@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jstl/core"
+	template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Reliquidación" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>Listado de Programas 2014 para el usuario admin</h2>
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoReliquidacionController.listadoProgramasServicio}"
+						liveResize="true" var="_programas" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+						styleClass="dataTable">
+						<p:columnGroup type="header">
+							<!--  -->
+							<p:row>
+								<p:column headerText="Programa" />
+								<p:column headerText="Descripción" />
+								<!-- <p:column headerText="Estado" width="60" /> -->
+
+								<p:column headerText="Iniciar" width="60" />
+								<!-- <p:column headerText="Terminar" width="60" /> -->
+							</p:row>
+						</p:columnGroup>
+
+						<p:column style="text-align:left;">
+							<span class="textoAjustado">#{_programas.programa}</span>
+						</p:column>
+						<p:column>
+							<span class="textoAjustado">#{_programas.descripcion}</span>
+						</p:column>
+						<!-- 
+						<p:column style="text-align:left;">
+							<span class="textoAjustado">#{_programas.descripcion}</span>
+						</p:column>
+						 -->
+						<!-- <p:column>
+							<h:graphicImage
+								value="resources/minsal/images/#{_programas.estado}.png"
+								styleClass="divapIcons" />
+						</p:column>-->
+						<!-- 
+						<p:column>
+							<h:outputText value="#{_programas.progreso}">
+								<f:convertNumber type="percent" />
+							</h:outputText>
+						</p:column>
+						 -->
+						<p:column>
+							<a href="#{_programas.url}.jsf"> <h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons" />
+							</a>
+						</p:column>
+						<!-- 	<p:column>
+							<h:commandLink
+								action="divapProcesoDistRecFinProgSeguimientoDocumentacion?faces-redirect=true">
+								<h:graphicImage value="resources/minsal/images/locked.png"
+									styleClass="divapIcons" />
+							</h:commandLink>
+						</p:column>-->
+					</p:dataTable>
+
+				</p:panel>
+
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

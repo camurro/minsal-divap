@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="X-UA-Compatible" content="IE=9" />
+	<title>Ministerio de Salud. Gobierno de Chile</title>
+	<style type="text/css" media="all">
+		@import url("resources/minsal/theme/style.css");
+		@import url("resources/minsal/modules/system/system.base.css");
+		@import url("resources/minsal/modules/system/system.menus.css");
+		@import url("resources/css/bandeja_tareas_main.css");
+	</style>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<link rel="shortcut icon" href="resources/minsal/theme/favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="resources/css/ext-all.css" />
+	<link rel="stylesheet" type="text/css" href="resources/css/xtheme-dgac-siso.css" />
+	<!-- <link rel="stylesheet" type="text/css" href="resources/css/estilo.css" /> -->
+	<script src="resources/SpryAssets/SpryMenuBar.js" type="text/javascript"></script>
+	<script src="resources/css/primefaceLocale.js" type="text/javascript"></script>
+	<link href="resources/SpryAssets/SpryMenuBarHorizontal.css" rel="stylesheet" type="text/css" />
+	<link href="resources/SpryAssets/SpryMenuBarHorizontal.css" type="text/css" rel="stylesheet" />
+	<link href="resources/SpryAssets/SpryValidationTextField.css" type="text/css" rel="stylesheet" />
+	<link href="resources/SpryAssets/SpryValidationPassword.css" type="text/css" rel="stylesheet" />
+	<link href="resources/minsal/theme/estilos_oirs_nuevo.css" type="text/css" rel="stylesheet" />
+
+	<!-- <link rel="stylesheet" type="text/css" href="resources/css/ext-all.css" /> -->
+	<!-- <link rel="stylesheet" type="text/css" href="resources/css/xtheme-dgac-siso.css" /> -->
+	<link rel="stylesheet" type="text/css" href="resources/css/iconos.css" />
+	<!-- <link rel="stylesheet" type="text/css" href="resources/css/estilo.css" /> -->
+	<script src="resources/SpryAssets/SpryMenuBar.js" type="text/javascript"></script>
+	<link href="resources/SpryAssets/SpryMenuBarHorizontal.css" rel="stylesheet" type="text/css" />
+
+	<script src="resources/SpryAssets/SpryMenuBar.js" type="text/javascript"></script>
+	<script src="resources/SpryAssets/SpryValidationTextField.js" type="text/javascript"></script>
+	<script src="resources/SpryAssets/SpryValidationPassword.js" type="text/javascript"></script>
+
+	<script type="text/javascript">
+		function addInputPrimeButtonStyleClass(element,styleClass){
+			elVar = 'input[id*="'+element+'"]';
+			jQuery(elVar).addClass(styleClass);
+		}
+		function removeInputPrimeButtonStyleClass(element,styleClass){
+			elVar = 'input[id*="'+element+'"]';
+			jQuery(elVar).removeClass(styleClass);
+		}
+	</script>
+</h:head>
+<h:body class="html front not-logged-in no-sidebars page-node">
+	<div id="wrapper">
+		<header id="header" class="clearfix">
+		<div id="site-logo">
+			<a href="/" title="Inicio"> <img
+				src="http://web.minsal.cl/sites/all/themes/minsal/logo.png"
+				alt="Inicio" />
+			</a>
+		</div>
+		<div id="buscador">
+			<div class="region region-buscador">
+				<div id="block-search-form" class="block block-search">
+					<div class="content">
+						<div>
+							<div class="container-inline">Versi&oacute;n:
+								#{bandejaVersion}</div>
+						</div>
+					</div>
+
+				</div>
+				<!-- /.block -->
+				<div id="block-text-resize-0" class="block block-text-resize"
+					style="display: none;">
+
+
+					<div class="content">
+						<a href="javascript:;" class="changer" title="Letra Pequeña"
+							id="text_resize_decrease"><sup>-</sup>A</a> <a
+							href="javascript:;" class="changer" title="Letra Normal"
+							id="text_resize_reset">A</a> <a href="javascript:;"
+							class="changer" id="text_resize_reset">A</a> <a
+							href="javascript:;" class="changer" title="Letra Grande"
+							id="text_resize_increase"><sup>+</sup>A</a>
+						<div id="text_resize_clear"></div>
+					</div>
+				</div>
+			</div>
+
+			<p>
+				<form>
+					<div style="display: none;" class="tooltip"
+						title="Contraste Normal" type="submit"
+						onclick="switch_style('style');return false;" name="theme"
+						value="style Theme" id="style"></div>
+					<div style="display: none;" type="submit"
+						onclick="switch_style('contraste');return false;" name="theme"
+						value="contraste Theme" id="contraste" title="Contrastar"></div>
+				</form>
+			</p>
+		</div>
+		<div id="tamanoLetra" style="display: none;"></div>
+		<nav id="navigation" role="navigation">
+		<div id="main-menu" class="menu l_tinynavNaN expanded active">
+			<!-- MENU NAVEGACION -->
+		</div>
+		</nav> </header>
+		<!-- CONTENIDO -->
+		<div id="main" class="clearfix">
+		<div style="clear:both;"></div>
+			<div style="clear:both;"></div>
+			<div id="principal">
+				<!--	inicio - caja login	-->
+
+				<div>
+					<h:messages globalOnly="true" styleClass="message" layout="list"
+						errorClass="error" infoClass="info" warnClass="warning"
+						errorStyle="color: red" infoStyle="color: green"
+						warnStyle="color: green"
+						style="max-width:650px;line-height: 15px;padding-bottom:2px;" />
+				</div>
+
+				<div id="container">
+			<!--	inicio - caja login	-->
+			<div>
+				<h:messages globalOnly="true" styleClass="message" layout="list"
+					errorClass="error" infoClass="info" warnClass="warning"
+					errorStyle="color: red" infoStyle="color: green"
+					warnStyle="color: green"
+					style="max-width:650px;line-height: 15px;padding-bottom:2px;" />
+			</div>
+			<div id="container">
+
+				<ui:insert name="content">
+                    [Template content will be inserted here]
+         			</ui:insert>
+
+
+			</div>
+				</div>
+<br />
+				<!--	fin - caja login	-->
+			</div>
+		</div>
+		<!-- FIN CONTENIDO -->
+		<footer id="footer-bottom"> <!-- FOOTER -->
+		<div class="copyright">
+			<div id="pie">
+				<table cellpadding="0" cellspacing="0" style="width: 960px;">
+					<tr>
+						<td align="left" style="padding-left: 14px; height: 62px;"><a
+							href="#">Pol&iacute;ticas de privacidad.</a><br /> RedHat Chile
+							<br /> Avenida Apoquindo #2827, Piso 7, Oficina 701. Las Condes,
+							Santiago de Chile <br /> Tel&eacute;fono (56 2) 25977000 :: Fax
+							(56 2) 25977026</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		</footer>
+
+	</div>
+
+	<div id="ribbon">
+		<a href="#top">Ir arriba</a>
+	</div>
+</h:body>
+
+</html>
+			

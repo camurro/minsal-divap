@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<p:panel styleClass="contentPanel">
+			<h:form>
+				<h1>
+					<h:outputText value="Asignación de Recursos per Capita" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>
+						<strong>Actividad:</strong> Enviar Consulta Regional
+					</h2>
+					<p class="parrafo">La tarea corresponde a nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est
+						faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.nulla eget ultricies. Morbi pulvinar elit at
+						justo pharetra, vitae ultricies est faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.</p>
+
+					<!-- ARCHIVOS DE TAREA -->
+					<div class="destacaArchivos ui-corner-all">
+						<h3>Archivos disponibles para la Tarea:</h3>
+						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+						<p:commandLink value="documento_gobierno-regional_arica-final.doc" />
+						<br />
+
+						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+						<p:commandLink value="documento_gobierno-regional_serena-final.doc" />
+						<br />
+
+						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+						<p:commandLink value="documento_gobierno-regional_arica-final.doc" />
+						<br />
+
+						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+						<p:commandLink value="documento_gobierno-regional_metropolitana-final.doc" />
+						<br />
+					</div>
+
+					<h3>Visualizador Montos de Distribución:</h3>
+					<br />
+					<!-- INICIO: MODAL CON INFORMACIóN Y FILTROS VISTA ONLINE -->
+
+					<p:panel styleClass="appMenu">
+						<h4>Filtros de Búsqueda:</h4>
+						<h:panelGrid columns="4" id="busqueda_mis_gobiernoRegionals">
+
+							<h:panelGrid>
+								<h:outputText value="Región" />
+								<p:selectOneMenu>
+									<f:selectItem itemLabel="METROPOLITANA" itemValue="15" />
+									<f:selectItem itemLabel="Seleccione" itemValue="" />
+								</p:selectOneMenu>
+							</h:panelGrid>
+
+							<h:panelGrid>
+								<h:outputText value="Servicio" />
+								<p:selectOneMenu>
+									<f:selectItem itemLabel="SANTIAGO" itemValue="SANTIAGO" />
+									<f:selectItem itemLabel="Seleccione" itemValue="" />
+								</p:selectOneMenu>
+							</h:panelGrid>
+
+							<h:panelGrid>
+								<h:outputText value="Comuna" />
+								<p:selectOneMenu>
+									<f:selectItem itemLabel="MACUL" itemValue="MACUL" />
+									<f:selectItem itemLabel="Seleccione" itemValue="" />
+								</p:selectOneMenu>
+							</h:panelGrid>
+
+							<h:panelGrid columns="2">
+								<p:commandButton value="Limpiar" styleClass=" x-btn-text icon-guardar" update="tablaMisTareas" />
+								<p:commandButton value="Ver" styleClass=" x-btn-text icon-guardar" update="tablaMisTareas" />
+							</h:panelGrid>
+						</h:panelGrid>
+					</p:panel>
+					<br />
+					<br />
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" liveResize="true" var="_gobiernoRegional" rows="10" paginator="true"
+						paginatorPosition="bottom" emptyMessage="No se encontraron Tareas Asignadas" styleClass="dataTable">
+						<!-- value="#{procesoAsignacionPerCapitaController.listGobiernoRegional}"  -->
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Tramo Pobreza" />
+							</f:facet>
+							<h:outputText value="5" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Pobreza" />
+							</f:facet>
+							<h:outputText value="3" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Ruralidad" />
+							</f:facet>
+							<h:outputText value="1" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Poblacion" />
+							</f:facet>
+							<h:outputText value="1.350.313" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Poblacion Mayor de 65 Años" />
+							</f:facet>
+							<h:outputText value="311.412" />
+						</p:column>
+
+					</p:dataTable>
+					<!-- FIN: MODAL CON INFORMACIóN Y FILTROS VISTA ONLINE -->
+
+					<!-- HISTORIAL DE SEGUIMIENTO -->
+					<h3>Tareas de la Actividad:</h3>
+					<p style="">
+						Para iniciar el envío masivo de los documentos correspondientes a cada uno de los Gobiernos Regionales haga clic en <span
+							class="strong">Envío Masivo de Documentación</span>.
+					</p>
+					<br />
+					<p:dataTable id="tablaGobiernosRegionales" resizableColumns="true" liveResize="true" var="_gobiernoRegional" rows="10" paginator="true"
+						paginatorPosition="bottom" emptyMessage="No se encontraron Tareas Asignadas" styleClass="dataTable"
+						value="#{procesoAsignacionPerCapitaController.listGobiernoRegional}">
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Gobierno Regional" />
+							</f:facet>
+							<h:outputText value="#{_gobiernoRegional.nombre}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Correo" />
+							</f:facet>
+							<h:outputText value="#{_gobiernoRegional.correo}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Archivo" />
+							</f:facet>
+							<h:outputText value="#{_gobiernoRegional.archivo}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Enviado" />
+							</f:facet>
+							<h:outputText value="No" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="¿Enviar?" />
+							</f:facet>
+							<p:selectBooleanCheckbox />
+						</p:column>
+
+					</p:dataTable>
+
+					<p:commandButton styleClass="x-btn-text" value="Enviar Documentación a Destinatarios Seleccionados" icon="ui-icon-mail-closed" />
+					<p:commandButton styleClass="x-btn-text" value="Finalizar Tramitación" icon="ui-icon-check"
+						action="bandejaTareas?faces-redirect=true indexMenu=0" />
+					<div style="clear: both;"></div>
+
+				</p:panel>
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</h:form>
+		</p:panel>
+	</ui:define>
+</ui:composition>

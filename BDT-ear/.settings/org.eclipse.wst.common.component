@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="BDT-ear">
+        <wb-resource deploy-path="/" source-path="/EarContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/lib" source-path="/lib"/>
+        <dependent-module archiveName="BDT-web.war" deploy-path="/" handle="module:/resource/BDT-web/BDT-web">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="BDT-ejb.jar" deploy-path="/" handle="module:/resource/BDT-ejb/BDT-ejb">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="BDT-JPA.jar" deploy-path="/lib" handle="module:/resource/BDT-JPA/BDT-JPA">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="BDT-Rest.war" deploy-path="/" handle="module:/resource/BDT-Rest/BDT-Rest">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>

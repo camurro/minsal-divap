@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jstl/core"
+	template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Distribución de Recursos Financieros por Programa" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>
+						<strong>Programa:</strong> PILOTO VIDA SANA: ALCOHOL
+					</h2>
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoDistRecFinController.listadoEnvioServicios}" liveResize="true"
+						var="_servicio" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+						styleClass="dataTable">
+						<p:columnGroup type="header">
+							<p:row>
+								<p:column headerText="Servicio de Salud" width="250" />
+								<p:column headerText="Documentos" />
+								<p:column headerText="Fecha de Envío" width="150" />
+								<p:column headerText="Destinatario" footerText="#{procesoDistRecFinController.getTotalMunicipal}" width="70" />
+							</p:row>
+						</p:columnGroup>
+
+						<p:column>#{_servicio.servicioSalud}</p:column>
+						<p:column>
+							<span class="textoAjustado"> <h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <p:commandLink
+									value="Planilla Distribucion de Recursos APS Municipal.xls" /> <br />
+							<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <p:commandLink
+									value="Planilla Distribucion de Recursos APS Servicio.xls" />
+							</span><br />
+							<span class="textoAjustado"> <h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <p:commandLink
+									value="Res. de Dist. de Rec. - APS Serv Salud.zip" /> <br />
+							<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <p:commandLink
+									value="Ord. de Dist. de Rec - APS Serv Salud.zip" />
+							</span>
+						</p:column>
+						<p:column>#{_servicio.enviado}</p:column>
+						<p:column>
+							<span class="textoAjustado">Rodolfo Cáceres - rcaceres@minsal.cl</span>
+						</p:column>
+					</p:dataTable>
+
+					<p:commandButton value="Finalizar Actividad" styleClass="x-btn-text"
+						action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false" icon="ui-icon-disk" />
+				</p:panel>
+
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

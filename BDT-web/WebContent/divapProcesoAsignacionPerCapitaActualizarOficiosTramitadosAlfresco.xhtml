@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<p:panel styleClass="contentPanel">
+			<h:form>
+				<h1>
+					<h:outputText value="Asignación de Recursos per Capita" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>
+						<strong>Actividad:</strong> Actualizar Oficios Tramitados en Alfresco
+					</h2>
+					<p class="parrafo">La tarea corresponde a nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est
+						faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.nulla eget ultricies. Morbi pulvinar elit at
+						justo pharetra, vitae ultricies est faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.</p>
+					<!-- HISTORIAL DE SEGUIMIENTO -->
+					<h3>Tareas de la Actividad:</h3>
+					<br />
+					<p:dataTable id="tablaGobiernosRegionales" resizableColumns="true" liveResize="true" var="_gobiernoRegional" rows="10" paginator="true"
+						paginatorPosition="bottom" emptyMessage="No se encontraron Tareas Asignadas" styleClass="dataTable"
+						value="#{procesoAsignacionPerCapitaController.listGobiernoRegional}">
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Gobierno Regional" />
+							</f:facet>
+							<h:outputText value="#{_gobiernoRegional.nombre}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Archivo" />
+							</f:facet>
+							<h:outputText value="" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Archivo" />
+							</f:facet>
+							<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" mode="simple"
+								styleClass="inputText" />
+						</p:column>
+
+					</p:dataTable>
+
+					<p:commandButton styleClass="x-btn-text" value="Finalizar Actividad | Todos los Archivos Finales han sido Subidos" icon="ui-icon-check"
+						action="bandejaTareas?faces-redirect=true indexMenu=0" />
+					<div style="clear: both;"></div>
+
+				</p:panel>
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</h:form>
+		</p:panel>
+	</ui:define>
+</ui:composition>

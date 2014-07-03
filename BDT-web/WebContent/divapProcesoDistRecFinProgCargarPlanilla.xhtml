@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Distribución de Recursos Financieros por Programa" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>Actividad: Subir Planilla del Programa</h2>
+					<p class="parrafo">Los archivos solicitados a continuación representan el input para la elaboración de toda la documentación del
+						proceso de Distribución de Recursos Financieros por Programa.</p>
+					<h3>Tareas de la Actividad:</h3>
+					<h:panelGrid columns="2">
+						<h:outputText value="Programa: " styleClass="inputLabel" />
+						<p:selectOneMenu>
+							<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<f:selectItem itemLabel="Programa ref 1" itemValue="Programa ref 1" />
+							<f:selectItem itemLabel="Programa ref 2" itemValue="Programa ref 2" />
+							<f:selectItem itemLabel="Programa ref 3" itemValue="Programa ref 3" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+					<p:panelGrid columns="3" styleClass="uploadFileTable">
+						<h:outputLabel for="valorBasicoDesempenoFile" value="Archivo: Planilla de Prog. para APS Municipal" styleClass="fileUploadLabel" />
+						<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" mode="simple" />
+						<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
+
+						<h:outputLabel for="valorBasicoDesempenoFile" value="Archivo: Planilla de Prog. para APS Servicio Salud" styleClass="fileUploadLabel" />
+						<p:fileUpload id="valorBasicoDesempenoFile2" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" mode="simple" />
+						<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
+					</p:panelGrid>
+					<br />
+					<p:commandButton value="Cargar Archivos" ajax="false"
+						actionListener="#{procesoAsignacionPerCapitaController.uploadArchivosValorizacion}"
+						action="bandejaTareas?faces-redirect=true indexMenu=0" icon="ui-icon-upload" />
+				</p:panel>
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="divapProcesoAsignacionPerCapitaInicio?faces-redirect=true" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

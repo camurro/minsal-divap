@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<h:form id="responderOirs" class="contentPanel">
+			<p:panel id="Panel" style="border:0px;">
+				<h1>
+					<h:outputText value="Procesos DIVAP" />
+				</h1>
+				<h:panelGrid width="100%">
+					<h:commandLink action="divapProcesoAsignacionPerCapitaInicio?faces-redirect=true">
+						<h:graphicImage value="resources/minsal/images/asignacion_per_capita.png" styleClass="divapIcons" />
+						<h:outputText value="Asignación de Recursos per Capita" styleClass="divapProcesosProcesoLabel" />
+					</h:commandLink>
+					<h:commandLink action="divapProcesoRebajaInicio?faces-redirect=true">
+						<h:graphicImage value="resources/minsal/images/asignacion_per_capita.png" styleClass="divapIcons" />
+						<h:outputText value="Resoluciones de Rebaja" styleClass="divapProcesosProcesoLabel" />
+					</h:commandLink>
+					<h:commandLink action="divapProcesoDistRecFinProgInicio?faces-redirect=true">
+						<h:graphicImage value="resources/minsal/images/asignacion_per_capita.png" styleClass="divapIcons" />
+						<h:outputText value="Distribución de Recursos Financieros por Programa" styleClass="divapProcesosProcesoLabel" />
+					</h:commandLink>
+					<h:commandLink action="divapProcesoReliqInicio?faces-redirect=true">
+						<h:graphicImage value="resources/minsal/images/asignacion_per_capita.png" styleClass="divapIcons" />
+						<h:outputText value="Reliquidación" styleClass="divapProcesosProcesoLabel" />
+					</h:commandLink>
+					<h:commandLink action="divapProcesoGITInicio?faces-redirect=true">
+						<h:graphicImage value="resources/minsal/images/asignacion_per_capita.png" styleClass="divapIcons" />
+						<h:outputText value="Gestión de Información para Transferencia" styleClass="divapProcesosProcesoLabel" />
+					</h:commandLink>
+					<h:commandLink action="divapProcesoProgInicio?faces-redirect=true">
+						<h:graphicImage value="resources/minsal/images/asignacion_per_capita.png" styleClass="divapIcons" />
+						<h:outputText value="Estimación de Flujos de Caja" styleClass="divapProcesosProcesoLabel" />
+					</h:commandLink>
+					<h:commandLink action="divapProcesoOTInicio?faces-redirect=true">
+						<h:graphicImage value="resources/minsal/images/asignacion_per_capita.png" styleClass="divapIcons" />
+						<h:outputText value="Ordenes de Transferencia" styleClass="divapProcesosProcesoLabel" />
+					</h:commandLink>
+				</h:panelGrid>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

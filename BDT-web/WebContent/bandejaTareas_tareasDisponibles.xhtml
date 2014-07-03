@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui">
+
+
+	<h:panelGrid>
+		<p:panel header="Buscar" style="width:953px;">
+
+			<h:panelGrid columns="4" id="busqueda_tareas_disponibles">
+
+				<h:panelGrid>
+					<h:outputText value="Nro Solicitud" />
+					<p:inputMask value="#{bandejaTareasController.nroSolicitud}" mask="9?999999" />
+				</h:panelGrid>
+
+				<h:panelGrid>
+					<h:outputText value="Fecha Creaci&oacute;n" />
+					<p:calendar language="es" styleClass="campo_fecha" value="#{bandejaTareasController.fechaCreacion}" showOn="button"
+						pattern="dd/MM/yyyy" readonlyInput="true" />
+				</h:panelGrid>
+
+				<h:panelGrid>
+					<h:outputText value="Fecha Vencimiento" />
+					<p:calendar value="#{bandejaTareasController.fechaVencimiento}" styleClass="campo_fecha" pattern="dd/MM/yyyy" showOn="button"
+						readonlyInput="true" />
+				</h:panelGrid>
+
+				<h:outputText value="" />
+
+				<h:panelGrid>
+					<h:outputText value="Actividad" />
+					<p:selectOneMenu value="#{bandejaTareasController.estadoTareasDisponibles}" style="width:132px;">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+
+				<h:outputText value="" />
+				<h:outputText value="" />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Limpiar" styleClass=" x-btn-text icon-guardar" onclick="BUI.show()" oncomplete="BUI.hide()"
+						action="#{bandejaTareasController.limpiarTareasDisponibles()}" update="busqueda_tareas_disponibles tabla2" />
+					<p:commandButton value="Buscar" styleClass=" x-btn-text icon-guardar" onclick="BUI.show()" oncomplete="BUI.hide()"
+						action="#{bandejaTareasController.buscarTareasDisponibles()}" update="tabla2" />
+				</h:panelGrid>
+
+			</h:panelGrid>
+
+			<p:blockUI widgetVar="BUI" block="Panel">
+   				Procesando..
+			</p:blockUI>
+
+		</p:panel>
+
+		<h:panelGrid id="tabla2" style="width:960px;">
+
+			<p:dialog id="modalDialog2" header="&iquest;Esta seguro en mover la tarea a 'Mis Tareas'?" widgetVar="dlg3" modal="true" height="160"
+				width="350">
+
+
+				<br></br>
+				<h:outputText value="Nro OIRS: #{bandejaTareasController.solicitudSeleccionada.solicitud.idSolicitud}" />
+				<br></br>
+				<h:outputText value="Tarea: #{bandejaTareasController.solicitudSeleccionada.name}" />
+				<br></br>
+				<h:outputText value="Apellido: #{bandejaTareasController.solicitudSeleccionada.solicitud.lastname}" />
+				<br></br>
+				<h:outputText value="Fecha Creaci&oacute;n: " />
+				<h:outputText value="#{bandejaTareasController.solicitudSeleccionada.solicitud.createDate}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+
+				<br></br>
+				<h:outputText value="Fecha Vencimiento: " />
+				<h:outputText value="#{bandejaTareasController.solicitudSeleccionada.solicitud.dueDate}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+
+
+				<br></br>
+				<br></br>
+				<h:panelGrid columns="2" align="center">
+					<p:commandButton id="confirm2" value="Si" update="messages" onclick="confirmation.hide()"
+						action="#{bandejaTareasController.reclamarTarea}" />
+					<p:commandButton id="decline2" value="No" onclick="confirmation.hide()" update="messages" />
+
+				</h:panelGrid>
+			</p:dialog>
+
+			<p:dataTable var="_tarea" scrollable="true" scrollWidth="960" resizableColumns="true" liveResize="true" rowKey="#{_tarea.id}" rows="10"
+				paginator="true" paginatorPosition="bottom" selectionMode="single" selection="#{bandejaTareasController.solicitudSeleccionada}"
+				emptyMessage="No se encontraron tareas disponibles" value="#{bandejaTareasController.listaBuscarTareasDisponibles}">
+
+				<p:ajax event="rowDblselect" update=":responderOirs:modalDialog2" oncomplete="dlg3.show()" />
+
+				<p:column width="60">
+					<f:facet name="header">
+						<h:outputText value="Nro OIRS" />
+					</f:facet>
+					<h:outputText value="#{_tarea.solicitud.idSolicitud}" />
+				</p:column>
+
+				<p:column headerText="" width="100">
+					<f:facet name="header">
+						<h:outputText value="Tarea" />
+					</f:facet>
+					<h:outputText value="#{_tarea.name}" />
+				</p:column>
+
+				<p:column width="160">
+					<f:facet name="header">
+						<h:outputText value="Nombre" />
+					</f:facet>
+					<h:outputText value="#{_tarea.solicitud.lastname}, #{_tarea.solicitud.firstname}" />
+				</p:column>
+
+				<p:column width="100">
+					<f:facet name="header">
+						<h:outputText value="Creaci&oacute;n" />
+					</f:facet>
+					<h:outputText value="#{_tarea.solicitud.createDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column width="100">
+					<f:facet name="header">
+						<h:outputText value="Vencimiento" />
+					</f:facet>
+					<h:outputText value="#{_tarea.solicitud.dueDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column width="125">
+					<f:facet name="header">
+						<h:outputText value="Actividad" />
+					</f:facet>
+					<h:outputText value="#{bandejaTareasController.obtenerEstado(_tarea.solicitud.state)}" />
+				</p:column>
+
+				<p:column width="80">
+					<f:facet name="header">
+						<h:outputText value="Tem.Con" />
+					</f:facet>
+					<h:outputText value="Dummy Value" />
+				</p:column>
+
+				<p:column width="60">
+					<f:facet name="header">
+						<h:outputText value="Sem&aacute;foro" />
+					</f:facet>
+					<p:graphicImage value="#{bandejaTareasController.dirImagenSemaforo(_tarea.solicitud.dueDate)}" style="width:30%;">
+
+					</p:graphicImage>
+				</p:column>
+			</p:dataTable>
+		</h:panelGrid>
+	</h:panelGrid>
+</ui:composition>

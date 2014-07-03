@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Distribución de Recursos Financieros por Programa" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>
+						<span class="strong">Programa Municipal | </span>APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES
+					</h2>
+
+					<p class="parrafo">La Planilla de Trabajo con Montos de Distribución contiene lorem ipsum dolor sit amet, consectetur adipiscing
+						elit. Praesent egestas tempor nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est dignissim, justo nisi
+						porttitor enim, eget ullamcorper felis augue eget lacus.</p>
+					<br />
+
+					<h:panelGrid columns="2">
+						<h:graphicImage value="resources/minsal/images/search.png" styleClass="divapIcons" />
+						<p:lightBox iframe="true" width="950px">
+							<h:outputLink value="http://localhost:8080/BandejaTareas-web/divapProcesoDistRecFinProgProgramas.jsf">Ver Resumen Parcial del Programa</h:outputLink>
+						</p:lightBox>
+					</h:panelGrid>
+					<br />
+
+					<h3>Filtros del Programa:</h3>
+					<h:panelGrid id="busqueda_mis_tareas">
+						<h:panelGrid>
+							<h:outputText value="Componente: " styleClass="inputLabel" />
+							<p:selectOneMenu>
+								<f:selectItem itemLabel="APOYO A LAS ACCIONES EN EL
+						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES"
+									itemValue="APOYO A LAS ACCIONES EN EL
+						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />
+							</p:selectOneMenu>
+						</h:panelGrid>
+
+						<h:panelGrid>
+							<h:outputText value="Subcomponente: " styleClass="inputLabel" />
+							<p:selectOneMenu>
+								<f:selectItem itemLabel="Subcomponente 1" itemValue="Subcomponente 1 Alcohol" />
+								<f:selectItem itemLabel="Subcomponente 2" itemValue="Subcomponente 2 Alcohol" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />
+							</p:selectOneMenu>
+						</h:panelGrid>
+
+						<h:panelGrid>
+							<h:panelGrid>
+								<h:outputText value="Actividad: " styleClass="inputLabel" />
+								<p:selectOneMenu>
+									<f:selectItem itemLabel="Actividad 1" itemValue="Actividad 1" />
+									<f:selectItem itemLabel="Seleccione" itemValue="" />
+								</p:selectOneMenu>
+							</h:panelGrid>
+						</h:panelGrid>
+						<h:panelGrid>
+							<h:outputText value="Servicio: " styleClass="inputLabel" />
+							<p:selectOneMenu onchange="document.getElementById('tablaSubtitulos').style.display = 'block';">
+								<f:selectItem itemLabel="Metropolitano Oriente" itemValue="Metropolitano Oriente" />
+								<f:selectItem itemLabel="Concepción" itemValue="Concepción" />
+								<f:selectItem itemLabel="Talcahuano" itemValue="Concepción" />
+								<f:selectItem itemLabel="Iquique" itemValue="Concepción" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />
+							</p:selectOneMenu>
+						</h:panelGrid>
+					</h:panelGrid>
+					<br />
+					<div id="tablaSubtitulos" style="display: none;">
+						<h3>Subtítulos del Programa</h3>
+						<h:form id="form">
+							<h:panelGrid>
+								<p:dataTable resizableColumns="true" value="#{procesoDistRecFinController.listadoEstablecimientos}" liveResize="true"
+									var="_establecimiento" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+									styleClass="dataTable">
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column rowspan="2" headerText="Comuna" width="170" />
+
+											<p:column colspan="2" headerText="Subtítulo 24" />
+
+											<p:column rowspan="2" headerText="Total" />
+										</p:row>
+										<p:row>
+											<p:column headerText="Tarifa" />
+											<p:column headerText="Cantidad" />
+										</p:row>
+									</p:columnGroup>
+
+									<p:column>
+										<span class="textoAjustado textoPequenio">#{_establecimiento.comuna.nombreComuna}</span>
+									</p:column>
+
+									<p:column>
+										<p:inputText value="#{_establecimiento.pS24}" styleClass="divapProcesoDistRecFinProgInput">
+											<p:ajax event="keyup" update="totales,total" />
+											<f:convertNumber groupingUsed="false" maxFractionDigits="0" />
+										</p:inputText>
+									</p:column>
+									<p:column>
+										<p:inputText value="#{_establecimiento.qS24}" styleClass="divapProcesoDistRecFinProgInput">
+											<p:ajax event="keyup" update="totales,total" />
+										</p:inputText>
+									</p:column>
+									<p:column>
+										<h:outputText styleClass="textoAjustado" value="#{_establecimiento.tS24}" id="totales">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+
+									<p:columnGroup type="footer">
+										<p:row>
+											<p:column />
+											<p:column colspan="2" />
+
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoDistRecFinController.totalS24}" id="total" styleClass="textoAjustado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+										</p:row>>
+									</p:columnGroup>
+								</p:dataTable>
+							</h:panelGrid>
+
+							<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" action="#" ajax="true" value="Guardar" />
+							<p:commandButton value="Finalizar" styleClass="x-btn-text"
+								action="divapProcesoDistRecFinProgSeguimientoDocumentacion?faces-redirect=true" ajax="false" icon="ui-icon-seek-first" />
+						</h:form>
+					</div>
+				</p:panel>
+
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

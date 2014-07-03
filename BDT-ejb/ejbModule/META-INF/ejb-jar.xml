@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:ejb="http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+	version="3.1">
+	<display-name>MinsalEJB</display-name>
+	<enterprise-beans>
+		<session>
+			<ejb-name>EmailService</ejb-name>
+			<env-entry>
+				<description>SMTP server</description>
+				<env-entry-name>smtpHost</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>smtp.gmail.com</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>SMT port</description>
+				<env-entry-name>smtpPort</env-entry-name>
+				<env-entry-type>java.lang.Integer</env-entry-type>
+				<env-entry-value>587</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>SMTP server User Name</description>
+				<env-entry-name>smtpUsername</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>testpocrh@gmail.com</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>SMTP server password</description>
+				<env-entry-name>smtpPassword</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>testPocRH1980</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Use ssl?</description>
+				<env-entry-name>smtpSSL</env-entry-name>
+				<env-entry-type>java.lang.Boolean</env-entry-type>
+				<env-entry-value>true</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Mail from</description>
+				<env-entry-name>mailFrom</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>testpocrh@gmail.com</env-entry-value>
+			</env-entry>
+		</session>
+		<session>
+			<ejb-name>AlfrescoService</ejb-name>
+			<env-entry>
+				<description>Alfresco Server</description>
+				<env-entry-name>alfrescoServer</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>http://localhost:8280/alfresco/service/api</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Alfresco User Name</description>
+				<env-entry-name>alfrescoUsername</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>admin</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Alfresco Password</description>
+				<env-entry-name>alfrescoPassword</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>alfresco</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Alfresco Site</description>
+				<env-entry-name>alfrescoSite</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>sitioTest</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Alfresco Upload Directory</description>
+				<env-entry-name>alfrescoUploadDirectory</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>/carpetaTest2</env-entry-value>
+			</env-entry>
+		</session>
+		<session>
+			<ejb-name>DocumentService</ejb-name>
+			<env-entry>
+				<description>Tmp Dir</description>
+				<env-entry-name>tmpDir</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>/tmp</env-entry-value>
+			</env-entry>
+		</session>
+		<session>
+			<ejb-name>ProcessService</ejb-name>
+			<env-entry>
+				<description>Base Url</description>
+				<env-entry-name>baseUrl</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>http://localhost:8080/business-central/</env-entry-value>
+			</env-entry>
+				<env-entry>
+				<description>BPM Suite User Name</description>
+				<env-entry-name>bpmUsername</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>admin</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>BPM Suite Password</description>
+				<env-entry-name>bpmPassword</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>Redhat123_</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>BPM Suite Deployment ID</description>
+				<env-entry-name>bpmDeploymentID</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>cl.minsal.divap:minsal_divap:1.0</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>BPM Suite lang</description>
+				<env-entry-name>lang</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>en-UK</env-entry-value>
+			</env-entry>
+		</session>
+	</enterprise-beans>
+	<!-- <ejb-client-jar>BaseEJBClient.jar</ejb-client-jar> -->
+</ejb-jar>

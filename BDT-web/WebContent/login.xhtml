@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/defaultLogin.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="formId">
+			<p:panel header="LOGIN - BANDEJA DE TAREAS" id="PanelLogin"
+				style="width:400px;margin:auto;">
+				
+					<p:messages id="messages" showDetail="true" autoUpdate="true"
+					closable="true" />
+				
+				<h:panelGrid columns="2" style="width:100%;vertical-align: top;">
+					
+						<p:outputLabel value="Usuario" />
+						<h:panelGroup>
+							<p:inputText id="usuario" maxlength="50" size="35" style="width: 270px;"
+								value="#{loginController.usuario}" >
+							</p:inputText>
+
+						</h:panelGroup>
+
+
+						<p:outputLabel value="Contrase&ntilde;a" />
+						<h:panelGroup>
+
+							<p:password id="turkishFeedback" style="width: 270px;"
+								value="#{loginController.contrasena}" maxlength="50"
+								size="35" >
+							</p:password>
+
+							<br />
+							<br />
+						</h:panelGroup>
+
+				</h:panelGrid>
+				
+				<p:commandButton value="Ingresar" ajax="false"
+					styleClass="x-btn-text icon-guardar" style="float: center;" 
+					onclick="BUI.show()" action="#{loginController.login}" oncomplete="if (#{not facesContext.validationFailed and not empty facesContext.messageList}) BUI.hide()" />
+
+
+				<p:blockUI widgetVar="BUI" block="PanelLogin" >
+  				Procesando..
+			</p:blockUI>
+			</p:panel>
+			
+			<p:idleMonitor timeout="899000"  onidle="location.reload(true)" />  
+              
+		</h:form>
+	</ui:define>
+</ui:composition>

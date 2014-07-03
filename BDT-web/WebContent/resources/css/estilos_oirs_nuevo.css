@@ -1,0 +1,260 @@
+/* Core styles for the page */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #F1F1F1;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  font-size: 0.8em;
+  color:#363636;
+}
+
+#container {
+ 
+  width: 100%; 
+  background: #FFFFFF;
+  background-image: url(#{request.contextPath}/resources/gfx/headerbkg.png);
+  background-repeat: repeat-x;
+ 
+}
+#sidebar {
+    font-size: 1em;   
+    border: 1px solid #666666;
+    background: #EAECEE;
+    padding: 0 15px 5px 15px;
+    vertical-align: top;
+    margin: 0px;    
+}
+#sidebar ul {
+    padding-left: 30px;
+}
+#content {
+  margin-top:0px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 20px;
+  border:1px;
+}
+
+#footer {
+  clear: both;
+  text-align: center;
+  color: #666666;
+  font-size: 0.85em;
+}
+
+#content table .componente {
+	
+	text-align: left;
+	vertical-align: top;
+	font-size: 12px;
+}
+
+code {
+  font-size: 1.1em;
+}
+a {
+  color: #4a5d75;
+  text-decoration: none;
+}
+a:hover {
+  color: #369;
+  text-decoration: underline;
+}
+
+hr{
+	margin-top: 10px;
+	margin-bottom: 10px;
+	color: #bed6f8;
+	width:99%;
+	border-style: solid;
+}
+/* Member registration styles */
+span.invalid {
+    color: red;
+    float: right;
+    margin-right: 0.5em;
+    text-align: right;
+    white-space: nowrap;
+}
+form {
+ 
+}
+
+.register {
+  float: left;
+  margin-left: 85px;
+}
+
+/*
+ * Navigation
+ */
+ 
+#navigation {
+	/*float: left;*/
+	width: 950px;
+	margin: 0 auto;
+	height: 50px;
+}
+
+#navigation ul {
+	border: 1px solid #cccccc;
+	padding: 1px;
+	border-radius: 5px;
+	text-align: center;
+	height: 30px;
+	background-color:#bed6f8;
+	background: -webkit-gradient(linear, left top, left bottom, from(#bed6f8),
+		to(#507EA8) );
+	background: -moz-linear-gradient(top, #bed6f8, #507EA8);
+	filter: progid :     DXImageTransform.Microsoft.gradient (    
+		startColorstr =  
+		  '#bed6f8', endColorstr =     '#507EA8' );		  
+		  color: #ffffff;
+		  -moz-box-shadow: 0 0 5px 5px #f2f2f2;
+		-webkit-box-shadow: 0 0 5px 5px #f2f2f2;
+				box-shadow: 0 0 5px 5px #f2f2f2;
+}
+
+#navigation ul li {
+	list-style: none;
+	float: left;	
+}
+
+#navigation a {
+	display: block;
+	color: #FFFFFF;
+	padding: 3px;
+	text-decoration: none;
+	border: 1px solid transparent;
+}
+
+#navigation a:hover {
+	border: 1px solid #dddddd;
+	border-radius: 5px;
+	background-color: #eeeeee;
+	color: #5b5b5b;
+	text-decoration: none;
+}
+
+#homeLink a:hover {
+	border: none;
+	text-decoration: none;
+}
+
+/*
+ * Header
+ */
+#header {	
+	font-size: 1.2em;
+	margin: 0 auto;	
+  	padding: 0px 10px 0px 10px;  
+  	width: 950px;
+  	background: #000000;   	
+  	box-shadow: 3px 3px 15px #d5d5d5;	
+  	color: #FFFFFF;
+  	font-weight: bold;
+  	height: 70px;
+  	text-align: center;  	
+  	border-left: 5px solid #000000;
+  	border-right: 5px solid #000000;
+  	padding-top: 1.5em;
+    vertical-align: middle;
+}
+
+.message {
+    padding: 5px;
+    list-style: none;
+    border: 0;
+    background: none;
+    padding: 0;
+    color: #000000;
+    margin: 5px 0 8px 0;
+    font-size: 12px;
+}
+
+.message li {
+    background: no-repeat left center;
+    padding-top: 1px;
+    padding-left: 20px;
+    margin-left: 3px;
+}
+
+.message li.infomsg {
+    background-image: url(#{request.contextPath}/resources/gfx/msginfo.png);
+}
+
+.message li.errormsg {
+    background-image: url(#{request.contextPath}/resources/gfx/msgerror.png);
+}
+
+.message li.warnmsg {
+    background-image: url(#{request.contextPath}/resources/gfx/msgwarn.png);
+}
+
+.solicitud_form_label {
+	text-align: right; 
+	
+}
+.solicitud_form_component {
+	width: 100%; 
+	text-align: right; 
+}
+
+.texto_ayuda {
+	color: gray;
+}
+
+.tabla_ingreso_solicitud thead {
+	background-color: #bed6f8;
+	color: white;
+}
+
+.tabla_ingreso_solicitud thead td {
+	font-size: 12px;
+	font-weight: bold;
+	padding-left: 10px;
+}
+
+.mensaje_atencion {
+	color: blue;
+}
+
+.solicitud_form_label {
+	text-align: right;
+}
+
+.recuadro {
+	border: 1px solid #D5D5D5;
+	padding: 10px;
+}
+
+.col1 {
+	width: 25%;
+}
+
+.headerDgac {
+	font-family: Arial, "Trebuchet MS", Verdana, sans-serif;
+	color: #00147e;	
+	font-size: 18px;
+	font-weight: bold;	
+}
+
+.subHeaderDgac {
+	font-family: Arial, "Trebuchet MS", Verdana, sans-serif;
+	color: #129cda;	
+	font-size: 14px;
+	font-weight: bold;	
+}
+
+.campo_fecha {
+	display: block;
+    width: 141px;
+}
+
+.campo_fecha input {
+	width:120px;
+}
+
+.campo_fecha button {
+	margin-left: -25px;
+}

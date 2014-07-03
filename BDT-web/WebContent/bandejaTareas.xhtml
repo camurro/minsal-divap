@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="responderOirs" class="contentPanel">
+			<h:panelGrid class="appSubMenu">
+				<!-- 
+				<p:commandLink value="Ingresar Solicitud" style="float: right;"
+					rendered="#{bandejaTareasController.verificarPermiso('INGRESAR SOLICITUD')}"
+					onclick="window.open('#{bandejaTareasController.ingresarSolicitud()}')" />
+			 -->
+				<p:tabMenu activeIndex="#{bandejaTareasController.indexMenu}" id="TabMenu">
+					<p:menuitem value="Mis Tareas" ajax="true" immediate="true" id="Menu_MisTareas" onclick="BUI.show()" update="responderOirs"
+						oncomplete="BUI.hide()" action="#{bandejaTareasController.establecerModo(0)}" />
+					<!-- rendered="#{bandejaTareasController.verificarPermiso('MIS TAREAS')}"  -->
+					<p:menuitem value="Tareas Disponibles" id="Menu_TareasDisponibles" ajax="true" immediate="true" onclick="BUI.show()"
+						update="responderOirs" oncomplete="BUI.hide()" action="#{bandejaTareasController.establecerModo(1)}" />
+					<!-- rendered="#{bandejaTareasController.verificarPermiso('TAREAS DISPONIBLES')}" -->
+					<p:menuitem value="Buscar Solicitud" id="Menu_BuscarSolicitud" ajax="true" immediate="true" onclick="BUI.show()" update="responderOirs"
+						oncomplete="BUI.hide()" action="#{bandejaTareasController.establecerModo(2)}" />
+
+				</p:tabMenu>
+
+			</h:panelGrid>
+
+			<p:blockUI widgetVar="BUI" block="Panel">
+  				Procesando..
+			</p:blockUI>
+
+
+			<p:panel id="Panel" style="border: 0px;">
+				<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+
+				<h:panelGroup rendered="#{bandejaTareasController.indexMenu==0}">
+					<ui:include src="bandejaTareas_misTareas.xhtml" />
+				</h:panelGroup>
+
+				<h:panelGroup rendered="#{bandejaTareasController.indexMenu==1}">
+					<ui:include src="bandejaTareas_tareasDisponibles.xhtml" />
+				</h:panelGroup>
+
+				<h:panelGroup rendered="#{bandejaTareasController.indexMenu==2}">
+					<ui:include src="bandejaTareas_buscarSolicitud.xhtml" />
+				</h:panelGroup>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

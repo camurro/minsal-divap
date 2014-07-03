@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="DIVAP Reportes" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>Meta Desempeño</h2>
+
+					<div class="destacaArchivos ui-corner-all">
+						<h3>Archivos Disponibles:</h3>
+						<span class="strong">Archivo: </span> Documento Informe Ordenes de Transferencia de Programa Presupuestario de Atención Primaria de Salud 2014 [
+						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+						<p:commandLink value="Generar y Descargar" />
+						]
+					</div>
+					
+				</p:panel>
+
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/emergente.xhtml">
+
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel">
+				<p:panel id="Panel">
+					<h2>
+						<strong>Tabla:</strong> Estado revisión y validación monitoreo programas
+					</h2>
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" liveResize="true" var="_programas" rows="10" paginator="false"
+						value="#{procesoProgramacionController.listadoProgramasServicio}" paginatorPosition="bottom"
+						emptyMessage="No se encontro información." styleClass="dataTable">
+						<p:columnGroup type="header">
+							<!--  -->
+							<p:row>
+								<p:column headerText="Programa" />
+								<p:column headerText="Estatus" width="200" />
+							</p:row>
+						</p:columnGroup>
+
+						<p:column><span class="textoAjustado">#{_programas.programa}</span></p:column>
+						<p:column><h:graphicImage value="resources/minsal/images/#{_programas.estado}.png" styleClass="divapIcons" /></p:column>
+					</p:dataTable>
+				</p:panel>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

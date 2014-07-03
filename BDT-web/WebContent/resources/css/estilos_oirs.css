@@ -1,0 +1,23 @@
+
+.tabla_ingreso_solicitud thead {
+	background-color: #bed6f8;
+	color: white;
+}
+
+.tabla_ingreso_solicitud thead td {
+	font-size: 12px;
+	font-weight: bold;
+	padding-left: 10px;
+}
+
+.mensaje_atencion {
+	color: blue;
+}
+
+.solicitud_form_label {
+	text-align: right;
+}
+
+.texto_ayuda {
+	color: gray;
+}

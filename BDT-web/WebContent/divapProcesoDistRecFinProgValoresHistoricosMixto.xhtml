@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Distribución de Recursos Financieros por Programa" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>
+						<span class="strong">Programa Valor Histórico Servicio Salud | </span>APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS
+						DEPENDIENTES
+					</h2>
+					<p class="parrafo">La Planilla de Trabajo con Montos de Distribución contiene lorem ipsum dolor sit amet, consectetur adipiscing
+						elit. Praesent egestas tempor nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est dignissim, justo nisi
+						porttitor enim, eget ullamcorper felis augue eget lacus.</p>
+					<br />
+					<h3>Factores de Referencia</h3>
+
+					<h3>Valor Histórico del Programa</h3>
+					<h:form id="form1">
+						<h:panelGrid>
+							<p:dataTable resizableColumns="true" value="#{procesoDistRecFinController.listadoValorHistorico}" liveResize="true" var="_historico"
+								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column rowspan="2" headerText="Servicio Salud" />
+										<p:column colspan="2" headerText="Subtítulo 24" />
+										<p:column rowspan="2" headerText="Total" />
+									</p:row>
+									<p:row>
+										<p:column headerText="Valor Histórico" />
+										<p:column headerText="Inflactor" />
+									</p:row>
+								</p:columnGroup>
+								<p:column styleClass="textoAjustado">#{_historico.servicioSalud}</p:column>
+								<p:column>
+									<h:outputText value="#{_historico.valorHistorico}" styleClass="divapProcesoDistRecFinProgInput">
+										<!-- 	<p:ajax event="keyup" update="totales" /> -->
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<!--<h:outputText value="#{_historico.factor}" styleClass="divapProcesoDistRecFinProgInput">
+										<f:convertNumber maxFractionDigits="2" />
+									</h:outputText>-->
+									 <p:inputText value="#{_historico.factor}" styleClass="divapProcesoDistRecFinProgInput">
+										<p:ajax event="keyup" update="totales" />
+										<f:convertNumber maxFractionDigits="2" />
+									</p:inputText>
+								</p:column>
+								<p:column>
+									<p:inputText styleClass="divapProcesoDistRecFinProgInput" value="#{_historico.total}" id="totales">
+										<f:convertNumber maxFractionDigits="0" groupingUsed="false" />
+									</p:inputText>
+									<!-- <h:outputText styleClass="textoAjustado" value="#{_historico.total}" id="totales">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL"/>
+									</h:outputText> -->
+								</p:column>
+							</p:dataTable>
+						</h:panelGrid>
+
+						<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" action="#" ajax="true" value="Guardar" />
+						<p:commandButton value="Finalizar" styleClass="x-btn-text"
+							action="divapProcesoDistRecFinProgSeguimientoDocumentacion?faces-redirect=true" ajax="false" icon="ui-icon-seek-first" />
+					</h:form>
+				</p:panel>
+
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

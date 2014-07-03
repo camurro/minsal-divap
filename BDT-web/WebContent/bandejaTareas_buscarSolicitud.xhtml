@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui">
+
+	<h:panelGrid class="contentPanel">
+		<p:panel header="Buscar">
+			<h:panelGrid columns="5" id="busqueda1" style="width:100%">
+				<h:panelGrid>
+					<h:outputText value="Nro Solicitud" />
+					<p:inputMask value="#{bandejaTareasController.nroSolicitud}" mask="9?999999" style="margin-right:5px;" />
+				</h:panelGrid>
+				<h:panelGrid>
+					<h:outputText value="Fecha Creaci&oacute;n Inicial" />
+					<p:calendar language="es" readonlyInput="true" styleClass="campo_fecha" value="#{bandejaTareasController.fechaCreacionInicial}"
+						showOn="button" pattern="dd/MM/yyyy" />
+				</h:panelGrid>
+				<h:panelGrid>
+					<h:outputText value="Fecha Creaci&oacute;n Final" />
+					<p:calendar language="es" readonlyInput="true" styleClass="campo_fecha" value="#{bandejaTareasController.fechaCreacionFinal}"
+						showOn="button" pattern="dd/MM/yyyy" />
+				</h:panelGrid>
+				<h:panelGrid>
+					<h:outputText value="Fecha Cierre Inicial" />
+					<p:calendar value="#{bandejaTareasController.fechaCierreInicial}" readonlyInput="true" styleClass="campo_fecha" showOn="button"
+						pattern="dd/MM/yyyy" />
+				</h:panelGrid>
+				<h:panelGrid>
+					<h:outputText value="Fecha Cierre Final" />
+					<p:calendar value="#{bandejaTareasController.fechaCierreFinal}" readonlyInput="true" styleClass="campo_fecha" showOn="button"
+						pattern="dd/MM/yyyy" />
+				</h:panelGrid>
+			</h:panelGrid>
+
+			<h:panelGrid columns="5" id="busqueda2" style="width:100%;margin-top: -5px;">
+				<h:panelGrid>
+					<h:outputText value="Nombre" />
+					<p:inputText value="#{bandejaTareasController.nombre}" />
+				</h:panelGrid>
+
+				<h:panelGrid>
+					<h:outputText value="Apellido" />
+					<p:inputText value="#{bandejaTareasController.apellido}" />
+				</h:panelGrid>
+
+				<h:panelGrid>
+					<h:outputText value="Email" />
+					<p:inputText value="#{bandejaTareasController.email}" />
+				</h:panelGrid>
+
+				<h:outputText value="" rendered="#{not bandejaTareasController.sessionBean.centralizador}" />
+				<h:outputText value="" />
+
+				<h:panelGrid>
+					<h:outputText value="Estado" />
+					<p:selectOneMenu value="#{bandejaTareasController.estadoBuscarSolicitud}">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItem itemLabel="Pendiente" itemValue="0" itemDisabled="#{bandejaTareasController.sessionBean.admin}" />
+						<f:selectItem itemLabel="Abierta" itemValue="1" />
+						<f:selectItem itemLabel="Cerrada" itemValue="2" />
+						<p:ajax event="change" update="dynAct" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+
+				<h:panelGrid>
+					<h:outputText value="Actividades" />
+					<p:selectOneMenu id="dynAct" value="#{bandejaTareasController.actividadSeleccionada}">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+
+
+				<p:separator style="visibility: hidden;" />
+			</h:panelGrid>
+			<h:panelGrid columns="2">
+				<p:commandButton value="Limpiar" styleClass=" x-btn-text icon-guardar" onclick="BUI.show()" oncomplete="BUI.hide()"
+					action="#{bandejaTareasController.limpiarBusqueda()}" update="busqueda1 busqueda2 tabla3" />
+				<p:commandButton value="Buscar" styleClass=" x-btn-text icon-guardar" onclick="BUI.show()" oncomplete="BUI.hide()"
+					action="#{bandejaTareasController.buscarSolicitud()}" update="tabla3" />
+			</h:panelGrid>
+			<p:blockUI widgetVar="BUI" block="Panel">
+ 				  Procesando..
+			</p:blockUI>
+
+		</p:panel>
+
+		<h:panelGrid id="tabla3" style="width:960px;">
+			<p:dataTable var="_tarea" resizableColumns="true" liveResize="true" scrollable="true" paginator="true" paginatorPosition="bottom"
+				rows="10" emptyMessage="No se encontraron solicitudes" sortOrder="descending" sortBy="#{_tarea.solicitud.createDate}"
+				value="#{bandejaTareasController.listaBuscarSolicitud}">
+
+				<p:column width="60" styleClass="center" sortBy="#{_tarea.solicitud.idSolicitud}">
+					<f:facet name="header">
+						<h:outputText value="Id Solicitud" />
+					</f:facet>
+					<h:outputText value="#{_tarea.solicitud.idSolicitud}" />
+				</p:column>
+
+				<p:column width="200" styleClass="center" sortBy="#{_tarea.solicitud.lastname}">
+					<f:facet name="header">
+						<h:outputText value="Nombre" />
+					</f:facet>
+					<p:commandLink value="#{_tarea.solicitud.lastname}, #{_tarea.solicitud.firstname}" />
+					<!-- onclick="window.open('#{bandejaTareasController.resolveUrlTaskVerSolicitud(_tarea.solicitud.idSolicitud,_tarea.id)}')" -->
+				</p:column>
+
+				<p:column width="100" styleClass="center" sortBy="#{_tarea.solicitud.createDate}">
+					<f:facet name="header">
+						<h:outputText value="Creaci&oacute;n" />
+					</f:facet>
+					<h:outputText value="#{_tarea.solicitud.createDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column width="100" styleClass="center" sortBy="#{_tarea.solicitud.dueDate}">
+					<f:facet name="header">
+						<h:outputText value="Vencimiento" />
+					</f:facet>
+					<h:outputText value="#{_tarea.solicitud.dueDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column width="150" styleClass="center" sortBy="#{bandejaTareasController.obtenerEstado(_tarea.solicitud.state)}">
+					<f:facet name="header">
+						<h:outputText value="Actividad" />
+					</f:facet>
+					<h:outputText value="#{bandejaTareasController.obtenerEstado(_tarea.solicitud.state)}" />
+				</p:column>
+
+				<p:column width="100" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Tem.Con" />
+					</f:facet>
+					<h:outputText value="Dummy Value" />
+				</p:column>
+
+				<p:column width="100" styleClass="center" sortBy="#{_tarea.solicitud.dueDate}">
+					<f:facet name="header">
+						<h:outputText value="Sem&aacute;foro" />
+					</f:facet>
+					<p:graphicImage value="#{bandejaTareasController.dirImagenSemaforo(_tarea.solicitud.dueDate)}" style="width:20px;">
+					</p:graphicImage>
+				</p:column>
+			</p:dataTable>
+		</h:panelGrid>
+	</h:panelGrid>
+</ui:composition>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Gestión de Información para Transferencia" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>
+						<span class="strong">Actividad:</span> Seguimiento de Documentación Formal
+					</h2>
+					<p class="parrafo">El #{procesoAsignacionPerCapitaController.actividadSeguimientoTitle} contiene lorem ipsum dolor sit amet,
+						consectetur adipiscing elit. Praesent egestas tempor nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est
+						faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo placerat, nisi augue suscipit ante, vel
+						auctor mauris enim eu turpis. Nunc eu erat et eros interdum eleifend eu non sem. Maecenas sollicitudin odio imperdiet orci
+						sollicitudin convallis. Etiam hendrerit, tellus a lacinia dignissim, justo nisi porttitor enim, eget ullamcorper felis augue eget
+						lacus.</p>
+					<!-- ARCHIVOS DE TAREA -->
+					<!-- <h3>Archivos disponibles para la Tarea:</h3> -->
+					<div class="destacaArchivos ui-corner-all">
+						<h3>Archivos Disponibles para la Tarea:</h3>
+						<span class="strong">Archivo: </span> Resolución de Recursos [
+						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+						<p:commandLink value="Bajar Última Versión" />
+						|
+						<h:graphicImage value="resources/minsal/images/upload-alt.png" styleClass="divapIcons" />
+						<p:commandLink value="Subir Nueva Versión" />
+						]
+					</div>
+					<!-- HISTORIAL DE SEGUIMIENTO -->
+					<h3>Bitácora de Seguimiento:</h3>
+					<!-- INICIO MENSAJE MOCK -->
+					<p:panelGrid columns="2">
+
+						<h:outputText value="04/04/2014" styleClass="inputLabel" />
+
+						<h:panelGrid styleClass="tableFullWidth">
+							<h:panelGrid columns="2" styleClass="tableFullWidth">
+								<h:outputText value="Para: " styleClass="inputLabel" />
+								<h:outputText value="jarriaga@redhat.com" />
+
+								<h:outputText value="CC: " styleClass="inputLabel" />
+								<h:outputText value="rwattcha@redhat.com, pmura@redhat.com" />
+
+								<h:outputText value="CCO: " styleClass="inputLabel" />
+								<h:outputText value="marcela.minsal@gmail.com" />
+
+								<h:outputText value="Adjunto: " styleClass="inputLabel" />
+								<h:panelGrid columns="2">
+									<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+									<p:commandLink value="archivos.zip" />
+								</h:panelGrid>
+
+								<h:outputText value="Asunto: " styleClass="inputLabel" />
+								<h:outputText value="Envío archivos de #{procesoAsignacionPerCapitaController.actividadSeguimientoTitle}" />
+
+								<h:outputText value="Mensaje: " styleClass="inputLabel" />
+								<h:outputText
+									value="Se valida que nulla eget ultricies. Morbi pulvinar elit
+						at justo pharetra, vitae ultricies est faucibus. Integer id est
+						euismod libero rutrum ultricies. Integer aliquet, sem id commodo. - Robson Watt" />
+							</h:panelGrid>
+						</h:panelGrid>
+					</p:panelGrid>
+					<!-- FIN MENSAJE MOCK -->
+
+					<h:form>
+						<h3>Enviar Correo:</h3>
+						<h:panelGrid styleClass="tableFullWidth">
+							<h:panelGrid columns="2" styleClass="tableFullWidth">
+								<h:outputText value="Para: " styleClass="inputLabel" />
+								<h:inputText styleClass="inputText" />
+
+								<h:outputText value="CC: " styleClass="inputLabel" />
+								<h:inputText styleClass="inputText" />
+
+								<h:outputText value="CCO: " styleClass="inputLabel" />
+								<h:inputText styleClass="inputText" />
+
+								<h:outputText value="Adjunto: " styleClass="inputLabel" />
+								<h:panelGrid columns="2">
+									<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" mode="simple"
+										styleClass="inputText" />
+									<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
+								</h:panelGrid>
+
+								<h:outputText value="Asunto: " styleClass="inputLabel" />
+								<h:inputText styleClass="inputText" />
+
+								<h:outputText value="Mensaje: " styleClass="inputLabel" />
+								<h:inputTextarea styleClass="inputTextArea" />
+							</h:panelGrid>
+							<p:commandButton styleClass="x-btn-text" style="float:right;" value="Enviar Correo" icon="ui-icon-comment" />
+						</h:panelGrid>
+						<h3>Tareas de la Actividad:</h3>
+						<p style="">
+							En caso de que el seguimiento de la actividad sea exitoso haga clic en <span class="strong">Finalizar Seguimiento</span> para
+							finalizar la actividad y pasar a la siguiente en el flujo del proceso. En caso de que exista algún error en la documentación y sea
+							necesario volver a generar la documentación haga clic en <span class="strong">Reingresar</span>.
+						</p>
+
+						<p:commandButton styleClass="x-btn-text" value="Finalizar Seguimiento | Actividad" icon="ui-icon-check"
+							action="bandejaTareas?faces-redirect=true indexMenu=0" />
+
+						<div style="clear: both;"></div>
+					</h:form>
+
+				</p:panel>
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

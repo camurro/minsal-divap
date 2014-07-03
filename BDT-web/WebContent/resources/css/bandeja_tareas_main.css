@@ -1,0 +1,105 @@
+@CHARSET "UTF-8";
+
+/*BODY & DEFAULT*/
+body {
+	font: 13px/150% 'gobCL',Helvetica,Arial,sans-serif !important;
+}
+
+.contentPanel .parrafo {
+	text-align: justify;
+}
+
+.dataTable td{
+	text-align: center;
+}
+
+/*MENUS*/
+.appSubMenu {
+	width: 100%;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+.appSubMenu .ui-tabmenu-nav {
+	/*background: none;*/
+}
+
+.appMenu {
+	text-shadow: black;
+}
+
+/*CONTENIDO*/
+.contentPanel {
+	width: 100% !important;
+	border: 0;
+	margin: 0;
+	padding: 0;
+}
+
+#container .x-btn-text {
+	margin: 15px;
+}
+
+.contentPanel h1 {
+	margin-bottom: 10px;
+	/*border-bottom: solid 1px lightgray;*/
+}
+
+.ui-panelgrid td {
+	border: 0px !important;
+	border-collapse: collapse !important;
+}
+
+.ui-panelgrid td {
+	border: 0px !important;
+	border-collapse: collapse !important;
+}
+
+/*PROCESOS DIVAP*/
+
+.divapProcesosProcesoLabel {
+	padding-left: 5px;
+}
+
+.divapIcons {
+	padding-right: 5px;
+}
+
+.fileUploadLabel {
+	vertical-align: middle;
+}
+
+.uploadFileTable {
+	border: 0;
+}
+
+.inputTextArea {
+	width: 100%;
+	height: 75px;
+	margin-bottom: 10px;
+}
+
+.inputText {
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.inputLabel {
+	font-weight: bold;
+	vertical-align: middle;
+}
+
+.tableFullWidth {
+	width: 100%;
+}
+
+.ui-state-error{
+	margin-left: 15px;
+}
+
+.noBorder {
+	border: 0 none !important;
+}
+
+.strong {
+	font-weight: bold;
+}

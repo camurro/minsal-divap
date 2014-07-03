@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<h:form id="responderOirs" class="contentPanel">
+			<p:panel id="Panel" style="border:0px;">
+				<h1>
+					<h:outputText value="Mantenedores DIVAP" />
+				</h1>
+				<h:panelGrid columns="4" width="100%">
+					<h:commandLink action="divapMantenedorCodigoComuna?faces-redirect=true">
+						<h:graphicImage value="resources/minsal/images/asignacion_per_capita.png" styleClass="divapIcons" />
+						<h:outputText value="Mantenedor de Códigos por Comuna" styleClass="divapProcesosProcesoLabel" />
+					</h:commandLink>
+				</h:panelGrid>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

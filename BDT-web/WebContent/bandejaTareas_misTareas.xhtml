@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui">
+
+	<script type="text/javascript">
+	
+ 	function getCustomerInfo(id ) {
+	
+	 //	window.open('http://localhost:8080/FormOIRS-web/vistaSolicitudBandejaOIRS.xhtml?variable1=30;variable2=Ejemplo;', '_blank'); 
+		  
+   }
+
+</script>
+
+	<h:panelGrid styleClass="ui-widget">
+
+		<p:panel header="Buscar" styleClass="ui-widget-header appMenu">
+
+			<h:panelGrid columns="4" id="busqueda_mis_tareas">
+
+				<h:panelGrid>
+					<h:outputText value="Identificador" />
+					<p:inputMask value="#{bandejaTareasController.nroSolicitud}" mask="9?999999" id="nroSolicitud" />
+				</h:panelGrid>
+
+				<h:panelGrid>
+					<h:outputText value="Fecha Inicio" />
+					<p:calendar language="es" readonlyInput="true" styleClass="campo_fecha" value="#{bandejaTareasController.fechaCreacion}"
+						showOn="button" pattern="dd/MM/yyyy" />
+				</h:panelGrid>
+
+				<h:panelGrid>
+					<h:outputText value="Proceso" />
+					<p:selectOneMenu value="#{bandejaTareasController.estadoMisTareas}">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+				<h:panelGrid>
+					<h:outputText value="Actividad" />
+					<p:selectOneMenu value="#{bandejaTareasController.estadoMisTareas}">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Limpiar" styleClass=" x-btn-text icon-guardar" onclick="BUI.show()" oncomplete="BUI.hide()"
+						action="#{bandejaTareasController.limpiarMisTareas()}" update="busqueda_mis_tareas tabla" />
+					<p:commandButton value="Buscar" styleClass=" x-btn-text icon-guardar" onclick="BUI.show()" oncomplete="BUI.hide()"
+						action="#{bandejaTareasController.buscarMisTareas()}" update="tabla" />
+				</h:panelGrid>
+
+			</h:panelGrid>
+
+			<p:blockUI widgetVar="BUI" block="Panel">
+  				Procesando..
+			</p:blockUI>
+		</p:panel>
+
+		<h:panelGrid id="tabla">
+			<p:dialog id="modalDialog3" header="Atenci&oacute;n" widgetVar="dlg4" modal="true" height="120" width="320">
+
+				<h:outputText
+					value="Se esta gestionando la solicitud #{bandejaTareasController.solicitudSeleccionada.solicitud.idSolicitud}, si ha finalizado presione el boton Continuar." />
+				<br></br>
+				<br></br>
+
+				<h:panelGrid align="center" width="300">
+					<p:commandButton value="Continuar" update="messages" onclick="confirmation.hide()"
+						action="#{bandejaTareasController.establecerModo(0)}" />
+				</h:panelGrid>
+			</p:dialog>
+
+			<p:dataTable id="tablaMisTareas" resizableColumns="true" liveResize="true" var="_tarea" rows="10" rowKey="#{_tarea.id}" paginator="true"
+				paginatorPosition="bottom" emptyMessage="No se encontraron Tareas Asignadas" selectionMode="single"
+				selection="#{bandejaTareasController.solicitudSeleccionada}" value="#{bandejaTareasController.listaBuscarMisTareas}"
+				styleClass="dataTable">
+
+				<p:column width="10%">
+					<f:facet name="header">
+						<h:outputText value="Identificador" />
+					</f:facet>
+					<h:outputText styleClass="textoAjustado" value="#{_tarea.solicitud.idSolicitud}" />
+				</p:column>
+
+				<p:column width="10%">
+					<f:facet name="header">
+						<h:outputText styleClass="textoAjustado" value="Fecha Inicio" />
+					</f:facet>
+					<h:outputText styleClass="textoAjustado" value="#{_tarea.solicitud.createDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+
+				<p:column width="30%">
+					<f:facet name="header">
+						<h:outputText value="Proceso" />
+					</f:facet>
+					<h:outputText styleClass="textoAjustado" value="#{_tarea.name}" />
+				</p:column>
+
+				<p:column width="50%" style="text-align:left;">
+					<f:facet name="header">
+						<h:outputText styleClass="textoAjustado" value="Actividad" />
+					</f:facet>
+					<!-- <p:commandLink value="#{_tarea.description}"
+						onclick="window.open('#{bandejaTareasController.resolveUrlTask(_tarea.name,_tarea.solicitud.idSolicitud,_tarea.id)}')"
+						update=":responderOirs:modalDialog3" oncomplete="dlg4.show()" /> -->
+					<p:commandLink styleClass="textoAjustado" value="#{_tarea.description}" onclick="window.location.href = '#{_tarea.url}';" />
+				</p:column>
+			</p:dataTable>
+
+		</h:panelGrid>
+
+	</h:panelGrid>
+
+</ui:composition>

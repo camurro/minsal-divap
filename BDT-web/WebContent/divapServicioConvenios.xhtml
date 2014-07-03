@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Gestión  de Información para Transferencia" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>
+						Subir Resoluciones y Convenios por Programa de Reforzamiento Año 2014<br />Servicio de Salud: Metropolitano Oriente
+					</h2>
+					<p class="parrafo">La tarea corresponde a nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est
+						faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.nulla eget ultricies. Morbi pulvinar elit at
+						justo pharetra, vitae ultricies est faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.</p>
+					<div class="destacaArchivos ui-corner-all">
+						<h3>Datos de Convenio Consolidado para Servicio:</h3>
+						<span class="strong">Archivo: </span> Consolidado de Convenios para Servicio de Salud [
+						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+						<p:commandLink value="Generar y Descargar" />
+						]
+					</div>
+					<h4>Filtros para la carga de Convenios:</h4>
+					<h:panelGrid columns="3">
+						<h:panelGrid>
+							<h:outputText value="Programa: " styleClass="inputLabel" />
+							<p:selectOneMenu style="width:450px;">
+								<f:selectItem itemLabel="Seleccione" itemValue="" />
+								<f:selectItem itemLabel="APOYO A LAS ACCIONES EN EL
+						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES"
+									itemValue="APOYO A LAS ACCIONES EN EL
+						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
+							</p:selectOneMenu>
+						</h:panelGrid>
+						<h:panelGrid>
+							<h:outputText value="Componente: " styleClass="inputLabel" />
+							<p:selectOneMenu style="width:450px;">
+								<f:selectItem itemLabel="Mostrar Todo" itemValue="" />
+								<f:selectItem itemLabel="Procedimientos Cutáneos Quirúrgicos de Baja" itemValue="Procedimientos Cutáneos Quirúrgicos de Baja" />
+								<f:selectItem itemLabel="Especialidades Ambulatorias" itemValue="Especialidades Ambulatorias" />
+							</p:selectOneMenu>
+						</h:panelGrid>
+						<h:panelGrid>
+							<h:outputText value="Actividad: " styleClass="inputLabel" />
+							<p:selectOneMenu style="width:450px;">
+								<f:selectItem itemLabel="Mostrar Todo" itemValue="" />
+								<f:selectItem itemLabel="Procedimientos Cutáneos Quirúrgicos de Baja" itemValue="Procedimientos Cutáneos Quirúrgicos de Baja" />
+								<f:selectItem itemLabel="Especialidades Ambulatorias" itemValue="Especialidades Ambulatorias" />
+							</p:selectOneMenu>
+						</h:panelGrid>
+						<h:panelGrid>
+							<h:outputText value="Comuna: " styleClass="inputLabel" />
+							<p:selectOneMenu style="width:450px;">
+								<f:selectItem itemLabel="Mostras Todo" itemValue="" />
+								<f:selectItem itemLabel="Macul" itemValue="Macul" />
+								<f:selectItem itemLabel="Las Condes" itemValue="Las Condes" />
+							</p:selectOneMenu>
+						</h:panelGrid>
+						<h:panelGrid>
+							<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+							<p:selectOneMenu style="width:450px;">
+								<f:selectItem itemLabel="Mostrar Todo" itemValue="" />
+								<f:selectItem itemLabel="Hospital Cordillera" itemValue="Hospital Cordillera" />
+								<f:selectItem itemLabel="COSAM Dr. Luis del Río" itemValue="COSAM Dr. Luis del Río" />
+							</p:selectOneMenu>
+						</h:panelGrid>
+					</h:panelGrid>
+					<br />
+					<p:tabView id="tabView">
+						<p:tab id="tab1" title="APS Municipal">
+							<p:dataTable resizableColumns="true" value="#{procesoConveniosController.listResoluciones}" liveResize="true" var="_data" rows="10"
+								paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+								<!-- <p:ajax event="rowToggle" listener="#{tableBean.onRowToggle}" update=":form:growl" />   -->
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column width="15" />
+										<p:column headerText="Comuna" />
+										<p:column headerText="Establecimiento" />
+										<p:column headerText="Programa / Componente / Actividad" />
+										<p:column headerText="Subtítulo" />
+										<p:column headerText="Monto" />
+										<p:column headerText="Cargar Información" />
+									</p:row>
+								</p:columnGroup>
+
+								<p:column>
+									<p:rowToggler />
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.comuna}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
+								</p:column>
+
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.componente}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.subtitulo}</span>
+								</p:column>
+								<p:column>
+									<h:outputText value="#{_data.monto}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+
+								<p:column>
+									<p:commandButton value="Cargar " onclick="dlg2.show();" type="button" styleClass="x-btn-text" icon="ui-icon-pencil" />
+								</p:column>
+								<p:rowExpansion>
+									<!-- INICIO EXPANSION -->
+
+									<p:dataTable resizableColumns="true" value="#{procesoConveniosController.listResoluciones}" liveResize="true" var="_data" rows="10"
+										paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+										<!-- <p:ajax event="rowToggle" listener="#{tableBean.onRowToggle}" update=":form:growl" />   -->
+										<p:columnGroup type="header">
+											<p:row>
+												<p:column width="15" />
+												<p:column headerText="Fecha" />
+												<p:column headerText="Número Resolución" />
+												<p:column headerText="Monto Final" />
+												<p:column headerText="Resolución y Convenio" />
+											</p:row>
+										</p:columnGroup>
+
+										<p:column>
+											<p:rowToggler />
+										</p:column>
+
+										<p:column>
+											<h:outputText value="#{_data.fecha}" styleClass="textoPequenio textoAjustado">
+												<f:convertDateTime pattern="dd/MMM/yyyy" />
+											</h:outputText>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio centrado">#{_data.resolucion}</span>
+										</p:column>
+
+										<p:column>
+											<h:outputText value="#{_data.monto}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</p:column>
+										<p:column>
+											<h:outputLink rendered="#{_data.monto!=null}">
+												<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+											</h:outputLink>
+										</p:column>
+
+									</p:dataTable>
+
+									<!-- FIN EXPANSION -->
+								</p:rowExpansion>
+							</p:dataTable>
+						</p:tab>
+						<p:tab id="tab2" title="APS Servicio">
+
+						</p:tab>
+					</p:tabView>
+					<p:growl id="growl" showDetail="true" />
+
+					<br />
+				</p:panel>
+				<p:dialog header="Ingreso de Nuevo Convenio" id="modalDialog" widgetVar="dlg2" modal="true" width="600">
+					<h:panelGrid>
+						<h:outputText value="Comuna: " styleClass="inputLabel" />
+						<h:outputText value="Macul" />
+					</h:panelGrid>
+					<h:panelGrid>
+						<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+						<h:outputText value="Hospital Cordillera" />
+					</h:panelGrid>
+					<h:panelGrid>
+						<h:outputText value="Número Resolución: " styleClass="inputLabel" />
+						<p:inputText />
+					</h:panelGrid>
+					<h:panelGrid>
+						<h:outputText value="Programa: " styleClass="inputLabel" />
+						<h:outputText value="APOYO A LAS ACCIONES EN EL
+						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
+					</h:panelGrid>
+					<h:panelGrid>
+						<h:outputText value="Componente: " styleClass="inputLabel" />
+						<h:outputText value="Especialidades Ambulatorias" />
+					</h:panelGrid>
+					<h:panelGrid>
+						<h:outputText value="Subtitulo: " styleClass="inputLabel" />
+						<h:outputText value="22" />
+					</h:panelGrid>
+					<h:panelGrid>
+						<h:outputText value="Monto: " styleClass="inputLabel" />
+						<p:inputText />
+					</h:panelGrid>
+					<br />
+					<div class="destacaArchivos ui-corner-all">
+						<br />
+						<h:panelGrid>
+							<h:outputText value="Seleccionar Archivo Existente: " styleClass="inputLabel" />
+							<p:selectOneMenu style="width:450px;">
+								<f:selectItem itemLabel="Seleccione un Archivo Existente" itemValue="" />
+								<f:selectItem itemLabel="Archivo de Ejemplo 1.pdf" itemValue="Archivo de Ejemplo 1.pdf" />
+								<f:selectItem itemLabel="Archivo de Ejemplo 2.pdf" itemValue="Archivo de Ejemplo 2.pdf" />
+								<f:selectItem itemLabel="Archivo de Ejemplo 2.pdf" itemValue="Archivo de Ejemplo 3.pdf" />
+							</p:selectOneMenu>
+						</h:panelGrid>
+						<br />
+
+						<h:panelGrid>
+							<h:outputText value="Subir un nuevo Archivo: " styleClass="inputLabel" />
+							<p:fileUpload id="subirArchivo" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" mode="simple" />
+						</h:panelGrid>
+						<br />
+					</div>
+					<p:commandButton value="Guardar" onclick="dlg2.hide();" styleClass="x-btn-text" icon="ui-icon-disk" />
+					<p:commandButton value="Cancelar" onclick="dlg2.hide();" styleClass="x-btn-text" icon="ui-icon-cancel" />
+				</p:dialog>
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

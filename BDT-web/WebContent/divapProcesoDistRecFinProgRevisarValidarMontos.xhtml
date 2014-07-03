@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Distribución de Recursos Financieros por Programa" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>
+						<strong>Actividad:</strong> Revisar y Validar Montos
+					</h2>
+					<p class="parrafo">La Planilla de Trabajo con Montos de Distribución contiene lorem ipsum dolor sit amet, consectetur adipiscing
+						elit. Praesent egestas tempor nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est faucibus. Integer id
+						est euismod libero rutrum ultricies. Integer aliquet, sem id commodo placerat, nisi augue suscipit ante, vel auctor mauris enim eu
+						turpis. Nunc eu erat et eros interdum eleifend eu non sem. Maecenas sollicitudin odio imperdiet orci sollicitudin convallis. Etiam
+						hendrerit, tellus a lacinia dignissim, justo nisi porttitor enim, eget ullamcorper felis augue eget lacus.</p>
+					<br />
+					<!-- ARCHIVOS DE TAREA -->
+					<div class="destacaArchivos ui-corner-all">
+						<h3>Archivos disponibles para la Tarea:</h3>
+						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+						<p:commandLink value="Planilla de Trabajo con Montos de Distribución para APS Municipal.xls" />
+						<br />
+						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+						<p:commandLink value="Planilla de Trabajo con Montos de Distribución para APS Servicio Salud.xls" />
+					</div>
+					<h3>Visualizador Montos de Distribución:</h3>
+					<!-- INICIO: MODAL CON INFORMACIóN Y FILTROS VISTA ONLINE -->
+
+					<p:panel styleClass="appMenu">
+						<h4>Filtros de Búsqueda:</h4>
+						<h:panelGrid columns="3" id="busqueda_mis_tareas">
+
+							<h:panelGrid columns="2">
+								<h:outputText value="Servicio: " styleClass="inputLabel" />
+								<p:selectOneMenu>
+									<f:selectItem itemLabel="Metropolitano Oriente" itemValue="Metropolitano Oriente" />
+									<f:selectItem itemLabel="Seleccione" itemValue="" />
+								</p:selectOneMenu>
+							</h:panelGrid>
+
+							<h:panelGrid columns="2">
+								<h:outputText value="Comuna: " styleClass="inputLabel" />
+								<p:selectCheckboxMenu value="#{procesoRebajaController.comunasSeleccionadas}" label="Seleccione" filter="true" filterText="Filter"
+									filterMatchMode="startsWith">
+									<f:selectItems value="#{procesoRebajaController.comunas}" />
+								</p:selectCheckboxMenu>
+							</h:panelGrid>
+
+							<h:panelGrid columns="2">
+								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+								<p:selectCheckboxMenu value="#{procesoRebajaController.comunasSeleccionadas}" label="Seleccione" filter="true" filterText="Filter"
+									filterMatchMode="startsWith">
+									<f:selectItems value="#{procesoRebajaController.comunas}" />
+								</p:selectCheckboxMenu>
+							</h:panelGrid>
+
+							<h:panelGrid columns="2">
+								<p:commandButton value="Buscar" styleClass=" x-btn-text icon-guardar" update="tablaMisTareas" icon="ui-icon-search" />
+								<p:commandButton value="Limpiar" styleClass=" x-btn-text icon-guardar" update="tablaMisTareas" icon="ui-icon-trash" />
+							</h:panelGrid>
+
+						</h:panelGrid>
+						<h4>Columnas a Mostrar:</h4>
+						<h:panelGrid columns="4" styleClass="tableFullWidth">
+							<h:panelGrid columns="2">
+								<p:selectBooleanCheckbox />
+								<h:outputText value="Región" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="2">
+								<p:selectBooleanCheckbox value="true" />
+								<h:outputText value="Serv. de Salud" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="2">
+								<p:selectBooleanCheckbox value="true" />
+								<h:outputText value="Comuna" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="2">
+								<p:selectBooleanCheckbox value="true" />
+								<h:outputText value="Establecimiento" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="2">
+								<p:selectBooleanCheckbox />
+								<h:outputText value="Programa" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="2">
+								<p:selectBooleanCheckbox />
+								<h:outputText value="Subprograma" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="2">
+								<p:selectBooleanCheckbox />
+								<h:outputText value="Actividad" />
+							</h:panelGrid>
+						</h:panelGrid>
+					</p:panel>
+					<br />
+					<h:outputText value="* Debe seleccionar al menos un filtro antes de realizar la búsqueda." styleClass="ui-state-error" />
+					<br />
+					<br />
+					<h:outputText value="* Debe seleccionar al menos una columna a mostrar." styleClass="ui-state-error" />
+					<br />
+					<br />
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoAsignacionPerCapitaController.planillaMontosDistribucion}"
+						liveResize="true" var="_rebaja" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+						styleClass="dataTable">
+						<p:columnGroup type="header">
+							<!--  -->
+							<p:row>
+								<!-- <p:column colspan="2" headerText="Región" /> -->
+								<p:column colspan="2" headerText="Serv. de Salud" />
+								<p:column colspan="2" headerText="Comuna" />
+								<p:column colspan="2" headerText="Establecimiento" />
+								<!-- <p:column colspan="2" headerText="Programa" /> -->
+								<!-- <p:column colspan="2" headerText="Subprograma" /> -->
+								<!-- <p:column colspan="2" headerText="Actividad" /> -->
+								<p:column rowspan="2" headerText="Precio" />
+								<p:column rowspan="2" headerText="Cantidad" />
+								<p:column rowspan="2" headerText="Total" />
+							</p:row>
+							<p:row>
+								<!-- <p:column headerText="Cod." />
+								<p:column headerText="Glosa" /> -->
+
+								<p:column headerText="Cod." />
+								<p:column headerText="Glosa" />
+
+								<p:column headerText="Cod." />
+								<p:column headerText="Glosa" />
+
+								<p:column headerText="Cod." />
+								<p:column headerText="Glosa" />
+
+								<!-- <p:column headerText="Cod." />
+								<p:column headerText="Glosa" />
+								
+								<p:column headerText="Cod." />
+								<p:column headerText="Glosa" />
+								
+								<p:column headerText="Cod." />
+								<p:column headerText="Glosa" /> -->
+							</p:row>
+
+						</p:columnGroup>
+
+						<p:column>10353</p:column>
+						<p:column>Metropolitano Oriente</p:column>
+
+						<p:column>10353A</p:column>
+						<p:column>Macul</p:column>
+
+						<p:column>10353A32</p:column>
+						<p:column>Hosp. Cordillera</p:column>
+
+						<p:column>$1.430.313</p:column>
+						<p:column>14</p:column>
+						<p:column>$20.024.382</p:column>
+					</p:dataTable>
+					<!-- FIN: MODAL CON INFORMACIóN Y FILTROS VISTA ONLINE -->
+
+					<h3>Tareas de la Actividad:</h3>
+
+					<h:form>
+						<p:commandButton styleClass="x-btn-text" icon="ui-icon-refresh" value="Re Cargar Planilla"
+							action="divapProcesoDistRecFinProgCargarPlanilla?faces-redirect=true" />
+						<p:commandButton styleClass="x-btn-text" icon="ui-icon-check" value="Validar Montos | Finalizar Actividad"
+							action="bandejaTareas?faces-redirect=true indexMenu=0" />
+					</h:form>
+				</p:panel>
+
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

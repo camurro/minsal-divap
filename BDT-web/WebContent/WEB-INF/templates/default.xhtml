@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="X-UA-Compatible" content="IE=9" />
+	<title>Ministerio de Salud. Gobierno de Chile</title>
+	<style type="text/css" media="all">
+@import url("resources/minsal/theme/style.css");
+
+@import url("resources/minsal/modules/system/system.base.css");
+
+@import url("resources/minsal/modules/system/system.menus.css");
+
+@import url("resources/css/bandeja_tareas_main.css");
+</style>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<link rel="shortcut icon" href="resources/minsal/theme/favicon.ico" />
+	<link rel="shortcut icon" href="resources/minsal/theme/favicon.png" />
+	<link rel="stylesheet" type="text/css" href="resources/css/ext-all.css" />
+	<link rel="stylesheet" type="text/css" href="resources/css/xtheme-dgac-siso.css" />
+	<!-- <link rel="stylesheet" type="text/css" href="resources/css/estilo.css" /> -->
+	<script src="resources/SpryAssets/SpryMenuBar.js" type="text/javascript"></script>
+	<script src="resources/css/primefaceLocale.js" type="text/javascript"></script>
+	<link href="resources/SpryAssets/SpryMenuBarHorizontal.css" rel="stylesheet" type="text/css" />
+	<link href="resources/SpryAssets/SpryMenuBarHorizontal.css" type="text/css" rel="stylesheet" />
+	<link href="resources/SpryAssets/SpryValidationTextField.css" type="text/css" rel="stylesheet" />
+	<link href="resources/SpryAssets/SpryValidationPassword.css" type="text/css" rel="stylesheet" />
+	<link href="resources/minsal/theme/estilos_oirs_nuevo.css" type="text/css" rel="stylesheet" />
+
+	<!-- <link rel="stylesheet" type="text/css" href="resources/css/ext-all.css" /> -->
+	<!-- <link rel="stylesheet" type="text/css" href="resources/css/xtheme-dgac-siso.css" /> -->
+	<link rel="stylesheet" type="text/css" href="resources/css/iconos.css" />
+	<!-- <link rel="stylesheet" type="text/css" href="resources/css/estilo.css" /> -->
+	<script src="resources/SpryAssets/SpryMenuBar.js" type="text/javascript"></script>
+	<link href="resources/SpryAssets/SpryMenuBarHorizontal.css" rel="stylesheet" type="text/css" />
+
+	<script src="resources/SpryAssets/SpryMenuBar.js" type="text/javascript"></script>
+	<script src="resources/SpryAssets/SpryValidationTextField.js" type="text/javascript"></script>
+	<script src="resources/SpryAssets/SpryValidationPassword.js" type="text/javascript"></script>
+
+	<script type="text/javascript">
+		function addInputPrimeButtonStyleClass(element,styleClass){
+			elVar = 'input[id*="'+element+'"]';
+			jQuery(elVar).addClass(styleClass);
+		}
+		function removeInputPrimeButtonStyleClass(element,styleClass){
+			elVar = 'input[id*="'+element+'"]';
+			jQuery(elVar).removeClass(styleClass);
+		}
+	</script>
+</h:head>
+<h:body class="html front not-logged-in no-sidebars page-node">
+	<div id="wrapper">
+		<header id="header" class="clearfix">
+		<div id="site-logo">
+			<h:graphicImage value="resources/minsal/theme/logo.png" styleClass="divapIcons" />
+		</div>
+		<div class="content" style="float: right;">
+			<div>
+				<div class="container-inline">
+					<strong>Versi&oacute;n:</strong> #{bandejaVersion}
+				</div>
+				<div class="container-inline">
+					<strong>Usuario Conectado:</strong> <span id="nombreUsuario"><h:outputText value="#{loginController.loggedUsername}" />&nbsp;&nbsp;</span>
+					<span id="idLogeado" style="visibility: hidden; display: none;">8</span>
+				</div>
+			</div>
+		</div>
+
+		<nav id="navigation" role="navigation">
+
+			<!-- INICIO MENU -->
+			<h:form>
+				<p:growl id="messages" />
+				<p:menubar>
+					<p:submenu label="Bandeja de Tareas" icon="ui-icon-seek-next">
+						<p:menuitem value="Mis Tareas" url="bandejaTareas.jsf?indexMenu=0" icon="ui-icon-pencil" />
+						<p:menuitem value="Tareas Disponibles" url="bandejaTareas.jsf?indexMenu=1" icon="ui-icon-video" />
+						<p:menuitem value="Buscar Tareas" url="bandejaTareas.jsf?indexMenu=2" icon="ui-icon-search" />
+					</p:submenu>
+					<p:submenu label="Procesos" icon="ui-icon-extlink">
+						<p:menuitem value="Asignación de Recursos per Capita" url="divapProcesoAsignacionPerCapitaInicio.jsf"
+							icon="ui-icon-arrowrefresh-1-s" />
+						<p:menuitem value="Resoluciones de Rebaja" url="divapProcesoRebajaInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
+						<p:menuitem value="Distribución de Recursos Financieros por Programa" url="divapProcesoDistRecFinProgInicio.jsf"
+							icon="ui-icon-arrowrefresh-1-s" />
+						<p:menuitem value="Reliquidación" url="divapProcesoReliqInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
+						<p:menuitem value="Gestión de Información para Transferencia" url="divapProcesoGITInicio.jsf"
+							icon="ui-icon-arrowrefresh-1-s" />
+						<p:menuitem value="Estimación de Flujos de Caja" url="divapProcesoProgInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
+						<p:menuitem value="Ordenes de Transferencia" url="divapProcesoOTInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
+					</p:submenu>
+					<p:submenu label="Reportes" icon="ui-icon-document">
+						<p:submenu label="Informes Comuna">
+							<p:menuitem value="Marco Presupuestario por Comuna" url="divapReporteMarcoPresupuestarioComuna.jsf" icon="ui-icon-document" />
+							<p:menuitem value="Población per Capita" url="divapReportePoblacionPerCapita.jsf" icon="ui-icon-document" />
+							<p:menuitem value="Histórico por Programa" url="divapReporteHistoricoPorPrograma.jsf" icon="ui-icon-document" />
+						</p:submenu>
+						<p:menuitem value="Monitoreo Programa" url="divapReporteMonitoreoPrograma.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Rebajas" url="divapReporteRebajas.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Estado Situación de Programa" url="divapReporteEstadoSituacionPrograma.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Meta Desempeño" url="divapReporteMetaDesempenio.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Glosa 07" url="divapReporteGlosa07.jsf" icon="ui-icon-document" />
+
+					</p:submenu>
+					<p:submenu label="Servicio de Salud" icon="ui-icon-extlink">
+						<p:menuitem value="Gestión de Convenios y Resoluciones" url="divapServicioConvenios.jsf" icon="ui-icon-pencil" />
+					</p:submenu>
+					<p:menuitem value="Mantenedores" url="#" icon="ui-icon-person" />
+				</p:menubar>
+			</h:form>
+			<!-- FIN MENU -->
+
+
+		</nav> </header>
+		<!-- CONTENIDO -->
+		<div id="main" class="clearfix">
+			<div style="clear: both;"></div>
+			<div id="principal">
+				<!--	inicio - caja login	-->
+
+				<div>
+					<h:messages globalOnly="true" styleClass="message" layout="list" errorClass="error" infoClass="info" warnClass="warning"
+						errorStyle="color: red" infoStyle="color: green" warnStyle="color: green"
+						style="max-width:650px;line-height: 15px;padding-bottom:2px;" />
+				</div>
+
+				<div id="container">
+
+					<ui:insert name="content">
+                    [Template content will be inserted here]
+         			</ui:insert>
+					<br />
+					<h:form>
+						<p:commandButton value="Salir" styleClass="x-btn-text icon-guardar" ajax="false" style="float: right;"
+							action="#{loginController.logout}" icon="ui-icon-power" />
+
+						<p:idleMonitor timeout="#{session.maxInactiveInterval * 1000}" onidle="idleDialog.show();" />
+
+						<p:dialog header="Tiempo de sesi&oacute;n agotado" widgetVar="idleDialog" resizable="false" modal="true" width="400">
+
+							<h:outputText
+								value="Su tiempo de sesi&oacute;n ha concluido, por favor comience una nueva sesi&oacute;n ingresando sus credenciales en la pantalla de inicio de sesi&oacute;n" />
+
+							<f:facet name="footer">
+								<h:panelGroup style="text-align:center;" layout="block">
+									<p:commandButton value="Aceptar" styleClass="x-btn-text icon-guardar" onclick="location.reload(true)" />
+								</h:panelGroup>
+							</f:facet>
+						</p:dialog>
+					</h:form>
+
+				</div>
+
+				<!--	fin - caja login	-->
+			</div>
+		</div>
+		<!-- FIN CONTENIDO -->
+		<footer id="footer-bottom"> <!-- FOOTER -->
+		<div class="copyright">
+			<div id="pie">
+				<table cellpadding="0" cellspacing="0" style="width: 960px;">
+					<tr>
+						<td align="left" style="padding-left: 14px; height: 62px;"><a href="#">Pol&iacute;ticas de privacidad.</a><br /> RedHat Chile <br />
+							Avenida Apoquindo #2827, Piso 7, Oficina 701. Las Condes, Santiago de Chile <br /> Tel&eacute;fono (56 2) 25977000 :: Fax (56 2)
+							25977026</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		</footer>
+
+	</div>
+
+	<div id="ribbon">
+		<a href="#top">Ir arriba</a>
+	</div>
+</h:body>
+
+</html>

@@ -1,0 +1,767 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Ordenes de Transferencia" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>Consolidado de Ordenes de Transferencia para el mes de Agosto</h2>
+					<p class="parrafo">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent egestas tempor nulla eget ultricies. Morbi
+						pulvinar elit at justo pharetra, vitae ultricies est dignissim, justo nisi porttitor enim, eget ullamcorper felis augue eget lacus.</p>
+					<br />
+					<h:panelGrid columns="2">
+						<h:graphicImage value="resources/minsal/images/search.png" styleClass="divapIcons" />
+						<p:lightBox iframe="true" width="950px">
+							<h:outputLink value="http://localhost:8080/BandejaTareas-web/divapProcesoOTProgramasMonitoreados.jsf">Ver Estado Revisión y Validación Ordenes de Transferencia por Programa</h:outputLink>
+						</p:lightBox>
+					</h:panelGrid>
+					<div id="tablaSubtitulos" style="display: block;">
+						<!-- ARCHIVOS DE TAREA -->
+						<h3>Archivos disponibles para la Tarea:</h3>
+						<div class="destacaArchivos ui-corner-all">
+							<ul class="versionesArchivo">
+								<li><h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <p:commandLink
+										value="Planilla Detalle Ordenes de Transferencia (consolidada) Julio 2014.xls" /></li>
+								<li><h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <p:commandLink
+										value="Planilla Resumen Ordenes de Transferencia formato FONASA Julio 2014.xls" /></li>
+							</ul>
+						</div>
+						<br />
+						<p:tabView id="tabViewConsolidado">
+							<p:tab id="tab11" title="Resumen Consolidado (formato FONASA)">
+								<p:tabView id="tabViewSubtitulos">
+									<p:tab id="s24" title="Subtítulo 24">
+
+										<p:dataTable resizableColumns="true" value="#{procesoProgramacionController.listadoServicios}" liveResize="true" var="_data"
+											rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+
+											<p:columnGroup type="header">
+												<p:row>
+													<p:column rowspan="2" headerText="Servicio" />
+													<p:column colspan="12" styleClass="textoPequenio" headerText="Subtítulo 24" />
+													<p:column rowspan="2" headerText="Marco" />
+													<p:column rowspan="2" headerText="Total" />
+												</p:row>
+												<p:row>
+													<p:column headerText="Per Capita Basal" />
+													<p:column headerText="ADOF" />
+													<p:column headerText="Chile Crece Contigo" />
+													<p:column headerText="Resolutividad" />
+													<p:column headerText="Urgencia" />
+													<p:column headerText="Odontológico" />
+													<p:column headerText="Otros Ref. Mun." />
+													<p:column headerText="LEYES 19.813, 20.157 y 20.250" />
+													<p:column headerText="Total per Capita" />
+													<p:column headerText="Rebaja Incumplimiento IAAPS" />
+													<p:column headerText="DESCTO. RETIRO LEYES 20.157 Y 20.589" />
+													<p:column headerText="TOTAL REF. MUNICIPAL ($)" />
+												</p:row>
+
+											</p:columnGroup>
+
+											<p:column>
+												<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.s24Enero}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.s24Febrero}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.s24Marzo}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.s24Abril}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.s24Mayo}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.s24Junio}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+
+
+											<p:column>
+												<h:outputText value="#{_data.s24Julio}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.s24Agosto}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber maxFractionDigits="0" groupingUsed="true" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.s24Septiembre}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber maxFractionDigits="0" groupingUsed="true" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.s24Octubre}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber maxFractionDigits="0" groupingUsed="true" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.s24Noviembre}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber maxFractionDigits="0" groupingUsed="true" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.s24Diciembre}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber maxFractionDigits="0" groupingUsed="true" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.total}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.total}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+
+											<p:columnGroup type="footer">
+												<p:row>
+													<p:column />
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{381400123*0.99}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{381400123*0.98}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{381400123*0.97}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{381400123*0.96}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{381400123*0.95}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{381400123*0.91}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{381400123*0.991}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{381400123*0.93}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{381400123*0.995}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{381400123*0.96}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{381400123*0.997}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{381400123*0.934}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{381400123*12}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{381400123*12*0.99}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+												</p:row>
+											</p:columnGroup>
+
+										</p:dataTable>
+
+									</p:tab>
+									<p:tab id="s22" title="Subtítulo 22"></p:tab>
+									<p:tab id="s21" title="Subtítulo 21"></p:tab>
+									<p:tab id="s29" title="Subtítulo 29"></p:tab>
+								</p:tabView>
+
+							</p:tab>
+							<p:tab id="tab22" title="Detalle Programas">
+								<h:panelGrid>
+									<h:outputText value="Programa: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:450px;">
+										<f:selectItem itemLabel="Seleccione" itemValue="" />
+										<f:selectItem itemLabel="APOYO A LAS ACCIONES EN EL
+						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES"
+											itemValue="APOYO A LAS ACCIONES EN EL
+						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
+									</p:selectOneMenu>
+								</h:panelGrid>
+								<br />
+								<p:tabView>
+									<p:tab title="Subtítulo 21">
+
+										<p:dataTable resizableColumns="true" value="#{procesoProgramacionController.listadoServicios}" liveResize="true" var="_data"
+											rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+
+											<p:columnGroup type="header">
+												<p:row>
+													<p:column rowspan="3" headerText="Servicio" />
+													<p:column colspan="11"
+														headerText="Subtítulo 21 (APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES)" />
+													<p:column rowspan="3" headerText="Total (Real + Estimado)" />
+													<p:column rowspan="3" headerText="Diferencia (Marco - Total)" />
+													<p:column rowspan="3" headerText="Ver Detalle" />
+												</p:row>
+												<p:row>
+													<p:column rowspan="2" headerText="Marco Presupuestario" />
+													<p:column colspan="2" headerText="Transferencia Acumulada a la Fecha" width="200" />
+													<p:column colspan="2" headerText="Convenios Recibidos" />
+													<p:column headerText="Julio" />
+													<p:column headerText="Agosto" />
+													<p:column headerText="Septiembre" />
+													<p:column headerText="Octubre" />
+													<p:column headerText="Noviembre" />
+													<p:column headerText="Diciembre" />
+												</p:row>
+												<p:row>
+													<p:column headerText="Monto" />
+													<p:column headerText="%" />
+
+													<p:column headerText="Monto" />
+													<p:column headerText="%" />
+
+													<p:column headerText="Estimado a Transferir" />
+													<p:column headerText="Estimado" />
+													<p:column headerText="Estimado" />
+													<p:column headerText="Estimado" />
+													<p:column headerText="Estimado" />
+													<p:column headerText="Estimado" />
+												</p:row>
+
+											</p:columnGroup>
+
+											<p:column>
+												<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+											</p:column>
+											<p:column>
+												<h:outputText value="#{_data.marcoMonto}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.remesaMonto}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+											<p:column>
+												<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.remesaPor}">
+													<f:convertNumber type="percent" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+											<p:column>
+												<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPor}">
+													<f:convertNumber type="percent" />
+												</h:outputText>
+											</p:column>
+
+											<p:column style="background-color:lightgreen;">
+												<h:outputText value="#{_data.s24Julio}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.s24Agosto}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.s24Septiembre}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.s24Octubre}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.s24Noviembre}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{_data.s24Diciembre}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+
+
+											<p:column>
+												<h:outputText value="#{_data.total}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<h:outputText value="#{0}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+
+											<p:column>
+												<p:commandButton onclick="dlg2.show();" type="button" styleClass="x-btn-text" icon="ui-icon-search" />
+											</p:column>
+
+											<p:columnGroup type="footer">
+												<p:row>
+													<p:column />
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{466124430*1.03*5}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column></p:column>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{466124430*12*5}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column></p:column>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{466124430}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{283156232}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{466124430*0.78}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{466124430*0.96}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{466124430*0.5}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{466124430*0.76}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{466124430*12*5*0.95}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{0}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</f:facet>
+													</p:column>
+													<p:column />
+												</p:row>
+											</p:columnGroup>
+
+										</p:dataTable>
+									</p:tab>
+									<p:tab title="Subtítulo 22"></p:tab>
+									<p:tab title="Subtítulo 29"></p:tab>
+									<p:tab title="Per Capita"></p:tab>
+									<p:tab title="Ref. Municipal"></p:tab>
+
+								</p:tabView>
+							</p:tab>
+						</p:tabView>
+
+						<p:commandButton value="Ordenes de Transferencia Correctas | Finalizar Revisión Consolidada" styleClass="x-btn-text"
+							action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false" icon="ui-icon-seek-first" />
+					</div>
+
+				</p:panel>
+				<p:dialog header="Detalle de Convenios y Transferencia para Servicio de Salud" id="modalDialog" widgetVar="dlg2" modal="true"
+					width="1800" height="600">
+					<p:tabView>
+						<p:tab title="Subtítulo 21">
+							<h4>Filtros para la Visualización:</h4>
+							<h:panelGrid columns="3">
+								<h:panelGrid>
+									<h:outputText value="Servicio: " styleClass="inputLabel" />
+									<h:outputText value="Servicio Metropolitano Oriente" />
+								</h:panelGrid>
+								<h:panelGrid>
+									<h:outputText value="Comuna: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:450px;">
+										<f:selectItem itemLabel="Mostras Todo" itemValue="" />
+										<f:selectItem itemLabel="Macul" itemValue="Macul" />
+										<f:selectItem itemLabel="Las Condes" itemValue="Las Condes" />
+									</p:selectOneMenu>
+								</h:panelGrid>
+								<h:panelGrid>
+									<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:450px;">
+										<f:selectItem itemLabel="Mostrar Todo" itemValue="" />
+										<f:selectItem itemLabel="Hospital Cordillera" itemValue="Hospital Cordillera" />
+										<f:selectItem itemLabel="COSAM Dr. Luis del Río" itemValue="COSAM Dr. Luis del Río" />
+									</p:selectOneMenu>
+								</h:panelGrid>
+							</h:panelGrid>
+							<br />
+							<p:dataTable resizableColumns="true" value="#{procesoConveniosController.listResoluciones}" liveResize="true" var="_data2" rows="10"
+								paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column headerText="Comuna" />
+										<p:column headerText="Establecimiento" />
+										<!-- <p:column headerText="Marco Presupuestario" /> -->
+										<p:column headerText="Resolución" />
+										<p:column headerText="Fecha" />
+										<p:column headerText="Monto Convenio" />
+										<p:column headerText="Enero" />
+										<p:column headerText="Febrero" />
+										<p:column headerText="Marzo" />
+										<p:column headerText="Abril" />
+										<p:column headerText="Mayo" />
+										<p:column headerText="Junio" />
+										<p:column headerText="Julio" />
+										<p:column headerText="Agosto" />
+										<p:column headerText="Septiembre" />
+										<p:column headerText="Octubre" />
+										<p:column headerText="Noviembre" />
+										<p:column headerText="Diciembre" />
+									</p:row>
+								</p:columnGroup>
+
+								<p:column rendered="#{_data2.monto!=null}">
+									<span class="textoAjustado textoPequenio centrado">#{_data2.comuna}</span>
+								</p:column>
+								<p:column rendered="#{_data2.monto!=null}">
+									<span class="textoAjustado textoPequenio centrado">#{_data2.establecimiento}</span>
+								</p:column>
+
+								<p:column rendered="#{_data2.monto!=null}">
+									<span class="textoAjustado textoPequenio centrado">#{_data2.resolucion}</span>
+								</p:column>
+								<p:column rendered="#{_data2.monto!=null}">
+									<h:outputText value="#{_data2.fecha}" styleClass="textoPequenio textoAjustado">
+										<f:convertDateTime pattern="dd/MMM/yyyy" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{_data2.monto!=null}">
+									<h:outputText value="#{_data2.monto}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+
+								<p:column rendered="#{_data2.monto!=null}">
+									<h:outputText value="#{0}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{_data2.monto!=null}">
+									<h:outputText value="#{0}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{_data2.monto!=null}">
+									<h:outputText value="#{0}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{_data2.monto!=null}">
+									<h:outputText value="#{0}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{_data2.monto!=null}">
+									<h:outputText value="#{0}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{_data2.monto!=null}">
+									<h:outputText value="#{0}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{_data2.monto!=null}">
+									<h:inputText value="#{_data2.monto*0.6}" styleClass="textoPequenioInput">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:inputText>
+								</p:column>
+								<p:column rendered="#{_data2.monto!=null}">
+									<h:inputText value="#{0}" styleClass="textoPequenioInput">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:inputText>
+								</p:column>
+								<p:column rendered="#{_data2.monto!=null}">
+									<h:inputText value="#{0}" styleClass="textoPequenioInput">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:inputText>
+								</p:column>
+								<p:column rendered="#{_data2.monto!=null}">
+									<h:inputText value="#{_data2.monto*0.4}" styleClass="textoPequenioInput">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:inputText>
+								</p:column>
+								<p:column rendered="#{_data2.monto!=null}">
+									<h:inputText value="#{0}" styleClass="textoPequenioInput">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:inputText>
+								</p:column>
+								<p:column rendered="#{_data2.monto!=null}">
+									<h:inputText value="#{0}" styleClass="textoPequenioInput">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:inputText>
+								</p:column>
+
+								<p:columnGroup type="footer">
+									<p:row>
+										<p:column />
+										<p:column />
+										<p:column />
+										<p:column />
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{466144*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{0}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{0}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{0}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{0}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{0}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{0}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{466144*1.05*5*0.6}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{0}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{0}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{466144*1.05*5*0.4}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{0}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{0}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+									</p:row>
+								</p:columnGroup>
+
+							</p:dataTable>
+							<br />
+							<p:commandButton value="Guardar" onclick="dlg2.hide();" styleClass="x-btn-text" icon="ui-icon-disk" />
+							<p:commandButton value="Cancelar" onclick="dlg2.hide();" styleClass="x-btn-text" icon="ui-icon-cancel" />
+						</p:tab>
+						<p:tab title="Subtítulo 22"></p:tab>
+						<p:tab title="Subtítulo 24"></p:tab>
+						<p:tab title="Subtítulo 29"></p:tab>
+					</p:tabView>
+
+				</p:dialog>
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

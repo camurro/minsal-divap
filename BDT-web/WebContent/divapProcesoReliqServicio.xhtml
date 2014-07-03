@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Reliquidación" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>Programa APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES</h2>
+
+					<p class="parrafo">La Planilla de Trabajo con Montos de Distribución contiene lorem ipsum dolor sit amet, consectetur adipiscing
+						elit. Praesent egestas tempor nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est dignissim, justo nisi
+						porttitor enim, eget ullamcorper felis augue eget lacus.</p>
+
+					<!-- ARCHIVOS DE TAREA -->
+					<h3>Archivos disponibles para la Tarea:</h3>
+					<div class="destacaArchivos ui-corner-all">
+						<span class="strong">Archivo: </span> Planillas de Reliquidacio para el Programa a Nivel Nacional
+						<ul class="versionesArchivo">
+							<li><h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <p:commandLink
+									value="Planilla Reliquidacion Nivel Nacional para programa NOMBRE PROGRAMA - servicio.xls" /></li>
+							<li><h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <p:commandLink
+									value="Criterios de Cumplimiento para NOMBRE PROGRAMA.xls" /></li>
+						</ul>
+					</div>
+
+					<h3>Filtros del Programa:</h3>
+					<h:panelGrid id="busqueda_mis_tareas">
+						<h:panelGrid>
+							<h:outputText value="Componente: " styleClass="inputLabel" />
+							<p:selectOneMenu>
+								<f:selectItem itemLabel="APOYO A LAS ACCIONES EN EL
+						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES"
+									itemValue="APOYO A LAS ACCIONES EN EL
+						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />
+							</p:selectOneMenu>
+						</h:panelGrid>
+						<h:panelGrid>
+							<h:outputText value="Servicio: " styleClass="inputLabel" />
+							<p:selectOneMenu onchange="document.getElementById('tablaSubtitulos').style.display = 'block';">
+								<f:selectItem itemLabel="Metropolitano Oriente" itemValue="Metropolitano Oriente" />
+								<f:selectItem itemLabel="Concepción" itemValue="Concepción" />
+								<f:selectItem itemLabel="Talcahuano" itemValue="Concepción" />
+								<f:selectItem itemLabel="Iquique" itemValue="Concepción" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />
+							</p:selectOneMenu>
+						</h:panelGrid>
+					</h:panelGrid>
+
+					<div id="tablaSubtitulos" style="display: none;">
+						<h3>Subtítulos del Programa</h3>
+						<h:form id="form">
+							<h:panelGrid>
+								<p:dataTable resizableColumns="true" value="#{procesoDistRecFinController.listadoEstablecimientos}" liveResize="true"
+									var="_establecimiento" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+									styleClass="dataTable">
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column rowspan="3" headerText="Establecimiento" />
+											<p:column rowspan="3" headerText="Convenio" />
+
+											<p:column colspan="8" headerText="Subtítulo 22" />
+
+											<p:column rowspan="3" headerText="Marco Final" />
+										</p:row>
+										<p:row>
+											<p:column colspan="2" headerText="Primera Cuota" />
+											<p:column colspan="2" headerText="Segunda Cuota" />
+
+											<p:column colspan="4" headerText="Reliquidación" />
+										</p:row>
+										<p:row>
+											<p:column headerText="%" />
+											<p:column headerText="Monto" />
+
+											<p:column headerText="%" />
+											<p:column headerText="Monto" />
+
+
+											<p:column headerText="Cumplimiento" />
+											<p:column headerText="% Reliq." />
+											<p:column headerText="Reb. 2ª Cuota" />
+											<p:column headerText="Monto Final 2ª Cuota" />
+										</p:row>
+									</p:columnGroup>
+
+									<p:column>
+										<span class="textoAjustado textoPequenio centrado">#{_establecimiento.nombreOficial}</span>
+									</p:column>
+
+									<p:column>
+										<h:outputText value="#{_establecimiento.tS24}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+
+									<p:column>
+										<span class="textoPequenio">60%</span>
+									</p:column>
+									<p:column>
+										<h:outputText value="#{_establecimiento.tS24*0.6}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+									<p:column>
+										<span class="textoPequenio">40%</span>
+									</p:column>
+									<p:column>
+										<h:outputText value="#{_establecimiento.tS24*0.4}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+									<!-- CUMPLIMIENTO -->
+									<p:column styleClass="destacaArchivos">
+										<h:outputText value="#{_establecimiento.cumplimiento}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="percent" />
+										</h:outputText>
+									</p:column>
+									<!-- MAXIMO CUMPLIMIENTO -->
+
+									<!-- % RELIQ -->
+									<p:column styleClass="destacaArchivos">
+										<h:outputText value="#{_establecimiento.reliquidacion}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="percent" />
+										</h:outputText>
+									</p:column>
+									<!-- MONTO RELIQ -->
+									<p:column styleClass="destacaArchivos">
+										<h:outputText value="#{_establecimiento.tS24*0.4*_establecimiento.reliquidacion}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+									<p:column styleClass="destacaArchivos">
+										<h:outputText styleClass="textoAjustado textoPequenio centrado"
+											value="#{_establecimiento.tS24*0.4-(_establecimiento.tS24*0.4*_establecimiento.reliquidacion)}" id="totales">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+
+									<p:column>
+										<h:outputText styleClass="textoAjustado textoPequenio centrado"
+											value="#{_establecimiento.tS24*0.4-(_establecimiento.tS24*0.4*_establecimiento.reliquidacion)+_establecimiento.tS24*0.6}"
+											id="totales2">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+
+									<p:columnGroup type="footer">
+										<p:row>
+											<p:column />
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoDistRecFinController.totalS24}" id="total22" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<p:column />
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoDistRecFinController.totalS24*0.6}" id="total2" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+
+											<p:column />
+
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoDistRecFinController.totalS24*0.4}" id="total3" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+
+											<p:column />
+											<p:column />
+
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoDistRecFinController.totalS24*0.524*0.4}" id="total"
+														styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoDistRecFinController.totalS24*0.486*0.4}" id="total5"
+														styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoDistRecFinController.totalS24*0.6+procesoDistRecFinController.totalS24*0.486*0.4}"
+														styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+										</p:row>>
+									</p:columnGroup>
+								</p:dataTable>
+							</h:panelGrid>
+
+							<p:commandButton value="Volver a Cargar Planilla" styleClass="x-btn-text"
+								action="divapProcesoReliqSubirPlanillas?faces-redirect=true" ajax="false" icon="ui-icon-reload" />
+							<p:commandButton value="Finalizar | Montos Correctos" styleClass="x-btn-text"
+								action="divapProcesoReliqSeguimientoDocumentacion?faces-redirect=true" ajax="false" icon="ui-icon-seek-first" />
+						</h:form>
+					</div>
+				</p:panel>
+
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

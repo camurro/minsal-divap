@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<p:panel id="Panel" style="border:0px;">
+			<h1>Mantenedores DIVAP: Códigos por Comuna</h1>
+			<!-- INICIO MODAL ADD/MODIFY -->
+
+			<p:dialog id="ModalDialog1" header="Agregar Comuna:" widgetVar="dlg1" modal="true" height="250">
+				<h:form>
+					<h:panelGrid styleClass="tableFullWidth">
+						<h:panelGrid columns="2" styleClass="tableFullWidth">
+							<h:outputText value="Cod. Fonasa: " styleClass="inputLabel" />
+							<h:inputText styleClass="inputText" />
+
+							<h:outputText value="Cod. Divap: " styleClass="inputLabel" />
+							<h:inputText styleClass="inputText" />
+
+							<h:outputText value="Cod. Otro: " styleClass="inputLabel" />
+							<h:inputText styleClass="inputText" />
+
+							<h:outputText value="Nombre Comuna: " styleClass="inputLabel" />
+							<h:inputText styleClass="inputText" />
+
+							<h:outputText value="Región:  " styleClass="inputLabel" />
+							<h:inputText styleClass="inputText" />
+
+						</h:panelGrid>
+						<h:panelGrid columns="2">
+							<p:commandButton styleClass="x-btn-text" style="float:right;" value="Cancelar" icon="ui-icon-cancel" onclick="dlg1.hide();" />
+							<p:commandButton styleClass="x-btn-text" style="float:right;" value="Agregar" icon="ui-icon-add" onclick="dlg1.hide();" />
+						</h:panelGrid>
+					</h:panelGrid>
+				</h:form>
+			</p:dialog>
+
+			<p:dialog id="ModalDialog2" header="Agregar Comuna:" widgetVar="dlg2" modal="true" height="250">
+				<h:form>
+					<h:panelGrid styleClass="tableFullWidth">
+						<h:panelGrid columns="2" styleClass="tableFullWidth">
+							<h:outputText value="Cod. Fonasa: " styleClass="inputLabel" />
+							<h:inputText styleClass="inputText" value="1" />
+
+							<h:outputText value="Cod. Divap: " styleClass="inputLabel" />
+							<h:inputText styleClass="inputText" value="100" />
+
+							<h:outputText value="Cod. Otro: " styleClass="inputLabel" />
+							<h:inputText styleClass="inputText" value="13" />
+
+							<h:outputText value="Nombre Comuna: " styleClass="inputLabel" />
+							<h:inputText styleClass="inputText" value="La Reina" />
+
+							<h:outputText value="Región:  " styleClass="inputLabel" />
+							<h:inputText styleClass="inputText" value="Metropolitana" />
+
+						</h:panelGrid>
+						<h:panelGrid columns="2">
+							<p:commandButton styleClass="x-btn-text" style="float:right;" value="Cancelar" icon="ui-icon-cancel" onclick="dlg2.hide();" />
+							<p:commandButton styleClass="x-btn-text" style="float:right;" value="Agregar" icon="ui-icon-add" onclick="dlg2.hide();" />
+						</h:panelGrid>
+					</h:panelGrid>
+				</h:form>
+			</p:dialog>
+			<!-- FIN MODAL ADD/MODIFY -->
+
+			<h:panelGrid id="tabla">
+				<p:dataTable id="tablaMisTareas" resizableColumns="true" liveResize="true" var="_comuna" rows="10" rowKey="#{_comuna.id}"
+					paginator="true" paginatorPosition="bottom" emptyMessage="No se encontraron Tareas Asignadas" selectionMode="single"
+					selection="#{bandejaTareasController.solicitudSeleccionada}" value="#{mantenedorComunaCodigoController.listadoComunas}"
+					styleClass="dataTable">
+
+					<p:column width="10%">
+						<f:facet name="header">
+							<h:outputText value="Id" />
+						</f:facet>
+						<h:outputText value="#{_comuna.id}" />
+					</p:column>
+
+					<p:column width="10%">
+						<f:facet name="header">
+							<h:outputText value="Cod. Fonasa" />
+						</f:facet>
+						<h:outputText value="#{_comuna.codigoFonasa}" />
+					</p:column>
+
+					<p:column width="10%">
+						<f:facet name="header">
+							<h:outputText value="Cod. Divap" />
+						</f:facet>
+						<h:outputText value="#{_comuna.codigoDivap}" />
+					</p:column>
+
+					<p:column width="10%">
+						<f:facet name="header">
+							<h:outputText value="Cod. Otro" />
+						</f:facet>
+						<h:outputText value="#{_comuna.codigoOtro}" />
+					</p:column>
+
+					<p:column width="10%">
+						<f:facet name="header">
+							<h:outputText value="Nombre Comuna" />
+						</f:facet>
+						<h:outputText value="#{_comuna.nombreComuna}" />
+					</p:column>
+
+					<p:column width="10%">
+						<f:facet name="header">
+							<h:outputText value="Cod. Fonasa" />
+						</f:facet>
+						<h:outputText value="#{_comuna.region}" />
+					</p:column>
+
+					<p:column width="10%">
+						<f:facet name="header">
+							<h:outputText value="Modificar" />
+						</f:facet>
+						<h:graphicImage value="resources/minsal/images/asignacion_per_capita.png" styleClass="divapIcons" onclick="dlg2.show();" />
+					</p:column>
+				</p:dataTable>
+			</h:panelGrid>
+			<p:commandButton value="Agregar" onclick="dlg1.show();" icon="ui-icon-add" />
+		</p:panel>
+	</ui:define>
+</ui:composition>

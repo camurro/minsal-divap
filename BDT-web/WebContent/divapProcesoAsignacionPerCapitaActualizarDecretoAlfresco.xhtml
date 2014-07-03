@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Asignación de Recursos per Capita" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>
+						<strong>Actividad: </strong>Actualizar Decreto en Alfresco
+					</h2>
+					<p class="parrafo">La tarea corresponde a nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est
+						faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.nulla eget ultricies. Morbi pulvinar elit at
+						justo pharetra, vitae ultricies est faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.</p>
+					<!-- ARCHIVOS DE TAREA -->
+					<div class="destacaArchivos ui-corner-all">
+						<h3>Archivo(s) disponible(s) para la Tarea:</h3>
+						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+						<p:commandLink value="Borrador de Decreto.xls" />
+					</div>
+					<h3>Actividades de la Tarea:</h3>
+					<p:panelGrid columns="3" styleClass="uploadFileTable">
+						<h:outputLabel for="valorBasicoDesempenoFile" value="Archivo: decreto con firmas" styleClass="fileUploadLabel" />
+						<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" mode="simple" />
+						<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
+					</p:panelGrid>
+					<br />
+					<p:commandButton value="Cargar Archivo" ajax="false"
+						actionListener="#{procesoAsignacionPerCapitaController.uploadArchivosValorizacion}"
+						action="bandejaTareas?faces-redirect=true indexMenu=0" icon="ui-icon-upload" />
+				</p:panel>
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

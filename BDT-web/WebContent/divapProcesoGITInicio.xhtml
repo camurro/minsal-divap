@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<h:form id="responderOirs" class="contentPanel">
+			<p:panel id="Panel" style="border:0px;">
+				<h1>
+					<h:outputText value="Procesos DIVAP" />
+				</h1>
+				<h2>Gestión de Información para Transferencias</h2>
+				<p class="parrafo">El Proceso de Gestión de Información para Transferencias consiste en lorem ipsum dolor sit amet, consectetur
+					adipiscing elit. Praesent egestas tempor nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est faucibus.
+					Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo placerat, nisi augue suscipit ante, vel auctor mauris
+					enim eu turpis. Nunc eu erat et eros interdum eleifend eu non sem. Maecenas sollicitudin odio imperdiet orci sollicitudin convallis.
+					Etiam hendrerit, tellus a lacinia dignissim, justo nisi porttitor enim, eget ullamcorper felis augue eget lacus.</p>
+
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="divapProcesosHome?faces-redirect=true" ajax="false"
+					icon="ui-icon-seek-first" />
+				<p:commandButton value="Iniciar Proceso" styleClass="x-btn-text" icon="ui-icon-play"
+					action="divapProcesoGITSubir?faces-redirect=true" ajax="false" />
+				<h3>Registro de instancias del proceso:</h3>
+				<p:panel header="[1] Ordenes de Transferencia">
+					<h4>Información de la Instancia:</h4>
+					<span class="strong">Usuario creador: </span>Juan Arriagada<br />
+					<span class="strong">Fecha creación: </span>04/04/2014 17:31 AM<br />
+					<span class="strong">Usuario finalizador: </span>Juan Arriagada<br />
+					<span class="strong">Fecha término: </span>05/04/2014 13:41 AM
+					<h4>Actividades realizadas:</h4>
+					<span class="strong">Actividad: </span>
+					<h:commandLink>Subir Planilla del Programa</h:commandLink> | Finalizado el 03/04/2014 12:00 AM por Robson Watt 
+					<br />
+					<h:commandLink>Revisar y Validar Montos</h:commandLink> | Finalizado el 03/04/2014 12:00 AM por Robson Watt 
+					<br />
+					<span class="strong">Actividad: </span>
+					<h:commandLink>Revisión y Validación de los Montos de Rebaja</h:commandLink> | Finalizado el 03/04/2014 12:15 AM por Robson Watt 
+					<br />
+					<span class="strong">Actividad: </span>
+					<h:commandLink>Seguimiento Documentos</h:commandLink> | Finalizado el 03/04/2014 12:34 AM por Juan Arriagada
+					<span class="strong">Actividad: </span>
+					<h:commandLink>Subir Documentos Firmados a Alfresco</h:commandLink> | Finalizado el 03/04/2014 15:34 AM por Juan Arriagada
+				</p:panel>
+				<br />
+			</p:panel>
+			<p:commandButton value="Volver" styleClass="x-btn-text" action="divapProcesosHome?faces-redirect=true" ajax="false"
+				icon="ui-icon-seek-first" />
+		</h:form>
+	</ui:define>
+</ui:composition>

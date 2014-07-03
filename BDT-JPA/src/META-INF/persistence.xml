@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="BDT-JPA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>java:jboss/datasources/MinsalDS</jta-data-source>
+		<class>cl.minsal.divap.model.AnoEnCurso</class>
+		<class>cl.minsal.divap.model.AntecendentesComuna</class>
+		<class>cl.minsal.divap.model.AntecendentesComunaPK</class>
+		<class>cl.minsal.divap.model.Componente</class>
+		<class>cl.minsal.divap.model.Comuna</class>
+		<class>cl.minsal.divap.model.Cuota</class>
+		<class>cl.minsal.divap.model.Establecimiento</class>
+		<class>cl.minsal.divap.model.MarcoPresupuestario</class>
+		<class>cl.minsal.divap.model.MetadataCore</class>
+		<class>cl.minsal.divap.model.Programa</class>
+		<class>cl.minsal.divap.model.ProgramaMunicipalCore</class>
+		<class>cl.minsal.divap.model.ProgramaMunicipalCorePK</class>
+		<class>cl.minsal.divap.model.ProgramaServicioCore</class>
+		<class>cl.minsal.divap.model.Region</class>
+		<class>cl.minsal.divap.model.Rol</class>
+		<class>cl.minsal.divap.model.ServicioSalud</class>
+		<class>cl.minsal.divap.model.TipoPrograma</class>
+		<class>cl.minsal.divap.model.Usuario</class>
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+			<property name="hibernate.show_sql" value="false"/>
+			<property name="hibernate.format_sql" value="false"/>
+		</properties>
+	</persistence-unit>
+</persistence>

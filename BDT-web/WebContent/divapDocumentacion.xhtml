@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel" style="border:0px;">
+				<h1>
+					<h:outputText value="Documentación DIVAP" />
+				</h1>
+				<p:panel>
+					<h2>Documentos Servicio Salud</h2>
+					<h4>Filtros de Búsqueda:</h4>
+					<h:panelGrid columns="4" id="busqueda_mis_tareas">
+						<h:panelGrid>
+							<h:outputText value="Región" />
+							<p:selectOneMenu>
+								<f:selectItem itemLabel="METROPOLITANA" itemValue="METROPOLITANA" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />
+							</p:selectOneMenu>
+						</h:panelGrid>
+
+						<h:panelGrid>
+							<h:outputText value="Servicio" />
+							<p:selectOneMenu>
+								<f:selectItem itemLabel="SANTIAGO" itemValue="SANTIAGO" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />
+							</p:selectOneMenu>
+						</h:panelGrid>
+
+						<h:panelGrid>
+							<h:outputText value="Comuna" />
+							<p:selectOneMenu>
+								<f:selectItem itemLabel="MACUL" itemValue="MACUL" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />
+							</p:selectOneMenu>
+						</h:panelGrid>
+
+						<h:panelGrid>
+							<h:outputText value="Año" />
+							<p:selectOneMenu>
+								<f:selectItem itemLabel="2014" itemValue="2014" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />
+							</p:selectOneMenu>
+						</h:panelGrid>
+					</h:panelGrid>
+					<h3>
+						<span class="strong">Región: </span>METROPOLITANA
+					</h3>
+					<p:panel>
+						<h4>
+							<span class="strong">Servicio: </span>SANTIAGO
+						</h4>
+						<h:panelGrid columns="3" width="100%">
+							<h:commandLink>
+								<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+								<h:outputText value="toma_razon-servicio_salud-santiago-macul.pdf" styleClass="divapProcesosProcesoLabel" />
+							</h:commandLink>
+						</h:panelGrid>
+					</p:panel>
+				</p:panel>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

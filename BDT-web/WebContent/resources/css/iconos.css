@@ -1,0 +1,25 @@
+@CHARSET "ISO-8859-1";
+.icon-guardar {
+	/*background-image:url(#{request.contextPath}/resources/imagenes/icons/guardar.png) !important;*/
+}
+.icon-limpiar {
+/*	background-image:url(../imagenes/icons/limpiar.png) !important;*/
+}
+.icon-enviar {
+/*	background-image:url(../imagenes/icons/enviar.png) !important;*/
+}
+.icon-detalles {
+/*	background-image:url(../imagenes/icons/ver_detalle.png) !important;*/
+}
+.icon-buscar {
+/*	background-image:url(../imagenes/icons/buscar.png) !important;*/
+}
+.icon-agregar {
+/*	background-image:url(../imagenes/icons/seleccionar.png) !important;*/
+}
+.icon-volver {
+/*	background-image:url(../imagenes/icons/volver.png) !important;*/
+}
+.icon-error {
+/*	background-image:url(../imagenes/icons/error.png) !important;*/
+}

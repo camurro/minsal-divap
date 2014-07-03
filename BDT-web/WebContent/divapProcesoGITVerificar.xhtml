@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Gestión de Información para Transferencia" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>Servicio de Salud: Metropolitano Oriente</h2>
+					<h4>Programa: APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES</h4>
+					<p class="parrafo">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent egestas tempor nulla eget ultricies. Morbi
+						pulvinar elit at justo pharetra, vitae ultricies est dignissim, justo nisi porttitor enim, eget ullamcorper felis augue eget lacus.</p>
+					<div class="destacaArchivos ui-corner-all">
+						<h3>Datos de Convenio Consolidado para Servicio:</h3>
+						<span class="strong">Archivo: </span> Consolidado de Convenios para Servicio de Salud [
+						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+						<p:commandLink value="Generar y Descargar" />
+						]
+					</div>
+					<br />
+
+					<div id="tablaSubtitulos" style="display: block;">
+						<p:tabView>
+							<p:tab title="Subtítulo 21">
+								<h4>Filtros para la Visualización de Convenios:</h4>
+								<h:panelGrid>
+									<h:panelGrid>
+										<h:outputText value="Componente: " styleClass="inputLabel" />
+										<p:selectOneMenu style="width:450px;">
+											<f:selectItem itemLabel="Mostrar Todo" itemValue="" />
+											<f:selectItem itemLabel="Procedimientos Cutáneos Quirúrgicos de Baja" itemValue="Procedimientos Cutáneos Quirúrgicos de Baja" />
+											<f:selectItem itemLabel="Especialidades Ambulatorias" itemValue="Especialidades Ambulatorias" />
+										</p:selectOneMenu>
+									</h:panelGrid>
+									<h:panelGrid>
+										<h:outputText value="Comuna: " styleClass="inputLabel" />
+										<p:selectOneMenu style="width:450px;">
+											<f:selectItem itemLabel="Mostras Todo" itemValue="" />
+											<f:selectItem itemLabel="Macul" itemValue="Macul" />
+											<f:selectItem itemLabel="Las Condes" itemValue="Las Condes" />
+										</p:selectOneMenu>
+									</h:panelGrid>
+									<h:panelGrid>
+										<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+										<p:selectOneMenu style="width:450px;">
+											<f:selectItem itemLabel="Mostrar Todo" itemValue="" />
+											<f:selectItem itemLabel="Hospital Cordillera" itemValue="Hospital Cordillera" />
+											<f:selectItem itemLabel="COSAM Dr. Luis del Río" itemValue="COSAM Dr. Luis del Río" />
+										</p:selectOneMenu>
+									</h:panelGrid>
+								</h:panelGrid>
+								<br />
+
+								<p:dataTable resizableColumns="true" value="#{procesoConveniosController.listResoluciones}" liveResize="true" var="_data" rows="10"
+									paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column headerText="Comuna" />
+											<p:column headerText="Establecimiento" />
+											<p:column headerText="Marco Presupuestario" />
+											<p:column headerText="Resolución" />
+											<p:column headerText="Fecha" />
+											<p:column headerText="Monto Convenio" />
+											<p:column headerText="Convenios Pendietes" />
+										</p:row>
+									</p:columnGroup>
+
+									<p:column rendered="#{_data.monto!=null}">
+										<span class="textoAjustado textoPequenio centrado">#{_data.comuna}</span>
+									</p:column>
+									<p:column rendered="#{_data.monto!=null}">
+										<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
+									</p:column>
+									<p:column rendered="#{_data.monto!=null}">
+										<h:outputText value="#{_data.monto}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+
+									<p:column rendered="#{_data.monto!=null}">
+										<span class="textoAjustado textoPequenio centrado">#{_data.resolucion}</span>
+									</p:column>
+									<p:column rendered="#{_data.monto!=null}">
+										<h:outputText value="#{_data.fecha}" styleClass="textoPequenio textoAjustado">
+											<f:convertDateTime pattern="dd/MMM/yyyy" />
+										</h:outputText>
+									</p:column>
+									<p:column rendered="#{_data.monto!=null}">
+										<h:outputText value="#{_data.monto}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+
+									<p:column rendered="#{_data.monto!=null}">
+										<h:outputText value="#{0}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+
+									<p:columnGroup type="footer">
+										<p:row>
+											<p:column />
+											<p:column />
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{466144*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<p:column />
+											<p:column />
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{466144*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{0}" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+
+										</p:row>
+									</p:columnGroup>
+
+								</p:dataTable>
+
+
+							</p:tab>
+							<p:tab title="Subtítulo 22"></p:tab>
+							<p:tab title="Subtítulo 29"></p:tab>
+							<p:tab title="Per Capita"></p:tab>
+							<p:tab title="Ref. Municipal"></p:tab>
+
+
+						</p:tabView>
+
+
+					</div>
+					<p:commandButton value="Información de Convenios Correcta para Programa" styleClass="x-btn-text"
+						action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false" icon="ui-icon-seek-first" />
+					<p:commandButton value="Informar Reparos en Convenios para Programa" styleClass="x-btn-text"
+						action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false" icon="ui-icon-cross" />
+				</p:panel>
+
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
