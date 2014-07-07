@@ -20,10 +20,10 @@ import cl.minsal.divap.pojo.HistoricoProgramaPojo;
 import cl.minsal.divap.pojo.MarcoPresupuestarioComunaPojo;
 import cl.minsal.divap.pojo.ReportePerCapitaPojo;
 import cl.minsal.divap.pojo.ReporteRebajaPojo;
-import cl.redhat.bandejaTareas.controller.BaseOirsController;
+import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
 
-@Named ( "reportesController" ) @ViewScoped public class ReportesController extends BaseOirsController implements Serializable {
+@Named ( "reportesController" ) @ViewScoped public class ReportesController extends BaseController implements Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject private transient Logger log;
 	@Inject private BandejaProperties bandejaProperties;

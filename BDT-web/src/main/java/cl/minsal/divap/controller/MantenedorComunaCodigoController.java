@@ -16,10 +16,10 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 
 import cl.minsal.divap.pojo.ComunaPojo;
-import cl.redhat.bandejaTareas.controller.BaseOirsController;
+import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
 
-@Named ( "mantenedorComunaCodigoController" ) @ViewScoped public class MantenedorComunaCodigoController extends BaseOirsController
+@Named ( "mantenedorComunaCodigoController" ) @ViewScoped public class MantenedorComunaCodigoController extends BaseController
 				implements Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject private transient Logger log;

@@ -77,7 +77,7 @@ import cl.redhat.bandejaTareas.util.BandejaProperties;
 
 @Named("bandejaTareasController")
 @ViewScoped
-public class BandejaTareasController extends BaseOirsController implements
+public class BandejaTareasController extends BaseController implements
 		Serializable {
 	@Inject
 	private transient Logger log;

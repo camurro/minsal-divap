@@ -30,7 +30,7 @@ import cl.redhat.bandejaTareas.util.BandejaProperties;
 
 @Named("loginController")
 @ViewScoped
-public class LoginController extends BaseOirsController implements Serializable {
+public class LoginController extends BaseController implements Serializable {
 
 	private static final long serialVersionUID = -8180634775574337540L;
 
