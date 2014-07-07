@@ -1,201 +1,234 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import java.util.Collection;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.persistence.*;
+import java.util.List;
+
 
 /**
- *
- * @author cmurillo
+ * The persistent class for the programa database table.
+ * 
  */
 @Entity
-@Table(name = "programa")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Programa.findAll", query = "SELECT p FROM Programa p"),
-    @NamedQuery(name = "Programa.findById", query = "SELECT p FROM Programa p WHERE p.id = :id"),
-    @NamedQuery(name = "Programa.findByNombre", query = "SELECT p FROM Programa p WHERE p.nombre = :nombre"),
-    @NamedQuery(name = "Programa.findByCantidadCuotas", query = "SELECT p FROM Programa p WHERE p.cantidadCuotas = :cantidadCuotas")})
+@NamedQuery(name="Programa.findAll", query="SELECT p FROM Programa p")
 public class Programa implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
-    @Column(name = "nombre")
-    private String nombre;
-    @Basic(optional = false)
-    @Column(name = "cantidad_cuotas")
-    private short cantidadCuotas;
-    @OneToMany(mappedBy = "idPrograma")
-    private Collection<MarcoPresupuestario> marcoPresupuestarioCollection;
-    @OneToMany(mappedBy = "idPrograma")
-    private Collection<ProgramaServicioCore> programaServicioCoreCollection;
-    @OneToMany(mappedBy = "idPrograma")
-    private Collection<Componente> componenteCollection;
-    @OneToMany(mappedBy = "idPrograma")
-    private Collection<Cuota> cuotaCollection;
-    @OneToMany(mappedBy = "idPrograma")
-    private Collection<MetadataCore> metadataCoreCollection;
-    @JoinColumn(name = "username_usuario", referencedColumnName = "username")
-    @ManyToOne
-    private Usuario usernameUsuario;
-    @JoinColumn(name = "id_tipo_programa", referencedColumnName = "id")
-    @ManyToOne
-    private TipoPrograma idTipoPrograma;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "programa")
-    private Collection<ProgramaMunicipalCore> programaMunicipalCoreCollection;
+	private static final long serialVersionUID = 1L;
 
-    public Programa() {
-    }
+	@Id
+	private Integer id;
 
-    public Programa(Integer id) {
-        this.id = id;
-    }
+	@Column(name="cantidad_cuotas")
+	private Integer cantidadCuotas;
 
-    public Programa(Integer id, short cantidadCuotas) {
-        this.id = id;
-        this.cantidadCuotas = cantidadCuotas;
-    }
+	private String nombre;
 
-    public Integer getId() {
-        return id;
-    }
+	//bi-directional many-to-one association to Componente
+	@OneToMany(mappedBy="programa")
+	private List<Componente> componentes;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	//bi-directional many-to-one association to Cuota
+	@OneToMany(mappedBy="programa")
+	private List<Cuota> cuotas;
 
-    public String getNombre() {
-        return nombre;
-    }
+	//bi-directional many-to-one association to MarcoPresupuestario
+	@OneToMany(mappedBy="programa")
+	private List<MarcoPresupuestario> marcoPresupuestarios;
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+	//bi-directional many-to-one association to MetadataCore
+	@OneToMany(mappedBy="programa")
+	private List<MetadataCore> metadataCores;
 
-    public short getCantidadCuotas() {
-        return cantidadCuotas;
-    }
+	//bi-directional many-to-one association to TipoPrograma
+	@ManyToOne
+	@JoinColumn(name="id_tipo_programa")
+	private TipoPrograma tipoPrograma;
 
-    public void setCantidadCuotas(short cantidadCuotas) {
-        this.cantidadCuotas = cantidadCuotas;
-    }
+	//bi-directional many-to-one association to Usuario
+	@ManyToOne
+	@JoinColumn(name="username_usuario")
+	private Usuario usuario;
 
-    @XmlTransient
-    public Collection<MarcoPresupuestario> getMarcoPresupuestarioCollection() {
-        return marcoPresupuestarioCollection;
-    }
+	//bi-directional many-to-one association to ProgramaMunicipalCore
+	@OneToMany(mappedBy="programa")
+	private List<ProgramaMunicipalCore> programaMunicipalCores;
 
-    public void setMarcoPresupuestarioCollection(Collection<MarcoPresupuestario> marcoPresupuestarioCollection) {
-        this.marcoPresupuestarioCollection = marcoPresupuestarioCollection;
-    }
+	//bi-directional many-to-one association to ProgramaServicioCore
+	@OneToMany(mappedBy="programa")
+	private List<ProgramaServicioCore> programaServicioCores;
 
-    @XmlTransient
-    public Collection<ProgramaServicioCore> getProgramaServicioCoreCollection() {
-        return programaServicioCoreCollection;
-    }
+	public Programa() {
+	}
 
-    public void setProgramaServicioCoreCollection(Collection<ProgramaServicioCore> programaServicioCoreCollection) {
-        this.programaServicioCoreCollection = programaServicioCoreCollection;
-    }
+	public Integer getId() {
+		return this.id;
+	}
 
-    @XmlTransient
-    public Collection<Componente> getComponenteCollection() {
-        return componenteCollection;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public void setComponenteCollection(Collection<Componente> componenteCollection) {
-        this.componenteCollection = componenteCollection;
-    }
+	public Integer getCantidadCuotas() {
+		return this.cantidadCuotas;
+	}
 
-    @XmlTransient
-    public Collection<Cuota> getCuotaCollection() {
-        return cuotaCollection;
-    }
+	public void setCantidadCuotas(Integer cantidadCuotas) {
+		this.cantidadCuotas = cantidadCuotas;
+	}
 
-    public void setCuotaCollection(Collection<Cuota> cuotaCollection) {
-        this.cuotaCollection = cuotaCollection;
-    }
+	public String getNombre() {
+		return this.nombre;
+	}
 
-    @XmlTransient
-    public Collection<MetadataCore> getMetadataCoreCollection() {
-        return metadataCoreCollection;
-    }
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
 
-    public void setMetadataCoreCollection(Collection<MetadataCore> metadataCoreCollection) {
-        this.metadataCoreCollection = metadataCoreCollection;
-    }
+	public List<Componente> getComponentes() {
+		return this.componentes;
+	}
 
-    public Usuario getUsernameUsuario() {
-        return usernameUsuario;
-    }
+	public void setComponentes(List<Componente> componentes) {
+		this.componentes = componentes;
+	}
 
-    public void setUsernameUsuario(Usuario usernameUsuario) {
-        this.usernameUsuario = usernameUsuario;
-    }
+	public Componente addComponente(Componente componente) {
+		getComponentes().add(componente);
+		componente.setPrograma(this);
 
-    public TipoPrograma getIdTipoPrograma() {
-        return idTipoPrograma;
-    }
+		return componente;
+	}
 
-    public void setIdTipoPrograma(TipoPrograma idTipoPrograma) {
-        this.idTipoPrograma = idTipoPrograma;
-    }
+	public Componente removeComponente(Componente componente) {
+		getComponentes().remove(componente);
+		componente.setPrograma(null);
 
-    @XmlTransient
-    public Collection<ProgramaMunicipalCore> getProgramaMunicipalCoreCollection() {
-        return programaMunicipalCoreCollection;
-    }
+		return componente;
+	}
 
-    public void setProgramaMunicipalCoreCollection(Collection<ProgramaMunicipalCore> programaMunicipalCoreCollection) {
-        this.programaMunicipalCoreCollection = programaMunicipalCoreCollection;
-    }
+	public List<Cuota> getCuotas() {
+		return this.cuotas;
+	}
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
+	public void setCuotas(List<Cuota> cuotas) {
+		this.cuotas = cuotas;
+	}
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Programa)) {
-            return false;
-        }
-        Programa other = (Programa) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
+	public Cuota addCuota(Cuota cuota) {
+		getCuotas().add(cuota);
+		cuota.setPrograma(this);
 
-    @Override
-    public String toString() {
-        return "cl.minsal.divap.model.Programa[ id=" + id + " ]";
-    }
-    
+		return cuota;
+	}
+
+	public Cuota removeCuota(Cuota cuota) {
+		getCuotas().remove(cuota);
+		cuota.setPrograma(null);
+
+		return cuota;
+	}
+
+	public List<MarcoPresupuestario> getMarcoPresupuestarios() {
+		return this.marcoPresupuestarios;
+	}
+
+	public void setMarcoPresupuestarios(List<MarcoPresupuestario> marcoPresupuestarios) {
+		this.marcoPresupuestarios = marcoPresupuestarios;
+	}
+
+	public MarcoPresupuestario addMarcoPresupuestario(MarcoPresupuestario marcoPresupuestario) {
+		getMarcoPresupuestarios().add(marcoPresupuestario);
+		marcoPresupuestario.setPrograma(this);
+
+		return marcoPresupuestario;
+	}
+
+	public MarcoPresupuestario removeMarcoPresupuestario(MarcoPresupuestario marcoPresupuestario) {
+		getMarcoPresupuestarios().remove(marcoPresupuestario);
+		marcoPresupuestario.setPrograma(null);
+
+		return marcoPresupuestario;
+	}
+
+	public List<MetadataCore> getMetadataCores() {
+		return this.metadataCores;
+	}
+
+	public void setMetadataCores(List<MetadataCore> metadataCores) {
+		this.metadataCores = metadataCores;
+	}
+
+	public MetadataCore addMetadataCore(MetadataCore metadataCore) {
+		getMetadataCores().add(metadataCore);
+		metadataCore.setPrograma(this);
+
+		return metadataCore;
+	}
+
+	public MetadataCore removeMetadataCore(MetadataCore metadataCore) {
+		getMetadataCores().remove(metadataCore);
+		metadataCore.setPrograma(null);
+
+		return metadataCore;
+	}
+
+	public TipoPrograma getTipoPrograma() {
+		return this.tipoPrograma;
+	}
+
+	public void setTipoPrograma(TipoPrograma tipoPrograma) {
+		this.tipoPrograma = tipoPrograma;
+	}
+
+	public Usuario getUsuario() {
+		return this.usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public List<ProgramaMunicipalCore> getProgramaMunicipalCores() {
+		return this.programaMunicipalCores;
+	}
+
+	public void setProgramaMunicipalCores(List<ProgramaMunicipalCore> programaMunicipalCores) {
+		this.programaMunicipalCores = programaMunicipalCores;
+	}
+
+	public ProgramaMunicipalCore addProgramaMunicipalCore(ProgramaMunicipalCore programaMunicipalCore) {
+		getProgramaMunicipalCores().add(programaMunicipalCore);
+		programaMunicipalCore.setPrograma(this);
+
+		return programaMunicipalCore;
+	}
+
+	public ProgramaMunicipalCore removeProgramaMunicipalCore(ProgramaMunicipalCore programaMunicipalCore) {
+		getProgramaMunicipalCores().remove(programaMunicipalCore);
+		programaMunicipalCore.setPrograma(null);
+
+		return programaMunicipalCore;
+	}
+
+	public List<ProgramaServicioCore> getProgramaServicioCores() {
+		return this.programaServicioCores;
+	}
+
+	public void setProgramaServicioCores(List<ProgramaServicioCore> programaServicioCores) {
+		this.programaServicioCores = programaServicioCores;
+	}
+
+	public ProgramaServicioCore addProgramaServicioCore(ProgramaServicioCore programaServicioCore) {
+		getProgramaServicioCores().add(programaServicioCore);
+		programaServicioCore.setPrograma(this);
+
+		return programaServicioCore;
+	}
+
+	public ProgramaServicioCore removeProgramaServicioCore(ProgramaServicioCore programaServicioCore) {
+		getProgramaServicioCores().remove(programaServicioCore);
+		programaServicioCore.setPrograma(null);
+
+		return programaServicioCore;
+	}
+
 }

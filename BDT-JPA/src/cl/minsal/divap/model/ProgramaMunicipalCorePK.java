@@ -1,80 +1,57 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.*;
 
 /**
- *
- * @author cmurillo
+ * The primary key class for the programa_municipal_core database table.
+ * 
  */
 @Embeddable
 public class ProgramaMunicipalCorePK implements Serializable {
-    @Basic(optional = false)
-    @Column(name = "id_programa")
-    private int idPrograma;
-    @Basic(optional = false)
-    @Column(name = "id_comuna")
-    private int idComuna;
+	//default serial version id, required for serializable classes.
+	private static final long serialVersionUID = 1L;
 
-    public ProgramaMunicipalCorePK() {
-    }
+	@Column(name="id_programa", insertable=false, updatable=false)
+	private Integer idPrograma;
 
-    public ProgramaMunicipalCorePK(int idPrograma, int idComuna) {
-        this.idPrograma = idPrograma;
-        this.idComuna = idComuna;
-    }
+	@Column(name="id_comuna", insertable=false, updatable=false)
+	private Integer idComuna;
 
-    public int getIdPrograma() {
-        return idPrograma;
-    }
+	public ProgramaMunicipalCorePK() {
+	}
+	public Integer getIdPrograma() {
+		return this.idPrograma;
+	}
+	public void setIdPrograma(Integer idPrograma) {
+		this.idPrograma = idPrograma;
+	}
+	public Integer getIdComuna() {
+		return this.idComuna;
+	}
+	public void setIdComuna(Integer idComuna) {
+		this.idComuna = idComuna;
+	}
 
-    public void setIdPrograma(int idPrograma) {
-        this.idPrograma = idPrograma;
-    }
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		if (!(other instanceof ProgramaMunicipalCorePK)) {
+			return false;
+		}
+		ProgramaMunicipalCorePK castOther = (ProgramaMunicipalCorePK)other;
+		return 
+			this.idPrograma.equals(castOther.idPrograma)
+			&& this.idComuna.equals(castOther.idComuna);
+	}
 
-    public int getIdComuna() {
-        return idComuna;
-    }
-
-    public void setIdComuna(int idComuna) {
-        this.idComuna = idComuna;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (int) idPrograma;
-        hash += (int) idComuna;
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ProgramaMunicipalCorePK)) {
-            return false;
-        }
-        ProgramaMunicipalCorePK other = (ProgramaMunicipalCorePK) object;
-        if (this.idPrograma != other.idPrograma) {
-            return false;
-        }
-        if (this.idComuna != other.idComuna) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "cl.minsal.divap.model.ProgramaMunicipalCorePK[ idPrograma=" + idPrograma + ", idComuna=" + idComuna + " ]";
-    }
-    
+	public int hashCode() {
+		final int prime = 31;
+		int hash = 17;
+		hash = hash * prime + this.idPrograma.hashCode();
+		hash = hash * prime + this.idComuna.hashCode();
+		
+		return hash;
+	}
 }

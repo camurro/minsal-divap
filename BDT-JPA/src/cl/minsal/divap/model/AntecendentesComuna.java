@@ -1,224 +1,152 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.persistence.*;
+
 
 /**
- *
- * @author cmurillo
+ * The persistent class for the antecendentes_comuna database table.
+ * 
  */
 @Entity
-@Table(name = "antecendentes_comuna")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "AntecendentesComuna.findAll", query = "SELECT a FROM AntecendentesComuna a"),
-    @NamedQuery(name = "AntecendentesComuna.findByClasificacion", query = "SELECT a FROM AntecendentesComuna a WHERE a.clasificacion = :clasificacion"),
-    @NamedQuery(name = "AntecendentesComuna.findByAsignacionZona", query = "SELECT a FROM AntecendentesComuna a WHERE a.asignacionZona = :asignacionZona"),
-    @NamedQuery(name = "AntecendentesComuna.findByPoblacion", query = "SELECT a FROM AntecendentesComuna a WHERE a.poblacion = :poblacion"),
-    @NamedQuery(name = "AntecendentesComuna.findByPoblacionMayor", query = "SELECT a FROM AntecendentesComuna a WHERE a.poblacionMayor = :poblacionMayor"),
-    @NamedQuery(name = "AntecendentesComuna.findByDesempenoDificil", query = "SELECT a FROM AntecendentesComuna a WHERE a.desempenoDificil = :desempenoDificil"),
-    @NamedQuery(name = "AntecendentesComuna.findByTramoPobreza", query = "SELECT a FROM AntecendentesComuna a WHERE a.tramoPobreza = :tramoPobreza"),
-    @NamedQuery(name = "AntecendentesComuna.findByPobreza", query = "SELECT a FROM AntecendentesComuna a WHERE a.pobreza = :pobreza"),
-    @NamedQuery(name = "AntecendentesComuna.findByRuralidad", query = "SELECT a FROM AntecendentesComuna a WHERE a.ruralidad = :ruralidad"),
-    @NamedQuery(name = "AntecendentesComuna.findByValorReferencialZona", query = "SELECT a FROM AntecendentesComuna a WHERE a.valorReferencialZona = :valorReferencialZona"),
-    @NamedQuery(name = "AntecendentesComuna.findByAnoAnoEnCurso", query = "SELECT a FROM AntecendentesComuna a WHERE a.antecendentesComunaPK.anoAnoEnCurso = :anoAnoEnCurso"),
-    @NamedQuery(name = "AntecendentesComuna.findByIdComuna", query = "SELECT a FROM AntecendentesComuna a WHERE a.antecendentesComunaPK.idComuna = :idComuna")})
+@Table(name="antecendentes_comuna")
+@NamedQuery(name="AntecendentesComuna.findAll", query="SELECT a FROM AntecendentesComuna a")
 public class AntecendentesComuna implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected AntecendentesComunaPK antecendentesComunaPK;
-    @Basic(optional = false)
-    @Column(name = "clasificacion")
-    private String clasificacion;
-    @Basic(optional = false)
-    @Column(name = "asignacion_zona")
-    private short asignacionZona;
-    @Basic(optional = false)
-    @Column(name = "poblacion")
-    private short poblacion;
-    @Basic(optional = false)
-    @Column(name = "poblacion_mayor")
-    private short poblacionMayor;
-    @Basic(optional = false)
-    @Column(name = "desempeno_dificil")
-    private short desempenoDificil;
-    @Basic(optional = false)
-    @Column(name = "tramo_pobreza")
-    private short tramoPobreza;
-    @Basic(optional = false)
-    @Column(name = "pobreza")
-    private short pobreza;
-    @Basic(optional = false)
-    @Column(name = "ruralidad")
-    private short ruralidad;
-    @Basic(optional = false)
-    @Column(name = "valor_referencial_zona")
-    private short valorReferencialZona;
-    @JoinColumn(name = "id_comuna", referencedColumnName = "id", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Comuna comuna;
-    @JoinColumn(name = "ano_ano_en_curso", referencedColumnName = "ano", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private AnoEnCurso anoEnCurso;
+	private static final long serialVersionUID = 1L;
 
-    public AntecendentesComuna() {
-    }
+	@EmbeddedId
+	private AntecendentesComunaPK id;
 
-    public AntecendentesComuna(AntecendentesComunaPK antecendentesComunaPK) {
-        this.antecendentesComunaPK = antecendentesComunaPK;
-    }
+	@Column(name="asignacion_zona")
+	private Integer asignacionZona;
 
-    public AntecendentesComuna(AntecendentesComunaPK antecendentesComunaPK, String clasificacion, short asignacionZona, short poblacion, short poblacionMayor, short desempenoDificil, short tramoPobreza, short pobreza, short ruralidad, short valorReferencialZona) {
-        this.antecendentesComunaPK = antecendentesComunaPK;
-        this.clasificacion = clasificacion;
-        this.asignacionZona = asignacionZona;
-        this.poblacion = poblacion;
-        this.poblacionMayor = poblacionMayor;
-        this.desempenoDificil = desempenoDificil;
-        this.tramoPobreza = tramoPobreza;
-        this.pobreza = pobreza;
-        this.ruralidad = ruralidad;
-        this.valorReferencialZona = valorReferencialZona;
-    }
+	private String clasificacion;
 
-    public AntecendentesComuna(short anoAnoEnCurso, int idComuna) {
-        this.antecendentesComunaPK = new AntecendentesComunaPK(anoAnoEnCurso, idComuna);
-    }
+	@Column(name="desempeno_dificil")
+	private Integer desempenoDificil;
 
-    public AntecendentesComunaPK getAntecendentesComunaPK() {
-        return antecendentesComunaPK;
-    }
+	private Integer poblacion;
 
-    public void setAntecendentesComunaPK(AntecendentesComunaPK antecendentesComunaPK) {
-        this.antecendentesComunaPK = antecendentesComunaPK;
-    }
+	@Column(name="poblacion_mayor")
+	private Integer poblacionMayor;
 
-    public String getClasificacion() {
-        return clasificacion;
-    }
+	private Integer pobreza;
 
-    public void setClasificacion(String clasificacion) {
-        this.clasificacion = clasificacion;
-    }
+	private Integer ruralidad;
 
-    public short getAsignacionZona() {
-        return asignacionZona;
-    }
+	@Column(name="tramo_pobreza")
+	private Integer tramoPobreza;
 
-    public void setAsignacionZona(short asignacionZona) {
-        this.asignacionZona = asignacionZona;
-    }
+	@Column(name="valor_referencial_zona")
+	private Integer valorReferencialZona;
 
-    public short getPoblacion() {
-        return poblacion;
-    }
+	//bi-directional many-to-one association to AnoEnCurso
+	@ManyToOne
+	@JoinColumn(name="ano_ano_en_curso")
+	private AnoEnCurso anoEnCurso;
 
-    public void setPoblacion(short poblacion) {
-        this.poblacion = poblacion;
-    }
+	//bi-directional many-to-one association to Comuna
+	@ManyToOne
+	@JoinColumn(name="id_comuna")
+	private Comuna comuna;
 
-    public short getPoblacionMayor() {
-        return poblacionMayor;
-    }
+	public AntecendentesComuna() {
+	}
 
-    public void setPoblacionMayor(short poblacionMayor) {
-        this.poblacionMayor = poblacionMayor;
-    }
+	public AntecendentesComunaPK getId() {
+		return this.id;
+	}
 
-    public short getDesempenoDificil() {
-        return desempenoDificil;
-    }
+	public void setId(AntecendentesComunaPK id) {
+		this.id = id;
+	}
 
-    public void setDesempenoDificil(short desempenoDificil) {
-        this.desempenoDificil = desempenoDificil;
-    }
+	public Integer getAsignacionZona() {
+		return this.asignacionZona;
+	}
 
-    public short getTramoPobreza() {
-        return tramoPobreza;
-    }
+	public void setAsignacionZona(Integer asignacionZona) {
+		this.asignacionZona = asignacionZona;
+	}
 
-    public void setTramoPobreza(short tramoPobreza) {
-        this.tramoPobreza = tramoPobreza;
-    }
+	public String getClasificacion() {
+		return this.clasificacion;
+	}
 
-    public short getPobreza() {
-        return pobreza;
-    }
+	public void setClasificacion(String clasificacion) {
+		this.clasificacion = clasificacion;
+	}
 
-    public void setPobreza(short pobreza) {
-        this.pobreza = pobreza;
-    }
+	public Integer getDesempenoDificil() {
+		return this.desempenoDificil;
+	}
 
-    public short getRuralidad() {
-        return ruralidad;
-    }
+	public void setDesempenoDificil(Integer desempenoDificil) {
+		this.desempenoDificil = desempenoDificil;
+	}
 
-    public void setRuralidad(short ruralidad) {
-        this.ruralidad = ruralidad;
-    }
+	public Integer getPoblacion() {
+		return this.poblacion;
+	}
 
-    public short getValorReferencialZona() {
-        return valorReferencialZona;
-    }
+	public void setPoblacion(Integer poblacion) {
+		this.poblacion = poblacion;
+	}
 
-    public void setValorReferencialZona(short valorReferencialZona) {
-        this.valorReferencialZona = valorReferencialZona;
-    }
+	public Integer getPoblacionMayor() {
+		return this.poblacionMayor;
+	}
 
-    public Comuna getComuna() {
-        return comuna;
-    }
+	public void setPoblacionMayor(Integer poblacionMayor) {
+		this.poblacionMayor = poblacionMayor;
+	}
 
-    public void setComuna(Comuna comuna) {
-        this.comuna = comuna;
-    }
+	public Integer getPobreza() {
+		return this.pobreza;
+	}
 
-    public AnoEnCurso getAnoEnCurso() {
-        return anoEnCurso;
-    }
+	public void setPobreza(Integer pobreza) {
+		this.pobreza = pobreza;
+	}
 
-    public void setAnoEnCurso(AnoEnCurso anoEnCurso) {
-        this.anoEnCurso = anoEnCurso;
-    }
+	public Integer getRuralidad() {
+		return this.ruralidad;
+	}
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (antecendentesComunaPK != null ? antecendentesComunaPK.hashCode() : 0);
-        return hash;
-    }
+	public void setRuralidad(Integer ruralidad) {
+		this.ruralidad = ruralidad;
+	}
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof AntecendentesComuna)) {
-            return false;
-        }
-        AntecendentesComuna other = (AntecendentesComuna) object;
-        if ((this.antecendentesComunaPK == null && other.antecendentesComunaPK != null) || (this.antecendentesComunaPK != null && !this.antecendentesComunaPK.equals(other.antecendentesComunaPK))) {
-            return false;
-        }
-        return true;
-    }
+	public Integer getTramoPobreza() {
+		return this.tramoPobreza;
+	}
 
-    @Override
-    public String toString() {
-        return "cl.minsal.divap.model.AntecendentesComuna[ antecendentesComunaPK=" + antecendentesComunaPK + " ]";
-    }
-    
+	public void setTramoPobreza(Integer tramoPobreza) {
+		this.tramoPobreza = tramoPobreza;
+	}
+
+	public Integer getValorReferencialZona() {
+		return this.valorReferencialZona;
+	}
+
+	public void setValorReferencialZona(Integer valorReferencialZona) {
+		this.valorReferencialZona = valorReferencialZona;
+	}
+
+	public AnoEnCurso getAnoEnCurso() {
+		return this.anoEnCurso;
+	}
+
+	public void setAnoEnCurso(AnoEnCurso anoEnCurso) {
+		this.anoEnCurso = anoEnCurso;
+	}
+
+	public Comuna getComuna() {
+		return this.comuna;
+	}
+
+	public void setComuna(Comuna comuna) {
+		this.comuna = comuna;
+	}
+
 }

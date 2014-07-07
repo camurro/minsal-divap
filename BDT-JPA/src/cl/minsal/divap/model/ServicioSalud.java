@@ -1,150 +1,159 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import java.util.Collection;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.persistence.*;
+import java.util.List;
+
 
 /**
- *
- * @author cmurillo
+ * The persistent class for the servicio_salud database table.
+ * 
  */
 @Entity
-@Table(name = "servicio_salud")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "ServicioSalud.findAll", query = "SELECT s FROM ServicioSalud s"),
-    @NamedQuery(name = "ServicioSalud.findById", query = "SELECT s FROM ServicioSalud s WHERE s.id = :id"),
-    @NamedQuery(name = "ServicioSalud.findByNombre", query = "SELECT s FROM ServicioSalud s WHERE s.nombre = :nombre")})
+@Table(name="servicio_salud")
+@NamedQuery(name="ServicioSalud.findAll", query="SELECT s FROM ServicioSalud s")
 public class ServicioSalud implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
-    @Column(name = "nombre")
-    private String nombre;
-    @JoinColumn(name = "id_region", referencedColumnName = "id")
-    @ManyToOne
-    private Region idRegion;
-    @OneToMany(mappedBy = "idServicioSalud")
-    private Collection<MarcoPresupuestario> marcoPresupuestarioCollection;
-    @OneToMany(mappedBy = "idServicioSalud")
-    private Collection<ProgramaServicioCore> programaServicioCoreCollection;
-    @OneToMany(mappedBy = "idServicioSalud")
-    private Collection<Establecimiento> establecimientoCollection;
-    @OneToMany(mappedBy = "idServicioSalud")
-    private Collection<Comuna> comunaCollection;
+	private static final long serialVersionUID = 1L;
 
-    public ServicioSalud() {
-    }
+	@Id
+	private Integer id;
 
-    public ServicioSalud(Integer id) {
-        this.id = id;
-    }
+	private String nombre;
 
-    public Integer getId() {
-        return id;
-    }
+	//bi-directional many-to-one association to Comuna
+	@OneToMany(mappedBy="servicioSalud")
+	private List<Comuna> comunas;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	//bi-directional many-to-one association to Establecimiento
+	@OneToMany(mappedBy="servicioSalud")
+	private List<Establecimiento> establecimientos;
 
-    public String getNombre() {
-        return nombre;
-    }
+	//bi-directional many-to-one association to MarcoPresupuestario
+	@OneToMany(mappedBy="servicioSalud")
+	private List<MarcoPresupuestario> marcoPresupuestarios;
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+	//bi-directional many-to-one association to ProgramaServicioCore
+	@OneToMany(mappedBy="servicioSalud")
+	private List<ProgramaServicioCore> programaServicioCores;
 
-    public Region getIdRegion() {
-        return idRegion;
-    }
+	//bi-directional many-to-one association to Region
+	@ManyToOne
+	@JoinColumn(name="id_region")
+	private Region region;
 
-    public void setIdRegion(Region idRegion) {
-        this.idRegion = idRegion;
-    }
+	public ServicioSalud() {
+	}
 
-    @XmlTransient
-    public Collection<MarcoPresupuestario> getMarcoPresupuestarioCollection() {
-        return marcoPresupuestarioCollection;
-    }
+	public Integer getId() {
+		return this.id;
+	}
 
-    public void setMarcoPresupuestarioCollection(Collection<MarcoPresupuestario> marcoPresupuestarioCollection) {
-        this.marcoPresupuestarioCollection = marcoPresupuestarioCollection;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    @XmlTransient
-    public Collection<ProgramaServicioCore> getProgramaServicioCoreCollection() {
-        return programaServicioCoreCollection;
-    }
+	public String getNombre() {
+		return this.nombre;
+	}
 
-    public void setProgramaServicioCoreCollection(Collection<ProgramaServicioCore> programaServicioCoreCollection) {
-        this.programaServicioCoreCollection = programaServicioCoreCollection;
-    }
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
 
-    @XmlTransient
-    public Collection<Establecimiento> getEstablecimientoCollection() {
-        return establecimientoCollection;
-    }
+	public List<Comuna> getComunas() {
+		return this.comunas;
+	}
 
-    public void setEstablecimientoCollection(Collection<Establecimiento> establecimientoCollection) {
-        this.establecimientoCollection = establecimientoCollection;
-    }
+	public void setComunas(List<Comuna> comunas) {
+		this.comunas = comunas;
+	}
 
-    @XmlTransient
-    public Collection<Comuna> getComunaCollection() {
-        return comunaCollection;
-    }
+	public Comuna addComuna(Comuna comuna) {
+		getComunas().add(comuna);
+		comuna.setServicioSalud(this);
 
-    public void setComunaCollection(Collection<Comuna> comunaCollection) {
-        this.comunaCollection = comunaCollection;
-    }
+		return comuna;
+	}
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
+	public Comuna removeComuna(Comuna comuna) {
+		getComunas().remove(comuna);
+		comuna.setServicioSalud(null);
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ServicioSalud)) {
-            return false;
-        }
-        ServicioSalud other = (ServicioSalud) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
+		return comuna;
+	}
 
-    @Override
-    public String toString() {
-        return "cl.minsal.divap.model.ServicioSalud[ id=" + id + " ]";
-    }
-    
+	public List<Establecimiento> getEstablecimientos() {
+		return this.establecimientos;
+	}
+
+	public void setEstablecimientos(List<Establecimiento> establecimientos) {
+		this.establecimientos = establecimientos;
+	}
+
+	public Establecimiento addEstablecimiento(Establecimiento establecimiento) {
+		getEstablecimientos().add(establecimiento);
+		establecimiento.setServicioSalud(this);
+
+		return establecimiento;
+	}
+
+	public Establecimiento removeEstablecimiento(Establecimiento establecimiento) {
+		getEstablecimientos().remove(establecimiento);
+		establecimiento.setServicioSalud(null);
+
+		return establecimiento;
+	}
+
+	public List<MarcoPresupuestario> getMarcoPresupuestarios() {
+		return this.marcoPresupuestarios;
+	}
+
+	public void setMarcoPresupuestarios(List<MarcoPresupuestario> marcoPresupuestarios) {
+		this.marcoPresupuestarios = marcoPresupuestarios;
+	}
+
+	public MarcoPresupuestario addMarcoPresupuestario(MarcoPresupuestario marcoPresupuestario) {
+		getMarcoPresupuestarios().add(marcoPresupuestario);
+		marcoPresupuestario.setServicioSalud(this);
+
+		return marcoPresupuestario;
+	}
+
+	public MarcoPresupuestario removeMarcoPresupuestario(MarcoPresupuestario marcoPresupuestario) {
+		getMarcoPresupuestarios().remove(marcoPresupuestario);
+		marcoPresupuestario.setServicioSalud(null);
+
+		return marcoPresupuestario;
+	}
+
+	public List<ProgramaServicioCore> getProgramaServicioCores() {
+		return this.programaServicioCores;
+	}
+
+	public void setProgramaServicioCores(List<ProgramaServicioCore> programaServicioCores) {
+		this.programaServicioCores = programaServicioCores;
+	}
+
+	public ProgramaServicioCore addProgramaServicioCore(ProgramaServicioCore programaServicioCore) {
+		getProgramaServicioCores().add(programaServicioCore);
+		programaServicioCore.setServicioSalud(this);
+
+		return programaServicioCore;
+	}
+
+	public ProgramaServicioCore removeProgramaServicioCore(ProgramaServicioCore programaServicioCore) {
+		getProgramaServicioCores().remove(programaServicioCore);
+		programaServicioCore.setServicioSalud(null);
+
+		return programaServicioCore;
+	}
+
+	public Region getRegion() {
+		return this.region;
+	}
+
+	public void setRegion(Region region) {
+		this.region = region;
+	}
+
 }

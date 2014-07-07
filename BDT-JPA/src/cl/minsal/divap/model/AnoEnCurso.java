@@ -1,119 +1,95 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import java.util.Collection;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.persistence.*;
+import java.util.List;
+
 
 /**
- *
- * @author cmurillo
+ * The persistent class for the ano_en_curso database table.
+ * 
  */
 @Entity
-@Table(name = "ano_en_curso")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "AnoEnCurso.findAll", query = "SELECT a FROM AnoEnCurso a"),
-    @NamedQuery(name = "AnoEnCurso.findByAno", query = "SELECT a FROM AnoEnCurso a WHERE a.ano = :ano"),
-    @NamedQuery(name = "AnoEnCurso.findByMontoPercapitalBasal", query = "SELECT a FROM AnoEnCurso a WHERE a.montoPercapitalBasal = :montoPercapitalBasal")})
+@Table(name="ano_en_curso")
+@NamedQuery(name="AnoEnCurso.findAll", query="SELECT a FROM AnoEnCurso a")
 public class AnoEnCurso implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @Column(name = "ano")
-    private Short ano;
-    @Basic(optional = false)
-    @Column(name = "monto_percapital_basal")
-    private short montoPercapitalBasal;
-    @OneToMany(mappedBy = "anoAnoEnCurso")
-    private Collection<MarcoPresupuestario> marcoPresupuestarioCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "anoEnCurso")
-    private Collection<AntecendentesComuna> antecendentesComunaCollection;
+	private static final long serialVersionUID = 1L;
 
-    public AnoEnCurso() {
-    }
+	@Id
+	private Integer ano;
 
-    public AnoEnCurso(Short ano) {
-        this.ano = ano;
-    }
+	@Column(name="monto_percapital_basal")
+	private Integer montoPercapitalBasal;
 
-    public AnoEnCurso(Short ano, short montoPercapitalBasal) {
-        this.ano = ano;
-        this.montoPercapitalBasal = montoPercapitalBasal;
-    }
+	//bi-directional many-to-one association to AntecendentesComuna
+	@OneToMany(mappedBy="anoEnCurso")
+	private List<AntecendentesComuna> antecendentesComunas;
 
-    public Short getAno() {
-        return ano;
-    }
+	//bi-directional many-to-one association to MarcoPresupuestario
+	@OneToMany(mappedBy="anoEnCurso")
+	private List<MarcoPresupuestario> marcoPresupuestarios;
 
-    public void setAno(Short ano) {
-        this.ano = ano;
-    }
+	public AnoEnCurso() {
+	}
 
-    public short getMontoPercapitalBasal() {
-        return montoPercapitalBasal;
-    }
+	public Integer getAno() {
+		return this.ano;
+	}
 
-    public void setMontoPercapitalBasal(short montoPercapitalBasal) {
-        this.montoPercapitalBasal = montoPercapitalBasal;
-    }
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
 
-    @XmlTransient
-    public Collection<MarcoPresupuestario> getMarcoPresupuestarioCollection() {
-        return marcoPresupuestarioCollection;
-    }
+	public Integer getMontoPercapitalBasal() {
+		return this.montoPercapitalBasal;
+	}
 
-    public void setMarcoPresupuestarioCollection(Collection<MarcoPresupuestario> marcoPresupuestarioCollection) {
-        this.marcoPresupuestarioCollection = marcoPresupuestarioCollection;
-    }
+	public void setMontoPercapitalBasal(Integer montoPercapitalBasal) {
+		this.montoPercapitalBasal = montoPercapitalBasal;
+	}
 
-    @XmlTransient
-    public Collection<AntecendentesComuna> getAntecendentesComunaCollection() {
-        return antecendentesComunaCollection;
-    }
+	public List<AntecendentesComuna> getAntecendentesComunas() {
+		return this.antecendentesComunas;
+	}
 
-    public void setAntecendentesComunaCollection(Collection<AntecendentesComuna> antecendentesComunaCollection) {
-        this.antecendentesComunaCollection = antecendentesComunaCollection;
-    }
+	public void setAntecendentesComunas(List<AntecendentesComuna> antecendentesComunas) {
+		this.antecendentesComunas = antecendentesComunas;
+	}
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (ano != null ? ano.hashCode() : 0);
-        return hash;
-    }
+	public AntecendentesComuna addAntecendentesComuna(AntecendentesComuna antecendentesComuna) {
+		getAntecendentesComunas().add(antecendentesComuna);
+		antecendentesComuna.setAnoEnCurso(this);
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof AnoEnCurso)) {
-            return false;
-        }
-        AnoEnCurso other = (AnoEnCurso) object;
-        if ((this.ano == null && other.ano != null) || (this.ano != null && !this.ano.equals(other.ano))) {
-            return false;
-        }
-        return true;
-    }
+		return antecendentesComuna;
+	}
 
-    @Override
-    public String toString() {
-        return "cl.minsal.divap.model.AnoEnCurso[ ano=" + ano + " ]";
-    }
-    
+	public AntecendentesComuna removeAntecendentesComuna(AntecendentesComuna antecendentesComuna) {
+		getAntecendentesComunas().remove(antecendentesComuna);
+		antecendentesComuna.setAnoEnCurso(null);
+
+		return antecendentesComuna;
+	}
+
+	public List<MarcoPresupuestario> getMarcoPresupuestarios() {
+		return this.marcoPresupuestarios;
+	}
+
+	public void setMarcoPresupuestarios(List<MarcoPresupuestario> marcoPresupuestarios) {
+		this.marcoPresupuestarios = marcoPresupuestarios;
+	}
+
+	public MarcoPresupuestario addMarcoPresupuestario(MarcoPresupuestario marcoPresupuestario) {
+		getMarcoPresupuestarios().add(marcoPresupuestario);
+		marcoPresupuestario.setAnoEnCurso(this);
+
+		return marcoPresupuestario;
+	}
+
+	public MarcoPresupuestario removeMarcoPresupuestario(MarcoPresupuestario marcoPresupuestario) {
+		getMarcoPresupuestarios().remove(marcoPresupuestario);
+		marcoPresupuestario.setAnoEnCurso(null);
+
+		return marcoPresupuestario;
+	}
+
 }
