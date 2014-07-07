@@ -15,29 +15,37 @@
 					<p class="parrafo">La tarea corresponde a nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est
 						faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.nulla eget ultricies. Morbi pulvinar elit at
 						justo pharetra, vitae ultricies est faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.</p>
-					<div class="destacaArchivos ui-corner-all">
-						<h3>Datos de Convenio Consolidado para Servicio:</h3>
-						<span class="strong">Archivo: </span> Consolidado de Convenios para Servicio de Salud [
-						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
-						<p:commandLink value="Generar y Descargar" />
-						]
-					</div>
+					
 					<h4>Seleccionar Programa a Informar:</h4>
-					<h:panelGrid>
-						<h:outputText value="Programa: " styleClass="inputLabel" />
-						<p:selectOneMenu style="width:650px;">
-							<f:selectItem itemLabel="Seleccione" itemValue="" />
-							<f:selectItem itemLabel="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES"
-								itemValue="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
-						</p:selectOneMenu>
-					</h:panelGrid>
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoProgramacionController.listadoProgramasServicio}"
+						liveResize="true" var="_programas" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+						styleClass="dataTable">
+						<p:columnGroup type="header">
+							<!--  -->
+							<p:row>
+								<p:column headerText="Programa" />
+								<p:column headerText="Descripción" />
+								<!-- <p:column headerText="Estado" width="60" /> -->
+
+								<p:column headerText="Iniciar" width="60" />
+								<!-- <p:column headerText="Terminar" width="60" /> -->
+							</p:row>
+						</p:columnGroup>
+
+						<p:column style="text-align:left;">
+							<span class="textoAjustado">#{_programas.programa}</span>
+						</p:column>
+						<p:column style="text-align:left;">
+							<span class="textoAjustado">#{_programas.descripcion}</span>
+						</p:column>
+						<p:column>
+							<a href="#{_programas.url}.jsf"> <h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons" />
+							</a>
+						</p:column>
+					</p:dataTable>
 
 					<br />
-
-					<p:commandButton value="Informar Apertura Presupuestaria a Profesional del Departamento de Finanzas de APS" styleClass="x-btn-text"
-						icon="ui-icon-check" />
+					
 				</p:panel>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />

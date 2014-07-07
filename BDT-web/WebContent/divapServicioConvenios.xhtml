@@ -217,6 +217,42 @@
 					<p:commandButton value="Guardar" onclick="dlg2.hide();" styleClass="x-btn-text" icon="ui-icon-disk" />
 					<p:commandButton value="Cancelar" onclick="dlg2.hide();" styleClass="x-btn-text" icon="ui-icon-cancel" />
 				</p:dialog>
+				
+				<!-- DIALOG PARA SUBIR LEYES -->
+				<p:dialog header="Ingreso de Convenios Leyes" id="leyesDialog" widgetVar="dlg3" modal="true" width="600">
+				<h:panelGrid>
+						<h:outputText value="Ley: " styleClass="inputLabel" />
+						<h:outputText value="RETIRO 20.157" />
+					</h:panelGrid>
+					<h:panelGrid>
+						<h:outputText value="Subtitulo: " styleClass="inputLabel" />
+						<h:outputText value="24" />
+					</h:panelGrid>
+					<h:panelGrid>
+						<h:outputText value="Comuna: " styleClass="inputLabel" />
+						<h:outputText value="Macul" />
+					</h:panelGrid>
+					<h:panelGrid>
+						<h:outputText value="Fecha de Convenio " styleClass="inputLabel" /><p:calendar></p:calendar>
+						<h:outputText value="Monto Adelanto" styleClass="inputLabel" /><h:inputText value="" />
+						<h:outputText value="Cuotas de Descuento" styleClass="inputLabel" /><h:inputText value="" />
+						<h:outputText value="Monto Aporte Fiscal" styleClass="inputLabel" /><h:inputText value="" />
+						<h:outputText value="Monto Adicional + Complementario" styleClass="inputLabel" /><h:inputText value="" />
+						<h:outputText value="TOTAL" styleClass="inputLabel" /><h:outputText value="$18.000.000" styleClass="inputLabel" />
+					</h:panelGrid>
+					
+					<br />
+					<div class="destacaArchivos ui-corner-all">
+						<br />
+						<h:panelGrid>
+							<h:outputText value="Subir Convenio: " styleClass="inputLabel" />
+							<p:fileUpload id="subirArchivoLeyes" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" mode="simple" />
+						</h:panelGrid>
+						<br />
+					</div>
+					<p:commandButton value="Guardar" onclick="dlg3.hide();" styleClass="x-btn-text" icon="ui-icon-disk" />
+					<p:commandButton value="Cancelar" onclick="dlg3.hide();" styleClass="x-btn-text" icon="ui-icon-cancel" />
+				</p:dialog>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />
 			</p:panel>
