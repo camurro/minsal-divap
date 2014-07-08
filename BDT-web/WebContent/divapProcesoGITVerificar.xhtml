@@ -60,21 +60,19 @@
 									<p:columnGroup type="header">
 										<p:row>
 											<p:column headerText="Comuna" />
-											<p:column headerText="Establecimiento" />
 											<p:column headerText="Marco Presupuestario" />
 											<p:column headerText="Resolución" />
 											<p:column headerText="Fecha" />
 											<p:column headerText="Monto Convenio" />
 											<p:column headerText="Convenios Pendietes" />
+											<p:column headerText="Convenio"/>
 										</p:row>
 									</p:columnGroup>
 
 									<p:column rendered="#{_data.monto!=null}">
 										<span class="textoAjustado textoPequenio centrado">#{_data.comuna}</span>
 									</p:column>
-									<p:column rendered="#{_data.monto!=null}">
-										<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
-									</p:column>
+									
 									<p:column rendered="#{_data.monto!=null}">
 										<h:outputText value="#{_data.monto}" styleClass="textoPequenio textoAjustado">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
@@ -100,10 +98,14 @@
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</p:column>
+									<p:column>
+											<h:outputLink rendered="#{_data.monto!=null}">
+												<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+											</h:outputLink>
+										</p:column>
 
 									<p:columnGroup type="footer">
 										<p:row>
-											<p:column />
 											<p:column />
 											<p:column>
 												<f:facet name="footer">
@@ -128,6 +130,9 @@
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
 												</f:facet>
+											</p:column>
+											<p:column>
+												
 											</p:column>
 
 										</p:row>

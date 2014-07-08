@@ -23,10 +23,10 @@ import cl.minsal.divap.pojo.EstablecimientoPojo;
 import cl.minsal.divap.pojo.ProcesosProgramasPojo;
 import cl.minsal.divap.pojo.ProgramasPojo;
 import cl.minsal.divap.pojo.ValorHistoricoPojo;
-import cl.redhat.bandejaTareas.controller.BaseOirsController;
+import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
 
-@Named ( "procesoReliquidacionController" ) @ViewScoped public class ProcesoReliquidacionController extends BaseOirsController implements
+@Named ( "procesoReliquidacionController" ) @ViewScoped public class ProcesoReliquidacionController extends BaseController implements
 				Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject private transient Logger log;

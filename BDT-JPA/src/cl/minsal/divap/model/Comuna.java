@@ -1,140 +1,132 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import java.util.Collection;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.persistence.*;
+import java.util.List;
+
 
 /**
- *
- * @author cmurillo
+ * The persistent class for the comuna database table.
+ * 
  */
 @Entity
-@Table(name = "comuna")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Comuna.findAll", query = "SELECT c FROM Comuna c"),
-    @NamedQuery(name = "Comuna.findById", query = "SELECT c FROM Comuna c WHERE c.id = :id"),
-    @NamedQuery(name = "Comuna.findByNombre", query = "SELECT c FROM Comuna c WHERE c.nombre = :nombre")})
+@NamedQuery(name="Comuna.findAll", query="SELECT c FROM Comuna c")
 public class Comuna implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
-    @Column(name = "nombre")
-    private String nombre;
-    @OneToMany(mappedBy = "idComuna")
-    private Collection<Establecimiento> establecimientoCollection;
-    @JoinColumn(name = "id_servicio_salud", referencedColumnName = "id")
-    @ManyToOne
-    private ServicioSalud idServicioSalud;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "comuna")
-    private Collection<AntecendentesComuna> antecendentesComunaCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "comuna")
-    private Collection<ProgramaMunicipalCore> programaMunicipalCoreCollection;
+	private static final long serialVersionUID = 1L;
 
-    public Comuna() {
-    }
+	@Id
+	private Integer id;
 
-    public Comuna(Integer id) {
-        this.id = id;
-    }
+	private String nombre;
 
-    public Integer getId() {
-        return id;
-    }
+	//bi-directional many-to-one association to AntecendentesComuna
+	@OneToMany(mappedBy="comuna")
+	private List<AntecendentesComuna> antecendentesComunas;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	//bi-directional many-to-one association to ServicioSalud
+	@ManyToOne
+	@JoinColumn(name="id_servicio_salud")
+	private ServicioSalud servicioSalud;
 
-    public String getNombre() {
-        return nombre;
-    }
+	//bi-directional many-to-one association to Establecimiento
+	@OneToMany(mappedBy="comuna")
+	private List<Establecimiento> establecimientos;
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+	//bi-directional many-to-one association to ProgramaMunicipalCore
+	@OneToMany(mappedBy="comuna")
+	private List<ProgramaMunicipalCore> programaMunicipalCores;
 
-    @XmlTransient
-    public Collection<Establecimiento> getEstablecimientoCollection() {
-        return establecimientoCollection;
-    }
+	public Comuna() {
+	}
 
-    public void setEstablecimientoCollection(Collection<Establecimiento> establecimientoCollection) {
-        this.establecimientoCollection = establecimientoCollection;
-    }
+	public Integer getId() {
+		return this.id;
+	}
 
-    public ServicioSalud getIdServicioSalud() {
-        return idServicioSalud;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public void setIdServicioSalud(ServicioSalud idServicioSalud) {
-        this.idServicioSalud = idServicioSalud;
-    }
+	public String getNombre() {
+		return this.nombre;
+	}
 
-    @XmlTransient
-    public Collection<AntecendentesComuna> getAntecendentesComunaCollection() {
-        return antecendentesComunaCollection;
-    }
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
 
-    public void setAntecendentesComunaCollection(Collection<AntecendentesComuna> antecendentesComunaCollection) {
-        this.antecendentesComunaCollection = antecendentesComunaCollection;
-    }
+	public List<AntecendentesComuna> getAntecendentesComunas() {
+		return this.antecendentesComunas;
+	}
 
-    @XmlTransient
-    public Collection<ProgramaMunicipalCore> getProgramaMunicipalCoreCollection() {
-        return programaMunicipalCoreCollection;
-    }
+	public void setAntecendentesComunas(List<AntecendentesComuna> antecendentesComunas) {
+		this.antecendentesComunas = antecendentesComunas;
+	}
 
-    public void setProgramaMunicipalCoreCollection(Collection<ProgramaMunicipalCore> programaMunicipalCoreCollection) {
-        this.programaMunicipalCoreCollection = programaMunicipalCoreCollection;
-    }
+	public AntecendentesComuna addAntecendentesComuna(AntecendentesComuna antecendentesComuna) {
+		getAntecendentesComunas().add(antecendentesComuna);
+		antecendentesComuna.setComuna(this);
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
+		return antecendentesComuna;
+	}
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Comuna)) {
-            return false;
-        }
-        Comuna other = (Comuna) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
+	public AntecendentesComuna removeAntecendentesComuna(AntecendentesComuna antecendentesComuna) {
+		getAntecendentesComunas().remove(antecendentesComuna);
+		antecendentesComuna.setComuna(null);
 
-    @Override
-    public String toString() {
-        return "cl.minsal.divap.model.Comuna[ id=" + id + " ]";
-    }
-    
+		return antecendentesComuna;
+	}
+
+	public ServicioSalud getServicioSalud() {
+		return this.servicioSalud;
+	}
+
+	public void setServicioSalud(ServicioSalud servicioSalud) {
+		this.servicioSalud = servicioSalud;
+	}
+
+	public List<Establecimiento> getEstablecimientos() {
+		return this.establecimientos;
+	}
+
+	public void setEstablecimientos(List<Establecimiento> establecimientos) {
+		this.establecimientos = establecimientos;
+	}
+
+	public Establecimiento addEstablecimiento(Establecimiento establecimiento) {
+		getEstablecimientos().add(establecimiento);
+		establecimiento.setComuna(this);
+
+		return establecimiento;
+	}
+
+	public Establecimiento removeEstablecimiento(Establecimiento establecimiento) {
+		getEstablecimientos().remove(establecimiento);
+		establecimiento.setComuna(null);
+
+		return establecimiento;
+	}
+
+	public List<ProgramaMunicipalCore> getProgramaMunicipalCores() {
+		return this.programaMunicipalCores;
+	}
+
+	public void setProgramaMunicipalCores(List<ProgramaMunicipalCore> programaMunicipalCores) {
+		this.programaMunicipalCores = programaMunicipalCores;
+	}
+
+	public ProgramaMunicipalCore addProgramaMunicipalCore(ProgramaMunicipalCore programaMunicipalCore) {
+		getProgramaMunicipalCores().add(programaMunicipalCore);
+		programaMunicipalCore.setComuna(this);
+
+		return programaMunicipalCore;
+	}
+
+	public ProgramaMunicipalCore removeProgramaMunicipalCore(ProgramaMunicipalCore programaMunicipalCore) {
+		getProgramaMunicipalCores().remove(programaMunicipalCore);
+		programaMunicipalCore.setComuna(null);
+
+		return programaMunicipalCore;
+	}
+
 }

@@ -16,12 +16,12 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 
 import cl.minsal.divap.pojo.RebajaPojo;
-import cl.redhat.bandejaTareas.controller.BaseOirsController;
+import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
 
 @Named("procesoRebajaController")
 @ViewScoped
-public class ProcesoRebajaController extends BaseOirsController implements
+public class ProcesoRebajaController extends BaseController implements
 		Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject

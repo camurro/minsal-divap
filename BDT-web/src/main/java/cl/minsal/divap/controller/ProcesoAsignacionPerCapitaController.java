@@ -24,7 +24,7 @@ import org.primefaces.model.UploadedFile;
 
 import cl.minsal.divap.pojo.GobiernoRegionalPojo;
 import cl.minsal.divap.pojo.montosDistribucionPojo;
-import cl.redhat.bandejaTareas.controller.BaseOirsController;
+import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
 

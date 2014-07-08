@@ -14,9 +14,9 @@ import org.apache.log4j.Logger;
 // import cl.redhat.bandejaTareas.service.SeguridadOirsServiceRemote;
 import cl.redhat.bandejaTareas.util.UserUtil;
 
-public abstract class BaseOirsController {
+public abstract class BaseController {
 	
-	private static Logger log = Logger.getLogger(BaseOirsController.class);
+	private static Logger log = Logger.getLogger(BaseController.class);
 	
 	@Inject private UserUtil userUtil;
 	@Inject FacesContext facesContext;

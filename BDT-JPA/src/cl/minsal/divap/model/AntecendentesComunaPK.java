@@ -1,80 +1,57 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.*;
 
 /**
- *
- * @author cmurillo
+ * The primary key class for the antecendentes_comuna database table.
+ * 
  */
 @Embeddable
 public class AntecendentesComunaPK implements Serializable {
-    @Basic(optional = false)
-    @Column(name = "ano_ano_en_curso")
-    private short anoAnoEnCurso;
-    @Basic(optional = false)
-    @Column(name = "id_comuna")
-    private int idComuna;
+	//default serial version id, required for serializable classes.
+	private static final long serialVersionUID = 1L;
 
-    public AntecendentesComunaPK() {
-    }
+	@Column(name="ano_ano_en_curso", insertable=false, updatable=false)
+	private Integer anoAnoEnCurso;
 
-    public AntecendentesComunaPK(short anoAnoEnCurso, int idComuna) {
-        this.anoAnoEnCurso = anoAnoEnCurso;
-        this.idComuna = idComuna;
-    }
+	@Column(name="id_comuna", insertable=false, updatable=false)
+	private Integer idComuna;
 
-    public short getAnoAnoEnCurso() {
-        return anoAnoEnCurso;
-    }
+	public AntecendentesComunaPK() {
+	}
+	public Integer getAnoAnoEnCurso() {
+		return this.anoAnoEnCurso;
+	}
+	public void setAnoAnoEnCurso(Integer anoAnoEnCurso) {
+		this.anoAnoEnCurso = anoAnoEnCurso;
+	}
+	public Integer getIdComuna() {
+		return this.idComuna;
+	}
+	public void setIdComuna(Integer idComuna) {
+		this.idComuna = idComuna;
+	}
 
-    public void setAnoAnoEnCurso(short anoAnoEnCurso) {
-        this.anoAnoEnCurso = anoAnoEnCurso;
-    }
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		if (!(other instanceof AntecendentesComunaPK)) {
+			return false;
+		}
+		AntecendentesComunaPK castOther = (AntecendentesComunaPK)other;
+		return 
+			this.anoAnoEnCurso.equals(castOther.anoAnoEnCurso)
+			&& this.idComuna.equals(castOther.idComuna);
+	}
 
-    public int getIdComuna() {
-        return idComuna;
-    }
-
-    public void setIdComuna(int idComuna) {
-        this.idComuna = idComuna;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (int) anoAnoEnCurso;
-        hash += (int) idComuna;
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof AntecendentesComunaPK)) {
-            return false;
-        }
-        AntecendentesComunaPK other = (AntecendentesComunaPK) object;
-        if (this.anoAnoEnCurso != other.anoAnoEnCurso) {
-            return false;
-        }
-        if (this.idComuna != other.idComuna) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "cl.minsal.divap.model.AntecendentesComunaPK[ anoAnoEnCurso=" + anoAnoEnCurso + ", idComuna=" + idComuna + " ]";
-    }
-    
+	public int hashCode() {
+		final int prime = 31;
+		int hash = 17;
+		hash = hash * prime + this.anoAnoEnCurso.hashCode();
+		hash = hash * prime + this.idComuna.hashCode();
+		
+		return hash;
+	}
 }

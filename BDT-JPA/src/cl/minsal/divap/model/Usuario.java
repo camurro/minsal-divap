@@ -1,158 +1,118 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import java.util.Collection;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.persistence.*;
+import java.util.List;
+
 
 /**
- *
- * @author cmurillo
+ * The persistent class for the usuario database table.
+ * 
  */
 @Entity
-@Table(name = "usuario")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u"),
-    @NamedQuery(name = "Usuario.findByUsername", query = "SELECT u FROM Usuario u WHERE u.username = :username"),
-    @NamedQuery(name = "Usuario.findByNombre", query = "SELECT u FROM Usuario u WHERE u.nombre = :nombre"),
-    @NamedQuery(name = "Usuario.findByApellido", query = "SELECT u FROM Usuario u WHERE u.apellido = :apellido"),
-    @NamedQuery(name = "Usuario.findByEmail", query = "SELECT u FROM Usuario u WHERE u.email = :email"),
-    @NamedQuery(name = "Usuario.findByPassword", query = "SELECT u FROM Usuario u WHERE u.password = :password")})
+@NamedQuery(name="Usuario.findAll", query="SELECT u FROM Usuario u")
 public class Usuario implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @Column(name = "username")
-    private String username;
-    @Basic(optional = false)
-    @Column(name = "nombre")
-    private String nombre;
-    @Basic(optional = false)
-    @Column(name = "apellido")
-    private String apellido;
-    @Basic(optional = false)
-    @Column(name = "email")
-    private String email;
-    @Basic(optional = false)
-    @Column(name = "password")
-    private String password;
-    @ManyToMany(mappedBy = "usuarioCollection")
-    private Collection<Rol> rolCollection;
-    @OneToMany(mappedBy = "usernameUsuario")
-    private Collection<Programa> programaCollection;
+	private static final long serialVersionUID = 1L;
 
-    public Usuario() {
-    }
+	@Id
+	private String username;
 
-    public Usuario(String username) {
-        this.username = username;
-    }
+	private String apellido;
 
-    public Usuario(String username, String nombre, String apellido, String email, String password) {
-        this.username = username;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.email = email;
-        this.password = password;
-    }
+	private String email;
 
-    public String getUsername() {
-        return username;
-    }
+	private String nombre;
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	private String password;
 
-    public String getNombre() {
-        return nombre;
-    }
+	//bi-directional many-to-one association to Programa
+	@OneToMany(mappedBy="usuario")
+	private List<Programa> programas;
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+	//bi-directional many-to-many association to Rol
+	@ManyToMany
+	@JoinTable(
+		name="usuario_rol"
+		, joinColumns={
+			@JoinColumn(name="username_usuario")
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="nombre_rol")
+			}
+		)
+	private List<Rol> rols;
 
-    public String getApellido() {
-        return apellido;
-    }
+	public Usuario() {
+	}
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
+	public String getUsername() {
+		return this.username;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public String getApellido() {
+		return this.apellido;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public void setApellido(String apellido) {
+		this.apellido = apellido;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public String getEmail() {
+		return this.email;
+	}
 
-    @XmlTransient
-    public Collection<Rol> getRolCollection() {
-        return rolCollection;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setRolCollection(Collection<Rol> rolCollection) {
-        this.rolCollection = rolCollection;
-    }
+	public String getNombre() {
+		return this.nombre;
+	}
 
-    @XmlTransient
-    public Collection<Programa> getProgramaCollection() {
-        return programaCollection;
-    }
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
 
-    public void setProgramaCollection(Collection<Programa> programaCollection) {
-        this.programaCollection = programaCollection;
-    }
+	public String getPassword() {
+		return this.password;
+	}
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (username != null ? username.hashCode() : 0);
-        return hash;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Usuario)) {
-            return false;
-        }
-        Usuario other = (Usuario) object;
-        if ((this.username == null && other.username != null) || (this.username != null && !this.username.equals(other.username))) {
-            return false;
-        }
-        return true;
-    }
+	public List<Programa> getProgramas() {
+		return this.programas;
+	}
 
-    @Override
-    public String toString() {
-        return "cl.minsal.divap.model.Usuario[ username=" + username + " ]";
-    }
-    
+	public void setProgramas(List<Programa> programas) {
+		this.programas = programas;
+	}
+
+	public Programa addPrograma(Programa programa) {
+		getProgramas().add(programa);
+		programa.setUsuario(this);
+
+		return programa;
+	}
+
+	public Programa removePrograma(Programa programa) {
+		getProgramas().remove(programa);
+		programa.setUsuario(null);
+
+		return programa;
+	}
+
+	public List<Rol> getRols() {
+		return this.rols;
+	}
+
+	public void setRols(List<Rol> rols) {
+		this.rols = rols;
+	}
+
 }

@@ -16,9 +16,9 @@ import org.apache.log4j.Logger;
 import cl.minsal.divap.pojo.ComponentePojo;
 import cl.minsal.divap.pojo.MonitoreoPojo;
 import cl.minsal.divap.pojo.ProcesosProgramasPojo;
-import cl.redhat.bandejaTareas.controller.BaseOirsController;
+import cl.redhat.bandejaTareas.controller.BaseController;
 
-@Named ( "procesoProgramacionController" ) @ViewScoped public class ProcesoProgramacionController extends BaseOirsController implements
+@Named ( "procesoProgramacionController" ) @ViewScoped public class ProcesoProgramacionController extends BaseController implements
 				Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject private transient Logger log;

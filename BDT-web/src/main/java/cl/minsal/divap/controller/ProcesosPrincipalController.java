@@ -13,10 +13,10 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 
-import cl.redhat.bandejaTareas.controller.BaseOirsController;
+import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
 
-@Named ( "procesosPrincipalController" ) @ViewScoped public class ProcesosPrincipalController extends BaseOirsController implements
+@Named ( "procesosPrincipalController" ) @ViewScoped public class ProcesosPrincipalController extends BaseController implements
 				Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject private transient Logger log;

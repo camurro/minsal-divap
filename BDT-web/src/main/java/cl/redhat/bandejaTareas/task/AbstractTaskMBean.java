@@ -6,11 +6,11 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.component.html.HtmlInputHidden;
 
-import cl.redhat.bandejaTareas.controller.BaseOirsController;
+import cl.redhat.bandejaTareas.controller.BaseController;
 import minsal.divap.enums.BusinessProcess;
 import minsal.divap.service.ProcessService;
 
-public abstract class AbstractTaskMBean extends BaseOirsController{
+public abstract class AbstractTaskMBean extends BaseController{
 	@EJB 
 	private ProcessService processService;
 	private HtmlInputHidden taskId = new HtmlInputHidden();
