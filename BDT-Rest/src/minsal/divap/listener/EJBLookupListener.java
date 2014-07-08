@@ -6,6 +6,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import minsal.divap.service.DocumentService;
 import minsal.divap.service.EmailService;
 
 /**
@@ -19,6 +20,8 @@ public class EJBLookupListener implements ServletContextListener {
 
 	@EJB
 	private EmailService emailService;
+	@EJB
+	private DocumentService documentService;
 
 	/**
 	 * Default constructor. 
@@ -32,13 +35,13 @@ public class EJBLookupListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent event) {
 		this.context = event.getServletContext();
 		add(EmailService.class.getName(), this.emailService);
+		add(DocumentService.class.getName(), this.documentService);
 	}
 
 	/**
 	 * @see ServletContextListener#contextDestroyed(ServletContextEvent)
 	 */
 	public void contextDestroyed(ServletContextEvent event) {
-		// TODO Auto-generated method stub
 	}
 
 

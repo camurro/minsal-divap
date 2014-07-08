@@ -42,16 +42,13 @@ import minsal.divap.service.DocumentService;
  */
 @Path("/documentos")
 @RequestScoped
-public class DocResourceRESTService {
+public class DocResourceRESTService extends BaseRest{
 	@Inject
 	private Logger log;
 
 	@Inject
 	private Validator validator;
 
-	@Inject
-	private DocumentService documentService;
-	
 
 	@DELETE
     @Path("/doc/delete/{docId}")
@@ -63,10 +60,12 @@ public class DocResourceRESTService {
 		if(docId == null){
 			throw new IllegalArgumentException("documento: "+ docId + " no puede ser nulo");
 		}
+		DocumentService documentService = getService(DocumentService.class);
 		documentService.delete(docId);
     }
 	
 	@POST
+	//@GET
     @Path("/rebaja/create/excel/{processInstanceId}/{docId}")
     @Produces("application/json")
     public Integer rebajaCreateExcel(
@@ -81,6 +80,7 @@ public class DocResourceRESTService {
 		BusinessProcess proceso = BusinessProcess.REBAJAS;
 		DocumentType type =  DocumentType.EXCEL;
 		ProcessDocument processDocument = ProcessDocument.getById(docId);
+		DocumentService documentService = getService(DocumentService.class);
 		documentService.createDocument(processInstanceId, proceso, type, processDocument);
         return 1;
     }
@@ -98,11 +98,13 @@ public class DocResourceRESTService {
 		BusinessProcess proceso = BusinessProcess.REBAJAS;
 		DocumentType type =  DocumentType.WORD;
 		ProcessDocument processDocument = ProcessDocument.getById(docId);
+		DocumentService documentService = getService(DocumentService.class);
 		documentService.createDocument(processInstanceId, proceso, type, processDocument);
         return 1;
     }
 	
 	@POST
+//	@GET
     @Path("/percapita/create/excel/{processInstanceId}/{docId}")
     @Produces("application/json")
     public Integer percapitaCreateExcel(
@@ -117,7 +119,8 @@ public class DocResourceRESTService {
 		BusinessProcess proceso = BusinessProcess.PERCAPITA;
 		DocumentType type =  DocumentType.EXCEL;
 		ProcessDocument processDocument = ProcessDocument.getById(docId);
-		//documentService.createDocument(processInstanceId, proceso, type, processDocument);
+		DocumentService documentService = getService(DocumentService.class);
+		documentService.createDocument(processInstanceId, proceso, type, processDocument);
         return 1;
     }
 	
@@ -134,7 +137,8 @@ public class DocResourceRESTService {
 		BusinessProcess proceso = BusinessProcess.PERCAPITA;
 		DocumentType type =  DocumentType.WORD;
 		ProcessDocument processDocument = ProcessDocument.getById(docId);
-		//documentService.createDocument(processInstanceId, proceso, type, processDocument);
+		DocumentService documentService = getService(DocumentService.class);
+		documentService.createDocument(processInstanceId, proceso, type, processDocument);
         return 1;
     }
 	

@@ -12,7 +12,6 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/BDT-ear/lib/commons-httpclient.jar"/>
 	<classpathentry kind="lib" path="/BDT-ear/lib/commons-email.jar"/>
 	<classpathentry kind="lib" path="/BDT-ear/lib/jackson-core-asl.jar"/>
 	<classpathentry kind="lib" path="/BDT-ear/lib/jackson-mapper-asl.jar"/>
@@ -21,5 +20,8 @@
 	<classpathentry kind="lib" path="/BDT-ear/lib/poi-ooxml.jar"/>
 	<classpathentry kind="lib" path="/BDT-ear/lib/poi.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/BDT-JPA"/>
+	<classpathentry kind="lib" path="/BDT-ear/lib/httpclient-4.1.2.jar"/>
+	<classpathentry kind="lib" path="/BDT-ear/lib/httpcore-4.1.2.jar"/>
+	<classpathentry kind="lib" path="/BDT-ear/lib/commons-httpclient.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

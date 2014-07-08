@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import minsal.divap.enums.BusinessProcess;
 import minsal.divap.enums.DocumentType;
@@ -21,7 +21,7 @@ public class DocumentService {
 	@Resource(name="tmpDir")
 	private String tmpDir;
 
-	@Inject
+	@EJB
 	private AlfrescoService alfrescoService;
 
 	public void createDocument(Integer processInstanceId, BusinessProcess proceso, DocumentType type, ProcessDocument processDocument){

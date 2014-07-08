@@ -50,7 +50,6 @@ public class NotificacionRESTService extends BaseRest{
 	@Inject
 	private Validator validator;
 
-	//private EmailService emailService;
 	
 
 	@POST

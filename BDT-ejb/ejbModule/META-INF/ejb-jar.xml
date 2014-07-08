@@ -44,6 +44,7 @@
 				<env-entry-value>testpocrh@gmail.com</env-entry-value>
 			</env-entry>
 		</session>
+		<!-- 
 		<session>
 			<ejb-name>AlfrescoService</ejb-name>
 			<env-entry>
@@ -77,6 +78,7 @@
 				<env-entry-value>/carpetaTest2</env-entry-value>
 			</env-entry>
 		</session>
+		 -->
 		<session>
 			<ejb-name>DocumentService</ejb-name>
 			<env-entry>
@@ -92,7 +94,7 @@
 				<description>Base Url</description>
 				<env-entry-name>baseUrl</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>http://localhost:8080/business-central/</env-entry-value>
+				<env-entry-value>http://localhost:8080/business-central/rest/</env-entry-value>
 			</env-entry>
 				<env-entry>
 				<description>BPM Suite User Name</description>
@@ -108,7 +110,7 @@
 			</env-entry>
 			<env-entry>
 				<description>BPM Suite Deployment ID</description>
-				<env-entry-name>bpmDeploymentID</env-entry-name>
+				<env-entry-name>bpmDeploymentId</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
 				<env-entry-value>cl.minsal.divap:minsal_divap:1.0</env-entry-value>
 			</env-entry>

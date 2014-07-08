@@ -256,7 +256,7 @@ public class ProcesoAsignacionPerCapitaController extends AbstractTaskMBean
 	public String iniciarProceso() {
 		String success = "divapProcesoAsignacionPerCapitaCargarValorizacion?faces-redirect=true";
 		Long procId = iniciarProceso(BusinessProcess.PERCAPITA);
-		if(procId != null){
+		if(procId == null){
 			 success = null;
 		}
 		return success;
