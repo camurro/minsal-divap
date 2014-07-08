@@ -42,12 +42,12 @@ public class AntecendentesComuna implements Serializable {
 
 	//bi-directional many-to-one association to AnoEnCurso
 	@ManyToOne
-	@JoinColumn(name="ano_ano_en_curso")
+	@JoinColumn(name="ano_ano_en_curso", insertable=false, updatable=false)
 	private AnoEnCurso anoEnCurso;
 
 	//bi-directional many-to-one association to Comuna
 	@ManyToOne
-	@JoinColumn(name="id_comuna")
+	@JoinColumn(name="id_comuna", insertable=false, updatable=false)
 	private Comuna comuna;
 
 	public AntecendentesComuna() {

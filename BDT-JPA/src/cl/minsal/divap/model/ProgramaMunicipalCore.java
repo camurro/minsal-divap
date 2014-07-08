@@ -39,12 +39,12 @@ public class ProgramaMunicipalCore implements Serializable {
 
 	//bi-directional many-to-one association to Comuna
 	@ManyToOne
-	@JoinColumn(name="id_comuna")
+	@JoinColumn(name="id_comuna" , insertable=false, updatable=false)
 	private Comuna comuna;
 
 	//bi-directional many-to-one association to Programa
 	@ManyToOne
-	@JoinColumn(name="id_programa")
+	@JoinColumn(name="id_programa", insertable=false, updatable=false)
 	private Programa programa;
 
 	public ProgramaMunicipalCore() {
