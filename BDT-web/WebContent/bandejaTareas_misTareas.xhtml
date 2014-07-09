@@ -35,12 +35,16 @@
 					<h:outputText value="Proceso" />
 					<p:selectOneMenu value="#{bandejaTareasController.estadoMisTareas}">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems itemLabel="#{_est.nombreLargo}" itemValue="#{_est.nombreAbreviado}" var="_est"
+							value="#{bandejaTareasController.listaEstadoMisTareas}" />
 					</p:selectOneMenu>
 				</h:panelGrid>
 				<h:panelGrid>
 					<h:outputText value="Actividad" />
 					<p:selectOneMenu value="#{bandejaTareasController.estadoMisTareas}">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems itemLabel="#{_est.nombreLargo}" itemValue="#{_est.nombreAbreviado}" var="_est"
+							value="#{bandejaTareasController.listaEstadoMisTareas}" />
 					</p:selectOneMenu>
 				</h:panelGrid>
 
