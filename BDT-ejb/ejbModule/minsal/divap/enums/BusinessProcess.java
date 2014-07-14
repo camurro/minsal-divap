@@ -2,7 +2,7 @@ package minsal.divap.enums;
 
 
 public enum BusinessProcess{
-	PERCAPITA(0, "minsal_divap.percapita"), REBAJAS(1,"minsal_divap.rebaja");
+	PERCAPITA(0, "minsal_divap.DistribucionIncialPerCapita"), REBAJAS(1,"minsal_divap.rebaja");
 
 	private int id;
 	private String name;
