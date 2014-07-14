@@ -60,7 +60,7 @@ public class LoginController extends BaseController implements Serializable {
 			facesContext.getExternalContext().redirect(
 					contextPath + "/login.jsf");
 		} catch (Exception e1) {
-			log.error("Se ha detectado un error al tratar de cerrar la sesi�n",
+			log.error("Se ha detectado un error al tratar de cerrar la sesion",
 					e1);
 		}
 	}
@@ -70,11 +70,9 @@ public class LoginController extends BaseController implements Serializable {
 			FacesContext context = FacesContext.getCurrentInstance();
 			HttpServletRequest request = (HttpServletRequest)
 					context.getExternalContext().getRequest();
-			System.out.println("usuario="+usuario);
-			System.out.println("contrasena="+contrasena);
 			
 			request.login(usuario.trim(), contrasena.trim());
-			
+
 			UsuarioVO usuarioVO = this.usuarioService.getUserByUsername(usuario);
 			
 			getSessionBean().setUsername(usuario);

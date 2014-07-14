@@ -56,6 +56,7 @@ Serializable {
 	private String nombre;
 	private String apellido;
 	private String email;
+	private List listaEstadoMisTareas;
 	private String estadoTareasDisponibles;
 	private String estadoBuscarSolicitud;
 	private List<TaskVO> listaBuscarMisTareas; // contiene listado tareas
@@ -1509,5 +1510,14 @@ Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	public List getListaEstadoMisTareas() {
+		return listaEstadoMisTareas;
+	}
+
+	public void setListaEstadoMisTareas(List listaEstadoMisTareas) {
+		this.listaEstadoMisTareas = listaEstadoMisTareas;
+	}
+	
 
 }
