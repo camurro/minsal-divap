@@ -6,8 +6,8 @@ package cl.redhat.bandejaTareas.mock;
 import java.util.Date;
 import java.util.List;
 
-import cl.redhat.bandejaTareas.brms.client.artifacts.HumanTask;
-import cl.redhat.bandejaTareas.brms.client.artifacts.Participant;
+import cl.redhat.bandejaTareas.bpms.client.artifacts.HumanTask;
+import cl.redhat.bandejaTareas.bpms.client.artifacts.Participant;
 
 public class HumanTaskMock {
 	
