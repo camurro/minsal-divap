@@ -33,6 +33,8 @@
 					<h:outputText value="Actividad" />
 					<p:selectOneMenu value="#{bandejaTareasController.estadoTareasDisponibles}" style="width:132px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems itemLabel="#{_est.nombreLargo}" itemValue="#{_est.nombreAbreviado}" var="_est"
+							value="#{bandejaTareasController.listaEstadoTareasDisponibles}" />
 					</p:selectOneMenu>
 				</h:panelGrid>
 
@@ -143,9 +145,9 @@
 
 				<p:column width="80">
 					<f:facet name="header">
-						<h:outputText value="Tem.Con" />
+						<h:outputText value="T.Consulta" />
 					</f:facet>
-					<h:outputText value="Dummy Value" />
+					<h:outputText value="#{bandejaTareasController.devolverTemaConsulta(_tarea.solicitud.idSolicitud)}" />
 				</p:column>
 
 				<p:column width="60">

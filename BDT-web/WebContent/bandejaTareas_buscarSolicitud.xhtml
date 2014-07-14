@@ -48,6 +48,13 @@
 					<p:inputText value="#{bandejaTareasController.email}" />
 				</h:panelGrid>
 
+				<h:panelGrid rendered="#{bandejaTareasController.sessionBean.centralizador}">
+					<h:outputText value="Oficinas" />
+					<p:selectOneMenu value="#{bandejaTareasController.oficinaOirsSeleccionada}">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems var="_ofi" itemLabel="#{_ofi.nombre}" itemValue="#{_ofi.id}" value="#{bandejaTareasController.listaOficinaOirs}" />
+					</p:selectOneMenu>
+				</h:panelGrid>
 				<h:outputText value="" rendered="#{not bandejaTareasController.sessionBean.centralizador}" />
 				<h:outputText value="" />
 
@@ -66,9 +73,27 @@
 					<h:outputText value="Actividades" />
 					<p:selectOneMenu id="dynAct" value="#{bandejaTareasController.actividadSeleccionada}">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems itemLabel="#{_est.nombreLargo}" itemValue="#{_est.nombreAbreviado}" var="_est"
+							value="#{bandejaTareasController.listaActividad}" />
 					</p:selectOneMenu>
 				</h:panelGrid>
 
+				<h:panelGrid>
+					<h:outputText value="Tema Consulta" />
+					<p:selectOneMenu value="#{bandejaTareasController.temaConsultaSeleccionado}">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems itemLabel="#{_est.descripcion}" itemValue="#{_est.id}" var="_est" value="#{bandejaTareasController.listaTemaConsulta}" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+
+				<h:panelGrid>
+					<h:outputText value="Producto Estrat&eacute;gico" />
+					<p:selectOneMenu value="#{bandejaTareasController.productoEstrategicoSeleccionado}">
+						<f:selectItem itemLabel="Seleccione" itemValue="" />
+						<f:selectItems itemLabel="#{_est.descripcion}" itemValue="#{_est.id}" var="_est"
+							value="#{bandejaTareasController.listaProductoEstrategico}" />
+					</p:selectOneMenu>
+				</h:panelGrid>
 
 				<p:separator style="visibility: hidden;" />
 			</h:panelGrid>
@@ -91,7 +116,7 @@
 
 				<p:column width="60" styleClass="center" sortBy="#{_tarea.solicitud.idSolicitud}">
 					<f:facet name="header">
-						<h:outputText value="Id Solicitud" />
+						<h:outputText value="Nro OIRS" />
 					</f:facet>
 					<h:outputText value="#{_tarea.solicitud.idSolicitud}" />
 				</p:column>
@@ -129,11 +154,11 @@
 					<h:outputText value="#{bandejaTareasController.obtenerEstado(_tarea.solicitud.state)}" />
 				</p:column>
 
-				<p:column width="100" styleClass="center">
+				<p:column width="100" styleClass="center" sortBy="#{bandejaTareasController.devolverTemaConsulta(_tarea.solicitud.idSolicitud)}">
 					<f:facet name="header">
-						<h:outputText value="Tem.Con" />
+						<h:outputText value="T.Consulta" />
 					</f:facet>
-					<h:outputText value="Dummy Value" />
+					<h:outputText value="#{bandejaTareasController.devolverTemaConsulta(_tarea.solicitud.idSolicitud)}" />
 				</p:column>
 
 				<p:column width="100" styleClass="center" sortBy="#{_tarea.solicitud.dueDate}">
