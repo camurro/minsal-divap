@@ -2,30 +2,23 @@ package cl.redhat.bandejaTareas.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
-import minsal.divap.EJBTest;
+import minsal.divap.service.UsuarioService;
+import minsal.divap.vo.UsuarioVO;
 
 import org.apache.log4j.Logger;
 
-
-// import cl.redhat.bandejaTareas.brms.client.BRMSClient;
-// import cl.redhat.bandejaTareas.brms.client.BRMSClientImpl;
-// import cl.redhat.bandejaTareas.brms.client.artifacts.responses.GETRoleCheckResponse;
-// import cl.redhat.bandejaTareas.exceptions.BusinessException;
-// import cl.redhat.bandejaTareas.model.OirsRol;
-//import cl.redhat.bandejaTareas.model.OirsSeguridad;
-//import cl.redhat.bandejaTareas.model.OirsUsuario;
-// import cl.redhat.bandejaTareas.model.OirsUsuario;
-// import cl.redhat.bandejaTareas.service.SeguridadOirsServiceRemote;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
 
 @Named("loginController")
@@ -36,15 +29,11 @@ public class LoginController extends BaseController implements Serializable {
 
 	private static Logger log = Logger.getLogger(LoginController.class);
 
-	private String usuario = "admin";
-	private String contrasena = "admin";
+	private String usuario;
+	private String contrasena;
 
-	// private BRMSClient client;
-	//
-	//private OirsSeguridad oirsSeguridad;
-
-    @Inject
-	private EJBTest ejbtest;
+	@EJB 
+	private UsuarioService usuarioService;
 
 	@Inject
 	private BandejaProperties bandejaProperties;
@@ -52,29 +41,20 @@ public class LoginController extends BaseController implements Serializable {
 	@Inject
 	private FacesContext facesContext;
 
-	// @EJB(lookup =
-	// "java:global/FormOIRS-ear/FormOIRS-ejb-0.1/SeguridadOirsServiceBean!cl.redhat.bandejaTareas.service.SeguridadOirsServiceRemote")
-	// private SeguridadOirsServiceRemote seguridadOirsService;
-
 	@PostConstruct
 	public void init() {
-		try {
-			//setOirsSeguridad(new OirsSeguridad());
-			//ejbtest.testMethod();
-			// setClient(new BRMSClientImpl(bandejaProperties.getHostBRMS(),
-			// bandejaProperties.getPortBRMS()));
-		} catch (Exception e) {
-			log.warn(e);
-		}
 
 	}
 
 	public void logout() {
 		try {
-			// client.logout();
-			// if (getOirsSeguridad().getIdSeguridad() != null)
-			// seguridadOirsService.eliminarComprobacion(getOirsSeguridad());
 			getSessionBean().logout();
+			ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+			HttpSession session = (HttpSession)context.getSession(true);
+			System.out.println("logout antes de invalidate");
+			if (session != null) {
+				session.invalidate();
+			}
 			String contextPath = facesContext.getExternalContext()
 					.getRequestContextPath();
 			facesContext.getExternalContext().redirect(
@@ -87,83 +67,33 @@ public class LoginController extends BaseController implements Serializable {
 
 	public String login() {
 		try {
-			// if (!seguridadOirsService.comprobarUsuario(usuario, contrasena))
-			// {
-			Boolean inicioSessionDummy = usuario.equals("admin")
-					&& contrasena.equals("admin");
-			if (!inicioSessionDummy) {
-				facesContext.addMessage(null, new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "",
-						"No existe usuario con el usuario y contrase\u00F1a"));
-
-				return "";
+			FacesContext context = FacesContext.getCurrentInstance();
+			HttpServletRequest request = (HttpServletRequest)
+					context.getExternalContext().getRequest();
+			System.out.println("usuario="+usuario);
+			System.out.println("contrasena="+contrasena);
+			
+			request.login(usuario.trim(), contrasena.trim());
+			
+			UsuarioVO usuarioVO = this.usuarioService.getUserByUsername(usuario);
+			
+			getSessionBean().setUsername(usuario);
+			getSessionBean().setPassword(contrasena);
+			if(usuarioVO.getRoles() != null && usuarioVO.getRoles().size() > 0){
+				getSessionBean().setRoles(new ArrayList<String>(usuarioVO.getRoles()));
 			}
-			// if(client.isLogged()) client.logout();
-			//
-			// try {
-			// client.login(usuario, contrasena);
-			// verificarRol();
-			// } catch (Exception e) {
-			// facesContext.addMessage(null, new FacesMessage(
-			// FacesMessage.SEVERITY_ERROR, "", e.getMessage()));
-			// return "";
-			// }
-
-			// GETProcessDefinitionsResponse resp =
-			// client.getProcessDefinitions();
-			//
-			// // checkear si viene cl.redhat.bandejaTareas.process.Solicitud
-			// boolean processActive = false;
-			// for (ProcessDefinition pd : resp.getDefinitions()) {
-			// if
-			// ("cl.redhat.bandejaTareas.process.Solicitud".equals(pd.getId()))
-			// processActive = true;
-			// }
-			//
-			// if (!processActive)
-			// throw new BusinessException(
-			// "No se encuentra declarado el proceso cl.redhat.bandejaTareas.process.Solicitud en BRMS");
-
-			// String token = seguridadOirsService.generacionToken(usuario);
-			// OirsUsuario user =
-			// seguridadOirsService.getUsuarioByName(usuario);
-			// OirsSeguridad oirsSeguridad =
-			// seguridadOirsService.guardarComprobacion(usuario, token);
-
-			//OirsUsuario user = new OirsUsuario();
-			//user.setActive(true);
 
 			boolean isAdmin = true;
 			boolean isCentr = true;
 			boolean isEspec = true;
 
-			//
-			// boolean isAdmin = false;
-			// boolean isCentr = false;
-			// boolean isEspec = false;
-			//
-			// for (OirsRol rol : user.getOirsRoles()) {
-			// if(rol.getRoleIdRol().equals(1L)){
-			// isAdmin = true;
-			// break;
-			// }
-			// if(rol.getRoleIdRol().equals(2L)){
-			// isCentr = true;
-			// break;
-			// }
-			// if(rol.getRoleIdRol().equals(3L)){
-			// isEspec = true;
-			// break;
-			// }
-			// }
-			//
-			//System.out.println("ID de Usuario: "+user.getUsuaIdUsuario());
 			guardarUserUtil(8L, isAdmin,
 					isCentr, isEspec);
 		} catch (Exception e) {
+			e.printStackTrace();
 			facesContext.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, "", e.getMessage()));
-			return "";
+			return null;
 		}
 
 		return "bandejaTareas?faces-redirect=true";

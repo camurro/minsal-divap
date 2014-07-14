@@ -10,7 +10,9 @@ import java.util.List;
  * 
  */
 @Entity
-@NamedQuery(name="Usuario.findAll", query="SELECT u FROM Usuario u")
+@NamedQueries({
+@NamedQuery(name="Usuario.findAll", query="SELECT u FROM Usuario u"),
+@NamedQuery(name="Usuario.findRols", query="SELECT r FROM Usuario u JOIN u.rols r WHERE u.username = :username")})
 public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
 

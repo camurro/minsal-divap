@@ -17,7 +17,7 @@ public class UsuarioDAO {
 	@PersistenceContext(unitName="BDT-JPA")
 	private EntityManager em;
 
-	public Usuario getUserByUsername(Integer username){
+	public Usuario getUserByUsername(String username){
 		try {
 			TypedQuery<Usuario> query = this.em
 					.createQuery(

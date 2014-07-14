@@ -4,17 +4,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.ejb.EJB;
-import javax.faces.component.html.HtmlInputHidden;
 
-import cl.redhat.bandejaTareas.controller.BaseController;
 import minsal.divap.enums.BusinessProcess;
 import minsal.divap.service.ProcessService;
+import minsal.divap.vo.TaskVO;
+import cl.redhat.bandejaTareas.controller.BaseController;
 
 public abstract class AbstractTaskMBean extends BaseController{
 	@EJB 
 	private ProcessService processService;
-	private HtmlInputHidden taskId = new HtmlInputHidden();
-
+	private TaskVO taskVO;
+	
+	public AbstractTaskMBean(){
+		taskVO = getFromSession("tareaSeleccionada", TaskVO.class);
+	}
 
 	protected abstract Map<String, Object> createResultData();
 	public abstract String iniciarProceso();
@@ -31,7 +34,8 @@ public abstract class AbstractTaskMBean extends BaseController{
 			parameters.put("user", user);
 			parameters.put("usuario", user);
 			System.out.println("Iniciando proceso = "+proceso.getName() + " con el usuario="+user);
-			procId = this.processService.startProcess(proceso, parameters);
+			minsal.divap.service.task.response.startProcess.CommandResponse.ProcessInstance processInstance = this.processService.startProcess(proceso, parameters);
+			procId = processInstance.getId();
 		}catch (Exception e) {
 			System.out.println("No se pudo completar la tarea ");
 			e.printStackTrace();
@@ -39,18 +43,28 @@ public abstract class AbstractTaskMBean extends BaseController{
 		}
 		return procId;
 	}
+	
+	public TaskVO getTaskVO() {
+		return taskVO;
+	}
 
-	public String enviar()
-	{
+	public void setTaskVO(TaskVO taskVO) {
+		this.taskVO = taskVO;
+	}
+
+	protected TaskVO getUserTasksByProcessId(Long processInstanceId, String username) {
+		 return this.processService.getUserTasksByProcessId(processInstanceId, null, username);
+	}
+
+	public String enviar(){
 		try {
 			Map<String, Object> data = createResultData();
 			String user = getLoggedUsername();
 			data.put("user", user);
 			data.put("usuario", user);
-			Long id = Long.valueOf(Long.parseLong(this.taskId.getValue().toString()));
-			this.processService.completeTask(id, getLoggedUsername(), data);
-		}
-		catch (Exception e) {
+			System.out.println("tarea a completar==>"+getTaskVO().getId());
+			this.processService.completeTask(getTaskVO().getProcessInstanceId(), getTaskVO().getId(), getLoggedUsername(), data);
+		} catch (Exception e) {
 			System.out.println("No se pudo completar la tarea ");
 			e.printStackTrace();
 			return "forbidden";

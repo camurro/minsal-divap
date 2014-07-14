@@ -24,88 +24,113 @@ public class DocumentService {
 	@EJB
 	private AlfrescoService alfrescoService;
 
-	public void createDocument(Integer processInstanceId, BusinessProcess proceso, DocumentType type, ProcessDocument processDocument){
+	public Integer createDocument(Integer processInstanceId, BusinessProcess proceso, DocumentType type, ProcessDocument processDocument){
+		Integer docId = null;
 		switch (proceso) {
 		case PERCAPITA: 
 			System.out.println("Documento proceso percapita");
-			createDocumentPercapita(processInstanceId, type, processDocument);
+			docId = createDocumentPercapita(processInstanceId, type, processDocument);
 			break;
-
 		case REBAJAS: 
 			System.out.println("Documento proceso rebajas");
-			createDocumentRebaja(processInstanceId, type, processDocument);
+			docId = createDocumentRebaja(processInstanceId, type, processDocument);
 			break;
-
 		default: System.out.println("Proceso no soportado.");
 		break;
 		}
+		return docId;
 	}
 
-	private void createDocumentPercapita(Integer processInstanceId, DocumentType type, ProcessDocument processDocument){
+	private Integer createDocumentPercapita(Integer processInstanceId, DocumentType type, ProcessDocument processDocument){
+		Integer docId = null;
 		switch (type) {
 		case EXCEL: 
 			System.out.println("Documento proceso percapita excel");
-			createDocumentPercapitaExcel(processInstanceId, processDocument);
+			docId = createDocumentPercapitaExcel(processInstanceId, processDocument);
 			break;
-
 		case WORD: 
 			System.out.println("Documento proceso percapita word");
-			createDocumentPercapitaWord(processInstanceId, processDocument);
+			docId = createDocumentPercapitaWord(processInstanceId, processDocument);
 			break;
-
 		default: System.out.println("Tipo documento no soportado.");
 		break;
 		}
+		return docId;
 	}
 
-	private void createDocumentPercapitaExcel(Integer processInstanceId,
+	private Integer createDocumentPercapitaExcel(Integer processInstanceId,
 			ProcessDocument processDocument) {
-		// TODO Auto-generated method stub
-
+		Integer docId = null;
+		switch (processDocument) {
+		case RESULTADOREBAJAS: 
+			System.out.println("Documento proceso percapita excel RESULTADOREBAJAS");
+			docId = createDocumentPercapitaExcelResultadoRebajas(processInstanceId);
+			break;
+		case REBAJASCOMUNAS: 
+			System.out.println("Documento proceso percapita excel REBAJASCOMUNAS");
+			docId = createDocumentPercapitaExcelResultadoRebajas(processInstanceId);
+			break;
+		case OFICIOCONSULTA: 
+			System.out.println("Documento proceso percapita excel OFICIOCONSULTA");
+			docId = createDocumentPercapitaExcelOficioConsultas(processInstanceId);
+			break;
+		default: System.out.println("Tipo documento no soportado.");
+		break;
+		}
+		return docId;
 	}
 
-	private void createDocumentPercapitaWord(Integer processInstanceId,
+	private Integer createDocumentPercapitaExcelOficioConsultas(
+			Integer processInstanceId) {
+		return 3;
+	}
+
+	private Integer createDocumentPercapitaExcelResultadoRebajas(
+			Integer processInstanceId) {
+		return 1;
+	}
+
+	private Integer createDocumentPercapitaWord(Integer processInstanceId,
 			ProcessDocument processDocument) {
-		// TODO Auto-generated method stub
-
+		return 2;
 	}
 
-	private void createDocumentRebaja(Integer processInstanceId, DocumentType type, ProcessDocument processDocument){
+	private Integer createDocumentRebaja(Integer processInstanceId, DocumentType type, ProcessDocument processDocument){
+		Integer docId = null;
 		switch (type) {
 		case EXCEL: 
 			System.out.println("Documento proceso rebaja excel");
-			createDocumentRebajaExcel(processInstanceId, processDocument);
+			docId = createDocumentRebajaExcel(processInstanceId, processDocument);
 			break;
-
 		case WORD: 
 			System.out.println("Documento proceso rebaja word");
-			createDocumentRebajaWord(processInstanceId, processDocument);
+			docId = createDocumentRebajaWord(processInstanceId, processDocument);
 			break;
-
 		default: System.out.println("Tipo documento no soportado.");
 		break;
 		}
+		return  docId;
 	}
 
-	private void createDocumentRebajaExcel(Integer processInstanceId,
+	private Integer createDocumentRebajaExcel(Integer processInstanceId,
 			ProcessDocument processDocument) {
+		Integer docId = null;
 		switch (processDocument) {
 		case RESULTADOREBAJAS: 
 			System.out.println("Documento excel proceso rebaja RESULTADOREBAJAS");
-			createDocumentResultadoRebaja(processInstanceId);
+			docId = createDocumentResultadoRebaja(processInstanceId);
 			break;
-
 		case REBAJASCOMUNAS: 
 			System.out.println("Documento excel proceso rebaja REBAJASCOMUNAS");
-			createDocumentRebajaComuna(processInstanceId);
+			docId = createDocumentRebajaComuna(processInstanceId);
 			break;
-
 		default: System.out.println("documento para proceso rebaja no soportado.");
 		break;
 		}
+		return docId;
 	}
-	
-	private void createDocumentResultadoRebaja(Integer processInstanceId) {
+
+	private Integer createDocumentResultadoRebaja(Integer processInstanceId) {
 		String fileName = tmpDir + "/rebaja.xlsx";
 		GeneradorExcel generadorExcel = new GeneradorExcel(fileName);
 		List<String> headers = new ArrayList<String>();
@@ -145,16 +170,17 @@ public class DocumentService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return 1;
 	}
 
-	private void createDocumentRebajaComuna(Integer processInstanceId) {
-
+	private Integer createDocumentRebajaComuna(Integer processInstanceId) {
+		return 1;
 	}
 
 
-	private void createDocumentRebajaWord(Integer processInstanceId,
+	private Integer createDocumentRebajaWord(Integer processInstanceId,
 			ProcessDocument processDocument) {
-
+		return 1;
 	}
 
 	public void delete(Integer docId) {

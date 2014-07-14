@@ -184,6 +184,23 @@ public class RestJBPM {
 		return xmlToString(commandRequest);
 	}
 
+	public static String getTasksByStatusByProcessInstanceId(
+			String deploymentId, String actorId, long processInstanceId)  throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException{
+		Element commandRequest = getCommandRequest( deploymentId, null);
+		Element elementTaskByStatusProcessInstance = commandRequest.getOwnerDocument().createElement( "get-tasks-by-status-by-processinstanceid" );
+		Element elementProcessInstanceId = commandRequest.getOwnerDocument().createElement( "process-instance-id" );
+		elementProcessInstanceId.setTextContent(String.valueOf(processInstanceId));
+		elementTaskByStatusProcessInstance.appendChild(elementProcessInstanceId);
+		Element elementLang = commandRequest.getOwnerDocument().createElement( "language" );
+		elementLang.setTextContent("en-UK"); 
+		elementTaskByStatusProcessInstance.appendChild(elementLang);
+		Element elementStatus = commandRequest.getOwnerDocument().createElement( "status" );
+		elementStatus.setTextContent("Reserved"); 
+		elementTaskByStatusProcessInstance.appendChild(elementStatus);
+		commandRequest.appendChild( elementTaskByStatusProcessInstance );
+		return xmlToString(commandRequest);
+	}
+	
 	public static String getStartTask(String deploymentId, long taskId,
 			String actorId) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
 		Element commandRequest = getCommandRequest( deploymentId, null);
@@ -316,5 +333,6 @@ public class RestJBPM {
 			e.printStackTrace();
 		}
 	}
+
 
 }

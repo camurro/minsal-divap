@@ -2,7 +2,7 @@ package minsal.divap.enums;
 
 
 public enum ProcessDocument{
-	RESULTADOREBAJAS(1), REBAJASCOMUNAS(2);
+	RESULTADOREBAJAS(1), REBAJASCOMUNAS(2),  OFICIOCONSULTA(3);
 
 	private int id;
 	

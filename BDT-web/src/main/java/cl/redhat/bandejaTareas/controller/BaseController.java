@@ -2,8 +2,11 @@ package cl.redhat.bandejaTareas.controller;
 
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+
+
 
 //import cl.redhat.bandejaTareas.model.OirsRol;
 //import cl.redhat.bandejaTareas.model.OirsUsuario;
@@ -15,15 +18,13 @@ import org.apache.log4j.Logger;
 import cl.redhat.bandejaTareas.util.UserUtil;
 
 public abstract class BaseController {
-	
+
 	private static Logger log = Logger.getLogger(BaseController.class);
-	
-	@Inject private UserUtil userUtil;
-	@Inject FacesContext facesContext;
-	
-	// @EJB(lookup =
-	// "java:global/FormOIRS-ear/FormOIRS-ejb-0.1/SeguridadOirsServiceBean!cl.redhat.bandejaTareas.service.SeguridadOirsServiceRemote")
-	// private SeguridadOirsServiceRemote seguridadOirsService;
+
+	@Inject 
+	private UserUtil userUtil;
+	@Inject 
+	FacesContext facesContext;
 	
 	public String getLoggedUsername() {
 		if (userUtil != null) return userUtil.getUsername();
@@ -32,16 +33,17 @@ public abstract class BaseController {
 			return "";
 		}
 	}
-	
+
 	public UserUtil getSessionBean() {
 		if (userUtil == null) userUtil = new UserUtil();
 		return userUtil;
 	}
-	
+
 	public FacesContext getFacesContex() {
 		return facesContext;
 	}
-	
+
+
 	/*public boolean verificarRol( OirsUsuario usu, String rol ) {
 		OirsRol temp = new OirsRol();
 		for (OirsRol o : usu.getOirsRoles()) {
@@ -50,52 +52,67 @@ public abstract class BaseController {
 		}
 		return false;
 	}*/
-	
+
 	public boolean verificarPermiso( String tarea ) {
-		
+
 		if (userUtil != null && userUtil.isLogged()) {
-//			OirsUsuario usu = null;
+			//			OirsUsuario usu = null;
 			try {
-//				usu = seguridadOirsService.getUsuarioByName(userUtil.getUsername());
+				//				usu = seguridadOirsService.getUsuarioByName(userUtil.getUsername());
 			} catch (Exception e) { //BusinessException
 				e.printStackTrace();
 			}
-//			if (usu != null) {
-				if (tarea.equals("MIS TAREAS")) {
-//					if (!verificarRol(usu, RolUsuario.admin.name())) // cualquiera que no sea admin
-					return true;
-//					else return false;
-				}
-				
-				if (tarea.equals("TAREAS DISPONIBLES")) {
-//					if (!verificarRol(usu, RolUsuario.admin.name())// cualquiera que no sea admin
-//									&& !verificarRol(usu, RolUsuario.grOirsEspecialistas.name())) // cualquiera que no sea especialista
-					return true;
-//					else return false;
-				}
-				
-				if (tarea.equals("REPORTES")) {
-//					if (!verificarRol(usu, RolUsuario.admin.name()) && !verificarRol(usu, RolUsuario.grOirsEspecialistas.name())) // solamente
-																																  // admin
-					return true;
-//					else return false;
-				}
-				
-				if (tarea.equals("INGRESAR SOLICITUD")) {
-//					if (!verificarRol(usu, RolUsuario.grOirsEspecialistas.name())) // cualquiera que no sea especialistas
-					return true;
-//					else return false;
-				}
-				
-				if (tarea.equals("MANTENEDORES")) {
-//					if (verificarRol(usu, RolUsuario.admin.name())) // solamente admin
-					return true;
-//					else return false;
-				}
+			//			if (usu != null) {
+			if (tarea.equals("MIS TAREAS")) {
+				//					if (!verificarRol(usu, RolUsuario.admin.name())) // cualquiera que no sea admin
+				return true;
+				//					else return false;
 			}
-			return true;
-//		}
-//		return false;
+
+			if (tarea.equals("TAREAS DISPONIBLES")) {
+				//					if (!verificarRol(usu, RolUsuario.admin.name())// cualquiera que no sea admin
+				//									&& !verificarRol(usu, RolUsuario.grOirsEspecialistas.name())) // cualquiera que no sea especialista
+				return true;
+				//					else return false;
+			}
+
+			if (tarea.equals("REPORTES")) {
+				//					if (!verificarRol(usu, RolUsuario.admin.name()) && !verificarRol(usu, RolUsuario.grOirsEspecialistas.name())) // solamente
+				// admin
+				return true;
+				//					else return false;
+			}
+
+			if (tarea.equals("INGRESAR SOLICITUD")) {
+				//					if (!verificarRol(usu, RolUsuario.grOirsEspecialistas.name())) // cualquiera que no sea especialistas
+				return true;
+				//					else return false;
+			}
+
+			if (tarea.equals("MANTENEDORES")) {
+				//					if (verificarRol(usu, RolUsuario.admin.name())) // solamente admin
+				return true;
+				//					else return false;
+			}
+		}
+		return true;
+		//		}
+		//		return false;
 	}
 	
+	 @SuppressWarnings("unchecked")
+	public <T> T getFromSession(String name, Class<T> clazz){
+	    HttpSession sc = (HttpSession)
+	    FacesContext.getCurrentInstance().getExternalContext()
+	      .getSession(false);
+	    return (T) sc.getAttribute(name);
+	  }
+
+	  public void setOnSession(String name, Object object) {
+	    HttpSession sc = (HttpSession)
+	    FacesContext.getCurrentInstance().getExternalContext()
+	      .getSession(false);
+	    sc.setAttribute(name, object);
+	  }
+
 }

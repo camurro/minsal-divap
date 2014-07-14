@@ -150,6 +150,35 @@ public class DocResourceRESTService extends BaseRest{
             throws DocNotFoundException {
         throw new DocNotFoundException("documento: "+ docId + " no existe");
     }
+	
+	@GET
+    @Path("/percapita/create/oficioConsulta/{processInstanceId}")
+    @Produces("application/json")
+    public Integer percapitaCrearOficioConsulta(
+            @PathParam("processInstanceId") Integer processInstanceId){
+		if(processInstanceId == null){
+			throw new IllegalArgumentException("instancia de proceso: "+ processInstanceId + " no puede ser nulo");
+		}
+		System.out.println("processInstanceId " + processInstanceId );
+		BusinessProcess proceso = BusinessProcess.PERCAPITA;
+		DocumentType type =  DocumentType.EXCEL;
+		ProcessDocument processDocument = ProcessDocument.OFICIOCONSULTA;
+		DocumentService documentService = getService(DocumentService.class);
+		return documentService.createDocument(processInstanceId, proceso, type, processDocument);
+    }
+	
+	@GET
+    @Path("/test/mensaje/{mensaje}")
+    @Produces("application/json")
+    public String testMensaje(
+            @PathParam("mensaje") String mensaje){
+		if(mensaje == null){
+			throw new IllegalArgumentException("instancia de proceso: "+ mensaje + " no puede ser nulo");
+		}
+		System.out.println("mensaje " + mensaje );
+		return "hola "+ mensaje;
+    }
+	
 	/*@Path("{proceso}","{documento}")
 	@GET
 	@Produces("application/json")

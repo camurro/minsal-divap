@@ -9,76 +9,33 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Logger;
-//import org.bouncycastle.asn1.ocsp.Request;
+import minsal.divap.service.ProcessService;
+import minsal.divap.service.RolesService;
+import minsal.divap.vo.TaskVO;
 
-//import cl.redhat.bandejaTareas.brms.client.artifacts.HumanTask;
-//import cl.redhat.bandejaTareas.brms.client.artifacts.responses.GETAssignedTasksResponse;
-//import cl.redhat.bandejaTareas.brms.client.artifacts.responses.GETDatasetInstanceResponse;
-//import cl.redhat.bandejaTareas.brms.client.artifacts.responses.GETParticipationsTasksResponse;
-//import cl.redhat.bandejaTareas.brms.client.artifacts.responses.GETProcessDefinitionsResponse;
-//import cl.redhat.bandejaTareas.brms.client.artifacts.responses.GETProcessInstancesResponse;
-//import cl.redhat.bandejaTareas.brms.client.artifacts.responses.GETServerStatusResponse;
-//import cl.redhat.bandejaTareas.brms.client.artifacts.responses.GETUnassignedTasksResponse;
-//import cl.redhat.bandejaTareas.brms.client.artifacts.responses.POSTClaimTaskResponse;
-// import cl.redhat.bandejaTareas.brms.client.BRMSClient;
-// import cl.redhat.bandejaTareas.brms.client.BRMSClientImpl;
-// import cl.redhat.bandejaTareas.brms.client.artifacts.HumanTask;
-// import cl.redhat.bandejaTareas.brms.client.artifacts.responses.GETAssignedTasksResponse;
-// import cl.redhat.bandejaTareas.brms.client.artifacts.responses.GETDatasetInstanceResponse;
-// import cl.redhat.bandejaTareas.brms.client.artifacts.responses.GETParticipationsTasksResponse;
-// import cl.redhat.bandejaTareas.brms.client.artifacts.responses.GETProcessDefinitionsResponse;
-// import cl.redhat.bandejaTareas.brms.client.artifacts.responses.GETProcessInstancesResponse;
-// import cl.redhat.bandejaTareas.brms.client.artifacts.responses.GETServerStatusResponse;
-// import cl.redhat.bandejaTareas.brms.client.artifacts.responses.GETUnassignedTasksResponse;
-// import cl.redhat.bandejaTareas.brms.client.artifacts.responses.POSTClaimTaskResponse;
-// import cl.redhat.bandejaTareas.exceptions.BusinessException;
+import org.apache.log4j.Logger;
+
 import cl.redhat.bandejaTareas.mock.HumanTaskMock;
 import cl.redhat.bandejaTareas.mock.SolicitudMock;
-//import cl.redhat.bandejaTareas.model.Estado;
-//import cl.redhat.bandejaTareas.model.OficinaOirs;
-//import cl.redhat.bandejaTareas.model.ProductoEstrategico;
-//import cl.redhat.bandejaTareas.model.SolicitudCiudadano;
-//import cl.redhat.bandejaTareas.model.TemaConsulta;
-// import cl.redhat.bandejaTareas.model.Estado;
-// import cl.redhat.bandejaTareas.model.EstadoSolicitudPendiente;
-// import cl.redhat.bandejaTareas.model.GestionSolicitud;
-// import cl.redhat.bandejaTareas.model.OficinaOirs;
-// import cl.redhat.bandejaTareas.model.OirsFestivos;
-// import cl.redhat.bandejaTareas.model.OirsRol;
-// import cl.redhat.bandejaTareas.model.OirsUsuario;
-// import cl.redhat.bandejaTareas.model.Parametro;
-// import cl.redhat.bandejaTareas.model.ProductoEstrategico;
-// import cl.redhat.bandejaTareas.model.RolUsuario;
-// import cl.redhat.bandejaTareas.model.SolicitudCiudadano;
-// import cl.redhat.bandejaTareas.model.TemaConsulta;
-// import cl.redhat.bandejaTareas.service.AsignarOirsSessionRemote;
-// import cl.redhat.bandejaTareas.service.EstadoServiceRemote;
-// import cl.redhat.bandejaTareas.service.FestivoServiceRemote;
-// import cl.redhat.bandejaTareas.service.OficinaServiceRemote;
-// import cl.redhat.bandejaTareas.service.ParametrosOirsServiceRemote;
-// import cl.redhat.bandejaTareas.service.ProductoEstrategicoServiceRemote;
-// import cl.redhat.bandejaTareas.service.SeguridadOirsServiceRemote;
-// import cl.redhat.bandejaTareas.service.SolicitudSessionRemote;
-// import cl.redhat.bandejaTareas.service.TemaConsultaServiceRemote;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
-
-//import cl.redhat.bandejaTareas.util.VtoUtil;
+import cl.redhat.bandejaTareas.util.MatchViewTask;
 
 @Named("bandejaTareasController")
 @ViewScoped
 public class BandejaTareasController extends BaseController implements
-		Serializable {
+Serializable {
 	@Inject
 	private transient Logger log;
 
@@ -95,80 +52,25 @@ public class BandejaTareasController extends BaseController implements
 	private Date fechaCierreFinal;
 	private String nroSolicitud;
 	private String estadoMisTareas;
-	//private String temaConsulta;
 	private String unidadOirs;
 	private String nombre;
 	private String apellido;
 	private String email;
-	// private String productoEstrategico;
-	//private List<Estado> listaEstadoMisTareas;
 	private String estadoTareasDisponibles;
-	//private List<Estado> listaEstadoTareasDisponibles;
 	private String estadoBuscarSolicitud;
-	//private List<Estado> listaEstadoBuscarSolicitud;
-	private List<HumanTaskMock> listaBuscarMisTareas; // contiene listado tareas
-														// asignadas
+	private List<TaskVO> listaBuscarMisTareas; // contiene listado tareas
 	private List<HumanTaskMock> listaBuscarTareasDisponibles; // contiene
-																// listado
-																// tareas
-																// disponibles
 	private List<HumanTaskMock> listaBuscarSolicitud;
-	private HumanTaskMock solicitudSeleccionada;
-	//private List<TemaConsulta> listaTemaConsulta;
-	//private String temaConsultaSeleccionado;
-	//private List<ProductoEstrategico> listaProductoEstrategico;
-	//private List<Estado> listaActividad;
-	//private String productoEstrategicoSeleccionado;
+	private TaskVO tareaSeleccionada;
 	private String actividadSeleccionada;
-	//private List<OficinaOirs> listaOficinaOirs;
-	//private String oficinaOirsSeleccionada;
 	private String dirImagenSemaforo;
-	// private GETUnassignedTasksResponse listaTareasNoAsignada;
-	// private BRMSClient client;
-
 	@Inject
 	private BandejaProperties bandejaProperties;
-	// @Inject private VtoUtil vtoUtil;
-
 	private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
-	// @EJB(lookup =
-	// "java:global/FormOIRS-ear/FormOIRS-ejb-0.1/SolicitudSessionBean!cl.redhat.bandejaTareas.service.SolicitudSessionRemote")
-	// private SolicitudSessionRemote solicitudSessionRemote;
-	//
-	// @EJB(lookup =
-	// "java:global/FormOIRS-ear/FormOIRS-ejb-0.1/ProductoEstrategicoImpl!cl.redhat.bandejaTareas.service.ProductoEstrategicoServiceRemote")
-	// private ProductoEstrategicoServiceRemote peService;
-	//
-	// @EJB(lookup =
-	// "java:global/FormOIRS-ear/FormOIRS-ejb-0.1/ParametrosOirsServiceBean!cl.redhat.bandejaTareas.service.ParametrosOirsServiceRemote")
-	// private ParametrosOirsServiceRemote parametrosOirsServiceRemote;
-	//
-	// @EJB(lookup =
-	// "java:global/FormOIRS-ear/FormOIRS-ejb-0.1/AsignarOirsSessionBean!cl.redhat.bandejaTareas.service.AsignarOirsSessionRemote")
-	// private AsignarOirsSessionRemote asignarOirsServiceRemote;
-	//
-	// @EJB(lookup =
-	// "java:global/FormOIRS-ear/FormOIRS-ejb-0.1/SeguridadOirsServiceBean!cl.redhat.bandejaTareas.service.SeguridadOirsServiceRemote")
-	// private SeguridadOirsServiceRemote seguridadOirsService;
-	//
-	// @EJB(lookup =
-	// "java:global/FormOIRS-ear/FormOIRS-ejb-0.1/TemaConsultaServiceImpl!cl.redhat.bandejaTareas.service.TemaConsultaServiceRemote")
-	// private TemaConsultaServiceRemote tcService;
-	//
-	// @EJB(lookup =
-	// "java:global/FormOIRS-ear/FormOIRS-ejb-0.1/OficinaServiceImpl!cl.redhat.bandejaTareas.service.OficinaServiceRemote")
-	// private OficinaServiceRemote ofService;
-	//
-	// @EJB(lookup =
-	// "java:global/FormOIRS-ear/FormOIRS-ejb-0.1/FestivoServiceImpl!cl.redhat.bandejaTareas.service.FestivoServiceRemote")
-	// private FestivoServiceRemote festivosService;
-	//
-	// @EJB(lookup =
-	// "java:global/FormOIRS-ear/FormOIRS-ejb-0.1/EstadoBean!cl.redhat.bandejaTareas.service.EstadoServiceRemote")
-	// private EstadoServiceRemote estadoServiceRemote;
-
-	// ****************Metodos**********************
+	@EJB 
+	private RolesService rolesService;
+	@EJB 
+	private ProcessService processService;
 
 	@PostConstruct
 	public void init() {
@@ -191,37 +93,7 @@ public class BandejaTareasController extends BaseController implements
 						"Error tratando de redireccionar a login por falta de usuario en sesion.",
 						e);
 			}
-		} // else {
-			// boolean admin = true;
-			// try {
-			// OirsUsuario user =
-			// seguridadOirsService.getUsuarioByName(getSessionBean().getUsername());
-			// for (OirsRol rol : user.getOirsRoles()) {
-			// if ("admin".equalsIgnoreCase(rol.getRoleDescripcionRol())) {
-			// admin = true;
-			// break;
-			// }
-			// }
-			// indexMenu = admin ? 2 : 0;
-			// } catch (BusinessException e) {
-			// log.error("No se pudo recuperar el usuario logueado al crear el controlador de Bandeja se asume usuario normal",
-			// e);
-			// indexMenu = 2;
-			// }
-
-		// try {
-		// setClient(new BRMSClientImpl(bandejaProperties.getHostBRMS(),
-		// bandejaProperties.getPortBRMS()));
-		// client.login(getSessionBean().getUsername(),
-		// getSessionBean().getPassword());
-
-		// establecerModo(indexMenu);
-
-		// } catch (Exception e) {
-		// log.warn("No se pudo establecer el enlace con BRMS para el usuario "
-		// + (admin ? "Administrador" : "logueado"), e);
-		// }
-		// }
+		} 
 	}
 
 	public void establecerModo(int _modo) {
@@ -319,11 +191,6 @@ public class BandejaTareasController extends BaseController implements
 		String fechaFinal = null;
 		int cant = 0;
 		cant = getVigencia();
-		// List<OirsFestivos> lstFestivos = festivosService.findAllActive(null);
-		// Date fechaCaducidad =
-		// getFechasUtilBean().getFechaVencimiento(fechaSolicitud, cant,
-		// lstFestivos);
-		// fechaFinal = dateFormat.format(fechaCaducidad);
 		return fechaFinal;
 	}
 
@@ -334,21 +201,11 @@ public class BandejaTareasController extends BaseController implements
 
 	private int getVigencia() {
 		int cantDiasVto = 0;
-		// String vto =
-		// parametrosOirsServiceRemote.obtenerValorParametrizacion(Parametro.cantidad_dias_vigente_solicitud.name());
-		// try {
-		// if (null != vto && !vto.isEmpty()) cantDiasVto =
-		// Integer.parseInt(vto);
-		// } catch (Exception e) {
-		// log.debug("El parametro no es valido para vto solicitud. Se toma valor por defecto");
 		cantDiasVto = TIEMPO_RESPUESTA_DEFAULT;
-		// }
 		return cantDiasVto;
 	}
 
 	public String obtenerEstado(String codigo) {
-		// return
-		// estadoServiceRemote.getEstadosByNombreCorto(codigo).getNombreLargo();
 		return "Estado actividad " + codigo;
 	}
 
@@ -367,12 +224,12 @@ public class BandejaTareasController extends BaseController implements
 		if (listaBuscarMisTareas == null
 				|| (listaBuscarMisTareas != null && listaBuscarMisTareas.size() == 0)) {
 			facesContext
-					.addMessage(
-							null,
-							new FacesMessage(
-									FacesMessage.SEVERITY_INFO,
-									"",
-									"No se han encontrado datos para la b\u00FAsqueda. Por favor revise sus filtros."));
+			.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_INFO,
+							"",
+							"No se han encontrado datos para la b\u00FAsqueda. Por favor revise sus filtros."));
 			return;
 		}
 
@@ -392,14 +249,14 @@ public class BandejaTareasController extends BaseController implements
 
 		if (listaBuscarTareasDisponibles == null
 				|| (listaBuscarTareasDisponibles != null && listaBuscarTareasDisponibles
-						.size() == 0)) {
+				.size() == 0)) {
 			facesContext
-					.addMessage(
-							null,
-							new FacesMessage(
-									FacesMessage.SEVERITY_INFO,
-									"",
-									"No se han encontrado datos para la b\u00FAsqueda. Por favor revise sus filtros."));
+			.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_INFO,
+							"",
+							"No se han encontrado datos para la b\u00FAsqueda. Por favor revise sus filtros."));
 			return;
 		}
 
@@ -418,36 +275,22 @@ public class BandejaTareasController extends BaseController implements
 		listaBuscarSolicitud = buscarSolicitud(nroSolicitud,
 				fechaCreacionInicial, fechaCierreInicial, fechaCreacionFinal,
 				fechaCierreFinal, estadoBuscarSolicitud,
-			    actividadSeleccionada, nombre,
+				actividadSeleccionada, nombre,
 				apellido, email);
 
 		if (listaBuscarSolicitud == null
 				|| (listaBuscarSolicitud != null && listaBuscarSolicitud.size() == 0)) {
 			facesContext
-					.addMessage(
-							null,
-							new FacesMessage(
-									FacesMessage.SEVERITY_INFO,
-									"",
-									"No se han encontrado datos para la b\u00FAsqueda. Por favor revise sus filtros."));
+			.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_INFO,
+							"",
+							"No se han encontrado datos para la b\u00FAsqueda. Por favor revise sus filtros."));
 			return;
 		}
 
 	}
-
-	// public List<String> getListaEstadoBuscarSolicitudAbierto() {
-	// return estadoServiceRemote.getEstadosSolicitudAbierto();
-	// }
-	//
-	// public List<String> getListaEstadoBuscarSolicitudCerrado() {
-	// return estadoServiceRemote.getEstadosSolicitudCerrado();
-	// }
-	//
-	// public List<String> getListaEstadoBuscarSolicitudPendiente() {
-	// return
-	// estadoServiceRemote.getEstadosSolicitudPendiente(getSessionBean().isCentralizador(),
-	// getSessionBean().isOirs());
-	// }
 
 	private void limpiar() {
 		fechaCreacion = null;
@@ -459,9 +302,6 @@ public class BandejaTareasController extends BaseController implements
 		nroSolicitud = null;
 		estadoBuscarSolicitud = null;
 
-		//oficinaOirsSeleccionada = null;
-		//productoEstrategicoSeleccionado = null;
-		//temaConsultaSeleccionado = null;
 		actividadSeleccionada = null;
 		nombre = null;
 		apellido = null;
@@ -502,12 +342,7 @@ public class BandejaTareasController extends BaseController implements
 	}
 
 	public void reclamarTarea() {
-		log.debug("TAREA A RECLAMAR: " + solicitudSeleccionada);
-
-		// todo: Cambiar el estado de la solicitud en la BD y por BRMS
-
-		// client.claimTask(String.valueOf(solicitudSeleccionada.getId()),
-		// getSessionBean().getUsername());
+		log.debug("TAREA A RECLAMAR: " + tareaSeleccionada);
 
 		reclamarTareaClient();
 
@@ -522,60 +357,6 @@ public class BandejaTareasController extends BaseController implements
 
 	public void reclamarTareaClient() {
 
-		// OirsUsuario usu = null;
-		// SolicitudCiudadano solic = null;
-		// try {
-		// solic = solicitudSessionRemote.seleccionarSolicitud(Long
-		// .valueOf(solicitudSeleccionada.getSolicitud()
-		// .getIdSolicitud()));
-		// } catch (NumberFormatException e) {
-		// e.printStackTrace();
-		// } catch (BusinessException e) {
-		// e.printStackTrace();
-		// }
-		//
-		// try {
-		// usu =
-		// seguridadOirsService.getUsuarioByName(getSessionBean().getUsername());
-		// } catch (BusinessException e) {
-		// e.printStackTrace();
-		// }
-		// OirsRol objectSet = new OirsRol();
-		// List<String> listaRol = new ArrayList<String>();
-		// for (OirsRol o : usu.getOirsRoles()) {
-		// objectSet = (OirsRol) o;
-		// listaRol.add(objectSet.getRoleDescripcionRol());
-		// }
-		// boolean other = true;
-		// for (int i = 0; i < listaRol.size(); i++) {
-		// if (listaRol.get(i).equals(RolUsuario.grOirsCentralizadores.name()))
-		// {
-		// solic.setEstadoSolicitud(EstadoSolicitudPendiente.ING_RECL.name());
-		// other = false;
-		// break;
-		// }
-		// }
-		// if(other)solic.setEstadoSolicitud(EstadoSolicitudPendiente.ASG_RECL.name());
-		//
-		// try {
-		// if (solic != null)
-		// solicitudSessionRemote.actualizaProductoEstrategico(solic);
-		// } catch (BusinessException e) {
-		// e.printStackTrace();
-		// }
-		//
-		// GestionSolicitud gestionSolicitud = new GestionSolicitud();
-		//
-		// gestionSolicitud.setOirsSolicitudCiudadano(solic);
-		// gestionSolicitud.setOirsUsuario(usu);
-		// gestionSolicitud.setOirsOficina(usu.getOirsOficina());
-		//
-		// try {
-		// solicitudSessionRemote.guardarGestionSolicitud(gestionSolicitud);
-		// } catch (BusinessException e) {
-		// e.printStackTrace();
-		// }
-
 	}
 
 	public List<HumanTaskMock> buscarTareasDisponibles(String nroSolicitud,
@@ -585,23 +366,6 @@ public class BandejaTareasController extends BaseController implements
 		if (estado != null && estado.equals(""))
 			estado = null;
 
-		// GETUnassignedTasksResponse ll =
-		// obtenerTareasSinAsignar(getSessionBean()
-		// .getUsername());
-		// List<HumanTask> ht = ll.getTasks();
-		//
-		// List<HumanTaskMock> ret = createHumanTaskMock(ht);
-		//
-		// HumanTaskMock filter = createFilter(nroSolicitud, fechaCreacion,
-		// fechaVencimiento, new String());
-		//
-		// ret = (List<HumanTaskMock>) filter(ret, filter);
-		//
-		// List<String> listaEstado = new ArrayList<String>();
-		// if (estado != null && !estado.equals("")) listaEstado.add(estado);
-		// ret = obtenerListaFiltradaPorEstado(ret, listaEstado);
-		//
-		// return ret;
 		return lst;
 	}
 
@@ -1349,33 +1113,27 @@ public class BandejaTareasController extends BaseController implements
 		return lst;
 	}
 
-	public List<HumanTaskMock> buscarMisTareas(String nroSolicitud,
+	public List<TaskVO> buscarMisTareas(String nroSolicitud,
 			Date fechaCreacion, Date fechaVencimiento, String estado) {
-		// INICIO LISTADO DUMMY TAREAS
-		List<HumanTaskMock> lst = generaListadoTareasDummy(1);
-		// FIN LISTADO DUMMY TAREAS
+		List<TaskVO> tasks = new ArrayList<TaskVO>();
 
-		// if (estado != null && estado.equals(""))
-		// estado = null;
-		//
-		// GETAssignedTasksResponse ll =
-		// obtenerTareasAsignados(getSessionBean().getUsername());
-		// List<HumanTask> ht = ll.getTasks();
-		//
-		// List<HumanTaskMock> ret = createHumanTaskMock(ht);
-		//
-		// HumanTaskMock filter = createFilter(nroSolicitud, fechaCreacion,
-		// fechaVencimiento, new String());
-		//
-		// ret = (List<HumanTaskMock>) filter(ret, filter);
-		//
-		// List<String> listaEstado = new ArrayList<String>();
-		// if (estado != null && !estado.equals(""))
-		// listaEstado.add(estado);
-		// ret = obtenerListaFiltradaPorEstado(ret, listaEstado);
-		//
-		// return ret;
-		return lst;
+		List<String> users = getSessionBean().getPotentialUsers();
+		tasks.addAll(this.processService.getUserTasks(
+				(String[])users
+				.toArray(new String[users.size()])));
+		List<String> roles = this.rolesService.getAllRoles();
+		LinkedHashSet<String> set = new LinkedHashSet<String>();
+		set.addAll(roles);
+		for (TaskVO task : tasks) {
+			if (((task.getUser() != null) && (!roles.contains(task.getUser()))) || 
+					(task.getStatus().equalsIgnoreCase("READY")))
+				task.setUser(getSessionBean().getUsername());
+			else {
+				task.setUser("");
+			}
+		}
+		//Collections.sort(this.tasks, new WorkspaceMBean.1(this));
+		return tasks;
 	}
 
 	public List<HumanTaskMock> buscarSolicitud(String nroSolicitud,
@@ -1476,49 +1234,7 @@ public class BandejaTareasController extends BaseController implements
 
 		return listTemp;
 	}
-
-	/*public List<HumanTaskMock> obtenerListaFiltradaPorEstado(
-			List<HumanTaskMock> listaInicial, List<String> listaEstado) {
-
-		List<HumanTaskMock> listTemp = new ArrayList<HumanTaskMock>();
-
-		for (int i = 0; i < listaInicial.size(); i++) {
-
-			SolicitudCiudadano sol = obtenerSolicitud(listaInicial.get(i)
-					.getSolicitud().getIdSolicitud().toString());
-
-			if (sol.getIdFolio() != null) {
-				listaInicial.get(i).getSolicitud()
-						.setFirstname(sol.getNombres());
-				listaInicial.get(i).getSolicitud()
-						.setLastname(sol.getApellidos());
-
-				listaInicial.get(i).getSolicitud()
-						.setState(sol.getEstadoSolicitud());
-
-				if (listaEstado.size() == 0)
-					listTemp.add(listaInicial.get(i));
-				else {
-					for (int j = 0; j < listaEstado.size(); j++) {
-
-						String estadoFiltro = listaEstado.get(j);
-
-						if ((sol.getEstadoSolicitud() != null && estadoFiltro == null)
-								|| (sol.getEstadoSolicitud() != null
-										&& estadoFiltro != null
-										&& sol.getEstadoSolicitud() != "" && sol
-										.getEstadoSolicitud().equals(
-												estadoFiltro))
-								&& !listTemp.contains(listaInicial.get(i)))
-							listTemp.add(listaInicial.get(i));
-					}
-				}
-			}
-		}
-
-		return listTemp;
-	}
-*/
+	
 	public String devolverTemaConsulta(String idSolicitud) {
 		String descripcion = "";
 		// try {
@@ -1534,24 +1250,6 @@ public class BandejaTareasController extends BaseController implements
 		return descripcion;
 	}
 
-	/*public SolicitudCiudadano obtenerSolicitud(String idSolicitud) {
-
-		SolicitudCiudadano sol = new SolicitudCiudadano();
-		// try {
-		// sol =
-		// solicitudSessionRemote.seleccionarSolicitud(Long.valueOf(idSolicitud));
-		// } catch (NumberFormatException e) {
-		// e.printStackTrace();
-		// } catch (BusinessException e) {
-		// e.printStackTrace();
-		// }
-
-		if (sol != null)
-			return sol;
-		else
-			return new SolicitudCiudadano();
-	}*/
-
 	public static <T> Collection<T> filter(Collection<T> target, T filter) {
 		Collection<T> result = new ArrayList<T>();
 		MyPredicate predicate = new MyPredicate();
@@ -1563,19 +1261,6 @@ public class BandejaTareasController extends BaseController implements
 		}
 		return result;
 	}
-
-	/*private List<HumanTaskMock> createHumanTaskMock(List<HumanTask> pp) {
-
-		List<HumanTaskMock> ret = new ArrayList<HumanTaskMock>(pp.size());
-		for (HumanTask p : pp) {
-			HumanTaskMock pm = new HumanTaskMock(p);
-			// processAditionalData(pm, p);
-			ret.add(pm);
-
-		}
-
-		return ret;
-	}*/
 
 	private HumanTaskMock createFilter(String nroSolicitud, Date fechaCreacion,
 			Date fechaVencimiento, String estado) {
@@ -1594,21 +1279,6 @@ public class BandejaTareasController extends BaseController implements
 
 		return ret;
 	}
-
-	/*private void processAditionalData(HumanTaskMock htm, HumanTask ht) {
-		// GETDatasetInstanceResponse data =
-		// obtenerDataInstancia(ht.processInstanceId);
-		// SolicitudMock sm = new SolicitudMock();
-		// sm.setCreateDate((String) data.getDataset().get("createDate"));
-		// sm.setDueDate((String) data.getDataset().get("dueDate"));
-		// sm.setFirstname((String) data.getDataset().get("firstname"));
-		// sm.setIdSolicitud((Long.parseLong(data.getDataset().get("solicitudId"))));
-		// sm.setLastname((String) data.getDataset().get("lastname"));
-		// sm.setState((String) data.getDataset().get("state"));
-		// htm.setSolicitud(sm);
-	}*/
-
-	// @Inject private UrlTaskResolver taskResolver;
 
 	public String resolveUrlTask(String taskName, String solicitudId,
 			String taskId) {
@@ -1645,28 +1315,6 @@ public class BandejaTareasController extends BaseController implements
 		@Override
 		public boolean apply(HumanTaskMock type, HumanTaskMock filter) {
 
-			// SolicitudMock solicitud = type.getSolicitud();
-			// SolicitudMock solFilter = filter.getSolicitud();
-
-			// if (solFilter.getIdSolicitud() != null
-			// && !evaluateEqual(String.valueOf(solFilter.getIdSolicitud()),
-			// String.valueOf(solicitud.getIdSolicitud()))) return false;
-			//
-			// if (!evaluateEqual(solFilter.getCreateDate(),
-			// solicitud.getCreateDate())) return false;
-			//
-			// if (!evaluateEqual(solFilter.getDueDate(),
-			// solicitud.getDueDate())) return false;
-			//
-			// if (!evaluateEqual(solFilter.getFirstname(),
-			// solicitud.getFirstname())) return false;
-			//
-			// if (!evaluateEqual(solFilter.getLastname(),
-			// solicitud.getLastname())) return false;
-			//
-			// if (!evaluateEqual(solFilter.getState(), solicitud.getState()))
-			// return false;
-
 			if (!evaluateEqual(filter.getName(), type.getName()))
 				return false;
 
@@ -1685,57 +1333,6 @@ public class BandejaTareasController extends BaseController implements
 		}
 
 	}
-/*
-	public GETProcessDefinitionsResponse obtenerDefinicionProceso() {
-		// return client.getProcessDefinitions();
-		return new GETProcessDefinitionsResponse();
-	}
-
-	public GETProcessInstancesResponse obtenerInstanciaProceso(String dato) {
-		// return client.getProcessIntances(dato);
-		return new GETProcessInstancesResponse();
-	}
-
-	public GETServerStatusResponse obtenerEstadoServidor() {
-		// return client.getServerStatus();
-		return new GETServerStatusResponse();
-	}
-
-	public GETUnassignedTasksResponse obtenerTareasSinAsignar(String usuario) {
-		// return client.getUnassignedTasks(usuario);
-		return new GETUnassignedTasksResponse();
-	}
-
-	public GETAssignedTasksResponse obtenerTareasAsignados(String usuario) {
-		// return client.getAssignedTasks(usuario);
-		return new GETAssignedTasksResponse();
-	}
-
-	public GETParticipationsTasksResponse obtenerTareasParticipaciones(
-			String usuario) {
-		// return client.getParticipationsTasks(usuario);
-		return new GETParticipationsTasksResponse();
-	}
-
-	public GETDatasetInstanceResponse obtenerDataInstancia(String idInstancia) {
-		// return client.getDatasetInstance(idInstancia);
-		return new GETDatasetInstanceResponse();
-	}
-
-	public POSTClaimTaskResponse reclamarTarea(String tarea, String usuario) {
-		// return client.claimTask(tarea, usuario);
-		return new POSTClaimTaskResponse();
-	}*/
-
-	// ****************Getter & Setter*******************
-
-	/*public String getTemaConsulta() {
-		return temaConsulta;
-	}
-
-	public void setTemaConsulta(String temaConsulta) {
-		this.temaConsulta = temaConsulta;
-	}*/
 
 	public String getUnidadOirs() {
 		return unidadOirs;
@@ -1744,14 +1341,6 @@ public class BandejaTareasController extends BaseController implements
 	public void setUnidadOirs(String unidadOirs) {
 		this.unidadOirs = unidadOirs;
 	}
-
-	/*public String getProductoEstrategico() {
-		return productoEstrategico;
-	}
-
-	public void setProductoEstrategico(String productoEstrategico) {
-		this.productoEstrategico = productoEstrategico;
-	}*/
 
 	public Date getFechaCreacion() {
 		return fechaCreacion;
@@ -1825,14 +1414,6 @@ public class BandejaTareasController extends BaseController implements
 		this.estadoMisTareas = estadoMisTareas;
 	}
 
-	/*public List<Estado> getListaEstadoMisTareas() {
-		return listaEstadoMisTareas;
-	}
-
-	public void setListaEstadoMisTareas(List<Estado> listaEstadoMisTareas) {
-		this.listaEstadoMisTareas = listaEstadoMisTareas;
-	}*/
-
 	public String getEstadoTareasDisponibles() {
 		return estadoTareasDisponibles;
 	}
@@ -1849,24 +1430,6 @@ public class BandejaTareasController extends BaseController implements
 		this.estadoBuscarSolicitud = estadoBuscarSolicitud;
 	}
 
-	/*public List<Estado> getListaEstadoTareasDisponibles() {
-		return listaEstadoTareasDisponibles;
-	}
-
-	public void setListaEstadoTareasDisponibles(
-			List<Estado> listaEstadoTareasDisponibles) {
-		this.listaEstadoTareasDisponibles = listaEstadoTareasDisponibles;
-	}*/
-
-	/*public List<Estado> getListaEstadoBuscarSolicitud() {
-		return listaEstadoBuscarSolicitud;
-	}
-
-	public void setListaEstadoBuscarSolicitud(
-			List<Estado> listaEstadoBuscarSolicitud) {
-		this.listaEstadoBuscarSolicitud = listaEstadoBuscarSolicitud;
-	}*/
-
 	public String getDirImagenSemaforo() {
 		return dirImagenSemaforo;
 	}
@@ -1875,83 +1438,6 @@ public class BandejaTareasController extends BaseController implements
 		this.dirImagenSemaforo = dirImagenSemaforo;
 	}
 
-	// public GETUnassignedTasksResponse getListaTareasNoAsignada() {
-	// return listaTareasNoAsignada;
-	// }
-
-	// public void setListaTareasNoAsignada( GETUnassignedTasksResponse
-	// listaTareasNoAsignada ) {
-	// this.listaTareasNoAsignada = listaTareasNoAsignada;
-	// }
-
-	/*public List<TemaConsulta> getListaTemaConsulta() {
-		return listaTemaConsulta;
-	}
-
-	public void setListaTemaConsulta(List<TemaConsulta> listaTemaConsulta) {
-		this.listaTemaConsulta = listaTemaConsulta;
-	}*/
-
-	/*public List<ProductoEstrategico> getListaProductoEstrategico() {
-		return listaProductoEstrategico;
-	}
-
-	public void setListaProductoEstrategico(
-			List<ProductoEstrategico> listaProductoEstrategico) {
-		this.listaProductoEstrategico = listaProductoEstrategico;
-	}*/
-
-	/*public List<Estado> getListaActividad() {
-		if (estadoBuscarSolicitud != null) {
-			if (estadoBuscarSolicitud.equalsIgnoreCase("1")) {// pendiente
-				// listaActividad = estadoServiceRemote.getEstadosAbierto();
-			} else if (estadoBuscarSolicitud.equalsIgnoreCase("2")) {// cerrado
-				// listaActividad = estadoServiceRemote.getEstadosCerrado();
-			}
-		} else {
-			// listaActividad = estadoServiceRemote.getEstadosSolicitud();
-		}
-
-		return listaActividad;
-	}
-
-	public void setListaActividad(List<Estado> listaActividad) {
-		this.listaActividad = listaActividad;
-	}*/
-
-	/*public List<OficinaOirs> getListaOficinaOirs() {
-		return listaOficinaOirs;
-	}
-
-	public void setListaOficinaOirs(List<OficinaOirs> listaOficinaOirs) {
-		this.listaOficinaOirs = listaOficinaOirs;
-	}*/
-
-	// public BRMSClient getClient() {
-	// return client;
-	// }
-
-	// public void setClient(BRMSClient client) {
-	// this.client = client;
-	// }
-
-	/*public String getTemaConsultaSeleccionado() {
-		return temaConsultaSeleccionado;
-	}
-
-	public void setTemaConsultaSeleccionado(String temaConsultaSeleccionado) {
-		this.temaConsultaSeleccionado = temaConsultaSeleccionado;
-	}*/
-
-/*	public String getProductoEstrategicoSeleccionado() {
-		return productoEstrategicoSeleccionado;
-	}
-
-	public void setProductoEstrategicoSeleccionado(
-			String productoEstrategicoSeleccionado) {
-		this.productoEstrategicoSeleccionado = productoEstrategicoSeleccionado;
-	}*/
-
 	public String getActividadSeleccionada() {
 		return actividadSeleccionada;
 	}
@@ -1959,21 +1445,16 @@ public class BandejaTareasController extends BaseController implements
 	public void setActividadSeleccionada(String actividadSeleccionada) {
 		this.actividadSeleccionada = actividadSeleccionada;
 	}
-
-	/*public String getOficinaOirsSeleccionada() {
-		return oficinaOirsSeleccionada;
+	
+	public String comenzar() {
+		return MatchViewTask.matchView(tareaSeleccionada);
 	}
 
-	public void setOficinaOirsSeleccionada(String oficinaOirsSeleccionada) {
-		this.oficinaOirsSeleccionada = oficinaOirsSeleccionada;
-	}
-*/
-	public List<HumanTaskMock> getListaBuscarMisTareas() {
-		return this.generaListadoTareasDummy(2);
-		// return listaBuscarMisTareas;
+	public List<TaskVO> getListaBuscarMisTareas() {
+		return listaBuscarMisTareas;
 	}
 
-	public void setListaBuscarMisTareas(List<HumanTaskMock> listaBuscarMisTareas) {
+	public void setListaBuscarMisTareas(List<TaskVO> listaBuscarMisTareas) {
 		this.listaBuscarMisTareas = listaBuscarMisTareas;
 	}
 
@@ -1994,12 +1475,15 @@ public class BandejaTareasController extends BaseController implements
 		this.listaBuscarSolicitud = listaBuscarSolicitud;
 	}
 
-	public HumanTaskMock getSolicitudSeleccionada() {
-		return solicitudSeleccionada;
+	public TaskVO getTareaSeleccionada() {
+		if(this.tareaSeleccionada == null){
+			this.tareaSeleccionada = new TaskVO();
+		}
+		return tareaSeleccionada;
 	}
 
-	public void setSolicitudSeleccionada(HumanTaskMock solicitudSeleccionada) {
-		this.solicitudSeleccionada = solicitudSeleccionada;
+	public void setTareaSeleccionada(TaskVO tareaSeleccionada) {
+		this.tareaSeleccionada = tareaSeleccionada;
 	}
 
 	public String getNombre() {

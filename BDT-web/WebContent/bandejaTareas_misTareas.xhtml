@@ -62,7 +62,7 @@
 			<p:dialog id="modalDialog3" header="Atenci&oacute;n" widgetVar="dlg4" modal="true" height="120" width="320">
 
 				<h:outputText
-					value="Se esta gestionando la solicitud #{bandejaTareasController.solicitudSeleccionada.solicitud.idSolicitud}, si ha finalizado presione el boton Continuar." />
+					value="Se esta gestionando la solicitud #{bandejaTareasController.tareaSeleccionada.id}, si ha finalizado presione el boton Continuar." />
 				<br></br>
 				<br></br>
 
@@ -74,21 +74,21 @@
 
 			<p:dataTable id="tablaMisTareas" resizableColumns="true" liveResize="true" var="_tarea" rows="10" rowKey="#{_tarea.id}" paginator="true"
 				paginatorPosition="bottom" emptyMessage="No se encontraron Tareas Asignadas" selectionMode="single"
-				selection="#{bandejaTareasController.solicitudSeleccionada}" value="#{bandejaTareasController.listaBuscarMisTareas}"
+				selection="#{bandejaTareasController.tareaSeleccionada}" value="#{bandejaTareasController.listaBuscarMisTareas}"
 				styleClass="dataTable">
 
 				<p:column width="10%">
 					<f:facet name="header">
 						<h:outputText value="Identificador" />
 					</f:facet>
-					<h:outputText styleClass="textoAjustado" value="#{_tarea.solicitud.idSolicitud}" />
+					<h:outputText styleClass="textoAjustado" value="#{_tarea.id}" />
 				</p:column>
 
 				<p:column width="10%">
 					<f:facet name="header">
 						<h:outputText styleClass="textoAjustado" value="Fecha Inicio" />
 					</f:facet>
-					<h:outputText styleClass="textoAjustado" value="#{_tarea.solicitud.createDate}">
+					<h:outputText styleClass="textoAjustado" value="#{_tarea.date}">
 						<f:convertDateTime pattern="dd/MM/yyyy" />
 					</h:outputText>
 				</p:column>
@@ -98,18 +98,27 @@
 					<f:facet name="header">
 						<h:outputText value="Proceso" />
 					</f:facet>
-					<h:outputText styleClass="textoAjustado" value="#{_tarea.name}" />
+					<h:outputText styleClass="textoAjustado" value="#{_tarea.processId}" >
+						<f:converter converterId="processConverter" />
+					</h:outputText>
 				</p:column>
 
 				<p:column width="50%" style="text-align:left;">
 					<f:facet name="header">
 						<h:outputText styleClass="textoAjustado" value="Actividad" />
 					</f:facet>
-					<!-- <p:commandLink value="#{_tarea.description}"
-						onclick="window.open('#{bandejaTareasController.resolveUrlTask(_tarea.name,_tarea.solicitud.idSolicitud,_tarea.id)}')"
-						update=":responderOirs:modalDialog3" oncomplete="dlg4.show()" /> -->
-					<p:commandLink styleClass="textoAjustado" value="#{_tarea.description}" onclick="window.location.href = '#{_tarea.url}';" />
+					<h:commandLink action="#{bandejaTareasController.comenzar}" value="#{_tarea.name}">
+					    <f:setPropertyActionListener target="#{bandejaTareasController.tareaSeleccionada.id}"
+							value="#{_tarea.id}" />
+						<f:setPropertyActionListener
+							target="#{bandejaTareasController.tareaSeleccionada.processId}"
+							value="#{_tarea.processId}" />
+						<f:setPropertyActionListener
+						target="#{bandejaTareasController.tareaSeleccionada.name}"
+						value="#{_tarea.name}" />
+					</h:commandLink>
 				</p:column>
+				
 			</p:dataTable>
 
 		</h:panelGrid>

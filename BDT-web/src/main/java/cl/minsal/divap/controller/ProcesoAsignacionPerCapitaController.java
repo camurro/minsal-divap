@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -17,6 +18,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import minsal.divap.enums.BusinessProcess;
+import minsal.divap.vo.TaskVO;
 
 import org.apache.log4j.Logger;
 import org.primefaces.event.FileUploadEvent;
@@ -249,15 +251,25 @@ public class ProcesoAsignacionPerCapitaController extends AbstractTaskMBean
 	
 	@Override
 	protected Map<String, Object> createResultData() {
-		return null;
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		System.out.println("createResultData usuario-->"+getSessionBean().getUsername());
+		parameters.put("usuario", getSessionBean().getUsername());
+		return parameters;
 	}
 
 	@Override
 	public String iniciarProceso() {
-		String success = "divapProcesoAsignacionPerCapitaCargarValorizacion?faces-redirect=true";
+		String success = "divapProcesoAsignacionPerCapitaCargarValorizacion";
 		Long procId = iniciarProceso(BusinessProcess.PERCAPITA);
+		System.out.println("procId-->"+procId);
 		if(procId == null){
 			 success = null;
+		}else{
+			TaskVO task = getUserTasksByProcessId(procId, getSessionBean().getUsername());
+			if(task != null){
+				System.out.println("task recuperada="+task);
+				setOnSession("tareaSeleccionada", task);
+			}
 		}
 		return success;
 	}

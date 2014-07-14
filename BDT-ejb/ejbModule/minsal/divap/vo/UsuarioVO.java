@@ -1,6 +1,7 @@
 package minsal.divap.vo;
 
 import java.io.Serializable;
+import java.util.Set;
 
 public class UsuarioVO extends UsuarioSummaryVO implements Serializable{
 	/**
@@ -10,6 +11,7 @@ public class UsuarioVO extends UsuarioSummaryVO implements Serializable{
 	
 	private String username;
 	private String password;
+	private Set<String> roles;
 	
 	public UsuarioVO(String username, String password) {
 		super();
@@ -38,6 +40,16 @@ public class UsuarioVO extends UsuarioSummaryVO implements Serializable{
 	
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+
+	public Set<String> getRoles() {
+		return roles;
+	}
+
+
+	public void setRoles(Set<String> roles) {
+		this.roles = roles;
 	}
 	
 }

@@ -16,12 +16,12 @@ public class UsuarioService {
 	@EJB
 	private UsuarioDAO usuarioDAO;
 	
-	public UsuarioVO getUserByUsername(Integer username){
+	public UsuarioVO getUserByUsername(String username){
 		Usuario usuario = this.usuarioDAO.getUserByUsername(username);
 	    return new UsuarioMapper().getBasic(usuario);
 	}
 	
-	public UsuarioSummaryVO getUserSummaryByUsername(Integer username){
+	public UsuarioSummaryVO getUserSummaryByUsername(String username){
 		Usuario usuario = this.usuarioDAO.getUserByUsername(username);
 	    return new UsuarioMapper().getSummary(usuario);
 	}
