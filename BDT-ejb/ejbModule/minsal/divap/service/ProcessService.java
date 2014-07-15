@@ -10,10 +10,12 @@ import javax.annotation.Resource;
 import javax.ejb.Stateless;
 
 import minsal.divap.enums.BusinessProcess;
+import minsal.divap.service.task.response.content.Content;
+import minsal.divap.service.task.response.task.Task;
 import minsal.divap.service.util.RestClientSimple;
+import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskVO;
 
-import org.kie.api.task.model.TaskSummary;
 
 @Stateless
 public class ProcessService {
@@ -49,7 +51,56 @@ public class ProcessService {
 		return client.startProcessWithParameters(client, parameters);
 	}
 
-	public void completeTask(Long processInstanceId, Long taskId, String actorId, Map<String, Object> parameters)  throws Exception {
+	public TaskDataVO getTaskData(Long taskId) {
+		TaskDataVO taskData = null;
+		try{
+			RestClientSimple client = new RestClientSimple(baseUrl, bpmDeploymentId, bpmUsername, bpmPassword);
+			Task bpmTask = client.getTaskById(client, taskId);
+			TaskVO task = createTask(bpmTask);
+			taskData = new TaskDataVO(task, getTaskData(bpmTask));
+		}catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		return taskData;
+	}
+
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> getTaskData(Task bpmTask) throws Exception {
+		RestClientSimple client = new RestClientSimple(baseUrl, bpmDeploymentId, bpmUsername, bpmPassword);
+		Content content = client.getContentById(client, bpmTask.getJaxbTaskData().getDocumentContentId());
+		Map<String, Object> data = null;
+		if ((content != null) && (content.getSerializedContent() != null)) {
+			System.out.println("ssscontent.getSerializedContent()-->"+content.getSerializedContent() );
+			/*Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getSerializedContent().getBytes("UTF-8"), null, null);
+			if(unmarshalledObject != null && unmarshalledObject instanceof Map){
+				System.out.println("unmarshalledObject no es null y es un mapa");
+				data = ((Map<String, Object>)unmarshalledObject);
+            }*/
+		}
+		if(data != null){
+			for (Map.Entry<String, Object> entry : data.entrySet()){
+				System.out.println(entry.getKey() + "/" + entry.getValue());
+			}
+		}
+		return data;
+	}
+
+	private TaskVO createTask(Task bpmTask) {
+		TaskVO taskVO = new TaskVO(bpmTask.getId(), bpmTask.getName().getText(), bpmTask.getDescription().getText(), 
+				bpmTask.getJaxbTaskData().getActualOwner() == null ? bpmTask.getPeopleAssignments().getPotentialOwner().getId() : bpmTask.getJaxbTaskData().getActualOwner(), 
+						(new Long(bpmTask.getPriority())).intValue(), bpmTask.getJaxbTaskData().getCreatedOn().toGregorianCalendar().getTime(), 
+						bpmTask.getJaxbTaskData().getProcessInstanceId(), bpmTask
+						.getJaxbTaskData().getProcessId());
+
+		if (bpmTask.getJaxbTaskData() != null) {
+			taskVO.setStatus(bpmTask.getJaxbTaskData().getStatus());
+		}
+
+		return taskVO;
+	}
+
+	public void completeTask(Long processInstanceId, Long taskId, String actorId, Map<String, Object> parameters) throws Exception {
 		TaskVO  taskVO = getUserTasksByProcessId(processInstanceId, taskId, actorId);
 		if(taskVO != null){
 			if ( (taskVO.getUserForComplete() == null) && ("Ready".equals(taskVO.getStatus()))) {
@@ -62,28 +113,28 @@ public class ProcessService {
 
 	private void starTask(Long taskId, String actorId) throws Exception {
 		RestClientSimple client = new RestClientSimple(baseUrl, bpmDeploymentId, bpmUsername, bpmPassword);
-	    client.startTask(client, taskId, actorId);
-	}
-	
-	private void completeTask(Long taskId, String actorId, Map<String, Object> parameters) throws Exception {
-		RestClientSimple client = new RestClientSimple(baseUrl, bpmDeploymentId, bpmUsername, bpmPassword);
-	    client.completeTask(client, taskId, actorId, parameters);
+		client.startTask(client, taskId, actorId);
 	}
 
-	public List<TaskSummary> getAssignedTasks(String idRef) {
-		/*try {
+	private void completeTask(Long taskId, String actorId, Map<String, Object> parameters) throws Exception {
+		RestClientSimple client = new RestClientSimple(baseUrl, bpmDeploymentId, bpmUsername, bpmPassword);
+		client.completeTask(client, taskId, actorId, parameters);
+	}
+
+	/*public List<TaskSummary> getAssignedTasks(String idRef) {
+		try {
 			TaskService taskService = engine.getTaskService();
 			return taskService.getTasksAssignedAsPotentialOwner(idRef, this.lang);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
-		} */
+		} 
 		return null;
-	}
+	}*/
 
 	public void claimTask(Long taskId, String usernameSource, String actorId) throws Exception {
 		RestClientSimple client = new RestClientSimple(baseUrl, bpmDeploymentId, bpmUsername, bpmPassword);
-	    client.claimTask(client, taskId, actorId);
+		client.claimTask(client, taskId, actorId);
 	}
 
 	public Set<TaskVO> getUserTasks(String[] userNames){

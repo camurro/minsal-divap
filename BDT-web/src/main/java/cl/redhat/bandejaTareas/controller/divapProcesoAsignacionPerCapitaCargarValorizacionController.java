@@ -1,6 +1,5 @@
 package cl.redhat.bandejaTareas.controller;
 
-import java.awt.print.Book;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +29,7 @@ Serializable {
 	@Override
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("error", new Boolean(isErrorCarga()));
+		parameters.put("error_", new Boolean(isErrorCarga()));
 		return parameters;
 	}
 

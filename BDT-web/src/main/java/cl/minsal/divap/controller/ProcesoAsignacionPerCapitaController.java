@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import minsal.divap.enums.BusinessProcess;
+import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskVO;
 
 import org.apache.log4j.Logger;
@@ -267,8 +268,11 @@ public class ProcesoAsignacionPerCapitaController extends AbstractTaskMBean
 		}else{
 			TaskVO task = getUserTasksByProcessId(procId, getSessionBean().getUsername());
 			if(task != null){
-				System.out.println("task recuperada="+task);
-				setOnSession("tareaSeleccionada", task);
+				TaskDataVO taskDataVO = getTaskData(task.getId());
+				if(taskDataVO != null){
+					System.out.println("taskDataVO recuperada="+taskDataVO);
+					setOnSession("taskDataSeleccionada", taskDataVO);
+				}
 			}
 		}
 		return success;

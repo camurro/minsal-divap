@@ -23,6 +23,7 @@ import javax.inject.Named;
 
 import minsal.divap.service.ProcessService;
 import minsal.divap.service.RolesService;
+import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskVO;
 
 import org.apache.log4j.Logger;
@@ -56,6 +57,7 @@ Serializable {
 	private String nombre;
 	private String apellido;
 	private String email;
+	private List listaEstadoMisTareas;
 	private String estadoTareasDisponibles;
 	private String estadoBuscarSolicitud;
 	private List<TaskVO> listaBuscarMisTareas; // contiene listado tareas
@@ -93,7 +95,10 @@ Serializable {
 						"Error tratando de redireccionar a login por falta de usuario en sesion.",
 						e);
 			}
-		} 
+		} else {
+			listaBuscarMisTareas = buscarMisTareas(null, null,
+					null, null);
+		}
 	}
 
 	public void establecerModo(int _modo) {
@@ -1447,7 +1452,13 @@ Serializable {
 	}
 	
 	public String comenzar() {
-		return MatchViewTask.matchView(tareaSeleccionada);
+		//TaskVO task = processService.getUserTasksByProcessId(tareaSeleccionada.getProcessInstanceId(), tareaSeleccionada.getId(), tareaSeleccionada.getUser());
+		TaskDataVO taskDataVO = processService.getTaskData(tareaSeleccionada.getId());
+		if(taskDataVO != null){
+			System.out.println("taskDataVO recuperada="+taskDataVO);
+			setOnSession("taskDataSeleccionada", taskDataVO);
+		}
+		return MatchViewTask.matchView(taskDataVO);
 	}
 
 	public List<TaskVO> getListaBuscarMisTareas() {
@@ -1508,6 +1519,14 @@ Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public List getListaEstadoMisTareas() {
+		return listaEstadoMisTareas;
+	}
+
+	public void setListaEstadoMisTareas(List listaEstadoMisTareas) {
+		this.listaEstadoMisTareas = listaEstadoMisTareas;
 	}
 
 }
