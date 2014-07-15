@@ -1,6 +1,7 @@
 package cl.redhat.bandejaTareas.controller;
 
 import java.io.Serializable;
+import java.security.Principal;
 import java.util.ArrayList;
 
 import javax.annotation.PostConstruct;
@@ -70,11 +71,17 @@ public class LoginController extends BaseController implements Serializable {
 			FacesContext context = FacesContext.getCurrentInstance();
 			HttpServletRequest request = (HttpServletRequest)
 					context.getExternalContext().getRequest();
-			
+			System.out.println("usuario="+usuario);
+			System.out.println("contrasena="+contrasena);
+
+			if (request.getUserPrincipal() != null) {
+				request.logout();
+			}
+
 			request.login(usuario.trim(), contrasena.trim());
 
 			UsuarioVO usuarioVO = this.usuarioService.getUserByUsername(usuario);
-			
+
 			getSessionBean().setUsername(usuario);
 			getSessionBean().setPassword(contrasena);
 			if(usuarioVO.getRoles() != null && usuarioVO.getRoles().size() > 0){

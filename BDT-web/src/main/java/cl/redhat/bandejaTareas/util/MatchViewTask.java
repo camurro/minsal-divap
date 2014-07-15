@@ -1,11 +1,12 @@
 package cl.redhat.bandejaTareas.util;
 
+import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskVO;
 
 public class MatchViewTask {
 	
 	enum ViewTask{
-		SUBIRDOCUMENTOS("minsal_divap.percapita.subirdocumentos", "divapProcesoAsignacionPerCapitaCargarValorizacion");
+		SUBIRDOCUMENTOS("minsal_divap.DistribucionInicialPerCapita.subirdocumentos", "divapProcesoAsignacionPerCapitaCargarValorizacion");
 
 		private String key;
 		private String view;
@@ -33,6 +34,9 @@ public class MatchViewTask {
 		}
 	}
 	
+	public static String matchView(TaskDataVO taskDataVO){
+		return matchView(taskDataVO.getTask());
+	}
 	public static String matchView(TaskVO task)	{
 		String process = task.getProcessId();
 		String taskName = task.getName().replaceAll(" ", "");

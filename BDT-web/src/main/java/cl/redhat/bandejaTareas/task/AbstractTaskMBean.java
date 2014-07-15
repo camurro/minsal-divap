@@ -7,16 +7,18 @@ import javax.ejb.EJB;
 
 import minsal.divap.enums.BusinessProcess;
 import minsal.divap.service.ProcessService;
+import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskVO;
 import cl.redhat.bandejaTareas.controller.BaseController;
 
 public abstract class AbstractTaskMBean extends BaseController{
 	@EJB 
 	private ProcessService processService;
-	private TaskVO taskVO;
+	private TaskDataVO taskDataVO;
+	private String target;
 	
 	public AbstractTaskMBean(){
-		taskVO = getFromSession("tareaSeleccionada", TaskVO.class);
+		taskDataVO = getFromSession("taskDataSeleccionada", TaskDataVO.class);
 	}
 
 	protected abstract Map<String, Object> createResultData();
@@ -43,33 +45,46 @@ public abstract class AbstractTaskMBean extends BaseController{
 		}
 		return procId;
 	}
-	
-	public TaskVO getTaskVO() {
-		return taskVO;
+
+	public TaskDataVO getTaskDataVO() {
+		return taskDataVO;
 	}
 
-	public void setTaskVO(TaskVO taskVO) {
-		this.taskVO = taskVO;
+	public void setTaskDataVO(TaskDataVO taskDataVO) {
+		this.taskDataVO = taskDataVO;
 	}
 
 	protected TaskVO getUserTasksByProcessId(Long processInstanceId, String username) {
 		 return this.processService.getUserTasksByProcessId(processInstanceId, null, username);
 	}
+	
+	protected TaskDataVO getTaskData(Long taskId){
+		return this.processService.getTaskData(taskId);
+	}
+	
+	public String getTarget() {
+		return target;
+	}
+
+	public void setTarget(String target) {
+		this.target = target;
+	}
 
 	public String enviar(){
+		System.out.println("target-->"+target);
 		try {
 			Map<String, Object> data = createResultData();
 			String user = getLoggedUsername();
 			data.put("user", user);
 			data.put("usuario", user);
-			System.out.println("tarea a completar==>"+getTaskVO().getId());
-			this.processService.completeTask(getTaskVO().getProcessInstanceId(), getTaskVO().getId(), getLoggedUsername(), data);
+			System.out.println("tarea a completar==>"+getTaskDataVO().getTask().getId());
+			this.processService.completeTask(getTaskDataVO().getTask().getProcessInstanceId(), getTaskDataVO().getTask().getId(), getLoggedUsername(), data);
 		} catch (Exception e) {
 			System.out.println("No se pudo completar la tarea ");
 			e.printStackTrace();
-			return "forbidden";
+			return null;
 		}
-		return "success";
+		return target;
 	}
 
 }

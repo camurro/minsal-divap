@@ -11,6 +11,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import minsal.divap.service.task.response.content.Content;
+import minsal.divap.service.task.response.task.Task;
+
 import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -279,6 +282,26 @@ public class RestClientSimple {
 		System.out.println("--------");
 		System.out.println("Response data-->"+dataFromService);
 		System.out.println("--------");
+	}
+
+	public Task getTaskById(RestClientSimple client, Long taskId) throws Exception {
+		String taskUrl = baseUrl + "task/"+taskId;
+		String dataFromService = client.getDataFromService(taskUrl, "GET", null, false);
+		System.out.println("--------");
+		System.out.println("Response data-->"+dataFromService);
+		System.out.println("--------");
+		Task task = createResponse(Task.class, dataFromService);
+		return task;
+	}
+
+	public Content getContentById(RestClientSimple client, Long documentContentId) throws Exception {
+		String taskUrl = baseUrl + "task/content/"+documentContentId;
+		String dataFromService = client.getDataFromService(taskUrl, "GET", null, false);
+		System.out.println("--------");
+		System.out.println("Response data-->"+dataFromService);
+		System.out.println("--------");
+		Content content = createResponse(Content.class, dataFromService);
+		return content;
 	}
 
 }
