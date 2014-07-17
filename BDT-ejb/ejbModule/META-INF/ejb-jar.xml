@@ -94,7 +94,7 @@
 				<description>Base Url</description>
 				<env-entry-name>baseUrl</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>http://localhost:8080/business-central/rest/</env-entry-value>
+				<env-entry-value>http://10.216.32.196:8080/business-central/rest/</env-entry-value>
 			</env-entry>
 				<env-entry>
 				<description>BPM Suite User Name</description>
