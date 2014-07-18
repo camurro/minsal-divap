@@ -156,7 +156,8 @@ public class RestJBPM {
 		elementUserId.setTextContent(actorId);
 		elementTaskPotentialOwner.appendChild(elementUserId);
 		Element elementLang = commandRequest.getOwnerDocument().createElement( "language" );
-		elementLang.setTextContent("en-UK"); 
+		elementLang.setTextContent("en-UK");
+		//elementLang.setTextContent("es-CL");
 		elementTaskPotentialOwner.appendChild(elementLang);
 		commandRequest.appendChild( elementTaskPotentialOwner );
 		return xmlToString(commandRequest);
@@ -192,7 +193,8 @@ public class RestJBPM {
 		elementProcessInstanceId.setTextContent(String.valueOf(processInstanceId));
 		elementTaskByStatusProcessInstance.appendChild(elementProcessInstanceId);
 		Element elementLang = commandRequest.getOwnerDocument().createElement( "language" );
-		elementLang.setTextContent("en-UK"); 
+		elementLang.setTextContent("en-UK");
+		//elementLang.setTextContent("es-CL");
 		elementTaskByStatusProcessInstance.appendChild(elementLang);
 		Element elementStatus = commandRequest.getOwnerDocument().createElement( "status" );
 		elementStatus.setTextContent("Reserved"); 
@@ -245,6 +247,7 @@ public class RestJBPM {
 		elementTasksByStatusbyProcessinstanceid.appendChild(elementProcessInstanceiId);
 		Element elementLanguage = commandRequest.getOwnerDocument().createElement( "language" );
 		elementLanguage.setTextContent("en-UK");
+		//elementLanguage.setTextContent("es-CL");
 		elementTasksByStatusbyProcessinstanceid.appendChild(elementLanguage);
 		if(status != null && status.size() > 0){
 			for(String estado : status){

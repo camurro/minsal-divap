@@ -95,15 +95,15 @@
 								<h:outputText value="Valor Ref. Asig. Zona" />
 							</h:panelGrid>
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox value="#{true}" />
+								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.valorPercapita}" />
 								<h:outputText value="Valor per Capita" />
 							</h:panelGrid>
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox value="#{true}" />
+								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.poblacionAno}" />
 								<h:outputText value="Poblacion Año" />
 							</h:panelGrid>
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox value="#{true}" />
+								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.mayor65}"  />
 								<h:outputText value="Población Mayor de 65 Años" />
 							</h:panelGrid>
 							<h:panelGrid columns="2">
@@ -111,7 +111,7 @@
 								<h:outputText value="Per Capita Mes" />
 							</h:panelGrid>
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox value="#{true}" />
+								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.percapitaAno}" />
 								<h:outputText value="Per Capita Año" />
 							</h:panelGrid>
 
@@ -131,7 +131,7 @@
 					<br />
 					<p:dataTable id="tablaMisTareas" resizableColumns="true" liveResize="true" var="_montoDistribucion" rows="10" paginator="true"
 						paginatorPosition="bottom" emptyMessage="No se encontraron Tareas Asignadas"
-						value="#{procesoAsignacionPerCapitaController.planillaMontosDistribucion}" styleClass="dataTable">
+						value="#{procesoAsignacionPerCapitaValidarMontosController.planillaMontosDistribucion}" styleClass="dataTable">
 
 						<p:column>
 							<f:facet name="header">
@@ -176,19 +176,31 @@
 
 					<h3>Tareas de la Actividad:</h3>
 
-					<h:form>
 						<p:commandButton styleClass="x-btn-text" icon="ui-icon-refresh" value="Re Cargar Archivos"
-							action="divapProcesoAsignacionPerCapitaCargarValorizacion?faces-redirect=true" />
+							action="#{procesoAsignacionPerCapitaValidarMontosController.enviar}" >
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaValidarMontosController.target}" value="bandejaTareas.jsf" />
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaValidarMontosController.rechazarRevalorizar_}" value='#{"false"}' />
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaValidarMontosController.rechazarSubirArchivos_}" value='#{"true"}'/>
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaValidarMontosController.aprobar_}" value='#{"false"}' />
+						</p:commandButton>
 						<p:commandButton styleClass="x-btn-text" icon="ui-icon-refresh" value="Re Valorizar"
-							action="divapProcesoAsignacionPerCapitaCargarValorizacion?faces-redirect=true" />
+							action="#{procesoAsignacionPerCapitaValidarMontosController.enviar}" >
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaValidarMontosController.target}" value="bandejaTareas.jsf" />
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaValidarMontosController.rechazarRevalorizar_}" value='#{"true"}' />
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaValidarMontosController.rechazarSubirArchivos_}" value='#{"false"}'/>
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaValidarMontosController.aprobar_}" value='#{"false"}' />
+						</p:commandButton>
 						<p:commandButton styleClass="x-btn-text" icon="ui-icon-check" value="Los montos de distribución son correctos | Finalizar Actividad"
-							action="bandejaTareas?faces-redirect=true indexMenu=0" />
-					</h:form>
+							action="#{procesoAsignacionPerCapitaValidarMontosController.enviar}" >
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaValidarMontosController.target}" value="bandejaTareas.jsf" />
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaValidarMontosController.rechazarRevalorizar_}" value='#{"false"}' />
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaValidarMontosController.rechazarSubirArchivos_}" value='#{"false"}'/>
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaValidarMontosController.aprobar_}" value='#{"true"}' />
+						</p:commandButton>
 
 				</p:panel>
-
-				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
-					icon="ui-icon-seek-first" />
+					<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+						icon="ui-icon-seek-first" />
 			</p:panel>
 		</h:form>
 	</ui:define>

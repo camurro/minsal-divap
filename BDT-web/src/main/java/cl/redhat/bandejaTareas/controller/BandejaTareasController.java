@@ -28,6 +28,7 @@ import minsal.divap.vo.TaskVO;
 
 import org.apache.log4j.Logger;
 
+import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.mock.HumanTaskMock;
 import cl.redhat.bandejaTareas.mock.SolicitudMock;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
@@ -1453,6 +1454,8 @@ Serializable {
 	
 	public String comenzar() {
 		//TaskVO task = processService.getUserTasksByProcessId(tareaSeleccionada.getProcessInstanceId(), tareaSeleccionada.getId(), tareaSeleccionada.getUser());
+		System.out.println("tareaSeleccionada.getId()="+tareaSeleccionada.getId());
+		System.out.println("tareaSeleccionada.getProcessInstanceId()="+tareaSeleccionada.getProcessInstanceId());
 		TaskDataVO taskDataVO = processService.getTaskData(tareaSeleccionada.getId());
 		if(taskDataVO != null){
 			System.out.println("taskDataVO recuperada="+taskDataVO);

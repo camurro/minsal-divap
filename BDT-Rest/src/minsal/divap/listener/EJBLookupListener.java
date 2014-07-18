@@ -6,6 +6,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import minsal.divap.service.DistribucionInicialPercapitaService;
 import minsal.divap.service.DocumentService;
 import minsal.divap.service.EmailService;
 
@@ -22,6 +23,8 @@ public class EJBLookupListener implements ServletContextListener {
 	private EmailService emailService;
 	@EJB
 	private DocumentService documentService;
+	@EJB
+	private DistribucionInicialPercapitaService distribucionInicialPercapitaService;
 
 	/**
 	 * Default constructor. 
@@ -36,6 +39,7 @@ public class EJBLookupListener implements ServletContextListener {
 		this.context = event.getServletContext();
 		add(EmailService.class.getName(), this.emailService);
 		add(DocumentService.class.getName(), this.documentService);
+		add(DistribucionInicialPercapitaService.class.getName(), this.distribucionInicialPercapitaService);
 	}
 
 	/**

@@ -15,6 +15,7 @@ import minsal.divap.service.task.response.content.Content;
 import minsal.divap.service.task.response.task.Task;
 
 import org.apache.http.HttpException;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
@@ -113,14 +114,12 @@ public class RestClientSimple {
 		} else if ("POST".equalsIgnoreCase(method)) {
 			request = new HttpPost(urlpath);
 
-
 			InetAddress inetAddr = InetAddress.getLocalHost();
 			String hostname = inetAddr.getHostName();
 			request.setHeader("User-Agent", "org.kie.services.client (1 "+ "/" + hostname + ")");
 			((HttpPost)request).setEntity(new StringEntity(data ,"application/xml", "UTF-8"));
 		}
 		try {
-			//HttpResponse response = client.execute(request);
 			HttpResponse response = client.execute(request, localContext);
 			final int status = response.getStatusLine().getStatusCode();
 			if (status != HttpStatus.SC_OK) {
@@ -266,10 +265,10 @@ public class RestClientSimple {
 	public void startTask(RestClientSimple client, Long taskId, String actorId) throws Exception {
 		String taskUrl = baseUrl + "task/execute/";
 		String data = RestJBPM.getStartTask(deploymentId, taskId, actorId);
-		System.out.println("Request data-->"+data);
+		System.out.println("Request data startTask-->"+data);
 		String dataFromService = client.getDataFromService(taskUrl, "POST", data, false);
 		System.out.println("--------");
-		System.out.println("Response data-->"+dataFromService);
+		System.out.println("Response data startTask-->"+dataFromService);
 		System.out.println("--------");
 	}
 
@@ -277,10 +276,10 @@ public class RestClientSimple {
 			String actorId, Map<String, Object> params) throws Exception {
 		String taskUrl = baseUrl + "task/execute/";
 		String data = RestJBPM.getCompleteTask(deploymentId, taskId, actorId, params);
-		System.out.println("Request data-->"+data);
+		System.out.println("Request data completeTask-->"+data);
 		String dataFromService = client.getDataFromService(taskUrl, "POST", data, false);
 		System.out.println("--------");
-		System.out.println("Response data-->"+dataFromService);
+		System.out.println("Response data completeTask-->"+dataFromService);
 		System.out.println("--------");
 	}
 

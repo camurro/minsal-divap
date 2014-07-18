@@ -16,6 +16,8 @@ public class AnoEnCurso implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Column(name="ano", unique=true, nullable=false)
+	@GeneratedValue
 	private Integer ano;
 
 	@Column(name="monto_percapital_basal")

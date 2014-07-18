@@ -15,6 +15,8 @@ public class Rol implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Column(name="nombre", unique=true, nullable=false)
+	@GeneratedValue
 	private String nombre;
 
 	//bi-directional many-to-many association to Usuario

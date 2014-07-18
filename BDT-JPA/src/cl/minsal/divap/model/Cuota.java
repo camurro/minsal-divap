@@ -14,6 +14,8 @@ public class Cuota implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Column(name="id", unique=true, nullable=false)
+	@GeneratedValue
 	private Integer id;
 
 	@Column(name="fecha_pago1")
