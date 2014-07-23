@@ -363,7 +363,7 @@ CREATE SEQUENCE distribucion_inicial_percapit_id_distribucion_inicial_perca_seq
   MAXVALUE 9223372036854775807
   START 1
   CACHE 1;
-ALTER TABLE distribucion_inicial_percapit_id_distribucion_inicial_perca_seq;
+
 
 
 CREATE TABLE distribucion_inicial_percapita
@@ -408,7 +408,7 @@ CREATE TABLE tipo_plantilla
 (
   id_tipo_plantilla serial NOT NULL,
   descripcion text NOT NULL,
-  CONSTRAINT plantilla_pk PRIMARY KEY (id_plantilla)
+  CONSTRAINT plantilla_pk PRIMARY KEY (id_tipo_plantilla)
 )
 WITH (
   OIDS=FALSE
