@@ -1,6 +1,8 @@
 package minsal.divap.vo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BaseVO implements Serializable{
 
@@ -52,6 +54,14 @@ public class BaseVO implements Serializable{
 	public String toString() {
 		return "BaseVO [region=" + region + ", servicio=" + servicio
 				+ ", comuna=" + comuna + "]";
+	}
+	
+	public List<String> getRow() {
+		List<String> row = new ArrayList<String>();
+		row.add(((getRegion() != null) ? getRegion().toString() : ""));
+		row.add(((getServicio() != null) ? getServicio().toString() : ""));
+		row.add(((getComuna() != null) ? getComuna().toString() : ""));
+		return row;
 	}
 
 }

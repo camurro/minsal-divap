@@ -15,8 +15,6 @@
 					<p:menuitem value="Mis Tareas" ajax="true" immediate="true" id="Menu_MisTareas" onclick="BUI.show()" update="responderOirs"
 						oncomplete="BUI.hide()" action="#{bandejaTareasController.establecerModo(0)}" />
 					<!-- rendered="#{bandejaTareasController.verificarPermiso('MIS TAREAS')}"  -->
-					<p:menuitem value="Tareas Disponibles" id="Menu_TareasDisponibles" ajax="true" immediate="true" onclick="BUI.show()"
-						update="responderOirs" oncomplete="BUI.hide()" action="#{bandejaTareasController.establecerModo(1)}" />
 					<!-- rendered="#{bandejaTareasController.verificarPermiso('TAREAS DISPONIBLES')}" -->
 					<p:menuitem value="Buscar Solicitud" id="Menu_BuscarSolicitud" ajax="true" immediate="true" onclick="BUI.show()" update="responderOirs"
 						oncomplete="BUI.hide()" action="#{bandejaTareasController.establecerModo(2)}" />

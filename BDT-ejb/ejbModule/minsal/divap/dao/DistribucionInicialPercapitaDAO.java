@@ -26,8 +26,7 @@ public class DistribucionInicialPercapitaDAO {
 			dto.setFechaCreacion(new Date(current));
 			this.em.persist(dto);
 			return dto.getIdDistribucionInicialPercapita();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;

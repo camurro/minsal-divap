@@ -33,7 +33,7 @@
 					<h:outputText value="Actividad" />
 					<p:selectOneMenu value="#{bandejaTareasController.estadoTareasDisponibles}" style="width:132px;">
 						<f:selectItem itemLabel="Seleccione" itemValue="" />
-						<f:selectItems itemLabel="#{_est.nombreLargo}" itemValue="#{_est.nombreAbreviado}" var="_est"
+						<f:selectItems itemLabel="#{_est.description}" itemValue="#{_est.status}" var="_est"
 							value="#{bandejaTareasController.listaEstadoTareasDisponibles}" />
 					</p:selectOneMenu>
 				</h:panelGrid>
@@ -63,20 +63,20 @@
 
 
 				<br></br>
-				<h:outputText value="Nro OIRS: #{bandejaTareasController.solicitudSeleccionada.solicitud.idSolicitud}" />
+				<h:outputText value="Nro Tarea: #{bandejaTareasController.tareaSeleccionada.id}" />
 				<br></br>
-				<h:outputText value="Tarea: #{bandejaTareasController.solicitudSeleccionada.name}" />
+				<h:outputText value="Tarea: #{bandejaTareasController.tareaSeleccionada.name}" />
 				<br></br>
-				<h:outputText value="Apellido: #{bandejaTareasController.solicitudSeleccionada.solicitud.lastname}" />
+				<h:outputText value="Apellido: #{bandejaTareasController.tareaSeleccionada.user}" />
 				<br></br>
 				<h:outputText value="Fecha Creaci&oacute;n: " />
-				<h:outputText value="#{bandejaTareasController.solicitudSeleccionada.solicitud.createDate}">
+				<h:outputText value="#{bandejaTareasController.tareaSeleccionada.date}">
 					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
 
 				<br></br>
 				<h:outputText value="Fecha Vencimiento: " />
-				<h:outputText value="#{bandejaTareasController.solicitudSeleccionada.solicitud.dueDate}">
+				<h:outputText value="#{bandejaTareasController.tareaSeleccionada.expirationDate}">
 					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
 
@@ -92,7 +92,7 @@
 			</p:dialog>
 
 			<p:dataTable var="_tarea" scrollable="true" scrollWidth="960" resizableColumns="true" liveResize="true" rowKey="#{_tarea.id}" rows="10"
-				paginator="true" paginatorPosition="bottom" selectionMode="single" selection="#{bandejaTareasController.solicitudSeleccionada}"
+				paginator="true" paginatorPosition="bottom" selectionMode="single" selection="#{bandejaTareasController.tareaSeleccionada}"
 				emptyMessage="No se encontraron tareas disponibles" value="#{bandejaTareasController.listaBuscarTareasDisponibles}">
 
 				<p:ajax event="rowDblselect" update=":responderOirs:modalDialog2" oncomplete="dlg3.show()" />

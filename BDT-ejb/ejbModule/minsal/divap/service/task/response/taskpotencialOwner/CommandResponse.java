@@ -313,6 +313,7 @@ public class CommandResponse {
             "createdBy",
             "createdOn",
             "activationTime",
+            "expirationTime",
             "processInstanceId",
             "processId",
             "processSessionId",
@@ -342,6 +343,9 @@ public class CommandResponse {
             @XmlElement(name = "activation-time", required = true)
             @XmlSchemaType(name = "dateTime")
             protected XMLGregorianCalendar activationTime;
+            @XmlElement(name = "expiration-time")
+            @XmlSchemaType(name = "dateTime")
+            protected XMLGregorianCalendar expirationTime;
             @XmlElement(name = "process-instance-id")
             protected long processInstanceId;
             @XmlElement(name = "process-id", required = true)
@@ -357,7 +361,7 @@ public class CommandResponse {
              */
             public long getId() {
                 return id;
-            }
+            }	
 
             /**
              * Sets the value of the id property.
@@ -598,8 +602,32 @@ public class CommandResponse {
             public void setActivationTime(XMLGregorianCalendar value) {
                 this.activationTime = value;
             }
+            
+            /**
+             * Gets the value of the expirationTime property.
+             * 
+             * @return
+             *     possible object is
+             *     {@link XMLGregorianCalendar }
+             *     
+             */
+            public XMLGregorianCalendar getExpirationTime() {
+				return expirationTime;
+			}
 
             /**
+             * Sets the value of the expirationTime property.
+             * 
+             * @param value
+             *     allowed object is
+             *     {@link XMLGregorianCalendar }
+             *     
+             */
+			public void setExpirationTime(XMLGregorianCalendar expirationTime) {
+				this.expirationTime = expirationTime;
+			}
+
+			/**
              * Gets the value of the processInstanceId property.
              * 
              */

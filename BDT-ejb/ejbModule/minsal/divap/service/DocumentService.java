@@ -1,192 +1,111 @@
 package minsal.divap.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Calendar;
+import java.util.Date;
 
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import minsal.divap.enums.BusinessProcess;
-import minsal.divap.enums.DocumentType;
-import minsal.divap.enums.ProcessDocument;
-import minsal.divap.excel.GeneradorExcel;
-import minsal.divap.excel.impl.PercapitaSheetExcel;
-import minsal.divap.vo.PercapitaExcelVO;
+import cl.minsal.divap.model.Plantilla;
+import cl.minsal.divap.model.ReferenciaDocumento;
+import cl.minsal.divap.model.TipoPlantilla;
+import minsal.divap.dao.DocumentDAO;
+import minsal.divap.enums.TemplatesType;
+import minsal.divap.vo.DocumentoVO;
 
+import javax.activation.MimetypesFileTypeMap;
+import javax.annotation.Resource;
 
 @Stateless
 public class DocumentService {
 
+	@EJB
+	private DocumentDAO fileDAO;
+	@EJB
+	private AlfrescoService alfrescoService;
 	@Resource(name="tmpDir")
 	private String tmpDir;
 
-	@EJB
-	private AlfrescoService alfrescoService;
+	public Integer createDocument(String path, String filename, String contentType){
+		return fileDAO.createDocument(path, filename, contentType, false);
+	}
+	
+	public Integer createDocumentAlfresco(String nodeRef, String filename, String contentType){
+		return fileDAO.createDocumentAlfresco(nodeRef, filename, contentType, false);
+	}
 
-	public Integer createDocument(Integer processInstanceId, BusinessProcess proceso, DocumentType type, ProcessDocument processDocument){
+	public Integer getPlantillaByType(TemplatesType template){
+		return fileDAO.getPlantillaByType(template);
+	}
+
+	public Integer createDocument(String path, String filename, String contentType, boolean last){
+		return fileDAO.createDocument(path, filename, contentType, last);
+	}
+
+	public Integer uploadTemporalFile(String fileName, byte[] contents) {
+		System.out.println("SUBIENDO ARCHIVO " + fileName + " (" + contents.length + 
+				"bytes)");
 		Integer docId = null;
-		switch (proceso) {
-		case PERCAPITA: 
-			System.out.println("Documento proceso percapita");
-			docId = createDocumentPercapita(processInstanceId, type, processDocument);
-			break;
-		case REBAJAS: 
-			System.out.println("Documento proceso rebajas");
-			docId = createDocumentRebaja(processInstanceId, type, processDocument);
-			break;
-		default: System.out.println("Proceso no soportado.");
-		break;
-		}
-		return docId;
-	}
+		fileName = new Date().getTime() + "_" + fileName;
+		String dir = "temp";
 
-	private Integer createDocumentPercapita(Integer processInstanceId, DocumentType type, ProcessDocument processDocument){
-		Integer docId = null;
-		switch (type) {
-		case EXCEL: 
-			System.out.println("Documento proceso percapita excel");
-			docId = createDocumentPercapitaExcel(processInstanceId, processDocument);
-			break;
-		case WORD: 
-			System.out.println("Documento proceso percapita word");
-			docId = createDocumentPercapitaWord(processInstanceId, processDocument);
-			break;
-		default: System.out.println("Tipo documento no soportado.");
-		break;
-		}
-		return docId;
-	}
-
-	private Integer createDocumentPercapitaExcel(Integer processInstanceId,
-			ProcessDocument processDocument) {
-		Integer docId = null;
-		switch (processDocument) {
-		case RESULTADOREBAJAS: 
-			System.out.println("Documento proceso percapita excel RESULTADOREBAJAS");
-			docId = createDocumentPercapitaExcelResultadoRebajas(processInstanceId);
-			break;
-		case REBAJASCOMUNAS: 
-			System.out.println("Documento proceso percapita excel REBAJASCOMUNAS");
-			docId = createDocumentPercapitaExcelResultadoRebajas(processInstanceId);
-			break;
-		case OFICIOCONSULTA: 
-			System.out.println("Documento proceso percapita excel OFICIOCONSULTA");
-			docId = createDocumentPercapitaExcelOficioConsultas(processInstanceId);
-			break;
-		default: System.out.println("Tipo documento no soportado.");
-		break;
-		}
-		return docId;
-	}
-
-	private Integer createDocumentPercapitaExcelOficioConsultas(
-			Integer processInstanceId) {
-		return 3;
-	}
-
-	private Integer createDocumentPercapitaExcelResultadoRebajas(
-			Integer processInstanceId) {
-		return 1;
-	}
-
-	private Integer createDocumentPercapitaWord(Integer processInstanceId,
-			ProcessDocument processDocument) {
-		return 2;
-	}
-
-	private Integer createDocumentRebaja(Integer processInstanceId, DocumentType type, ProcessDocument processDocument){
-		Integer docId = null;
-		switch (type) {
-		case EXCEL: 
-			System.out.println("Documento proceso rebaja excel");
-			docId = createDocumentRebajaExcel(processInstanceId, processDocument);
-			break;
-		case WORD: 
-			System.out.println("Documento proceso rebaja word");
-			docId = createDocumentRebajaWord(processInstanceId, processDocument);
-			break;
-		default: System.out.println("Tipo documento no soportado.");
-		break;
-		}
-		return  docId;
-	}
-
-	private Integer createDocumentRebajaExcel(Integer processInstanceId,
-			ProcessDocument processDocument) {
-		Integer docId = null;
-		switch (processDocument) {
-		case RESULTADOREBAJAS: 
-			System.out.println("Documento excel proceso rebaja RESULTADOREBAJAS");
-			docId = createDocumentResultadoRebaja(processInstanceId);
-			break;
-		case REBAJASCOMUNAS: 
-			System.out.println("Documento excel proceso rebaja REBAJASCOMUNAS");
-			docId = createDocumentRebajaComuna(processInstanceId);
-			break;
-		default: System.out.println("documento para proceso rebaja no soportado.");
-		break;
-		}
-		return docId;
-	}
-
-	private Integer createDocumentResultadoRebaja(Integer processInstanceId) {
-		String fileName = tmpDir + "/rebaja.xlsx";
-		GeneradorExcel generadorExcel = new GeneradorExcel(fileName);
-		List<String> headers = new ArrayList<String>();
-		headers.add("REGION");
-		headers.add("SERVICIO");
-		headers.add("COMUNA");
-		headers.add("CLASIFICACION 2014");
-		headers.add("Ref. Asig_Zon 2014");
-		headers.add("Tramo Pobreza");
-		headers.add("Per Cápita Basal 2014");
-		headers.add("Pobreza 2014");
-		headers.add("Ruralidad 2014");
-		headers.add("Valor Ref- Asig. Zona 2014");
-		headers.add("VALOR PER CAPITA 2014 ($/mes 2014)");
-		headers.add("POBLACION AÑO 2014");
-		headers.add("POBLACION MAYOR DE 65 AÑOS 2014");
-		headers.add("PER CÁPITA AÑO 2014 (m$2014)");
-		List<PercapitaExcelVO> items  = new ArrayList<PercapitaExcelVO>();
-		PercapitaExcelVO percapitaExcelVO = new PercapitaExcelVO();
-		percapitaExcelVO.setRegion(15);
-		percapitaExcelVO.setServicio("ARICA");
-		percapitaExcelVO.setComuna("ARICA");
-		percapitaExcelVO.setClasificacion("URBANA")			;
-		percapitaExcelVO.setAsignacionZona(40);
-		percapitaExcelVO.setTramoPobreza(4);
-		percapitaExcelVO.setPercapitaBasal(3794);
-		percapitaExcelVO.setValorAsignacionZona(531);
-		percapitaExcelVO.setValorPercapita(4325);
-		percapitaExcelVO.setPoblacion(197251);
-		percapitaExcelVO.setPoblacionMayor(22199);
-		percapitaExcelVO.setPercapitaAno(16150874);
-		items.add(percapitaExcelVO);
-		PercapitaSheetExcel percapitaSheetExcel = new PercapitaSheetExcel(headers, items, 2, 1);
-		generadorExcel.addSheet( percapitaSheetExcel, "Hoja 1");
+		BufferedOutputStream bs = null;
 		try {
-			alfrescoService.uploadDocument(generadorExcel.saveExcel());
+			FileOutputStream fs = new FileOutputStream(new File(tmpDir + File.separator + fileName));
+			bs = new BufferedOutputStream(fs);
+			bs.write(contents);
+			ReferenciaDocumento doc = new ReferenciaDocumento();
+			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
+			String contentType = mimemap.getContentType(fileName.toLowerCase());
+			doc.setContentType(contentType);
+
+			doc.setPath(dir + "/" + fileName);
+
+			this.fileDAO.save(doc);
+			docId = Integer.valueOf(doc.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			if (bs != null) try { bs.close(); } catch (Exception e) {e.printStackTrace();}
 		}
-		return 1;
+		return docId;
 	}
 
-	private Integer createDocumentRebajaComuna(Integer processInstanceId) {
-		return 1;
+	public DocumentoVO getDocument(Integer documentoId){
+		ReferenciaDocumento doc = this.fileDAO.findById(documentoId);
+		DocumentoVO documentoVO = null;
+		try	{
+			String key = ((doc.getNodeRef() == null) ? doc.getPath() : doc.getNodeRef().replace("workspace://SpacesStore/", ""));
+			documentoVO = alfrescoService.download(key);
+			documentoVO.setContentType(doc.getContentType());
+			String filename = ((doc.getNodeRef() != null) ? doc.getPath() : doc.getPath().substring((doc.getPath().lastIndexOf(File.separator) + 1)));
+			documentoVO.setName(filename);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return documentoVO;
 	}
 
-
-	private Integer createDocumentRebajaWord(Integer processInstanceId,
-			ProcessDocument processDocument) {
-		return 1;
+	public Integer createTemplate(TemplatesType templatesType,
+			String nodeRef, String filename, String contenType) {
+		long current = Calendar.getInstance().getTimeInMillis();
+		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		TipoPlantilla tipoPlantilla = new TipoPlantilla(templatesType.getId());
+		Plantilla plantilla = new Plantilla();
+		plantilla.setDocumento(referenciaDocumento);
+		plantilla.setTipoPlantilla(tipoPlantilla);
+		plantilla.setFechaCreacion(new Date(current));
+		plantilla.setFechaVigencia(null);
+		fileDAO.save(plantilla);
+		return referenciaDocumento.getId();
 	}
 
-	public void delete(Integer docId) {
-		System.out.println("buscando documento " + docId + " a eliminar en alfresco");
-		String docAlfresco = "40c22b34-ae96-4a78-9793-eec13103ffbb";
-		alfrescoService.delete(docAlfresco);
+	public Integer getDocumentoIdByPlantillaId(Integer plantillaId) {
+		return fileDAO.getDocumentoIdByPlantillaId(plantillaId);
 	}
 
 }

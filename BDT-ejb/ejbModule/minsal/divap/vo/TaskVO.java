@@ -14,6 +14,7 @@ public class TaskVO implements Serializable{
 	private String user;
 	private Integer priority;
 	private Date date;
+	private Date expirationDate;
 	private Long processInstanceId;
 	private String processId;
 	private String userForComplete;
@@ -87,6 +88,14 @@ public class TaskVO implements Serializable{
 		return this.processInstanceId;
 	}
 	
+	public Date getExpirationDate() {
+		return expirationDate;
+	}
+
+	public void setExpirationDate(Date expirationDate) {
+		this.expirationDate = expirationDate;
+	}
+
 	public void setProcessInstanceId(Long processInstanceId) {
 		this.processInstanceId = processInstanceId;
 	}

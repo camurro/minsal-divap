@@ -144,22 +144,23 @@ public class AlfrescoService {
 		return ticketURLResponse;
 	}
 
-	public BodyVO uploadDocument(File file){
+	public BodyVO uploadDocument(File file, String contentType, String folder){
 		BodyVO body = null;
 		try {
 			String authTicket = getTicket();
 			String urlString = alfrescoServer +"/upload?alf_ticket="
 					+ authTicket;
-			System.out.println("The upload url:::" + urlString);
+			System.out.println("The upload url::" + urlString);
 			HttpClient client = new HttpClient();
 
-			String filename = "xxxx.xlsx";
-			String filetype = "application/vnd.ms-excel";
-			String description = "excel del proceso";
+			String filename = file.getName();
+			String description =  "Archivo subido a alfresco";
+			String uploaddirectory = ( (folder == null) ? alfrescoUploadDirectory : (alfrescoUploadDirectory + File.separator + folder));
+			System.out.println("uploaddirectory-->"+uploaddirectory);
 
 			PostMethod mPost = new PostMethod(urlString);
 			Part[] parts = {
-					new FilePart("filedata", filename, file, filetype, null),
+					new FilePart("filedata", filename, file, contentType, null),
 					new StringPart("filename", filename),
 					new StringPart("description", description),
 					//new StringPart("destination", destination),
@@ -167,7 +168,7 @@ public class AlfrescoService {
 					//modify this according to where you wanna put your content
 					new StringPart("siteid", alfrescoSite),
 					new StringPart("containerid", "documentLibrary"),
-					new StringPart("uploaddirectory", alfrescoUploadDirectory)
+					new StringPart("uploaddirectory", uploaddirectory)
 			};
 			mPost.setRequestEntity(new MultipartRequestEntity(parts, mPost
 					.getParams()));
@@ -217,33 +218,21 @@ public class AlfrescoService {
 		DocumentoVO documentoVO = null;
 		try {
 			String authTicket = getTicket();
-			String urlString = alfrescoServer +"node/content/workspace/SpacesStore/" + docAlfresco +"?alf_ticket="
+			String urlString = alfrescoServer +"/node/content/workspace/SpacesStore/" + docAlfresco +"?alf_ticket="
 					+ authTicket;
 			System.out.println("download archivo url:::" + urlString);
 			// Create the POST object and add the parameters
 			HttpMethod downloadMethod = new GetMethod(urlString);
 			HttpClient client = new HttpClient();
 			int statusCode = client.executeMethod(downloadMethod);
-			System.out.println("statusLine>>>" + statusCode + "......"
-					+ "\n status line \n"
-					+downloadMethod.getStatusLine() + "\nbody \n" +downloadMethod.getResponseBodyAsString());
+			System.out.println("statusCode>>>" + statusCode + "......");
+			//		+ "\n status line \n"
+			//		+downloadMethod.getStatusLine() + "\nbody \n" +downloadMethod.getResponseBodyAsString());
 			if(statusCode == 200){
-				/*ObjectMapper mapper = new ObjectMapper();
-				body = mapper.readValue(mPost.getResponseBodyAsString(), BodyVO.class);*/
 				byte[] content = readInputStream(downloadMethod.getResponseBodyAsStream());
 				documentoVO = new DocumentoVO("documentoDescargado", "contentType", content);
 			}
-			//System.out.println("response body->"+body);
 			downloadMethod.releaseConnection();
-			/*InputStream in = downloadMethod.getResponseBodyAsStream();
-			FileOutputStream out = new FileOutputStream(new File("/home/cmurillo/bajado.pdf"));
-			byte[] b = new byte[1024];
-			int len = 0;
-			while ((len = in.read(b)) != -1) {
-				out.write(b, 0, len);
-			}
-			in.close();
-			out.close();*/
 			System.out.println("file download success");
 		} catch (Exception e) {
 			System.out.println(e);

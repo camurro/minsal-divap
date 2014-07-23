@@ -13,6 +13,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -21,9 +22,13 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import minsal.divap.service.DistribucionInicialPercapitaService;
 import minsal.divap.service.ProcessService;
 import minsal.divap.service.RolesService;
+import minsal.divap.service.task.response.taskpotencialOwner.CommandResponse.TaskSummaryList.TaskSummary;
 import minsal.divap.vo.TaskDataVO;
+import minsal.divap.vo.TaskStatusVO;
+import minsal.divap.vo.TaskSummaryVO;
 import minsal.divap.vo.TaskVO;
 
 import org.apache.log4j.Logger;
@@ -62,6 +67,8 @@ Serializable {
 	private String estadoTareasDisponibles;
 	private String estadoBuscarSolicitud;
 	private List<TaskVO> listaBuscarMisTareas; // contiene listado tareas
+	private List<TaskStatusVO> listaEstadoTareasDisponibles;
+	private List<TaskSummaryVO> listaActividad;
 	private List<HumanTaskMock> listaBuscarTareasDisponibles; // contiene
 	private List<HumanTaskMock> listaBuscarSolicitud;
 	private TaskVO tareaSeleccionada;
@@ -1124,9 +1131,25 @@ Serializable {
 		List<TaskVO> tasks = new ArrayList<TaskVO>();
 
 		List<String> users = getSessionBean().getPotentialUsers();
-		tasks.addAll(this.processService.getUserTasks(
-				(String[])users
-				.toArray(new String[users.size()])));
+		Set<TaskVO> tasksReponse = this.processService.getUserTasks((String[])users.toArray(new String[users.size()]));
+		if((nroSolicitud != null && !nroSolicitud.trim().isEmpty()) || fechaCreacion != null  || fechaVencimiento != null || 
+				(estado != null && !estado.trim().isEmpty())){
+			if((nroSolicitud != null && !nroSolicitud.trim().isEmpty())){
+				tasksReponse = filterByTaskId(tasksReponse, Long.valueOf(nroSolicitud.trim()));
+			}
+			if( fechaCreacion != null ){
+				tasksReponse = filterByCreationDate(tasksReponse, fechaCreacion);
+			}
+			if( fechaVencimiento != null ){
+				tasksReponse = filterByExpirationDate(tasksReponse, fechaVencimiento);
+			}
+			if((estado != null && !estado.trim().isEmpty())){
+				tasksReponse = filterByState(tasksReponse, estado.trim());
+			}
+			tasks.addAll(tasksReponse);
+		}else{
+			tasks.addAll(tasksReponse);
+		}
 		List<String> roles = this.rolesService.getAllRoles();
 		LinkedHashSet<String> set = new LinkedHashSet<String>();
 		set.addAll(roles);
@@ -1140,6 +1163,54 @@ Serializable {
 		}
 		//Collections.sort(this.tasks, new WorkspaceMBean.1(this));
 		return tasks;
+	}
+	
+	private Set<TaskVO> filterByState(Set<TaskVO> tasks, String estado) {
+		Set<TaskVO> tasksFiltered = new LinkedHashSet<TaskVO>();
+		if(tasks != null && tasks.size() > 0){
+			for(TaskVO task: tasks){
+				if(task.getStatus().equals(estado)){
+					tasksFiltered.add(task);
+				}
+			}
+		}
+		return tasksFiltered;
+	}
+
+	public Set<TaskVO> filterByTaskId(Set<TaskVO> tasks, Long taskId){
+		Set<TaskVO> tasksFiltered = new LinkedHashSet<TaskVO>();
+		if(tasks != null && tasks.size() > 0){
+			for(TaskVO task: tasks){
+				if(task.getId().equals(taskId)){
+					tasksFiltered.add(task);
+				}
+			}
+		}
+		return tasksFiltered;
+	}
+	
+	public Set<TaskVO> filterByCreationDate(Set<TaskVO> tasks, Date creation){
+		Set<TaskVO> tasksFiltered = new LinkedHashSet<TaskVO>();
+		if(tasks != null && tasks.size() > 0){
+			for(TaskVO task: tasks){
+				if(compareDatesUsingCalendar(task.getDate(), creation) == 0){
+					tasksFiltered.add(task);
+				}
+			}
+		}
+		return tasksFiltered;
+	}
+	
+	public Set<TaskVO> filterByExpirationDate(Set<TaskVO> tasks, Date expiration){
+		Set<TaskVO> tasksFiltered = new LinkedHashSet<TaskVO>();
+		if(tasks != null && tasks.size() > 0){
+			for(TaskVO task: tasks){
+				if(compareDatesUsingCalendar(task.getExpirationDate(), expiration) == 0){
+					tasksFiltered.add(task);
+				}
+			}
+		}
+		return tasksFiltered;
 	}
 
 	public List<HumanTaskMock> buscarSolicitud(String nroSolicitud,
@@ -1530,6 +1601,23 @@ Serializable {
 
 	public void setListaEstadoMisTareas(List listaEstadoMisTareas) {
 		this.listaEstadoMisTareas = listaEstadoMisTareas;
+	}
+
+	public List<TaskStatusVO> getListaEstadoTareasDisponibles() {
+		return listaEstadoTareasDisponibles;
+	}
+
+	public void setListaEstadoTareasDisponibles(
+			List<TaskStatusVO> listaEstadoTareasDisponibles) {
+		this.listaEstadoTareasDisponibles = listaEstadoTareasDisponibles;
+	}
+
+	public List<TaskSummaryVO> getListaActividad() {
+		return listaActividad;
+	}
+
+	public void setListaActividad(List<TaskSummaryVO> listaActividad) {
+		this.listaActividad = listaActividad;
 	}
 
 }

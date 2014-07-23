@@ -32,7 +32,7 @@ import minsal.divap.enums.BusinessProcess;
 import minsal.divap.enums.DocumentType;
 import minsal.divap.enums.ProcessDocument;
 import minsal.divap.exception.DocNotFoundException;
-import minsal.divap.service.DocumentService;
+import minsal.divap.service.DocumentAlfrescoService;
 
 
 /**
@@ -60,7 +60,7 @@ public class DocResourceRESTService extends BaseRest{
 		if(docId == null){
 			throw new IllegalArgumentException("documento: "+ docId + " no puede ser nulo");
 		}
-		DocumentService documentService = getService(DocumentService.class);
+		DocumentAlfrescoService documentService = getService(DocumentAlfrescoService.class);
 		documentService.delete(docId);
     }
 	
@@ -80,7 +80,7 @@ public class DocResourceRESTService extends BaseRest{
 		BusinessProcess proceso = BusinessProcess.REBAJAS;
 		DocumentType type =  DocumentType.EXCEL;
 		ProcessDocument processDocument = ProcessDocument.getById(docId);
-		DocumentService documentService = getService(DocumentService.class);
+		DocumentAlfrescoService documentService = getService(DocumentAlfrescoService.class);
 		documentService.createDocument(processInstanceId, proceso, type, processDocument);
         return 1;
     }
@@ -98,7 +98,7 @@ public class DocResourceRESTService extends BaseRest{
 		BusinessProcess proceso = BusinessProcess.REBAJAS;
 		DocumentType type =  DocumentType.WORD;
 		ProcessDocument processDocument = ProcessDocument.getById(docId);
-		DocumentService documentService = getService(DocumentService.class);
+		DocumentAlfrescoService documentService = getService(DocumentAlfrescoService.class);
 		documentService.createDocument(processInstanceId, proceso, type, processDocument);
         return 1;
     }
@@ -119,7 +119,7 @@ public class DocResourceRESTService extends BaseRest{
 		BusinessProcess proceso = BusinessProcess.PERCAPITA;
 		DocumentType type =  DocumentType.EXCEL;
 		ProcessDocument processDocument = ProcessDocument.getById(docId);
-		DocumentService documentService = getService(DocumentService.class);
+		DocumentAlfrescoService documentService = getService(DocumentAlfrescoService.class);
 		documentService.createDocument(processInstanceId, proceso, type, processDocument);
         return 1;
     }
@@ -137,7 +137,7 @@ public class DocResourceRESTService extends BaseRest{
 		BusinessProcess proceso = BusinessProcess.PERCAPITA;
 		DocumentType type =  DocumentType.WORD;
 		ProcessDocument processDocument = ProcessDocument.getById(docId);
-		DocumentService documentService = getService(DocumentService.class);
+		DocumentAlfrescoService documentService = getService(DocumentAlfrescoService.class);
 		documentService.createDocument(processInstanceId, proceso, type, processDocument);
         return 1;
     }
@@ -163,7 +163,7 @@ public class DocResourceRESTService extends BaseRest{
 		BusinessProcess proceso = BusinessProcess.PERCAPITA;
 		DocumentType type =  DocumentType.EXCEL;
 		ProcessDocument processDocument = ProcessDocument.OFICIOCONSULTA;
-		DocumentService documentService = getService(DocumentService.class);
+		DocumentAlfrescoService documentService = getService(DocumentAlfrescoService.class);
 		return documentService.createDocument(processInstanceId, proceso, type, processDocument);
     }
 	

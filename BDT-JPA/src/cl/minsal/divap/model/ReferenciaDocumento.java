@@ -2,11 +2,11 @@ package cl.minsal.divap.model;
 
 import java.io.Serializable;
 import java.util.Collection;
-import javax.persistence.Basic;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -33,14 +33,15 @@ import javax.xml.bind.annotation.XmlTransient;
 public class ReferenciaDocumento implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
+	@Column(name="id", unique=true, nullable=false)
+	@GeneratedValue
     private Integer id;
     @Column(name = "content_type")
     private String contentType;
     @Column(name = "path")
     private String path;
+    @Column(name = "node_ref")
+    private String nodeRef;
     @Column(name = "documento_final")
     private Boolean documentoFinal;
     @ManyToMany(mappedBy = "referenciaDocumentoCollection")
@@ -49,7 +50,8 @@ public class ReferenciaDocumento implements Serializable {
         @JoinColumn(name = "id_referencia_documento", referencedColumnName = "id")}, inverseJoinColumns = {
         @JoinColumn(name = "id_seguimiento", referencedColumnName = "id")})
     @ManyToMany
-    private Collection<Seguimiento> seguimientoCollection;
+    private Set<Seguimiento> seguimientoCollection;
+   
 
     public ReferenciaDocumento() {
     }
@@ -100,15 +102,23 @@ public class ReferenciaDocumento implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Seguimiento> getSeguimientoCollection() {
+    public Set<Seguimiento> getSeguimientoCollection() {
         return seguimientoCollection;
     }
 
-    public void setSeguimientoCollection(Collection<Seguimiento> seguimientoCollection) {
+    public void setSeguimientoCollection(Set<Seguimiento> seguimientoCollection) {
         this.seguimientoCollection = seguimientoCollection;
     }
 
-    @Override
+    public String getNodeRef() {
+		return nodeRef;
+	}
+
+	public void setNodeRef(String nodeRef) {
+		this.nodeRef = nodeRef;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);

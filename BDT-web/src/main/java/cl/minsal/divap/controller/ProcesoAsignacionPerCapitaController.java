@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -16,6 +17,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import minsal.divap.enums.BusinessProcess;
+import minsal.divap.service.DistribucionInicialPercapitaService;
+import minsal.divap.service.DocumentService;
 import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskVO;
 
@@ -26,11 +29,12 @@ import org.primefaces.model.UploadedFile;
 import cl.minsal.divap.pojo.GobiernoRegionalPojo;
 import cl.minsal.divap.pojo.montosDistribucionPojo;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
+import cl.redhat.bandejaTareas.util.JSONHelper;
 
 @Named("procesoAsignacionPerCapitaController")
 @ViewScoped
 public class ProcesoAsignacionPerCapitaController extends AbstractTaskMBean
-		implements Serializable {
+implements Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject
 	private transient Logger log;
@@ -38,9 +42,17 @@ public class ProcesoAsignacionPerCapitaController extends AbstractTaskMBean
 	FacesContext facesContext;
 	private UploadedFile calculoPerCapitaFile;
 	private UploadedFile valorBasicoDesempenoFile;
-	
+
+	@EJB
+	private DistribucionInicialPercapitaService distribucionInicialPercapitaService;
+	@EJB
+	private DocumentService documentService;
 	private boolean errorCarga = false;
 	private boolean archivosCargados = false;
+	private String docIdDownload;
+	private Integer docAsignacionRecursosPercapita;
+	private Integer docAsignacionDesempenoDificil;
+	private List<Integer> docIds;
 
 	public UploadedFile getCalculoPerCapitaFile() {
 		return calculoPerCapitaFile;
@@ -65,6 +77,15 @@ public class ProcesoAsignacionPerCapitaController extends AbstractTaskMBean
 					"Los archivos fueron cargados correctamente.");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			setArchivosCargados(true);
+			docIds = new ArrayList<Integer>();
+			Integer docPercapita = persistFile(calculoPerCapitaFile);
+			if(docPercapita != null){
+				docIds.add(docPercapita);
+			}
+			Integer docDesempeno = persistFile(valorBasicoDesempenoFile);
+			if(docDesempeno != null){
+				docIds.add(docDesempeno);
+			}
 		}else{
 			setArchivosCargados(false);
 		}
@@ -131,7 +152,11 @@ public class ProcesoAsignacionPerCapitaController extends AbstractTaskMBean
 	@PostConstruct
 	public void init() {
 		log.info("ProcesosPrincipalController Alcanzado.");
-		//ejb.testMethod();
+		this.docAsignacionRecursosPercapita = distribucionInicialPercapitaService.getIdPlantillaRecursosPerCapita();
+		this.docAsignacionDesempenoDificil = distribucionInicialPercapitaService.getIdPlantillaPoblacionInscrita();
+		
+		System.out.println("this.docAsignacionRecursosPercapita-->"+this.docAsignacionRecursosPercapita);
+		System.out.println("this.docAsignacionDesempenoDificil-->"+this.docAsignacionDesempenoDificil);
 		if (!getSessionBean().isLogged()) {
 			log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
 			try {
@@ -241,13 +266,17 @@ public class ProcesoAsignacionPerCapitaController extends AbstractTaskMBean
 				.getFileName() + " is uploaded.");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
-	
+
 	@Override
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		System.out.println("createResultData usuario-->"+getSessionBean().getUsername());
 		parameters.put("usuario", getSessionBean().getUsername());
 		parameters.put("error_", new Boolean(isErrorCarga()));
+		if(this.docIds != null){
+			System.out.println("documentos_ -->"+JSONHelper.toJSON(this.docIds));
+			parameters.put("documentos_", JSONHelper.toJSON(this.docIds));
+		}
 		return parameters;
 	}
 
@@ -257,7 +286,7 @@ public class ProcesoAsignacionPerCapitaController extends AbstractTaskMBean
 		Long procId = iniciarProceso(BusinessProcess.PERCAPITA);
 		System.out.println("procId-->"+procId);
 		if(procId == null){
-			 success = null;
+			success = null;
 		}else{
 			TaskVO task = getUserTasksByProcessId(procId, getSessionBean().getUsername());
 			if(task != null){
@@ -278,13 +307,47 @@ public class ProcesoAsignacionPerCapitaController extends AbstractTaskMBean
 	public void setErrorCarga(boolean errorCarga) {
 		this.errorCarga = errorCarga;
 	}
-	
+
 	public boolean isArchivosCargados() {
 		return archivosCargados;
 	}
 
 	public void setArchivosCargados(boolean archivosCargados) {
 		this.archivosCargados = archivosCargados;
+	}
+
+	public String getDocIdDownload() {
+		return docIdDownload;
+	}
+
+	public void setDocIdDownload(String docIdDownload) {
+		System.out.println("docIdDownload-->"+docIdDownload);
+		this.docIdDownload = docIdDownload;
+	}
+
+	public Integer getDocAsignacionRecursosPercapita() {
+		return docAsignacionRecursosPercapita;
+	}
+
+	public void setDocAsignacionRecursosPercapita(
+			Integer docAsignacionRecursosPercapita) {
+		this.docAsignacionRecursosPercapita = docAsignacionRecursosPercapita;
+	}
+
+	public Integer getDocAsignacionDesempenoDificil() {
+		return docAsignacionDesempenoDificil;
+	}
+
+	public void setDocAsignacionDesempenoDificil(
+			Integer docAsignacionDesempenoDificil) {
+		this.docAsignacionDesempenoDificil = docAsignacionDesempenoDificil;
+	}
+
+	public String downloadTemplate() {
+		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownload()));
+		setDocumento(documentService.getDocument(docDownload));
+		super.downloadDocument();
+		return null;
 	}
 
 	@Override

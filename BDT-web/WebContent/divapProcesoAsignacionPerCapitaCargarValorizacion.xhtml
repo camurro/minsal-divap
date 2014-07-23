@@ -33,22 +33,28 @@
 
 						<span class="strong">Archivo: </span> Planilla Base Población Inscrita Validada [
 						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
-						<p:commandLink value="Bajar" />
+						<h:commandLink action="#{procesoAsignacionPerCapitaController.downloadTemplate}" value="Bajar">
+						    <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaController.docIdDownload}"
+								value="#{procesoAsignacionPerCapitaController.docAsignacionRecursosPercapita}" />
+						</h:commandLink>
 						]<br /> <span class="strong">Archivo: </span> Planilla Base Asignación Desempeño Difícil [
 						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
-						<p:commandLink value="Bajar" />
+						<h:commandLink action="#{procesoAsignacionPerCapitaController.downloadTemplate}" value="Bajar">
+						    <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaController.docIdDownload}"
+								value="#{procesoAsignacionPerCapitaController.docAsignacionDesempenoDificil}" />
+						</h:commandLink>
 						]
 
 					</div>
 					<h3>Tareas de la Actividad:</h3>
 					<p:panelGrid columns="3" styleClass="uploadFileTable">
 						<h:outputLabel for="calculoPerCapitaFile" value="Archivo: datos valorización" styleClass="fileUploadLabel" />
-						<p:fileUpload id="calculoPerCapitaFile" value="#{procesoAsignacionPerCapitaController.calculoPerCapitaFile}" mode="simple" />
-						<h:outputText value="" styleClass="ui-helper-hidden ui-state-error" />
+						<p:fileUpload id="calculoPerCapitaFile" value="#{procesoAsignacionPerCapitaController.calculoPerCapitaFile}" update=":calculoPerCapita" mode="simple" />
+						<h:outputText value="* No se ha subido ningún archivo aún." id="calculoPerCapita" styleClass="#{(empty procesoAsignacionPerCapitaController.calculoPerCapitaFile)?'ui-state-error':'ui-helper-hidden ui-state-error'}"/>
 
 						<h:outputLabel for="valorBasicoDesempenoFile" value="Archivo: valor básico por desempeño difícil" styleClass="fileUploadLabel" />
-						<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" mode="simple" />
-						<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
+						<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" update=":desempenoDificil" mode="simple" />
+						<h:outputText value="* No se ha subido ningún archivo aún." id="desempenoDificil" styleClass="#{(empty procesoAsignacionPerCapitaController.calculoPerCapitaFile)?'ui-state-error':'ui-helper-hidden ui-state-error'}" />
 					</p:panelGrid>
 					<br />
 					<p:commandButton value="Cargar Archivos" ajax="false"

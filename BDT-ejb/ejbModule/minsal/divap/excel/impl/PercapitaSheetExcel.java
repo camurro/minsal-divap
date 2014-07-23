@@ -15,6 +15,7 @@ public class PercapitaSheetExcel extends ExcelTemplate<PercapitaExcelVO>{
 	public PercapitaSheetExcel(List<String> headers, List<PercapitaExcelVO> items, Integer offsetRows, Integer offsetColumns){
 		super(headers, items, offsetRows, offsetColumns);
 	}
+	
 	@Override
 	public List<List<String>> getDataList() {
 		List<List<String>> dataList = new ArrayList<List<String>>();

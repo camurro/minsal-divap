@@ -44,7 +44,6 @@
 				<env-entry-value>testpocrh@gmail.com</env-entry-value>
 			</env-entry>
 		</session>
-		<!-- 
 		<session>
 			<ejb-name>AlfrescoService</ejb-name>
 			<env-entry>
@@ -75,10 +74,10 @@
 				<description>Alfresco Upload Directory</description>
 				<env-entry-name>alfrescoUploadDirectory</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>/carpetaTest2</env-entry-value>
+				<env-entry-value>/DIVAP</env-entry-value>
 			</env-entry>
+			
 		</session>
-		 -->
 		<session>
 			<ejb-name>DocumentService</ejb-name>
 			<env-entry>
@@ -119,6 +118,21 @@
 				<env-entry-name>lang</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
 				<env-entry-value>en-UK</env-entry-value>
+			</env-entry>
+		</session>
+		<session>
+			<ejb-name>DistribucionInicialPercapitaService</ejb-name>
+			<env-entry>
+				<description>Tmp Dir</description>
+				<env-entry-name>tmpDir</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>/tmp/excel</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Template folder percapita</description>
+				<env-entry-name>folderTemplatePercapita</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>TEMPLATES/PERCAPITA</env-entry-value>
 			</env-entry>
 		</session>
 	</enterprise-beans>
