@@ -9,10 +9,8 @@
 					<h:outputText value="Reliquidación" />
 				</h1>
 				<p:panel id="Panel">
-					<h2>Programa PILOTO VIDA SANA: ALCOHOL</h2>
-					<p class="parrafo">La tarea corresponde a nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est
-						faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.nulla eget ultricies. Morbi pulvinar elit at
-						justo pharetra, vitae ultricies est faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.</p>
+					<h2><h:outputLabel value="#{procesoReliquidacionPlanillasController.programaSeleccionado.nombre}" /></h2>
+					<p class="parrafo"><h:outputLabel value="#{procesoReliquidacionPlanillasController.programaSeleccionado.descripcion}" /></p>
 					<h3>
 						<strong>Actividad: </strong>Descargar Planillas Base y Subir Planillas Llenas
 					</h3>
@@ -30,7 +28,7 @@
 						<h:outputLabel for="valorBasicoDesempenoFile3"
 							value="Archivo: Planilla Base Cumplimiento PROGRAMA - Municipal.xls"
 							styleClass="textoAjustado fileUploadLabel" />
-						<p:fileUpload id="valorBasicoDesempenoFile3" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" mode="simple" />
+						<p:fileUpload id="valorBasicoDesempenoFile3" value="#{procesoReliquidacionPlanillasController.planillaMunicipal}" mode="simple" />
 					</p:panelGrid>
 					<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
 					<br />
@@ -39,17 +37,20 @@
 						<h:outputLabel for="valorBasicoDesempenoFile4"
 							value="Planilla Base Cumplimiento PROGRAMA - Servicio.xls"
 							styleClass="textoAjustado fileUploadLabel" />
-						<p:fileUpload id="valorBasicoDesempenoFile4" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" mode="simple" />
+						<p:fileUpload id="valorBasicoDesempenoFile4" value="#{procesoReliquidacionPlanillasController.planillaServicio}" mode="simple" />
 					</p:panelGrid>
 					<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
 					<br />
 					<br />
-					<p:commandButton value="Finalizar Actividad | Todos los Archivos fueron cargados" ajax="false"
-						actionListener="#{procesoAsignacionPerCapitaController.uploadArchivosValorizacion}"
-						action="bandejaTareas?faces-redirect=true indexMenu=0" icon="ui-icon-upload" />
+					<p:commandButton value="Cargar Archivos" ajax="false"
+						action="#{procesoReliquidacionPlanillasController.cargarArchivos}" icon="ui-icon-upload" update=":botonContinuar"/>
 				</p:panel>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />
+				<p:commandButton id="botonContinuar" value="Continuar" ajax="false"	action="#{procesoReliquidacionPlanillasController.enviar}" icon="ui-icon-upload"
+					disabled="#{procesoReliquidacionPlanillasController.archivosCargados}">
+					<f:setPropertyActionListener target="#{procesoReliquidacionPlanillasController.target}"	value="bandejaTareas.jsf" />
+				</p:commandButton>
 			</p:panel>
 		</h:form>
 	</ui:define>

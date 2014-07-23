@@ -21,6 +21,7 @@ import javax.inject.Named;
 
 import minsal.divap.enums.BusinessProcess;
 import minsal.divap.service.ProgramasService;
+import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskVO;
@@ -38,12 +39,13 @@ import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
 import cl.redhat.bandejaTareas.util.MatchViewTask;
 
-@Named ("procesoReliquidacionController") 
+@Named("procesoReliquidacionMuniController") 
 @ViewScoped
-public class ProcesoReliquidacionController extends AbstractTaskMBean implements
+public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implements
 				Serializable {
 	
-	private static final long serialVersionUID = 8979055329731411696L;
+
+	private static final long serialVersionUID = 5164638468861890516L;
 	@Inject
 	private transient Logger log;
 	@Inject 
@@ -52,12 +54,14 @@ public class ProcesoReliquidacionController extends AbstractTaskMBean implements
 	@EJB
 	ProgramasService programaService;
 	
+	
 	private List<ProgramaVO> listadoProgramasUsuario;
+	private List<ComponentesVO> listadoComponentes;
 	
 	private ProgramaVO programaSeleccionado;
 	
-	
 	private List<ProgramasPojo> listadoProgramas;
+	
 	
 	public List<ProgramasPojo> getListadoProgramas() {
 		return listadoProgramas;
@@ -165,7 +169,7 @@ public class ProcesoReliquidacionController extends AbstractTaskMBean implements
 
 	@PostConstruct
 	public void init() {
-		log.info("ProcesoReliquidacionController tocado.");
+		log.info("ProcesoReliquidacionProgMunicipalController tocado.");
 		if (!getSessionBean().isLogged()) {
 			log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
 			try {
@@ -174,8 +178,8 @@ public class ProcesoReliquidacionController extends AbstractTaskMBean implements
 				log.error("Error tratando de redireccionar a login por falta de usuario en sesion.", e);
 			}
 		}else{
-			
-			cargaProgramasUsuario(getSessionBean().getUsername());
+			ProgramaVO programaSeleccionado = getFromSession("programaSeleccionado", ProgramaVO.class);
+			construyeListaComponentes(programaSeleccionado.getId());
 		}
 	
 		
@@ -450,9 +454,10 @@ public class ProcesoReliquidacionController extends AbstractTaskMBean implements
 		listadoValorHistorico.add(valorHistorico);
 	}
 	
-	private void cargaProgramasUsuario(String username) {
-		listadoProgramasUsuario = programaService.getProgramasByUser(username);
-				
+
+	private void construyeListaComponentes(int programaId) {
+		listadoComponentes=programaService.getComponenteByPrograma(programaId);
+		
 	}
 
 	public Long getTotalServicio(){
@@ -499,17 +504,6 @@ public class ProcesoReliquidacionController extends AbstractTaskMBean implements
 		return success;
 	}
 	
-	public String comenzar(){
-		if(programaSeleccionado != null){
-			System.out.println(programaSeleccionado.getNombre());
-			setOnSession("programaSeleccionado", programaSeleccionado);
-			//super.setTarget(MatchViewTask.matchView(programaSeleccionado.getTipo_programa()));
-			return super.enviar();
-			
-		}
-		return null;
-	}
-
 	public List<ProgramaVO> getListadoProgramasUsuario() {
 		return listadoProgramasUsuario;
 	}
@@ -527,6 +521,14 @@ public class ProcesoReliquidacionController extends AbstractTaskMBean implements
 
 	public void setProgramaSeleccionado(ProgramaVO programaSeleccionado) {
 		this.programaSeleccionado = programaSeleccionado;
+	}
+
+	public List<ComponentesVO> getListadoComponentes() {
+		return listadoComponentes;
+	}
+
+	public void setListadoComponentes(List<ComponentesVO> listadoComponentes) {
+		this.listadoComponentes = listadoComponentes;
 	}
 
 	

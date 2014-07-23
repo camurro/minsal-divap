@@ -31,7 +31,7 @@ public class DocumentService {
 			System.out.println("Documento proceso percapita");
 			docId = createDocumentPercapita(processInstanceId, type, processDocument);
 			break;
-		case REBAJAS: 
+		case REBAJA: 
 			System.out.println("Documento proceso rebajas");
 			docId = createDocumentRebaja(processInstanceId, type, processDocument);
 			break;

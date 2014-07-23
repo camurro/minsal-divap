@@ -1,7 +1,9 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+
 import java.util.List;
 
 
@@ -10,7 +12,10 @@ import java.util.List;
  * 
  */
 @Entity
-@NamedQuery(name="Programa.findAll", query="SELECT p FROM Programa p")
+@NamedQueries({
+	@NamedQuery(name="Programa.findAll", query="SELECT p FROM Programa p"),
+	@NamedQuery(name="Programa.findByUser", query="SELECT p FROM Programa p where p.usuario.username=:usuario"),
+	@NamedQuery(name="Programa.findComponentesByPrograma", query="SELECT p FROM Programa p where p.id=:id")})
 public class Programa implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -21,6 +26,8 @@ public class Programa implements Serializable {
 	private Integer cantidadCuotas;
 
 	private String nombre;
+	
+	private String descripcion;
 
 	//bi-directional many-to-one association to Componente
 	@OneToMany(mappedBy="programa")
@@ -230,5 +237,14 @@ public class Programa implements Serializable {
 
 		return programaServicioCore;
 	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+	
 
 }

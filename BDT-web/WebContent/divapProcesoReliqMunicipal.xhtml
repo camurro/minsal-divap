@@ -32,11 +32,8 @@
 						<h:panelGrid>
 							<h:outputText value="Componente: " styleClass="inputLabel" />
 							<p:selectOneMenu>
-								<f:selectItem itemLabel="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES"
-									itemValue="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
-								<f:selectItem itemLabel="Seleccione" itemValue="" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />  
+								<f:selectItems value="#{procesoReliquidacionMuniController.listadoComponentes}" itemLabel="#{componente.nombre}" var="componente" itemValue="#{componente.componente_id}"/> 
 							</p:selectOneMenu>
 						</h:panelGrid>
 						<h:panelGrid>
@@ -55,7 +52,7 @@
 						<h3>Subtítulos del Programa</h3>
 						<h:form id="form">
 							<h:panelGrid>
-								<p:dataTable resizableColumns="true" value="#{procesoDistRecFinController.listadoEstablecimientos}" liveResize="true"
+								<p:dataTable resizableColumns="true" value="#{procesoReliquidacionMuniController.listadoEstablecimientos}" liveResize="true"
 									var="_establecimiento" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
 									styleClass="dataTable">
 
@@ -155,7 +152,7 @@
 											<p:column />
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS24}" id="total22" styleClass="textoAjustado textoPequenio centrado">
+													<h:outputText value="#{procesoReliquidacionMuniController.totalS24}" id="total22" styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
 												</f:facet>
@@ -163,7 +160,7 @@
 											<p:column />
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS24*0.6}" id="total2" styleClass="textoAjustado textoPequenio centrado">
+													<h:outputText value="#{procesoReliquidacionMuniController.totalS24*0.6}" id="total2" styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
 												</f:facet>
@@ -173,7 +170,7 @@
 
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS24*0.4}" id="total3" styleClass="textoAjustado textoPequenio centrado">
+													<h:outputText value="#{procesoReliquidacionMuniController.totalS24*0.4}" id="total3" styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
 												</f:facet>
@@ -184,7 +181,7 @@
 
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS24*0.524*0.4}" id="total"
+													<h:outputText value="#{procesoReliquidacionMuniController.totalS24*0.524*0.4}" id="total"
 														styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
@@ -192,7 +189,7 @@
 											</p:column>
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS24*0.486*0.4}" id="total5"
+													<h:outputText value="#{procesoReliquidacionMuniController.totalS24*0.486*0.4}" id="total5"
 														styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
@@ -200,7 +197,7 @@
 											</p:column>
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS24*0.6+procesoDistRecFinController.totalS24*0.486*0.4}"
+													<h:outputText value="#{procesoReliquidacionMuniController.totalS24*0.6+procesoReliquidacionMuniController.totalS24*0.486*0.4}"
 														styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>

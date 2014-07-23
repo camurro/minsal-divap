@@ -55,9 +55,9 @@
 
 							<h:panelGrid columns="2">
 								<h:outputText value="Comuna: " styleClass="inputLabel" />
-								<p:selectCheckboxMenu value="#{procesoRebajaController.comunasSeleccionadas}" label="Seleccione" filter="true" filterText="Filter"
+								<p:selectCheckboxMenu value="#{procesoRebajaTramitacionController.comunasSeleccionadas}" label="Seleccione" filter="true" filterText="Filter"
 									filterMatchMode="startsWith">
-									<f:selectItems value="#{procesoRebajaController.comunas}" />
+									<f:selectItems value="#{procesoRebajaTramitacionController.comunas}" />
 								</p:selectCheckboxMenu>
 							</h:panelGrid>
 
@@ -69,7 +69,7 @@
 						</h:panelGrid>
 					</p:panel>
 					<br />
-					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoRebajaController.listRebaja}" liveResize="true" var="_rebaja"
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoRebajaTramitacionController.listRebaja}" liveResize="true" var="_rebaja"
 						rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 						<p:columnGroup type="header">
 							<!--  -->
@@ -250,10 +250,16 @@
 						</p>
 
 						<p:commandButton styleClass="x-btn-text" value="Modificar Rebaja" icon="ui-icon-refresh"
-							action="bandejaTareas?faces-redirect=true indexMenu=0" />
+							actionListener="#{procesoRebajaTramitacionController.recalcular}" action="bandejaTareas?faces-redirect=true indexMenu=0">
+						<f:setPropertyActionListener target="#{procesoRebajaTramitacionController.target}"
+							value="bandejaTareas.jsf" />
+						</p:commandButton>
 
 						<p:commandButton styleClass="x-btn-text" value="Finalizar Seguimiento" icon="ui-icon-check"
-							action="bandejaTareas?faces-redirect=true indexMenu=0" />
+							actionListener="#{procesoRebajaTramitacionController.enviar}" action="bandejaTareas?faces-redirect=true indexMenu=0">
+							<f:setPropertyActionListener target="#{procesoRebajaTramitacionController.target}"
+							value="bandejaTareas.jsf" />
+						</p:commandButton>
 
 						<div style="clear: both;"></div>
 					</h:form>

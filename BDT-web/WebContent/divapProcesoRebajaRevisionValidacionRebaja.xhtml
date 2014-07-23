@@ -55,9 +55,9 @@
 
 							<h:panelGrid columns="2">
 								<h:outputText value="Comuna: " styleClass="inputLabel" />
-								<p:selectCheckboxMenu value="#{procesoRebajaController.comunasSeleccionadas}" label="Seleccione" filter="true" filterText="Filter"
+								<p:selectCheckboxMenu value="#{procesoRebajaValidarMontosController.comunasSeleccionadas}" label="Seleccione" filter="true" filterText="Filter"
 									filterMatchMode="startsWith">
-									<f:selectItems value="#{procesoRebajaController.comunas}" />
+									<f:selectItems value="#{procesoRebajaValidarMontosController.comunas}" />
 								</p:selectCheckboxMenu>
 							</h:panelGrid>
 
@@ -69,7 +69,7 @@
 						</h:panelGrid>
 					</p:panel>
 					<br />
-					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoRebajaController.listRebaja}" liveResize="true" var="_rebaja"
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoRebajaValidarMontosController.listRebaja}" liveResize="true" var="_rebaja"
 						rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 						<p:columnGroup type="header">
 							<!--  -->
@@ -185,12 +185,20 @@
 					<h3>Tareas de la Actividad:</h3>
 
 					<h:form>
-						<p:commandButton styleClass="x-btn-text" icon="ui-icon-refresh" value="Re Cargar Archivos"
-							action="divapProcesoAsignacionPerCapitaCargarValorizacion?faces-redirect=true" />
-						<p:commandButton styleClass="x-btn-text" icon="ui-icon-refresh" value="Re Calcular Rebaja"
-							action="divapProcesoAsignacionPerCapitaCargarValorizacion?faces-redirect=true" />
-						<p:commandButton styleClass="x-btn-text" icon="ui-icon-check" value="Aceptar Rebaja Calculada"
-							action="bandejaTareas?faces-redirect=true indexMenu=0" />
+						<p:commandButton styleClass="x-btn-text" icon="ui-icon-refresh" value="Re Cargar Archivos" actionListener="#{procesoRebajaValidarMontosController.recargarArchivos}" action="bandejaTareas?faces-redirect=true indexMenu=0">
+						<f:setPropertyActionListener target="#{procesoRebajaValidarMontosController.target}"
+							value="bandejaTareas.jsf" />
+						</p:commandButton>
+						<p:commandButton styleClass="x-btn-text" icon="ui-icon-refresh" value="Re Calcular Rebaja" actionListener="#{procesoRebajaValidarMontosController.recalcular}" action="bandejaTareas?faces-redirect=true indexMenu=0">
+						<f:setPropertyActionListener target="#{procesoRebajaValidarMontosController.target}"
+							value="bandejaTareas.jsf" />
+							</p:commandButton>
+						<p:commandButton styleClass="x-btn-text" icon="ui-icon-check" value="Aceptar Rebaja Calculada" actionListener="#{procesoRebajaValidarMontosController.enviar}" action="bandejaTareas?faces-redirect=true indexMenu=0">
+						<f:setPropertyActionListener target="#{procesoRebajaValidarMontosController.target}"
+							value="bandejaTareas.jsf" />
+							</p:commandButton>
+						
+						
 					</h:form>
 
 				</p:panel>

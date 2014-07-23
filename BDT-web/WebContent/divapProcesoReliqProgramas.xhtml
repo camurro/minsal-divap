@@ -10,55 +10,41 @@
 				</h1>
 				<p:panel id="Panel">
 					<h2>Listado de Programas 2014 para el usuario admin</h2>
-					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoReliquidacionController.listadoProgramasServicio}"
-						liveResize="true" var="_programas" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoReliquidacionController.listadoProgramasUsuario}"
+						liveResize="true" var="_programas" rows="10" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información."
 						styleClass="dataTable">
 						<p:columnGroup type="header">
-							<!--  -->
 							<p:row>
 								<p:column headerText="Programa" />
 								<p:column headerText="Descripción" />
-								<!-- <p:column headerText="Estado" width="60" /> -->
-
 								<p:column headerText="Iniciar" width="60" />
-								<!-- <p:column headerText="Terminar" width="60" /> -->
 							</p:row>
 						</p:columnGroup>
 
 						<p:column style="text-align:left;">
-							<span class="textoAjustado">#{_programas.programa}</span>
+							<span class="textoAjustado">#{_programas.nombre}</span>
 						</p:column>
 						<p:column>
 							<span class="textoAjustado">#{_programas.descripcion}</span>
 						</p:column>
-						<!-- 
-						<p:column style="text-align:left;">
-							<span class="textoAjustado">#{_programas.descripcion}</span>
-						</p:column>
-						 -->
-						<!-- <p:column>
-							<h:graphicImage
-								value="resources/minsal/images/#{_programas.estado}.png"
-								styleClass="divapIcons" />
-						</p:column>-->
-						<!-- 
 						<p:column>
-							<h:outputText value="#{_programas.progreso}">
-								<f:convertNumber type="percent" />
-							</h:outputText>
+						
+						<h:commandLink action="#{procesoReliquidacionController.comenzar()}" value="INICIA">
+							<f:setPropertyActionListener target="#{procesoReliquidacionController.programaSeleccionado.nombre}"
+							value="#{_programas.nombre}" />
+							<f:setPropertyActionListener target="#{procesoReliquidacionController.programaSeleccionado.tipo_programa}"
+							value="#{_programas.tipo_programa}" />
+							<f:setPropertyActionListener target="#{procesoReliquidacionController.programaSeleccionado.id}"
+							value="#{_programas.id}" />
+							<f:setPropertyActionListener target="#{procesoReliquidacionController.programaSeleccionado.descripcion}"
+							value="#{_programas.descripcion}" />
+							<f:setPropertyActionListener target="#{procesoReliquidacionController.target}"
+							value="bandejaTareas.jsf" />
+        					<!-- h:graphicImage value="resources/minsal/images/play.png"  styleClass="divapIcons">        					
+							</h:graphicImage-->
+						</h:commandLink>
+							
 						</p:column>
-						 -->
-						<p:column>
-							<a href="#{_programas.url}.jsf"> <h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons" />
-							</a>
-						</p:column>
-						<!-- 	<p:column>
-							<h:commandLink
-								action="divapProcesoDistRecFinProgSeguimientoDocumentacion?faces-redirect=true">
-								<h:graphicImage value="resources/minsal/images/locked.png"
-									styleClass="divapIcons" />
-							</h:commandLink>
-						</p:column>-->
 					</p:dataTable>
 
 				</p:panel>
