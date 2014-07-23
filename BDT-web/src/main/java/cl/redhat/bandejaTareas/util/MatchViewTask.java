@@ -6,14 +6,27 @@ import minsal.divap.vo.TaskVO;
 public class MatchViewTask {
 
 	enum ViewTask{
+		// Mapero páginas Per Capita
 		SUBIRDOCUMENTOS("minsal_divap.DistribucionInicialPerCapita.subirdocumentos", "divapProcesoAsignacionPerCapitaCargarValorizacion"),
 		VALIDARRESULTADOSVALORIZACION("minsal_divap.DistribucionInicialPerCapita.validarresultadosvalorizacion", "divapProcesoAsignacionPerCapitaValidarMontosDistribucion"),
 		HACERSEGUIMIENTOOFICIO("minsal_divap.DistribucionInicialPerCapita.hacerseguimientooficios", "divapProcesoAsignacionPerCapitaSeguimiento"),
 		HACERSEGUIMIENTODECRETO("minsal_divap.DistribucionInicialPerCapita.hacerseguimientodecreto/subirultimaversion", "divapProcesoAsignacionPerCapitaSeguimiento"),
 		HACERSEGUIMIENTORESOLUCIONES("minsal_divap.DistribucionInicialPerCapita.hacerseguimientoresoluciones", "divapProcesoAsignacionPerCapitaSeguimiento"),
 		HACERSEGUIMIENTOTOMARAZON("minsal_divap.DistribucionInicialPerCapita.hacerseguimientotomaderazon", "divapProcesoAsignacionPerCapitaSeguimiento"),
-		SUBIRDOCUMENTOSFINALES("minsal_divap.DistribucionInicialPerCapita.subirdocumentostotalmentetramitados(decretosyresoluciones)", "divapProcesoAsignacionPerCapitaSubirDocumentosTotalmenteTramitados");
+		SUBIRDOCUMENTOSFINALES("minsal_divap.DistribucionInicialPerCapita.subirdocumentostotalmentetramitados(decretosyresoluciones)", "divapProcesoAsignacionPerCapitaSubirDocumentosTotalmenteTramitados"),
 
+		// Mapeo páginas de Rebaja
+		REBAJASUBIRDOCUMENTOS("minsal.divap.procesos.Rebaja.subirinformaciondecumplimientoporcomuna", "divapProcesoRebajaCargarInformacionCumplimiento"),
+		REBAJAREVISIONMONTOS("minsal.divap.procesos.Rebaja.revisionyvalidaciondelosmontosderebaja","divapProcesoRebajaRevisionValidacionRebaja"),
+		REBAJARESOLUCIONES("minsal.divap.procesos.Rebaja.seguimientoderesoluciones","divapProcesoRebajaSeguimientoTratamientoRevision"),
+		
+		// Mapeo páginas de Reliquidación
+		RELIQUIDACIONPROGRAMAS("minsal.divap.procesos.Reliquidacion.seleccionarprograma","divapProcesoReliqProgramas"),
+		RELIQUIDACIONARCHIVOS("minsal.divap.procesos.Reliquidacion.descargarysubirplanillacumplimiento","divapProcesoReliqPlanillas"),		
+		RELIQUIDACIONMUNICIPAL("minsal.divap.procesos.Reliquidacion.validacionmontosreliquidacionmunicipal","divapProcesoReliqMunicipal"),
+		RELIQUIDACIONSERVICIO("minsal.divap.procesos.Reliquidacion.validacionmontosreliquidacionservicio","divapProcesoReliqServicio");
+		
+		
 		private String key;
 		private String view;
 
@@ -43,6 +56,7 @@ public class MatchViewTask {
 	public static String matchView(TaskDataVO taskDataVO){
 		return matchView(taskDataVO.getTask());
 	}
+	
 	public static String matchView(TaskVO task)	{
 		String process = task.getProcessId();
 		System.out.println("original name-->"+task.getName());

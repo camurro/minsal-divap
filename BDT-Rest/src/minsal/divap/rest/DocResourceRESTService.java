@@ -77,7 +77,7 @@ public class DocResourceRESTService extends BaseRest{
 			throw new IllegalArgumentException("documento: "+ docId + " no puede ser nulo");
 		}
 		System.out.println("processInstanceId " + processInstanceId +  " documento a crear-->"+docId);
-		BusinessProcess proceso = BusinessProcess.REBAJAS;
+		BusinessProcess proceso = BusinessProcess.REBAJA;
 		DocumentType type =  DocumentType.EXCEL;
 		ProcessDocument processDocument = ProcessDocument.getById(docId);
 		DocumentAlfrescoService documentService = getService(DocumentAlfrescoService.class);
@@ -95,7 +95,7 @@ public class DocResourceRESTService extends BaseRest{
 			throw new DocNotFoundException("documento: "+ docId + " no existe");
 		}
 		System.out.println("processInstanceId " + processInstanceId +  " documento a crear-->"+docId);
-		BusinessProcess proceso = BusinessProcess.REBAJAS;
+		BusinessProcess proceso = BusinessProcess.REBAJA;
 		DocumentType type =  DocumentType.WORD;
 		ProcessDocument processDocument = ProcessDocument.getById(docId);
 		DocumentAlfrescoService documentService = getService(DocumentAlfrescoService.class);
