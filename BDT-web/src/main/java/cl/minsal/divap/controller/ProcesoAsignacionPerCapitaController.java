@@ -2,8 +2,6 @@ package cl.minsal.divap.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,9 +25,7 @@ import org.primefaces.model.UploadedFile;
 
 import cl.minsal.divap.pojo.GobiernoRegionalPojo;
 import cl.minsal.divap.pojo.montosDistribucionPojo;
-import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
-import cl.redhat.bandejaTareas.util.BandejaProperties;
 
 @Named("procesoAsignacionPerCapitaController")
 @ViewScoped
@@ -39,16 +35,12 @@ public class ProcesoAsignacionPerCapitaController extends AbstractTaskMBean
 	@Inject
 	private transient Logger log;
 	@Inject
-	private BandejaProperties bandejaProperties;
-	@Inject
 	FacesContext facesContext;
-	
-
-	private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
-	// divapProcesoAsignacionPerCapitaCargarValorizacion: INICIO
 	private UploadedFile calculoPerCapitaFile;
 	private UploadedFile valorBasicoDesempenoFile;
+	
+	private boolean errorCarga = false;
+	private boolean archivosCargados = false;
 
 	public UploadedFile getCalculoPerCapitaFile() {
 		return calculoPerCapitaFile;
@@ -72,12 +64,12 @@ public class ProcesoAsignacionPerCapitaController extends AbstractTaskMBean
 			FacesMessage msg = new FacesMessage(
 					"Los archivos fueron cargados correctamente.");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			setArchivosCargados(true);
+		}else{
+			setArchivosCargados(false);
 		}
 	}
 
-	// divapProcesoAsignacionPerCapitaCargarValorizacion: FIN
-
-	// divapProcesoAsignacionPerCapitaValidarMontosDistribucion: INICIO
 	boolean validarMontosDistribucion = false;
 	List<montosDistribucionPojo> planillaMontosDistribucion;
 
@@ -255,6 +247,7 @@ public class ProcesoAsignacionPerCapitaController extends AbstractTaskMBean
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		System.out.println("createResultData usuario-->"+getSessionBean().getUsername());
 		parameters.put("usuario", getSessionBean().getUsername());
+		parameters.put("error_", new Boolean(isErrorCarga()));
 		return parameters;
 	}
 
@@ -276,5 +269,26 @@ public class ProcesoAsignacionPerCapitaController extends AbstractTaskMBean
 			}
 		}
 		return success;
+	}
+
+	public boolean isErrorCarga() {
+		return errorCarga;
+	}
+
+	public void setErrorCarga(boolean errorCarga) {
+		this.errorCarga = errorCarga;
+	}
+	
+	public boolean isArchivosCargados() {
+		return archivosCargados;
+	}
+
+	public void setArchivosCargados(boolean archivosCargados) {
+		this.archivosCargados = archivosCargados;
+	}
+
+	@Override
+	public String enviar(){
+		return super.enviar();
 	}
 }

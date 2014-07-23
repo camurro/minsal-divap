@@ -1,5 +1,7 @@
 package minsal.divap.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInputStream;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +10,10 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
+
+import org.drools.core.impl.EnvironmentFactory;
+import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.kie.api.runtime.Environment;
 
 import minsal.divap.enums.BusinessProcess;
 import minsal.divap.service.task.response.content.Content;
@@ -19,6 +25,7 @@ import minsal.divap.vo.TaskVO;
 
 @Stateless
 public class ProcessService {
+
 	@Resource(name="baseUrl")
 	private String baseUrl;
 
@@ -71,8 +78,16 @@ public class ProcessService {
 		Content content = client.getContentById(client, bpmTask.getJaxbTaskData().getDocumentContentId());
 		Map<String, Object> data = null;
 		if ((content != null) && (content.getSerializedContent() != null)) {
-			System.out.println("ssscontent.getSerializedContent()-->"+content.getSerializedContent() );
-			/*Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getSerializedContent().getBytes("UTF-8"), null, null);
+			System.out.println("content.getSerializedContent()-->"+content.getSerializedContent() );
+			/*ObjectInputStream stream = new ObjectInputStream(new ByteArrayInputStream(content.getSerializedContent().getBytes()));
+			Object unmarshalledObject = stream.readObject();
+			if(unmarshalledObject != null && unmarshalledObject instanceof Map){
+				System.out.println("unmarshalledObject no es null y es un mapa");
+				data = ((Map<String, Object>)unmarshalledObject);
+            }
+			stream.close();*/
+			/*Environment environment = EnvironmentFactory.newEnvironment();
+			Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getSerializedContent().getBytes(), environment);
 			if(unmarshalledObject != null && unmarshalledObject instanceof Map){
 				System.out.println("unmarshalledObject no es null y es un mapa");
 				data = ((Map<String, Object>)unmarshalledObject);
@@ -102,6 +117,8 @@ public class ProcessService {
 
 	public void completeTask(Long processInstanceId, Long taskId, String actorId, Map<String, Object> parameters) throws Exception {
 		TaskVO  taskVO = getUserTasksByProcessId(processInstanceId, taskId, actorId);
+		System.out.println("tarea recuperado para completar");
+		System.out.println(taskVO);
 		if(taskVO != null){
 			if ( (taskVO.getUserForComplete() == null) && ("Ready".equals(taskVO.getStatus()))) {
 				claimTask(taskId, null, actorId);
@@ -171,6 +188,7 @@ public class ProcessService {
 	public TaskVO getUserTasksByProcessId(Long processInstanceId, Long taskId, String username){
 		TaskVO task = null;
 		RestClientSimple client = new RestClientSimple(baseUrl, bpmDeploymentId, bpmUsername, bpmPassword);
+		System.out.println("getUserTasksByProcessId processInstanceId="+processInstanceId+" taskId="+taskId+" username="+username);
 		try{
 			minsal.divap.service.task.response.taskpotencialOwner.CommandResponse.TaskSummaryList.TaskSummary summary = null;
 			if(taskId == null){

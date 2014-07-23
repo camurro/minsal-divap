@@ -10,9 +10,9 @@
 				</h1>
 				<p:panel id="Panel">
 					<h2>
-						<span class="strong">Actividad:</span> #{procesoAsignacionPerCapitaController.actividadSeguimientoTitle}
+						<span class="strong">Actividad:</span> #{procesoAsignacionPerCapitaSeguimientoController.actividadSeguimientoTitle}
 					</h2>
-					<p class="parrafo">El #{procesoAsignacionPerCapitaController.actividadSeguimientoTitle} contiene lorem ipsum dolor sit amet,
+					<p class="parrafo">El #{procesoAsignacionPerCapitaSeguimientoController.actividadSeguimientoTitle} contiene lorem ipsum dolor sit amet,
 						consectetur adipiscing elit. Praesent egestas tempor nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est
 						faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo placerat, nisi augue suscipit ante, vel
 						auctor mauris enim eu turpis. Nunc eu erat et eros interdum eleifend eu non sem. Maecenas sollicitudin odio imperdiet orci
@@ -96,7 +96,7 @@
 								</h:panelGrid>
 
 								<h:outputText value="Asunto: " styleClass="inputLabel" />
-								<h:outputText value="Envío archivos de #{procesoAsignacionPerCapitaController.actividadSeguimientoTitle}" />
+								<h:outputText value="Envío archivos de #{procesoAsignacionPerCapitaSeguimientoController.actividadSeguimientoTitle}" />
 
 								<h:outputText value="Mensaje: " styleClass="inputLabel" />
 								<h:outputText
@@ -123,7 +123,7 @@
 
 								<h:outputText value="Adjunto: " styleClass="inputLabel" />
 								<h:panelGrid columns="2">
-									<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" mode="simple"
+									<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoAsignacionPerCapitaSeguimientoController.valorBasicoDesempenoFile}" mode="simple"
 										styleClass="inputText" />
 									<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
 								</h:panelGrid>
@@ -144,13 +144,27 @@
 						</p>
 
 						<p:commandButton styleClass="x-btn-text" value="Re Cargar Archivos" icon="ui-icon-refresh"
-							action="bandejaTareas?faces-redirect=true indexMenu=0" />
+							action="#{procesoAsignacionPerCapitaSeguimientoController.enviar}" >
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaSeguimientoController.target}" value="bandejaTareas.jsf" />
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarRevalorizar_}" value='#{"false"}' />
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarSubirArchivos_}" value='#{"true"}'/>
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaSeguimientoController.aprobar_}" value='#{"false"}' />
+						</p:commandButton>
 
 						<p:commandButton styleClass="x-btn-text" value="Re Valorizar" icon="ui-icon-refresh"
-							action="bandejaTareas?faces-redirect=true indexMenu=0" />
+							action="#{procesoAsignacionPerCapitaSeguimientoController.enviar}" >
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaSeguimientoController.target}" value="bandejaTareas.jsf" />
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarRevalorizar_}" value='#{"true"}' />
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarSubirArchivos_}" value='#{"false"}'/>
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaSeguimientoController.aprobar_}" value='#{"false"}' />
+						</p:commandButton>
 						<p:commandButton styleClass="x-btn-text" value="Finalizar Seguimiento | Actividad" icon="ui-icon-check"
-							action="bandejaTareas?faces-redirect=true indexMenu=0" />
-
+							action="#{procesoAsignacionPerCapitaSeguimientoController.enviar}" >
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaSeguimientoController.target}" value="bandejaTareas.jsf" />
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarRevalorizar_}" value='#{"false"}' />
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarSubirArchivos_}" value='#{"false"}'/>
+							 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaSeguimientoController.aprobar_}" value='#{"true"}' />
+						</p:commandButton>
 						<div style="clear: both;"></div>
 					</h:form>
 

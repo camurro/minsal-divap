@@ -1,8 +1,12 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlTransient;
+
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -11,12 +15,14 @@ import java.util.List;
  */
 @Entity
 @NamedQueries({
-@NamedQuery(name="Usuario.findAll", query="SELECT u FROM Usuario u"),
-@NamedQuery(name="Usuario.findRols", query="SELECT r FROM Usuario u JOIN u.rols r WHERE u.username = :username")})
+	@NamedQuery(name="Usuario.findAll", query="SELECT u FROM Usuario u"),
+	@NamedQuery(name="Usuario.findRols", query="SELECT r FROM Usuario u JOIN u.rols r WHERE u.username = :username")})
 public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Column(name="username", unique=true, nullable=false)
+	@GeneratedValue
 	private String username;
 
 	private String apellido;
@@ -26,6 +32,9 @@ public class Usuario implements Serializable {
 	private String nombre;
 
 	private String password;
+	
+	@OneToMany(mappedBy = "usuario")
+	private Set<DistribucionInicialPercapita> distribucionInicialPercapitaCollection;
 
 	//bi-directional many-to-one association to Programa
 	@OneToMany(mappedBy="usuario")
@@ -34,14 +43,14 @@ public class Usuario implements Serializable {
 	//bi-directional many-to-many association to Rol
 	@ManyToMany
 	@JoinTable(
-		name="usuario_rol"
-		, joinColumns={
-			@JoinColumn(name="username_usuario")
+			name="usuario_rol"
+			, joinColumns={
+					@JoinColumn(name="username_usuario")
 			}
-		, inverseJoinColumns={
-			@JoinColumn(name="nombre_rol")
+			, inverseJoinColumns={
+					@JoinColumn(name="nombre_rol")
 			}
-		)
+			)
 	private List<Rol> rols;
 
 	public Usuario() {
@@ -115,6 +124,16 @@ public class Usuario implements Serializable {
 
 	public void setRols(List<Rol> rols) {
 		this.rols = rols;
+	}
+	
+	@XmlTransient
+	public Set<DistribucionInicialPercapita> getDistribucionInicialPercapitaCollection() {
+		return distribucionInicialPercapitaCollection;
+	}
+
+	public void setDistribucionInicialPercapitaCollection(
+			Set<DistribucionInicialPercapita> distribucionInicialPercapitaCollection) {
+		this.distribucionInicialPercapitaCollection = distribucionInicialPercapitaCollection;
 	}
 
 }

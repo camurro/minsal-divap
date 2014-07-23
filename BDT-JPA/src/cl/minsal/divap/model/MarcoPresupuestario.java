@@ -15,7 +15,8 @@ public class MarcoPresupuestario implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="id_marco_presupuestario")
+	@Column(name="id_marco_presupuestario", unique=true, nullable=false)
+	@GeneratedValue
 	private Integer idMarcoPresupuestario;
 
 	@Column(name="marco_inicial")
