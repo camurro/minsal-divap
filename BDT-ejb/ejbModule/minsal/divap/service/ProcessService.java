@@ -1,7 +1,5 @@
 package minsal.divap.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -11,15 +9,16 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 
-import org.jbpm.services.task.utils.ContentMarshallerHelper;
-import org.kie.internal.task.api.model.ContentData;
-
 import minsal.divap.enums.BusinessProcess;
 import minsal.divap.service.task.response.content.Content;
 import minsal.divap.service.task.response.task.Task;
 import minsal.divap.service.util.RestClientSimple;
 import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskVO;
+
+import org.jbpm.services.task.utils.ContentMarshallerHelper;
+
+import sun.misc.BASE64Decoder;
 
 
 @Stateless
@@ -77,33 +76,14 @@ public class ProcessService {
 		Content content = client.getContentById(client, bpmTask.getJaxbTaskData().getDocumentContentId());
 		Map<String, Object> data = null;
 		if ((content != null) && (content.getSerializedContent() != null)) {
-			System.out.println("content.getSerializedContent()-->"+content.getSerializedContent() );
-			/*ObjectInputStream stream = new ObjectInputStream(new ByteArrayInputStream(content.getSerializedContent().getBytes()));
-			Object unmarshalledObject = stream.readObject();
+			//System.out.println("content.getSerializedContent()-->"+content.getSerializedContent() );
+			BASE64Decoder base64Decoder = new BASE64Decoder();
+			byte[] contentBytes = base64Decoder.decodeBuffer(content.getSerializedContent());
+			Object unmarshalledObject = ContentMarshallerHelper.unmarshall(contentBytes, null);
 			if(unmarshalledObject != null && unmarshalledObject instanceof Map){
-				System.out.println("unmarshalledObject no es null y es un mapa");
+				//System.out.println("unmarshalledObject no es null y es un mapa");
 				data = ((Map<String, Object>)unmarshalledObject);
             }
-			stream.close();*/
-			//Environment environment = EnvironmentFactory.newEnvironment();
-			//*Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getSerializedContent().getBytes(), environment);
-		  /* Map<String, Object> test = new HashMap<String, Object> ();
-		   test.put("one",1L);
-		   test.put("dos",2L);
-		   
-		   ContentData contentData = ContentMarshallerHelper.marshal("CONTENT", null);
-		   System.out.println("LUEGO DE MARSHAL");
-		  
-		   
-		   Object unmarshalledObject  =  (Map<String, Object>) ContentMarshallerHelper.unmarshall( contentData.getContent(), null);
-		   System.out.println("LUEGO DE unMARSHAL"+unmarshalledObject);*/
-		   
-		   
-			/*Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getSerializedContent().getBytes(), null);
-			if(unmarshalledObject != null && unmarshalledObject instanceof Map){
-				System.out.println("unmarshalledObject no es null y es un mapa");
-				data = ((Map<String, Object>)unmarshalledObject);
-            }*/
 		}
 		if(data != null){
 			for (Map.Entry<String, Object> entry : data.entrySet()){
