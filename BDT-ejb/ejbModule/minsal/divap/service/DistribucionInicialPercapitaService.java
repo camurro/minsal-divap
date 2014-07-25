@@ -60,10 +60,6 @@ public class DistribucionInicialPercapitaService {
 		Integer plantillaId = documentService.getPlantillaByType(TemplatesType.DESEMPENODIFICIL);
 		if(plantillaId == null){
 			List<BaseVO> servicios = servicioSaludService.getAllServicios();
-			
-			for(BaseVO baseVO : servicios){
-				System.out.println("getIdPlantillaPoblacionInscrita baseVO="+baseVO);
-			}
 
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			String filename = tmpDir + File.separator + "plantillaDesempenoDificil.xlsx";
