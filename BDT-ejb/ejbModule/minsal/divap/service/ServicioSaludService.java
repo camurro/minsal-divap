@@ -37,23 +37,6 @@ public class ServicioSaludService {
 		return result;
 	}
 	
-	public List<RebajaVO> getAllServiciosyComunasConId() {
-		List<ServicioSalud> serviciosSalud = this.servicioSaludDAO.getServicios();
-		List<RebajaVO> result = new ArrayList<RebajaVO>();
-		if(serviciosSalud != null){
-			for (ServicioSalud servicioSalud : serviciosSalud){
-				for (Comuna comuna : servicioSalud.getComunas()){
-					RebajaVO rebajaVO = new RebajaVO();
-					rebajaVO.setId_servicio(servicioSalud.getId());
-					rebajaVO.setServicio(((servicioSalud.getNombre() != null)?servicioSalud.getNombre():null));
-					rebajaVO.setId_comuna(comuna.getId());
-					rebajaVO.setComuna(((comuna != null)?comuna.getNombre():null));
-					result.add(rebajaVO);
-				}
-			}
-		}
-		return result;
-	}
 	
 	public List<ServiciosVO> getAllServiciosVO() {
 		List<ServicioSalud> serviciosSalud = this.servicioSaludDAO.getServicios();

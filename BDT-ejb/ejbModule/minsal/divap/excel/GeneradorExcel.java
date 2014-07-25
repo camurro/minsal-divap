@@ -4,14 +4,13 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import minsal.divap.excel.impl.RebajaSheetExcel;
 import minsal.divap.excel.interfaces.ExcelTemplate;
 
-import org.apache.poi.ss.usermodel.CellRange;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -35,7 +34,7 @@ public class GeneradorExcel {
 	}
 
 	public static <T> T fromContent(byte [] content, Class<T> clazz) throws InvalidFormatException, IOException {
-		if("XSSFWorkbook".equals(clazz.getName())){
+		if("XSSFWorkbook".equals(clazz.getSimpleName())){
 			return (T)createXlsx(content);
 		}else{
 			return (T)createXls(content);

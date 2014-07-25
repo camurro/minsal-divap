@@ -13,6 +13,7 @@ public class RebajaVO implements Serializable{
 	private String comuna;
 	private Integer id_servicio;
 	private String servicio;
+	private List<String> itemsCumplimiento;
 	
 	public RebajaVO(){}
 	
@@ -71,6 +72,14 @@ public class RebajaVO implements Serializable{
 
 	public void setServicio(String servicio) {
 		this.servicio = servicio;
+	}
+
+	public List<String> getItemsCumplimiento() {
+		return itemsCumplimiento;
+	}
+
+	public void setItemsCumplimiento(List<String> itemsCumplimiento) {
+		this.itemsCumplimiento = itemsCumplimiento;
 	}
 
 

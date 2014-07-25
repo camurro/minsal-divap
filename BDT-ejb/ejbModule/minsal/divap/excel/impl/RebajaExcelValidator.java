@@ -18,8 +18,10 @@ import minsal.divap.excel.util.ExcelExtensionValidator;
 import minsal.divap.exception.ExcelFormatException;
 import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.CellTypeExcelVO;
+import minsal.divap.vo.CumplimientoVO;
 
-public class RebajaExcelValidator extends ExcelValidator<BaseVO>{
+public class RebajaExcelValidator extends ExcelValidator<CumplimientoVO>{
+	
 	public RebajaExcelValidator(Integer numberField, List<CellTypeExcelVO> cells) {
 		super(numberField, cells);
 	}
@@ -90,59 +92,28 @@ public class RebajaExcelValidator extends ExcelValidator<BaseVO>{
 	}
 
 	@Override
-	protected BaseVO convert() {
-		BaseVO baseVO = new BaseVO();
+	protected CumplimientoVO convert() {
+		CumplimientoVO cumVO = new CumplimientoVO();
 		if(getValues().size() == getCells().size()){
-			if(!"".equals(getValues().get(0))){
-				Double region = Double.parseDouble(getValues().get(0));
-				baseVO.setRegion( region.intValue());
-			}
-			if(!"".equals(getValues().get(1))){
-				baseVO.setServicio(getValues().get(1));
-			}
 			if(!"".equals(getValues().get(2))){
-				baseVO.setComuna(getValues().get(2));
+				Double id_comuna = Double.parseDouble(getValues().get(2));
+				cumVO.setId_comuna(id_comuna.intValue());
 			}
-		}
-		return baseVO;
-	}
-
-	public static void main(String[] args) {
-		try {
-			URL url = new URL("file:///home/cmurillo/MinSal/PERCAPITA.xls");
-			List<CellTypeExcelVO> cells = new ArrayList<CellTypeExcelVO>();
-			CellTypeExcelVO fieldOne = new CellTypeExcelVO(true, FieldType.INTEGERFIELD);
-			cells.add(fieldOne);
-			CellTypeExcelVO fieldTwo = new CellTypeExcelVO(true);
-			cells.add(fieldTwo);
-			CellTypeExcelVO fieldThree = new CellTypeExcelVO(true);
-			cells.add(fieldThree);
-			ExcelExtensionValidator excelExtensionValidator = new ExcelExtensionValidator();
-			if(excelExtensionValidator.validate(url.getFile())){
-				if(url.getFile().endsWith("xls")){
-					HSSFWorkbook workbook = new HSSFWorkbook(url.openStream());
-					HSSFSheet worksheet = workbook.getSheetAt(0);
-					RebajaExcelValidator rebajaExcelValidator = new RebajaExcelValidator(cells.size(), cells, true, 1, 1);
-					rebajaExcelValidator.validateFormat(worksheet);		
-					List<BaseVO> items = rebajaExcelValidator.getItems();
-					for(BaseVO item : items){
-						System.out.println("item->"+item);
-					}
-				}else{
-					XSSFWorkbook workbook = new XSSFWorkbook (url.openStream());
-					XSSFSheet worksheet = workbook.getSheetAt(0);
-					RebajaExcelValidator rebajaExcelValidator = new RebajaExcelValidator(cells.size(), cells, true, 1, 1);
-					rebajaExcelValidator.validateFormat(worksheet);		
-					List<BaseVO> items = rebajaExcelValidator.getItems();
-					for(BaseVO item : items){
-						System.out.println("item->"+item);
-					}
-				}
+			if(!"".equals(getValues().get(4))){
+				Double value_item1 = Double.parseDouble(getValues().get(4));
+				cumVO.setValue_item1(value_item1.intValue());
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
+			if(!"".equals(getValues().get(5))){
+				Double value_item2 = Double.parseDouble(getValues().get(5));
+				cumVO.setValue_item2(value_item2.intValue());
+			}
+			if(!"".equals(getValues().get(6))){
+				Double value_item3 = Double.parseDouble(getValues().get(6));
+				cumVO.setValue_item3(value_item3.intValue());
+			}
+		
 		}
+		return cumVO;
 	}
+	
 }
