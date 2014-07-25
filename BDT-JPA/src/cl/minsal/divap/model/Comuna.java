@@ -22,7 +22,7 @@ public class Comuna implements Serializable {
 	private String nombre;
 
 	//bi-directional many-to-one association to AntecendentesComuna
-	@OneToMany(mappedBy="comuna")
+	@OneToMany(mappedBy="idComuna")
 	private List<AntecendentesComuna> antecendentesComunas;
 
 	//bi-directional many-to-one association to ServicioSalud
@@ -63,20 +63,6 @@ public class Comuna implements Serializable {
 
 	public void setAntecendentesComunas(List<AntecendentesComuna> antecendentesComunas) {
 		this.antecendentesComunas = antecendentesComunas;
-	}
-
-	public AntecendentesComuna addAntecendentesComuna(AntecendentesComuna antecendentesComuna) {
-		getAntecendentesComunas().add(antecendentesComuna);
-		antecendentesComuna.setComuna(this);
-
-		return antecendentesComuna;
-	}
-
-	public AntecendentesComuna removeAntecendentesComuna(AntecendentesComuna antecendentesComuna) {
-		getAntecendentesComunas().remove(antecendentesComuna);
-		antecendentesComuna.setComuna(null);
-
-		return antecendentesComuna;
 	}
 
 	public ServicioSalud getServicioSalud() {

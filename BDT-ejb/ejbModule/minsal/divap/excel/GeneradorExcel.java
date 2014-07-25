@@ -1,15 +1,20 @@
 package minsal.divap.excel;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.io.InputStream;
 import java.util.List;
 
 import minsal.divap.excel.impl.RebajaSheetExcel;
 import minsal.divap.excel.interfaces.ExcelTemplate;
 
 import org.apache.poi.ss.usermodel.CellRange;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -27,6 +32,27 @@ public class GeneradorExcel {
 	public GeneradorExcel(String fileName){
 		numberSheet = 0;
 		this.fileName = fileName;
+	}
+
+	public static <T> T fromContent(byte [] content, Class<T> clazz) throws InvalidFormatException, IOException {
+		if("XSSFWorkbook".equals(clazz.getName())){
+			return (T)createXlsx(content);
+		}else{
+			return (T)createXls(content);
+		}
+		 
+	}
+	
+	private static HSSFWorkbook createXls(byte [] content) throws IOException{
+		InputStream inputStream = new ByteArrayInputStream(content);
+		HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
+		return workbook;
+	}
+
+	private static XSSFWorkbook createXlsx(byte [] content) throws InvalidFormatException, IOException{
+		InputStream inputStream = new ByteArrayInputStream(content);
+		XSSFWorkbook workbook = new XSSFWorkbook(OPCPackage.open(inputStream));
+		return workbook;
 	}
 
 	public void addSheet(ExcelTemplate excelSheet, String sheetName){

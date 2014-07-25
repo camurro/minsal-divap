@@ -19,7 +19,10 @@
 
 						<span class="strong">Archivo: </span> Planilla Base Cumplimiento por Comuna [
 						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
-						<p:commandLink value="Bajar" />]
+						<h:commandLink action="#{procesoRebajaController.downloadTemplate}" value="Bajar">
+						    <f:setPropertyActionListener target="#{procesoRebajaController.docIdDownload}"
+								value="#{procesoRebajaController.docBaseCumplimiento}" />
+						</h:commandLink>]
 					</div>
 					<h3>Tareas de la Actividad:</h3>
 					<p:panelGrid columns="3" styleClass="uploadFileTable">
@@ -28,16 +31,15 @@
 						<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
 					</p:panelGrid>
 					<br />
-					<p:commandButton value="Cargar Archivos" ajax="false"
-						actionListener="#{procesoRebajaController.uploadArchivoCumplimiento}"
-						action="bandejaTareas?faces-redirect=true indexMenu=0" icon="ui-icon-upload">
+					<p:commandButton value="Cargar Archivos" ajax="false" actionListener="#{procesoRebajaController.uploadArchivoCumplimiento}"
+						icon="ui-icon-upload" update=":botonContinuar">
 						
 					</p:commandButton>
 				</p:panel>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true" ajax="false"
 					icon="ui-icon-seek-first" />
-				<p:commandButton value="Continuar" ajax="false" actionListener="#{procesoRebajaController.enviar}"
-						action="bandejaTareas?faces-redirect=true indexMenu=0" icon="ui-icon-play">
+				<p:commandButton id="botonContinuar" value="Continuar" ajax="false" actionListener="#{procesoRebajaController.enviar}"
+						action="bandejaTareas?faces-redirect=true indexMenu=0" icon="ui-icon-play" disabled="#{procesoRebajaController.archivosCargados}">
 						<f:setPropertyActionListener target="#{procesoRebajaController.target}"
 							value="bandejaTareas.jsf" />
 					</p:commandButton>

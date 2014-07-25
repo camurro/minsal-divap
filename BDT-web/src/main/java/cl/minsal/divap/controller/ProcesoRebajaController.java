@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -15,6 +16,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import minsal.divap.enums.BusinessProcess;
+import minsal.divap.service.RebajaService;
 import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskVO;
 
@@ -38,15 +40,21 @@ public class ProcesoRebajaController extends AbstractTaskMBean
 	@Inject
 	FacesContext facesContext;
 	
-	
 	private UploadedFile cumplimientoFile;
 	private String target;
+	private String docIdDownload;
+	private Integer docBaseCumplimiento;
+	private boolean errorArchivo;
+	private boolean archivosCargados = true;
 	
 	//Variables de salida proceso
 	private boolean error_;
 	private String correoUsuario_;
 	private String correoSubject_;
 	private String correoBody_;
+	
+	@EJB
+	private RebajaService rebajaService;
 	
 	@PostConstruct
 	public void init() {
@@ -61,6 +69,7 @@ public class ProcesoRebajaController extends AbstractTaskMBean
 						e);
 			}
 		}
+		docBaseCumplimiento = rebajaService.getPlantillaBaseCumplimiento();
 	}
 	
 	public String getTarget() {
@@ -107,14 +116,21 @@ public class ProcesoRebajaController extends AbstractTaskMBean
 	
 	public void uploadArchivoCumplimiento(){
 		//TODO VALIDAR ARCHIVO
-		if (cumplimientoFile != null) {
-			FacesMessage msg = new FacesMessage(
-					"El archivo de cumplimiento ha sido cargado correctamente.");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+		if(isErrorArchivo()){
+			setArchivosCargados(true);			
+		}else{
+			setArchivosCargados(false);
 		}
 		
 	}
 		
+	public String downloadTemplate() {
+		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownload()));
+		setDocumento(documentService.getDocument(docDownload));
+		super.downloadDocument();
+		return null;
+	}
+	
 	public UploadedFile getCumplimientoFile() {
 		return cumplimientoFile;
 	}
@@ -153,6 +169,38 @@ public class ProcesoRebajaController extends AbstractTaskMBean
 
 	public void setCorreoBody_(String correoBody_) {
 		this.correoBody_ = correoBody_;
+	}
+
+	public String getDocIdDownload() {
+		return docIdDownload;
+	}
+
+	public void setDocIdDownload(String docIdDownload) {
+		this.docIdDownload = docIdDownload;
+	}
+
+	public Integer getDocBaseCumplimiento() {
+		return docBaseCumplimiento;
+	}
+
+	public void setDocBaseCumplimiento(Integer docBaseCumplimiento) {
+		this.docBaseCumplimiento = docBaseCumplimiento;
+	}
+
+	public boolean isErrorArchivo() {
+		return errorArchivo;
+	}
+
+	public void setErrorArchivo(boolean errorArchivo) {
+		this.errorArchivo = errorArchivo;
+	}
+
+	public boolean isArchivosCargados() {
+		return archivosCargados;
+	}
+
+	public void setArchivosCargados(boolean archivosCargados) {
+		this.archivosCargados = archivosCargados;
 	}
 	
 

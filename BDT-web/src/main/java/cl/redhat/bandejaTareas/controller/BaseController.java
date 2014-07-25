@@ -150,6 +150,10 @@ public abstract class BaseController {
 		return documentService.uploadTemporalFile(file.getFileName(), file.getContents());
 	}
 
+	public Integer persistFile(String filename, byte[] contents) {
+		return documentService.uploadTemporalFile(filename, contents);
+	}
+	
 	public DocumentoVO getDocumento()
 	{
 		return this.documento;

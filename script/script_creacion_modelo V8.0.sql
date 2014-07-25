@@ -441,5 +441,94 @@ INSERT INTO tipo_plantilla(id_tipo_plantilla, descripcion) VALUES (2, 'Població
 ALTER TABLE referencia_documento
    ADD COLUMN node_ref text;
 
+-- Modificaciones 24/07/2014
+
+CREATE TABLE tramo
+(
+  id_tramo serial NOT NULL,
+  tramo text NOT NULL,
+  CONSTRAINT id_tramo_pk PRIMARY KEY (id_tramo)
+)
+WITH (
+  OIDS=FALSE
+);
+
+CREATE TABLE tipo_cumplimiento
+(
+  id_tipo_cumplimiento serial NOT NULL,
+  descripcion text NOT NULL,
+  CONSTRAINT tipo_cumplimiento_pk PRIMARY KEY (id_tipo_cumplimiento)
+)
+WITH (
+  OIDS=FALSE
+);
+
+CREATE TABLE cumplimiento
+(
+  id_cumplimiento serial NOT NULL,
+  tramo integer NOT NULL,
+  tipo_cumplimiento integer NOT NULL,
+  rebaja numeric NOT NULL,
+  porcentaje_desde numeric NOT NULL,
+  porcentaje_hasta numeric,
+  CONSTRAINT id_cumplimiento_pk PRIMARY KEY (id_cumplimiento),
+  CONSTRAINT tipo_cumplimiento_fk FOREIGN KEY (tipo_cumplimiento)
+      REFERENCES tipo_cumplimiento (id_tipo_cumplimiento) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT tramo_fk FOREIGN KEY (tramo)
+      REFERENCES tramo (id_tramo) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+-- Modificacion tabla antecendentes_comuna
+
+ALTER TABLE antecendentes_comuna DROP COLUMN poblacion;
+ALTER TABLE antecendentes_comuna DROP COLUMN poblacion_mayor;
+ALTER TABLE antecendentes_comuna DROP COLUMN desempeno_dificil;
+ALTER TABLE antecendentes_comuna DROP COLUMN pobreza;
+ALTER TABLE antecendentes_comuna DROP COLUMN ruralidad;
+ALTER TABLE antecendentes_comuna DROP COLUMN valor_referencial_zona;
+ALTER TABLE antecendentes_comuna DROP CONSTRAINT antecendentes_comuna_pk;
+ALTER TABLE antecendentes_comuna DROP CONSTRAINT ano_en_curso_fk;
+ALTER TABLE antecendentes_comuna DROP CONSTRAINT comuna_fk;
+ALTER TABLE antecendentes_comuna
+ADD COLUMN id_antecedentes_comuna serial NOT NULL;
+ALTER TABLE antecendentes_comuna
+  ADD CONSTRAINT antecendentes_comuna_pk PRIMARY KEY(id_antecedentes_comuna);
+ALTER TABLE antecendentes_comuna
+  ADD CONSTRAINT comuna_fk FOREIGN KEY (id_comuna) REFERENCES comuna (id)
+   ON UPDATE NO ACTION ON DELETE NO ACTION;
+CREATE INDEX fki_comuna_fk
+  ON antecendentes_comuna(id_comuna);
+ALTER TABLE antecendentes_comuna
+  ADD CONSTRAINT ano_en_curso_fk FOREIGN KEY (ano_ano_en_curso) REFERENCES ano_en_curso (ano)
+   ON UPDATE NO ACTION ON DELETE NO ACTION;
+CREATE INDEX fki_ano_en_curso_fk
+  ON antecendentes_comuna(ano_ano_en_curso);
+
+CREATE TABLE antecendentes_comuna_calculado
+(
+  id_antecendentes_comuna_calculado serial NOT NULL,
+  antecedentes_comuna integer NOT NULL,
+  poblacion smallint,
+  poblacion_mayor smallint,
+  desempeno_dificil smallint,
+  pobreza smallint,
+  ruralidad smallint,
+  valor_referencial_zona smallint,
+  CONSTRAINT antecendentes_comuna_calculado_pk PRIMARY KEY (id_antecendentes_comuna_calculado),
+  CONSTRAINT antecendentes_comuna_fk FOREIGN KEY (antecedentes_comuna)
+      REFERENCES antecendentes_comuna (id_antecedentes_comuna) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+
+
 
 

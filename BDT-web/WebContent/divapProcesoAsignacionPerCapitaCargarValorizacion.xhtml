@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/default.xhtml">
+	 
 
 	<ui:define name="content">
-		<h:form enctype="multipart/form-data">
+		
+		<h:form id="formUpload" enctype="multipart/form-data">
 			<p:panel styleClass="contentPanel">
 				<!-- MODAL -->
 				<!-- <p:dialog id="modalDialog3" header="Atención" widgetVar="dlg1"
@@ -24,48 +30,76 @@
 				</h1>
 				<p:panel id="Panel">
 					<h2>
-						<strong>Actividad:</strong> Subir Información Población Inscrita Validada y Asignación por Desempeño Difícil
+						<strong>Actividad:</strong> Subir Información Población Inscrita
+						Validada y Asignación por Desempeño Difícil
 					</h2>
-					<p class="parrafo">Los archivos solicitados a continuación representan el input para la elaboración de toda la documentación del
-						proceso de asignación de recursos per capita.</p>
+					<p class="parrafo">Los archivos solicitados a continuación
+						representan el input para la elaboración de toda la documentación
+						del proceso de asignación de recursos per capita.</p>
 					<div class="destacaArchivos ui-corner-all">
 						<h3>Archivos Disponibles para la Tarea:</h3>
 
-						<span class="strong">Archivo: </span> Planilla Base Población Inscrita Validada [
-						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
-						<h:commandLink action="#{procesoAsignacionPerCapitaController.downloadTemplate}" value="Bajar">
-						    <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaController.docIdDownload}"
+						<span class="strong">Archivo: </span> Planilla Base Población
+						Inscrita Validada [
+						<h:graphicImage value="resources/minsal/images/download-alt.png"
+							styleClass="divapIcons" />
+						<h:commandLink
+							action="#{procesoAsignacionPerCapitaController.downloadTemplate}"
+							value="Bajar">
+							<f:setPropertyActionListener
+								target="#{procesoAsignacionPerCapitaController.docIdDownload}"
 								value="#{procesoAsignacionPerCapitaController.docAsignacionRecursosPercapita}" />
 						</h:commandLink>
-						]<br /> <span class="strong">Archivo: </span> Planilla Base Asignación Desempeño Difícil [
-						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
-						<h:commandLink action="#{procesoAsignacionPerCapitaController.downloadTemplate}" value="Bajar">
-						    <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaController.docIdDownload}"
+						]<br /> <span class="strong">Archivo: </span> Planilla Base
+						Asignación Desempeño Difícil [
+						<h:graphicImage value="resources/minsal/images/download-alt.png"
+							styleClass="divapIcons" />
+						<h:commandLink
+							action="#{procesoAsignacionPerCapitaController.downloadTemplate}"
+							value="Bajar">
+							<f:setPropertyActionListener
+								target="#{procesoAsignacionPerCapitaController.docIdDownload}"
 								value="#{procesoAsignacionPerCapitaController.docAsignacionDesempenoDificil}" />
 						</h:commandLink>
 						]
 
 					</div>
 					<h3>Tareas de la Actividad:</h3>
-					<p:panelGrid columns="3" styleClass="uploadFileTable">
-						<h:outputLabel for="calculoPerCapitaFile" value="Archivo: datos valorización" styleClass="fileUploadLabel" />
-						<p:fileUpload id="calculoPerCapitaFile" value="#{procesoAsignacionPerCapitaController.calculoPerCapitaFile}" update=":calculoPerCapita" mode="simple" />
-						<h:outputText value="* No se ha subido ningún archivo aún." id="calculoPerCapita" styleClass="#{(empty procesoAsignacionPerCapitaController.calculoPerCapitaFile)?'ui-state-error':'ui-helper-hidden ui-state-error'}"/>
+					<p:panelGrid columns="2" styleClass="uploadFileTable">
+						<h:outputLabel for="calculoPerCapitaFile"
+							value="Archivo: datos valorización" styleClass="fileUploadLabel" />
+						<p:fileUpload
+							fileUploadListener="#{procesoAsignacionPerCapitaController.handleFileUploadPerCapitaFile}"
+							
+							id="calculoPerCapitaFile"
+							value="#{procesoAsignacionPerCapitaController.calculoPerCapitaFile}"
+							mode="simple" auto="true" update="formUpload" />
 
-						<h:outputLabel for="valorBasicoDesempenoFile" value="Archivo: valor básico por desempeño difícil" styleClass="fileUploadLabel" />
-						<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" update=":desempenoDificil" mode="simple" />
-						<h:outputText value="* No se ha subido ningún archivo aún." id="desempenoDificil" styleClass="#{(empty procesoAsignacionPerCapitaController.calculoPerCapitaFile)?'ui-state-error':'ui-helper-hidden ui-state-error'}" />
+						<h:outputLabel for="valorBasicoDesempenoFile"
+							value="Archivo: valor básico por desempeño difícil"
+							styleClass="fileUploadLabel" />
+						<p:fileUpload
+							fileUploadListener="#{procesoAsignacionPerCapitaController.handleFileUploadBasicoDesempenoFile}"
+							id="valorBasicoDesempenoFile"
+							value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}"
+							update="formUpload" mode="simple" />
 					</p:panelGrid>
 					<br />
 					<p:commandButton value="Cargar Archivos" ajax="false"
 						actionListener="#{procesoAsignacionPerCapitaController.uploadArchivosValorizacion}"
-						icon="ui-icon-upload"  update=":continuar" />
+						icon="ui-icon-upload" id="cargarArchivos" update=":continuar"
+						disabled="#{not procesoAsignacionPerCapitaController.archivosCargados}" />
 				</p:panel>
-				<p:commandButton value="Volver" styleClass="x-btn-text" action="divapProcesoAsignacionPerCapitaInicio?faces-redirect=true" ajax="false"
-					icon="ui-icon-seek-first" />
-				<p:commandButton id="continuar" value="Continuar" styleClass="x-btn-text" action="#{procesoAsignacionPerCapitaController.enviar}" disabled="#{not procesoAsignacionPerCapitaController.archivosCargados}">
-				 <f:setPropertyActionListener target="#{procesoAsignacionPerCapitaController.target}"
-							value="bandejaTareas.jsf" />
+				<p:commandButton value="Volver" styleClass="x-btn-text"
+					action="divapProcesoAsignacionPerCapitaInicio?faces-redirect=true"
+					ajax="false" icon="ui-icon-seek-first" />
+				<p:commandButton id="continuar" value="Continuar"
+					styleClass="x-btn-text"
+					action="#{procesoAsignacionPerCapitaController.enviar}"
+					disabled="#{not procesoAsignacionPerCapitaController.archivosValidos}">
+					<f:setPropertyActionListener
+						target="#{procesoAsignacionPerCapitaController.target}"
+						value="bandejaTareas.jsf" />
 				</p:commandButton>
 			</p:panel>
 		</h:form>

@@ -5,7 +5,6 @@
 		<jta-data-source>java:jboss/datasources/MinsalDS</jta-data-source>
 		<class>cl.minsal.divap.model.AnoEnCurso</class>
 		<class>cl.minsal.divap.model.AntecendentesComuna</class>
-		<class>cl.minsal.divap.model.AntecendentesComunaPK</class>
 		<class>cl.minsal.divap.model.Componente</class>
 		<class>cl.minsal.divap.model.Comuna</class>
 		<class>cl.minsal.divap.model.Cuota</class>

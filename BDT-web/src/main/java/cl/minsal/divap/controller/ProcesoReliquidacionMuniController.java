@@ -21,8 +21,11 @@ import javax.inject.Named;
 
 import minsal.divap.enums.BusinessProcess;
 import minsal.divap.service.ProgramasService;
+import minsal.divap.service.ServicioSaludService;
+import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ProgramaVO;
+import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskVO;
 
@@ -37,6 +40,7 @@ import cl.minsal.divap.pojo.ValorHistoricoPojo;
 import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
+import cl.redhat.bandejaTareas.util.JSONHelper;
 import cl.redhat.bandejaTareas.util.MatchViewTask;
 
 @Named("procesoReliquidacionMuniController") 
@@ -54,9 +58,12 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 	@EJB
 	ProgramasService programaService;
 	
+	@EJB
+	ServicioSaludService serviciosService;
 	
 	private List<ProgramaVO> listadoProgramasUsuario;
 	private List<ComponentesVO> listadoComponentes;
+	private List<ServiciosVO> listaServicios;
 	
 	private ProgramaVO programaSeleccionado;
 	
@@ -177,9 +184,15 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 			} catch (IOException e) {
 				log.error("Error tratando de redireccionar a login por falta de usuario en sesion.", e);
 			}
-		}else{
-			ProgramaVO programaSeleccionado = getFromSession("programaSeleccionado", ProgramaVO.class);
+		}else{	
+			programaSeleccionado = getFromSession("programaSeleccionado", ProgramaVO.class);
+			if(programaSeleccionado==null){
+				String variablePrograma = (String) getTaskDataVO().getData().get("_programa");				
+				programaSeleccionado = (ProgramaVO) JSONHelper.fromJSON(variablePrograma,ProgramaVO.class);
+				setOnSession("programaSeleccionado", programaSeleccionado);
+			}
 			construyeListaComponentes(programaSeleccionado.getId());
+			construyeListaServicios();
 		}
 	
 		
@@ -455,6 +468,11 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 	}
 	
 
+	private void construyeListaServicios() {
+		listaServicios = serviciosService.getAllServiciosVO();
+		
+	}
+
 	private void construyeListaComponentes(int programaId) {
 		listadoComponentes=programaService.getComponenteByPrograma(programaId);
 		
@@ -504,6 +522,10 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 		return success;
 	}
 	
+	public void buscarReliquidacion(){
+		
+	}
+	
 	public List<ProgramaVO> getListadoProgramasUsuario() {
 		return listadoProgramasUsuario;
 	}
@@ -513,9 +535,6 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 	}
 
 	public ProgramaVO getProgramaSeleccionado() {
-		if(this.programaSeleccionado == null){
-			this.programaSeleccionado = new ProgramaVO();
-		}
 		return programaSeleccionado;
 	}
 
@@ -529,6 +548,14 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 
 	public void setListadoComponentes(List<ComponentesVO> listadoComponentes) {
 		this.listadoComponentes = listadoComponentes;
+	}
+
+	public List<ServiciosVO> getListaServicios() {
+		return listaServicios;
+	}
+
+	public void setListaServicios(List<ServiciosVO> listaServicios) {
+		this.listaServicios = listaServicios;
 	}
 
 	

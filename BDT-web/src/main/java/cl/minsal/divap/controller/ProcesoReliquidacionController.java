@@ -36,6 +36,7 @@ import cl.minsal.divap.pojo.ValorHistoricoPojo;
 import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
+import cl.redhat.bandejaTareas.util.JSONHelper;
 import cl.redhat.bandejaTareas.util.MatchViewTask;
 
 @Named ("procesoReliquidacionController") 
@@ -476,6 +477,8 @@ public class ProcesoReliquidacionController extends AbstractTaskMBean implements
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		System.out.println("createResultData usuario-->"+getSessionBean().getUsername());
 		parameters.put("usuario", getSessionBean().getUsername());
+		ProgramaVO programaSel = getFromSession("programaSeleccionado", ProgramaVO.class);		
+		parameters.put("programa_", JSONHelper.toJSON(programaSel));
 		return parameters;
 	}
 

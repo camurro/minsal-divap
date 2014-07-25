@@ -10,6 +10,8 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
 import minsal.divap.dao.UsuarioDAO;
 import minsal.divap.enums.TemplatesType;
@@ -103,5 +105,14 @@ public class DistribucionInicialPercapitaService {
 		return plantillaId;
 	}
 
+
+	public void procesarCalculoPercapita(XSSFWorkbook fromContent) {
+		
+	}
+
+
+	public void procesarValorBasicoDesempen(XSSFWorkbook fromContent) {
+		
+	}
 
 }
