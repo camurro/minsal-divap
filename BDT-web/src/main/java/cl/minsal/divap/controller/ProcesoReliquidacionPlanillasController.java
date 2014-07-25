@@ -38,6 +38,7 @@ import cl.minsal.divap.pojo.ValorHistoricoPojo;
 import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
+import cl.redhat.bandejaTareas.util.JSONHelper;
 import cl.redhat.bandejaTareas.util.MatchViewTask;
 
 @Named ("procesoReliquidacionPlanillasController") 
@@ -126,8 +127,11 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 
 
 	public ProgramaVO getProgramaSeleccionado() {
-		if(this.programaSeleccionado == null){
-			this.programaSeleccionado=getFromSession("programaSeleccionado", ProgramaVO.class);
+		programaSeleccionado = getFromSession("programaSeleccionado", ProgramaVO.class);
+		if(programaSeleccionado==null){
+			String variablePrograma = (String) getTaskDataVO().getData().get("_programa");				
+			programaSeleccionado = (ProgramaVO) JSONHelper.fromJSON(variablePrograma,ProgramaVO.class);
+			setOnSession("programaSeleccionado", programaSeleccionado);
 		}
 		return programaSeleccionado;
 	}

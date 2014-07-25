@@ -135,6 +135,21 @@
 				<env-entry-value>TEMPLATES/PERCAPITA</env-entry-value>
 			</env-entry>
 		</session>
+		<session>
+			<ejb-name>RebajaService</ejb-name>
+			<env-entry>
+				<description>Tmp Dir</description>
+				<env-entry-name>tmpDir</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>/tmp/excel</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Template folder rebaja</description>
+				<env-entry-name>folderTemplateRebaja</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>TEMPLATES/REBAJA</env-entry-value>
+			</env-entry>
+		</session>
 	</enterprise-beans>
 	<!-- <ejb-client-jar>BaseEJBClient.jar</ejb-client-jar> -->
 </ejb-jar>

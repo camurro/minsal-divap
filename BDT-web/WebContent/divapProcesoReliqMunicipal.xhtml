@@ -9,11 +9,9 @@
 					<h:outputText value="Reliquidación" />
 				</h1>
 				<p:panel id="Panel">
-					<h2>Programa APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES</h2>
+					<h2><h:outputLabel value="#{procesoReliquidacionPlanillasController.programaSeleccionado.nombre}" /></h2>
 
-					<p class="parrafo">La Planilla de Trabajo con Montos de Distribución contiene lorem ipsum dolor sit amet, consectetur adipiscing
-						elit. Praesent egestas tempor nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est dignissim, justo nisi
-						porttitor enim, eget ullamcorper felis augue eget lacus.</p>
+					<p class="parrafo"><h:outputLabel value="#{procesoReliquidacionPlanillasController.programaSeleccionado.descripcion}" /></p>
 
 					<!-- ARCHIVOS DE TAREA -->
 					<h3>Archivos disponibles para la Tarea:</h3>
@@ -28,7 +26,7 @@
 					</div>
 
 					<h3>Filtros del Programa:</h3>
-					<h:panelGrid id="busqueda_mis_tareas">
+					<h:panelGrid id="busqueda_mis_tareas" columns="3">
 						<h:panelGrid>
 							<h:outputText value="Componente: " styleClass="inputLabel" />
 							<p:selectOneMenu>
@@ -38,17 +36,19 @@
 						</h:panelGrid>
 						<h:panelGrid>
 							<h:outputText value="Servicio: " styleClass="inputLabel" />
-							<p:selectOneMenu onchange="document.getElementById('tablaSubtitulos').style.display = 'block';">
-								<f:selectItem itemLabel="Metropolitano Oriente" itemValue="Metropolitano Oriente" />
-								<f:selectItem itemLabel="Concepción" itemValue="Concepción" />
-								<f:selectItem itemLabel="Talcahuano" itemValue="Concepción" />
-								<f:selectItem itemLabel="Iquique" itemValue="Concepción" />
-								<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<p:selectOneMenu>
+								<f:selectItem itemLabel="Seleccione" itemValue="" />  
+								<f:selectItems value="#{procesoReliquidacionMuniController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
 							</p:selectOneMenu>
+						</h:panelGrid>
+						<h:panelGrid>
+						<br />
+						<p:commandButton value="Buscar" styleClass="x-btn-text" icon="ui-icon-search"
+					action="#{procesoReliquidacionMuniController.buscarReliquidacion}" ajax="false" />
 						</h:panelGrid>
 					</h:panelGrid>
 
-					<div id="tablaSubtitulos" style="display: none;">
+					<div id="tablaSubtitulos">
 						<h3>Subtítulos del Programa</h3>
 						<h:form id="form">
 							<h:panelGrid>
