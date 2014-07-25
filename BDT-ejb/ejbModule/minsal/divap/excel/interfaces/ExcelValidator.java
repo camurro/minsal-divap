@@ -119,7 +119,7 @@ public abstract class ExcelValidator<T>{
 		if(getCells() == null || getCells().isEmpty()){
 			return false;
 		}
-
+		
 		int first = getOffsetColumns();
 		boolean isValidRow = true;
 		values = new ArrayList<String>();
@@ -129,6 +129,7 @@ public abstract class ExcelValidator<T>{
 				try{
 					String value = "";
 					if(cellType.getRequired()){
+						System.out.println("xssfRow.getCell("+first+").getRichStringCellValue().getString()-->" + xssfRow.getCell(first).getRichStringCellValue().getString());
 						value = xssfRow.getCell(first++).getRichStringCellValue().getString();
 					}else{
 						if(xssfRow.getCell(first++).getCellType() != 3){
@@ -145,6 +146,7 @@ public abstract class ExcelValidator<T>{
 				try{
 					String value = "";
 					if(cellType.getRequired()){
+						System.out.println("xssfRow.getCell("+first+").getNumericCellValue().getString()-->" + xssfRow.getCell(first).getNumericCellValue());
 						value = "" + xssfRow.getCell(first++).getNumericCellValue();
 					}else{
 						if(xssfRow.getCell(first++).getCellType() != 3){

@@ -124,8 +124,8 @@ public class PercapitaExcelVO extends BaseVO{
 				+ ", percapitaAno=" + percapitaAno + "]";
 	}
 
-	public List<String> getRow() {
-		List<String> row = new ArrayList<String>();
+	public List<Object> getRow() {
+		List<Object> row = new ArrayList<Object>();
 		row.add(((getRegion() != null) ? getRegion().toString() : ""));
 		row.add(((getServicio() != null) ? getServicio().toString() : ""));
 		row.add(getComuna());

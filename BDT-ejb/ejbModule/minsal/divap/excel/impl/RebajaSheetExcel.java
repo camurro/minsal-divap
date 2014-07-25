@@ -20,10 +20,10 @@ public class RebajaSheetExcel extends ExcelTemplate<RebajaVO>{
 	}
 	
 	@Override
-	public List<List<String>> getDataList() {
-		List<List<String>> dataList = new ArrayList<List<String>>();
+	public List<List<Object>> getDataList() {
+		List<List<Object>> dataList = new ArrayList<List<Object>>();
 		for(RebajaVO rebajaVO : getItems()){
-			List<String> row = rebajaVO.getRow();
+			List<Object> row = rebajaVO.getRow();
 			if(row != null){
 				dataList.add(row);
 			}

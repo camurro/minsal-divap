@@ -5,6 +5,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import minsal.divap.enums.FieldType;
+import minsal.divap.excel.interfaces.ExcelValidator;
+import minsal.divap.excel.util.ExcelExtensionValidator;
+import minsal.divap.exception.ExcelFormatException;
+import minsal.divap.vo.CellTypeExcelVO;
+import minsal.divap.vo.DesempenoDificilVO;
+
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -12,29 +19,22 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import minsal.divap.enums.FieldType;
-import minsal.divap.excel.interfaces.ExcelValidator;
-import minsal.divap.excel.util.ExcelExtensionValidator;
-import minsal.divap.exception.ExcelFormatException;
-import minsal.divap.vo.BaseVO;
-import minsal.divap.vo.CellTypeExcelVO;
-
-public class RebajaExcelValidator extends ExcelValidator<BaseVO>{
-	public RebajaExcelValidator(Integer numberField, List<CellTypeExcelVO> cells) {
+public class PercapitaDesempenoDificilExcelValidator extends ExcelValidator<DesempenoDificilVO>{
+	public PercapitaDesempenoDificilExcelValidator(Integer numberField, List<CellTypeExcelVO> cells) {
 		super(numberField, cells);
 	}
 
-	public RebajaExcelValidator(Integer numberField, List<CellTypeExcelVO> cells, Boolean omitHeader) {
+	public PercapitaDesempenoDificilExcelValidator(Integer numberField, List<CellTypeExcelVO> cells, Boolean omitHeader) {
 		super(numberField, cells, omitHeader);
 	}
 
-	public RebajaExcelValidator(Integer numberField, List<CellTypeExcelVO> cells, Integer offsetColumns, Integer offsetRows) {
+	public PercapitaDesempenoDificilExcelValidator(Integer numberField, List<CellTypeExcelVO> cells, Integer offsetColumns, Integer offsetRows) {
 		super(numberField, cells);
 		super.setOffsetColumns(offsetColumns);
 		super.setOffsetRows(offsetRows);
 	}
 
-	public RebajaExcelValidator(Integer numberField, List<CellTypeExcelVO> cells, Boolean omitHeader, Integer offsetColumns, Integer offsetRows) {
+	public PercapitaDesempenoDificilExcelValidator(Integer numberField, List<CellTypeExcelVO> cells, Boolean omitHeader, Integer offsetColumns, Integer offsetRows) {
 		super(numberField, cells, omitHeader);
 		super.setOffsetColumns(offsetColumns);
 		super.setOffsetRows(offsetRows);
@@ -80,6 +80,7 @@ public class RebajaExcelValidator extends ExcelValidator<BaseVO>{
 		int last = sheet.getPhysicalNumberOfRows();
 		for(;first<=last;first++){
 			XSSFRow xssfRow = sheet.getRow(first);
+			System.out.println("xssfRow-->"+xssfRow);
 			if(!empty(xssfRow)){
 				if(!validateTypes(xssfRow)){
 					throw new ExcelFormatException("Los datos de la fila " + first + " no son válidos ");
@@ -90,21 +91,25 @@ public class RebajaExcelValidator extends ExcelValidator<BaseVO>{
 	}
 
 	@Override
-	protected BaseVO convert() {
-		BaseVO baseVO = new BaseVO();
+	protected DesempenoDificilVO convert() {
+		DesempenoDificilVO desempenoDificilVO = new DesempenoDificilVO();
 		if(getValues().size() == getCells().size()){
 			if(!"".equals(getValues().get(0))){
 				Double region = Double.parseDouble(getValues().get(0));
-				baseVO.setRegion( region.intValue());
+				desempenoDificilVO.setRegion( region.intValue());
 			}
 			if(!"".equals(getValues().get(1))){
-				baseVO.setServicio(getValues().get(1));
+				desempenoDificilVO.setServicio(getValues().get(1));
 			}
 			if(!"".equals(getValues().get(2))){
-				baseVO.setComuna(getValues().get(2));
+				desempenoDificilVO.setComuna(getValues().get(2));
+			}
+			if(!"".equals(getValues().get(3))){
+				Double desempenoDificil = Double.parseDouble(getValues().get(3));
+				desempenoDificilVO.setValorDesempenoDificil(desempenoDificil.intValue());
 			}
 		}
-		return baseVO;
+		return desempenoDificilVO;
 	}
 
 	public static void main(String[] args) {
@@ -122,19 +127,19 @@ public class RebajaExcelValidator extends ExcelValidator<BaseVO>{
 				if(url.getFile().endsWith("xls")){
 					HSSFWorkbook workbook = new HSSFWorkbook(url.openStream());
 					HSSFSheet worksheet = workbook.getSheetAt(0);
-					RebajaExcelValidator rebajaExcelValidator = new RebajaExcelValidator(cells.size(), cells, true, 1, 1);
+					PercapitaDesempenoDificilExcelValidator rebajaExcelValidator = new PercapitaDesempenoDificilExcelValidator(cells.size(), cells, true, 1, 1);
 					rebajaExcelValidator.validateFormat(worksheet);		
-					List<BaseVO> items = rebajaExcelValidator.getItems();
-					for(BaseVO item : items){
+					List<DesempenoDificilVO> items = rebajaExcelValidator.getItems();
+					for(DesempenoDificilVO item : items){
 						System.out.println("item->"+item);
 					}
 				}else{
 					XSSFWorkbook workbook = new XSSFWorkbook (url.openStream());
 					XSSFSheet worksheet = workbook.getSheetAt(0);
-					RebajaExcelValidator rebajaExcelValidator = new RebajaExcelValidator(cells.size(), cells, true, 1, 1);
+					PercapitaDesempenoDificilExcelValidator rebajaExcelValidator = new PercapitaDesempenoDificilExcelValidator(cells.size(), cells, true, 1, 1);
 					rebajaExcelValidator.validateFormat(worksheet);		
-					List<BaseVO> items = rebajaExcelValidator.getItems();
-					for(BaseVO item : items){
+					List<DesempenoDificilVO> items = rebajaExcelValidator.getItems();
+					for(DesempenoDificilVO item : items){
 						System.out.println("item->"+item);
 					}
 				}

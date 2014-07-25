@@ -18,6 +18,7 @@ import javax.inject.Named;
 
 import minsal.divap.enums.BusinessProcess;
 import minsal.divap.excel.GeneradorExcel;
+import minsal.divap.exception.ExcelFormatException;
 import minsal.divap.service.DistribucionInicialPercapitaService;
 import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskVO;
@@ -48,7 +49,6 @@ implements Serializable {
 	@EJB
 	private DistribucionInicialPercapitaService distribucionInicialPercapitaService;
 	private boolean errorCarga = false;
-	private boolean archivosCargados = false;
 	private boolean archivosValidos = false;
 	private String docIdDownload;
 	private Integer docAsignacionRecursosPercapita;
@@ -75,24 +75,27 @@ implements Serializable {
 	public void uploadArchivosValorizacion(){
 		String mensaje = "Los archivos fueron cargados correctamente.";
 		if (calculoPerCapitaFile != null && valorBasicoDesempenoFile != null) {
-			setArchivosCargados(true);
 			try{
 				docIds = new ArrayList<Integer>();
 				String filename = calculoPerCapitaFile.getFileName();
-				byte [] content = calculoPerCapitaFile.getContents();
-				distribucionInicialPercapitaService.procesarCalculoPercapita(GeneradorExcel.fromContent(content, XSSFWorkbook.class));
-				Integer docPercapita = persistFile(filename, content);
+				byte [] contentCalculoPerCapitaFile = calculoPerCapitaFile.getContents();
+				distribucionInicialPercapitaService.procesarCalculoPercapita(GeneradorExcel.fromContent(contentCalculoPerCapitaFile, XSSFWorkbook.class));
+				Integer docPercapita = persistFile(filename, contentCalculoPerCapitaFile);
 				if(docPercapita != null){
 					docIds.add(docPercapita);
 				}
 				filename = valorBasicoDesempenoFile.getFileName();
-				content = valorBasicoDesempenoFile.getContents();
-				distribucionInicialPercapitaService.procesarValorBasicoDesempen(GeneradorExcel.fromContent(content, XSSFWorkbook.class));
-				Integer docDesempeno = persistFile(filename, content);
+				byte [] contentDesempeno = valorBasicoDesempenoFile.getContents();
+				distribucionInicialPercapitaService.procesarValorBasicoDesempeno(GeneradorExcel.fromContent(contentDesempeno, XSSFWorkbook.class));
+				Integer docDesempeno = persistFile(filename, contentDesempeno);
 				if(docDesempeno != null){
 					docIds.add(docDesempeno);
 				}
 				setArchivosValidos(true);
+			} catch (ExcelFormatException e) {
+				mensaje = "Los archivos no son válidos.";
+				setArchivosValidos(false);
+				e.printStackTrace();
 			} catch (InvalidFormatException e) {
 				mensaje = "Los archivos no son válidos.";
 				setArchivosValidos(false);
@@ -105,7 +108,6 @@ implements Serializable {
 		}else{
 			mensaje = "Los archivos no fueron cargados.";
 			setArchivosValidos(false);
-			setArchivosCargados(false);
 		}
 		FacesMessage msg = new FacesMessage(mensaje);
 		FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -333,19 +335,6 @@ implements Serializable {
 
 	public void setErrorCarga(boolean errorCarga) {
 		this.errorCarga = errorCarga;
-	}
-
-	public boolean isArchivosCargados() {
-		this.archivosCargados = false;
-		if(this.calculoPerCapitaFile != null && this.valorBasicoDesempenoFile != null){
-			this.archivosCargados = true;
-		}
-		System.out.println("isArchivosCargados-->"+archivosCargados);
-		return archivosCargados;
-	}
-
-	public void setArchivosCargados(boolean archivosCargados) {
-		this.archivosCargados = archivosCargados;
 	}
 
 	public String getDocIdDownload() {

@@ -4,17 +4,15 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import minsal.divap.excel.impl.RebajaSheetExcel;
 import minsal.divap.excel.interfaces.ExcelTemplate;
 
-import org.apache.poi.ss.usermodel.CellRange;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -35,12 +33,12 @@ public class GeneradorExcel {
 	}
 
 	public static <T> T fromContent(byte [] content, Class<T> clazz) throws InvalidFormatException, IOException {
-		if("XSSFWorkbook".equals(clazz.getName())){
+		System.out.println("GeneradorExcel fromContent clazz.getName()-->"+clazz.getSimpleName());
+		if("XSSFWorkbook".equals(clazz.getSimpleName())){
 			return (T)createXlsx(content);
 		}else{
 			return (T)createXls(content);
 		}
-		 
 	}
 	
 	private static HSSFWorkbook createXls(byte [] content) throws IOException{
@@ -51,7 +49,7 @@ public class GeneradorExcel {
 
 	private static XSSFWorkbook createXlsx(byte [] content) throws InvalidFormatException, IOException{
 		InputStream inputStream = new ByteArrayInputStream(content);
-		XSSFWorkbook workbook = new XSSFWorkbook(OPCPackage.open(inputStream));
+		XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
 		return workbook;
 	}
 
@@ -87,8 +85,8 @@ public class GeneradorExcel {
 				cell.setCellStyle(style);
 			}
 
-			List<List<String>>  datalist = excelSheet.getDataList();
-			for(List<String> rowData : datalist){
+			List<List<Object>>  datalist = excelSheet.getDataList();
+			for(List<Object> rowData : datalist){
 				int skipPosition = 0;
 				XSSFRow newRow = sheet.createRow(currentRow++);
 				for (; skipPosition < excelSheet.getOffsetColumns(); skipPosition++) {
@@ -96,8 +94,33 @@ public class GeneradorExcel {
 				}
 				for (int element = 0; element < rowData.size(); element++) {
 					XSSFCell cell = newRow.createCell(skipPosition++);
-					cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-					cell.setCellValue(rowData.get(element));
+					if(rowData.get(element) instanceof String){
+						cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+						System.out.println("rowData.get(element).toString()-->"+rowData.get(element).toString());
+						cell.setCellValue(rowData.get(element).toString());
+					}else if(rowData.get(element) instanceof Boolean){
+						cell.setCellType(XSSFCell.CELL_TYPE_BOOLEAN);
+						boolean value = (Boolean)rowData.get(element);
+						System.out.println("Boolean)rowData.get(element)-->"+value);
+						cell.setCellValue(value);
+					}else if((rowData.get(element) instanceof Integer) || (rowData.get(element) instanceof Long) || (rowData.get(element) instanceof Double) || (rowData.get(element) instanceof Float)){
+						cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+						Double value = null;
+						if(rowData.get(element) instanceof Integer){
+							value = Double.valueOf(((Integer)rowData.get(element)).toString());
+						}
+						if(rowData.get(element) instanceof Long){
+							value = Double.valueOf(((Long)rowData.get(element)).toString());
+						}
+						if(rowData.get(element) instanceof Double){
+							value = (Double)rowData.get(element);
+						}
+						if(rowData.get(element) instanceof Float){
+							value = Double.valueOf(((Float)rowData.get(element)).toString());
+						}
+						System.out.println("Numeric rowData.get(element)-->"+value);
+						cell.setCellValue(value);
+					}
 				}
 			}
 			numberSheet++;
