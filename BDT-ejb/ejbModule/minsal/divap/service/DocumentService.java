@@ -51,7 +51,6 @@ public class DocumentService {
 		Integer docId = null;
 		fileName = new Date().getTime() + "_" + fileName;
 		String dir = "temp";
-
 		BufferedOutputStream bs = null;
 		try {
 			FileOutputStream fs = new FileOutputStream(new File(tmpDir + File.separator + fileName));
@@ -61,9 +60,7 @@ public class DocumentService {
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			String contentType = mimemap.getContentType(fileName.toLowerCase());
 			doc.setContentType(contentType);
-
 			doc.setPath(dir + "/" + fileName);
-
 			this.fileDAO.save(doc);
 			docId = Integer.valueOf(doc.getId());
 		} catch (Exception e) {

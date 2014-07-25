@@ -99,7 +99,7 @@
 				<description>BPM Suite User Name</description>
 				<env-entry-name>bpmUsername</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>bpmsadmin</env-entry-value>
+				<env-entry-value>admin</env-entry-value>
 			</env-entry>
 			<env-entry>
 				<description>BPM Suite Password</description>

@@ -11,7 +11,10 @@ import java.util.List;
  */
 @Entity
 @Table(name="ano_en_curso")
-@NamedQuery(name="AnoEnCurso.findAll", query="SELECT a FROM AnoEnCurso a")
+@NamedQueries({
+    @NamedQuery(name = "AnoEnCurso.findAll", query = "SELECT a FROM AnoEnCurso a"),
+    @NamedQuery(name = "AnoEnCurso.findByAno", query = "SELECT a FROM AnoEnCurso a WHERE a.ano = :ano"),
+    @NamedQuery(name = "AnoEnCurso.findByMontoPercapitalBasal", query = "SELECT a FROM AnoEnCurso a WHERE a.montoPercapitalBasal = :montoPercapitalBasal")})
 public class AnoEnCurso implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -24,7 +27,7 @@ public class AnoEnCurso implements Serializable {
 	private Integer montoPercapitalBasal;
 
 	//bi-directional many-to-one association to AntecendentesComuna
-	@OneToMany(mappedBy="anoEnCurso")
+	@OneToMany(mappedBy="anoAnoEnCurso")
 	private List<AntecendentesComuna> antecendentesComunas;
 
 	//bi-directional many-to-one association to MarcoPresupuestario
@@ -60,14 +63,14 @@ public class AnoEnCurso implements Serializable {
 
 	public AntecendentesComuna addAntecendentesComuna(AntecendentesComuna antecendentesComuna) {
 		getAntecendentesComunas().add(antecendentesComuna);
-		antecendentesComuna.setAnoEnCurso(this);
+		antecendentesComuna.setAnoAnoEnCurso(this);
 
 		return antecendentesComuna;
 	}
 
 	public AntecendentesComuna removeAntecendentesComuna(AntecendentesComuna antecendentesComuna) {
 		getAntecendentesComunas().remove(antecendentesComuna);
-		antecendentesComuna.setAnoEnCurso(null);
+		antecendentesComuna.setAnoAnoEnCurso(null);
 
 		return antecendentesComuna;
 	}

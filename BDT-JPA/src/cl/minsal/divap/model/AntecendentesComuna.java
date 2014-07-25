@@ -1,152 +1,135 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+import java.util.Set;
+
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 
-/**
- * The persistent class for the antecendentes_comuna database table.
- * 
- */
 @Entity
-@Table(name="antecendentes_comuna")
-@NamedQuery(name="AntecendentesComuna.findAll", query="SELECT a FROM AntecendentesComuna a")
+@Table(name = "antecendentes_comuna")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "AntecendentesComuna.findAll", query = "SELECT a FROM AntecendentesComuna a"),
+    @NamedQuery(name = "AntecendentesComuna.findByClasificacion", query = "SELECT a FROM AntecendentesComuna a WHERE a.clasificacion = :clasificacion"),
+    @NamedQuery(name = "AntecendentesComuna.findByAsignacionZona", query = "SELECT a FROM AntecendentesComuna a WHERE a.asignacionZona = :asignacionZona"),
+    @NamedQuery(name = "AntecendentesComuna.findByTramoPobreza", query = "SELECT a FROM AntecendentesComuna a WHERE a.tramoPobreza = :tramoPobreza"),
+    @NamedQuery(name = "AntecendentesComuna.findByIdAntecedentesComuna", query = "SELECT a FROM AntecendentesComuna a WHERE a.idAntecedentesComuna = :idAntecedentesComuna")})
 public class AntecendentesComuna implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+    @Basic(optional = false)
+    @Column(name = "clasificacion")
+    private String clasificacion;
+    @Column(name = "asignacion_zona")
+    private Short asignacionZona;
+    @Column(name = "tramo_pobreza")
+    private Short tramoPobreza;
+    @Id
+	@Column(name="id_antecedentes_comuna", unique=true, nullable=false)
+	@GeneratedValue
+    private Integer idAntecedentesComuna;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "antecedentesComuna")
+    private Set<AntecendentesComunaCalculado> antecendentesComunaCalculadoCollection;
+    @JoinColumn(name = "id_comuna", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Comuna idComuna;
+    @JoinColumn(name = "ano_ano_en_curso", referencedColumnName = "ano")
+    @ManyToOne(optional = false)
+    private AnoEnCurso anoAnoEnCurso;
 
-	@EmbeddedId
-	private AntecendentesComunaPK id;
+    public AntecendentesComuna() {
+    }
 
-	@Column(name="asignacion_zona")
-	private Integer asignacionZona;
+    public AntecendentesComuna(Integer idAntecedentesComuna) {
+        this.idAntecedentesComuna = idAntecedentesComuna;
+    }
 
-	private String clasificacion;
+    public AntecendentesComuna(Integer idAntecedentesComuna, String clasificacion) {
+        this.idAntecedentesComuna = idAntecedentesComuna;
+        this.clasificacion = clasificacion;
+    }
 
-	@Column(name="desempeno_dificil")
-	private Integer desempenoDificil;
+    public String getClasificacion() {
+        return clasificacion;
+    }
 
-	private Integer poblacion;
+    public void setClasificacion(String clasificacion) {
+        this.clasificacion = clasificacion;
+    }
 
-	@Column(name="poblacion_mayor")
-	private Integer poblacionMayor;
+    public Short getAsignacionZona() {
+        return asignacionZona;
+    }
 
-	private Integer pobreza;
+    public void setAsignacionZona(Short asignacionZona) {
+        this.asignacionZona = asignacionZona;
+    }
 
-	private Integer ruralidad;
+    public Short getTramoPobreza() {
+        return tramoPobreza;
+    }
 
-	@Column(name="tramo_pobreza")
-	private Integer tramoPobreza;
+    public void setTramoPobreza(Short tramoPobreza) {
+        this.tramoPobreza = tramoPobreza;
+    }
 
-	@Column(name="valor_referencial_zona")
-	private Integer valorReferencialZona;
+    public Integer getIdAntecedentesComuna() {
+        return idAntecedentesComuna;
+    }
 
-	//bi-directional many-to-one association to AnoEnCurso
-	@ManyToOne
-	@JoinColumn(name="ano_ano_en_curso", insertable=false, updatable=false)
-	private AnoEnCurso anoEnCurso;
+    public void setIdAntecedentesComuna(Integer idAntecedentesComuna) {
+        this.idAntecedentesComuna = idAntecedentesComuna;
+    }
 
-	//bi-directional many-to-one association to Comuna
-	@ManyToOne
-	@JoinColumn(name="id_comuna", insertable=false, updatable=false)
-	private Comuna comuna;
+    @XmlTransient
+    public Set<AntecendentesComunaCalculado> getAntecendentesComunaCalculadoCollection() {
+        return antecendentesComunaCalculadoCollection;
+    }
 
-	public AntecendentesComuna() {
-	}
+    public void setAntecendentesComunaCalculadoCollection(Set<AntecendentesComunaCalculado> antecendentesComunaCalculadoCollection) {
+        this.antecendentesComunaCalculadoCollection = antecendentesComunaCalculadoCollection;
+    }
 
-	public AntecendentesComunaPK getId() {
-		return this.id;
-	}
+    public Comuna getIdComuna() {
+        return idComuna;
+    }
 
-	public void setId(AntecendentesComunaPK id) {
-		this.id = id;
-	}
+    public void setIdComuna(Comuna idComuna) {
+        this.idComuna = idComuna;
+    }
 
-	public Integer getAsignacionZona() {
-		return this.asignacionZona;
-	}
+    public AnoEnCurso getAnoAnoEnCurso() {
+        return anoAnoEnCurso;
+    }
 
-	public void setAsignacionZona(Integer asignacionZona) {
-		this.asignacionZona = asignacionZona;
-	}
+    public void setAnoAnoEnCurso(AnoEnCurso anoAnoEnCurso) {
+        this.anoAnoEnCurso = anoAnoEnCurso;
+    }
 
-	public String getClasificacion() {
-		return this.clasificacion;
-	}
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idAntecedentesComuna != null ? idAntecedentesComuna.hashCode() : 0);
+        return hash;
+    }
 
-	public void setClasificacion(String clasificacion) {
-		this.clasificacion = clasificacion;
-	}
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof AntecendentesComuna)) {
+            return false;
+        }
+        AntecendentesComuna other = (AntecendentesComuna) object;
+        if ((this.idAntecedentesComuna == null && other.idAntecedentesComuna != null) || (this.idAntecedentesComuna != null && !this.idAntecedentesComuna.equals(other.idAntecedentesComuna))) {
+            return false;
+        }
+        return true;
+    }
 
-	public Integer getDesempenoDificil() {
-		return this.desempenoDificil;
-	}
-
-	public void setDesempenoDificil(Integer desempenoDificil) {
-		this.desempenoDificil = desempenoDificil;
-	}
-
-	public Integer getPoblacion() {
-		return this.poblacion;
-	}
-
-	public void setPoblacion(Integer poblacion) {
-		this.poblacion = poblacion;
-	}
-
-	public Integer getPoblacionMayor() {
-		return this.poblacionMayor;
-	}
-
-	public void setPoblacionMayor(Integer poblacionMayor) {
-		this.poblacionMayor = poblacionMayor;
-	}
-
-	public Integer getPobreza() {
-		return this.pobreza;
-	}
-
-	public void setPobreza(Integer pobreza) {
-		this.pobreza = pobreza;
-	}
-
-	public Integer getRuralidad() {
-		return this.ruralidad;
-	}
-
-	public void setRuralidad(Integer ruralidad) {
-		this.ruralidad = ruralidad;
-	}
-
-	public Integer getTramoPobreza() {
-		return this.tramoPobreza;
-	}
-
-	public void setTramoPobreza(Integer tramoPobreza) {
-		this.tramoPobreza = tramoPobreza;
-	}
-
-	public Integer getValorReferencialZona() {
-		return this.valorReferencialZona;
-	}
-
-	public void setValorReferencialZona(Integer valorReferencialZona) {
-		this.valorReferencialZona = valorReferencialZona;
-	}
-
-	public AnoEnCurso getAnoEnCurso() {
-		return this.anoEnCurso;
-	}
-
-	public void setAnoEnCurso(AnoEnCurso anoEnCurso) {
-		this.anoEnCurso = anoEnCurso;
-	}
-
-	public Comuna getComuna() {
-		return this.comuna;
-	}
-
-	public void setComuna(Comuna comuna) {
-		this.comuna = comuna;
-	}
-
+    @Override
+    public String toString() {
+        return "cl.minsal.divap.model.AntecendentesComuna[ idAntecedentesComuna=" + idAntecedentesComuna + " ]";
+    }
+    
 }

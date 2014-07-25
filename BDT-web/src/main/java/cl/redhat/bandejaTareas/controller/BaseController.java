@@ -35,7 +35,7 @@ public abstract class BaseController {
 	FacesContext facesContext;
 	private DocumentoVO documento;
 	@EJB
-	private DocumentService documentService;
+	protected DocumentService documentService;
 
 	public String getLoggedUsername() {
 		if (userUtil != null) return userUtil.getUsername();
@@ -150,6 +150,10 @@ public abstract class BaseController {
 		return documentService.uploadTemporalFile(file.getFileName(), file.getContents());
 	}
 
+	public Integer persistFile(String filename, byte[] contents) {
+		return documentService.uploadTemporalFile(filename, contents);
+	}
+	
 	public DocumentoVO getDocumento()
 	{
 		return this.documento;

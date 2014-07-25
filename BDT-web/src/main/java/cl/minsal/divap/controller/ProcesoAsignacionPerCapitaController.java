@@ -17,12 +17,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import minsal.divap.enums.BusinessProcess;
+import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.service.DistribucionInicialPercapitaService;
-import minsal.divap.service.DocumentService;
 import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskVO;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
@@ -45,10 +47,9 @@ implements Serializable {
 
 	@EJB
 	private DistribucionInicialPercapitaService distribucionInicialPercapitaService;
-	@EJB
-	private DocumentService documentService;
 	private boolean errorCarga = false;
 	private boolean archivosCargados = false;
+	private boolean archivosValidos = false;
 	private String docIdDownload;
 	private Integer docAsignacionRecursosPercapita;
 	private Integer docAsignacionDesempenoDificil;
@@ -71,24 +72,43 @@ implements Serializable {
 		this.valorBasicoDesempenoFile = valorBasicoDesempenoFile;
 	}
 
-	public void uploadArchivosValorizacion() {
+	public void uploadArchivosValorizacion(){
+		String mensaje = "Los archivos fueron cargados correctamente.";
 		if (calculoPerCapitaFile != null && valorBasicoDesempenoFile != null) {
-			FacesMessage msg = new FacesMessage(
-					"Los archivos fueron cargados correctamente.");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
 			setArchivosCargados(true);
-			docIds = new ArrayList<Integer>();
-			Integer docPercapita = persistFile(calculoPerCapitaFile);
-			if(docPercapita != null){
-				docIds.add(docPercapita);
-			}
-			Integer docDesempeno = persistFile(valorBasicoDesempenoFile);
-			if(docDesempeno != null){
-				docIds.add(docDesempeno);
+			try{
+				docIds = new ArrayList<Integer>();
+				String filename = calculoPerCapitaFile.getFileName();
+				byte [] content = calculoPerCapitaFile.getContents();
+				distribucionInicialPercapitaService.procesarCalculoPercapita(GeneradorExcel.fromContent(content, XSSFWorkbook.class));
+				Integer docPercapita = persistFile(filename, content);
+				if(docPercapita != null){
+					docIds.add(docPercapita);
+				}
+				filename = valorBasicoDesempenoFile.getFileName();
+				content = valorBasicoDesempenoFile.getContents();
+				distribucionInicialPercapitaService.procesarValorBasicoDesempen(GeneradorExcel.fromContent(content, XSSFWorkbook.class));
+				Integer docDesempeno = persistFile(filename, content);
+				if(docDesempeno != null){
+					docIds.add(docDesempeno);
+				}
+				setArchivosValidos(true);
+			} catch (InvalidFormatException e) {
+				mensaje = "Los archivos no son válidos.";
+				setArchivosValidos(false);
+				e.printStackTrace();
+			} catch (IOException e) {
+				mensaje = "Los archivos no son válidos.";
+				setArchivosValidos(false);
+				e.printStackTrace();
 			}
 		}else{
+			mensaje = "Los archivos no fueron cargados.";
+			setArchivosValidos(false);
 			setArchivosCargados(false);
 		}
+		FacesMessage msg = new FacesMessage(mensaje);
+		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 
 	boolean validarMontosDistribucion = false;
@@ -154,7 +174,7 @@ implements Serializable {
 		log.info("ProcesosPrincipalController Alcanzado.");
 		this.docAsignacionRecursosPercapita = distribucionInicialPercapitaService.getIdPlantillaRecursosPerCapita();
 		this.docAsignacionDesempenoDificil = distribucionInicialPercapitaService.getIdPlantillaPoblacionInscrita();
-		
+
 		System.out.println("this.docAsignacionRecursosPercapita-->"+this.docAsignacionRecursosPercapita);
 		System.out.println("this.docAsignacionDesempenoDificil-->"+this.docAsignacionDesempenoDificil);
 		if (!getSessionBean().isLogged()) {
@@ -261,10 +281,17 @@ implements Serializable {
 		listGobiernoRegional.add(pojo);
 	}
 
-	public void handleFileUpload(FileUploadEvent event) {
+	public void handleFileUploadPerCapitaFile(FileUploadEvent event) {
 		FacesMessage msg = new FacesMessage("Succesful", event.getFile()
 				.getFileName() + " is uploaded.");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
+		System.out.println("handleFileUploadPerCapitaFile-->");
+	}
+	public void handleFileUploadBasicoDesempenoFile(FileUploadEvent event) {
+		FacesMessage msg = new FacesMessage("Succesful", event.getFile()
+				.getFileName() + " is uploaded.");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		System.out.println("handleFileUploadBasicoDesempenoFile-->");
 	}
 
 	@Override
@@ -309,6 +336,11 @@ implements Serializable {
 	}
 
 	public boolean isArchivosCargados() {
+		this.archivosCargados = false;
+		if(this.calculoPerCapitaFile != null && this.valorBasicoDesempenoFile != null){
+			this.archivosCargados = true;
+		}
+		System.out.println("isArchivosCargados-->"+archivosCargados);
 		return archivosCargados;
 	}
 
@@ -348,6 +380,14 @@ implements Serializable {
 		setDocumento(documentService.getDocument(docDownload));
 		super.downloadDocument();
 		return null;
+	}
+
+	public boolean isArchivosValidos() {
+		return archivosValidos;
+	}
+
+	public void setArchivosValidos(boolean archivosValidos) {
+		this.archivosValidos = archivosValidos;
 	}
 
 	@Override
