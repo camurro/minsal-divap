@@ -68,7 +68,7 @@
 				<description>Alfresco Site</description>
 				<env-entry-name>alfrescoSite</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>sitioTest</env-entry-value>
+				<env-entry-value>MINSAL-DIVAP</env-entry-value>
 			</env-entry>
 			<env-entry>
 				<description>Alfresco Upload Directory</description>
@@ -133,6 +133,21 @@
 				<env-entry-name>folderTemplatePercapita</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
 				<env-entry-value>TEMPLATES/PERCAPITA</env-entry-value>
+			</env-entry>
+		</session>
+		<session>
+			<ejb-name>RebajaService</ejb-name>
+			<env-entry>
+				<description>Tmp Dir</description>
+				<env-entry-name>tmpDir</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>/tmp/excel</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Template folder rebaja</description>
+				<env-entry-name>folderTemplateRebaja</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>TEMPLATES/REBAJA</env-entry-value>
 			</env-entry>
 		</session>
 	</enterprise-beans>

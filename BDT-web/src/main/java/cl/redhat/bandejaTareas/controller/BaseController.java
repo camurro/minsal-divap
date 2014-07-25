@@ -35,7 +35,7 @@ public abstract class BaseController {
 	FacesContext facesContext;
 	private DocumentoVO documento;
 	@EJB
-	private DocumentService documentService;
+	protected DocumentService documentService;
 
 	public String getLoggedUsername() {
 		if (userUtil != null) return userUtil.getUsername();

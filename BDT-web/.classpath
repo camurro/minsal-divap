@@ -4,16 +4,6 @@
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/BDT-ejb"/>
-<<<<<<< HEAD
-	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.jboss.ide.eclipse.as.core.server.runtime.runtimeTarget/JBoss EAP 6.1 Runtime 1">
-=======
-	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.jboss.ide.eclipse.as.core.server.runtime.runtimeTarget/JBoss BPMS 6.2 Runtime">
->>>>>>> e0ed6cc13d8a19b01464120fa16ade93bc709d8f
-		<attributes>
-			<attribute name="owner.project.facets" value="jst.jsf;jst.web"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.6.0_45">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
@@ -21,5 +11,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="/BDT-ear/lib/jackson-core-asl.jar"/>
 	<classpathentry kind="lib" path="/BDT-ear/lib/jackson-mapper-asl.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/BDT-ejb"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.jboss.ide.eclipse.as.core.server.runtime.runtimeTarget/JBoss BPMS 6.2 Runtime"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
