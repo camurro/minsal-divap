@@ -68,7 +68,7 @@
 				<description>Alfresco Site</description>
 				<env-entry-name>alfrescoSite</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>sitioTest</env-entry-value>
+				<env-entry-value>MINSAL-DIVAP</env-entry-value>
 			</env-entry>
 			<env-entry>
 				<description>Alfresco Upload Directory</description>
