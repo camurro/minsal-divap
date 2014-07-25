@@ -17,10 +17,10 @@ public class PercapitaSheetExcel extends ExcelTemplate<PercapitaExcelVO>{
 	}
 	
 	@Override
-	public List<List<String>> getDataList() {
-		List<List<String>> dataList = new ArrayList<List<String>>();
+	public List<List<Object>> getDataList() {
+		List<List<Object>> dataList = new ArrayList<List<Object>>();
 		for(PercapitaExcelVO percapitaExcelVO : getItems()){
-			List<String> row = percapitaExcelVO.getRow();
+			List<Object> row = percapitaExcelVO.getRow();
 			if(row != null){
 				dataList.add(row);
 			}

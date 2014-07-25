@@ -10,15 +10,24 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
 import minsal.divap.dao.UsuarioDAO;
+import minsal.divap.enums.FieldType;
 import minsal.divap.enums.TemplatesType;
 import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.excel.impl.AsignacionRecursosPercapitaSheetExcel;
+import minsal.divap.excel.impl.PercapitaDesempenoDificilExcelValidator;
+import minsal.divap.exception.ExcelFormatException;
 import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.BodyVO;
+import minsal.divap.vo.CellTypeExcelVO;
+import minsal.divap.vo.DesempenoDificilVO;
+
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import cl.minsal.divap.model.Usuario;
 
 @Stateless
@@ -38,7 +47,7 @@ public class DistribucionInicialPercapitaService {
 	private String tmpDir;
 	@Resource(name="folderTemplatePercapita")
 	private String folderTemplatePercapita;
-	
+
 
 	public Integer crearIntanciaDistribucionInicialPercapita(String username){
 		System.out.println("username-->"+username);
@@ -51,7 +60,7 @@ public class DistribucionInicialPercapitaService {
 		Integer plantillaId = documentService.getPlantillaByType(TemplatesType.DESEMPENODIFICIL);
 		if(plantillaId == null){
 			List<BaseVO> servicios = servicioSaludService.getAllServicios();
-			
+
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			String filename = tmpDir + File.separator + "plantillaDesempenoDificil.xlsx";
 			String contenType = mimemap.getContentType(filename.toLowerCase());
@@ -80,6 +89,11 @@ public class DistribucionInicialPercapitaService {
 		Integer plantillaId = documentService.getPlantillaByType(TemplatesType.RECURSOSPERCAPITA);
 		if(plantillaId == null){
 			List<BaseVO> servicios = servicioSaludService.getAllServicios();
+			for(BaseVO baseVO : servicios){
+				System.out.println("getIdPlantillaRecursosPerCapita baseVO="+baseVO);
+			}
+
+			
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			String filename = tmpDir + File.separator + "plantillaPercapita.xlsx";
 			String contenType = mimemap.getContentType(filename.toLowerCase());
@@ -106,13 +120,36 @@ public class DistribucionInicialPercapitaService {
 	}
 
 
-	public void procesarCalculoPercapita(XSSFWorkbook fromContent) {
-		
+	public void procesarCalculoPercapita(XSSFWorkbook workbook) {
+
 	}
 
 
-	public void procesarValorBasicoDesempen(XSSFWorkbook fromContent) {
-		
+	public void procesarValorBasicoDesempeno(XSSFWorkbook workbook) throws ExcelFormatException {
+		List<CellTypeExcelVO> cells = new ArrayList<CellTypeExcelVO>();
+		CellTypeExcelVO fieldOne = new CellTypeExcelVO(true, FieldType.INTEGERFIELD);
+		cells.add(fieldOne);
+		CellTypeExcelVO fieldTwo = new CellTypeExcelVO(true);
+		cells.add(fieldTwo);
+		CellTypeExcelVO fieldThree = new CellTypeExcelVO(true);
+		cells.add(fieldThree);
+		CellTypeExcelVO fieldFour = new CellTypeExcelVO(true, FieldType.INTEGERFIELD);
+		cells.add(fieldFour);
+		XSSFSheet worksheet = workbook.getSheetAt(0);
+		PercapitaDesempenoDificilExcelValidator desempenoDificilExcelValidator = new PercapitaDesempenoDificilExcelValidator(cells.size(), cells, true, 0, 0);
+		desempenoDificilExcelValidator.validateFormat(worksheet);		
+		List<DesempenoDificilVO> items = desempenoDificilExcelValidator.getItems();
+		for(DesempenoDificilVO item : items){
+			System.out.println("item->"+item);
+		}
+	}
+
+	public void procesarCalculoPercapita(HSSFSheet workbook) {
+		throw new NotImplementedException();
+	}
+
+	public void procesarValorBasicoDesempeno(HSSFSheet workbook) {
+		throw new NotImplementedException();
 	}
 
 }

@@ -1,42 +1,35 @@
 package minsal.divap.excel.impl;
 
-import java.io.FileNotFoundException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
+
+import minsal.divap.excel.interfaces.ExcelValidator;
+import minsal.divap.exception.ExcelFormatException;
+import minsal.divap.vo.CellTypeExcelVO;
+import minsal.divap.vo.DesempenoDificilVO;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import minsal.divap.enums.FieldType;
-import minsal.divap.excel.interfaces.ExcelValidator;
-import minsal.divap.excel.util.ExcelExtensionValidator;
-import minsal.divap.exception.ExcelFormatException;
-import minsal.divap.vo.BaseVO;
-import minsal.divap.vo.CellTypeExcelVO;
-import minsal.divap.vo.CumplimientoVO;
 
-public class RebajaExcelValidator extends ExcelValidator<CumplimientoVO>{
+public class PercapitaDesempenoDificilExcelValidator extends ExcelValidator<DesempenoDificilVO>{
 	
-	public RebajaExcelValidator(Integer numberField, List<CellTypeExcelVO> cells) {
+	public PercapitaDesempenoDificilExcelValidator(Integer numberField, List<CellTypeExcelVO> cells) {
 		super(numberField, cells);
 	}
 
-	public RebajaExcelValidator(Integer numberField, List<CellTypeExcelVO> cells, Boolean omitHeader) {
+	public PercapitaDesempenoDificilExcelValidator(Integer numberField, List<CellTypeExcelVO> cells, Boolean omitHeader) {
 		super(numberField, cells, omitHeader);
 	}
 
-	public RebajaExcelValidator(Integer numberField, List<CellTypeExcelVO> cells, Integer offsetColumns, Integer offsetRows) {
+	public PercapitaDesempenoDificilExcelValidator(Integer numberField, List<CellTypeExcelVO> cells, Integer offsetColumns, Integer offsetRows) {
 		super(numberField, cells);
 		super.setOffsetColumns(offsetColumns);
 		super.setOffsetRows(offsetRows);
 	}
 
-	public RebajaExcelValidator(Integer numberField, List<CellTypeExcelVO> cells, Boolean omitHeader, Integer offsetColumns, Integer offsetRows) {
+	public PercapitaDesempenoDificilExcelValidator(Integer numberField, List<CellTypeExcelVO> cells, Boolean omitHeader, Integer offsetColumns, Integer offsetRows) {
 		super(numberField, cells, omitHeader);
 		super.setOffsetColumns(offsetColumns);
 		super.setOffsetRows(offsetRows);
@@ -82,6 +75,7 @@ public class RebajaExcelValidator extends ExcelValidator<CumplimientoVO>{
 		int last = sheet.getPhysicalNumberOfRows();
 		for(;first<=last;first++){
 			XSSFRow xssfRow = sheet.getRow(first);
+			System.out.println("xssfRow-->"+xssfRow);
 			if(!empty(xssfRow)){
 				if(!validateTypes(xssfRow)){
 					throw new ExcelFormatException("Los datos de la fila " + first + " no son válidos ");
@@ -91,29 +85,26 @@ public class RebajaExcelValidator extends ExcelValidator<CumplimientoVO>{
 		}
 	}
 
-	@Override
-	protected CumplimientoVO convert() {
-		CumplimientoVO cumVO = new CumplimientoVO();
-		if(getValues().size() == getCells().size()){
-			if(!"".equals(getValues().get(2))){
-				Double id_comuna = Double.parseDouble(getValues().get(2));
-				cumVO.setId_comuna(id_comuna.intValue());
-			}
-			if(!"".equals(getValues().get(4))){
-				Double value_item1 = Double.parseDouble(getValues().get(4));
-				cumVO.setValue_item1(value_item1.intValue());
-			}
-			if(!"".equals(getValues().get(5))){
-				Double value_item2 = Double.parseDouble(getValues().get(5));
-				cumVO.setValue_item2(value_item2.intValue());
-			}
-			if(!"".equals(getValues().get(6))){
-				Double value_item3 = Double.parseDouble(getValues().get(6));
-				cumVO.setValue_item3(value_item3.intValue());
-			}
-		
-		}
-		return cumVO;
-	}
 	
+	protected DesempenoDificilVO convert() {
+		DesempenoDificilVO desempenoDificilVO = new DesempenoDificilVO();
+		if(getValues().size() == getCells().size()){
+			if(!"".equals(getValues().get(0))){
+				Double region = Double.parseDouble(getValues().get(0));
+				desempenoDificilVO.setRegion( region.intValue());
+			}
+			if(!"".equals(getValues().get(1))){
+				desempenoDificilVO.setServicio(getValues().get(1));
+			}
+			if(!"".equals(getValues().get(2))){
+				desempenoDificilVO.setComuna(getValues().get(2));
+			}
+			if(!"".equals(getValues().get(3))){
+				Double desempenoDificil = Double.parseDouble(getValues().get(3));
+				desempenoDificilVO.setValorDesempenoDificil(desempenoDificil.intValue());
+			}
+		}
+		return desempenoDificilVO;
+	}
+
 }

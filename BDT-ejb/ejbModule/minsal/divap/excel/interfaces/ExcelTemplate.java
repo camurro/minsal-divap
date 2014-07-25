@@ -9,7 +9,7 @@ public abstract class ExcelTemplate<T>{
 	private List<String> headers = null;
 	private List<T> items;
 
-	public abstract List<List<String>> getDataList();
+	public abstract List<List<Object>> getDataList();
 
 	public ExcelTemplate(List<String> headers, List<T> items){
 		this.headers = headers;

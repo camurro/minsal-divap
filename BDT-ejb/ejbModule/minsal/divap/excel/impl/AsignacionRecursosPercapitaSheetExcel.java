@@ -17,10 +17,10 @@ public class AsignacionRecursosPercapitaSheetExcel extends ExcelTemplate<BaseVO>
 	}
 	
 	@Override
-	public List<List<String>> getDataList() {
-		List<List<String>> dataList = new ArrayList<List<String>>();
+	public List<List<Object>> getDataList() {
+		List<List<Object>> dataList = new ArrayList<List<Object>>();
 		for(BaseVO baseVO : getItems()){
-			List<String> row = baseVO.getRow();
+			List<Object> row = baseVO.getRow();
 			if(row != null){
 				dataList.add(row);
 			}

@@ -87,11 +87,10 @@
 					<br />
 					<p:commandButton value="Cargar Archivos" ajax="false"
 						actionListener="#{procesoAsignacionPerCapitaController.uploadArchivosValorizacion}"
-						icon="ui-icon-upload" id="cargarArchivos" update=":continuar"
-						disabled="#{not procesoAsignacionPerCapitaController.archivosCargados}" />
+						icon="ui-icon-upload" id="cargarArchivos" update=":continuar" />
 				</p:panel>
 				<p:commandButton value="Volver" styleClass="x-btn-text"
-					action="divapProcesoAsignacionPerCapitaInicio?faces-redirect=true"
+					action="bandejaTareas.jsf?faces-redirect=true"
 					ajax="false" icon="ui-icon-seek-first" />
 				<p:commandButton id="continuar" value="Continuar"
 					styleClass="x-btn-text"
