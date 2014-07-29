@@ -27,7 +27,7 @@ public class ServicioSalud implements Serializable {
 	private String nombre;
 
 	//bi-directional many-to-one association to Comuna
-	@OneToMany(mappedBy="idServicioSalud")
+	@OneToMany(mappedBy="servicioSalud")
 	private List<Comuna> comunas;
 
 	//bi-directional many-to-one association to Establecimiento
