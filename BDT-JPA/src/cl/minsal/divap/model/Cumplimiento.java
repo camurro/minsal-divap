@@ -24,6 +24,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Cumplimiento.findAll", query = "SELECT c FROM Cumplimiento c"),
     @NamedQuery(name = "Cumplimiento.findByIdCumplimiento", query = "SELECT c FROM Cumplimiento c WHERE c.idCumplimiento = :idCumplimiento"),
+    @NamedQuery(name = "Cumplimiento.findByIdTramo", query = "SELECT c FROM Cumplimiento c WHERE c.tramo.idTramo = :idTramo"),
+    @NamedQuery(name = "Cumplimiento.findByIdTipoCumplimiento", query = "SELECT c FROM Cumplimiento c WHERE c.tipoCumplimiento.idTipoCumplimiento = :idTipoCumplimiento"),
     @NamedQuery(name = "Cumplimiento.findByRebaja", query = "SELECT c FROM Cumplimiento c WHERE c.rebaja = :rebaja"),
     @NamedQuery(name = "Cumplimiento.findByPorcentajeDesde", query = "SELECT c FROM Cumplimiento c WHERE c.porcentajeDesde = :porcentajeDesde"),
     @NamedQuery(name = "Cumplimiento.findByPorcentajeHasta", query = "SELECT c FROM Cumplimiento c WHERE c.porcentajeHasta = :porcentajeHasta")})

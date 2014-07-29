@@ -39,7 +39,7 @@
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true" ajax="false"
 					icon="ui-icon-seek-first" />
 				<p:commandButton id="botonContinuar" value="Continuar" ajax="false" actionListener="#{procesoRebajaController.enviar}"
-						action="bandejaTareas?faces-redirect=true indexMenu=0" icon="ui-icon-play" disabled="#{procesoRebajaController.archivosCargados}">
+						action="bandejaTareas?faces-redirect=true indexMenu=0" icon="ui-icon-play" disabled="#{not procesoRebajaController.archivosValidos}">
 						<f:setPropertyActionListener target="#{procesoRebajaController.target}"
 							value="bandejaTareas.jsf" />
 					</p:commandButton>

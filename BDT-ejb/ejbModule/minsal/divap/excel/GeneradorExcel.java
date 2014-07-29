@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import minsal.divap.excel.impl.RebajaCalculadaSheetExcel;
 import minsal.divap.excel.impl.RebajaSheetExcel;
 import minsal.divap.excel.interfaces.ExcelTemplate;
 
@@ -205,8 +206,8 @@ public class GeneradorExcel {
 				
 			}
 
-			List<List<String>>  datalist = excelSheet.getDataList();
-			for(List<String> rowData : datalist){
+			List<List<Object>>  datalist = excelSheet.getDataList();
+			for(List<Object> rowData : datalist){
 				int skipPosition = 0;
 				XSSFRow newRow = sheet.createRow(currentRow++);
 				for (; skipPosition < excelSheet.getOffsetColumns(); skipPosition++) {
@@ -214,8 +215,153 @@ public class GeneradorExcel {
 				}
 				for (int element = 0; element < rowData.size(); element++) {
 					XSSFCell cell = newRow.createCell(skipPosition++);
+					if(rowData.get(element) instanceof String){
+						cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+						System.out.println("rowData.get(element).toString()-->"+rowData.get(element).toString());
+						cell.setCellValue(rowData.get(element).toString());
+					}else if(rowData.get(element) instanceof Boolean){
+						cell.setCellType(XSSFCell.CELL_TYPE_BOOLEAN);
+						boolean value = (Boolean)rowData.get(element);
+						System.out.println("Boolean)rowData.get(element)-->"+value);
+						cell.setCellValue(value);
+					}else if((rowData.get(element) instanceof Integer) || (rowData.get(element) instanceof Long) || (rowData.get(element) instanceof Double) || (rowData.get(element) instanceof Float)){
+						cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+						Double value = null;
+						if(rowData.get(element) instanceof Integer){
+							value = Double.valueOf(((Integer)rowData.get(element)).toString());
+						}
+						if(rowData.get(element) instanceof Long){
+							value = Double.valueOf(((Long)rowData.get(element)).toString());
+						}
+						if(rowData.get(element) instanceof Double){
+							value = (Double)rowData.get(element);
+						}
+						if(rowData.get(element) instanceof Float){
+							value = Double.valueOf(((Float)rowData.get(element)).toString());
+						}
+						System.out.println("Numeric rowData.get(element)-->"+value);
+						cell.setCellValue(value);
+					}
+				}
+			}
+			numberSheet++;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void addSheetRebajaCalculada(ExcelTemplate excelSheet, String sheetName){
+		try{
+			if(workbook == null){
+				workbook = new XSSFWorkbook();
+			}
+			XSSFSheet sheet = null;
+			sheet = workbook.createSheet(sheetName);
+			int currentRow = 0;
+			for(; currentRow < excelSheet.getOffsetRows(); ){
+				sheet.createRow(currentRow++);
+			}
+
+			XSSFRow row = sheet.createRow(currentRow++);
+			List<String> headers = excelSheet.getHeaders();
+			List<String> subHeaders = ((RebajaCalculadaSheetExcel)excelSheet).getSubHeaders();
+			
+			CellStyle style = workbook.createCellStyle();
+			style.setFillBackgroundColor(IndexedColors.BLUE.getIndex());
+			style.setFillPattern(CellStyle.ALIGN_FILL);
+			Font font = workbook.createFont();
+			font.setColor(IndexedColors.WHITE.getIndex());
+			style.setFont(font);
+			
+			
+			List<Integer> merged = new ArrayList<Integer>();
+			List<String> titulos = new ArrayList<String>();
+			
+			for (int i = 0; i < headers.size(); i++) {
+				String[] datos = headers.get(i).split(",");
+				merged.add(Integer.parseInt(datos[0]));
+				titulos.add(datos[1]);
+			}
+			
+			int pos=0;
+			for (int i = 0; i < titulos.size(); i++) {
+				int longitud = merged.get(i);
+				for (int j = 0; j < longitud; j++) {
+					XSSFCell cell = row.createCell(pos++);
 					cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-					cell.setCellValue(rowData.get(element));
+					if(j==0){
+						cell.setCellValue(titulos.get(i));
+					}else{
+						cell.setCellValue("");
+					}
+					cell.setCellStyle(style);
+				}
+			}
+			
+			int posicion=0;
+			for (int i = 0; i < merged.size(); i++) {	
+				if(i==0){
+					sheet.addMergedRegion(new CellRangeAddress(0,0,posicion,merged.get(i)-1));
+					posicion+=merged.get(i);
+				}else{
+					sheet.addMergedRegion(new CellRangeAddress(0,0,posicion,posicion+merged.get(i)-1));
+					posicion+=merged.get(i);
+				}
+			}
+			
+						
+			XSSFRow row2 = sheet.createRow(currentRow++);
+			
+			
+			for (int element = 0, skipPosition = 0; element < subHeaders.size(); element++) {
+				if(element == 0){
+					for (; skipPosition < excelSheet.getOffsetColumns(); skipPosition++) {
+						row.createCell(skipPosition);
+					}
+				}
+				XSSFCell cell = row2.createCell(skipPosition++);
+				cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+				cell.setCellValue(subHeaders.get(element));
+				cell.setCellStyle(style);
+				
+			}
+
+			List<List<Object>>  datalist = excelSheet.getDataList();
+			for(List<Object> rowData : datalist){
+				int skipPosition = 0;
+				XSSFRow newRow = sheet.createRow(currentRow++);
+				for (; skipPosition < excelSheet.getOffsetColumns(); skipPosition++) {
+					newRow.createCell(skipPosition);
+				}
+				for (int element = 0; element < rowData.size(); element++) {
+					XSSFCell cell = newRow.createCell(skipPosition++);
+					if(rowData.get(element) instanceof String){
+						cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+						System.out.println("rowData.get(element).toString()-->"+rowData.get(element).toString());
+						cell.setCellValue(rowData.get(element).toString());
+					}else if(rowData.get(element) instanceof Boolean){
+						cell.setCellType(XSSFCell.CELL_TYPE_BOOLEAN);
+						boolean value = (Boolean)rowData.get(element);
+						System.out.println("Boolean)rowData.get(element)-->"+value);
+						cell.setCellValue(value);
+					}else if((rowData.get(element) instanceof Integer) || (rowData.get(element) instanceof Long) || (rowData.get(element) instanceof Double) || (rowData.get(element) instanceof Float)){
+						cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+						Double value = null;
+						if(rowData.get(element) instanceof Integer){
+							value = Double.valueOf(((Integer)rowData.get(element)).toString());
+						}
+						if(rowData.get(element) instanceof Long){
+							value = Double.valueOf(((Long)rowData.get(element)).toString());
+						}
+						if(rowData.get(element) instanceof Double){
+							value = (Double)rowData.get(element);
+						}
+						if(rowData.get(element) instanceof Float){
+							value = Double.valueOf(((Float)rowData.get(element)).toString());
+						}
+						System.out.println("Numeric rowData.get(element)-->"+value);
+						cell.setCellValue(value);
+					}
 				}
 			}
 			numberSheet++;
