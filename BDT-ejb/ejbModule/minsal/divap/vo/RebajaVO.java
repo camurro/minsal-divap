@@ -27,10 +27,10 @@ public class RebajaVO implements Serializable{
 
 	public List<Object> getRow() {
 		List<Object> row = new ArrayList<Object>();
-		row.add(((getId_servicio() > 0) ? getId_servicio().toString() : ""));
-		row.add(((getServicio() != null) ? getServicio().toString() : ""));
-		row.add(((getId_comuna() > 0) ? getId_comuna().toString() : ""));
-		row.add(((getComuna() != null) ? getComuna().toString() : ""));
+		row.add(getId_servicio());
+		row.add(getServicio());
+		row.add(getId_comuna());
+		row.add(getComuna());
 		return row;
 	}
 

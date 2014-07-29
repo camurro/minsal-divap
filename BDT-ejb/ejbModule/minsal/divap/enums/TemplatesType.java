@@ -2,7 +2,7 @@ package minsal.divap.enums;
 
 
 public enum TemplatesType{
-	DESEMPENODIFICIL(1), RECURSOSPERCAPITA(2), BASECUMPLIMIENTO(3)  ;
+	DESEMPENODIFICIL(1), RECURSOSPERCAPITA(2), BASECUMPLIMIENTO(3),REBAJACALCULADA(4)  ;
 
 	private Integer id;
 	

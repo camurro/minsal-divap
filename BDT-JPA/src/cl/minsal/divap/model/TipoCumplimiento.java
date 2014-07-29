@@ -1,13 +1,19 @@
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import java.util.Set;
-
+import java.util.Collection;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -30,14 +36,15 @@ import javax.xml.bind.annotation.XmlTransient;
 public class TipoCumplimiento implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-	@Column(name="id_tipo_cumplimiento", unique=true, nullable=false)
-	@GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id_tipo_cumplimiento")
     private Integer idTipoCumplimiento;
     @Basic(optional = false)
     @Column(name = "descripcion")
     private String descripcion;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tipoCumplimiento")
-    private Set<Cumplimiento> cumplimientoCollection;
+    @OneToMany(mappedBy = "idTipoCumplimiento")
+    private Collection<ComunaCumplimiento> comunaCumplimientoCollection;
 
     public TipoCumplimiento() {
     }
@@ -68,12 +75,12 @@ public class TipoCumplimiento implements Serializable {
     }
 
     @XmlTransient
-    public Set<Cumplimiento> getCumplimientoCollection() {
-        return cumplimientoCollection;
+    public Collection<ComunaCumplimiento> getComunaCumplimientoCollection() {
+        return comunaCumplimientoCollection;
     }
 
-    public void setCumplimientoCollection(Set<Cumplimiento> cumplimientoCollection) {
-        this.cumplimientoCollection = cumplimientoCollection;
+    public void setComunaCumplimientoCollection(Collection<ComunaCumplimiento> comunaCumplimientoCollection) {
+        this.comunaCumplimientoCollection = comunaCumplimientoCollection;
     }
 
     @Override
@@ -85,6 +92,7 @@ public class TipoCumplimiento implements Serializable {
 
     @Override
     public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof TipoCumplimiento)) {
             return false;
         }
@@ -101,4 +109,3 @@ public class TipoCumplimiento implements Serializable {
     }
     
 }
-

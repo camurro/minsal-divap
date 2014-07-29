@@ -2,8 +2,18 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
 
+<ui:define name="zonaJavaScript">
+<script type="text/javascript">
+function sumaRebajas(){
+	var suma = parseInt(document.getElementById("rebajasForm:tablaMisTareas:0:final1").value)+parseInt(document.getElementById("rebajasForm:tablaMisTareas:0:final2").value)+parseInt(document.getElementById("rebajasForm:tablaMisTareas:0:final3").value);
+	alert(suma);
+	document.getElementById("rebajasForm:tablaMisTareas:0:totalFinal").value = suma;
+	
+}
+</script>
+</ui:define>
 	<ui:define name="content">
-		<h:form enctype="multipart/form-data">
+		<h:form enctype="multipart/form-data" id="rebajasForm">
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="Rebaja" />
@@ -21,13 +31,12 @@
 						<h3>Archivos disponibles para la Tarea:</h3>
 						<span class="strong">Archivo: </span> Planilla Montos de Rebaja [
 						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
-						<p:commandLink value="Bajar Última Versión" />
-						]
+						<h:commandLink action="#{procesoRebajaValidarMontosController.downloadExcelRebaja}" value="Bajar">
+						    <f:setPropertyActionListener target="#{procesoRebajaValidarMontosController.docIdDownload}"
+								value="#{procesoRebajaValidarMontosController.docRebaja}" />
+						</h:commandLink>]
 						<ul class="versionesArchivo">
-							<li><h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <p:commandLink
-									value="Planilla de Montos de Rebaja-v2.xls" /> (Modificado el 10 de Abril de 2014 a las 14:31 por Juan Arriagada)</li>
-							<li><h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <p:commandLink
-									value="Planilla de Montos de Rebaja-v1.xls" /> (Modificado el 6 de Abril de 2014 a las 14:31 por Robson Watt)</li>
+							<li>No existen versiones anteriores</li>
 						</ul>
 					</div>
 					<h3>Visualizador: Montos de Rebaja</h3>
@@ -38,38 +47,40 @@
 						<h:panelGrid columns="4" id="busqueda_mis_tareas">
 							<h:panelGrid columns="2">
 								<h:outputText value="Región: " styleClass="inputLabel" />
-								<p:selectOneMenu>
-									<f:selectItem itemLabel="METROPOLITANA" itemValue="METROPOLITANA" />
-									<f:selectItem itemLabel="Ver Todo" itemValue="Ver Todo" />
-									<f:selectItem itemLabel="Seleccione" itemValue="" />
-								</p:selectOneMenu>
+								<p:selectOneMenu value="#{procesoRebajaValidarMontosController.regionSeleccionada}">
+								<p:ajax listener="#{procesoRebajaValidarMontosController.cargaServicios}" update="servicios comunas" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />  
+								<f:selectItems value="#{procesoRebajaValidarMontosController.listaRegiones}" itemLabel="#{region.descRegion}" var="region" itemValue="#{region.idRegion}"/> 
+							</p:selectOneMenu>
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
 								<h:outputText value="Servicio: " styleClass="inputLabel" />
-								<p:selectOneMenu>
-									<f:selectItem itemLabel="SANTIAGO" itemValue="SANTIAGO" />
-									<f:selectItem itemLabel="Seleccione" itemValue="" />
-								</p:selectOneMenu>
+								<p:selectOneMenu id="servicios"  value="#{procesoRebajaValidarMontosController.servicioSeleccionado}">
+								<p:ajax listener="#{procesoRebajaValidarMontosController.cargaComunas}" update="comunas" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />  
+								<f:selectItems value="#{procesoRebajaValidarMontosController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
+							</p:selectOneMenu>
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
 								<h:outputText value="Comuna: " styleClass="inputLabel" />
-								<p:selectCheckboxMenu value="#{procesoRebajaValidarMontosController.comunasSeleccionadas}" label="Seleccione" filter="true" filterText="Filter"
+								<p:selectCheckboxMenu id="comunas" value="#{procesoRebajaValidarMontosController.comunasSeleccionadas}" label="Seleccione" filter="true" filterText="Filter"
 									filterMatchMode="startsWith">
-									<f:selectItems value="#{procesoRebajaValidarMontosController.comunas}" />
+									<f:selectItems value="#{procesoRebajaValidarMontosController.listaComunas}" itemLabel="#{comuna.descComuna}" var="comuna" itemValue="#{comuna.idComuna}"/>
 								</p:selectCheckboxMenu>
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
-								<p:commandButton value="Buscar" styleClass=" x-btn-text icon-guardar" update="tablaMisTareas" icon="ui-icon-search" />
+							<p:commandButton value="Buscar" styleClass="x-btn-text" icon="ui-icon-search"
+							actionListener="#{procesoRebajaValidarMontosController.buscarRebaja}" ajax="false" update="tablaMisTareas"/>
 								<p:commandButton value="Limpiar" styleClass=" x-btn-text icon-guardar" update="tablaMisTareas" icon="ui-icon-trash" />
 							</h:panelGrid>
 
 						</h:panelGrid>
 					</p:panel>
 					<br />
-					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoRebajaValidarMontosController.listRebaja}" liveResize="true" var="_rebaja"
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoRebajaValidarMontosController.rebajaComunas}" liveResize="true" var="_rebaja"
 						rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 						<p:columnGroup type="header">
 							<!--  -->
@@ -101,82 +112,74 @@
 								
 							</p:row>
 						</p:columnGroup>
-						<p:column><h:outputText value="#{_rebaja.comuna}"  styleClass="textoPequenio textoAjustado" /></p:column>
+						<p:column><h:outputText value="#{_rebaja.descComuna}"  styleClass="textoPequenio textoAjustado" /></p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.marco}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="#{_rebaja.aporteEstatal}" styleClass="textoPequenio textoAjustado">
 								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 							</h:outputText>
 						</p:column>
+						
 						<p:column>
-							<h:outputText value="#{_rebaja.itemCumplimiento1}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
+							<h:outputText value="#{_rebaja.cumplimientoItem1}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.itemCumplimiento2}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
+							<h:outputText value="#{_rebaja.cumplimientoItem2}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.itemCumplimiento3}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
+							<h:outputText value="#{_rebaja.cumplimientoItem3}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.rebaja1}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
+							<h:outputText value="#{_rebaja.rebajaCalculada1}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.rebaja2}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
+							<h:outputText value="#{_rebaja.rebajaCalculada2}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.rebaja3}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
+							<h:outputText value="#{_rebaja.rebajaCalculada3}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.totalRebaja}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
+							<h:outputText value="#{_rebaja.rebajaCalculada1 + _rebaja.rebajaCalculada2 + _rebaja.rebajaCalculada3}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 
 						<p:column>
-							<h:inputText value="#{_rebaja.rebajaExcepcional1}" styleClass="textoPequenioInput textoAjustado">
-								<f:convertNumber type="percent" />
+							<h:inputText id="final1" value="#{_rebaja.rebajaFinal1}" styleClass="textoPequenioInput textoAjustado" style="width:30px" >
 							</h:inputText>
 						</p:column>
 						<p:column>
-							<h:inputText value="#{_rebaja.rebajaExcepcional2}" styleClass="textoPequenioInput textoAjustado">
-								<f:convertNumber type="percent" />
+							<h:inputText id="final2" value="#{_rebaja.rebajaFinal2}" styleClass="textoPequenioInput textoAjustado" style="width:30px" >
 							</h:inputText>
 						</p:column>
 						<p:column>
-							<h:inputText value="#{_rebaja.rebajaExcepcional3}" styleClass="textoPequenioInput textoAjustado">
-								<f:convertNumber type="percent" />
+							<h:inputText id="final3" value="#{_rebaja.rebajaFinal3}" styleClass="textoPequenioInput textoAjustado"  style="width:30px" >
 							</h:inputText>
 						</p:column>
 
 						<p:column>
-							<h:outputText value="#{_rebaja.totalRebajaExcepcional}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
+							<h:outputText id="totalFinal" value="" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 
 						<p:column>
-							<h:outputText value="#{_rebaja.marco*_rebaja.totalRebaja}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="" styleClass="textoPequenio textoAjustado">
 								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.marco-(_rebaja.marco*_rebaja.totalRebaja)}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="" styleClass="textoPequenio textoAjustado">
 								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<p:commandButton icon="ui-icon-disk" />
+							<p:commandButton  icon="ui-icon-disk" title="Guardar" action="#{procesoRebajaValidarMontosController.guardaRebaja}">
+                				<f:setPropertyActionListener value="#{_rebaja}" target="#{procesoRebajaValidarMontosController.rebajaSeleccionada}" />
+            				</p:commandButton>
 						</p:column>
 
 					</p:dataTable>
@@ -184,7 +187,6 @@
 
 					<h3>Tareas de la Actividad:</h3>
 
-					<h:form>
 						<p:commandButton styleClass="x-btn-text" icon="ui-icon-refresh" value="Re Cargar Archivos" actionListener="#{procesoRebajaValidarMontosController.recargarArchivos}" action="bandejaTareas?faces-redirect=true indexMenu=0">
 						<f:setPropertyActionListener target="#{procesoRebajaValidarMontosController.target}"
 							value="bandejaTareas.jsf" />
@@ -197,9 +199,7 @@
 						<f:setPropertyActionListener target="#{procesoRebajaValidarMontosController.target}"
 							value="bandejaTareas.jsf" />
 							</p:commandButton>
-						
-						
-					</h:form>
+
 
 				</p:panel>
 

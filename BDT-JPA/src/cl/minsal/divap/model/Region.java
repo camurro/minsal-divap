@@ -10,7 +10,7 @@ import java.util.List;
  * 
  */
 @Entity
-@NamedQuery(name="Region.findAll", query="SELECT r FROM Region r")
+@NamedQuery(name="Region.findAll", query="SELECT r FROM Region r order by r.id asc")
 public class Region implements Serializable {
 	private static final long serialVersionUID = 1L;
 

@@ -149,6 +149,12 @@
 				<env-entry-type>java.lang.String</env-entry-type>
 				<env-entry-value>TEMPLATES/REBAJA</env-entry-value>
 			</env-entry>
+			<env-entry>
+				<description>Proceso folder rebaja</description>
+				<env-entry-name>folderProcesoRebaja</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>PROCESOS/REBAJA</env-entry-value>
+			</env-entry>
 		</session>
 	</enterprise-beans>
 	<!-- <ejb-client-jar>BaseEJBClient.jar</ejb-client-jar> -->

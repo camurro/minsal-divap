@@ -1,7 +1,9 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+
 import java.util.List;
 
 
@@ -11,7 +13,9 @@ import java.util.List;
  */
 @Entity
 @Table(name="servicio_salud")
-@NamedQuery(name="ServicioSalud.findAll", query="SELECT s FROM ServicioSalud s")
+@NamedQueries({
+	@NamedQuery(name="ServicioSalud.findAll", query="SELECT s FROM ServicioSalud s"),
+	@NamedQuery(name="ServicioSalud.findServiciosByRegion", query="SELECT s FROM ServicioSalud s WHERE s.region.id = :idRegion order by s.id asc")})
 public class ServicioSalud implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -23,7 +27,7 @@ public class ServicioSalud implements Serializable {
 	private String nombre;
 
 	//bi-directional many-to-one association to Comuna
-	@OneToMany(mappedBy="servicioSalud")
+	@OneToMany(mappedBy="idServicioSalud")
 	private List<Comuna> comunas;
 
 	//bi-directional many-to-one association to Establecimiento
@@ -70,20 +74,7 @@ public class ServicioSalud implements Serializable {
 		this.comunas = comunas;
 	}
 
-	public Comuna addComuna(Comuna comuna) {
-		getComunas().add(comuna);
-		comuna.setServicioSalud(this);
-
-		return comuna;
-	}
-
-	public Comuna removeComuna(Comuna comuna) {
-		getComunas().remove(comuna);
-		comuna.setServicioSalud(null);
-
-		return comuna;
-	}
-
+	
 	public List<Establecimiento> getEstablecimientos() {
 		return this.establecimientos;
 	}

@@ -7,25 +7,20 @@ import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.vo.PlanillaRebajaCalculadaVO;
 import minsal.divap.vo.RebajaVO;
 
-public class RebajaSheetExcel extends ExcelTemplate<RebajaVO>{
+public class RebajaCalculadaSheetExcel extends ExcelTemplate<PlanillaRebajaCalculadaVO>{
 
 	private List<String> subHeaders;
 	
-	public RebajaSheetExcel(List<String> headers,List<String> subHeaders, List<RebajaVO> items) {
-		super(headers, items);
+	public RebajaCalculadaSheetExcel(List<String> headers, List<String> subHeaders,List<PlanillaRebajaCalculadaVO> datos) {
+		super(headers, datos);
 		this.subHeaders=subHeaders;
 	}
 	
-	public RebajaSheetExcel(List<String> headers, List<RebajaVO> items, Integer offsetRows, Integer offsetColumns){
-		super(headers, items, offsetRows, offsetColumns);
-	}
-	
-
 	@Override
 	public List<List<Object>> getDataList() {
 		List<List<Object>> dataList = new ArrayList<List<Object>>();
-		for(RebajaVO rebajaVO : getItems()){
-			List<Object> row = rebajaVO.getRow();
+		for(PlanillaRebajaCalculadaVO planillaRebaja : getItems()){
+			List<Object> row = planillaRebaja.getRow();
 			if(row != null){
 				dataList.add(row);
 			}
