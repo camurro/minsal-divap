@@ -134,6 +134,12 @@
 				<env-entry-type>java.lang.String</env-entry-type>
 				<env-entry-value>TEMPLATES/PERCAPITA</env-entry-value>
 			</env-entry>
+			<env-entry>
+				<description>Template folder percapita</description>
+				<env-entry-name>folderPercapita</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>PROCESOS/{ANO}/PERCAPITA</env-entry-value>
+			</env-entry>
 		</session>
 		<session>
 			<ejb-name>RebajaService</ejb-name>

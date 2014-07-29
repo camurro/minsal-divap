@@ -42,7 +42,8 @@ public class DistribucionInicialPerCapitaRESTService extends BaseRest{
 		if(idDistribucionInicialPercapita == null){
 			throw new IllegalArgumentException("proceso: "+ idDistribucionInicialPercapita + " no puede ser nulo");
 		}
-        return 1;
+		DistribucionInicialPercapitaService distribucionInicialPercapitaService = getService(DistribucionInicialPercapitaService.class);
+		return distribucionInicialPercapitaService.valorizarDisponibilizarPlanillaTrabajo(idDistribucionInicialPercapita);
     }
 	
 	@GET

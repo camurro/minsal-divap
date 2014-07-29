@@ -80,7 +80,7 @@ public class PercapitaDesempenoDificilExcelValidator extends ExcelValidator<Dese
 		int last = sheet.getPhysicalNumberOfRows();
 		for(;first<=last;first++){
 			XSSFRow xssfRow = sheet.getRow(first);
-			System.out.println("xssfRow-->"+xssfRow);
+			//System.out.println("xssfRow-->"+xssfRow);
 			if(!empty(xssfRow)){
 				if(!validateTypes(xssfRow)){
 					throw new ExcelFormatException("Los datos de la fila " + first + " no son válidos ");

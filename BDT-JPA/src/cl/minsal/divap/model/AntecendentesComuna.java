@@ -16,16 +16,20 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "AntecendentesComuna.findByClasificacion", query = "SELECT a FROM AntecendentesComuna a WHERE a.clasificacion = :clasificacion"),
     @NamedQuery(name = "AntecendentesComuna.findByAsignacionZona", query = "SELECT a FROM AntecendentesComuna a WHERE a.asignacionZona = :asignacionZona"),
     @NamedQuery(name = "AntecendentesComuna.findByTramoPobreza", query = "SELECT a FROM AntecendentesComuna a WHERE a.tramoPobreza = :tramoPobreza"),
+    @NamedQuery(name = "AntecendentesComuna.findByIdAntecedentesComunaByComuna", query = "SELECT a FROM AntecendentesComuna a WHERE a.idComuna.id = :idComuna"),
+    @NamedQuery(name = "AntecendentesComuna.findAntecendentesComunaByComunaServicioAno", query = "SELECT a FROM AntecendentesComuna a WHERE a.idComuna.nombre = :nombreComuna and a.idComuna.servicioSalud.nombre = :nombreServicio and a.anoAnoEnCurso.ano  = :anoEnCurso"),
     @NamedQuery(name = "AntecendentesComuna.findByIdAntecedentesComuna", query = "SELECT a FROM AntecendentesComuna a WHERE a.idAntecedentesComuna = :idAntecedentesComuna")})
 public class AntecendentesComuna implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Basic(optional = false)
-    @Column(name = "clasificacion")
-    private String clasificacion;
-    @Column(name = "asignacion_zona")
-    private Short asignacionZona;
-    @Column(name = "tramo_pobreza")
-    private Short tramoPobreza;
+    @JoinColumn(name = "clasificacion", referencedColumnName = "id_tipo_comuna")
+    @ManyToOne
+    private TipoComuna clasificacion;
+    @JoinColumn(name = "asignacion_zona", referencedColumnName = "id_factor_ref_asig_zona")
+    @ManyToOne
+    private FactorRefAsigZona asignacionZona;
+    @JoinColumn(name = "tramo_pobreza", referencedColumnName = "id_factor_tramo_pobreza")
+    @ManyToOne
+    private FactorTramoPobreza tramoPobreza;
     @Id
 	@Column(name="id_antecedentes_comuna", unique=true, nullable=false)
 	@GeneratedValue
@@ -46,36 +50,36 @@ public class AntecendentesComuna implements Serializable {
         this.idAntecedentesComuna = idAntecedentesComuna;
     }
 
-    public AntecendentesComuna(Integer idAntecedentesComuna, String clasificacion) {
+    public AntecendentesComuna(Integer idAntecedentesComuna, TipoComuna clasificacion) {
         this.idAntecedentesComuna = idAntecedentesComuna;
         this.clasificacion = clasificacion;
     }
 
-    public String getClasificacion() {
+    public TipoComuna getClasificacion() {
         return clasificacion;
     }
 
-    public void setClasificacion(String clasificacion) {
+    public void setClasificacion(TipoComuna clasificacion) {
         this.clasificacion = clasificacion;
     }
 
-    public Short getAsignacionZona() {
-        return asignacionZona;
-    }
+    public FactorRefAsigZona getAsignacionZona() {
+		return asignacionZona;
+	}
 
-    public void setAsignacionZona(Short asignacionZona) {
-        this.asignacionZona = asignacionZona;
-    }
+	public void setAsignacionZona(FactorRefAsigZona asignacionZona) {
+		this.asignacionZona = asignacionZona;
+	}
 
-    public Short getTramoPobreza() {
-        return tramoPobreza;
-    }
+	public FactorTramoPobreza getTramoPobreza() {
+		return tramoPobreza;
+	}
 
-    public void setTramoPobreza(Short tramoPobreza) {
-        this.tramoPobreza = tramoPobreza;
-    }
+	public void setTramoPobreza(FactorTramoPobreza tramoPobreza) {
+		this.tramoPobreza = tramoPobreza;
+	}
 
-    public Integer getIdAntecedentesComuna() {
+	public Integer getIdAntecedentesComuna() {
         return idAntecedentesComuna;
     }
 

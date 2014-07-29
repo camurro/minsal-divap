@@ -28,7 +28,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByDesempenoDificil", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.desempenoDificil = :desempenoDificil"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByPobreza", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.pobreza = :pobreza"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByRuralidad", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.ruralidad = :ruralidad"),
-	@NamedQuery(name = "AntecendentesComunaCalculado.findByValorReferencialZona", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.valorReferencialZona = :valorReferencialZona")})
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByValorReferencialZona", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.valorReferencialZona = :valorReferencialZona"),
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByAntecedentesDistrinbucionInicial", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idAntecedentesComuna = :idAntecendentesComuna and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByDistribucionInicialPercapita", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByComunaServicioAnoCurso", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.id = :idComuna and a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio and a.antecedentesComuna.anoAnoEnCurso.ano = :anoEnCurso"),
+	@NamedQuery(name = "AntecendentesComunaCalculado.countByDistribucionInicialPercapita", query = "SELECT count(a) FROM AntecendentesComunaCalculado a WHERE a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita")})
 public class AntecendentesComunaCalculado implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -36,17 +40,26 @@ public class AntecendentesComunaCalculado implements Serializable {
 	@GeneratedValue
 	private Integer idAntecendentesComunaCalculado;
 	@Column(name = "poblacion")
-	private Short poblacion;
+	private Integer poblacion;
 	@Column(name = "poblacion_mayor")
-	private Short poblacionMayor;
+	private Integer poblacionMayor;
 	@Column(name = "desempeno_dificil")
-	private Short desempenoDificil;
+	private Integer desempenoDificil;
 	@Column(name = "pobreza")
-	private Short pobreza;
+	private Double pobreza;
 	@Column(name = "ruralidad")
-	private Short ruralidad;
+	private Double ruralidad;
 	@Column(name = "valor_referencial_zona")
-	private Short valorReferencialZona;
+	private Double valorReferencialZona;
+	@Column(name = "valor_per_capita_comunal_mes")
+	private Double valorPerCapitaComunalMes;
+	@Column(name = "percapita_mes")
+	private Double percapitaMes;
+	@Column(name = "percapita_ano")
+	private Double percapitaAno;
+	@JoinColumn(name = "distribucion_inicial_percapita", referencedColumnName = "id_distribucion_inicial_percapita")
+	@ManyToOne
+	private DistribucionInicialPercapita distribucionInicialPercapita;
 	@JoinColumn(name = "antecedentes_comuna", referencedColumnName = "id_antecedentes_comuna")
 	@ManyToOne(optional = false)
 	private AntecendentesComuna antecedentesComuna;
@@ -66,52 +79,61 @@ public class AntecendentesComunaCalculado implements Serializable {
 		this.idAntecendentesComunaCalculado = idAntecendentesComunaCalculado;
 	}
 
-	public Short getPoblacion() {
+	public Integer getPoblacion() {
 		return poblacion;
 	}
 
-	public void setPoblacion(Short poblacion) {
+	public void setPoblacion(Integer poblacion) {
 		this.poblacion = poblacion;
 	}
 
-	public Short getPoblacionMayor() {
+	public Integer getPoblacionMayor() {
 		return poblacionMayor;
 	}
 
-	public void setPoblacionMayor(Short poblacionMayor) {
+	public void setPoblacionMayor(Integer poblacionMayor) {
 		this.poblacionMayor = poblacionMayor;
 	}
 
-	public Short getDesempenoDificil() {
+	public Integer getDesempenoDificil() {
 		return desempenoDificil;
 	}
 
-	public void setDesempenoDificil(Short desempenoDificil) {
+	public void setDesempenoDificil(Integer desempenoDificil) {
 		this.desempenoDificil = desempenoDificil;
 	}
 
-	public Short getPobreza() {
+	public Double getPobreza() {
 		return pobreza;
 	}
 
-	public void setPobreza(Short pobreza) {
+	public void setPobreza(Double pobreza) {
 		this.pobreza = pobreza;
 	}
 
-	public Short getRuralidad() {
+	public Double getRuralidad() {
 		return ruralidad;
 	}
 
-	public void setRuralidad(Short ruralidad) {
+	public void setRuralidad(Double ruralidad) {
 		this.ruralidad = ruralidad;
 	}
 
-	public Short getValorReferencialZona() {
+	public Double getValorReferencialZona() {
 		return valorReferencialZona;
 	}
 
-	public void setValorReferencialZona(Short valorReferencialZona) {
+	public void setValorReferencialZona(Double valorReferencialZona) {
 		this.valorReferencialZona = valorReferencialZona;
+	}
+
+	public DistribucionInicialPercapita getDistribucionInicialPercapita() {
+		return distribucionInicialPercapita;
+	}
+
+	public void setDistribucionInicialPercapita(
+			DistribucionInicialPercapita distribucionInicialPercapita) {
+		this.distribucionInicialPercapita = distribucionInicialPercapita;
 	}
 
 	public AntecendentesComuna getAntecedentesComuna() {
@@ -120,6 +142,30 @@ public class AntecendentesComunaCalculado implements Serializable {
 
 	public void setAntecedentesComuna(AntecendentesComuna antecedentesComuna) {
 		this.antecedentesComuna = antecedentesComuna;
+	}
+
+	public Double getValorPerCapitaComunalMes() {
+		return valorPerCapitaComunalMes;
+	}
+
+	public void setValorPerCapitaComunalMes(Double valorPerCapitaComunalMes) {
+		this.valorPerCapitaComunalMes = valorPerCapitaComunalMes;
+	}
+
+	public Double getPercapitaMes() {
+		return percapitaMes;
+	}
+
+	public void setPercapitaMes(Double percapitaMes) {
+		this.percapitaMes = percapitaMes;
+	}
+
+	public Double getPercapitaAno() {
+		return percapitaAno;
+	}
+
+	public void setPercapitaAno(Double percapitaAno) {
+		this.percapitaAno = percapitaAno;
 	}
 
 	@Override

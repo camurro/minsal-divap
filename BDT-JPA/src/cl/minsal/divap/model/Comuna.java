@@ -1,8 +1,11 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -10,7 +13,9 @@ import java.util.List;
  * 
  */
 @Entity
-@NamedQuery(name="Comuna.findAll", query="SELECT c FROM Comuna c")
+@NamedQueries({
+    @NamedQuery(name = "Comuna.findAll", query = "SELECT c FROM Comuna c"),
+    @NamedQuery(name = "Comuna.findByComunaServicioAno", query = "SELECT c FROM Comuna c JOIN c.antecendentesComunas a WHERE c.nombre = :comuna and c.servicioSalud.nombre = :servicio and a.anoAnoEnCurso.ano = :anoCurso")})
 public class Comuna implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -23,7 +28,7 @@ public class Comuna implements Serializable {
 
 	//bi-directional many-to-one association to AntecendentesComuna
 	@OneToMany(mappedBy="idComuna")
-	private List<AntecendentesComuna> antecendentesComunas;
+	private Set<AntecendentesComuna> antecendentesComunas;
 
 	//bi-directional many-to-one association to ServicioSalud
 	@ManyToOne
@@ -57,11 +62,11 @@ public class Comuna implements Serializable {
 		this.nombre = nombre;
 	}
 
-	public List<AntecendentesComuna> getAntecendentesComunas() {
+	public Set<AntecendentesComuna> getAntecendentesComunas() {
 		return this.antecendentesComunas;
 	}
 
-	public void setAntecendentesComunas(List<AntecendentesComuna> antecendentesComunas) {
+	public void setAntecendentesComunas(Set<AntecendentesComuna> antecendentesComunas) {
 		this.antecendentesComunas = antecendentesComunas;
 	}
 

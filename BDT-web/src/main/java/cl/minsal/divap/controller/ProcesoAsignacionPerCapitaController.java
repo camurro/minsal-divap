@@ -54,6 +54,7 @@ implements Serializable {
 	private Integer docAsignacionRecursosPercapita;
 	private Integer docAsignacionDesempenoDificil;
 	private List<Integer> docIds;
+	private Integer idDistribucionInicialPercapita;
 
 	public UploadedFile getCalculoPerCapitaFile() {
 		return calculoPerCapitaFile;
@@ -79,14 +80,14 @@ implements Serializable {
 				docIds = new ArrayList<Integer>();
 				String filename = calculoPerCapitaFile.getFileName();
 				byte [] contentCalculoPerCapitaFile = calculoPerCapitaFile.getContents();
-				distribucionInicialPercapitaService.procesarCalculoPercapita(GeneradorExcel.fromContent(contentCalculoPerCapitaFile, XSSFWorkbook.class));
+				distribucionInicialPercapitaService.procesarCalculoPercapita(getIdDistribucionInicialPercapita(), GeneradorExcel.fromContent(contentCalculoPerCapitaFile, XSSFWorkbook.class));
 				Integer docPercapita = persistFile(filename, contentCalculoPerCapitaFile);
 				if(docPercapita != null){
 					docIds.add(docPercapita);
 				}
 				filename = valorBasicoDesempenoFile.getFileName();
 				byte [] contentDesempeno = valorBasicoDesempenoFile.getContents();
-				distribucionInicialPercapitaService.procesarValorBasicoDesempeno(GeneradorExcel.fromContent(contentDesempeno, XSSFWorkbook.class));
+				distribucionInicialPercapitaService.procesarValorBasicoDesempeno(getIdDistribucionInicialPercapita(), GeneradorExcel.fromContent(contentDesempeno, XSSFWorkbook.class));
 				Integer docDesempeno = persistFile(filename, contentDesempeno);
 				if(docDesempeno != null){
 					docIds.add(docDesempeno);
@@ -176,7 +177,10 @@ implements Serializable {
 		log.info("ProcesosPrincipalController Alcanzado.");
 		this.docAsignacionRecursosPercapita = distribucionInicialPercapitaService.getIdPlantillaRecursosPerCapita();
 		this.docAsignacionDesempenoDificil = distribucionInicialPercapitaService.getIdPlantillaPoblacionInscrita();
-
+		if(getTaskDataVO() != null && getTaskDataVO().getData() != null){
+			this.idDistribucionInicialPercapita = (Integer) getTaskDataVO().getData().get("_idDistribucionInicialPercapita");
+			System.out.println("this.idDistribucionInicialPercapita --->"+this.idDistribucionInicialPercapita );
+		}
 		System.out.println("this.docAsignacionRecursosPercapita-->"+this.docAsignacionRecursosPercapita);
 		System.out.println("this.docAsignacionDesempenoDificil-->"+this.docAsignacionDesempenoDificil);
 		if (!getSessionBean().isLogged()) {
@@ -377,6 +381,15 @@ implements Serializable {
 
 	public void setArchivosValidos(boolean archivosValidos) {
 		this.archivosValidos = archivosValidos;
+	}
+	
+	public Integer getIdDistribucionInicialPercapita() {
+		return idDistribucionInicialPercapita;
+	}
+
+	public void setIdDistribucionInicialPercapita(
+			Integer idDistribucionInicialPercapita) {
+		this.idDistribucionInicialPercapita = idDistribucionInicialPercapita;
 	}
 
 	@Override

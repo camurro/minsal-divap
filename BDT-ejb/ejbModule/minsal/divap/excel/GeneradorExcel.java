@@ -231,6 +231,9 @@ public class GeneradorExcel {
 		File file = new File(fileName); 
 		FileOutputStream os = null; 
 		try { 
+			if (!file.getParentFile().exists()) {
+			    file.getParentFile().mkdir();
+			}
 			os = new FileOutputStream(file);
 			workbook.write(os);
 		} catch (IOException e) { 

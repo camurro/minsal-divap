@@ -39,7 +39,10 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 	FacesContext facesContext;
 	
 	private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
+	
+    private String docIdDownload;
+    private Integer docId;
+    private Integer idDistribucionInicialPercapita;
 	private UploadedFile calculoPerCapitaFile;
 	private UploadedFile valorBasicoDesempenoFile;
 	
@@ -141,7 +144,8 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 	@PostConstruct
 	public void init() {
 		log.info("ProcesoAsignacionPerCapitaValidarMontosController Alcanzado.");
-		//ejb.testMethod();
+		this.docId = (Integer) getTaskDataVO().getData().get("_docId");
+		this.idDistribucionInicialPercapita = (Integer) getTaskDataVO().getData().get("_idDistribucionInicialPercapita");
 		if (!getSessionBean().isLogged()) {
 			log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
 			try {
@@ -262,6 +266,13 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 		parameters.put("aprobar_", new Boolean(isAprobar_()));
 		return parameters;
 	}
+	
+	public String downloadPlanilla() {
+		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownload()));
+		setDocumento(documentService.getDocument(docDownload));
+		super.downloadDocument();
+		return null;
+	}
 
 
 	public boolean isRechazarRevalorizar_() {
@@ -326,6 +337,31 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 
 	public void setPercapitaAno(boolean percapitaAno) {
 		this.percapitaAno = percapitaAno;
+	}
+
+	public String getDocIdDownload() {
+		return docIdDownload;
+	}
+
+	public void setDocIdDownload(String docIdDownload) {
+		this.docIdDownload = docIdDownload;
+	}
+
+	public Integer getDocId() {
+		return docId;
+	}
+
+	public void setDocId(Integer docId) {
+		this.docId = docId;
+	}
+
+	public Integer getIdDistribucionInicialPercapita() {
+		return idDistribucionInicialPercapita;
+	}
+
+	public void setIdDistribucionInicialPercapita(
+			Integer idDistribucionInicialPercapita) {
+		this.idDistribucionInicialPercapita = idDistribucionInicialPercapita;
 	}
 	
 }

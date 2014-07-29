@@ -17,6 +17,10 @@ public class DistribucionInicialPercapitaDAO {
 
 	@PersistenceContext(unitName="BDT-JPA")
 	private EntityManager em;
+	
+	public DistribucionInicialPercapita findById(Integer idDistribucionInicialPercapita) {
+		return this.em.find(DistribucionInicialPercapita.class, idDistribucionInicialPercapita);
+	}
 
 	public Integer crearIntanciaDistribucionInicialPercapita(Usuario usuario){
 		try {

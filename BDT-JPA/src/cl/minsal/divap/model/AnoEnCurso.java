@@ -25,6 +25,12 @@ public class AnoEnCurso implements Serializable {
 
 	@Column(name="monto_percapital_basal")
 	private Integer montoPercapitalBasal;
+	
+	@Column(name="asignacion_adulto_mayor")
+	private Integer asignacionAdultoMayor ;
+	
+	@Column(name="inflactor")
+	private Double inflactor ;
 
 	//bi-directional many-to-one association to AntecendentesComuna
 	@OneToMany(mappedBy="anoAnoEnCurso")
@@ -48,9 +54,25 @@ public class AnoEnCurso implements Serializable {
 	public Integer getMontoPercapitalBasal() {
 		return this.montoPercapitalBasal;
 	}
-
+	
 	public void setMontoPercapitalBasal(Integer montoPercapitalBasal) {
 		this.montoPercapitalBasal = montoPercapitalBasal;
+	}
+	
+	public Integer getAsignacionAdultoMayor() {
+		return asignacionAdultoMayor;
+	}
+
+	public void setAsignacionAdultoMayor(Integer asignacionAdultoMayor) {
+		this.asignacionAdultoMayor = asignacionAdultoMayor;
+	}
+
+	public Double getInflactor() {
+		return inflactor;
+	}
+
+	public void setInflactor(Double inflactor) {
+		this.inflactor = inflactor;
 	}
 
 	public List<AntecendentesComuna> getAntecendentesComunas() {

@@ -7,6 +7,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -22,10 +24,8 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import minsal.divap.service.DistribucionInicialPercapitaService;
 import minsal.divap.service.ProcessService;
 import minsal.divap.service.RolesService;
-import minsal.divap.service.task.response.taskpotencialOwner.CommandResponse.TaskSummaryList.TaskSummary;
 import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskStatusVO;
 import minsal.divap.vo.TaskSummaryVO;
@@ -33,7 +33,6 @@ import minsal.divap.vo.TaskVO;
 
 import org.apache.log4j.Logger;
 
-import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.mock.HumanTaskMock;
 import cl.redhat.bandejaTareas.mock.SolicitudMock;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
@@ -1161,7 +1160,7 @@ Serializable {
 				task.setUser("");
 			}
 		}
-		//Collections.sort(this.tasks, new WorkspaceMBean.1(this));
+		Collections.sort(tasks, new TaskComparatorByIdAndName());
 		return tasks;
 	}
 	
@@ -1620,4 +1619,15 @@ Serializable {
 		this.listaActividad = listaActividad;
 	}
 
+}
+
+class TaskComparatorByIdAndName implements Comparator<TaskVO> {
+	 
+    @Override
+    public int compare(TaskVO o1, TaskVO o2) {
+        int flag = (int) (o1.getId() - o2.getId());
+        if(flag==0) flag = o1.getName().compareTo(o2.getName());
+        return flag;
+    }
+ 
 }

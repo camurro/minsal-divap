@@ -14,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -47,6 +48,8 @@ public class DistribucionInicialPercapita implements Serializable {
 	@JoinColumn(name = "usuario", referencedColumnName = "username")
 	@ManyToOne
 	private Usuario usuario;
+	@OneToMany(mappedBy = "distribucionInicialPercapita")
+    private Set<AntecendentesComunaCalculado> antecendentesComunaCalculadoCollection;
 
 	public DistribucionInicialPercapita() {
 	}
@@ -86,6 +89,15 @@ public class DistribucionInicialPercapita implements Serializable {
 	public void setReferenciaDocumentoCollection(
 			Set<ReferenciaDocumento> referenciaDocumentoCollection) {
 		this.referenciaDocumentoCollection = referenciaDocumentoCollection;
+	}
+
+	public Set<AntecendentesComunaCalculado> getAntecendentesComunaCalculadoCollection() {
+		return antecendentesComunaCalculadoCollection;
+	}
+
+	public void setAntecendentesComunaCalculadoCollection(
+			Set<AntecendentesComunaCalculado> antecendentesComunaCalculadoCollection) {
+		this.antecendentesComunaCalculadoCollection = antecendentesComunaCalculadoCollection;
 	}
 
 	@Override

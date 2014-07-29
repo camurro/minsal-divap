@@ -3,12 +3,14 @@ package minsal.divap.service;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.Plantilla;
 import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.TipoPlantilla;
@@ -103,6 +105,18 @@ public class DocumentService {
 
 	public Integer getDocumentoIdByPlantillaId(Integer plantillaId) {
 		return fileDAO.getDocumentoIdByPlantillaId(plantillaId);
+	}
+
+	public Integer createDocumentPercapita(
+			DistribucionInicialPercapita distribucionInicialPercapita,
+			String nodeRef, String filename, String contenType) {
+		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		if(referenciaDocumento.getDistribucionInicialPercapitaCollection() == null ){
+			referenciaDocumento.setDistribucionInicialPercapitaCollection(new ArrayList<DistribucionInicialPercapita>());
+		}
+		referenciaDocumento.getDistribucionInicialPercapitaCollection().add(distribucionInicialPercapita);
+		return referenciaDocumentoId;
 	}
 
 }
