@@ -1038,6 +1038,10 @@ INSERT INTO antecendentes_comuna VALUES	('COSTO FIJO'	,	2	,	 NULL	,	2013	,	12102
 INSERT INTO antecendentes_comuna VALUES	('URBANA'	,	4	,	 NULL	,	2013	,	12401	,	746	);
 INSERT INTO antecendentes_comuna VALUES	('COSTO FIJO'	,	4	,	 NULL	,	2013	,	12303	,	747	);
 
+ALTER TABLE antecendentes_comuna_calculado ADD COLUMN valor_per_capita_comunal_mes numeric;
+ALTER TABLE antecendentes_comuna_calculado ADD COLUMN percapita_mes numeric;
+ALTER TABLE antecendentes_comuna_calculado ADD COLUMN percapita_ano numeric;
+
 
 INSERT INTO antecendentes_comuna_calculado VALUES (	1000	,	400	,	30014	,	50014	,	55014	,	NULL	,	NULL	,	NULL	,	NULL	,	13000	);
 INSERT INTO antecendentes_comuna_calculado VALUES (	1001	,	401	,	30019	,	50019	,	55019	,	NULL	,	NULL	,	NULL	,	NULL	,	13001	);
