@@ -39,48 +39,51 @@
 						<h:panelGrid columns="4" id="busqueda_mis_tareas">
 							<h:panelGrid columns="2">
 								<h:outputText value="Región: " styleClass="inputLabel" />
-								<p:selectOneMenu>
-									<f:selectItem itemLabel="METROPOLITANA" itemValue="METROPOLITANA" />
-									<f:selectItem itemLabel="Seleccione" itemValue="" />
-								</p:selectOneMenu>
+								<p:selectOneMenu value="#{procesoRebajaTramitacionController.regionSeleccionada}">
+								<p:ajax listener="#{procesoRebajaTramitacionController.cargaServicios}" update="servicios comunas" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />  
+								<f:selectItems value="#{procesoRebajaTramitacionController.listaRegiones}" itemLabel="#{region.descRegion}" var="region" itemValue="#{region.idRegion}"/> 
+							</p:selectOneMenu>
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
 								<h:outputText value="Servicio: " styleClass="inputLabel" />
-								<p:selectOneMenu>
-									<f:selectItem itemLabel="SANTIAGO" itemValue="SANTIAGO" />
-									<f:selectItem itemLabel="Seleccione" itemValue="" />
-								</p:selectOneMenu>
+								<p:selectOneMenu id="servicios"  value="#{procesoRebajaTramitacionController.servicioSeleccionado}">
+								<p:ajax listener="#{procesoRebajaTramitacionController.cargaComunas}" update="comunas" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />  
+								<f:selectItems value="#{procesoRebajaTramitacionController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
+							</p:selectOneMenu>
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
 								<h:outputText value="Comuna: " styleClass="inputLabel" />
-								<p:selectCheckboxMenu value="#{procesoRebajaTramitacionController.comunasSeleccionadas}" label="Seleccione" filter="true" filterText="Filter"
+								<p:selectCheckboxMenu id="comunas" value="#{procesoRebajaTramitacionController.comunasSeleccionadas}" label="Seleccione" filter="true" filterText="Filter"
 									filterMatchMode="startsWith">
-									<f:selectItems value="#{procesoRebajaTramitacionController.comunas}" />
+									<f:selectItems value="#{procesoRebajaTramitacionController.listaComunas}" itemLabel="#{comuna.descComuna}" var="comuna" itemValue="#{comuna.idComuna}"/>
 								</p:selectCheckboxMenu>
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
-								<p:commandButton value="Buscar" styleClass=" x-btn-text icon-guardar" update="tablaMisTareas" icon="ui-icon-search" />
+							<p:commandButton value="Buscar" styleClass="x-btn-text" icon="ui-icon-search"
+							actionListener="#{procesoRebajaTramitacionController.buscarRebaja}" ajax="false" update="tablaMisTareas"/>
 								<p:commandButton value="Limpiar" styleClass=" x-btn-text icon-guardar" update="tablaMisTareas" icon="ui-icon-trash" />
 							</h:panelGrid>
 
 						</h:panelGrid>
 					</p:panel>
 					<br />
-					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoRebajaTramitacionController.listRebaja}" liveResize="true" var="_rebaja"
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoRebajaTramitacionController.rebajaComunas}" liveResize="true" var="_rebaja"
 						rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 						<p:columnGroup type="header">
 							<!--  -->
 							<p:row>
 								<p:column rowspan="2" headerText="Comuna" />
-								<p:column rowspan="2" headerText="Aporte Estatal {MAYO}" />
+								<p:column rowspan="2" headerText="Aporte Estatal #{procesoRebajaTramitacionController.mesActual}" />
 								<p:column colspan="3" headerText="Cumplimiento" />
 								<p:column colspan="4" headerText="Rebaja Calculada" />
 								<p:column colspan="4" headerText="Rebaja Final" />
-								<p:column rowspan="2" headerText="Monto Rebaja {MAYO}" />
-								<p:column rowspan="2" headerText="Nuevo Aporte Estatal {MAYO}" />
+								<p:column rowspan="2" headerText="Monto Rebaja #{procesoRebajaTramitacionController.mesActual}" />
+								<p:column rowspan="2" headerText="Nuevo Aporte Estatal #{procesoRebajaTramitacionController.mesActual}" />
 							</p:row>
 							<p:row>
 								<p:column headerText="item1" />
@@ -100,81 +103,64 @@
 								
 							</p:row>
 						</p:columnGroup>
-						<p:column><h:outputText value="#{_rebaja.comuna}"  styleClass="textoPequenio textoAjustado" /></p:column>
+						<p:column><h:outputText value="#{_rebaja.descComuna}"  styleClass="textoPequenio textoAjustado" /></p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.marco}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+							<h:outputText id="aporteEstatal" value="#{_rebaja.aporteEstatal}" styleClass="textoPequenio textoAjustado">
+							</h:outputText>
+						</p:column>
+						
+						<p:column>
+							<h:outputText value="#{_rebaja.cumplimiento1.valor}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.itemCumplimiento1}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
+							<h:outputText value="#{_rebaja.cumplimiento2.valor}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.itemCumplimiento2}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
+							<h:outputText value="#{_rebaja.cumplimiento3.valor}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.itemCumplimiento3}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
+							<h:outputText value="#{_rebaja.rebajaCalculada1}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.rebaja1}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
+							<h:outputText value="#{_rebaja.rebajaCalculada2}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.rebaja2}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
+							<h:outputText value="#{_rebaja.rebajaCalculada3}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.rebaja3}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
-							</h:outputText>
-						</p:column>
-						<p:column>
-							<h:outputText value="#{_rebaja.totalRebaja}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
+							<h:outputText value="#{_rebaja.totalCalculada}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 
 						<p:column>
-							<h:outputText value="#{_rebaja.rebajaExcepcional1}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
-							</h:outputText>
+							<h:outputText value="#{_rebaja.rebajaFinal1}" styleClass="textoPequenio textoAjustado"/>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.rebajaExcepcional2}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
-							</h:outputText>
+							<h:outputText value="#{_rebaja.rebajaFinal2}" styleClass="textoPequenio textoAjustado"/>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.rebajaExcepcional3}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
+							<h:outputText value="#{_rebaja.rebajaFinal3}" styleClass="textoPequenio textoAjustado"/>
+						</p:column>
+
+						<p:column>
+							<h:outputText id="totalFinal" value="#{_rebaja.totalFinal}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 
 						<p:column>
-							<h:outputText value="#{_rebaja.totalRebajaExcepcional}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="percent" />
-							</h:outputText>
-						</p:column>
-
-						<p:column>
-							<h:outputText value="#{_rebaja.marco*_rebaja.totalRebaja}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+							<h:outputText id="montoRebaja" value="#{_rebaja.montoRebaja}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.marco-(_rebaja.marco*_rebaja.totalRebaja)}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+							<h:outputText id="nuevoAporte" value="#{_rebaja.nuevoAporteEstatal}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
-
 					</p:dataTable>
 					<!-- FIN: MODAL CON INFORMACIóN Y FILTROS VISTA ONLINE -->
 					<!-- HISTORIAL DE SEGUIMIENTO -->

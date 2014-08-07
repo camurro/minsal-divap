@@ -36,17 +36,27 @@ import minsal.divap.service.RebajaService;
 public class RebajaRESTService extends BaseRest{
 
 	@GET
-    @Path("/rebaja/calcularRebaja/{idMes}")
+    @Path("/rebaja/calcularRebaja/{idMes}/{idProceso}")
     @Produces("application/json")
-    public Integer calcularRebaja(@PathParam("idMes") Integer idMes){
+    public Integer calcularRebaja(@PathParam("idMes") Integer idMes,@PathParam("idProceso") Integer idProceso){
+
 		System.out.println("Mes de rebaja>"+idMes);
 		if(idMes == null){
 			throw new IllegalArgumentException("Id Mes: "+ idMes + " no puede ser nulo");
 		}
 			RebajaService rebajaService = getService(RebajaService.class);
-			rebajaService.calculaRebajaMes(idMes);
-		
-        return 1;
+			return rebajaService.calculaRebajaMes(idMes,idProceso);
+	}	
+	@GET
+    @Path("/rebaja/instanciarProcesoRebaja/{usuarioId}")
+    @Produces("application/json")
+    public Integer instanciarProcesoRebaja(@PathParam("usuarioId") String usuarioId){
+		System.out.println("instanciar Proceso Rebaja-->"+usuarioId);
+		if(usuarioId == null){
+			throw new IllegalArgumentException("usuarioId: "+ usuarioId + " no puede ser nulo");
+		}
+		RebajaService rebajaService = getService(RebajaService.class);
+		return rebajaService.crearIntanciaRebaja(usuarioId);
     }
 	
 }

@@ -10,6 +10,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -32,7 +35,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "ReferenciaDocumento.findByIds", query = "SELECT r FROM ReferenciaDocumento r WHERE r.id IN (:ids)"),
     @NamedQuery(name = "ReferenciaDocumento.findByContentType", query = "SELECT r FROM ReferenciaDocumento r WHERE r.contentType = :contentType"),
     @NamedQuery(name = "ReferenciaDocumento.findByPath", query = "SELECT r FROM ReferenciaDocumento r WHERE r.path = :path"),
-    @NamedQuery(name = "ReferenciaDocumento.findByDocumentoFinal", query = "SELECT r FROM ReferenciaDocumento r WHERE r.documentoFinal = :documentoFinal")})
+    @NamedQuery(name = "ReferenciaDocumento.findByDocumentoFinal", query = "SELECT r FROM ReferenciaDocumento r WHERE r.documentoFinal = :documentoFinal"),
+    @NamedQuery(name = "ReferenciaDocumento.findByNodeRef", query = "SELECT r FROM ReferenciaDocumento r WHERE r.nodeRef = :nodeRef"),
+    @NamedQuery(name = "ReferenciaDocumento.findByFechaCreacion", query = "SELECT r FROM ReferenciaDocumento r WHERE r.fechaCreacion = :fechaCreacion")})
 public class ReferenciaDocumento implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -50,6 +55,11 @@ public class ReferenciaDocumento implements Serializable {
 	private Date fechaCreacion;
     @Column(name = "documento_final")
     private Boolean documentoFinal;
+    @JoinTable(name = "documento_rebaja", joinColumns = {
+            @JoinColumn(name = "documento", referencedColumnName = "id")}, inverseJoinColumns = {
+            @JoinColumn(name = "rebaja", referencedColumnName = "id_rebaja")})
+    @ManyToMany
+    private Collection<Rebaja> rebajaCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idDocumento")
     private Set<DocumentoDistribucionInicialPercapita> documentoDistribucionInicialPercapitaCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idReferenciaDocumento")
@@ -95,8 +105,25 @@ public class ReferenciaDocumento implements Serializable {
     public void setDocumentoFinal(Boolean documentoFinal) {
         this.documentoFinal = documentoFinal;
     }
+ 
+    public String getNodeRef() {
+        return nodeRef;
+    }
 
-    public Set<DocumentoDistribucionInicialPercapita> getDocumentoDistribucionInicialPercapitaCollection() {
+    public void setNodeRef(String nodeRef) {
+        this.nodeRef = nodeRef;
+    }
+
+    @XmlTransient
+    public Collection<Rebaja> getRebajaCollection() {
+        return rebajaCollection;
+    }
+
+    public void setRebajaCollection(Collection<Rebaja> rebajaCollection) {
+        this.rebajaCollection = rebajaCollection;
+    }
+    
+	public Set<DocumentoDistribucionInicialPercapita> getDocumentoDistribucionInicialPercapitaCollection() {
 		return documentoDistribucionInicialPercapitaCollection;
 	}
 
@@ -114,15 +141,7 @@ public class ReferenciaDocumento implements Serializable {
         this.seguimientoReferenciaDocumentoCollection = seguimientoReferenciaDocumentoCollection;
     }
 
-    public String getNodeRef() {
-		return nodeRef;
-	}
-
-	public void setNodeRef(String nodeRef) {
-		this.nodeRef = nodeRef;
-	}
-
-	@Override
+    @Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);
@@ -156,6 +175,7 @@ public class ReferenciaDocumento implements Serializable {
 	public void setPlantillaCollection(Set<Plantilla> plantillaCollection) {
 		this.plantillaCollection = plantillaCollection;
 	}
+	
 
 	@Override
     public String toString() {

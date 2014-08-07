@@ -36,7 +36,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "ComunaCumplimiento.findByIdComunaCumplimiento", query = "SELECT c FROM ComunaCumplimiento c WHERE c.idComunaCumplimiento = :idComunaCumplimiento"),
     @NamedQuery(name = "ComunaCumplimiento.findByIdMes", query = "SELECT c FROM ComunaCumplimiento c WHERE c.idMes.idMes= :idMes"),
     @NamedQuery(name = "ComunaCumplimiento.findByValor", query = "SELECT c FROM ComunaCumplimiento c WHERE c.valor = :valor"),
-    @NamedQuery(name = "ComunaCumplimiento.findByComuna", query = "SELECT c FROM ComunaCumplimiento c WHERE c.idComuna.id = :idComuna order by c.idComunaCumplimiento asc")})
+    @NamedQuery(name = "ComunaCumplimiento.findByComuna", query = "SELECT c FROM ComunaCumplimiento c WHERE c.idComuna.id = :idComuna order by c.idComunaCumplimiento asc"),
+    @NamedQuery(name = "ComunaCumplimiento.deleteUsingIdCumplimiento", query = "DELETE FROM ComunaCumplimiento c WHERE c.idComunaCumplimiento IN (:listaIdCumplimientos)")})
 public class ComunaCumplimiento implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

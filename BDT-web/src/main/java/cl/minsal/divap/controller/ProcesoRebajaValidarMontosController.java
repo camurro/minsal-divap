@@ -17,10 +17,12 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import minsal.divap.dao.RebajaDAO;
 import minsal.divap.enums.BusinessProcess;
 import minsal.divap.service.RebajaService;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ComunaVO;
+import minsal.divap.vo.DocumentSummaryVO;
 import minsal.divap.vo.RebajaVO;
 import minsal.divap.vo.RegionVO;
 import minsal.divap.vo.ServiciosVO;
@@ -35,6 +37,7 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.controller.divapProcesoRebajaCargarCumplimientoController;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
+import cl.redhat.bandejaTareas.util.JSONHelper;
 
 @Named("procesoRebajaValidarMontosController")
 @ViewScoped
@@ -62,10 +65,14 @@ public class ProcesoRebajaValidarMontosController extends AbstractTaskMBean
 	private List<ComunaVO> listaComunas;
 	private List<String> comunasSeleccionadas;
 	private List<ComunaVO> rebajaComunas;
+	private List<Integer> allDocuments;
+	private List<DocumentSummaryVO> resumenDocumentos;
+
 	
 	private Integer docRebaja;
 	private String docIdDownload;
 	private ComunaVO rebajaSeleccionada;
+	private String mesActual;
 	
 	//Variables de salida proceso
 	private boolean aprobar_;
@@ -85,10 +92,27 @@ public class ProcesoRebajaValidarMontosController extends AbstractTaskMBean
 						e);
 			}
 		}
-		docRebaja = rebajaService.getPlantillaRebaja();
+		buscaDocumentos();
 		cargarListaRegiones();
+		String formato="MMMM";
+		SimpleDateFormat dateFormat = new SimpleDateFormat(formato);
+		setMesActual(dateFormat.format(new Date()));
 	}
 	
+	private void buscaDocumentos() {
+		this.docRebaja = (Integer) getTaskDataVO().getData().get("_idDoc");
+		String todosDocumentos = (String) getTaskDataVO().getData().get("_allDocumentsId");
+		if(todosDocumentos!=null){
+			allDocuments = JSONHelper.fromJSON(todosDocumentos, List.class);
+			allDocuments.add(docRebaja);
+		}else{
+			allDocuments = new ArrayList<Integer>();
+			allDocuments.add(docRebaja);
+		}
+		resumenDocumentos = rebajaService.getReferenciaDocumentosById(allDocuments);
+		
+	}
+
 	public void cargarListaRegiones(){
 		listaRegiones = utilitariosService.getAllRegion();
 	}
@@ -119,10 +143,6 @@ public class ProcesoRebajaValidarMontosController extends AbstractTaskMBean
 		rebajaComunas = rebajaService.getRebajasByComuna(comunasId,Integer.parseInt(dateFormat.format(new Date())));
 	}
 
-	public String getTarget() {
-		return target;
-	}
-
 	@Override
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new HashMap<String, Object>();
@@ -131,6 +151,7 @@ public class ProcesoRebajaValidarMontosController extends AbstractTaskMBean
 		parameters.put("aprobar_", this.aprobar_);
 		parameters.put("rechazarRevalorizar_", this.rechazarRevalorizar_);
 		parameters.put("rechazarSubirArchivo_", this.rechazarSubirArchivo_);
+		parameters.put("allDocumentsId_", JSONHelper.toJSON(allDocuments));
 		return parameters;
 	}
 	
@@ -143,10 +164,7 @@ public class ProcesoRebajaValidarMontosController extends AbstractTaskMBean
 	
 	public void guardaRebaja(){
 		if(rebajaSeleccionada!=null){
-		System.out.println("*******************");
-		System.out.println(rebajaSeleccionada.getIdComuna());
-		System.out.println(rebajaSeleccionada.getRebajaFinal1());
-		System.out.println("*******************");
+		rebajaService.updateMontosRebajaComuna(rebajaSeleccionada);
 		}
 	}
 
@@ -273,6 +291,38 @@ public class ProcesoRebajaValidarMontosController extends AbstractTaskMBean
 
 	public void setRebajaSeleccionada(ComunaVO rebajaSeleccionada) {
 		this.rebajaSeleccionada = rebajaSeleccionada;
+	}
+
+	public String getMesActual() {
+		return mesActual;
+	}
+
+	public void setMesActual(String mesActual) {
+		this.mesActual = mesActual;
+	}
+
+	public List<Integer> getAllDocuments() {
+		return allDocuments;
+	}
+
+	public void setAllDocuments(List<Integer> allDocuments) {
+		this.allDocuments = allDocuments;
+	}
+
+	public List<DocumentSummaryVO> getResumenDocumentos() {
+		return resumenDocumentos;
+	}
+
+	public void setResumenDocumentos(List<DocumentSummaryVO> resumenDocumentos) {
+		this.resumenDocumentos = resumenDocumentos;
+	}
+
+	public String getTarget() {
+		return target;
+	}
+
+	public void setTarget(String target) {
+		this.target = target;
 	}
 
 }

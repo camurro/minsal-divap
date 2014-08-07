@@ -6,8 +6,15 @@
 <script type="text/javascript">
 function sumaRebajas(){
 	var suma = parseInt(document.getElementById("rebajasForm:tablaMisTareas:0:final1").value)+parseInt(document.getElementById("rebajasForm:tablaMisTareas:0:final2").value)+parseInt(document.getElementById("rebajasForm:tablaMisTareas:0:final3").value);
-	alert(suma);
-	document.getElementById("rebajasForm:tablaMisTareas:0:totalFinal").value = suma;
+	document.getElementById("rebajasForm:tablaMisTareas:0:totalFinal").innerHTML = suma;
+
+	var aporte = document.getElementById("rebajasForm:tablaMisTareas:0:aporteEstatal").innerHTML;
+	var montoReb= parseInt(aporte)*parseInt(suma)/100;
+alert(montoReb);
+	document.getElementById("rebajasForm:tablaMisTareas:0:montoRebaja").innerHTML=montoReb;
+
+	var nuevoAp = parseInt(aporte) - parseInt(montoReb);
+	document.getElementById("rebajasForm:tablaMisTareas:0:nuevoAporte").innerHTML=nuevoAp;
 	
 }
 </script>
@@ -29,16 +36,20 @@ function sumaRebajas(){
 
 					<div class="destacaArchivos ui-corner-all">
 						<h3>Archivos disponibles para la Tarea:</h3>
-						<span class="strong">Archivo: </span> Planilla Montos de Rebaja [
-						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
-						<h:commandLink action="#{procesoRebajaValidarMontosController.downloadExcelRebaja}" value="Bajar">
-						    <f:setPropertyActionListener target="#{procesoRebajaValidarMontosController.docIdDownload}"
-								value="#{procesoRebajaValidarMontosController.docRebaja}" />
-						</h:commandLink>]
-						<ul class="versionesArchivo">
-							<li>No existen versiones anteriores</li>
-						</ul>
-					</div>
+						
+						<h:dataTable var="_resumenDoc" value="#{procesoRebajaValidarMontosController.resumenDocumentos}">
+   							 <h:column>
+       							 <h:outputText value="#{_resumenDoc.descDocumento}"  />
+    						</h:column>
+   							 <h:column>
+      							  <h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+									<h:commandLink action="#{procesoRebajaValidarMontosController.downloadExcelRebaja}" value="Bajar">
+						   				 <f:setPropertyActionListener target="#{procesoRebajaValidarMontosController.docIdDownload}"
+											value="#{_resumenDoc.idDocumento}" />
+										</h:commandLink> 
+    							</h:column>
+							</h:dataTable>
+						</div>
 					<h3>Visualizador: Montos de Rebaja</h3>
 					<!-- INICIO: MODAL CON INFORMACIóN Y FILTROS VISTA ONLINE -->
 
@@ -86,12 +97,12 @@ function sumaRebajas(){
 							<!--  -->
 							<p:row>
 								<p:column rowspan="2" headerText="Comuna" />
-								<p:column rowspan="2" headerText="Aporte Estatal {MAYO}" />
+								<p:column rowspan="2" headerText="Aporte Estatal #{procesoRebajaValidarMontosController.mesActual}" />
 								<p:column colspan="3" headerText="Cumplimiento" />
 								<p:column colspan="4" headerText="Rebaja Calculada" />
 								<p:column colspan="4" headerText="Rebaja Final" />
-								<p:column rowspan="2" headerText="Monto Rebaja {MAYO}" />
-								<p:column rowspan="2" headerText="Nuevo Aporte Estatal {MAYO}" />
+								<p:column rowspan="2" headerText="Monto Rebaja #{procesoRebajaValidarMontosController.mesActual}" />
+								<p:column rowspan="2" headerText="Nuevo Aporte Estatal #{procesoRebajaValidarMontosController.mesActual}" />
 								<p:column rowspan="2" headerText="Guardar" />
 							</p:row>
 							<p:row>
@@ -114,21 +125,20 @@ function sumaRebajas(){
 						</p:columnGroup>
 						<p:column><h:outputText value="#{_rebaja.descComuna}"  styleClass="textoPequenio textoAjustado" /></p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.aporteEstatal}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+							<h:outputText id="aporteEstatal" value="#{_rebaja.aporteEstatal}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						
 						<p:column>
-							<h:outputText value="#{_rebaja.cumplimientoItem1}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="#{_rebaja.cumplimiento1.valor}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.cumplimientoItem2}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="#{_rebaja.cumplimiento2.valor}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.cumplimientoItem3}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="#{_rebaja.cumplimiento3.valor}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>
@@ -144,36 +154,34 @@ function sumaRebajas(){
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.rebajaCalculada1 + _rebaja.rebajaCalculada2 + _rebaja.rebajaCalculada3}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="#{_rebaja.totalCalculada}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 
 						<p:column>
-							<h:inputText id="final1" value="#{_rebaja.rebajaFinal1}" styleClass="textoPequenioInput textoAjustado" style="width:30px" >
+							<h:inputText id="final1" value="#{_rebaja.rebajaFinal1}" styleClass="textoPequenioInput textoAjustado" style="width:30px" onchange="javascript:sumaRebajas();">
 							</h:inputText>
 						</p:column>
 						<p:column>
-							<h:inputText id="final2" value="#{_rebaja.rebajaFinal2}" styleClass="textoPequenioInput textoAjustado" style="width:30px" >
+							<h:inputText id="final2" value="#{_rebaja.rebajaFinal2}" styleClass="textoPequenioInput textoAjustado" style="width:30px" onchange="javascript:sumaRebajas();">
 							</h:inputText>
 						</p:column>
 						<p:column>
-							<h:inputText id="final3" value="#{_rebaja.rebajaFinal3}" styleClass="textoPequenioInput textoAjustado"  style="width:30px" >
+							<h:inputText id="final3" value="#{_rebaja.rebajaFinal3}" styleClass="textoPequenioInput textoAjustado"  style="width:30px" onchange="javascript:sumaRebajas();">
 							</h:inputText>
 						</p:column>
 
 						<p:column>
-							<h:outputText id="totalFinal" value="" styleClass="textoPequenio textoAjustado">
+							<h:outputText id="totalFinal" value="#{_rebaja.totalFinal}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 
 						<p:column>
-							<h:outputText value="" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+							<h:outputText id="montoRebaja" value="#{_rebaja.montoRebaja}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+							<h:outputText id="nuevoAporte" value="#{_rebaja.nuevoAporteEstatal}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>

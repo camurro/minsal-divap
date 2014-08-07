@@ -13,17 +13,20 @@ public class ComunaVO implements Serializable{
 	private Integer idComuna;
 	private String descComuna;
 	private Integer aporteEstatal;
-	private Integer cumplimientoItem1;
-	private Integer cumplimientoItem2;
-	private Integer cumplimientoItem3;
+	private CumplimientoSummaryVO cumplimiento1;
+	private CumplimientoSummaryVO cumplimiento2;
+	private CumplimientoSummaryVO cumplimiento3;
 	private Double rebajaCalculada1;
 	private Double rebajaCalculada2;
 	private Double rebajaCalculada3;
+	private Double totalCalculada;
 	private Double rebajaFinal1;
 	private Double rebajaFinal2;
 	private Double rebajaFinal3;
+	private Double totalFinal;
 	private Integer montoRebaja;
 	private Integer nuevoAporteEstatal;
+	
 	
 	
 	
@@ -56,24 +59,6 @@ public class ComunaVO implements Serializable{
 	}
 	public void setNuevoAporteEstatal(Integer nuevoAporteEstatal) {
 		this.nuevoAporteEstatal = nuevoAporteEstatal;
-	}
-	public Integer getCumplimientoItem1() {
-		return cumplimientoItem1;
-	}
-	public void setCumplimientoItem1(Integer cumplimientoItem1) {
-		this.cumplimientoItem1 = cumplimientoItem1;
-	}
-	public Integer getCumplimientoItem2() {
-		return cumplimientoItem2;
-	}
-	public void setCumplimientoItem2(Integer cumplimientoItem2) {
-		this.cumplimientoItem2 = cumplimientoItem2;
-	}
-	public Integer getCumplimientoItem3() {
-		return cumplimientoItem3;
-	}
-	public void setCumplimientoItem3(Integer cumplimientoItem3) {
-		this.cumplimientoItem3 = cumplimientoItem3;
 	}
 	public Double getRebajaCalculada1() {
 		return rebajaCalculada1;
@@ -110,6 +95,36 @@ public class ComunaVO implements Serializable{
 	}
 	public void setRebajaFinal3(Double rebajaFinal3) {
 		this.rebajaFinal3 = rebajaFinal3;
+	}
+	public Double getTotalCalculada() {
+		return totalCalculada;
+	}
+	public void setTotalCalculada(Double totalCalculada) {
+		this.totalCalculada = totalCalculada;
+	}
+	public Double getTotalFinal() {
+		return totalFinal;
+	}
+	public void setTotalFinal(Double totalFinal) {
+		this.totalFinal = totalFinal;
+	}
+	public CumplimientoSummaryVO getCumplimiento1() {
+		return cumplimiento1;
+	}
+	public void setCumplimiento1(CumplimientoSummaryVO cumplimiento1) {
+		this.cumplimiento1 = cumplimiento1;
+	}
+	public CumplimientoSummaryVO getCumplimiento2() {
+		return cumplimiento2;
+	}
+	public void setCumplimiento2(CumplimientoSummaryVO cumplimiento2) {
+		this.cumplimiento2 = cumplimiento2;
+	}
+	public CumplimientoSummaryVO getCumplimiento3() {
+		return cumplimiento3;
+	}
+	public void setCumplimiento3(CumplimientoSummaryVO cumplimiento3) {
+		this.cumplimiento3 = cumplimiento3;
 	}
 	
 	

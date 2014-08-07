@@ -51,12 +51,16 @@ public class ProcesoRebajaController extends AbstractTaskMBean
 	private boolean archivosCargados = false;
 	private boolean archivosValidos = false;
 	private List<Integer> docIds;
+	private List<Integer> idDocumentosExistentes;
 	
 	//Variables de salida proceso
 	private boolean error_;
 	private String correoUsuario_;
 	private String correoSubject_;
 	private String correoBody_;
+	
+	//Variables de entrada proceso
+	private Integer idProcesoRebaja;
 	
 	@EJB
 	private RebajaService rebajaService;
@@ -77,6 +81,7 @@ public class ProcesoRebajaController extends AbstractTaskMBean
 		docBaseCumplimiento = rebajaService.getPlantillaBaseCumplimiento();
 	}
 	
+
 	public String getTarget() {
 		return target;
 	}
@@ -237,6 +242,14 @@ public class ProcesoRebajaController extends AbstractTaskMBean
 
 	public void setDocIds(List<Integer> docIds) {
 		this.docIds = docIds;
+	}
+
+	public List<Integer> getIdDocumentosExistentes() {
+		return idDocumentosExistentes;
+	}
+
+	public void setIdDocumentosExistentes(List<Integer> idDocumentosExistentes) {
+		this.idDocumentosExistentes = idDocumentosExistentes;
 	}
 	
 
