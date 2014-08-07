@@ -1433,7 +1433,36 @@ ALTER TABLE ano_en_curso
    ALTER COLUMN inflactor SET NOT NULL;
 
 
+-- 29/07/2014
+CREATE TABLE rebaja
+(
+  id_rebaja serial NOT NULL,
+  usuario text,
+  fecha_creacion timestamp with time zone,
+  CONSTRAINT rebaja_pkey PRIMARY KEY (id_rebaja),
+  CONSTRAINT rebaja_usuario_fkey FOREIGN KEY (usuario)
+      REFERENCES usuario (username) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
 
+CREATE TABLE documento_rebaja
+(
+  rebaja integer NOT NULL,
+  documento integer NOT NULL,
+  CONSTRAINT documento_rebaja_pkey PRIMARY KEY (rebaja, documento),
+  CONSTRAINT documento_rebaja_documento_fkey FOREIGN KEY (documento)
+      REFERENCES referencia_documento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT documento_rebaja_rebaja_fkey FOREIGN KEY (rebaja)
+      REFERENCES rebaja (id_rebaja) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
 
 
 

@@ -12,6 +12,7 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
+import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
 import minsal.divap.dao.RebajaDAO;
 import minsal.divap.dao.ServicioSaludDAO;
@@ -23,10 +24,13 @@ import minsal.divap.excel.impl.RebajaCalculadaSheetExcel;
 import minsal.divap.excel.impl.RebajaExcelValidator;
 import minsal.divap.excel.impl.RebajaSheetExcel;
 import minsal.divap.exception.ExcelFormatException;
+import minsal.divap.model.mappers.RebajaMapper;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.CellTypeExcelVO;
 import minsal.divap.vo.ComunaVO;
+import minsal.divap.vo.CumplimientoSummaryVO;
 import minsal.divap.vo.CumplimientoVO;
+import minsal.divap.vo.DocumentSummaryVO;
 import minsal.divap.vo.PlanillaRebajaCalculadaVO;
 import minsal.divap.vo.RebajaVO;
 
@@ -38,8 +42,11 @@ import cl.minsal.divap.model.ComunaCumplimiento;
 import cl.minsal.divap.model.ComunaRebaja;
 import cl.minsal.divap.model.Cumplimiento;
 import cl.minsal.divap.model.Mes;
+import cl.minsal.divap.model.Rebaja;
+import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.ServicioSalud;
 import cl.minsal.divap.model.TipoCumplimiento;
+import cl.minsal.divap.model.Usuario;
 
 @Stateless
 @LocalBean
@@ -52,6 +59,8 @@ public class RebajaService {
 	private ServicioSaludDAO servicioSaludDAO;
 	@EJB
 	private RebajaDAO rebajaDAO;
+	@EJB
+	private AntecedentesComunaDAO antecedentesComunaDAO;
 	@EJB
 	private DocumentService documentService;
 	@EJB
@@ -140,9 +149,9 @@ public class RebajaService {
 					comunaId.add(comuna.getId());
 					List<ComunaVO> comunaRebajas = getRebajasByComuna(comunaId,Integer.parseInt(dateFormat.format(new Date())));
 					for(ComunaVO comVO : comunaRebajas){
-						planilla.setCumplimientoItem1(comVO.getCumplimientoItem1());
-						planilla.setCumplimientoItem2(comVO.getCumplimientoItem2());
-						planilla.setCumplimientoItem3(comVO.getCumplimientoItem3());
+						planilla.setCumplimientoItem1(comVO.getCumplimiento1().getValor());
+						planilla.setCumplimientoItem2(comVO.getCumplimiento2().getValor());
+						planilla.setCumplimientoItem3(comVO.getCumplimiento3().getValor());
 						planilla.setRebajaCalculada1(comVO.getRebajaCalculada1());
 						planilla.setRebajaCalculada2(comVO.getRebajaCalculada2());
 						planilla.setRebajaCalculada3(comVO.getRebajaCalculada3());
@@ -197,6 +206,15 @@ public class RebajaService {
 		String formato="MM";
 		SimpleDateFormat dateFormat = new SimpleDateFormat(formato);
 
+		List<ComunaCumplimiento> cumplimientosExistentes = rebajaDAO.getAllCumplimientoPorMes(Integer.parseInt(dateFormat.format(new Date())));
+		if(cumplimientosExistentes.size() > 0){
+			List<Integer> listaIdCumplimientos = new ArrayList<Integer>();
+			for(ComunaCumplimiento cumpleComuna : cumplimientosExistentes){
+				listaIdCumplimientos.add(cumpleComuna.getIdComunaCumplimiento());
+			}
+			rebajaDAO.deleteComunaRebajaByIdCumplimiento(listaIdCumplimientos);
+			rebajaDAO.deleteComunaCumplimientoByIdCumplimiento(listaIdCumplimientos);
+		}
 		for(CumplimientoVO item : items){
 			
 			Comuna comuna = new Comuna();
@@ -242,36 +260,73 @@ public class RebajaService {
 			comunaVO.setDescComuna(comuna.getNombre());
 			
 			List<ComunaCumplimiento> comunaCumplimientos = rebajaDAO.getAllCumplimientoPorComuna(comuna.getId());
-			comunaVO.setCumplimientoItem1(comunaCumplimientos.get(0).getValor());
-			comunaVO.setCumplimientoItem2(comunaCumplimientos.get(1).getValor());
-			comunaVO.setCumplimientoItem3(comunaCumplimientos.get(2).getValor());
+			
+			for (int i = 0; i < comunaCumplimientos.size(); i++) {
+				CumplimientoSummaryVO cumpleSummaryVO = new RebajaMapper().getSummary(comunaCumplimientos.get(i));
+				if(i==0){
+					comunaVO.setCumplimiento1(cumpleSummaryVO);
+				}
+				if(i==1){
+					comunaVO.setCumplimiento2(cumpleSummaryVO);
+				}
+				if(i==2){
+					comunaVO.setCumplimiento3(cumpleSummaryVO);
+				}
+			}
 			
 			List<ComunaRebaja> comunaRebaja = rebajaDAO.getallRebajaByComuna(comuna.getId());
 			comunaVO.setRebajaCalculada1(comunaRebaja.get(0).getRebajaCalculada());
 			comunaVO.setRebajaCalculada2(comunaRebaja.get(1).getRebajaCalculada());
 			comunaVO.setRebajaCalculada3(comunaRebaja.get(2).getRebajaCalculada());
+			
+			Double totalCalculado = comunaRebaja.get(0).getRebajaCalculada()  +comunaRebaja.get(1).getRebajaCalculada()+comunaRebaja.get(2).getRebajaCalculada();
+			comunaVO.setTotalCalculada(totalCalculado);
+			
 			comunaVO.setRebajaFinal1(comunaRebaja.get(0).getRebajaFinal());
 			comunaVO.setRebajaFinal2(comunaRebaja.get(1).getRebajaFinal());
 			comunaVO.setRebajaFinal3(comunaRebaja.get(2).getRebajaFinal());
 			
-			comunaVO.setAporteEstatal(123456789);
+			Double totalFinal = comunaRebaja.get(0).getRebajaFinal()  +comunaRebaja.get(1).getRebajaFinal()+comunaRebaja.get(2).getRebajaFinal();
+			comunaVO.setTotalFinal(totalFinal);
+			
+			
+			String formato="yyyy";
+			SimpleDateFormat dateFormat = new SimpleDateFormat(formato);
+			Double aporteEstatal = antecedentesComunaDAO.findPerCapitaCostoFijoByServicioComunaAnoAnterior(comuna.getId(), comuna.getServicioSalud().getId(), Integer.parseInt(dateFormat.format(new Date())));
+			
+			comunaVO.setAporteEstatal((aporteEstatal != null?aporteEstatal.intValue():Integer.parseInt("0")));
+
+			
+			Double montoRebaja = comunaVO.getAporteEstatal()*comunaVO.getTotalFinal()/100;
+			comunaVO.setMontoRebaja(montoRebaja.intValue());
+			
+			Double nuevoAporte = comunaVO.getAporteEstatal() - montoRebaja;
+			comunaVO.setNuevoAporteEstatal(nuevoAporte.intValue());
 			
 			comunasRebajaVO.add(comunaVO);
 		}
 		return comunasRebajaVO;
 	}
 
-	public void calculaRebajaMes(int idMes){
-		List<ComunaCumplimiento> comunaCumplimiento = rebajaDAO.getAllCumplimientoPorMes(idMes);
-		if(comunaCumplimiento.size()>0)
-			for(ComunaCumplimiento comunaCumple : comunaCumplimiento){
-				reglaCalculoRebajaPorComuna(comunaCumple);
+	public Integer calculaRebajaMes(int idMes, int idProceso){
+			List<ComunaCumplimiento> comunaCumplimiento = rebajaDAO.getAllCumplimientoPorMes(idMes);
+			if(comunaCumplimiento.size()>0){
+				List<Integer> listaIdCumplimientos = new ArrayList<Integer>();
+				for(ComunaCumplimiento cumpleComuna : comunaCumplimiento){
+					listaIdCumplimientos.add(cumpleComuna.getIdComunaCumplimiento());
+				}
+				rebajaDAO.deleteComunaRebajaByIdCumplimiento(listaIdCumplimientos);
+				for(ComunaCumplimiento comunaCumple : comunaCumplimiento){
+					reglaCalculoRebajaPorComuna(comunaCumple);
+				}
 			}
-		
+		return generarExcelRebajaCalculada(idProceso);
 	}
+	
 	private void reglaCalculoRebajaPorComuna(ComunaCumplimiento comunaCumplimiento) {
 		List<Cumplimiento> cumplimiento = rebajaDAO.getAllCumplimientoByTipoCumplimiento(comunaCumplimiento.getIdTipoCumplimiento().getIdTipoCumplimiento());
 		for(Cumplimiento cumple : cumplimiento){
+			System.out.println(cumple.getIdCumplimiento());
 			if(comunaCumplimiento.getValor().intValue() >= cumple.getPorcentajeDesde().intValue() &&
 					comunaCumplimiento.getValor().intValue() <= cumple.getPorcentajeHasta()){
 				ComunaRebaja comunaRebaja = new ComunaRebaja();
@@ -283,9 +338,9 @@ public class RebajaService {
 		}
 	}
 
-	public Integer getPlantillaRebaja() {
-		Integer plantillaId = documentService.getPlantillaByType(TemplatesType.REBAJACALCULADA);
-		if(plantillaId == null){
+	public Integer generarExcelRebajaCalculada(int idProceso) {
+
+			int documentId = 0;
 			List<PlanillaRebajaCalculadaVO> servicios = getAllRebajasPlanillaTotal();
 			
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
@@ -325,13 +380,42 @@ public class RebajaService {
 				String[] folder = folderProcesoRebaja.split("/");
 				BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folder[0]+"/"+dateFormat.format(new Date())+"/"+folder[1]);
 				System.out.println("response rebajaCalculadaSheetExcel --->"+response);
-				plantillaId = documentService.createTemplate(TemplatesType.REBAJACALCULADA, response.getNodeRef(), response.getFileName(), contenType);
+				Rebaja rebaja = rebajaDAO.findRebajaById(idProceso);
+				documentId = documentService.crearDocumentoRebajaCalculada(rebaja,response.getNodeRef(), response.getFileName(), contenType);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}else{
-			plantillaId = documentService.getDocumentoIdByPlantillaId(plantillaId);
-		}
-		return plantillaId;
+	
+		return documentId;
 	}
-}
+	
+	public Integer crearIntanciaRebaja(String username){
+		System.out.println("username-->"+username);
+		Usuario usuario = this.usuarioDAO.getUserByUsername(username);
+		return rebajaDAO.crearIntanciaRebaja(usuario);
+	}
+
+	
+	public void updateMontosRebajaComuna(ComunaVO comuna){
+		rebajaDAO.updateRebajaComuna(comuna.getCumplimiento1().getIdCumplimiento(),comuna.getRebajaFinal1());
+		rebajaDAO.updateRebajaComuna(comuna.getCumplimiento2().getIdCumplimiento(),comuna.getRebajaFinal2());
+		rebajaDAO.updateRebajaComuna(comuna.getCumplimiento3().getIdCumplimiento(),comuna.getRebajaFinal3());
+	}
+
+	public List<DocumentSummaryVO> getReferenciaDocumentosById(
+			List<Integer> allDocuments) {
+		List<ReferenciaDocumento> referenciaDocumentos = rebajaDAO.getReferenciaDocumentosById(allDocuments);
+		List<DocumentSummaryVO> resumenDocumentos = new ArrayList<DocumentSummaryVO>();
+		int i=1;
+		for(ReferenciaDocumento referencia : referenciaDocumentos){
+			DocumentSummaryVO resumen = new DocumentSummaryVO();
+			resumen.setIdDocumento(referencia.getId());
+			String[] nombreDocumento = referencia.getPath().split("\\.");
+			resumen.setDescDocumento(nombreDocumento[0].concat("_v").concat(String.valueOf(i)).concat("."+nombreDocumento[1]));
+			resumenDocumentos.add(resumen);
+			i++;
+		}
+		return resumenDocumentos;
+	}
+
+	}

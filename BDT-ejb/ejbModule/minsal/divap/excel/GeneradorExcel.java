@@ -97,12 +97,10 @@ public class GeneradorExcel {
 					XSSFCell cell = newRow.createCell(skipPosition++);
 					if(rowData.get(element) instanceof String){
 						cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-						System.out.println("rowData.get(element).toString()-->"+rowData.get(element).toString());
 						cell.setCellValue(rowData.get(element).toString());
 					}else if(rowData.get(element) instanceof Boolean){
 						cell.setCellType(XSSFCell.CELL_TYPE_BOOLEAN);
 						boolean value = (Boolean)rowData.get(element);
-						System.out.println("Boolean)rowData.get(element)-->"+value);
 						cell.setCellValue(value);
 					}else if((rowData.get(element) instanceof Integer) || (rowData.get(element) instanceof Long) || (rowData.get(element) instanceof Double) || (rowData.get(element) instanceof Float)){
 						cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
@@ -119,7 +117,6 @@ public class GeneradorExcel {
 						if(rowData.get(element) instanceof Float){
 							value = Double.valueOf(((Float)rowData.get(element)).toString());
 						}
-						System.out.println("Numeric rowData.get(element)-->"+value);
 						cell.setCellValue(value);
 					}
 				}
@@ -217,12 +214,10 @@ public class GeneradorExcel {
 					XSSFCell cell = newRow.createCell(skipPosition++);
 					if(rowData.get(element) instanceof String){
 						cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-						System.out.println("rowData.get(element).toString()-->"+rowData.get(element).toString());
 						cell.setCellValue(rowData.get(element).toString());
 					}else if(rowData.get(element) instanceof Boolean){
 						cell.setCellType(XSSFCell.CELL_TYPE_BOOLEAN);
 						boolean value = (Boolean)rowData.get(element);
-						System.out.println("Boolean)rowData.get(element)-->"+value);
 						cell.setCellValue(value);
 					}else if((rowData.get(element) instanceof Integer) || (rowData.get(element) instanceof Long) || (rowData.get(element) instanceof Double) || (rowData.get(element) instanceof Float)){
 						cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
@@ -239,7 +234,6 @@ public class GeneradorExcel {
 						if(rowData.get(element) instanceof Float){
 							value = Double.valueOf(((Float)rowData.get(element)).toString());
 						}
-						System.out.println("Numeric rowData.get(element)-->"+value);
 						cell.setCellValue(value);
 					}
 				}
@@ -337,12 +331,10 @@ public class GeneradorExcel {
 					XSSFCell cell = newRow.createCell(skipPosition++);
 					if(rowData.get(element) instanceof String){
 						cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-						System.out.println("rowData.get(element).toString()-->"+rowData.get(element).toString());
 						cell.setCellValue(rowData.get(element).toString());
 					}else if(rowData.get(element) instanceof Boolean){
 						cell.setCellType(XSSFCell.CELL_TYPE_BOOLEAN);
 						boolean value = (Boolean)rowData.get(element);
-						System.out.println("Boolean)rowData.get(element)-->"+value);
 						cell.setCellValue(value);
 					}else if((rowData.get(element) instanceof Integer) || (rowData.get(element) instanceof Long) || (rowData.get(element) instanceof Double) || (rowData.get(element) instanceof Float)){
 						cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
@@ -359,7 +351,6 @@ public class GeneradorExcel {
 						if(rowData.get(element) instanceof Float){
 							value = Double.valueOf(((Float)rowData.get(element)).toString());
 						}
-						System.out.println("Numeric rowData.get(element)-->"+value);
 						cell.setCellValue(value);
 					}
 				}

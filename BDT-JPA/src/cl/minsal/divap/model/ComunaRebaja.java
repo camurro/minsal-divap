@@ -30,7 +30,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "ComunaRebaja.findAll", query = "SELECT c FROM ComunaRebaja c"),
     @NamedQuery(name = "ComunaRebaja.findByIdComunaRebaja", query = "SELECT c FROM ComunaRebaja c WHERE c.comunaCumplimiento.idComuna.id = :idComunaRebaja order by c.comunaCumplimiento.idComuna.id asc"),
-    @NamedQuery(name = "ComunaRebaja.findByRebaja", query = "SELECT c FROM ComunaRebaja c WHERE c.rebajaCalculada = :rebajaCalculada")})
+    @NamedQuery(name = "ComunaRebaja.findByIdCumplimiento", query = "SELECT c FROM ComunaRebaja c WHERE c.comunaCumplimiento.idComunaCumplimiento = :idComunaCumplimiento"),
+    @NamedQuery(name = "ComunaRebaja.findByRebaja", query = "SELECT c FROM ComunaRebaja c WHERE c.rebajaCalculada = :rebajaCalculada"),
+    @NamedQuery(name = "ComunaRebaja.deleteUsingIdCumplimiento", query = "DELETE FROM ComunaRebaja c WHERE c.comunaCumplimiento.idComunaCumplimiento IN (:listaIdCumplimientos)")})
 public class ComunaRebaja implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

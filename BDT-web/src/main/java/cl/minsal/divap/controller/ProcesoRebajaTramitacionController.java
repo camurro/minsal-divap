@@ -2,30 +2,29 @@ package cl.minsal.divap.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
+import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import minsal.divap.enums.BusinessProcess;
-import minsal.divap.vo.TaskDataVO;
-import minsal.divap.vo.TaskVO;
+import minsal.divap.service.RebajaService;
+import minsal.divap.service.UtilitariosService;
+import minsal.divap.vo.ComunaVO;
+import minsal.divap.vo.RegionVO;
+import minsal.divap.vo.ServiciosVO;
 
 import org.apache.log4j.Logger;
-import org.primefaces.model.UploadedFile;
 
-import cl.minsal.divap.pojo.RebajaPojo;
-import cl.redhat.bandejaTareas.controller.BaseController;
-import cl.redhat.bandejaTareas.controller.divapProcesoRebajaCargarCumplimientoController;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
-import cl.redhat.bandejaTareas.util.BandejaProperties;
 
 @Named("procesoRebajaTramitacionController")
 @ViewScoped
@@ -37,13 +36,22 @@ public class ProcesoRebajaTramitacionController extends AbstractTaskMBean
 	private transient Logger log;
 	@Inject
 	FacesContext facesContext;
-	
+	@EJB
+	UtilitariosService utilitariosService;
+	@EJB
+	RebajaService rebajaService;
 	
 	//Variables página
-	private String target;
-	private Map<String, String> comunas;
+	private List<RegionVO> listaRegiones;
+	private String regionSeleccionada;	
+	private List<ServiciosVO> listaServicios;
+	private String servicioSeleccionado;
+	private List<ComunaVO> listaComunas;
 	private List<String> comunasSeleccionadas;
-	List<RebajaPojo> listRebaja;
+	private List<ComunaVO> rebajaComunas;
+	
+	private String mesActual;
+	private String target;
 	
 	//Variables de salida proceso
 	private boolean aprobar_;
@@ -63,51 +71,39 @@ public class ProcesoRebajaTramitacionController extends AbstractTaskMBean
 						e);
 			}
 		}
-		generaComunas();
-		generaRebajas();
+		cargarListaRegiones();
+		String formato="MMMM";
+		SimpleDateFormat dateFormat = new SimpleDateFormat(formato);
+		setMesActual(dateFormat.format(new Date()));
 	}
-	public void generaComunas() {
-		comunas = new HashMap<String, String>();
-		comunas.put("PROVIDENCIA", "PROVIDENCIA");
-		comunas.put("MACUL", "MACUL");
-		comunas.put("LA FLORIDA", "LA FLORIDA");
-		comunas.put("LA REINA", "LA REINA");
-		comunas.put("RENCA", "RENCA");
+	
+	public void cargarListaRegiones(){
+		listaRegiones = utilitariosService.getAllRegion();
 	}
-	public void generaRebajas() {
-		listRebaja = new ArrayList();
-		RebajaPojo rebaja = new RebajaPojo();
-		
-		rebaja.setComuna("MACUL");
-		rebaja.setItemCumplimiento1(0.05f);
-		rebaja.setItemCumplimiento1(0.02f);
-		rebaja.setItemCumplimiento1(0.017f);
-		
-		rebaja.setRebaja1(0.04f);
-		rebaja.setRebaja2(0);
-		rebaja.setRebaja3(0.05f);
-		rebaja.setTotalRebaja(rebaja.getRebaja1() + rebaja.getRebaja2() + rebaja.getRebaja3());
-		
-		rebaja.setRebajaExcepcional1(0.04f);
-		rebaja.setRebajaExcepcional2(0);
-		rebaja.setRebajaExcepcional3(0.05f);
-		rebaja.setTotalRebajaExcepcional(rebaja.getRebajaExcepcional1() + rebaja.getRebajaExcepcional2() + rebaja.getRebajaExcepcional3());
-		
-		listRebaja.add(rebaja);
-		
-		rebaja = new RebajaPojo();
-		
-		rebaja.setComuna("LA REINA");
-		rebaja.setItemCumplimiento1(0.03f);
-		rebaja.setItemCumplimiento1(0.015f);
-		rebaja.setItemCumplimiento1(0.01f);
-		
-		rebaja.setRebaja1(0.013f);
-		rebaja.setRebaja2(0);
-		rebaja.setRebaja3(0.015f);
-		rebaja.setTotalRebaja(rebaja.getRebaja1() + rebaja.getRebaja2() + rebaja.getRebaja3());
-		
-		listRebaja.add(rebaja);
+	public void cargaServicios(){
+		if(regionSeleccionada!=null && !regionSeleccionada.equals("")){
+			listaServicios=utilitariosService.getServiciosByRegion(Integer.parseInt(regionSeleccionada));
+		}else{
+			listaServicios = new ArrayList<ServiciosVO>();
+		}
+	}
+	public void cargaComunas(){
+		if(servicioSeleccionado!=null && !servicioSeleccionado.equals("")){
+			listaComunas = utilitariosService.getComunasByServicio(Integer.parseInt(servicioSeleccionado));
+		}else{
+			listaComunas = new ArrayList<ComunaVO>();
+		}
+	}
+	
+	public void buscarRebaja(){
+		List<Integer> comunasId = new ArrayList<Integer>();
+		for(String comunas : comunasSeleccionadas){
+			Integer comunaId = Integer.parseInt(comunas);
+			comunasId.add(comunaId);
+		}
+		String formato="MM";
+		SimpleDateFormat dateFormat = new SimpleDateFormat(formato);
+		rebajaComunas = rebajaService.getRebajasByComuna(comunasId,Integer.parseInt(dateFormat.format(new Date())));
 	}
 	public String getTarget() {
 		return target;
@@ -145,28 +141,6 @@ public class ProcesoRebajaTramitacionController extends AbstractTaskMBean
 		return null;
 	}
 
-	
-	public Map<String, String> getComunas() {
-		return comunas;
-	}
-
-	public void setComunas(Map<String, String> comunas) {
-		this.comunas = comunas;
-	}
-
-	public List<String> getComunasSeleccionadas() {
-		return comunasSeleccionadas;
-	}
-
-	public void setComunasSeleccionadas(List<String> comunasSeleccionadas) {
-		this.comunasSeleccionadas = comunasSeleccionadas;
-	}
-	public List<RebajaPojo> getListRebaja() {
-		return listRebaja;
-	}
-	public void setListRebaja(List<RebajaPojo> listRebaja) {
-		this.listRebaja = listRebaja;
-	}
 	public boolean isAprobar_() {
 		return aprobar_;
 	}
@@ -184,6 +158,70 @@ public class ProcesoRebajaTramitacionController extends AbstractTaskMBean
 	}
 	public void setRechazarSubirArchivo_(boolean rechazarSubirArchivo_) {
 		this.rechazarSubirArchivo_ = rechazarSubirArchivo_;
+	}
+
+	public List<RegionVO> getListaRegiones() {
+		return listaRegiones;
+	}
+
+	public void setListaRegiones(List<RegionVO> listaRegiones) {
+		this.listaRegiones = listaRegiones;
+	}
+
+	public String getRegionSeleccionada() {
+		return regionSeleccionada;
+	}
+
+	public void setRegionSeleccionada(String regionSeleccionada) {
+		this.regionSeleccionada = regionSeleccionada;
+	}
+
+	public List<ServiciosVO> getListaServicios() {
+		return listaServicios;
+	}
+
+	public void setListaServicios(List<ServiciosVO> listaServicios) {
+		this.listaServicios = listaServicios;
+	}
+
+	public String getServicioSeleccionado() {
+		return servicioSeleccionado;
+	}
+
+	public void setServicioSeleccionado(String servicioSeleccionado) {
+		this.servicioSeleccionado = servicioSeleccionado;
+	}
+
+	public List<ComunaVO> getListaComunas() {
+		return listaComunas;
+	}
+
+	public void setListaComunas(List<ComunaVO> listaComunas) {
+		this.listaComunas = listaComunas;
+	}
+
+	public List<String> getComunasSeleccionadas() {
+		return comunasSeleccionadas;
+	}
+
+	public void setComunasSeleccionadas(List<String> comunasSeleccionadas) {
+		this.comunasSeleccionadas = comunasSeleccionadas;
+	}
+
+	public List<ComunaVO> getRebajaComunas() {
+		return rebajaComunas;
+	}
+
+	public void setRebajaComunas(List<ComunaVO> rebajaComunas) {
+		this.rebajaComunas = rebajaComunas;
+	}
+
+	public String getMesActual() {
+		return mesActual;
+	}
+
+	public void setMesActual(String mesActual) {
+		this.mesActual = mesActual;
 	}
 
 }

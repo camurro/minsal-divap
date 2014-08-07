@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 
 import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.Plantilla;
+import cl.minsal.divap.model.Rebaja;
 import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.TipoPlantilla;
 import minsal.divap.dao.DocumentDAO;
@@ -116,6 +117,18 @@ public class DocumentService {
 			referenciaDocumento.setDistribucionInicialPercapitaCollection(new ArrayList<DistribucionInicialPercapita>());
 		}
 		referenciaDocumento.getDistribucionInicialPercapitaCollection().add(distribucionInicialPercapita);
+		return referenciaDocumentoId;
+	}
+
+	public Integer crearDocumentoRebajaCalculada(Rebaja rebaja, String nodeRef,
+			String fileName, String contenType) {
+		
+		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, fileName, contenType);
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		if(referenciaDocumento.getRebajaCollection() == null ){
+			referenciaDocumento.setRebajaCollection(new ArrayList<Rebaja>());
+		}
+		referenciaDocumento.getRebajaCollection().add(rebaja);
 		return referenciaDocumentoId;
 	}
 
