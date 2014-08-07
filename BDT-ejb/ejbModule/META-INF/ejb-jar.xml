@@ -99,7 +99,7 @@
 				<description>BPM Suite User Name</description>
 				<env-entry-name>bpmUsername</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>bpmsadmin</env-entry-value>
+				<env-entry-value>admin</env-entry-value>
 			</env-entry>
 			<env-entry>
 				<description>BPM Suite Password</description>
@@ -129,13 +129,19 @@
 				<env-entry-value>/tmp/excel</env-entry-value>
 			</env-entry>
 			<env-entry>
+				<description>Tmp Dir docs</description>
+				<env-entry-name>tmpDirDoc</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>/tmp/doc</env-entry-value>
+			</env-entry>
+			<env-entry>
 				<description>Template folder percapita</description>
 				<env-entry-name>folderTemplatePercapita</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
 				<env-entry-value>TEMPLATES/PERCAPITA</env-entry-value>
 			</env-entry>
 			<env-entry>
-				<description>Template folder percapita</description>
+				<description>Process folder percapita</description>
 				<env-entry-name>folderPercapita</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
 				<env-entry-value>PROCESOS/{ANO}/PERCAPITA</env-entry-value>

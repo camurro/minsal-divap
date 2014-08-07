@@ -39,7 +39,6 @@ public class ComunaRebaja implements Serializable {
     @Column(name = "id_comuna_rebaja")
     private Integer idComunaRebaja;
     // @Mavalue=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "rebaja_calculada")
     private Double rebajaCalculada;
     @Column(name = "rebaja_final")
     private Double rebajaFinal;

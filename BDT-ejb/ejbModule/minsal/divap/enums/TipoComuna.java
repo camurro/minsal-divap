@@ -5,15 +5,15 @@ public enum TipoComuna{
 	RURAL(1, "RURAL"), COSTOFIJO(2,"COSTO FIJO"), 
 	URBANA(3,"URBANA");
 
-	private int id;
+	private Integer id;
 	private String name;
 
-	private TipoComuna(int id, String name) {
+	private TipoComuna(Integer id, String name) {
 		this.id = id; 
 		this.name = name;
 	}
 
-	public int getId()
+	public Integer getId()
 	{
 		return this.id;
 	}

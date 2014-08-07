@@ -30,7 +30,7 @@ public class Programa implements Serializable {
 	private String nombre;
 	
 	private String descripcion;
-
+	
 	//bi-directional many-to-one association to Componente
 	@OneToMany(mappedBy="programa")
 	private List<Componente> componentes;
@@ -247,6 +247,5 @@ public class Programa implements Serializable {
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
-	
 
 }

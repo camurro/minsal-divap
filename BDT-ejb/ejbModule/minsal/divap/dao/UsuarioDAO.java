@@ -34,4 +34,12 @@ public class UsuarioDAO {
 
 	}
 
+	public String getEmailByUsername(String username) {
+		Usuario usuario = getUserByUsername(username);
+		if(usuario != null && usuario.getEmail() != null){
+			return usuario.getEmail().getValor();
+		}
+		return null;
+	}
+
 }

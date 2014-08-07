@@ -1,19 +1,20 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
+
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -31,47 +32,45 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Seguimiento.findAll", query = "SELECT s FROM Seguimiento s"),
     @NamedQuery(name = "Seguimiento.findById", query = "SELECT s FROM Seguimiento s WHERE s.id = :id"),
     @NamedQuery(name = "Seguimiento.findByIdInstancia", query = "SELECT s FROM Seguimiento s WHERE s.idInstancia = :idInstancia"),
-    @NamedQuery(name = "Seguimiento.findByMailFrom", query = "SELECT s FROM Seguimiento s WHERE s.mailFrom = :mailFrom"),
-    @NamedQuery(name = "Seguimiento.findByMailTo", query = "SELECT s FROM Seguimiento s WHERE s.mailTo = :mailTo"),
+    @NamedQuery(name = "Seguimiento.findByIdDistribucionInicialTarea", query = "SELECT s FROM Seguimiento s JOIN s.distribucionInicialPercapitaSeguimientoCollection d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.distribucionInicialPercapita.idDistribucionInicialPercapita = :idDistribucionInicialPercapita"),
     @NamedQuery(name = "Seguimiento.findBySubject", query = "SELECT s FROM Seguimiento s WHERE s.subject = :subject"),
-    @NamedQuery(name = "Seguimiento.findByCc", query = "SELECT s FROM Seguimiento s WHERE s.cc = :cc"),
-    @NamedQuery(name = "Seguimiento.findByCco", query = "SELECT s FROM Seguimiento s WHERE s.cco = :cco"),
     @NamedQuery(name = "Seguimiento.findByBody", query = "SELECT s FROM Seguimiento s WHERE s.body = :body"),
     @NamedQuery(name = "Seguimiento.findByFechaEnvio", query = "SELECT s FROM Seguimiento s WHERE s.fechaEnvio = :fechaEnvio")})
 public class Seguimiento implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
+  	@Column(name="id", unique=true, nullable=false)
+  	@GeneratedValue
     private Integer id;
     @Basic(optional = false)
     @Column(name = "id_instancia")
     private short idInstancia;
     @Basic(optional = false)
-    @Column(name = "mail_from")
-    private String mailFrom;
-    @Basic(optional = false)
-    @Column(name = "mail_to")
-    private String mailTo;
-    @Basic(optional = false)
     @Column(name = "subject")
     private String subject;
-    @Column(name = "cc")
-    private String cc;
-    @Column(name = "cco")
-    private String cco;
     @Column(name = "body")
     private String body;
     @Basic(optional = false)
     @Column(name = "fecha_envio")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaEnvio;
-    @ManyToMany(mappedBy = "seguimientoCollection")
-    private Collection<ReferenciaDocumento> referenciaDocumentoCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSeguimiento")
+    private Set<SeguimientoReferenciaDocumento> seguimientoReferenciaDocumentoCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguimiento")
+    private Set<DistribucionInicialPercapitaSeguimiento> distribucionInicialPercapitaSeguimientoCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguimiento")
+    private Set<AdjuntosSeguimiento> adjuntosSeguimientoCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguimiento")
+    private Set<Destinatarios> destinatariosCollection;
+    @JoinColumn(name = "tarea_seguimiento", referencedColumnName = "id_tarea_seguimiento")
+    @ManyToOne(optional = false)
+    private TareaSeguimiento tareaSeguimiento;
     @JoinColumn(name = "id_programa", referencedColumnName = "id")
     @ManyToOne
     private Programa idPrograma;
+    @JoinColumn(name = "mail_from", referencedColumnName = "id_email")
+    @ManyToOne(optional = false)
+    private Email mailFrom;
 
     public Seguimiento() {
     }
@@ -80,11 +79,9 @@ public class Seguimiento implements Serializable {
         this.id = id;
     }
 
-    public Seguimiento(Integer id, short idInstancia, String mailFrom, String mailTo, String subject, Date fechaEnvio) {
+    public Seguimiento(Integer id, short idInstancia, String subject, Date fechaEnvio) {
         this.id = id;
         this.idInstancia = idInstancia;
-        this.mailFrom = mailFrom;
-        this.mailTo = mailTo;
         this.subject = subject;
         this.fechaEnvio = fechaEnvio;
     }
@@ -105,44 +102,12 @@ public class Seguimiento implements Serializable {
         this.idInstancia = idInstancia;
     }
 
-    public String getMailFrom() {
-        return mailFrom;
-    }
-
-    public void setMailFrom(String mailFrom) {
-        this.mailFrom = mailFrom;
-    }
-
-    public String getMailTo() {
-        return mailTo;
-    }
-
-    public void setMailTo(String mailTo) {
-        this.mailTo = mailTo;
-    }
-
     public String getSubject() {
         return subject;
     }
 
     public void setSubject(String subject) {
         this.subject = subject;
-    }
-
-    public String getCc() {
-        return cc;
-    }
-
-    public void setCc(String cc) {
-        this.cc = cc;
-    }
-
-    public String getCco() {
-        return cco;
-    }
-
-    public void setCco(String cco) {
-        this.cco = cco;
     }
 
     public String getBody() {
@@ -160,14 +125,49 @@ public class Seguimiento implements Serializable {
     public void setFechaEnvio(Date fechaEnvio) {
         this.fechaEnvio = fechaEnvio;
     }
-
+    
     @XmlTransient
-    public Collection<ReferenciaDocumento> getReferenciaDocumentoCollection() {
-        return referenciaDocumentoCollection;
+    public Set<SeguimientoReferenciaDocumento> getSeguimientoReferenciaDocumentoCollection() {
+        return seguimientoReferenciaDocumentoCollection;
     }
 
-    public void setReferenciaDocumentoCollection(Collection<ReferenciaDocumento> referenciaDocumentoCollection) {
-        this.referenciaDocumentoCollection = referenciaDocumentoCollection;
+    public void setSeguimientoReferenciaDocumentoCollection(Set<SeguimientoReferenciaDocumento> seguimientoReferenciaDocumentoCollection) {
+        this.seguimientoReferenciaDocumentoCollection = seguimientoReferenciaDocumentoCollection;
+    }
+
+    @XmlTransient
+    public Set<DistribucionInicialPercapitaSeguimiento> getDistribucionInicialPercapitaSeguimientoCollection() {
+        return distribucionInicialPercapitaSeguimientoCollection;
+    }
+
+    public void setDistribucionInicialPercapitaSeguimientoCollection(Set<DistribucionInicialPercapitaSeguimiento> distribucionInicialPercapitaSeguimientoCollection) {
+        this.distribucionInicialPercapitaSeguimientoCollection = distribucionInicialPercapitaSeguimientoCollection;
+    }
+
+    @XmlTransient
+    public Set<AdjuntosSeguimiento> getAdjuntosSeguimientoCollection() {
+        return adjuntosSeguimientoCollection;
+    }
+
+    public void setAdjuntosSeguimientoCollection(Set<AdjuntosSeguimiento> adjuntosSeguimientoCollection) {
+        this.adjuntosSeguimientoCollection = adjuntosSeguimientoCollection;
+    }
+
+    @XmlTransient
+    public Set<Destinatarios> getDestinatariosCollection() {
+        return destinatariosCollection;
+    }
+
+    public void setDestinatariosCollection(Set<Destinatarios> destinatariosCollection) {
+        this.destinatariosCollection = destinatariosCollection;
+    }
+
+    public TareaSeguimiento getTareaSeguimiento() {
+        return tareaSeguimiento;
+    }
+
+    public void setTareaSeguimiento(TareaSeguimiento tareaSeguimiento) {
+        this.tareaSeguimiento = tareaSeguimiento;
     }
 
     public Programa getIdPrograma() {
@@ -176,6 +176,14 @@ public class Seguimiento implements Serializable {
 
     public void setIdPrograma(Programa idPrograma) {
         this.idPrograma = idPrograma;
+    }
+
+    public Email getMailFrom() {
+        return mailFrom;
+    }
+
+    public void setMailFrom(Email mailFrom) {
+        this.mailFrom = mailFrom;
     }
 
     @Override
@@ -187,7 +195,6 @@ public class Seguimiento implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Seguimiento)) {
             return false;
         }

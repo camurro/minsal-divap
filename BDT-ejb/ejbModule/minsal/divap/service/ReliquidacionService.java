@@ -12,7 +12,7 @@ import javax.ejb.Stateless;
 
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
 import minsal.divap.dao.UsuarioDAO;
-import minsal.divap.enums.TemplatesType;
+import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.excel.impl.AsignacionRecursosPercapitaSheetExcel;
 import minsal.divap.vo.BaseVO;
@@ -46,7 +46,7 @@ public class ReliquidacionService {
 
 
 	public Integer getIdPlantillaPoblacionInscrita(){
-		Integer plantillaId = documentService.getPlantillaByType(TemplatesType.DESEMPENODIFICIL);
+		Integer plantillaId = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAASIGNACIONDESEMPENODIFICIL);
 		if(plantillaId == null){
 			List<BaseVO> servicios = servicioSaludService.getAllServicios();
 			
@@ -64,7 +64,7 @@ public class ReliquidacionService {
 			try {
 				BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderTemplatePercapita);
 				System.out.println("response asignacionDesempenoDificilSheetExcel --->"+response);
-				plantillaId = documentService.createTemplate(TemplatesType.DESEMPENODIFICIL, response.getNodeRef(), response.getFileName(), contenType);
+				plantillaId = documentService.createTemplate(TipoDocumentosProcesos.PLANTILLAASIGNACIONDESEMPENODIFICIL, response.getNodeRef(), response.getFileName(), contenType);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -75,7 +75,7 @@ public class ReliquidacionService {
 	}
 
 	public Integer getIdPlantillaRecursosPerCapita(){
-		Integer plantillaId = documentService.getPlantillaByType(TemplatesType.RECURSOSPERCAPITA);
+		Integer plantillaId = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAPOBLACIONINSCRITA);
 		if(plantillaId == null){
 			List<BaseVO> servicios = servicioSaludService.getAllServicios();
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
@@ -93,7 +93,7 @@ public class ReliquidacionService {
 			try {
 				BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderTemplatePercapita);
 				System.out.println("response AsignacionRecursosPercapitaSheetExcel --->"+response);
-				plantillaId = documentService.createTemplate(TemplatesType.RECURSOSPERCAPITA, response.getNodeRef(), response.getFileName(), contenType);
+				plantillaId = documentService.createTemplate(TipoDocumentosProcesos.PLANTILLAPOBLACIONINSCRITA, response.getNodeRef(), response.getFileName(), contenType);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

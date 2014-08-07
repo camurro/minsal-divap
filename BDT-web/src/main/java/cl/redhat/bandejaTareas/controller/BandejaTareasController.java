@@ -1,6 +1,5 @@
 package cl.redhat.bandejaTareas.controller;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -83,6 +82,10 @@ Serializable {
 
 	@PostConstruct
 	public void init() {
+		log.debug("Iniciando BandejaTareasController");
+		if(sessionExpired()){
+			return;
+		}
 		try {
 			String stringIndexMenu = facesContext.getExternalContext()
 					.getRequestParameterMap().get("indexMenu");
@@ -92,20 +95,9 @@ Serializable {
 			log.debug("No se recibió parómetro GET indexMenu");
 			indexMenu = 0;
 		}
+		listaBuscarMisTareas = buscarMisTareas(null, null,
+				null, null);
 
-		if (!getSessionBean().isLogged()) {
-			log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
-			try {
-				facesContext.getExternalContext().redirect("login.jsf");
-			} catch (IOException e) {
-				log.error(
-						"Error tratando de redireccionar a login por falta de usuario en sesion.",
-						e);
-			}
-		} else {
-			listaBuscarMisTareas = buscarMisTareas(null, null,
-					null, null);
-		}
 	}
 
 	public void establecerModo(int _modo) {
@@ -1163,7 +1155,7 @@ Serializable {
 		Collections.sort(tasks, new TaskComparatorByIdAndName());
 		return tasks;
 	}
-	
+
 	private Set<TaskVO> filterByState(Set<TaskVO> tasks, String estado) {
 		Set<TaskVO> tasksFiltered = new LinkedHashSet<TaskVO>();
 		if(tasks != null && tasks.size() > 0){
@@ -1187,7 +1179,7 @@ Serializable {
 		}
 		return tasksFiltered;
 	}
-	
+
 	public Set<TaskVO> filterByCreationDate(Set<TaskVO> tasks, Date creation){
 		Set<TaskVO> tasksFiltered = new LinkedHashSet<TaskVO>();
 		if(tasks != null && tasks.size() > 0){
@@ -1199,7 +1191,7 @@ Serializable {
 		}
 		return tasksFiltered;
 	}
-	
+
 	public Set<TaskVO> filterByExpirationDate(Set<TaskVO> tasks, Date expiration){
 		Set<TaskVO> tasksFiltered = new LinkedHashSet<TaskVO>();
 		if(tasks != null && tasks.size() > 0){
@@ -1310,7 +1302,7 @@ Serializable {
 
 		return listTemp;
 	}
-	
+
 	public String devolverTemaConsulta(String idSolicitud) {
 		String descripcion = "";
 		// try {
@@ -1521,7 +1513,7 @@ Serializable {
 	public void setActividadSeleccionada(String actividadSeleccionada) {
 		this.actividadSeleccionada = actividadSeleccionada;
 	}
-	
+
 	public String comenzar() {
 		//TaskVO task = processService.getUserTasksByProcessId(tareaSeleccionada.getProcessInstanceId(), tareaSeleccionada.getId(), tareaSeleccionada.getUser());
 		System.out.println("tareaSeleccionada.getId()="+tareaSeleccionada.getId());
@@ -1622,12 +1614,12 @@ Serializable {
 }
 
 class TaskComparatorByIdAndName implements Comparator<TaskVO> {
-	 
-    @Override
-    public int compare(TaskVO o1, TaskVO o2) {
-        int flag = (int) (o1.getId() - o2.getId());
-        if(flag==0) flag = o1.getName().compareTo(o2.getName());
-        return flag;
-    }
- 
+
+	@Override
+	public int compare(TaskVO o1, TaskVO o2) {
+		int flag = (int) (o1.getId() - o2.getId());
+		if(flag==0) flag = o1.getName().compareTo(o2.getName());
+		return flag;
+	}
+
 }

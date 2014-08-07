@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import minsal.divap.enums.BusinessProcess;
+import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.exception.ExcelFormatException;
 import minsal.divap.service.DistribucionInicialPercapitaService;
@@ -41,8 +42,6 @@ implements Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject
 	private transient Logger log;
-	@Inject
-	FacesContext facesContext;
 	private UploadedFile calculoPerCapitaFile;
 	private UploadedFile valorBasicoDesempenoFile;
 
@@ -73,26 +72,38 @@ implements Serializable {
 		this.valorBasicoDesempenoFile = valorBasicoDesempenoFile;
 	}
 
-	public void uploadArchivosValorizacion(){
+	public void uploadArchivosValorizacion() {
 		String mensaje = "Los archivos fueron cargados correctamente.";
 		if (calculoPerCapitaFile != null && valorBasicoDesempenoFile != null) {
-			try{
+			try {
 				docIds = new ArrayList<Integer>();
 				String filename = calculoPerCapitaFile.getFileName();
-				byte [] contentCalculoPerCapitaFile = calculoPerCapitaFile.getContents();
-				distribucionInicialPercapitaService.procesarCalculoPercapita(getIdDistribucionInicialPercapita(), GeneradorExcel.fromContent(contentCalculoPerCapitaFile, XSSFWorkbook.class));
-				Integer docPercapita = persistFile(filename, contentCalculoPerCapitaFile);
-				if(docPercapita != null){
+				byte[] contentCalculoPerCapitaFile = calculoPerCapitaFile
+						.getContents();
+				distribucionInicialPercapitaService.procesarCalculoPercapita(
+						getIdDistribucionInicialPercapita(), GeneradorExcel
+						.fromContent(contentCalculoPerCapitaFile,
+								XSSFWorkbook.class));
+				Integer docPercapita = persistFile(filename,
+						contentCalculoPerCapitaFile);
+				if (docPercapita != null) {
 					docIds.add(docPercapita);
 				}
 				filename = valorBasicoDesempenoFile.getFileName();
-				byte [] contentDesempeno = valorBasicoDesempenoFile.getContents();
-				distribucionInicialPercapitaService.procesarValorBasicoDesempeno(getIdDistribucionInicialPercapita(), GeneradorExcel.fromContent(contentDesempeno, XSSFWorkbook.class));
+				byte[] contentDesempeno = valorBasicoDesempenoFile
+						.getContents();
+				distribucionInicialPercapitaService
+				.procesarValorBasicoDesempeno(
+						getIdDistribucionInicialPercapita(),
+						GeneradorExcel.fromContent(contentDesempeno,
+								XSSFWorkbook.class));
 				Integer docDesempeno = persistFile(filename, contentDesempeno);
-				if(docDesempeno != null){
+				if (docDesempeno != null) {
 					docIds.add(docDesempeno);
 				}
 				setArchivosValidos(true);
+				distribucionInicialPercapitaService.moveToAlfresco(this.idDistribucionInicialPercapita, docPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA);
+				distribucionInicialPercapitaService.moveToAlfresco(this.idDistribucionInicialPercapita, docDesempeno, TipoDocumentosProcesos.ASIGNACIONDESEMPENODIFICIL);
 			} catch (ExcelFormatException e) {
 				mensaje = "Los archivos no son válidos.";
 				setArchivosValidos(false);
@@ -106,13 +117,14 @@ implements Serializable {
 				setArchivosValidos(false);
 				e.printStackTrace();
 			}
-		}else{
+		} else {
 			mensaje = "Los archivos no fueron cargados.";
 			setArchivosValidos(false);
 		}
 		FacesMessage msg = new FacesMessage(mensaje);
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
+
 
 	boolean validarMontosDistribucion = false;
 	List<montosDistribucionPojo> planillaMontosDistribucion;
@@ -175,24 +187,23 @@ implements Serializable {
 	@PostConstruct
 	public void init() {
 		log.info("ProcesosPrincipalController Alcanzado.");
-		this.docAsignacionRecursosPercapita = distribucionInicialPercapitaService.getIdPlantillaRecursosPerCapita();
-		this.docAsignacionDesempenoDificil = distribucionInicialPercapitaService.getIdPlantillaPoblacionInscrita();
-		if(getTaskDataVO() != null && getTaskDataVO().getData() != null){
-			this.idDistribucionInicialPercapita = (Integer) getTaskDataVO().getData().get("_idDistribucionInicialPercapita");
-			System.out.println("this.idDistribucionInicialPercapita --->"+this.idDistribucionInicialPercapita );
+		if(sessionExpired()){
+			return;
 		}
-		System.out.println("this.docAsignacionRecursosPercapita-->"+this.docAsignacionRecursosPercapita);
-		System.out.println("this.docAsignacionDesempenoDificil-->"+this.docAsignacionDesempenoDificil);
-		if (!getSessionBean().isLogged()) {
-			log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
-			try {
-				facesContext.getExternalContext().redirect("login.jsf");
-			} catch (IOException e) {
-				log.error(
-						"Error tratando de redireccionar a login por falta de usuario en sesion.",
-						e);
-			}
+		this.docAsignacionRecursosPercapita = distribucionInicialPercapitaService
+				.getIdPlantillaRecursosPerCapita();
+		this.docAsignacionDesempenoDificil = distribucionInicialPercapitaService
+				.getIdPlantillaPoblacionInscrita();
+		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
+			this.idDistribucionInicialPercapita = (Integer) getTaskDataVO()
+					.getData().get("_idDistribucionInicialPercapita");
+			System.out.println("this.idDistribucionInicialPercapita --->"
+					+ this.idDistribucionInicialPercapita);
 		}
+		System.out.println("this.docAsignacionRecursosPercapita-->"
+				+ this.docAsignacionRecursosPercapita);
+		System.out.println("this.docAsignacionDesempenoDificil-->"
+				+ this.docAsignacionDesempenoDificil);
 
 		// FUNCIONAMIENTO MOCK PLANTILLAS SEGUIMIENTO
 		try {
@@ -293,6 +304,7 @@ implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		System.out.println("handleFileUploadPerCapitaFile-->");
 	}
+
 	public void handleFileUploadBasicoDesempenoFile(FileUploadEvent event) {
 		FacesMessage msg = new FacesMessage("Succesful", event.getFile()
 				.getFileName() + " is uploaded.");
@@ -303,11 +315,13 @@ implements Serializable {
 	@Override
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		System.out.println("createResultData usuario-->"+getSessionBean().getUsername());
+		System.out.println("createResultData usuario-->"
+				+ getSessionBean().getUsername());
 		parameters.put("usuario", getSessionBean().getUsername());
 		parameters.put("error_", new Boolean(isErrorCarga()));
-		if(this.docIds != null){
-			System.out.println("documentos_ -->"+JSONHelper.toJSON(this.docIds));
+		if (this.docIds != null) {
+			System.out.println("documentos_ -->"
+					+ JSONHelper.toJSON(this.docIds));
 			parameters.put("documentos_", JSONHelper.toJSON(this.docIds));
 		}
 		return parameters;
@@ -317,15 +331,16 @@ implements Serializable {
 	public String iniciarProceso() {
 		String success = "divapProcesoAsignacionPerCapitaCargarValorizacion";
 		Long procId = iniciarProceso(BusinessProcess.PERCAPITA);
-		System.out.println("procId-->"+procId);
-		if(procId == null){
+		System.out.println("procId-->" + procId);
+		if (procId == null) {
 			success = null;
-		}else{
-			TaskVO task = getUserTasksByProcessId(procId, getSessionBean().getUsername());
-			if(task != null){
+		} else {
+			TaskVO task = getUserTasksByProcessId(procId, getSessionBean()
+					.getUsername());
+			if (task != null) {
 				TaskDataVO taskDataVO = getTaskData(task.getId());
-				if(taskDataVO != null){
-					System.out.println("taskDataVO recuperada="+taskDataVO);
+				if (taskDataVO != null) {
+					System.out.println("taskDataVO recuperada=" + taskDataVO);
 					setOnSession("taskDataSeleccionada", taskDataVO);
 				}
 			}
@@ -346,7 +361,7 @@ implements Serializable {
 	}
 
 	public void setDocIdDownload(String docIdDownload) {
-		System.out.println("docIdDownload-->"+docIdDownload);
+		System.out.println("docIdDownload-->" + docIdDownload);
 		this.docIdDownload = docIdDownload;
 	}
 
@@ -369,7 +384,8 @@ implements Serializable {
 	}
 
 	public String downloadTemplate() {
-		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownload()));
+		Integer docDownload = Integer.valueOf(Integer
+				.parseInt(getDocIdDownload()));
 		setDocumento(documentService.getDocument(docDownload));
 		super.downloadDocument();
 		return null;
@@ -382,7 +398,7 @@ implements Serializable {
 	public void setArchivosValidos(boolean archivosValidos) {
 		this.archivosValidos = archivosValidos;
 	}
-	
+
 	public Integer getIdDistribucionInicialPercapita() {
 		return idDistribucionInicialPercapita;
 	}
@@ -393,7 +409,7 @@ implements Serializable {
 	}
 
 	@Override
-	public String enviar(){
+	public String enviar() {
 		return super.enviar();
 	}
 }

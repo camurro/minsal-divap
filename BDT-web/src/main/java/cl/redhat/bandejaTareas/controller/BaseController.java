@@ -1,5 +1,6 @@
 package cl.redhat.bandejaTareas.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,6 +16,7 @@ import minsal.divap.vo.DocumentoVO;
 
 import org.apache.log4j.Logger;
 import org.primefaces.model.UploadedFile;
+
 
 //import cl.redhat.bandejaTareas.model.OirsRol;
 //import cl.redhat.bandejaTareas.model.OirsUsuario;
@@ -32,10 +34,29 @@ public abstract class BaseController {
 	@Inject 
 	private UserUtil userUtil;
 	@Inject 
-	FacesContext facesContext;
+	protected FacesContext facesContext;
 	private DocumentoVO documento;
 	@EJB
 	protected DocumentService documentService;
+	
+	public BaseController(){
+	}
+	
+	protected boolean sessionExpired(){
+		boolean expired = false;
+		if (!getSessionBean().isLogged()) {
+			log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
+			expired = true;
+			try {
+				facesContext.getExternalContext().redirect("login.jsf");
+			} catch (IOException e) {
+				log.error(
+						"Error tratando de redireccionar a login por falta de usuario en sesion.",
+						e);
+			}
+		}
+		return expired;
+	}
 
 	public String getLoggedUsername() {
 		if (userUtil != null) return userUtil.getUsername();
@@ -152,6 +173,10 @@ public abstract class BaseController {
 
 	public Integer persistFile(String filename, byte[] contents) {
 		return documentService.uploadTemporalFile(filename, contents);
+	}
+	
+	public File createTemporalFile(String filename, byte[] contents) {
+		return documentService.createTemporalFile(filename, contents);
 	}
 	
 	public DocumentoVO getDocumento()

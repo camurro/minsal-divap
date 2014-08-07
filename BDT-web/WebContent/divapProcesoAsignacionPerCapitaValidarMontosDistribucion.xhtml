@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:p="http://primefaces.org/ui" 
+	template="/WEB-INF/templates/default.xhtml">
 
 	<ui:define name="content">
 		<h:form enctype="multipart/form-data">
@@ -40,90 +44,95 @@
 
 							<h:panelGrid columns="2">
 								<h:outputText value="Servicio: " styleClass="inputLabel" />
-								<p:selectOneMenu>
-									<f:selectItem itemLabel="ARICA" itemValue="ARICA" />
-									<f:selectItem itemLabel="Seleccione" itemValue="" />
+								<p:selectOneMenu id="servicio" value="#{procesoAsignacionPerCapitaValidarMontosController.servicioSeleccionado}">
+								<p:ajax listener="#{procesoAsignacionPerCapitaValidarMontosController.cargaComunas}" update="comuna" />
+									<f:selectItem itemLabel="Seleccione - Servicio" itemValue="" />
+									<f:selectItems itemLabel="#{_serv.nombre_servicio}" itemValue="#{_serv.id_servicio}" var="_serv"
+										value="#{procesoAsignacionPerCapitaValidarMontosController.servicios}" />
+									
 								</p:selectOneMenu>
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
 								<h:outputText value="Comuna: " styleClass="inputLabel" />
-								<p:selectOneMenu>
-									<f:selectItem itemLabel="ARICA" itemValue="ARICA" />
-									<f:selectItem itemLabel="Seleccione" itemValue="" />
+								<p:selectOneMenu id="comuna" value="#{procesoAsignacionPerCapitaValidarMontosController.comunaSeleccionada}">
+									<f:selectItem itemLabel="Seleccione - Comuna" itemValue="" />
+									<f:selectItems itemLabel="#{_com.descComuna}" itemValue="#{_com.idComuna}" var="_com"
+										value="#{procesoAsignacionPerCapitaValidarMontosController.comunas}" />
+								
 								</p:selectOneMenu>
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
-								<p:commandButton value="Buscar" styleClass=" x-btn-text icon-guardar" update="tablaMisTareas" icon="ui-icon-search" />
-								<p:commandButton value="Limpiar" styleClass=" x-btn-text icon-guardar" update="tablaMisTareas" icon="ui-icon-trash" />
+								<p:commandButton value="Buscar" actionListener="#{procesoAsignacionPerCapitaValidarMontosController.buscar}"  styleClass=" x-btn-text icon-guardar" update="tablaMisTareas" icon="ui-icon-search" />
+								<p:commandButton value="Limpiar" actionListener="#{procesoAsignacionPerCapitaValidarMontosController.limpiar}" styleClass=" x-btn-text icon-guardar" update="servicio comuna colShow tablaMisTareas" icon="ui-icon-trash" />
 							</h:panelGrid>
 
 						</h:panelGrid>
 						<h4>Columnas a Mostrar:</h4>
-						<h:panelGrid columns="4" styleClass="tableFullWidth">
+						<h:panelGrid id="colShow" columns="4" styleClass="tableFullWidth">
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox />
+								<p:selectBooleanCheckbox  value="#{procesoAsignacionPerCapitaValidarMontosController.checkRegion}"/>
 								<h:outputText value="Región" />
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox />
+								<p:selectBooleanCheckbox  value="#{procesoAsignacionPerCapitaValidarMontosController.checkComuna}"/>
 								<h:outputText value="Comuna" />
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox />
+								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.checkServicio}"/>
 								<h:outputText value="Servicio" />
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox />
+								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.checkRefAsigZona}"/>
 								<h:outputText value="Ref. Asig_Zon" />
 							</h:panelGrid>
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox />
-								<h:outputText value="Tramo Pobreza" />
+								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.checkTramoPobreza}" />
+								<h:outputText value="Tramo Pobreza"/>
 							</h:panelGrid>
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox />
+								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.checkPerCapitaBasal}"/>
 								<h:outputText value="Per Capita Basal" />
 							</h:panelGrid>
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox />
+								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.checkPobreza}"/>
 								<h:outputText value="Pobreza" />
 							</h:panelGrid>
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox />
+								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.checkRuralidad}" />
 								<h:outputText value="Ruralidad" />
 							</h:panelGrid>
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox />
+								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.checkValorRefAsigZona}" />
 								<h:outputText value="Valor Ref. Asig. Zona" />
 							</h:panelGrid>
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.valorPercapita}" />
+								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.checkValorperCapita}" />
 								<h:outputText value="Valor per Capita" />
 							</h:panelGrid>
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.poblacionAno}" />
+								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.checkPoblacionAno}" />
 								<h:outputText value="Poblacion Año" />
 							</h:panelGrid>
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.mayor65}"  />
+								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.checkPoblacionMayor65Anos}"  />
 								<h:outputText value="Población Mayor de 65 Años" />
 							</h:panelGrid>
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox />
+								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.checkPerCapitaMes}" />
 								<h:outputText value="Per Capita Mes" />
 							</h:panelGrid>
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.percapitaAno}" />
+								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.checkPerCapitaAno}" />
 								<h:outputText value="Per Capita Año" />
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
-								<p:selectBooleanCheckbox />
+								<p:selectBooleanCheckbox value="#{procesoAsignacionPerCapitaValidarMontosController.checkAsigDesempenoDificil}" />
 								<h:outputText value="Asig. Desempeño Difícil" />
 							</h:panelGrid>
 						</h:panelGrid>
@@ -138,17 +147,70 @@
 					<br />
 					<p:dataTable id="tablaMisTareas" resizableColumns="true" liveResize="true" var="_montoDistribucion" rows="10" paginator="true"
 						paginatorPosition="bottom" emptyMessage="No se encontraron Tareas Asignadas"
-						value="#{procesoAsignacionPerCapitaValidarMontosController.planillaMontosDistribucion}" styleClass="dataTable">
-
+						value="#{procesoAsignacionPerCapitaValidarMontosController.antecendentesComunaCalculado}" styleClass="dataTable" 
+						rendered="#{not empty procesoAsignacionPerCapitaValidarMontosController.antecendentesComunaCalculado}">
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkRegion}">
+							<f:facet name="header">
+								<h:outputText value="Región" />
+							</f:facet>
+							<h:outputText value="#{_montoDistribucion.region}"/>
+						</p:column>
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkComuna}">
+							<f:facet name="header">
+								<h:outputText value="Comuna" />
+							</f:facet>
+							<h:outputText value="#{_montoDistribucion.comuna}"/>
+						</p:column>
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkServicio}">
+							<f:facet name="header">
+								<h:outputText value="Servicio" />
+							</f:facet>
+							<h:outputText value="#{_montoDistribucion.servicio}"/>
+						</p:column>
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkRefAsigZona}">
+							<f:facet name="header">
+								<h:outputText value="Ref. Asig_Zon" />
+							</f:facet>
+							<h:outputText value="#{_montoDistribucion.refAsignacionZona}"/>
+						</p:column>
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkTramoPobreza}">
+							<f:facet name="header">
+								<h:outputText value="Tramo Pobreza" />
+							</f:facet>
+							<h:outputText value="#{_montoDistribucion.tramoPobreza}"/>
+						</p:column>
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkPerCapitaBasal}">
+							<f:facet name="header">
+								<h:outputText value="Per Capita Basal" />
+							</f:facet>
+							<h:outputText value="#{_montoDistribucion.percapitaBasal}"/>
+						</p:column>
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkPobreza}">
+							<f:facet name="header">
+								<h:outputText value="Pobreza" />
+							</f:facet>
+							<h:outputText value="#{_montoDistribucion.pobreza}"/>
+						</p:column>
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkRuralidad}">
+							<f:facet name="header">
+								<h:outputText value="Ruralidad" />
+							</f:facet>
+							<h:outputText value="#{_montoDistribucion.ruralidad}"/>
+						</p:column>
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkValorRefAsigZona}">
+							<f:facet name="header">
+								<h:outputText value="Valor Ref. Asig. Zona" />
+							</f:facet>
+							<h:outputText value="#{_montoDistribucion.valorRefAsignacionZona}"/>
+						</p:column>
 						<p:column>
 							<f:facet name="header">
 								<h:outputText value="Valor per Capita" />
 							</f:facet>
-							<h:outputText value="#{_montoDistribucion.valorPerCapita}">
+							<h:outputText value="#{_montoDistribucion.valorPercapitaMes}">
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
-
 						<p:column>
 							<f:facet name="header">
 								<h:outputText value="Poblacion Año" />
@@ -157,13 +219,20 @@
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
-
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Población Mayor de 65 Años" />
+							</f:facet>
+							<h:outputText value="#{_montoDistribucion.poblacionMayor}">
+								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
+							</h:outputText>
+						</p:column>
 						<p:column>
 							<f:facet name="header">
 								<h:outputText value="Per Capita Mensual (M$2014)" />
 							</f:facet>
 							<h:outputText value="$ " />
-							<h:outputText value="#{_montoDistribucion.perCapitaMensual}">
+							<h:outputText value="#{_montoDistribucion.valorPercapitaMes}">
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
@@ -173,11 +242,11 @@
 								<h:outputText value="Per Capita Año (M$2014)" />
 							</f:facet>
 							<h:outputText value="$ " />
-							<h:outputText value="#{_montoDistribucion.perCapitaMensual}">
+							<h:outputText value="#{_montoDistribucion.valorPercapitaAno}">
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
-
+						
 					</p:dataTable>
 					<!-- FIN: MODAL CON INFORMACIóN Y FILTROS VISTA ONLINE -->
 

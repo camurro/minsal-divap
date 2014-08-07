@@ -91,8 +91,8 @@ public class RestClientSimple {
 	private String getDataFromService(String urlpath, String method,
 			String data, boolean b) throws Exception  {
 		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(params, 10000);
-		HttpConnectionParams.setSoTimeout(params, 10000);
+		HttpConnectionParams.setConnectionTimeout(params, 30000);
+		HttpConnectionParams.setSoTimeout(params, 30000);
 		HttpClient client = new DefaultHttpClient(params);
 
 		((DefaultHttpClient)client).getCredentialsProvider().setCredentials(

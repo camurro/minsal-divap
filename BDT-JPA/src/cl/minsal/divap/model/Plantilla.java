@@ -42,9 +42,9 @@ public class Plantilla implements Serializable {
     @Column(name = "fecha_vigencia")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaVigencia;
-    @JoinColumn(name = "tipo_plantilla", referencedColumnName = "id_tipo_plantilla")
+    @JoinColumn(name = "tipo_plantilla", referencedColumnName = "id_tipo_documento")
     @ManyToOne(optional = false)
-    private TipoPlantilla tipoPlantilla;
+    private TipoDocumento tipoPlantilla;
     @JoinColumn(name = "documento", referencedColumnName = "id")
     @ManyToOne
     private ReferenciaDocumento documento;
@@ -85,11 +85,11 @@ public class Plantilla implements Serializable {
         this.fechaVigencia = fechaVigencia;
     }
 
-    public TipoPlantilla getTipoPlantilla() {
+    public TipoDocumento getTipoPlantilla() {
         return tipoPlantilla;
     }
 
-    public void setTipoPlantilla(TipoPlantilla tipoPlantilla) {
+    public void setTipoPlantilla(TipoDocumento tipoPlantilla) {
         this.tipoPlantilla = tipoPlantilla;
     }
 

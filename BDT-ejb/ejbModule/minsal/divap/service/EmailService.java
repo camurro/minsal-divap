@@ -73,11 +73,15 @@ public class EmailService {
 	public void sendMail(String to, String subject, String content, List<Adjunto> adjuntos){
 		ArrayList<String> forAll = new ArrayList<String>();
 		forAll.add(to);
-		sendMail(forAll, subject, content, adjuntos);
+		sendMail(forAll, null, null, subject, content, adjuntos);
 	}
 
 	public void sendMail(List<String> to, String subject, String content){
-		sendMail(to, subject, content, new ArrayList<Adjunto>());
+		sendMail(to, null, null, subject, content, new ArrayList<Adjunto>());
+	}
+	
+	public void sendMail(List<String> to, List<String> cc, List<String> cco, String subject, String content){
+		sendMail(to, cc, cco, subject, content, new ArrayList<Adjunto>());
 	}
 
 	public void sendMail(String rut, String subject, String content){
@@ -85,9 +89,10 @@ public class EmailService {
 				new ArrayList<Adjunto>());
 	}
 
-	public void sendMail(List<String> to, String subject, String content, List<Adjunto> adjuntos){
+	public void sendMail(List<String> to, List<String> cc, List<String> cco, String subject, String content, List<Adjunto> adjuntos){
 		if (adjuntos == null)
 			adjuntos = new ArrayList<Adjunto>();
+		System.out.println("sendMail adjuntos.size()-->"+adjuntos.size());
 		HtmlEmail email = new HtmlEmail();
 		try {
 			email.setHostName(this.smtpHost);
@@ -96,6 +101,16 @@ public class EmailService {
 			email.setFrom(this.mailFrom);
 			for (String mailTo : to) {
 				email.addTo(mailTo);
+			}
+			if(cc != null && cc.size() > 0){
+				for (String mailCc : cc) {
+					email.addCc(mailCc);
+				}
+			}
+			if(cco != null && cco.size() > 0){
+				for (String mailCco : cco) {
+					email.addBcc(mailCco);
+				}
 			}
 			email.setSubject(subject);
 			email.setSSL(this.smtpSSL.booleanValue());

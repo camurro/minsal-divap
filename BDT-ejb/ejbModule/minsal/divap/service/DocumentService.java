@@ -6,26 +6,32 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-
-import cl.minsal.divap.model.DistribucionInicialPercapita;
-import cl.minsal.divap.model.Plantilla;
-import cl.minsal.divap.model.ReferenciaDocumento;
-import cl.minsal.divap.model.TipoPlantilla;
-import minsal.divap.dao.DocumentDAO;
-import minsal.divap.enums.TemplatesType;
-import minsal.divap.vo.DocumentoVO;
+import java.util.List;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.Resource;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+
+import minsal.divap.dao.DistribucionInicialPercapitaDAO;
+import minsal.divap.dao.DocumentDAO;
+import minsal.divap.enums.TipoDocumentosProcesos;
+import minsal.divap.model.mappers.ReferenciaDocumentoMapper;
+import minsal.divap.vo.DocumentoVO;
+import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
+import cl.minsal.divap.model.DistribucionInicialPercapita;
+import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
+import cl.minsal.divap.model.Plantilla;
+import cl.minsal.divap.model.ReferenciaDocumento;
+import cl.minsal.divap.model.TipoDocumento;
 
 @Stateless
 public class DocumentService {
 
 	@EJB
 	private DocumentDAO fileDAO;
+	@EJB
+	private DistribucionInicialPercapitaDAO distribucionInicialPercapitaDAO;
 	@EJB
 	private AlfrescoService alfrescoService;
 	@Resource(name="tmpDir")
@@ -39,7 +45,7 @@ public class DocumentService {
 		return fileDAO.createDocumentAlfresco(nodeRef, filename, contentType, false);
 	}
 
-	public Integer getPlantillaByType(TemplatesType template){
+	public Integer getPlantillaByType(TipoDocumentosProcesos template){
 		return fileDAO.getPlantillaByType(template);
 	}
 
@@ -48,11 +54,9 @@ public class DocumentService {
 	}
 
 	public Integer uploadTemporalFile(String fileName, byte[] contents) {
-		System.out.println("SUBIENDO ARCHIVO " + fileName + " (" + contents.length + 
-				"bytes)");
+		System.out.println("SUBIENDO ARCHIVO " + fileName + " (" + contents.length + "bytes)");
 		Integer docId = null;
 		fileName = new Date().getTime() + "_" + fileName;
-		String dir = "temp";
 		BufferedOutputStream bs = null;
 		try {
 			FileOutputStream fs = new FileOutputStream(new File(tmpDir + File.separator + fileName));
@@ -62,7 +66,8 @@ public class DocumentService {
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			String contentType = mimemap.getContentType(fileName.toLowerCase());
 			doc.setContentType(contentType);
-			doc.setPath(dir + "/" + fileName);
+			doc.setFechaCreacion(new Date(Calendar.getInstance().getTimeInMillis()));
+			doc.setPath(tmpDir + File.separator + fileName);
 			this.fileDAO.save(doc);
 			docId = Integer.valueOf(doc.getId());
 		} catch (Exception e) {
@@ -72,10 +77,31 @@ public class DocumentService {
 		}
 		return docId;
 	}
+	
+	public File createTemporalFile(String fileName, byte[] contents) {
+		System.out.println("Creando ARCHIVO " + fileName + " (" + contents.length + 
+				"bytes)");
+		fileName = new Date().getTime() + "_" + fileName;
+		BufferedOutputStream bs = null;
+		File file = new File(tmpDir + File.separator + fileName);
+		try {
+			FileOutputStream fs = new FileOutputStream(file);
+			bs = new BufferedOutputStream(fs);
+			bs.write(contents);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (bs != null) try { bs.close(); } catch (Exception e) {e.printStackTrace();}
+		}
+		return file;
+	}
 
 	public DocumentoVO getDocument(Integer documentoId){
 		ReferenciaDocumento doc = this.fileDAO.findById(documentoId);
 		DocumentoVO documentoVO = null;
+		if(doc == null){
+			return null;
+		}
 		try	{
 			String key = ((doc.getNodeRef() == null) ? doc.getPath() : doc.getNodeRef().replace("workspace://SpacesStore/", ""));
 			documentoVO = alfrescoService.download(key);
@@ -87,13 +113,13 @@ public class DocumentService {
 		}
 		return documentoVO;
 	}
-
-	public Integer createTemplate(TemplatesType templatesType,
+	
+	public Integer createTemplate(TipoDocumentosProcesos tipoDocumentoProceso,
 			String nodeRef, String filename, String contenType) {
 		long current = Calendar.getInstance().getTimeInMillis();
 		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
 		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
-		TipoPlantilla tipoPlantilla = new TipoPlantilla(templatesType.getId());
+		TipoDocumento tipoPlantilla = new TipoDocumento(tipoDocumentoProceso.getId());
 		Plantilla plantilla = new Plantilla();
 		plantilla.setDocumento(referenciaDocumento);
 		plantilla.setTipoPlantilla(tipoPlantilla);
@@ -102,21 +128,85 @@ public class DocumentService {
 		fileDAO.save(plantilla);
 		return referenciaDocumento.getId();
 	}
+	
+	public Integer updateDocumentTemplate(Integer referenciaDocumentoId, String nodeRef,
+			String fileName, String contentType) {
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		referenciaDocumento.setNodeRef(nodeRef);
+		referenciaDocumento.setPath(fileName);
+		referenciaDocumento.setContentType(contentType);
+		return referenciaDocumento.getId();
+	}
 
 	public Integer getDocumentoIdByPlantillaId(Integer plantillaId) {
 		return fileDAO.getDocumentoIdByPlantillaId(plantillaId);
-	}
-
+	} 
+	
+	public ReferenciaDocumentoSummaryVO getDocumentByPlantillaId(Integer plantillaId) {
+		return new ReferenciaDocumentoMapper().getSummary(fileDAO.getDocumentByPlantillaId(plantillaId));
+	} 
+	
+	public ReferenciaDocumentoSummaryVO getDocumentSummary(Integer referenciaDocumentoId) {
+		return new ReferenciaDocumentoMapper().getSummary(fileDAO.findById(referenciaDocumentoId));
+	} 
+	
 	public Integer createDocumentPercapita(
-			DistribucionInicialPercapita distribucionInicialPercapita,
+			Integer idDistribucionInicialPercapita, TipoDocumentosProcesos tipoDocumentoProceso,
+			String nodeRef, String filename, String contenType) {
+		  	DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findById(idDistribucionInicialPercapita);
+		  	return createDocumentPercapita(distribucionInicialPercapita, tipoDocumentoProceso, nodeRef, filename, contenType );
+	}
+ 
+	public Integer createDocumentPercapita(
+			DistribucionInicialPercapita distribucionInicialPercapita, TipoDocumentosProcesos tipoDocumentoProceso,
 			String nodeRef, String filename, String contenType) {
 		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
 		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
-		if(referenciaDocumento.getDistribucionInicialPercapitaCollection() == null ){
-			referenciaDocumento.setDistribucionInicialPercapitaCollection(new ArrayList<DistribucionInicialPercapita>());
-		}
-		referenciaDocumento.getDistribucionInicialPercapitaCollection().add(distribucionInicialPercapita);
+		DocumentoDistribucionInicialPercapita documentoDistribucionInicialPercapita = new DocumentoDistribucionInicialPercapita();
+		documentoDistribucionInicialPercapita.setTipoDocumento(new TipoDocumento(tipoDocumentoProceso.getId()));
+		documentoDistribucionInicialPercapita.setIdDocumento(referenciaDocumento);
+		documentoDistribucionInicialPercapita.setIdDistribucionInicialPercapita(distribucionInicialPercapita);
+		distribucionInicialPercapitaDAO.save(documentoDistribucionInicialPercapita);
+		System.out.println("luego de aplicar insert del documento percapita");
 		return referenciaDocumentoId;
 	}
 
+	public ReferenciaDocumentoSummaryVO getDocumentByTypeDistribucionInicialPercapita(Integer idDistribucionInicialPercapita, TipoDocumentosProcesos borradoraporteestatal) {
+		return new ReferenciaDocumentoMapper().getSummary(fileDAO.getDocumentByTypeDistribucionInicialPercapita(idDistribucionInicialPercapita, borradoraporteestatal));
+	}
+	
+	public ReferenciaDocumentoSummaryVO getDocumentById(Integer documentId) {
+		return new ReferenciaDocumentoMapper().getSummary(fileDAO.findById(documentId));
+	}
+	
+	public List<ReferenciaDocumentoSummaryVO> getReferenciasDocumentosById(List<Integer> docIds){
+		 List<ReferenciaDocumentoSummaryVO> referenciasDocumentoSummary = new ArrayList<ReferenciaDocumentoSummaryVO>();
+		 List<ReferenciaDocumento> referenciasDocumento = fileDAO.getReferenciasDocumentosById(docIds);
+		 if(referenciasDocumento != null && referenciasDocumento.size() >0){
+			 for(ReferenciaDocumento referenciaDocumento : referenciasDocumento){
+				 referenciasDocumentoSummary.add(new ReferenciaDocumentoMapper().getSummary(referenciaDocumento));
+			 }
+		 }
+		 return referenciasDocumentoSummary;
+	}
+
+	public void createDocumentPercapita(DistribucionInicialPercapita distribucionInicialPercapita,
+			TipoDocumentosProcesos tipoDocumento, Integer referenciaDocumentoId) {
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		DocumentoDistribucionInicialPercapita documentoDistribucionInicialPercapita = new DocumentoDistribucionInicialPercapita();
+		documentoDistribucionInicialPercapita.setTipoDocumento(new TipoDocumento(tipoDocumento.getId()));
+		documentoDistribucionInicialPercapita.setIdDocumento(referenciaDocumento);
+		documentoDistribucionInicialPercapita.setIdDistribucionInicialPercapita(distribucionInicialPercapita);
+		distribucionInicialPercapitaDAO.save(documentoDistribucionInicialPercapita);
+		System.out.println("luego de aplicar insert del documento percapita");
+	}
+
+	public ReferenciaDocumentoSummaryVO getLastDocumentoSummaryByDistribucionInicialPercapitaType(
+			Integer idDistribucionInicialPercapita,
+			TipoDocumentosProcesos tipoDocumento) {
+		ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = null;
+		ReferenciaDocumento referenciaDocumento =  fileDAO.getLastDocumentByTypeDistribucionInicialPercapita(idDistribucionInicialPercapita, tipoDocumento);
+		referenciaDocumentoSummaryVO = new ReferenciaDocumentoMapper().getSummary(referenciaDocumento);
+		return referenciaDocumentoSummaryVO;
+	}
 }

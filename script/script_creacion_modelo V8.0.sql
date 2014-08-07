@@ -1436,6 +1436,247 @@ UPDATE ano_en_curso SET inflactor=1.3070;
 ALTER TABLE ano_en_curso
    ALTER COLUMN inflactor SET NOT NULL;
 
+ALTER TABLE antecendentes_comuna_calculado
+   ALTER COLUMN percapita_mes TYPE integer;
+
+ALTER TABLE antecendentes_comuna_calculado
+   ALTER COLUMN percapita_ano TYPE integer;
+
+ALTER TABLE referencia_documento ADD COLUMN fecha_creacion timestamp with time zone;
+
+--registro documentos en proceso percapita 30/07/2014
+
+ALTER TABLE documento_distribucion_inicial_percapita DROP CONSTRAINT documento_distribucion_inicial_percapita_pk;
+ALTER TABLE documento_distribucion_inicial_percapita
+   ADD COLUMN id_documento_distribucion_inicial_percapita serial NOT NULL;
+
+ ALTER TABLE documento_distribucion_inicial_percapita
+  ADD CONSTRAINT documento_distribucion_inicial_percapita_pk PRIMARY KEY(id_documento_distribucion_inicial_percapita);
+
+
+
+-- modelo seguimiento
+
+CREATE TABLE email
+(
+  id_email serial NOT NULL,
+  valor text NOT NULL,
+  CONSTRAINT email_pk PRIMARY KEY (id_email)
+)
+WITH (
+  OIDS=FALSE
+);
+
+ALTER TABLE usuario DROP COLUMN email;
+
+ALTER TABLE usuario
+   ADD COLUMN email integer;
+
+ALTER TABLE usuario
+  ADD CONSTRAINT email_fk FOREIGN KEY (email) REFERENCES email (id_email)
+   ON UPDATE NO ACTION ON DELETE NO ACTION;
+CREATE INDEX fki_email_fk
+  ON usuario(email);
+
+CREATE TABLE adjuntos_seguimiento
+(
+  id_adjuntos_seguimiento serial NOT NULL,
+  seguimiento integer NOT NULL,
+  documento integer NOT NULL,
+  CONSTRAINT adjuntos_correo_pk PRIMARY KEY (id_adjuntos_seguimiento),
+  CONSTRAINT seguimiento_fk FOREIGN KEY (seguimiento)
+      REFERENCES seguimiento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT documento_fk FOREIGN KEY (documento)
+      REFERENCES referencia_documento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+
+CREATE TABLE tipo_destinatario
+(
+  descripcion text NOT NULL,
+  id_tipo_destinatario serial NOT NULL,
+  CONSTRAINT tipo_destinatario_pk PRIMARY KEY (id_tipo_destinatario)
+)
+WITH (
+  OIDS=FALSE
+);
+
+INSERT INTO tipo_destinatario(descripcion, id_tipo_destinatario, descripcion_corta) VALUES ('Destinatario', 1, 'Para');
+INSERT INTO tipo_destinatario(descripcion, id_tipo_destinatario, descripcion_corta) VALUES ('Destinatario copia', 2, 'Cc');
+INSERT INTO tipo_destinatario(descripcion, id_tipo_destinatario, descripcion_corta) VALUES ('Destinatario copia oculta', 3, 'Cco');
+
+ALTER TABLE tipo_destinatario
+   ADD COLUMN descripcion_corta text NOT NULL;
+
+CREATE TABLE destinatarios
+(
+  id_destinatarios serial NOT NULL,
+  tipo_destinatario integer NOT NULL,
+  destinatario integer NOT NULL,
+  seguimiento integer NOT NULL,
+  CONSTRAINT destinatarios_pk PRIMARY KEY (id_destinatarios),
+  CONSTRAINT seguimiento_destinatario_fk FOREIGN KEY (seguimiento)
+      REFERENCES seguimiento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT destinatario_fk FOREIGN KEY (destinatario)
+      REFERENCES email (id_email) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT tipo_destinatario_fk FOREIGN KEY (tipo_destinatario)
+      REFERENCES tipo_destinatario (id_tipo_destinatario) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+CREATE TABLE tipo_documento
+(
+  id_tipo_documento serial NOT NULL,
+  nombre text NOT NULL
+)
+WITH (
+  OIDS=FALSE
+);
+
+ALTER TABLE tipo_documento
+  ADD CONSTRAINT tipo_documento_pk PRIMARY KEY (id_tipo_documento);
+
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (1, 'Plantilla Asignación de Desempeño Difícil');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (2, 'Plantilla Borrador decreto aporte estatal');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (3, 'Población Inscrita Validada');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (4, 'Borrador decreto aporte estatal');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (5, 'Plantilla Base Cumplimiento');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (6, 'Plantilla Rebaja Calculada');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (7, 'Plantilla Oficio Consulta');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (8, 'Oficio Consulta');
+
+
+ALTER TABLE documento_distribucion_inicial_percapita ADD COLUMN tipo_documento integer;
+
+
+ALTER TABLE documento_distribucion_inicial_percapita
+  ADD CONSTRAINT tipo_documento_fk FOREIGN KEY (tipo_documento)
+      REFERENCES tipo_documento (id_tipo_documento) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+UPDATE documento_distribucion_inicial_percapita
+   SET tipo_documento=3;
+
+ALTER TABLE documento_distribucion_inicial_percapita
+   ALTER COLUMN tipo_documento SET NOT NULL;
+
+ALTER TABLE plantilla DROP CONSTRAINT tipo_plantilla_fk;
+
+
+ALTER TABLE plantilla
+  ADD CONSTRAINT tipo_plantilla_fk FOREIGN KEY (tipo_plantilla) REFERENCES tipo_documento (id_tipo_documento)
+   ON UPDATE NO ACTION ON DELETE NO ACTION;
+CREATE INDEX fki_tipo_plantilla_fk
+  ON plantilla(tipo_plantilla);
+
+DROP TABLE tipo_plantilla;
+
+
+--03/08/2014
+
+ALTER TABLE seguimiento DROP COLUMN mail_to;
+ALTER TABLE seguimiento DROP COLUMN cc;
+ALTER TABLE seguimiento DROP COLUMN cco;
+
+
+CREATE TABLE public.tarea_seguimiento
+(
+   id_tarea_seguimiento serial NOT NULL, 
+   descripcion text NOT NULL, 
+   CONSTRAINT tarea_seguimiento_pk PRIMARY KEY (id_tarea_seguimiento)
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (1, 'Hacer seguimiento oficio');
+
+CREATE TABLE public.distribucion_inicial_percapita_seguimiento
+(
+   id_distribucion_inicial_percapita_seguimiento serial NOT NULL, 
+   distribucion_inicial_percapita integer NOT NULL, 
+   seguimiento integer NOT NULL, 
+   CONSTRAINT distribucion_inicial_percapita_seguimiento_pk PRIMARY KEY (id_distribucion_inicial_percapita_seguimiento), 
+   CONSTRAINT distribucion_inicial_percapita_seguimiento_fk FOREIGN KEY (seguimiento) REFERENCES seguimiento (id) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT distribucion_inicial_percapita_fk FOREIGN KEY (distribucion_inicial_percapita) REFERENCES distribucion_inicial_percapita (id_distribucion_inicial_percapita) ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+ALTER TABLE seguimiento DROP COLUMN mail_from;
+ALTER TABLE seguimiento
+   ADD COLUMN mail_from integer NOT NULL;
+
+ALTER TABLE seguimiento
+  ADD CONSTRAINT mail_from FOREIGN KEY (mail_from) REFERENCES email (id_email)
+   ON UPDATE NO ACTION ON DELETE NO ACTION;
+CREATE INDEX fki_mail_from
+  ON seguimiento(mail_from);
+
+ALTER TABLE seguimiento
+   ADD COLUMN tarea_seguimiento integer NOT NULL;
+
+ALTER TABLE seguimiento
+  ADD CONSTRAINT tarea_seguimiento_fk FOREIGN KEY (tarea_seguimiento) REFERENCES tarea_seguimiento (id_tarea_seguimiento)
+   ON UPDATE NO ACTION ON DELETE NO ACTION;
+CREATE INDEX fki_tarea_seguimiento_fk
+  ON seguimiento(tarea_seguimiento);
+
+ALTER TABLE seguimiento_referencia_documento DROP CONSTRAINT seguimiento_referencia_documento_pk;
+
+ALTER TABLE seguimiento_referencia_documento
+   ADD COLUMN id_seguimiento_referencia_documento serial NOT NULL;
+
+ALTER TABLE seguimiento_referencia_documento
+  ADD CONSTRAINT seguimiento_referencia_documento_pk PRIMARY KEY (id_seguimiento_referencia_documento);
+
+
+--esto corresponde al usuario con que se ingresa en la aplicacion
+INSERT INTO email(id_email, valor) VALUES (1, 'camurro@gmail.com');
+UPDATE usuario SET  email = 1 WHERE username='cmurillo'
+--esto corresponde al usuario con que se ingresa en la aplicacion
+
+ALTER TABLE seguimiento
+   ALTER COLUMN subject TYPE text;
+
+ALTER TABLE seguimiento
+   ALTER COLUMN body TYPE text;
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (9, 'Plantilla Resoluciones Comunales de Aporte Estatal UR');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (10, 'Plantilla Resoluciones Comunales de Aporte Estatal CF');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (11, 'Resoluciones Comunales de Aporte Estatal UR');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (12, 'Resoluciones Comunales de Aporte Estatal CF');
+
+
+ALTER TABLE documento_distribucion_inicial_percapita ADD COLUMN comuna integer;
+ALTER TABLE documento_distribucion_inicial_percapita
+  ADD CONSTRAINT comuna_fk FOREIGN KEY (comuna)
+      REFERENCES comuna (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (13, 'Plantilla Borrador decreto aporte estatal');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (14, 'Asignación de Desempeño Difícil');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (15, 'Población Inscrita Validada');
+
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (2, 'Hacer seguimiento decreto');
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (3, 'Hacer seguimiento toma de razon');
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (4, 'Hacer seguimiento resoluciones');
+
 
 
 

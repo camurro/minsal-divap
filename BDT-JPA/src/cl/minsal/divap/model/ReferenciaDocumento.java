@@ -2,18 +2,20 @@ package cl.minsal.divap.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -27,6 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "ReferenciaDocumento.findAll", query = "SELECT r FROM ReferenciaDocumento r"),
     @NamedQuery(name = "ReferenciaDocumento.findById", query = "SELECT r FROM ReferenciaDocumento r WHERE r.id = :id"),
+    @NamedQuery(name = "ReferenciaDocumento.findByIds", query = "SELECT r FROM ReferenciaDocumento r WHERE r.id IN (:ids)"),
     @NamedQuery(name = "ReferenciaDocumento.findByContentType", query = "SELECT r FROM ReferenciaDocumento r WHERE r.contentType = :contentType"),
     @NamedQuery(name = "ReferenciaDocumento.findByPath", query = "SELECT r FROM ReferenciaDocumento r WHERE r.path = :path"),
     @NamedQuery(name = "ReferenciaDocumento.findByDocumentoFinal", query = "SELECT r FROM ReferenciaDocumento r WHERE r.documentoFinal = :documentoFinal")})
@@ -42,16 +45,17 @@ public class ReferenciaDocumento implements Serializable {
     private String path;
     @Column(name = "node_ref")
     private String nodeRef;
+    @Column(name = "fecha_creacion")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date fechaCreacion;
     @Column(name = "documento_final")
     private Boolean documentoFinal;
-    @ManyToMany(mappedBy = "referenciaDocumentoCollection")
-    private Collection<DistribucionInicialPercapita> distribucionInicialPercapitaCollection;
-    @JoinTable(name = "seguimiento_referencia_documento", joinColumns = {
-        @JoinColumn(name = "id_referencia_documento", referencedColumnName = "id")}, inverseJoinColumns = {
-        @JoinColumn(name = "id_seguimiento", referencedColumnName = "id")})
-    @ManyToMany
-    private Set<Seguimiento> seguimientoCollection;
-   
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idDocumento")
+    private Set<DocumentoDistribucionInicialPercapita> documentoDistribucionInicialPercapitaCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idReferenciaDocumento")
+    private Collection<SeguimientoReferenciaDocumento> seguimientoReferenciaDocumentoCollection;
+    @OneToMany(mappedBy = "documento")
+    private Set<Plantilla> plantillaCollection;
 
     public ReferenciaDocumento() {
     }
@@ -92,22 +96,22 @@ public class ReferenciaDocumento implements Serializable {
         this.documentoFinal = documentoFinal;
     }
 
-    @XmlTransient
-    public Collection<DistribucionInicialPercapita> getDistribucionInicialPercapitaCollection() {
-        return distribucionInicialPercapitaCollection;
+    public Set<DocumentoDistribucionInicialPercapita> getDocumentoDistribucionInicialPercapitaCollection() {
+		return documentoDistribucionInicialPercapitaCollection;
+	}
+
+	public void setDocumentoDistribucionInicialPercapitaCollection(
+			Set<DocumentoDistribucionInicialPercapita> documentoDistribucionInicialPercapitaCollection) {
+		this.documentoDistribucionInicialPercapitaCollection = documentoDistribucionInicialPercapitaCollection;
+	}
+
+	@XmlTransient
+    public Collection<SeguimientoReferenciaDocumento> getSeguimientoReferenciaDocumentoCollection() {
+        return seguimientoReferenciaDocumentoCollection;
     }
 
-    public void setDistribucionInicialPercapitaCollection(Collection<DistribucionInicialPercapita> distribucionInicialPercapitaCollection) {
-        this.distribucionInicialPercapitaCollection = distribucionInicialPercapitaCollection;
-    }
-
-    @XmlTransient
-    public Set<Seguimiento> getSeguimientoCollection() {
-        return seguimientoCollection;
-    }
-
-    public void setSeguimientoCollection(Set<Seguimiento> seguimientoCollection) {
-        this.seguimientoCollection = seguimientoCollection;
+    public void setSeguimientoReferenciaDocumentoCollection(Collection<SeguimientoReferenciaDocumento> seguimientoReferenciaDocumentoCollection) {
+        this.seguimientoReferenciaDocumentoCollection = seguimientoReferenciaDocumentoCollection;
     }
 
     public String getNodeRef() {
@@ -137,7 +141,23 @@ public class ReferenciaDocumento implements Serializable {
         return true;
     }
 
-    @Override
+    public Date getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(Date fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public Set<Plantilla> getPlantillaCollection() {
+		return plantillaCollection;
+	}
+
+	public void setPlantillaCollection(Set<Plantilla> plantillaCollection) {
+		this.plantillaCollection = plantillaCollection;
+	}
+
+	@Override
     public String toString() {
         return "cl.minsal.divap.model.ReferenciaDocumento[ id=" + id + " ]";
     }

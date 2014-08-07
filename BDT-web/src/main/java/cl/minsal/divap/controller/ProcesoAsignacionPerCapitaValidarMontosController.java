@@ -1,59 +1,72 @@
 package cl.minsal.divap.controller;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import minsal.divap.service.DistribucionInicialPercapitaService;
+import minsal.divap.service.UtilitariosService;
+import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
+import minsal.divap.vo.ComunaVO;
+import minsal.divap.vo.ServiciosVO;
+
 import org.apache.log4j.Logger;
-import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
-import cl.minsal.divap.pojo.GobiernoRegionalPojo;
-import cl.minsal.divap.pojo.montosDistribucionPojo;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
-import cl.redhat.bandejaTareas.util.BandejaProperties;
 
 @Named("procesoAsignacionPerCapitaValidarMontosController")
 @ViewScoped
 public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractTaskMBean
-		implements Serializable {
+implements Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject
 	private transient Logger log;
-	@Inject
-	private BandejaProperties bandejaProperties;
-	@Inject
-	FacesContext facesContext;
+	private boolean checkRegion;
+	private boolean checkComuna;
+	private boolean checkServicio;
+	private boolean checkRefAsigZona;
+	private boolean checkTramoPobreza;
+	private boolean checkPerCapitaBasal;
+	private boolean checkPobreza;
+	private boolean checkRuralidad;
+	private boolean checkValorRefAsigZona;
+	private boolean checkValorperCapita;
+	private boolean checkPoblacionAno;
+	private boolean checkPoblacionMayor65Anos;
+	private boolean checkPerCapitaMes;
+	private boolean checkPerCapitaAno;
+	private boolean checkAsigDesempenoDificil;
 	
-	private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-	
-    private String docIdDownload;
-    private Integer docId;
-    private Integer idDistribucionInicialPercapita;
+	@EJB
+	private UtilitariosService utilitariosService;
+	@EJB
+	private DistribucionInicialPercapitaService distribucionInicialPercapitaService;
+	private List<AsignacionDistribucionPerCapitaVO> antecendentesComunaCalculado;
+	private String docIdDownload;
+	private Integer docId;
+	private Integer idDistribucionInicialPercapita;
 	private UploadedFile calculoPerCapitaFile;
 	private UploadedFile valorBasicoDesempenoFile;
-	
+	private String servicioSeleccionado;
+	private List<ServiciosVO> servicios;
+	private String comunaSeleccionada;
+	private List<ComunaVO> comunas;
+
 	private  boolean rechazarRevalorizar_;
 	private  boolean rechazarSubirArchivos_;
 	private  boolean aprobar_;
-	
-	private boolean valorPercapita;
-	private boolean poblacionAno;
-	private boolean mayor65;
-	private boolean percapitaAno;
+
 
 	public UploadedFile getCalculoPerCapitaFile() {
 		return calculoPerCapitaFile;
@@ -79,33 +92,46 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
-
-	// divapProcesoAsignacionPerCapitaCargarValorizacion: FIN
-
-	// divapProcesoAsignacionPerCapitaValidarMontosDistribucion: INICIO
-	boolean validarMontosDistribucion = false;
-	List<montosDistribucionPojo> planillaMontosDistribucion;
-
-	public List<montosDistribucionPojo> getPlanillaMontosDistribucion() {
-		return planillaMontosDistribucion;
+	
+	public void buscar() {
+		System.out.println("buscar--> servicioSeleccionado="+servicioSeleccionado+" comunaSeleccionada="+comunaSeleccionada);
+		if((servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty()) && (comunaSeleccionada == null || comunaSeleccionada.trim().isEmpty()) ){
+			FacesMessage msg = new FacesMessage("Debe seleccionar al menos un filtro antes de realizar la búsqueda");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}else{
+			this.antecendentesComunaCalculado = distribucionInicialPercapitaService.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(Integer.parseInt(servicioSeleccionado),
+					(((comunaSeleccionada != null) &&  !(comunaSeleccionada.trim().isEmpty()))?Integer.parseInt(comunaSeleccionada):null), idDistribucionInicialPercapita);
+		}
+		System.out.println("fin buscar-->");
 	}
 
-	public void setPlanillaMontosDistribucion(
-			List<montosDistribucionPojo> planillaMontosDistribucion) {
-		this.planillaMontosDistribucion = planillaMontosDistribucion;
+	public void limpiar() {
+		System.out.println("Limpiar-->");
+		servicioSeleccionado = "";
+		comunaSeleccionada = "";
+		antecendentesComunaCalculado = new ArrayList<AsignacionDistribucionPerCapitaVO>();
+		limpiarCheck();
+		System.out.println("fin limpiar");
+	}
+	
+	private void limpiarCheck(){
+		checkRegion = false;
+		checkComuna = false;
+		checkServicio = false;
+		checkRefAsigZona = false;
+		checkTramoPobreza = false;
+		checkPerCapitaBasal = false;
+		checkPobreza = false;
+		checkRuralidad = false;
+		checkValorRefAsigZona = false;
+		checkValorperCapita = false;
+		checkPoblacionAno = false;
+		checkPoblacionMayor65Anos = false;
+		checkPerCapitaMes = false;
+		checkPerCapitaAno = false;
+		checkAsigDesempenoDificil = false;
 	}
 
-	public boolean isValidarMontosDistribucion() {
-		return validarMontosDistribucion;
-	}
-
-	public void setValidarMontosDistribucion(boolean validarMontosDistribucion) {
-		this.validarMontosDistribucion = validarMontosDistribucion;
-	}
-
-	// divapProcesoAsignacionPerCapitaValidarMontosDistribucion: FIN
-
-	// divapProcesoAsignacionPerCapitaSeguimiento: INICIO
 	String actividadSeguimientoTitle = "";
 
 	public String getActividadSeguimientoTitle() {
@@ -116,146 +142,32 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 		this.actividadSeguimientoTitle = actividadSeguimientoTitle;
 	}
 
-	// divapProcesoAsignacionPerCapitaSeguimiento: FIN
-
-	// divapProcesoAsignacionPerCapitaActualizarOficiosTramitadosAlfresco.jsf:
-	// INICIO
-
-	List<GobiernoRegionalPojo> listGobiernoRegional;
-
-	public void setListGobiernoRegional(
-			List<GobiernoRegionalPojo> listGobiernoRegional) {
-		this.listGobiernoRegional = listGobiernoRegional;
-	}
-
 	@Override
 	public String toString() {
 		return "ProcesoAsignacionPerCapitaController [validarMontosDistribucion="
-				+ validarMontosDistribucion + "]";
-	}
-
-	// divapProcesoAsignacionPerCapitaActualizarOficiosTramitadosAlfresco.jsf:
-	// FIN
-
-	public List<GobiernoRegionalPojo> getListGobiernoRegional() {
-		return listGobiernoRegional;
+				+ idDistribucionInicialPercapita + "]";
 	}
 
 	@PostConstruct
 	public void init() {
 		log.info("ProcesoAsignacionPerCapitaValidarMontosController Alcanzado.");
+		if(sessionExpired()){
+			return;
+		}
 		this.docId = (Integer) getTaskDataVO().getData().get("_docId");
+		System.out.println("this.docId->"+this.docId);
 		this.idDistribucionInicialPercapita = (Integer) getTaskDataVO().getData().get("_idDistribucionInicialPercapita");
-		if (!getSessionBean().isLogged()) {
-			log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
-			try {
-				facesContext.getExternalContext().redirect("login.jsf");
-			} catch (IOException e) {
-				log.error(
-						"Error tratando de redireccionar a login por falta de usuario en sesion.",
-						e);
-			}
+		System.out.println("this.idDistribucionInicialPercapita->"+this.idDistribucionInicialPercapita);
+		this.antecendentesComunaCalculado = distribucionInicialPercapitaService.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(idDistribucionInicialPercapita);
+		if(this.antecendentesComunaCalculado  != null && this.antecendentesComunaCalculado .size() > 0){
+			checkValorperCapita = true;
+			checkPoblacionAno = true;
+			checkPerCapitaMes = true;
+			checkPerCapitaAno = true;
 		}
-
-		// FUNCIONAMIENTO MOCK PLANTILLAS SEGUIMIENTO
-		try {
-			int actividad = Integer.parseInt(facesContext.getExternalContext()
-					.getRequestParameterMap().get("actividad"));
-
-			if (actividad == 1) {
-				actividadSeguimientoTitle = "Seguimiento Decreto";
-			} else if (actividad == 2) {
-				actividadSeguimientoTitle = "Seguimiento Documentación Formal";
-			} else if (actividad == 3) {
-				actividadSeguimientoTitle = "Seguimiento a Toma de Razón";
-			} else if (actividad == 4) {
-				actividadSeguimientoTitle = "Seguimiento Oficios";
-			}
-		} catch (Exception e) {
-			actividadSeguimientoTitle = "";
-		}
-
-		// FUNCIONAMIENTO MOCK VALIDACION MONTOS DE DISTRIBUCION
-		planillaMontosDistribucion = new ArrayList<montosDistribucionPojo>();
-
-		montosDistribucionPojo md = new montosDistribucionPojo();
-		md.setRegion(15);
-		md.setServicio("ARICA");
-		md.setComuna("ARICA");
-		md.setClasificacion("URBANA");
-		md.setRefAsigZon(40);
-		md.setTramoPobreza(4);
-		md.setPerCapitaBasal(3794);
-		md.setRefAsigZon(531);
-		md.setValorPerCapita(4325);
-		md.setPoblacion(197251);
-		md.setPoblacionAdultoMayor(22199);
-		md.setPerCapitaMensual(1345906);
-		md.setPerCapitaAno(16150872);
-
-		planillaMontosDistribucion.add(md);
-
-		// FUNCIONAMIENTO MOCK TRAMITACION CON GOBIERNOS REGIONALES
-
-		listGobiernoRegional = new ArrayList<GobiernoRegionalPojo>();
-		GobiernoRegionalPojo pojo;
-		Random rnd = new Random();
-
-		pojo = new GobiernoRegionalPojo();
-		pojo.setNombre("ARICA");
-		pojo.setArchivo("documentacion_gobierno-regional_arica.pdf");
-		pojo.setCorreo("arica@gobierno.cl");
-		pojo.setEnviado(rnd.nextBoolean());
-		pojo.setSubido(rnd.nextBoolean());
-		listGobiernoRegional.add(pojo);
-
-		pojo = new GobiernoRegionalPojo();
-		pojo.setNombre("TARAPACA");
-		pojo.setArchivo("documentacion_gobierno-regional_tarapaca.pdf");
-		pojo.setCorreo("tarapaca@gobierno.cl");
-		pojo.setEnviado(rnd.nextBoolean());
-		pojo.setSubido(rnd.nextBoolean());
-		listGobiernoRegional.add(pojo);
-
-		pojo = new GobiernoRegionalPojo();
-		pojo.setNombre("ANTOFAGASTA");
-		pojo.setArchivo("documentacion_gobierno-regional_antofagasta.pdf");
-		pojo.setCorreo("antofagasta@gobierno.cl");
-		pojo.setEnviado(rnd.nextBoolean());
-		pojo.setSubido(rnd.nextBoolean());
-		listGobiernoRegional.add(pojo);
-
-		pojo = new GobiernoRegionalPojo();
-		pojo.setNombre("METROPOLITANA DE SANTIAGO");
-		pojo.setArchivo("documentacion_gobierno-regional_metropolitana-de-santiago.pdf");
-		pojo.setCorreo("santiago@gobierno.cl");
-		pojo.setEnviado(rnd.nextBoolean());
-		pojo.setSubido(rnd.nextBoolean());
-		listGobiernoRegional.add(pojo);
-
-		pojo = new GobiernoRegionalPojo();
-		pojo.setNombre("LA ARAUCANÍA");
-		pojo.setArchivo("documentacion_gobierno-regional_la-araucania.pdf");
-		pojo.setCorreo("araucania@gobierno.cl");
-		pojo.setEnviado(rnd.nextBoolean());
-		pojo.setSubido(rnd.nextBoolean());
-		listGobiernoRegional.add(pojo);
-
-		pojo = new GobiernoRegionalPojo();
-		pojo.setNombre("MAGALLANES");
-		pojo.setArchivo("documentacion_gobierno-regional_magallanes.pdf");
-		pojo.setCorreo("magallanes@gobierno.cl");
-		pojo.setEnviado(rnd.nextBoolean());
-		pojo.setSubido(rnd.nextBoolean());
-		listGobiernoRegional.add(pojo);
 	}
 
-	public void handleFileUpload(FileUploadEvent event) {
-		FacesMessage msg = new FacesMessage("Succesful", event.getFile()
-				.getFileName() + " is uploaded.");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-	}
-	
+
 	@Override
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new HashMap<String, Object>();
@@ -266,7 +178,7 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 		parameters.put("aprobar_", new Boolean(isAprobar_()));
 		return parameters;
 	}
-	
+
 	public String downloadPlanilla() {
 		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownload()));
 		setDocumento(documentService.getDocument(docDownload));
@@ -307,38 +219,6 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 		return null;
 	}
 
-	public boolean isValorPercapita() {
-		return valorPercapita;
-	}
-
-	public void setValorPercapita(boolean valorPercapita) {
-		this.valorPercapita = valorPercapita;
-	}
-
-	public boolean isPoblacionAno() {
-		return poblacionAno;
-	}
-
-	public void setPoblacionAno(boolean poblacionAno) {
-		this.poblacionAno = poblacionAno;
-	}
-
-	public boolean isMayor65() {
-		return mayor65;
-	}
-
-	public void setMayor65(boolean mayor65) {
-		this.mayor65 = mayor65;
-	}
-
-	public boolean getPercapitaAno() {
-		return percapitaAno;
-	}
-
-	public void setPercapitaAno(boolean percapitaAno) {
-		this.percapitaAno = percapitaAno;
-	}
-
 	public String getDocIdDownload() {
 		return docIdDownload;
 	}
@@ -363,5 +243,187 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 			Integer idDistribucionInicialPercapita) {
 		this.idDistribucionInicialPercapita = idDistribucionInicialPercapita;
 	}
+
+	
+	public void cargaComunas(){
+		if(servicioSeleccionado != null && !servicioSeleccionado.trim().isEmpty()){
+			comunas = utilitariosService.getComunasByServicio(Integer.parseInt(servicioSeleccionado));
+		}else{
+			comunas = new ArrayList<ComunaVO>();
+		}
+	}
+
+	public List<ServiciosVO> getServicios() {
+		if(this.servicios == null){
+			this.servicios = utilitariosService.getAllServicios();
+		}
+		return servicios;
+	}
+
+	public void setServicios(List<ServiciosVO> servicios) {
+		this.servicios = servicios;
+	}
+
+	public String getServicioSeleccionado() {
+		return servicioSeleccionado;
+	}
+
+	public void setServicioSeleccionado(String servicioSeleccionado) {
+		this.servicioSeleccionado = servicioSeleccionado;
+	}
+
+	public List<ComunaVO> getComunas() {
+		return comunas;
+	}
+
+	public void setComunas(List<ComunaVO> comunas) {
+		this.comunas = comunas;
+	}
+
+	public String getComunaSeleccionada() {
+		return comunaSeleccionada;
+	}
+
+	public void setComunaSeleccionada(String comunaSeleccionada) {
+		this.comunaSeleccionada = comunaSeleccionada;
+	}
+
+	public FacesContext getFacesContext() {
+		return facesContext;
+	}
+
+	public void setFacesContext(FacesContext facesContext) {
+		this.facesContext = facesContext;
+	}
+
+	public boolean isCheckRegion() {
+		return checkRegion;
+	}
+
+	public void setCheckRegion(boolean checkRegion) {
+		this.checkRegion = checkRegion;
+	}
+
+	public boolean isCheckComuna() {
+		return checkComuna;
+	}
+
+	public void setCheckComuna(boolean checkComuna) {
+		this.checkComuna = checkComuna;
+	}
+
+	public boolean isCheckServicio() {
+		return checkServicio;
+	}
+
+	public void setCheckServicio(boolean checkServicio) {
+		this.checkServicio = checkServicio;
+	}
+
+	public boolean isCheckRefAsigZona() {
+		return checkRefAsigZona;
+	}
+
+	public void setCheckRefAsigZona(boolean checkRefAsigZona) {
+		this.checkRefAsigZona = checkRefAsigZona;
+	}
+
+	public boolean isCheckTramoPobreza() {
+		return checkTramoPobreza;
+	}
+
+	public void setCheckTramoPobreza(boolean checkTramoPobreza) {
+		this.checkTramoPobreza = checkTramoPobreza;
+	}
+
+	public boolean isCheckPerCapitaBasal() {
+		return checkPerCapitaBasal;
+	}
+
+	public void setCheckPerCapitaBasal(boolean checkPerCapitaBasal) {
+		this.checkPerCapitaBasal = checkPerCapitaBasal;
+	}
+
+	public boolean isCheckPobreza() {
+		return checkPobreza;
+	}
+
+	public void setCheckPobreza(boolean checkPobreza) {
+		this.checkPobreza = checkPobreza;
+	}
+
+	public boolean isCheckRuralidad() {
+		return checkRuralidad;
+	}
+
+	public void setCheckRuralidad(boolean checkRuralidad) {
+		this.checkRuralidad = checkRuralidad;
+	}
+
+	public boolean isCheckValorRefAsigZona() {
+		return checkValorRefAsigZona;
+	}
+
+	public void setCheckValorRefAsigZona(boolean checkValorRefAsigZona) {
+		this.checkValorRefAsigZona = checkValorRefAsigZona;
+	}
+
+	public boolean isCheckValorperCapita() {
+		return checkValorperCapita;
+	}
+
+	public void setCheckValorperCapita(boolean checkValorperCapita) {
+		this.checkValorperCapita = checkValorperCapita;
+	}
+
+	public boolean isCheckPoblacionAno() {
+		return checkPoblacionAno;
+	}
+
+	public void setCheckPoblacionAno(boolean checkPoblacionAno) {
+		this.checkPoblacionAno = checkPoblacionAno;
+	}
+
+	public boolean isCheckPoblacionMayor65Anos() {
+		return checkPoblacionMayor65Anos;
+	}
+
+	public void setCheckPoblacionMayor65Anos(boolean checkPoblacionMayor65Anos) {
+		this.checkPoblacionMayor65Anos = checkPoblacionMayor65Anos;
+	}
+
+	public boolean isCheckPerCapitaMes() {
+		return checkPerCapitaMes;
+	}
+
+	public void setCheckPerCapitaMes(boolean checkPerCapitaMes) {
+		this.checkPerCapitaMes = checkPerCapitaMes;
+	}
+
+	public boolean isCheckPerCapitaAno() {
+		return checkPerCapitaAno;
+	}
+
+	public void setCheckPerCapitaAno(boolean checkPerCapitaAno) {
+		this.checkPerCapitaAno = checkPerCapitaAno;
+	}
+
+	public boolean isCheckAsigDesempenoDificil() {
+		return checkAsigDesempenoDificil;
+	}
+
+	public void setCheckAsigDesempenoDificil(boolean checkAsigDesempenoDificil) {
+		this.checkAsigDesempenoDificil = checkAsigDesempenoDificil;
+	}
+
+	public List<AsignacionDistribucionPerCapitaVO> getAntecendentesComunaCalculado() {
+		return antecendentesComunaCalculado;
+	}
+
+	public void setAntecendentesComunaCalculado(
+			List<AsignacionDistribucionPerCapitaVO> antecendentesComunaCalculado) {
+		this.antecendentesComunaCalculado = antecendentesComunaCalculado;
+	}
 	
 }
+

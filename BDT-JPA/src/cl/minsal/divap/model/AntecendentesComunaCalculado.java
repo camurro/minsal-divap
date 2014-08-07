@@ -32,6 +32,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByAntecedentesDistrinbucionInicial", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idAntecedentesComuna = :idAntecendentesComuna and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByDistribucionInicialPercapita", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByComunaServicioAnoCurso", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.id = :idComuna and a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio and a.antecedentesComuna.anoAnoEnCurso.ano = :anoEnCurso"),
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByComunaServicioDistribucionInicialPercapita", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.id = :idComuna and a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByServicioDistribucionInicialPercapita", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.countByDistribucionInicialPercapita", query = "SELECT count(a) FROM AntecendentesComunaCalculado a WHERE a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita")})
 public class AntecendentesComunaCalculado implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -54,9 +56,9 @@ public class AntecendentesComunaCalculado implements Serializable {
 	@Column(name = "valor_per_capita_comunal_mes")
 	private Double valorPerCapitaComunalMes;
 	@Column(name = "percapita_mes")
-	private Double percapitaMes;
+	private Integer percapitaMes;
 	@Column(name = "percapita_ano")
-	private Double percapitaAno;
+	private Integer percapitaAno;
 	@JoinColumn(name = "distribucion_inicial_percapita", referencedColumnName = "id_distribucion_inicial_percapita")
 	@ManyToOne
 	private DistribucionInicialPercapita distribucionInicialPercapita;
@@ -152,19 +154,19 @@ public class AntecendentesComunaCalculado implements Serializable {
 		this.valorPerCapitaComunalMes = valorPerCapitaComunalMes;
 	}
 
-	public Double getPercapitaMes() {
+	public Integer getPercapitaMes() {
 		return percapitaMes;
 	}
 
-	public void setPercapitaMes(Double percapitaMes) {
+	public void setPercapitaMes(Integer percapitaMes) {
 		this.percapitaMes = percapitaMes;
 	}
 
-	public Double getPercapitaAno() {
+	public Integer getPercapitaAno() {
 		return percapitaAno;
 	}
 
-	public void setPercapitaAno(Double percapitaAno) {
+	public void setPercapitaAno(Integer percapitaAno) {
 		this.percapitaAno = percapitaAno;
 	}
 

@@ -17,7 +17,7 @@ import minsal.divap.dao.RebajaDAO;
 import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.dao.UsuarioDAO;
 import minsal.divap.enums.FieldType;
-import minsal.divap.enums.TemplatesType;
+import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.excel.impl.RebajaCalculadaSheetExcel;
 import minsal.divap.excel.impl.RebajaExcelValidator;
@@ -68,7 +68,7 @@ public class RebajaService {
 	
 
 	public Integer getPlantillaBaseCumplimiento(){
-		Integer plantillaId = documentService.getPlantillaByType(TemplatesType.BASECUMPLIMIENTO);
+		Integer plantillaId = documentService.getPlantillaByType(TipoDocumentosProcesos.BASECUMPLIMIENTO);
 		if(plantillaId == null){
 			List<RebajaVO> servicios = getAllServiciosyComunasConId();
 			
@@ -92,7 +92,7 @@ public class RebajaService {
 			try {
 				BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderTemplateRebaja);
 				System.out.println("response rebajaSheetExcel --->"+response);
-				plantillaId = documentService.createTemplate(TemplatesType.BASECUMPLIMIENTO, response.getNodeRef(), response.getFileName(), contenType);
+				plantillaId = documentService.createTemplate(TipoDocumentosProcesos.BASECUMPLIMIENTO, response.getNodeRef(), response.getFileName(), contenType);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -284,7 +284,7 @@ public class RebajaService {
 	}
 
 	public Integer getPlantillaRebaja() {
-		Integer plantillaId = documentService.getPlantillaByType(TemplatesType.REBAJACALCULADA);
+		Integer plantillaId = documentService.getPlantillaByType(TipoDocumentosProcesos.REBAJACALCULADA);
 		if(plantillaId == null){
 			List<PlanillaRebajaCalculadaVO> servicios = getAllRebajasPlanillaTotal();
 			
@@ -325,7 +325,7 @@ public class RebajaService {
 				String[] folder = folderProcesoRebaja.split("/");
 				BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folder[0]+"/"+dateFormat.format(new Date())+"/"+folder[1]);
 				System.out.println("response rebajaCalculadaSheetExcel --->"+response);
-				plantillaId = documentService.createTemplate(TemplatesType.REBAJACALCULADA, response.getNodeRef(), response.getFileName(), contenType);
+				plantillaId = documentService.createTemplate(TipoDocumentosProcesos.REBAJACALCULADA, response.getNodeRef(), response.getFileName(), contenType);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

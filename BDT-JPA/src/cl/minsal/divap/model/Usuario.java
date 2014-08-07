@@ -27,12 +27,14 @@ public class Usuario implements Serializable {
 
 	private String apellido;
 
-	private String email;
-
 	private String nombre;
 
 	private String password;
-	
+
+	@JoinColumn(name = "email", referencedColumnName = "id_email")
+	@ManyToOne
+	private Email email;
+
 	@OneToMany(mappedBy = "usuario")
 	private Set<DistribucionInicialPercapita> distribucionInicialPercapitaCollection;
 
@@ -72,13 +74,13 @@ public class Usuario implements Serializable {
 		this.apellido = apellido;
 	}
 
-	public String getEmail() {
-		return this.email;
-	}
+    public Email getEmail() {
+        return email;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setEmail(Email email) {
+        this.email = email;
+    }
 
 	public String getNombre() {
 		return this.nombre;
@@ -125,7 +127,7 @@ public class Usuario implements Serializable {
 	public void setRols(List<Rol> rols) {
 		this.rols = rols;
 	}
-	
+
 	@XmlTransient
 	public Set<DistribucionInicialPercapita> getDistribucionInicialPercapitaCollection() {
 		return distribucionInicialPercapitaCollection;

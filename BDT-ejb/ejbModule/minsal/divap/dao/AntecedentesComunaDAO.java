@@ -113,4 +113,45 @@ public class AntecedentesComunaDAO {
 		return result;
 	}
 
+	public List<AntecendentesComunaCalculado> findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapita(
+			Integer servicio, Integer comuna, Integer idDistribucionInicialPercapita) {
+		List<AntecendentesComunaCalculado> results = null;
+		try {
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByComunaServicioDistribucionInicialPercapita", AntecendentesComunaCalculado.class);
+			query.setParameter("idComuna", comuna);
+			query.setParameter("idServicio", servicio);
+			query.setParameter("distribucionInicialPercapita", idDistribucionInicialPercapita);
+			results = query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return results;
+	}
+	
+	public List<AntecendentesComunaCalculado> findAntecendentesComunaCalculadoByServicioDistribucionInicialPercapita(
+			Integer servicio, Integer idDistribucionInicialPercapita) {
+		List<AntecendentesComunaCalculado> results = null;
+		try {
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByServicioDistribucionInicialPercapita", AntecendentesComunaCalculado.class);
+			query.setParameter("idServicio", servicio);
+			query.setParameter("distribucionInicialPercapita", idDistribucionInicialPercapita);
+			results = query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return results;
+	}
+
+	public List<AntecendentesComuna> findAntecendentesComunaByidDistribucionInicialPercapita(Integer idDistribucionInicialPercapita) {
+		List<AntecendentesComuna> results = null;
+		try {
+			TypedQuery<AntecendentesComuna> query = this.em.createNamedQuery("AntecendentesComuna.findByDistribucionInicialPercapita", AntecendentesComuna.class);
+			query.setParameter("idDistribucionInicialPercapita", idDistribucionInicialPercapita);
+			results = query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return results;
+	}
+
 }

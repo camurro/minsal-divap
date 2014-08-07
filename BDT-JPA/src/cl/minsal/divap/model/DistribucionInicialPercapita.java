@@ -1,9 +1,13 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -40,11 +44,8 @@ public class DistribucionInicialPercapita implements Serializable {
 	@Column(name = "fecha_creacion")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date fechaCreacion;
-	@JoinTable(name = "documento_distribucion_inicial_percapita", joinColumns = {
-			@JoinColumn(name = "id_distribucion_inicial_percapita", referencedColumnName = "id_distribucion_inicial_percapita")}, inverseJoinColumns = {
-			@JoinColumn(name = "id_documento", referencedColumnName = "id")})
-	@ManyToMany
-	private Set<ReferenciaDocumento> referenciaDocumentoCollection;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idDistribucionInicialPercapita")
+    private Set<DocumentoDistribucionInicialPercapita> documentoDistribucionInicialPercapitaCollection;
 	@JoinColumn(name = "usuario", referencedColumnName = "username")
 	@ManyToOne
 	private Usuario usuario;
@@ -82,13 +83,13 @@ public class DistribucionInicialPercapita implements Serializable {
 		this.usuario = usuario;
 	}
 	
-	public Set<ReferenciaDocumento> getReferenciaDocumentoCollection() {
-		return referenciaDocumentoCollection;
+	public Set<DocumentoDistribucionInicialPercapita> getDocumentoDistribucionInicialPercapitaCollection() {
+		return documentoDistribucionInicialPercapitaCollection;
 	}
 
-	public void setReferenciaDocumentoCollection(
-			Set<ReferenciaDocumento> referenciaDocumentoCollection) {
-		this.referenciaDocumentoCollection = referenciaDocumentoCollection;
+	public void setDocumentoDistribucionInicialPercapitaCollection(
+			Set<DocumentoDistribucionInicialPercapita> documentoDistribucionInicialPercapitaCollection) {
+		this.documentoDistribucionInicialPercapitaCollection = documentoDistribucionInicialPercapitaCollection;
 	}
 
 	public Set<AntecendentesComunaCalculado> getAntecendentesComunaCalculadoCollection() {

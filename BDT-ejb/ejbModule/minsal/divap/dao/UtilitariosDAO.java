@@ -48,4 +48,13 @@ public class UtilitariosDAO {
 		}
 	}
 
+	public List<ServicioSalud> getServicios() {
+		try {
+			TypedQuery<ServicioSalud> query = this.em.createNamedQuery("ServicioSalud.findAll", ServicioSalud.class);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 }

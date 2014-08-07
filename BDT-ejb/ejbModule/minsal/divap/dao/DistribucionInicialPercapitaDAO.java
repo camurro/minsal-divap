@@ -8,6 +8,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import cl.minsal.divap.model.DistribucionInicialPercapita;
+import cl.minsal.divap.model.DistribucionInicialPercapitaSeguimiento;
+import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
+import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.Usuario;
 
 
@@ -20,6 +23,15 @@ public class DistribucionInicialPercapitaDAO {
 	
 	public DistribucionInicialPercapita findById(Integer idDistribucionInicialPercapita) {
 		return this.em.find(DistribucionInicialPercapita.class, idDistribucionInicialPercapita);
+	}
+	
+	public DistribucionInicialPercapita update(DistribucionInicialPercapita distribucionInicialPercapita) {
+		return em.merge(distribucionInicialPercapita);
+	}
+	
+	public Integer save(DocumentoDistribucionInicialPercapita documentoDistribucionInicialPercapita) {
+		em.persist(documentoDistribucionInicialPercapita);
+		return documentoDistribucionInicialPercapita.getIdDocumentoDistribucionInicialPercapita();
 	}
 
 	public Integer crearIntanciaDistribucionInicialPercapita(Usuario usuario){
@@ -34,6 +46,16 @@ public class DistribucionInicialPercapitaDAO {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public Integer createSeguimiento(Integer idDistribucionInicialPercapita,
+			Seguimiento seguimiento) {
+		DistribucionInicialPercapita distribucionInicialPercapita = findById(idDistribucionInicialPercapita);
+		DistribucionInicialPercapitaSeguimiento distribucionInicialPercapitaSeguimiento = new DistribucionInicialPercapitaSeguimiento();
+		distribucionInicialPercapitaSeguimiento.setDistribucionInicialPercapita(distribucionInicialPercapita);
+		distribucionInicialPercapitaSeguimiento.setSeguimiento(seguimiento);
+		this.em.persist(distribucionInicialPercapitaSeguimiento);
+		return distribucionInicialPercapitaSeguimiento.getIdDistribucionInicialPercapitaSeguimiento();
 	}
 
 }

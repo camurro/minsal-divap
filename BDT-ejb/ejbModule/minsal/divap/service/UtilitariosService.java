@@ -34,7 +34,19 @@ public class UtilitariosService {
 		return regionesVO;
 	}
 	
-	public List<ServiciosVO> getServiciosByRegion(int idRegion){
+	public List<ServiciosVO> getAllServicios(){
+		List<ServicioSalud> servicios = utilitariosDAO.getServicios();
+		List<ServiciosVO> serviciosVO = new ArrayList<ServiciosVO>();
+		for(ServicioSalud servicio:servicios){
+			ServiciosVO servicioVO = new ServiciosVO();
+			servicioVO.setId_servicio(servicio.getId());
+			servicioVO.setNombre_servicio(servicio.getNombre());
+			serviciosVO.add(servicioVO);
+		}
+		return serviciosVO;
+	}
+	
+	public List<ServiciosVO> getServiciosByRegion(Integer idRegion){
 		List<ServicioSalud> servicios = utilitariosDAO.getServiciosByRegion(idRegion);
 		List<ServiciosVO> serviciosVO = new ArrayList<ServiciosVO>();
 		for(ServicioSalud servicio:servicios){
@@ -46,7 +58,7 @@ public class UtilitariosService {
 		return serviciosVO;
 	}
 	
-	public List<ComunaVO> getComunasByServicio(int idServicio){
+	public List<ComunaVO> getComunasByServicio(Integer idServicio){
 		List<Comuna> comunas = utilitariosDAO.getComunasByServicio(idServicio);
 		List<ComunaVO> comunasVO = new ArrayList<ComunaVO>();
 		for(Comuna comuna : comunas){

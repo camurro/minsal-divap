@@ -35,11 +35,11 @@ public abstract class AbstractTaskMBean extends BaseController{
 			String user = getLoggedUsername();
 			parameters.put("user", user);
 			parameters.put("usuario", user);
-			System.out.println("Iniciando proceso = "+proceso.getName() + " con el usuario="+user);
+			System.out.println("Iniciando proceso = " + proceso.getName() + " con el usuario="+user);
 			minsal.divap.service.task.response.startProcess.CommandResponse.ProcessInstance processInstance = this.processService.startProcess(proceso, parameters);
 			procId = processInstance.getId();
 		}catch (Exception e) {
-			System.out.println("No se pudo completar la tarea ");
+			System.out.println("No se pudo iniciar el proceso = " + proceso.getName());
 			e.printStackTrace();
 			 procId = null;
 		}
@@ -79,8 +79,8 @@ public abstract class AbstractTaskMBean extends BaseController{
 			data.put("usuario", user);
 			System.out.println("tarea a completar==>"+getTaskDataVO().getTask().getId());
 			this.processService.completeTask(getTaskDataVO().getTask().getProcessInstanceId(), getTaskDataVO().getTask().getId(), getLoggedUsername(), data);
-		} catch (Exception e) {
-			System.out.println("No se pudo completar la tarea ");
+		}catch (Exception e) {
+			System.out.println("No se pudo completar la tarea==>"+getTaskDataVO().getTask().getName());
 			e.printStackTrace();
 			return null;
 		}

@@ -17,8 +17,8 @@ public class AsignacionDistribucionPerCapitaVO extends CalculoPercapitaVO{
 	private Double pobreza;
 	private Double ruralidad;
 	private Double valorRefAsignacionZona;
-	private Double valorPercapitaMes;
-	private Double valorPercapitaAno;
+	private Integer valorPercapitaMes;
+	private Integer valorPercapitaAno;
 	
 	public AsignacionDistribucionPerCapitaVO(Integer region, String servicio, String comuna,
 			Integer poblacion, Integer poblacionMayor) {
@@ -81,19 +81,19 @@ public class AsignacionDistribucionPerCapitaVO extends CalculoPercapitaVO{
 		this.valorRefAsignacionZona = valorRefAsignacionZona;
 	}
 	
-	public Double getValorPercapitaMes() {
+	public Integer getValorPercapitaMes() {
 		return valorPercapitaMes;
 	}
 	
-	public void setValorPercapitaMes(Double valorPercapitaMes) {
+	public void setValorPercapitaMes(Integer valorPercapitaMes) {
 		this.valorPercapitaMes = valorPercapitaMes;
 	}
 	
-	public Double getValorPercapitaAno() {
+	public Integer getValorPercapitaAno() {
 		return valorPercapitaAno;
 	}
 	
-	public void setValorPercapitaAno(Double valorPercapitaAno) {
+	public void setValorPercapitaAno(Integer valorPercapitaAno) {
 		this.valorPercapitaAno = valorPercapitaAno;
 	}
 	

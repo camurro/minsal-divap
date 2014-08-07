@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "AntecendentesComuna.findByClasificacion", query = "SELECT a FROM AntecendentesComuna a WHERE a.clasificacion = :clasificacion"),
     @NamedQuery(name = "AntecendentesComuna.findByAsignacionZona", query = "SELECT a FROM AntecendentesComuna a WHERE a.asignacionZona = :asignacionZona"),
     @NamedQuery(name = "AntecendentesComuna.findByTramoPobreza", query = "SELECT a FROM AntecendentesComuna a WHERE a.tramoPobreza = :tramoPobreza"),
+    @NamedQuery(name = "AntecendentesComuna.findByDistribucionInicialPercapita", query = "SELECT a FROM AntecendentesComuna a JOIN a.antecendentesComunaCalculadoCollection c WHERE c.distribucionInicialPercapita.idDistribucionInicialPercapita = :idDistribucionInicialPercapita"),
     @NamedQuery(name = "AntecendentesComuna.findByIdAntecedentesComunaByComuna", query = "SELECT a FROM AntecendentesComuna a WHERE a.idComuna.id = :idComuna"),
     @NamedQuery(name = "AntecendentesComuna.findAntecendentesComunaByComunaServicioAno", query = "SELECT a FROM AntecendentesComuna a WHERE a.idComuna.nombre = :nombreComuna and a.idComuna.servicioSalud.nombre = :nombreServicio and a.anoAnoEnCurso.ano  = :anoEnCurso"),
     @NamedQuery(name = "AntecendentesComuna.findByIdAntecedentesComuna", query = "SELECT a FROM AntecendentesComuna a WHERE a.idAntecedentesComuna = :idAntecedentesComuna")})
