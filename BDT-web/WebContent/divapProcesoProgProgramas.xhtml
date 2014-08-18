@@ -10,7 +10,7 @@
 				</h1>
 				<p:panel id="Panel">
 					<h2>Listado de Programas 2014 para el usuario admin</h2>
-					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoProgramacionController.listadoProgramasServicio}"
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoEstimacionFlujoCajaSeleccionarLineaController.listadoProgramasServicio}"
 						liveResize="true" var="_programas" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
 						styleClass="dataTable">
 						<p:columnGroup type="header">
@@ -32,13 +32,14 @@
 							<span class="textoAjustado">#{_programas.descripcion}</span>
 						</p:column>
 						<p:column>
-							<a href="#{_programas.url}.jsf"> <h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons" />
-							</a>
+						<h:commandLink action="#{procesoEstimacionFlujoCajaSeleccionarLineaController.continuarProceso(_programas.id)}" >
+							<h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons"  />
+						</h:commandLink>
 						</p:column>
 					</p:dataTable>
 
 				</p:panel>
-
+	
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />
 			</p:panel>
