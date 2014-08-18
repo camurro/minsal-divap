@@ -18,8 +18,13 @@ public class EstimacionFlujoCajaService {
 	public Integer calcularPropuesta(Integer idPrograma){
 		//System.out.println("username-->"+username);
 		//Obtengo la lista de datos para realizar los calculos correspondientes.
-//		int subtitulo = 0;
-//		if (subtitulo == (int)Subtitulo.SUBTITULO21) //Percapita
+		int subtitulo = 0;
+		if (subtitulo == 24) //Percapita
+		{
+		
+			
+			
+		}
 //			
 //		
 //		
