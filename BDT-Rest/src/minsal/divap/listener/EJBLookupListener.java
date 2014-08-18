@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebListener;
 import minsal.divap.service.DistribucionInicialPercapitaService;
 import minsal.divap.service.DocumentAlfrescoService;
 import minsal.divap.service.EmailService;
+import minsal.divap.service.EstimacionFlujoCajaService;
 import minsal.divap.service.RebajaService;
 
 /**
@@ -28,6 +29,8 @@ public class EJBLookupListener implements ServletContextListener {
 	private DistribucionInicialPercapitaService distribucionInicialPercapitaService;
 	@EJB
 	private RebajaService rebajaService;
+	@EJB
+	private EstimacionFlujoCajaService estimacionFlujoCajaService;
 
 	/**
 	 * Default constructor. 
@@ -44,6 +47,7 @@ public class EJBLookupListener implements ServletContextListener {
 		add(DocumentAlfrescoService.class.getName(), this.documentService);
 		add(DistribucionInicialPercapitaService.class.getName(), this.distribucionInicialPercapitaService);
 		add(RebajaService.class.getName(), this.rebajaService);
+		add(EstimacionFlujoCajaService.class.getName(), this.estimacionFlujoCajaService);
 	}
 
 	/**
