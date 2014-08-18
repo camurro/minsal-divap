@@ -8,6 +8,9 @@ public class ProcesosProgramasPojo {
 	private Boolean terminar;
 	private String estado;
 	private String url;
+	private Integer id;
+	
+	
 	
 	public String getPrograma() {
 		return programa;
@@ -63,6 +66,14 @@ public class ProcesosProgramasPojo {
 	
 	public void setUrl( String url ) {
 		this.url = url;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	
 }
