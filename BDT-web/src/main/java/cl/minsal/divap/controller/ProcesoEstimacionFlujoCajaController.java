@@ -43,17 +43,10 @@ implements Serializable {
 	@Inject
 	private transient Logger log;
 	private UploadedFile calculoPerCapitaFile;
-	private UploadedFile valorBasicoDesempenoFile;
 
 	@EJB
 	private DistribucionInicialPercapitaService distribucionInicialPercapitaService;
-	private boolean errorCarga = false;
-	private boolean archivosValidos = false;
-	private String docIdDownload;
-	private Integer docAsignacionRecursosPercapita;
-	private Integer docAsignacionDesempenoDificil;
-	private List<Integer> docIds;
-	private Integer idDistribucionInicialPercapita;
+
 
 	public UploadedFile getCalculoPerCapitaFile() {
 		return calculoPerCapitaFile;

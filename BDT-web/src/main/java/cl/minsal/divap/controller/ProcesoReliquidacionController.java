@@ -452,7 +452,7 @@ public class ProcesoReliquidacionController extends AbstractTaskMBean implements
 	}
 	
 	private void cargaProgramasUsuario(String username) {
-		listadoProgramasUsuario = programaService.getProgramasByUser(username);
+		//listadoProgramasUsuario = programaService.getProgramasByUser(username);
 				
 	}
 
@@ -485,7 +485,7 @@ public class ProcesoReliquidacionController extends AbstractTaskMBean implements
 	@Override
 	public String iniciarProceso() {
 		String success = "divapProcesoReliqProgramas";
-		Long procId = iniciarProceso(BusinessProcess.RELIQUIDACION);
+		Long procId = iniciarProceso(BusinessProcess.Prueba);
 		System.out.println("procId-->"+procId);
 		if(procId == null){
 			 success = null;

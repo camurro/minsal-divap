@@ -56,10 +56,11 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 	}
 
 	// Continua el proceso con el programa seleccionado.
-	public void continuarProceso(Integer id) {
+	public String continuarProceso(Integer id) {
 
 		setIdLineaProgramatica(id);
-		super.enviar();
+		setTarget("divapProcesoProgMonitoreo");
+		return super.enviar();
 	}
 	
 	@Override
