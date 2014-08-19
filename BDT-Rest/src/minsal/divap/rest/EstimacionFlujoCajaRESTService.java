@@ -65,10 +65,46 @@ public class EstimacionFlujoCajaRESTService extends BaseRest{
 		return 1;
     }
 
+	@GET
+    @Path("/estimacionFlujoCaja/notificarUsuarioConsolidador/{idLineaProgramatica}")
+    @Produces("application/json")
+    public Integer notificarUsuarioConsolidador(@PathParam("idLineaProgramatica") Integer idLineaProgramatica){
+		System.out.println("[Eliminar Planilla] -->"+idLineaProgramatica);
+		return 1;
+    }
+	
+	@GET
+    @Path("/estimacionFlujoCaja/recalcularEstimacion/{flujo}")
+    @Produces("application/json")
+    public Integer recalcularEstimacion(@PathParam("flujo") Integer idLineaProgramatica){
+		System.out.println("[Eliminar Planilla] -->"+idLineaProgramatica);
+		return 1;
+    }
 	
 	
+	@GET
+    @Path("/estimacionFlujoCaja/elaborarOrdinarioProgramacion/{flujo}")
+    @Produces("application/json")
+    public Integer elaborarOrdinarioProgramacion(@PathParam("flujo") Integer idLineaProgramatica){
+		System.out.println("[Eliminar Planilla] -->"+idLineaProgramatica);
+		return 1;
+    }
+	
+	@GET
+    @Path("/estimacionFlujoCaja/administrarVersiones/{flujo}")
+    @Produces("application/json")
+    public Integer administrarVersiones(@PathParam("flujo") Integer idLineaProgramatica){
+		System.out.println("[Eliminar Planilla] -->"+idLineaProgramatica);
+		return 1;
+    }
 	
 	
-	
+	@GET
+    @Path("/estimacionFlujoCaja/enviarOrdinarioFONASA/{flujo}")
+    @Produces("application/json")
+    public Integer enviarOrdinarioFONASA(@PathParam("flujo") Integer idLineaProgramatica){
+		System.out.println("[Eliminar Planilla] -->"+idLineaProgramatica);
+		return 1;
+    }
 	
 }
