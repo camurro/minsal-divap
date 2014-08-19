@@ -6,7 +6,7 @@ import minsal.divap.vo.TaskVO;
 public class MatchViewTask {
 
 	enum ViewTask{
-		// Mapero páginas Per Capita
+		// Mapero pÃ¡ginas Per Capita
 		SUBIRDOCUMENTOS("minsal_divap.DistribucionInicialPerCapita.subirdocumentos", "divapProcesoAsignacionPerCapitaCargarValorizacion"),
 		VALIDARRESULTADOSVALORIZACION("minsal_divap.DistribucionInicialPerCapita.validarresultadosvalorizacion", "divapProcesoAsignacionPerCapitaValidarMontosDistribucion"),
 		HACERSEGUIMIENTOOFICIO("minsal_divap.DistribucionInicialPerCapita.hacerseguimientooficiosconsultaregional", "divapProcesoAsignacionPerCapitaSeguimiento"),
@@ -15,18 +15,23 @@ public class MatchViewTask {
 		HACERSEGUIMIENTOTOMARAZON("minsal_divap.DistribucionInicialPerCapita.hacerseguimientotomaderazon", "divapProcesoAsignacionPerCapitaSeguimiento"),
 		SUBIRDOCUMENTOSFINALES("minsal_divap.DistribucionInicialPerCapita.subirdocumentostotalmentetramitados(decretosyresoluciones)", "divapProcesoAsignacionPerCapitaSubirDocumentosTotalmenteTramitados"),
 
-		// Mapeo páginas de Rebaja
+		// Mapeo pÃ¡ginas de Rebaja
 		REBAJASUBIRDOCUMENTOS("minsal.divap.procesos.Rebaja.subirinformaciondecumplimientoporcomuna", "divapProcesoRebajaCargarInformacionCumplimiento"),
 		REBAJAREVISIONMONTOS("minsal.divap.procesos.Rebaja.revisionyvalidaciondelosmontosderebaja","divapProcesoRebajaRevisionValidacionRebaja"),
 		REBAJARESOLUCIONES("minsal.divap.procesos.Rebaja.seguimientoderesoluciones","divapProcesoRebajaSeguimientoTratamientoRevision"),
 		
-		// Mapeo páginas de Reliquidación
+		// Mapeo pÃ¡ginas de ReliquidaciÃ³n
 		RELIQUIDACIONPROGRAMAS("minsal.divap.procesos.Reliquidacion.seleccionarprograma","divapProcesoReliqProgramas"),
 		RELIQUIDACIONARCHIVOS("minsal.divap.procesos.Reliquidacion.descargarysubirplanillacumplimiento","divapProcesoReliqPlanillas"),		
 		RELIQUIDACIONMUNICIPAL("minsal.divap.procesos.Reliquidacion.validacionmontosreliquidacionmunicipal","divapProcesoReliqMunicipal"),
-		RELIQUIDACIONSERVICIO("minsal.divap.procesos.Reliquidacion.validacionmontosreliquidacionservicio","divapProcesoReliqServicio");
+		RELIQUIDACIONSERVICIO("minsal.divap.procesos.Reliquidacion.validacionmontosreliquidacionservicio","divapProcesoReliqServicio"),
 		
-		
+		PRUEBA("minsal_divap.prueba.primeratarea","divapPrueba"),
+		PRUEBA2("minsal_divap.prueba.segundatarea","divapPrueba"),
+		ESTIMACIONFLUJOCAJASELECCIONARLINEAPROGRAMATICA("minsal_divap.EstimacionFlujoCaja.seleccionarlineaprogramatica","divapProcesoProgProgramas"),
+		ESTIMACIONFLUJOCAJAREVISARVALIDARMONITOREO("minsal_divap.EstimacionFlujoCaja.revisaryvalidarmonitoreo","divapProcesoProgMonitoreo"),
+		ESTIMACIONFLUJOCAJAREVISARCONSOLIDACION("minsal_divap.EstimacionFlujoConsolidador.revisarconsolidaciondeestimaciondeflujodecaja","divapProcesoProgConsolidado"),
+		ESTIMACIONFLUJOCAJAHACERSEGUIMIENTO("minsal_divap.EstimacionFlujoConsolidador.hacerseguimientoordinario","divapProcesoProgSeguimiento");
 		private String key;
 		private String view;
 
@@ -49,7 +54,7 @@ public class MatchViewTask {
 					return viewTask;
 				}
 			}
-			throw new IllegalArgumentException("nombre de tarea no válido");
+			throw new IllegalArgumentException("nombre de tarea no vÃ¡lido");
 		}
 	}
 
@@ -67,31 +72,31 @@ public class MatchViewTask {
 
 		String taskName = task.getName().replaceAll(" ", "");
 		String result = process + "." + taskName.toLowerCase();
-		result = result.replaceAll("ñ", "n");
-		result = result.replaceAll("á", "a");
-		result = result.replaceAll("é", "e");
-		result = result.replaceAll("í", "i");
-		result = result.replaceAll("ó", "o");
-		result = result.replaceAll("ú", "u");
+		result = result.replaceAll("Ã±", "n");
+		result = result.replaceAll("Ã¡", "a");
+		result = result.replaceAll("Ã©", "e");
+		result = result.replaceAll("Ã­", "i");
+		result = result.replaceAll("Ã³", "o");
+		result = result.replaceAll("Ãº", "u");
 		result = result.replace("\\u00E1", "a");
 		result = result.replace("\\u00E9", "e");
 		result = result.replace("\\u00ED", "i");
 		result = result.replace("\\u00F3", "o");
 		result = result.replace("\\u00FA", "u");
-		result = result.replaceAll("[àä]","a");
-		result = result.replaceAll("[èë]","e");
-		result = result.replaceAll("[ìï]","i");
-		result = result.replaceAll("[òö]","o");
-		result = result.replaceAll("[ùu]","u");
-		result = result.replaceAll("[ÁÀÄ]","a");
-		result = result.replaceAll("[ÉÈË]","e");
-		result = result.replaceAll("[ÍÌÏ]","i");
-		result = result.replaceAll("[ÓÒÖ]","o");
-		result = result.replaceAll("[ÚÙÜ]","u");
+		result = result.replaceAll("[Ã Ã¤]","a");
+		result = result.replaceAll("[Ã¨Ã«]","e");
+		result = result.replaceAll("[Ã¬Ã¯]","i");
+		result = result.replaceAll("[Ã²Ã¶]","o");
+		result = result.replaceAll("[Ã¹u]","u");
+		result = result.replaceAll("[Ã�Ã€Ã„]","a");
+		result = result.replaceAll("[Ã‰ÃˆÃ‹]","e");
+		result = result.replaceAll("[Ã�ÃŒÃ�]","i");
+		result = result.replaceAll("[Ã“Ã’Ã–]","o");
+		result = result.replaceAll("[ÃšÃ™Ãœ]","u");
 		result = result.replaceAll("&#243;","o");
-		result = result.replaceAll("Ñ","n");
-		result = result.replaceAll("çÇ","c");
-		result = result.replaceAll("['\"~°]", "");
+		result = result.replaceAll("Ã‘","n");
+		result = result.replaceAll("Ã§Ã‡","c");
+		result = result.replaceAll("['\"~Â°]", "");
 		System.out.println("result-->"+result);
 		return ViewTask.getByKey(result).getView();
 	}
