@@ -35,9 +35,9 @@ import cl.minsal.divap.pojo.montosDistribucionPojo;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 import cl.redhat.bandejaTareas.util.JSONHelper;
 
-@Named("procesoEstimacionFlujoCajaController")
+@Named("procesoEstimacionFlujoCajaConsolidadorController")
 @ViewScoped
-public class ProcesoEstimacionFlujoCajaController extends AbstractTaskMBean
+public class ProcesoEstimacionFlujoCajaConsolidadorController extends AbstractTaskMBean
 implements Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject
@@ -98,7 +98,7 @@ implements Serializable {
 	@Override
 	public String iniciarProceso() {
 		String success = "bandejaTareas";
-		Long procId = iniciarProceso(BusinessProcess.ESTIMACIONFLUJOCAJA);
+		Long procId = iniciarProceso(BusinessProcess.ESTIMACIONFLUJOCAJACONSOLIDADOR);
 		System.out.println("procId-->" + procId);
 		if (procId == null) {
 			success = null;

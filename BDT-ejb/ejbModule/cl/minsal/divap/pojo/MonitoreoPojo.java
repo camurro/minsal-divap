@@ -4,6 +4,7 @@ import java.util.Random;
 
 public class MonitoreoPojo {
 	Random rnd = new Random();
+	private long id;
 	private String establecimiento;
 	private String servicio;
 	private String comuna;
@@ -587,6 +588,14 @@ public class MonitoreoPojo {
 	
 	public void setS29Diciembre( long s29Diciembre ) {
 		this.s29Diciembre = s29Diciembre;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 	
 }

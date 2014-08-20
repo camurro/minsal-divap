@@ -114,6 +114,12 @@
 				</p:panel>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />
+					
+					<p:commandButton value="Avanzar" styleClass="x-btn-text" icon="ui-icon-play"
+					action="#{procesoEstimacionFlujoCajaConsolidadorHacerSeguimientoController.continuarProceso}" ajax="false" />
+				
+				
+				
 			</p:panel>
 		</h:form>
 	</ui:define>

@@ -17,9 +17,9 @@ import org.apache.log4j.Logger;
 import cl.minsal.divap.pojo.ProcesosProgramasPojo;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
-@Named("procesoEstimacionFlujoCajaSeleccionarLineaController")
+@Named("procesoEstimacionFlujoCajaConsolidadorVerificarCorreoController")
 @ViewScoped
-public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
+public class ProcesoEstimacionFlujoCajaConsolidadorVerificarCorreoController extends
 		AbstractTaskMBean implements Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject
@@ -56,10 +56,10 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 	}
 
 	// Continua el proceso con el programa seleccionado.
-	public String continuarProceso(Integer id) {
+	public String continuarProceso() {
 
-		setIdLineaProgramatica(id);
-		setTarget("divapProcesoProgMonitoreo");
+		//setIdLineaProgramatica(id);
+		setTarget("bandejaTareas");
 		return super.enviar();
 	}
 	
@@ -89,9 +89,7 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 	@Override
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		System.out.println("createResultData usuario-->"
-				+ getSessionBean().getUsername());
-		parameters.put("idLineaProgramatica_", 1);
+		
 		return parameters;
 	}
 
