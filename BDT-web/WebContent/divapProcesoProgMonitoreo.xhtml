@@ -49,7 +49,7 @@
 											<h:panelGrid>
 
 												<p:dataTable resizableColumns="true"
-													value="#{procesoProgramacionController.listadoServicios}"
+													value="#{procesoProgramacionController.estimacionFlujoMonitoreoGlobalPojo.estimacionFlujoMonitoreoPojo}"
 													liveResize="true" var="_data" rows="10" paginator="false"
 													paginatorPosition="bottom"
 													emptyMessage="No se encontro información."
@@ -128,7 +128,7 @@
 													</p:column>
 													<p:column>
 														<h:outputText class="textoAjustado textoPequenio centrado"
-															value="#{_data.remesaPor}">
+															value="#{_data.remesaPorcentaje}">
 															<f:convertNumber type="percent" />
 														</h:outputText>
 													</p:column>
@@ -142,12 +142,12 @@
 													</p:column>
 													<p:column>
 														<h:outputText class="textoAjustado textoPequenio centrado"
-															value="#{_data.convenioPor}">
+															value="#{_data.convenioPorcentaje}">
 															<f:convertNumber type="percent" />
 														</h:outputText>
 													</p:column>
 													<p:column>
-														<h:outputText value="#{_data.s24Julio}"
+														<h:outputText value="#{_data.julio}"
 															styleClass="textoPequenio textoAjustado">
 															<f:convertNumber type="currency" maxFractionDigits="0"
 																locale="es_CL" currencySymbol="$" />
@@ -184,7 +184,7 @@
 															<f:convertNumber maxFractionDigits="0" groupingUsed="true" />
 														</p:inputText>
 													</p:column> -->
-
+													
 													<c:forEach items="#{procesoProgramacionController.columns}"
 														var="dynamicColumn">
 														<p:column>
@@ -212,7 +212,7 @@
 
 
 													<p:column style="background-color:#{_data.color};">
-														<h:outputText value="#{_data.s24Total}"
+														<h:outputText value="#{_data.total}"
 															styleClass="textoPequenio textoAjustado">
 															<f:convertNumber type="currency" maxFractionDigits="0"
 																locale="es_CL" currencySymbol="$" />
@@ -224,7 +224,7 @@
 															<p:column />
 															<p:column>
 																<f:facet name="footer">
-																	<h:outputText value="#{466124430*1.05*5}"
+																	<h:outputText value="#{procesoProgramacionController.estimacionFlujoMonitoreoGlobalPojo.totalMarcoMonto}"
 																		styleClass="textoAjustado textoPequenio centrado">
 																		<f:convertNumber type="currency" maxFractionDigits="0"
 																			locale="es_CL" currencySymbol="$" />
@@ -234,7 +234,7 @@
 
 															<p:column>
 																<f:facet name="footer">
-																	<h:outputText value="#{466124430*1.03*5}"
+																	<h:outputText value="#{procesoProgramacionController.estimacionFlujoMonitoreoGlobalPojo.totalTransferenciaMonto}"
 																		styleClass="textoAjustado textoPequenio centrado">
 																		<f:convertNumber type="currency" maxFractionDigits="0"
 																			locale="es_CL" currencySymbol="$" />
@@ -244,7 +244,7 @@
 															<p:column></p:column>
 															<p:column>
 																<f:facet name="footer">
-																	<h:outputText value="#{466124430*12*5}"
+																	<h:outputText value="#{procesoProgramacionController.estimacionFlujoMonitoreoGlobalPojo.totalConvenioMonto}"
 																		styleClass="textoAjustado textoPequenio centrado">
 																		<f:convertNumber type="currency" maxFractionDigits="0"
 																			locale="es_CL" currencySymbol="$" />
@@ -254,14 +254,38 @@
 															<p:column></p:column>
 															<p:column>
 																<f:facet name="footer">
-																	<h:outputText value="#{466124430}"
+																	<h:outputText value="#{procesoProgramacionController.estimacionFlujoMonitoreoGlobalPojo.julio}"
 																		styleClass="textoAjustado textoPequenio centrado">
 																		<f:convertNumber type="currency" maxFractionDigits="0"
 																			locale="es_CL" currencySymbol="$" />
 																	</h:outputText>
 																</f:facet>
 															</p:column>
-															<p:column>
+															
+															<ui:param name="dato" value="#{procesoProgramacionController.estimacionFlujoMonitoreoGlobalPojo}" />
+													<c:forEach items="#{procesoProgramacionController.columns}"
+														var="dynamicColumn">
+														
+														
+														<p:column>
+																<f:facet name="footer">
+																	<h:outputText value="#{dato[dynamicColumn.nombreColumna]}"
+																		styleClass="textoAjustado textoPequenio centrado">
+																		<f:convertNumber type="currency" maxFractionDigits="0"
+																			locale="es_CL" currencySymbol="$" />
+																	</h:outputText>
+																</f:facet>
+															</p:column>
+															
+															
+															
+												
+														
+													
+													</c:forEach>
+													
+													
+															<!-- <p:column>
 																<f:facet name="footer">
 																	<h:outputText value="#{283156232}"
 																		styleClass="textoAjustado textoPequenio centrado">
@@ -305,11 +329,11 @@
 																			locale="es_CL" currencySymbol="$" />
 																	</h:outputText>
 																</f:facet>
-															</p:column>
+															</p:column> -->
 
 															<p:column>
 																<f:facet name="footer">
-																	<h:outputText value="#{466124430*12*5*0.95}"
+																	<h:outputText value="#{procesoProgramacionController.estimacionFlujoMonitoreoGlobalPojo.total}"
 																		styleClass="textoAjustado textoPequenio centrado">
 																		<f:convertNumber type="currency" maxFractionDigits="0"
 																			locale="es_CL" currencySymbol="$" />
