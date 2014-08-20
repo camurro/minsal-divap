@@ -15,7 +15,8 @@ import java.util.List;
 @NamedQueries({
 	@NamedQuery(name="Programa.findAll", query="SELECT p FROM Programa p"),
 	@NamedQuery(name="Programa.findByUser", query="SELECT p FROM Programa p where p.usuario.username=:usuario"),
-	@NamedQuery(name="Programa.findComponentesByPrograma", query="SELECT p FROM Programa p where p.id=:id")})
+	@NamedQuery(name="Programa.findComponentesByPrograma", query="SELECT p FROM Programa p where p.id=:id"),
+	@NamedQuery(name="Programa.findProgramaPorID", query="SELECT p FROM Programa p where p.id=:id")})
 public class Programa implements Serializable {
 	private static final long serialVersionUID = 1L;
 

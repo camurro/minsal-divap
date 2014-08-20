@@ -38,5 +38,15 @@ public class ProgramasDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public  Programa getProgramaPorID(int programaId){
+		try {
+			TypedQuery<Programa> query = this.em.createNamedQuery("Programa.findProgramaPorID", Programa.class);
+			query.setParameter("id", programaId);
+			return query.getSingleResult(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }

@@ -50,5 +50,13 @@ public class ProgramasService {
 		}
 		return componentesPrograma;
 	}
+	
+	
+
+	public Programa getProgramaPorID(int programaId) {
+		Programa programa = this.programasDAO.getProgramaPorID(programaId);
+		
+		return programa;
+	}
 
 }
