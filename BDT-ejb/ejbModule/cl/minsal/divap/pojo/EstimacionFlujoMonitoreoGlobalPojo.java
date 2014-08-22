@@ -2,9 +2,18 @@ package cl.minsal.divap.pojo;
 import java.util.List;
 
 
-public class EstimacionFlujoMonitoreoGlobalPojo {
+public class EstimacionFlujoMonitoreoGlobalPojo implements Cloneable {
 
-	
+	 @Override 
+	 public EstimacionFlujoMonitoreoGlobalPojo clone() {
+	        try {
+	            final EstimacionFlujoMonitoreoGlobalPojo result = (EstimacionFlujoMonitoreoGlobalPojo) super.clone();
+	            // copy fields that need to be copied here!
+	            return result;
+	        } catch (final CloneNotSupportedException ex) {
+	            throw new AssertionError();
+	        }
+	 }
 	private long totalMarcoMonto;
 	private long totalTransferenciaMonto;
 	

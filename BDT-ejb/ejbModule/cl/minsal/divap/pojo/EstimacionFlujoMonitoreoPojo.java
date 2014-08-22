@@ -332,7 +332,7 @@ public class EstimacionFlujoMonitoreoPojo {
 
 
 	public long getTotal() {
-		return enero+febrero+marzo+abril+mayo+junio+julio+agosto+septiembre+octubre+diciembre;
+		return enero+febrero+marzo+abril+mayo+junio+julio+agosto+septiembre+octubre+noviembre+diciembre;
 	}
 
 
@@ -344,6 +344,10 @@ public class EstimacionFlujoMonitoreoPojo {
 
 
 	public String getColor() {
+		if (marcoMonto != getTotal())
+			color = "#FF0000";
+		else
+			color = "#3ADF00";
 		return color;
 	}
 
