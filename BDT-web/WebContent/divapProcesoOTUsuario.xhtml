@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml"
-                xmlns:c="http://java.sun.com/jsp/jstl/core">
+                xmlns:c="http://java.sun.com/jsp/jstl/core" 
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                 >
 
 	<ui:define name="content">
+	
+	<ui:param name="datoMunicipal" value="#{procesoOTRevisarAntecedentesController.oTRevisarAntecedentesGlobalVOMunicipal}" />
+	<ui:param name="datoSubtitulo21" value="#{procesoOTRevisarAntecedentesController.oTRevisarAntecedentesGlobalVOSubtitulo21}" />
+	<ui:param name="datoSubtitulo22" value="#{procesoOTRevisarAntecedentesController.oTRevisarAntecedentesGlobalVOSubtitulo22}" />
+	<ui:param name="datoSubtitulo29" value="#{procesoOTRevisarAntecedentesController.oTRevisarAntecedentesGlobalVOSubtitulo29}" />
+	
 		<h:form enctype="multipart/form-data" id="form"   >
+
 	<p:growl id="msgs" showDetail="true"/>
 			<p:panel styleClass="contentPanel">
 				<h1>
@@ -16,20 +25,29 @@
 						pulvinar elit at justo pharetra, vitae ultricies est dignissim, justo nisi porttitor enim, eget ullamcorper felis augue eget lacus.</p>
 					<br />
 
+					<h:form id="formIngreso" > </h:form>
 					<p:tabView>
 						<p:tab title="Subtítulo 21">
+							<h:form id="formSubtitulo21">
 							
-							<p:dataTable resizableColumns="true" id="datos" value="#{procesoOTRevisarAntecedentesController.listadoServicios}" liveResize="true" var="_data"
-								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" editable="true"  editMode="cell" >
-  <p:ajax event="cellEdit" listener="#{procesoOTRevisarAntecedentesController.onCellEdit}" update=":form:msgs" />
+						
+						
+						<h:panelGrid>
+							
+						 <p:dataTable resizableColumns="true" id="datosSubtitulo21" value="#{datoSubtitulo21.listadoServicios}" liveResize="true" var="_data" editable="true"  editMode="cell"
+								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable"   rowKey="#{_data.id}"  style="margin-bottom:0" selection="#{procesoOTRevisarAntecedentesController.seleccionadosSubtitulo21}"  > 
+  			 <p:ajax event="cellEdit" listener="#{procesoOTRevisarAntecedentesController.onCellEditSubtitulo21}" update=":#{p:component('formSubtitulo21')}"/>
+  			  <p:ajax event="rowSelectCheckbox" update=":#{p:component('formSubtitulo21')}" />
+   				<p:ajax event="rowUnselectCheckbox" update=":#{p:component('formSubtitulo21')}" />
 								<p:columnGroup type="header">
 									<p:row>
 										<p:column rowspan="3" headerText="Servicio" />
-										<p:column colspan="12"
+										<p:column colspan="#{(fn:length(procesoOTRevisarAntecedentesController.columns) *3 )+6}"
 											headerText="Subtítulo 21 (APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES)" />
 										
 										<p:column rowspan="2" colspan="2" headerText="Diferencia (Marco - Total)" />
-										<p:column rowspan="3" headerText="Revisado" />
+										 <p:column rowspan="3" headerText="Revisado" /> 
+									
 									</p:row>
 									<p:row>
 			
@@ -37,8 +55,14 @@
 										<p:column rowspan="2" headerText="Marco Presupuestario" />
 										<p:column colspan="2" headerText="Transferencia Acumulada a la Fecha" width="200" />
 										<p:column colspan="2" headerText="Convenios Recibidos" />
-										<p:column colspan="3" headerText="Julio" />
-										<p:column colspan="3" headerText="Agosto" />
+										
+										<!--DEBE SER DINAMICA  -->
+										<c:forEach
+											items="#{procesoOTRevisarAntecedentesController.columns}"
+											var="dynamicColumn">
+											<p:column colspan="3" headerText="#{dynamicColumn.header}" />
+										</c:forEach>
+										
 									</p:row>
 									<p:row>
 										<p:column headerText="Monto" />
@@ -47,39 +71,33 @@
 										<p:column headerText="Monto" />
 										<p:column headerText="%" />
 
-										<p:column headerText="Remesa 09" />
-										<p:column headerText="Remesa 24" />
-										<p:column headerText="Remesa 28" />
-										<p:column headerText="Remesa 09" />
-										<p:column headerText="Remesa 24" />
-										<p:column headerText="Remesa 28" />
+										<!--DEBE SER DINAMICA  -->
+										<c:forEach
+											items="#{procesoOTRevisarAntecedentesController.columns}"
+												var="dynamicColumn">
+												
+													<p:column headerText="Remesa 09" />
+													<p:column headerText="Remesa 24" />
+													<p:column headerText="Remesa 28" />
+										</c:forEach>
 										
 										<p:column headerText="Monto" />
 										<p:column headerText="%" />
 									</p:row>
 
 								</p:columnGroup>
-
 								<p:column>
 									<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
 								</p:column>
 								<p:column>
 									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
 								</p:column>
-								
-								 
- 
-							       <p:column headerText="marcoMonto">
-							              <p:cellEditor>
-							                  <f:facet name="output"><h:outputText value="#{_data.marcoMonto}" /></f:facet>
-							                  <f:facet name="input"><p:inputText id="modelInput" value="#{_data.marcoMonto}" style="width:96%"/></f:facet>
-							              </p:cellEditor>
-							          </p:column>
-		<!-- 					<p:column>
+			
+								<p:column>
 									<h:outputText value="#{_data.marcoMonto}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
-								</p:column> -->
+								</p:column>
 								
 								<p:column>
 								<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
@@ -94,7 +112,7 @@
 									</h:outputText>
 								</p:column>
 								<p:column>
-								<h:outputText value="#{_data.s24Julio}" styleClass="textoPequenio textoAjustado">
+								<h:outputText value="#{_data.junioRemesa28}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 									
@@ -106,39 +124,382 @@
 									</h:outputText>
 								</p:column>	
 
+						<!--COLUMNAS EDITABLES REMESA-->
+						<c:forEach
+											items="#{procesoOTRevisarAntecedentesController.columns}"
+												var="dynamicColumn">
+												
+						
+					<p:column>
+					<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual le 9)}"><!-- <=  -->
+					     <p:cellEditor>
+									<f:facet name="output">
+										<h:outputText
+											value="#{_data[dynamicColumn.nombreColumna.concat('Remesa09')]}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText
+											value="#{_data[dynamicColumn.nombreColumna.concat('Remesa09')]}"
+											style="width:100%"
+											label="#{dynamicColumn.nombreColumna}" />
+									</f:facet>
+								</p:cellEditor>
+					</c:if>
+					<c:otherwise>
+					   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa09')]}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+					</c:otherwise>
+
+					</p:column>		
+					<p:column>
+					<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual gt 9)}"><!-- >  -->
+							<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual lt 28)}"><!-- <  -->
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText
+										value="#{_data[dynamicColumn.nombreColumna.concat('Remesa24')]}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText
+										value="#{_data[dynamicColumn.nombreColumna.concat('Remesa24')]}"
+										style="width:100%"
+										label="#{dynamicColumn.nombreColumna}" />
+
+
+								</f:facet>
+							</p:cellEditor>
+							</c:if>
+							
+							</c:if>
+							<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual ge 28)}"><!-- >= -->
+							<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual le 9)}"><!-- <=  -->
+							   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa24')]}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+							</h:outputText>
+							</c:if>
+							</c:if>
+							
+							
+					</p:column>			
+					<p:column>
+					<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual ge 28)}"><!-- >=  -->
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText
+										value="#{_data[dynamicColumn.nombreColumna.concat('Remesa28')]}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText
+										value="#{_data[dynamicColumn.nombreColumna.concat('Remesa28')]}"
+										style="width:100%"
+										label="#{dynamicColumn.nombreColumna}" />
+
+
+								</f:facet>
+							</p:cellEditor>
+							</c:if>
+					<c:otherwise>
+					   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa28')]}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+					</h:outputText>
+					</c:otherwise>
+					</p:column>	
+												
+						</c:forEach>
+						
+					<!--FIN COLUMNAS DINAMICAS REMESA-->
+
 								<p:column>
-									<h:outputText value="#{_data.s24Agosto}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.diciembreRemesa09}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
-
+								
 								<p:column>
-									$<h:inputText value="#{_data.s24Septiembre}">
-											
-									</h:inputText>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPor}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
 								</p:column>
-
-								<p:column>
-								$<h:inputText value="#{_data.s24Octubre}"/>
-								</p:column>
-
-								<p:column>
-								$<h:inputText value="#{_data.s24Noviembre}"/>
+									<!-- COLUMNA CHECKBOX 		 -->						
+								   <p:column selectionMode="multiple" style="width:16px;text-align:center"  />
+								<p:columnGroup type="footer">
+									<p:row>
+										<p:column colspan="2">
+											<f:facet name="footer">
+												TOTAL
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												
+											</f:facet>
+										</p:column>
+										<!-- TOTAL REMESA MESES -->
+										
+										<c:forEach
+											items="#{procesoOTRevisarAntecedentesController.columns}"
+												var="dynamicColumn">
+										<p:column>
+										<f:facet name="footer">
+												<h:outputText value="#{datoSubtitulo21[dynamicColumn.nombreColumna.concat('Remesa09')]}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>	
+										<p:column>	
+											<f:facet name="footer">
+												<h:outputText value="#{datoSubtitulo21[dynamicColumn.nombreColumna.concat('Remesa24')]}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>	
+										<p:column>	
+										<f:facet name="footer">
+												<h:outputText value="#{datoSubtitulo21[dynamicColumn.nombreColumna.concat('Remesa28')]}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>		
+										</c:forEach>
+												
+												
 									
-								</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												
+											</f:facet>
+										</p:column>
+									<p:column>
+											<f:facet name="footer">
+												
+											</f:facet>
+										</p:column>
+									</p:row>
+								</p:columnGroup>
+
+							</p:dataTable>
+
+								</h:panelGrid>
+										</h:form>
+						</p:tab>
+						<p:tab title="Subtítulo 22">
+						
+						<h:form id="formSubtitulo22">
+						<h:panelGrid>
+							
+							<p:dataTable resizableColumns="true" id="datosSubtitulo22" value="#{datoSubtitulo22.listadoServicios}" liveResize="true" var="_data" rowKey="#{_data.id}" selection="#{procesoOTRevisarAntecedentesController.seleccionadosSubtitulo22}"  style="margin-bottom:0"
+								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" editable="true"  editMode="cell" >
+  						<p:ajax event="cellEdit" listener="#{procesoOTRevisarAntecedentesController.onCellEditSubtitulo22}" update=":#{p:component('formSubtitulo22')}" />				
+					    <p:ajax event="rowSelectCheckbox" update=":#{p:component('formSubtitulo22')}" />
+   					    <p:ajax event="rowUnselectCheckbox" update=":#{p:component('formSubtitulo22')}" />
+								<p:columnGroup type="header">
+									<p:row>
+									 
+										<p:column rowspan="3" headerText="Servicio" />
+										<p:column colspan="#{(fn:length(procesoOTRevisarAntecedentesController.columns) *3 )+6}"
+											headerText="Subtítulo 22 (APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES)" />
+										
+										<p:column rowspan="2" colspan="2" headerText="Diferencia (Marco - Total)" />
+										<p:column rowspan="3" headerText="Revisado" />
+									</p:row>
+									<p:row>
+			
+										<p:column rowspan="2" headerText="Establecimiento" />
+										<p:column rowspan="2" headerText="Marco Presupuestario" />
+										<p:column colspan="2" headerText="Transferencia Acumulada a la Fecha" width="200" />
+										<p:column colspan="2" headerText="Convenios Recibidos" />
+										
+										<!--DEBE SER DINAMICA  -->
+										<c:forEach
+											items="#{procesoOTRevisarAntecedentesController.columns}"
+											var="dynamicColumn">
+											<p:column colspan="3" headerText="#{dynamicColumn.header}" />
+										</c:forEach>
+										
+									</p:row>
+									<p:row>
+										<p:column headerText="Monto" />
+										<p:column headerText="%" />
+
+										<p:column headerText="Monto" />
+										<p:column headerText="%" />
+
+										<!--DEBE SER DINAMICA  -->
+										<c:forEach
+											items="#{procesoOTRevisarAntecedentesController.columns}"
+												var="dynamicColumn">
+												
+													<p:column headerText="Remesa 09" />
+													<p:column headerText="Remesa 24" />
+													<p:column headerText="Remesa 28" />
+										</c:forEach>
+										
+										<p:column headerText="Monto" />
+										<p:column headerText="%" />
+									</p:row>
+
+								</p:columnGroup>
 
 								<p:column>
-								$<h:inputText value="#{_data.s24Diciembre}"/>
-									
+									<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
+								</p:column>
+			
+								<p:column>
+									<h:outputText value="#{_data.marcoMonto}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
 								</p:column>
 								
 								<p:column>
-								$<h:inputText value="#{_data.s24Diciembre}"/>
+								<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
 									
 								</p:column>
-								
+									
 								<p:column>
-									<h:outputText value="#{_data.s24Diciembre}" styleClass="textoPequenio textoAjustado">
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.remesaPor}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+								<h:outputText value="#{_data.junioRemesa28}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+									
+								</p:column>
+
+								<p:column>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPor}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>	
+
+						<!--COLUMNAS EDITABLES REMESA-->
+						<c:forEach
+											items="#{procesoOTRevisarAntecedentesController.columns}"
+												var="dynamicColumn">
+												
+						
+					<p:column>
+					<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual le 9)}"><!-- <=  -->
+					     <p:cellEditor>
+									<f:facet name="output">
+										<h:outputText
+											value="#{_data[dynamicColumn.nombreColumna.concat('Remesa09')]}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText
+											value="#{_data[dynamicColumn.nombreColumna.concat('Remesa09')]}"
+											style="width:100%"
+											label="#{dynamicColumn.nombreColumna}" />
+									</f:facet>
+								</p:cellEditor>
+					</c:if>
+					<c:otherwise>
+					   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa09')]}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+					</c:otherwise>
+
+					</p:column>		
+					<p:column>
+					<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual gt 9)}"><!-- >  -->
+							<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual lt 28)}"><!-- <  -->
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText
+										value="#{_data[dynamicColumn.nombreColumna.concat('Remesa24')]}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText
+										value="#{_data[dynamicColumn.nombreColumna.concat('Remesa24')]}"
+										style="width:100%"
+										label="#{dynamicColumn.nombreColumna}" />
+
+
+								</f:facet>
+							</p:cellEditor>
+							</c:if>
+							
+							</c:if>
+							<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual ge 28)}"><!-- >= -->
+							<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual le 9)}"><!-- <=  -->
+							   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa24')]}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+							</h:outputText>
+							</c:if>
+							</c:if>
+							
+							
+					</p:column>			
+					<p:column>
+					<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual ge 28)}"><!-- >=  -->
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText
+										value="#{_data[dynamicColumn.nombreColumna.concat('Remesa28')]}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText
+										value="#{_data[dynamicColumn.nombreColumna.concat('Remesa28')]}"
+										style="width:100%"
+										label="#{dynamicColumn.nombreColumna}" />
+
+
+								</f:facet>
+							</p:cellEditor>
+							</c:if>
+					<c:otherwise>
+					   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa28')]}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+					</h:outputText>
+					</c:otherwise>
+					</p:column>	
+												
+						</c:forEach>
+						
+					<!--FIN COLUMNAS DINAMICAS REMESA-->
+
+								<p:column>
+									<h:outputText value="#{_data.diciembreRemesa09}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
@@ -149,9 +510,296 @@
 									</h:outputText>
 								</p:column>
 								
+							<!-- 	COLUMNA CHECKBOX  -->
+								<p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+								<p:columnGroup type="footer">
+									<p:row>
+										<p:column colspan="2">
+											<f:facet name="footer">
+												TOTAL
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												
+											</f:facet>
+										</p:column>
+										<!-- TOTAL REMESA MESES -->
+										
+										<c:forEach
+											items="#{procesoOTRevisarAntecedentesController.columns}"
+												var="dynamicColumn">
+										<p:column>
+										<f:facet name="footer">
+												<h:outputText value="#{datoSubtitulo22[dynamicColumn.nombreColumna.concat('Remesa09')]}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>	
+										<p:column>	
+											<f:facet name="footer">
+												<h:outputText value="#{datoSubtitulo22[dynamicColumn.nombreColumna.concat('Remesa24')]}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>	
+										<p:column>	
+										<f:facet name="footer">
+												<h:outputText value="#{datoSubtitulo22[dynamicColumn.nombreColumna.concat('Remesa28')]}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>		
+										</c:forEach>
+												
+												
+									
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												
+											</f:facet>
+										</p:column>
+									<p:column>
+											<f:facet name="footer">
+												
+											</f:facet>
+										</p:column>
+									</p:row>
+								</p:columnGroup>
+
+							</p:dataTable>
+								</h:panelGrid>
+										</h:form>
+						
+						</p:tab>
+						<p:tab title="Subtítulo 29">
+						
+						<h:form id="formSubtitulo29">
+						<h:panelGrid>
+							
+							<p:dataTable resizableColumns="true" id="datosSubtitulo29" value="#{datoSubtitulo29.listadoServicios}" liveResize="true" var="_data"
+								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" editable="true"  editMode="cell"  rowKey="#{_data.id}"  style="margin-bottom:0" selection="#{procesoOTRevisarAntecedentesController.seleccionadosSubtitulo29}"  >
+  						<p:ajax event="cellEdit" listener="#{procesoOTRevisarAntecedentesController.onCellEditSubtitulo29}" update=":#{p:component('formSubtitulo29')}" />
+  						  <p:ajax event="rowSelectCheckbox" update=":#{p:component('formSubtitulo29')}" />
+   						<p:ajax event="rowUnselectCheckbox" update=":#{p:component('formSubtitulo29')}" />
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column rowspan="3" headerText="Servicio" />
+										<p:column colspan="#{(fn:length(procesoOTRevisarAntecedentesController.columns) *3 )+6}"
+											headerText="Subtítulo 29 (APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES)" />
+										
+										<p:column rowspan="2" colspan="2" headerText="Diferencia (Marco - Total)" />
+										<p:column rowspan="3" headerText="Revisado" />
+									</p:row>
+									<p:row>
+			
+										<p:column rowspan="2" headerText="Establecimiento" />
+										<p:column rowspan="2" headerText="Marco Presupuestario" />
+										<p:column colspan="2" headerText="Transferencia Acumulada a la Fecha" width="200" />
+										<p:column colspan="2" headerText="Convenios Recibidos" />
+										
+										<!--DEBE SER DINAMICA  -->
+										<c:forEach
+											items="#{procesoOTRevisarAntecedentesController.columns}"
+											var="dynamicColumn">
+											<p:column colspan="3" headerText="#{dynamicColumn.header}" />
+										</c:forEach>
+										
+									</p:row>
+									<p:row>
+										<p:column headerText="Monto" />
+										<p:column headerText="%" />
+
+										<p:column headerText="Monto" />
+										<p:column headerText="%" />
+
+										<!--DEBE SER DINAMICA  -->
+										<c:forEach
+											items="#{procesoOTRevisarAntecedentesController.columns}"
+												var="dynamicColumn">
+												
+													<p:column headerText="Remesa 09" />
+													<p:column headerText="Remesa 24" />
+													<p:column headerText="Remesa 28" />
+										</c:forEach>
+										
+										<p:column headerText="Monto" />
+										<p:column headerText="%" />
+									</p:row>
+
+								</p:columnGroup>
+
 								<p:column>
-									<h:selectBooleanCheckbox value="false" />
+									<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
 								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
+								</p:column>
+			
+								<p:column>
+									<h:outputText value="#{_data.marcoMonto}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+								
+								<p:column>
+								<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+									
+								</p:column>
+									
+								<p:column>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.remesaPor}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+								<h:outputText value="#{_data.junioRemesa28}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+									
+								</p:column>
+
+								<p:column>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPor}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>	
+
+						<!--COLUMNAS EDITABLES REMESA-->
+						<c:forEach
+											items="#{procesoOTRevisarAntecedentesController.columns}"
+												var="dynamicColumn">
+												
+						
+					<p:column>
+					<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual le 9)}"><!-- <=  -->
+					     <p:cellEditor>
+									<f:facet name="output">
+										<h:outputText
+											value="#{_data[dynamicColumn.nombreColumna.concat('Remesa09')]}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText
+											value="#{_data[dynamicColumn.nombreColumna.concat('Remesa09')]}"
+											style="width:100%"
+											label="#{dynamicColumn.nombreColumna}" />
+									</f:facet>
+								</p:cellEditor>
+					</c:if>
+					<c:otherwise>
+					   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa09')]}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+					</c:otherwise>
+
+					</p:column>		
+					<p:column>
+					<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual gt 9)}"><!-- >  -->
+							<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual lt 28)}"><!-- <  -->
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText
+										value="#{_data[dynamicColumn.nombreColumna.concat('Remesa24')]}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText
+										value="#{_data[dynamicColumn.nombreColumna.concat('Remesa24')]}"
+										style="width:100%"
+										label="#{dynamicColumn.nombreColumna}" />
+
+
+								</f:facet>
+							</p:cellEditor>
+							</c:if>
+							
+							</c:if>
+							<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual ge 28)}"><!-- >= -->
+							<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual le 9)}"><!-- <=  -->
+							   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa24')]}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+							</h:outputText>
+							</c:if>
+							</c:if>
+							
+							
+					</p:column>			
+					<p:column>
+					<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual ge 28)}"><!-- >=  -->
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText
+										value="#{_data[dynamicColumn.nombreColumna.concat('Remesa28')]}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText
+										value="#{_data[dynamicColumn.nombreColumna.concat('Remesa28')]}"
+										style="width:100%"
+										label="#{dynamicColumn.nombreColumna}" />
+
+
+								</f:facet>
+							</p:cellEditor>
+							</c:if>
+					<c:otherwise>
+					   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa28')]}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+					</h:outputText>
+					</c:otherwise>
+					</p:column>	
+												
+						</c:forEach>
+						
+					<!--FIN COLUMNAS DINAMICAS REMESA-->
+
+								<p:column>
+									<h:outputText value="#{_data.diciembreRemesa09}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+								
+								<p:column>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPor}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>
+								
+									<!--COLUMNA CHECKBOX  -->
+							   <p:column selectionMode="multiple" style="width:16px;text-align:center"  />
 								
 								
 								<p:columnGroup type="footer">
@@ -192,48 +840,36 @@
 												
 											</f:facet>
 										</p:column>
+										<!-- TOTAL REMESA MESES -->
+										
+										<c:forEach
+											items="#{procesoOTRevisarAntecedentesController.columns}"
+												var="dynamicColumn">
 										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+										<f:facet name="footer">
+												<h:outputText value="#{datoSubtitulo29[dynamicColumn.nombreColumna.concat('Remesa09')]}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
-										</p:column>
-										<p:column>
+										</p:column>	
+										<p:column>	
 											<f:facet name="footer">
-												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{datoSubtitulo29[dynamicColumn.nombreColumna.concat('Remesa24')]}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
-										</p:column>
-										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+										</p:column>	
+										<p:column>	
+										<f:facet name="footer">
+												<h:outputText value="#{datoSubtitulo29[dynamicColumn.nombreColumna.concat('Remesa28')]}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
-										</p:column>
-										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</f:facet>
-										</p:column>
-										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</f:facet>
-										</p:column>
-										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</f:facet>
-										</p:column>
+										</p:column>		
+										</c:forEach>
+												
+												
+									
 										<p:column>
 											<f:facet name="footer">
 												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
@@ -255,18 +891,23 @@
 								</p:columnGroup>
 
 							</p:dataTable>
+								</h:panelGrid>
+										</h:form>
+						
 						</p:tab>
-						<p:tab title="Subtítulo 22"></p:tab>
-						<p:tab title="Subtítulo 29"></p:tab>
 						<p:tab title="Per Capita"></p:tab>
 						<p:tab title="Ref. Municipal">
-						<p:dataTable resizableColumns="true" value="#{procesoOTRevisarAntecedentesController.listadoServicios}" liveResize="true" var="_data"
-								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
-
+							<h:form id="formMunicipal">
+							<h:panelGrid>
+						<p:dataTable resizableColumns="true" value="#{datoMunicipal.listadoServicios}" liveResize="true" var="_data"
+								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable"  editable="true"  editMode="cell"  rowKey="#{_data.id}"  style="margin-bottom:0" selection="#{procesoOTRevisarAntecedentesController.seleccionadosMunicipal}"  >
+ 								<p:ajax event="cellEdit" listener="#{procesoOTRevisarAntecedentesController.onCellEditMunicipal}" update=":#{p:component('formMunicipal')}" />
+ 								  <p:ajax event="rowSelectCheckbox" update=":#{p:component('formMunicipal')}" />
+   								<p:ajax event="rowUnselectCheckbox" update=":#{p:component('formMunicipal')}" />
 								<p:columnGroup type="header">
 									<p:row>
 										<p:column rowspan="3" headerText="Servicio" />
-										<p:column colspan="12"
+										<p:column colspan="#{(fn:length(procesoOTRevisarAntecedentesController.columns) *3 )+6}"
 											headerText="Subtítulo 21 (APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES)" />
 										
 										<p:column rowspan="2" colspan="2" headerText="Diferencia (Marco - Total)" />
@@ -277,8 +918,13 @@
 										<p:column rowspan="2" headerText="Marco Presupuestario" />
 										<p:column colspan="2" headerText="Transferencia Acumulada a la Fecha" width="200" />
 										<p:column colspan="2" headerText="Convenios Recibidos" />
-										<p:column colspan="3" headerText="Julio" />
-										<p:column colspan="3" headerText="Agosto" />
+										<!--DEBE SER DINAMICA  -->
+										<c:forEach
+											items="#{procesoOTRevisarAntecedentesController.columns}"
+											var="dynamicColumn">
+											<p:column colspan="3" headerText="#{dynamicColumn.header}" />
+										</c:forEach>
+					
 									</p:row>
 									<p:row>
 										<p:column headerText="Monto" />
@@ -287,12 +933,16 @@
 										<p:column headerText="Monto" />
 										<p:column headerText="%" />
 
-										<p:column headerText="Remesa 09" />
-										<p:column headerText="Remesa 24" />
-										<p:column headerText="Remesa 28" />
-										<p:column headerText="Remesa 09" />
-										<p:column headerText="Remesa 24" />
-										<p:column headerText="Remesa 28" />
+										<!--DEBE SER DINAMICA  -->
+										<c:forEach
+											items="#{procesoOTRevisarAntecedentesController.columns}"
+												var="dynamicColumn">
+												
+													<p:column headerText="Remesa 09" />
+													<p:column headerText="Remesa 24" />
+													<p:column headerText="Remesa 28" />
+										</c:forEach>
+										
 										
 										<p:column headerText="Monto" />
 										<p:column headerText="%" />
@@ -325,7 +975,7 @@
 									</h:outputText>
 								</p:column>
 								<p:column>
-								<h:outputText value="#{_data.s24Julio}" styleClass="textoPequenio textoAjustado">
+								<h:outputText value="#{_data.julioRemesa09}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 									
@@ -337,39 +987,94 @@
 									</h:outputText>
 								</p:column>	
 
-								<p:column>
-									<h:outputText value="#{_data.s24Agosto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-									</h:outputText>
-								</p:column>
-
-								<p:column>
-									$<h:inputText value="#{_data.s24Septiembre}">
-											
-									</h:inputText>
-								</p:column>
-
-								<p:column>
-								$<h:inputText value="#{_data.s24Octubre}"/>
-								</p:column>
-
-								<p:column>
-								$<h:inputText value="#{_data.s24Noviembre}"/>
+								<!--COLUMNAS EDITABLES REMESA-->
+									<c:forEach
+										items="#{procesoOTRevisarAntecedentesController.columns}"
+											var="dynamicColumn">
+															
 									
-								</p:column>
-
 								<p:column>
-								$<h:inputText value="#{_data.s24Diciembre}"/>
-									
-								</p:column>
+								<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual le 9)}"><!-- <=  -->
+								     <p:cellEditor>
+												<f:facet name="output">
+													<h:outputText
+														value="#{_data[dynamicColumn.nombreColumna.concat('Remesa09')]}" />
+												</f:facet>
+												<f:facet name="input">
+													<p:inputText
+														value="#{_data[dynamicColumn.nombreColumna.concat('Remesa09')]}"
+														style="width:100%"
+														label="#{dynamicColumn.nombreColumna}" />
+												</f:facet>
+											</p:cellEditor>
+								</c:if>
+								<c:otherwise>
+								   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa09')]}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+								</c:otherwise>
+			
+								</p:column>		
+								<p:column>
+								<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual gt 9)}"><!-- >  -->
+										<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual lt 28)}"><!-- <  -->
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText
+													value="#{_data[dynamicColumn.nombreColumna.concat('Remesa24')]}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText
+													value="#{_data[dynamicColumn.nombreColumna.concat('Remesa24')]}"
+													style="width:100%"
+													label="#{dynamicColumn.nombreColumna}" />
+			
+			
+											</f:facet>
+										</p:cellEditor>
+										</c:if>
+										
+										</c:if>
+										<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual ge 28)}"><!-- >= -->
+										<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual le 9)}"><!-- <=  -->
+										   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa24')]}" styleClass="textoPequenio textoAjustado">
+															<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+										</c:if>
+										</c:if>
+										
+										
+								</p:column>			
+								<p:column>
+								<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual ge 28)}"><!-- >=  -->
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText
+													value="#{_data[dynamicColumn.nombreColumna.concat('Remesa28')]}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText
+													value="#{_data[dynamicColumn.nombreColumna.concat('Remesa28')]}"
+													style="width:100%"
+													label="#{dynamicColumn.nombreColumna}" />
+			
+			
+											</f:facet>
+										</p:cellEditor>
+										</c:if>
+								<c:otherwise>
+								   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa28')]}" styleClass="textoPequenio textoAjustado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+								</h:outputText>
+								</c:otherwise>
+								</p:column>	
+															
+									</c:forEach>
+						
+							<!--FIN COLUMNAS DINAMICAS REMESA-->
 								
 								<p:column>
-								$<h:inputText value="#{_data.s24Diciembre}"/>
-									
-								</p:column>
-								
-								<p:column>
-									<h:outputText value="#{_data.s24Diciembre}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.diciembreRemesa09}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
@@ -379,9 +1084,8 @@
 										<f:convertNumber type="percent" />
 									</h:outputText>
 								</p:column>
-<p:column>
-									<h:selectBooleanCheckbox value="false" />
-								</p:column>
+								<!--COLUMNA CHECKBOX  -->
+								   <p:column selectionMode="multiple" style="width:16px;text-align:center"  />
 								<p:columnGroup type="footer">
 									<p:row>
 										<p:column colspan="2">
@@ -420,48 +1124,35 @@
 												
 											</f:facet>
 										</p:column>
+								
+											<!-- TOTAL REMESA MESES -->
+										
+										<c:forEach
+											items="#{procesoOTRevisarAntecedentesController.columns}"
+												var="dynamicColumn">
 										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+										<f:facet name="footer">
+												<h:outputText value="#{datoMunicipal[dynamicColumn.nombreColumna.concat('Remesa09')]}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
-										</p:column>
-										<p:column>
+										</p:column>	
+										<p:column>	
 											<f:facet name="footer">
-												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{datoMunicipal[dynamicColumn.nombreColumna.concat('Remesa24')]}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
-										</p:column>
-										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+										</p:column>	
+										<p:column>	
+										<f:facet name="footer">
+												<h:outputText value="#{datoMunicipal[dynamicColumn.nombreColumna.concat('Remesa28')]}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
-										</p:column>
-										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</f:facet>
-										</p:column>
-										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</f:facet>
-										</p:column>
-										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</f:facet>
-										</p:column>
+										</p:column>		
+										</c:forEach>
+							
 										<p:column>
 											<f:facet name="footer">
 												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
@@ -483,6 +1174,8 @@
 								</p:columnGroup>
 
 							</p:dataTable>
+							</h:panelGrid>
+							</h:form>
 						</p:tab>
 
 					</p:tabView>
@@ -490,8 +1183,9 @@
 					<p:commandButton value="Validar Antecedentes para Orden de Transferencia" styleClass="x-btn-text"
 						action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false" icon="ui-icon-seek-first" />
 						
-				<p:commandButton type="submit" value="Validar Antecedentes para Orden de Transferencia More" styleClass="x-btn-text"
-						 ajax="false" icon="ui-icon-seek-first"  action="#{procesoOTRevisarAntecedentesController.continuarProceso()}">							   
+				<p:commandButton type="submit" process="datosSubtitulo21" value="Validar Antecedentes para Orden de Transferencia More" styleClass="x-btn-text"
+						 ajax="false" icon="ui-icon-seek-first" update=":#{p:component('formSubtitulo21')}"  action="#{procesoOTRevisarAntecedentesController.continuarProceso()}">		
+						 					   
 	
 				</p:commandButton>	
 						
