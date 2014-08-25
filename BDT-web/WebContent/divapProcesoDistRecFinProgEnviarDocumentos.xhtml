@@ -12,7 +12,7 @@
 					<h2>
 						<strong>Programa:</strong> PILOTO VIDA SANA: ALCOHOL
 					</h2>
-					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoDistRecFinController.listadoEnvioServicios}" liveResize="true"
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoDistRecFinSeguimientoDocumentacionController.listadoEnvioServicios}" liveResize="true"
 						var="_servicio" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
 						styleClass="dataTable">
 						<p:columnGroup type="header">
@@ -20,7 +20,7 @@
 								<p:column headerText="Servicio de Salud" width="250" />
 								<p:column headerText="Documentos" />
 								<p:column headerText="Fecha de Envío" width="150" />
-								<p:column headerText="Destinatario" footerText="#{procesoDistRecFinController.getTotalMunicipal}" width="70" />
+								<p:column headerText="Destinatario" footerText="#{procesoDistRecFinSeguimientoDocumentacionController.getTotalMunicipal}" width="70" />
 							</p:row>
 						</p:columnGroup>
 
@@ -44,7 +44,9 @@
 					</p:dataTable>
 
 					<p:commandButton value="Finalizar Actividad" styleClass="x-btn-text"
-						action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false" icon="ui-icon-disk" />
+						action="#{procesoDistRecFinSeguimientoDocumentacionController.enviar}" ajax="false" icon="ui-icon-disk" >
+						<f:setPropertyActionListener target="#{procesoDistRecFinSeguimientoDocumentacionController.target}" value="bandejaTareas.jsf" />
+					</p:commandButton>
 				</p:panel>
 
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
