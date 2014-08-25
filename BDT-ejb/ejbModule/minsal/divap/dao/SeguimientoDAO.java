@@ -85,12 +85,13 @@ public class SeguimientoDAO {
 	public void createSeguimientoDocumentos(Integer idSeguimiento,
 			List<ReferenciaDocumento> documentosSeguimiento) {
 		Seguimiento seguimiento = getSeguimientoById(idSeguimiento);
-		if(documentosSeguimiento != null){
+		if(documentosSeguimiento != null && documentosSeguimiento.size() > 0){
 			for(ReferenciaDocumento referenciaDocumento : documentosSeguimiento){
 				SeguimientoReferenciaDocumento seguimientoReferenciaDocumento = new SeguimientoReferenciaDocumento();
 				seguimientoReferenciaDocumento.setIdReferenciaDocumento(referenciaDocumento);
 				seguimientoReferenciaDocumento.setIdSeguimiento(seguimiento);
 				this.em.persist(seguimientoReferenciaDocumento);
+				System.out.println("persiste SeguimientoReferenciaDocumento");
 			}
 		}
 	}

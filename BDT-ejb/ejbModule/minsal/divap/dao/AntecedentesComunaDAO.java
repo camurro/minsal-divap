@@ -45,6 +45,22 @@ public class AntecedentesComunaDAO {
 		}
 		return entity;
 	}
+	
+	public Comuna findByComunaById(Integer idComuna) {
+		Comuna entity = null;
+		try {
+			System.out.println("idComuna->"+idComuna);
+			TypedQuery<Comuna> query = this.em.createNamedQuery("Comuna.findById", Comuna.class);
+			query.setParameter("id", idComuna);
+			List<Comuna> comunas = query.getResultList(); 
+			if(comunas != null && comunas.size() > 0){
+				entity = comunas.get(0);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return entity;
+	}
 
 	public AntecendentesComunaCalculado findByAntecedentesDistrinbucionInicial(
 			Integer idAntecedentesComuna, Integer idDistribucionInicialPercapita) {

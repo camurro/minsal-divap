@@ -19,23 +19,35 @@ public class ReferenciaDocumentoSummaryVO implements Serializable{
 		this.path = path;
 		this.nodeRef = nodeRef;
 	}
+	
 	public Integer getId() {
 		return id;
 	}
+	
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	
 	public String getPath() {
 		return path;
 	}
+	
 	public void setPath(String path) {
 		this.path = path;
 	}
+	
 	public String getNodeRef() {
 		return nodeRef;
 	}
+	
 	public void setNodeRef(String nodeRef) {
 		this.nodeRef = nodeRef;
+	}
+
+	@Override
+	public String toString() {
+		return "ReferenciaDocumentoSummaryVO [id=" + id + ", path=" + path
+				+ ", nodeRef=" + nodeRef + "]";
 	}
 	
 }

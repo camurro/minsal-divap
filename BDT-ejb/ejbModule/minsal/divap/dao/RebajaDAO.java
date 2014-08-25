@@ -10,12 +10,10 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import minsal.divap.vo.CumplimientoVO;
 import cl.minsal.divap.model.Comuna;
 import cl.minsal.divap.model.ComunaCumplimiento;
 import cl.minsal.divap.model.ComunaRebaja;
 import cl.minsal.divap.model.Cumplimiento;
-import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.Rebaja;
 import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.TipoCumplimiento;
@@ -129,7 +127,7 @@ public class RebajaDAO {
 
 	public List<ReferenciaDocumento> getReferenciaDocumentosById(
 			List<Integer> allDocuments) {
-		TypedQuery<ReferenciaDocumento> query = this.em.createNamedQuery("ReferenciaDocumento.findByAllId", ReferenciaDocumento.class);
+		TypedQuery<ReferenciaDocumento> query = this.em.createNamedQuery("ReferenciaDocumento.findByIds", ReferenciaDocumento.class);
 		query.setParameter("listaIdReferencia", allDocuments);
 		return query.getResultList(); 
 	}

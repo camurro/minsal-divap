@@ -2,44 +2,22 @@ package cl.minsal.divap.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.math.BigInteger;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.enterprise.context.ApplicationScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import minsal.divap.enums.BusinessProcess;
-import minsal.divap.service.ProgramasService;
 import minsal.divap.vo.ProgramaVO;
-import minsal.divap.vo.TaskDataVO;
-import minsal.divap.vo.TaskVO;
 
 import org.apache.log4j.Logger;
 import org.primefaces.model.UploadedFile;
 
-import cl.minsal.divap.model.Programa;
-import cl.minsal.divap.pojo.ComunaPojo;
-import cl.minsal.divap.pojo.EnvioServiciosPojo;
-import cl.minsal.divap.pojo.EstablecimientoPojo;
-import cl.minsal.divap.pojo.ProcesosProgramasPojo;
-import cl.minsal.divap.pojo.ProgramasPojo;
-import cl.minsal.divap.pojo.ValorHistoricoPojo;
-import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
-import cl.redhat.bandejaTareas.util.BandejaProperties;
 import cl.redhat.bandejaTareas.util.JSONHelper;
-import cl.redhat.bandejaTareas.util.MatchViewTask;
 
 @Named ("procesoReliquidacionPlanillasController") 
 @ViewScoped
@@ -90,7 +68,7 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("usuario", getSessionBean().getUsername());
-		parameters.put("sufijoTarea_", getProgramaSeleccionado().getTipo_programa());
+		parameters.put("sufijoTarea_", getProgramaSeleccionado().getTipoPrograma().getNombre());
 		return parameters;
 	}
 

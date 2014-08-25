@@ -37,7 +37,6 @@ public class SeguimientoService {
 	public Integer createSeguimiento(TareasSeguimiento tareaSeguimiento, String subject, String body, String from, List<String> para, List<String> conCopia, List<String> conCopiaOculta, List<ReferenciaDocumentoSummaryVO> documentos){
 		List<Email> destinoConCopia = null;
 		List<Email> destinoConCopiaOculta = null;
-		List<ReferenciaDocumento> documentosSeguimiento = null;
 		List<Email> destinoPara = getCorreos(para);
 		Email correoOrigen = getCorreo(from);
 		if(conCopia != null){
@@ -64,7 +63,7 @@ public class SeguimientoService {
 		emailService.sendMail(para, conCopia, conCopiaOculta, subject, body, adjuntos); 
 		Integer seguimiento = seguimientoDAO.createSeguimiento(subject, body, correoOrigen, new TareaSeguimiento(tareaSeguimiento.getId()));
 		seguimientoDAO.createSeguimientoDestinatarios(seguimiento, destinoPara, destinoConCopia, destinoConCopiaOculta);
-		seguimientoDAO.createSeguimientoDocumentos(seguimiento, documentosSeguimiento);
+		seguimientoDAO.createSeguimientoDocumentos(seguimiento, referenciaDocumentoDao.getReferenciaDocumentosBySummaryId(documentos));
 		return seguimiento; 
 	}
 

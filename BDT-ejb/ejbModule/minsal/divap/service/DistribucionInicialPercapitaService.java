@@ -415,13 +415,14 @@ public class DistribucionInicialPercapitaService {
 			System.out.println("template->"+template);
 			System.out.println("filename->"+filename);
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("{anoSiguiente}", (getAnoCurso() + 1));
-			parameters.put("{poblacionBeneficiaria}", new Integer(100000));
-			parameters.put("{porcentaje}", new Double(0.96));
-			parameters.put("{anoCurso}", getAnoCurso());
+			parameters.put("ano_siguiente", (getAnoCurso() + 1));
+			parameters.put("poblacion_beneficiaria", new Integer(100000));
+			parameters.put("porcentaje", new Double(0.96));
+			parameters.put("ano_curso", getAnoCurso());
 
 
 			if(template.endsWith(".doc")){
+				System.out.println("Genera archivo doc");
 				generadorWord.saveContent(documentoVO.getContent(), HWPFDocument.class);
 				GeneradorOficioConsulta generadorOficioConsulta = new GeneradorOficioConsulta(filename,template);
 				generadorOficioConsulta.replaceValues(null, null, HWPFDocument.class);
@@ -429,11 +430,12 @@ public class DistribucionInicialPercapitaService {
 				System.out.println("response AsignacionRecursosPercapitaSheetExcel --->"+response);
 				plantillaId = documentService.createDocumentPercapita(idDistribucionInicialPercapita, TipoDocumentosProcesos.OFICIOCONSULTA, response.getNodeRef(), response.getFileName(), contenType);
 			}else if(template.endsWith(".docx")){
+				System.out.println("Genera archivo docx");
 				generadorWord.saveContent(documentoVO.getContent(), XWPFDocument.class);
 				GeneradorOficioConsulta generadorOficioConsulta = new GeneradorOficioConsulta(filename, template);
 				generadorOficioConsulta.replaceValues(parameters, variaciones, XWPFDocument.class);
 				BodyVO response = alfrescoService.uploadDocument(new File(filename), contenType, folderPercapita.replace("{ANO}", getAnoCurso().toString()));
-				System.out.println("response AsignacionRecursosPercapitaSheetExcel --->"+response);
+				System.out.println("response AsignacionRecursosPercapita --->"+response);
 				plantillaId = documentService.createDocumentPercapita(idDistribucionInicialPercapita, TipoDocumentosProcesos.OFICIOCONSULTA, response.getNodeRef(), response.getFileName(), contenType);
 			}
 		}catch(IOException e){
@@ -520,9 +522,9 @@ public class DistribucionInicialPercapitaService {
 					if(antecendenteComuna.getClasificacion() != null){
 						if(TipoComuna.COSTOFIJO.getId().equals(antecendenteComuna.getClasificacion().getIdTipoComuna())){
 							Map<String, Object> parametersAporteEstatalCF = new HashMap<String, Object>();
-							parametersAporteEstatalCF.put("{Comuna}", antecendenteComuna.getIdComuna().getNombre());
-							parametersAporteEstatalCF.put("{AporteEstatalMensual}",((antecendentesComunaCalculado.getPercapitaMes() != null)?new Integer(0): antecendentesComunaCalculado.getPercapitaMes()));
-							parametersAporteEstatalCF.put("{Ano}",getAnoCurso());
+							parametersAporteEstatalCF.put("{comuna_seleccionada}", antecendenteComuna.getIdComuna().getNombre());
+							parametersAporteEstatalCF.put("{aporte_mensual}",((antecendentesComunaCalculado.getPercapitaMes() == null)? new Integer(0) : antecendentesComunaCalculado.getPercapitaMes()));
+							parametersAporteEstatalCF.put("{ano_curso}",getAnoCurso());
 
 							generadorWordAporteEstatalCF.saveContent(documentoAporteEstatalCFVO.getContent(), XWPFDocument.class);
 							String filenameAporteEstatalCFTmp = filenameAporteEstatalCF.replace(".docx", "-" + antecendenteComuna.getIdComuna().getId() + ".docx");
@@ -530,22 +532,22 @@ public class DistribucionInicialPercapitaService {
 							generadorResolucionAporteEstatalCF.replaceValues(parametersAporteEstatalCF, XWPFDocument.class);
 							BodyVO responseAporteEstatalCF = alfrescoService.uploadDocument(new File(filenameAporteEstatalCFTmp), contenTypeAporteEstatalCF, folderPercapita.replace("{ANO}", getAnoCurso().toString()));
 							System.out.println("response responseAporteEstatalCF --->"+responseAporteEstatalCF);
-							plantillaIdResolucionAporteEstatalCF = documentService.createDocumentPercapita(idDistribucionInicialPercapita, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF, responseAporteEstatalCF.getNodeRef(), responseAporteEstatalCF.getFileName(), contenTypeAporteEstatalCF);
+							plantillaIdResolucionAporteEstatalCF = documentService.createDocumentPercapita(idDistribucionInicialPercapita, antecendenteComuna.getIdComuna().getId(), TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF, responseAporteEstatalCF.getNodeRef(), responseAporteEstatalCF.getFileName(), contenTypeAporteEstatalCF);
 						}else{
 							Map<String, Object> parametersAporteEstatalUR = new HashMap<String, Object>();
-							parametersAporteEstatalUR.put("{Comuna}", antecendenteComuna.getIdComuna().getNombre());
-							Integer poblacion = ((antecendentesComunaCalculado.getPoblacion() != null)?new Integer(0): antecendentesComunaCalculado.getPoblacion()) + ((antecendentesComunaCalculado.getPoblacionMayor() != null)?new Integer(0): antecendentesComunaCalculado.getPoblacionMayor());
-							parametersAporteEstatalUR.put("{Poblacion}",poblacion);
-							parametersAporteEstatalUR.put("{Monto}",((antecendentesComunaCalculado.getValorPerCapitaComunalMes()!= null)?new Double(0): antecendentesComunaCalculado.getValorPerCapitaComunalMes()));
-							parametersAporteEstatalUR.put("{AporteEstatalMensual}",((antecendentesComunaCalculado.getPercapitaMes() != null)?new Integer(0): antecendentesComunaCalculado.getPercapitaMes()));
-
+							parametersAporteEstatalUR.put("{ano_curso}",getAnoCurso());
+							parametersAporteEstatalUR.put("{comuna_seleccionada}", antecendenteComuna.getIdComuna().getNombre());
+							Integer poblacion = ((antecendentesComunaCalculado.getPoblacion() == null) ? new Integer(0): antecendentesComunaCalculado.getPoblacion()) + ((antecendentesComunaCalculado.getPoblacionMayor() != null)?new Integer(0): antecendentesComunaCalculado.getPoblacionMayor());
+							parametersAporteEstatalUR.put("{poblacion_seleccionada}",poblacion);
+							parametersAporteEstatalUR.put("{monto_seleccionado}",((antecendentesComunaCalculado.getValorPerCapitaComunalMes() == null)?new Double(0): antecendentesComunaCalculado.getValorPerCapitaComunalMes()));
+							parametersAporteEstatalUR.put("{aporte_mensual}",((antecendentesComunaCalculado.getPercapitaMes() == null)? new Integer(0): antecendentesComunaCalculado.getPercapitaMes()));
 							generadorWordAporteEstatalUR.saveContent(documentoAporteEstatalURVO.getContent(), XWPFDocument.class);
 							String filenameAporteEstatalURTmp = filenameAporteEstatalUR.replace(".docx", "-" + antecendenteComuna.getIdComuna().getId() + ".docx");
 							GeneradorResolucionAporteEstatal generadorResolucionAporteEstatalUR = new GeneradorResolucionAporteEstatal(filenameAporteEstatalURTmp, templateAporteEstatalUR);
 							generadorResolucionAporteEstatalUR.replaceValues(parametersAporteEstatalUR, XWPFDocument.class);
 							BodyVO responseAporteEstatalUR = alfrescoService.uploadDocument(new File(filenameAporteEstatalURTmp), contenTypeAporteEstatalUR, folderPercapita.replace("{ANO}", getAnoCurso().toString()));
 							System.out.println("response responseAporteEstatalUR --->"+responseAporteEstatalUR);
-							plantillaIdResolucionAporteEstatalUR = documentService.createDocumentPercapita(idDistribucionInicialPercapita, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF, responseAporteEstatalUR.getNodeRef(), responseAporteEstatalUR.getFileName(), contenTypeAporteEstatalUR);
+							plantillaIdResolucionAporteEstatalUR = documentService.createDocumentPercapita(idDistribucionInicialPercapita, antecendenteComuna.getIdComuna().getId(), TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF, responseAporteEstatalUR.getNodeRef(), responseAporteEstatalUR.getFileName(), contenTypeAporteEstatalUR);
 						}
 					}
 				}
@@ -593,7 +595,6 @@ public class DistribucionInicialPercapitaService {
 			System.out.println("filenameBorradorAporteEstatal filename-->"+filenameBorradorAporteEstatal);
 			System.out.println("templateBorradorAporteEstatal template-->"+templateBorradorAporteEstatal);
 			GeneradorWord generadorWordPlantillaBorradorDecretoAporteEstatal = new GeneradorWord(templateBorradorAporteEstatal);
-
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			String contenTypeBorradorAporteEstatal = mimemap.getContentType(filenameBorradorAporteEstatal.toLowerCase());
 			System.out.println("contenTypeBorradorAporteEstatal->"+contenTypeBorradorAporteEstatal);
@@ -629,17 +630,21 @@ public class DistribucionInicialPercapitaService {
 
 	}
 
-	public void moveToAlfresco(Integer idDistribucionInicialPercapita, Integer referenciaDocumentoId, TipoDocumentosProcesos tipoDocumento) {
+	public void moveToAlfresco(Integer idDistribucionInicialPercapita, Integer referenciaDocumentoId, TipoDocumentosProcesos tipoDocumento, Boolean lastVersion ) {
+		System.out.println("Buscando referenciaDocumentoId="+referenciaDocumentoId);
 		ReferenciaDocumentoSummaryVO referenciaDocumentoSummary = documentService.getDocumentSummary(referenciaDocumentoId);
-		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
-		String contenType= mimemap.getContentType(referenciaDocumentoSummary.getPath().toLowerCase());
-		BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummary.getPath()), contenType, folderPercapita.replace("{ANO}", getAnoCurso().toString()));
-		System.out.println("response upload template --->"+response);
-		documentService.updateDocumentTemplate(referenciaDocumentoSummary.getId(), response.getNodeRef(), response.getFileName(), contenType);
-		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findById(idDistribucionInicialPercapita);
-		documentService.createDocumentPercapita(distribucionInicialPercapita, tipoDocumento, referenciaDocumentoId);
+		System.out.println("Buscando referenciaDocumentoSummary="+referenciaDocumentoSummary);
+		if(referenciaDocumentoSummary != null){
+			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
+			String contenType= mimemap.getContentType(referenciaDocumentoSummary.getPath().toLowerCase());
+			BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummary.getPath()), contenType, folderPercapita.replace("{ANO}", getAnoCurso().toString()));
+			System.out.println("response upload template --->"+response);
+			documentService.updateDocumentTemplate(referenciaDocumentoSummary.getId(), response.getNodeRef(), response.getFileName(), contenType);
+			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findById(idDistribucionInicialPercapita);
+			documentService.createDocumentPercapita(distribucionInicialPercapita, tipoDocumento, referenciaDocumentoId, lastVersion);
+		}
 	}
-	
+
 	public ReferenciaDocumentoSummaryVO getLastDocumentoSummaryByDistribucionInicialPercapitaType(Integer idDistribucionInicialPercapita,TipoDocumentosProcesos tipoDocumento){
 		return documentService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, tipoDocumento);
 	}

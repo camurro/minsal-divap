@@ -26,12 +26,25 @@ public class MatchViewTask {
 		RELIQUIDACIONMUNICIPAL("minsal.divap.procesos.Reliquidacion.validacionmontosreliquidacionmunicipal","divapProcesoReliqMunicipal"),
 		RELIQUIDACIONSERVICIO("minsal.divap.procesos.Reliquidacion.validacionmontosreliquidacionservicio","divapProcesoReliqServicio"),
 		
+		//Mapeo páginas de Distribución de Recursos Financieros para Programas de Reforzamiento APS 
+		SELECCIONARPROGRAMA("minsal_divap.DistribucionRecursosProgramasReforzamiento.seleccionarprograma","divapProcesoDistRecFinProgProgramasServicio"),
+		DESCARGARSUBIRVALORIZACION("minsal_divap.DistribucionRecursosProgramasReforzamiento.descargar/subirplanillasvalorizacion","divapProcesoDistRecFinProgSubirPlanillasMixto"),
+		REVISARVALIDARMONTOSPxQMUNICIPAL("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programapxqcondependenciamunicipal)","divapProcesoDistRecFinProgMunicipal"),
+		REVISARVALIDARMONTOSPxQSERVICIO("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programapxqcondependenciadeserviciodesalud)","divapProcesoDistRecFinProgServicioSalud"),
+		REVISARVALIDARMONTOSPxQMIXTO("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programapxqcondependenciadeserviciodesaludymunicipal)","divapProcesoDistRecFinProgMixto"),
+		REVISARVALIDARMONTOSHISTORICOMUNICIPAL("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programavaloreshistoricoscondependenciamunicipal)","divapProcesoDistRecFinProgValoresHistoricosMunicipal"),
+		REVISARVALIDARMONTOSHISTORICOSERVICIO("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programavaloreshistoricoscondependenciadeserviciodesalud)","divapProcesoDistRecFinProgValoresHistoricosServicioSalud"),
+		REVISARVALIDARMONTOSHISTORICOMIXTOL("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programavaloreshistoricoscondependenciadeserviciodesaludymunicipal)","divapProcesoDistRecFinProgValoresHistoricosMixto"),
+		HACERSEGUIMIENTO("minsal_divap.DistribucionRecursosProgramasReforzamiento.hacerseguimientoadocumentos", "divapProcesoDistRecFinProgSeguimientoDocumentacion"),
+		REVISARRESUMENESDOCUMENTOS("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisarresumenenviodocumentos", "divapProcesoDistRecFinProgEnviarDocumentos"),
+		
 		PRUEBA("minsal_divap.prueba.primeratarea","divapPrueba"),
 		PRUEBA2("minsal_divap.prueba.segundatarea","divapPrueba"),
 		ESTIMACIONFLUJOCAJASELECCIONARLINEAPROGRAMATICA("minsal_divap.EstimacionFlujoCaja.seleccionarlineaprogramatica","divapProcesoProgProgramas"),
 		ESTIMACIONFLUJOCAJAREVISARVALIDARMONITOREO("minsal_divap.EstimacionFlujoCaja.revisaryvalidarmonitoreo","divapProcesoProgMonitoreo"),
 		ESTIMACIONFLUJOCAJAREVISARCONSOLIDACION("minsal_divap.EstimacionFlujoConsolidador.revisarconsolidaciondeestimaciondeflujodecaja","divapProcesoProgConsolidado"),
 		ESTIMACIONFLUJOCAJAHACERSEGUIMIENTO("minsal_divap.EstimacionFlujoConsolidador.hacerseguimientoordinario","divapProcesoProgSeguimiento");
+
 		private String key;
 		private String view;
 
