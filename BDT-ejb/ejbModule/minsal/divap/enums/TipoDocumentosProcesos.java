@@ -9,7 +9,8 @@ public enum TipoDocumentosProcesos{
 	PLANTILLARESOLUCIONAPORTEESTATALUR(9,"Plantilla Resoluciones Comunales de Aporte Estatal UR"), PLANTILLARESOLUCIONAPORTEESTATALCF(10,"Plantilla Resoluciones Comunales de Aporte Estatal CF"),
 	RESOLUCIONAPORTEESTATALUR(11,"Resoluciones Comunales de Aporte Estatal UR"), RESOLUCIONAPORTEESTATALCF(12,"Resoluciones Comunales de Aporte Estatal CF"),
 	PLANTILLABORRADORAPORTEESTATAL(13,"Plantilla Borrador decreto aporte estatal"), ASIGNACIONDESEMPENODIFICIL(14, "Asignación de Desempeño Difícil"),
-	POBLACIONINSCRITA(15, "Población Inscrita Validada");
+	POBLACIONINSCRITA(15, "Población Inscrita Validada"), PLANTILLAPROGRAMACION(16,"Planilla completa actualizada de Programacion de Caja"),
+	PLANTILLAPROPUESTA(17,"Planilla Programacion de Caja");
 
 	private Integer id;
 	private String name;
