@@ -3,8 +3,10 @@ package cl.minsal.divap.model;
 import java.io.Serializable;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlTransient;
 
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -15,6 +17,9 @@ import java.util.List;
 @NamedQueries({
 	@NamedQuery(name="Programa.findAll", query="SELECT p FROM Programa p"),
 	@NamedQuery(name="Programa.findByUser", query="SELECT p FROM Programa p where p.usuario.username=:usuario"),
+	@NamedQuery(name ="Programa.findById", query = "SELECT p FROM Programa p WHERE p.id = :id"),
+	@NamedQuery(name = "Programa.findByNombre", query = "SELECT p FROM Programa p WHERE p.nombre = :nombre"),
+	@NamedQuery(name = "Programa.findByCantidadCuotas", query = "SELECT p FROM Programa p WHERE p.cantidadCuotas = :cantidadCuotas"),
 	@NamedQuery(name="Programa.findComponentesByPrograma", query="SELECT p FROM Programa p where p.id=:id")})
 public class Programa implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -28,9 +33,9 @@ public class Programa implements Serializable {
 	private Integer cantidadCuotas;
 
 	private String nombre;
-	
+
 	private String descripcion;
-	
+
 	//bi-directional many-to-one association to Componente
 	@OneToMany(mappedBy="programa")
 	private List<Componente> componentes;
@@ -43,27 +48,29 @@ public class Programa implements Serializable {
 	@OneToMany(mappedBy="programa")
 	private List<MarcoPresupuestario> marcoPresupuestarios;
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "programa")
+	private Set<ProgramaSubtitulo> programasSubtitulos;
+
 	//bi-directional many-to-one association to MetadataCore
 	@OneToMany(mappedBy="programa")
 	private List<MetadataCore> metadataCores;
 
 	//bi-directional many-to-one association to TipoPrograma
+	@JoinColumn(name = "id_tipo_programa", referencedColumnName = "id")
 	@ManyToOne
-	@JoinColumn(name="id_tipo_programa")
-	private TipoPrograma tipoPrograma;
+	private TipoPrograma idTipoPrograma;
+
+	@JoinColumn(name = "dependencia", referencedColumnName = "id_dependencia_programa")
+	@ManyToOne(optional = false)
+	private DependenciaPrograma dependencia;
 
 	//bi-directional many-to-one association to Usuario
 	@ManyToOne
 	@JoinColumn(name="username_usuario")
 	private Usuario usuario;
 
-	//bi-directional many-to-one association to ProgramaMunicipalCore
-	@OneToMany(mappedBy="programa")
-	private List<ProgramaMunicipalCore> programaMunicipalCores;
-
-	//bi-directional many-to-one association to ProgramaServicioCore
-	@OneToMany(mappedBy="programa")
-	private List<ProgramaServicioCore> programaServicioCores;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "programa")
+	private Set<ProgramaAno> programasAnos;
 
 	public Programa() {
 	}
@@ -180,14 +187,6 @@ public class Programa implements Serializable {
 		return metadataCore;
 	}
 
-	public TipoPrograma getTipoPrograma() {
-		return this.tipoPrograma;
-	}
-
-	public void setTipoPrograma(TipoPrograma tipoPrograma) {
-		this.tipoPrograma = tipoPrograma;
-	}
-
 	public Usuario getUsuario() {
 		return this.usuario;
 	}
@@ -196,48 +195,25 @@ public class Programa implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public List<ProgramaMunicipalCore> getProgramaMunicipalCores() {
-		return this.programaMunicipalCores;
+	@XmlTransient
+	public Set<ProgramaAno> getProgramasAnos() {
+		return programasAnos;
 	}
 
-	public void setProgramaMunicipalCores(List<ProgramaMunicipalCore> programaMunicipalCores) {
-		this.programaMunicipalCores = programaMunicipalCores;
+	public void setProgramasAnos(Set<ProgramaAno> programasAnos) {
+		this.programasAnos = programasAnos;
 	}
 
-	public ProgramaMunicipalCore addProgramaMunicipalCore(ProgramaMunicipalCore programaMunicipalCore) {
-		getProgramaMunicipalCores().add(programaMunicipalCore);
-		programaMunicipalCore.setPrograma(this);
-
-		return programaMunicipalCore;
+	public ProgramaAno addProgramaAno(ProgramaAno programaAno) {
+		getProgramasAnos().add(programaAno);
+		programaAno.setPrograma(this);
+		return programaAno;
 	}
 
-	public ProgramaMunicipalCore removeProgramaMunicipalCore(ProgramaMunicipalCore programaMunicipalCore) {
-		getProgramaMunicipalCores().remove(programaMunicipalCore);
-		programaMunicipalCore.setPrograma(null);
-
-		return programaMunicipalCore;
-	}
-
-	public List<ProgramaServicioCore> getProgramaServicioCores() {
-		return this.programaServicioCores;
-	}
-
-	public void setProgramaServicioCores(List<ProgramaServicioCore> programaServicioCores) {
-		this.programaServicioCores = programaServicioCores;
-	}
-
-	public ProgramaServicioCore addProgramaServicioCore(ProgramaServicioCore programaServicioCore) {
-		getProgramaServicioCores().add(programaServicioCore);
-		programaServicioCore.setPrograma(this);
-
-		return programaServicioCore;
-	}
-
-	public ProgramaServicioCore removeProgramaServicioCore(ProgramaServicioCore programaServicioCore) {
-		getProgramaServicioCores().remove(programaServicioCore);
-		programaServicioCore.setPrograma(null);
-
-		return programaServicioCore;
+	public ProgramaAno removeProgramaAno(ProgramaAno programaAno) {
+		getProgramasAnos().remove(programaAno);
+		programaAno.setPrograma(null);
+		return programaAno;
 	}
 
 	public String getDescripcion() {
@@ -246,6 +222,31 @@ public class Programa implements Serializable {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public TipoPrograma getIdTipoPrograma() {
+		return idTipoPrograma;
+	}
+
+	public void setIdTipoPrograma(TipoPrograma idTipoPrograma) {
+		this.idTipoPrograma = idTipoPrograma;
+	}
+
+	@XmlTransient    
+	public Set<ProgramaSubtitulo> getProgramasSubtitulos() {
+		return programasSubtitulos;
+	}
+
+	public void setProgramasSubtitulos(Set<ProgramaSubtitulo> programasSubtitulos) {
+		this.programasSubtitulos = programasSubtitulos;
+	}
+
+	public DependenciaPrograma getDependencia() {
+		return dependencia;
+	}
+
+	public void setDependencia(DependenciaPrograma dependencia) {
+		this.dependencia = dependencia;
 	}
 
 }

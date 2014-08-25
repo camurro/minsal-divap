@@ -14,12 +14,17 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.Part;
 
 import minsal.divap.enums.TareasSeguimiento;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.DistribucionInicialPercapitaService;
+import minsal.divap.service.DocumentService;
+import minsal.divap.service.ServicioSaludService;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
+import minsal.divap.vo.ReferenciaDocumentoVO;
 import minsal.divap.vo.SeguimientoVO;
+import minsal.divap.vo.ServiciosVO;
 
 import org.apache.log4j.Logger;
 import org.primefaces.event.FileUploadEvent;
@@ -31,12 +36,22 @@ import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 @ViewScoped
 public class ProcesoAsignacionPerCapitaSeguimientoController extends AbstractTaskMBean
 implements Serializable {
-	private static final long serialVersionUID = 8979055329731411696L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7833255114459148554L;
 	@Inject
 	private transient Logger log;
 	@EJB
 	private DistribucionInicialPercapitaService distribucionInicialPercapitaService;
+	@EJB
+	private ServicioSaludService serviciosService;
+	@EJB
+	private DocumentService documentService;
 	private List<SeguimientoVO> bitacoraSeguimiento;
+	private List<ServiciosVO> servicios;
+	private List<ReferenciaDocumentoVO> documentos;
+	private String servicioSeleccionado;
 	private TareasSeguimiento tareaSeguimiento;
 	private String actividadSeguimientoTitle;
 	private String to;
@@ -47,20 +62,22 @@ implements Serializable {
 	private boolean verRecargarArchivos;
 	private boolean verRevalorizar;
 	private boolean verBusqueda;
-	
+
 	private boolean versionFinal;
 	private String docIdDownload;
-	
+
 	private Integer oficioConsultaId;
+	private Integer decretoId;
 	private ReferenciaDocumentoSummaryVO documentoPoblacionInscrita;
-	
+
 	private  boolean rechazarRevalorizar_;
 	private  boolean rechazarSubirArchivos_;
 	private  boolean aprobar_;
-	
-	
+
+
 	private UploadedFile attachedFile;
 	private UploadedFile file;
+	private Part fileUpload;
 	private Integer idDistribucionInicialPercapita;
 
 
@@ -72,12 +89,47 @@ implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
-
-	public void upload() {
-		if(file != null) {
-			FacesMessage message = new FacesMessage("Archivo", file.getFileName() + " subio correctamente.");
+	
+	public void uploadVersion() {
+		if (file != null){
+			System.out.println("uploadVersion file is not null");
+			String filename = file.getFileName();
+			byte[] contentAttachedFile = file.getContents();
+			Integer docNewVersion = persistFile(filename,	contentAttachedFile);
+			TipoDocumentosProcesos tipoDocumento = null;
+			switch (tareaSeguimiento) {
+			case HACERSEGUIMIENTOOFICIO:
+				tipoDocumento = TipoDocumentosProcesos.OFICIOCONSULTA;
+				distribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, tipoDocumento, versionFinal);
+				this.oficioConsultaId = docNewVersion;
+				break;
+			case HACERSEGUIMIENTORESOLUCIONES:
+				break;	
+			case HACERSEGUIMIENTOTOMARAZON:
+				break;
+			case HACERSEGUIMIENTODECRETO:
+				tipoDocumento = TipoDocumentosProcesos.BORRADORAPORTEESTATAL;
+				distribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, tipoDocumento, versionFinal);
+				this.decretoId = docNewVersion;
+				break;	
+			default:
+				break;
+			}
+		}else{
+			System.out.println("uploadVersion file is null");
+			FacesMessage message = new FacesMessage("uploadVersion file is null");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
+	}
+
+	public String uploadVersionModal() {
+		if (attachedFile != null){
+			String filename = attachedFile.getFileName();
+			byte[] contentAttachedFile = attachedFile.getContents();
+			Integer docAttachedFile = persistFile(filename,	contentAttachedFile);
+		 System.out.println("docAttachedFile="+docAttachedFile);
+		}
+		return null;
 	}
 
 	public void handleAttachedFile(FileUploadEvent event) {
@@ -85,6 +137,13 @@ implements Serializable {
 				.getFileName() + " is uploaded.");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		System.out.println("handleAttachedFile");
+	}
+	
+	public void handleFile(FileUploadEvent event) {
+		FacesMessage msg = new FacesMessage("Succesful", event.getFile()
+				.getFileName() + " is uploaded.");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		System.out.println("handleFile");
 	}
 
 	public String sendMail(){
@@ -94,11 +153,16 @@ implements Serializable {
 			if (attachedFile != null){
 				documentos = new ArrayList<Integer>();
 				String filename = attachedFile.getFileName();
+				System.out.println("attachedFile------>"+filename);
 				byte[] contentAttachedFile = attachedFile.getContents();
 				Integer docAttachedFile = persistFile(filename,	contentAttachedFile);
 				if (docAttachedFile != null) {
 					documentos.add(docAttachedFile);
 				}
+			}
+			if (file != null){
+				String filename = file.getFileName();
+				System.out.println("filename------>"+filename);
 			}
 			List<String> para = Arrays.asList(this.to.split("\\,"));
 			List<String> conCopia = null;
@@ -109,7 +173,6 @@ implements Serializable {
 			if((this.cco != null) && !(this.cco.trim().isEmpty())){
 				conCopiaOculta = Arrays.asList(this.cco.split("\\,")); 
 			}
-
 			System.out.println("ProcesoAsignacionPerCapitaSeguimientoController-->sendMail");
 			distribucionInicialPercapitaService.createSeguimientoDistribucionInicialPercapita(idDistribucionInicialPercapita, tareaSeguimiento, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
 		}catch(Exception e){
@@ -117,6 +180,24 @@ implements Serializable {
 			target = null;
 		}
 		return target;
+	}
+	
+	public void buscar() {
+		System.out.println("buscar--> servicioSeleccionado="+servicioSeleccionado);
+		TipoDocumentosProcesos[] tiposDocumentos = {TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF};
+		if(servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty()){
+			documentos = documentService.getDocumentByTypesServicioDistribucionInicialPercapita(idDistribucionInicialPercapita, null, tiposDocumentos);
+		}else{
+			documentos = documentService.getDocumentByTypesServicioDistribucionInicialPercapita(idDistribucionInicialPercapita, Integer.parseInt(servicioSeleccionado), tiposDocumentos);
+		}
+		System.out.println("fin buscar-->");
+	}
+
+	public void limpiar() {
+		System.out.println("Limpiar-->");
+		servicioSeleccionado = "";
+		documentos = new ArrayList<ReferenciaDocumentoVO>();
+		System.out.println("fin limpiar");
 	}
 
 	@Override
@@ -140,7 +221,15 @@ implements Serializable {
 					+ this.actividadSeguimientoTitle);
 			String _tareaSeguimiento = (String) getTaskDataVO()
 					.getData().get("_tareaSeguimiento");
-			this.oficioConsultaId = (Integer) getTaskDataVO().getData().get("_oficioConsultaId");
+			ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.OFICIOCONSULTA);
+			if(referenciaDocumentoSummaryVO != null){
+				this.oficioConsultaId = referenciaDocumentoSummaryVO.getId();
+			}else{
+				this.oficioConsultaId = (Integer) getTaskDataVO().getData().get("_oficioConsultaId");
+			}
+			if(getTaskDataVO().getData().get("_borradorAporteEstatalId") != null){
+				this.decretoId = (Integer)getTaskDataVO().getData().get("_borradorAporteEstatalId");
+			}
 			this.tareaSeguimiento = TareasSeguimiento.getById(Integer.valueOf(_tareaSeguimiento));
 		}
 		documentoPoblacionInscrita = distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA);
@@ -182,7 +271,6 @@ implements Serializable {
 	}
 
 	public boolean isRechazarRevalorizar_() {
-		System.out.println("rechazarRevalorizar_-->"+rechazarRevalorizar_);
 		return rechazarRevalorizar_;
 	}
 
@@ -191,7 +279,6 @@ implements Serializable {
 	}
 
 	public boolean isRechazarSubirArchivos_() {
-		System.out.println("rechazarSubirArchivos_-->"+rechazarSubirArchivos_);
 		return rechazarSubirArchivos_;
 	}
 
@@ -200,7 +287,6 @@ implements Serializable {
 	}
 
 	public boolean isAprobar_() {
-		System.out.println("aprobar_-->"+aprobar_);
 		return aprobar_;
 	}
 
@@ -302,7 +388,6 @@ implements Serializable {
 		default:
 			break;
 		}
-		System.out.println("verRecargarArchivos-->"+verRecargarArchivos);
 		return verRecargarArchivos;
 	}
 
@@ -323,32 +408,36 @@ implements Serializable {
 		default:
 			break;
 		}
-		System.out.println("verRevalorizar-->"+verRevalorizar);
 		return verRevalorizar;
 	}
 
 	public boolean isVerBusqueda() {
 		switch (tareaSeguimiento) {
 		case HACERSEGUIMIENTOOFICIO:
+		case HACERSEGUIMIENTODECRETO:
+		case HACERSEGUIMIENTOTOMARAZON:
 			verBusqueda = false;
 			break;
 		case HACERSEGUIMIENTORESOLUCIONES:
-		case HACERSEGUIMIENTODECRETO:
-		case HACERSEGUIMIENTOTOMARAZON:
 			verBusqueda = true;
 			break;	
 		default:
 			break;
 		}
-		System.out.println("verBusqueda-->"+verBusqueda);
 		return verBusqueda;
 	}
-	
+
 	public String downloadPlanilla() {
 		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownload()));
 		setDocumento(documentService.getDocument(docDownload));
 		super.downloadDocument();
 		return null;
+	}
+
+	public void clearFormUpload(){
+		System.out.println("clear form");
+		this.versionFinal = false;
+		this.file = null;
 	}
 
 	public void setVerBusqueda(boolean verBusqueda) {
@@ -374,13 +463,56 @@ implements Serializable {
 	public void setTareaSeguimiento(TareasSeguimiento tareaSeguimiento) {
 		this.tareaSeguimiento = tareaSeguimiento;
 	}
-	
+
 	public String getDocIdDownload() {
 		return docIdDownload;
 	}
 
 	public void setDocIdDownload(String docIdDownload) {
 		this.docIdDownload = docIdDownload;
+	}
+
+	public Part getFileUpload() {
+		return fileUpload;
+	}
+
+	public void setFileUpload(Part fileUpload) {
+		this.fileUpload = fileUpload;
+	}
+
+	public Integer getDecretoId() {
+		return decretoId;
+	}
+
+	public void setDecretoId(Integer decretoId) {
+		this.decretoId = decretoId;
+	}
+	
+	public List<ServiciosVO> getServicios() {
+		if(servicios == null){
+			servicios = serviciosService.getAllServiciosVO();
+		}
+		return servicios;
+	}
+
+	public void setServicios(List<ServiciosVO> servicios) {
+		this.servicios = servicios;
+	}
+
+	public String getServicioSeleccionado() {
+		return servicioSeleccionado;
+	}
+
+	public void setServicioSeleccionado(String servicioSeleccionado) {
+		this.servicioSeleccionado = servicioSeleccionado;
+	}
+
+	public List<ReferenciaDocumentoVO> getDocumentos() {
+		return documentos;
+	}
+
+	public void setDocumentos(List<ReferenciaDocumentoVO> documentos) {
+		this.documentos = documentos;
 	}
 
 	@Override

@@ -3,10 +3,13 @@ package minsal.divap.model.mappers;
 import java.util.Set;
 
 import minsal.divap.enums.TiposDestinatarios;
+import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.SeguimientoVO;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import cl.minsal.divap.model.AdjuntosSeguimiento;
 import cl.minsal.divap.model.Destinatarios;
 import cl.minsal.divap.model.Seguimiento;
+import cl.minsal.divap.model.SeguimientoReferenciaDocumento;
 
 public class SeguimientoMapper implements Mapper<Seguimiento>{
 
@@ -41,7 +44,14 @@ public class SeguimientoMapper implements Mapper<Seguimiento>{
 				default:
 					break;
 				}
-				
+
+			}
+		}
+		Set<SeguimientoReferenciaDocumento>  adjuntos = seguimiento.getSeguimientoReferenciaDocumentoCollection();
+		for(SeguimientoReferenciaDocumento adjunto : adjuntos){
+			if(adjunto.getIdReferenciaDocumento() != null){
+				ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = new ReferenciaDocumentoSummaryVO(adjunto.getIdReferenciaDocumento().getId(), adjunto.getIdReferenciaDocumento().getPath(), adjunto.getIdReferenciaDocumento().getNodeRef());
+				seguimientoVO.setAttached(referenciaDocumentoSummaryVO);
 			}
 		}
 		seguimientoVO.setDate(seguimiento.getFechaEnvio());

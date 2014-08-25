@@ -3,7 +3,7 @@ package minsal.divap.enums;
 
 public enum BusinessProcess{
 	PERCAPITA(0, "minsal_divap.DistribucionInicialPerCapita"), REBAJA(1,"minsal.divap.procesos.Rebaja"), 
-	RELIQUIDACION(2,"minsal.divap.procesos.Reliquidacion");
+	RELIQUIDACION(2,"minsal.divap.procesos.Reliquidacion"), RECURSOSFINANCIEROSAPS(3,"minsal_divap.DistribucionRecursosProgramasReforzamiento");
 
 	private int id;
 	private String name;

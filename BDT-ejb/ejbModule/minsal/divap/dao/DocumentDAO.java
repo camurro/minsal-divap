@@ -1,5 +1,6 @@
 package minsal.divap.dao;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -144,6 +145,30 @@ public class DocumentDAO {
 			throw new RuntimeException(e);
 		}
 		return referenciaDocumento;
+	}
+
+	public List<DocumentoDistribucionInicialPercapita> getDocumentosByTypeServicioDistribucionInicialPercapita(
+			Integer idDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos... tiposDocumentoProceso) {
+		try {
+			TypedQuery<DocumentoDistribucionInicialPercapita> query = null;
+			List<Integer> tipos = new ArrayList<Integer>();
+			for(TipoDocumentosProcesos tipoDocumentosProcesos: tiposDocumentoProceso){
+				tipos.add(tipoDocumentosProcesos.getId());
+			}
+			if(idServicio == null){
+				query = this.em.createNamedQuery("DocumentoDistribucionInicialPercapita.findByTypesIdDistribucionInicialPercapita", DocumentoDistribucionInicialPercapita.class);
+			}else{
+				query = this.em.createNamedQuery("DocumentoDistribucionInicialPercapita.findByTypesServicioIdDistribucionInicialPercapita", DocumentoDistribucionInicialPercapita.class);
+			}
+			query.setParameter("idDistribucionInicialPercapita", idDistribucionInicialPercapita);
+			query.setParameter("idTiposDocumento", tipos);
+			if(idServicio != null){
+				query.setParameter("idServicio", idServicio);
+			}
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 

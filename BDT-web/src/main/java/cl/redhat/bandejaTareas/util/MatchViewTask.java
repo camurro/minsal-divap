@@ -24,8 +24,19 @@ public class MatchViewTask {
 		RELIQUIDACIONPROGRAMAS("minsal.divap.procesos.Reliquidacion.seleccionarprograma","divapProcesoReliqProgramas"),
 		RELIQUIDACIONARCHIVOS("minsal.divap.procesos.Reliquidacion.descargarysubirplanillacumplimiento","divapProcesoReliqPlanillas"),		
 		RELIQUIDACIONMUNICIPAL("minsal.divap.procesos.Reliquidacion.validacionmontosreliquidacionmunicipal","divapProcesoReliqMunicipal"),
-		RELIQUIDACIONSERVICIO("minsal.divap.procesos.Reliquidacion.validacionmontosreliquidacionservicio","divapProcesoReliqServicio");
+		RELIQUIDACIONSERVICIO("minsal.divap.procesos.Reliquidacion.validacionmontosreliquidacionservicio","divapProcesoReliqServicio"),
 		
+		//Mapeo páginas de Distribución de Recursos Financieros para Programas de Reforzamiento APS 
+		SELECCIONARPROGRAMA("minsal_divap.DistribucionRecursosProgramasReforzamiento.seleccionarprograma","divapProcesoDistRecFinProgProgramasServicio"),
+		DESCARGARSUBIRVALORIZACION("minsal_divap.DistribucionRecursosProgramasReforzamiento.descargar/subirplanillasvalorizacion","divapProcesoDistRecFinProgSubirPlanillasMixto"),
+		REVISARVALIDARMONTOSPxQMUNICIPAL("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programapxqcondependenciamunicipal)","divapProcesoDistRecFinProgMunicipal"),
+		REVISARVALIDARMONTOSPxQSERVICIO("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programapxqcondependenciadeserviciodesalud)","divapProcesoDistRecFinProgServicioSalud"),
+		REVISARVALIDARMONTOSPxQMIXTO("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programapxqcondependenciadeserviciodesaludymunicipal)","divapProcesoDistRecFinProgMixto"),
+		REVISARVALIDARMONTOSHISTORICOMUNICIPAL("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programavaloreshistoricoscondependenciamunicipal)","divapProcesoDistRecFinProgValoresHistoricosMunicipal"),
+		REVISARVALIDARMONTOSHISTORICOSERVICIO("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programavaloreshistoricoscondependenciadeserviciodesalud)","divapProcesoDistRecFinProgValoresHistoricosServicioSalud"),
+		REVISARVALIDARMONTOSHISTORICOMIXTOL("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programavaloreshistoricoscondependenciadeserviciodesaludymunicipal)","divapProcesoDistRecFinProgValoresHistoricosMixto"),
+		HACERSEGUIMIENTO("minsal_divap.DistribucionRecursosProgramasReforzamiento.hacerseguimientoadocumentos", "divapProcesoDistRecFinProgSeguimientoDocumentacion"),
+		REVISARRESUMENESDOCUMENTOS("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisarresumenenviodocumentos", "divapProcesoDistRecFinProgEnviarDocumentos");
 		
 		private String key;
 		private String view;
