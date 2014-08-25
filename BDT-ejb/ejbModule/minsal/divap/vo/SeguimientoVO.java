@@ -13,7 +13,7 @@ public class SeguimientoVO implements Serializable {
 	private String to;
 	private String cc;
 	private String cco;
-	private String attached;
+	private ReferenciaDocumentoSummaryVO attached;
 	private String subject;
 	private String body;
 	
@@ -22,7 +22,7 @@ public class SeguimientoVO implements Serializable {
 	}
 	
 	public SeguimientoVO(Date date, String to, String cc, String cco,
-			String attached, String subject, String body) {
+			ReferenciaDocumentoSummaryVO attached, String subject, String body) {
 		super();
 		this.date = date;
 		this.to = to;
@@ -58,14 +58,14 @@ public class SeguimientoVO implements Serializable {
 		this.cc = cc;
 	}
 	
-	public String getAttached() {
+	public ReferenciaDocumentoSummaryVO getAttached() {
 		return attached;
 	}
-	
-	public void setAttached(String attached) {
+
+	public void setAttached(ReferenciaDocumentoSummaryVO attached) {
 		this.attached = attached;
 	}
-	
+
 	public String getSubject() {
 		return subject;
 	}

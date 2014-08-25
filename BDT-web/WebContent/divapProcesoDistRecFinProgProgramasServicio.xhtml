@@ -10,8 +10,8 @@
 				</h1>
 				<p:panel id="Panel">
 					<h2>Listado de Programas 2014 | Perfil Administrador</h2>
-					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoDistRecFinController.listadoProgramasServicio}"
-						liveResize="true" var="_programas" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoDistRecFinProgProgramasController.programas}"
+						liveResize="true" var="programa" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
 						styleClass="dataTable">
 						<p:columnGroup type="header">
 							<!--  -->
@@ -26,10 +26,10 @@
 						</p:columnGroup>
 
 						<p:column style="text-align:left;">
-							<span class="textoAjustado">#{_programas.programa}</span>
+							<span class="textoAjustado">#{programa.nombre}</span>
 						</p:column>
 						<p:column style="text-align:left;">
-							<span class="textoAjustado">#{_programas.descripcion}</span>
+							<span class="textoAjustado">#{programa.descripcion}</span>
 						</p:column>
 						<!-- <p:column>
 							<h:graphicImage
@@ -44,8 +44,15 @@
 						</p:column>
 						 -->
 						<p:column>
-							<a href="#{_programas.url}.jsf"> <h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons" />
-							</a>
+							<h:commandLink action="#{procesoDistRecFinProgProgramasController.enviar}">
+								<h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons" />
+								<f:setPropertyActionListener
+								target="#{procesoDistRecFinProgProgramasController.programaSeleccionado}"
+								value="#{programa.id}" />
+								<f:setPropertyActionListener
+								target="#{procesoDistRecFinProgProgramasController.target}"
+								value="bandejaTareas.jsf" />
+							</h:commandLink>
 						</p:column>
 						<!-- 	<p:column>
 							<h:commandLink

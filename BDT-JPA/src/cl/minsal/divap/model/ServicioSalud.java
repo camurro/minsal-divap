@@ -38,10 +38,6 @@ public class ServicioSalud implements Serializable {
 	@OneToMany(mappedBy="servicioSalud")
 	private List<MarcoPresupuestario> marcoPresupuestarios;
 
-	//bi-directional many-to-one association to ProgramaServicioCore
-	@OneToMany(mappedBy="servicioSalud")
-	private List<ProgramaServicioCore> programaServicioCores;
-
 	//bi-directional many-to-one association to Region
 	@ManyToOne
 	@JoinColumn(name="id_region")
@@ -117,28 +113,6 @@ public class ServicioSalud implements Serializable {
 		marcoPresupuestario.setServicioSalud(null);
 
 		return marcoPresupuestario;
-	}
-
-	public List<ProgramaServicioCore> getProgramaServicioCores() {
-		return this.programaServicioCores;
-	}
-
-	public void setProgramaServicioCores(List<ProgramaServicioCore> programaServicioCores) {
-		this.programaServicioCores = programaServicioCores;
-	}
-
-	public ProgramaServicioCore addProgramaServicioCore(ProgramaServicioCore programaServicioCore) {
-		getProgramaServicioCores().add(programaServicioCore);
-		programaServicioCore.setServicioSalud(this);
-
-		return programaServicioCore;
-	}
-
-	public ProgramaServicioCore removeProgramaServicioCore(ProgramaServicioCore programaServicioCore) {
-		getProgramaServicioCores().remove(programaServicioCore);
-		programaServicioCore.setServicioSalud(null);
-
-		return programaServicioCore;
 	}
 
 	public Region getRegion() {

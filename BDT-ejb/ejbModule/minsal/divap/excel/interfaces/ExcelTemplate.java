@@ -7,6 +7,7 @@ public abstract class ExcelTemplate<T>{
 	private Integer offsetRows = 0;
 	private Integer offsetColumns = 0;
 	private List<String> headers = null;
+
 	private List<T> items;
 
 	public abstract List<List<Object>> getDataList();

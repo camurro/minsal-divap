@@ -27,7 +27,7 @@ public class TipoPrograma implements Serializable {
 	private List<MetadataCore> metadataCores;
 
 	//bi-directional many-to-one association to Programa
-	@OneToMany(mappedBy="tipoPrograma")
+	@OneToMany(mappedBy="idTipoPrograma")
 	private List<Programa> programas;
 
 	public TipoPrograma() {
@@ -81,14 +81,14 @@ public class TipoPrograma implements Serializable {
 
 	public Programa addPrograma(Programa programa) {
 		getProgramas().add(programa);
-		programa.setTipoPrograma(this);
+		programa.setIdTipoPrograma(this);
 
 		return programa;
 	}
 
 	public Programa removePrograma(Programa programa) {
 		getProgramas().remove(programa);
-		programa.setTipoPrograma(null);
+		programa.setIdTipoPrograma(null);
 
 		return programa;
 	}

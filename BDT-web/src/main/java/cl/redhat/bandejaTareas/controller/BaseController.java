@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.primefaces.model.UploadedFile;
 
 
+
 //import cl.redhat.bandejaTareas.model.OirsRol;
 //import cl.redhat.bandejaTareas.model.OirsUsuario;
 // import cl.redhat.bandejaTareas.exceptions.BusinessException;
@@ -38,10 +39,10 @@ public abstract class BaseController {
 	private DocumentoVO documento;
 	@EJB
 	protected DocumentService documentService;
-	
+
 	public BaseController(){
 	}
-	
+
 	protected boolean sessionExpired(){
 		boolean expired = false;
 		if (!getSessionBean().isLogged()) {
@@ -174,11 +175,11 @@ public abstract class BaseController {
 	public Integer persistFile(String filename, byte[] contents) {
 		return documentService.uploadTemporalFile(filename, contents);
 	}
-	
+
 	public File createTemporalFile(String filename, byte[] contents) {
 		return documentService.createTemporalFile(filename, contents);
 	}
-	
+
 	public DocumentoVO getDocumento()
 	{
 		return this.documento;
@@ -228,6 +229,17 @@ public abstract class BaseController {
 			compare = 1;
 		}
 		return compare;
+	}
+
+	@SuppressWarnings("unchecked")
+	protected <T> T getBean(String name, Class<T> type){
+		return 	(T) FacesContext.getCurrentInstance()
+				.getApplication()
+				.getExpressionFactory()
+				.createValueExpression(
+						FacesContext.getCurrentInstance().getELContext(), 
+						"#{" + name + "}", type)
+						.getValue(FacesContext.getCurrentInstance().getELContext());
 	}
 
 }

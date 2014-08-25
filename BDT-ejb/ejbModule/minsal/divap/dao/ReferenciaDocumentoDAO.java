@@ -1,5 +1,6 @@
 package minsal.divap.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Singleton;
@@ -7,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import cl.minsal.divap.model.ReferenciaDocumento;
 
 
@@ -23,7 +25,6 @@ public class ReferenciaDocumentoDAO {
 	}
 
 	public List<ReferenciaDocumento> getReferenciaDocumentosById(List<Integer> idDocumentos){
-		
 		try {
 			TypedQuery<ReferenciaDocumento> query = this.em
 					.createNamedQuery("ReferenciaDocumento.findByIds", 
@@ -33,7 +34,17 @@ public class ReferenciaDocumentoDAO {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
 
+	public List<ReferenciaDocumento> getReferenciaDocumentosBySummaryId(List<ReferenciaDocumentoSummaryVO> documentos) {
+		if(documentos == null || documentos.size() == 0){
+			return null;
+		}
+		List<Integer> idDocumentos = new ArrayList<Integer>();
+		for(ReferenciaDocumentoSummaryVO referencia : documentos){
+			idDocumentos.add(referencia.getId());
+		}
+		return getReferenciaDocumentosById(idDocumentos);
 	}
 
 }

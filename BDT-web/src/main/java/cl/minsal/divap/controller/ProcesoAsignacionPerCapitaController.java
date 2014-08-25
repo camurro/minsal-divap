@@ -102,8 +102,8 @@ implements Serializable {
 					docIds.add(docDesempeno);
 				}
 				setArchivosValidos(true);
-				distribucionInicialPercapitaService.moveToAlfresco(this.idDistribucionInicialPercapita, docPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA);
-				distribucionInicialPercapitaService.moveToAlfresco(this.idDistribucionInicialPercapita, docDesempeno, TipoDocumentosProcesos.ASIGNACIONDESEMPENODIFICIL);
+				distribucionInicialPercapitaService.moveToAlfresco(this.idDistribucionInicialPercapita, docPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA, null);
+				distribucionInicialPercapitaService.moveToAlfresco(this.idDistribucionInicialPercapita, docDesempeno, TipoDocumentosProcesos.ASIGNACIONDESEMPENODIFICIL, null);
 			} catch (ExcelFormatException e) {
 				mensaje = "Los archivos no son válidos.";
 				setArchivosValidos(false);

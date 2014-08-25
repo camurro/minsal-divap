@@ -168,6 +168,33 @@
 				<env-entry-value>PROCESOS/REBAJA</env-entry-value>
 			</env-entry>
 		</session>
+		<session>
+			<ejb-name>RecursosFinancierosProgramasReforzamientoService</ejb-name>
+			<env-entry>
+				<description>Tmp Dir</description>
+				<env-entry-name>tmpDir</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>/tmp/excel</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Tmp Dir docs</description>
+				<env-entry-name>tmpDirDoc</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>/tmp/doc</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Template folder recursos financieros APS</description>
+				<env-entry-name>folderTemplateRecursosFinancierosAPS</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>TEMPLATES/RECURSOSFINANCIEROSPROGRAMASREFORZAMIENTOAPS</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Process folder recursos financieros APS</description>
+				<env-entry-name>folderRecursosFinancierosAPS</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>PROCESOS/{ANO}/RECURSOSFINANCIEROSPROGRAMASREFORZAMIENTOAPS</env-entry-value>
+			</env-entry>
+		</session>
 	</enterprise-beans>
 	<!-- <ejb-client-jar>BaseEJBClient.jar</ejb-client-jar> -->
 </ejb-jar>

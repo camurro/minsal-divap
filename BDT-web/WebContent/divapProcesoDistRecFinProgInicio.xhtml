@@ -17,8 +17,8 @@
 
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="divapProcesosHome?faces-redirect=true" ajax="false"
 					icon="ui-icon-seek-first" />
-				<p:commandButton value="Iniciar Proceso" styleClass="x-btn-text" icon="ui-icon-play"
-					action="divapProcesoDistRecFinProgProgramasServicio?faces-redirect=true" ajax="false" />
+				<p:commandButton value="Iniciar Proceso" action="#{divapProcesoDistRecFinProgInicio.iniciarProceso}" styleClass="x-btn-text" icon="ui-icon-play"
+					  ajax="false" />
 				<h3>Registro de instancias del proceso:</h3>
 				<p:panel header="[1] Distribución de Recursos Financieros por Programa: Programa Ref. 1">
 					<h4>Información de la Instancia:</h4>

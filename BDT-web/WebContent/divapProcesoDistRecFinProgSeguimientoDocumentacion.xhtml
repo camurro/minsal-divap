@@ -15,7 +15,7 @@
 					<h3>
 						<span class="strong">Programa | </span> PILOTO VIDA SANA: ALCOHOL
 					</h3>
-					<p class="parrafo">El #{procesoAsignacionPerCapitaController.actividadSeguimientoTitle} contiene lorem ipsum dolor sit amet,
+					<p class="parrafo">El #{procesoDistRecFinSeguimientoController.actividadSeguimientoTitle} contiene lorem ipsum dolor sit amet,
 						consectetur adipiscing elit. Praesent egestas tempor nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est
 						faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo placerat, nisi augue suscipit ante, vel
 						auctor mauris enim eu turpis. Nunc eu erat et eros interdum eleifend eu non sem. Maecenas sollicitudin odio imperdiet orci
@@ -39,27 +39,6 @@
 									<f:selectItem itemLabel="Seleccione" itemValue="" />
 								</p:selectOneMenu>
 							</h:panelGrid>
-							<!-- 
-							<h:panelGrid columns="2">
-								<h:outputText value="Comuna: " styleClass="inputLabel" />
-								<p:selectCheckboxMenu
-									value="#{procesoRebajaController.comunasSeleccionadas}"
-									label="Seleccione" filter="true" filterText="Filter"
-									filterMatchMode="startsWith">
-									<f:selectItems value="#{procesoRebajaController.comunas}" />
-								</p:selectCheckboxMenu>
-							</h:panelGrid>
-
-							<h:panelGrid columns="2">
-								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
-								<p:selectCheckboxMenu
-									value="#{procesoRebajaController.comunasSeleccionadas}"
-									label="Seleccione" filter="true" filterText="Filter"
-									filterMatchMode="startsWith">
-									<f:selectItems value="#{procesoRebajaController.comunas}" />
-								</p:selectCheckboxMenu>
-							</h:panelGrid>
- -->
 
 							<h:panelGrid columns="2">
 								<p:commandButton value="Buscar" styleClass=" x-btn-text icon-guardar" icon="ui-icon-search" />
@@ -111,17 +90,17 @@
 
 							<h:panelGrid columns="2">
 								<h:outputText value="Comuna: " styleClass="inputLabel" />
-								<p:selectCheckboxMenu value="#{procesoRebajaController.comunasSeleccionadas}" label="Seleccione" filter="true" filterText="Filter"
+								<p:selectCheckboxMenu value="#{procesoDistRecFinSeguimientoController.comunasSeleccionadas}" label="Seleccione" filter="true" filterText="Filter"
 									filterMatchMode="startsWith">
-									<f:selectItems value="#{procesoRebajaController.comunas}" />
+									<f:selectItems value="#{procesoDistRecFinSeguimientoController.comunas}" />
 								</p:selectCheckboxMenu>
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
 								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
-								<p:selectCheckboxMenu value="#{procesoRebajaController.comunasSeleccionadas}" label="Seleccione" filter="true" filterText="Filter"
+								<p:selectCheckboxMenu value="#{procesoDistRecFinSeguimientoController.establecimientosSeleccionadas}" label="Seleccione" filter="true" filterText="Filter"
 									filterMatchMode="startsWith">
-									<f:selectItems value="#{procesoRebajaController.comunas}" />
+									<f:selectItems value="#{procesoDistRecFinSeguimientoController.comunas}" />
 								</p:selectCheckboxMenu>
 							</h:panelGrid>
 
@@ -176,7 +155,7 @@
 					<h:outputText value="* Debe seleccionar al menos una columna a mostrar." styleClass="ui-state-error" />
 					<br />
 					<br />
-					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoAsignacionPerCapitaController.planillaMontosDistribucion}"
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoDistRecFinSeguimientoController.planillaMontosDistribucion}"
 						liveResize="true" var="_rebaja" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
 						styleClass="dataTable">
 						<p:columnGroup type="header">
@@ -255,7 +234,7 @@
 
 								<h:outputText value="Adjunto: " styleClass="inputLabel" />
 								<h:panelGrid columns="2">
-									<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" mode="simple"
+									<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoDistRecFinSeguimientoController.adjunto}" mode="simple"
 										styleClass="inputText" />
 									<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
 								</h:panelGrid>
@@ -274,8 +253,9 @@
 							finalizar la actividad y pasar a la siguiente en el flujo del proceso. En caso de que exista algún error en la documentación y sea
 							necesario volver a generar la documentación haga clic en <span class="strong">Reingresar</span>.
 						</p>
-						<p:commandButton styleClass="x-btn-text" value="Finalizar Seguimiento | Actividad" icon="ui-icon-check"
-							action="bandejaTareas?faces-redirect=true indexMenu=0" />
+						<p:commandButton styleClass="x-btn-text" value="Finalizar Seguimiento | Actividad" icon="ui-icon-check" action="#{procesoDistRecFinSeguimientoController.enviar}">
+							<f:setPropertyActionListener target="#{procesoDistRecFinSeguimientoController.target}" value="bandejaTareas.jsf" />
+						</p:commandButton>
 
 						<div style="clear: both;"></div>
 					</h:form>
