@@ -1,6 +1,8 @@
 package cl.minsal.divap.pojo;
 
-public class EstimacionFlujoMonitoreoPojo {
+import java.util.Comparator;
+
+public class EstimacionFlujoMonitoreoPojo implements Comparable<EstimacionFlujoMonitoreoPojo> {
 
 	
 	private long id;
@@ -357,8 +359,26 @@ public class EstimacionFlujoMonitoreoPojo {
 		this.color = color;
 	}
 	
+	public static class OrderByAmount implements Comparator<EstimacionFlujoMonitoreoPojo> {
+
+        @Override
+        public int compare(EstimacionFlujoMonitoreoPojo o1, EstimacionFlujoMonitoreoPojo o2) {
+            return o1.comuna.compareTo(o2.comuna);
+        }
+    }
 	
-	
+	@Override
+    public int compareTo(EstimacionFlujoMonitoreoPojo o) {
+        return this.getId() > o.getId() ? 1 : (this.id < o.id ? -1 : 0);
+    }
+  
+    /*
+     * implementing toString method to print orderId of Order
+     */
+    @Override
+    public String toString(){
+        return String.valueOf(id);
+    }
 	
 
 	
