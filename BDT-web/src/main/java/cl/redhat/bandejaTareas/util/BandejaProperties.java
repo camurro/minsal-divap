@@ -8,16 +8,21 @@ import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.ejb.Startup;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 
 import org.apache.log4j.Logger;
 
 
 
-@SuppressWarnings("serial")
-@ApplicationScoped
+@SuppressWarnings({"serial", "cdi-ambiguous-dependency"})
+@Dependent
 @Startup
 public class BandejaProperties extends Properties {
 
+	public BandejaProperties()
+	{
+	
+	}
 	public static final String DEFAULT_FILE_NAME = "bandeja.properties";
 
 	private static final String SERVER_CONF_URL = System

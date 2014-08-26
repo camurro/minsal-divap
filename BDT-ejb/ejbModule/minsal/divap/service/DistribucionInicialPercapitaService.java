@@ -166,6 +166,7 @@ public class DistribucionInicialPercapitaService {
 	}
 
 	public Integer getIdPlantillaRecursosPerCapita(){
+		
 		Integer plantillaId = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAPOBLACIONINSCRITA);
 		if(plantillaId == null){
 			List<BaseVO> servicios = servicioSaludService.getAllServicios();

@@ -13,7 +13,7 @@ import javax.inject.Named;
 
 import minsal.divap.enums.BusinessProcess;
 import minsal.divap.service.ProgramasService;
-import minsal.divap.service.TratamientoOrdenService;
+import minsal.divap.service.OTService;
 import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.TaskDataVO;
@@ -29,7 +29,7 @@ implements Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	
 	@EJB
-	private TratamientoOrdenService tratamientoOrdenService;
+	private OTService tratamientoOrdenService;
 	
 	@EJB
 	private ProgramasService programaService;

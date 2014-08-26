@@ -28,21 +28,24 @@ public class MatchViewTask {
 		
 		PRUEBA("minsal_divap.prueba.primeratarea","divapPrueba"),
 		PRUEBA2("minsal_divap.prueba.segundatarea","divapPrueba"),
-		
-		
-		PRUEBALANZAR("minsal_divap.preflujo.lanzar","divapPrueba"),
-		PRUEBAREBOTE("minsal_divap.preflujo.rebote","divapPrueba"),
-		PRUEBAPUNTO("minsal_divap.preflujo.punto","divapPrueba"),
+		ESTIMACIONFLUJOCAJASELECCIONARLINEAPROGRAMATICA("minsal_divap.EstimacionFlujoCaja.seleccionarlineaprogramatica","divapProcesoProgProgramas"),
+		ESTIMACIONFLUJOCAJAREVISARVALIDARMONITOREO("minsal_divap.EstimacionFlujoCaja.revisaryvalidarmonitoreo","divapProcesoProgMonitoreo"),
+		ESTIMACIONFLUJOCAJAREVISARCONSOLIDACION("minsal_divap.EstimacionFlujoConsolidador.revisarconsolidaciondeestimaciondeflujodecaja","divapProcesoProgConsolidado"),
+		ESTIMACIONFLUJOCAJAHACERSEGUIMIENTO("minsal_divap.EstimacionFlujoConsolidador.hacerseguimientoordinario","divapProcesoProgSeguimiento"),
 		
 		// Mapeo paginas de Tramitacion Orden Transferencia Profesional
 		OTSELECCIONARLINEAFINANCIAMIENTO("minsal_divap.TramitacionOrdenTransferenciaProfesional.seleccionarlineadefinanciamiento","divapProcesoOTLineas"),//"divapProcesoProgProgramas"),
-		OTREVISARANTECEDENTESPERCAPITA("minsal_divap.TramitacionOrdenTransferenciaProfesional.revisarantecedentespercapita","divapProcesoOTUsuario"),
+		OTREVISARANTECEDENTESPERCAPITA("minsal_divap.TramitacionOrdenTransferenciaProfesional.revisarantecedentespercapita","divapProcesoOTUsuario"),//divapProcesoOTUsuario
 		OTREVISARANTECEDENTESLEYES("minsal_divap.TramitacionOrdenTransferenciaProfesional.revisarantecedentesleyes","divapProcesoOTUsuario"),
-		OTREVISARANTECEDENTESPROGRAMATICA("minsal_divap.TramitacionOrdenTransferenciaProfesional.revisarantecedenteslineaprogramatica","divapProcesoOTUsuario"),
+		OTREVISARANTECEDENTESPROGRAMATICA("minsal_divap.TramitacionOrdenTransferenciaProfesional.revisarantecedenteslineaprogramatica","divapProcesoOTLineas"),
 		
 		// Mapeo paginas de Tramitacion Orden Transferencia Consolidador
-		TRAMITACIONORDENREVISARCONSOLIDACION("minsal_divap.TramitacionOrdenTransferenciaConsolidador.revisarconsolidaciondeordenesdetransferencia","divapPrueba"),
+		TRAMITACIONORDENREVISARCONSOLIDACION("minsal_divap.TramitacionOrdenTransferenciaConsolidador.revisarconsolidaciondeordenesdetransferencia","divapProcesoOTConsolidador"),//"divapProcesoOTSeguimiento"),//"divapProcesoOTConsolidador"),
 		TRAMITACIONORDENHACERSEGUIMIENTO("minsal_divap.TramitacionOrdenTransferenciaConsolidador.hacerseguimientoordinariosdeordenesdetransferencia","divapPrueba");
+				
+
+
+
 		
 		
 		private String key;

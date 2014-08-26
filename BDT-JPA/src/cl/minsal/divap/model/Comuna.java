@@ -63,6 +63,21 @@ public class Comuna implements Serializable {
 	private List<ProgramaMunicipalCore> programaMunicipalCores;
 	@OneToMany(mappedBy = "idComuna")
    	 private Collection<ComunaCumplimiento> comunaCumplimientoCollection;
+	
+	
+//	//bi-directional many-to-one association to Establecimiento
+//	@OneToMany(mappedBy="comuna")
+//	private List<Remesa> remesas;
+	
+	
+
+//	public List<Remesa> getRemesas() {
+//		return remesas;
+//	}
+//
+//	public void setRemesas(List<Remesa> remesas) {
+//		this.remesas = remesas;
+//	}
 
 	public Comuna() {
 	}

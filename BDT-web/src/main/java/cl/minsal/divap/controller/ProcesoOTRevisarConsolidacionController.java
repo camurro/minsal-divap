@@ -34,7 +34,8 @@ import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.excel.impl.AsignacionRecursosPercapitaSheetExcel;
 import minsal.divap.service.AlfrescoService;
-import minsal.divap.service.TratamientoOrdenService;
+import minsal.divap.service.DistribucionInicialPercapitaService;
+import minsal.divap.service.OTService;
 import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
 import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.BodyVO;
@@ -47,6 +48,8 @@ import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskVO;
 import minsal.divap.vo.VariacionPoblacionVO;
 import cl.minsal.divap.pojo.ComponentePojo;
+import cl.minsal.divap.pojo.EstimacionFlujoMonitoreoGlobalPojo;
+import cl.minsal.divap.pojo.EstimacionFlujoMonitoreoPojo;
 import cl.minsal.divap.pojo.ProcesosProgramasPojo;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
@@ -58,12 +61,10 @@ implements Serializable {
 	@Inject private transient Logger log;
 
 	@EJB
-	private TratamientoOrdenService tratamientoOrdenService;
+	private OTService tratamientoOrdenService;
 	private List<AsignacionDistribucionPerCapitaVO> antecendentesComunaCalculado;
 	
 	private boolean existeProgramasPendientes;
-	
-	
 	public boolean isExisteProgramasPendientes() {
 		
 		boolean existeProgramasPendientes = false;
@@ -77,6 +78,180 @@ implements Serializable {
 		return existeProgramasPendientes;
 	}
 
+	@EJB
+	private OTService  otService;
+	private Integer docAsignacionRecursosPercapita;
+	private String docIdDownload;
+	public String getDocIdDownload() {
+		return docIdDownload;
+	}
+	
+	public String downloadTemplate() {
+		Integer docDownload = Integer.valueOf(Integer
+				.parseInt(getDocIdDownload()));
+		setDocumento(documentService.getDocument(docDownload));
+		super.downloadDocument();
+		return null;
+	}
+
+
+	public void setDocIdDownload(String docIdDownload) {
+		System.out.println("docIdDownload-->" + docIdDownload);
+		this.docIdDownload = docIdDownload;
+	}
+	
+	public Integer getDocAsignacionRecursosPercapita() {
+		return docAsignacionRecursosPercapita;
+	}
+	
+	public void setDocAsignacionRecursosPercapita(
+			Integer docAsignacionRecursosPercapita) {
+		this.docAsignacionRecursosPercapita = docAsignacionRecursosPercapita;
+	}
+	
+	
+	/*
+	 ********************************************************************************************* SUBTITULO 21
+	 */
+	/*
+	 * Filtra la lista segun los parametros de entrada, en este caso el servicio.
+	 */
+
+	OTRevisarAntecedentesGlobalVO oTRevisarAntecedentesGlobalVOSubtitulo21Original;
+	public OTRevisarAntecedentesGlobalVO getOTRevisarAntecedentesGlobalVOSubtitulo21Original() {
+		return oTRevisarAntecedentesGlobalVOSubtitulo21Original;
+	}
+
+	public void setOTRevisarAntecedentesGlobalVOSubtitulo21Original(
+			OTRevisarAntecedentesGlobalVO oTRevisarAntecedentesGlobalVOSubtitulo21Original) {
+		this.oTRevisarAntecedentesGlobalVOSubtitulo21Original = oTRevisarAntecedentesGlobalVOSubtitulo21Original;
+	}
+	
+	private String valorComboProgramaFiltro;
+	public String getValorComboProgramaFiltro() {
+		return valorComboProgramaFiltro;
+	}
+
+	public void setValorComboProgramaFiltro(
+			String valorComboProgramaFiltro) {
+		this.valorComboProgramaFiltro = valorComboProgramaFiltro;
+	}
+	
+	
+	public void filtrarGrillasTabDetallePrograma()
+	{
+		filtrarSubtitulo21();
+		filtrarSubtitulo22();
+		filtrarSubtitulo29();
+		filtrarMunicipal();
+	}
+	
+	public void filtrarSubtitulo21()
+	{
+		List<OTRevisarAntecedentesVO> lst = oTRevisarAntecedentesGlobalVOSubtitulo21Original.getListadoServicios();
+		List<OTRevisarAntecedentesVO> lstAgregar = new ArrayList<OTRevisarAntecedentesVO>();
+		for (OTRevisarAntecedentesVO oTRevisarAntecedentesVO : lst) {
+			if (oTRevisarAntecedentesVO.getServicio().contains(valorComboProgramaFiltro))
+			{
+				lstAgregar.add(oTRevisarAntecedentesVO);
+			}
+		}
+		oTRevisarAntecedentesGlobalVOSubtitulo21.setListadoServicios(lstAgregar);
+		
+	}
+	
+	/*
+	 ********************************************************************************************* SUBTITULO 22
+	 */
+	/*
+	 * Filtra la lista segun los parametros de entrada, en este caso el servicio.
+	 */
+
+	OTRevisarAntecedentesGlobalVO oTRevisarAntecedentesGlobalVOSubtitulo22Original;
+	public OTRevisarAntecedentesGlobalVO getOTRevisarAntecedentesGlobalVOSubtitulo22Original() {
+		return oTRevisarAntecedentesGlobalVOSubtitulo22Original;
+	}
+
+	public void setOTRevisarAntecedentesGlobalVOSubtitulo22Original(
+			OTRevisarAntecedentesGlobalVO oTRevisarAntecedentesGlobalVOSubtitulo22Original) {
+		this.oTRevisarAntecedentesGlobalVOSubtitulo22Original = oTRevisarAntecedentesGlobalVOSubtitulo22Original;
+	}
+
+	public void filtrarSubtitulo22()
+	{
+		List<OTRevisarAntecedentesVO> lst = oTRevisarAntecedentesGlobalVOSubtitulo22Original.getListadoServicios();
+		List<OTRevisarAntecedentesVO> lstAgregar = new ArrayList<OTRevisarAntecedentesVO>();
+		for (OTRevisarAntecedentesVO estimacionFlujoMonitoreoPojo : lst) {
+			if (estimacionFlujoMonitoreoPojo.getServicio().contains(valorComboProgramaFiltro))
+			{
+				lstAgregar.add(estimacionFlujoMonitoreoPojo);
+			}
+		}
+		oTRevisarAntecedentesGlobalVOSubtitulo22.setListadoServicios(lstAgregar);
+	}
+	
+	
+	/*
+	 ********************************************************************************************* SUBTITULO 29
+	 */
+	/*
+	 * Filtra la lista segun los parametros de entrada, en este caso el servicio.
+	 */
+
+	OTRevisarAntecedentesGlobalVO oTRevisarAntecedentesGlobalVOSubtitulo29Original;
+	public OTRevisarAntecedentesGlobalVO getOTRevisarAntecedentesGlobalVOSubtitulo29Original() {
+		return oTRevisarAntecedentesGlobalVOSubtitulo29Original;
+	}
+
+	public void setOTRevisarAntecedentesGlobalVOSubtitulo29Original(
+			OTRevisarAntecedentesGlobalVO oTRevisarAntecedentesGlobalVOSubtitulo29Original) {
+		this.oTRevisarAntecedentesGlobalVOSubtitulo29Original = oTRevisarAntecedentesGlobalVOSubtitulo29Original;
+	}
+	
+	public void filtrarSubtitulo29()
+	{
+		List<OTRevisarAntecedentesVO> lst = oTRevisarAntecedentesGlobalVOSubtitulo29Original.getListadoServicios();
+		List<OTRevisarAntecedentesVO> lstAgregar = new ArrayList<OTRevisarAntecedentesVO>();
+		for (OTRevisarAntecedentesVO estimacionFlujoMonitoreoPojo : lst) {
+			if (estimacionFlujoMonitoreoPojo.getServicio().contains(valorComboProgramaFiltro))
+			{
+				lstAgregar.add(estimacionFlujoMonitoreoPojo);
+			}
+		}
+		oTRevisarAntecedentesGlobalVOSubtitulo29.setListadoServicios(lstAgregar);
+	}
+	
+	/*
+	 ********************************************************************************************* MUNICIPAL
+	 */
+	/*
+	 * Filtra la lista segun los parametros de entrada, en este caso el servicio.
+	 */
+
+	OTRevisarAntecedentesGlobalVO oTRevisarAntecedentesGlobalVOMunicipalOriginal;
+	public OTRevisarAntecedentesGlobalVO getOTRevisarAntecedentesGlobalVOMunicipalOriginal() {
+		return oTRevisarAntecedentesGlobalVOMunicipalOriginal;
+	}
+
+	public void setOTRevisarAntecedentesGlobalVOMunicipalOriginal(
+			OTRevisarAntecedentesGlobalVO oTRevisarAntecedentesGlobalVOMunicipalOriginal) {
+		this.oTRevisarAntecedentesGlobalVOMunicipalOriginal = oTRevisarAntecedentesGlobalVOMunicipalOriginal;
+	}
+	
+	public void filtrarMunicipal()
+	{
+		List<OTRevisarAntecedentesVO> lst = oTRevisarAntecedentesGlobalVOMunicipalOriginal.getListadoServicios();
+		List<OTRevisarAntecedentesVO> lstAgregar = new ArrayList<OTRevisarAntecedentesVO>();
+		for (OTRevisarAntecedentesVO estimacionFlujoMonitoreoPojo : lst) {
+			if (estimacionFlujoMonitoreoPojo.getServicio().contains(valorComboProgramaFiltro))
+			{
+				lstAgregar.add(estimacionFlujoMonitoreoPojo);
+			}
+		}
+		oTRevisarAntecedentesGlobalVOMunicipal.setListadoServicios(lstAgregar);
+	}
+	
+	
 	@PostConstruct
 	public void init() {
 		
@@ -89,6 +264,9 @@ implements Serializable {
 				log.error("Error tratando de redireccionar a login por falta de usuario en sesion.", e);
 			}
 		}
+		
+		this.docAsignacionRecursosPercapita = otService.getIdPlantillaRecursosPerCapita();
+		
 		generarObjetosGlobal();
 		generaProgramas();
 		generaServicios();
@@ -216,8 +394,7 @@ implements Serializable {
 	
 	//EDICION SUBTITULO 21
 	public void onCellEditSubtitulo21(CellEditEvent event) {
-		 
-		 UIColumn col= (UIColumn) event.getColumn();
+
 		 DataTable o=(DataTable) event.getSource();
 		
 		 OTRevisarAntecedentesVO info=(OTRevisarAntecedentesVO)o.getRowData();
@@ -241,20 +418,44 @@ implements Serializable {
 	        		    monitore_borrar = monitoreo_actual;
 	        		    break;
 	        		}
-					
 				}
 	        	
 	        	listadoServiciosSubtitulo21.remove(monitore_borrar);
 	        	listadoServiciosSubtitulo21.add(info);        	
 	        	
 	        	oTRevisarAntecedentesGlobalVOSubtitulo21.setListadoServicios(listadoServiciosSubtitulo21);
+	        	
+	        	//MODIFICAR LA LISTA ORIGINAL
+	        	
+	        	List<OTRevisarAntecedentesVO> lst_monitore_borrar =new ArrayList<OTRevisarAntecedentesVO>();
+	        	List<OTRevisarAntecedentesVO> lst_monitore_agregar =new ArrayList<OTRevisarAntecedentesVO>();
+	        	
+	        	for (OTRevisarAntecedentesVO monitoreo_actual : listadoServiciosSubtitulo21) {
+	        		
+	        		for (OTRevisarAntecedentesVO oTRevisarAntecedentesVO : oTRevisarAntecedentesGlobalVOSubtitulo21Original.getListadoServicios()) {
+						
+					
+	        		if (oTRevisarAntecedentesVO.getId() == monitoreo_actual.getId())
+	        		{
+	        		    lst_monitore_borrar.add(oTRevisarAntecedentesVO);
+	        		    lst_monitore_agregar.add(monitoreo_actual);
+	        		}
+	        		}
+					
+				}
+	        	
+	        	for (OTRevisarAntecedentesVO oTRevisarAntecedentesVO : lst_monitore_borrar) {
+	        		oTRevisarAntecedentesGlobalVOSubtitulo21Original.getListadoServicios().remove(oTRevisarAntecedentesVO);
+				}
+	        	
+	        	for (OTRevisarAntecedentesVO oTRevisarAntecedentesVO : lst_monitore_agregar) {
+	        		oTRevisarAntecedentesGlobalVOSubtitulo21Original.getListadoServicios().add(oTRevisarAntecedentesVO);
+				}	
 	}
 	
 	
 	//EDICION SUBTITULO 22
 		public void onCellEditSubtitulo22(CellEditEvent event) {
-			 
-			 UIColumn col= (UIColumn) event.getColumn();
 			 DataTable o=(DataTable) event.getSource();
 			
 			 OTRevisarAntecedentesVO info=(OTRevisarAntecedentesVO)o.getRowData();
@@ -285,12 +486,37 @@ implements Serializable {
 		        	listadoServiciosSubtitulo22.add(info);        	
 		        	
 		        	oTRevisarAntecedentesGlobalVOSubtitulo22.setListadoServicios(listadoServiciosSubtitulo22);
+		        	
+		        	//MODIFICAR LA LISTA ORIGINAL
+		        	
+		        	List<OTRevisarAntecedentesVO> lst_monitore_borrar =new ArrayList<OTRevisarAntecedentesVO>();
+		        	List<OTRevisarAntecedentesVO> lst_monitore_agregar =new ArrayList<OTRevisarAntecedentesVO>();
+		        	
+		        	for (OTRevisarAntecedentesVO monitoreo_actual : listadoServiciosSubtitulo22) {
+		        		
+		        		for (OTRevisarAntecedentesVO oTRevisarAntecedentesVO : oTRevisarAntecedentesGlobalVOSubtitulo22Original.getListadoServicios()) {
+							
+						
+		        		if (oTRevisarAntecedentesVO.getId() == monitoreo_actual.getId())
+		        		{
+		        		    lst_monitore_borrar.add(oTRevisarAntecedentesVO);
+		        		    lst_monitore_agregar.add(monitoreo_actual);
+		        		}
+		        		}
+						
+					}
+		        	
+		        	for (OTRevisarAntecedentesVO oTRevisarAntecedentesVO : lst_monitore_borrar) {
+		        		oTRevisarAntecedentesGlobalVOSubtitulo22Original.getListadoServicios().remove(oTRevisarAntecedentesVO);
+					}
+		        	
+		        	for (OTRevisarAntecedentesVO oTRevisarAntecedentesVO : lst_monitore_agregar) {
+		        		oTRevisarAntecedentesGlobalVOSubtitulo22Original.getListadoServicios().add(oTRevisarAntecedentesVO);
+					}
 		}
 		
 		//EDICION SUBTITULO 29
 		public void onCellEditSubtitulo29(CellEditEvent event) {
-			 
-			 UIColumn col= (UIColumn) event.getColumn();
 			 DataTable o=(DataTable) event.getSource();
 			
 			 OTRevisarAntecedentesVO info=(OTRevisarAntecedentesVO)o.getRowData();
@@ -321,12 +547,37 @@ implements Serializable {
 		        	listadoServiciosSubtitulo29.add(info);        	
 		        	
 		        	oTRevisarAntecedentesGlobalVOSubtitulo29.setListadoServicios(listadoServiciosSubtitulo29);
+		        	
+		        	//MODIFICAR LA LISTA ORIGINAL
+		        	
+		        	List<OTRevisarAntecedentesVO> lst_monitore_borrar =new ArrayList<OTRevisarAntecedentesVO>();
+		        	List<OTRevisarAntecedentesVO> lst_monitore_agregar =new ArrayList<OTRevisarAntecedentesVO>();
+		        	
+		        	for (OTRevisarAntecedentesVO monitoreo_actual : listadoServiciosSubtitulo29) {
+		        		
+		        		for (OTRevisarAntecedentesVO oTRevisarAntecedentesVO : oTRevisarAntecedentesGlobalVOSubtitulo29Original.getListadoServicios()) {
+							
+						
+		        		if (oTRevisarAntecedentesVO.getId() == monitoreo_actual.getId())
+		        		{
+		        		    lst_monitore_borrar.add(oTRevisarAntecedentesVO);
+		        		    lst_monitore_agregar.add(monitoreo_actual);
+		        		}
+		        		}
+						
+					}
+		        	
+		        	for (OTRevisarAntecedentesVO oTRevisarAntecedentesVO : lst_monitore_borrar) {
+		        		oTRevisarAntecedentesGlobalVOSubtitulo29Original.getListadoServicios().remove(oTRevisarAntecedentesVO);
+					}
+		        	
+		        	for (OTRevisarAntecedentesVO oTRevisarAntecedentesVO : lst_monitore_agregar) {
+		        		oTRevisarAntecedentesGlobalVOSubtitulo29Original.getListadoServicios().add(oTRevisarAntecedentesVO);
+					}
 		}
 	
 	//EDICION MUNICIPAL
 	public void onCellEditMunicipal(CellEditEvent event) {
-		 
-		 UIColumn col= (UIColumn) event.getColumn();
 		 DataTable o=(DataTable) event.getSource();
 		
 		 OTRevisarAntecedentesVO info=(OTRevisarAntecedentesVO)o.getRowData();
@@ -355,6 +606,33 @@ implements Serializable {
 	        	listadoServiciosMunicipal.add(info);        	
 	        	
 	        	oTRevisarAntecedentesGlobalVOMunicipal.setListadoServicios(listadoServiciosMunicipal);
+	        	
+	        	//MODIFICAR LA LISTA ORIGINAL
+	        	
+	        	List<OTRevisarAntecedentesVO> lst_monitore_borrar =new ArrayList<OTRevisarAntecedentesVO>();
+	        	List<OTRevisarAntecedentesVO> lst_monitore_agregar =new ArrayList<OTRevisarAntecedentesVO>();
+	        	
+	        	for (OTRevisarAntecedentesVO monitoreo_actual : listadoServiciosMunicipal) {
+	        		
+	        		for (OTRevisarAntecedentesVO oTRevisarAntecedentesVO : oTRevisarAntecedentesGlobalVOMunicipalOriginal.getListadoServicios()) {
+						
+					
+	        		if (oTRevisarAntecedentesVO.getId() == monitoreo_actual.getId())
+	        		{
+	        		    lst_monitore_borrar.add(oTRevisarAntecedentesVO);
+	        		    lst_monitore_agregar.add(monitoreo_actual);
+	        		}
+	        		}
+					
+				}
+	        	
+	        	for (OTRevisarAntecedentesVO oTRevisarAntecedentesVO : lst_monitore_borrar) {
+	        		oTRevisarAntecedentesGlobalVOMunicipalOriginal.getListadoServicios().remove(oTRevisarAntecedentesVO);
+				}
+	        	
+	        	for (OTRevisarAntecedentesVO oTRevisarAntecedentesVO : lst_monitore_agregar) {
+	        		oTRevisarAntecedentesGlobalVOMunicipalOriginal.getListadoServicios().add(oTRevisarAntecedentesVO);
+				}
 	}
 
 	
@@ -514,6 +792,14 @@ implements Serializable {
 		c.setComponenteNombre("Emergencia Dental");
 		c.setPesoComponente(0.3f);
 		
+		CargarListaSubTitulo21(c);
+		CargarListaSubTitulo22(c);
+		CargarListaSubTitulo29(c);
+		CargarListaMunicipal(c);
+	}
+	
+	private void CargarListaSubTitulo21(ComponentePojo c)
+	{
 		//SUBTITULO 21
 		OTRevisarAntecedentesVO p;
 		listadoServiciosSubtitulo21 = new ArrayList<OTRevisarAntecedentesVO>();
@@ -525,6 +811,7 @@ implements Serializable {
 		p.setComponente(c);
 		p.setId(1L);
 		listadoServiciosSubtitulo21.add(p);
+
 		
 		p = new OTRevisarAntecedentesVO();
 		p.setEstablecimiento("Centro Comunitario de Salud Familiar El Boro");
@@ -536,7 +823,14 @@ implements Serializable {
 		listadoServiciosSubtitulo21.add(p);
 		
 		oTRevisarAntecedentesGlobalVOSubtitulo21.setListadoServicios(listadoServiciosSubtitulo21);
-		
+				
+		//EL FILTRADO DEBE SER IGUAL AL ORIGINAL
+		oTRevisarAntecedentesGlobalVOSubtitulo21Original = new OTRevisarAntecedentesGlobalVO();
+		oTRevisarAntecedentesGlobalVOSubtitulo21Original  = oTRevisarAntecedentesGlobalVOSubtitulo21.clone();
+	}
+	
+	private void CargarListaSubTitulo22(ComponentePojo c)
+	{
 		//SUBTITULO 22
 		OTRevisarAntecedentesVO p22;
 		listadoServiciosSubtitulo22 = new ArrayList<OTRevisarAntecedentesVO>();
@@ -560,6 +854,13 @@ implements Serializable {
 		
 		oTRevisarAntecedentesGlobalVOSubtitulo22.setListadoServicios(listadoServiciosSubtitulo22);
 		
+		//EL FILTRADO DEBE SER IGUAL AL ORIGINAL
+		oTRevisarAntecedentesGlobalVOSubtitulo22Original = new OTRevisarAntecedentesGlobalVO();
+		oTRevisarAntecedentesGlobalVOSubtitulo22Original  = oTRevisarAntecedentesGlobalVOSubtitulo22.clone();
+	}
+	
+	private void CargarListaSubTitulo29(ComponentePojo c)
+	{
 		//SUBTITULO 29
 		OTRevisarAntecedentesVO p29;
 		listadoServiciosSubtitulo29 = new ArrayList<OTRevisarAntecedentesVO>();
@@ -582,7 +883,13 @@ implements Serializable {
 		listadoServiciosSubtitulo29.add(p29);
 		
 		oTRevisarAntecedentesGlobalVOSubtitulo29.setListadoServicios(listadoServiciosSubtitulo29);
-
+		//EL FILTRADO DEBE SER IGUAL AL ORIGINAL
+		oTRevisarAntecedentesGlobalVOSubtitulo29Original = new OTRevisarAntecedentesGlobalVO();
+		oTRevisarAntecedentesGlobalVOSubtitulo29Original  = oTRevisarAntecedentesGlobalVOSubtitulo29.clone();
+	}
+	
+	private void CargarListaMunicipal(ComponentePojo c)
+	{
 		//MUNICIPAL
 		OTRevisarAntecedentesVO pMunicipal;
 		listadoServiciosMunicipal = new ArrayList<OTRevisarAntecedentesVO>();
@@ -605,13 +912,15 @@ implements Serializable {
 		listadoServiciosMunicipal.add(pMunicipal);
 		oTRevisarAntecedentesGlobalVOMunicipal.setListadoServicios(listadoServiciosMunicipal);
 		
+		//EL FILTRADO DEBE SER IGUAL AL ORIGINAL
+		oTRevisarAntecedentesGlobalVOMunicipalOriginal = new OTRevisarAntecedentesGlobalVO();
+		oTRevisarAntecedentesGlobalVOMunicipalOriginal  = oTRevisarAntecedentesGlobalVOMunicipal.clone();
 	}
 	
 	/**
 	 * Metodos implementacion BPM 
 	 */
-	
-	
+
 	@Override
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new HashMap<String, Object>();

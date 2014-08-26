@@ -65,6 +65,36 @@ public class Programa implements Serializable {
 	//bi-directional many-to-one association to ProgramaServicioCore
 	@OneToMany(mappedBy="programa")
 	private List<ProgramaServicioCore> programaServicioCores;
+	
+	
+	//REFERENCIA AGREGADO POR LSUAREZ 
+	//SE GUARDA LOS REMESAS QUE SE HICIERON DICHO PROGRAMA
+	//bi-directional many-to-one association to remesas
+	@OneToMany(mappedBy="programa")
+	private List<Remesa> remesas;
+	public List<Remesa> getRemesas() {
+		return remesas;
+	}
+
+	public void setRemesas(List<Remesa> remesas) {
+		this.remesas = remesas;
+	}
+	
+	
+	public Remesa addRemesa(Remesa remesa) {
+		getRemesas().add(remesa);
+		remesa.setPrograma(this);
+
+		return remesa;
+	}
+
+	public Remesa removeRemesa(Remesa remesa) {
+		getRemesas().remove(remesa);
+		remesa.setPrograma(null);
+
+		return remesa;
+	}
+	
 
 	public Programa() {
 	}

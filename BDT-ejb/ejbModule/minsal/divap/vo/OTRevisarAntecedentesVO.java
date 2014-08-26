@@ -1,19 +1,40 @@
 package minsal.divap.vo;
 
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import cl.minsal.divap.model.Programa;
+import cl.minsal.divap.model.ProgramaMunicipalCore;
+import cl.minsal.divap.model.ProgramaServicioCore;
+import cl.minsal.divap.model.Remesa;
+import cl.minsal.divap.model.ServicioSalud;
 import cl.minsal.divap.pojo.ComponentePojo;
 
 public class OTRevisarAntecedentesVO
 {
 	Random rnd = new Random();
 	private long id;
+	private Integer idRemesa;
+	private Integer idEstablecimiento;
+	private Integer idServicio;
+	private Integer idComuna;
+	
 	private String establecimiento;
 	private String servicio;
 	private String comuna;
 	private ComponentePojo componente;
+	private Integer anio;
 	
+	
+	public Integer getAnio() {
+		return anio;
+	}
+
+	public void setAnio(Integer anio) {
+		this.anio = anio;
+	}
+
 	public ComponentePojo getComponente() {
 		return componente;
 	}
@@ -38,6 +59,285 @@ public class OTRevisarAntecedentesVO
 		this.servicio = servicio;
 	}
 	
+	
+	public Integer getIdRemesa() {
+		return idRemesa;
+	}
+
+	public void setIdRemesa(Integer idRemesa) {
+		this.idRemesa = idRemesa;
+	}
+
+	public List<OTRevisarAntecedentesVO> crearListaServicioPorPrograma(Programa programa)
+	{
+		List<OTRevisarAntecedentesVO> lista = new ArrayList<OTRevisarAntecedentesVO>();
+		
+		if(programa.getTipoPrograma().getId() == 1 )//SERVICIO
+		{
+			for (ProgramaServicioCore servicioCore : programa.getProgramaServicioCores()) {
+				
+				OTRevisarAntecedentesVO otRevisarAntecedentesVO = new OTRevisarAntecedentesVO();
+				//SERVICIO SALUD
+				if(servicioCore.getServicioSalud() != null)
+				{
+					otRevisarAntecedentesVO.setServicio(servicioCore.getServicioSalud().getNombre());
+					otRevisarAntecedentesVO.setIdServicio(servicioCore.getServicioSalud().getId());
+				}
+				
+				//COMUNA
+				/*
+				if(servicioCore.getComuna() != null)
+				{
+					otRevisarAntecedentesVO.setEstablecimiento(servicioCore.getComuna().getNombre());
+					otRevisarAntecedentesVO.setIdEstablecimiento(servicioCore.getComuna().getId());
+				}
+				*/
+				otRevisarAntecedentesVO.setComuna("COMUNA PRUEBA SERVICIO");
+				otRevisarAntecedentesVO.setIdComuna(1);
+				
+				//ESTABLECIMIENTO
+				/*
+				if(servicioCore.getEstablecimiento() != null)
+				{
+					otRevisarAntecedentesVO.setEstablecimiento(servicioCore.getEstablecimiento().getNombre());
+					otRevisarAntecedentesVO.setIdEstablecimiento(servicioCore.getEstablecimiento().getId());
+				}
+				*/
+				otRevisarAntecedentesVO.setEstablecimiento("ESTABLECIMIENTO PRUEBA SERVICIO");
+				otRevisarAntecedentesVO.setIdEstablecimiento(1);
+				
+				lista.add(otRevisarAntecedentesVO);
+				
+			}			
+		}
+		else if(programa.getTipoPrograma().getId() == 1 )//MUNICIPAL
+		{
+			for (ProgramaMunicipalCore municipalCore : programa.getProgramaMunicipalCores()) {
+				
+				OTRevisarAntecedentesVO otRevisarAntecedentesVO = new OTRevisarAntecedentesVO();
+				//SERVICIO SALUD
+//				if(municipalCore.getServicioSalud() != null)
+//				{
+//					otRevisarAntecedentesVO.setEstablecimiento(municipalCore.getServicioSalud().getNombre());
+//					otRevisarAntecedentesVO.setIdEstablecimiento(municipalCore.getServicioSalud().getId());
+//				}
+				otRevisarAntecedentesVO.setServicio("SERVICIO PRUEBA MUNICIPAL");
+				otRevisarAntecedentesVO.setIdServicio(1);
+				
+				//COMUNA
+				/*
+				if(servicioCore.getComuna() != null)
+				{
+					otRevisarAntecedentesVO.setEstablecimiento(servicioCore.getComuna().getNombre());
+					otRevisarAntecedentesVO.setIdEstablecimiento(servicioCore.getComuna().getId());
+				}
+				*/
+				otRevisarAntecedentesVO.setComuna("COMUNA PRUEBA MUNICIPAL");
+				otRevisarAntecedentesVO.setIdComuna(1);
+				
+				//ESTABLECIMIENTO
+				/*
+				if(servicioCore.getEstablecimiento() != null)
+				{
+					otRevisarAntecedentesVO.setEstablecimiento(servicioCore.getEstablecimiento().getNombre());
+					otRevisarAntecedentesVO.setIdEstablecimiento(servicioCore.getEstablecimiento().getId());
+				}
+				*/
+				otRevisarAntecedentesVO.setEstablecimiento("ESTABLECIMIENTO PRUEBA MUNICIPAL");
+				otRevisarAntecedentesVO.setIdEstablecimiento(1);
+				
+				lista.add(otRevisarAntecedentesVO);
+				
+			}			
+		}
+		
+		return lista;
+		
+		
+	}
+	
+	public List<OTRevisarAntecedentesVO> obtenerListaSubtitulo21VOPorPrograma(Programa programa)
+	{
+		List<OTRevisarAntecedentesVO> listaVO = crearListaServicioPorPrograma(programa);
+		
+		List<Remesa>listaRemesa =  new ArrayList<Remesa>();
+		if(programa.getRemesas()!=null)
+			listaRemesa = programa.getRemesas();
+
+
+		for (OTRevisarAntecedentesVO otRevisarAntecedentesVO : listaVO) {
+
+			Integer idServicioSalud = otRevisarAntecedentesVO.getIdServicio();
+			Integer idEstablecimiento =0;
+			if(otRevisarAntecedentesVO.getIdEstablecimiento()!=null)
+				idEstablecimiento= otRevisarAntecedentesVO.getIdEstablecimiento();
+			
+			Integer idComuna=0;
+			if(otRevisarAntecedentesVO.getIdComuna()!=null)
+				idComuna= otRevisarAntecedentesVO.getIdComuna();
+			
+			Integer anio = 2014;// otRevisarAntecedentesVO.getAnio();
+
+			for (Remesa remesa : listaRemesa) {
+				
+					if(programa.getTipoPrograma().getId() == 1)//TIPO SERVICIO
+					{
+						
+						
+						cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
+						/*
+						if(remesa.getServicioSalud()!=null)
+						{
+							if(idServicioSalud == remesa.getServicioSalud().getId())
+							{
+								if(remesa.getEstablecimiento()!=null)
+								{
+									if(idEstablecimiento== remesa.getEstablecimiento().getId())
+									{
+										if(anio== remesa.getAnio())
+										{
+											cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
+										}
+									}
+								}
+							}
+						}
+						*/
+					}
+					else if(programa.getTipoPrograma().getId() == 2)//TIPO MUNCIPAL
+					{
+						cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
+						/*
+						if(remesa.getServicioSalud()!=null)
+						{
+							if(idServicioSalud == remesa.getServicioSalud().getId())
+							{
+								if(remesa.getComuna()!=null)
+								{
+									if(idComuna== remesa.getComuna().getId())
+									{
+										if(anio== remesa.getAnio())
+										{
+											cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
+										}
+									}
+								}
+							}
+						}
+						*/
+					}
+			}
+		}
+		
+		return listaVO;
+		
+	}
+	
+	
+	private void cargarVOPorRemesa(OTRevisarAntecedentesVO otRevisarAntecedentesVO, Remesa remesa)
+	{
+		
+		Long valorDia09 =  1L;//remesa.getValorDia09();
+		Long valorDia24 =  1L;//remesa.getValorDia09();
+		Long valorDia28 =  1L;//remesa.getValorDia09();
+		/*	
+		//ENERO
+		if(remesa.getMes().getIdMes() == 1)
+		{
+			otRevisarAntecedentesVO.setEneroRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setEneroRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setEneroRemesa28(valorDia28);
+		}
+		
+		//FEBRERO
+		if(remesa.getMes().getIdMes() == 2)
+		{
+			otRevisarAntecedentesVO.setFebreroRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setFebreroRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setFebreroRemesa28(valorDia28);
+		}
+		//MARZO
+		if(remesa.getMes().getIdMes() == 3)
+		{
+			otRevisarAntecedentesVO.setMarzoRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setMarzoRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setMarzoRemesa28(valorDia28);
+		}
+		
+		
+		//ABRIL
+		if(remesa.getMes().getIdMes() == 4)
+		{
+			otRevisarAntecedentesVO.setAbrilRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setAbrilRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setAbrilRemesa28(valorDia28);
+		}
+		
+		//MAYO
+		if(remesa.getMes().getIdMes() == 5)
+		{
+			otRevisarAntecedentesVO.setMayoRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setMayoRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setMayoRemesa28(valorDia28);
+		}
+		
+		//JUNIO
+		if(remesa.getMes().getIdMes() == 6)
+		{
+			otRevisarAntecedentesVO.setJunioRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setJunioRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setJunioRemesa28(valorDia28);
+		}
+		
+		//JULIO
+		if(remesa.getMes().getIdMes() == 7)
+		{
+			otRevisarAntecedentesVO.setJulioRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setJulioRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setJulioRemesa28(valorDia28);
+		}
+		
+		//AGOSTO
+		if(remesa.getMes().getIdMes() == 8)
+		{
+			otRevisarAntecedentesVO.setAgostoRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setAgostoRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setAgostoRemesa28(valorDia28);
+		}
+		
+		//SEPTIEMBRE
+		if(remesa.getMes().getIdMes() == 9)
+		{
+			otRevisarAntecedentesVO.setSeptiembreRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setSeptiembreRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setSeptiembreRemesa28(valorDia28);
+		}
+		
+		//OCTUBRE
+		if(remesa.getMes().getIdMes() == 10)
+		{
+			otRevisarAntecedentesVO.setOctubreRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setOctubreRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setOctubreRemesa28(valorDia28);
+		}
+
+		//NOVIEMBRE
+		if(remesa.getMes().getIdMes() == 11)
+		{
+			otRevisarAntecedentesVO.setNoviembreRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setNoviembreRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setNoviembreRemesa28(valorDia28);
+		}
+		
+		//DICIEMBRE
+		if(remesa.getMes().getIdMes() == 12)
+		{
+			otRevisarAntecedentesVO.setDiciembreRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setDiciembreRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setDiciembreRemesa28(valorDia28);
+		}
+		*/
+	}
 
 	private long eneroRemesa09 = rnd.nextInt(99999999);
 	private long eneroRemesa24 = rnd.nextInt(99999999);
@@ -503,4 +803,30 @@ public class OTRevisarAntecedentesVO
 	public void setId(long id) {
 		this.id = id;
 	}
+
+	public Integer getIdEstablecimiento() {
+		return idEstablecimiento;
+	}
+
+	public void setIdEstablecimiento(Integer idEstablecimiento) {
+		this.idEstablecimiento = idEstablecimiento;
+	}
+
+	public Integer getIdServicio() {
+		return idServicio;
+	}
+
+	public void setIdServicio(Integer idServicio) {
+		this.idServicio = idServicio;
+	}
+
+	public Integer getIdComuna() {
+		return idComuna;
+	}
+
+	public void setIdComuna(Integer idComuna) {
+		this.idComuna = idComuna;
+	}
+	
+	
 }
