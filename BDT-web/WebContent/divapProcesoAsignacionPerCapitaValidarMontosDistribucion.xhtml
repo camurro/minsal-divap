@@ -7,7 +7,7 @@
 	template="/WEB-INF/templates/default.xhtml">
 
 	<ui:define name="content">
-		<h:form enctype="multipart/form-data">
+		<h:form id="formMontosDistribucion" enctype="multipart/form-data">
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="Asignación de Recursos per Capita" />
@@ -64,8 +64,8 @@
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
-								<p:commandButton value="Buscar" actionListener="#{procesoAsignacionPerCapitaValidarMontosController.buscar}"  styleClass=" x-btn-text icon-guardar" update="tablaMisTareas" icon="ui-icon-search" />
-								<p:commandButton value="Limpiar" actionListener="#{procesoAsignacionPerCapitaValidarMontosController.limpiar}" styleClass=" x-btn-text icon-guardar" update="servicio comuna colShow tablaMisTareas" icon="ui-icon-trash" />
+								<p:commandButton value="Buscar" actionListener="#{procesoAsignacionPerCapitaValidarMontosController.buscar}"  styleClass=" x-btn-text icon-guardar" update="formMontosDistribucion:colShow formMontosDistribucion:tablaMisTareas formMontosDistribucion:errorfilter" icon="ui-icon-search" />
+								<p:commandButton value="Limpiar" actionListener="#{procesoAsignacionPerCapitaValidarMontosController.limpiar}" styleClass=" x-btn-text icon-guardar" update="formMontosDistribucion:servicio formMontosDistribucion:comuna formMontosDistribucion:colShow formMontosDistribucion:tablaMisTareas formMontosDistribucion:errorfilter" icon="ui-icon-trash" />
 							</h:panelGrid>
 
 						</h:panelGrid>
@@ -139,10 +139,11 @@
 
 					</p:panel>
 					<br />
-					<h:outputText value="* Debe seleccionar al menos un filtro antes de realizar la búsqueda." styleClass="ui-state-error" />
-					<br />
-					<br />
-					<h:outputText value="* Debe seleccionar al menos una columna a mostrar." styleClass="ui-state-error" />
+					<h:panelGrid id="errorfilter"  styleClass="tableFullWidth">
+					<h:outputText  value="* Debe seleccionar al menos un filtro antes de realizar la búsqueda." styleClass="ui-state-error" rendered="#{empty procesoAsignacionPerCapitaValidarMontosController.servicioSeleccionado and empty procesoAsignacionPerCapitaValidarMontosController.comunaSeleccionada}"/>
+					 
+					<h:outputText  value="* Debe seleccionar al menos una columna a mostrar." styleClass="ui-state-error" rendered="#{not procesoAsignacionPerCapitaValidarMontosController.emptyCheckColumn}" />
+					</h:panelGrid>
 					<br />
 					<br />
 					<p:dataTable id="tablaMisTareas" resizableColumns="true" liveResize="true" var="_montoDistribucion" rows="10" paginator="true"
@@ -203,7 +204,7 @@
 							</f:facet>
 							<h:outputText value="#{_montoDistribucion.valorRefAsignacionZona}"/>
 						</p:column>
-						<p:column>
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkPerCapitaMes}">
 							<f:facet name="header">
 								<h:outputText value="Valor per Capita" />
 							</f:facet>
@@ -211,7 +212,7 @@
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
-						<p:column>
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkPerCapitaAno}">
 							<f:facet name="header">
 								<h:outputText value="Poblacion Año" />
 							</f:facet>
@@ -219,7 +220,7 @@
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
-						<p:column>
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkPoblacionMayor65Anos}">
 							<f:facet name="header">
 								<h:outputText value="Población Mayor de 65 Años" />
 							</f:facet>
@@ -227,7 +228,7 @@
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
-						<p:column>
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkPerCapitaMes}">
 							<f:facet name="header">
 								<h:outputText value="Per Capita Mensual (M$2014)" />
 							</f:facet>
@@ -237,7 +238,7 @@
 							</h:outputText>
 						</p:column>
 
-						<p:column>
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkPerCapitaAno}">
 							<f:facet name="header">
 								<h:outputText value="Per Capita Año (M$2014)" />
 							</f:facet>

@@ -15,6 +15,13 @@ public class ColumnaVO implements Serializable {
 	    private String property;
 	    private String nombreColumna;
 	    
+<<<<<<< HEAD
+=======
+	    public ColumnaVO()
+	    {
+	    
+	    }
+>>>>>>> 85ce19ff095dd2055f77baa27d804ca58c27b67e
 	    public ColumnaVO(String header, String property, String nombreColumna) {
 	        this.header = header;
 	        this.property = property;

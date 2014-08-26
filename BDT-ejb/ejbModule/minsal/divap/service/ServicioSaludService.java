@@ -46,7 +46,6 @@ public class ServicioSaludService {
 					ServiciosVO servicioVO = new ServiciosVO();
 					servicioVO.setId_servicio(servicioSalud.getId());
 					servicioVO.setNombre_servicio(servicioSalud.getNombre());
-					
 					result.add(servicioVO);
 			}
 		}

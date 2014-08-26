@@ -97,17 +97,17 @@ public class GeneradorOficioConsulta extends GeneradorWord {
 
 	private XWPFDocument replaceValuesDocx(Map<String, Object> parameters, List<VariacionPoblacionVO> values) throws FileNotFoundException, IOException, InvalidFormatException {
 		File template = new File(this.templateFilename);
+		System.out.println("replaceValuesDocx en -->"+this.templateFilename + "parameters.size()"+((parameters==null)?0:parameters.size()));
 		XWPFDocument document = new XWPFDocument(new FileInputStream(template));
 		String replacementText = null;
 		for (XWPFParagraph p : document.getParagraphs()) {
 			for (XWPFRun run : p.getRuns()) {
 				String text = run.getText(0);
-				if(parameters != null && !parameters.isEmpty() && text != null){
+				if(parameters != null && parameters.size() > 0 && text != null){
 					for (String key : parameters.keySet()) {
 						if(text.contains(key)){
 							replacementText = parameters.get(key).toString();
-							String keyReplace = key.replace("{", "\\{").replace("}", "\\}");
-							text = text.replaceAll(keyReplace, replacementText);
+							text = text.replaceAll(key, replacementText);
 							run.setText(text, 0);
 						}
 					}

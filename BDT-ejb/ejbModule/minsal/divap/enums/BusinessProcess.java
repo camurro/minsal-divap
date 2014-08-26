@@ -2,8 +2,18 @@ package minsal.divap.enums;
 
 
 public enum BusinessProcess{
-	PERCAPITA(0, "minsal_divap.DistribucionInicialPerCapita"), REBAJA(1,"minsal.divap.procesos.Rebaja"), 
-	RELIQUIDACION(2,"minsal.divap.procesos.Reliquidacion"), Prueba(4,"minsal_divap.prueba"),TRAMITACIONORDEN(5,"minsal_divap.TramitacionOrdenTransferenciaConsolidador"),OTPROFESIONAL(6,"minsal_divap.TramitacionOrdenTransferenciaProfesional"),ESTIMACIONFLUJOCAJA(7,"minsal_divap.EstimacionFlujoCaja");
+	PERCAPITA(0, "minsal_divap.DistribucionInicialPerCapita"), 
+	REBAJA(1,"minsal.divap.procesos.Rebaja"), 
+
+	
+	 TRAMITACIONORDEN(5,"minsal_divap.TramitacionOrdenTransferenciaConsolidador"),
+	 OTPROFESIONAL(6,"minsal_divap.TramitacionOrdenTransferenciaProfesional"),
+	RELIQUIDACION(2,"minsal.divap.procesos.Reliquidacion"), 
+	RECURSOSFINANCIEROSAPS(3,"minsal_divap.DistribucionRecursosProgramasReforzamiento"),
+    Prueba(4,"minsal_divap.prueba"),
+    ESTIMACIONFLUJOCAJA(5,"minsal_divap.EstimacionFlujoCaja"),
+    ESTIMACIONFLUJOCAJACONSOLIDADOR(6,"minsal_divap.EstimacionFlujoConsolidador");
+
 
 	private int id;
 	private String name;

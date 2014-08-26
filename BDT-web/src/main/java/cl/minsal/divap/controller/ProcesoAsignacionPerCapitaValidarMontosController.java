@@ -47,6 +47,7 @@ implements Serializable {
 	private boolean checkPerCapitaMes;
 	private boolean checkPerCapitaAno;
 	private boolean checkAsigDesempenoDificil;
+	private boolean emptyCheckColumn;
 	
 	@EJB
 	private UtilitariosService utilitariosService;
@@ -423,6 +424,17 @@ implements Serializable {
 	public void setAntecendentesComunaCalculado(
 			List<AsignacionDistribucionPerCapitaVO> antecendentesComunaCalculado) {
 		this.antecendentesComunaCalculado = antecendentesComunaCalculado;
+	}
+
+	public boolean isEmptyCheckColumn() {
+		emptyCheckColumn = (checkRegion || 	checkComuna || checkServicio || checkRefAsigZona || checkTramoPobreza || checkPerCapitaBasal || checkPobreza || checkRuralidad || checkValorRefAsigZona ||  checkValorperCapita
+		|| 	checkPoblacionAno || checkPoblacionMayor65Anos || checkPerCapitaMes || checkPerCapitaAno || checkAsigDesempenoDificil);
+		return emptyCheckColumn;
+	}
+
+	public void setEmptyCheckColumn(boolean emptyCheckColumn) {
+		
+		this.emptyCheckColumn = emptyCheckColumn;
 	}
 	
 }

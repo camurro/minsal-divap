@@ -26,7 +26,9 @@ import cl.minsal.divap.pojo.ValorHistoricoPojo;
 import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
 
-@Named ( "procesoDistRecFinController" ) @ViewScoped public class ProcesoDistRecFinController extends BaseController implements
+@Named ( "procesoDistRecFinController" ) 
+@ViewScoped 
+public class ProcesoDistRecFinController extends BaseController implements
 				Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject private transient Logger log;

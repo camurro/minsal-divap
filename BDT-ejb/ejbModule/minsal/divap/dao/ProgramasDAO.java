@@ -8,7 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import cl.minsal.divap.model.Programa;
-import cl.minsal.divap.model.Rol;
+import cl.minsal.divap.model.ProgramaAno;
 
 
 
@@ -44,6 +44,17 @@ public class ProgramasDAO {
 			TypedQuery<Programa> query = this.em.createNamedQuery("Programa.findProgramaPorID", Programa.class);
 			query.setParameter("id", programaId);
 			return query.getSingleResult(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<ProgramaAno> getProgramasByUserAno(String username, Integer anoCurso) {
+		try {
+			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.findByUserAno", ProgramaAno.class);
+			query.setParameter("usuario", username);
+			query.setParameter("ano", anoCurso);
+			return query.getResultList(); 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

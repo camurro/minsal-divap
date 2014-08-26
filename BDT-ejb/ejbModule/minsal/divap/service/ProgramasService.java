@@ -1,6 +1,9 @@
 package minsal.divap.service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -8,12 +11,12 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
 import minsal.divap.dao.ProgramasDAO;
-import minsal.divap.dao.RolDAO;
+import minsal.divap.model.mappers.ProgramaMapper;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ProgramaVO;
 import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.Programa;
-import cl.minsal.divap.model.Rol;
+import cl.minsal.divap.model.ProgramaAno;
 
 @Stateless
 @LocalBean
@@ -22,19 +25,20 @@ public class ProgramasService {
 	private ProgramasDAO programasDAO;
 
 	public List<ProgramaVO> getProgramasByUser(String username) {
-		List<Programa> programa = this.programasDAO.getProgramasByUser(username);
-		ArrayList<ProgramaVO> result = new ArrayList<ProgramaVO>(programa.size());
-		for (Programa prog : programa){
-			ProgramaVO progVO = new ProgramaVO();
-			progVO.setNombre(prog.getNombre());
-			progVO.setTipo_programa(prog.getTipoPrograma().getNombre());
-			progVO.setCantidad_cuotas(prog.getCantidadCuotas());
-			progVO.setDescripcion(prog.getDescripcion());
-			progVO.setUsername(prog.getUsuario().getUsername());
-			progVO.setId(prog.getId());
-			result.add(progVO);
+		List<ProgramaAno> programas = this.programasDAO.getProgramasByUserAno(username, getAnoCurso());
+		List<ProgramaVO> result = new ArrayList<ProgramaVO>();
+		if(programas != null && programas.size() > 0){
+			for(ProgramaAno programa : programas){
+				result.add(new ProgramaMapper().getBasic(programa));
+			}
 		}
 		return result;
+	}
+	
+	private Integer getAnoCurso() {
+		DateFormat formatNowYear = new SimpleDateFormat("yyyy");
+		Date nowDate = new Date();
+		return Integer.valueOf(formatNowYear.format(nowDate)); 
 	}
 	
 	public List<ComponentesVO> getComponenteByPrograma(int programaId) {

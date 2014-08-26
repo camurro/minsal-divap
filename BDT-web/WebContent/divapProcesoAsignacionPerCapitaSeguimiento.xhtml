@@ -5,16 +5,131 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
 	template="/WEB-INF/templates/default.xhtml"
-                xmlns:c="http://java.sun.com/jstl/core">
+	xmlns:c="http://java.sun.com/jstl/core">
 
 	<ui:define name="zonaJavaScript">
 		<style type="text/css">
-		  .ui-state-error {
-			    margin-left: 0px;
+			.ui-state-error {
+				margin-left: 0px;
+			}
+
+			.web_dialog_overlay {
+				position: fixed;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				height: 100%;
+				width: 100%;
+				margin: 0;
+				padding: 0;
+				background: #000000;
+				opacity: .15;
+				filter: alpha(opacity = 15);
+				-moz-opacity: .15;
+				z-index: 101;
+				display: none;
+			}
+
+			.web_dialog {
+				display: none;
+				position: fixed;
+				width: 500px;
+				height: 200px;
+				top: 50%;
+				left: 50%;
+				margin-left: -190px;
+				margin-top: -100px;
+				background-color: #ffffff;
+				border: 2px solid #336699;
+				padding: 0px;
+				z-index: 102;
+				font-family: Verdana;
+				font-size: 10pt;
+			}
+
+			.web_dialog_title {
+				border-bottom: solid 2px #336699;
+				background-color: #336699;
+				padding: 4px;
+				color: White;
+				font-weight: bold;
+			}
+			
+			.web_dialog_title a {
+				color: White;
+				text-decoration: none;
+			}
+			
+			.align_right {
+				text-align: right;
 			}
 		</style>
 		<script type="text/javascript">
-		 
+
+
+		 $(document).ready(function ()
+				   {
+				      $("#btnShowSimple").click(function (e)
+				      {
+				         ShowDialog(false);
+				         e.preventDefault();
+				      });
+
+				      $("#btnShowModal").click(function (e)
+				      {
+				         ShowDialog(true);
+				         e.preventDefault();
+				      });
+
+				      $("#btnClose").click(function (e)
+				      {
+				         HideDialog();
+				         e.preventDefault();
+				      });
+
+				      $("#btnSubmit").click(function (e)
+				      {
+				         var brand = $("#brands input:radio:checked").val();
+				         $("#output").html("<b>Your favorite mobile brand: </b>" + brand);
+				         HideDialog();
+				         e.preventDefault();
+				      });
+
+				   });
+
+				   function ShowDialog(modal)
+				   {
+				      $("#overlay").show();
+				      $("#dialog").fadeIn(300);
+
+				      if (modal)
+				      {
+				         $("#overlay").unbind("click");
+				      }
+				      else
+				      {
+				         $("#overlay").click(function (e)
+				         {
+				            HideDialog();
+				         });
+				      }
+				   }
+
+				   function HideDialog()
+				   {
+				      $("#overlay").hide();
+				      $("#dialog").fadeOut(300);
+				   } 
+				
+
+				  
+ 
+
+			function refresh() {
+				alert("alert refresh parent");
+			}
+			
 			function checkEmail(email) {
 				var regExp = /(^[a-z]([a-z_\.]*)@([a-z_\.]*)([.][a-z]{3})$)|(^[a-z]([a-z_\.]*)@([a-z_\.]*)(\.[a-z]{3})(\.[a-z]{2})*$)/i;
 				return regExp.test(email);
@@ -40,7 +155,7 @@
 				emails = $.trim(emails);
 				if(required){
 					if(emails == ""){
-						alert("Error \nDebes Especificar al menos un destinatario");
+						alert("Debe Especificar al menos un destinatario");
 						return false;
 					}
 				}else{
@@ -105,13 +220,21 @@
                    document.getElementById('formDownload:hiddenId').value=idDoc;
                    document.getElementById('formDownload:linkDownload').click();  
                }  
+
+			   function subirDocumentos(){  
+                   document.getElementById('btnShowModal').click();  
+               }  
 		 
 		</script>
 	</ui:define>
 
 	<ui:define name="content">
-			<p:panel styleClass="contentPanel">
+		<p:panel styleClass="contentPanel">
+
 			<h:form id="formSeguimiento" enctype="multipart/form-data">
+
+
+
 				<h1>
 					<h:outputText value="Asignación de Recursos per Capita" />
 				</h1>
@@ -135,265 +258,291 @@
 					<!-- <h3>Archivos disponibles para la Tarea:</h3> -->
 					<div class="destacaArchivos ui-corner-all">
 						<h3>Archivos Disponibles para la Tarea:</h3>
-						<c:if test="#{procesoAsignacionPerCapitaSeguimientoController.tareaSeguimiento.id == 1}">	
 						<span class="strong">Archivo: </span> Población Inscrita Validada [
 						<h:graphicImage value="resources/minsal/images/download-alt.png"
-							styleClass="divapIcons" />
-						<h:commandLink value="Bajar Última Versión" onclick="downloadDocument(#{procesoAsignacionPerCapitaSeguimientoController.documentoPoblacionInscrita.id});return false;"/>
+								styleClass="divapIcons" />
+							<h:commandLink value="Bajar Última Versión"
+								onclick="downloadDocument(#{procesoAsignacionPerCapitaSeguimientoController.documentoPoblacionInscrita.id});return false;" />
 						
 						]
-						<br /> <span class="strong">Archivo:
-						</span> Oficio Consulta [
-						<h:graphicImage value="resources/minsal/images/download-alt.png"
-							styleClass="divapIcons" /> 
-						<h:commandLink value="Bajar Última Versión" onclick="downloadDocument(#{procesoAsignacionPerCapitaSeguimientoController.oficioConsultaId});return false;"/>
-						|
-						<h:graphicImage value="resources/minsal/images/upload-alt.png"
-							styleClass="divapIcons" />
-						<p:commandLink value="Subir Nueva Versión" />
-						]<span style="color: red; font-size: 10px;">(Hacer
-							Seguimiento Oficio)</span>
-						</c:if>
-						<c:if test="#{procesoAsignacionPerCapitaSeguimientoController.tareaSeguimiento.id != 1}">	
-						<span class="strong">Archivo: </span> Población Inscrita Validada [
-						<h:graphicImage value="resources/minsal/images/download-alt.png"
-							styleClass="divapIcons" />
-						<p:commandLink value="Bajar Última Versión" />
-						|
-						<h:graphicImage value="resources/minsal/images/upload-alt.png"
-							styleClass="divapIcons" />
-						<p:commandLink value="Subir Nueva Versión" />
-						]<span style="color: red; font-size: 10px;">(Hacer
-							Seguimiento Oficios)</span> <br /> <span class="strong">Archivo:
-						</span> Decreto Montos de Distribución [
-						<h:graphicImage value="resources/minsal/images/download-alt.png"
-							styleClass="divapIcons" />
-						<p:commandLink value="Bajar Última Versión" />
-						|
-						<h:graphicImage value="resources/minsal/images/upload-alt.png"
-							styleClass="divapIcons" />
-						<p:commandLink value="Subir Nueva Versión" />
-						]<span style="color: red; font-size: 10px;">(Hacer
-							Seguimiento Decreto)</span>
-						</c:if>	
+						<c:if
+							test="#{procesoAsignacionPerCapitaSeguimientoController.tareaSeguimiento.id == 1}">
 							
-						<c:if test="#{procesoAsignacionPerCapitaSeguimientoController.verBusqueda}">	
+						<br />
+							<span class="strong">Archivo: </span> Oficio Consulta [
+						<h:graphicImage value="resources/minsal/images/download-alt.png"
+								styleClass="divapIcons" />
+							<h:commandLink id="lastSeguimiento" value="Bajar Última Versión"
+								onclick="downloadDocument(#{procesoAsignacionPerCapitaSeguimientoController.oficioConsultaId});return false;" />
+						|
+						<h:graphicImage value="resources/minsal/images/upload-alt.png"
+								styleClass="divapIcons" />
+							<p:commandLink value="Subir Nueva Versión"
+								oncomplete="dlgUpload.show();" />
+						]<span style="color: red; font-size: 10px;">(Hacer
+								Seguimiento Oficio)</span>
+						</c:if>
+						<c:if
+							test="#{procesoAsignacionPerCapitaSeguimientoController.tareaSeguimiento.id == 2}">
+							<br />
+							<span class="strong">Archivo: </span> Decreto Montos de Distribución [
+						<h:graphicImage value="resources/minsal/images/download-alt.png"
+								styleClass="divapIcons" />
+							<p:commandLink value="Bajar Última Versión" />
+						|
+						<h:graphicImage value="resources/minsal/images/upload-alt.png"
+								styleClass="divapIcons" />
+							<p:commandLink value="Subir Nueva Versión" />
+						]<span style="color: red; font-size: 10px;">(Hacer
+								Seguimiento Decreto)</span>
+						</c:if>
+						
+						<c:if
+							test="#{procesoAsignacionPerCapitaSeguimientoController.tareaSeguimiento.id == 3}">
+							<br />
+							<span class="strong">Archivo: </span> Decreto Montos de Distribución [
+						<h:graphicImage value="resources/minsal/images/download-alt.png"
+								styleClass="divapIcons" />
+							<h:commandLink id="lastSeguimientoDecreto" value="Bajar Última Versión"
+								onclick="downloadDocument(#{procesoAsignacionPerCapitaSeguimientoController.decretoId});return false;" />
+						|
+						<h:graphicImage value="resources/minsal/images/upload-alt.png"
+								styleClass="divapIcons" />
+							<p:commandLink value="Subir Nueva Versión"
+								oncomplete="dlgUpload.show();" />
+						]<span style="color: red; font-size: 10px;">(Hacer
+								Seguimiento Decreto)</span>
+						</c:if>
+				
 
-						<h:panelGrid columns="3" id="busqueda_mis_tareas2">
+						<c:if
+							test="#{procesoAsignacionPerCapitaSeguimientoController.verBusqueda}">
 
-							<h:panelGrid columns="2">
-								<h:outputText value="Servicio: " styleClass="inputLabel" />
-								<p:selectOneMenu>
-									<f:selectItem itemLabel="Metropolitano Oriente"
-										itemValue="Metropolitano Oriente" />
-									<f:selectItem itemLabel="Seleccione" itemValue="" />
-								</p:selectOneMenu>
+							<h:panelGrid columns="3" id="busqueda_mis_tareas2">
+
+								<h:panelGrid columns="2">
+									<h:outputText value="Servicio: " styleClass="inputLabel" />
+									<p:selectOneMenu  id="servicios" value="#{procesoAsignacionPerCapitaSeguimientoController.servicioSeleccionado}">
+										<f:selectItem itemLabel="Seleccione" itemValue="" />
+										<f:selectItems value="#{procesoAsignacionPerCapitaSeguimientoController.servicios}" itemLabel="#{serv.nombre_servicio}" var="serv" itemValue="#{serv.id_servicio}"/>
+									</p:selectOneMenu>
+								</h:panelGrid>
+								
+								<h:panelGrid columns="2">
+									<p:commandButton value="Buscar" actionListener="#{procesoAsignacionPerCapitaSeguimientoController.buscar}" update="formSeguimiento:panelBusqueda" styleClass=" x-btn-text icon-guardar" icon="ui-icon-search" />
+									<p:commandButton value="Limpiar" actionListener="#{procesoAsignacionPerCapitaSeguimientoController.limpiar}" update="formSeguimiento:servicios formSeguimiento:panelBusqueda" styleClass=" x-btn-text icon-guardar" icon="ui-icon-trash" />
+								</h:panelGrid>
 							</h:panelGrid>
 
-							<h:panelGrid columns="2">
-								<p:commandButton value="Buscar"
-									styleClass=" x-btn-text icon-guardar" icon="ui-icon-search" />
-								<p:commandButton value="Limpiar"
-									styleClass=" x-btn-text icon-guardar" icon="ui-icon-trash" />
-							</h:panelGrid>
-						</h:panelGrid>
-						
-						
-						 
-						<span class="strong">Archivo: </span> Archivo comprimido con Oficios para Servicio de Salud
-						<ul class="versionesArchivo">
-							<li><h:graphicImage
-									value="resources/minsal/images/download-alt.png"
-									styleClass="divapIcons" /> <p:commandLink
-									value="Oficios para Servicio Metropolitano.zip" /> [ <h:graphicImage
-									value="resources/minsal/images/download-alt.png"
-									styleClass="divapIcons" /> <p:commandLink
-									value="Bajar Última Versión" /> | <h:graphicImage
-									value="resources/minsal/images/upload-alt.png"
-									styleClass="divapIcons" /> <p:commandLink
-									value="Subir Nueva Versión" /> ] <span
-								style="color: red; font-size: 10px;">(Hacer Seguimiento
-									Oficios)</span></li>
-							<li><h:graphicImage
-									value="resources/minsal/images/download-alt.png"
-									styleClass="divapIcons" /> <p:commandLink
-									value="Decretos para Servicio Metropolitano.zip" /> [ <h:graphicImage
-									value="resources/minsal/images/download-alt.png"
-									styleClass="divapIcons" /> <p:commandLink
-									value="Bajar Última Versión" /> | <h:graphicImage
-									value="resources/minsal/images/upload-alt.png"
-									styleClass="divapIcons" /> <p:commandLink
-									value="Subir Nueva Versión" /> ] <span
-								style="color: red; font-size: 10px;">(Hacer Seguimiento
-									Decreto)</span></li>
-							<li><h:graphicImage
-									value="resources/minsal/images/download-alt.png"
-									styleClass="divapIcons" /> <p:commandLink
-									value="Resoluciones para Servicio Metropolitano.zip" /> [ <h:graphicImage
-									value="resources/minsal/images/download-alt.png"
-									styleClass="divapIcons" /> <p:commandLink
-									value="Bajar Última Versión" /> | <h:graphicImage
-									value="resources/minsal/images/upload-alt.png"
-									styleClass="divapIcons" /> <p:commandLink
-									value="Subir Nueva Versión" /> ] <span
-								style="color: red; font-size: 10px;">(Hacer Seguimiento
-									Resoluciones)</span></li>
-						</ul>
+                            <p:panel id="panelBusqueda">
+							<span class="strong">Archivo: </span> Archivo comprimido con Oficios para Servicio de Salud
+							<ul class="versionesArchivo">
+								<c:forEach var="vardoc" items="#{procesoAsignacionPerCapitaSeguimientoController.documentos}">
+								<li><h:graphicImage
+										value="resources/minsal/images/download-alt.png"
+										styleClass="divapIcons" /> <p:outputLabel
+										value="Resolucion para Servicio #{vardoc.servicio} comuna #{vardoc.comuna}" /> [ <h:graphicImage
+										value="resources/minsal/images/download-alt.png"
+										styleClass="divapIcons" /> <h:commandLink  value="Bajar Última Versión"
+								onclick="downloadDocument(#{vardoc.id});return false;" /> | <h:graphicImage
+										value="resources/minsal/images/upload-alt.png"
+										styleClass="divapIcons" /> <p:commandLink
+										value="Subir Nueva Versión" /> ] <span
+									style="color: red; font-size: 10px;">(Hacer Seguimiento
+										Resoluciones)</span></li>
+								</c:forEach>
+							</ul>
+							</p:panel>
 						</c:if>
 					</div>
 					<!-- HISTORIAL DE SEGUIMIENTO -->
 					<h3>Bitácora de Seguimiento:</h3>
 					<!-- INICIO MENSAJE MOCK -->
-					<p:panelGrid columns="2" rendered="#{not empty procesoAsignacionPerCapitaSeguimientoController.bitacoraSeguimiento}">
-						<c:forEach var="var" items="#{procesoAsignacionPerCapitaSeguimientoController.bitacoraSeguimiento}" >
-						<h:outputText value="#{var.date}" styleClass="inputLabel" >
-						 <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
-						</h:outputText>
+					<p:panelGrid columns="2"
+						rendered="#{not empty procesoAsignacionPerCapitaSeguimientoController.bitacoraSeguimiento}">
+						<c:forEach var="var"
+							items="#{procesoAsignacionPerCapitaSeguimientoController.bitacoraSeguimiento}">
+							<h:outputText value="#{var.date}" styleClass="inputLabel">
+								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+							</h:outputText>
 
-						<h:panelGrid styleClass="tableFullWidth">
-							<h:panelGrid columns="2" styleClass="tableFullWidth">
-								<h:outputText value="Para: " styleClass="inputLabel" />
-								<h:outputText value="#{var.to}" />
-								<h:outputText value="CC: " styleClass="inputLabel" />
-								<h:outputText value="#{var.cc}" />
-								<h:outputText value="CCO: " styleClass="inputLabel" />
-								<h:outputText value="#{var.cco}" />
-								<h:outputText value="Adjunto: " styleClass="inputLabel" />
-								<h:panelGrid columns="2">
-									<h:graphicImage
-										value="resources/minsal/images/download-alt.png"
-										styleClass="divapIcons" />
-									<p:commandLink value="archivos.zip" />
+							<h:panelGrid styleClass="tableFullWidth">
+								<h:panelGrid columns="2" styleClass="tableFullWidth">
+									<h:outputText value="Para: " styleClass="inputLabel" />
+									<h:outputText value="#{var.to}" />
+									<h:outputText value="CC: " styleClass="inputLabel" rendered="#{not empty var.cc}"/>
+									<h:outputText value="#{var.cc}" rendered="#{not empty var.cc}"/>
+									<h:outputText value="CCO: " styleClass="inputLabel" rendered="#{not empty var.cco}"/>
+									<h:outputText value="#{var.cco}" rendered="#{not empty var.cco}" />
+									<h:outputText value="Adjunto: " styleClass="inputLabel" rendered="#{not empty var.attached}"/>
+									<h:panelGrid columns="2" rendered="#{not empty var.attached}">
+										<h:graphicImage
+											value="resources/minsal/images/download-alt.png"
+											styleClass="divapIcons" />
+										<h:commandLink value="#{var.attached.path}"
+								onclick="downloadDocument(#{var.attached.id});return false;" />
+									</h:panelGrid>
+									<h:outputText value="Asunto: " styleClass="inputLabel" />
+									<h:outputText value="#{var.subject}" />
+									<h:outputText value="Mensaje: " styleClass="inputLabel" />
+									<h:outputText value="#{var.body}" />
 								</h:panelGrid>
-								<h:outputText value="Asunto: " styleClass="inputLabel" />
-								<h:outputText value="#{var.subject}" />
-								<h:outputText value="Mensaje: " styleClass="inputLabel" />
-								<h:outputText value="#{var.body}" />
 							</h:panelGrid>
-						</h:panelGrid>
 						</c:forEach>
 					</p:panelGrid>
 					<!-- FIN MENSAJE MOCK -->
-					
-					 
-						<h3>Enviar Correo:</h3>
-						<h:panelGrid styleClass="tableFullWidth">
-							<h:panelGrid columns="2" styleClass="tableFullWidth">
-								<h:outputText value="Para: " styleClass="inputLabel" />
-								<p:inputText styleClass="inputText" style="width: 70%;" id="to"
-									value="#{procesoAsignacionPerCapitaSeguimientoController.to}" required="true"/>
 
-								<h:outputText value="CC: " styleClass="inputLabel" />
-								<p:inputText styleClass="inputText" style="width: 70%;" id="cc"
-									value="#{procesoAsignacionPerCapitaSeguimientoController.cc}" />
 
-								<h:outputText value="CCO: " styleClass="inputLabel" />
-								<p:inputText styleClass="inputText" style="width: 70%;" id="cco"
-									value="#{procesoAsignacionPerCapitaSeguimientoController.cco}" />
+					<h3>Enviar Correo:</h3>
+					<h:panelGrid styleClass="tableFullWidth">
+						<h:panelGrid columns="2" styleClass="tableFullWidth">
+							<h:outputText value="Para: " styleClass="inputLabel" />
+							<p:inputText styleClass="inputText" style="width: 70%;" id="to"
+								value="#{procesoAsignacionPerCapitaSeguimientoController.to}" />
 
-								<h:outputText value="Adjunto: " styleClass="inputLabel" />
-								<h:panelGrid columns="2">
-									<p:fileUpload id="attachedFile"
-										fileUploadListener="#{procesoAsignacionPerCapitaSeguimientoController.handleAttachedFile}"
-										value="#{procesoAsignacionPerCapitaSeguimientoController.attachedFile}"
-										mode="simple" styleClass="inputText" />
-								</h:panelGrid>
+							<h:outputText value="CC: " styleClass="inputLabel" />
+							<p:inputText styleClass="inputText" style="width: 70%;" id="cc"
+								value="#{procesoAsignacionPerCapitaSeguimientoController.cc}" />
 
-								<h:outputText value="Asunto: " styleClass="inputLabel"/>
-								<p:inputText styleClass="inputText" style="width: 70%;" id="subject" value="#{procesoAsignacionPerCapitaSeguimientoController.subject}" />
+							<h:outputText value="CCO: " styleClass="inputLabel" />
+							<p:inputText styleClass="inputText" style="width: 70%;" id="cco"
+								value="#{procesoAsignacionPerCapitaSeguimientoController.cco}" />
 
-								<h:outputText value="Mensaje: " styleClass="inputLabel" />
-								<p:inputTextarea styleClass="inputTextArea" style="width: 70%;"  id="body" value="#{procesoAsignacionPerCapitaSeguimientoController.body}" 
-                                       requiredMessage="Debe especificar el mensaje del correo" />
+							<h:outputText value="Adjunto: " styleClass="inputLabel" />
+							<h:panelGrid columns="2">
+								<p:fileUpload id="attachedFile"
+									fileUploadListener="#{procesoAsignacionPerCapitaSeguimientoController.handleAttachedFile}"
+									value="#{procesoAsignacionPerCapitaSeguimientoController.attachedFile}"
+									mode="simple" auto="true"  styleClass="inputText" />
+								
 							</h:panelGrid>
-							<p:commandButton styleClass="x-btn-text" onclick="return checkListEmails()" 
-								style="float:right;"
-								value="Enviar Correo" icon="ui-icon-comment" ajax="false"
-								action="#{procesoAsignacionPerCapitaSeguimientoController.sendMail}"
-								id="sendMail" />
+
+							<h:outputText value="Asunto: " styleClass="inputLabel" />
+							<p:inputText styleClass="inputText" style="width: 70%;"
+								id="subject"
+								value="#{procesoAsignacionPerCapitaSeguimientoController.subject}" />
+
+							<h:outputText value="Mensaje: " styleClass="inputLabel" />
+							<p:inputTextarea styleClass="inputTextArea" style="width: 70%;"
+								id="body"
+								value="#{procesoAsignacionPerCapitaSeguimientoController.body}"
+								requiredMessage="Debe especificar el mensaje del correo" />
 						</h:panelGrid>
-						<h3>Tareas de la Actividad:</h3>
-						<p style="">
-							En caso de que el seguimiento de la actividad sea exitoso haga
-							clic en <span class="strong">Finalizar Seguimiento</span> para
-							finalizar la actividad y pasar a la siguiente en el flujo del
-							proceso. En caso de que exista algún error en la documentación y
-							sea necesario volver a generar la documentación haga clic en <span
-								class="strong">Reingresar</span>.
-						</p>
-
 						<p:commandButton styleClass="x-btn-text"
-							value="Re Cargar Archivos" icon="ui-icon-refresh"
-							action="#{procesoAsignacionPerCapitaSeguimientoController.enviar}" rendered="#{procesoAsignacionPerCapitaSeguimientoController.verRecargarArchivos}">
-							<f:setPropertyActionListener
-								target="#{procesoAsignacionPerCapitaSeguimientoController.target}"
-								value="bandejaTareas.jsf" />
-							<f:setPropertyActionListener
-								target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarRevalorizar_}"
-								value='#{"false"}' />
-							<f:setPropertyActionListener
-								target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarSubirArchivos_}"
-								value='#{"true"}' />
-							<f:setPropertyActionListener
-								target="#{procesoAsignacionPerCapitaSeguimientoController.aprobar_}"
-								value='#{"false"}' />
-						</p:commandButton>
+							onclick="return checkListEmails()" style="float:right;"
+							value="Enviar Correo" icon="ui-icon-comment" ajax="false"
+							action="#{procesoAsignacionPerCapitaSeguimientoController.sendMail}"
+							id="sendMail" />
+					</h:panelGrid>
+						
+					<h3>Tareas de la Actividad:</h3>
+					<p style="">
+						En caso de que el seguimiento de la actividad sea exitoso haga
+						clic en <span class="strong">Finalizar Seguimiento</span> para
+						finalizar la actividad y pasar a la siguiente en el flujo del
+						proceso. En caso de que exista algún error en la documentación y
+						sea necesario volver a generar la documentación haga clic en <span
+							class="strong">Reingresar</span>.
+					</p>
 
-						<p:commandButton styleClass="x-btn-text" value="Re Valorizar" rendered="#{procesoAsignacionPerCapitaSeguimientoController.verRevalorizar}"
-							icon="ui-icon-refresh"
-							action="#{procesoAsignacionPerCapitaSeguimientoController.enviar}">
-							<f:setPropertyActionListener
-								target="#{procesoAsignacionPerCapitaSeguimientoController.target}"
-								value="bandejaTareas.jsf" />
-							<f:setPropertyActionListener
-								target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarRevalorizar_}"
-								value='#{"true"}' />
-							<f:setPropertyActionListener
-								target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarSubirArchivos_}"
-								value='#{"false"}' />
-							<f:setPropertyActionListener
-								target="#{procesoAsignacionPerCapitaSeguimientoController.aprobar_}"
-								value='#{"false"}' />
-						</p:commandButton>
-						<p:commandButton styleClass="x-btn-text"
-							value="Finalizar Seguimiento | Actividad" icon="ui-icon-check"
-							action="#{procesoAsignacionPerCapitaSeguimientoController.enviar}">
-							<f:setPropertyActionListener
-								target="#{procesoAsignacionPerCapitaSeguimientoController.target}"
-								value="bandejaTareas.jsf" />
-							<f:setPropertyActionListener
-								target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarRevalorizar_}"
-								value='#{"false"}' />
-							<f:setPropertyActionListener
-								target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarSubirArchivos_}"
-								value='#{"false"}' />
-							<f:setPropertyActionListener
-								target="#{procesoAsignacionPerCapitaSeguimientoController.aprobar_}"
-								value='#{"true"}' />
-						</p:commandButton>
-						<div style="clear: both;"></div>
-					
+					<p:commandButton styleClass="x-btn-text" value="Re Cargar Archivos"
+						icon="ui-icon-refresh"
+						action="#{procesoAsignacionPerCapitaSeguimientoController.enviar}"
+						rendered="#{procesoAsignacionPerCapitaSeguimientoController.verRecargarArchivos}">
+						<f:setPropertyActionListener
+							target="#{procesoAsignacionPerCapitaSeguimientoController.target}"
+							value="bandejaTareas.jsf" />
+						<f:setPropertyActionListener
+							target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarRevalorizar_}"
+							value='#{"false"}' />
+						<f:setPropertyActionListener
+							target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarSubirArchivos_}"
+							value='#{"true"}' />
+						<f:setPropertyActionListener
+							target="#{procesoAsignacionPerCapitaSeguimientoController.aprobar_}"
+							value='#{"false"}' />
+					</p:commandButton>
+
+					<p:commandButton styleClass="x-btn-text" value="Re Valorizar"
+						rendered="#{procesoAsignacionPerCapitaSeguimientoController.verRevalorizar}"
+						icon="ui-icon-refresh"
+						action="#{procesoAsignacionPerCapitaSeguimientoController.enviar}">
+						<f:setPropertyActionListener
+							target="#{procesoAsignacionPerCapitaSeguimientoController.target}"
+							value="bandejaTareas.jsf" />
+						<f:setPropertyActionListener
+							target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarRevalorizar_}"
+							value='#{"true"}' />
+						<f:setPropertyActionListener
+							target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarSubirArchivos_}"
+							value='#{"false"}' />
+						<f:setPropertyActionListener
+							target="#{procesoAsignacionPerCapitaSeguimientoController.aprobar_}"
+							value='#{"false"}' />
+					</p:commandButton>
+					<p:commandButton styleClass="x-btn-text"
+						value="Finalizar Seguimiento | Actividad" icon="ui-icon-check"
+						action="#{procesoAsignacionPerCapitaSeguimientoController.enviar}">
+						<f:setPropertyActionListener
+							target="#{procesoAsignacionPerCapitaSeguimientoController.target}"
+							value="bandejaTareas.jsf" />
+						<f:setPropertyActionListener
+							target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarRevalorizar_}"
+							value='#{"false"}' />
+						<f:setPropertyActionListener
+							target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarSubirArchivos_}"
+							value='#{"false"}' />
+						<f:setPropertyActionListener
+							target="#{procesoAsignacionPerCapitaSeguimientoController.aprobar_}"
+							value='#{"true"}' />
+					</p:commandButton>
+					<div style="clear: both;"></div>
+
 
 				</p:panel>
-				<p:commandButton value="Volver" styleClass="x-btn-text" immediate="true"
+				<p:commandButton value="Volver" styleClass="x-btn-text"
+					immediate="true"
 					action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />
-				</h:form>	
-					
-			</p:panel>
-		<h:form id="formDownload">	
-			<h:inputHidden value="#{procesoAsignacionPerCapitaSeguimientoController.docIdDownload}" id="hiddenId" />
-			<h:commandButton id="linkDownload" action="#{procesoAsignacionPerCapitaSeguimientoController.downloadPlanilla}" style="display: none"></h:commandButton>  
+
+
+
+			</h:form>
+
+		</p:panel>
+
+
+
+		<h:form id="formDownload">
+			<h:inputHidden
+				value="#{procesoAsignacionPerCapitaSeguimientoController.docIdDownload}"
+				id="hiddenId" />
+			<h:commandButton id="linkDownload"
+				action="#{procesoAsignacionPerCapitaSeguimientoController.downloadPlanilla}"
+				style="display: none"></h:commandButton>
 		</h:form>
 		
-		<p:dialog header="Subir archivos" widgetVar="dlgUpload" modal="true" height="100">
-		    <h:form enctype="multipart/form-data">
-			    <p:growl id="messages" showDetail="true" />
-			 
-			    <p:fileUpload value="#{procesoAsignacionPerCapitaSeguimientoController.file}" mode="simple" disabled="true" />
-			 
-			    <p:commandButton value="Submit" ajax="false" actionListener="#{fileUploadView.upload}" disabled="true" />
-			</h:form>
-		</p:dialog>   
+			
+	   <p:dialog header="Subir archivos" widgetVar="dlgUpload" id="idDlgUpload" modal="true" height="150"  appendToBody="true">
+			<h:form id="uploadVersion" enctype="multipart/form-data">
+			<p:panelGrid columns="2" >
+				<h:outputText value="Nueva Versión: " />
+				<p:fileUpload id="newVersionFile"
+							fileUploadListener="#{procesoAsignacionPerCapitaSeguimientoController.handleFile}"
+							value="#{procesoAsignacionPerCapitaSeguimientoController.file}"
+							update="uploadVersion" mode="simple"  />
+				<h:outputText value="Versión Final: "  />
+				<h:selectBooleanCheckbox id="checkVersionFinal" value="#{procesoAsignacionPerCapitaSeguimientoController.versionFinal}" />
+				<p:commandButton value="Aceptar" ajax="false"
+					actionListener="#{procesoAsignacionPerCapitaSeguimientoController.uploadVersion}" update=":lastSeguimiento"
+					oncomplete="if (args &amp;&amp; args.showDialog){dlgUpload.hide()}else{ alert('the bean didnt let me open the dialog')}" />
+					
+				<p:commandButton value="Cancelar"
+					onclick="dlgUpload.hide()" type="button" />
+			</p:panelGrid>
+			</h:form> 	
+		</p:dialog> 
+	
+
 	</ui:define>
 </ui:composition>

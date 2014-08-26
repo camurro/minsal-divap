@@ -25,14 +25,7 @@ public class MatchViewTask {
 		RELIQUIDACIONARCHIVOS("minsal.divap.procesos.Reliquidacion.descargarysubirplanillacumplimiento","divapProcesoReliqPlanillas"),		
 		RELIQUIDACIONMUNICIPAL("minsal.divap.procesos.Reliquidacion.validacionmontosreliquidacionmunicipal","divapProcesoReliqMunicipal"),
 		RELIQUIDACIONSERVICIO("minsal.divap.procesos.Reliquidacion.validacionmontosreliquidacionservicio","divapProcesoReliqServicio"),
-		
-		PRUEBA("minsal_divap.prueba.primeratarea","divapPrueba"),
-		PRUEBA2("minsal_divap.prueba.segundatarea","divapPrueba"),
-		
-		
-		PRUEBALANZAR("minsal_divap.preflujo.lanzar","divapPrueba"),
-		PRUEBAREBOTE("minsal_divap.preflujo.rebote","divapPrueba"),
-		PRUEBAPUNTO("minsal_divap.preflujo.punto","divapPrueba"),
+
 		
 		// Mapeo paginas de Tramitacion Orden Transferencia Profesional
 		OTSELECCIONARLINEAFINANCIAMIENTO("minsal_divap.TramitacionOrdenTransferenciaProfesional.seleccionarlineadefinanciamiento","divapProcesoOTLineas"),//"divapProcesoProgProgramas"),
@@ -42,9 +35,28 @@ public class MatchViewTask {
 		
 		// Mapeo paginas de Tramitacion Orden Transferencia Consolidador
 		TRAMITACIONORDENREVISARCONSOLIDACION("minsal_divap.TramitacionOrdenTransferenciaConsolidador.revisarconsolidaciondeordenesdetransferencia","divapPrueba"),
-		TRAMITACIONORDENHACERSEGUIMIENTO("minsal_divap.TramitacionOrdenTransferenciaConsolidador.hacerseguimientoordinariosdeordenesdetransferencia","divapPrueba");
+		TRAMITACIONORDENHACERSEGUIMIENTO("minsal_divap.TramitacionOrdenTransferenciaConsolidador.hacerseguimientoordinariosdeordenesdetransferencia","divapPrueba"),
+
 		
+		//Mapeo páginas de Distribución de Recursos Financieros para Programas de Reforzamiento APS 
+		SELECCIONARPROGRAMA("minsal_divap.DistribucionRecursosProgramasReforzamiento.seleccionarprograma","divapProcesoDistRecFinProgProgramasServicio"),
+		DESCARGARSUBIRVALORIZACION("minsal_divap.DistribucionRecursosProgramasReforzamiento.descargar/subirplanillasvalorizacion","divapProcesoDistRecFinProgSubirPlanillasMixto"),
+		REVISARVALIDARMONTOSPxQMUNICIPAL("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programapxqcondependenciamunicipal)","divapProcesoDistRecFinProgMunicipal"),
+		REVISARVALIDARMONTOSPxQSERVICIO("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programapxqcondependenciadeserviciodesalud)","divapProcesoDistRecFinProgServicioSalud"),
+		REVISARVALIDARMONTOSPxQMIXTO("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programapxqcondependenciadeserviciodesaludymunicipal)","divapProcesoDistRecFinProgMixto"),
+		REVISARVALIDARMONTOSHISTORICOMUNICIPAL("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programavaloreshistoricoscondependenciamunicipal)","divapProcesoDistRecFinProgValoresHistoricosMunicipal"),
+		REVISARVALIDARMONTOSHISTORICOSERVICIO("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programavaloreshistoricoscondependenciadeserviciodesalud)","divapProcesoDistRecFinProgValoresHistoricosServicioSalud"),
+		REVISARVALIDARMONTOSHISTORICOMIXTOL("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programavaloreshistoricoscondependenciadeserviciodesaludymunicipal)","divapProcesoDistRecFinProgValoresHistoricosMixto"),
+		HACERSEGUIMIENTO("minsal_divap.DistribucionRecursosProgramasReforzamiento.hacerseguimientoadocumentos", "divapProcesoDistRecFinProgSeguimientoDocumentacion"),
+		REVISARRESUMENESDOCUMENTOS("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisarresumenenviodocumentos", "divapProcesoDistRecFinProgEnviarDocumentos"),
 		
+		PRUEBA("minsal_divap.prueba.primeratarea","divapPrueba"),
+		PRUEBA2("minsal_divap.prueba.segundatarea","divapPrueba"),
+		ESTIMACIONFLUJOCAJASELECCIONARLINEAPROGRAMATICA("minsal_divap.EstimacionFlujoCaja.seleccionarlineaprogramatica","divapProcesoProgProgramas"),
+		ESTIMACIONFLUJOCAJAREVISARVALIDARMONITOREO("minsal_divap.EstimacionFlujoCaja.revisaryvalidarmonitoreo","divapProcesoProgMonitoreo"),
+		ESTIMACIONFLUJOCAJAREVISARCONSOLIDACION("minsal_divap.EstimacionFlujoConsolidador.revisarconsolidaciondeestimaciondeflujodecaja","divapProcesoProgConsolidado"),
+		ESTIMACIONFLUJOCAJAHACERSEGUIMIENTO("minsal_divap.EstimacionFlujoConsolidador.hacerseguimientoordinario","divapProcesoProgSeguimiento");
+
 		private String key;
 		private String view;
 

@@ -27,6 +27,8 @@ import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.RowEditEvent;
 
 import cl.minsal.divap.pojo.ComponentePojo;
+import cl.minsal.divap.pojo.EstimacionFlujoMonitoreoGlobalPojo;
+import cl.minsal.divap.pojo.EstimacionFlujoMonitoreoPojo;
 import cl.minsal.divap.pojo.MonitoreoPojo;
 import cl.minsal.divap.pojo.ProcesosProgramasPojo;
 import cl.redhat.bandejaTareas.controller.BaseController;
@@ -54,10 +56,15 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 		
 		generaProgramas();
 		generaServicios();
+<<<<<<< HEAD
+=======
+		cargarListas();
+>>>>>>> 85ce19ff095dd2055f77baa27d804ca58c27b67e
 		
 		columns = new ArrayList<ColumnaVO>();
 		//ColumnaVO col = new ColumnaVO("Julio","valor");
 		//columns.add(col);
+<<<<<<< HEAD
 		ColumnaVO  col = new ColumnaVO("Agosto", "Valor", "s24Agosto");
 		columns.add(col);
 		col = new ColumnaVO("Septiembre", "Valor","s24Septiembre");
@@ -67,6 +74,17 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 		col = new ColumnaVO("Noviembre", "Valor","s24Noviembre");
 		columns.add(col);
 		col = new ColumnaVO("Diciembre", "Valor","s24Diciembre");
+=======
+		ColumnaVO  col = new ColumnaVO("Agosto", "Valor", "agosto");
+		columns.add(col);
+		col = new ColumnaVO("Septiembre", "Valor","septiembre");
+		columns.add(col);
+		col = new ColumnaVO("Octubre", "Valor","octubre");
+		columns.add(col);
+		col = new ColumnaVO("Noviembre", "Valor","noviembre");
+		columns.add(col);
+		col = new ColumnaVO("Diciembre", "Valor","diciembre");
+>>>>>>> 85ce19ff095dd2055f77baa27d804ca58c27b67e
 		columns.add(col);
 		
 		
@@ -88,7 +106,11 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 		 UIColumn col= (UIColumn) event.getColumn();
 		 DataTable o=(DataTable) event.getSource();
 		
+<<<<<<< HEAD
 		 MonitoreoPojo info=(MonitoreoPojo)o.getRowData();
+=======
+		 EstimacionFlujoMonitoreoPojo info=(EstimacionFlujoMonitoreoPojo)o.getRowData();
+>>>>>>> 85ce19ff095dd2055f77baa27d804ca58c27b67e
 		 
 		 
 	        Object oldValue = event.getOldValue();
@@ -101,10 +123,17 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 	       
 	        //listadoServicios2.add(info);
 	        
+<<<<<<< HEAD
 	        MonitoreoPojo monitore_borrar = new MonitoreoPojo();
 	        
 
 	        	for (MonitoreoPojo monitoreo_actual : listadoServicios) {
+=======
+	        EstimacionFlujoMonitoreoPojo monitore_borrar = new EstimacionFlujoMonitoreoPojo();
+	        
+
+	        	for (EstimacionFlujoMonitoreoPojo monitoreo_actual : listadoMonitoreoSubtitulo21) {
+>>>>>>> 85ce19ff095dd2055f77baa27d804ca58c27b67e
 	        		
 	        		if (info.getId() == monitoreo_actual.getId())
 	        		{
@@ -114,9 +143,17 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 					
 				}
 	        	
+<<<<<<< HEAD
 	        	listadoServicios.remove(monitore_borrar);
 	        	info.setS24Total(info.getS24Enero() + info.getS24Febrero() + info.getS24Marzo() + info.getS24Abril() + info.getS24Mayo() + info.getS24Junio() + info.getS24Julio() + info.getS24Agosto() + info.getS24Septiembre() + info.getS24Octubre() + info.getS24Noviembre()+ info.getS24Diciembre());
 	        	listadoServicios.add(info);
+=======
+	        	listadoMonitoreoSubtitulo21.remove(monitore_borrar);
+	        	//info.setS24Total(info.getS24Enero() + info.getS24Febrero() + info.getS24Marzo() + info.getS24Abril() + info.getS24Mayo() + info.getS24Junio() + info.getS24Julio() + info.getS24Agosto() + info.getS24Septiembre() + info.getS24Octubre() + info.getS24Noviembre()+ info.getS24Diciembre());
+	        	listadoMonitoreoSubtitulo21.add(info);
+	        	
+	        	estimacionFlujoMonitoreoGlobalPojo.setEstimacionFlujoMonitoreoPojo(listadoMonitoreoSubtitulo21);
+>>>>>>> 85ce19ff095dd2055f77baa27d804ca58c27b67e
 				        
 	    }
 	 
@@ -148,6 +185,7 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 		}
 		return result;
 		}
+<<<<<<< HEAD
 	public void patocarlo()
 	{
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -162,7 +200,8 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 		
 		//Object c = table.getRowData[1];
 		
-	}
+=======
+	
 	List<ColumnaVO> columns;
 	
 	public List<ColumnaVO> getColumns() {
@@ -171,6 +210,109 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 
 	public void setColumns(List<ColumnaVO> columns) {
 		this.columns = columns;
+	}
+	
+	//Listas para llenar las grillas
+	List<EstimacionFlujoMonitoreoPojo> listadoMonitoreoSubtitulo21;
+	public List<EstimacionFlujoMonitoreoPojo> getListadoMonitoreoSubtitulo21() {
+		return listadoMonitoreoSubtitulo21;
+	}
+
+	public void setListadoMonitoreoSubtitulo21(
+			List<EstimacionFlujoMonitoreoPojo> listadoMonitoreoSubtitulo21) {
+		this.listadoMonitoreoSubtitulo21 = listadoMonitoreoSubtitulo21;
+	}
+
+	public void cargarListas()
+	{
+	    listadoMonitoreoSubtitulo21 = new ArrayList<EstimacionFlujoMonitoreoPojo>();
+	    //Obtener desde la base de datos.
+	    CargarListaSubtitulo21();
+>>>>>>> 85ce19ff095dd2055f77baa27d804ca58c27b67e
+	}
+	List<ColumnaVO> columns;
+	
+<<<<<<< HEAD
+	public List<ColumnaVO> getColumns() {
+		return columns;
+	}
+
+	public void setColumns(List<ColumnaVO> columns) {
+		this.columns = columns;
+=======
+	EstimacionFlujoMonitoreoGlobalPojo estimacionFlujoMonitoreoGlobalPojo;
+	public EstimacionFlujoMonitoreoGlobalPojo getEstimacionFlujoMonitoreoGlobalPojo() {
+		return estimacionFlujoMonitoreoGlobalPojo;
+	}
+
+	public void setEstimacionFlujoMonitoreoGlobalPojo(
+			EstimacionFlujoMonitoreoGlobalPojo estimacionFlujoMonitoreoGlobalPojo) {
+		this.estimacionFlujoMonitoreoGlobalPojo = estimacionFlujoMonitoreoGlobalPojo;
+	}
+
+	public void CargarListaSubtitulo21()
+	{
+		estimacionFlujoMonitoreoGlobalPojo = new EstimacionFlujoMonitoreoGlobalPojo();
+		
+		
+		EstimacionFlujoMonitoreoPojo estimacionFlujoMonitoreoPojo = new EstimacionFlujoMonitoreoPojo();
+		estimacionFlujoMonitoreoPojo.setAbril(4);
+		estimacionFlujoMonitoreoPojo.setAgosto(9);
+		estimacionFlujoMonitoreoPojo.setColor("#FFB5B5");
+		estimacionFlujoMonitoreoPojo.setComuna("Macul");
+		estimacionFlujoMonitoreoPojo.setConvenioMonto(10);
+		estimacionFlujoMonitoreoPojo.setConvenioPorcentaje(10);
+		estimacionFlujoMonitoreoPojo.setDiciembre(12);
+		estimacionFlujoMonitoreoPojo.setEnero(1);
+		estimacionFlujoMonitoreoPojo.setEstablecimiento("Establecimiento");
+		estimacionFlujoMonitoreoPojo.setFebrero(2);
+		estimacionFlujoMonitoreoPojo.setId(1);
+		estimacionFlujoMonitoreoPojo.setJulio(7);
+		estimacionFlujoMonitoreoPojo.setJunio(6);
+		estimacionFlujoMonitoreoPojo.setMarcoMonto(10);
+		estimacionFlujoMonitoreoPojo.setMarzo(3);
+		estimacionFlujoMonitoreoPojo.setMayo(5);
+		estimacionFlujoMonitoreoPojo.setNoviembre(11);
+		estimacionFlujoMonitoreoPojo.setOctubre(10);
+		estimacionFlujoMonitoreoPojo.setRemesaMonto(15);
+		estimacionFlujoMonitoreoPojo.setRemesaPorcentaje(10);
+		estimacionFlujoMonitoreoPojo.setSeptiembre(9);
+		estimacionFlujoMonitoreoPojo.setServicio("Servicio");
+		estimacionFlujoMonitoreoPojo.setTotal(100);
+		estimacionFlujoMonitoreoPojo.setTransferenciaMonto(100);
+		estimacionFlujoMonitoreoPojo.setTransferenciaPorcentaje(10);
+		listadoMonitoreoSubtitulo21.add(estimacionFlujoMonitoreoPojo);
+		//OTRO REGISTO
+		estimacionFlujoMonitoreoPojo = new EstimacionFlujoMonitoreoPojo();
+		estimacionFlujoMonitoreoPojo.setAbril(45);
+		estimacionFlujoMonitoreoPojo.setAgosto(95);
+		estimacionFlujoMonitoreoPojo.setColor("#FFB5B5");
+		estimacionFlujoMonitoreoPojo.setComuna("Macul 2");
+		estimacionFlujoMonitoreoPojo.setConvenioMonto(150);
+		estimacionFlujoMonitoreoPojo.setConvenioPorcentaje(150);
+		estimacionFlujoMonitoreoPojo.setDiciembre(152);
+		estimacionFlujoMonitoreoPojo.setEnero(51);
+		estimacionFlujoMonitoreoPojo.setEstablecimiento("Establecimiento 2");
+		estimacionFlujoMonitoreoPojo.setFebrero(52);
+		estimacionFlujoMonitoreoPojo.setId(15);
+		estimacionFlujoMonitoreoPojo.setJulio(57);
+		estimacionFlujoMonitoreoPojo.setJunio(56);
+		estimacionFlujoMonitoreoPojo.setMarcoMonto(510);
+		estimacionFlujoMonitoreoPojo.setMarzo(53);
+		estimacionFlujoMonitoreoPojo.setMayo(55);
+		estimacionFlujoMonitoreoPojo.setNoviembre(511);
+		estimacionFlujoMonitoreoPojo.setOctubre(510);
+		estimacionFlujoMonitoreoPojo.setRemesaMonto(515);
+		estimacionFlujoMonitoreoPojo.setRemesaPorcentaje(510);
+		estimacionFlujoMonitoreoPojo.setSeptiembre(59);
+		estimacionFlujoMonitoreoPojo.setServicio("Servicio 2");
+		estimacionFlujoMonitoreoPojo.setTotal(5100);
+		estimacionFlujoMonitoreoPojo.setTransferenciaMonto(5100);
+		estimacionFlujoMonitoreoPojo.setTransferenciaPorcentaje(510);
+		
+		listadoMonitoreoSubtitulo21.add(estimacionFlujoMonitoreoPojo);
+		estimacionFlujoMonitoreoGlobalPojo.setEstimacionFlujoMonitoreoPojo(listadoMonitoreoSubtitulo21);
+>>>>>>> 85ce19ff095dd2055f77baa27d804ca58c27b67e
 	}
 
 	List<ProcesosProgramasPojo> listadoProgramasServicio;

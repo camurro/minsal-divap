@@ -1,158 +1,124 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * The persistent class for the programa_servicio_core database table.
- * 
+ *
+ * @author cmurillo
  */
 @Entity
-@Table(name="programa_servicio_core")
-@NamedQuery(name="ProgramaServicioCore.findAll", query="SELECT p FROM ProgramaServicioCore p")
+@Table(name = "programa_servicio_core")
+@XmlRootElement
+@NamedQueries({
+	@NamedQuery(name = "ProgramaServicioCore.findAll", query = "SELECT p FROM ProgramaServicioCore p"),
+	@NamedQuery(name = "ProgramaServicioCore.findByIdProgramaServicioCore", query = "SELECT p FROM ProgramaServicioCore p WHERE p.idProgramaServicioCore = :idProgramaServicioCore"),
+	@NamedQuery(name = "ProgramaServicioCore.findByProgramaAno", query = "SELECT p FROM ProgramaServicioCore p WHERE p.programaAnoServicio.idProgramaAno = :programaAno"),
+	@NamedQuery(name = "ProgramaServicioCore.findByComuna", query = "SELECT p FROM ProgramaServicioCore p WHERE p.comuna.id = :comuna")})
 public class ProgramaServicioCore implements Serializable {
 	private static final long serialVersionUID = 1L;
-
 	@Id
-	@Column(name="id_programa_servicio")
-	private Integer idProgramaServicio;
+	@Column(name="id_programa_servicio_core", unique=true, nullable=false)
+	@GeneratedValue
+	private Integer idProgramaServicioCore;
+	@JoinColumn(name = "programa_ano", referencedColumnName = "id_programa_ano")
+	@ManyToOne(optional = false)
+	private ProgramaAno programaAnoServicio;
+	@JoinColumn(name = "establecimiento", referencedColumnName = "id")
+	@ManyToOne(optional = false)
+	private Establecimiento establecimiento;
+	@JoinColumn(name = "comuna", referencedColumnName = "id")
+	@ManyToOne(optional = false)
+	private Comuna comuna;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "programaServicioCore1")
+	private Set<ProgramaServicioCoreComponente> programaServicioCoreComponentes;
 
-	private String columna1;
-
-	private String columna10;
-
-	private String columna2;
-
-	private String columna3;
-
-	private String columna4;
-
-	private String columna5;
-
-	private String columna6;
-
-	private String columna7;
-
-	private String columna8;
-
-	private String columna9;
-
-	//bi-directional many-to-one association to Programa
-	@ManyToOne
-	@JoinColumn(name="id_programa")
-	private Programa programa;
-
-	//bi-directional many-to-one association to ServicioSalud
-	@ManyToOne
-	@JoinColumn(name="id_servicio_salud")
-	private ServicioSalud servicioSalud;
 
 	public ProgramaServicioCore() {
 	}
 
-	public Integer getIdProgramaServicio() {
-		return this.idProgramaServicio;
+	public ProgramaServicioCore(Integer idProgramaServicioCore) {
+		this.idProgramaServicioCore = idProgramaServicioCore;
 	}
 
-	public void setIdProgramaServicio(Integer idProgramaServicio) {
-		this.idProgramaServicio = idProgramaServicio;
+	public Integer getIdProgramaServicioCore() {
+		return idProgramaServicioCore;
 	}
 
-	public String getColumna1() {
-		return this.columna1;
+	public void setIdProgramaServicioCore(Integer idProgramaServicioCore) {
+		this.idProgramaServicioCore = idProgramaServicioCore;
 	}
 
-	public void setColumna1(String columna1) {
-		this.columna1 = columna1;
+	public ProgramaAno getProgramaAnoServicio() {
+		return programaAnoServicio;
 	}
 
-	public String getColumna10() {
-		return this.columna10;
+	public void setProgramaAnoServicio(ProgramaAno programaAnoServicio) {
+		this.programaAnoServicio = programaAnoServicio;
 	}
 
-	public void setColumna10(String columna10) {
-		this.columna10 = columna10;
+	public Establecimiento getEstablecimiento() {
+		return establecimiento;
 	}
 
-	public String getColumna2() {
-		return this.columna2;
+	public void setEstablecimiento(Establecimiento establecimiento) {
+		this.establecimiento = establecimiento;
 	}
 
-	public void setColumna2(String columna2) {
-		this.columna2 = columna2;
+	public Comuna getComuna() {
+		return comuna;
 	}
 
-	public String getColumna3() {
-		return this.columna3;
+	public void setComuna(Comuna comuna) {
+		this.comuna = comuna;
+	}
+	
+	@XmlTransient
+	public Set<ProgramaServicioCoreComponente> getProgramaServicioCoreComponentes() {
+		return programaServicioCoreComponentes;
 	}
 
-	public void setColumna3(String columna3) {
-		this.columna3 = columna3;
+	public void setProgramaServicioCoreComponentes(
+			Set<ProgramaServicioCoreComponente> programaServicioCoreComponentes) {
+		this.programaServicioCoreComponentes = programaServicioCoreComponentes;
 	}
 
-	public String getColumna4() {
-		return this.columna4;
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (idProgramaServicioCore != null ? idProgramaServicioCore.hashCode() : 0);
+		return hash;
 	}
 
-	public void setColumna4(String columna4) {
-		this.columna4 = columna4;
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof ProgramaServicioCore)) {
+			return false;
+		}
+	ProgramaServicioCore other = (ProgramaServicioCore) object;
+	if ((this.idProgramaServicioCore == null && other.idProgramaServicioCore != null) || (this.idProgramaServicioCore != null && !this.idProgramaServicioCore.equals(other.idProgramaServicioCore))) {
+		return false;
+	}
+	return true;
 	}
 
-	public String getColumna5() {
-		return this.columna5;
-	}
-
-	public void setColumna5(String columna5) {
-		this.columna5 = columna5;
-	}
-
-	public String getColumna6() {
-		return this.columna6;
-	}
-
-	public void setColumna6(String columna6) {
-		this.columna6 = columna6;
-	}
-
-	public String getColumna7() {
-		return this.columna7;
-	}
-
-	public void setColumna7(String columna7) {
-		this.columna7 = columna7;
-	}
-
-	public String getColumna8() {
-		return this.columna8;
-	}
-
-	public void setColumna8(String columna8) {
-		this.columna8 = columna8;
-	}
-
-	public String getColumna9() {
-		return this.columna9;
-	}
-
-	public void setColumna9(String columna9) {
-		this.columna9 = columna9;
-	}
-
-	public Programa getPrograma() {
-		return this.programa;
-	}
-
-	public void setPrograma(Programa programa) {
-		this.programa = programa;
-	}
-
-	public ServicioSalud getServicioSalud() {
-		return this.servicioSalud;
-	}
-
-	public void setServicioSalud(ServicioSalud servicioSalud) {
-		this.servicioSalud = servicioSalud;
+	@Override
+	public String toString() {
+		return "cl.minsal.divap.model.ProgramaServicioCore[ idProgramaServicioCore=" + idProgramaServicioCore + " ]";
 	}
 
 }

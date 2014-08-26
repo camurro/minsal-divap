@@ -30,7 +30,7 @@
 						<h:outputLabel for="valorBasicoDesempenoFile"
 							value="Archivo: Planilla PILOTO VIDA SANA ALCOHOL - Municipal.xls"
 							styleClass="textoAjustado fileUploadLabel" />
-						<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" mode="simple" />
+						<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoDistRecFinProgSubirPlanillasController.planillaMuncipal}" mode="simple" />
 					</p:panelGrid>
 					<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
 					<br />
@@ -39,14 +39,14 @@
 						<h:outputLabel for="valorBasicoDesempenoFile2"
 							value="Archivo: Planilla PILOTO VIDA SANA ALCOHOL - Servicio.xls"
 							styleClass="textoAjustado fileUploadLabel" />
-						<p:fileUpload id="valorBasicoDesempenoFile2" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" mode="simple" />
+						<p:fileUpload id="valorBasicoDesempenoFile2" value="#{procesoDistRecFinProgSubirPlanillasController.planillaServicio}" mode="simple" />
 					</p:panelGrid>
 					<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
 					<br />
 					<br />
-					<p:commandButton value="Finalizar Actividad | Todos los Archivos fueron cargados" ajax="false"
-						actionListener="#{procesoAsignacionPerCapitaController.uploadArchivosValorizacion}"
-						action="divapProcesoDistRecFinProgMixto?faces-redirect=true" icon="ui-icon-upload" />
+					<p:commandButton value="Finalizar Actividad | Todos los Archivos fueron cargados" ajax="false" action="#{procesoDistRecFinProgSubirPlanillasController.enviar}" icon="ui-icon-upload" >
+						 <f:setPropertyActionListener target="#{procesoDistRecFinProgSubirPlanillasController.target}" value="bandejaTareas.jsf" />
+					</p:commandButton>
 				</p:panel>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />

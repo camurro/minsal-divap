@@ -230,8 +230,9 @@
 
 
 							<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" action="#" ajax="true" value="Guardar" />
-							<p:commandButton value="Finalizar" styleClass="x-btn-text"
-								action="divapProcesoDistRecFinProgSeguimientoDocumentacion?faces-redirect=true" ajax="false" icon="ui-icon-seek-first" />
+							<p:commandButton value="Finalizar" styleClass="x-btn-text" action="#{procesoDistRecFinValidarMontosController.enviar}" ajax="false" icon="ui-icon-seek-first" >
+								<f:setPropertyActionListener target="#{procesoDistRecFinValidarMontosController.target}" value="bandejaTareas.jsf" />
+							</p:commandButton>
 						</h:form>
 					</div>
 				</p:panel>

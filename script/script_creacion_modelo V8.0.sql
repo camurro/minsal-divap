@@ -1710,5 +1710,363 @@ WITH (
 );
 
 
+-- 19/08/2014 Modelo// Distribución de Recursos Financieros para Programas de Reforzamiento de APS 
+
+
+DROP TABLE programa_municipal_core;
+
+CREATE TABLE programa_municipal_core
+(
+  programa_ano integer NOT NULL,
+  comuna integer NOT NULL,
+  establecimiento integer,
+  id_programa_municipal_core serial NOT NULL,
+  CONSTRAINT programa_municipal_core_pk PRIMARY KEY (id_programa_municipal_core),
+  CONSTRAINT establecimiento_fk FOREIGN KEY (establecimiento)
+      REFERENCES establecimiento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT programa_ano_fk FOREIGN KEY (programa_ano)
+      REFERENCES programa_ano (id_programa_ano) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT programa_comuna_fk FOREIGN KEY (comuna)
+      REFERENCES comuna (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+CREATE TABLE programa_municipal_core_componente
+(
+  programa_municipal_core integer NOT NULL,
+  componente integer NOT NULL,
+  tarifa integer,
+  cantidad integer,
+  CONSTRAINT programa_municipal_core_componente_pk PRIMARY KEY (programa_municipal_core, componente),
+  CONSTRAINT componente_fk FOREIGN KEY (componente)
+      REFERENCES componente (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT programa_municipal_core_fk FOREIGN KEY (programa_municipal_core)
+      REFERENCES programa_municipal_core (id_programa_municipal_core) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+
+INSERT INTO tipo_programa(id, nombre) VALUES (1, 'PxQ');
+INSERT INTO tipo_programa(id, nombre) VALUES (2, 'Histórico');
+
+CREATE TABLE public.tipo_subtitulo
+(
+   id_tipo_subtitulo serial NOT NULL, 
+   nombre_subtitulo text NOT NULL, 
+   CONSTRAINT tipo_subtitulo_pk PRIMARY KEY (id_tipo_subtitulo)
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+INSERT INTO tipo_subtitulo(id_tipo_subtitulo, nombre_subtitulo) VALUES (1, 'SUbtítulo 21');
+INSERT INTO tipo_subtitulo(id_tipo_subtitulo, nombre_subtitulo) VALUES (2, 'SUbtítulo 22');
+INSERT INTO tipo_subtitulo(id_tipo_subtitulo, nombre_subtitulo) VALUES (3, 'SUbtítulo 24');
+INSERT INTO tipo_subtitulo(id_tipo_subtitulo, nombre_subtitulo) VALUES (4, 'SUbtítulo 29');
+
+
+CREATE TABLE public.programa_subtitulo
+(
+   id_programa_subtitulo serial NOT NULL, 
+   programa integer NOT NULL, 
+   subtitulo integer NOT NULL, 
+   CONSTRAINT programa_subtitulo_pk PRIMARY KEY (id_programa_subtitulo), 
+   CONSTRAINT programa_fk FOREIGN KEY (programa) REFERENCES programa (id) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT subtitulo_fk FOREIGN KEY (subtitulo) REFERENCES tipo_subtitulo (id_tipo_subtitulo) ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+DROP TABLE programa_servicio_core;
+
+
+CREATE TABLE programa_servicio_core
+(
+   programa_ano integer NOT NULL, 
+   comuna integer NOT NULL, 
+   establecimiento integer NOT NULL, 
+   id_programa_servicio_core serial NOT NULL, 
+   CONSTRAINT programa_servicio_core_pk PRIMARY KEY (id_programa_servicio_core), 
+   CONSTRAINT programa_servicio_core_comuna_fk FOREIGN KEY (comuna) REFERENCES comuna (id) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT programa_servicio_core_establecimiento_fk FOREIGN KEY (establecimiento) REFERENCES establecimiento (id) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT programa_servicio_core_programa_ano_fk FOREIGN KEY (programa_ano) REFERENCES programa_ano (id_programa_ano) ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+CREATE TABLE public.programa_servicio_core_componente
+(
+   programa_servicio_core integer NOT NULL, 
+   componente integer NOT NULL, 
+   tarifa integer, 
+   cantidad integer, 
+   CONSTRAINT programa_servicio_core_componente_pk PRIMARY KEY (programa_servicio_core, componente), 
+   CONSTRAINT componente_fk FOREIGN KEY (componente) REFERENCES componente (id) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT programa_servicio_core_fk FOREIGN KEY (programa_servicio_core) REFERENCES programa_servicio_core (id_programa_servicio_core) ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+
+CREATE TABLE estado_programa
+(
+  id_estado_programa serial NOT NULL,
+  nombre_estado text NOT NULL,
+  CONSTRAINT estado_programa_pk PRIMARY KEY (id_estado_programa)
+)
+WITH (
+  OIDS=FALSE
+);
+
+INSERT INTO estado_programa(id_estado_programa, nombre_estado) VALUES (1, 'Sin Iniciar');
+INSERT INTO estado_programa(id_estado_programa, nombre_estado) VALUES (2, 'En Curso');
+INSERT INTO estado_programa(id_estado_programa, nombre_estado) VALUES (3, 'Finalizado');
+
+CREATE TABLE programa_ano
+(
+  id_programa_ano serial NOT NULL,
+  programa integer NOT NULL,
+  ano integer NOT NULL,
+  estado integer NOT NULL,
+  CONSTRAINT programa_ano_pk PRIMARY KEY (id_programa_ano),
+  CONSTRAINT estado_programa_fk FOREIGN KEY (estado)
+      REFERENCES estado_programa (id_estado_programa) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT programa_ano_fk FOREIGN KEY (ano)
+      REFERENCES ano_en_curso (ano) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT programa_fk FOREIGN KEY (programa)
+      REFERENCES programa (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (40, 'Plantilla Programa APS Municipales');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (41, 'Plantilla Programa APS Mixto');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (42, 'Plantilla Programa APS Servicios');
+
+
+CREATE TABLE dependencia_programa
+(
+  id_dependencia_programa serial NOT NULL,
+  nombre text NOT NULL,
+  CONSTRAINT dependencia_programa_pk PRIMARY KEY (id_dependencia_programa)
+)
+WITH (
+  OIDS=FALSE
+);
+
+INSERT INTO dependencia_programa(id_dependencia_programa, nombre) VALUES (1, 'Municipal');
+INSERT INTO dependencia_programa(id_dependencia_programa, nombre) VALUES (2, 'Servicios');
+INSERT INTO dependencia_programa(id_dependencia_programa, nombre) VALUES (3, 'Mixto');
+
+
+ALTER TABLE programa ADD COLUMN descripcion text;
+ALTER TABLE programa
+  ADD COLUMN dependencia integer NOT NULL;
+
+ALTER TABLE programa
+  ADD COLUMN dependencia integer NOT NULL;
+ALTER TABLE programa
+  ADD CONSTRAINT dependencia_fk FOREIGN KEY (dependencia) REFERENCES dependencia_programa (id_dependencia_programa) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+DELETE FROM programa;
+
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(1, 'APOYO A LA GESTION EN EL NIVEL PRIMARIO DE SALUD EN EST. DEP. DE LOS SS (CV, CACU, MEJ, FORT.)', 2, 1, 'cmurillo', 'Descripcion de prueba', 2);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(2, 'COMPLEMENTARIO GES', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(3, 'CONTROL DEL SALUD JOVEN SANO', 2, 1, 'cmurillo', 'Descripcion de prueba',1);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(4, 'CAPACITACIÓN Y FORMACIÓN ATENCIÓN PRIMARIA EN LA RED ASISTENCIAL', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(5, 'ESPACIOS AMIGABLES ADOLESCENTES', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(6, 'FORMACION DE MEDICOS ESPECIALISTAS EN LA ATENCION PRIMARIA EN EL SISTEMA PUBLICO DE ATENCION DE SALUD', 2, 1, 'cmurillo', 'Descripcion de prueba',1);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(7, 'MISIONES DE ESTUDIOS PARA LA FORMACION DE MEDICOS ESPECIALISTAS', 2, 1, 'cmurillo', 'Descripcion de prueba',1);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(8, 'VIDA SANA: INTERVENCIÓN EN FACTORES DE RIESGO DE ENFERMEDADES CRÓNICAS ASOCIADAS A LA MALNUTRICIÓN EN NIÑOS, NIÑAS, ADOLESCENTES, ADULTOS Y MUJERES POSTPARTO.', 2, 1, 'cmurillo', 'Descripcion de prueba',1);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(9, 'PILOTO VIDA SANA: ALCOHOL', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(10, 'SALUD MENTAL INTEGRAL EN APS', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(11, 'APOYO A LA GESTION LOCAL', 2, 1, 'cmurillo', 'Descripcion de prueba',1);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(12, 'APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES', 2, 1, 'cmurillo', 'Descripcion de prueba',2);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(13, 'CENTROS COMUNITARIOS DE SALUD FAMILIAR (CECOSF)', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(14, 'CONSULTORIOS DE EXCELENCIA', 2, 1, 'cmurillo', 'Descripcion de prueba',1);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(15, 'PILOTO DE DISPENSACION AUTOMATICA FARMACOS E INSUMOS APS', 2, 1, 'cmurillo', 'Descripcion de prueba',1);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(16, 'APOYO AL DESARROLLO BIOPSICOSOCIAL', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(17, 'APOYO RADIOLÓGICO', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(18, 'ASISTENCIA VENTILATORIA INVASIVA (AVI)', 2, 1, 'cmurillo', 'Descripcion de prueba',2);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(19, 'ASISTENCIA VENTILATORIA INVASIVA EN ADULTOS (AVIA)', 2, 1, 'cmurillo', 'Descripcion de prueba',2);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(20, 'ASISTENCIA VENTILATORIA NO INVASIVA (AVNI)', 2, 1, 'cmurillo', 'Descripcion de prueba',2);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(21, 'ASISTENCIA VENTILATORIA NO INVASIVA EN ADULTO (AVNIA)', 2, 1, 'cmurillo', 'Descripcion de prueba',2);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(22, 'CONTROL ENFERMEDADES RESPIRATORIAS DEL ADULTO (ERA)', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(23, 'MODELO DE ATENCIÓN CON ENFOQUE FAMILIAR', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(24, 'IMÁGENES DIAGNÓSTICAS', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(25, 'INFECCIONES RESPIRATORIAS INFANTILES (IRA)', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(26, 'MEJORÍA DE LA EQUIDAD EN SALUD RURAL', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(27, 'PILOTO CONTROL SALUD DEL NIÑO/A SANO/A DE 5 A 9 AÑOS', 2, 1, 'cmurillo', 'Descripcion de prueba',1);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(28, 'PROGRAMA PLAN ARAUCANIA', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(29, 'APOYO A LA AP DE SALUD MUNICIPAL', 2, 1, 'cmurillo', 'Descripcion de prueba', 1);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(30, 'ATENCIÓN DOMICILIARIA DE PERSONAS CON DISCAPACIDAD SEVERA', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(31, 'GES ODONTOLÓGICO ADULTO', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(32, 'GES ODONTOLOGICO FAMILIAR', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(33, 'PREV. SALUD BUCAL POB. PREESC. APS', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(34, 'MANTENIMIENTO INFRAESTRUCTURA APS', 2, 1, 'cmurillo', 'Descripcion de prueba',1);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(35, 'ODONTOLÓGICO INTEGRAL', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(36, 'RCP CON DEA', 2, 1, 'cmurillo', 'Descripcion de prueba',1);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(37, 'REHABILITACIÓN INTEGRAL CON BASE COMUNITARIA', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(38, 'RESOLUTIVIDAD EN APS', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(39, 'SERVICIO DE ATENCIÓN PRIMARIA DE URGENCIA (SAPU)', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(40, 'SERVICIO DE URGENCIAL RURAL (SUR)', 2, 1, 'cmurillo', 'Descripcion de prueba',1);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(41, 'FORTALECIMIENTO DE LAS CAPACIDADES DE GESTIÓN DE SALUD EN LA AP MUNICIPAL', 2, 1, 'cmurillo', 'Descripcion de prueba',1);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(42, 'INMUNIZACIÓN DE INFLUENZA Y NEUMOCOCO EN EL NIVEL PRIMARIO DE ATENCIÓN', 2, 1, 'cmurillo', 'Descripcion de prueba',1);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(43, 'CAPACITACIÓN Y PERFECIONAMIENTO', 2, 1, 'cmurillo', 'Descripcion de prueba',1);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(44, 'FONDO DE FÁRMACIA PARA ENFERMEDADES CRONICAS NO TRANSMISIBLES', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(45, 'PROGRAMA ESPECIAL DE SALUD Y PUEBLOS INDIGENAS (PESPI)', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+
+
+
+
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (1, 1, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (2, 2, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (3, 3, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (4, 4, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (5, 5, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (6, 6, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (7, 7, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (8, 8, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (9, 9, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (10, 10, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (11, 11, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (12, 21, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (13, 13, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (14, 14, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (15, 15, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (16, 16, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (17, 17, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (18, 18, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (19, 19, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (20, 20, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (21, 21, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (22, 22, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (23, 23, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (24, 24, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (25, 25, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (26, 26, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (27, 27, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (28, 28, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (29, 29, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (30, 30, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (31, 31, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (32, 32, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (33, 33, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (34, 34, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (35, 35, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (36, 36, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (37, 37, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (38, 38, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (39, 39, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (40, 40, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (41, 41, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (42, 42, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (43, 43, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (44, 44, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (45, 45, 2014, 1);
+
+
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	1	,	'APOYO A LA GESTION EN EL NIVEL PRIMARIO DE SALUD EN EST DEP. DE LOS SS (CV, CACU, MEJ, FORT.)'	,	1	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	2	,	'COMPLEMENTARIO GES'	,	2	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	3	,	'CONTROL DE SALUD JOVEN SANO'	,	3	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	4	,	'DESARROLLO DE CAPITAL HUMANO HOSP. MENOR COMPLEJIDAD'	,	4	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	5	,	'DESARROLLO DE RECURSO HUMANO EN APS MUNICIPAL'	,	4	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	6	,	'CAPACITACION UNIVERSAL'	,	4	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	7	,	'ADOLESCENTES'	,	5	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	8	,	'ESPECIALISTAS BASICOS (6 AÑOS)'	,	6	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	9	,	'MISIONES DE ESTUDIOS MEDICOS ESPECIALISTAS'	,	7	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	10	,	'INTERVENCIÓN EN OBESIDAD EN NIÑOS, ADOLESCENTES Y ADULTOS'	,	8	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	11	,	'PILOTO VIDA SANA: ALCOHOL'	,	9	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	12	,	'SALUD MENTAL INTEGRAL EN APS'	,	10	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	13	,	'APOYO A LA GESTION LOCAL.'	,	11	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	14	,	'PUESTA EN MARCHA CONS. NUEVOS'	,	11	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	15	,	'APS NO MUNICIPAL'	,	12	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	16	,	'ONG'	,	12	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	17	,	'ANCORA'	,	12	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	18	,	'APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN EST DEPENDIENTES'	,	12	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	19	,	'CENTROS COMUNITARIOS DE SALUD FAMILIAR (CECOSF)'	,	13	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	20	,	'CONSULTORIOS DE EXCELENCIA'	,	14	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	21	,	'PILOTO DE DISPENSACION AUTOMATICA FARMACOS E INSUMOS APS'	,	15	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	22	,	'APOYO AL DESARROLLO BIOSICOSOCIAL'	,	16	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	23	,	'APOYO RADIOLÓGICO'	,	17	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	24	,	'AVI'	,	18	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	25	,	'AVIA'	,	19	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	26	,	'AVNI'	,	20	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	27	,	'AVNIA'	,	21	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	28	,	'ERA'	,	22	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	29	,	'ESTÍMULO CESFAM'	,	23	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	30	,	'IMÁGENES DIAGNÓSTICAS'	,	24	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	31	,	'IRA'	,	25	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	32	,	'IRA EN SAPUS'	,	25	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	33	,	'IRA MIXTAS'	,	25	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	34	,	'MEJORÍA DE LA EQUIDAD EN SALUD RURAL'	,	26	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	35	,	'PILOTO CONTROL SALUD DEL NIÑO/A SANO/A DE 5 A 9 AÑOS'	,	27	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	36	,	'PROGRAMA PLAN ARAUCANIA'	,	28	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	37	,	'APOYO A LA AP DE SALUD MUNICIPAL'	,	29	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	38	,	'PAGO A CUIDADORES DE PERSONAS CON DISCAPACIDAD SEVERA'	,	30	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	39	,	'VISITA INTEGRAL DOMICILIARIA'	,	30	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	40	,	'SALUD ORAL A LOS 60 AÑOS'	,	31	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	41	,	'SALUD ORAL 6 AÑOS'	,	32	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	42	,	'SALUD ORAL EMBARAZADA'	,	32	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	43	,	'URGENCIA ODONTOLOGICA'	,	32	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	44	,	'PREV. SALUD BUCAL POB. PREESC. APS'	,	33	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	45	,	'MANTENIMIENTO INFRAESTRUCTURA APS'	,	34	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	46	,	'APOYO ODONTOLÓGICO EN CECOSF'	,	35	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	47	,	'CLINICAS MOVILES'	,	35	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	48	,	'ALTAS MHER'	,	35	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	49	,	'ALTAS MUJERES MAS SONRISAS PARA CHILE'	,	35	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	50	,	'PROTESIS Y ENDODONCIAS'	,	35	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	51	,	'RCP CON DEA'	,	36	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	52	,	'ARTROSIS'	,	37	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	53	,	'REHABILITACIÓN EQUIPOS RURALES'	,	37	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	54	,	'REHABILITACIÓN INTEGRAL CON BASE COMUNITARIA'	,	37	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	55	,	'REHABILITACIÓN OSTEOMUSCULAR'	,	37	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	56	,	'ESPECIALIDADES AMBULATORIAS'	,	38	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	57	,	'UAPO'	,	38	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	58	,	'PROCEDIMIENTOS QUIRURGICOS DE BAJA COMPLEJIDAD'	,	38	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	59	,	'SAPU (AVANZADO, LARGO Y CORTO)'	,	39	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	60	,	'SAPU DENTAL'	,	39	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	61	,	'SAPU VERANO'	,	39	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	62	,	'SERVICIO DE URGENCIAL RURAL (SUR)'	,	40	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	63	,	'FORTALECIMIENTO DE LAS CAPACIDADES DE GESTIÓN DE SALUD EN LA AP MUNICIPAL'	,	41	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	64	,	'INMUNIZACIÓN DE INFLUENZA Y NEUMOCOCO EN EL NIVEL PRIMARIO DE ATENCIÓN'	,	42	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	65	,	'CAPACITACIÓN Y PERFECIONAMIENTO'	,	43	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	66	,	'FONDO DE FÁRMACIA PARA ENFERMEDADES CRONICAS NO TRANSMISIBLES'	,	44	);
+INSERT INTO componente(id, nombre, id_programa)	 VALUES (	67	,	'PROGRAMA ESPECIAL DE SALUD Y PUEBLOS INDIGENAS (PESPI)'	,	45	);
+
+
+
+
+
+
+
+
+
+-- Modelo// Distribución de Recursos Financieros para Programas de Reforzamiento de APS 
+
+
+
+
+
 
 

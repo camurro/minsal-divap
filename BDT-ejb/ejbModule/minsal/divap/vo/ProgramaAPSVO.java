@@ -1,0 +1,97 @@
+package minsal.divap.vo;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import minsal.divap.enums.TiposPrograma;
+import minsal.divap.enums.TiposSubtitulos;
+
+public class ProgramaAPSVO implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8466103003802069012L;
+	private Integer idServicioSalud;
+	private String servicioSalud;
+	private Integer idComuna;
+	private String comuna;
+	private Integer tarifa;
+	private Integer cantidad;
+	private TiposPrograma tipoPrograma;
+	private TiposSubtitulos tipoSubtitulo;
+	//TO-DO Componentes
+	public Integer getIdServicioSalud() {
+		return idServicioSalud;
+	}
+	public void setIdServicioSalud(Integer idServicioSalud) {
+		this.idServicioSalud = idServicioSalud;
+	}
+	public String getServicioSalud() {
+		return servicioSalud;
+	}
+	public void setServicioSalud(String servicioSalud) {
+		this.servicioSalud = servicioSalud;
+	}
+	public Integer getIdComuna() {
+		return idComuna;
+	}
+	public void setIdComuna(Integer idComuna) {
+		this.idComuna = idComuna;
+	}
+	public String getComuna() {
+		return comuna;
+	}
+	public void setComuna(String comuna) {
+		this.comuna = comuna;
+	}
+	public Integer getTarifa() {
+		return tarifa;
+	}
+	public void setTarifa(Integer tarifa) {
+		this.tarifa = tarifa;
+	}
+	public Integer getCantidad() {
+		return cantidad;
+	}
+	public void setCantidad(Integer cantidad) {
+		this.cantidad = cantidad;
+	}
+	public TiposPrograma getTipoPrograma() {
+		return tipoPrograma;
+	}
+	public void setTipoPrograma(TiposPrograma tipoPrograma) {
+		this.tipoPrograma = tipoPrograma;
+	}
+	public TiposSubtitulos getTipoSubtitulo() {
+		return tipoSubtitulo;
+	}
+	public void setTipoSubtitulo(TiposSubtitulos tipoSubtitulo) {
+		this.tipoSubtitulo = tipoSubtitulo;
+	}
+	
+
+	public List<Object> getRow() {
+		List<Object> row = new ArrayList<Object>();
+		if(getIdServicioSalud() != null){
+			row.add(getIdServicioSalud()) ;
+		}
+		if(getServicioSalud() != null){
+			row.add(getServicioSalud());
+		}
+		if(getIdComuna() != null){
+			row.add(getIdComuna());
+		}
+		if(getComuna() != null){
+			row.add(getComuna());
+		}
+		if(getTarifa()!= null){
+			row.add(getTarifa());
+		}
+		if(getCantidad()!= null){
+			row.add(getCantidad());
+		}
+		return row;
+	}
+	
+}

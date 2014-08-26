@@ -123,7 +123,7 @@ public class EmailService {
 				attachment.setURL(adjunto.getUrl());
 				email.attach(attachment);
 			}
-			email.send();
+			//email.send();
 			System.out.println("email enviado");
 		}
 		catch (EmailException e) {
