@@ -327,7 +327,7 @@
 
 
 												<h:outputText value="Servicio: " styleClass="inputLabel" />
-												<p:selectOneMenu
+												<!-- <p:selectOneMenu
 													value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorComboSubtitulo22}"
 													onchange="cambiaSubtitulo22()" id="cmbSubtitulo22"
 													style="width:250px;">
@@ -341,7 +341,13 @@
 													<p:ajax
 														listener="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.filtrarSubtitulo22}"
 														update=":#{p:component('form3')}" />
-												</p:selectOneMenu>
+												</p:selectOneMenu> -->
+												
+						<p:selectOneMenu id="cmbSubtitulo22Servicio"  style="width:650px;" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorComboSubtitulo22}">
+            <f:selectItem itemLabel="Seleccione" itemValue="" />
+            <f:selectItems value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.servicios}" />
+           	 <p:ajax listener="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.filtrarSubtitulo22}"	update=":#{p:component('form3')}" />
+           	 </p:selectOneMenu>
 											</h:panelGrid>
 										</h:panelGrid>
 										<br />
@@ -537,7 +543,7 @@
 										<h:panelGrid>
 											<h:outputText value="Servicio: " styleClass="inputLabel" />
 
-											<p:selectOneMenu
+											<!-- <p:selectOneMenu
 												value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorComboSubtitulo24}"
 												onchange="cambiaSubtitulo24()" id="select14"
 												style="width:250px;">
@@ -551,7 +557,13 @@
 												<p:ajax
 													listener="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.filtrarSubtitulo24}"
 													update=":#{p:component('formSubtitulo24')}" />
-											</p:selectOneMenu>
+											</p:selectOneMenu> -->
+											
+															<p:selectOneMenu id="cmbSubtitulo24Servicio"  style="width:650px;" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorComboSubtitulo24}">
+            <f:selectItem itemLabel="Seleccione" itemValue="" />
+            <f:selectItems value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.servicios}" />
+           	 <p:ajax listener="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.filtrarSubtitulo24}"	update=":#{p:component('formSubtitulo24')}" />
+           	 </p:selectOneMenu>
 										</h:panelGrid>
 										<br />
 										<h:panelGrid columns="2">
@@ -739,7 +751,7 @@
 											<h:panelGrid>
 												<h:outputText value="Servicio: " styleClass="inputLabel" />
 
-												<p:selectOneMenu
+												<!-- <p:selectOneMenu
 													value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorComboSubtitulo29}"
 													onchange="cambiaSubtitulo29()" id="cmbSubtitulo29"
 													style="width:250px;">
@@ -754,7 +766,13 @@
 														listener="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.filtrarSubtitulo29}"
 														update=":#{p:component('formSubtitulo29')}" />
 														
-												</p:selectOneMenu>
+												</p:selectOneMenu> -->
+												
+																								<p:selectOneMenu id="cmbSubtitulo29Servicio"  style="width:650px;" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorComboSubtitulo29}">
+            <f:selectItem itemLabel="Seleccione" itemValue="" />
+            <f:selectItems value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.servicios}" />
+           	 <p:ajax listener="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.filtrarSubtitulo29}"	update=":#{p:component('formSubtitulo29')}" />
+           	 </p:selectOneMenu>
 											</h:panelGrid>
 										</h:panelGrid>
 										<br />
@@ -1444,6 +1462,7 @@
 										</h:panelGrid>
 										</h:form>
 									</p:tab>
+									
 									<p:tab title="Subtítulo 29">
 									<ui:param name="datoSubtitulo29ConvenioRemesa"
 											value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.estimacionFlujoMonitoreoGlobalPojoSubtitulo29ConvenioRemesa}" />

@@ -9,11 +9,12 @@ public enum TipoDocumentosProcesos{
 	PLANTILLARESOLUCIONAPORTEESTATALUR(9,"Plantilla Resoluciones Comunales de Aporte Estatal UR"), PLANTILLARESOLUCIONAPORTEESTATALCF(10,"Plantilla Resoluciones Comunales de Aporte Estatal CF"),
 	RESOLUCIONAPORTEESTATALUR(11,"Resoluciones Comunales de Aporte Estatal UR"), RESOLUCIONAPORTEESTATALCF(12,"Resoluciones Comunales de Aporte Estatal CF"),
 	PLANTILLABORRADORAPORTEESTATAL(13,"Plantilla Borrador decreto aporte estatal"), ASIGNACIONDESEMPENODIFICIL(14, "Asignación de Desempeño Difícil"),
+	PLANTILLAPROGRAMAAPSMUNICIPALES(40, "Plantilla Programa APS Municipales"), PLANTILLAPROGRAMAAPSMUNICIPALEXCEPCION(41, "Plantilla Programa APS Municipal – Excepción"), PLANTILLAPROGRAMAAPSSERVICIO(42, "Plantilla Programa APS Servicios"),
+	PROGRAMAAPSMUNICIPAL(43, "Programa APS Municipales"), PROGRAMAAPSMUNICIPALMIXTO(44, "Programa APS Municipal – MIXTO"), PROGRAMAAPSSERVICIO(45, "Programa APS Servicios"),
 	POBLACIONINSCRITA(15, "Población Inscrita Validada"), 
 	
-	//Plantilla PARA Distribución de Recursos Financieros para Programas de Reforzamiento de APS
-	PLANTILLAPROGRAMAAPSMUNICIPALES(40, "Plantilla Programa APS Municipales"), PLANTILLAPROGRAMAAPSMUNICIPALEXCEPCION(41, "Plantilla Programa APS Municipal – Excepción"), PLANTILLAPROGRAMAAPSSERVICIO(42, "Plantilla Programa APS Servicios"),
-	PROGRAMAAPSMUNICIPAL(43, "Programa APS Municipales"), PROGRAMAAPSMUNICIPALMIXTO(44, "Programa APS Municipal – MIXTO"), PROGRAMAAPSSERVICIO(45, "Programa APS Servicios");
+	PLANTILLAPROGRAMACION(17,"Planilla Programacion de Caja"),PLANTILLAPROPUESTA(16,"Plantilla Propuesta"), PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA(18,"Plantilla Ordinario Programacion Caja");
+	
 
 	private Integer id;
 	private String name;

@@ -107,7 +107,7 @@ public class GeneradorWordBorradorAporteEstatal extends GeneradorWord {
 					for (String key : parameters.keySet()) {
 						if(text.contains(key)){
 							replacementText = parameters.get(key).toString();
-							text = text.replaceAll(key, replacementText);
+							text = text.replaceAll("\\" + key, replacementText);
 							run.setText(text, 0);
 						}
 					}

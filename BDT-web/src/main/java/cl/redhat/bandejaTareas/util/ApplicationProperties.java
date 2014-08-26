@@ -8,13 +8,14 @@ import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.ejb.Startup;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 
 import org.apache.log4j.Logger;
 
 
 
 @SuppressWarnings("serial")
-@ApplicationScoped
+@Dependent
 @Startup
 public class ApplicationProperties extends Properties {
 

@@ -3,10 +3,12 @@ package cl.minsal.divap.controller;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -23,10 +25,12 @@ import minsal.divap.exception.ExcelFormatException;
 import minsal.divap.service.DistribucionInicialPercapitaService;
 import minsal.divap.service.EstimacionFlujoCajaService;
 import minsal.divap.service.ProgramasService;
+import minsal.divap.service.ServicioSaludService;
 import minsal.divap.util.Util;
 import minsal.divap.vo.ColumnaVO;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ProgramaVO;
+import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskVO;
 
@@ -48,6 +52,7 @@ import cl.minsal.divap.pojo.ProcesosProgramasPojo;
 import cl.minsal.divap.pojo.montosDistribucionPojo;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 import cl.redhat.bandejaTareas.util.JSONHelper;
+
 
 @Named("procesoEstimacionFlujoCajaRevisarValidarMonitoreoController")
 @ViewScoped
@@ -134,6 +139,8 @@ implements Serializable {
 	List<ColumnaVO> columns;
 	List<ColumnaVO> columnsInicial;
 	private Map<String,String> componentes = new HashMap<String, String>();
+	private Map<String,String> servicios = new HashMap<String, String>();
+	
 	
 	public Map<String, String> getComponentes() {
 		return componentes;
@@ -149,6 +156,9 @@ implements Serializable {
 	@EJB
 	private ProgramasService programaService;
 	
+	@EJB
+	private ServicioSaludService servicioSaludService;
+	
 
 
 	private Integer docProgramacion;
@@ -157,12 +167,13 @@ implements Serializable {
 	 ********************************** FIN VARIABLES
 	 */
 	
-	public Map<String,String> getListadComponente() {
+	public void getListadComponente() {
 		List<ComponentesVO> componentesV = programaService.getComponenteByPrograma(1);
 		for (ComponentesVO componentesVO : componentesV) {
 			componentes.put(componentesVO.getNombre(), componentesVO.getNombre());
 		}
-		return componentes;
+		Map<String, String> mapOrdenado = new TreeMap<String, String>(componentes);
+		componentes = mapOrdenado;
 	}
 	
 	@PostConstruct public void init() {
@@ -184,6 +195,7 @@ implements Serializable {
 		setMes(8);
 		crearColumnasDinamicas();
 		getListadComponente();
+		getListaServicios();
 		//DOCUMENTOS
 		this.docProgramacion = estimacionFlujoCajaService.getIdPlantillaProgramacion();
 				
@@ -191,6 +203,21 @@ implements Serializable {
 		
 		
 		anoActual = 2014;
+	}
+
+	private void getListaServicios() {
+		// TODO Auto-generated method stub
+		
+		List<ServiciosVO> serviciosV = servicioSaludService.getAllServiciosVO();
+		for (ServiciosVO serviciosVO : serviciosV) {
+			servicios.put(serviciosVO.getNombre_servicio(), serviciosVO.getNombre_servicio());
+		}
+		Map<String, String> mapOrdenado = new TreeMap<String, String>(servicios);
+		servicios = mapOrdenado;
+		//return servicios;
+		
+		
+		
 	}
 
 	/*
@@ -432,7 +459,7 @@ implements Serializable {
 	 */
 	public void filtrarSubtitulo22()
 	{
-		
+		if (valorComboSubtitulo22!=null){
 		//String nuevo = valor;
 		List<EstimacionFlujoMonitoreoPojo> lst = estimacionFlujoMonitoreoGlobalPojoSubtitulo22Original.getEstimacionFlujoMonitoreoPojo();
 		List<EstimacionFlujoMonitoreoPojo> lstAgregar = new ArrayList<EstimacionFlujoMonitoreoPojo>();
@@ -445,6 +472,7 @@ implements Serializable {
 		//listadoMonitoreoSubtitulo22 = lstAgregar;
 		
 		estimacionFlujoMonitoreoGlobalPojoSubtitulo22.setEstimacionFlujoMonitoreoPojo(lstAgregar);
+		}
 		
 	}
 	
@@ -513,6 +541,7 @@ implements Serializable {
 	        		estimacionFlujoMonitoreoGlobalPojoSubtitulo22Original.getEstimacionFlujoMonitoreoPojo().add(estimacionFlujoMonitoreoPojo);
 				}
 	        	
+	        	Collections.sort(estimacionFlujoMonitoreoGlobalPojoSubtitulo22.getEstimacionFlujoMonitoreoPojo(), Collections.reverseOrder());
 	 
 	 }
 	 /*
@@ -707,7 +736,7 @@ implements Serializable {
 		 */
 		public void filtrarSubtitulo24()
 		{
-			
+			if (valorComboSubtitulo24!=null){
 			//String nuevo = valor;
 			List<EstimacionFlujoMonitoreoPojo> lst = estimacionFlujoMonitoreoGlobalPojoSubtitulo24Original.getEstimacionFlujoMonitoreoPojo();
 			List<EstimacionFlujoMonitoreoPojo> lstAgregar = new ArrayList<EstimacionFlujoMonitoreoPojo>();
@@ -720,7 +749,7 @@ implements Serializable {
 			//listadoMonitoreoSubtitulo24 = lstAgregar;
 			
 			estimacionFlujoMonitoreoGlobalPojoSubtitulo24.setEstimacionFlujoMonitoreoPojo(lstAgregar);
-			
+			}
 		}
 		
 		 /*
@@ -981,7 +1010,7 @@ implements Serializable {
 			 */
 			public void filtrarSubtitulo29()
 			{
-				
+				if (valorComboSubtitulo29!=null){
 				//String nuevo = valor;
 				List<EstimacionFlujoMonitoreoPojo> lst = estimacionFlujoMonitoreoGlobalPojoSubtitulo29Original.getEstimacionFlujoMonitoreoPojo();
 				List<EstimacionFlujoMonitoreoPojo> lstAgregar = new ArrayList<EstimacionFlujoMonitoreoPojo>();
@@ -994,10 +1023,18 @@ implements Serializable {
 				//listadoMonitoreoSubtitulo29 = lstAgregar;
 				
 				estimacionFlujoMonitoreoGlobalPojoSubtitulo29.setEstimacionFlujoMonitoreoPojo(lstAgregar);
-				
+				}	
 			}
 			
-			 /*
+			 public Map<String, String> getServicios() {
+				return servicios;
+			}
+
+			public void setServicios(Map<String, String> servicios) {
+				this.servicios = servicios;
+			}
+
+			/*
 			  * Modificación de la celda
 			  */
 			 public void onCellEditSubtitulo29(CellEditEvent event) {
