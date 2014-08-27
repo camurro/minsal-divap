@@ -11,10 +11,8 @@ public enum TipoDocumentosProcesos{
 	PLANTILLABORRADORAPORTEESTATAL(13,"Plantilla Borrador decreto aporte estatal"), ASIGNACIONDESEMPENODIFICIL(14, "Asignación de Desempeño Difícil"),
 	PLANTILLAPROGRAMAAPSMUNICIPALES(40, "Plantilla Programa APS Municipales"), PLANTILLAPROGRAMAAPSMUNICIPALEXCEPCION(41, "Plantilla Programa APS Municipal – Excepción"), PLANTILLAPROGRAMAAPSSERVICIO(42, "Plantilla Programa APS Servicios"),
 	PROGRAMAAPSMUNICIPAL(43, "Programa APS Municipales"), PROGRAMAAPSMUNICIPALMIXTO(44, "Programa APS Municipal – MIXTO"), PROGRAMAAPSSERVICIO(45, "Programa APS Servicios"),
-	POBLACIONINSCRITA(15, "Población Inscrita Validada"), 
-	
-	PLANTILLAPROGRAMACION(17,"Planilla Programacion de Caja"),PLANTILLAPROPUESTA(16,"Plantilla Propuesta"), PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA(18,"Plantilla Ordinario Programacion Caja");
-	
+	POBLACIONINSCRITA(15, "Población Inscrita Validada"),PLANTILLAPROPUESTA(16, "Planilla Propuesta"),PLANTILLAPROGRAMACION(17, "Planilla Programación"), PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA(50,"Plantilla Ordinario Seguimiento");
+
 
 	private Integer id;
 	private String name;

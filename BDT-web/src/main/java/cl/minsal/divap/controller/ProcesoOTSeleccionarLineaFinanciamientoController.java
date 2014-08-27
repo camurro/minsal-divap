@@ -13,7 +13,7 @@ import javax.inject.Named;
 
 import minsal.divap.enums.BusinessProcess;
 import minsal.divap.service.ProgramasService;
-import minsal.divap.service.TratamientoOrdenService;
+import minsal.divap.service.OTService;
 import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.TaskDataVO;
@@ -29,7 +29,7 @@ implements Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	
 	@EJB
-	private TratamientoOrdenService tratamientoOrdenService;
+	private OTService tratamientoOrdenService;
 	
 	@EJB
 	private ProgramasService programaService;
@@ -54,20 +54,20 @@ implements Serializable {
 		
 		Programa programa = programaService.getProgramaPorID(idLineaProgramatica);//programaId)
 		
-		if(programa.getTipoPrograma().getId() == 1)//TIPO PERCAPITA
-		{
-			parameters.put("revisarPerCapita_", "si");
-			parameters.put("revisarLeyes_", "no");
-		}
-		else if(programa.getTipoPrograma().getId() == 2)//TIPO LEYES
-		{
-			parameters.put("revisarLeyes_", "si");
-		}
-		else if(programa.getTipoPrograma().getId() == 3)//TIPO PROGRAMATICA
-		{
-			parameters.put("revisarLeyes_", "no");
-			parameters.put("revisarPerCapita_", "no");
-		}
+//		if(programa.getTipoPrograma().getId() == 1)//TIPO PERCAPITA
+//		{
+//			parameters.put("revisarPerCapita_", "si");
+//			parameters.put("revisarLeyes_", "no");
+//		}
+//		else if(programa.getTipoPrograma().getId() == 2)//TIPO LEYES
+//		{
+//			parameters.put("revisarLeyes_", "si");
+//		}
+//		else if(programa.getTipoPrograma().getId() == 3)//TIPO PROGRAMATICA
+//		{
+//			parameters.put("revisarLeyes_", "no");
+//			parameters.put("revisarPerCapita_", "no");
+//		}
 
 		return parameters;
 	}

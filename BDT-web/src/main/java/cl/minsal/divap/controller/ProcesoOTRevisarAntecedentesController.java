@@ -16,7 +16,8 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import minsal.divap.service.TratamientoOrdenService;
+import minsal.divap.service.OTService;
+import minsal.divap.service.ProgramasService;
 import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
 import minsal.divap.vo.ColumnaVO;
 import minsal.divap.vo.OTRevisarAntecedentesGlobalVO;
@@ -27,6 +28,7 @@ import org.primefaces.component.api.UIColumn;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.CellEditEvent;
 
+import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.pojo.ComponentePojo;
 import cl.minsal.divap.pojo.ProcesosProgramasPojo;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
@@ -39,7 +41,10 @@ implements Serializable {
 	@Inject private transient Logger log;
 	
 	@EJB
-	private TratamientoOrdenService tratamientoOrdenService;
+	private OTService tratamientoOrdenService;
+	@EJB
+	private ProgramasService programasService;
+	
 	private List<AsignacionDistribucionPerCapitaVO> antecendentesComunaCalculado;
 	
 	
@@ -56,7 +61,6 @@ implements Serializable {
 			}
 		}
 		generarObjetosGlobal();
-		generaProgramas();
 		generaServicios();
 		
 		generarColumnasDinamicas();
@@ -92,9 +96,9 @@ implements Serializable {
 	private void generarColumnasDinamicas() {
 		// TODO Auto-generated method stub
 		columns = new ArrayList<ColumnaVO>();
-		ColumnaVO  col = new ColumnaVO("Agosto", "Valor", "agosto");
+		ColumnaVO  col = new ColumnaVO("Enero", "Valor", "enero");
 		columns.add(col);
-		col = new ColumnaVO("Septiembre", "Valor","septiembre");
+		col = new ColumnaVO("Febrero", "Valor","febrero");
 		columns.add(col);
 //		col = new ColumnaVO("Octubre", "Valor","octubre");
 //		columns.add(col);
@@ -102,78 +106,6 @@ implements Serializable {
 //		columns.add(col);
 //		col = new ColumnaVO("Diciembre", "Valor","diciembre");
 //		columns.add(col);
-	}
-
-
-	List<ProcesosProgramasPojo> listadoProgramasServicio;
-	
-	public List<ProcesosProgramasPojo> getListadoProgramasServicio() {
-		return listadoProgramasServicio;
-	}
-	
-	public void setListadoProgramasServicio( List<ProcesosProgramasPojo> listadoProgramasServicio ) {
-		this.listadoProgramasServicio = listadoProgramasServicio;
-	}
-
-	public void generaProgramas() {
-		listadoProgramasServicio = new ArrayList<ProcesosProgramasPojo>();
-		
-		ProcesosProgramasPojo p2;
-		
-		p2 = new ProcesosProgramasPojo();
-		p2.setPrograma("VIDA SANA: INTERVENCIÓN EN  FACTORES DE RIESGO DE ENFERMEDADES CRÓNICAS ASOCIADAS A LA MALNUTRICIÓN EN NIÑOS, NIÑAS, ADOLESCENTES, ADULTOS Y MUJERES POSTPARTO");
-		p2.setDescripcion("Descripción del Programa de Vida Sana (Municipal)");
-		//p2.setUrl("divapProcesoProgMonitoreo");
-		p2.setUrl("divapProcesoOTUsuario");
-		p2.setEditar(true);
-		p2.setProgreso(0.55D);
-		p2.setEstado("green");
-		p2.setTerminar(true);
-		listadoProgramasServicio.add(p2);
-		
-		p2 = new ProcesosProgramasPojo();
-		p2.setPrograma("APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES");
-		p2.setDescripcion("Descripción del Programa de Apoyo a las acciones en el nivel primario de Salud (Servicio).");
-		//p2.setUrl("divapProcesoProgMonitoreo");
-		p2.setUrl("divapProcesoOTUsuario");
-		p2.setEditar(false);
-		p2.setProgreso(1D);
-		p2.setEstado("green");
-		p2.setTerminar(false);
-		listadoProgramasServicio.add(p2);
-		
-		p2 = new ProcesosProgramasPojo();
-		p2.setPrograma("PILOTO VIDA SANA: ALCOHOL");
-		p2.setDescripcion("Descripción del Programa de Vida Sana con Alcohol (Mixto).");
-		//p2.setUrl("divapProcesoProgMonitoreo");
-		p2.setUrl("divapProcesoOTUsuario");
-		p2.setEditar(true);
-		p2.setProgreso(0D);
-		p2.setEstado("red");
-		p2.setTerminar(false);
-		listadoProgramasServicio.add(p2);
-		
-		p2 = new ProcesosProgramasPojo();
-		p2.setPrograma("APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES");
-		p2.setDescripcion("Descripción del Programa de Apoyo a las Acciones en el nivel Primario (Programa Valores Históricos Municipal).");
-		//p2.setUrl("divapProcesoProgMonitoreo");
-		p2.setUrl("divapProcesoOTUsuario");
-		p2.setEditar(true);
-		p2.setProgreso(0.75D);
-		p2.setEstado("green");
-		p2.setTerminar(false);
-		listadoProgramasServicio.add(p2);
-		
-		p2 = new ProcesosProgramasPojo();
-		p2.setPrograma("CAPACITACIÓN Y FORMACIÓN ATENCIÓN PRIMARIA EN LA RED ASISTENCIAL");
-		p2.setDescripcion("Descripción del Programa de Apoyo a las Acciones en el nivel Primario (Programa Valores Históricos Servicio Salud).");
-		//p2.setUrl("divapProcesoProgMonitoreo");
-		p2.setUrl("divapProcesoOTUsuario");
-		p2.setEditar(true);
-		p2.setProgreso(0.75D);
-		p2.setEstado("red");
-		p2.setTerminar(false);
-		listadoProgramasServicio.add(p2);
 	}
 	
 	//LISTAS DE DATOS SELECCIONADOS 
@@ -227,7 +159,6 @@ implements Serializable {
 	//EDICION SUBTITULO 21
 	public void onCellEditSubtitulo21(CellEditEvent event) {
 		 
-		 UIColumn col= (UIColumn) event.getColumn();
 		 DataTable o=(DataTable) event.getSource();
 		
 		 OTRevisarAntecedentesVO info=(OTRevisarAntecedentesVO)o.getRowData();
@@ -264,7 +195,6 @@ implements Serializable {
 	//EDICION SUBTITULO 22
 		public void onCellEditSubtitulo22(CellEditEvent event) {
 			 
-			 UIColumn col= (UIColumn) event.getColumn();
 			 DataTable o=(DataTable) event.getSource();
 			
 			 OTRevisarAntecedentesVO info=(OTRevisarAntecedentesVO)o.getRowData();
@@ -300,7 +230,6 @@ implements Serializable {
 		//EDICION SUBTITULO 29
 		public void onCellEditSubtitulo29(CellEditEvent event) {
 			 
-			 UIColumn col= (UIColumn) event.getColumn();
 			 DataTable o=(DataTable) event.getSource();
 			
 			 OTRevisarAntecedentesVO info=(OTRevisarAntecedentesVO)o.getRowData();
@@ -336,7 +265,6 @@ implements Serializable {
 	//EDICION MUNICIPAL
 	public void onCellEditMunicipal(CellEditEvent event) {
 		 
-		 UIColumn col= (UIColumn) event.getColumn();
 		 DataTable o=(DataTable) event.getSource();
 		
 		 OTRevisarAntecedentesVO info=(OTRevisarAntecedentesVO)o.getRowData();
@@ -390,6 +318,16 @@ implements Serializable {
         return selectedCar;
     }
  
+    //ID Programa
+  	private Integer idLineaProgramatica;
+  	
+  	public Integer getIdLineaProgramatica() {
+  		return idLineaProgramatica;
+  	}
+
+  	public void setIdLineaProgramatica(Integer idLineaProgramatica) {
+  		this.idLineaProgramatica = idLineaProgramatica;
+  	}
 	
 	/**
 	 * SUBTITULO 21
@@ -527,31 +465,43 @@ implements Serializable {
 	
 	public void generaServicios(){
 
-		ComponentePojo c = new ComponentePojo();
-		c.setComponenteNombre("Emergencia Dental");
-		c.setPesoComponente(0.3f);
+		Programa programa = programasService.getProgramaPorID(1);//idLineaProgramatica);
 		
-		//SUBTITULO 21
-		OTRevisarAntecedentesVO p;
-		listadoServiciosSubtitulo21 = new ArrayList<OTRevisarAntecedentesVO>();
-		p = new OTRevisarAntecedentesVO();
-		p.setEstablecimiento("Centro Comunitario de Salud Familiar Cerro Esmeralda");
-		p.setServicio("Metropolitano Oriente");
-		p.setComuna("Macul");
-		p.setComponente(c);
-		p.setId(1L);
-		listadoServiciosSubtitulo21.add(p);
+		CargarListaSubTitulo21(programa);
+		CargarListaSubTitulo22();
+		CargarListaSubTitulo29();
+		CargarListaMunicipal();
 		
-		p = new OTRevisarAntecedentesVO();
-		p.setEstablecimiento("Centro Comunitario de Salud Familiar El Boro");
-		p.setServicio("Iquique");
-		p.setComuna("La Reina");
-		p.setComponente(c);
-		p.setId(2L);
-		listadoServiciosSubtitulo21.add(p);
+	}
+	
+	private void CargarListaSubTitulo21(Programa programa)
+	{
 		
+//		//SUBTITULO 21
+//		OTRevisarAntecedentesVO p;
+//		listadoServiciosSubtitulo21 = new ArrayList<OTRevisarAntecedentesVO>();
+//		p = new OTRevisarAntecedentesVO();
+//		p.setEstablecimiento("Centro Comunitario de Salud Familiar Cerro Esmeralda");
+//		p.setServicio("Metropolitano Oriente");
+//		p.setComuna("Macul");
+//		p.setId(1L);
+//		listadoServiciosSubtitulo21.add(p);
+//		
+//		p = new OTRevisarAntecedentesVO();
+//		p.setEstablecimiento("Centro Comunitario de Salud Familiar El Boro");
+//		p.setServicio("Iquique");
+//		p.setComuna("La Reina");
+//		p.setId(2L);
+		//listadoServiciosSubtitulo21.add(p);
+		
+		OTRevisarAntecedentesVO otRevisarAntecedentesVO = new OTRevisarAntecedentesVO();
+		listadoServiciosSubtitulo21.addAll(otRevisarAntecedentesVO.obtenerListaSubtitulo21VOPorPrograma(programa));
+
 		oTRevisarAntecedentesGlobalVOSubtitulo21.setListadoServicios(listadoServiciosSubtitulo21);
-		
+	}
+	
+	private void CargarListaSubTitulo22()
+	{
 		//SUBTITULO 22
 		OTRevisarAntecedentesVO p22;
 		listadoServiciosSubtitulo22 = new ArrayList<OTRevisarAntecedentesVO>();
@@ -559,7 +509,6 @@ implements Serializable {
 		p22.setEstablecimiento("Centro Comunitario de Salud Familiar Cerro Esmeralda");
 		p22.setServicio("Metropolitano Oriente");
 		p22.setComuna("Macul");
-		p22.setComponente(c);
 		p22.setId(1L);
 		listadoServiciosSubtitulo22.add(p22);
 		
@@ -567,11 +516,14 @@ implements Serializable {
 		p22.setEstablecimiento("Centro Comunitario de Salud Familiar El Boro");
 		p22.setServicio("Iquique");
 		p22.setComuna("La Reina");
-		p22.setComponente(c);
 		p22.setId(2L);
 		listadoServiciosSubtitulo22.add(p22);
 		
 		oTRevisarAntecedentesGlobalVOSubtitulo22.setListadoServicios(listadoServiciosSubtitulo22);
+	}
+	
+	private void CargarListaSubTitulo29()
+	{
 		
 		//SUBTITULO 29
 		OTRevisarAntecedentesVO p29;
@@ -580,7 +532,6 @@ implements Serializable {
 		p29.setEstablecimiento("Centro Comunitario de Salud Familiar Cerro Esmeralda");
 		p29.setServicio("Metropolitano Oriente");
 		p29.setComuna("Macul");
-		p29.setComponente(c);
 		p29.setId(1L);
 		listadoServiciosSubtitulo29.add(p29);
 		
@@ -588,12 +539,15 @@ implements Serializable {
 		p29.setEstablecimiento("Centro Comunitario de Salud Familiar El Boro");
 		p29.setServicio("Iquique");
 		p29.setComuna("La Reina");
-		p29.setComponente(c);
 		p29.setId(2L);
 		listadoServiciosSubtitulo29.add(p29);
 		
 		oTRevisarAntecedentesGlobalVOSubtitulo29.setListadoServicios(listadoServiciosSubtitulo29);
-
+	}
+	
+	private void CargarListaMunicipal()
+	{
+		
 		//MUNICIPAL
 		OTRevisarAntecedentesVO pMunicipal;
 		listadoServiciosMunicipal = new ArrayList<OTRevisarAntecedentesVO>();
@@ -601,7 +555,6 @@ implements Serializable {
 		pMunicipal.setEstablecimiento("PAC");
 		pMunicipal.setServicio("Metropolitano Oriente");
 		pMunicipal.setComuna("Macul");
-		pMunicipal.setComponente(c);
 		pMunicipal.setId(1L);
 		listadoServiciosMunicipal.add(pMunicipal);
 		
@@ -609,13 +562,13 @@ implements Serializable {
 		pMunicipal.setEstablecimiento("DEHESA");
 		pMunicipal.setServicio("Iquique");
 		pMunicipal.setComuna("La Reina");
-		pMunicipal.setComponente(c);
 		pMunicipal.setId(2L);
 		listadoServiciosMunicipal.add(pMunicipal);
 		oTRevisarAntecedentesGlobalVOMunicipal.setListadoServicios(listadoServiciosMunicipal);
 		
 	}
-	
+
+	//METODO QUE DEBE GUARDAR LOS DATOS DE LAS LISTAS.
 	private void guardarDatos()
 	{
 		//Subtitulo21

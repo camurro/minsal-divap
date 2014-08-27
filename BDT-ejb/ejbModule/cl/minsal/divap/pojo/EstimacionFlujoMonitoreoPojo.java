@@ -1,8 +1,10 @@
 package cl.minsal.divap.pojo;
 
+
 import java.util.Comparator;
 
 public class EstimacionFlujoMonitoreoPojo implements Comparable<EstimacionFlujoMonitoreoPojo> {
+
 
 	
 	private long id;
@@ -359,6 +361,7 @@ public class EstimacionFlujoMonitoreoPojo implements Comparable<EstimacionFlujoM
 		this.color = color;
 	}
 	
+
 	public static class OrderByAmount implements Comparator<EstimacionFlujoMonitoreoPojo> {
 
         @Override
@@ -379,7 +382,7 @@ public class EstimacionFlujoMonitoreoPojo implements Comparable<EstimacionFlujoM
     public String toString(){
         return String.valueOf(id);
     }
-	
+
 
 	
 }

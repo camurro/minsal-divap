@@ -5,8 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class OTRevisarAntecedentesGlobalVO 
+import cl.minsal.divap.pojo.EstimacionFlujoMonitoreoGlobalPojo;
+
+public class OTRevisarAntecedentesGlobalVO implements Cloneable 
 {
+	
+	 @Override 
+	 public OTRevisarAntecedentesGlobalVO clone() {
+	        try {
+	            final OTRevisarAntecedentesGlobalVO result = (OTRevisarAntecedentesGlobalVO) super.clone();
+	            // copy fields that need to be copied here!
+	            return result;
+	        } catch (final CloneNotSupportedException ex) {
+	            throw new AssertionError();
+	        }
+	 }
 	
 	
 	public List<OTRevisarAntecedentesVO> listadoServicios = new  ArrayList<OTRevisarAntecedentesVO>();
@@ -60,8 +73,6 @@ public class OTRevisarAntecedentesGlobalVO
 	private long diciembreRemesa09;
 	private long diciembreRemesa24;
 	private long diciembreRemesa28;
-	
-	
 	
 	public List<OTRevisarAntecedentesVO> getListadoServicios() {
 		return listadoServicios;
@@ -128,12 +139,9 @@ public class OTRevisarAntecedentesGlobalVO
 		}
 		return febreroRemesa24;
 	}
-	
 	public void setFebreroRemesa24(long febreroRemesa24) {
 		this.febreroRemesa24 = febreroRemesa24;
 	}
-	
-	
 	public long getFebreroRemesa28() {
 		febreroRemesa28 = 0;
 		for (OTRevisarAntecedentesVO e : listadoServicios) {
@@ -337,7 +345,6 @@ public class OTRevisarAntecedentesGlobalVO
 		}
 		return septiembreRemesa09;
 	}
-
 	public void setSeptiembreRemesa09(long septiembreRemesa09) {
 		this.septiembreRemesa09 = septiembreRemesa09;
 	}

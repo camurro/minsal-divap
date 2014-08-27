@@ -1,3 +1,4 @@
+
 package cl.redhat.bandejaTareas.util;
 
 import minsal.divap.vo.TaskDataVO;
@@ -57,6 +58,9 @@ public class MatchViewTask {
 		ESTIMACIONFLUJOCAJAREVISARCONSOLIDACION("minsal_divap.EstimacionFlujoConsolidador.revisarconsolidaciondeestimaciondeflujodecaja","divapProcesoProgConsolidado"),
 		ESTIMACIONFLUJOCAJAHACERSEGUIMIENTO("minsal_divap.EstimacionFlujoConsolidador.hacerseguimientoordinario","divapProcesoProgSeguimiento");
 
+		
+		
+		
 		private String key;
 		private String view;
 
@@ -146,3 +150,5 @@ public class MatchViewTask {
 		return charEsc + returnStr;
 	}
 }
+
+

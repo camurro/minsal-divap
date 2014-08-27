@@ -14,11 +14,16 @@ import org.apache.log4j.Logger;
 
 
 
+
 @SuppressWarnings("serial")
 @Dependent
 @Startup
 public class BandejaProperties extends Properties {
 
+	public BandejaProperties()
+	{
+	
+	}
 	public static final String DEFAULT_FILE_NAME = "bandeja.properties";
 
 	private static final String SERVER_CONF_URL = System
@@ -36,10 +41,10 @@ public class BandejaProperties extends Properties {
 			File externalFile = getExternalConfig();
 			InputStream elInput=null;
 			if (externalFile==null) {
-				log.warn("No se encontr— archivo de configuraci—n "+DEFAULT_FILE_NAME+ " en "+SERVER_CONF_URL+". Se usar‡ el default");
+				log.warn("No se encontrï¿½ archivo de configuraciï¿½n "+DEFAULT_FILE_NAME+ " en "+SERVER_CONF_URL+". Se usarï¿½ el default");
 				elInput  = this.getClass().getClassLoader().getResourceAsStream(DEFAULT_FILE_NAME);
 			} else {
-				log.info("Usando archivo de configuraci—n de Bandeja "+externalFile.getAbsolutePath());
+				log.info("Usando archivo de configuraciï¿½n de Bandeja "+externalFile.getAbsolutePath());
 				elInput = new FileInputStream(externalFile);
 			}
 			

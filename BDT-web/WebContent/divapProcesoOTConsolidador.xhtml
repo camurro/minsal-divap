@@ -6,7 +6,7 @@
 
 	<ui:define name="content">
  <ui:param name="datoMunicipal" value="#{procesoOTRevisarConsolidacionController.oTRevisarAntecedentesGlobalVOMunicipal}" />
-	<ui:param name="datoSubtitulo21" value="#{procesoOTRevisarConsolidacionController.oTRevisarAntecedentesGlobalVOSubtitulo21}" />
+<ui:param name="datoSubtitulo21" value="#{procesoOTRevisarConsolidacionController.oTRevisarAntecedentesGlobalVOSubtitulo21}" />
 	<ui:param name="datoSubtitulo22" value="#{procesoOTRevisarConsolidacionController.oTRevisarAntecedentesGlobalVOSubtitulo22}" />
 	<ui:param name="datoSubtitulo29" value="#{procesoOTRevisarConsolidacionController.oTRevisarAntecedentesGlobalVOSubtitulo29}" />
 		<h:form enctype="multipart/form-data">
@@ -19,6 +19,7 @@
 					<p class="parrafo">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent egestas tempor nulla eget ultricies. Morbi
 						pulvinar elit at justo pharetra, vitae ultricies est dignissim, justo nisi porttitor enim, eget ullamcorper felis augue eget lacus.</p>
 					<br />
+						<h:form id="formIngreso" > </h:form>
 					<h:panelGrid columns="2">
 						<h:graphicImage value="resources/minsal/images/search.png" styleClass="divapIcons" />
 						<p:lightBox iframe="true" width="950px">
@@ -292,28 +293,30 @@
 							
 								<!-- INICIO DETALLE PROGRAMAS  -->
 							<p:tab id="tab22" title="Detalle Programas">
-								<h:panelGrid>
-									<h:outputText value="Programa: " styleClass="inputLabel" />
-									<p:selectOneMenu style="width:450px;" >
-										<f:selectItem itemLabel="Seleccione" itemValue="" />
-										<f:selectItem itemLabel="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES"
-											itemValue="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
-									</p:selectOneMenu>
+									<h:panelGrid>
+									<h:panelGrid>
+										<h:outputText value="Programa: " styleClass="inputLabel" />
+										<p:selectOneMenu style="width:650px;" id="select1" value="#{procesoOTRevisarConsolidacionController.valorComboProgramaFiltro}">
+											<f:selectItem itemLabel="APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES"
+												itemValue="APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
+											<f:selectItem itemLabel="Seleccione" itemValue="" />
+												<p:ajax
+													listener="#{procesoOTRevisarConsolidacionController.filtrarGrillasTabDetallePrograma}"
+													update=":#{p:component('formGeneral')}" />
+										</p:selectOneMenu>
+									</h:panelGrid>
 								</h:panelGrid>
 								<br />
-								
-								
-								
+								<h:form id="formGeneral">	
 								<p:tabView>
+						
 						<p:tab title="Subtítulo 21">
-							<h:form id="formSubtitulo21">
+						<h:form id="formSubtitulo21">
 						<h:panelGrid>
-							
+
 							<p:dataTable resizableColumns="true" id="datosSubtitulo21" value="#{datoSubtitulo21.listadoServicios}" liveResize="true" var="_data"
 								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" editable="true"  editMode="cell" >
-  						<p:ajax event="cellEdit" listener="#{procesoOTRevisarConsolidacionController.onCellEditSubtitulo21}" update=":#{p:component('formSubtitulo21')}" />
+  					
 								<p:columnGroup type="header">
 									<p:row>
 										<p:column rowspan="3" headerText="Servicio" />
@@ -530,11 +533,11 @@
 
 							</p:dataTable>
 								</h:panelGrid>
-										</h:form>
+						</h:form> 
 						</p:tab>
 						<p:tab title="Subtítulo 22">
 						
-						<h:form id="formSubtitulo22">
+						<h:form id="formSubtitulo22"> 
 						<h:panelGrid>
 							
 							<p:dataTable resizableColumns="true" id="datosSubtitulo22" value="#{datoSubtitulo22.listadoServicios}" liveResize="true" var="_data"
@@ -751,12 +754,12 @@
 
 							</p:dataTable>
 								</h:panelGrid>
-										</h:form>
+						 </h:form> 
 						
 						</p:tab>
 						<p:tab title="Subtítulo 29">
 						
-						<h:form id="formSubtitulo29">
+						 <h:form id="formSubtitulo29"> 
 						<h:panelGrid>
 							
 							<p:dataTable resizableColumns="true" id="datosSubtitulo29" value="#{datoSubtitulo29.listadoServicios}" liveResize="true" var="_data"
@@ -973,229 +976,228 @@
 
 							</p:dataTable>
 								</h:panelGrid>
-										</h:form>
+						 </h:form> 
 						
 						</p:tab>
 						<p:tab title="Per Capita"></p:tab>
 						<p:tab title="Ref. Municipal">
-							<h:form id="formMunicipal">
-							<h:panelGrid>
-						<p:dataTable resizableColumns="true" value="#{datoMunicipal.listadoServicios}" liveResize="true" var="_data"
-								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable"  editable="true"  editMode="cell">
- 								<p:ajax event="cellEdit" listener="#{procesoOTRevisarConsolidacionController.onCellEditMunicipal}" update=":#{p:component('formMunicipal')}" />
-								<p:columnGroup type="header">
-									<p:row>
-										<p:column rowspan="3" headerText="Servicio" />
-										<p:column colspan="#{(fn:length(procesoOTRevisarConsolidacionController.columns) *3 )+6}"
-											headerText="Subtítulo 21 (APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES)" />
-										
-										<p:column rowspan="2" colspan="2" headerText="Diferencia (Marco - Total)" />
-										
-									</p:row>
-									<p:row>
-										<p:column rowspan="2" headerText="Comuna" />
-										<p:column rowspan="2" headerText="Marco Presupuestario" />
-										<p:column colspan="2" headerText="Transferencia Acumulada a la Fecha" width="200" />
-										<p:column colspan="2" headerText="Convenios Recibidos" />
-										<!--DEBE SER DINAMICA  -->
-										<c:forEach
-											items="#{procesoOTRevisarConsolidacionController.columns}"
+						 <h:form id="formMunicipal"> 
+						<h:panelGrid>
+					<p:dataTable resizableColumns="true" value="#{datoMunicipal.listadoServicios}" liveResize="true" var="_data"
+							rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable"  editable="true"  editMode="cell">
+								<p:ajax event="cellEdit" listener="#{procesoOTRevisarConsolidacionController.onCellEditMunicipal}" update=":#{p:component('formMunicipal')}" />
+							<p:columnGroup type="header">
+								<p:row>
+									<p:column rowspan="3" headerText="Servicio" />
+									<p:column colspan="#{(fn:length(procesoOTRevisarConsolidacionController.columns) *3 )+6}"
+										headerText="Subtítulo 21 (APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES)" />
+									
+									<p:column rowspan="2" colspan="2" headerText="Diferencia (Marco - Total)" />
+									
+								</p:row>
+								<p:row>
+									<p:column rowspan="2" headerText="Comuna" />
+									<p:column rowspan="2" headerText="Marco Presupuestario" />
+									<p:column colspan="2" headerText="Transferencia Acumulada a la Fecha" width="200" />
+									<p:column colspan="2" headerText="Convenios Recibidos" />
+									<!--DEBE SER DINAMICA  -->
+									<c:forEach
+										items="#{procesoOTRevisarConsolidacionController.columns}"
+										var="dynamicColumn">
+										<p:column colspan="3" headerText="#{dynamicColumn.header}" />
+									</c:forEach>
+				
+								</p:row>
+								<p:row>
+									<p:column headerText="Monto" />
+									<p:column headerText="%" />
+
+									<p:column headerText="Monto" />
+									<p:column headerText="%" />
+
+									<!--DEBE SER DINAMICA  -->
+									<c:forEach
+										items="#{procesoOTRevisarConsolidacionController.columns}"
 											var="dynamicColumn">
-											<p:column colspan="3" headerText="#{dynamicColumn.header}" />
-										</c:forEach>
+											
+												<p:column headerText="Remesa 09" />
+												<p:column headerText="Remesa 24" />
+												<p:column headerText="Remesa 28" />
+									</c:forEach>
+									
+									
+									<p:column headerText="Monto" />
+									<p:column headerText="%" />
+								</p:row>
+
+							</p:columnGroup>
+
+							<p:column>
+								<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+							</p:column>
+							<p:column>
+								<span class="textoAjustado textoPequenio centrado">#{_data.comuna}</span>
+							</p:column>
+
+							<p:column>
+								<h:outputText value="#{_data.marcoMonto}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+								</h:outputText>
+							</p:column>
+							<p:column>
+							<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+								</h:outputText>
+								
+							</p:column>
+								
+							<p:column>
+								<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.remesaPor}">
+									<f:convertNumber type="percent" />
+								</h:outputText>
+							</p:column>
+							<p:column>
+							<h:outputText value="#{_data.julioRemesa09}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+								</h:outputText>
+								
+							</p:column>
+
+							<p:column>
+								<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPor}">
+									<f:convertNumber type="percent" />
+								</h:outputText>
+							</p:column>	
+
+							<!--COLUMNAS EDITABLES REMESA-->
+							<c:forEach
+										items="#{procesoOTRevisarConsolidacionController.columns}"
+											var="dynamicColumn">
+											
 					
-									</p:row>
-									<p:row>
-										<p:column headerText="Monto" />
-										<p:column headerText="%" />
-
-										<p:column headerText="Monto" />
-										<p:column headerText="%" />
-
-										<!--DEBE SER DINAMICA  -->
-										<c:forEach
-											items="#{procesoOTRevisarConsolidacionController.columns}"
-												var="dynamicColumn">
-												
-													<p:column headerText="Remesa 09" />
-													<p:column headerText="Remesa 24" />
-													<p:column headerText="Remesa 28" />
-										</c:forEach>
-										
-										
-										<p:column headerText="Monto" />
-										<p:column headerText="%" />
-									</p:row>
-
-								</p:columnGroup>
-
-								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
-								</p:column>
-								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.comuna}</span>
-								</p:column>
-
-								<p:column>
-									<h:outputText value="#{_data.marcoMonto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-									</h:outputText>
-								</p:column>
-								<p:column>
-								<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-									</h:outputText>
-									
-								</p:column>
-									
-								<p:column>
-									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.remesaPor}">
-										<f:convertNumber type="percent" />
-									</h:outputText>
-								</p:column>
-								<p:column>
-								<h:outputText value="#{_data.julioRemesa09}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-									</h:outputText>
-									
-								</p:column>
-
-								<p:column>
-									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPor}">
-										<f:convertNumber type="percent" />
-									</h:outputText>
-								</p:column>	
-
-								<!--COLUMNAS EDITABLES REMESA-->
-								<c:forEach
-											items="#{procesoOTRevisarConsolidacionController.columns}"
-												var="dynamicColumn">
-												
-						
-					<p:column>
-						<h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa09')]}" styleClass="textoPequenio textoAjustado">
-							<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-						</h:outputText>
-					</p:column>		
-					<p:column>
-						<h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa24')]}" styleClass="textoPequenio textoAjustado">
-							<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-						</h:outputText>
-					</p:column>			
-					<p:column>
-						<h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa28')]}" styleClass="textoPequenio textoAjustado">
-							<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-						</h:outputText>
-					</p:column>	
-												
-						</c:forEach>
-						
-							<!--FIN COLUMNAS DINAMICAS REMESA-->
-								
-								<p:column>
-									<h:outputText value="#{_data.diciembreRemesa09}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-									</h:outputText>
-								</p:column>
-								
-								<p:column>
-									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPor}">
-										<f:convertNumber type="percent" />
-									</h:outputText>
-								</p:column>
-
-								<p:columnGroup type="footer">
-									<p:row>
-										<p:column colspan="2">
-											<f:facet name="footer">
-												TOTAL
-											</f:facet>
-										</p:column>
-										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</f:facet>
-										</p:column>
-										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</f:facet>
-										</p:column>
-										<p:column>
-											<f:facet name="footer">
-												
-											</f:facet>
-										</p:column>
-										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</f:facet>
-										</p:column>
-										<p:column>
-											<f:facet name="footer">
-												
-											</f:facet>
-										</p:column>
-								
-											<!-- TOTAL REMESA MESES -->
-										
-										<c:forEach
-											items="#{procesoOTRevisarConsolidacionController.columns}"
-												var="dynamicColumn">
-										<p:column>
-										<f:facet name="footer">
-												<h:outputText value="#{datoMunicipal[dynamicColumn.nombreColumna.concat('Remesa09')]}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</f:facet>
-										</p:column>	
-										<p:column>	
-											<f:facet name="footer">
-												<h:outputText value="#{datoMunicipal[dynamicColumn.nombreColumna.concat('Remesa24')]}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</f:facet>
-										</p:column>	
-										<p:column>	
-										<f:facet name="footer">
-												<h:outputText value="#{datoMunicipal[dynamicColumn.nombreColumna.concat('Remesa28')]}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</f:facet>
-										</p:column>		
-										</c:forEach>
+				<p:column>
+					<h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa09')]}" styleClass="textoPequenio textoAjustado">
+						<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+					</h:outputText>
+				</p:column>		
+				<p:column>
+					<h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa24')]}" styleClass="textoPequenio textoAjustado">
+						<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+					</h:outputText>
+				</p:column>			
+				<p:column>
+					<h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa28')]}" styleClass="textoPequenio textoAjustado">
+						<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+					</h:outputText>
+				</p:column>	
+											
+					</c:forEach>
+					
+						<!--FIN COLUMNAS DINAMICAS REMESA-->
 							
-										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</f:facet>
-										</p:column>
-										<p:column>
-											<f:facet name="footer">
-												
-											</f:facet>
-										</p:column>
+							<p:column>
+								<h:outputText value="#{_data.diciembreRemesa09}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+								</h:outputText>
+							</p:column>
 							
-									</p:row>
-								</p:columnGroup>
+							<p:column>
+								<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPor}">
+									<f:convertNumber type="percent" />
+								</h:outputText>
+							</p:column>
 
-							</p:dataTable>
-							</h:panelGrid>
-							</h:form>
+							<p:columnGroup type="footer">
+								<p:row>
+									<p:column colspan="2">
+										<f:facet name="footer">
+											TOTAL
+										</f:facet>
+									</p:column>
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+									<p:column>
+										<f:facet name="footer">
+											
+										</f:facet>
+									</p:column>
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+									<p:column>
+										<f:facet name="footer">
+											
+										</f:facet>
+									</p:column>
+							
+										<!-- TOTAL REMESA MESES -->
+									
+									<c:forEach
+										items="#{procesoOTRevisarConsolidacionController.columns}"
+											var="dynamicColumn">
+									<p:column>
+									<f:facet name="footer">
+											<h:outputText value="#{datoMunicipal[dynamicColumn.nombreColumna.concat('Remesa09')]}" styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>	
+									<p:column>	
+										<f:facet name="footer">
+											<h:outputText value="#{datoMunicipal[dynamicColumn.nombreColumna.concat('Remesa24')]}" styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>	
+									<p:column>	
+									<f:facet name="footer">
+											<h:outputText value="#{datoMunicipal[dynamicColumn.nombreColumna.concat('Remesa28')]}" styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>		
+									</c:forEach>
+						
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+									<p:column>
+										<f:facet name="footer">
+											
+										</f:facet>
+									</p:column>
+						
+								</p:row>
+							</p:columnGroup>
+
+						</p:dataTable>
+						</h:panelGrid>
+						 </h:form> 
 						</p:tab>
-
+						
 					</p:tabView>
-								
-								
-							</p:tab>
+					</h:form>
+					</p:tab>
 
 							<!-- FIN  -->
 							

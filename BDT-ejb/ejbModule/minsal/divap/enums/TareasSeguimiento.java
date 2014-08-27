@@ -2,8 +2,16 @@ package minsal.divap.enums;
 
 
 public enum TareasSeguimiento{
-	HACERSEGUIMIENTOOFICIO(1, "Hacer seguimiento oficio"), HACERSEGUIMIENTODECRETO(2, "Hacer Seguimiento Decreto"),
-	HACERSEGUIMIENTOTOMARAZON(3, "Hacer Seguimiento Toma de Razon"), HACERSEGUIMIENTORESOLUCIONES(4,"Hacer Seguimiento Resoluciones"),HACERSEGUIMIENTOESTIMACIONFLUJOCAJA(5,"Hacer Seguimiento Ordinario");
+	HACERSEGUIMIENTOOFICIO(1, "Hacer seguimiento oficio"), 
+	HACERSEGUIMIENTODECRETO(2, "Hacer Seguimiento Decreto"),
+
+	HACERSEGUIMIENTOTOMARAZON(3, "Hacer Seguimiento Toma de Razon"), 
+	HACERSEGUIMIENTORESOLUCIONES(4,"Hacer Seguimiento Resoluciones"),
+	HACERSEGUIMIENTOESTIMACIONFLUJOCAJA(5,"Hacer Seguimiento Ordinario"),
+
+	
+	HACERSEGUIMIENTOOT(5,"Hacer Seguimiento Ordinarios de Ordenes de Transferencia");
+
 	
 	private Integer id;
 	private String name;

@@ -50,7 +50,7 @@
 				<description>Alfresco Server</description>
 				<env-entry-name>alfrescoServer</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>http://localhost:8090/alfresco/service/api</env-entry-value>
+				<env-entry-value>http://localhost:8088/alfresco/service/api</env-entry-value>
 			</env-entry>
 			<env-entry>
 				<description>Alfresco User Name</description>
@@ -62,7 +62,7 @@
 				<description>Alfresco Password</description>
 				<env-entry-name>alfrescoPassword</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>redhat</env-entry-value>
+				<env-entry-value>Nectia.2013</env-entry-value>
 			</env-entry>
 			<env-entry>
 				<description>Alfresco Site</description>
@@ -84,7 +84,8 @@
 				<description>Tmp Dir</description>
 				<env-entry-name>tmpDir</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>D:\tmp</env-entry-value>
+				<!-- <env-entry-value>/tmp</env-entry-value> -->
+				<env-entry-value>E:\redhatdoc</env-entry-value> 
 			</env-entry>
 		</session>
 		<session>
@@ -175,6 +176,7 @@
 				<env-entry-name>tmpDir</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
 				<env-entry-value>/tmp/excel</env-entry-value>
+				<!-- <env-entry-value>/tmp/excel</env-entry-value> -->
 			</env-entry>
 			<env-entry>
 				<description>Tmp Dir docs</description>
