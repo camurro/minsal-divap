@@ -1,6 +1,8 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -60,6 +62,9 @@ public class ProgramaAno implements Serializable {
 	private Set<ProgramaServicioCore> programasServiciosCore;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "programaAnoMunicipal")
 	private Set<ProgramaMunicipalCore> programasMunicipalesCore;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idProgramaAno")
+	private Collection<Remesa> remesaCollection;
+	
 
 	public ProgramaAno() {
 	}
@@ -143,5 +148,16 @@ public class ProgramaAno implements Serializable {
 	public String toString() {
 		return "cl.minsal.divap.model.ProgramaAno[ idProgramaAno=" + idProgramaAno + " ]";
 	}
+	
+
+
+	@XmlTransient
+	   public Collection<Remesa> getRemesaCollection() {
+	       return remesaCollection;
+	   }
+
+	   public void setRemesaCollection(Collection<Remesa> remesaCollection) {
+	       this.remesaCollection = remesaCollection;
+	   }
 
 }

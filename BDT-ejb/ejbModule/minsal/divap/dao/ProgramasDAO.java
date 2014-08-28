@@ -62,6 +62,15 @@ public class ProgramasDAO {
 	}
 	
 	
+	public ProgramaAno getProgramasByIdProgramaAno(Integer idProgramaAno) {
+		try {
+			return em.find(ProgramaAno.class, idProgramaAno);
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	
 	public Programa getProgramaByID(Integer idPrograma){
 		try {

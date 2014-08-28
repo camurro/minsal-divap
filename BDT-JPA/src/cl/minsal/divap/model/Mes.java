@@ -2,7 +2,9 @@ package cl.minsal.divap.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -60,6 +62,20 @@ public class Mes implements Serializable {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idMes")
+    private Collection<Remesa> remesaCollection;
+
+
+    @XmlTransient
+       public Collection<Remesa> getRemesaCollection() {
+           return remesaCollection;
+       }
+
+       public void setRemesaCollection(Collection<Remesa> remesaCollection) {
+           this.remesaCollection = remesaCollection;
+       }
+
 
     @XmlTransient
     public Collection<ComunaCumplimiento> getComunaCumplimientoCollection() {

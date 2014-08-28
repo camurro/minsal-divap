@@ -61,5 +61,12 @@ public class Util {
 		 
 		 return mesesNombre[mes];
 	}
+	
+  public static Date addMonths(java.util.Date aDate, int number){  
+        java.util.Calendar aCalendar = java.util.Calendar.getInstance();  
+        aCalendar.setTime(aDate);  
+        aCalendar.add(java.util.Calendar.MONTH, number);  
+        return aCalendar.getTime();  
+    }
     
 }

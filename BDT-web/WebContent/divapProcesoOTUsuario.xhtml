@@ -87,39 +87,39 @@
 
 								</p:columnGroup>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data.servicioSalud.nombre}</span>
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento.nombre}</span>
 								</p:column>
 			
 								<p:column>
-									<h:outputText value="#{_data.marcoMonto}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoPresupuestarioMonto}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 								
+								<p:column>
+								<h:outputText value="#{_data.acumuladoFechaMonto}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+									
+								</p:column>
+									
+								<p:column>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.acumuladoFechaPorcentaje}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>
 								<p:column>
 								<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 									
 								</p:column>
-									
-								<p:column>
-									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.remesaPor}">
-										<f:convertNumber type="percent" />
-									</h:outputText>
-								</p:column>
-								<p:column>
-								<h:outputText value="#{_data.junioRemesa28}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-									</h:outputText>
-									
-								</p:column>
 
 								<p:column>
-									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPor}">
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPorcentaje}">
 										<f:convertNumber type="percent" />
 									</h:outputText>
 								</p:column>	
@@ -173,11 +173,9 @@
 							
 							</c:if>
 							<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual ge 28)}"><!-- >= -->
-							<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual le 9)}"><!-- <=  -->
 							   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa24')]}" styleClass="textoPequenio textoAjustado">
 												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 							</h:outputText>
-							</c:if>
 							</c:if>
 							
 							
@@ -199,25 +197,25 @@
 								</f:facet>
 							</p:cellEditor>
 							</c:if>
-					<c:otherwise>
+					<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual lt 28)}"><!-- <  -->
 					   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa28')]}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 					</h:outputText>
-					</c:otherwise>
+					</c:if>
 					</p:column>	
 												
 						</c:forEach>
 						
 					<!--FIN COLUMNAS DINAMICAS REMESA-->
-
+					<!-- DIFERENCIA TOTAL  -->
 								<p:column>
-									<h:outputText value="#{_data.diciembreRemesa09}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.diferenciaMarcoContraTotalMonto}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 								
 								<p:column>
-									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPor}">
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.diferenciaMarcoContraTotalPorcentaje}">
 										<f:convertNumber type="percent" />
 									</h:outputText>
 								</p:column>
@@ -375,14 +373,14 @@
 								</p:columnGroup>
 
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data.servicioSalud.nombre}</span>
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento.nombre}</span>
 								</p:column>
 			
 								<p:column>
-									<h:outputText value="#{_data.marcoMonto}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoPresupuestarioMonto}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
@@ -663,14 +661,14 @@
 								</p:columnGroup>
 
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data.servicioSalud.nombre}</span>
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento.nombre}</span>
 								</p:column>
 			
 								<p:column>
-									<h:outputText value="#{_data.marcoMonto}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoPresupuestarioMonto}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
@@ -951,14 +949,14 @@
 								</p:columnGroup>
 
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data.servicioSalud.nombre}</span>
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.comuna}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data.comuna.nombre}</span>
 								</p:column>
 
 								<p:column>
-									<h:outputText value="#{_data.marcoMonto}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoPresupuestarioMonto}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>

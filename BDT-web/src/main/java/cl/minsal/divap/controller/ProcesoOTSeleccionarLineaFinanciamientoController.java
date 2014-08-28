@@ -52,7 +52,7 @@ implements Serializable {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		
 		
-		Programa programa = programaService.getProgramaPorID(idLineaProgramatica);//programaId)
+		//Programa programa = programaService.getProgramaPorID(idLineaProgramatica);//programaId)
 		
 //		if(programa.getTipoPrograma().getId() == 1)//TIPO PERCAPITA
 //		{

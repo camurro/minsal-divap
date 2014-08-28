@@ -74,10 +74,9 @@ public class ProgramasService {
 	
 	
 
-	public Programa getProgramaPorID(int programaId) {
-		Programa programa = this.programasDAO.getProgramaPorID(programaId);
-		
-		return programa;
+	public ProgramaVO getProgramaAnoPorID(int programaAnoId) {
+		ProgramaAno programa = this.programasDAO.getProgramasByIdProgramaAno(programaAnoId);
+		return new ProgramaMapper().getBasic(programa);
 	}
 
 }

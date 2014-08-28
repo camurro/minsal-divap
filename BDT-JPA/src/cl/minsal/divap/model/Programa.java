@@ -1,6 +1,7 @@
 package cl.minsal.divap.model;
  
 import java.io.Serializable;
+
 import java.util.List;
 import java.util.Set;
 
@@ -60,11 +61,6 @@ public class Programa implements Serializable {
     private Set<MetadataCore> metadataCores;
     @OneToMany(mappedBy = "idPrograma")
     private Set<Seguimiento> seguimientoCollection;
-  //REFERENCIA AGREGADO POR LSUAREZ 
-	//SE GUARDA LOS REMESAS QUE SE HICIERON DICHO PROGRAMA
-	//bi-directional many-to-one association to remesas
-	@OneToMany(mappedBy="programa")
-	private List<Remesa> remesas;
 
 	public Programa() {
 	}
@@ -205,27 +201,6 @@ public class Programa implements Serializable {
 		this.componentes = componentes;
 	}
 	
-	public List<Remesa> getRemesas() {
-		return remesas;
-	}
-
-	public void setRemesas(List<Remesa> remesas) {
-		this.remesas = remesas;
-	}
 	
-	
-	public Remesa addRemesa(Remesa remesa) {
-		getRemesas().add(remesa);
-		remesa.setPrograma(this);
-
-		return remesa;
-	}
-
-	public Remesa removeRemesa(Remesa remesa) {
-		getRemesas().remove(remesa);
-		remesa.setPrograma(null);
-
-		return remesa;
-	}
 	
 }

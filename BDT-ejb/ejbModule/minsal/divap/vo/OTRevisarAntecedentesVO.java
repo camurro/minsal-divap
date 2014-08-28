@@ -1,28 +1,117 @@
 package minsal.divap.vo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import cl.minsal.divap.model.Programa;
-import cl.minsal.divap.model.ProgramaMunicipalCore;
-import cl.minsal.divap.model.ProgramaServicioCore;
+import cl.minsal.divap.model.Comuna;
+import cl.minsal.divap.model.Establecimiento;
 import cl.minsal.divap.model.Remesa;
 import cl.minsal.divap.model.ServicioSalud;
 import cl.minsal.divap.pojo.ComponentePojo;
 
 public class OTRevisarAntecedentesVO
 {
-	Random rnd = new Random();
 	private long id;
-	private Integer idRemesa;
+	private Integer idRemesaMesEnero;
+	private Integer idRemesaMesFebrero;
+	private Integer idRemesaMesMarzo;
+	private Integer idRemesaMesAbril;
+	private Integer idRemesaMesMayo;
+	private Integer idRemesaMesJunio;
+	private Integer idRemesaMesJulio;
+	private Integer idRemesaMesAgosto;
+	private Integer idRemesaMesSeptiembre;
+	private Integer idRemesaMesOctubre;
+	private Integer idRemesaMesNoviembre;
+	private Integer idRemesaMesDiciembre;
 	private Integer idEstablecimiento;
-	private Integer idServicio;
+	private Integer idServicioSalud;
 	private Integer idComuna;
 	
-	private String establecimiento;
-	private String servicio;
-	private String comuna;
+	private ServicioSalud servicioSalud;
+	private Comuna comuna;
+	private Establecimiento establecimiento ;
+	
+	private long marcoPresupuestarioMonto;
+	private long acumuladoFechaMonto;
+	private String acumuladoFechaPorcentaje;
+	private long convenioMonto;
+	private String convenioPorcentaje;
+	
+	private long diferenciaMarcoContraTotalMonto;
+	private String diferenciaMarcoContraTotalPorcentaje;
+
+	public String getConvenioPorcentaje() {
+		return convenioPorcentaje;
+	}
+
+	public void setConvenioPorcentaje(String convenioPorcentaje) {
+		this.convenioPorcentaje = convenioPorcentaje;
+	}
+
+	public long getMarcoPresupuestarioMonto() {
+		return marcoPresupuestarioMonto;
+	}
+
+	public void setMarcoPresupuestarioMonto(long marcoPresupuestarioMonto) {
+		this.marcoPresupuestarioMonto = marcoPresupuestarioMonto;
+	}
+
+	public long getAcumuladoFechaMonto() {
+		return acumuladoFechaMonto;
+	}
+
+	public void setAcumuladoFechaMonto(long acumuladoFechaMonto) {
+		this.acumuladoFechaMonto = acumuladoFechaMonto;
+	}
+
+	public String getAcumuladoFechaPorcentaje() {
+		return acumuladoFechaPorcentaje;
+	}
+
+	public void setAcumuladoFechaPorcentaje(String acumuladoFechaPorcentaje) {
+		this.acumuladoFechaPorcentaje = acumuladoFechaPorcentaje;
+	}
+
+	public long getDiferenciaMarcoContraTotalMonto() {
+		return diferenciaMarcoContraTotalMonto;
+	}
+
+	public void setDiferenciaMarcoContraTotalMonto(
+			long diferenciaMarcoContraTotalMonto) {
+		this.diferenciaMarcoContraTotalMonto = diferenciaMarcoContraTotalMonto;
+	}
+
+	public String getDiferenciaMarcoContraTotalPorcentaje() {
+		return diferenciaMarcoContraTotalPorcentaje;
+	}
+
+	public void setDiferenciaMarcoContraTotalPorcentaje(
+			String diferenciaMarcoContraTotalPorcentaje) {
+		this.diferenciaMarcoContraTotalPorcentaje = diferenciaMarcoContraTotalPorcentaje;
+	}
+
+	public ServicioSalud getServicioSalud() {
+		return servicioSalud;
+	}
+
+	public void setServicioSalud(ServicioSalud servicioSalud) {
+		this.servicioSalud = servicioSalud;
+	}
+
+	public Comuna getComuna() {
+		return comuna;
+	}
+
+	public void setComuna(Comuna comuna) {
+		this.comuna = comuna;
+	}
+
+	public Establecimiento getEstablecimiento() {
+		return establecimiento;
+	}
+
+	public void setEstablecimiento(Establecimiento establecimiento) {
+		this.establecimiento = establecimiento;
+	}
+
 	private ComponentePojo componente;
 	private Integer anio;
 	
@@ -43,349 +132,150 @@ public class OTRevisarAntecedentesVO
 		this.componente = componente;
 	}
 	
-	public String getComuna() {
-		return comuna;
-	}
-	
-	public void setComuna( String comuna ) {
-		this.comuna = comuna;
-	}
-	
-	public String getServicio() {
-		return servicio;
-	}
-	
-	public void setServicio( String servicio ) {
-		this.servicio = servicio;
-	}
-	
-	
-	public Integer getIdRemesa() {
-		return idRemesa;
+	public Integer getIdRemesaMesEnero() {
+		return idRemesaMesEnero;
 	}
 
-	public void setIdRemesa(Integer idRemesa) {
-		this.idRemesa = idRemesa;
+	public void setIdRemesaMesEnero(Integer idRemesaMesEnero) {
+		this.idRemesaMesEnero = idRemesaMesEnero;
 	}
 
-	public List<OTRevisarAntecedentesVO> crearListaServicioPorPrograma(Programa programa)
-	{
-		List<OTRevisarAntecedentesVO> lista = new ArrayList<OTRevisarAntecedentesVO>();
-		
-//		if(programa.getDe.getId() == 1 )//SERVICIO
-//		{
-////			for (ProgramaServicioCore servicioCore : programa.getProgramaServicioCores()) {
-////				
-////				OTRevisarAntecedentesVO otRevisarAntecedentesVO = new OTRevisarAntecedentesVO();
-////				//SERVICIO SALUD
-//////				if(servicioCore.getServicioSalud() != null)
-//////				{
-//////					otRevisarAntecedentesVO.setServicio(servicioCore.getServicioSalud().getNombre());
-//////					otRevisarAntecedentesVO.setIdServicio(servicioCore.getServicioSalud().getId());
-//////				}
-//////				
-////				//COMUNA
-////				/*
-////				if(servicioCore.getComuna() != null)
-////				{
-////					otRevisarAntecedentesVO.setEstablecimiento(servicioCore.getComuna().getNombre());
-////					otRevisarAntecedentesVO.setIdEstablecimiento(servicioCore.getComuna().getId());
-////				}
-////				*/
-////				otRevisarAntecedentesVO.setComuna("COMUNA PRUEBA SERVICIO");
-////				otRevisarAntecedentesVO.setIdComuna(1);
-////				
-////				//ESTABLECIMIENTO
-////				/*
-////				if(servicioCore.getEstablecimiento() != null)
-////				{
-////					otRevisarAntecedentesVO.setEstablecimiento(servicioCore.getEstablecimiento().getNombre());
-////					otRevisarAntecedentesVO.setIdEstablecimiento(servicioCore.getEstablecimiento().getId());
-////				}
-////				*/
-////				otRevisarAntecedentesVO.setEstablecimiento("ESTABLECIMIENTO PRUEBA SERVICIO");
-////				otRevisarAntecedentesVO.setIdEstablecimiento(1);
-////				
-////				lista.add(otRevisarAntecedentesVO);
-////				
-////			}			
-//		}
-//		else if(programa.getIdTipoPrograma().getId() == 1 )//MUNICIPAL
-//		{
-////			for (ProgramaMunicipalCore municipalCore : programa.getProgramaMunicipalCores()) {
-////				
-////				OTRevisarAntecedentesVO otRevisarAntecedentesVO = new OTRevisarAntecedentesVO();
-////				//SERVICIO SALUD
-//////				if(municipalCore.getServicioSalud() != null)
-//////				{
-//////					otRevisarAntecedentesVO.setEstablecimiento(municipalCore.getServicioSalud().getNombre());
-//////					otRevisarAntecedentesVO.setIdEstablecimiento(municipalCore.getServicioSalud().getId());
-//////				}
-////				otRevisarAntecedentesVO.setServicio("SERVICIO PRUEBA MUNICIPAL");
-////				otRevisarAntecedentesVO.setIdServicio(1);
-////				
-////				//COMUNA
-////				/*
-////				if(servicioCore.getComuna() != null)
-////				{
-////					otRevisarAntecedentesVO.setEstablecimiento(servicioCore.getComuna().getNombre());
-////					otRevisarAntecedentesVO.setIdEstablecimiento(servicioCore.getComuna().getId());
-////				}
-////				*/
-////				otRevisarAntecedentesVO.setComuna("COMUNA PRUEBA MUNICIPAL");
-////				otRevisarAntecedentesVO.setIdComuna(1);
-////				
-////				//ESTABLECIMIENTO
-////				/*
-////				if(servicioCore.getEstablecimiento() != null)
-////				{
-////					otRevisarAntecedentesVO.setEstablecimiento(servicioCore.getEstablecimiento().getNombre());
-////					otRevisarAntecedentesVO.setIdEstablecimiento(servicioCore.getEstablecimiento().getId());
-////				}
-////				*/
-////				otRevisarAntecedentesVO.setEstablecimiento("ESTABLECIMIENTO PRUEBA MUNICIPAL");
-////				otRevisarAntecedentesVO.setIdEstablecimiento(1);
-////				
-////				lista.add(otRevisarAntecedentesVO);
-////				
-////			}			
-//		}
-		
-		return lista;
-		
-		
-	}
-	
-	public List<OTRevisarAntecedentesVO> obtenerListaSubtitulo21VOPorPrograma(Programa programa)
-	{
-		List<OTRevisarAntecedentesVO> listaVO = crearListaServicioPorPrograma(programa);
-		
-		List<Remesa>listaRemesa =  new ArrayList<Remesa>();
-		if(programa.getRemesas()!=null)
-			listaRemesa = programa.getRemesas();
-
-
-		for (OTRevisarAntecedentesVO otRevisarAntecedentesVO : listaVO) {
-
-			Integer idServicioSalud = otRevisarAntecedentesVO.getIdServicio();
-			Integer idEstablecimiento =0;
-			if(otRevisarAntecedentesVO.getIdEstablecimiento()!=null)
-				idEstablecimiento= otRevisarAntecedentesVO.getIdEstablecimiento();
-			
-			Integer idComuna=0;
-			if(otRevisarAntecedentesVO.getIdComuna()!=null)
-				idComuna= otRevisarAntecedentesVO.getIdComuna();
-			
-			Integer anio = 2014;// otRevisarAntecedentesVO.getAnio();
-
-			for (Remesa remesa : listaRemesa) {
-				
-//					if(programa.getIdTipoPrograma().getId() == 1)//TIPO SERVICIO
-//					{
-//						
-//						
-//						cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
-//						/*
-//						if(remesa.getServicioSalud()!=null)
-//						{
-//							if(idServicioSalud == remesa.getServicioSalud().getId())
-//							{
-//								if(remesa.getEstablecimiento()!=null)
-//								{
-//									if(idEstablecimiento== remesa.getEstablecimiento().getId())
-//									{
-//										if(anio== remesa.getAnio())
-//										{
-//											cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
-//										}
-//									}
-//								}
-//							}
-//						}
-//						*/
-//					}
-//					else if(programa.getIdTipoPrograma().getId() == 2)//TIPO MUNCIPAL
-//					{
-//						cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
-//						/*
-//						if(remesa.getServicioSalud()!=null)
-//						{
-//							if(idServicioSalud == remesa.getServicioSalud().getId())
-//							{
-//								if(remesa.getComuna()!=null)
-//								{
-//									if(idComuna== remesa.getComuna().getId())
-//									{
-//										if(anio== remesa.getAnio())
-//										{
-//											cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
-//										}
-//									}
-//								}
-//							}
-//						}
-//						*/
-//					}
-			}
-		}
-		
-		return listaVO;
-		
-	}
-	
-	
-	private void cargarVOPorRemesa(OTRevisarAntecedentesVO otRevisarAntecedentesVO, Remesa remesa)
-	{
-		
-		Long valorDia09 =  1L;//remesa.getValorDia09();
-		Long valorDia24 =  1L;//remesa.getValorDia09();
-		Long valorDia28 =  1L;//remesa.getValorDia09();
-		/*	
-		//ENERO
-		if(remesa.getMes().getIdMes() == 1)
-		{
-			otRevisarAntecedentesVO.setEneroRemesa09(valorDia09);
-			otRevisarAntecedentesVO.setEneroRemesa24(valorDia24);
-			otRevisarAntecedentesVO.setEneroRemesa28(valorDia28);
-		}
-		
-		//FEBRERO
-		if(remesa.getMes().getIdMes() == 2)
-		{
-			otRevisarAntecedentesVO.setFebreroRemesa09(valorDia09);
-			otRevisarAntecedentesVO.setFebreroRemesa24(valorDia24);
-			otRevisarAntecedentesVO.setFebreroRemesa28(valorDia28);
-		}
-		//MARZO
-		if(remesa.getMes().getIdMes() == 3)
-		{
-			otRevisarAntecedentesVO.setMarzoRemesa09(valorDia09);
-			otRevisarAntecedentesVO.setMarzoRemesa24(valorDia24);
-			otRevisarAntecedentesVO.setMarzoRemesa28(valorDia28);
-		}
-		
-		
-		//ABRIL
-		if(remesa.getMes().getIdMes() == 4)
-		{
-			otRevisarAntecedentesVO.setAbrilRemesa09(valorDia09);
-			otRevisarAntecedentesVO.setAbrilRemesa24(valorDia24);
-			otRevisarAntecedentesVO.setAbrilRemesa28(valorDia28);
-		}
-		
-		//MAYO
-		if(remesa.getMes().getIdMes() == 5)
-		{
-			otRevisarAntecedentesVO.setMayoRemesa09(valorDia09);
-			otRevisarAntecedentesVO.setMayoRemesa24(valorDia24);
-			otRevisarAntecedentesVO.setMayoRemesa28(valorDia28);
-		}
-		
-		//JUNIO
-		if(remesa.getMes().getIdMes() == 6)
-		{
-			otRevisarAntecedentesVO.setJunioRemesa09(valorDia09);
-			otRevisarAntecedentesVO.setJunioRemesa24(valorDia24);
-			otRevisarAntecedentesVO.setJunioRemesa28(valorDia28);
-		}
-		
-		//JULIO
-		if(remesa.getMes().getIdMes() == 7)
-		{
-			otRevisarAntecedentesVO.setJulioRemesa09(valorDia09);
-			otRevisarAntecedentesVO.setJulioRemesa24(valorDia24);
-			otRevisarAntecedentesVO.setJulioRemesa28(valorDia28);
-		}
-		
-		//AGOSTO
-		if(remesa.getMes().getIdMes() == 8)
-		{
-			otRevisarAntecedentesVO.setAgostoRemesa09(valorDia09);
-			otRevisarAntecedentesVO.setAgostoRemesa24(valorDia24);
-			otRevisarAntecedentesVO.setAgostoRemesa28(valorDia28);
-		}
-		
-		//SEPTIEMBRE
-		if(remesa.getMes().getIdMes() == 9)
-		{
-			otRevisarAntecedentesVO.setSeptiembreRemesa09(valorDia09);
-			otRevisarAntecedentesVO.setSeptiembreRemesa24(valorDia24);
-			otRevisarAntecedentesVO.setSeptiembreRemesa28(valorDia28);
-		}
-		
-		//OCTUBRE
-		if(remesa.getMes().getIdMes() == 10)
-		{
-			otRevisarAntecedentesVO.setOctubreRemesa09(valorDia09);
-			otRevisarAntecedentesVO.setOctubreRemesa24(valorDia24);
-			otRevisarAntecedentesVO.setOctubreRemesa28(valorDia28);
-		}
-
-		//NOVIEMBRE
-		if(remesa.getMes().getIdMes() == 11)
-		{
-			otRevisarAntecedentesVO.setNoviembreRemesa09(valorDia09);
-			otRevisarAntecedentesVO.setNoviembreRemesa24(valorDia24);
-			otRevisarAntecedentesVO.setNoviembreRemesa28(valorDia28);
-		}
-		
-		//DICIEMBRE
-		if(remesa.getMes().getIdMes() == 12)
-		{
-			otRevisarAntecedentesVO.setDiciembreRemesa09(valorDia09);
-			otRevisarAntecedentesVO.setDiciembreRemesa24(valorDia24);
-			otRevisarAntecedentesVO.setDiciembreRemesa28(valorDia28);
-		}
-		*/
+	public Integer getIdRemesaMesFebrero() {
+		return idRemesaMesFebrero;
 	}
 
-	private long eneroRemesa09 = rnd.nextInt(99999999);
-	private long eneroRemesa24 = rnd.nextInt(99999999);
-	private long eneroRemesa28 = rnd.nextInt(99999999);
+	public void setIdRemesaMesFebrero(Integer idRemesaMesFebrero) {
+		this.idRemesaMesFebrero = idRemesaMesFebrero;
+	}
 
-	private long febreroRemesa09 = rnd.nextInt(99999999);
-	private long febreroRemesa24 = rnd.nextInt(99999999);
-	private long febreroRemesa28 = rnd.nextInt(99999999);
-	
-	private long marzoRemesa09 = rnd.nextInt(99999999);
-	private long marzoRemesa24 = rnd.nextInt(99999999);
-	private long marzoRemesa28 = rnd.nextInt(99999999);
-	
-	private long abrilRemesa09 = rnd.nextInt(99999999);
-	private long abrilRemesa24 = rnd.nextInt(99999999);
-	private long abrilRemesa28 = rnd.nextInt(99999999);
-	
-	private long mayoRemesa09 = rnd.nextInt(99999999);
-	private long mayoRemesa24 = rnd.nextInt(99999999);
-	private long mayoRemesa28 = rnd.nextInt(99999999);
-	
-	private long junioRemesa09 = rnd.nextInt(99999999);
-	private long junioRemesa24 = rnd.nextInt(99999999);
-	private long junioRemesa28 = rnd.nextInt(99999999);
+	public Integer getIdRemesaMesMarzo() {
+		return idRemesaMesMarzo;
+	}
 
-	private long julioRemesa09 = rnd.nextInt(4);
-	private long julioRemesa24 = rnd.nextInt(4);
-	private long julioRemesa28 = rnd.nextInt(4);
+	public void setIdRemesaMesMarzo(Integer idRemesaMesMarzo) {
+		this.idRemesaMesMarzo = idRemesaMesMarzo;
+	}
 
-	private long agostoRemesa09 = rnd.nextInt(1);
-	private long agostoRemesa24 = rnd.nextInt(1);
-	private long agostoRemesa28 = rnd.nextInt(1);
+	public Integer getIdRemesaMesAbril() {
+		return idRemesaMesAbril;
+	}
+
+	public void setIdRemesaMesAbril(Integer idRemesaMesAbril) {
+		this.idRemesaMesAbril = idRemesaMesAbril;
+
+	}
+
+	public Integer getIdRemesaMesMayo() {
+		return idRemesaMesMayo;
+	}
+
+	public void setIdRemesaMesMayo(Integer idRemesaMesMayo) {
+		this.idRemesaMesMayo = idRemesaMesMayo;
+	}
+
+	public Integer getIdRemesaMesJunio() {
+		return idRemesaMesJunio;
+	}
+
+	public void setIdRemesaMesJunio(Integer idRemesaMesJunio) {
+		this.idRemesaMesJunio = idRemesaMesJunio;
+	}
+
+	public Integer getIdRemesaMesJulio() {
+		return idRemesaMesJulio;
+	}
+
+	public void setIdRemesaMesJulio(Integer idRemesaMesJulio) {
+		this.idRemesaMesJulio = idRemesaMesJulio;
+	}
+
+	public Integer getIdRemesaMesAgosto() {
+		return idRemesaMesAgosto;
+	}
+
+	public void setIdRemesaMesAgosto(Integer idRemesaMesAgosto) {
+		this.idRemesaMesAgosto = idRemesaMesAgosto;
+	}
+
+	public Integer getIdRemesaMesSeptiembre() {
+		return idRemesaMesSeptiembre;
+	}
+
+	public void setIdRemesaMesSeptiembre(Integer idRemesaMesSeptiembre) {
+		this.idRemesaMesSeptiembre = idRemesaMesSeptiembre;
+	}
+
+	public Integer getIdRemesaMesOctubre() {
+		return idRemesaMesOctubre;
+	}
+
+	public void setIdRemesaMesOctubre(Integer idRemesaMesOctubre) {
+		this.idRemesaMesOctubre = idRemesaMesOctubre;
+	}
+
+	public Integer getIdRemesaMesNoviembre() {
+		return idRemesaMesNoviembre;
+	}
+
+	public void setIdRemesaMesNoviembre(Integer idRemesaMesNoviembre) {
+		this.idRemesaMesNoviembre = idRemesaMesNoviembre;
+	}
+
+	public Integer getIdRemesaMesDiciembre() {
+		return idRemesaMesDiciembre;
+	}
+
+	public void setIdRemesaMesDiciembre(Integer idRemesaMesDiciembre) {
+		this.idRemesaMesDiciembre = idRemesaMesDiciembre;
+	}
+
+	private long eneroRemesa09 =0;
+	private long eneroRemesa24 =0;
+	private long eneroRemesa28 =0;
+
+	private long febreroRemesa09 =0;
+	private long febreroRemesa24 =0;
+	private long febreroRemesa28 =0;
 	
-	private long septiembreRemesa09 = rnd.nextInt(99999999);
-	private long septiembreRemesa24 = rnd.nextInt(99999999);
-	private long septiembreRemesa28 = rnd.nextInt(99999999);
+	private long marzoRemesa09 =0;
+	private long marzoRemesa24 =0;
+	private long marzoRemesa28 =0;
 	
-	private long octubreRemesa09 = rnd.nextInt(99999999);
-	private long octubreRemesa24 = rnd.nextInt(99999999);
-	private long octubreRemesa28 = rnd.nextInt(99999999);
+	private long abrilRemesa09 =0;
+	private long abrilRemesa24 =0;
+	private long abrilRemesa28 =0;
 	
-	private long noviembreRemesa09 = rnd.nextInt(99999999);
-	private long noviembreRemesa24 = rnd.nextInt(99999999);
-	private long noviembreRemesa28 = rnd.nextInt(99999999);
+	private long mayoRemesa09 =0;
+	private long mayoRemesa24 =0;
+	private long mayoRemesa28 =0;
 	
-	private long diciembreRemesa09 = rnd.nextInt(99999999);
-	private long diciembreRemesa24 = rnd.nextInt(99999999);
-	private long diciembreRemesa28 = rnd.nextInt(99999999);
+	private long junioRemesa09 =0;
+	private long junioRemesa24 =0;
+	private long junioRemesa28 =0;
+
+	private long julioRemesa09 =0;
+	private long julioRemesa24 = 0;
+	private long julioRemesa28 = 0;
+
+	private long agostoRemesa09 = 0;
+	private long agostoRemesa24 = 0;
+	private long agostoRemesa28 = 0;
+	
+	private long septiembreRemesa09 =0;
+	private long septiembreRemesa24 =0;
+	private long septiembreRemesa28 =0;
+	
+	private long octubreRemesa09 =0;
+	private long octubreRemesa24 =0;
+	private long octubreRemesa28 =0;
+	
+	private long noviembreRemesa09 =0;
+	private long noviembreRemesa24 =0;
+	private long noviembreRemesa28 =0;
+	
+	private long diciembreRemesa09 =0;
+	private long diciembreRemesa24 =0;
+	private long diciembreRemesa28 =0;
 	
 	//check box 
 	private boolean valorCheckBox;
@@ -697,18 +587,15 @@ public class OTRevisarAntecedentesVO
 	}
 
 	private long convenio = (long) (julioRemesa09 * 12 * 0.7);
-	private long total = convenio + rnd.nextInt(2);
+	private long total = convenio + 1111;
 	private String color = "#FFB5B5";
 	
 	private long marcoMonto = s24Total;
 	// private long marcoPor;
-	private float remesaPor = rnd.nextFloat();
+	private float remesaPor =2222;
 	private Double remesaMonto = Double.valueOf(marcoMonto * remesaPor);
 	
-	private float convenioPor = rnd.nextFloat();
-	private long convenioMonto = (long) (marcoMonto * convenioPor);
-	
-	
+	private float convenioPor =33333;
 	public long getConvenioMonto() {
 		return convenioMonto;
 	}
@@ -779,23 +666,6 @@ public class OTRevisarAntecedentesVO
 		}
 	}
 	
-	public Random getRnd() {
-		return rnd;
-	}
-	
-	public void setRnd( Random rnd ) {
-		this.rnd = rnd;
-	}
-	
-	public String getEstablecimiento() {
-		return establecimiento;
-	}
-	
-	public void setEstablecimiento( String establecimiento ) {
-		this.establecimiento = establecimiento;
-	}
-	
-	
 	public long getId() {
 		return id;
 	}
@@ -812,12 +682,12 @@ public class OTRevisarAntecedentesVO
 		this.idEstablecimiento = idEstablecimiento;
 	}
 
-	public Integer getIdServicio() {
-		return idServicio;
+	public Integer getIdServicioSalud() {
+		return idServicioSalud;
 	}
 
-	public void setIdServicio(Integer idServicio) {
-		this.idServicio = idServicio;
+	public void setIdServicioSalud(Integer idServicioSalud) {
+		this.idServicioSalud = idServicioSalud;
 	}
 
 	public Integer getIdComuna() {
@@ -828,5 +698,29 @@ public class OTRevisarAntecedentesVO
 		this.idComuna = idComuna;
 	}
 	
-	
+	public void calcularDiferencia(OTRevisarAntecedentesVO otRevisarAntecedentesVO)
+	{
+		//DIFERENCIA (MARCO -TOTAL(ACUMULADO+CONVENIO))
+		long total = otRevisarAntecedentesVO.getEneroRemesa09()+otRevisarAntecedentesVO.getEneroRemesa24()+otRevisarAntecedentesVO.getEneroRemesa28()+
+				otRevisarAntecedentesVO.getFebreroRemesa09()+otRevisarAntecedentesVO.getFebreroRemesa24()+otRevisarAntecedentesVO.getFebreroRemesa28()+
+				otRevisarAntecedentesVO.getMarzoRemesa09()+otRevisarAntecedentesVO.getMarzoRemesa24()+otRevisarAntecedentesVO.getMarzoRemesa28()+
+				otRevisarAntecedentesVO.getAbrilRemesa09()+otRevisarAntecedentesVO.getAbrilRemesa24()+otRevisarAntecedentesVO.getAbrilRemesa28()+
+				otRevisarAntecedentesVO.getMayoRemesa09()+otRevisarAntecedentesVO.getMayoRemesa24()+otRevisarAntecedentesVO.getMayoRemesa28()+
+				otRevisarAntecedentesVO.getJunioRemesa09()+otRevisarAntecedentesVO.getJunioRemesa24()+otRevisarAntecedentesVO.getJunioRemesa28()+
+				otRevisarAntecedentesVO.getJulioRemesa09()+otRevisarAntecedentesVO.getJulioRemesa24()+otRevisarAntecedentesVO.getJulioRemesa28()+
+				otRevisarAntecedentesVO.getAgostoRemesa09()+otRevisarAntecedentesVO.getAgostoRemesa24()+otRevisarAntecedentesVO.getAgostoRemesa28()+
+				otRevisarAntecedentesVO.getSeptiembreRemesa09()+otRevisarAntecedentesVO.getSeptiembreRemesa24()+otRevisarAntecedentesVO.getSeptiembreRemesa28()+
+				otRevisarAntecedentesVO.getOctubreRemesa09()+otRevisarAntecedentesVO.getOctubreRemesa24()+otRevisarAntecedentesVO.getOctubreRemesa28()+
+				otRevisarAntecedentesVO.getNoviembreRemesa09()+otRevisarAntecedentesVO.getNoviembreRemesa24()+otRevisarAntecedentesVO.getNoviembreRemesa28()+
+				otRevisarAntecedentesVO.getDiciembreRemesa09()+otRevisarAntecedentesVO.getDiciembreRemesa24()+otRevisarAntecedentesVO.getDiciembreRemesa28()+
+				otRevisarAntecedentesVO.getConvenioMonto();		
+		
+		
+		otRevisarAntecedentesVO.setDiferenciaMarcoContraTotalMonto(otRevisarAntecedentesVO.getMarcoPresupuestarioMonto() - total);
+		total = otRevisarAntecedentesVO.getMarcoPresupuestarioMonto() - total;
+		
+		float totalPorcentaje  = ((float)total* (float)100)/(float)otRevisarAntecedentesVO.getMarcoPresupuestarioMonto();
+		otRevisarAntecedentesVO.setDiferenciaMarcoContraTotalPorcentaje(String.valueOf(totalPorcentaje)+"%");	
+		
+	}
 }

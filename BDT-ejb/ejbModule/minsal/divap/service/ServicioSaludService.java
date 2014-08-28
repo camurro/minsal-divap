@@ -12,6 +12,7 @@ import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.RebajaVO;
 import minsal.divap.vo.ServiciosVO;
 import cl.minsal.divap.model.Comuna;
+import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.ServicioSalud;
 
 @Stateless
@@ -50,6 +51,12 @@ public class ServicioSaludService {
 			}
 		}
 		return result;
+	}
+	
+	public ServicioSalud getServicioSaludPorID(int idServicioSalud) {
+		ServicioSalud servicioSalud = this.servicioSaludDAO.getServicioSaludPorID(idServicioSalud);
+		
+		return servicioSalud;
 	}
 
 }
