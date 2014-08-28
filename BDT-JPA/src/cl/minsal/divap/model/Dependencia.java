@@ -2,12 +2,12 @@ package cl.minsal.divap.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -21,33 +21,32 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author cmurillo
  */
 @Entity
-@Table(name = "dependencia_programa")
+@Table(name = "dependencia")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "DependenciaPrograma.findAll", query = "SELECT d FROM DependenciaPrograma d"),
-    @NamedQuery(name = "DependenciaPrograma.findByIdDependenciaPrograma", query = "SELECT d FROM DependenciaPrograma d WHERE d.idDependenciaPrograma = :idDependenciaPrograma"),
-    @NamedQuery(name = "DependenciaPrograma.findByNombre", query = "SELECT d FROM DependenciaPrograma d WHERE d.nombre = :nombre")})
-public class DependenciaPrograma implements Serializable {
+    @NamedQuery(name = "DependenciaPrograma.findAll", query = "SELECT d FROM Dependencia d"),
+    @NamedQuery(name = "DependenciaPrograma.findByIdDependenciaPrograma", query = "SELECT d FROM Dependencia d WHERE d.idDependenciaPrograma = :idDependenciaPrograma"),
+    @NamedQuery(name = "DependenciaPrograma.findByNombre", query = "SELECT d FROM Dependencia d WHERE d.nombre = :nombre")})
+public class Dependencia implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id_dependencia_programa")
+	@Id
+	@Column(name="id_dependencia_programa", unique=true, nullable=false)
+	@GeneratedValue
     private Integer idDependenciaPrograma;
     @Basic(optional = false)
     @Column(name = "nombre")
     private String nombre;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dependencia")
-    private Collection<Programa> programaCollection;
+    private Collection<TipoSubtitulo> tipoSubtitulos;
 
-    public DependenciaPrograma() {
+    public Dependencia() {
     }
 
-    public DependenciaPrograma(Integer idDependenciaPrograma) {
+    public Dependencia(Integer idDependenciaPrograma) {
         this.idDependenciaPrograma = idDependenciaPrograma;
     }
 
-    public DependenciaPrograma(Integer idDependenciaPrograma, String nombre) {
+    public Dependencia(Integer idDependenciaPrograma, String nombre) {
         this.idDependenciaPrograma = idDependenciaPrograma;
         this.nombre = nombre;
     }
@@ -68,14 +67,6 @@ public class DependenciaPrograma implements Serializable {
         this.nombre = nombre;
     }
 
-    @XmlTransient
-    public Collection<Programa> getProgramaCollection() {
-        return programaCollection;
-    }
-
-    public void setProgramaCollection(Collection<Programa> programaCollection) {
-        this.programaCollection = programaCollection;
-    }
 
     @Override
     public int hashCode() {
@@ -83,13 +74,22 @@ public class DependenciaPrograma implements Serializable {
         hash += (idDependenciaPrograma != null ? idDependenciaPrograma.hashCode() : 0);
         return hash;
     }
+    
+    @XmlTransient
+    public Collection<TipoSubtitulo> getTipoSubtitulos() {
+		return tipoSubtitulos;
+	}
 
-    @Override
+	public void setTipoSubtitulos(Collection<TipoSubtitulo> tipoSubtitulos) {
+		this.tipoSubtitulos = tipoSubtitulos;
+	}
+
+	@Override
     public boolean equals(Object object) {
-        if (!(object instanceof DependenciaPrograma)) {
+        if (!(object instanceof Dependencia)) {
             return false;
         }
-        DependenciaPrograma other = (DependenciaPrograma) object;
+        Dependencia other = (Dependencia) object;
         if ((this.idDependenciaPrograma == null && other.idDependenciaPrograma != null) || (this.idDependenciaPrograma != null && !this.idDependenciaPrograma.equals(other.idDependenciaPrograma))) {
             return false;
         }

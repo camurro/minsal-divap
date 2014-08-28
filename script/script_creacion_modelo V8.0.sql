@@ -1709,6 +1709,58 @@ WITH (
   OIDS=FALSE
 );
 
+-- Estimacion Flujo Caja.
+DROP TABLE caja;
+
+CREATE TABLE caja
+(
+  id integer NOT NULL DEFAULT nextval(('public.caja_id_seq'::text)::regclass), -- Identificador para la tabla de caja
+  id_programa integer NOT NULL, -- FK del programa
+  id_componente integer NOT NULL,
+  id_servicio integer NOT NULL,
+  marco_presupuestario numeric(18,0),
+  enero numeric(18,0),
+  febrero numeric(18,0),
+  marzo numeric(18,0),
+  abril numeric(18,0),
+  mayo numeric(18,0),
+  junio numeric(18,0),
+  julio numeric(18,0),
+  agosto numeric(18,0),
+  septiembre numeric(18,0),
+  octubre numeric(18,0),
+  noviembre numeric(18,0),
+  diciembre numeric(18,0),
+  total numeric(18,0),
+  id_comuna integer,
+  id_subtitulo integer,
+  ano integer,
+  CONSTRAINT caja_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_componente FOREIGN KEY (id_componente)
+      REFERENCES componente (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE, -- *Verificar si es necesaria
+  CONSTRAINT fk_comuna FOREIGN KEY (id_comuna)
+      REFERENCES comuna (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_programa FOREIGN KEY (id_programa)
+      REFERENCES programa (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_servicio FOREIGN KEY (id_servicio)
+      REFERENCES servicio_salud (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE caja
+  OWNER TO postgres;
+COMMENT ON TABLE caja
+  IS 'Tabla para el proceso de estimacion de flujo de caja';
+COMMENT ON COLUMN caja.id IS 'Identificador para la tabla de caja';
+COMMENT ON COLUMN caja.id_programa IS 'FK del programa';
+
+COMMENT ON CONSTRAINT fk_componente ON caja IS '*Verificar si es necesaria';
+
 
 -- 19/08/2014 Modelo// Distribución de Recursos Financieros para Programas de Reforzamiento de APS 
 
@@ -1742,12 +1794,16 @@ CREATE TABLE programa_municipal_core_componente
   componente integer NOT NULL,
   tarifa integer,
   cantidad integer,
+  subtitulo integer,
   CONSTRAINT programa_municipal_core_componente_pk PRIMARY KEY (programa_municipal_core, componente),
   CONSTRAINT componente_fk FOREIGN KEY (componente)
       REFERENCES componente (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT programa_municipal_core_fk FOREIGN KEY (programa_municipal_core)
       REFERENCES programa_municipal_core (id_programa_municipal_core) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT subtitulo_fk FOREIGN KEY (subtitulo)
+      REFERENCES tipo_subtitulo (id_tipo_subtitulo) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 WITH (
@@ -1808,7 +1864,7 @@ WITH (
 )
 ;
 
-CREATE TABLE public.programa_servicio_core_componente
+CREATE TABLE programa_servicio_core_componente
 (
    programa_servicio_core integer NOT NULL, 
    componente integer NOT NULL, 
@@ -1884,6 +1940,7 @@ INSERT INTO dependencia_programa(id_dependencia_programa, nombre) VALUES (2, 'Se
 INSERT INTO dependencia_programa(id_dependencia_programa, nombre) VALUES (3, 'Mixto');
 
 
+
 ALTER TABLE programa ADD COLUMN descripcion text;
 ALTER TABLE programa
   ADD COLUMN dependencia integer NOT NULL;
@@ -1895,8 +1952,8 @@ ALTER TABLE programa
 
 DELETE FROM programa;
 
-INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(1, 'APOYO A LA GESTION EN EL NIVEL PRIMARIO DE SALUD EN EST. DEP. DE LOS SS (CV, CACU, MEJ, FORT.)', 2, 1, 'cmurillo', 'Descripcion de prueba', 2);
-INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(2, 'COMPLEMENTARIO GES', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(1, 'APOYO A LA GESTION EN EL NIVEL PRIMARIO DE SALUD EN EST. DEP. DE LOS SS (CV, CACU, MEJ, FORT.)', 2, 2, 'cmurillo', 'Descripcion de prueba', 2);
+INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(2, 'COMPLEMENTARIO GES', 2, 2, 'cmurillo', 'Descripcion de prueba',3);
 INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(3, 'CONTROL DEL SALUD JOVEN SANO', 2, 1, 'cmurillo', 'Descripcion de prueba',1);
 INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(4, 'CAPACITACIÓN Y FORMACIÓN ATENCIÓN PRIMARIA EN LA RED ASISTENCIAL', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
 INSERT INTO programa(  id, nombre, cantidad_cuotas, id_tipo_programa, username_usuario, descripcion, dependencia)	VALUES	(5, 'ESPACIOS AMIGABLES ADOLESCENTES', 2, 1, 'cmurillo', 'Descripcion de prueba',3);
@@ -2059,67 +2116,483 @@ INSERT INTO componente(id, nombre, id_programa)	 VALUES (	65	,	'CAPACITACIÓN Y 
 INSERT INTO componente(id, nombre, id_programa)	 VALUES (	66	,	'FONDO DE FÁRMACIA PARA ENFERMEDADES CRONICAS NO TRANSMISIBLES'	,	44	);
 INSERT INTO componente(id, nombre, id_programa)	 VALUES (	67	,	'PROGRAMA ESPECIAL DE SALUD Y PUEBLOS INDIGENAS (PESPI)'	,	45	);
 
+-- Modelo// Distribución de Recursos Financieros para Programas de Reforzamiento de APS 
 
--- Estimacion Flujo Caja.
-DROP TABLE caja;
 
-CREATE TABLE caja
+--25/08/2014
+
+INSERT INTO dependencia_programa(id_dependencia_programa, nombre) VALUES (4, 'Servcios Establecimientos');
+INSERT INTO dependencia_programa(id_dependencia_programa, nombre) VALUES (5, 'Mixto Establecimientos');
+
+--25/08/2014
+
+--26/08/2014 cambios del modelo dependencia, tipo y subtitulo sobre componente del programa
+DROP TABLE programa_subtitulo;
+
+
+CREATE TABLE componente_subtitulo
 (
-  id integer NOT NULL DEFAULT nextval(('public.caja_id_seq'::text)::regclass), -- Identificador para la tabla de caja
-  id_programa integer NOT NULL, -- FK del programa
-  id_componente integer NOT NULL,
-  id_servicio integer NOT NULL,
-  marco_presupuestario numeric(18,0),
-  enero numeric(18,0),
-  febrero numeric(18,0),
-  marzo numeric(18,0),
-  abril numeric(18,0),
-  mayo numeric(18,0),
-  junio numeric(18,0),
-  julio numeric(18,0),
-  agosto numeric(18,0),
-  septiembre numeric(18,0),
-  octubre numeric(18,0),
-  noviembre numeric(18,0),
-  diciembre numeric(18,0),
-  total numeric(18,0),
-  id_comuna integer,
-  id_subtitulo integer,
-  ano integer,
-  CONSTRAINT caja_pkey PRIMARY KEY (id),
-  CONSTRAINT fk_componente FOREIGN KEY (id_componente)
+  id_componente_subtitulo serial NOT NULL,
+  componente integer NOT NULL,
+  subtitulo integer NOT NULL,
+  CONSTRAINT componente_subtitulo_pk PRIMARY KEY (id_componente_subtitulo),
+  CONSTRAINT componente_fk FOREIGN KEY (componente)
       REFERENCES componente (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE, -- *Verificar si es necesaria
-  CONSTRAINT fk_comuna FOREIGN KEY (id_comuna)
-      REFERENCES comuna (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT fk_programa FOREIGN KEY (id_programa)
-      REFERENCES programa (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT fk_servicio FOREIGN KEY (id_servicio)
-      REFERENCES servicio_salud (id) MATCH SIMPLE
+  CONSTRAINT subtitulo_fk FOREIGN KEY (subtitulo)
+      REFERENCES tipo_subtitulo (id_tipo_subtitulo) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE caja
-  OWNER TO postgres;
-COMMENT ON TABLE caja
-  IS 'Tabla para el proceso de estimacion de flujo de caja';
-COMMENT ON COLUMN caja.id IS 'Identificador para la tabla de caja';
-COMMENT ON COLUMN caja.id_programa IS 'FK del programa';
-
-COMMENT ON CONSTRAINT fk_componente ON caja IS '*Verificar si es necesaria';
 
 
+ALTER TABLE programa DROP CONSTRAINT tipo_programa_fk;
+ALTER TABLE programa DROP COLUMN id_tipo_programa;
+
+ALTER TABLE programa DROP CONSTRAINT dependencia_fk;
+ALTER TABLE programa DROP COLUMN dependencia;
+
+DELETE FROM programa_ano;
+DELETE FROM componente;
+DELETE FROM programa;
+
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(1, 'APOYO A LA GESTION EN EL NIVEL PRIMARIO DE SALUD EN EST. DEP. DE LOS SS (CV, CACU, MEJ, FORT.)', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(2, 'COMPLEMENTARIO GES', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(3, 'CONTROL DEL SALUD JOVEN SANO', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(4, 'CAPACITACIÓN Y FORMACIÓN ATENCIÓN PRIMARIA EN LA RED ASISTENCIAL', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(5, 'ESPACIOS AMIGABLES ADOLESCENTES', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(6, 'FORMACION DE MEDICOS ESPECIALISTAS EN LA ATENCION PRIMARIA EN EL SISTEMA PUBLICO DE ATENCION DE SALUD', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(7, 'MISIONES DE ESTUDIOS PARA LA FORMACION DE MEDICOS ESPECIALISTAS', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(8, 'VIDA SANA: INTERVENCIÓN EN FACTORES DE RIESGO DE ENFERMEDADES CRÓNICAS ASOCIADAS A LA MALNUTRICIÓN EN NIÑOS, NIÑAS, ADOLESCENTES, ADULTOS Y MUJERES POSTPARTO.', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(9, 'PILOTO VIDA SANA: ALCOHOL', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(10, 'SALUD MENTAL INTEGRAL EN APS', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(11, 'APOYO A LA GESTION LOCAL', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(12, 'APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(13, 'CENTROS COMUNITARIOS DE SALUD FAMILIAR (CECOSF)', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(14, 'CONSULTORIOS DE EXCELENCIA', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(15, 'PILOTO DE DISPENSACION AUTOMATICA FARMACOS E INSUMOS APS', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(16, 'APOYO AL DESARROLLO BIOPSICOSOCIAL', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(17, 'APOYO RADIOLÓGICO', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(18, 'ASISTENCIA VENTILATORIA INVASIVA (AVI)', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(19, 'ASISTENCIA VENTILATORIA INVASIVA EN ADULTOS (AVIA)', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(20, 'ASISTENCIA VENTILATORIA NO INVASIVA (AVNI)', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(21, 'ASISTENCIA VENTILATORIA NO INVASIVA EN ADULTO (AVNIA)', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(22, 'CONTROL ENFERMEDADES RESPIRATORIAS DEL ADULTO (ERA)', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(23, 'MODELO DE ATENCIÓN CON ENFOQUE FAMILIAR', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(24, 'IMÁGENES DIAGNÓSTICAS', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(25, 'INFECCIONES RESPIRATORIAS INFANTILES (IRA)', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(26, 'MEJORÍA DE LA EQUIDAD EN SALUD RURAL', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(27, 'PILOTO CONTROL SALUD DEL NIÑO/A SANO/A DE 5 A 9 AÑOS', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(28, 'PROGRAMA PLAN ARAUCANIA', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(29, 'APOYO A LA AP DE SALUD MUNICIPAL', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(30, 'ATENCIÓN DOMICILIARIA DE PERSONAS CON DISCAPACIDAD SEVERA', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(31, 'GES ODONTOLÓGICO ADULTO', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(32, 'GES ODONTOLOGICO FAMILIAR', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(33, 'PREV. SALUD BUCAL POB. PREESC. APS', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(34, 'MANTENIMIENTO INFRAESTRUCTURA APS', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(35, 'ODONTOLÓGICO INTEGRAL', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(36, 'RCP CON DEA', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(37, 'REHABILITACIÓN INTEGRAL CON BASE COMUNITARIA', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(38, 'RESOLUTIVIDAD EN APS', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(39, 'SERVICIO DE ATENCIÓN PRIMARIA DE URGENCIA (SAPU)', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(40, 'SERVICIO DE URGENCIAL RURAL (SUR)', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(41, 'FORTALECIMIENTO DE LAS CAPACIDADES DE GESTIÓN DE SALUD EN LA AP MUNICIPAL', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(42, 'INMUNIZACIÓN DE INFLUENZA Y NEUMOCOCO EN EL NIVEL PRIMARIO DE ATENCIÓN', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(43, 'CAPACITACIÓN Y PERFECIONAMIENTO', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(44, 'FONDO DE FÁRMACIA PARA ENFERMEDADES CRONICAS NO TRANSMISIBLES', 2, 'cmurillo', 'Descripcion de prueba');
+INSERT INTO programa(  id, nombre, cantidad_cuotas, username_usuario, descripcion)	VALUES	(45, 'PROGRAMA ESPECIAL DE SALUD Y PUEBLOS INDIGENAS (PESPI)', 2, 'cmurillo', 'Descripcion de prueba');
+
+
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (1, 1, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (2, 2, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (3, 3, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (4, 4, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (5, 5, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (6, 6, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (7, 7, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (8, 8, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (9, 9, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (10, 10, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (11, 11, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (12, 21, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (13, 13, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (14, 14, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (15, 15, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (16, 16, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (17, 17, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (18, 18, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (19, 19, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (20, 20, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (21, 21, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (22, 22, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (23, 23, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (24, 24, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (25, 25, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (26, 26, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (27, 27, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (28, 28, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (29, 29, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (30, 30, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (31, 31, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (32, 32, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (33, 33, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (34, 34, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (35, 35, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (36, 36, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (37, 37, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (38, 38, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (39, 39, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (40, 40, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (41, 41, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (42, 42, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (43, 43, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (44, 44, 2014, 1);
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (45, 45, 2014, 1);
+
+ALTER TABLE tipo_programa
+  RENAME TO tipo_componente;
+
+ALTER TABLE componente
+  ADD COLUMN tipo_componente integer NOT NULL;
+ALTER TABLE componente
+  ADD CONSTRAINT tipo_componente_fk FOREIGN KEY (tipo_componente) REFERENCES tipo_componente (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 
 
 
 
+ALTER TABLE dependencia_programa
+  RENAME TO dependencia;
 
--- Modelo// Distribución de Recursos Financieros para Programas de Reforzamiento de APS 
+DELETE FROM dependencia;
+
+INSERT INTO dependencia(id_dependencia_programa, nombre) VALUES (1, 'APS MUNICIPAL');
+INSERT INTO dependencia(id_dependencia_programa, nombre) VALUES (2, 'APS SERVICIOS');
+
+
+ALTER TABLE tipo_subtitulo ADD COLUMN dependencia integer;
+
+UPDATE tipo_subtitulo SET dependencia=1 WHERE id_tipo_subtitulo = 3;
+UPDATE tipo_subtitulo SET dependencia=2 WHERE id_tipo_subtitulo <> 3;
+
+ALTER TABLE tipo_subtitulo
+   ALTER COLUMN dependencia SET NOT NULL;
+
+ALTER TABLE tipo_subtitulo
+  ADD CONSTRAINT dependencia_fk FOREIGN KEY (dependencia) REFERENCES dependencia (id_dependencia_programa) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE componente DROP CONSTRAINT programa_fk;
+
+ALTER TABLE componente
+  ADD CONSTRAINT programa_fk FOREIGN KEY (id_programa)
+      REFERENCES programa (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						1	,	'APOYO A LA GESTION EN EL NIVEL PRIMARIO DE SALUD EN EST DEP. DE LOS SS (CV, CACU, MEJ, FORT.)'	,	1	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						2	,	'COMPLEMENTARIO GES'	,	2	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						3	,	'CONTROL DE SALUD JOVEN SANO'	,	3	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						4	,	'DESARROLLO DE CAPITAL HUMANO HOSP. MENOR COMPLEJIDAD'	,	4	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						5	,	'DESARROLLO DE RECURSO HUMANO EN APS MUNICIPAL'	,	4	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						6	,	'CAPACITACION UNIVERSAL'	,	4	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						7	,	'ADOLESCENTES'	,	5	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						8	,	'ESPECIALISTAS BASICOS (6 AÑOS)'	,	6	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						9	,	'MISIONES DE ESTUDIOS MEDICOS ESPECIALISTAS'	,	7	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						10	,	'INTERVENCIÓN EN OBESIDAD EN NIÑOS, ADOLESCENTES Y ADULTOS'	,	8	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						11	,	'PILOTO VIDA SANA: ALCOHOL'	,	9	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						12	,	'SALUD MENTAL INTEGRAL EN APS'	,	10	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						13	,	'APOYO A LA GESTION LOCAL.'	,	11	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						14	,	'PUESTA EN MARCHA CONS. NUEVOS'	,	11	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						15	,	'APS NO MUNICIPAL'	,	12	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						16	,	'ONG'	,	12	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						17	,	'ANCORA'	,	12	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						18	,	'APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN EST DEPENDIENTES'	,	12	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						19	,	'CENTROS COMUNITARIOS DE SALUD FAMILIAR (CECOSF)'	,	13	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						20	,	'CONSULTORIOS DE EXCELENCIA'	,	14	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						21	,	 'PILOTO DE DISPENSACION AUTOMATICA FARMACOS E INSUMOS APS - PROGRAMAS DE REFORZAMIENTO Y ACTIVIDADES VALORIZABLES, APS AÑO 2014 '	,	15	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						22	,	 'PILOTO DE DISPENSACION AUTOMATICA FARMACOS E INSUMOS APS - OPERACIÓN DISPENSACION AUTOMATICA FARMACOS E INSUMOS APS'	,	15	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						23	,	'APOYO AL DESARROLLO BIOSICOSOCIAL'	,	16	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						24	,	'APOYO RADIOLÓGICO'	,	17	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						25	,	'AVI'	,	18	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						26	,	'AVIA'	,	19	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						27	,	'AVNI'	,	20	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						28	,	'AVNIA'	,	21	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						29	,	 'ERA - OPERACIÓN  ERA'	,	22	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						30	,	 'ERA - REFUERZO CONSULTORIO'	,	22	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						31	,	 'ESTÍMULO CESFAM'	,	23	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						32	,	 'IMÁGENES DIAGNÓSTICAS - Nº MAMOGRAFIAS'	,	24	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						33	,	 'IMÁGENES DIAGNÓSTICAS - Nº ECOGRAFIA MAMOGRAFIA'	,	24	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						34	,	 'IMÁGENES DIAGNÓSTICAS - Nº ECOGRAFIA ABDOMINAL'	,	24	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						35	,	 'IMÁGENES DIAGNÓSTICAS - Nº RADIOGRAFIA DE CADERA'	,	24	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						36	,	'IRA'	,	25	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						37	,	'IRA EN SAPUS'	,	25	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						38	,	'IRA MIXTAS'	,	25	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						39	,	 'MEJORÍA DE LA EQUIDAD EN SALUD RURAL - Nº TECNICOS PARAMEDICOS'	,	26	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						40	,	 'MEJORÍA DE LA EQUIDAD EN SALUD RURAL - 2º EQUIPO DE RONDA'	,	26	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						41	,	 'MEJORÍA DE LA EQUIDAD EN SALUD RURAL - PROYECTOS COMUNITARIOS'	,	26	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						42	,	'PILOTO CONTROL SALUD DEL NIÑO/A SANO/A DE 5 A 9 AÑOS'	,	27	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						43	,	'PROGRAMA PLAN ARAUCANIA'	,	28	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						44	,	'APOYO A LA AP DE SALUD MUNICIPAL'	,	29	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						45	,	'PAGO A CUIDADORES DE PERSONAS CON DISCAPACIDAD SEVERA'	,	30	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						46	,	'VISITA INTEGRAL DOMICILIARIA'	,	30	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						47	,	'SALUD ORAL A LOS 60 AÑOS'	,	31	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						48	,	'SALUD ORAL 6 AÑOS'	,	32	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						49	,	'SALUD ORAL EMBARAZADA'	,	32	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						50	,	'URGENCIA ODONTOLOGICA'	,	32	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						51	,	 'PREV. SALUD BUCAL POB. PREESC. APS - CEPILLOS Y PASTAS'	,	33	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						52	,	 'PREV. SALUD BUCAL POB. PREESC. APS - FLUOR'	,	33	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						53	,	 'MANTENIMIENTO INFRAESTRUCTURA APS'	,	34	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						54	,	 'APOYO ODONTOLÓGICO EN CECOSF - IMPLEMENTACIÓN APOYO ODONTOLOGICO CECOSF'	,	35	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						55	,	 'APOYO ODONTOLÓGICO EN CECOSF - OPERACIÓN APOYO ODONTOLÓGICO EN CECOSF'	,	35	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						56	,	 'CLINICAS MOVILES'	,	35	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						57	,	  'ALTAS MHER - ATENCIÓN ODONTOLOGICA INTEGRAL A MUJERES Y HOMBRES DE ESCASOS RECURSOS'	,	35	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						58	,	 'ALTAS MHER - AUDITORIAS CLINICAS'	,	35	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						59	,	 'ALTAS MUJERES MAS SONRISAS PARA CHILE - ATENCIÓN ODONTOLOGICA INTEGRAL A MUJERES MAS SONRISAS PARA CHILE'	,	35	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						60	,	 'ALTAS MUJERES MAS SONRISAS PARA CHILE - AUDITORIAS CLINICAS'	,	35	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						61	,	 'PROTESIS Y ENDODONCIAS - ENDODONCIAS EN APS'	,	35	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						62	,	 'PROTESIS Y ENDODONCIAS - PROTESIS EN APS'	,	35	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						63	,	'RCP CON DEA'	,	36	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						64	,	'ARTROSIS'	,	37	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						65	,	 'REHABILITACIÓN EQUIPOS RURALES - IMPLEMENTACIÓN EQUIPO RURAL'	,	37	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						66	,	 'REHABILITACIÓN EQUIPOS RURALES - OPERACIÓN EQUIPOS RURALES'	,	37	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						67	,	 'REHABILITACIÓN INTEGRAL CON BASE COMUNITARIA - IMPLEMENTACIÓN SALA REHABILITACIÓN INTEGRAL CON BASE COMUNITARIA'	,	37	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						68	,	 'REHABILITACIÓN INTEGRAL CON BASE COMUNITARIA - OPERACIÓN SALA REHABILITACIÓN INTEGRAL CON BASE COMUNITARIA'	,	37	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						69	,	 'REHABILITACIÓN OSTEOMUSCULAR - IMPLEMENTACIÓN SALA REHABILITACIÓN OSTEOMUSCULAR'	,	37	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						70	,	 'REHABILITACIÓN OSTEOMUSCULAR - OPERACIÓN SALA REHABILITACIÓN OSTEOMUSCULAR'	,	37	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						71	,	 'ESPECIALIDADES AMBULATORIAS - OFTALMOLOGIA - CANASTAS INTEGRALES'	,	38	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						72	,	 'ESPECIALIDADES AMBULATORIAS - OFTALMOLOGIA - TELEOFTALMOLOGIA CAMARA'	,	38	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						73	,	 'ESPECIALIDADES AMBULATORIAS - OFTALMOLOGIA - TELEOFTALMOLOGIA INFORME'	,	38	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						74	,	 'ESPECIALIDADES AMBULATORIAS - OTORRINOLARINGOLOGIA - CANASTAS INTEGRALES '	,	38	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						75	,	 'ESPECIALIDADES AMBULATORIAS - GASTROENTEROLOGIA - CANASTAS INTEGRALES '	,	38	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						76	,	 'ESPECIALIDADES AMBULATORIAS - N° MEDICO GESTOR'	,	38	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						77	,	 'ESPECIALIDADES AMBULATORIAS - TELEDERMATOLOGIA - CAMARAS'	,	38	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						78	,	 'ESPECIALIDADES AMBULATORIAS - TELEDERMATOLOGIA - CANASTAS INTEGRALES'	,	38	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						79	,	 'ESPECIALIDADES AMBULATORIAS - TELEDERMATOLOGIA - SERVICIOS DERMATOLOGICOS'	,	38	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						80	,	 'UAPO - IMPLEMENTACIÓN UAPO'	,	38	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						81	,	 'UAPO - MESES OPERACIÓN UAPO'	,	38	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						82	,	 'UAPO - LENTES UAPO'	,	38	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						83	,	 'UAPO - FARMACOS UAPO'	,	38	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						84	,	 'UAPO - LUBRICANTES UAPO '	,	38	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						85	,	 'PROCEDIMIENTOS QUIRURGICOS DE BAJA COMPLEJIDAD - IMPLEMENTACIÓN SALA'	,	38	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						86	,	 'PROCEDIMIENTOS QUIRURGICOS DE BAJA COMPLEJIDAD - N° CIRUGIA MENOR'	,	38	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						87	,	 'SAPU (AVANZADO, LARGO Y CORTO) - OPERACIÓN SAPU AVANZADO; ATENCIONES, PROCEDIMIENTOS Y TRASLADOS DE URGENCIA'	,	39	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						88	,	 'SAPU (AVANZADO, LARGO Y CORTO) - OPERACIÓN SAPU LARGO; ATENCIONES, PROCEDIMIENTOS Y TRASLADOS DE URGENCIA'	,	39	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						89	,	 'SAPU (AVANZADO, LARGO Y CORTO) - OPERACIÓN SAPU CORTO; ATENCIONES, PROCEDIMIENTOS Y TRASLADOS DE URGENCIA'	,	39	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						90	,	'SAPU DENTAL'	,	39	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						91	,	'SAPU VERANO'	,	39	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						92	,	 'SERVICIO DE URGENCIAL RURAL (SUR) - OPERACIÓN SUR ALTA; ATENCIONES, PROCEDIMIENTOS Y TRASLADOS DE URGENCIA'	,	40	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						93	,	 'SERVICIO DE URGENCIAL RURAL (SUR) - OPERACIÓN SUR MEDIA; ATENCIONES, PROCEDIMIENTOS Y TRASLADOS DE URGENCIA'	,	40	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						94	,	 'SERVICIO DE URGENCIAL RURAL (SUR) - OPERACIÓN SUR BAJA; ATENCIONES, PROCEDIMIENTOS Y TRASLADOS DE URGENCIA'	,	40	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						95	,	'FORTALECIMIENTO DE LAS CAPACIDADES DE GESTIÓN DE SALUD EN LA AP MUNICIPAL'	,	41	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						96	,	'INMUNIZACIÓN DE INFLUENZA Y NEUMOCOCO EN EL NIVEL PRIMARIO DE ATENCIÓN'	,	42	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						97	,	'CAPACITACIÓN Y PERFECIONAMIENTO'	,	43	,	1	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						98	,	'FONDO DE FÁRMACIA PARA ENFERMEDADES CRONICAS NO TRANSMISIBLES'	,	44	,	2	);
+INSERT INTO componente(id, nombre, id_programa, tipo_componente) VALUES (						99	,	'PROGRAMA ESPECIAL DE SALUD Y PUEBLOS INDIGENAS (PESPI)'	,	45	,	2	);
+
+
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	1	,	1	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	2	,	1	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	3	,	2	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	4	,	2	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	5	,	2	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	6	,	3	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	7	,	4	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	8	,	5	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	9	,	6	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	10	,	7	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	11	,	7	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	12	,	7	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	13	,	8	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	14	,	9	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	15	,	10	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	16	,	11	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	17	,	11	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	18	,	11	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	19	,	12	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	20	,	12	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	21	,	12	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	22	,	13	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	23	,	14	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	24	,	15	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	25	,	15	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	26	,	16	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	27	,	17	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	28	,	18	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	29	,	19	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	30	,	19	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	31	,	19	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	32	,	20	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	33	,	21	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	34	,	22	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	35	,	23	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	36	,	23	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	37	,	23	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	38	,	24	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	39	,	24	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	40	,	25	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	41	,	26	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	42	,	27	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	43	,	27	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	44	,	27	,	4	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	45	,	28	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	46	,	28	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	47	,	28	,	4	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	48	,	29	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	49	,	29	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	50	,	29	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	51	,	30	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	52	,	31	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	53	,	31	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	54	,	32	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	55	,	32	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	56	,	33	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	57	,	33	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	58	,	34	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	59	,	34	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	60	,	35	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	61	,	35	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	62	,	36	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	63	,	36	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	64	,	36	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	65	,	37	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	66	,	37	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	67	,	37	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	68	,	38	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	69	,	38	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	70	,	39	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	71	,	39	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	72	,	40	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	73	,	40	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	74	,	41	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	75	,	41	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	76	,	42	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	77	,	43	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	78	,	43	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	79	,	44	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	80	,	45	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	81	,	46	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	82	,	46	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	83	,	47	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	84	,	47	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	85	,	47	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	86	,	48	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	87	,	48	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	88	,	48	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	89	,	49	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	90	,	49	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	91	,	49	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	92	,	50	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	93	,	50	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	94	,	50	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	95	,	51	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	96	,	51	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	97	,	52	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	98	,	52	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	99	,	53	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	100	,	54	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	101	,	54	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	102	,	55	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	103	,	55	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	104	,	55	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	105	,	56	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	106	,	56	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	107	,	56	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	108	,	57	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	109	,	57	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	110	,	57	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	111	,	58	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	112	,	58	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	113	,	58	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	114	,	59	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	115	,	59	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	116	,	60	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	117	,	60	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	118	,	61	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	119	,	61	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	120	,	62	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	121	,	62	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	122	,	63	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	123	,	64	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	124	,	64	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	125	,	65	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	126	,	65	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	127	,	66	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	128	,	66	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	129	,	66	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	130	,	67	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	131	,	67	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	132	,	68	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	133	,	68	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	134	,	68	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	135	,	69	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	136	,	69	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	137	,	70	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	138	,	70	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	139	,	71	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	140	,	71	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	141	,	71	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	142	,	72	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	143	,	72	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	144	,	73	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	145	,	73	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	146	,	74	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	147	,	74	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	148	,	74	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	149	,	75	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	150	,	75	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	151	,	76	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	152	,	76	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	153	,	77	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	154	,	77	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	155	,	78	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	156	,	78	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	157	,	79	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	158	,	79	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	159	,	80	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	160	,	80	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	161	,	81	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	162	,	81	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	163	,	81	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	164	,	82	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	165	,	82	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	166	,	83	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	167	,	83	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	168	,	84	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	169	,	84	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	170	,	85	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	171	,	85	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	172	,	86	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	173	,	86	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	174	,	87	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	175	,	88	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	176	,	88	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	177	,	88	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	178	,	89	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	179	,	89	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	180	,	89	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	181	,	90	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	182	,	90	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	183	,	91	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	184	,	92	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	185	,	93	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	186	,	94	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	187	,	95	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	188	,	96	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	189	,	97	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	190	,	98	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	191	,	98	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	192	,	98	,	3	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	193	,	99	,	1	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	194	,	99	,	2	);
+INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo) VALUES (	195	,	99	,	3	);
+
+
+--26/08/2014
+
+
+
 
 
 

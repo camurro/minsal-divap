@@ -2,24 +2,25 @@ package minsal.divap.vo;
 
 import java.io.Serializable;
 
-public class DependenciaProgramaVO implements Serializable{
-	
+public class EstadoProgramaVO implements Serializable{
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8454380408179410086L;
+	private static final long serialVersionUID = 7758240192092767506L;
+
 	private Integer id;
 	private String nombre;
-	
-	public DependenciaProgramaVO(){
-		
+
+	public EstadoProgramaVO(){
+
 	}
-	
-	public DependenciaProgramaVO(Integer id, String nombre){
+
+	public EstadoProgramaVO(Integer id, String nombre){
 		this.id = id;
 		this.nombre = nombre;
 	}
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -38,7 +39,7 @@ public class DependenciaProgramaVO implements Serializable{
 
 	@Override
 	public String toString() {
-		return "DependenciaProgramaVO [id=" + id + ", nombre=" + nombre + "]";
+		return "EstadoProgramaVO [id=" + id + ", nombre=" + nombre + "]";
 	}
 
 }

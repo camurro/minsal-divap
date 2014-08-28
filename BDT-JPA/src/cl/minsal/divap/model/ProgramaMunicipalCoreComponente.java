@@ -31,12 +31,15 @@ public class ProgramaMunicipalCoreComponente implements Serializable {
     private Integer tarifa;
     @Column(name = "cantidad")
     private Integer cantidad;
+    @JoinColumn(name = "subtitulo", referencedColumnName = "id_tipo_subtitulo")
+    @ManyToOne
+    private TipoSubtitulo subtitulo;
     @JoinColumn(name = "programa_municipal_core", referencedColumnName = "id_programa_municipal_core", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private ProgramaMunicipalCore programaMunicipalCore;
     @JoinColumn(name = "componente", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
-    private Componente componente;
+    private Componente municipalCoreComponente;
 
     public ProgramaMunicipalCoreComponente() {
     }
@@ -72,6 +75,14 @@ public class ProgramaMunicipalCoreComponente implements Serializable {
     public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
     }
+    
+    public TipoSubtitulo getSubtitulo() {
+        return subtitulo;
+    }
+
+    public void setSubtitulo(TipoSubtitulo subtitulo) {
+        this.subtitulo = subtitulo;
+    }
 
     public ProgramaMunicipalCore getProgramaMunicipalCore() {
 		return programaMunicipalCore;
@@ -81,12 +92,12 @@ public class ProgramaMunicipalCoreComponente implements Serializable {
 		this.programaMunicipalCore = programaMunicipalCore;
 	}
 
-	public Componente getComponente() {
-		return componente;
+	public Componente getMunicipalCoreComponente() {
+		return municipalCoreComponente;
 	}
 
-	public void setComponente(Componente componente) {
-		this.componente = componente;
+	public void setMunicipalCoreComponente(Componente municipalCoreComponente) {
+		this.municipalCoreComponente = municipalCoreComponente;
 	}
 
 	@Override

@@ -15,7 +15,6 @@ import minsal.divap.service.task.response.content.Content;
 import minsal.divap.service.task.response.task.Task;
 
 import org.apache.http.HttpException;
-import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;

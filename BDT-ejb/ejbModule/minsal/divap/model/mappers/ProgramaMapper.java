@@ -3,11 +3,11 @@ package minsal.divap.model.mappers;
 import java.util.ArrayList;
 import java.util.List;
 
-import minsal.divap.enums.EstadosProgramas;
+import minsal.divap.enums.Subtitulo;
 import minsal.divap.vo.ComponentesVO;
-import minsal.divap.vo.DependenciaProgramaVO;
+import minsal.divap.vo.EstadoProgramaVO;
 import minsal.divap.vo.ProgramaVO;
-import minsal.divap.vo.TipoProgramaVO;
+import minsal.divap.vo.SubtituloVO;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.ProgramaAno;
@@ -25,21 +25,21 @@ public class ProgramaMapper implements Mapper<ProgramaAno>{
 		if (programaAno == null)
 			return null;
 		
-		ProgramaVO programaVO = new ProgramaVO();
-		programaVO.setId(programaAno.getIdProgramaAno());
-		
-		
+		ProgramaVO programaVO = new ProgramaVO();		
+		programaVO.setIdProgramaAno(programaAno.getIdProgramaAno());
+		programaVO.setDependenciaMunicipal(false);
+		programaVO.setDependenciaServicio(false);
+		if (programaAno.getEstado() != null){
+			programaVO.setEstado(new EstadoProgramaVO(programaAno.getEstado().getIdEstadoPrograma(), programaAno.getEstado().getNombreEstado()));
+		}else{
+			programaVO.setEstado(new EstadoProgramaVO());
+		}
 		if(programaAno.getPrograma() != null){
 			programaVO.setNombre(programaAno.getPrograma().getNombre());
+			programaVO.setId(programaAno.getPrograma().getId());
 			programaVO.setDescripcion(programaAno.getPrograma().getDescripcion());
 			if(programaAno.getPrograma().getUsuario() != null){
 				programaVO.setUsername(programaAno.getPrograma().getUsuario().getUsername());
-			}
-			if(programaAno.getPrograma().getIdTipoPrograma() != null){
-				programaVO.setTipoPrograma(new TipoProgramaVO(programaAno.getPrograma().getIdTipoPrograma().getId(), programaAno.getPrograma().getIdTipoPrograma().getNombre()));
-			}
-			if(programaAno.getPrograma().getDependencia() != null){
-				programaVO.setDependenciaPrograma(new DependenciaProgramaVO(programaAno.getPrograma().getDependencia().getIdDependenciaPrograma(), programaAno.getPrograma().getDependencia().getNombre()));
 			}
 			if(programaAno.getPrograma().getComponentes() != null && programaAno.getPrograma().getComponentes().size() >0){
 				List<ComponentesVO> componentesVO = new ArrayList<ComponentesVO>();
@@ -52,6 +52,20 @@ public class ProgramaMapper implements Mapper<ProgramaAno>{
 			if (programaAno.getEstadoFlujoCaja()!=null)
 			{
 			    programaVO.setEstadoFlujocaja(programaAno.getEstadoFlujoCaja());
+			}
+		}
+		System.out.println("programaVO.getComponentes().size()==>"+((programaVO.getComponentes() == null) ? 0 : programaVO.getComponentes().size()));
+		if(programaVO.getComponentes() != null && programaVO.getComponentes().size() > 0){
+			for(ComponentesVO componenteVO : programaVO.getComponentes()){
+				System.out.println("Antes de determinar si es dependiente municipal o servicio");
+				if(componenteVO.getSubtitulos().contains(new SubtituloVO(Subtitulo.SUBTITULO24.getId()))){
+					programaVO.setDependenciaMunicipal(true);
+					System.out.println("Dependencia municipal");
+				}
+				if((componenteVO.getSubtitulos().contains(new SubtituloVO(Subtitulo.SUBTITULO21.getId()))) || (componenteVO.getSubtitulos().contains(new SubtituloVO(Subtitulo.SUBTITULO22.getId()))) || (componenteVO.getSubtitulos().contains(new SubtituloVO(Subtitulo.SUBTITULO29.getId())))){
+					programaVO.setDependenciaServicio(true);
+					System.out.println("Dependencia servicio");
+				}
 			}
 		}
 		return programaVO;
