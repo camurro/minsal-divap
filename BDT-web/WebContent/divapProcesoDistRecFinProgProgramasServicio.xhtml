@@ -11,7 +11,7 @@
 				<p:panel id="Panel">
 					<h2>Listado de Programas 2014 | Perfil Administrador</h2>
 					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoDistRecFinProgProgramasController.programas}"
-						liveResize="true" var="programa" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+						liveResize="true" var="programa" rows="10" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información."
 						styleClass="dataTable">
 						<p:columnGroup type="header">
 							<!--  -->
@@ -25,42 +25,23 @@
 							</p:row>
 						</p:columnGroup>
 
-						<p:column style="text-align:left;">
+						<p:column style="text-align: left; #{(programa.estado.id == '3')?'background-color: #c0c0c0;':''} ">
 							<span class="textoAjustado">#{programa.nombre}</span>
 						</p:column>
-						<p:column style="text-align:left;">
+						<p:column style="text-align:left;  #{(programa.estado.id == '3')?'background-color: #c0c0c0;':''} ">
 							<span class="textoAjustado">#{programa.descripcion}</span>
 						</p:column>
-						<!-- <p:column>
-							<h:graphicImage
-								value="resources/minsal/images/#{_programas.estado}.png"
-								styleClass="divapIcons" />
-						</p:column>-->
-						<!-- 
-						<p:column>
-							<h:outputText value="#{_programas.progreso}">
-								<f:convertNumber type="percent" />
-							</h:outputText>
-						</p:column>
-						 -->
-						<p:column>
-							<h:commandLink action="#{procesoDistRecFinProgProgramasController.enviar}">
+						<p:column  style=" #{(programa.estado.id == '3')?'background-color: #c0c0c0;':''} ">
+							<h:commandLink action="#{procesoDistRecFinProgProgramasController.enviar}" rendered="#{programa.estado.id == '1'}">
 								<h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons" />
 								<f:setPropertyActionListener
 								target="#{procesoDistRecFinProgProgramasController.programaSeleccionado}"
-								value="#{programa.id}" />
+								value="#{programa.idProgramaAno}" />
 								<f:setPropertyActionListener
 								target="#{procesoDistRecFinProgProgramasController.target}"
 								value="bandejaTareas.jsf" />
 							</h:commandLink>
 						</p:column>
-						<!-- 	<p:column>
-							<h:commandLink
-								action="divapProcesoDistRecFinProgSeguimientoDocumentacion?faces-redirect=true">
-								<h:graphicImage value="resources/minsal/images/locked.png"
-									styleClass="divapIcons" />
-							</h:commandLink>
-						</p:column>-->
 					</p:dataTable>
 
 				</p:panel>

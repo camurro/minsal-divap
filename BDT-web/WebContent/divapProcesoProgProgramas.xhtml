@@ -10,18 +10,18 @@
 				</h1>
 				<p:panel id="Panel">
 					<h2>Listado de Programas 2014 para el usuario admin2</h2>
-					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoEstimacionFlujoCajaSeleccionarLineaController.listadoProgramasServicio}"
-						liveResize="true" var="_programas" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
-						styleClass="dataTable">
+					<p:dataTable id="tablaMisTareas" resizableColumns="true"
+						value="#{procesoEstimacionFlujoCajaSeleccionarLineaController.listadoProgramasServicio}"
+						liveResize="true" var="_programas" rows="10" paginator="false"
+						paginatorPosition="bottom"
+						emptyMessage="No se encontro información." styleClass="dataTable">
 						<p:columnGroup type="header">
 							<!--  -->
 							<p:row>
 								<p:column headerText="Programa" />
 								<p:column headerText="Descripción" />
-								<!-- <p:column headerText="Estado" width="60" /> -->
-
 								<p:column headerText="Iniciar" width="60" />
-								<!-- <p:column headerText="Terminar" width="60" /> -->
+								<p:column headerText="Modificar" width="60" />
 							</p:row>
 						</p:columnGroup>
 
@@ -32,9 +32,27 @@
 							<span class="textoAjustado">#{_programas.descripcion}</span>
 						</p:column>
 						<p:column>
-						<h:commandLink action="#{procesoEstimacionFlujoCajaSeleccionarLineaController.continuarProceso(_programas.id)}" >
-							<h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons"  />
-						</h:commandLink>
+							<h:commandLink rendered="${_programas.estadoFlujoCaja eq 1}"
+								action="#{procesoEstimacionFlujoCajaSeleccionarLineaController.continuarProceso(_programas.id)}">
+								<h:graphicImage value="resources/minsal/images/play.png"
+									styleClass="divapIcons" />
+							</h:commandLink>
+							<!-- Iniciados. No presentan boton -->
+							<!-- Finalizados. Fondo Color Gris. -->
+							<h:commandLink disabled="true"
+								rendered="${_programas.estadoFlujoCaja eq 3}">
+								<h:graphicImage value="resources/minsal/images/play_locked.png"
+									styleClass="divapIcons" />
+							</h:commandLink>
+						</p:column>
+
+						<p:column>
+							<!-- Modificación del programa año vigente -->
+							<h:link
+								outcome="divapProcesoProgMonitoreo?faces-redirect=true programa=#{_programas.id}">
+								<h:graphicImage value="resources/minsal/images/play.png"
+									styleClass="divapIcons" />
+							</h:link>
 						</p:column>
 					</p:dataTable>
 

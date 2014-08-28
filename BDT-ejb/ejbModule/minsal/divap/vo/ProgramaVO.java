@@ -3,6 +3,8 @@ package minsal.divap.vo;
 import java.io.Serializable;
 import java.util.List;
 
+import cl.minsal.divap.model.EstadoPrograma;
+
 
 public class ProgramaVO implements Serializable{
 
@@ -11,23 +13,34 @@ public class ProgramaVO implements Serializable{
 	 */
 	private static final long serialVersionUID = 5435842805479614786L;
 	
-	private int id;
+	private Integer id;
+	private Integer idProgramaAno;
 	private String nombre;
 	private int cantidad_cuotas;
-	private TipoProgramaVO tipoPrograma;
-	private DependenciaProgramaVO dependenciaPrograma;
 	private String username;
 	private String descripcion;
+	private EstadoProgramaVO estado;
+	private Boolean dependenciaMunicipal;
+	private Boolean dependenciaServicio;
 	private List<ComponentesVO> componentes;
+	private EstadoPrograma estadoFlujocaja;
 	
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 	
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	
+	public Integer getIdProgramaAno() {
+		return idProgramaAno;
+	}
+
+	public void setIdProgramaAno(Integer idProgramaAno) {
+		this.idProgramaAno = idProgramaAno;
+	}
+
 	public String getNombre() {
 		return nombre;
 	}
@@ -44,22 +57,22 @@ public class ProgramaVO implements Serializable{
 		this.cantidad_cuotas = cantidad_cuotas;
 	}
 	
-	public TipoProgramaVO getTipoPrograma() {
-		return tipoPrograma;
-	}
-	
-	public void setTipoPrograma(TipoProgramaVO tipoPrograma) {
-		this.tipoPrograma = tipoPrograma;
-	}
-	
-	public DependenciaProgramaVO getDependenciaPrograma() {
-		return dependenciaPrograma;
+	public Boolean getDependenciaMunicipal() {
+		return dependenciaMunicipal;
 	}
 
-	public void setDependenciaPrograma(DependenciaProgramaVO dependenciaPrograma) {
-		this.dependenciaPrograma = dependenciaPrograma;
+	public void setDependenciaMunicipal(Boolean dependenciaMunicipal) {
+		this.dependenciaMunicipal = dependenciaMunicipal;
 	}
 
+	public Boolean getDependenciaServicio() {
+		return dependenciaServicio;
+	}
+
+	public void setDependenciaServicio(Boolean dependenciaServicio) {
+		this.dependenciaServicio = dependenciaServicio;
+	}
+	
 	public String getUsername() {
 		return username;
 	}
@@ -83,5 +96,31 @@ public class ProgramaVO implements Serializable{
 	public void setComponentes(List<ComponentesVO> componentes) {
 		this.componentes = componentes;
 	}
-	
+
+	public EstadoPrograma getEstadoFlujocaja() {
+		return estadoFlujocaja;
+	}
+
+	public void setEstadoFlujocaja(EstadoPrograma estadoFlujocaja) {
+		this.estadoFlujocaja = estadoFlujocaja;
+	}
+
+	public EstadoProgramaVO getEstado() {
+		return estado;
+	}
+
+	public void setEstado(EstadoProgramaVO estado) {
+		this.estado = estado;
+	}
+
+	@Override
+	public String toString() {
+		return "ProgramaVO [id=" + id + ", idProgramaAno=" + idProgramaAno
+				+ ", nombre=" + nombre + ", cantidad_cuotas=" + cantidad_cuotas
+				+ ", username=" + username + ", descripcion=" + descripcion
+				+ ", estado=" + estado + ", dependenciaMunicipal="
+				+ dependenciaMunicipal + ", dependenciaServicio="
+				+ dependenciaServicio + ", componentes=" + componentes + "]";
+	}
+
 }

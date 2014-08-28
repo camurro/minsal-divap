@@ -31,8 +31,8 @@ public class MetadataCore implements Serializable {
 
 	//bi-directional many-to-one association to TipoPrograma
 	@ManyToOne
-	@JoinColumn(name="id_tipo_programa")
-	private TipoPrograma tipoPrograma;
+	@JoinColumn(name = "id_tipo_programa", referencedColumnName = "id")
+	private TipoComponente idTipoPrograma;
 
 	public MetadataCore() {
 	}
@@ -69,12 +69,12 @@ public class MetadataCore implements Serializable {
 		this.programa = programa;
 	}
 
-	public TipoPrograma getTipoPrograma() {
-		return this.tipoPrograma;
+	public TipoComponente getIdTipoPrograma() {
+		return idTipoPrograma;
 	}
 
-	public void setTipoPrograma(TipoPrograma tipoPrograma) {
-		this.tipoPrograma = tipoPrograma;
+	public void setIdTipoPrograma(TipoComponente idTipoPrograma) {
+		this.idTipoPrograma = idTipoPrograma;
 	}
 
 }

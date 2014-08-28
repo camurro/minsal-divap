@@ -32,12 +32,15 @@ public class ProgramaServicioCoreComponente implements Serializable {
     private Integer tarifa;
     @Column(name = "cantidad")
     private Integer cantidad;
+    @JoinColumn(name = "subtitulo", referencedColumnName = "id_tipo_subtitulo")
+    @ManyToOne
+    private TipoSubtitulo subtitulo;
     @JoinColumn(name = "programa_servicio_core", referencedColumnName = "id_programa_servicio_core", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private ProgramaServicioCore programaServicioCore1;
     @JoinColumn(name = "componente", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
-    private Componente componente1;
+    private Componente servicioCoreComponente;
 
     public ProgramaServicioCoreComponente() {
     }
@@ -74,7 +77,15 @@ public class ProgramaServicioCoreComponente implements Serializable {
         this.cantidad = cantidad;
     }
 
-    public ProgramaServicioCore getProgramaServicioCore1() {
+    public TipoSubtitulo getSubtitulo() {
+		return subtitulo;
+	}
+
+	public void setSubtitulo(TipoSubtitulo subtitulo) {
+		this.subtitulo = subtitulo;
+	}
+
+	public ProgramaServicioCore getProgramaServicioCore1() {
         return programaServicioCore1;
     }
 
@@ -82,15 +93,15 @@ public class ProgramaServicioCoreComponente implements Serializable {
         this.programaServicioCore1 = programaServicioCore1;
     }
 
-    public Componente getComponente1() {
-        return componente1;
-    }
+    public Componente getServicioCoreComponente() {
+		return servicioCoreComponente;
+	}
 
-    public void setComponente1(Componente componente1) {
-        this.componente1 = componente1;
-    }
+	public void setServicioCoreComponente(Componente servicioCoreComponente) {
+		this.servicioCoreComponente = servicioCoreComponente;
+	}
 
-    @Override
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (programaServicioCoreComponentePK != null ? programaServicioCoreComponentePK.hashCode() : 0);

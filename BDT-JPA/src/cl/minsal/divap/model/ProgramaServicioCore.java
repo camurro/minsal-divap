@@ -35,6 +35,9 @@ public class ProgramaServicioCore implements Serializable {
 	@Column(name="id_programa_servicio_core", unique=true, nullable=false)
 	@GeneratedValue
 	private Integer idProgramaServicioCore;
+	@JoinColumn(name = "servicio", referencedColumnName = "id")
+	@ManyToOne(optional = false)
+	private ServicioSalud servicio;
 	@JoinColumn(name = "programa_ano", referencedColumnName = "id_programa_ano")
 	@ManyToOne(optional = false)
 	private ProgramaAno programaAnoServicio;
@@ -86,7 +89,15 @@ public class ProgramaServicioCore implements Serializable {
 	public void setComuna(Comuna comuna) {
 		this.comuna = comuna;
 	}
-	
+
+	public ServicioSalud getServicio() {
+		return servicio;
+	}
+
+	public void setServicio(ServicioSalud servicio) {
+		this.servicio = servicio;
+	}
+
 	@XmlTransient
 	public Set<ProgramaServicioCoreComponente> getProgramaServicioCoreComponentes() {
 		return programaServicioCoreComponentes;
@@ -109,11 +120,11 @@ public class ProgramaServicioCore implements Serializable {
 		if (!(object instanceof ProgramaServicioCore)) {
 			return false;
 		}
-	ProgramaServicioCore other = (ProgramaServicioCore) object;
-	if ((this.idProgramaServicioCore == null && other.idProgramaServicioCore != null) || (this.idProgramaServicioCore != null && !this.idProgramaServicioCore.equals(other.idProgramaServicioCore))) {
-		return false;
-	}
-	return true;
+		ProgramaServicioCore other = (ProgramaServicioCore) object;
+		if ((this.idProgramaServicioCore == null && other.idProgramaServicioCore != null) || (this.idProgramaServicioCore != null && !this.idProgramaServicioCore.equals(other.idProgramaServicioCore))) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override

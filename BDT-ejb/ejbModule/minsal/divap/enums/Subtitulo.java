@@ -1,22 +1,23 @@
 package minsal.divap.enums;
 
 public enum Subtitulo {
-	SUBTITULO24(24), SUBTITULO21(21), SUBTITULO22(22), SUBTITULO29(29);
-	
-private int id;
-	
-	private Subtitulo(int id) { this.id = id; }
+	SUBTITULO24(3,"SUbtítulo 24"), SUBTITULO21(1, "SUbtítulo 21"), SUBTITULO22(2,"SUbtítulo 22"), SUBTITULO29(4,"SUbtítulo 29");
+	private Integer id;
 
-	public int getId()
+	private Subtitulo(Integer id, String name) {
+		this.id = id; 
+	}
+
+	public Integer getId()
 	{
 		return this.id;
 	}
-	
+
 	public static Subtitulo getById(int id){
-        for (Subtitulo subtitulo : Subtitulo.values()) {
-            if (subtitulo.id == id)
-                return subtitulo;
-        }
-        throw new IllegalArgumentException("id de documento no válido");
-    }
+		for (Subtitulo subtitulo : Subtitulo.values()) {
+			if (subtitulo.id == id)
+				return subtitulo;
+		}
+		throw new IllegalArgumentException("id de documento no válido");
+	}
 }

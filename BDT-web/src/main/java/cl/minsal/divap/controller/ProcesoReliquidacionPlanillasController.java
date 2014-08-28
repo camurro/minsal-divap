@@ -11,6 +11,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import minsal.divap.enums.TiposPrograma;
 import minsal.divap.vo.ProgramaVO;
 
 import org.apache.log4j.Logger;
@@ -68,7 +69,15 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("usuario", getSessionBean().getUsername());
-		parameters.put("sufijoTarea_", getProgramaSeleccionado().getTipoPrograma().getNombre());
+		String sufijoTarea = TiposPrograma.ProgramaPxQ.getName();
+		if(getProgramaSeleccionado().getComponentes() != null && getProgramaSeleccionado().getComponentes().size() > 0){
+			if(getProgramaSeleccionado().getComponentes().size() == 1){
+				if((getProgramaSeleccionado().getComponentes().get(0).getTipoComponente()) != null && (getProgramaSeleccionado().getComponentes().get(0).getTipoComponente().getId().equals(TiposPrograma.ProgramaHistorico.getId()) ) ){
+					sufijoTarea = TiposPrograma.ProgramaHistorico.getName();
+				}
+			}
+		}
+		parameters.put("sufijoTarea_", sufijoTarea);
 		return parameters;
 	}
 

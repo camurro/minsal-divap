@@ -1,3 +1,4 @@
+
 package minsal.divap.dao;
 
 import java.util.List;
@@ -59,5 +60,22 @@ public class ProgramasDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	
+	
+	public Programa getProgramaByID(Integer idPrograma){
+		try {
+			TypedQuery<Programa> query = this.em.createNamedQuery("Programa.findById", Programa.class);
+			query.setParameter("id", idPrograma);
+			if (query.getSingleResult()!=null)
+			return query.getSingleResult(); 
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return null;
+	}
+	
 
 }
+

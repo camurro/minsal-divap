@@ -40,6 +40,9 @@ public class EstadoPrograma implements Serializable {
     private String nombreEstado;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "estado")
     private Set<ProgramaAno> programasAnos;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "estadoFlujoCaja")
+    private Set<ProgramaAno> programasAnosFlujoCaja;
 
     public EstadoPrograma() {
     }

@@ -72,84 +72,84 @@ public class OTRevisarAntecedentesVO
 	{
 		List<OTRevisarAntecedentesVO> lista = new ArrayList<OTRevisarAntecedentesVO>();
 		
-		if(programa.getIdTipoPrograma().getId() == 1 )//SERVICIO
-		{
-//			for (ProgramaServicioCore servicioCore : programa.getProgramaServicioCores()) {
-//				
-//				OTRevisarAntecedentesVO otRevisarAntecedentesVO = new OTRevisarAntecedentesVO();
-//				//SERVICIO SALUD
-////				if(servicioCore.getServicioSalud() != null)
-////				{
-////					otRevisarAntecedentesVO.setServicio(servicioCore.getServicioSalud().getNombre());
-////					otRevisarAntecedentesVO.setIdServicio(servicioCore.getServicioSalud().getId());
-////				}
+//		if(programa.getDe.getId() == 1 )//SERVICIO
+//		{
+////			for (ProgramaServicioCore servicioCore : programa.getProgramaServicioCores()) {
 ////				
-//				//COMUNA
-//				/*
-//				if(servicioCore.getComuna() != null)
-//				{
-//					otRevisarAntecedentesVO.setEstablecimiento(servicioCore.getComuna().getNombre());
-//					otRevisarAntecedentesVO.setIdEstablecimiento(servicioCore.getComuna().getId());
-//				}
-//				*/
-//				otRevisarAntecedentesVO.setComuna("COMUNA PRUEBA SERVICIO");
-//				otRevisarAntecedentesVO.setIdComuna(1);
-//				
-//				//ESTABLECIMIENTO
-//				/*
-//				if(servicioCore.getEstablecimiento() != null)
-//				{
-//					otRevisarAntecedentesVO.setEstablecimiento(servicioCore.getEstablecimiento().getNombre());
-//					otRevisarAntecedentesVO.setIdEstablecimiento(servicioCore.getEstablecimiento().getId());
-//				}
-//				*/
-//				otRevisarAntecedentesVO.setEstablecimiento("ESTABLECIMIENTO PRUEBA SERVICIO");
-//				otRevisarAntecedentesVO.setIdEstablecimiento(1);
-//				
-//				lista.add(otRevisarAntecedentesVO);
-//				
-//			}			
-		}
-		else if(programa.getIdTipoPrograma().getId() == 1 )//MUNICIPAL
-		{
-//			for (ProgramaMunicipalCore municipalCore : programa.getProgramaMunicipalCores()) {
-//				
-//				OTRevisarAntecedentesVO otRevisarAntecedentesVO = new OTRevisarAntecedentesVO();
-//				//SERVICIO SALUD
-////				if(municipalCore.getServicioSalud() != null)
+////				OTRevisarAntecedentesVO otRevisarAntecedentesVO = new OTRevisarAntecedentesVO();
+////				//SERVICIO SALUD
+//////				if(servicioCore.getServicioSalud() != null)
+//////				{
+//////					otRevisarAntecedentesVO.setServicio(servicioCore.getServicioSalud().getNombre());
+//////					otRevisarAntecedentesVO.setIdServicio(servicioCore.getServicioSalud().getId());
+//////				}
+//////				
+////				//COMUNA
+////				/*
+////				if(servicioCore.getComuna() != null)
 ////				{
-////					otRevisarAntecedentesVO.setEstablecimiento(municipalCore.getServicioSalud().getNombre());
-////					otRevisarAntecedentesVO.setIdEstablecimiento(municipalCore.getServicioSalud().getId());
+////					otRevisarAntecedentesVO.setEstablecimiento(servicioCore.getComuna().getNombre());
+////					otRevisarAntecedentesVO.setIdEstablecimiento(servicioCore.getComuna().getId());
 ////				}
-//				otRevisarAntecedentesVO.setServicio("SERVICIO PRUEBA MUNICIPAL");
-//				otRevisarAntecedentesVO.setIdServicio(1);
-//				
-//				//COMUNA
-//				/*
-//				if(servicioCore.getComuna() != null)
-//				{
-//					otRevisarAntecedentesVO.setEstablecimiento(servicioCore.getComuna().getNombre());
-//					otRevisarAntecedentesVO.setIdEstablecimiento(servicioCore.getComuna().getId());
-//				}
-//				*/
-//				otRevisarAntecedentesVO.setComuna("COMUNA PRUEBA MUNICIPAL");
-//				otRevisarAntecedentesVO.setIdComuna(1);
-//				
-//				//ESTABLECIMIENTO
-//				/*
-//				if(servicioCore.getEstablecimiento() != null)
-//				{
-//					otRevisarAntecedentesVO.setEstablecimiento(servicioCore.getEstablecimiento().getNombre());
-//					otRevisarAntecedentesVO.setIdEstablecimiento(servicioCore.getEstablecimiento().getId());
-//				}
-//				*/
-//				otRevisarAntecedentesVO.setEstablecimiento("ESTABLECIMIENTO PRUEBA MUNICIPAL");
-//				otRevisarAntecedentesVO.setIdEstablecimiento(1);
-//				
-//				lista.add(otRevisarAntecedentesVO);
-//				
-//			}			
-		}
+////				*/
+////				otRevisarAntecedentesVO.setComuna("COMUNA PRUEBA SERVICIO");
+////				otRevisarAntecedentesVO.setIdComuna(1);
+////				
+////				//ESTABLECIMIENTO
+////				/*
+////				if(servicioCore.getEstablecimiento() != null)
+////				{
+////					otRevisarAntecedentesVO.setEstablecimiento(servicioCore.getEstablecimiento().getNombre());
+////					otRevisarAntecedentesVO.setIdEstablecimiento(servicioCore.getEstablecimiento().getId());
+////				}
+////				*/
+////				otRevisarAntecedentesVO.setEstablecimiento("ESTABLECIMIENTO PRUEBA SERVICIO");
+////				otRevisarAntecedentesVO.setIdEstablecimiento(1);
+////				
+////				lista.add(otRevisarAntecedentesVO);
+////				
+////			}			
+//		}
+//		else if(programa.getIdTipoPrograma().getId() == 1 )//MUNICIPAL
+//		{
+////			for (ProgramaMunicipalCore municipalCore : programa.getProgramaMunicipalCores()) {
+////				
+////				OTRevisarAntecedentesVO otRevisarAntecedentesVO = new OTRevisarAntecedentesVO();
+////				//SERVICIO SALUD
+//////				if(municipalCore.getServicioSalud() != null)
+//////				{
+//////					otRevisarAntecedentesVO.setEstablecimiento(municipalCore.getServicioSalud().getNombre());
+//////					otRevisarAntecedentesVO.setIdEstablecimiento(municipalCore.getServicioSalud().getId());
+//////				}
+////				otRevisarAntecedentesVO.setServicio("SERVICIO PRUEBA MUNICIPAL");
+////				otRevisarAntecedentesVO.setIdServicio(1);
+////				
+////				//COMUNA
+////				/*
+////				if(servicioCore.getComuna() != null)
+////				{
+////					otRevisarAntecedentesVO.setEstablecimiento(servicioCore.getComuna().getNombre());
+////					otRevisarAntecedentesVO.setIdEstablecimiento(servicioCore.getComuna().getId());
+////				}
+////				*/
+////				otRevisarAntecedentesVO.setComuna("COMUNA PRUEBA MUNICIPAL");
+////				otRevisarAntecedentesVO.setIdComuna(1);
+////				
+////				//ESTABLECIMIENTO
+////				/*
+////				if(servicioCore.getEstablecimiento() != null)
+////				{
+////					otRevisarAntecedentesVO.setEstablecimiento(servicioCore.getEstablecimiento().getNombre());
+////					otRevisarAntecedentesVO.setIdEstablecimiento(servicioCore.getEstablecimiento().getId());
+////				}
+////				*/
+////				otRevisarAntecedentesVO.setEstablecimiento("ESTABLECIMIENTO PRUEBA MUNICIPAL");
+////				otRevisarAntecedentesVO.setIdEstablecimiento(1);
+////				
+////				lista.add(otRevisarAntecedentesVO);
+////				
+////			}			
+//		}
 		
 		return lista;
 		
@@ -180,52 +180,52 @@ public class OTRevisarAntecedentesVO
 
 			for (Remesa remesa : listaRemesa) {
 				
-					if(programa.getIdTipoPrograma().getId() == 1)//TIPO SERVICIO
-					{
-						
-						
-						cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
-						/*
-						if(remesa.getServicioSalud()!=null)
-						{
-							if(idServicioSalud == remesa.getServicioSalud().getId())
-							{
-								if(remesa.getEstablecimiento()!=null)
-								{
-									if(idEstablecimiento== remesa.getEstablecimiento().getId())
-									{
-										if(anio== remesa.getAnio())
-										{
-											cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
-										}
-									}
-								}
-							}
-						}
-						*/
-					}
-					else if(programa.getIdTipoPrograma().getId() == 2)//TIPO MUNCIPAL
-					{
-						cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
-						/*
-						if(remesa.getServicioSalud()!=null)
-						{
-							if(idServicioSalud == remesa.getServicioSalud().getId())
-							{
-								if(remesa.getComuna()!=null)
-								{
-									if(idComuna== remesa.getComuna().getId())
-									{
-										if(anio== remesa.getAnio())
-										{
-											cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
-										}
-									}
-								}
-							}
-						}
-						*/
-					}
+//					if(programa.getIdTipoPrograma().getId() == 1)//TIPO SERVICIO
+//					{
+//						
+//						
+//						cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
+//						/*
+//						if(remesa.getServicioSalud()!=null)
+//						{
+//							if(idServicioSalud == remesa.getServicioSalud().getId())
+//							{
+//								if(remesa.getEstablecimiento()!=null)
+//								{
+//									if(idEstablecimiento== remesa.getEstablecimiento().getId())
+//									{
+//										if(anio== remesa.getAnio())
+//										{
+//											cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
+//										}
+//									}
+//								}
+//							}
+//						}
+//						*/
+//					}
+//					else if(programa.getIdTipoPrograma().getId() == 2)//TIPO MUNCIPAL
+//					{
+//						cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
+//						/*
+//						if(remesa.getServicioSalud()!=null)
+//						{
+//							if(idServicioSalud == remesa.getServicioSalud().getId())
+//							{
+//								if(remesa.getComuna()!=null)
+//								{
+//									if(idComuna== remesa.getComuna().getId())
+//									{
+//										if(anio== remesa.getAnio())
+//										{
+//											cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
+//										}
+//									}
+//								}
+//							}
+//						}
+//						*/
+//					}
 			}
 		}
 		

@@ -9,9 +9,17 @@ public class ProcesosProgramasPojo {
 	private String estado;
 	private String url;
 	private Integer id;
+	private Integer estadoFlujoCaja;
 	
 	
-	
+	public Integer getEstadoFlujoCaja() {
+		return estadoFlujoCaja;
+	}
+
+	public void setEstadoFlujoCaja(Integer estadoFlujoCaja) {
+		this.estadoFlujoCaja = estadoFlujoCaja;
+	}
+
 	public String getPrograma() {
 		return programa;
 	}
