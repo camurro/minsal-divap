@@ -1,10 +1,20 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-
-import javax.persistence.*;
-
+import java.util.Collection;
 import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlTransient;
 
 
 /**
@@ -70,31 +80,18 @@ public class Programa implements Serializable {
 	//REFERENCIA AGREGADO POR LSUAREZ 
 	//SE GUARDA LOS REMESAS QUE SE HICIERON DICHO PROGRAMA
 	//bi-directional many-to-one association to remesas
-	@OneToMany(mappedBy="programa")
-	private List<Remesa> remesas;
-	public List<Remesa> getRemesas() {
-		return remesas;
-	}
-
-	public void setRemesas(List<Remesa> remesas) {
-		this.remesas = remesas;
-	}
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idPrograma")
+	private Collection<Remesa> remesaCollection;
 	
-	
-	public Remesa addRemesa(Remesa remesa) {
-		getRemesas().add(remesa);
-		remesa.setPrograma(this);
+	@XmlTransient
+	   public Collection<Remesa> getRemesaCollection() {
+	       return remesaCollection;
+	   }
 
-		return remesa;
-	}
+	   public void setRemesaCollection(Collection<Remesa> remesaCollection) {
+	       this.remesaCollection = remesaCollection;
+	   }
 
-	public Remesa removeRemesa(Remesa remesa) {
-		getRemesas().remove(remesa);
-		remesa.setPrograma(null);
-
-		return remesa;
-	}
-	
 
 	public Programa() {
 	}

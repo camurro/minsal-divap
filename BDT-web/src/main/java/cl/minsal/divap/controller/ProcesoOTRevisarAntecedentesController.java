@@ -18,19 +18,18 @@ import javax.inject.Named;
 
 import minsal.divap.service.OTService;
 import minsal.divap.service.ProgramasService;
-import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
+import minsal.divap.service.RemesaService;
+import minsal.divap.util.Util;
 import minsal.divap.vo.ColumnaVO;
 import minsal.divap.vo.OTRevisarAntecedentesGlobalVO;
 import minsal.divap.vo.OTRevisarAntecedentesVO;
 
 import org.apache.log4j.Logger;
-import org.primefaces.component.api.UIColumn;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.CellEditEvent;
 
 import cl.minsal.divap.model.Programa;
-import cl.minsal.divap.pojo.ComponentePojo;
-import cl.minsal.divap.pojo.ProcesosProgramasPojo;
+import cl.minsal.divap.model.Remesa;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 @Named("procesoOTRevisarAntecedentesController")
@@ -41,13 +40,32 @@ implements Serializable {
 	@Inject private transient Logger log;
 	
 	@EJB
-	private OTService tratamientoOrdenService;
+	private OTService otService;
 	@EJB
 	private ProgramasService programasService;
 	
-	private List<AsignacionDistribucionPerCapitaVO> antecendentesComunaCalculado;
+	@EJB
+	private RemesaService remesaService;
 	
-	
+	private Integer idMesActual;
+	private Integer idMesSiguiente;
+
+	public Integer getIdMesActual() {
+		return idMesActual;
+	}
+
+	public void setIdMesActual(Integer idMesActual) {
+		this.idMesActual = idMesActual;
+	}
+
+	public Integer getIdMesSiguiente() {
+		return idMesSiguiente;
+	}
+
+	public void setIdMesSiguiente(Integer idMesSiguiente) {
+		this.idMesSiguiente = idMesSiguiente;
+	}
+
 	@PostConstruct
 	public void init() {
 		
@@ -94,18 +112,17 @@ implements Serializable {
 	}
 
 	private void generarColumnasDinamicas() {
-		// TODO Auto-generated method stub
+		
+		idMesActual = Util.obtenerMes(new Date());
+		idMesSiguiente = idMesActual+1;
+		String mesActualNombre = Util.obtenerNombreMes(idMesActual);
+		String mesSiguienteNombre = Util.obtenerNombreMes(idMesSiguiente);
+		
 		columns = new ArrayList<ColumnaVO>();
-		ColumnaVO  col = new ColumnaVO("Enero", "Valor", "enero");
+		ColumnaVO  col = new ColumnaVO(mesActualNombre, "Valor", mesActualNombre.toLowerCase());
 		columns.add(col);
-		col = new ColumnaVO("Febrero", "Valor","febrero");
+		col = new ColumnaVO(mesSiguienteNombre, "Valor",mesSiguienteNombre.toLowerCase());
 		columns.add(col);
-//		col = new ColumnaVO("Octubre", "Valor","octubre");
-//		columns.add(col);
-//		col = new ColumnaVO("Noviembre", "Valor","noviembre");
-//		columns.add(col);
-//		col = new ColumnaVO("Diciembre", "Valor","diciembre");
-//		columns.add(col);
 	}
 	
 	//LISTAS DE DATOS SELECCIONADOS 
@@ -162,7 +179,7 @@ implements Serializable {
 		 DataTable o=(DataTable) event.getSource();
 		
 		 OTRevisarAntecedentesVO info=(OTRevisarAntecedentesVO)o.getRowData();
-		 
+		 info.calcularDiferencia(info);
 		 
 	        Object oldValue = event.getOldValue();
 	        Object newValue = event.getNewValue();
@@ -172,20 +189,18 @@ implements Serializable {
 	            FacesContext.getCurrentInstance().addMessage(null, msg);
 	        }
 	       
-	        OTRevisarAntecedentesVO monitore_borrar = new OTRevisarAntecedentesVO();
+	        OTRevisarAntecedentesVO otRevisarAntecedentesVO_borrar = new OTRevisarAntecedentesVO();
 	        
-
-	        	for (OTRevisarAntecedentesVO monitoreo_actual : listadoServiciosSubtitulo21) {
+	        	for (OTRevisarAntecedentesVO otRevisarAntecedentesVO : listadoServiciosSubtitulo21) {
 	        		
-	        		if (info.getId() == monitoreo_actual.getId())
+	        		if (info.getId() == otRevisarAntecedentesVO.getId())
 	        		{
-	        		    monitore_borrar = monitoreo_actual;
+	        			otRevisarAntecedentesVO_borrar = otRevisarAntecedentesVO;
 	        		    break;
 	        		}
-					
 				}
 	        	
-	        	listadoServiciosSubtitulo21.remove(monitore_borrar);
+	        	listadoServiciosSubtitulo21.remove(otRevisarAntecedentesVO_borrar);
 	        	listadoServiciosSubtitulo21.add(info);        	
 	        	
 	        	oTRevisarAntecedentesGlobalVOSubtitulo21.setListadoServicios(listadoServiciosSubtitulo21);
@@ -208,20 +223,20 @@ implements Serializable {
 		            FacesContext.getCurrentInstance().addMessage(null, msg);
 		        }
 		       
-		        OTRevisarAntecedentesVO monitore_borrar = new OTRevisarAntecedentesVO();
+		        OTRevisarAntecedentesVO otRevisarAntecedentesVO_borrar = new OTRevisarAntecedentesVO();
 		        
 
-		        	for (OTRevisarAntecedentesVO monitoreo_actual : listadoServiciosSubtitulo22) {
+		        	for (OTRevisarAntecedentesVO otRevisarAntecedentesVO : listadoServiciosSubtitulo22) {
 		        		
-		        		if (info.getId() == monitoreo_actual.getId())
+		        		if (info.getId() == otRevisarAntecedentesVO.getId())
 		        		{
-		        		    monitore_borrar = monitoreo_actual;
+		        			otRevisarAntecedentesVO_borrar = otRevisarAntecedentesVO;
 		        		    break;
 		        		}
 						
 					}
 		        	
-		        	listadoServiciosSubtitulo22.remove(monitore_borrar);
+		        	listadoServiciosSubtitulo22.remove(otRevisarAntecedentesVO_borrar);
 		        	listadoServiciosSubtitulo22.add(info);        	
 		        	
 		        	oTRevisarAntecedentesGlobalVOSubtitulo22.setListadoServicios(listadoServiciosSubtitulo22);
@@ -243,20 +258,20 @@ implements Serializable {
 		            FacesContext.getCurrentInstance().addMessage(null, msg);
 		        }
 		       
-		        OTRevisarAntecedentesVO monitore_borrar = new OTRevisarAntecedentesVO();
+		        OTRevisarAntecedentesVO otRevisarAntecedentesVO_borrar = new OTRevisarAntecedentesVO();
 		        
 
-		        	for (OTRevisarAntecedentesVO monitoreo_actual : listadoServiciosSubtitulo29) {
+		        	for (OTRevisarAntecedentesVO otRevisarAntecedentesVO : listadoServiciosSubtitulo29) {
 		        		
-		        		if (info.getId() == monitoreo_actual.getId())
+		        		if (info.getId() == otRevisarAntecedentesVO.getId())
 		        		{
-		        		    monitore_borrar = monitoreo_actual;
+		        			otRevisarAntecedentesVO_borrar = otRevisarAntecedentesVO;
 		        		    break;
 		        		}
 						
 					}
 		        	
-		        	listadoServiciosSubtitulo29.remove(monitore_borrar);
+		        	listadoServiciosSubtitulo29.remove(otRevisarAntecedentesVO_borrar);
 		        	listadoServiciosSubtitulo29.add(info);        	
 		        	
 		        	oTRevisarAntecedentesGlobalVOSubtitulo29.setListadoServicios(listadoServiciosSubtitulo29);
@@ -278,48 +293,42 @@ implements Serializable {
 	            FacesContext.getCurrentInstance().addMessage(null, msg);
 	        }
 	       
-	        OTRevisarAntecedentesVO monitore_borrar = new OTRevisarAntecedentesVO();
+	        OTRevisarAntecedentesVO otRevisarAntecedentesVO_borrar = new OTRevisarAntecedentesVO();
 	        
-	        	for (OTRevisarAntecedentesVO monitoreo_actual : listadoServiciosMunicipal) {
+	        	for (OTRevisarAntecedentesVO otRevisarAntecedentesVO : listadoServiciosMunicipal) {
 	        		
-	        		if (info.getId() == monitoreo_actual.getId())
+	        		if (info.getId() == otRevisarAntecedentesVO.getId())
 	        		{
-	        		    monitore_borrar = monitoreo_actual;
+	        			otRevisarAntecedentesVO_borrar = otRevisarAntecedentesVO;
 	        		    break;
 	        		}
 				}
 	        	
-	        	listadoServiciosMunicipal.remove(monitore_borrar);
+	        	listadoServiciosMunicipal.remove(otRevisarAntecedentesVO_borrar);
 	        	listadoServiciosMunicipal.add(info);        	
 	        	
 	        	oTRevisarAntecedentesGlobalVOMunicipal.setListadoServicios(listadoServiciosMunicipal);
 	}
 
 	
-	public void buscar() {
-//		System.out.println("buscar--> servicioSeleccionado="+servicioSeleccionado+" comunaSeleccionada="+comunaSeleccionada);
-//		if((servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty()) && (comunaSeleccionada == null || comunaSeleccionada.trim().isEmpty()) ){
-//			FacesMessage msg = new FacesMessage("Debe seleccionar al menos un filtro antes de realizar la búsqueda");
-//			FacesContext.getCurrentInstance().addMessage(null, msg);
-//		}else{
-//			
-//			
-			this.antecendentesComunaCalculado = tratamientoOrdenService.findDatos(1);
-			
-			
-//		}
-//		System.out.println("fin buscar-->");
-	}
-
-
-
 	 private OTRevisarAntecedentesVO selectedCar;
     public OTRevisarAntecedentesVO getSelectedCar() {
         return selectedCar;
     }
  
     //ID Programa
-  	private Integer idLineaProgramatica;
+    
+    private Programa programa;
+    
+  	public Programa getPrograma() {
+		return programa;
+	}
+
+	public void setPrograma(Programa programa) {
+		this.programa = programa;
+	}
+
+	private Integer idLineaProgramatica;
   	
   	public Integer getIdLineaProgramatica() {
   		return idLineaProgramatica;
@@ -465,37 +474,20 @@ implements Serializable {
 	
 	public void generaServicios(){
 
-		Programa programa = programasService.getProgramaPorID(1);//idLineaProgramatica);
+		programa = programasService.getProgramaPorID(1);//idLineaProgramatica);
 		
-		CargarListaSubTitulo21(programa);
-		CargarListaSubTitulo22();
-		CargarListaSubTitulo29();
-		CargarListaMunicipal();
+		CargarListaSubTitulo21();
+//		CargarListaSubTitulo22();
+//		CargarListaSubTitulo29();
+//		CargarListaMunicipal();
 		
 	}
 	
-	private void CargarListaSubTitulo21(Programa programa)
+	private void CargarListaSubTitulo21()
 	{
-		
-//		//SUBTITULO 21
-//		OTRevisarAntecedentesVO p;
-//		listadoServiciosSubtitulo21 = new ArrayList<OTRevisarAntecedentesVO>();
-//		p = new OTRevisarAntecedentesVO();
-//		p.setEstablecimiento("Centro Comunitario de Salud Familiar Cerro Esmeralda");
-//		p.setServicio("Metropolitano Oriente");
-//		p.setComuna("Macul");
-//		p.setId(1L);
-//		listadoServiciosSubtitulo21.add(p);
-//		
-//		p = new OTRevisarAntecedentesVO();
-//		p.setEstablecimiento("Centro Comunitario de Salud Familiar El Boro");
-//		p.setServicio("Iquique");
-//		p.setComuna("La Reina");
-//		p.setId(2L);
-		//listadoServiciosSubtitulo21.add(p);
-		
 		OTRevisarAntecedentesVO otRevisarAntecedentesVO = new OTRevisarAntecedentesVO();
-		listadoServiciosSubtitulo21.addAll(otRevisarAntecedentesVO.obtenerListaSubtitulo21VOPorPrograma(programa));
+		listadoServiciosSubtitulo21 = new ArrayList<OTRevisarAntecedentesVO>();
+		listadoServiciosSubtitulo21.addAll(otService.obtenerListaSubtitulo21VOPorPrograma(programa));
 
 		oTRevisarAntecedentesGlobalVOSubtitulo21.setListadoServicios(listadoServiciosSubtitulo21);
 	}
@@ -506,16 +498,10 @@ implements Serializable {
 		OTRevisarAntecedentesVO p22;
 		listadoServiciosSubtitulo22 = new ArrayList<OTRevisarAntecedentesVO>();
 		p22 = new OTRevisarAntecedentesVO();
-		p22.setEstablecimiento("Centro Comunitario de Salud Familiar Cerro Esmeralda");
-		p22.setServicio("Metropolitano Oriente");
-		p22.setComuna("Macul");
 		p22.setId(1L);
 		listadoServiciosSubtitulo22.add(p22);
 		
 		p22 = new OTRevisarAntecedentesVO();
-		p22.setEstablecimiento("Centro Comunitario de Salud Familiar El Boro");
-		p22.setServicio("Iquique");
-		p22.setComuna("La Reina");
 		p22.setId(2L);
 		listadoServiciosSubtitulo22.add(p22);
 		
@@ -529,16 +515,10 @@ implements Serializable {
 		OTRevisarAntecedentesVO p29;
 		listadoServiciosSubtitulo29 = new ArrayList<OTRevisarAntecedentesVO>();
 		p29 = new OTRevisarAntecedentesVO();
-		p29.setEstablecimiento("Centro Comunitario de Salud Familiar Cerro Esmeralda");
-		p29.setServicio("Metropolitano Oriente");
-		p29.setComuna("Macul");
 		p29.setId(1L);
 		listadoServiciosSubtitulo29.add(p29);
 		
 		p29 = new OTRevisarAntecedentesVO();
-		p29.setEstablecimiento("Centro Comunitario de Salud Familiar El Boro");
-		p29.setServicio("Iquique");
-		p29.setComuna("La Reina");
 		p29.setId(2L);
 		listadoServiciosSubtitulo29.add(p29);
 		
@@ -552,16 +532,10 @@ implements Serializable {
 		OTRevisarAntecedentesVO pMunicipal;
 		listadoServiciosMunicipal = new ArrayList<OTRevisarAntecedentesVO>();
 		pMunicipal = new OTRevisarAntecedentesVO();
-		pMunicipal.setEstablecimiento("PAC");
-		pMunicipal.setServicio("Metropolitano Oriente");
-		pMunicipal.setComuna("Macul");
 		pMunicipal.setId(1L);
 		listadoServiciosMunicipal.add(pMunicipal);
 		
 		pMunicipal = new OTRevisarAntecedentesVO();
-		pMunicipal.setEstablecimiento("DEHESA");
-		pMunicipal.setServicio("Iquique");
-		pMunicipal.setComuna("La Reina");
 		pMunicipal.setId(2L);
 		listadoServiciosMunicipal.add(pMunicipal);
 		oTRevisarAntecedentesGlobalVOMunicipal.setListadoServicios(listadoServiciosMunicipal);
@@ -572,16 +546,28 @@ implements Serializable {
 	private void guardarDatos()
 	{
 		//Subtitulo21
-		for (OTRevisarAntecedentesVO x : seleccionadosSubtitulo21) {
-		}
-		//Subtitulo22
-		for (OTRevisarAntecedentesVO x : seleccionadosSubtitulo22) {		
-		}
-		//Subtitulo29
-		for (OTRevisarAntecedentesVO x : seleccionadosSubtitulo29) {
-		}
-		//Ref.Municipal
-		for (OTRevisarAntecedentesVO x : seleccionadosMunicipal) {
+		List<Remesa> listaRemesa = otService.obtenerListaRemesaPorListaOTRevisarAntecedentesVO(seleccionadosSubtitulo21,programa);
+		guardarDatosProcesoRevisarOT(listaRemesa);
+		
+	}
+	
+	
+	public void guardarDatosProcesoRevisarOT(List<Remesa> listaRemesa) {
+
+		for (Remesa remesa : listaRemesa) {
+			
+			if(remesa.getIdMes().getIdMes().intValue() == idMesActual ||
+			  remesa.getIdMes().getIdMes().intValue() == idMesSiguiente	)
+			{
+				if(remesa.getIdRemesa()!= null && remesa.getIdRemesa().intValue() > 0)
+				{
+					remesaService.actualizarRemesa(remesa);
+				}
+				else
+				{
+					remesaService.crearRemesa(remesa);
+				}
+			}
 		}
 	}
 	
@@ -604,6 +590,7 @@ implements Serializable {
 	
 	// Continua el proceso con el programa seleccionado.
 	public void continuarProceso() {
+		guardarDatos();
 		
 		//super.enviar();
 	}

@@ -1,10 +1,21 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-
-import javax.persistence.*;
-
+import java.util.Collection;
 import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlTransient;
 
 
 /**
@@ -15,7 +26,8 @@ import java.util.List;
 @Table(name="servicio_salud")
 @NamedQueries({
 	@NamedQuery(name="ServicioSalud.findAll", query="SELECT s FROM ServicioSalud s"),
-	@NamedQuery(name="ServicioSalud.findServiciosByRegion", query="SELECT s FROM ServicioSalud s WHERE s.region.id = :idRegion order by s.id asc")})
+	@NamedQuery(name="ServicioSalud.findServiciosByRegion", query="SELECT s FROM ServicioSalud s WHERE s.region.id = :idRegion order by s.id asc"),
+	 @NamedQuery(name = "ServicioSalud.findByIdServicioSalud", query = "SELECT s FROM ServicioSalud s WHERE s.id = :idServicioSalud")})
 public class ServicioSalud implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -46,6 +58,10 @@ public class ServicioSalud implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="id_region")
 	private Region region;
+	
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idServicioSalud")
+	private Collection<Remesa> remesaCollection;
 
 	public ServicioSalud() {
 	}
@@ -148,5 +164,14 @@ public class ServicioSalud implements Serializable {
 	public void setRegion(Region region) {
 		this.region = region;
 	}
+	
+	@XmlTransient
+   public Collection<Remesa> getRemesaCollection() {
+       return remesaCollection;
+   }
+
+   public void setRemesaCollection(Collection<Remesa> remesaCollection) {
+       this.remesaCollection = remesaCollection;
+   }
 
 }

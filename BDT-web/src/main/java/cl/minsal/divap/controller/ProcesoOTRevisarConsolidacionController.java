@@ -151,7 +151,7 @@ implements Serializable {
 		List<OTRevisarAntecedentesVO> lst = oTRevisarAntecedentesGlobalVOSubtitulo21Original.getListadoServicios();
 		List<OTRevisarAntecedentesVO> lstAgregar = new ArrayList<OTRevisarAntecedentesVO>();
 		for (OTRevisarAntecedentesVO oTRevisarAntecedentesVO : lst) {
-			if (oTRevisarAntecedentesVO.getServicio().contains(valorComboProgramaFiltro))
+			if (oTRevisarAntecedentesVO.getServicioSalud().getNombre().contains(valorComboProgramaFiltro))
 			{
 				lstAgregar.add(oTRevisarAntecedentesVO);
 			}
@@ -181,10 +181,10 @@ implements Serializable {
 	{
 		List<OTRevisarAntecedentesVO> lst = oTRevisarAntecedentesGlobalVOSubtitulo22Original.getListadoServicios();
 		List<OTRevisarAntecedentesVO> lstAgregar = new ArrayList<OTRevisarAntecedentesVO>();
-		for (OTRevisarAntecedentesVO estimacionFlujoMonitoreoPojo : lst) {
-			if (estimacionFlujoMonitoreoPojo.getServicio().contains(valorComboProgramaFiltro))
+		for (OTRevisarAntecedentesVO oTRevisarAntecedentesVO : lst) {
+			if (oTRevisarAntecedentesVO.getServicioSalud().getNombre().contains(valorComboProgramaFiltro))
 			{
-				lstAgregar.add(estimacionFlujoMonitoreoPojo);
+				lstAgregar.add(oTRevisarAntecedentesVO);
 			}
 		}
 		oTRevisarAntecedentesGlobalVOSubtitulo22.setListadoServicios(lstAgregar);
@@ -212,10 +212,10 @@ implements Serializable {
 	{
 		List<OTRevisarAntecedentesVO> lst = oTRevisarAntecedentesGlobalVOSubtitulo29Original.getListadoServicios();
 		List<OTRevisarAntecedentesVO> lstAgregar = new ArrayList<OTRevisarAntecedentesVO>();
-		for (OTRevisarAntecedentesVO estimacionFlujoMonitoreoPojo : lst) {
-			if (estimacionFlujoMonitoreoPojo.getServicio().contains(valorComboProgramaFiltro))
+		for (OTRevisarAntecedentesVO oTRevisarAntecedentesVO : lst) {
+			if (oTRevisarAntecedentesVO.getServicioSalud().getNombre().contains(valorComboProgramaFiltro))
 			{
-				lstAgregar.add(estimacionFlujoMonitoreoPojo);
+				lstAgregar.add(oTRevisarAntecedentesVO);
 			}
 		}
 		oTRevisarAntecedentesGlobalVOSubtitulo29.setListadoServicios(lstAgregar);
@@ -242,10 +242,10 @@ implements Serializable {
 	{
 		List<OTRevisarAntecedentesVO> lst = oTRevisarAntecedentesGlobalVOMunicipalOriginal.getListadoServicios();
 		List<OTRevisarAntecedentesVO> lstAgregar = new ArrayList<OTRevisarAntecedentesVO>();
-		for (OTRevisarAntecedentesVO estimacionFlujoMonitoreoPojo : lst) {
-			if (estimacionFlujoMonitoreoPojo.getServicio().contains(valorComboProgramaFiltro))
+		for (OTRevisarAntecedentesVO oTRevisarAntecedentesVO : lst) {
+			if (oTRevisarAntecedentesVO.getServicioSalud().getNombre().contains(valorComboProgramaFiltro))
 			{
-				lstAgregar.add(estimacionFlujoMonitoreoPojo);
+				lstAgregar.add(oTRevisarAntecedentesVO);
 			}
 		}
 		oTRevisarAntecedentesGlobalVOMunicipal.setListadoServicios(lstAgregar);
@@ -804,9 +804,7 @@ implements Serializable {
 		OTRevisarAntecedentesVO p;
 		listadoServiciosSubtitulo21 = new ArrayList<OTRevisarAntecedentesVO>();
 		p = new OTRevisarAntecedentesVO();
-		p.setEstablecimiento("Centro Comunitario de Salud Familiar Cerro Esmeralda");
-		p.setServicio("Metropolitano Oriente");
-		p.setComuna("Macul");
+		
 		p.setAbrilRemesa09(222L);
 		p.setComponente(c);
 		p.setId(1L);
@@ -814,9 +812,7 @@ implements Serializable {
 
 		
 		p = new OTRevisarAntecedentesVO();
-		p.setEstablecimiento("Centro Comunitario de Salud Familiar El Boro");
-		p.setServicio("Iquique");
-		p.setComuna("La Reina");
+
 		p.setAbrilRemesa09(333L);
 		p.setComponente(c);
 		p.setId(2L);
@@ -835,18 +831,14 @@ implements Serializable {
 		OTRevisarAntecedentesVO p22;
 		listadoServiciosSubtitulo22 = new ArrayList<OTRevisarAntecedentesVO>();
 		p22 = new OTRevisarAntecedentesVO();
-		p22.setEstablecimiento("Centro Comunitario de Salud Familiar Cerro Esmeralda");
-		p22.setServicio("Metropolitano Oriente");
-		p22.setComuna("Macul");
+
 		p22.setAbrilRemesa09(555L);
 		p22.setComponente(c);
 		p22.setId(1L);
 		listadoServiciosSubtitulo22.add(p22);
 		
 		p22 = new OTRevisarAntecedentesVO();
-		p22.setEstablecimiento("Centro Comunitario de Salud Familiar El Boro");
-		p22.setServicio("Iquique");
-		p22.setComuna("La Reina");
+
 		p22.setAbrilRemesa09(999L);
 		p22.setComponente(c);
 		p22.setId(2L);
@@ -865,18 +857,14 @@ implements Serializable {
 		OTRevisarAntecedentesVO p29;
 		listadoServiciosSubtitulo29 = new ArrayList<OTRevisarAntecedentesVO>();
 		p29 = new OTRevisarAntecedentesVO();
-		p29.setEstablecimiento("Centro Comunitario de Salud Familiar Cerro Esmeralda");
-		p29.setServicio("Metropolitano Oriente");
-		p29.setComuna("Macul");
+
 		p29.setAbrilRemesa09(234L);
 		p29.setComponente(c);
 		p29.setId(1L);
 		listadoServiciosSubtitulo29.add(p29);
 		
 		p29 = new OTRevisarAntecedentesVO();
-		p29.setEstablecimiento("Centro Comunitario de Salud Familiar El Boro");
-		p29.setServicio("Iquique");
-		p29.setComuna("La Reina");
+
 		p29.setAbrilRemesa09(182L);
 		p29.setComponente(c);
 		p29.setId(2L);
@@ -894,18 +882,14 @@ implements Serializable {
 		OTRevisarAntecedentesVO pMunicipal;
 		listadoServiciosMunicipal = new ArrayList<OTRevisarAntecedentesVO>();
 		pMunicipal = new OTRevisarAntecedentesVO();
-		pMunicipal.setEstablecimiento("PAC");
-		pMunicipal.setServicio("Metropolitano Oriente");
-		pMunicipal.setComuna("Macul");
+
 		pMunicipal.setAbrilRemesa09(1200L);
 		pMunicipal.setComponente(c);
 		pMunicipal.setId(1L);
 		listadoServiciosMunicipal.add(pMunicipal);
 		
 		pMunicipal = new OTRevisarAntecedentesVO();
-		pMunicipal.setEstablecimiento("DEHESA");
-		pMunicipal.setServicio("Iquique");
-		pMunicipal.setComuna("La Reina");
+
 		pMunicipal.setAbrilRemesa09(2900L);
 		pMunicipal.setComponente(c);
 		pMunicipal.setId(2L);

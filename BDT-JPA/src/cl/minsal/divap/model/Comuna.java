@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -64,20 +65,19 @@ public class Comuna implements Serializable {
 	@OneToMany(mappedBy = "idComuna")
    	 private Collection<ComunaCumplimiento> comunaCumplimientoCollection;
 	
-	
-//	//bi-directional many-to-one association to Establecimiento
-//	@OneToMany(mappedBy="comuna")
-//	private List<Remesa> remesas;
-	
-	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idComuna")
+	private Collection<Remesa> remesaCollection;
 
-//	public List<Remesa> getRemesas() {
-//		return remesas;
-//	}
-//
-//	public void setRemesas(List<Remesa> remesas) {
-//		this.remesas = remesas;
-//	}
+
+	@XmlTransient
+	   public Collection<Remesa> getRemesaCollection() {
+	       return remesaCollection;
+	   }
+
+	   public void setRemesaCollection(Collection<Remesa> remesaCollection) {
+	       this.remesaCollection = remesaCollection;
+	   }
+
 
 	public Comuna() {
 	}

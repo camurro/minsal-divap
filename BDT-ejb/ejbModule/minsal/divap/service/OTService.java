@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
 import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.DocumentoVO;
+import minsal.divap.vo.OTRevisarAntecedentesVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.SeguimientoVO;
 import minsal.divap.vo.VariacionPoblacionVO;
@@ -42,6 +44,12 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 import cl.minsal.divap.model.AntecendentesComunaCalculado;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
+import cl.minsal.divap.model.Establecimiento;
+import cl.minsal.divap.model.Mes;
+import cl.minsal.divap.model.Programa;
+import cl.minsal.divap.model.ProgramaMunicipalCore;
+import cl.minsal.divap.model.ProgramaServicioCore;
+import cl.minsal.divap.model.Remesa;
 import cl.minsal.divap.model.Seguimiento;
 
 @Stateless
@@ -65,6 +73,11 @@ public class OTService {
 	private SeguimientoService seguimientoService;
 	@EJB
 	private EmailService emailService;
+	@EJB
+	private MesService mesService;
+	@EJB
+	private RemesaService remesaService;
+	
 	@Resource(name="tmpDir")
 	private String tmpDir;
 	@Resource(name="tmpDirDoc")
@@ -164,5 +177,566 @@ public class OTService {
 		return seguimientoService.getBitacora(idDistribucionInicialPercapita, tareaSeguimiento);
 	}
 
+	
+	
+	///***** METODOS ACTIVIDAD REVISAR ANTECENDETES ******
+	private void calcularDatosOTRevisarAntecedentesVO(OTRevisarAntecedentesVO otRevisarAntecedentesVO,Collection<Remesa>listaRemesa)
+	{
+		//MARCO PRESUPUESTARIO
+		long marcoPresupuestario = 1000000;
+		otRevisarAntecedentesVO.setMarcoPresupuestarioMonto(marcoPresupuestario);
+		
+		//ACUMULADO
+		long acumulado = 0;
+		for (Remesa remesa : listaRemesa) {
+			acumulado = acumulado + remesa.getValorDia09() +remesa.getValorDia09()+remesa.getValorDia24()+remesa.getValorDia28();
+		}
+		otRevisarAntecedentesVO.setAcumuladoFechaMonto(acumulado);
+		
+		//CONVENIO
+		long convenio = 3000;
+		otRevisarAntecedentesVO.setConvenioMonto(convenio);
+
+		//DIFERENCIA (MARCO -TOTAL(ACUMULADO+CONVENIO))
+		long total =acumulado+convenio;
+		total = marcoPresupuestario - total;
+		otRevisarAntecedentesVO.setDiferenciaMarcoContraTotalMonto(total);
+		
+		//*********PORCENTAJES*************
+		
+		//ACUMULADO 
+		float totalAcumuladoPorcentaje = ((float)acumulado* (float)100)/(float)marcoPresupuestario;
+		otRevisarAntecedentesVO.setAcumuladoFechaPorcentaje(String.valueOf(totalAcumuladoPorcentaje)+"%");
+		
+		//TOTAL ACUMULADO 
+		float convenioPorcentaje  = ((float)convenio* (float)100)/(float)marcoPresupuestario;
+		otRevisarAntecedentesVO.setConvenioPorcentaje(String.valueOf(convenioPorcentaje)+"%");
+		
+		//DIFERENCIA (MARCO - TOTAL)
+		float totalPorcentaje  = ((float)total* (float)100)/(float)marcoPresupuestario;
+		otRevisarAntecedentesVO.setDiferenciaMarcoContraTotalPorcentaje(String.valueOf(totalPorcentaje)+"%");		
+	}
+
+	public List<OTRevisarAntecedentesVO> crearListaServicioPorPrograma(Programa programa)
+	{
+		List<OTRevisarAntecedentesVO> lista = new ArrayList<OTRevisarAntecedentesVO>();
+		
+		if(programa.getTipoPrograma().getId() == 1 )//SERVICIO
+		{
+			for (ProgramaServicioCore servicioCore : programa.getProgramaServicioCores()) {
+				
+				//SERVICIO SALUD
+				if(servicioCore.getServicioSalud() != null)
+				{
+					if(true)//POR ESTABLECIMIENTO
+					{
+						for (Establecimiento establecimiento : servicioCore.getServicioSalud().getEstablecimientos()) {
+							
+							OTRevisarAntecedentesVO otRevisarAntecedentesVO = new OTRevisarAntecedentesVO();
+							otRevisarAntecedentesVO.setServicioSalud(servicioCore.getServicioSalud());
+							otRevisarAntecedentesVO.setIdServicioSalud(servicioCore.getServicioSalud().getId());
+						
+							otRevisarAntecedentesVO.setEstablecimiento(establecimiento);
+							otRevisarAntecedentesVO.setIdEstablecimiento(establecimiento.getId());
+							
+							//SE CALCLULA DATOS : MARCO PRESUPUESTARIO-ACUMULADO-CONVENIO.
+							calcularDatosOTRevisarAntecedentesVO(otRevisarAntecedentesVO,establecimiento.getRemesaCollection());
+
+							lista.add(otRevisarAntecedentesVO);
+						}
+					}
+					else //POR SERVICIO
+					{
+						OTRevisarAntecedentesVO otRevisarAntecedentesVO = new OTRevisarAntecedentesVO();
+						otRevisarAntecedentesVO.setServicioSalud(servicioCore.getServicioSalud());
+						otRevisarAntecedentesVO.setIdServicioSalud(servicioCore.getServicioSalud().getId());
+						
+						lista.add(otRevisarAntecedentesVO);
+					}
+				
+				}			
+			}			
+		}
+		else if(programa.getTipoPrograma().getId() == 1 )//MUNICIPAL
+		{
+			for (ProgramaMunicipalCore municipalCore : programa.getProgramaMunicipalCores()) {
+				
+				OTRevisarAntecedentesVO otRevisarAntecedentesVO = new OTRevisarAntecedentesVO();
+				//SERVICIO SALUD
+//				if(municipalCore.getServicioSalud() != null)
+//				{
+//					otRevisarAntecedentesVO.setEstablecimiento(municipalCore.getServicioSalud().getNombre());
+//					otRevisarAntecedentesVO.setIdEstablecimiento(municipalCore.getServicioSalud().getId());
+//				}
+				//otRevisarAntecedentesVO.setServicio("SERVICIO PRUEBA MUNICIPAL");
+				//otRevisarAntecedentesVO.setIdServicioSalud(1);
+				
+				//COMUNA
+				/*
+				if(servicioCore.getComuna() != null)
+				{
+					otRevisarAntecedentesVO.setEstablecimiento(servicioCore.getComuna().getNombre());
+					otRevisarAntecedentesVO.setIdEstablecimiento(servicioCore.getComuna().getId());
+				}
+				*/
+				//otRevisarAntecedentesVO.setComunaNombre("COMUNA PRUEBA MUNICIPAL");
+				//otRevisarAntecedentesVO.setIdComuna(1);
+				
+				//ESTABLECIMIENTO
+				/*
+				if(servicioCore.getEstablecimiento() != null)
+				{
+					otRevisarAntecedentesVO.setEstablecimiento(servicioCore.getEstablecimiento().getNombre());
+					otRevisarAntecedentesVO.setIdEstablecimiento(servicioCore.getEstablecimiento().getId());
+				}
+				*/
+				
+				lista.add(otRevisarAntecedentesVO);
+				
+			}			
+		}
+
+		long id=0;
+		for (OTRevisarAntecedentesVO otRevisarAntecedentesVO : lista) {
+			
+			otRevisarAntecedentesVO.setId(id);
+			
+		
+			id++;
+		}
+		
+		return lista;
+		
+	}
+	
+	public List<OTRevisarAntecedentesVO> obtenerListaSubtitulo21VOPorPrograma(Programa programa)
+	{
+		List<OTRevisarAntecedentesVO> listaVO = crearListaServicioPorPrograma(programa);
+		
+		Collection<Remesa>listaRemesa =  new ArrayList<Remesa>();
+		if(programa.getRemesaCollection()!=null)
+			listaRemesa = programa.getRemesaCollection();
+
+		for (OTRevisarAntecedentesVO otRevisarAntecedentesVO : listaVO) {
+
+			Integer idServicioSalud = otRevisarAntecedentesVO.getIdServicioSalud();
+			Integer idEstablecimiento =0;
+			if(otRevisarAntecedentesVO.getIdEstablecimiento()!=null)
+				idEstablecimiento= otRevisarAntecedentesVO.getIdEstablecimiento();
+			
+			Integer idComuna=0;
+			if(otRevisarAntecedentesVO.getIdComuna()!=null)
+				idComuna= otRevisarAntecedentesVO.getIdComuna();
+			
+			Integer anio = 2014;// otRevisarAntecedentesVO.getAnio();
+
+			for (Remesa remesa : listaRemesa) {
+				
+				//datos remesa
+				Integer idServicioSaludRemesa = remesa.getIdServicioSalud().getId();
+				Integer idEstablecimientoRemesa =0;
+				if(remesa.getIdEstablecimiento()!=null)
+					idEstablecimientoRemesa= remesa.getIdEstablecimiento().getId();
+				
+				Integer idComunaRemesa=0;
+				if(remesa.getIdComuna()!=null)
+					idComunaRemesa= remesa.getIdComuna().getId();
+				
+				if(anio.intValue() == remesa.getAnio().intValue() )
+				{
+					if(idServicioSalud == idServicioSaludRemesa)
+					{
+						if(programa.getTipoPrograma().getId() == 1)//TIPO SERVICIO
+						{
+							if(true)//POR ESTABLECIMIENTO
+							{
+								if(idEstablecimiento== idEstablecimientoRemesa)
+								{
+									cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
+								}
+							}
+							else //POR SERVICIO
+							{
+								cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
+							}
+						}
+						else if(programa.getTipoPrograma().getId() == 2)//TIPO MUNCIPAL
+						{
+							if(idComuna== idComunaRemesa)
+							{
+								cargarVOPorRemesa(otRevisarAntecedentesVO,remesa);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return listaVO;
+		
+	}
+
+	private void cargarVOPorRemesa(OTRevisarAntecedentesVO otRevisarAntecedentesVO, Remesa remesa)
+	{
+		
+		Long valorDia09 = Long.valueOf(String.valueOf(remesa.getValorDia09()));
+		Long valorDia24 =  Long.valueOf(String.valueOf(remesa.getValorDia24()));
+		Long valorDia28 =  Long.valueOf(String.valueOf(remesa.getValorDia28()));
+			
+		//ENERO
+		if(remesa.getIdMes().getIdMes() == 1)
+		{
+			otRevisarAntecedentesVO.setEneroRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setEneroRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setEneroRemesa28(valorDia28);
+			otRevisarAntecedentesVO.setIdRemesaMesEnero(remesa.getIdRemesa());
+		}
+		
+		//FEBRERO
+		if(remesa.getIdMes().getIdMes() == 2)
+		{
+			otRevisarAntecedentesVO.setFebreroRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setFebreroRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setFebreroRemesa28(valorDia28);
+			otRevisarAntecedentesVO.setIdRemesaMesFebrero(remesa.getIdRemesa());
+		}
+		//MARZO
+		if(remesa.getIdMes().getIdMes() == 3)
+		{
+			otRevisarAntecedentesVO.setMarzoRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setMarzoRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setMarzoRemesa28(valorDia28);
+			otRevisarAntecedentesVO.setIdRemesaMesMarzo(remesa.getIdRemesa());
+		}
+		
+		
+		//ABRIL
+		if(remesa.getIdMes().getIdMes() == 4)
+		{
+			otRevisarAntecedentesVO.setAbrilRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setAbrilRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setAbrilRemesa28(valorDia28);
+			otRevisarAntecedentesVO.setIdRemesaMesAbril(remesa.getIdRemesa());
+		}
+		
+		//MAYO
+		if(remesa.getIdMes().getIdMes() == 5)
+		{
+			otRevisarAntecedentesVO.setMayoRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setMayoRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setMayoRemesa28(valorDia28);
+			otRevisarAntecedentesVO.setIdRemesaMesMayo(remesa.getIdRemesa());
+		}
+		
+		//JUNIO
+		if(remesa.getIdMes().getIdMes() == 6)
+		{
+			otRevisarAntecedentesVO.setJunioRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setJunioRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setJunioRemesa28(valorDia28);
+			otRevisarAntecedentesVO.setIdRemesaMesJunio(remesa.getIdRemesa());
+		}
+		
+		//JULIO
+		if(remesa.getIdMes().getIdMes() == 7)
+		{
+			otRevisarAntecedentesVO.setJulioRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setJulioRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setJulioRemesa28(valorDia28);
+			otRevisarAntecedentesVO.setIdRemesaMesJulio(remesa.getIdRemesa());
+		}
+		
+		//AGOSTO
+		if(remesa.getIdMes().getIdMes() == 8)
+		{
+			otRevisarAntecedentesVO.setAgostoRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setAgostoRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setAgostoRemesa28(valorDia28);
+			otRevisarAntecedentesVO.setIdRemesaMesAgosto(remesa.getIdRemesa());
+		}
+		
+		//SEPTIEMBRE
+		if(remesa.getIdMes().getIdMes() == 9)
+		{
+			otRevisarAntecedentesVO.setSeptiembreRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setSeptiembreRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setSeptiembreRemesa28(valorDia28);
+			otRevisarAntecedentesVO.setIdRemesaMesSeptiembre(remesa.getIdRemesa());
+		}
+		
+		//OCTUBRE
+		if(remesa.getIdMes().getIdMes() == 10)
+		{
+			otRevisarAntecedentesVO.setOctubreRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setOctubreRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setOctubreRemesa28(valorDia28);
+			otRevisarAntecedentesVO.setIdRemesaMesOctubre(remesa.getIdRemesa());
+		}
+
+		//NOVIEMBRE
+		if(remesa.getIdMes().getIdMes() == 11)
+		{
+			otRevisarAntecedentesVO.setNoviembreRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setNoviembreRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setNoviembreRemesa28(valorDia28);
+			otRevisarAntecedentesVO.setIdRemesaMesNoviembre(remesa.getIdRemesa());
+		}
+		
+		//DICIEMBRE
+		if(remesa.getIdMes().getIdMes() == 12)
+		{
+			otRevisarAntecedentesVO.setDiciembreRemesa09(valorDia09);
+			otRevisarAntecedentesVO.setDiciembreRemesa24(valorDia24);
+			otRevisarAntecedentesVO.setDiciembreRemesa28(valorDia28);
+			otRevisarAntecedentesVO.setIdRemesaMesDiciembre(remesa.getIdRemesa());
+		}
+	}
+
+	public List<Remesa> obtenerListaRemesaPorListaOTRevisarAntecedentesVO(List<OTRevisarAntecedentesVO> listaVO,Programa programa)
+	{
+		List<Remesa> listaRemesa= new ArrayList<Remesa>();
+		
+		for (OTRevisarAntecedentesVO otRevisarAntecedentesVO : listaVO) {
+
+			//ENERO
+			if(String.valueOf(otRevisarAntecedentesVO.getEneroRemesa09()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getEneroRemesa24()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getEneroRemesa28()) != "0")
+			{
+				Remesa remesa = new Remesa(otRevisarAntecedentesVO.getIdRemesaMesEnero(),programa,otRevisarAntecedentesVO.getServicioSalud(),2014,mesService.getMesPorID(1),
+						(int)(long)otRevisarAntecedentesVO.getEneroRemesa09(),
+						(int)(long) otRevisarAntecedentesVO.getEneroRemesa24(),
+						(int)(long) otRevisarAntecedentesVO.getEneroRemesa28());
+				
+				if(programa.getTipoPrograma().getId() == 1 )//SERVICIO
+					remesa.setIdEstablecimiento(otRevisarAntecedentesVO.getEstablecimiento());
+				if(programa.getTipoPrograma().getId() == 2 )//MUNICIPAL
+					remesa.setIdComuna(otRevisarAntecedentesVO.getComuna());
+				
+				listaRemesa.add(remesa);
+				
+			}
+			
+			//Febrero
+			if(String.valueOf(otRevisarAntecedentesVO.getFebreroRemesa09()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getFebreroRemesa24()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getFebreroRemesa28()) != "0")
+			{
+				Remesa remesa = new Remesa(otRevisarAntecedentesVO.getIdRemesaMesFebrero(),programa,otRevisarAntecedentesVO.getServicioSalud(),2014,mesService.getMesPorID(2),
+						(int)(long)otRevisarAntecedentesVO.getFebreroRemesa09(),
+						(int)(long) otRevisarAntecedentesVO.getFebreroRemesa24(),
+						(int)(long) otRevisarAntecedentesVO.getFebreroRemesa28());
+				
+				if(programa.getTipoPrograma().getId() == 1 )//SERVICIO
+					remesa.setIdEstablecimiento(otRevisarAntecedentesVO.getEstablecimiento());
+				if(programa.getTipoPrograma().getId() == 2 )//MUNICIPAL
+					remesa.setIdComuna(otRevisarAntecedentesVO.getComuna());
+				
+				listaRemesa.add(remesa);
+				
+			}
+			
+			//Marzo
+			if(String.valueOf(otRevisarAntecedentesVO.getMarzoRemesa09()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getMarzoRemesa24()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getMarzoRemesa28()) != "0")
+			{
+				
+				Remesa remesa = new Remesa(otRevisarAntecedentesVO.getIdRemesaMesMarzo(),programa,otRevisarAntecedentesVO.getServicioSalud(),2014,mesService.getMesPorID(3),
+						(int)(long)otRevisarAntecedentesVO.getMarzoRemesa09(),
+						(int)(long) otRevisarAntecedentesVO.getMarzoRemesa24(),
+						(int)(long) otRevisarAntecedentesVO.getMarzoRemesa28());
+				
+				if(programa.getTipoPrograma().getId() == 1 )//SERVICIO
+					remesa.setIdEstablecimiento(otRevisarAntecedentesVO.getEstablecimiento());
+				if(programa.getTipoPrograma().getId() == 2 )//MUNICIPAL
+					remesa.setIdComuna(otRevisarAntecedentesVO.getComuna());
+				
+				listaRemesa.add(remesa);
+				
+			}
+			
+			//Abril
+			if(String.valueOf(otRevisarAntecedentesVO.getAbrilRemesa09()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getAbrilRemesa24()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getAbrilRemesa28()) != "0")
+			{
+				Remesa remesa = new Remesa(otRevisarAntecedentesVO.getIdRemesaMesAbril(),programa,otRevisarAntecedentesVO.getServicioSalud(),2014,mesService.getMesPorID(4),
+						(int)(long)otRevisarAntecedentesVO.getAbrilRemesa09(),
+						(int)(long) otRevisarAntecedentesVO.getAbrilRemesa24(),
+						(int)(long) otRevisarAntecedentesVO.getAbrilRemesa28());
+				
+				if(programa.getTipoPrograma().getId() == 1 )//SERVICIO
+					remesa.setIdEstablecimiento(otRevisarAntecedentesVO.getEstablecimiento());
+				if(programa.getTipoPrograma().getId() == 2 )//MUNICIPAL
+					remesa.setIdComuna(otRevisarAntecedentesVO.getComuna());
+				
+				listaRemesa.add(remesa);
+				
+			}
+			
+			
+			//mayo
+			if(String.valueOf(otRevisarAntecedentesVO.getMayoRemesa09()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getMayoRemesa24()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getMayoRemesa28()) != "0")
+			{
+				
+				Remesa remesa = new Remesa(otRevisarAntecedentesVO.getIdRemesaMesMayo(),programa,otRevisarAntecedentesVO.getServicioSalud(),2014,mesService.getMesPorID(5),
+						(int)(long)otRevisarAntecedentesVO.getMayoRemesa09(),
+						(int)(long) otRevisarAntecedentesVO.getMayoRemesa24(),
+						(int)(long) otRevisarAntecedentesVO.getMayoRemesa28());
+				
+				if(programa.getTipoPrograma().getId() == 1 )//SERVICIO
+					remesa.setIdEstablecimiento(otRevisarAntecedentesVO.getEstablecimiento());
+				if(programa.getTipoPrograma().getId() == 2 )//MUNICIPAL
+					remesa.setIdComuna(otRevisarAntecedentesVO.getComuna());
+				
+				listaRemesa.add(remesa);
+				
+			}
+			
+			//Junio
+			if(String.valueOf(otRevisarAntecedentesVO.getJunioRemesa09()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getJunioRemesa24()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getJunioRemesa28()) != "0")
+			{
+				Remesa remesa = new Remesa(otRevisarAntecedentesVO.getIdRemesaMesJunio(),programa,otRevisarAntecedentesVO.getServicioSalud(),2014,mesService.getMesPorID(6),
+						(int)(long)otRevisarAntecedentesVO.getJunioRemesa09(),
+						(int)(long) otRevisarAntecedentesVO.getJunioRemesa24(),
+						(int)(long) otRevisarAntecedentesVO.getJunioRemesa28());
+				
+				if(programa.getTipoPrograma().getId() == 1 )//SERVICIO
+					remesa.setIdEstablecimiento(otRevisarAntecedentesVO.getEstablecimiento());
+				if(programa.getTipoPrograma().getId() == 2 )//MUNICIPAL
+					remesa.setIdComuna(otRevisarAntecedentesVO.getComuna());
+				
+				listaRemesa.add(remesa);
+				
+			}
+			
+			
+			//Julio
+			if(String.valueOf(otRevisarAntecedentesVO.getJulioRemesa09()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getJulioRemesa24()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getJulioRemesa28()) != "0")
+			{
+				Remesa remesa = new Remesa(otRevisarAntecedentesVO.getIdRemesaMesJulio(),programa,otRevisarAntecedentesVO.getServicioSalud(),2014,mesService.getMesPorID(7),
+						(int)(long)otRevisarAntecedentesVO.getJulioRemesa09(),
+						(int)(long) otRevisarAntecedentesVO.getJulioRemesa24(),
+						(int)(long) otRevisarAntecedentesVO.getJulioRemesa28());
+				
+				if(programa.getTipoPrograma().getId() == 1 )//SERVICIO
+					remesa.setIdEstablecimiento(otRevisarAntecedentesVO.getEstablecimiento());
+				if(programa.getTipoPrograma().getId() == 2 )//MUNICIPAL
+					remesa.setIdComuna(otRevisarAntecedentesVO.getComuna());
+				
+				listaRemesa.add(remesa);
+				
+			}
+			
+			
+			//Agosto
+			if(String.valueOf(otRevisarAntecedentesVO.getAgostoRemesa09()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getAgostoRemesa24()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getAgostoRemesa28()) != "0")
+			{
+				Remesa remesa = new Remesa(otRevisarAntecedentesVO.getIdRemesaMesAgosto(),programa,otRevisarAntecedentesVO.getServicioSalud(),2014,mesService.getMesPorID(8),
+						(int)(long)otRevisarAntecedentesVO.getAgostoRemesa09(),
+						(int)(long) otRevisarAntecedentesVO.getAgostoRemesa24(),
+						(int)(long) otRevisarAntecedentesVO.getAgostoRemesa28());
+				
+				if(programa.getTipoPrograma().getId() == 1 )//SERVICIO
+					remesa.setIdEstablecimiento(otRevisarAntecedentesVO.getEstablecimiento());
+				if(programa.getTipoPrograma().getId() == 2 )//MUNICIPAL
+					remesa.setIdComuna(otRevisarAntecedentesVO.getComuna());
+				
+				listaRemesa.add(remesa);
+				
+			}
+			
+			//Septiembre
+			if(String.valueOf(otRevisarAntecedentesVO.getSeptiembreRemesa09()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getSeptiembreRemesa24()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getSeptiembreRemesa28()) != "0")
+			{
+				Remesa remesa = new Remesa(otRevisarAntecedentesVO.getIdRemesaMesSeptiembre(),programa,otRevisarAntecedentesVO.getServicioSalud(),2014,mesService.getMesPorID(9),
+						(int)(long)otRevisarAntecedentesVO.getSeptiembreRemesa09(),
+						(int)(long) otRevisarAntecedentesVO.getSeptiembreRemesa24(),
+						(int)(long) otRevisarAntecedentesVO.getSeptiembreRemesa28());
+				
+				if(programa.getTipoPrograma().getId() == 1 )//SERVICIO
+					remesa.setIdEstablecimiento(otRevisarAntecedentesVO.getEstablecimiento());
+				if(programa.getTipoPrograma().getId() == 2 )//MUNICIPAL
+					remesa.setIdComuna(otRevisarAntecedentesVO.getComuna());
+				
+				listaRemesa.add(remesa);
+				
+			}
+			
+			//Octubre
+			if(String.valueOf(otRevisarAntecedentesVO.getOctubreRemesa09()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getOctubreRemesa24()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getOctubreRemesa28()) != "0")
+			{
+				Remesa remesa = new Remesa(otRevisarAntecedentesVO.getIdRemesaMesOctubre(),programa,otRevisarAntecedentesVO.getServicioSalud(),2014,mesService.getMesPorID(10),
+						otRevisarAntecedentesVO.getOctubreRemesa09(),
+						otRevisarAntecedentesVO.getOctubreRemesa24(),
+						otRevisarAntecedentesVO.getOctubreRemesa28());
+				
+				if(programa.getTipoPrograma().getId() == 1 )//SERVICIO
+					remesa.setIdEstablecimiento(otRevisarAntecedentesVO.getEstablecimiento());
+				if(programa.getTipoPrograma().getId() == 2 )//MUNICIPAL
+					remesa.setIdComuna(otRevisarAntecedentesVO.getComuna());
+				
+				listaRemesa.add(remesa);
+				
+			}
+			
+			//Noviembre
+			if(String.valueOf(otRevisarAntecedentesVO.getNoviembreRemesa09()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getNoviembreRemesa24()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getNoviembreRemesa28()) != "0")
+			{
+				Remesa remesa = new Remesa(otRevisarAntecedentesVO.getIdRemesaMesNoviembre(),programa,otRevisarAntecedentesVO.getServicioSalud(),2014,mesService.getMesPorID(11),
+						(int)(long)otRevisarAntecedentesVO.getNoviembreRemesa09(),
+						(int)(long) otRevisarAntecedentesVO.getNoviembreRemesa24(),
+						(int)(long) otRevisarAntecedentesVO.getNoviembreRemesa28());
+				
+				if(programa.getTipoPrograma().getId() == 1 )//SERVICIO
+					remesa.setIdEstablecimiento(otRevisarAntecedentesVO.getEstablecimiento());
+				if(programa.getTipoPrograma().getId() == 2 )//MUNICIPAL
+					remesa.setIdComuna(otRevisarAntecedentesVO.getComuna());
+				
+				listaRemesa.add(remesa);
+				
+			}
+			//Diciembre
+			if(String.valueOf(otRevisarAntecedentesVO.getDiciembreRemesa09()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getDiciembreRemesa24()) != "0"||
+			   String.valueOf(otRevisarAntecedentesVO.getDiciembreRemesa28()) != "0")
+			{
+				
+				Remesa remesa = new Remesa(otRevisarAntecedentesVO.getIdRemesaMesDiciembre(),programa,otRevisarAntecedentesVO.getServicioSalud(),2014,mesService.getMesPorID(12),
+						(int)(long)otRevisarAntecedentesVO.getDiciembreRemesa09(),
+						(int)(long) otRevisarAntecedentesVO.getDiciembreRemesa24(),
+						(int)(long) otRevisarAntecedentesVO.getDiciembreRemesa28());
+				
+				if(programa.getTipoPrograma().getId() == 1 )//SERVICIO
+					remesa.setIdEstablecimiento(otRevisarAntecedentesVO.getEstablecimiento());
+				if(programa.getTipoPrograma().getId() == 2 )//MUNICIPAL
+					remesa.setIdComuna(otRevisarAntecedentesVO.getComuna());
+					
+				
+				listaRemesa.add(remesa);
+				
+			}
+		}
+		
+		
+		return listaRemesa;
+	}
+	
+	///*****FIN METODOS ACTIVIDAD REVISAR ANTECENDETES ******
 
 }
