@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,11 +23,14 @@ import minsal.divap.enums.BusinessProcess;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.exception.ExcelFormatException;
+import minsal.divap.service.CajaService;
 import minsal.divap.service.DistribucionInicialPercapitaService;
 import minsal.divap.service.EstimacionFlujoCajaService;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ServicioSaludService;
 import minsal.divap.util.Util;
+import minsal.divap.vo.CajaGlobalVO;
+import minsal.divap.vo.CajaVO;
 import minsal.divap.vo.ColumnaVO;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ProgramaVO;
@@ -70,8 +74,8 @@ implements Serializable {
 	 * SUBTITULO 21
 	 */
 	
-	EstimacionFlujoMonitoreoGlobalPojo estimacionFlujoMonitoreoGlobalPojoSubtitulo21;
-	List<EstimacionFlujoMonitoreoPojo> listadoMonitoreoSubtitulo21;
+	CajaGlobalVO estimacionFlujoMonitoreoGlobalPojoSubtitulo21;
+	List<CajaVO> listadoMonitoreoSubtitulo21;
 	
 	//Convenio Remesa
 	EstimacionFlujoMonitoreoGlobalPojo estimacionFlujoMonitoreoGlobalPojoSubtitulo21ConvenioRemesa;
@@ -158,6 +162,8 @@ implements Serializable {
 	@EJB
 	private ServicioSaludService servicioSaludService;
 	
+	@EJB
+	private CajaService cajaService;
 
 
 	private Integer docProgramacion;
@@ -177,9 +183,8 @@ implements Serializable {
 	
 	@PostConstruct public void init() {
 		
-		@SuppressWarnings("unused")
-		String idPrograma =facesContext.getExternalContext()
-				.getRequestParameterMap().get("programa");
+		idPrograma =Integer.parseInt(facesContext.getExternalContext()
+				.getRequestParameterMap().get("programa"));
 		
 		listadoServicios2 = new ArrayList<MonitoreoPojo>();
 		log.info("procesoProgramacionController tocado.");
@@ -237,6 +242,19 @@ implements Serializable {
 	/*
 	 ********************************************************************************************** SUBTITULO 21
 	 */
+	
+	/*
+	 * Guardar Subtitulo 21
+	 */
+	
+	public void guardarSubtitulo21()
+	{
+
+		List<CajaVO> cajaVO = estimacionFlujoMonitoreoGlobalPojoSubtitulo21.getEstimacionFlujoMonitoreoPojo();
+		
+		cajaService.save(cajaVO);
+		
+	}
 	/*
 	 * Modificacion de la celda
 	 */
@@ -245,7 +263,7 @@ implements Serializable {
 		 UIColumn col= (UIColumn) event.getColumn();
 		 DataTable o=(DataTable) event.getSource();
 		
-		 EstimacionFlujoMonitoreoPojo info=(EstimacionFlujoMonitoreoPojo)o.getRowData();
+		 CajaVO info=(CajaVO)o.getRowData();
 		 
 		 
 	        Object oldValue = event.getOldValue();
@@ -257,10 +275,10 @@ implements Serializable {
 	        }
 	       
 	        
-	        EstimacionFlujoMonitoreoPojo monitore_borrar = new EstimacionFlujoMonitoreoPojo();
+	        CajaVO monitore_borrar = new CajaVO();
 	        
 
-	        	for (EstimacionFlujoMonitoreoPojo monitoreo_actual : listadoMonitoreoSubtitulo21) {
+	        	for (CajaVO monitoreo_actual : listadoMonitoreoSubtitulo21) {
 	        		
 	        		if (info.getId() == monitoreo_actual.getId())
 	        		{
@@ -282,9 +300,10 @@ implements Serializable {
 	public void CargarListaSubtitulo21()
 	{
 		
-	
-//		estimacionFlujoMonitoreoGlobalPojoSubtitulo21 = new EstimacionFlujoMonitoreoGlobalPojo();
-//		
+		listadoMonitoreoSubtitulo21 = cajaService.getByProgramaAnoSubtituloVO(idPrograma, Util.obtenerAno(new Date()), 1);
+		
+		estimacionFlujoMonitoreoGlobalPojoSubtitulo21 = new CajaGlobalVO();
+		
 //		
 //		EstimacionFlujoMonitoreoPojo estimacionFlujoMonitoreoPojo = new EstimacionFlujoMonitoreoPojo();
 //		estimacionFlujoMonitoreoPojo.setAbril(4);
@@ -342,7 +361,7 @@ implements Serializable {
 //		estimacionFlujoMonitoreoPojo.setTransferenciaPorcentaje(510);
 //		
 //		listadoMonitoreoSubtitulo21.add(estimacionFlujoMonitoreoPojo);
-//		estimacionFlujoMonitoreoGlobalPojoSubtitulo21.setEstimacionFlujoMonitoreoPojo(listadoMonitoreoSubtitulo21);
+    	estimacionFlujoMonitoreoGlobalPojoSubtitulo21.setEstimacionFlujoMonitoreoPojo(listadoMonitoreoSubtitulo21);
 	}
 	
 	
@@ -1712,21 +1731,21 @@ List<MonitoreoPojo> listadoServicios2;
 	}
 
 
-	public EstimacionFlujoMonitoreoGlobalPojo getEstimacionFlujoMonitoreoGlobalPojoSubtitulo21() {
+	public CajaGlobalVO getEstimacionFlujoMonitoreoGlobalPojoSubtitulo21() {
 		return estimacionFlujoMonitoreoGlobalPojoSubtitulo21;
 	}
 
 	public void setEstimacionFlujoMonitoreoGlobalPojoSubtitulo21(
-			EstimacionFlujoMonitoreoGlobalPojo estimacionFlujoMonitoreoGlobalPojoSubtitulo21) {
+			CajaGlobalVO estimacionFlujoMonitoreoGlobalPojoSubtitulo21) {
 		this.estimacionFlujoMonitoreoGlobalPojoSubtitulo21 = estimacionFlujoMonitoreoGlobalPojoSubtitulo21;
 	}
 
-	public List<EstimacionFlujoMonitoreoPojo> getListadoMonitoreoSubtitulo21() {
+	public List<CajaVO> getListadoMonitoreoSubtitulo21() {
 		return listadoMonitoreoSubtitulo21;
 	}
 
 	public void setListadoMonitoreoSubtitulo21(
-			List<EstimacionFlujoMonitoreoPojo> listadoMonitoreoSubtitulo21) {
+			List<CajaVO> listadoMonitoreoSubtitulo21) {
 		this.listadoMonitoreoSubtitulo21 = listadoMonitoreoSubtitulo21;
 	}
 
@@ -2084,7 +2103,7 @@ List<MonitoreoPojo> listadoServicios2;
 	 */
 	public void cargarListas()
 	{
-	    listadoMonitoreoSubtitulo21 = new ArrayList<EstimacionFlujoMonitoreoPojo>();
+	    listadoMonitoreoSubtitulo21 = new ArrayList<CajaVO>();
 	    listadoMonitoreoSubtitulo22 = new ArrayList<EstimacionFlujoMonitoreoPojo>();
 	    listadoMonitoreoSubtitulo24 = new ArrayList<EstimacionFlujoMonitoreoPojo>();
 	    listadoMonitoreoSubtitulo29 = new ArrayList<EstimacionFlujoMonitoreoPojo>();
