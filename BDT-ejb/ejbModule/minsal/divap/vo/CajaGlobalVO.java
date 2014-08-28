@@ -1,31 +1,27 @@
 package minsal.divap.vo;
 
-import java.util.Comparator;
+import java.util.List;
 
-import cl.minsal.divap.pojo.ComponentePojo;
+import cl.minsal.divap.pojo.EstimacionFlujoMonitoreoGlobalPojo;
 import cl.minsal.divap.pojo.EstimacionFlujoMonitoreoPojo;
 
-public class CajaGlobalVO  {
+public class CajaGlobalVO implements Cloneable {
 
-	
-	private long id;
-	private String servicio;
-	private String comuna;
-	private long marcoMonto;
-	private long transferenciaMonto;
-	private float transferenciaPorcentaje;
-	
-	private long remesaMonto;
-	private float remesaPorcentaje;
-	private long convenioMonto;
-	private float convenioPorcentaje;
-	
-	
-	private String establecimiento;
-	
-	
-	private ComponentePojo componente;
-	
+	 @Override 
+	 public CajaGlobalVO clone() {
+	        try {
+	            final CajaGlobalVO result = (CajaGlobalVO) super.clone();
+	            // copy fields that need to be copied here!
+	            return result;
+	        } catch (final CloneNotSupportedException ex) {
+	            throw new AssertionError();
+	        }
+	 }
+	private long totalMarcoMonto;
+	/*Se obtienes desde otros procesos*/
+	private long totalTransferenciaMonto;
+	private long totalRemesaMonto;
+	private long totalConvenioMonto;
 
 	private long enero;
 	private long febrero;
@@ -39,351 +35,226 @@ public class CajaGlobalVO  {
 	private long octubre;
 	private long noviembre; 
 	private long diciembre; 
-	private long total = enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre
-					+ octubre + noviembre + diciembre;
+	private long total;
 	
-	
-	
-	private String color = "#FFB5B5";
+	private List<CajaVO> estimacionFlujoMonitoreoPojo;
 
-
-
-	public long getId() {
-		return id;
+	public long getTotalMarcoMonto() {
+		totalMarcoMonto = 0;
+		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+			totalMarcoMonto += e.getMarcoMonto();
+		}
+		
+		return totalMarcoMonto;
 	}
 
-
-
-	public void setId(long id) {
-		this.id = id;
+	public void setTotalMarcoMonto(long totalMarcoMonto) {
+		this.totalMarcoMonto = totalMarcoMonto;
 	}
 
-
-
-	public String getServicio() {
-		return servicio;
+	public long getTotalTransferenciaMonto() {
+		
+		totalTransferenciaMonto =0;
+		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+			total += e.getTransferenciaMonto();
+		}
+		
+		return totalTransferenciaMonto;
 	}
 
-
-
-	public void setServicio(String servicio) {
-		this.servicio = servicio;
+	public void setTotalTransferenciaMonto(long totalTransferenciaMonto) {
+		this.totalTransferenciaMonto = totalTransferenciaMonto;
 	}
 
-
-
-	public String getComuna() {
-		return comuna;
+	public long getTotalRemesaMonto() {
+		totalRemesaMonto = 0;
+		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+			totalRemesaMonto += e.getRemesaMonto();
+		}
+		return totalRemesaMonto;
 	}
 
-
-
-	public void setComuna(String comuna) {
-		this.comuna = comuna;
+	public void setTotalRemesaMonto(long totalRemesaMonto) {
+		this.totalRemesaMonto = totalRemesaMonto;
 	}
 
-
-
-	public long getMarcoMonto() {
-		return marcoMonto;
+	public long getTotalConvenioMonto() {
+		totalConvenioMonto = 0;
+		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+			totalConvenioMonto += e.getConvenioMonto();
+		}
+		
+		return totalConvenioMonto;
 	}
 
-
-
-	public void setMarcoMonto(long marcoMonto) {
-		this.marcoMonto = marcoMonto;
+	public void setTotalConvenioMonto(long totalConvenioMonto) {
+		this.totalConvenioMonto = totalConvenioMonto;
 	}
-
-
-
-	public long getTransferenciaMonto() {
-		return transferenciaMonto;
-	}
-
-
-
-	public void setTransferenciaMonto(long transferenciaMonto) {
-		this.transferenciaMonto = transferenciaMonto;
-	}
-
-
-
-	public float getTransferenciaPorcentaje() {
-		return transferenciaPorcentaje;
-	}
-
-
-
-	public void setTransferenciaPorcentaje(float transferenciaPorcentaje) {
-		this.transferenciaPorcentaje = transferenciaPorcentaje;
-	}
-
-
-
-	public long getRemesaMonto() {
-		return remesaMonto;
-	}
-
-
-
-	public void setRemesaMonto(long remesaMonto) {
-		this.remesaMonto = remesaMonto;
-	}
-
-
-
-	public float getRemesaPorcentaje() {
-		return remesaPorcentaje;
-	}
-
-
-
-	public void setRemesaPorcentaje(float remesaPorcentaje) {
-		this.remesaPorcentaje = remesaPorcentaje;
-	}
-
-
-
-	public long getConvenioMonto() {
-		return convenioMonto;
-	}
-
-
-
-	public void setConvenioMonto(long convenioMonto) {
-		this.convenioMonto = convenioMonto;
-	}
-
-
-
-	public float getConvenioPorcentaje() {
-		return convenioPorcentaje;
-	}
-
-
-
-	public void setConvenioPorcentaje(float convenioPorcentaje) {
-		this.convenioPorcentaje = convenioPorcentaje;
-	}
-
-
-
-	public String getEstablecimiento() {
-		return establecimiento;
-	}
-
-
-
-	public void setEstablecimiento(String establecimiento) {
-		this.establecimiento = establecimiento;
-	}
-
-
-
-	public ComponentePojo getComponente() {
-		return componente;
-	}
-
-
-
-	public void setComponente(ComponentePojo componente) {
-		this.componente = componente;
-	}
-
-
 
 	public long getEnero() {
+		enero = 0;
+		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+			enero += e.getEnero();
+		}
+		
 		return enero;
 	}
-
-
 
 	public void setEnero(long enero) {
 		this.enero = enero;
 	}
 
-
-
 	public long getFebrero() {
+		febrero = 0;
+		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+			febrero += e.getFebrero();
+		}
 		return febrero;
 	}
-
-
 
 	public void setFebrero(long febrero) {
 		this.febrero = febrero;
 	}
 
-
-
 	public long getMarzo() {
+		marzo = 0;
+		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+			marzo += e.getMarzo();
+		}
 		return marzo;
 	}
-
-
 
 	public void setMarzo(long marzo) {
 		this.marzo = marzo;
 	}
 
-
-
 	public long getAbril() {
+		abril = 0;
+		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+			abril += e.getAbril();
+		}
 		return abril;
 	}
-
-
 
 	public void setAbril(long abril) {
 		this.abril = abril;
 	}
 
-
-
 	public long getMayo() {
+		mayo = 0;
+		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+			mayo += e.getMayo();
+		}
 		return mayo;
 	}
-
-
 
 	public void setMayo(long mayo) {
 		this.mayo = mayo;
 	}
 
-
-
 	public long getJunio() {
+		junio = 0;
+		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+			junio += e.getJunio();
+		}
 		return junio;
 	}
-
-
 
 	public void setJunio(long junio) {
 		this.junio = junio;
 	}
 
-
-
 	public long getJulio() {
+		julio = 0;
+		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+			julio += e.getJulio();
+		}
 		return julio;
 	}
-
-
 
 	public void setJulio(long julio) {
 		this.julio = julio;
 	}
 
-
-
 	public long getAgosto() {
+		
+		agosto = 0;
+		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+			agosto += e.getAgosto();
+		}
 		return agosto;
 	}
-
-
 
 	public void setAgosto(long agosto) {
 		this.agosto = agosto;
 	}
 
-
-
 	public long getSeptiembre() {
+		septiembre = 0;
+		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+			septiembre += e.getSeptiembre();
+		}
 		return septiembre;
 	}
-
-
 
 	public void setSeptiembre(long septiembre) {
 		this.septiembre = septiembre;
 	}
 
-
-
 	public long getOctubre() {
+		octubre = 0;
+		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+			octubre += e.getOctubre();
+		}
 		return octubre;
 	}
-
-
 
 	public void setOctubre(long octubre) {
 		this.octubre = octubre;
 	}
 
-
-
 	public long getNoviembre() {
+		noviembre = 0;
+		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+			noviembre += e.getNoviembre();
+		}
 		return noviembre;
 	}
-
-
 
 	public void setNoviembre(long noviembre) {
 		this.noviembre = noviembre;
 	}
 
-
-
 	public long getDiciembre() {
+		diciembre = 0;
+		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+			diciembre += e.getDiciembre();
+		}
 		return diciembre;
 	}
-
-
 
 	public void setDiciembre(long diciembre) {
 		this.diciembre = diciembre;
 	}
 
-
-
 	public long getTotal() {
-		return enero+febrero+marzo+abril+mayo+junio+julio+agosto+septiembre+octubre+noviembre+diciembre;
+		total = 0;
+		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+			total += e.getTotal();
+		}
+		return total;
 	}
-
-
 
 	public void setTotal(long total) {
 		this.total = total;
 	}
 
-
-
-	public String getColor() {
-		if (marcoMonto != getTotal())
-			color = "#FF0000";
-		else
-			color = "#3ADF00";
-		return color;
+	public List<CajaVO> getEstimacionFlujoMonitoreoPojo() {
+		return estimacionFlujoMonitoreoPojo;
 	}
 
-
-
-	public void setColor(String color) {
-		this.color = color;
+	public void setEstimacionFlujoMonitoreoPojo(
+			List<CajaVO> estimacionFlujoMonitoreoPojo) {
+		this.estimacionFlujoMonitoreoPojo = estimacionFlujoMonitoreoPojo;
 	}
-	
-//	public static class OrderByAmount implements Comparator<EstimacionFlujoMonitoreoPojo> {
-//
-//        @Override
-//        public int compare(EstimacionFlujoMonitoreoPojo o1, EstimacionFlujoMonitoreoPojo o2) {
-//            return o1.comuna.compareTo(o2.comuna);
-//        }
-//    }
-	
-//	@Override
-//    public int compareTo(EstimacionFlujoMonitoreoPojo o) {
-//        return this.getId() > o.getId() ? 1 : (this.id < o.id ? -1 : 0);
-//    }
-  
-    /*
-     * implementing toString method to print orderId of Order
-     */
-    @Override
-    public String toString(){
-        return String.valueOf(id);
-    }
-	
-
-	
 }
-

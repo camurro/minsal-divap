@@ -97,8 +97,20 @@ public class Caja implements Serializable {
     @JoinColumn(name = "id_componente", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Componente idComponente;
+    
+    @JoinColumn(name = "id_establecimiento", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Establecimiento idEstablecimiento;
 
-    public Caja() {
+    public Establecimiento getIdEstablecimiento() {
+		return idEstablecimiento;
+	}
+
+	public void setIdEstablecimiento(Establecimiento idEstablecimiento) {
+		this.idEstablecimiento = idEstablecimiento;
+	}
+
+	public Caja() {
     }
 
     public Caja(Integer id) {

@@ -57,6 +57,12 @@ public class CajaDAO {
 		}
 		return caja;
 	}
+	
+	public boolean save(Caja caja) {
+
+		this.em.persist(caja);
+		return true;
+	}
 
 	public List<Caja> getByIDProgramaAnoSubtitulo(Integer idPrograma,
 			Integer ano, Integer subtitulo) {
@@ -72,6 +78,19 @@ public class CajaDAO {
 		}
 	}
 
+	
+	public Caja getByID(Integer id) {
+		try {
+			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findById", Caja.class);
+			query.setParameter("id",id);
+			
+			if (query.getSingleResult()!=null);
+			return query.getSingleResult();
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 
 }
