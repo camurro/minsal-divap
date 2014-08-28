@@ -20,9 +20,11 @@
 		<class>cl.minsal.divap.model.TipoPrograma</class>
 		<class>cl.minsal.divap.model.Usuario</class>
 		<class>cl.minsal.divap.model.DistribucionInicialPercapita</class>
+		
+		<class>cl.minsal.divap.model.Caja</class>
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-			<property name="hibernate.show_sql" value="false"/>
+			<property name="hibernate.show_sql" value="true"/>
 			<property name="hibernate.format_sql" value="true"/>
 		</properties>
 	</persistence-unit>

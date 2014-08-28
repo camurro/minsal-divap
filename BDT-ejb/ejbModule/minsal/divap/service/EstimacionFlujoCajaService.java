@@ -20,9 +20,11 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 import cl.minsal.divap.model.AntecendentesComunaCalculado;
+import cl.minsal.divap.model.Caja;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.Usuario;
+import minsal.divap.dao.CajaDAO;
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
 import minsal.divap.dao.EstimacionFlujoCajaDAO;
 import minsal.divap.dao.SeguimientoDAO;
@@ -37,6 +39,7 @@ import minsal.divap.excel.impl.AsignacionDistribucionPercapitaSheetExcel;
 import minsal.divap.excel.impl.AsignacionRecursosPercapitaSheetExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaSheetExcel;
 import minsal.divap.model.mappers.AsignacionDistribucionPercapitaMapper;
+import minsal.divap.util.Util;
 import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
 import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.BodyVO;
@@ -77,6 +80,8 @@ public class EstimacionFlujoCajaService {
 	@EJB
 	private SeguimientoDAO seguimientoDAO;
 	
+	@EJB
+	private CajaDAO cajaDAO;
 	
 	//Generar documento
 	public Integer elaborarOrdinarioProgramacionCaja(Integer idDistribucionInicialPercapita) {
@@ -176,51 +181,22 @@ public class EstimacionFlujoCajaService {
 		return planillaTrabajoId;
 	}
 	
-	
+	//Para hacer el calculo de la propuesta, se debe hacer una copia de los valores del año pasado.
 	public Integer calcularPropuesta(Integer idPrograma){
-		//System.out.println("username-->"+username);
-		//Obtengo la lista de datos para realizar los calculos correspondientes.
-		int subtitulo = 0;
-		
-		switch (subtitulo) {
-		case 21:
-		case 22:
-		case 24:
-		case 29:
-			if (subtitulo == 24){ 
-				
-			//PERCAPITA
-			Double marcoPresupuestario = (Double) 0.0; //Obtener cuota desde la BD
-			Double cuota = marcoPresupuestario / 12;
-			
-			//LEYES
-			//Distribucion Mensual (Igual que Percapita)
-			//Segun Demanda
-			}
-			
-			//TODO: Explicacion del algoritmo Programas de Reoforzamiento
-			
-			
-			
-			break;
-		default:
-			break;
+	
+		//Obtenemos los datos de la caja por el ID de programa.
+		//Modificamos el año y guardamos nuevamente.
+		List<Caja> lst = cajaDAO.getByIDProgramaAno(idPrograma, Util.obtenerAno(new Date()));
+		for (Caja caja : lst) {
+			caja.setAno(caja.getAno() + 1);
+			caja.setId(null);
 		}
-		if (subtitulo == 24) //Percapita
-		{
-			//Cuota n [mes de programación a diciembre] de un SS = MP[actualizado] / 12
+		//Generamos la copia de los datos para el nuevo año
+		cajaDAO.save(lst);
 		
-			//Se guarda el valor para todos los programas.
-			
-		}
-		else if (subtitulo == 21 || subtitulo == 22 || subtitulo ==24 || subtitulo == 29)
-		{
 		
-		}
-//			21, 22, 24, 29)
-//		
-//		
-//		estimacionFlujoCajaDAO.calcularPropuesta();
+		
+		
 	return 1;
 	}
 

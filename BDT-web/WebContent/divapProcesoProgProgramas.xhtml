@@ -21,6 +21,7 @@
 								<!-- <p:column headerText="Estado" width="60" /> -->
 
 								<p:column headerText="Iniciar" width="60" />
+								<p:column headerText="Modificar" width="60" />
 								<!-- <p:column headerText="Terminar" width="60" /> -->
 							</p:row>
 						</p:columnGroup>
@@ -31,6 +32,23 @@
 						<p:column style="text-align:left;">
 							<span class="textoAjustado">#{_programas.descripcion}</span>
 						</p:column>
+						<p:column>
+						
+						<c:if test="${(_programas.estadoFlujoCaja eq 2)}">
+						<h:commandLink action="#{procesoEstimacionFlujoCajaSeleccionarLineaController.continuarProceso(_programas.id)}" >
+							<h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons"  />
+						</h:commandLink>
+						
+						</c:if>
+						#{_programas.estadoFlujoCaja}
+						<!-- <c:if test="#{_programas.estadoFlujoCaja ne 1}">
+						<h:commandLink action="#{procesoEstimacionFlujoCajaSeleccionarLineaController.continuarProceso(_programas.id)}" >
+							<h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons"  />
+						</h:commandLink>
+						</c:if> -->
+						
+						</p:column>
+						
 						<p:column>
 						<h:commandLink action="#{procesoEstimacionFlujoCajaSeleccionarLineaController.continuarProceso(_programas.id)}" >
 							<h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons"  />

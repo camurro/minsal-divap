@@ -3,6 +3,8 @@ package minsal.divap.vo;
 import java.io.Serializable;
 import java.util.List;
 
+import cl.minsal.divap.model.EstadoPrograma;
+
 
 public class ProgramaVO implements Serializable{
 
@@ -19,6 +21,7 @@ public class ProgramaVO implements Serializable{
 	private String username;
 	private String descripcion;
 	private List<ComponentesVO> componentes;
+	private EstadoPrograma estadoFlujocaja;
 	
 	public int getId() {
 		return id;
@@ -82,6 +85,14 @@ public class ProgramaVO implements Serializable{
 	
 	public void setComponentes(List<ComponentesVO> componentes) {
 		this.componentes = componentes;
+	}
+
+	public EstadoPrograma getEstadoFlujocaja() {
+		return estadoFlujocaja;
+	}
+
+	public void setEstadoFlujocaja(EstadoPrograma estadoFlujocaja) {
+		this.estadoFlujocaja = estadoFlujocaja;
 	}
 	
 }
