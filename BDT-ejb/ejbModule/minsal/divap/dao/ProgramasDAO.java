@@ -29,6 +29,16 @@ public class ProgramasDAO {
 		}
 	}
 	
+	public Programa getProgramaByID(Integer idPrograma){
+		try {
+			TypedQuery<Programa> query = this.em.createNamedQuery("Programa.findById", Programa.class);
+			query.setParameter("id", idPrograma);
+			return query.getSingleResult(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	public List<Programa> getComponenteByPrograma(int programaId){
 		try {
 			TypedQuery<Programa> query = this.em.createNamedQuery("Programa.findComponentesByPrograma", Programa.class);
