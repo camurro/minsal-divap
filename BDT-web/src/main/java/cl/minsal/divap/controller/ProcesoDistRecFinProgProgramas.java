@@ -10,6 +10,7 @@ import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
+import minsal.divap.enums.TiposPrograma;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 import minsal.divap.vo.ProgramaVO;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
@@ -35,24 +36,35 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 	@Override
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new HashMap<String, Object>();
+		System.out.println("programaSeleccionado-->"+programaSeleccionado);
 		if(programaSeleccionado != null){
 			Integer paramProgramaSeleccionado = Integer.parseInt(programaSeleccionado);
 			for(ProgramaVO programaVO : programas){
-				if(paramProgramaSeleccionado == programaVO.getId()){
+				if(paramProgramaSeleccionado.equals(programaVO.getIdProgramaAno())){
 					StringBuilder sufijoTipoPrograma = new StringBuilder();
-					if(programaVO.getTipoPrograma().getId() == 1){
-						sufijoTipoPrograma.append("Programa PxQ");
-						parameters.put("tipoProgramaPxQ_", new Boolean(true));
-					} else if(programaVO.getTipoPrograma().getId() == 2){
-						sufijoTipoPrograma.append("Programa Valores Historicos");
-						parameters.put("tipoProgramaPxQ_",  new Boolean(false));
+					System.out.println("tipoProgramaPxQ_-->"+true);
+					if(programaVO.getComponentes() != null && programaVO.getComponentes().size() > 0){
+						if(programaVO.getComponentes().size() == 1){
+							if((programaVO.getComponentes().get(0).getTipoComponente()) != null && (programaVO.getComponentes().get(0).getTipoComponente().getId().equals(TiposPrograma.ProgramaHistorico.getId()) ) ){
+								parameters.put("tipoProgramaPxQ_",  new Boolean(false));
+								sufijoTipoPrograma.append("Programa Valores Historicos");
+								System.out.println("tipoProgramaPxQ_-->"+false);
+							}else{
+								sufijoTipoPrograma.append("Programa PxQ");
+								parameters.put("tipoProgramaPxQ_", new Boolean(true));
+							}
+						}else{
+							sufijoTipoPrograma.append("Programa PxQ");
+							parameters.put("tipoProgramaPxQ_", new Boolean(true));
+						}
 					}
-					if(programaVO.getDependenciaPrograma().getId() == 1){
-						sufijoTipoPrograma.append(" con Dependencia Municipal");
-					} else if(programaVO.getDependenciaPrograma().getId() == 2){
-						sufijoTipoPrograma.append(" con Dependencia de Servicio de Salud");
-					} else if(programaVO.getDependenciaPrograma().getId() == 3){
+					
+					if(programaVO.getDependenciaMunicipal() && programaVO.getDependenciaServicio()){
 						sufijoTipoPrograma.append(" con Dependencia de Servicio de Salud y Municipal");
+					}else if(programaVO.getDependenciaMunicipal()){
+						sufijoTipoPrograma.append(" con Dependencia Municipal");
+					}else{
+						sufijoTipoPrograma.append(" con Dependencia de Servicio de Salud");
 					}
 					parameters.put("sufijoTipoPrograma_", sufijoTipoPrograma.toString());
 				}

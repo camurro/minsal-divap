@@ -1,12 +1,19 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlTransient;
-
-import java.util.List;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlTransient;
 
 
 /**
@@ -20,6 +27,7 @@ import java.util.Set;
 	@NamedQuery(name ="Programa.findById", query = "SELECT p FROM Programa p WHERE p.id = :id"),
 	@NamedQuery(name = "Programa.findByNombre", query = "SELECT p FROM Programa p WHERE p.nombre = :nombre"),
 	@NamedQuery(name = "Programa.findByCantidadCuotas", query = "SELECT p FROM Programa p WHERE p.cantidadCuotas = :cantidadCuotas"),
+	@NamedQuery(name = "Programa.findByDescripcion", query = "SELECT p FROM Programa p WHERE p.descripcion = :descripcion"),
 	@NamedQuery(name="Programa.findComponentesByPrograma", query="SELECT p FROM Programa p where p.id=:id")})
 public class Programa implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -36,41 +44,21 @@ public class Programa implements Serializable {
 
 	private String descripcion;
 
-	//bi-directional many-to-one association to Componente
-	@OneToMany(mappedBy="programa")
-	private List<Componente> componentes;
-
-	//bi-directional many-to-one association to Cuota
-	@OneToMany(mappedBy="programa")
-	private List<Cuota> cuotas;
-
-	//bi-directional many-to-one association to MarcoPresupuestario
-	@OneToMany(mappedBy="programa")
-	private List<MarcoPresupuestario> marcoPresupuestarios;
-
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "programa")
-	private Set<ProgramaSubtitulo> programasSubtitulos;
-
-	//bi-directional many-to-one association to MetadataCore
-	@OneToMany(mappedBy="programa")
-	private List<MetadataCore> metadataCores;
-
-	//bi-directional many-to-one association to TipoPrograma
-	@JoinColumn(name = "id_tipo_programa", referencedColumnName = "id")
-	@ManyToOne
-	private TipoPrograma idTipoPrograma;
-
-	@JoinColumn(name = "dependencia", referencedColumnName = "id_dependencia_programa")
-	@ManyToOne(optional = false)
-	private DependenciaPrograma dependencia;
-
-	//bi-directional many-to-one association to Usuario
-	@ManyToOne
-	@JoinColumn(name="username_usuario")
-	private Usuario usuario;
-
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "programa")
-	private Set<ProgramaAno> programasAnos;
+    private Set<ProgramaAno> programasAnos;
+    @OneToMany(mappedBy = "programa")
+    private Set<Cuota> cuotas;
+    @JoinColumn(name = "username_usuario", referencedColumnName = "username")
+    @ManyToOne
+    private Usuario usuario;
+    @OneToMany(mappedBy = "programa")
+    private Set<MarcoPresupuestario> marcoPresupuestarios;
+    @OneToMany(mappedBy = "idPrograma")
+    private Set<Componente> componentes;
+    @OneToMany(mappedBy = "programa")
+    private Set<MetadataCore> metadataCores;
+    @OneToMany(mappedBy = "idPrograma")
+    private Set<Seguimiento> seguimientoCollection;
 
 	public Programa() {
 	}
@@ -99,33 +87,11 @@ public class Programa implements Serializable {
 		this.nombre = nombre;
 	}
 
-	public List<Componente> getComponentes() {
-		return this.componentes;
-	}
-
-	public void setComponentes(List<Componente> componentes) {
-		this.componentes = componentes;
-	}
-
-	public Componente addComponente(Componente componente) {
-		getComponentes().add(componente);
-		componente.setPrograma(this);
-
-		return componente;
-	}
-
-	public Componente removeComponente(Componente componente) {
-		getComponentes().remove(componente);
-		componente.setPrograma(null);
-
-		return componente;
-	}
-
-	public List<Cuota> getCuotas() {
+	public Set<Cuota> getCuotas() {
 		return this.cuotas;
 	}
 
-	public void setCuotas(List<Cuota> cuotas) {
+	public void setCuotas(Set<Cuota> cuotas) {
 		this.cuotas = cuotas;
 	}
 
@@ -143,11 +109,11 @@ public class Programa implements Serializable {
 		return cuota;
 	}
 
-	public List<MarcoPresupuestario> getMarcoPresupuestarios() {
+	public Set<MarcoPresupuestario> getMarcoPresupuestarios() {
 		return this.marcoPresupuestarios;
 	}
 
-	public void setMarcoPresupuestarios(List<MarcoPresupuestario> marcoPresupuestarios) {
+	public void setMarcoPresupuestarios(Set<MarcoPresupuestario> marcoPresupuestarios) {
 		this.marcoPresupuestarios = marcoPresupuestarios;
 	}
 
@@ -165,11 +131,11 @@ public class Programa implements Serializable {
 		return marcoPresupuestario;
 	}
 
-	public List<MetadataCore> getMetadataCores() {
+	public Set<MetadataCore> getMetadataCores() {
 		return this.metadataCores;
 	}
 
-	public void setMetadataCores(List<MetadataCore> metadataCores) {
+	public void setMetadataCores(Set<MetadataCore> metadataCores) {
 		this.metadataCores = metadataCores;
 	}
 
@@ -223,30 +189,14 @@ public class Programa implements Serializable {
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
-
-	public TipoPrograma getIdTipoPrograma() {
-		return idTipoPrograma;
+	
+	@XmlTransient
+	public Set<Componente> getComponentes() {
+		return componentes;
 	}
 
-	public void setIdTipoPrograma(TipoPrograma idTipoPrograma) {
-		this.idTipoPrograma = idTipoPrograma;
+	public void setComponentes(Set<Componente> componentes) {
+		this.componentes = componentes;
 	}
-
-	@XmlTransient    
-	public Set<ProgramaSubtitulo> getProgramasSubtitulos() {
-		return programasSubtitulos;
-	}
-
-	public void setProgramasSubtitulos(Set<ProgramaSubtitulo> programasSubtitulos) {
-		this.programasSubtitulos = programasSubtitulos;
-	}
-
-	public DependenciaPrograma getDependencia() {
-		return dependencia;
-	}
-
-	public void setDependencia(DependenciaPrograma dependencia) {
-		this.dependencia = dependencia;
-	}
-
+	
 }

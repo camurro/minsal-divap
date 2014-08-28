@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import minsal.divap.enums.TiposPrograma;
-import minsal.divap.enums.TiposSubtitulos;
+import minsal.divap.enums.Subtitulo;
 
 public class ProgramaAPSVO implements Serializable{
 	/**
@@ -19,7 +19,7 @@ public class ProgramaAPSVO implements Serializable{
 	private Integer tarifa;
 	private Integer cantidad;
 	private TiposPrograma tipoPrograma;
-	private TiposSubtitulos tipoSubtitulo;
+	private Subtitulo subtitulo;
 	//TO-DO Componentes
 	public Integer getIdServicioSalud() {
 		return idServicioSalud;
@@ -63,14 +63,13 @@ public class ProgramaAPSVO implements Serializable{
 	public void setTipoPrograma(TiposPrograma tipoPrograma) {
 		this.tipoPrograma = tipoPrograma;
 	}
-	public TiposSubtitulos getTipoSubtitulo() {
-		return tipoSubtitulo;
-	}
-	public void setTipoSubtitulo(TiposSubtitulos tipoSubtitulo) {
-		this.tipoSubtitulo = tipoSubtitulo;
-	}
-	
 
+	public Subtitulo getSubtitulo() {
+		return subtitulo;
+	}
+	public void setSubtitulo(Subtitulo subtitulo) {
+		this.subtitulo = subtitulo;
+	}
 	public List<Object> getRow() {
 		List<Object> row = new ArrayList<Object>();
 		if(getIdServicioSalud() != null){
