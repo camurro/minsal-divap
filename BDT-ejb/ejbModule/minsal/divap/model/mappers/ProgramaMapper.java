@@ -3,6 +3,7 @@ package minsal.divap.model.mappers;
 import java.util.ArrayList;
 import java.util.List;
 
+import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.DependenciaProgramaVO;
 import minsal.divap.vo.ProgramaVO;
@@ -20,10 +21,14 @@ public class ProgramaMapper implements Mapper<ProgramaAno>{
 
 	@Override
 	public ProgramaVO getBasic(ProgramaAno programaAno) {
+		
 		if (programaAno == null)
 			return null;
+		
 		ProgramaVO programaVO = new ProgramaVO();
 		programaVO.setId(programaAno.getIdProgramaAno());
+		
+		
 		if(programaAno.getPrograma() != null){
 			programaVO.setNombre(programaAno.getPrograma().getNombre());
 			programaVO.setDescripcion(programaAno.getPrograma().getDescripcion());
@@ -42,6 +47,11 @@ public class ProgramaMapper implements Mapper<ProgramaAno>{
 					componentesVO.add(new ComponenteMapper().getBasic(componente));
 				}
 				programaVO.setComponentes(componentesVO);
+			}
+			
+			if (programaAno.getEstadoFlujoCaja()!=null)
+			{
+			    programaVO.setEstadoFlujocaja(programaAno.getEstadoFlujoCaja());
 			}
 		}
 		return programaVO;

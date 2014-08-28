@@ -25,6 +25,7 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 	@Inject
 	private transient Logger log;
 
+	
 	//ID Programa
 	private Integer idLineaProgramatica;
 	
@@ -50,6 +51,8 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 			p2.setPrograma(programaVO.getNombre());
 			p2.setDescripcion("descripcion");
 			p2.setId(programaVO.getId());
+			p2.setEstadoFlujoCaja(programaVO.getEstadoFlujocaja().getIdEstadoPrograma());
+			
 			listadoProgramasServicio.add(p2);
 		}
 		return listadoProgramasServicio;
@@ -59,7 +62,7 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 	public String continuarProceso(Integer id) {
 
 		setIdLineaProgramatica(id);
-		setTarget("divapProcesoProgMonitoreo");
+		setTarget("bandejaTareas");
 		return super.enviar();
 	}
 	

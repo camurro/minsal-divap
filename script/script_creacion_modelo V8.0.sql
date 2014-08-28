@@ -1837,13 +1837,15 @@ WITH (
 INSERT INTO estado_programa(id_estado_programa, nombre_estado) VALUES (1, 'Sin Iniciar');
 INSERT INTO estado_programa(id_estado_programa, nombre_estado) VALUES (2, 'En Curso');
 INSERT INTO estado_programa(id_estado_programa, nombre_estado) VALUES (3, 'Finalizado');
+DROP TABLE programa_ano;
 
 CREATE TABLE programa_ano
 (
   id_programa_ano serial NOT NULL,
   programa integer NOT NULL,
   ano integer NOT NULL,
-  estado integer NOT NULL,
+  estado integer,
+  estadoflujocaja integer,
   CONSTRAINT programa_ano_pk PRIMARY KEY (id_programa_ano),
   CONSTRAINT estado_programa_fk FOREIGN KEY (estado)
       REFERENCES estado_programa (id_estado_programa) MATCH SIMPLE
@@ -1858,6 +1860,9 @@ CREATE TABLE programa_ano
 WITH (
   OIDS=FALSE
 );
+ALTER TABLE programa_ano
+  OWNER TO postgres;
+
 
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (40, 'Plantilla Programa APS Municipales');
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (41, 'Plantilla Programa APS Mixto');
@@ -2054,6 +2059,58 @@ INSERT INTO componente(id, nombre, id_programa)	 VALUES (	65	,	'CAPACITACIÓN Y 
 INSERT INTO componente(id, nombre, id_programa)	 VALUES (	66	,	'FONDO DE FÁRMACIA PARA ENFERMEDADES CRONICAS NO TRANSMISIBLES'	,	44	);
 INSERT INTO componente(id, nombre, id_programa)	 VALUES (	67	,	'PROGRAMA ESPECIAL DE SALUD Y PUEBLOS INDIGENAS (PESPI)'	,	45	);
 
+
+-- Estimacion Flujo Caja.
+DROP TABLE caja;
+
+CREATE TABLE caja
+(
+  id integer NOT NULL DEFAULT nextval(('public.caja_id_seq'::text)::regclass), -- Identificador para la tabla de caja
+  id_programa integer NOT NULL, -- FK del programa
+  id_componente integer NOT NULL,
+  id_servicio integer NOT NULL,
+  marco_presupuestario numeric(18,0),
+  enero numeric(18,0),
+  febrero numeric(18,0),
+  marzo numeric(18,0),
+  abril numeric(18,0),
+  mayo numeric(18,0),
+  junio numeric(18,0),
+  julio numeric(18,0),
+  agosto numeric(18,0),
+  septiembre numeric(18,0),
+  octubre numeric(18,0),
+  noviembre numeric(18,0),
+  diciembre numeric(18,0),
+  total numeric(18,0),
+  id_comuna integer,
+  id_subtitulo integer,
+  ano integer,
+  CONSTRAINT caja_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_componente FOREIGN KEY (id_componente)
+      REFERENCES componente (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE, -- *Verificar si es necesaria
+  CONSTRAINT fk_comuna FOREIGN KEY (id_comuna)
+      REFERENCES comuna (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_programa FOREIGN KEY (id_programa)
+      REFERENCES programa (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_servicio FOREIGN KEY (id_servicio)
+      REFERENCES servicio_salud (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE caja
+  OWNER TO postgres;
+COMMENT ON TABLE caja
+  IS 'Tabla para el proceso de estimacion de flujo de caja';
+COMMENT ON COLUMN caja.id IS 'Identificador para la tabla de caja';
+COMMENT ON COLUMN caja.id_programa IS 'FK del programa';
+
+COMMENT ON CONSTRAINT fk_componente ON caja IS '*Verificar si es necesaria';
 
 
 
