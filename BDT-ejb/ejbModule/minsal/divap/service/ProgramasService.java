@@ -24,8 +24,25 @@ public class ProgramasService {
 	@EJB
 	private ProgramasDAO programasDAO;
 
+	public Programa getProgramasByID(Integer idPrograma) {
+		Programa programa = this.programasDAO.getProgramaByID(idPrograma);
+		return programa;
+	}
+	
+	
 	public List<ProgramaVO> getProgramasByUser(String username) {
 		List<ProgramaAno> programas = this.programasDAO.getProgramasByUserAno(username, getAnoCurso());
+		List<ProgramaVO> result = new ArrayList<ProgramaVO>();
+		if(programas != null && programas.size() > 0){
+			for(ProgramaAno programa : programas){
+				result.add(new ProgramaMapper().getBasic(programa));
+			}
+		}
+		return result;
+	}
+	
+	public List<ProgramaVO> getProgramasByUserAno(String username, Integer ano) {
+		List<ProgramaAno> programas = this.programasDAO.getProgramasByUserAno(username, ano);
 		List<ProgramaVO> result = new ArrayList<ProgramaVO>();
 		if(programas != null && programas.size() > 0){
 			for(ProgramaAno programa : programas){

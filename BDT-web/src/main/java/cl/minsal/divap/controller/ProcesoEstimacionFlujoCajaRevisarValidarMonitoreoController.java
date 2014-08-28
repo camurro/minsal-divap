@@ -43,6 +43,7 @@ import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
+import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.pojo.ComponentePojo;
 import cl.minsal.divap.pojo.EstimacionFlujoMonitoreoGlobalPojo;
 import cl.minsal.divap.pojo.EstimacionFlujoMonitoreoPojo;
@@ -140,15 +141,13 @@ implements Serializable {
 	List<ColumnaVO> columnsInicial;
 	private Map<String,String> componentes = new HashMap<String, String>();
 	private Map<String,String> servicios = new HashMap<String, String>();
-	
-	
-	public Map<String, String> getComponentes() {
-		return componentes;
-	}
-
-	public void setComponentes(Map<String, String> componentes) {
-		this.componentes = componentes;
-	}
+	private Integer idProgramaModificar;
+	//Para mostrar los subtitulos según corresponda.
+	private	Boolean mostrarSubtitulo21;
+	private Boolean mostrarSubtitulo22;
+	private Boolean mostrarSubtitulo24;
+	private Boolean mostrarSubtitulo29;
+	private int idPrograma;
 
 
 	@EJB
@@ -178,6 +177,10 @@ implements Serializable {
 	
 	@PostConstruct public void init() {
 		
+		@SuppressWarnings("unused")
+		String idPrograma =facesContext.getExternalContext()
+				.getRequestParameterMap().get("programa");
+		
 		listadoServicios2 = new ArrayList<MonitoreoPojo>();
 		log.info("procesoProgramacionController tocado.");
 		if (!getSessionBean().isLogged()) {
@@ -188,7 +191,7 @@ implements Serializable {
 				log.error("Error tratando de redireccionar a login por falta de usuario en sesion.", e);
 			}
 		}
-		
+		configurarVisibilidadPaneles();
 		generaProgramas();
 		generaServicios();
 		cargarListas();
@@ -203,6 +206,17 @@ implements Serializable {
 		
 		
 		anoActual = 2014;
+	}
+
+	private void configurarVisibilidadPaneles() {
+		// TODO [ASAAVEDRA] Completar la visibilidad de los paneles segun los componentes/subtitulos asociados ala programa.
+		
+		Programa programa = programaService.getProgramasByID(idPrograma);
+		mostrarSubtitulo21 = true;
+		mostrarSubtitulo22 = true;
+		mostrarSubtitulo24 = true;
+		mostrarSubtitulo29 = true;
+		
 	}
 
 	private void getListaServicios() {
@@ -267,66 +281,68 @@ implements Serializable {
 	 */
 	public void CargarListaSubtitulo21()
 	{
-		estimacionFlujoMonitoreoGlobalPojoSubtitulo21 = new EstimacionFlujoMonitoreoGlobalPojo();
 		
-		
-		EstimacionFlujoMonitoreoPojo estimacionFlujoMonitoreoPojo = new EstimacionFlujoMonitoreoPojo();
-		estimacionFlujoMonitoreoPojo.setAbril(4);
-		estimacionFlujoMonitoreoPojo.setAgosto(9);
-		estimacionFlujoMonitoreoPojo.setColor("#FFB5B5");
-		estimacionFlujoMonitoreoPojo.setComuna("Macul");
-		estimacionFlujoMonitoreoPojo.setConvenioMonto(10);
-		estimacionFlujoMonitoreoPojo.setConvenioPorcentaje(10);
-		estimacionFlujoMonitoreoPojo.setDiciembre(12);
-		estimacionFlujoMonitoreoPojo.setEnero(1);
-		estimacionFlujoMonitoreoPojo.setEstablecimiento("Establecimiento");
-		estimacionFlujoMonitoreoPojo.setFebrero(2);
-		estimacionFlujoMonitoreoPojo.setId(1);
-		estimacionFlujoMonitoreoPojo.setJulio(7);
-		estimacionFlujoMonitoreoPojo.setJunio(6);
-		estimacionFlujoMonitoreoPojo.setMarcoMonto(10);
-		estimacionFlujoMonitoreoPojo.setMarzo(3);
-		estimacionFlujoMonitoreoPojo.setMayo(5);
-		estimacionFlujoMonitoreoPojo.setNoviembre(11);
-		estimacionFlujoMonitoreoPojo.setOctubre(10);
-		estimacionFlujoMonitoreoPojo.setRemesaMonto(15);
-		estimacionFlujoMonitoreoPojo.setRemesaPorcentaje(10);
-		estimacionFlujoMonitoreoPojo.setSeptiembre(9);
-		estimacionFlujoMonitoreoPojo.setServicio("Servicio");
-		estimacionFlujoMonitoreoPojo.setTotal(100);
-		estimacionFlujoMonitoreoPojo.setTransferenciaMonto(100);
-		estimacionFlujoMonitoreoPojo.setTransferenciaPorcentaje(10);
-		listadoMonitoreoSubtitulo21.add(estimacionFlujoMonitoreoPojo);
-		//OTRO REGISTO
-		estimacionFlujoMonitoreoPojo = new EstimacionFlujoMonitoreoPojo();
-		estimacionFlujoMonitoreoPojo.setAbril(45);
-		estimacionFlujoMonitoreoPojo.setAgosto(95);
-		estimacionFlujoMonitoreoPojo.setColor("#FFB5B5");
-		estimacionFlujoMonitoreoPojo.setComuna("Macul 2");
-		estimacionFlujoMonitoreoPojo.setConvenioMonto(150);
-		estimacionFlujoMonitoreoPojo.setConvenioPorcentaje(150);
-		estimacionFlujoMonitoreoPojo.setDiciembre(152);
-		estimacionFlujoMonitoreoPojo.setEnero(51);
-		estimacionFlujoMonitoreoPojo.setEstablecimiento("Establecimiento 2");
-		estimacionFlujoMonitoreoPojo.setFebrero(52);
-		estimacionFlujoMonitoreoPojo.setId(15);
-		estimacionFlujoMonitoreoPojo.setJulio(57);
-		estimacionFlujoMonitoreoPojo.setJunio(56);
-		estimacionFlujoMonitoreoPojo.setMarcoMonto(510);
-		estimacionFlujoMonitoreoPojo.setMarzo(53);
-		estimacionFlujoMonitoreoPojo.setMayo(55);
-		estimacionFlujoMonitoreoPojo.setNoviembre(511);
-		estimacionFlujoMonitoreoPojo.setOctubre(510);
-		estimacionFlujoMonitoreoPojo.setRemesaMonto(515);
-		estimacionFlujoMonitoreoPojo.setRemesaPorcentaje(510);
-		estimacionFlujoMonitoreoPojo.setSeptiembre(59);
-		estimacionFlujoMonitoreoPojo.setServicio("Servicio 2");
-		estimacionFlujoMonitoreoPojo.setTotal(5100);
-		estimacionFlujoMonitoreoPojo.setTransferenciaMonto(5100);
-		estimacionFlujoMonitoreoPojo.setTransferenciaPorcentaje(510);
-		
-		listadoMonitoreoSubtitulo21.add(estimacionFlujoMonitoreoPojo);
-		estimacionFlujoMonitoreoGlobalPojoSubtitulo21.setEstimacionFlujoMonitoreoPojo(listadoMonitoreoSubtitulo21);
+	
+//		estimacionFlujoMonitoreoGlobalPojoSubtitulo21 = new EstimacionFlujoMonitoreoGlobalPojo();
+//		
+//		
+//		EstimacionFlujoMonitoreoPojo estimacionFlujoMonitoreoPojo = new EstimacionFlujoMonitoreoPojo();
+//		estimacionFlujoMonitoreoPojo.setAbril(4);
+//		estimacionFlujoMonitoreoPojo.setAgosto(9);
+//		estimacionFlujoMonitoreoPojo.setColor("#FFB5B5");
+//		estimacionFlujoMonitoreoPojo.setComuna("Macul");
+//		estimacionFlujoMonitoreoPojo.setConvenioMonto(10);
+//		estimacionFlujoMonitoreoPojo.setConvenioPorcentaje(10);
+//		estimacionFlujoMonitoreoPojo.setDiciembre(12);
+//		estimacionFlujoMonitoreoPojo.setEnero(1);
+//		estimacionFlujoMonitoreoPojo.setEstablecimiento("Establecimiento");
+//		estimacionFlujoMonitoreoPojo.setFebrero(2);
+//		estimacionFlujoMonitoreoPojo.setId(1);
+//		estimacionFlujoMonitoreoPojo.setJulio(7);
+//		estimacionFlujoMonitoreoPojo.setJunio(6);
+//		estimacionFlujoMonitoreoPojo.setMarcoMonto(10);
+//		estimacionFlujoMonitoreoPojo.setMarzo(3);
+//		estimacionFlujoMonitoreoPojo.setMayo(5);
+//		estimacionFlujoMonitoreoPojo.setNoviembre(11);
+//		estimacionFlujoMonitoreoPojo.setOctubre(10);
+//		estimacionFlujoMonitoreoPojo.setRemesaMonto(15);
+//		estimacionFlujoMonitoreoPojo.setRemesaPorcentaje(10);
+//		estimacionFlujoMonitoreoPojo.setSeptiembre(9);
+//		estimacionFlujoMonitoreoPojo.setServicio("Servicio");
+//		estimacionFlujoMonitoreoPojo.setTotal(100);
+//		estimacionFlujoMonitoreoPojo.setTransferenciaMonto(100);
+//		estimacionFlujoMonitoreoPojo.setTransferenciaPorcentaje(10);
+//		listadoMonitoreoSubtitulo21.add(estimacionFlujoMonitoreoPojo);
+//		//OTRO REGISTO
+//		estimacionFlujoMonitoreoPojo = new EstimacionFlujoMonitoreoPojo();
+//		estimacionFlujoMonitoreoPojo.setAbril(45);
+//		estimacionFlujoMonitoreoPojo.setAgosto(95);
+//		estimacionFlujoMonitoreoPojo.setColor("#FFB5B5");
+//		estimacionFlujoMonitoreoPojo.setComuna("Macul 2");
+//		estimacionFlujoMonitoreoPojo.setConvenioMonto(150);
+//		estimacionFlujoMonitoreoPojo.setConvenioPorcentaje(150);
+//		estimacionFlujoMonitoreoPojo.setDiciembre(152);
+//		estimacionFlujoMonitoreoPojo.setEnero(51);
+//		estimacionFlujoMonitoreoPojo.setEstablecimiento("Establecimiento 2");
+//		estimacionFlujoMonitoreoPojo.setFebrero(52);
+//		estimacionFlujoMonitoreoPojo.setId(15);
+//		estimacionFlujoMonitoreoPojo.setJulio(57);
+//		estimacionFlujoMonitoreoPojo.setJunio(56);
+//		estimacionFlujoMonitoreoPojo.setMarcoMonto(510);
+//		estimacionFlujoMonitoreoPojo.setMarzo(53);
+//		estimacionFlujoMonitoreoPojo.setMayo(55);
+//		estimacionFlujoMonitoreoPojo.setNoviembre(511);
+//		estimacionFlujoMonitoreoPojo.setOctubre(510);
+//		estimacionFlujoMonitoreoPojo.setRemesaMonto(515);
+//		estimacionFlujoMonitoreoPojo.setRemesaPorcentaje(510);
+//		estimacionFlujoMonitoreoPojo.setSeptiembre(59);
+//		estimacionFlujoMonitoreoPojo.setServicio("Servicio 2");
+//		estimacionFlujoMonitoreoPojo.setTotal(5100);
+//		estimacionFlujoMonitoreoPojo.setTransferenciaMonto(5100);
+//		estimacionFlujoMonitoreoPojo.setTransferenciaPorcentaje(510);
+//		
+//		listadoMonitoreoSubtitulo21.add(estimacionFlujoMonitoreoPojo);
+//		estimacionFlujoMonitoreoGlobalPojoSubtitulo21.setEstimacionFlujoMonitoreoPojo(listadoMonitoreoSubtitulo21);
 	}
 	
 	
@@ -1970,6 +1986,62 @@ List<MonitoreoPojo> listadoServicios2;
 
 	public void setDocPropuesta(Integer docPropuesta) {
 		this.docPropuesta = docPropuesta;
+	}
+
+	
+	public Integer getIdProgramaModificar() {
+		return idProgramaModificar;
+	}
+
+	public void setIdProgramaModificar(Integer idProgramaModificar) {
+		this.idProgramaModificar = idProgramaModificar;
+	}
+
+	public Map<String, String> getComponentes() {
+		return componentes;
+	}
+
+	public void setComponentes(Map<String, String> componentes) {
+		this.componentes = componentes;
+	}
+	public Boolean getMostrarSubtitulo21() {
+		return mostrarSubtitulo21;
+	}
+
+	public void setMostrarSubtitulo21(Boolean mostrarSubtitulo21) {
+		this.mostrarSubtitulo21 = mostrarSubtitulo21;
+	}
+
+	public Boolean getMostrarSubtitulo22() {
+		return mostrarSubtitulo22;
+	}
+
+	public void setMostrarSubtitulo22(Boolean mostrarSubtitulo22) {
+		this.mostrarSubtitulo22 = mostrarSubtitulo22;
+	}
+
+	public Boolean getMostrarSubtitulo24() {
+		return mostrarSubtitulo24;
+	}
+
+	public void setMostrarSubtitulo24(Boolean mostrarSubtitulo24) {
+		this.mostrarSubtitulo24 = mostrarSubtitulo24;
+	}
+
+	public Boolean getMostrarSubtitulo29() {
+		return mostrarSubtitulo29;
+	}
+
+	public void setMostrarSubtitulo29(Boolean mostrarSubtitulo29) {
+		this.mostrarSubtitulo29 = mostrarSubtitulo29;
+	}
+
+	public int getIdPrograma() {
+		return idPrograma;
+	}
+
+	public void setIdPrograma(int idPrograma) {
+		this.idPrograma = idPrograma;
 	}
 
 	/*
