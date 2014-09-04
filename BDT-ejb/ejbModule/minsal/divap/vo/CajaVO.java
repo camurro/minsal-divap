@@ -7,7 +7,7 @@ import cl.minsal.divap.pojo.EstimacionFlujoMonitoreoPojo;
 
 public class CajaVO  {
 
-	
+	private float pesoComponente;
 	private int id;
 	private String servicio;
 	private int idServicio;
@@ -89,7 +89,7 @@ public class CajaVO  {
 
 
 	public long getMarcoMonto() {
-		return marcoMonto;
+		return marcoMonto + (long)(Float.valueOf(marcoMonto)*pesoComponente);
 	}
 
 
@@ -101,7 +101,7 @@ public class CajaVO  {
 
 
 	public long getTransferenciaMonto() {
-		return transferenciaMonto;
+		return transferenciaMonto +  (long)(Float.valueOf(transferenciaMonto)*pesoComponente);
 	}
 
 
@@ -125,7 +125,7 @@ public class CajaVO  {
 
 
 	public long getRemesaMonto() {
-		return remesaMonto;
+		return remesaMonto +  (long)(Float.valueOf(remesaMonto)*pesoComponente);
 	}
 
 
@@ -149,7 +149,7 @@ public class CajaVO  {
 
 
 	public long getConvenioMonto() {
-		return convenioMonto;
+		return convenioMonto +  (long)(Float.valueOf(convenioMonto)*pesoComponente);
 	}
 
 
@@ -197,7 +197,7 @@ public class CajaVO  {
 
 
 	public long getEnero() {
-		return enero;
+		return enero +  (long)(Float.valueOf(enero)*pesoComponente);
 	}
 
 
@@ -209,7 +209,7 @@ public class CajaVO  {
 
 
 	public long getFebrero() {
-		return febrero;
+		return febrero +  (long)(Float.valueOf(febrero)*pesoComponente);
 	}
 
 
@@ -221,7 +221,7 @@ public class CajaVO  {
 
 
 	public long getMarzo() {
-		return marzo;
+		return marzo +  (long)(Float.valueOf(marzo)*pesoComponente);
 	}
 
 
@@ -233,7 +233,7 @@ public class CajaVO  {
 
 
 	public long getAbril() {
-		return abril;
+		return abril +  (long)(Float.valueOf(abril)*pesoComponente) ;
 	}
 
 
@@ -245,7 +245,7 @@ public class CajaVO  {
 
 
 	public long getMayo() {
-		return mayo;
+		return mayo +  (long)(Float.valueOf(mayo)*pesoComponente) ;
 	}
 
 
@@ -257,7 +257,7 @@ public class CajaVO  {
 
 
 	public long getJunio() {
-		return junio;
+		return junio +  (long)(Float.valueOf(junio)*pesoComponente);
 	}
 
 
@@ -269,7 +269,7 @@ public class CajaVO  {
 
 
 	public long getJulio() {
-		return julio;
+		return julio +  (long)(Float.valueOf(julio)*pesoComponente);
 	}
 
 
@@ -281,7 +281,7 @@ public class CajaVO  {
 
 
 	public long getAgosto() {
-		return agosto;
+		return agosto +  (long)(Float.valueOf(agosto)*pesoComponente);
 	}
 
 
@@ -293,7 +293,7 @@ public class CajaVO  {
 
 
 	public long getSeptiembre() {
-		return septiembre;
+		return septiembre +  (long)(Float.valueOf(septiembre)*pesoComponente);
 	}
 
 
@@ -305,7 +305,7 @@ public class CajaVO  {
 
 
 	public long getOctubre() {
-		return octubre;
+		return octubre +  (long)(Float.valueOf(octubre)*pesoComponente);
 	}
 
 
@@ -317,7 +317,7 @@ public class CajaVO  {
 
 
 	public long getNoviembre() {
-		return noviembre;
+		return noviembre +  (long)(Float.valueOf(noviembre)*pesoComponente);
 	}
 
 
@@ -329,7 +329,7 @@ public class CajaVO  {
 
 
 	public long getDiciembre() {
-		return diciembre;
+		return diciembre +  (long)(Float.valueOf(diciembre)*pesoComponente);
 	}
 
 
@@ -341,7 +341,8 @@ public class CajaVO  {
 
 
 	public long getTotal() {
-		total = enero+febrero+marzo+abril+mayo+junio+julio+agosto+septiembre+octubre+noviembre+diciembre;
+		total = (enero+febrero+marzo+abril+mayo+junio+julio+agosto+septiembre+octubre+noviembre+diciembre);
+		total = total +  (long)(Float.valueOf(total)*pesoComponente);
 		return total;
 	}
 
@@ -423,6 +424,18 @@ public class CajaVO  {
     public String toString(){
         return String.valueOf(id);
     }
+
+
+
+	public float getPesoComponente() {
+		return pesoComponente;
+	}
+
+
+
+	public void setPesoComponente(float pesoComponente) {
+		this.pesoComponente = pesoComponente;
+	}
 	
 
 	

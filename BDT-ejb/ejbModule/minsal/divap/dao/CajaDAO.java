@@ -33,11 +33,10 @@ public class CajaDAO {
 
 	}
 	
-	public List<Caja> getByIDProgramaAno(Integer idPrograma, Integer ano){
+	public List<Caja> getByIDProgramaAno(Integer idProgramaAno){
 		try {
 			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByIdProgramaAno", Caja.class);
-			query.setParameter("idPrograma",idPrograma);
-			query.setParameter("ano",ano);
+			query.setParameter("idProgramaAno",idProgramaAno);
 			List<Caja> results = query.getResultList();
 			return results;
 		} catch (Exception e) {

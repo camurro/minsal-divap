@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
 	@NamedQuery(name = "ProgramaAno.findAll", query = "SELECT p FROM ProgramaAno p"),
 	@NamedQuery(name = "ProgramaAno.findByUserAno", query = "SELECT p FROM ProgramaAno p WHERE p.programa.usuario.username=:usuario and p.ano.ano = :ano ORDER BY p.idProgramaAno ASC"),
+	@NamedQuery(name = "ProgramaAno.findByAnoIdPrograma", query = "SELECT p FROM ProgramaAno p WHERE p.programa.id = :idPrograma and p.ano.ano = :ano"),
 	@NamedQuery(name = "ProgramaAno.findByIdProgramaAno", query = "SELECT p FROM ProgramaAno p WHERE p.idProgramaAno = :idProgramaAno")})
 public class ProgramaAno implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -56,9 +57,9 @@ public class ProgramaAno implements Serializable {
 	@JoinColumn(name = "ano", referencedColumnName = "ano")
 	@ManyToOne(optional = false)
 	private AnoEnCurso ano;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "programaAnoServicio")
+	@OneToMany(mappedBy = "programaAnoServicio")
 	private Set<ProgramaServicioCore> programasServiciosCore;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "programaAnoMunicipal")
+	@OneToMany(mappedBy = "programaAnoMunicipal")
 	private Set<ProgramaMunicipalCore> programasMunicipalesCore;
 
 	public ProgramaAno() {

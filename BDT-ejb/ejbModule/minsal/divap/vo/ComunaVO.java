@@ -11,6 +11,7 @@ public class ComunaVO implements Serializable{
 	private static final long serialVersionUID = 4116280922217173546L;
 
 	private Integer idComuna;
+	private String nombre;
 	private String descComuna;
 	private Integer aporteEstatal;
 	private CumplimientoSummaryVO cumplimiento1;
@@ -125,6 +126,12 @@ public class ComunaVO implements Serializable{
 	}
 	public void setCumplimiento3(CumplimientoSummaryVO cumplimiento3) {
 		this.cumplimiento3 = cumplimiento3;
+	}
+	public String getNombre() {
+		return nombre;
+	}
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 	
 	

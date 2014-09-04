@@ -12,6 +12,7 @@ public class ComponentesVO implements Serializable{
 	private String nombre;
 	private TipoComponenteVO tipoComponente;
 	private List<SubtituloVO> subtitulos;
+	private float peso;
 	
 	public Integer getComponente_id() {
 		return componente_id;
@@ -43,6 +44,14 @@ public class ComponentesVO implements Serializable{
 
 	public void setTipoComponente(TipoComponenteVO tipoComponente) {
 		this.tipoComponente = tipoComponente;
+	}
+
+	public float getPeso() {
+		return peso;
+	}
+
+	public void setPeso(float peso) {
+		this.peso = peso;
 	}
 	
 }

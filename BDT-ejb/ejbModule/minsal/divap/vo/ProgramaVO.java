@@ -23,8 +23,8 @@ public class ProgramaVO implements Serializable{
 	private Boolean dependenciaMunicipal;
 	private Boolean dependenciaServicio;
 	private List<ComponentesVO> componentes;
-	private EstadoPrograma estadoFlujocaja;
-	
+	private EstadoProgramaVO estadoFlujocaja;
+	private List<ServiciosVO> servicios;
 	public Integer getId() {
 		return id;
 	}
@@ -97,11 +97,11 @@ public class ProgramaVO implements Serializable{
 		this.componentes = componentes;
 	}
 
-	public EstadoPrograma getEstadoFlujocaja() {
+	public EstadoProgramaVO getEstadoFlujocaja() {
 		return estadoFlujocaja;
 	}
 
-	public void setEstadoFlujocaja(EstadoPrograma estadoFlujocaja) {
+	public void setEstadoFlujocaja(EstadoProgramaVO estadoFlujocaja) {
 		this.estadoFlujocaja = estadoFlujocaja;
 	}
 
@@ -121,6 +121,14 @@ public class ProgramaVO implements Serializable{
 				+ ", estado=" + estado + ", dependenciaMunicipal="
 				+ dependenciaMunicipal + ", dependenciaServicio="
 				+ dependenciaServicio + ", componentes=" + componentes + "]";
+	}
+
+	public List<ServiciosVO> getServicios() {
+		return servicios;
+	}
+
+	public void setServicios(List<ServiciosVO> servicios) {
+		this.servicios = servicios;
 	}
 
 }

@@ -27,6 +27,9 @@ public class Componente implements Serializable {
 	private Integer id;
 	@Column(name = "nombre")
 	private String nombre;
+	
+	@Column(name = "peso")
+	private float peso;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "componente")
 	private Set<ComponenteSubtitulo> componenteSubtitulos;
 	@JoinColumn(name = "tipo_componente", referencedColumnName = "id")
@@ -107,6 +110,14 @@ public class Componente implements Serializable {
 	public void setProgramaMunicipalCoreComponentes(
 			Set<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes) {
 		this.programaMunicipalCoreComponentes = programaMunicipalCoreComponentes;
+	}
+
+	public float getPeso() {
+		return peso;
+	}
+
+	public void setPeso(float peso) {
+		this.peso = peso;
 	}
 	
 }

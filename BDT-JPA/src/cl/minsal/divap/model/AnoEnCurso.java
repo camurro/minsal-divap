@@ -20,7 +20,6 @@ public class AnoEnCurso implements Serializable {
 
 	@Id
 	@Column(name="ano", unique=true, nullable=false)
-	@GeneratedValue
 	private Integer ano;
 
 	@Column(name="monto_percapital_basal")

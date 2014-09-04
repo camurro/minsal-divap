@@ -11,10 +11,12 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
 import minsal.divap.dao.ProgramasDAO;
+import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.model.mappers.ProgramaMapper;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ProgramaVO;
 import cl.minsal.divap.model.Componente;
+import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
 
@@ -26,6 +28,12 @@ public class ProgramasService {
 
 	public Programa getProgramasByID(Integer idPrograma) {
 		Programa programa = this.programasDAO.getProgramaByID(idPrograma);
+		return programa;
+	}
+	
+	
+	public ProgramaVO getProgramaAno(Integer idProgramaAno) {
+		ProgramaVO programa = new ProgramaMapper().getBasic(this.programasDAO.getProgramaAnoByID(idProgramaAno));
 		return programa;
 	}
 	
@@ -66,6 +74,7 @@ public class ProgramasService {
 				ComponentesVO comVO = new ComponentesVO();
 				comVO.setComponente_id(componente.getId());
 				comVO.setNombre(componente.getNombre());
+				comVO.setPeso(componente.getPeso());
 				componentesPrograma.add(comVO);
 			}
 		}
@@ -78,6 +87,24 @@ public class ProgramasService {
 		Programa programa = this.programasDAO.getProgramaPorID(programaId);
 		
 		return programa;
+	}
+
+
+	public void guardarEstadoFlujoCaja(Integer idEstado, Integer idProgramaAno) {
+		// TODO Auto-generated method stub
+		this.programasDAO.guardarEstadoFlujoCaja(idEstado,idProgramaAno);
+	}
+
+
+	public void cambiarEstadoProgramaAno(Integer idProgramaAno, EstadosProgramas encurso) {
+		// TODO Auto-generated method stub
+		
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
+		EstadoPrograma estadoPrograma = new EstadoPrograma(encurso.getId());
+		programaAno.setEstadoFlujoCaja(estadoPrograma);
+		
+		
+		this.programasDAO.saveProgramaAno(programaAno, false);
 	}
 
 }

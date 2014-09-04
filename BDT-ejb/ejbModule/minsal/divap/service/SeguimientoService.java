@@ -97,5 +97,18 @@ public class SeguimientoService {
 		}
 		return bitacora;
 	}
+	
+	public List<SeguimientoVO> getBitacoraEstimacionFlujoCaja(
+			Integer idProgramaAno,
+			TareasSeguimiento tareaSeguimiento) {
+		List<SeguimientoVO> bitacora = new ArrayList<SeguimientoVO>();
+		List<Seguimiento> bitacoraSeguimiento = seguimientoDAO.getBitacoraEstimacionFlujoCaja(idProgramaAno, tareaSeguimiento);
+		if(bitacoraSeguimiento != null && bitacoraSeguimiento.size() > 0){
+			for(Seguimiento seguimiento : bitacoraSeguimiento){
+				bitacora.add(new SeguimientoMapper().getBasic(seguimiento));
+			}
+		}
+		return bitacora;
+	}
 
 }
