@@ -59,4 +59,4 @@ public enum TipoDocumentosProcesos{
 		throw new IllegalArgumentException("id de tipo documento proceso no válido");
 	}
 }
->>>>>>> aldo3
+
