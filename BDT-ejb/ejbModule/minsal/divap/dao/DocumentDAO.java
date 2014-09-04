@@ -12,6 +12,7 @@ import javax.persistence.TypedQuery;
 
 import minsal.divap.enums.TipoDocumentosProcesos;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
+import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.Plantilla;
 import cl.minsal.divap.model.ReferenciaDocumento;
 
@@ -138,6 +139,25 @@ public class DocumentDAO {
 			query.setParameter("idDistribucionInicialPercapita", idDistribucionInicialPercapita);
 			query.setParameter("idTipoDocumento", tipoDocumento.getId());
 			List<DocumentoDistribucionInicialPercapita> referenciasDocumentos = query.getResultList(); 
+			if(referenciasDocumentos != null && referenciasDocumentos.size() > 0){
+				referenciaDocumento = referenciasDocumentos.get(0).getIdDocumento();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return referenciaDocumento;
+	}
+	
+	
+	public ReferenciaDocumento getLastDocumentByTypeEstimacionFlujoCaja(
+			Integer idProgramaAno,
+			TipoDocumentosProcesos tipoDocumento) {
+		ReferenciaDocumento referenciaDocumento = null;
+		try {
+			TypedQuery<DocumentoEstimacionflujocaja> query = this.em.createNamedQuery("DocumentoEstimacionflujocaja.findByProgramaAnoTipoDocumento", DocumentoEstimacionflujocaja.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idTipoDocumento", tipoDocumento.getId());
+			List<DocumentoEstimacionflujocaja> referenciasDocumentos = query.getResultList(); 
 			if(referenciasDocumentos != null && referenciasDocumentos.size() > 0){
 				referenciaDocumento = referenciasDocumentos.get(0).getIdDocumento();
 			}

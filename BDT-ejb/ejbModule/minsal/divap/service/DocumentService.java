@@ -16,6 +16,7 @@ import javax.ejb.Stateless;
 import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
 import minsal.divap.dao.DocumentDAO;
+import minsal.divap.dao.EstimacionFlujoCajaDAO;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.model.mappers.PercapitaReferenciaDocumentoMapper;
 import minsal.divap.model.mappers.ReferenciaDocumentoMapper;
@@ -25,7 +26,9 @@ import minsal.divap.vo.ReferenciaDocumentoVO;
 import cl.minsal.divap.model.Comuna;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
+import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.Plantilla;
+import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.Rebaja;
 import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.TipoDocumento;
@@ -37,6 +40,9 @@ public class DocumentService {
 	private DocumentDAO fileDAO;
 	@EJB
 	private DistribucionInicialPercapitaDAO distribucionInicialPercapitaDAO;
+	
+	@EJB
+	private EstimacionFlujoCajaDAO estimacionFlujoCajaDAO;
 	@EJB
 	private AntecedentesComunaDAO antecedentesComunaDAO;
 	@EJB
@@ -157,6 +163,21 @@ public class DocumentService {
 		return new ReferenciaDocumentoMapper().getSummary(fileDAO.findById(referenciaDocumentoId));
 	} 
 	
+	public Integer createDocumentPropuestaEstimacionFlujoCaja(ProgramaAno programaAno, TipoDocumento tipoDocumentoProceso,
+			String nodeRef, String filename, String contenType) {
+		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		DocumentoEstimacionflujocaja documentoEstimacionFlujoCaja = new DocumentoEstimacionflujocaja();
+		documentoEstimacionFlujoCaja.setIdProgramaAno(programaAno);
+		documentoEstimacionFlujoCaja.setIdTipoDocumento(tipoDocumentoProceso);
+		documentoEstimacionFlujoCaja.setIdDocumento(referenciaDocumento);
+		//documentoDistribucionInicialPercapita.setIdDocumento(referenciaDocumento);
+		
+		estimacionFlujoCajaDAO.save(documentoEstimacionFlujoCaja);
+		System.out.println("luego de aplicar insert del documento percapita");
+		return referenciaDocumentoId;
+	}
+	
 	public Integer createDocumentPercapita(
 			Integer idDistribucionInicialPercapita, TipoDocumentosProcesos tipoDocumentoProceso,
 			String nodeRef, String filename, String contenType) {
@@ -255,6 +276,15 @@ public class DocumentService {
 		return referenciaDocumentoSummaryVO;
 	}
 	
+	public ReferenciaDocumentoSummaryVO getLastDocumentoSummaryByEstimacionFlujoCajaType(
+			Integer idProgramaAno,
+			TipoDocumentosProcesos tipoDocumento) {
+		ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = null;
+		ReferenciaDocumento referenciaDocumento =  fileDAO.getLastDocumentByTypeEstimacionFlujoCaja(idProgramaAno, tipoDocumento);
+		referenciaDocumentoSummaryVO = new ReferenciaDocumentoMapper().getSummary(referenciaDocumento);
+		return referenciaDocumentoSummaryVO;
+	}
+	
 	public Integer crearDocumentoRebajaCalculada(Rebaja rebaja, String nodeRef,
 			String fileName, String contenType) {
 		
@@ -265,6 +295,35 @@ public class DocumentService {
 		}
 		referenciaDocumento.getRebajaCollection().add(rebaja);
 		return referenciaDocumentoId;
+	}
+
+	public List<DocumentoEstimacionflujocaja> getDocumentEstimacionFlujoCajaByIDProgramaAnoTipoDocumento(
+			ProgramaAno programaAno, TipoDocumento tipoDocumento) {
+		// TODO Auto-generated method stub
+		
+		return estimacionFlujoCajaDAO.getDocumentByIDProgramaAnoTipoDocumento(programaAno,tipoDocumento);
+		
+		
+	}
+
+	public void createDocumentOrdinarioProgramacionEstimacionFlujoCaja(
+			ProgramaAno programaAno, TipoDocumentosProcesos tipoDocumento,
+			Integer referenciaDocumentoId, boolean versionFinal) {
+		
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		if(versionFinal){
+			referenciaDocumento.setDocumentoFinal(versionFinal);
+		}
+		DocumentoEstimacionflujocaja documentoEstimacionFlujoCaja = new DocumentoEstimacionflujocaja();
+		
+		
+		documentoEstimacionFlujoCaja.setIdTipoDocumento(new TipoDocumento(tipoDocumento.getId()));
+		documentoEstimacionFlujoCaja.setIdDocumento(referenciaDocumento);
+		documentoEstimacionFlujoCaja.setIdProgramaAno(programaAno);
+		estimacionFlujoCajaDAO.save(documentoEstimacionFlujoCaja);
+		//distribucionInicialPercapitaDAO.save(documentoDistribucionInicialPercapita);
+		System.out.println("luego de aplicar insert del documento percapita");
+		
 	}
 
 }

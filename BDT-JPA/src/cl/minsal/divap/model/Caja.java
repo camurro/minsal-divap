@@ -39,9 +39,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Caja.findByDiciembre", query = "SELECT c FROM Caja c WHERE c.diciembre = :diciembre"),
     @NamedQuery(name = "Caja.findByTotal", query = "SELECT c FROM Caja c WHERE c.total = :total"),
     @NamedQuery(name = "Caja.findByIdSubtitulo", query = "SELECT c FROM Caja c WHERE c.idSubtitulo = :idSubtitulo"),
-    @NamedQuery(name = "Caja.findByIdPrograma", query = "SELECT c FROM Caja c WHERE c.idPrograma.id = :idPrograma"),
-    @NamedQuery(name = "Caja.findByIdProgramaAno", query = "SELECT c FROM Caja c WHERE c.idPrograma.id = :idPrograma and c.ano = :ano"),
-    @NamedQuery(name = "Caja.findByIdProgramaAnoSubtitulo", query = "SELECT c FROM Caja c WHERE c.idPrograma.id = :idPrograma and c.ano = :ano and c.idSubtitulo = :idSubtitulo"),
+    @NamedQuery(name = "Caja.findByIdPrograma", query = "SELECT c FROM Caja c WHERE c.idProgramaAno.programa.id = :idPrograma"),
+    @NamedQuery(name = "Caja.findByIdProgramaAno", query = "SELECT c FROM Caja c WHERE c.idProgramaAno.programa.id = :idProgramaAno"),
+    @NamedQuery(name = "Caja.findByIdProgramaAnoSubtitulo", query = "SELECT c FROM Caja c WHERE c.idProgramaAno.programa.id = :idPrograma and c.idProgramaAno.ano.ano = :ano and c.idSubtitulo = :idSubtitulo"),
     @NamedQuery(name = "Caja.findByAno", query = "SELECT c FROM Caja c WHERE c.ano = :ano")})
 
 
@@ -88,9 +88,9 @@ public class Caja implements Serializable {
     @JoinColumn(name = "id_servicio", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private ServicioSalud idServicio;
-    @JoinColumn(name = "id_programa", referencedColumnName = "id")
+    @JoinColumn(name = "id_programa_ano", referencedColumnName = "id_programa_ano")
     @ManyToOne(optional = false)
-    private Programa idPrograma;
+    private ProgramaAno idProgramaAno;
     @JoinColumn(name = "id_comuna", referencedColumnName = "id")
     @ManyToOne
     private Comuna idComuna;
@@ -261,12 +261,12 @@ public class Caja implements Serializable {
         this.idServicio = idServicio;
     }
 
-    public Programa getIdPrograma() {
-        return idPrograma;
+    public ProgramaAno getIdPrograma() {
+        return idProgramaAno;
     }
 
-    public void setIdPrograma(Programa idPrograma) {
-        this.idPrograma = idPrograma;
+    public void setIdPrograma(ProgramaAno idPrograma) {
+        this.idProgramaAno = idPrograma;
     }
 
     public Comuna getIdComuna() {

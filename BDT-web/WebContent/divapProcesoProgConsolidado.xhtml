@@ -45,62 +45,50 @@
 					
 							<p:tab title="Subtítulo 21">
 				
-							
+							<h:form id="formSubtitulo21">
 								<h4>Filtros para el Monitoreo:</h4>
 								<h:panelGrid>
 									<h:panelGrid>
 										<h:outputText value="Programa: " styleClass="inputLabel" />
-										<p:selectOneMenu style="width:650px;" id="select1" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.valorComboProgramaSubtitulo21}">
-											<f:selectItem itemLabel="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES"
-												itemValue="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
-											<f:selectItem itemLabel="Seleccione" itemValue="" />
-											
-												<p:ajax
-														listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.filtrarSubtitulo21}"
-														update=":#{p:component('formSubtitulo21')}" />
-														
-														
-										</p:selectOneMenu>
+										
+										<p:selectOneMenu style="width:650px;" id="cbPrograma21" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.valorComboProgramaSubtitulo21}">
+									    <f:selectItem itemLabel="Seleccione" itemValue="" />
+           								 <f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.programas21}" />
+           								 <!-- <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.filtrarSubtitulo21}"	update=":#{p:component('formSubtitulo21')}" /> -->
+           								  <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cargarServicios21}"	update=":#{p:component('formSubtitulo21')}" />
+           	 							</p:selectOneMenu>
+      
 									</h:panelGrid>
 								</h:panelGrid>
 								<h:panelGrid>
 									<h:outputText value="Servicio: " styleClass="inputLabel" />
-									<p:selectOneMenu onchange="document.getElementById('tablaSubtitulos').style.display = 'block';" id="select17" style="width:250px;" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.valorComboServicioSubtitulo21}">
-										<f:selectItem itemLabel="Metropolitano Oriente" itemValue="Metropolitano Oriente" />
-										<f:selectItem itemLabel="Concepción" itemValue="Concepción" />
-										<f:selectItem itemLabel="Talcahuano" itemValue="Concepción" />
-										<f:selectItem itemLabel="Iquique" itemValue="Concepción" />
-										<f:selectItem itemLabel="Seleccione" itemValue="" />
-										<p:ajax
-														listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.filtrarSubtitulo21}"
-														update=":#{p:component('formSubtitulo21')}" />
-									</p:selectOneMenu>
+									<p:selectOneMenu style="width:650px;" id="cbServicio21" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.valorComboServicioSubtitulo21}">
+									    <f:selectItem itemLabel="Seleccione" itemValue="" />
+           								 <f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.servicios21}" />
+           								  <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cargarComunas21}"	update=":#{p:component('formSubtitulo21')}" />
+           	 							  <p:ajax 	update=":#{p:component('formSubtitulo21')}" />
+           	 							</p:selectOneMenu>
 								</h:panelGrid>
 								<h:panelGrid>
 									<h:outputText value="Comuna: " styleClass="inputLabel" />
-									<p:selectOneMenu value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.valorComboComunaSubtitulo21}">
-										<f:selectItem itemLabel="Macul" itemValue="Metropolitano Oriente" />
-										<f:selectItem itemLabel="La Reina" itemValue="Concepción" />
-										<f:selectItem itemLabel="Las Condes" itemValue="Concepción" />
-										<f:selectItem itemLabel="Puente Alto" itemValue="Concepción" />
-										<f:selectItem itemLabel="Seleccione" itemValue="" />
-										<p:ajax
-														listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.filtrarSubtitulo21}"
-														update=":#{p:component('formSubtitulo21')}" />
-									</p:selectOneMenu>
+									<p:selectOneMenu style="width:650px;" id="cbComunas21" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.valorComboComunaSubtitulo21}">
+									    <f:selectItem itemLabel="Seleccione" itemValue="" />
+           								 <f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.comunas21}" />
+           								<!--   <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cargarComunas}"	update=":#{p:component('formSubtitulo21')}" />
+           	 					 -->		
+           	 					   <p:ajax 	update=":#{p:component('formSubtitulo21')}" />
+           	 							</p:selectOneMenu>
 								</h:panelGrid>
 						
 								
-							<h:form id="formSubtitulo21">
+							
 											<h4>Monitoreo Mes de #{mes}</h4>
 											<h:panelGrid>
 								
-								<ui:param name="datoSubtitulo21" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.estimacionFlujoMonitoreoGlobalPojoSubtitulo21}" />
+								<ui:param name="datoSubtitulo21" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cajaGlobalVOSubtitulo21}" />
 											
 									<p:dataTable resizableColumns="true"
-													value="#{datoSubtitulo21.estimacionFlujoMonitoreoPojo}"
+													value="#{datoSubtitulo21.caja}"
 													liveResize="true" var="_data" rows="10" paginator="false"
 													paginatorPosition="bottom"
 													emptyMessage="No se encontro información."
@@ -274,27 +262,47 @@
 							</p:tab>
 							<p:tab title="Subtítulo 22">
 								<h4>Filtros para el Monitoreo:</h4>
+								<h:form id="formSubtitulo22">
 								<h:panelGrid>
-									<h:panelGrid>
 										<h:outputText value="Programa: " styleClass="inputLabel" />
-										<p:selectOneMenu style="width:650px;" id="select2">
-											<f:selectItem itemLabel="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES"
-												itemValue="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
-											<f:selectItem itemLabel="Seleccione" itemValue="" />
-										</p:selectOneMenu>
+										
+										<p:selectOneMenu style="width:650px;" id="cbPrograma22" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.valorComboProgramaSubtitulo22}">
+									    <f:selectItem itemLabel="Seleccione" itemValue="" />
+           								 <f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.programas22}" />
+           								 <!-- <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.filtrarSubtitulo21}"	update=":#{p:component('formSubtitulo21')}" /> -->
+           								  <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cargarServicios22}"	update=":#{p:component('formSubtitulo22')}" />
+           	 							</p:selectOneMenu>
+      
 									</h:panelGrid>
+								
+								<h:panelGrid>
+									<h:outputText value="Servicio: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:650px;" id="cbServicio22" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.valorComboServicioSubtitulo22}">
+									    <f:selectItem itemLabel="Seleccione" itemValue="" />
+           								 <f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.servicios22}" />
+           								  <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cargarComunas22}"	update=":#{p:component('formSubtitulo22')}" />
+           	 							  <p:ajax 	update=":#{p:component('formSubtitulo22')}" />
+           	 							</p:selectOneMenu>
+								</h:panelGrid>
+								<h:panelGrid>
+									<h:outputText value="Comuna: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:650px;" id="cbComunas22" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.valorComboComunaSubtitulo22}">
+									    <f:selectItem itemLabel="Seleccione" itemValue="" />
+           								 <f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.comunas22}" />
+           								<!--   <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cargarComunas}"	update=":#{p:component('formSubtitulo21')}" />
+           	 					 -->		
+           	 					   <p:ajax 	update=":#{p:component('formSubtitulo22')}" />
+           	 							</p:selectOneMenu>
 								</h:panelGrid>
 								<br />
-								<h:form id="formSubtitulo22">
+								
 											<h4>Monitoreo Mes de #{mes}</h4>
 											<h:panelGrid>
 								
-								<ui:param name="datoSubtitulo22" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.estimacionFlujoMonitoreoGlobalPojoSubtitulo22}" />
+								<ui:param name="datoSubtitulo22" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cajaGlobalVOSubtitulo22}" />
 											
 									<p:dataTable resizableColumns="true"
-													value="#{datoSubtitulo22.estimacionFlujoMonitoreoPojo}"
+													value="#{datoSubtitulo22.caja}"
 													liveResize="true" var="_data" rows="10" paginator="false"
 													paginatorPosition="bottom"
 													emptyMessage="No se encontro información."
@@ -467,27 +475,47 @@
 							</p:tab>
 							<p:tab title="Subtítulo 24">
 								<h4>Filtros para el Monitoreo:</h4>
-								<h:panelGrid>
-									<h:panelGrid>
+								<h:form id="formSubtitulo24">
+														<h:panelGrid>
 										<h:outputText value="Programa: " styleClass="inputLabel" />
-										<p:selectOneMenu style="width:650px;" id="select3">
-											<f:selectItem itemLabel="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES"
-												itemValue="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
-											<f:selectItem itemLabel="Seleccione" itemValue="" />
-										</p:selectOneMenu>
+										
+										<p:selectOneMenu style="width:650px;" id="cbPrograma24" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.valorComboProgramaSubtitulo24}">
+									    <f:selectItem itemLabel="Seleccione" itemValue="" />
+           								 <f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.programas24}" />
+           								 <!-- <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.filtrarSubtitulo21}"	update=":#{p:component('formSubtitulo21')}" /> -->
+           								  <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cargarServicios24}"	update=":#{p:component('formSubtitulo24')}" />
+           	 							</p:selectOneMenu>
+      
 									</h:panelGrid>
+								
+								<h:panelGrid>
+									<h:outputText value="Servicio: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:650px;" id="cbServicio24" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.valorComboServicioSubtitulo24}">
+									    <f:selectItem itemLabel="Seleccione" itemValue="" />
+           								 <f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.servicios24}" />
+           								  <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cargarComunas24}"	update=":#{p:component('formSubtitulo24')}" />
+           	 							  <p:ajax 	update=":#{p:component('formSubtitulo24')}" />
+           	 							</p:selectOneMenu>
+								</h:panelGrid>
+								<h:panelGrid>
+									<h:outputText value="Comuna: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:650px;" id="cbComunas24" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.valorComboComunaSubtitulo24}">
+									    <f:selectItem itemLabel="Seleccione" itemValue="" />
+           								 <f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.comunas24}" />
+           								<!--   <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cargarComunas}"	update=":#{p:component('formSubtitulo21')}" />
+           	 					 -->		
+           	 					   <p:ajax 	update=":#{p:component('formSubtitulo24')}" />
+           	 							</p:selectOneMenu>
 								</h:panelGrid>
 								<br />
-								<h:form id="formSubtitulo24">
+								
 											<h4>Monitoreo Mes de #{mes}</h4>
 											<h:panelGrid>
 								
-								<ui:param name="datoSubtitulo24" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.estimacionFlujoMonitoreoGlobalPojoSubtitulo24}" />
+								<ui:param name="datoSubtitulo24" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cajaGlobalVOSubtitulo24}" />
 											
 									<p:dataTable resizableColumns="true"
-													value="#{datoSubtitulo24.estimacionFlujoMonitoreoPojo}"
+													value="#{datoSubtitulo24.caja}"
 													liveResize="true" var="_data" rows="10" paginator="false"
 													paginatorPosition="bottom"
 													emptyMessage="No se encontro información."
@@ -660,27 +688,47 @@
 							</p:tab>
 							<p:tab title="Subtítulo 29">
 								<h4>Filtros para el Monitoreo:</h4>
+								<h:form id="formSubtitulo29">
 								<h:panelGrid>
-									<h:panelGrid>
 										<h:outputText value="Programa: " styleClass="inputLabel" />
-										<p:selectOneMenu style="width:650px;" id="select4">
-											<f:selectItem itemLabel="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES"
-												itemValue="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
-											<f:selectItem itemLabel="Seleccione" itemValue="" />
-										</p:selectOneMenu>
+										
+										<p:selectOneMenu style="width:650px;" id="cbPrograma29" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.valorComboProgramaSubtitulo29}">
+									    <f:selectItem itemLabel="Seleccione" itemValue="" />
+           								 <f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.programas29}" />
+           								 <!-- <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.filtrarSubtitulo21}"	update=":#{p:component('formSubtitulo21')}" /> -->
+           								  <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cargarServicios29}"	update=":#{p:component('formSubtitulo29')}" />
+           	 							</p:selectOneMenu>
+      
 									</h:panelGrid>
+							
+								<h:panelGrid>
+									<h:outputText value="Servicio: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:650px;" id="cbServicio29" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.valorComboServicioSubtitulo29}">
+									    <f:selectItem itemLabel="Seleccione" itemValue="" />
+           								 <f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.servicios29}" />
+           								  <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cargarComunas29}"	update=":#{p:component('formSubtitulo29')}" />
+           	 							  <p:ajax 	update=":#{p:component('formSubtitulo29')}" />
+           	 							</p:selectOneMenu>
+								</h:panelGrid>
+								<h:panelGrid>
+									<h:outputText value="Comuna: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:650px;" id="cbComunas29" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.valorComboComunaSubtitulo29}">
+									    <f:selectItem itemLabel="Seleccione" itemValue="" />
+           								 <f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.comunas29}" />
+           								<!--   <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cargarComunas}"	update=":#{p:component('formSubtitulo21')}" />
+           	 					 -->		
+           	 					   <p:ajax 	update=":#{p:component('formSubtitulo29')}" />
+           	 							</p:selectOneMenu>
 								</h:panelGrid>
 								<br />
-								<h:form id="formSubtitulo29">
+								
 											<h4>Monitoreo Mes de #{mes}</h4>
 											<h:panelGrid>
 								
-								<ui:param name="datoSubtitulo29" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.estimacionFlujoMonitoreoGlobalPojoSubtitulo29}" />
+								<ui:param name="datoSubtitulo29" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cajaGlobalVOSubtitulo29}" />
 											
 									<p:dataTable resizableColumns="true"
-													value="#{datoSubtitulo29.estimacionFlujoMonitoreoPojo}"
+													value="#{datoSubtitulo29.caja}"
 													liveResize="true" var="_data" rows="10" paginator="false"
 													paginatorPosition="bottom"
 													emptyMessage="No se encontro información."
@@ -853,27 +901,47 @@
 							</p:tab>
 							<p:tab title="Per Cápita">
 								<h4>Filtros para el Monitoreo:</h4>
+								<h:form id="formSubtituloPerCapita">
 								<h:panelGrid>
-									<h:panelGrid>
 										<h:outputText value="Programa: " styleClass="inputLabel" />
-										<p:selectOneMenu style="width:650px;" id="select5">
-											<f:selectItem itemLabel="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES"
-												itemValue="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
-											<f:selectItem itemLabel="Seleccione" itemValue="" />
-										</p:selectOneMenu>
+										
+										<p:selectOneMenu style="width:650px;" id="cbProgramaPerCapita" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.valorComboProgramaSubtituloPerCapita}">
+									    <f:selectItem itemLabel="Seleccione" itemValue="" />
+           								 <f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.programasPerCapita}" />
+           								 <!-- <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.filtrarSubtitulo21}"	update=":#{p:component('formSubtitulo21')}" /> -->
+           								  <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cargarServiciosPerCapita}"	update=":#{p:component('formSubtituloPerCapita')}" />
+           	 							</p:selectOneMenu>
+      
 									</h:panelGrid>
+								
+								<h:panelGrid>
+									<h:outputText value="Servicio: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:650px;" id="cbServicioPerCapita" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.valorComboServicioSubtituloPerCapita}">
+									    <f:selectItem itemLabel="Seleccione" itemValue="" />
+           								 <f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.serviciosPerCapita}" />
+           								  <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cargarComunasPerCapita}"	update=":#{p:component('formSubtituloPerCapita')}" />
+           	 							  <p:ajax 	update=":#{p:component('formSubtituloPerCapita')}" />
+           	 							</p:selectOneMenu>
+								</h:panelGrid>
+								<h:panelGrid>
+									<h:outputText value="Comuna: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:650px;" id="cbComunasPerCapita" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.valorComboComunaSubtituloPerCapita}">
+									    <f:selectItem itemLabel="Seleccione" itemValue="" />
+           								 <f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.comunasPerCapita}" />
+           								<!--   <p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cargarComunas}"	update=":#{p:component('formSubtitulo21')}" />
+           	 					 -->		
+           	 					   <p:ajax 	update=":#{p:component('formSubtituloPerCapita')}" />
+           	 							</p:selectOneMenu>
 								</h:panelGrid>
 								<br />
-								<h:form id="formSubtituloPerCapita">
+								
 											<h4>Monitoreo Mes de #{mes}</h4>
 											<h:panelGrid>
 								
-								<ui:param name="datoSubtituloPerCapita" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.estimacionFlujoMonitoreoGlobalPojoSubtituloPerCapita}" />
+								<ui:param name="datoSubtituloPerCapita" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.cajaGlobalVOSubtituloPerCapita}" />
 											
 									<p:dataTable resizableColumns="true"
-													value="#{datoSubtituloPerCapita.estimacionFlujoMonitoreoPojo}"
+													value="#{datoSubtituloPerCapita.caja}"
 													liveResize="true" var="_data" rows="10" paginator="false"
 													paginatorPosition="bottom"
 													emptyMessage="No se encontro información."
@@ -1048,12 +1116,11 @@
 
 
 						<p:commandButton value="Todos los Programas Ingresados | Iniciar Seguimiento Ordinarios" styleClass="x-btn-text"
-							action="divapProcesoProgSeguimiento?faces-redirect=true" ajax="false" icon="ui-icon-seek-first" />
+							action="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.continuarProceso}" ajax="false" icon="ui-icon-seek-first" />
 					</div>
 
 				</p:panel>
-<p:commandButton value="Avanzar" styleClass="x-btn-text" icon="ui-icon-play"
-					action="#{procesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionController.continuarProceso}" ajax="false" />
+
 					
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />

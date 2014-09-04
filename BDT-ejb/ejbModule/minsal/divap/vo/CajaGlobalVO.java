@@ -3,7 +3,7 @@ package minsal.divap.vo;
 import java.util.List;
 
 import cl.minsal.divap.pojo.EstimacionFlujoMonitoreoGlobalPojo;
-import cl.minsal.divap.pojo.EstimacionFlujoMonitoreoPojo;
+
 
 public class CajaGlobalVO implements Cloneable {
 
@@ -37,11 +37,11 @@ public class CajaGlobalVO implements Cloneable {
 	private long diciembre; 
 	private long total;
 	
-	private List<CajaVO> estimacionFlujoMonitoreoPojo;
+	private List<CajaVO> caja;
 
 	public long getTotalMarcoMonto() {
 		totalMarcoMonto = 0;
-		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+		for (CajaVO e : caja) {
 			totalMarcoMonto += e.getMarcoMonto();
 		}
 		
@@ -55,7 +55,7 @@ public class CajaGlobalVO implements Cloneable {
 	public long getTotalTransferenciaMonto() {
 		
 		totalTransferenciaMonto =0;
-		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+		for (CajaVO e : caja) {
 			total += e.getTransferenciaMonto();
 		}
 		
@@ -68,7 +68,7 @@ public class CajaGlobalVO implements Cloneable {
 
 	public long getTotalRemesaMonto() {
 		totalRemesaMonto = 0;
-		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+		for (CajaVO e : caja) {
 			totalRemesaMonto += e.getRemesaMonto();
 		}
 		return totalRemesaMonto;
@@ -80,7 +80,7 @@ public class CajaGlobalVO implements Cloneable {
 
 	public long getTotalConvenioMonto() {
 		totalConvenioMonto = 0;
-		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+		for (CajaVO e : caja) {
 			totalConvenioMonto += e.getConvenioMonto();
 		}
 		
@@ -93,7 +93,7 @@ public class CajaGlobalVO implements Cloneable {
 
 	public long getEnero() {
 		enero = 0;
-		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+		for (CajaVO e : caja) {
 			enero += e.getEnero();
 		}
 		
@@ -106,7 +106,7 @@ public class CajaGlobalVO implements Cloneable {
 
 	public long getFebrero() {
 		febrero = 0;
-		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+		for (CajaVO e : caja) {
 			febrero += e.getFebrero();
 		}
 		return febrero;
@@ -118,7 +118,7 @@ public class CajaGlobalVO implements Cloneable {
 
 	public long getMarzo() {
 		marzo = 0;
-		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+		for (CajaVO e : caja) {
 			marzo += e.getMarzo();
 		}
 		return marzo;
@@ -130,7 +130,7 @@ public class CajaGlobalVO implements Cloneable {
 
 	public long getAbril() {
 		abril = 0;
-		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+		for (CajaVO e : caja) {
 			abril += e.getAbril();
 		}
 		return abril;
@@ -142,7 +142,7 @@ public class CajaGlobalVO implements Cloneable {
 
 	public long getMayo() {
 		mayo = 0;
-		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+		for (CajaVO e : caja) {
 			mayo += e.getMayo();
 		}
 		return mayo;
@@ -154,7 +154,7 @@ public class CajaGlobalVO implements Cloneable {
 
 	public long getJunio() {
 		junio = 0;
-		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+		for (CajaVO e : caja) {
 			junio += e.getJunio();
 		}
 		return junio;
@@ -166,7 +166,7 @@ public class CajaGlobalVO implements Cloneable {
 
 	public long getJulio() {
 		julio = 0;
-		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+		for (CajaVO e : caja) {
 			julio += e.getJulio();
 		}
 		return julio;
@@ -179,7 +179,7 @@ public class CajaGlobalVO implements Cloneable {
 	public long getAgosto() {
 		
 		agosto = 0;
-		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+		for (CajaVO e : caja) {
 			agosto += e.getAgosto();
 		}
 		return agosto;
@@ -191,7 +191,7 @@ public class CajaGlobalVO implements Cloneable {
 
 	public long getSeptiembre() {
 		septiembre = 0;
-		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+		for (CajaVO e : caja) {
 			septiembre += e.getSeptiembre();
 		}
 		return septiembre;
@@ -203,7 +203,7 @@ public class CajaGlobalVO implements Cloneable {
 
 	public long getOctubre() {
 		octubre = 0;
-		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+		for (CajaVO e : caja) {
 			octubre += e.getOctubre();
 		}
 		return octubre;
@@ -215,7 +215,7 @@ public class CajaGlobalVO implements Cloneable {
 
 	public long getNoviembre() {
 		noviembre = 0;
-		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+		for (CajaVO e : caja) {
 			noviembre += e.getNoviembre();
 		}
 		return noviembre;
@@ -227,7 +227,7 @@ public class CajaGlobalVO implements Cloneable {
 
 	public long getDiciembre() {
 		diciembre = 0;
-		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+		for (CajaVO e : caja) {
 			diciembre += e.getDiciembre();
 		}
 		return diciembre;
@@ -239,7 +239,7 @@ public class CajaGlobalVO implements Cloneable {
 
 	public long getTotal() {
 		total = 0;
-		for (CajaVO e : estimacionFlujoMonitoreoPojo) {
+		for (CajaVO e : caja) {
 			total += e.getTotal();
 		}
 		return total;
@@ -249,12 +249,12 @@ public class CajaGlobalVO implements Cloneable {
 		this.total = total;
 	}
 
-	public List<CajaVO> getEstimacionFlujoMonitoreoPojo() {
-		return estimacionFlujoMonitoreoPojo;
+	public List<CajaVO> getCaja() {
+		return caja;
 	}
 
-	public void setEstimacionFlujoMonitoreoPojo(
-			List<CajaVO> estimacionFlujoMonitoreoPojo) {
-		this.estimacionFlujoMonitoreoPojo = estimacionFlujoMonitoreoPojo;
+	public void setCaja(
+			List<CajaVO> caja) {
+		this.caja = caja;
 	}
 }

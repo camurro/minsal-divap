@@ -1,20 +1,8 @@
-/*
- * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat, Inc. and/or its affiliates, and individual
- * contributors by the @authors tag. See the copyright.txt in the
- * distribution for a full listing of individual contributors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package minsal.divap.rest;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.GET;
@@ -22,8 +10,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import minsal.divap.enums.BusinessProcess;
 import minsal.divap.service.DistribucionInicialPercapitaService;
 import minsal.divap.service.EstimacionFlujoCajaService;
+import minsal.divap.service.ProcessService;
 
 
 /**
@@ -36,25 +26,26 @@ import minsal.divap.service.EstimacionFlujoCajaService;
 public class EstimacionFlujoCajaRESTService extends BaseRest{
 
 	@GET
-    @Path("/estimacionFlujoCaja/calcularPropuesta/{idLineaProgramatica}")
+    @Path("/estimacionFlujoCaja/calcularPropuesta/{idProgramaAno}")
     @Produces("application/json")
-    public Integer calcularPropuesta(@PathParam("idLineaProgramatica") Integer idLineaProgramatica){
-		System.out.println("[Calcular Propuesta] -->"+idLineaProgramatica);
+    public Integer calcularPropuesta(@PathParam("idProgramaAno") Integer idProgramaAno){
 		
+		System.out.println("[CALCULAR PROPUESTA] -->"+idProgramaAno);
 		EstimacionFlujoCajaService estimacionFlujoCajaService = getService(EstimacionFlujoCajaService.class);
-		Integer ind = estimacionFlujoCajaService.calcularPropuesta(idLineaProgramatica);
-		//return distribucionInicialPercapitaService.valorizarDisponibilizarPlanillaTrabajo(idDistribucionInicialPercapita);
+		System.out.println("[FIN CALCULAR PROPUESTA]");
+		return estimacionFlujoCajaService.calcularPropuesta(idProgramaAno);
 		
-		return 1;
     }
 	
 	
 	@GET
-    @Path("/estimacionFlujoCaja/generarPlanillaPropuesta/{idLineaProgramatica}")
+    @Path("/estimacionFlujoCaja/generarPlanillaPropuesta/{idProgramaAno}")
     @Produces("application/json")
-    public Integer generarPlanillaPropuesta(@PathParam("idLineaProgramatica") Integer idLineaProgramatica){
-		System.out.println("[Generar Planilla] -->"+idLineaProgramatica);
-		return 1;
+    public Integer generarPlanillaPropuesta(@PathParam("idProgramaAno") Integer idProgramaAno){
+		System.out.println("[GENERAR PLANILLA PROPUESTA] -->"+idProgramaAno);
+		EstimacionFlujoCajaService estimacionFlujoCajaService = getService(EstimacionFlujoCajaService.class);
+		System.out.println("FIN GENERAR PLANILLA PROPUESTA");
+		return estimacionFlujoCajaService.generarPlanillaPropuesta(idProgramaAno);
     }
 	
 	@GET
@@ -62,22 +53,39 @@ public class EstimacionFlujoCajaRESTService extends BaseRest{
     @Produces("application/json")
     public Integer eliminarPlanillaPropuesta(@PathParam("idLineaProgramatica") Integer idLineaProgramatica){
 		System.out.println("[Eliminar Planilla] -->"+idLineaProgramatica);
-		return 1;
+		//EstimacionFlujoCajaService estimacionFlujoCajaService = getService(EstimacionFlujoCajaService.class);
+		return 1; //estimacionFlujoCajaService.eliminarPlanillaPropuesta(idLineaProgramatica);
+		
     }
 
 	@GET
     @Path("/estimacionFlujoCaja/notificarUsuarioConsolidador/{idLineaProgramatica}")
     @Produces("application/json")
     public Integer notificarUsuarioConsolidador(@PathParam("idLineaProgramatica") Integer idLineaProgramatica){
-		System.out.println("[Eliminar Planilla] -->"+idLineaProgramatica);
-		return 1;
+		System.out.println("[Notificar a Usuario Consolidador] -->"+idLineaProgramatica);
+		
+		//Iniciar el segundo proceso.
+		ProcessService processService = getService(ProcessService.class);
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		String usuario = "lsuarez";
+		parameters.put("user", usuario);
+		parameters.put("usuario", usuario);		
+		try {
+			processService.startProcess(BusinessProcess.ESTIMACIONFLUJOCAJACONSOLIDADOR, parameters);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		EstimacionFlujoCajaService estimacionFlujoCajaService = getService(EstimacionFlujoCajaService.class);
+		return estimacionFlujoCajaService.notificarUsuarioConsolidador(idLineaProgramatica);
     }
 	
 	@GET
     @Path("/estimacionFlujoCaja/recalcularEstimacion/{flujo}")
     @Produces("application/json")
     public Integer recalcularEstimacion(@PathParam("flujo") Integer idLineaProgramatica){
-		System.out.println("[Eliminar Planilla] -->"+idLineaProgramatica);
+		System.out.println("[Recalcular Estimacion] -->"+idLineaProgramatica);
 		return 1;
     }
 	
@@ -87,6 +95,11 @@ public class EstimacionFlujoCajaRESTService extends BaseRest{
     @Produces("application/json")
     public Integer elaborarOrdinarioProgramacion(@PathParam("flujo") Integer idLineaProgramatica){
 		System.out.println("[Eliminar Planilla] -->"+idLineaProgramatica);
+		EstimacionFlujoCajaService estimacionFlujoCajaService = getService(EstimacionFlujoCajaService.class);
+		//Elaborar Ordinario Programacion
+		estimacionFlujoCajaService.elaborarOrdinarioProgramacionCaja(idLineaProgramatica);
+		//Generar la Planilla Propuesta
+		estimacionFlujoCajaService.generarPlanillaPropuesta(idLineaProgramatica);
 		return 1;
     }
 	
@@ -96,19 +109,23 @@ public class EstimacionFlujoCajaRESTService extends BaseRest{
     public Integer administrarVersiones(@PathParam("flujo") Integer idLineaProgramatica){
 		System.out.println("[Eliminar Planilla] -->"+idLineaProgramatica);
 
+		System.out.println("[Eliminar Planilla] -->"+idLineaProgramatica);
 		EstimacionFlujoCajaService estimacionFlujoCajaService = getService(EstimacionFlujoCajaService.class);
-		estimacionFlujoCajaService.elaborarOrdinarioProgramacionCaja(1);
-
-		return 1;
+		return estimacionFlujoCajaService.eliminarOrdinarioFonasa(idLineaProgramatica);
+		//return 1;
     }
+	
+	
 	
 		
 	@GET
     @Path("/estimacionFlujoCaja/enviarOrdinarioFONASA/{flujo}")
     @Produces("application/json")
     public Integer enviarOrdinarioFONASA(@PathParam("flujo") Integer idLineaProgramatica){
-		System.out.println("[Eliminar Planilla] -->"+idLineaProgramatica);
-		return 1;
+		EstimacionFlujoCajaService estimacionFlujoCajaService = getService(EstimacionFlujoCajaService.class);
+		//Elaborar Ordinario Programacion
+		return estimacionFlujoCajaService.enviarOrdinarioFONASA(idLineaProgramatica);
     }
 	
 }
+>>>>>>> aldo3

@@ -31,21 +31,9 @@
 					<h:panelGrid>
 					<h:form id ="more"> </h:form>
 						<h:outputText value="Componente: " styleClass="inputLabel" />
-						<!-- <p:selectOneMenu style="width:650px;" id="select5" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorComboSubtituloComponente}">
-							<f:selectItem itemLabel="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES"
-								itemValue="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
-							<f:selectItem itemLabel="Seleccione" itemValue="Seleccione" />
-							
-							<p:ajax
-														listener="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.filtrarSubtituloComponente}"
-														update=":#{p:component('formComponente')}"  />
-														
-						</p:selectOneMenu> -->
-						
+											
 						<p:selectOneMenu id="select5"  style="width:650px;" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorComboSubtituloComponente}">
-            <f:selectItem itemLabel="Seleccione" itemValue="" />
+            <f:selectItem itemLabel="Seleccione" itemValue="0" />
             <f:selectItems value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.componentes}" />
             <p:ajax
 														listener="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.filtrarSubtituloComponente}"
@@ -59,8 +47,8 @@
 					<h:form id="formComponente">
 					<p:panelGrid columns="2" id="display" columnClasses="label,value">
 					<div class="destacaArchivos ui-corner-all" style="padding: 10px;">
-						<span class="strong">Componente:</span> #{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorComboSubtituloComponente} <br /> <span
-							class="strong">Peso Componente:</span> 35%
+						<span class="strong">Componente:</span> #{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorNombreComponente} <br /> <span
+							class="strong">Peso Componente:</span> #{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorPesoComponente}
 					</div>
 					</p:panelGrid>
 					<br />

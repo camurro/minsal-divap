@@ -14,6 +14,8 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import minsal.divap.enums.EstadosProgramas;
+import minsal.divap.service.EstimacionFlujoCajaService;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.util.Util;
 import minsal.divap.vo.ProgramaVO;
@@ -28,6 +30,7 @@ import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 		AbstractTaskMBean implements Serializable {
 	
+	//TODO: [ASAAVEDRA] Modificar el icono de modificación del programa, según correspondan los estados en lo que se puede modificar.
 	
 	/*
 	 * Variables
@@ -37,29 +40,22 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 	@Inject
 	private transient Logger log;
 
-	//ID del programa seleccionado.
-	private Integer idLineaProgramatica;
+	private Integer idProgramaAno;
 	@EJB
 	private ProgramasService programaService;
+	@EJB
+	private EstimacionFlujoCajaService estimacionFlujoCajaService;
+	
+	private String usuario;
 
 	/*
 	 * Se obtiene la lista de programas del usuario por username y año.
 	 */
-	public List<ProcesosProgramasPojo> getListadoProgramasServicio() {
-		List<ProcesosProgramasPojo> listadoProgramasServicio = new ArrayList<ProcesosProgramasPojo>();
-		List<ProgramaVO> programas = programaService
+	public List<ProgramaVO> getListadoProgramasServicio() {
+			List<ProgramaVO> programas = programaService
 				.getProgramasByUserAno(getLoggedUsername(), Util.obtenerAno(new Date()));
-		for (ProgramaVO programaVO : programas) {
-			ProcesosProgramasPojo p2 = new ProcesosProgramasPojo();
-			p2.setPrograma(programaVO.getNombre());
-			p2.setDescripcion("descripcion");
-			p2.setId(programaVO.getId());
-			p2.setEstadoFlujoCaja(programaVO.getEstadoFlujocaja()
-					.getIdEstadoPrograma());
-
-			listadoProgramasServicio.add(p2);
-		}
-		return listadoProgramasServicio;
+		
+		return programas;
 	}
 
 	/*
@@ -67,9 +63,12 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 	 */
 	public String continuarProceso(Integer id) {
 
-		setIdLineaProgramatica(id);
+		//TODO: [ASAAVEDRA] Transaccional.
+		this.idProgramaAno = estimacionFlujoCajaService.obtenerIdProgramaAno(id);
 		setTarget("bandejaTareas");
-		return super.enviar();
+		String pagina = super.enviar();
+		
+		return pagina;
 	}
 
 	@Override
@@ -103,7 +102,7 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		System.out.println("createResultData usuario-->"
 				+ getSessionBean().getUsername());
-		parameters.put("idLineaProgramatica_", idLineaProgramatica);
+		parameters.put("idProgramaAno_", idProgramaAno);
 		return parameters;
 	}
 
@@ -115,18 +114,27 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 	 * Fin Comunicacion BPM
 	 */
 
-	
 	/*
 	 * Getter y Setter
 	 */
-	public Integer getIdLineaProgramatica() {
-		return idLineaProgramatica;
+	public Integer getIdProgramaAno() {
+		return idProgramaAno;
 	}
 
-	public void setIdLineaProgramatica(Integer idLineaProgramatica) {
-		this.idLineaProgramatica = idLineaProgramatica;
+	public void setIdProgramaAno(Integer idProgramaAno) {
+		this.idProgramaAno = idProgramaAno;
 	}
 	/*
 	 * Fin Getter y Setter
 	 */
+
+	public String getUsuario() {
+		return getLoggedUsername();
+	}
+
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
+	}
+
+
 }

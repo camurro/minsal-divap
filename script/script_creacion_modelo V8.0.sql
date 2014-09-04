@@ -1810,7 +1810,7 @@ WITH (
   OIDS=FALSE
 );
 
-
+DELETE FROM tipo_programa;
 INSERT INTO tipo_programa(id, nombre) VALUES (1, 'PxQ');
 INSERT INTO tipo_programa(id, nombre) VALUES (2, 'Histórico');
 
@@ -2591,6 +2591,194 @@ INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo)
 
 --26/08/2014
 
+ALTER TABLE public.componente
+  ADD COLUMN peso numeric(18);
+  
+  DROP TABLE Caja;
+  
+CREATE TABLE public.caja (
+  id                    serial NOT NULL,
+  id_programa_ano       integer NOT NULL,
+  id_componente         integer NOT NULL,
+  id_servicio           integer NOT NULL,
+  marco_presupuestario  numeric(18),
+  enero                 numeric(18),
+  febrero               numeric(18),
+  marzo                 numeric(18),
+  abril                 numeric(18),
+  mayo                  numeric(18),
+  junio                 numeric(18),
+  julio                 numeric(18),
+  agosto                numeric(18),
+  septiembre            numeric(18),
+  octubre               numeric(18),
+  noviembre             numeric(18),
+  diciembre             numeric(18),
+  total                 numeric(18),
+  id_comuna             integer,
+  id_subtitulo          integer,
+  ano                   integer,
+  id_establecimiento    integer,
+  /* Keys */
+  CONSTRAINT caja_pkey
+    PRIMARY KEY (id),
+  /* Foreign keys */
+  CONSTRAINT fk_componente
+    FOREIGN KEY (id_componente)
+    REFERENCES public.componente(id), 
+  CONSTRAINT fk_comuna
+    FOREIGN KEY (id_comuna)
+    REFERENCES public.comuna(id), 
+  CONSTRAINT fk_establecimiento
+    FOREIGN KEY (id_establecimiento)
+    REFERENCES public.establecimiento(id), 
+  CONSTRAINT fk_programa
+    FOREIGN KEY (id_programa_ano)
+    REFERENCES public.programa_ano(id_programa_ano), 
+  CONSTRAINT fk_servicio
+    FOREIGN KEY (id_servicio)
+    REFERENCES public.servicio_salud(id)
+) WITH (
+    OIDS = FALSE
+  );
+
+ALTER TABLE public.caja
+  OWNER TO postgres;
+
+COMMENT ON TABLE public.caja
+  IS 'Tabla para el proceso de estimacion de flujo de caja';
+
+COMMENT ON COLUMN public.caja.id
+  IS 'Identificador para la tabla de caja';
+
+COMMENT ON COLUMN public.caja.id_programa_ano
+  IS 'FK del programa';
+
+COMMENT ON CONSTRAINT fk_componente
+  ON public.caja
+  IS '*Verificar si es necesaria';
+  
+  
+  CREATE TABLE public.documento_estimacionflujocaja (
+  id                 integer NOT NULL PRIMARY KEY,
+  id_tipo_documento  integer,
+  id_documento       integer,
+  /* Foreign keys */
+  CONSTRAINT fk_tipodocumento
+    FOREIGN KEY (id_tipo_documento)
+    REFERENCES public.tipo_documento(id_tipo_documento), 
+  CONSTRAINT documento
+    FOREIGN KEY (id_documento)
+    REFERENCES public.referencia_documento(id)
+) WITH (
+    OIDS = FALSE
+  );
+
+  DROP TABLE caja;
+
+CREATE TABLE caja
+(
+  id integer NOT NULL DEFAULT nextval(('public.caja_id_seq'::text)::regclass), -- Identificador para la tabla de caja
+  id_programa_ano integer NOT NULL, -- FK del programa
+  id_componente integer NOT NULL,
+  id_servicio integer NOT NULL,
+  marco_presupuestario numeric(18,0),
+  enero numeric(18,0),
+  febrero numeric(18,0),
+  marzo numeric(18,0),
+  abril numeric(18,0),
+  mayo numeric(18,0),
+  junio numeric(18,0),
+  julio numeric(18,0),
+  agosto numeric(18,0),
+  septiembre numeric(18,0),
+  octubre numeric(18,0),
+  noviembre numeric(18,0),
+  diciembre numeric(18,0),
+  total numeric(18,0),
+  id_comuna integer,
+  id_subtitulo integer,
+  ano integer,
+  id_establecimiento integer,
+  CONSTRAINT caja_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_componente FOREIGN KEY (id_componente)
+      REFERENCES componente (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE, -- *Verificar si es necesaria
+  CONSTRAINT fk_comuna FOREIGN KEY (id_comuna)
+      REFERENCES comuna (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_establecimiento FOREIGN KEY (id_establecimiento)
+      REFERENCES establecimiento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_programa FOREIGN KEY (id_programa_ano)
+      REFERENCES programa_ano (id_programa_ano) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_servicio FOREIGN KEY (id_servicio)
+      REFERENCES servicio_salud (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE caja
+  OWNER TO postgres;
+COMMENT ON TABLE caja
+  IS 'Tabla para el proceso de estimacion de flujo de caja';
+COMMENT ON COLUMN caja.id IS 'Identificador para la tabla de caja';
+COMMENT ON COLUMN caja.id_programa_ano IS 'FK del programa';
+
+COMMENT ON CONSTRAINT fk_componente ON caja IS '*Verificar si es necesaria';
+
+
+DROP TABLE documento_estimacionflujocaja;
+
+CREATE TABLE documento_estimacionflujocaja
+(
+  id integer NOT NULL DEFAULT nextval(('public.documento_estimacionflujocaja_id_seq'::text)::regclass),
+  id_tipo_documento integer,
+  id_documento integer,
+  id_programa_ano integer,
+  CONSTRAINT documento_estimacionflujocaja_pkey PRIMARY KEY (id),
+  CONSTRAINT documento FOREIGN KEY (id_documento)
+      REFERENCES referencia_documento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_programaano FOREIGN KEY (id_programa_ano)
+      REFERENCES programa_ano (id_programa_ano) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_tipodocumento FOREIGN KEY (id_tipo_documento)
+      REFERENCES tipo_documento (id_tipo_documento) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE documento_estimacionflujocaja
+  OWNER TO postgres;
+
+  
+  DROP TABLE estimacion_flujo_caja_seguimiento;
+
+CREATE TABLE estimacion_flujo_caja_seguimiento
+(
+  id serial NOT NULL,
+  id_programa_ano integer,
+  seguimiento integer,
+  CONSTRAINT estimacion_flujo_caja_seguimiento_pkey PRIMARY KEY (id),
+  CONSTRAINT foreign_key01 FOREIGN KEY (id_programa_ano)
+      REFERENCES programa_ano (id_programa_ano) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT foreign_key02 FOREIGN KEY (seguimiento)
+      REFERENCES seguimiento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE estimacion_flujo_caja_seguimiento
+  OWNER TO postgres;
+
+  
+  ALTER TABLE programa_ano ADD COLUMN estadoflujocaja integer;
 
 
 

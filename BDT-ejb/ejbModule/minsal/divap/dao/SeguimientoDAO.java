@@ -106,5 +106,16 @@ public class SeguimientoDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public List<Seguimiento> getBitacoraEstimacionFlujoCaja(Integer idProgramaAno, TareasSeguimiento tareaSeguimiento) {
+		try {
+			TypedQuery<Seguimiento> query = this.em.createNamedQuery("Seguimiento.findByIdEstimacionFlujoCaja", Seguimiento.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idTareaSeguimiento", tareaSeguimiento.getId());
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }

@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Seguimiento.findById", query = "SELECT s FROM Seguimiento s WHERE s.id = :id"),
     @NamedQuery(name = "Seguimiento.findByIdInstancia", query = "SELECT s FROM Seguimiento s WHERE s.idInstancia = :idInstancia"),
     @NamedQuery(name = "Seguimiento.findByIdDistribucionInicialTarea", query = "SELECT s FROM Seguimiento s JOIN s.distribucionInicialPercapitaSeguimientoCollection d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.distribucionInicialPercapita.idDistribucionInicialPercapita = :idDistribucionInicialPercapita"),
+    @NamedQuery(name = "Seguimiento.findByIdEstimacionFlujoCaja", query = "SELECT s FROM Seguimiento s JOIN s.estimacionFlujoCajaSeguimientoCollection d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.programaAno.idProgramaAno = :idProgramaAno"),
     @NamedQuery(name = "Seguimiento.findBySubject", query = "SELECT s FROM Seguimiento s WHERE s.subject = :subject"),
     @NamedQuery(name = "Seguimiento.findByBody", query = "SELECT s FROM Seguimiento s WHERE s.body = :body"),
     @NamedQuery(name = "Seguimiento.findByFechaEnvio", query = "SELECT s FROM Seguimiento s WHERE s.fechaEnvio = :fechaEnvio")})
@@ -58,6 +59,8 @@ public class Seguimiento implements Serializable {
     private Set<SeguimientoReferenciaDocumento> seguimientoReferenciaDocumentoCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguimiento")
     private Set<DistribucionInicialPercapitaSeguimiento> distribucionInicialPercapitaSeguimientoCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguimiento")
+    private Set<EstimacionFlujoCajaSeguimiento> estimacionFlujoCajaSeguimientoCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguimiento")
     private Set<AdjuntosSeguimiento> adjuntosSeguimientoCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguimiento")
