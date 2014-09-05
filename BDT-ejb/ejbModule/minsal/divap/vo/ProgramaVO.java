@@ -24,6 +24,7 @@ public class ProgramaVO implements Serializable{
 	private Boolean dependenciaServicio;
 	private List<ComponentesVO> componentes;
 	private EstadoPrograma estadoFlujocaja;
+	private Boolean revisaFonasa;
 	
 	public Integer getId() {
 		return id;
@@ -111,6 +112,16 @@ public class ProgramaVO implements Serializable{
 
 	public void setEstado(EstadoProgramaVO estado) {
 		this.estado = estado;
+	}
+	
+	
+
+	public Boolean getRevisaFonasa() {
+		return revisaFonasa;
+	}
+
+	public void setRevisaFonasa(Boolean revisaFonasa) {
+		this.revisaFonasa = revisaFonasa;
 	}
 
 	@Override

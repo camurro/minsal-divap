@@ -107,4 +107,16 @@ public class SeguimientoDAO {
 		}
 	}
 
+	public List<Seguimiento> getBitacoraProcesoOT(Integer idOrdenTransferencia, TareasSeguimiento tareaSeguimiento) {
+		try {
+			TypedQuery<Seguimiento> query = this.em.createNamedQuery("Seguimiento.findByIdOrdenTransferenciaTarea", Seguimiento.class);
+			query.setParameter("idOrdenTransferencia", idOrdenTransferencia);
+			query.setParameter("idTareaSeguimiento", tareaSeguimiento.getId());
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
 }

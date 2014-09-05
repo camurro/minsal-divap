@@ -29,6 +29,7 @@ public class ProgramaMapper implements Mapper<ProgramaAno>{
 		programaVO.setIdProgramaAno(programaAno.getIdProgramaAno());
 		programaVO.setDependenciaMunicipal(false);
 		programaVO.setDependenciaServicio(false);
+		
 		if (programaAno.getEstado() != null){
 			programaVO.setEstado(new EstadoProgramaVO(programaAno.getEstado().getIdEstadoPrograma(), programaAno.getEstado().getNombreEstado()));
 		}else{
@@ -38,6 +39,7 @@ public class ProgramaMapper implements Mapper<ProgramaAno>{
 			programaVO.setNombre(programaAno.getPrograma().getNombre());
 			programaVO.setId(programaAno.getPrograma().getId());
 			programaVO.setDescripcion(programaAno.getPrograma().getDescripcion());
+			programaVO.setRevisaFonasa(programaAno.getPrograma().getRevisaFonasa());
 			if(programaAno.getPrograma().getUsuario() != null){
 				programaVO.setUsername(programaAno.getPrograma().getUsuario().getUsername());
 			}

@@ -54,6 +54,17 @@ implements Serializable {
 	private boolean versionFinal;
 	private String docIdDownload;
 	
+	private String tipoDocumento;
+	
+	
+	public String getTipoDocumento() {
+		return tipoDocumento;
+	}
+
+	public void setTipoDocumento(String tipoDocumento) {
+		this.tipoDocumento = tipoDocumento;
+	}
+
 	private Integer oficioConsultaId;
 	private ReferenciaDocumentoSummaryVO documentoPoblacionInscrita;
 	
@@ -64,14 +75,27 @@ implements Serializable {
 	
 	private UploadedFile attachedFile;
 	private UploadedFile file;
-	private Integer idOT;
+	
+	private Integer idDocResumenConsolidadoFonasa;
 
-	public Integer getIdOT() {
-		return idOT;
+	private Integer idDocOrdinarioOrdenTransferencia;
+	
+	public Integer getIdDocResumenConsolidadoFonasa() {
+		return idDocResumenConsolidadoFonasa;
 	}
 
-	public void setIdOT(Integer idOT) {
-		this.idOT = idOT;
+	public void setIdDocResumenConsolidadoFonasa(
+			Integer idDocResumenConsolidadoFonasa) {
+		this.idDocResumenConsolidadoFonasa = idDocResumenConsolidadoFonasa;
+	}
+
+	public Integer getIdDocOrdinarioOrdenTransferencia() {
+		return idDocOrdinarioOrdenTransferencia;
+	}
+
+	public void setIdDocOrdinarioOrdenTransferencia(
+			Integer idDocOrdinarioOrdenTransferencia) {
+		this.idDocOrdinarioOrdenTransferencia = idDocOrdinarioOrdenTransferencia;
 	}
 
 	public void uploadArchivoSeguimiento() {
@@ -97,7 +121,7 @@ implements Serializable {
 	}
 
 	public String sendMail(){
-		String target = "divapProcesoAsignacionPerCapitaSeguimiento";
+		String target = "divapProcesoOTSeguimiento";
 		try{
 			List<Integer> documentos = null;
 			if (attachedFile != null){
@@ -120,7 +144,8 @@ implements Serializable {
 			}
 
 			System.out.println("ProcesoAsignacionPerCapitaSeguimientoController-->sendMail");
-			otService.createSeguimientoOT(1, tareaSeguimiento, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
+			
+			otService.createSeguimientoOT(idOrdenTransferencia, tareaSeguimiento, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
 		}catch(Exception e){
 			e.printStackTrace();
 			target = null;
@@ -133,6 +158,7 @@ implements Serializable {
 		return "ProcesoAsignacionPerCapitaController [validarMontosDistribucion=]";
 	}
 
+	//TODO INIT
 	@PostConstruct
 	public void init() {
 		log.info("ProcesosPrincipalController Alcanzado.");
@@ -140,23 +166,30 @@ implements Serializable {
 			return;
 		}
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			
-			this.idOT = 1;
-			/*(Integer) getTaskDataVO()
-					.getData().get("_idDistribucionInicialPercapita");
-			System.out.println("this.idDistribucionInicialPercapita --->"
-					+ this.idDistribucionInicialPercapita);
-				*/	
-			
-			this.actividadSeguimientoTitle = "more Segui";/*getTaskDataVO().getTask().getName();
-			System.out.println("this.actividadSeguimientoTitle --->"
-					+ this.actividadSeguimientoTitle);*/
-			
-//			this.oficioConsultaId = (Integer) getTaskDataVO().getData().get("_oficioConsultaId");
+	
+     		this.idOrdenTransferencia = (Integer) getTaskDataVO().getData().get("_idOrdenTransferencia");
 		}
 		
-		//documentoPoblacionInscrita = distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA);
-		bitacoraSeguimiento = otService.getBitacora(this.idOT,TareasSeguimiento.HACERSEGUIMIENTOOT);
+		this.tareaSeguimiento = TareasSeguimiento.HACERSEGUIMIENTOOT;
+		bitacoraSeguimiento = otService.getBitacora(this.idOrdenTransferencia,tareaSeguimiento);
+		
+		cargarArchivos();
+	}
+
+	private Integer idOrdenTransferencia;
+	
+	public Integer getIdOrdenTransferencia() {
+		return idOrdenTransferencia;
+	}
+
+	public void setIdOrdenTransferencia(Integer idOrdenTransferencia) {
+		this.idOrdenTransferencia = idOrdenTransferencia;
+	}
+	
+	private void cargarArchivos() {
+		
+		 idDocResumenConsolidadoFonasa =  otService.cargarDocumentoResumenConsolidado(idOrdenTransferencia);
+		 idDocOrdinarioOrdenTransferencia =  otService.cargarDocumentoOrdinarioOrdenTransferencia(idOrdenTransferencia);
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
@@ -336,13 +369,14 @@ implements Serializable {
 		return verBusqueda;
 	}
 	
-	public String downloadPlanilla() {
-		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownload()));
+	public String downloadDocumento() {
+		Integer docDownload = Integer.valueOf(Integer
+				.parseInt(getDocIdDownload()));
 		setDocumento(documentService.getDocument(docDownload));
 		super.downloadDocument();
 		return null;
 	}
-
+	
 	public void setVerBusqueda(boolean verBusqueda) {
 		this.verBusqueda = verBusqueda;
 	}
@@ -374,10 +408,52 @@ implements Serializable {
 	public void setDocIdDownload(String docIdDownload) {
 		this.docIdDownload = docIdDownload;
 	}
+	
+	public void handleFile(FileUploadEvent event) {
+		FacesMessage msg = new FacesMessage("Succesful", event.getFile()
+				.getFileName() + " is uploaded.");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		System.out.println("handleFile");
+	}
+
+	public void uploadVersion() {
+		if (file != null){
+			System.out.println("uploadVersion file is not null");
+			String filename = file.getFileName();
+			byte[] contentAttachedFile = file.getContents();
+			Integer docNewVersion = persistFile(filename,	contentAttachedFile);
+			TipoDocumentosProcesos tipoDocumento = null;
+			Integer tipoDoc= 1;//Integer.valueOf(this.tipoDocumento);
+			switch (tipoDoc) {
+			case 1:
+				tipoDocumento = TipoDocumentosProcesos.RESUMENCONSOLIDADOFONASA;
+				otService.moveToAlfresco(idOrdenTransferencia, docNewVersion, tipoDocumento, versionFinal);
+				this.idDocResumenConsolidadoFonasa = docNewVersion;
+				break;
+			case 2:
+				tipoDocumento = TipoDocumentosProcesos.PLANTILLAORDINARIOOREDENTRANSFERENCIA;
+				otService.moveToAlfresco(idOrdenTransferencia, docNewVersion, tipoDocumento, versionFinal);
+				this.idOrdenTransferencia = docNewVersion;
+				break;	
+			default:
+				break;
+			}
+		}else{
+			System.out.println("uploadVersion file is null");
+			FacesMessage message = new FacesMessage("uploadVersion file is null");
+			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
+	}
+
 
 	@Override
 	public String iniciarProceso() {
 		return null;
+	}
+	
+	// Continua el proceso con el programa seleccionado.
+	public void continuarProceso() {
+		super.enviar();
 	}
 
 	

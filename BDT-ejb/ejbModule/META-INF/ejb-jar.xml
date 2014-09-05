@@ -56,7 +56,7 @@
 				<description>Alfresco User Name</description>
 				<env-entry-name>alfrescoUsername</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>redhat</env-entry-value>
+				<env-entry-value>admin</env-entry-value>
 			</env-entry>
 			<env-entry>
 				<description>Alfresco Password</description>
@@ -225,6 +225,39 @@
 				<env-entry-value>PROCESOS\{ANO}\PERCAPITA</env-entry-value>
 			</env-entry>
 		</session>
+		
+		<!-- DIRECCION PROCESO OT  -->
+		<session>
+			<ejb-name>OTService</ejb-name>
+			<env-entry>
+				<description>Tmp Dir</description>
+				<env-entry-name>tmpDir</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<!-- <env-entry-value>/tmp/excel</env-entry-value> -->
+				<env-entry-value>E:\redhatexcel</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Tmp Dir docs</description>
+				<env-entry-name>tmpDirDoc</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<!--  <env-entry-value>/tmp/doc</env-entry-value>-->
+				<env-entry-value>E:\redhatdoc</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Template folder ot</description>
+				<env-entry-name>folderTemplateOT</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>TEMPLATES\OT</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Process folder ot</description>
+				<env-entry-name>folderOT</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>PROCESOS\{ANO}\OT</env-entry-value>
+			</env-entry>
+		</session>
+		
+		
 	</enterprise-beans>
 	<!-- <ejb-client-jar>BaseEJBClient.jar</ejb-client-jar> -->
 </ejb-jar>

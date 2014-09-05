@@ -12,6 +12,7 @@ import javax.persistence.TypedQuery;
 
 import minsal.divap.enums.TipoDocumentosProcesos;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
+import cl.minsal.divap.model.DocumentoOt;
 import cl.minsal.divap.model.Plantilla;
 import cl.minsal.divap.model.ReferenciaDocumento;
 
@@ -169,6 +170,25 @@ public class DocumentDAO {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	
+	public ReferenciaDocumento getLastDocumentByOrdinarioOrdenTransferencia(
+			Integer idOrdenTransferencia,Integer idTipoDocumento) {
+		ReferenciaDocumento referenciaDocumento = null;
+		try {
+			TypedQuery<DocumentoOt> query = this.em.createNamedQuery("DocumentoOt.findLastByidOrdenTransferencia", DocumentoOt.class);
+			query.setParameter("idOrdenTransferencia", idOrdenTransferencia);
+			query.setParameter("idTipoDocumento", idTipoDocumento);
+			
+			List<DocumentoOt> referenciasDocumentos = query.getResultList(); 
+			if(referenciasDocumentos != null && referenciasDocumentos.size() > 0){
+				referenciaDocumento = referenciasDocumentos.get(0).getIdDocumento();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return referenciaDocumento;
 	}
 
 

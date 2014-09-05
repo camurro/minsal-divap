@@ -34,15 +34,18 @@ implements Serializable {
 	@EJB
 	private ProgramasService programaService;
 	
-	private List<AsignacionDistribucionPerCapitaVO> antecendentesComunaCalculado;
-	
 	//ID Programa
-	private Integer idLineaProgramatica;
+	private Integer idProgramaAno;
 	
-	public void setIdLineaProgramatica(Integer idLineaProgramatica) {
-		this.idLineaProgramatica = idLineaProgramatica;
+	
+	public Integer getIdProgramaAno() {
+		return idProgramaAno;
 	}
-	
+
+	public void setIdProgramaAno(Integer idProgramaAno) {
+		this.idProgramaAno = idProgramaAno;
+	}
+
 	@PostConstruct
 	public void init() {
 	}
@@ -51,23 +54,27 @@ implements Serializable {
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		
+		parameters.put("revisarPerCapita_", "si");
+		parameters.put("revisarLeyes_", "no");
+		parameters.put("idProgramaAno_", idProgramaAno);
 		
-		//Programa programa = programaService.getProgramaPorID(idLineaProgramatica);//programaId)
-		
-//		if(programa.getTipoPrograma().getId() == 1)//TIPO PERCAPITA
-//		{
-//			parameters.put("revisarPerCapita_", "si");
-//			parameters.put("revisarLeyes_", "no");
-//		}
-//		else if(programa.getTipoPrograma().getId() == 2)//TIPO LEYES
-//		{
-//			parameters.put("revisarLeyes_", "si");
-//		}
-//		else if(programa.getTipoPrograma().getId() == 3)//TIPO PROGRAMATICA
-//		{
-//			parameters.put("revisarLeyes_", "no");
-//			parameters.put("revisarPerCapita_", "no");
-//		}
+		/*
+		ProgramaVO programa = programaService.getProgramaAnoPorID(idProgramaAno);
+		if(programa..getTipoPrograma().getId() == 1)//TIPO PERCAPITA
+		{
+			parameters.put("revisarPerCapita_", "si");
+			parameters.put("revisarLeyes_", "no");
+		}
+		else if(programa.getTipoPrograma().getId() == 2)//TIPO LEYES
+		{
+			parameters.put("revisarLeyes_", "si");
+		}
+		else if(programa.getTipoPrograma().getId() == 3)//TIPO PROGRAMATICA
+		{
+			parameters.put("revisarLeyes_", "no");
+			parameters.put("revisarPerCapita_", "no");
+		}
+		*/
 
 		return parameters;
 	}
@@ -92,14 +99,12 @@ implements Serializable {
 		return success;
 	}
 	
-
-	//TODO: [ASAAVEDRA] Verificar cuando los programas estan iniciados.
-	
 	//Obtiene la lista de programas del usuario
 	public List<ProcesosProgramasPojo> getListadoProgramasServicio() {
+		
 		List<ProcesosProgramasPojo> listadoProgramasServicio = new ArrayList<ProcesosProgramasPojo>();
-		List<ProgramaVO> programas = programaService
-				.getProgramasByUser(getLoggedUsername());
+		List<ProgramaVO> programas = programaService.getProgramasByUser(getLoggedUsername());
+		
 		for (ProgramaVO programaVO : programas) {
 			ProcesosProgramasPojo p2 = new ProcesosProgramasPojo();
 			p2.setPrograma(programaVO.getNombre());
@@ -113,7 +118,7 @@ implements Serializable {
 	// Continua el proceso con el programa seleccionado.
 		public void continuarProceso(Integer id) {
 
-			setIdLineaProgramatica(id);
+			setIdProgramaAno(id);
 			super.enviar();
 		}
 }

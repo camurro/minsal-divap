@@ -8,7 +8,7 @@
 				<h1>
 					<h:outputText value="Procesos DIVAP" />
 				</h1>
-				<h2>Ordenes de Transferencia MORE</h2>
+				<h2>Ordenes de Transferencia</h2>
 				<p class="parrafo">El Proceso Ordenes de Transferencia consiste en lorem ipsum dolor sit amet, consectetur
 					adipiscing elit. Praesent egestas tempor nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est faucibus.
 					Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo placerat, nisi augue suscipit ante, vel auctor mauris
@@ -17,14 +17,15 @@
 
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="divapProcesosHome?faces-redirect=true" ajax="false"
 					icon="ui-icon-seek-first" />
+					
 				<p:commandButton value="Iniciar Proceso" styleClass="x-btn-text" icon="ui-icon-play"
 					action="divapProcesoOTLineas?faces-redirect=true" ajax="false" />
 					
 			<p:commandButton value="Iniciar Proceso Profesional" styleClass="x-btn-text" icon="ui-icon-play"
-					action="#{procesoOTController.iniciarProceso}" ajax="false" />
+					action="#{procesoOTInicioProfesionalController.iniciarProceso}" ajax="false" />
 					
 				<p:commandButton value="Iniciar Proceso Consolidador" styleClass="x-btn-text" icon="ui-icon-play"
-				action="#{procesoOTRevisarConsolidacionController.iniciarProceso}" ajax="false" />
+				action="#{procesoOTController.iniciarProceso}" ajax="false" />
 						
 					
 				<h3>Registro de instancias del proceso:</h3>

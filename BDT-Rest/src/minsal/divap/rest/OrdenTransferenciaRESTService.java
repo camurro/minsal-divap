@@ -23,6 +23,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import minsal.divap.service.DistribucionInicialPercapitaService;
+import minsal.divap.service.OTService;
 
 
 /**
@@ -44,8 +45,9 @@ public class OrdenTransferenciaRESTService extends BaseRest{
 			throw new IllegalArgumentException("proceso: "+ idProcesoOT + " no puede ser nulo");
 		}
 
-		//DistribucionInicialPercapitaService distribucionInicialPercapitaService = getService(DistribucionInicialPercapitaService.class);
-		return 1;//distribucionInicialPercapitaService.crearOficioConsulta(idProcesoOT);
+		OTService otService = getService(OTService.class);
+		otService.crearDocumentoOrdinarioOrdenTransferencia(idProcesoOT);
+		return 1;
     }
 	
 	@GET
@@ -56,9 +58,11 @@ public class OrdenTransferenciaRESTService extends BaseRest{
 		if(idProcesoOT == null){
 			throw new IllegalArgumentException("proceso: "+ idProcesoOT + " no puede ser nulo");
 		}
-
-		//DistribucionInicialPercapitaService distribucionInicialPercapitaService = getService(DistribucionInicialPercapitaService.class);
-		return 1;//distribucionInicialPercapitaService.crearOficioConsulta(idProcesoOT);
+		OTService otService = getService(OTService.class);
+		otService.administracionVersionAlfresco(idProcesoOT);
+	
+		return 1;
+		
     }
 	
 	@GET
@@ -69,9 +73,10 @@ public class OrdenTransferenciaRESTService extends BaseRest{
 		if(idProcesoOT == null){
 			throw new IllegalArgumentException("proceso: "+ idProcesoOT + " no puede ser nulo");
 		}
-
-		//DistribucionInicialPercapitaService distribucionInicialPercapitaService = getService(DistribucionInicialPercapitaService.class);
-		return 1;//distribucionInicialPercapitaService.crearOficioConsulta(idProcesoOT);
+		
+		OTService otService = getService(OTService.class);
+		otService.enviarOrdinarioOTServicioSalud(idProcesoOT,"lsuarez");
+		return 1;
     }
 	
 	

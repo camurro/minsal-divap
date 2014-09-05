@@ -35,8 +35,8 @@ public class MatchViewTask {
 		OTREVISARANTECEDENTESPROGRAMATICA("minsal_divap.TramitacionOrdenTransferenciaProfesional.revisarantecedenteslineaprogramatica","divapProcesoOTUsuario"),
 		
 		// Mapeo paginas de Tramitacion Orden Transferencia Consolidador
-		TRAMITACIONORDENREVISARCONSOLIDACION("minsal_divap.TramitacionOrdenTransferenciaConsolidador.revisarconsolidaciondeordenesdetransferencia","divapPrueba"),
-		TRAMITACIONORDENHACERSEGUIMIENTO("minsal_divap.TramitacionOrdenTransferenciaConsolidador.hacerseguimientoordinariosdeordenesdetransferencia","divapPrueba"),
+		TRAMITACIONORDENREVISARCONSOLIDACION("minsal_divap.TramitacionOrdenTransferenciaConsolidador.revisarconsolidaciondeordenesdetransferencia","divapProcesoOTConsolidador"),
+		TRAMITACIONORDENHACERSEGUIMIENTO("minsal_divap.TramitacionOrdenTransferenciaConsolidador.hacerseguimientoordinariosdeordenesdetransferencia","divapProcesoOTSeguimiento"),
 
 		
 		//Mapeo páginas de Distribución de Recursos Financieros para Programas de Reforzamiento APS 

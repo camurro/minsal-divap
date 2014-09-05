@@ -16,21 +16,22 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import minsal.divap.enums.Subtitulo;
 import minsal.divap.service.OTService;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.RemesaService;
 import minsal.divap.util.Util;
 import minsal.divap.vo.ColumnaVO;
+import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.OTRevisarAntecedentesGlobalVO;
 import minsal.divap.vo.OTRevisarAntecedentesVO;
 import minsal.divap.vo.ProgramaVO;
+import minsal.divap.vo.SubtituloVO;
 
 import org.apache.log4j.Logger;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.CellEditEvent;
 
-import cl.minsal.divap.model.Programa;
-import cl.minsal.divap.model.Remesa;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 @Named("procesoOTRevisarAntecedentesController")
@@ -42,6 +43,7 @@ implements Serializable {
 	
 	@EJB
 	private OTService otService;
+		
 	@EJB
 	private ProgramasService programasService;
 	
@@ -66,6 +68,43 @@ implements Serializable {
 	public void setIdMesSiguiente(Integer idMesSiguiente) {
 		this.idMesSiguiente = idMesSiguiente;
 	}
+	
+	private boolean mostrarSubtitulo21;
+	private boolean mostrarSubtitulo22;
+	private boolean mostrarSubtitulo29;
+	private boolean mostrarSubtitulo24;
+	
+	public boolean isMostrarSubtitulo21() {
+		return mostrarSubtitulo21;
+	}
+
+	public void setMostrarSubtitulo21(boolean mostrarSubtitulo21) {
+		this.mostrarSubtitulo21 = mostrarSubtitulo21;
+	}
+
+	public boolean isMostrarSubtitulo22() {
+		return mostrarSubtitulo22;
+	}
+
+	public void setMostrarSubtitulo22(boolean mostrarSubtitulo22) {
+		this.mostrarSubtitulo22 = mostrarSubtitulo22;
+	}
+
+	public boolean isMostrarSubtitulo29() {
+		return mostrarSubtitulo29;
+	}
+
+	public void setMostrarSubtitulo29(boolean mostrarSubtitulo29) {
+		this.mostrarSubtitulo29 = mostrarSubtitulo29;
+	}
+
+	public boolean isMostrarSubtitulo24() {
+		return mostrarSubtitulo24;
+	}
+
+	public void setMostrarSubtitulo24(boolean mostrarSubtitulo24) {
+		this.mostrarSubtitulo24 = mostrarSubtitulo24;
+	}
 
 	@PostConstruct
 	public void init() {
@@ -79,9 +118,11 @@ implements Serializable {
 				log.error("Error tratando de redireccionar a login por falta de usuario en sesion.", e);
 			}
 		}
-		generarObjetosGlobal();
-		generaServicios();
 		
+		this.idProgramaAno = (Integer) getTaskDataVO().getData().get("_idProgramaAno");
+		configurarVisibilidadPaneles();
+		generarObjetosGlobal();
+		cargarServicios();
 		generarColumnasDinamicas();
 	}
 
@@ -214,7 +255,7 @@ implements Serializable {
 			 DataTable o=(DataTable) event.getSource();
 			
 			 OTRevisarAntecedentesVO info=(OTRevisarAntecedentesVO)o.getRowData();
-			 
+			 info.calcularDiferencia(info);
 			 
 		        Object oldValue = event.getOldValue();
 		        Object newValue = event.getNewValue();
@@ -249,7 +290,7 @@ implements Serializable {
 			 DataTable o=(DataTable) event.getSource();
 			
 			 OTRevisarAntecedentesVO info=(OTRevisarAntecedentesVO)o.getRowData();
-			 
+			 info.calcularDiferencia(info);
 			 
 		        Object oldValue = event.getOldValue();
 		        Object newValue = event.getNewValue();
@@ -269,7 +310,6 @@ implements Serializable {
 		        			otRevisarAntecedentesVO_borrar = otRevisarAntecedentesVO;
 		        		    break;
 		        		}
-						
 					}
 		        	
 		        	listadoServiciosSubtitulo29.remove(otRevisarAntecedentesVO_borrar);
@@ -284,7 +324,7 @@ implements Serializable {
 		 DataTable o=(DataTable) event.getSource();
 		
 		 OTRevisarAntecedentesVO info=(OTRevisarAntecedentesVO)o.getRowData();
-		 
+		 info.calcularDiferencia(info);
 		 
 	        Object oldValue = event.getOldValue();
 	        Object newValue = event.getNewValue();
@@ -329,14 +369,14 @@ implements Serializable {
 		this.programa = programa;
 	}
 
-	private Integer idLineaProgramatica;
+	private Integer idProgramaAno=1;
   	
-  	public Integer getIdLineaProgramatica() {
-  		return idLineaProgramatica;
+  	public Integer getIdProgramaAno() {
+  		return idProgramaAno;
   	}
 
-  	public void setIdLineaProgramatica(Integer idLineaProgramatica) {
-  		this.idLineaProgramatica = idLineaProgramatica;
+  	public void setIdProgramaAno(Integer idProgramaAno) {
+  		this.idProgramaAno = idProgramaAno;
   	}
 	
 	/**
@@ -473,103 +513,103 @@ implements Serializable {
 		this.listadoServiciosMunicipal = listadoServiciosMunicipal;
 	}
 	
-	public void generaServicios(){
-
-		CargarListaSubTitulo21();
-//		CargarListaSubTitulo22();
-//		CargarListaSubTitulo29();
-//		CargarListaMunicipal();
-		
+	public void cargarServicios(){
+	
+		if(mostrarSubtitulo21)
+			CargarListaSubTitulo21();
+		if(mostrarSubtitulo22)
+			CargarListaSubTitulo22();
+		if(mostrarSubtitulo29)
+			CargarListaSubTitulo29();
+		if(mostrarSubtitulo24)
+			CargarListaMunicipal();
 	}
 	
 	private void CargarListaSubTitulo21()
 	{
-		OTRevisarAntecedentesVO otRevisarAntecedentesVO = new OTRevisarAntecedentesVO();
 		listadoServiciosSubtitulo21 = new ArrayList<OTRevisarAntecedentesVO>();
-		listadoServiciosSubtitulo21.addAll(otService.obtenerListaSubtitulo21VOPorPrograma(1));///idProgramaAno del proceso
-
+		listadoServiciosSubtitulo21.addAll(otService.obtenerListaSubtituloVOPorPrograma(idProgramaAno,Subtitulo.SUBTITULO21.getId()));
 		oTRevisarAntecedentesGlobalVOSubtitulo21.setListadoServicios(listadoServiciosSubtitulo21);
 	}
 	
 	private void CargarListaSubTitulo22()
 	{
 		//SUBTITULO 22
-		OTRevisarAntecedentesVO p22;
 		listadoServiciosSubtitulo22 = new ArrayList<OTRevisarAntecedentesVO>();
-		p22 = new OTRevisarAntecedentesVO();
-		p22.setId(1L);
-		listadoServiciosSubtitulo22.add(p22);
-		
-		p22 = new OTRevisarAntecedentesVO();
-		p22.setId(2L);
-		listadoServiciosSubtitulo22.add(p22);
-		
+		listadoServiciosSubtitulo22.addAll(otService.obtenerListaSubtituloVOPorPrograma(idProgramaAno,Subtitulo.SUBTITULO22.getId()));
 		oTRevisarAntecedentesGlobalVOSubtitulo22.setListadoServicios(listadoServiciosSubtitulo22);
 	}
 	
 	private void CargarListaSubTitulo29()
 	{
-		
 		//SUBTITULO 29
-		OTRevisarAntecedentesVO p29;
 		listadoServiciosSubtitulo29 = new ArrayList<OTRevisarAntecedentesVO>();
-		p29 = new OTRevisarAntecedentesVO();
-		p29.setId(1L);
-		listadoServiciosSubtitulo29.add(p29);
-		
-		p29 = new OTRevisarAntecedentesVO();
-		p29.setId(2L);
-		listadoServiciosSubtitulo29.add(p29);
-		
+		listadoServiciosSubtitulo29.addAll(otService.obtenerListaSubtituloVOPorPrograma(idProgramaAno,Subtitulo.SUBTITULO29.getId()));
 		oTRevisarAntecedentesGlobalVOSubtitulo29.setListadoServicios(listadoServiciosSubtitulo29);
 	}
 	
 	private void CargarListaMunicipal()
 	{
-		
 		//MUNICIPAL
-		OTRevisarAntecedentesVO pMunicipal;
 		listadoServiciosMunicipal = new ArrayList<OTRevisarAntecedentesVO>();
-		pMunicipal = new OTRevisarAntecedentesVO();
-		pMunicipal.setId(1L);
-		listadoServiciosMunicipal.add(pMunicipal);
-		
-		pMunicipal = new OTRevisarAntecedentesVO();
-		pMunicipal.setId(2L);
-		listadoServiciosMunicipal.add(pMunicipal);
+		listadoServiciosMunicipal.addAll(otService.obtenerListaSubtituloVOPorPrograma(idProgramaAno,Subtitulo.SUBTITULO24.getId()));
 		oTRevisarAntecedentesGlobalVOMunicipal.setListadoServicios(listadoServiciosMunicipal);
-		
 	}
 
 	//METODO QUE DEBE GUARDAR LOS DATOS DE LAS LISTAS.
-	private void guardarDatos()
+	public void guardarDatos()
 	{
-		//Subtitulo21
-		List<Remesa> listaRemesa = otService.obtenerListaRemesaPorListaOTRevisarAntecedentesVO(seleccionadosSubtitulo21,1);///idProgramaAno del proceso
-		guardarDatosProcesoRevisarOT(listaRemesa);
+		//Guardar datos correspondientes a la lista Subtitulo21
+		if(mostrarSubtitulo21)
+			if(seleccionadosSubtitulo21 !=null)
+				otService.guardarDatosProcesoRevisarOT(seleccionadosSubtitulo21,idProgramaAno,idMesActual,idMesSiguiente,Subtitulo.SUBTITULO21.getId());
 		
+		//Guardar datos correspondientes a la lista Subtitulo22
+		if(mostrarSubtitulo22)
+			if(seleccionadosSubtitulo22 !=null)
+				otService.guardarDatosProcesoRevisarOT(seleccionadosSubtitulo22,idProgramaAno,idMesActual,idMesSiguiente,Subtitulo.SUBTITULO22.getId());
+		
+		//Guardar datos correspondientes a la lista Subtitulo29
+		if(mostrarSubtitulo29)
+			if(seleccionadosSubtitulo29 !=null)
+				otService.guardarDatosProcesoRevisarOT(seleccionadosSubtitulo29,idProgramaAno,idMesActual,idMesSiguiente,Subtitulo.SUBTITULO29.getId());
+		
+		//Guardar datos correspondientes a la lista Municipal
+		if(mostrarSubtitulo24)
+			if(seleccionadosMunicipal !=null)
+				otService.guardarDatosProcesoRevisarOT(seleccionadosMunicipal,idProgramaAno,idMesActual,idMesSiguiente,Subtitulo.SUBTITULO24.getId());
 	}
 	
-	
-	public void guardarDatosProcesoRevisarOT(List<Remesa> listaRemesa) {
+	private void configurarVisibilidadPaneles() {
+        // TODO [ASAAVEDRA] Completar la visibilidad de los paneles segun los componentes/subtitulos asociados ala programa.
+       
+        ProgramaVO programa = programasService.getProgramaAnoPorID(idProgramaAno);
+        List<ComponentesVO> s = programa.getComponentes();
+       
+        List<SubtituloVO> lst = new ArrayList<SubtituloVO>();
+                     
+        for (ComponentesVO componentesVO : s) {
+               lst.addAll(componentesVO.getSubtitulos());
+        }
 
-		for (Remesa remesa : listaRemesa) {
-			
-			if(remesa.getIdMes().getIdMes().intValue() == idMesActual ||
-			  remesa.getIdMes().getIdMes().intValue() == idMesSiguiente	)
-			{
-				if(remesa.getIdRemesa()!= null && remesa.getIdRemesa().intValue() > 0)
-				{
-					remesaService.actualizarRemesa(remesa);
-				}
-				else
-				{
-					remesaService.crearRemesa(remesa);
-				}
-			}
-		}
+        mostrarSubtitulo21 = false;
+        mostrarSubtitulo22 = false;
+        mostrarSubtitulo24 = false;
+        mostrarSubtitulo29 = false;
+       
+        for (SubtituloVO subtituloVO : lst) {
+               if (subtituloVO.getId()== Subtitulo.SUBTITULO21.getId())
+                      mostrarSubtitulo21 = true;
+               if (subtituloVO.getId()== Subtitulo.SUBTITULO22.getId())
+                      mostrarSubtitulo22 = true;
+               if (subtituloVO.getId()== Subtitulo.SUBTITULO24.getId())
+                      mostrarSubtitulo24 = true;
+               if (subtituloVO.getId()== Subtitulo.SUBTITULO29.getId())
+                      mostrarSubtitulo29 = true;
+        }
 	}
-	
+
+
 	/**
 	 * Metodos implementacion BPM 
 	 */
@@ -577,7 +617,6 @@ implements Serializable {
 	@Override
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("idProcesoTramitacionOrden_", 12);
 		return parameters;
 	}
 
@@ -588,10 +627,9 @@ implements Serializable {
 	}
 	
 	// Continua el proceso con el programa seleccionado.
-	public void continuarProceso() {
-		guardarDatos();
-		
-		//super.enviar();
-	}
+		public void continuarProceso() {
+
+			super.enviar();
+		}
 
 }
