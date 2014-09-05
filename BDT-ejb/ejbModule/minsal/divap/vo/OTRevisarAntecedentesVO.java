@@ -2,7 +2,7 @@ package minsal.divap.vo;
 
 import cl.minsal.divap.model.Comuna;
 import cl.minsal.divap.model.Establecimiento;
-import cl.minsal.divap.model.Remesa;
+import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.ServicioSalud;
 import cl.minsal.divap.pojo.ComponentePojo;
 
@@ -37,6 +37,15 @@ public class OTRevisarAntecedentesVO
 	
 	private long diferenciaMarcoContraTotalMonto;
 	private String diferenciaMarcoContraTotalPorcentaje;
+	private ProgramaAno programaAno;
+	
+	public ProgramaAno getProgramaAno() {
+		return programaAno;
+	}
+
+	public void setProgramaAno(ProgramaAno programaAno) {
+		this.programaAno = programaAno;
+	}
 
 	public String getConvenioPorcentaje() {
 		return convenioPorcentaje;

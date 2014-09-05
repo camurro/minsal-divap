@@ -36,7 +36,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Seguimiento.findByIdEstimacionFlujoCaja", query = "SELECT s FROM Seguimiento s JOIN s.estimacionFlujoCajaSeguimientoCollection d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.programaAno.idProgramaAno = :idProgramaAno"),
     @NamedQuery(name = "Seguimiento.findBySubject", query = "SELECT s FROM Seguimiento s WHERE s.subject = :subject"),
     @NamedQuery(name = "Seguimiento.findByBody", query = "SELECT s FROM Seguimiento s WHERE s.body = :body"),
-    @NamedQuery(name = "Seguimiento.findByFechaEnvio", query = "SELECT s FROM Seguimiento s WHERE s.fechaEnvio = :fechaEnvio")})
+    @NamedQuery(name = "Seguimiento.findByFechaEnvio", query = "SELECT s FROM Seguimiento s WHERE s.fechaEnvio = :fechaEnvio"),
+    @NamedQuery(name = "Seguimiento.findByIdOrdenTransferenciaTarea", query = "SELECT s FROM Seguimiento s JOIN s.otSeguimientoCollection d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.ordenTransferencia.idOrdenTransferencia = :idOrdenTransferencia")})
 public class Seguimiento implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -75,6 +76,9 @@ public class Seguimiento implements Serializable {
     @ManyToOne(optional = false)
     private Email mailFrom;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguimiento")
+    private Set<OtSeguimiento> otSeguimientoCollection;
+    
     public Seguimiento() {
     }
 
@@ -146,8 +150,19 @@ public class Seguimiento implements Serializable {
     public void setDistribucionInicialPercapitaSeguimientoCollection(Set<DistribucionInicialPercapitaSeguimiento> distribucionInicialPercapitaSeguimientoCollection) {
         this.distribucionInicialPercapitaSeguimientoCollection = distribucionInicialPercapitaSeguimientoCollection;
     }
-
+    
+    
     @XmlTransient
+    public Set<OtSeguimiento> getOtSeguimientoCollection() {
+		return otSeguimientoCollection;
+	}
+
+	public void setOtSeguimientoCollection(
+			Set<OtSeguimiento> otSeguimientoCollection) {
+		this.otSeguimientoCollection = otSeguimientoCollection;
+	}
+
+	@XmlTransient
     public Set<AdjuntosSeguimiento> getAdjuntosSeguimientoCollection() {
         return adjuntosSeguimientoCollection;
     }

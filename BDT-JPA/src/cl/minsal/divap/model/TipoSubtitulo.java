@@ -1,6 +1,7 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Set;
 
 import javax.persistence.Basic;
@@ -50,6 +51,9 @@ public class TipoSubtitulo implements Serializable {
     private Dependencia dependencia;
     @OneToMany(mappedBy = "subtitulo")
     private Set<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes;
+    
+    @OneToMany(mappedBy = "idtiposubtitulo")
+    private Collection<Remesa> remesaCollection;
 
     public TipoSubtitulo() {
     }
@@ -61,6 +65,15 @@ public class TipoSubtitulo implements Serializable {
     public TipoSubtitulo(Integer idTipoSubtitulo, String nombreSubtitulo) {
         this.idTipoSubtitulo = idTipoSubtitulo;
         this.nombreSubtitulo = nombreSubtitulo;
+    }
+    
+    @XmlTransient
+    public Collection<Remesa> getRemesaCollection() {
+        return remesaCollection;
+    }
+
+    public void setRemesaCollection(Collection<Remesa> remesaCollection) {
+        this.remesaCollection = remesaCollection;
     }
 
     public Integer getIdTipoSubtitulo() {

@@ -31,33 +31,5 @@ public class RemesaService {
 		return this.remesaDAO.actualizarRemesa(remesa);
 
 	}
-	
-	public void actualizarRemesa(List<Remesa> listaRemesa) {
-
-		for (Remesa remesa : listaRemesa) {
-			
-			this.remesaDAO.actualizarRemesa(remesa);
-		}
-
-	}
-
-	
-	public void guardarDatosProcesoRevisarOT(List<Remesa> listaRemesa) {
-
-		for (Remesa remesa : listaRemesa) {
-			
-			if(remesa.getIdRemesa()!= null && remesa.getIdRemesa().intValue() > 0)
-			{
-				this.remesaDAO.actualizarRemesa(remesa);
-			}
-			else
-			{
-				this.remesaDAO.crearRemesa(remesa);
-			}
-		}
-	}
-	
-	
-	
 
 }

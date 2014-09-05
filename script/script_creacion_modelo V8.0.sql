@@ -1864,6 +1864,14 @@ WITH (
 )
 ;
 
+ALTER TABLE programa_servicio_core ADD COLUMN servicio integer;
+ALTER TABLE programa_servicio_core ALTER COLUMN servicio SET NOT NULL;
+
+ALTER TABLE programa_servicio_core
+  ADD CONSTRAINT servicio_fk FOREIGN KEY (servicio)
+      REFERENCES servicio_salud (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION;
+
 CREATE TABLE programa_servicio_core_componente
 (
    programa_servicio_core integer NOT NULL, 

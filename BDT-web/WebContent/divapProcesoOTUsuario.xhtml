@@ -20,14 +20,14 @@
 					<h:outputText value="Ordenes de Transferencia" />
 				</h1>
 				<p:panel id="Panel">
-					<h2> MORE Programa: APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES</h2>
+					<h2>Programa: APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES</h2>
 					<p class="parrafo">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent egestas tempor nulla eget ultricies. Morbi
 						pulvinar elit at justo pharetra, vitae ultricies est dignissim, justo nisi porttitor enim, eget ullamcorper felis augue eget lacus.</p>
 					<br />
 
 					<h:form id="formIngreso" > </h:form>
 					<p:tabView>
-						<p:tab title="Subtítulo 21">
+						<p:tab title="Subtítulo 21" rendered="#{procesoOTRevisarAntecedentesController.mostrarSubtitulo21}">
 							<h:form id="formSubtitulo21">
 							
 						
@@ -314,7 +314,7 @@
 								</h:panelGrid>
 										</h:form>
 						</p:tab>
-						<p:tab title="Subtítulo 22">
+						<p:tab title="Subtítulo 22" rendered="#{procesoOTRevisarAntecedentesController.mostrarSubtitulo22}">
 						
 						<h:form id="formSubtitulo22">
 						<h:panelGrid>
@@ -386,26 +386,26 @@
 								</p:column>
 								
 								<p:column>
-								<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
+								<h:outputText value="#{_data.acumuladoFechaMonto}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 									
 								</p:column>
 									
 								<p:column>
-									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.remesaPor}">
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.acumuladoFechaPorcentaje}">
 										<f:convertNumber type="percent" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-								<h:outputText value="#{_data.junioRemesa28}" styleClass="textoPequenio textoAjustado">
+								<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 									
 								</p:column>
 
 								<p:column>
-									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPor}">
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPorcentaje}">
 										<f:convertNumber type="percent" />
 									</h:outputText>
 								</p:column>	
@@ -440,7 +440,7 @@
 					</p:column>		
 					<p:column>
 					<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual gt 9)}"><!-- >  -->
-							<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual lt 28)}"><!-- <  -->
+					<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual lt 28)}"><!-- <  -->
 							<p:cellEditor>
 								<f:facet name="output">
 									<h:outputText
@@ -459,11 +459,9 @@
 							
 							</c:if>
 							<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual ge 28)}"><!-- >= -->
-							<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual le 9)}"><!-- <=  -->
 							   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa24')]}" styleClass="textoPequenio textoAjustado">
 												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 							</h:outputText>
-							</c:if>
 							</c:if>
 							
 							
@@ -485,25 +483,25 @@
 								</f:facet>
 							</p:cellEditor>
 							</c:if>
-					<c:otherwise>
+			<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual lt 28)}"><!-- >= -->
 					   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa28')]}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 					</h:outputText>
-					</c:otherwise>
+				</c:if>
 					</p:column>	
 												
 						</c:forEach>
 						
 					<!--FIN COLUMNAS DINAMICAS REMESA-->
-
+					<!-- DIFERENCIA TOTAL  -->
 								<p:column>
-									<h:outputText value="#{_data.diciembreRemesa09}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.diferenciaMarcoContraTotalMonto}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 								
 								<p:column>
-									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPor}">
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.diferenciaMarcoContraTotalPorcentaje}">
 										<f:convertNumber type="percent" />
 									</h:outputText>
 								</p:column>
@@ -603,7 +601,7 @@
 										</h:form>
 						
 						</p:tab>
-						<p:tab title="Subtítulo 29">
+						<p:tab title="Subtítulo 29" rendered="#{procesoOTRevisarAntecedentesController.mostrarSubtitulo29}">
 						
 						<h:form id="formSubtitulo29">
 						<h:panelGrid>
@@ -674,26 +672,26 @@
 								</p:column>
 								
 								<p:column>
-								<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
+								<h:outputText value="#{_data.acumuladoFechaMonto}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 									
 								</p:column>
 									
 								<p:column>
-									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.remesaPor}">
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.acumuladoFechaPorcentaje}">
 										<f:convertNumber type="percent" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-								<h:outputText value="#{_data.junioRemesa28}" styleClass="textoPequenio textoAjustado">
+								<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 									
 								</p:column>
 
 								<p:column>
-									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPor}">
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPorcentaje}">
 										<f:convertNumber type="percent" />
 									</h:outputText>
 								</p:column>	
@@ -747,11 +745,9 @@
 							
 							</c:if>
 							<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual ge 28)}"><!-- >= -->
-							<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual le 9)}"><!-- <=  -->
 							   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa24')]}" styleClass="textoPequenio textoAjustado">
 												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 							</h:outputText>
-							</c:if>
 							</c:if>
 							
 							
@@ -773,25 +769,26 @@
 								</f:facet>
 							</p:cellEditor>
 							</c:if>
-					<c:otherwise>
+				<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual lt 28)}"><!-- <  -->	
 					   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa28')]}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 					</h:outputText>
-					</c:otherwise>
+					</c:if>
 					</p:column>	
 												
 						</c:forEach>
 						
 					<!--FIN COLUMNAS DINAMICAS REMESA-->
+					<!-- DIFERENCIA TOTAL  -->
 
 								<p:column>
-									<h:outputText value="#{_data.diciembreRemesa09}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.diferenciaMarcoContraTotalMonto}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 								
 								<p:column>
-									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPor}">
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.diferenciaMarcoContraTotalPorcentaje}">
 										<f:convertNumber type="percent" />
 									</h:outputText>
 								</p:column>
@@ -893,8 +890,8 @@
 										</h:form>
 						
 						</p:tab>
-						<p:tab title="Per Capita"></p:tab>
-						<p:tab title="Ref. Municipal">
+						<p:tab title="Per Capita" rendered="#{procesoOTRevisarAntecedentesController.mostrarSubtitulo24}"></p:tab>
+						<p:tab title="Ref. Municipal" rendered="#{procesoOTRevisarAntecedentesController.mostrarSubtitulo24}">
 							<h:form id="formMunicipal">
 							<h:panelGrid>
 						<p:dataTable resizableColumns="true" value="#{datoMunicipal.listadoServicios}" liveResize="true" var="_data"
@@ -961,26 +958,26 @@
 									</h:outputText>
 								</p:column>
 								<p:column>
-								<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
+								<h:outputText value="#{_data.acumuladoFechaMonto}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 									
 								</p:column>
 									
 								<p:column>
-									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.remesaPor}">
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.acumuladoFechaPorcentaje}">
 										<f:convertNumber type="percent" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-								<h:outputText value="#{_data.julioRemesa09}" styleClass="textoPequenio textoAjustado">
+								<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 									
 								</p:column>
 
 								<p:column>
-									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPor}">
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPorcentaje}">
 										<f:convertNumber type="percent" />
 									</h:outputText>
 								</p:column>	
@@ -1034,11 +1031,10 @@
 										
 										</c:if>
 										<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual ge 28)}"><!-- >= -->
-										<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual le 9)}"><!-- <=  -->
+	
 										   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa24')]}" styleClass="textoPequenio textoAjustado">
 															<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
-										</c:if>
 										</c:if>
 										
 										
@@ -1060,25 +1056,25 @@
 											</f:facet>
 										</p:cellEditor>
 										</c:if>
-								<c:otherwise>
+								<c:if test="#{(procesoOTRevisarAntecedentesController.diaActual lt 28)}"><!-- <  -->	
 								   <h:outputText value="#{_data[dynamicColumn.nombreColumna.concat('Remesa28')]}" styleClass="textoPequenio textoAjustado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 								</h:outputText>
-								</c:otherwise>
+							</c:if>
 								</p:column>	
 															
 									</c:forEach>
 						
 							<!--FIN COLUMNAS DINAMICAS REMESA-->
-								
+								<!-- DIFERENCIA TOTAL  -->
 								<p:column>
-									<h:outputText value="#{_data.diciembreRemesa09}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.diferenciaMarcoContraTotalMonto}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 								
 								<p:column>
-									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPor}">
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.diferenciaMarcoContraTotalPorcentaje}">
 										<f:convertNumber type="percent" />
 									</h:outputText>
 								</p:column>
@@ -1181,14 +1177,13 @@
 					<p:commandButton value="Validar Antecedentes para Orden de Transferencia" styleClass="x-btn-text"
 						action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false" icon="ui-icon-seek-first" />
 						
-				<p:commandButton type="submit" process="datosSubtitulo21" value="Validar Antecedentes para Orden de Transferencia More" styleClass="x-btn-text"
-						 ajax="false" icon="ui-icon-seek-first" update=":#{p:component('formSubtitulo21')}"  action="#{procesoOTRevisarAntecedentesController.continuarProceso()}">		
-						 					   
-	
+				<p:commandButton type="submit" process="datosSubtitulo21" value="Guardar Antecedentes" styleClass="x-btn-text"
+						 ajax="false" icon="ui-icon-seek-first" update=":#{p:component('formSubtitulo21')}"  action="#{procesoOTRevisarAntecedentesController.guardarDatos()}">					   
 				</p:commandButton>	
-						
-					<p:commandButton value="Guardar Antecedentes" styleClass="x-btn-text"
-						action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false" icon="ui-icon-seek-first" />
+				
+				<p:commandButton type="submit" process="datosSubtitulo21" value="Validar Antecedentes para Orden de Transferencia Avanzar" styleClass="x-btn-text"
+						 ajax="false" icon="ui-icon-seek-first" update=":#{p:component('formSubtitulo21')}"  action="#{procesoOTRevisarAntecedentesController.continuarProceso()}">					   
+				</p:commandButton>	
 				</p:panel>
 
 				<p:dialog header="Detalle de Convenios y Transferencia para Servicio de Salud" id="modalDialog" widgetVar="dlg2" modal="true"

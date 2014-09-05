@@ -22,13 +22,14 @@
 		<class>cl.minsal.divap.model.DistribucionInicialPercapita</class>
 		<class>cl.minsal.divap.model.Remesa</class>
 		<class>cl.minsal.divap.model.Caja</class>
+		<class>cl.minsal.divap.model.DocumentoOt</class>
+		<class>cl.minsal.divap.model.OrdenTransferencia</class>
+		<class>cl.minsal.divap.model.OtSeguimiento</class>
 		<class>cl.minsal.divap.model.DocumentoEstimacionflujocaja</class>
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
 			<property name="hibernate.show_sql" value="true"/>
 			<property name="hibernate.format_sql" value="true"/>
 		</properties>
-		
-
 	</persistence-unit>
 </persistence>

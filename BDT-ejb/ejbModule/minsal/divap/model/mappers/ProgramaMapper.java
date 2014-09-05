@@ -6,16 +6,12 @@ import java.util.List;
 
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.vo.ComponentesVO;
-import minsal.divap.vo.ComunaVO;
 import minsal.divap.vo.EstadoProgramaVO;
 import minsal.divap.vo.ProgramaVO;
-import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloVO;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import cl.minsal.divap.model.Componente;
-import cl.minsal.divap.model.Comuna;
 import cl.minsal.divap.model.ProgramaAno;
-import cl.minsal.divap.model.ProgramaServicioCore;
 
 public class ProgramaMapper implements Mapper<ProgramaAno>{
 
@@ -34,6 +30,7 @@ public class ProgramaMapper implements Mapper<ProgramaAno>{
 		programaVO.setIdProgramaAno(programaAno.getIdProgramaAno());
 		programaVO.setDependenciaMunicipal(false);
 		programaVO.setDependenciaServicio(false);
+		
 		if (programaAno.getEstado() != null){
 			programaVO.setEstado(new EstadoProgramaVO(programaAno.getEstado().getIdEstadoPrograma(), programaAno.getEstado().getNombreEstado()));
 		}else{
@@ -43,6 +40,7 @@ public class ProgramaMapper implements Mapper<ProgramaAno>{
 			programaVO.setNombre(programaAno.getPrograma().getNombre());
 			programaVO.setId(programaAno.getPrograma().getId());
 			programaVO.setDescripcion(programaAno.getPrograma().getDescripcion());
+			programaVO.setRevisaFonasa(programaAno.getPrograma().getRevisaFonasa());
 			if(programaAno.getPrograma().getUsuario() != null){
 				programaVO.setUsername(programaAno.getPrograma().getUsuario().getUsername());
 			}
@@ -54,38 +52,10 @@ public class ProgramaMapper implements Mapper<ProgramaAno>{
 				programaVO.setComponentes(componentesVO);
 			}
 			
-			if (programaAno.getEstadoFlujoCaja()!=null)
-			{
-				EstadoProgramaVO estadoProgramaVO = new EstadoProgramaVO();
-				estadoProgramaVO.setId(programaAno.getEstadoFlujoCaja().getIdEstadoPrograma());
-				estadoProgramaVO.setNombre(programaAno.getEstadoFlujoCaja().getNombreEstado());
-				
-			    programaVO.setEstadoFlujocaja(estadoProgramaVO);
-			}
-		}
-		
-		if (programaAno.getProgramasServiciosCore()!=null)
-		{
-			List<ServiciosVO> lstServiciosVO = new ArrayList<ServiciosVO>();
-			
-			for (ProgramaServicioCore programaServicio : programaAno.getProgramasServiciosCore()) {
-				ServiciosVO serviciosVO = new ServiciosVO();
-				serviciosVO.setId_servicio(programaServicio.getServicio().getId());
-				serviciosVO.setNombre_servicio(programaServicio.getServicio().getNombre());
-				List<ComunaVO> lstComunas = new ArrayList<ComunaVO>();
-				for (Comuna comuna : programaServicio.getServicio().getComunas()) {
-					ComunaVO comunaVO = new ComunaVO();
-					comunaVO.setNombre(comuna.getNombre());
-					comunaVO.setIdComuna(comuna.getId());
-					lstComunas.add(comunaVO);
-				}
-				serviciosVO.setComuna(lstComunas);
-			
-				
-				lstServiciosVO.add(serviciosVO);
-			}
-			programaVO.setServicios(lstServiciosVO);
-			
+//			if (programaAno.getEstadoFlujoCaja()!=null)
+//			{
+//			    programaVO.setEstadoFlujocaja(programaAno.getEstadoFlujoCaja());
+//			}
 		}
 		System.out.println("programaVO.getComponentes().size()==>"+((programaVO.getComponentes() == null) ? 0 : programaVO.getComponentes().size()));
 		if(programaVO.getComponentes() != null && programaVO.getComponentes().size() > 0){

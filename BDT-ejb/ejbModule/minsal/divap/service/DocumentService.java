@@ -17,6 +17,7 @@ import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
 import minsal.divap.dao.DocumentDAO;
 import minsal.divap.dao.EstimacionFlujoCajaDAO;
+import minsal.divap.dao.DocumentOtDAO;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.model.mappers.PercapitaReferenciaDocumentoMapper;
 import minsal.divap.model.mappers.ReferenciaDocumentoMapper;
@@ -27,6 +28,8 @@ import cl.minsal.divap.model.Comuna;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
+import cl.minsal.divap.model.DocumentoOt;
+import cl.minsal.divap.model.OrdenTransferencia;
 import cl.minsal.divap.model.Plantilla;
 import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.Rebaja;
@@ -38,6 +41,9 @@ public class DocumentService {
 
 	@EJB
 	private DocumentDAO fileDAO;
+	@EJB
+	private DocumentOtDAO documentOtDAO;
+	
 	@EJB
 	private DistribucionInicialPercapitaDAO distribucionInicialPercapitaDAO;
 	
@@ -295,6 +301,48 @@ public class DocumentService {
 		}
 		referenciaDocumento.getRebajaCollection().add(rebaja);
 		return referenciaDocumentoId;
+	}
+	
+	public Integer createDocumentOrdinarioOrdenTransferencia(OrdenTransferencia ordenTransferencia, TipoDocumento tipoDocumentoProceso,
+            String nodeRef, String filename, String contenType) {
+     Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
+     ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+
+     DocumentoOt documentoOt = new DocumentoOt();
+     documentoOt.setIdOrdenTransferencia(ordenTransferencia);
+	 documentoOt.setIdTipoDocumento(tipoDocumentoProceso);
+     documentoOt.setIdDocumento(referenciaDocumento);
+     documentOtDAO.save(documentoOt);
+     System.out.println("luego de aplicar insert del documento percapita");
+     return referenciaDocumentoId;
+}
+	
+	public void createDocumentOrdinarioOrdenTransferencia(OrdenTransferencia ordenTransferencia,
+			TipoDocumentosProcesos tipoDocumento, Integer referenciaDocumentoId, Boolean lastVersion) {
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		if(lastVersion != null){
+			referenciaDocumento.setDocumentoFinal(lastVersion);
+		}
+		
+		DocumentoOt documentoOt = new DocumentoOt();
+	     documentoOt.setIdOrdenTransferencia(ordenTransferencia);
+	     if(tipoDocumento!=null)
+		 {
+		 	documentoOt.setIdTipoDocumento(new TipoDocumento(tipoDocumento.getId()));
+		 }
+	     documentoOt.setIdDocumento(referenciaDocumento);
+		
+	     documentOtDAO.save(documentoOt);
+		System.out.println("luego de aplicar insert del documento percapita");
+	}
+	
+	public ReferenciaDocumentoSummaryVO getLastDocumentoSummaryByOrdinarioOrdenTransferenciaType(
+			Integer idOrdenTransferencia,Integer idTipoDocumento) {
+		
+		ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = null;
+		ReferenciaDocumento referenciaDocumento =  fileDAO.getLastDocumentByOrdinarioOrdenTransferencia(idOrdenTransferencia,idTipoDocumento);
+		referenciaDocumentoSummaryVO = new ReferenciaDocumentoMapper().getSummary(referenciaDocumento);
+		return referenciaDocumentoSummaryVO;
 	}
 
 	public List<DocumentoEstimacionflujocaja> getDocumentEstimacionFlujoCajaByIDProgramaAnoTipoDocumento(

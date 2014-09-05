@@ -23,6 +23,8 @@ public class OTRevisarAntecedentesGlobalVO implements Cloneable
 	
 	
 	public List<OTRevisarAntecedentesVO> listadoServicios = new  ArrayList<OTRevisarAntecedentesVO>();
+	public List<OTResumenConsolidadoFonasaVO> listadoResumenConsolidado = new  ArrayList<OTResumenConsolidadoFonasaVO>();
+	public List<OTResumenTotalVO> listadoResumenTotal = new  ArrayList<OTResumenTotalVO>();
 	
 	//TOTALES
 	Random rnd = new Random();
@@ -79,6 +81,22 @@ public class OTRevisarAntecedentesGlobalVO implements Cloneable
 	}
 	public void setListadoServicios(List<OTRevisarAntecedentesVO> listadoServicios) {
 		this.listadoServicios = listadoServicios;
+	}
+	
+	public List<OTResumenConsolidadoFonasaVO> getListadoResumenConsolidado() {
+		return listadoResumenConsolidado;
+	}
+	public void setListadoResumenConsolidado(
+			List<OTResumenConsolidadoFonasaVO> listadoResumenConsolidado) {
+		this.listadoResumenConsolidado = listadoResumenConsolidado;
+	}
+	
+
+	public List<OTResumenTotalVO> getListadoResumenTotal() {
+		return listadoResumenTotal;
+	}
+	public void setListadoResumenTotal(List<OTResumenTotalVO> listadoResumenTotal) {
+		this.listadoResumenTotal = listadoResumenTotal;
 	}
 	public Random getRnd() {
 		return rnd;

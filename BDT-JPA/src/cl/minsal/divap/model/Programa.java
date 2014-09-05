@@ -62,6 +62,9 @@ public class Programa implements Serializable {
     @OneToMany(mappedBy = "idPrograma")
     private Set<Seguimiento> seguimientoCollection;
 
+    @Column(name = "revisaFonasa")
+    private Boolean revisaFonasa;
+    
 	public Programa() {
 	}
 
@@ -200,7 +203,13 @@ public class Programa implements Serializable {
 	public void setComponentes(Set<Componente> componentes) {
 		this.componentes = componentes;
 	}
-	
-	
+
+	public Boolean getRevisaFonasa() {
+		return revisaFonasa;
+	}
+
+	public void setRevisaFonasa(Boolean revisaFonasa) {
+		this.revisaFonasa = revisaFonasa;
+	}
 	
 }

@@ -35,15 +35,14 @@ import cl.minsal.divap.pojo.montosDistribucionPojo;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 import cl.redhat.bandejaTareas.util.JSONHelper;
 
-@Named("procesoOTController")
+@Named("procesoOTInicioProfesionalController")
 @ViewScoped
-public class ProcesoOTController extends AbstractTaskMBean
+public class ProcesoOTInicioProfesionalController extends AbstractTaskMBean
 implements Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject
 	private transient Logger log;
 	
-
 	@PostConstruct
 	public void init() {
 		log.info("ProcesoReliquidacionController tocado.");
@@ -61,23 +60,24 @@ implements Serializable {
 
 	@Override
 	protected Map<String, Object> createResultData() {
+
 		return null;
 	}
 
-	
 	@Override
 	public String iniciarProceso() {
 		String success = "bandejaTareas";
-		Long procId = iniciarProceso(BusinessProcess.OTCONSOLIDADOR);
-		System.out.println("procId-->"+procId);
-		if(procId == null){
-			 success = null;
-		}else{
-			TaskVO task = getUserTasksByProcessId(procId, getSessionBean().getUsername());
-			if(task != null){
+		Long procId = iniciarProceso(BusinessProcess.OTPROFESIONAL);
+		System.out.println("procId-->" + procId);
+		if (procId == null) {
+			success = null;
+		} else {
+			TaskVO task = getUserTasksByProcessId(procId, getSessionBean()
+					.getUsername());
+			if (task != null) {
 				TaskDataVO taskDataVO = getTaskData(task.getId());
-				if(taskDataVO != null){
-					System.out.println("taskDataVO recuperada="+taskDataVO);
+				if (taskDataVO != null) {
+					System.out.println("taskDataVO recuperada=" + taskDataVO);
 					setOnSession("taskDataSeleccionada", taskDataVO);
 				}
 			}
@@ -85,6 +85,5 @@ implements Serializable {
 		return success;
 	}
 	
-
 	
 }

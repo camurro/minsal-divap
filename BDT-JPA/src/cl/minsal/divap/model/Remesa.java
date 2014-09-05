@@ -51,6 +51,10 @@ public class Remesa implements Serializable  {
     private long valorDia24;
     @Column(name = "valorDia28")
     private long valorDia28;
+    @JoinColumn(name = "idtiposubtitulo", referencedColumnName = "id_tipo_subtitulo")
+    @ManyToOne
+    private TipoSubtitulo idtiposubtitulo;
+    
     @JoinColumn(name = "idServicioSalud", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private ServicioSalud idServicioSalud;
@@ -155,6 +159,15 @@ public class Remesa implements Serializable  {
         this.idComuna = idComuna;
     }
 
+
+    public TipoSubtitulo getIdtiposubtitulo() {
+        return idtiposubtitulo;
+    }
+
+    public void setIdtiposubtitulo(TipoSubtitulo idtiposubtitulo) {
+        this.idtiposubtitulo = idtiposubtitulo;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;
