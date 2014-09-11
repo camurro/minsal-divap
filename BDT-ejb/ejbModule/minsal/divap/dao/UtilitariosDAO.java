@@ -47,6 +47,16 @@ public class UtilitariosDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public List<Comuna> getComunasCumplimientoByServicio(Integer idServicio){
+		try {
+			TypedQuery<Comuna> query = this.em.createNamedQuery("ComunaCumplimiento.findByServicio", Comuna.class);
+			query.setParameter("idServicio", idServicio);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	public List<ServicioSalud> getServicios() {
 		try {

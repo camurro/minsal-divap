@@ -27,11 +27,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.model.UploadedFile;
 
-import cl.minsal.divap.pojo.RebajaPojo;
-import cl.redhat.bandejaTareas.controller.BaseController;
-import cl.redhat.bandejaTareas.controller.divapProcesoRebajaCargarCumplimientoController;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
-import cl.redhat.bandejaTareas.util.BandejaProperties;
 
 @Named("procesoRebajaController")
 @ViewScoped
@@ -68,17 +64,13 @@ public class ProcesoRebajaController extends AbstractTaskMBean
 	@PostConstruct
 	public void init() {
 		log.info("ProcesosRebajaController tocado.");
-		if (!getSessionBean().isLogged()) {
-			log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
-			try {
-				facesContext.getExternalContext().redirect("login.jsf");
-			} catch (IOException e) {
-				log.error(
-						"Error tratando de redireccionar a login por falta de usuario en sesion.",
-						e);
-			}
+		if(sessionExpired()){
+			return;
 		}
 		docBaseCumplimiento = rebajaService.getPlantillaBaseCumplimiento();
+		if(getTaskDataVO() != null && getTaskDataVO().getData() != null && getTaskDataVO().getData().get("_idProcesoRebaja") != null){
+			this.idProcesoRebaja = (Integer)getTaskDataVO().getData().get("_idProcesoRebaja");
+		}
 	}
 	
 
@@ -132,7 +124,7 @@ public class ProcesoRebajaController extends AbstractTaskMBean
 				docIds = new ArrayList<Integer>();
 				String filename = cumplimientoFile.getFileName();
 				byte [] content = cumplimientoFile.getContents();
-				rebajaService.procesarCalculoRebaja(GeneradorExcel.fromContent(content, XSSFWorkbook.class));
+				rebajaService.procesarCalculoRebaja(idProcesoRebaja, GeneradorExcel.fromContent(content, XSSFWorkbook.class));
 				Integer docRebaja = persistFile(filename, content);
 				if(docRebaja != null){
 					docIds.add(docRebaja);

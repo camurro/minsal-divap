@@ -1,22 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jstl/core" template="/WEB-INF/templates/default.xhtml">
 
 <ui:define name="zonaJavaScript">
 <script type="text/javascript">
-function sumaRebajas(){
-	var suma = parseInt(document.getElementById("rebajasForm:tablaMisTareas:0:final1").value)+parseInt(document.getElementById("rebajasForm:tablaMisTareas:0:final2").value)+parseInt(document.getElementById("rebajasForm:tablaMisTareas:0:final3").value);
-	document.getElementById("rebajasForm:tablaMisTareas:0:totalFinal").innerHTML = suma;
-
-	var aporte = document.getElementById("rebajasForm:tablaMisTareas:0:aporteEstatal").innerHTML;
-	var montoReb= parseInt(aporte)*parseInt(suma)/100;
-alert(montoReb);
-	document.getElementById("rebajasForm:tablaMisTareas:0:montoRebaja").innerHTML=montoReb;
-
-	var nuevoAp = parseInt(aporte) - parseInt(montoReb);
-	document.getElementById("rebajasForm:tablaMisTareas:0:nuevoAporte").innerHTML=nuevoAp;
+	function sumaRebajas(){
+		var suma = parseInt(document.getElementById("rebajasForm:tablaMisTareas:0:final1").value)+parseInt(document.getElementById("rebajasForm:tablaMisTareas:0:final2").value)+parseInt(document.getElementById("rebajasForm:tablaMisTareas:0:final3").value);
+		document.getElementById("rebajasForm:tablaMisTareas:0:totalFinal").innerHTML = suma;
 	
-}
+		var aporte = document.getElementById("rebajasForm:tablaMisTareas:0:aporteEstatal").innerHTML;
+		var montoReb= parseInt(aporte)*parseInt(suma)/100;
+	alert(montoReb);
+		document.getElementById("rebajasForm:tablaMisTareas:0:montoRebaja").innerHTML=montoReb;
+	
+		var nuevoAp = parseInt(aporte) - parseInt(montoReb);
+		document.getElementById("rebajasForm:tablaMisTareas:0:nuevoAporte").innerHTML=nuevoAp;
+		
+	}
+
+	function actualizarModelo(id, fila, largo, idText){
+		$("#actualizaModelo\\:posicionElemento").val(fila);
+		$("#actualizaModelo\\:columnaElemento").val(largo);
+		$("#actualizaModelo\\:valorElemento").val(document.getElementById(id).value);
+		document.getElementById('actualizaModelo:actualizarModelo').click();
+	}
+		
+	function refreshTable(){
+		var hiddenFirstTime = document.getElementById("rebajasForm:hiddenTotalIncumplimiento").value;
+		alert("hiddenFirstTime-->"+hiddenFirstTime);
+		if(hiddenFirstTime == "2"){
+			alert("buscando nuevamente");
+			document.getElementById('rebajasForm:buscarListado').click();  
+		}
+	}
+
+	function message(){
+		var total = document.getElementById("rebajasForm:hiddenTotalIncumplimiento").value;
+		if(total == "0"){
+			alert("La(s) Comuna(s) no Presenta(n) Rebaja(s) por Incumplimiento de Metas");
+		}
+	}
+
+	function dummy(){
+		document.getElementById('actualizaDummy:actualizarDummy').click();
+	}
 </script>
 </ui:define>
 	<ui:define name="content">
@@ -68,7 +95,7 @@ alert(montoReb);
 							<h:panelGrid columns="2">
 								<h:outputText value="Servicio: " styleClass="inputLabel" />
 								<p:selectOneMenu id="servicios"  value="#{procesoRebajaValidarMontosController.servicioSeleccionado}">
-								<p:ajax listener="#{procesoRebajaValidarMontosController.cargaComunas}" update="comunas" />
+								<p:ajax listener="#{procesoRebajaValidarMontosController.cargaComunas}" update="comunas hiddenFirstTime" />
 								<f:selectItem itemLabel="Seleccione" itemValue="" />  
 								<f:selectItems value="#{procesoRebajaValidarMontosController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
 							</p:selectOneMenu>
@@ -83,16 +110,20 @@ alert(montoReb);
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
-							<p:commandButton value="Buscar" styleClass="x-btn-text" icon="ui-icon-search"
-							actionListener="#{procesoRebajaValidarMontosController.buscarRebaja}" ajax="false" update="tablaMisTareas"/>
-								<p:commandButton value="Limpiar" styleClass=" x-btn-text icon-guardar" update="tablaMisTareas" icon="ui-icon-trash" />
+							<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoRebajaValidarMontosController.buscarRebaja}" oncomplete="message();" update="tablaMisTareas hiddenFirstTime hiddenTotalIncumplimiento"/>
+							<p:commandButton value="Limpiar" styleClass=" x-btn-text icon-guardar" icon="ui-icon-trash" actionListener="#{procesoRebajaValidarMontosController.limpiar}" update="tablaMisTareas busqueda_mis_tareas hiddenFirstTime" />
 							</h:panelGrid>
 
 						</h:panelGrid>
 					</p:panel>
 					<br />
+					
+					<h:inputHidden id="hiddenFirstTime" value="#{procesoRebajaValidarMontosController.fisrtTime}" />
+					<h:inputHidden id="hiddenTotalIncumplimiento" value="#{procesoRebajaValidarMontosController.totalIncumplimiento}" />
+					<p:growl id="msgs" showDetail="true"/>
 					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoRebajaValidarMontosController.rebajaComunas}" liveResize="true" var="_rebaja"
-						rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+						rows="10" paginator="false" paginatorPosition="bottom" rowIndexVar="rowIndex" emptyMessage="No se encontro información." styleClass="dataTable" >
+						
 						<p:columnGroup type="header">
 							<!--  -->
 							<p:row>
@@ -120,76 +151,92 @@ alert(montoReb);
 								<p:column headerText="reb ex3" />
 								<p:column headerText="total" />
 								
-								
 							</p:row>
 						</p:columnGroup>
-						<p:column><h:outputText value="#{_rebaja.descComuna}"  styleClass="textoPequenio textoAjustado" /></p:column>
 						<p:column>
+							<h:outputText value="#{_rebaja.comuna}"  styleClass="textoPequenio textoAjustado" />
+						</p:column>
+						<p:column>
+							<h:outputText value="$ " />
 							<h:outputText id="aporteEstatal" value="#{_rebaja.aporteEstatal}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
+						</p:column>
+ 
+						<p:column>			
+							<h:outputText value="#{_rebaja.cumplimientoRebajasItem1.valor}" styleClass="textoPequenio textoAjustado">
+							</h:outputText>
+						</p:column>
+						<p:column>			
+							<h:outputText value="#{_rebaja.cumplimientoRebajasItem2.valor}" styleClass="textoPequenio textoAjustado">
+							</h:outputText>
+						</p:column>
+						<p:column>			
+							<h:outputText value="#{_rebaja.cumplimientoRebajasItem3.valor}" styleClass="textoPequenio textoAjustado">
+							</h:outputText>
+						</p:column>
+						 
+						<p:column>
+							<h:outputText value="#{_rebaja.cumplimientoRebajasItem1.rebajaCalculada}" styleClass="textoPequenio textoAjustado">
+							</h:outputText>
+						</p:column>
+						<p:column>
+							<h:outputText value="#{_rebaja.cumplimientoRebajasItem2.rebajaCalculada}" styleClass="textoPequenio textoAjustado">
+							</h:outputText>
+						</p:column>
+						<p:column>
+							<h:outputText value="#{_rebaja.cumplimientoRebajasItem3.rebajaCalculada}" styleClass="textoPequenio textoAjustado">
+							</h:outputText>
+						</p:column>
+						 
+						<p:column>
+							<h:outputText value="#{_rebaja.totalRebajaCalculada}" styleClass="textoPequenio textoAjustado">
+							</h:outputText>
+						</p:column>  
+						
+						<p:column>
+							 	<p:inputText value="#{_rebaja.cumplimientoRebajasItem1.rebajaFinal}" 
+							 		styleClass="textoPequenioInput textoAjustado" style="width:30px" 
+							 		onkeypress="if (event.keyCode == 13) { actualizarModelo(this.id, '#{rowIndex}', '1', 'final_#{_rebaja.id_comuna}'); return false; }">
+								</p:inputText>
 						</p:column>
 						
 						<p:column>
-							<h:outputText value="#{_rebaja.cumplimiento1.valor}" styleClass="textoPequenio textoAjustado">
+							 	<p:inputText value="#{_rebaja.cumplimientoRebajasItem2.rebajaFinal}" 
+							 		styleClass="textoPequenioInput textoAjustado" style="width:30px" 
+							 		onkeypress="if (event.keyCode == 13) { actualizarModelo(this.id, '#{rowIndex}', '2', 'final_#{_rebaja.id_comuna}'); return false; }">
+								</p:inputText>
+						</p:column>
+						<p:column>
+							 	<p:inputText  value="#{_rebaja.cumplimientoRebajasItem3.rebajaFinal}" 
+							 		styleClass="textoPequenioInput textoAjustado" style="width:30px" 
+							 		onkeypress="if (event.keyCode == 13) { actualizarModelo(this.id, '#{rowIndex}', '3', 'final_#{_rebaja.id_comuna}'); return false; }">
+								</p:inputText>
+						</p:column>
+						
+						
+						
+						<p:column>
+							<h:outputText id="totalFinal" value="#{_rebaja.totalRebajaRebajaFinal}" styleClass="textoPequenio textoAjustado">
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.cumplimiento2.valor}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="$ " />
+							<h:outputText id="montoRebaja" value="#{_rebaja.montoRebajaMes}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_rebaja.cumplimiento3.valor}" styleClass="textoPequenio textoAjustado">
-							</h:outputText>
-						</p:column>
-						<p:column>
-							<h:outputText value="#{_rebaja.rebajaCalculada1}" styleClass="textoPequenio textoAjustado">
-							</h:outputText>
-						</p:column>
-						<p:column>
-							<h:outputText value="#{_rebaja.rebajaCalculada2}" styleClass="textoPequenio textoAjustado">
-							</h:outputText>
-						</p:column>
-						<p:column>
-							<h:outputText value="#{_rebaja.rebajaCalculada3}" styleClass="textoPequenio textoAjustado">
-							</h:outputText>
-						</p:column>
-						<p:column>
-							<h:outputText value="#{_rebaja.totalCalculada}" styleClass="textoPequenio textoAjustado">
-							</h:outputText>
-						</p:column>
-
-						<p:column>
-							<h:inputText id="final1" value="#{_rebaja.rebajaFinal1}" styleClass="textoPequenioInput textoAjustado" style="width:30px" onchange="javascript:sumaRebajas();">
-							</h:inputText>
-						</p:column>
-						<p:column>
-							<h:inputText id="final2" value="#{_rebaja.rebajaFinal2}" styleClass="textoPequenioInput textoAjustado" style="width:30px" onchange="javascript:sumaRebajas();">
-							</h:inputText>
-						</p:column>
-						<p:column>
-							<h:inputText id="final3" value="#{_rebaja.rebajaFinal3}" styleClass="textoPequenioInput textoAjustado"  style="width:30px" onchange="javascript:sumaRebajas();">
-							</h:inputText>
-						</p:column>
-
-						<p:column>
-							<h:outputText id="totalFinal" value="#{_rebaja.totalFinal}" styleClass="textoPequenio textoAjustado">
-							</h:outputText>
-						</p:column>
-
-						<p:column>
-							<h:outputText id="montoRebaja" value="#{_rebaja.montoRebaja}" styleClass="textoPequenio textoAjustado">
-							</h:outputText>
-						</p:column>
-						<p:column>
+							<h:outputText value="$ " />
 							<h:outputText id="nuevoAporte" value="#{_rebaja.nuevoAporteEstatal}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<p:commandButton  icon="ui-icon-disk" title="Guardar" action="#{procesoRebajaValidarMontosController.guardaRebaja}">
-                				<f:setPropertyActionListener value="#{_rebaja}" target="#{procesoRebajaValidarMontosController.rebajaSeleccionada}" />
+							<p:commandButton  icon="ui-icon-disk" title="Guardar" actionListener="#{procesoRebajaValidarMontosController.guardaRebaja}" update="tablaMisTareas" rendered="#{_rebaja.actualizar}">
+                				<f:setPropertyActionListener value="#{rowIndex}" target="#{procesoRebajaValidarMontosController.rebajaSeleccionada}" />
             				</p:commandButton>
 						</p:column>
-
 					</p:dataTable>
 					<!-- FIN: MODAL CON INFORMACIóN Y FILTROS VISTA ONLINE -->
 
@@ -214,6 +261,15 @@ alert(montoReb);
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />
 			</p:panel>
+		</h:form>
+		<h:form id="actualizaModelo">
+			<h:inputHidden id="posicionElemento" value="#{procesoRebajaValidarMontosController.posicionElemento}" />
+			<h:inputHidden id="columnaElemento" value="#{procesoRebajaValidarMontosController.columnaElemento}" />
+			<h:inputHidden id="valorElemento" value="#{procesoRebajaValidarMontosController.valorElemento}" />
+			<p:commandButton id="actualizarModelo" icon="ui-icon-disk" title="Guardar" actionListener="#{procesoRebajaValidarMontosController.actualizarModelo}" style="display: none" oncomplete="dummy();" update=":rebajasForm:tablaMisTareas" />
+		</h:form>
+		<h:form id="actualizaDummy">
+			<p:commandButton id="actualizarDummy" icon="ui-icon-disk" title="Guardar" actionListener="#{procesoRebajaValidarMontosController.actualizarDummy}" style="display: none" update=":rebajasForm:tablaMisTareas" />
 		</h:form>
 	</ui:define>
 </ui:composition>

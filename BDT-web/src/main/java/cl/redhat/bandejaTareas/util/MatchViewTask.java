@@ -19,8 +19,8 @@ public class MatchViewTask {
 		// Mapeo pÃ¡ginas de Rebaja
 		REBAJASUBIRDOCUMENTOS("minsal.divap.procesos.Rebaja.subirinformaciondecumplimientoporcomuna", "divapProcesoRebajaCargarInformacionCumplimiento"),
 		REBAJAREVISIONMONTOS("minsal.divap.procesos.Rebaja.revisionyvalidaciondelosmontosderebaja","divapProcesoRebajaRevisionValidacionRebaja"),
-		REBAJARESOLUCIONES("minsal.divap.procesos.Rebaja.seguimientoderesoluciones","divapProcesoRebajaSeguimientoTratamientoRevision"),
-		
+		REBAJARESOLUCIONES("minsal.divap.procesos.Rebaja.seguimientoderesolucionesderebaja","divapProcesoRebajaSeguimientoTratamientoRevision"),
+														 
 		// Mapeo pÃ¡ginas de ReliquidaciÃ³n
 		RELIQUIDACIONPROGRAMAS("minsal.divap.procesos.Reliquidacion.seleccionarprograma","divapProcesoReliqProgramas"),
 		RELIQUIDACIONARCHIVOS("minsal.divap.procesos.Reliquidacion.descargarysubirplanillacumplimiento","divapProcesoReliqPlanillas"),		

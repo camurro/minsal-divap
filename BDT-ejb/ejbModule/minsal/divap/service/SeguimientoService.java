@@ -17,9 +17,9 @@ import minsal.divap.service.EmailService.Adjunto;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.SeguimientoVO;
 import cl.minsal.divap.model.Email;
-import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.TareaSeguimiento;
+
 
 
 @Stateless
@@ -98,7 +98,19 @@ public class SeguimientoService {
 		return bitacora;
 	}
 	
-
+	public List<SeguimientoVO> getBitacoraRebaja(
+			Integer idRebaja,
+			TareasSeguimiento tareaSeguimiento) {
+		List<SeguimientoVO> bitacora = new ArrayList<SeguimientoVO>();
+		List<Seguimiento> bitacoraSeguimiento = seguimientoDAO.getBitacoraRebaja(idRebaja, tareaSeguimiento);
+		if(bitacoraSeguimiento != null && bitacoraSeguimiento.size() > 0){
+			for(Seguimiento seguimiento : bitacoraSeguimiento){
+				bitacora.add(new SeguimientoMapper().getBasic(seguimiento));
+			}
+		}
+		return bitacora;
+	}
+	
 	public List<SeguimientoVO> getBitacoraEstimacionFlujoCaja(
 			Integer idProgramaAno,
 			TareasSeguimiento tareaSeguimiento) {

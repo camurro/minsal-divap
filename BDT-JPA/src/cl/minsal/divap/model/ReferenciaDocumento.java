@@ -66,6 +66,8 @@ public class ReferenciaDocumento implements Serializable {
     private Collection<SeguimientoReferenciaDocumento> seguimientoReferenciaDocumentoCollection;
     @OneToMany(mappedBy = "documento")
     private Set<Plantilla> plantillaCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "documento")
+    private Set<DocumentoRebaja> documentosRebaja;
 
     public ReferenciaDocumento() {
     }
@@ -176,6 +178,14 @@ public class ReferenciaDocumento implements Serializable {
 		this.plantillaCollection = plantillaCollection;
 	}
 	
+	@XmlTransient
+	public Set<DocumentoRebaja> getDocumentosRebaja() {
+		return documentosRebaja;
+	}
+
+	public void setDocumentosRebaja(Set<DocumentoRebaja> documentosRebaja) {
+		this.documentosRebaja = documentosRebaja;
+	}
 
 	@Override
     public String toString() {

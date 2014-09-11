@@ -7,7 +7,7 @@ public enum BusinessProcess{
 	REBAJA(1,"minsal.divap.procesos.Rebaja"), 
 
 	
-	 TRAMITACIONORDEN(5,"minsal_divap.TramitacionOrdenTransferenciaConsolidador"),
+	TRAMITACIONORDEN(5,"minsal_divap.TramitacionOrdenTransferenciaConsolidador"),
 	
 	RELIQUIDACION(2,"minsal.divap.procesos.Reliquidacion"), 
 	RECURSOSFINANCIEROSAPS(3,"minsal_divap.DistribucionRecursosProgramasReforzamiento"),

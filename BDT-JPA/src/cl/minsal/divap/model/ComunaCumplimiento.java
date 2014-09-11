@@ -8,21 +8,17 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import java.util.Collection;
-import javax.persistence.Basic;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -37,24 +33,35 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "ComunaCumplimiento.findByIdMes", query = "SELECT c FROM ComunaCumplimiento c WHERE c.idMes.idMes= :idMes"),
     @NamedQuery(name = "ComunaCumplimiento.findByValor", query = "SELECT c FROM ComunaCumplimiento c WHERE c.valor = :valor"),
     @NamedQuery(name = "ComunaCumplimiento.findByComuna", query = "SELECT c FROM ComunaCumplimiento c WHERE c.idComuna.id = :idComuna order by c.idComunaCumplimiento asc"),
-    @NamedQuery(name = "ComunaCumplimiento.deleteUsingIdCumplimiento", query = "DELETE FROM ComunaCumplimiento c WHERE c.idComunaCumplimiento IN (:listaIdCumplimientos)")})
+    @NamedQuery(name = "ComunaCumplimiento.findByServicio", query = "SELECT DISTINCT(c.idComuna) FROM ComunaCumplimiento c WHERE c.idComuna is not null and c.idComuna.servicioSalud is not null and c.idComuna.servicioSalud.id = :idServicio"),
+    @NamedQuery(name = "ComunaCumplimiento.findByRebaja", query = "SELECT c FROM ComunaCumplimiento c WHERE c.rebaja.idRebaja = :idRebaja"),
+    @NamedQuery(name = "ComunaCumplimiento.deleteUsingIdCumplimiento", query = "DELETE FROM ComunaCumplimiento c WHERE c.idComunaCumplimiento IN (:listaIdCumplimientos)"),
+    @NamedQuery(name = "ComunaCumplimiento.findByRebajaComunas", query = "SELECT c FROM ComunaCumplimiento c WHERE c.idComuna.id IN (:listaId) and c.rebaja.idRebaja = :idRebaja"),
+    @NamedQuery(name = "ComunaCumplimiento.findByRebajaComuna", query = "SELECT c FROM ComunaCumplimiento c WHERE c.idComuna.id = :idComuna and c.rebaja.idRebaja = :idRebaja"),
+    @NamedQuery(name = "ComunaCumplimiento.deleteByRebaja", query="DELETE FROM ComunaCumplimiento c WHERE c.rebaja.idRebaja = :rebaja")})
 public class ComunaCumplimiento implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id_comuna_cumplimiento")
+	@Column(name="id_comuna_cumplimiento", unique=true, nullable=false)
+	@GeneratedValue
     private Integer idComunaCumplimiento;
     @Column(name = "valor")
-    private Integer valor;
-    @OneToMany(mappedBy = "comunaCumplimiento")
-    private Collection<ComunaRebaja> comunaRebajaCollection;
+    private Double valor;
     @JoinColumn(name = "id_tipo_cumplimiento", referencedColumnName = "id_tipo_cumplimiento")
     @ManyToOne
     private TipoCumplimiento idTipoCumplimiento;
+    @JoinColumn(name = "rebaja", referencedColumnName = "id_rebaja")
+    @ManyToOne(optional = false)
+    private Rebaja rebaja;
     @JoinColumn(name = "id_mes", referencedColumnName = "id_mes")
     @ManyToOne
     private Mes idMes;
+    @JoinColumn(name = "rebaja_final", referencedColumnName = "comuna_cumplimiento_rebaja_id")
+    @ManyToOne
+    private ComunaCumplimientoRebaja rebajaFinal;
+    @JoinColumn(name = "rebaja_calculada", referencedColumnName = "comuna_cumplimiento_rebaja_id")
+    @ManyToOne
+    private ComunaCumplimientoRebaja rebajaCalculada;
     @JoinColumn(name = "id_comuna", referencedColumnName = "id")
     @ManyToOne
     private Comuna idComuna;
@@ -74,22 +81,15 @@ public class ComunaCumplimiento implements Serializable {
         this.idComunaCumplimiento = idComunaCumplimiento;
     }
 
-    public Integer getValor() {
+    public Double getValor() {
         return valor;
     }
 
-    public void setValor(Integer valor) {
+    public void setValor(Double valor) {
         this.valor = valor;
     }
 
-    @XmlTransient
-    public Collection<ComunaRebaja> getComunaRebajaCollection() {
-        return comunaRebajaCollection;
-    }
-
-    public void setComunaRebajaCollection(Collection<ComunaRebaja> comunaRebajaCollection) {
-        this.comunaRebajaCollection = comunaRebajaCollection;
-    }
+     
 
     public TipoCumplimiento getIdTipoCumplimiento() {
         return idTipoCumplimiento;
@@ -107,7 +107,31 @@ public class ComunaCumplimiento implements Serializable {
         this.idMes = idMes;
     }
 
-    public Comuna getIdComuna() {
+    public Rebaja getRebaja() {
+		return rebaja;
+	}
+
+	public void setRebaja(Rebaja rebaja) {
+		this.rebaja = rebaja;
+	}
+
+	public ComunaCumplimientoRebaja getRebajaFinal() {
+		return rebajaFinal;
+	}
+
+	public void setRebajaFinal(ComunaCumplimientoRebaja rebajaFinal) {
+		this.rebajaFinal = rebajaFinal;
+	}
+
+	public ComunaCumplimientoRebaja getRebajaCalculada() {
+		return rebajaCalculada;
+	}
+
+	public void setRebajaCalculada(ComunaCumplimientoRebaja rebajaCalculada) {
+		this.rebajaCalculada = rebajaCalculada;
+	}
+
+	public Comuna getIdComuna() {
         return idComuna;
     }
 

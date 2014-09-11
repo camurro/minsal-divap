@@ -117,6 +117,28 @@ public class DocumentDAO {
 		}
 		return referenciaDocumento;
 	}
+	public List<ReferenciaDocumento> getDocumentByTypesServicioDistribucionInicialPercapita(Integer idDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos... tiposDocumentoProceso) {
+		List<ReferenciaDocumento> result = new ArrayList<ReferenciaDocumento>();
+		try {
+			List<Integer> tipos = new ArrayList<Integer>();
+			for(TipoDocumentosProcesos tipoDocumentosProcesos: tiposDocumentoProceso){
+				tipos.add(tipoDocumentosProcesos.getId());
+			}
+			TypedQuery<DocumentoDistribucionInicialPercapita> query = this.em.createNamedQuery("DocumentoDistribucionInicialPercapita.findByTypesIdServicioIdDistribucionInicialPercapita", DocumentoDistribucionInicialPercapita.class);
+			query.setParameter("idDistribucionInicialPercapita", idDistribucionInicialPercapita);
+			query.setParameter("idTiposDocumento", tipos);
+			query.setParameter("idServicio", idServicio);
+			List<DocumentoDistribucionInicialPercapita> referenciasDocumentos = query.getResultList(); 
+			if(referenciasDocumentos != null && referenciasDocumentos.size() > 0){
+				for(DocumentoDistribucionInicialPercapita documentoDistribucionInicialPercapita : referenciasDocumentos){
+					result.add(documentoDistribucionInicialPercapita.getIdDocumento());
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return result;
+	}
 
 	public List<ReferenciaDocumento> getReferenciasDocumentosById(List<Integer> idDocumentos){
 		try {
@@ -149,7 +171,6 @@ public class DocumentDAO {
 		return referenciaDocumento;
 	}
 	
-	
 	public ReferenciaDocumento getLastDocumentByTypeEstimacionFlujoCaja(
 			Integer idProgramaAno,
 			TipoDocumentosProcesos tipoDocumento) {
@@ -180,18 +201,15 @@ public class DocumentDAO {
 				query = this.em.createNamedQuery("DocumentoDistribucionInicialPercapita.findByTypesIdDistribucionInicialPercapita", DocumentoDistribucionInicialPercapita.class);
 			}else{
 				query = this.em.createNamedQuery("DocumentoDistribucionInicialPercapita.findByTypesServicioIdDistribucionInicialPercapita", DocumentoDistribucionInicialPercapita.class);
+				query.setParameter("idServicio", idServicio);
 			}
 			query.setParameter("idDistribucionInicialPercapita", idDistribucionInicialPercapita);
 			query.setParameter("idTiposDocumento", tipos);
-			if(idServicio != null){
-				query.setParameter("idServicio", idServicio);
-			}
 			return query.getResultList(); 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
 	
 	public ReferenciaDocumento getLastDocumentByOrdinarioOrdenTransferencia(
 			Integer idOrdenTransferencia,Integer idTipoDocumento) {
@@ -210,6 +228,5 @@ public class DocumentDAO {
 		}
 		return referenciaDocumento;
 	}
-
 
 }

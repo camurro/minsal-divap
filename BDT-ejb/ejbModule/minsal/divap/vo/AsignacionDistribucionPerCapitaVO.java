@@ -14,11 +14,12 @@ public class AsignacionDistribucionPerCapitaVO extends CalculoPercapitaVO{
 	private Double refAsignacionZona;
 	private Double tramoPobreza;
 	private Integer percapitaBasal;
+	private Integer valorPerCapitaComunalMes; 
 	private Double pobreza;
 	private Double ruralidad;
 	private Double valorRefAsignacionZona;
-	private Integer valorPercapitaMes;
-	private Integer valorPercapitaAno;
+	private Long valorPercapitaMes;
+	private Long valorPercapitaAno;
 	
 	public AsignacionDistribucionPerCapitaVO(Integer region, String servicio, String comuna,
 			Integer poblacion, Integer poblacionMayor) {
@@ -81,22 +82,30 @@ public class AsignacionDistribucionPerCapitaVO extends CalculoPercapitaVO{
 		this.valorRefAsignacionZona = valorRefAsignacionZona;
 	}
 	
-	public Integer getValorPercapitaMes() {
+	public Long getValorPercapitaMes() {
 		return valorPercapitaMes;
 	}
 	
-	public void setValorPercapitaMes(Integer valorPercapitaMes) {
+	public void setValorPercapitaMes(Long valorPercapitaMes) {
 		this.valorPercapitaMes = valorPercapitaMes;
 	}
 	
-	public Integer getValorPercapitaAno() {
+	public Long getValorPercapitaAno() {
 		return valorPercapitaAno;
 	}
 	
-	public void setValorPercapitaAno(Integer valorPercapitaAno) {
+	public void setValorPercapitaAno(Long valorPercapitaAno) {
 		this.valorPercapitaAno = valorPercapitaAno;
 	}
 	
+	public Integer getValorPerCapitaComunalMes() {
+		return valorPerCapitaComunalMes;
+	}
+
+	public void setValorPerCapitaComunalMes(Integer valorPerCapitaComunalMes) {
+		this.valorPerCapitaComunalMes = valorPerCapitaComunalMes;
+	}
+
 	@Override
 	public String toString() {
 		return "AsignacionDistribucionPerCapitaVO [clasificacion="
@@ -145,8 +154,8 @@ public class AsignacionDistribucionPerCapitaVO extends CalculoPercapitaVO{
 		if(getValorRefAsignacionZona() != null){
 			row.add(getValorRefAsignacionZona());
 		}
-		if(getValorPercapitaMes() != null){
-			row.add(getValorPercapitaMes());
+		if(getValorPerCapitaComunalMes() != null){
+			row.add(getValorPerCapitaComunalMes());
 		}
 		if(getPoblacion() != null){
 			row.add(getPoblacion());
@@ -156,6 +165,9 @@ public class AsignacionDistribucionPerCapitaVO extends CalculoPercapitaVO{
 		}
 		if(getValorPercapitaAno() != null){
 			row.add(getValorPercapitaAno());
+		}
+		if(getValorPercapitaMes() != null){
+			row.add(getValorPercapitaMes());
 		}
 		return row;
 	}

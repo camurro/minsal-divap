@@ -18,8 +18,11 @@ public class Region implements Serializable {
 	@Column(name="id", unique=true, nullable=false)
 	@GeneratedValue
 	private Integer id;
-
 	private String nombre;
+
+	@JoinColumn(name = "secretario_regional", referencedColumnName = "id_persona")
+	@ManyToOne(optional = false)
+	private Persona secretarioRegional;
 
 	//bi-directional many-to-one association to ServicioSalud
 	@OneToMany(mappedBy="region")
@@ -42,6 +45,14 @@ public class Region implements Serializable {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public Persona getSecretarioRegional() {
+		return secretarioRegional;
+	}
+
+	public void setSecretarioRegional(Persona secretarioRegional) {
+		this.secretarioRegional = secretarioRegional;
 	}
 
 	public List<ServicioSalud> getServicioSaluds() {

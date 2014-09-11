@@ -1,3 +1,4 @@
+
 package minsal.divap.service;
 
 import java.text.DateFormat;
@@ -27,16 +28,13 @@ public class ProgramasService {
 	private ProgramasDAO programasDAO;
 
 	public Programa getProgramasByID(Integer idPrograma) {
-		Programa programa = this.programasDAO.getProgramaByID(idPrograma);
-		return programa;
+		return this.programasDAO.getProgramaPorID(idPrograma);
 	}
-	
 	
 	public ProgramaVO getProgramaAno(Integer idProgramaAno) {
 		ProgramaVO programa = new ProgramaMapper().getBasic(this.programasDAO.getProgramaAnoByID(idProgramaAno));
 		return programa;
 	}
-	
 	
 	public List<ProgramaVO> getProgramasByUser(String username) {
 		List<ProgramaAno> programas = this.programasDAO.getProgramasByUserAno(username, getAnoCurso());
@@ -80,29 +78,24 @@ public class ProgramasService {
 		}
 		return componentesPrograma;
 	}
-	
-	
 
+	public Programa getProgramaPorID(int programaId) {
+		return this.programasDAO.getProgramaPorID(programaId);
+	}
+	
 	public ProgramaVO getProgramaAnoPorID(int programaAnoId) {
 		ProgramaAno programa = this.programasDAO.getProgramasByIdProgramaAno(programaAnoId);
 		return new ProgramaMapper().getBasic(programa);
 	}
-
-
+	
 	public void guardarEstadoFlujoCaja(Integer idEstado, Integer idProgramaAno) {
-		// TODO Auto-generated method stub
 		this.programasDAO.guardarEstadoFlujoCaja(idEstado,idProgramaAno);
 	}
-
-
+	
 	public void cambiarEstadoProgramaAno(Integer idProgramaAno, EstadosProgramas encurso) {
-		// TODO Auto-generated method stub
-		
 		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
 		EstadoPrograma estadoPrograma = new EstadoPrograma(encurso.getId());
 		programaAno.setEstadoFlujoCaja(estadoPrograma);
-		
-		
 		this.programasDAO.saveProgramaAno(programaAno, false);
 	}
 

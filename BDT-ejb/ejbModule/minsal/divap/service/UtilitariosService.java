@@ -59,7 +59,8 @@ public class UtilitariosService {
 	}
 	
 	public List<ComunaVO> getComunasByServicio(Integer idServicio){
-		List<Comuna> comunas = utilitariosDAO.getComunasByServicio(idServicio);
+		//List<Comuna> comunas = utilitariosDAO.getComunasByServicio(idServicio);
+		List<Comuna> comunas = utilitariosDAO.getComunasCumplimientoByServicio(idServicio);
 		List<ComunaVO> comunasVO = new ArrayList<ComunaVO>();
 		for(Comuna comuna : comunas){
 			ComunaVO comunaVO = new ComunaVO();

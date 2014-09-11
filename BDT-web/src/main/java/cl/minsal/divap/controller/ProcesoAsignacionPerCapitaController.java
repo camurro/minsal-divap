@@ -78,25 +78,15 @@ implements Serializable {
 			try {
 				docIds = new ArrayList<Integer>();
 				String filename = calculoPerCapitaFile.getFileName();
-				byte[] contentCalculoPerCapitaFile = calculoPerCapitaFile
-						.getContents();
-				distribucionInicialPercapitaService.procesarCalculoPercapita(
-						getIdDistribucionInicialPercapita(), GeneradorExcel
-						.fromContent(contentCalculoPerCapitaFile,
-								XSSFWorkbook.class));
-				Integer docPercapita = persistFile(filename,
-						contentCalculoPerCapitaFile);
+				byte[] contentCalculoPerCapitaFile = calculoPerCapitaFile.getContents();
+				distribucionInicialPercapitaService.procesarCalculoPercapita(getIdDistribucionInicialPercapita(), GeneradorExcel.fromContent(contentCalculoPerCapitaFile, XSSFWorkbook.class));
+				Integer docPercapita = persistFile(filename, contentCalculoPerCapitaFile);
 				if (docPercapita != null) {
 					docIds.add(docPercapita);
 				}
 				filename = valorBasicoDesempenoFile.getFileName();
-				byte[] contentDesempeno = valorBasicoDesempenoFile
-						.getContents();
-				distribucionInicialPercapitaService
-				.procesarValorBasicoDesempeno(
-						getIdDistribucionInicialPercapita(),
-						GeneradorExcel.fromContent(contentDesempeno,
-								XSSFWorkbook.class));
+				byte[] contentDesempeno = valorBasicoDesempenoFile.getContents();
+				distribucionInicialPercapitaService.procesarValorBasicoDesempeno(getIdDistribucionInicialPercapita(), GeneradorExcel.fromContent(contentDesempeno, XSSFWorkbook.class));
 				Integer docDesempeno = persistFile(filename, contentDesempeno);
 				if (docDesempeno != null) {
 					docIds.add(docDesempeno);

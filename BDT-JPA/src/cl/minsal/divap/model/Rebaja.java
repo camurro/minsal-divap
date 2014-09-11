@@ -3,18 +3,19 @@ package cl.minsal.divap.model;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
-import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -33,9 +34,8 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Rebaja implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id_rebaja")
+	@Column(name="id_rebaja", unique=true, nullable=false)
+	@GeneratedValue
     private Integer idRebaja;
     @JoinColumn(name = "usuario", referencedColumnName = "username")
 	@ManyToOne
@@ -43,8 +43,12 @@ public class Rebaja implements Serializable {
     @Column(name = "fecha_creacion")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaCreacion;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "rebaja")
+    private Set<RebajaSeguimiento> rebajaSeguimientos;
     @ManyToMany(mappedBy = "rebajaCollection")
     private Collection<ReferenciaDocumento> referenciaDocumentoCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "rebaja")
+    private Set<ComunaCumplimiento> comunaCumplimientos;
 
     public Rebaja() {
     }
@@ -85,8 +89,27 @@ public class Rebaja implements Serializable {
     public void setReferenciaDocumentoCollection(Collection<ReferenciaDocumento> referenciaDocumentoCollection) {
         this.referenciaDocumentoCollection = referenciaDocumentoCollection;
     }
+    
+    @XmlTransient
+    public Set<ComunaCumplimiento> getComunaCumplimientos() {
+		return comunaCumplimientos;
+	}
 
-    @Override
+	public void setComunaCumplimientos(
+			Set<ComunaCumplimiento> comunaCumplimientos) {
+		this.comunaCumplimientos = comunaCumplimientos;
+	}
+
+	@XmlTransient
+	public Set<RebajaSeguimiento> getRebajaSeguimientos() {
+		return rebajaSeguimientos;
+	}
+
+	public void setRebajaSeguimientos(Set<RebajaSeguimiento> rebajaSeguimientos) {
+		this.rebajaSeguimientos = rebajaSeguimientos;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (idRebaja != null ? idRebaja.hashCode() : 0);

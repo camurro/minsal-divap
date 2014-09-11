@@ -26,8 +26,9 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name="servicio_salud")
 @NamedQueries({
 	@NamedQuery(name="ServicioSalud.findAll", query="SELECT s FROM ServicioSalud s"),
+	@NamedQuery(name="ServicioSalud.findById", query="SELECT s FROM ServicioSalud s  WHERE s.id = :idServicio"),
 	@NamedQuery(name="ServicioSalud.findServiciosByRegion", query="SELECT s FROM ServicioSalud s WHERE s.region.id = :idRegion order by s.id asc"),
-	 @NamedQuery(name = "ServicioSalud.findByIdServicioSalud", query = "SELECT s FROM ServicioSalud s WHERE s.id = :idServicioSalud")})
+	@NamedQuery(name = "ServicioSalud.findByIdServicioSalud", query = "SELECT s FROM ServicioSalud s WHERE s.id = :idServicioSalud")})
 public class ServicioSalud implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -54,10 +55,20 @@ public class ServicioSalud implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="id_region")
 	private Region region;
-	
-	
+
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idServicioSalud")
 	private Collection<Remesa> remesaCollection;
+
+	@JoinColumn(name = "director", referencedColumnName = "id_persona")
+	@ManyToOne(optional = false)
+	private Persona director;
+	@JoinColumn(name = "encargado_finanzas_aps", referencedColumnName = "id_persona")
+	@ManyToOne(optional = false)
+	private Persona encargadoFinanzasAps;
+	@JoinColumn(name = "encargado_aps", referencedColumnName = "id_persona")
+	@ManyToOne(optional = false)
+	private Persona encargadoAps;
 
 	public ServicioSalud() {
 	}
@@ -86,7 +97,7 @@ public class ServicioSalud implements Serializable {
 		this.comunas = comunas;
 	}
 
-	
+
 	public List<Establecimiento> getEstablecimientos() {
 		return this.establecimientos;
 	}
@@ -138,14 +149,38 @@ public class ServicioSalud implements Serializable {
 	public void setRegion(Region region) {
 		this.region = region;
 	}
-	
-	@XmlTransient
-   public Collection<Remesa> getRemesaCollection() {
-       return remesaCollection;
-   }
 
-   public void setRemesaCollection(Collection<Remesa> remesaCollection) {
-       this.remesaCollection = remesaCollection;
-   }
+	@XmlTransient
+	public Collection<Remesa> getRemesaCollection() {
+		return remesaCollection;
+	}
+
+	public void setRemesaCollection(Collection<Remesa> remesaCollection) {
+		this.remesaCollection = remesaCollection;
+	}
+
+	public Persona getDirector() {
+		return director;
+	}
+
+	public void setDirector(Persona director) {
+		this.director = director;
+	}
+
+	public Persona getEncargadoFinanzasAps() {
+		return encargadoFinanzasAps;
+	}
+
+	public void setEncargadoFinanzasAps(Persona encargadoFinanzasAps) {
+		this.encargadoFinanzasAps = encargadoFinanzasAps;
+	}
+
+	public Persona getEncargadoAps() {
+		return encargadoAps;
+	}
+
+	public void setEncargadoAps(Persona encargadoAps) {
+		this.encargadoAps = encargadoAps;
+	}
 
 }

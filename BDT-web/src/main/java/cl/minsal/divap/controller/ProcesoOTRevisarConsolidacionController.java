@@ -14,7 +14,6 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import minsal.divap.enums.BusinessProcess;
 import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.service.OTService;
@@ -28,8 +27,6 @@ import minsal.divap.vo.OTRevisarAntecedentesGlobalVO;
 import minsal.divap.vo.OTRevisarAntecedentesVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.SubtituloVO;
-import minsal.divap.vo.TaskDataVO;
-import minsal.divap.vo.TaskVO;
 
 import org.apache.log4j.Logger;
 

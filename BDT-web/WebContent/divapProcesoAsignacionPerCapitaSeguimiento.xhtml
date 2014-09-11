@@ -281,18 +281,36 @@
 								oncomplete="dlgUpload.show();" />
 						]<span style="color: red; font-size: 10px;">(Hacer
 								Seguimiento Oficio)</span>
+						<br />
+						<div class="destacaArchivos ui-corner-all">
+						<h3>Plantilla Envío Correo Consulta Regional :</h3>
+						<span class="strong">Archivo: </span> Correo Consulta Regional [
+						<h:graphicImage value="resources/minsal/images/download-alt.png"
+							styleClass="divapIcons" />
+						<h:commandLink id="lastPlantilla" value="Bajar Última Versión"
+						        onclick="downloadDocument(#{procesoAsignacionPerCapitaSeguimientoController.plantillaCorreoId});return false;" />
+						|
+						<h:graphicImage value="resources/minsal/images/upload-alt.png"
+								styleClass="divapIcons" />
+							<p:commandLink value="Subir Nueva Versión"
+								oncomplete="dlgUpload2.show();" />
+						]
+						</div>
+						<br />
 						</c:if>
 						<c:if
 							test="#{procesoAsignacionPerCapitaSeguimientoController.tareaSeguimiento.id == 2}">
 							<br />
-							<span class="strong">Archivo: </span> Decreto Montos de Distribución [
+							<span class="strong">Archivo: </span> Decreto Aporte Estatal [
 						<h:graphicImage value="resources/minsal/images/download-alt.png"
 								styleClass="divapIcons" />
-							<p:commandLink value="Bajar Última Versión" />
+							<h:commandLink id="lastSeguimiento" value="Bajar Última Versión"
+								onclick="downloadDocument(#{procesoAsignacionPerCapitaSeguimientoController.decretoId});return false;" />
 						|
 						<h:graphicImage value="resources/minsal/images/upload-alt.png"
 								styleClass="divapIcons" />
-							<p:commandLink value="Subir Nueva Versión" />
+							<p:commandLink value="Subir Nueva Versión"
+								oncomplete="dlgUpload.show();" />
 						]<span style="color: red; font-size: 10px;">(Hacer
 								Seguimiento Decreto)</span>
 						</c:if>
@@ -312,6 +330,26 @@
 								oncomplete="dlgUpload.show();" />
 						]<span style="color: red; font-size: 10px;">(Hacer
 								Seguimiento Decreto)</span>
+						</c:if>
+						
+						<c:if
+							test="#{procesoAsignacionPerCapitaSeguimientoController.tareaSeguimiento.id == 4}">
+						<br />
+						<div class="destacaArchivos ui-corner-all">
+						<h3>Plantilla Envío Correo Resoluciones :</h3>
+						<span class="strong">Archivo: </span> Correo Resoluciones [
+						<h:graphicImage value="resources/minsal/images/download-alt.png"
+							styleClass="divapIcons" />
+						<h:commandLink id="lastPlantilla" value="Bajar Última Versión"
+						        onclick="downloadDocument(#{procesoAsignacionPerCapitaSeguimientoController.plantillaCorreoId});return false;" />
+						|
+						<h:graphicImage value="resources/minsal/images/upload-alt.png"
+								styleClass="divapIcons" />
+							<p:commandLink value="Subir Nueva Versión"
+								oncomplete="dlgUpload2.show();" />
+						]
+						</div>
+						<br />
 						</c:if>
 				
 
@@ -393,7 +431,7 @@
 					<!-- FIN MENSAJE MOCK -->
 
 
-					<h3>Enviar Correo:</h3>
+					<h3>Seguimiento:</h3>
 					<h:panelGrid styleClass="tableFullWidth">
 						<h:panelGrid columns="2" styleClass="tableFullWidth">
 							<h:outputText value="Para: " styleClass="inputLabel" />
@@ -539,6 +577,24 @@
 					
 				<p:commandButton value="Cancelar"
 					onclick="dlgUpload.hide()" type="button" />
+			</p:panelGrid>
+			</h:form> 	
+		</p:dialog> 
+		
+		<p:dialog header="Subir archivos" widgetVar="dlgUpload2" id="idDlgUpload2" modal="true" height="150"  appendToBody="true">
+			<h:form id="uploadVersion2" enctype="multipart/form-data">
+			<p:panelGrid columns="2" >
+				<h:outputText value="Nueva Versión: " />
+				<p:fileUpload id="newVersionFile2"
+							fileUploadListener="#{procesoAsignacionPerCapitaSeguimientoController.handleFile2}"
+							value="#{procesoAsignacionPerCapitaSeguimientoController.file2}"
+							update="uploadVersion2" mode="simple"  />
+				<p:commandButton value="Aceptar" ajax="false"
+					actionListener="#{procesoAsignacionPerCapitaSeguimientoController.uploadVersion2}" update=":lastPlantilla"
+					oncomplete="if (args &amp;&amp; args.showDialog){dlgUpload2.hide()}else{ alert('the bean didnt let me open the dialog')}" />
+					
+				<p:commandButton value="Cancelar"
+					onclick="dlgUpload2.hide()" type="button" />
 			</p:panelGrid>
 			</h:form> 	
 		</p:dialog> 

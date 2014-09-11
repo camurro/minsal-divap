@@ -76,12 +76,10 @@ public class ProcessService {
 		Content content = client.getContentById(client, bpmTask.getJaxbTaskData().getDocumentContentId());
 		Map<String, Object> data = null;
 		if ((content != null) && (content.getSerializedContent() != null)) {
-			//System.out.println("content.getSerializedContent()-->"+content.getSerializedContent() );
 			BASE64Decoder base64Decoder = new BASE64Decoder();
 			byte[] contentBytes = base64Decoder.decodeBuffer(content.getSerializedContent());
 			Object unmarshalledObject = ContentMarshallerHelper.unmarshall(contentBytes, null);
 			if(unmarshalledObject != null && unmarshalledObject instanceof Map){
-				//System.out.println("unmarshalledObject no es null y es un mapa");
 				data = ((Map<String, Object>)unmarshalledObject);
             }
 		}

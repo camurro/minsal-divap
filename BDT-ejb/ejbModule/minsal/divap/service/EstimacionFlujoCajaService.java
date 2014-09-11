@@ -2,8 +2,6 @@ package minsal.divap.service;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,24 +16,7 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-
-import cl.minsal.divap.model.AnoEnCurso;
-import cl.minsal.divap.model.AntecendentesComuna;
-import cl.minsal.divap.model.AntecendentesComunaCalculado;
-import cl.minsal.divap.model.Caja;
-import cl.minsal.divap.model.DistribucionInicialPercapita;
-import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
-import cl.minsal.divap.model.EstadoPrograma;
-import cl.minsal.divap.model.MarcoPresupuestario;
-import cl.minsal.divap.model.ProgramaAno;
-import cl.minsal.divap.model.ReferenciaDocumento;
-import cl.minsal.divap.model.Seguimiento;
-import cl.minsal.divap.model.TipoDocumento;
-import cl.minsal.divap.model.Usuario;
 import minsal.divap.dao.CajaDAO;
-import minsal.divap.dao.DistribucionInicialPercapitaDAO;
 import minsal.divap.dao.EstimacionFlujoCajaDAO;
 import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.dao.SeguimientoDAO;
@@ -43,15 +24,10 @@ import minsal.divap.dao.UsuarioDAO;
 import minsal.divap.doc.GeneradorWord;
 import minsal.divap.doc.GeneradorWordBorradorAporteEstatal;
 import minsal.divap.enums.EstadosProgramas;
-import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TareasSeguimiento;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.excel.GeneradorExcel;
-import minsal.divap.excel.impl.AsignacionDistribucionPercapitaSheetExcel;
-import minsal.divap.excel.impl.AsignacionRecursosPercapitaSheetExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaSheetExcel;
-import minsal.divap.model.mappers.AsignacionDistribucionPercapitaMapper;
-import minsal.divap.service.EmailService.Adjunto;
 import minsal.divap.util.Util;
 import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
 import minsal.divap.vo.BaseVO;
@@ -60,6 +36,17 @@ import minsal.divap.vo.DocumentoVO;
 import minsal.divap.vo.EmailVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.SeguimientoVO;
+
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+
+import cl.minsal.divap.model.AnoEnCurso;
+import cl.minsal.divap.model.Caja;
+import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
+import cl.minsal.divap.model.EstadoPrograma;
+import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.Seguimiento;
+import cl.minsal.divap.model.TipoDocumento;
 
 @Stateless
 @LocalBean
@@ -99,7 +86,7 @@ public class EstimacionFlujoCajaService {
 
 	@EJB
 	private ProgramasDAO programasDAO;
-	
+
 	@EJB
 	private EmailService emailService;
 
@@ -146,8 +133,8 @@ public class EstimacionFlujoCajaService {
 			// generadorWordPlantillaBorradorDecretoAporteEstatal.saveContent(documentoBorradorAporteEstatalVO.getContent(),
 			// XWPFDocument.class);
 			generadorWordPlantillaBorradorOrdinarioProgramacionCaja
-					.saveContent(documentoBorradorOrdinarioProgramacionCajaVO
-							.getContent(), XWPFDocument.class);
+			.saveContent(documentoBorradorOrdinarioProgramacionCajaVO
+					.getContent(), XWPFDocument.class);
 
 			Map<String, Object> parametersBorradorAporteEstatal = new HashMap<String, Object>();
 			parametersBorradorAporteEstatal.put("{ano}",
@@ -177,7 +164,7 @@ public class EstimacionFlujoCajaService {
 					.getProgramaAnoByID(idLineaProgramatica);
 			TipoDocumento tipoDocumento = new TipoDocumento(
 					TipoDocumentosProcesos.PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA
-							.getId());
+					.getId());
 			plantillaBorradorOrdinarioProgramacionCaja = documentService
 					.createDocumentPropuestaEstimacionFlujoCaja(programaAno,
 							tipoDocumento, response.getNodeRef(),
@@ -214,32 +201,33 @@ public class EstimacionFlujoCajaService {
 	}
 
 	// Para hacer el calculo de la propuesta, se debe hacer una copia de los
-	// valores del año pasado.
+	// valores del aï¿½o pasado.
 	public Integer calcularPropuesta(Integer idProgramaAno) {
 
 		//Obtnemos los datos del programa ano anterior.
 		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
-	
+
 		ProgramaAno programaAnoAnterior = programasDAO.getProgramaAnoByIDProgramaAno(programaAno.getPrograma().getId(),programaAno.getAno().getAno() -1);
-		
+
 		List<Caja> lst = cajaDAO.getByIDProgramaAno(programaAnoAnterior.getIdProgramaAno());
 		if (lst.size()==0)
 		{
-			System.out.println("No se han encontrado datos para el año anterior.");
+			System.out.println("No se han encontrado datos para el aï¿½o anterior.");
 		}
 		else
 		{
-		//Obtenemos el programa actual.
-		
-		for (Caja caja : lst) {
-			// TODO: [ASAAVEDRA] Debo cambiar el programa ano.
-			caja.setAno(caja.getAno() + 1);
-			caja.setIdPrograma(programaAno);
-			caja.setId(null);
-			// caja.setIdPrograma(programaAnoSiguiente);
-		}
-		// Generamos la copia de los datos para el nuevo año
-		cajaDAO.save(lst);
+			//Obtenemos el programa actual.
+
+			for (Caja caja : lst) {
+				// TODO: [ASAAVEDRA] Debo cambiar el programa ano.
+				caja.setAno(caja.getAno() + 1);
+				caja.setIdPrograma(programaAno);
+				caja.setId(null);
+				// caja.setIdPrograma(programaAnoSiguiente);
+			}
+			// Generamos la copia de los datos para el nuevo aï¿½o
+			//Generamos la copia de los datos para el nuevo aï¿½o
+			cajaDAO.save(lst);
 		}
 		return idProgramaAno;
 	}
@@ -270,8 +258,8 @@ public class EstimacionFlujoCajaService {
 						generadorExcel.saveExcel(), contenType,
 						folderEstimacionFlujoCaja);
 				System.out
-						.println("response AsignacionRecursosPercapitaSheetExcel --->"
-								+ response);
+				.println("response AsignacionRecursosPercapitaSheetExcel --->"
+						+ response);
 				plantillaId = documentService.createTemplate(
 						TipoDocumentosProcesos.PLANTILLAPOBLACIONINSCRITA,
 						response.getNodeRef(), response.getFileName(),
@@ -312,8 +300,8 @@ public class EstimacionFlujoCajaService {
 						generadorExcel.saveExcel(), contenType,
 						folderEstimacionFlujoCaja);
 				System.out
-						.println("response AsignacionRecursosPercapitaSheetExcel --->"
-								+ response);
+				.println("response AsignacionRecursosPercapitaSheetExcel --->"
+						+ response);
 				plantillaId = documentService.createTemplate(
 						TipoDocumentosProcesos.PLANTILLAPOBLACIONINSCRITA,
 						response.getNodeRef(), response.getFileName(),
@@ -368,10 +356,10 @@ public class EstimacionFlujoCajaService {
 				conCopiaOculta, documentosTmp);
 		Seguimiento seguimiento = seguimientoDAO
 				.getSeguimientoById(idSeguimiento);
-		
+
 		estimacionFlujoCajaDAO.createSeguimiento(idLineaProgramatica,seguimiento);
 		return 1;// distribucionInicialPercapitaDAO.createSeguimiento(idDistribucionInicialPercapita,
-					// seguimiento);
+		// seguimiento);
 	}
 
 	public List<SeguimientoVO> getBitacora(
@@ -416,8 +404,8 @@ public class EstimacionFlujoCajaService {
 					.saveExcel(), contenType, folderEstimacionFlujoCaja
 					.replace("{ANO}", getAnoCurso().toString()));
 			System.out
-					.println("response AsignacionRecursosPercapitaSheetExcel --->"
-							+ response);
+			.println("response AsignacionRecursosPercapitaSheetExcel --->"
+					+ response);
 			ProgramaAno programaAno = programasDAO
 					.getProgramaAnoByID(idLineaProgramatica);
 			TipoDocumento tipoDocumento = new TipoDocumento(
@@ -451,9 +439,9 @@ public class EstimacionFlujoCajaService {
 		for (DocumentoEstimacionflujocaja documentoEstimacionflujocaja : lstDocEstimacionFlujoCaja) {
 			String key = ((documentoEstimacionflujocaja.getIdDocumento()
 					.getNodeRef() == null) ? documentoEstimacionflujocaja
-					.getIdDocumento().getPath() : documentoEstimacionflujocaja
-					.getIdDocumento().getNodeRef()
-					.replace("workspace://SpacesStore/", ""));
+							.getIdDocumento().getPath() : documentoEstimacionflujocaja
+							.getIdDocumento().getNodeRef()
+							.replace("workspace://SpacesStore/", ""));
 
 			alfrescoService.delete(key);
 		}
@@ -463,7 +451,7 @@ public class EstimacionFlujoCajaService {
 
 	public Integer notificarUsuarioConsolidador(Integer idLineaProgramatica) {
 		EmailVO emailVO = new EmailVO();
-	
+
 		emailVO.setContent("ola");
 		emailVO.setSubject("mensaje prueba");
 		emailVO.setTo("asaavedra@nectia.com");
@@ -474,22 +462,22 @@ public class EstimacionFlujoCajaService {
 	public Integer eliminarOrdinarioFonasa(Integer idLineaProgramatica) {
 		//Eliminar todos menos el ultimo.
 		ReferenciaDocumentoSummaryVO referenciaDocumentoSummary =  getLastDocumentSummaryEstimacionFlujoCajaType(idLineaProgramatica, TipoDocumentosProcesos.PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA);
-		
+
 		ProgramaAno programaAno = programasDAO
 				.getProgramaAnoByID(idLineaProgramatica);
-		
+
 		TipoDocumento tipoDocumento = new TipoDocumento(
 				TipoDocumentosProcesos.PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA
-						.getId());
+				.getId());
 		List<DocumentoEstimacionflujocaja> lstDocEstimacionFlujoCaja = documentService
 				.getDocumentEstimacionFlujoCajaByIDProgramaAnoTipoDocumento(
 						programaAno, tipoDocumento);
-		
+
 		String keyUltimo = ((referenciaDocumentoSummary.getNodeRef() == null) ? referenciaDocumentoSummary.getPath() : referenciaDocumentoSummary.getNodeRef().replace("workspace://SpacesStore/", ""));
-		
+
 		for (DocumentoEstimacionflujocaja documentoEstimacionflujocaja : lstDocEstimacionFlujoCaja) {
-			
-			
+
+
 			String key = ((documentoEstimacionflujocaja.getIdDocumento().getNodeRef() == null) ? documentoEstimacionflujocaja.getIdDocumento().getPath() : documentoEstimacionflujocaja.getIdDocumento().getNodeRef()
 					.replace("workspace://SpacesStore/", ""));
 			if (key.equals(keyUltimo)){
@@ -501,7 +489,7 @@ public class EstimacionFlujoCajaService {
 	}
 
 
-	
+
 	public void moveToAlfresco(Integer idLineaProgramatica,
 			Integer referenciaDocumentoId, TipoDocumentosProcesos tipoDocumento,
 			boolean versionFinal) {
@@ -509,7 +497,7 @@ public class EstimacionFlujoCajaService {
 				+ referenciaDocumentoId);
 		ReferenciaDocumentoSummaryVO referenciaDocumentoSummary = documentService
 				.getDocumentSummary(referenciaDocumentoId);
-		
+
 		System.out.println("Buscando referenciaDocumentoSummary="
 				+ referenciaDocumentoSummary);
 		if (referenciaDocumentoSummary != null) {
@@ -524,8 +512,8 @@ public class EstimacionFlujoCajaService {
 			documentService.updateDocumentTemplate(
 					referenciaDocumentoSummary.getId(), response.getNodeRef(),
 					response.getFileName(), contenType);
-//			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO
-//					.findById(idDistribucionInicialPercapita);
+			//			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO
+			//					.findById(idDistribucionInicialPercapita);
 			ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idLineaProgramatica);
 			documentService.createDocumentOrdinarioProgramacionEstimacionFlujoCaja(programaAno,tipoDocumento,referenciaDocumentoId,versionFinal);
 			//documentService.createDocumentPercapita(
@@ -540,67 +528,67 @@ public class EstimacionFlujoCajaService {
 			Integer idProgramaAno,
 			TipoDocumentosProcesos tipoDocumento) {
 		// TODO Auto-generated method stub
-			return documentService.getLastDocumentoSummaryByEstimacionFlujoCajaType(idProgramaAno, tipoDocumento);
-	
+		return documentService.getLastDocumentoSummaryByEstimacionFlujoCajaType(idProgramaAno, tipoDocumento);
+
 	}
 
-	//Obtiene el id del programa para el año siguiente para hacer la estimacion del flujo de caja.
+	//Obtiene el id del programa para el aï¿½o siguiente para hacer la estimacion del flujo de caja.
 	public Integer obtenerIdProgramaAno(Integer id) {
 		// TODO Auto-generated method stub
 		ProgramaAno programaAnoActual = programasDAO.getProgramaAnoByID(id);
-		
+
 		// Obtener el siguiente programa ano.
 		ProgramaAno programaAnoSiguiente = programasDAO
 				.getProgramaAnoByIDProgramaAno(programaAnoActual.getPrograma()
 						.getId(), programaAnoActual.getAno().getAno()+1);
-		
+
 		Integer idProgramaAnoNuevo = 0;
-		// CREAMOS EL PROGRAMA PARA EL AÑO SIGUIENTE SI NO EXISTE.
+		// CREAMOS EL PROGRAMA PARA EL Aï¿½O SIGUIENTE SI NO EXISTE.
 		if (programaAnoSiguiente == null) {
-			
-			
+
+
 			AnoEnCurso anoCurso = programasDAO.getAnoEnCursoById(programaAnoActual.getAno().getAno() + 1);
 			if (anoCurso==null){
-			AnoEnCurso anoC = new AnoEnCurso();
-			anoC.setAno(programaAnoActual.getAno().getAno() + 1);
-			anoC.setAsignacionAdultoMayor(0);
-			anoC.setInflactor(0.0);
-			anoC.setMontoPercapitalBasal(0);
-			
-			 anoCurso = programasDAO.saveAnoCurso(anoC);
+				AnoEnCurso anoC = new AnoEnCurso();
+				anoC.setAno(programaAnoActual.getAno().getAno() + 1);
+				anoC.setAsignacionAdultoMayor(0);
+				anoC.setInflactor(0.0);
+				anoC.setMontoPercapitalBasal(0);
+
+				anoCurso = programasDAO.saveAnoCurso(anoC);
 			}
-			
-			 EstadoPrograma estadoProgramaCurso = new EstadoPrograma(EstadosProgramas.ENCURSO.getId());
-			 EstadoPrograma estadoProgramaIniciar = new EstadoPrograma(EstadosProgramas.SININICIAR.getId());
-			 programaAnoActual.setAno(anoCurso);
-			 programaAnoActual.setEstado(estadoProgramaIniciar);
-			 programaAnoActual.setEstadoFlujoCaja(estadoProgramaCurso);
-			 programaAnoActual.setIdProgramaAno(null);
-			 
-			 idProgramaAnoNuevo = programasDAO.saveProgramaAno(programaAnoActual,true);
+
+			EstadoPrograma estadoProgramaCurso = new EstadoPrograma(EstadosProgramas.ENCURSO.getId());
+			EstadoPrograma estadoProgramaIniciar = new EstadoPrograma(EstadosProgramas.SININICIAR.getId());
+			programaAnoActual.setAno(anoCurso);
+			programaAnoActual.setEstado(estadoProgramaIniciar);
+			programaAnoActual.setEstadoFlujoCaja(estadoProgramaCurso);
+			programaAnoActual.setIdProgramaAno(null);
+
+			idProgramaAnoNuevo = programasDAO.saveProgramaAno(programaAnoActual,true);
 			// estadoPrograma );
 		}
 		else
 		{
 			idProgramaAnoNuevo = programaAnoSiguiente.getIdProgramaAno();
 		}
-		
+
 		return idProgramaAnoNuevo;
 	}
 
 	public Integer enviarOrdinarioFONASA(Integer idLineaProgramatica) {
-		// TODO [ASAAVEDRA] Enviar a usuario consolidador también.
+		// TODO [ASAAVEDRA] Enviar a usuario consolidador tambiï¿½n.
 		//System.out.println("enviarDecretoAporteEstatal--> "+borradorAporteEstatalId+" username="+username);
-		
+
 		ReferenciaDocumentoSummaryVO referenciaDocumentoSummary = getLastDocumentSummaryEstimacionFlujoCajaType(idLineaProgramatica, TipoDocumentosProcesos.PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA);
 		DocumentoVO documentDecretoAporteEstatalVO = documentService.getDocument(referenciaDocumentoSummary.getId());
-		
+
 		String fileNameDecretoAporteEstatal = tmpDirDoc + File.separator + documentDecretoAporteEstatalVO.getName();
-		
+
 		GeneradorWord generadorWordDecretoAporteEstatal = new GeneradorWord(fileNameDecretoAporteEstatal);
 		try {
 			generadorWordDecretoAporteEstatal.saveContent(documentDecretoAporteEstatalVO.getContent(), XWPFDocument.class);
-			
+
 			List<EmailService.Adjunto> adjuntos = new ArrayList<EmailService.Adjunto>();
 			EmailService.Adjunto adjunto = new EmailService.Adjunto();
 			adjunto.setDescripcion("Borrador Decreto Aporte Estatal");
@@ -614,7 +602,7 @@ public class EstimacionFlujoCajaService {
 		}
 		return 1;
 		//adjunto.set
-		
+
 	}
 
 }

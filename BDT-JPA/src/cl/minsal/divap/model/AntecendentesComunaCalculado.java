@@ -30,9 +30,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByRuralidad", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.ruralidad = :ruralidad"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByValorReferencialZona", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.valorReferencialZona = :valorReferencialZona"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByAntecedentesDistrinbucionInicial", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idAntecedentesComuna = :idAntecendentesComuna and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),
-	@NamedQuery(name = "AntecendentesComunaCalculado.findByDistribucionInicialPercapita", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByDistribucionInicialPercapita", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita order by a.antecedentesComuna.idComuna.servicioSalud.id asc"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByComunaServicioAnoCurso", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.id = :idComuna and a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio and a.antecedentesComuna.anoAnoEnCurso.ano = :anoEnCurso"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByComunaServicioDistribucionInicialPercapita", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.id = :idComuna and a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByComunasDistribucionInicialPercapita", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.id IN (:comunas) and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByServicioDistribucionInicialPercapita", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.countByDistribucionInicialPercapita", query = "SELECT count(a) FROM AntecendentesComunaCalculado a WHERE a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita")})
 public class AntecendentesComunaCalculado implements Serializable {
@@ -56,9 +57,9 @@ public class AntecendentesComunaCalculado implements Serializable {
 	@Column(name = "valor_per_capita_comunal_mes")
 	private Double valorPerCapitaComunalMes;
 	@Column(name = "percapita_mes")
-	private Integer percapitaMes;
+	private Long percapitaMes;
 	@Column(name = "percapita_ano")
-	private Integer percapitaAno;
+	private Long percapitaAno;
 	@JoinColumn(name = "distribucion_inicial_percapita", referencedColumnName = "id_distribucion_inicial_percapita")
 	@ManyToOne
 	private DistribucionInicialPercapita distribucionInicialPercapita;
@@ -154,19 +155,19 @@ public class AntecendentesComunaCalculado implements Serializable {
 		this.valorPerCapitaComunalMes = valorPerCapitaComunalMes;
 	}
 
-	public Integer getPercapitaMes() {
+	public Long getPercapitaMes() {
 		return percapitaMes;
 	}
 
-	public void setPercapitaMes(Integer percapitaMes) {
+	public void setPercapitaMes(Long percapitaMes) {
 		this.percapitaMes = percapitaMes;
 	}
 
-	public Integer getPercapitaAno() {
+	public Long getPercapitaAno() {
 		return percapitaAno;
 	}
 
-	public void setPercapitaAno(Integer percapitaAno) {
+	public void setPercapitaAno(Long percapitaAno) {
 		this.percapitaAno = percapitaAno;
 	}
 

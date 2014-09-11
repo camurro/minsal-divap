@@ -124,34 +124,40 @@ public class DistribucionInicialPerCapitaRESTService extends BaseRest{
 	@GET
     @Path("/distribucionInicialPerCapita/administrarVersionesFinalesAlfresco/{idDistribucionInicialPercapita}")
     @Produces("application/json")
-    public Integer administrarVersionesFinalesAlfresco(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita){
+    public void administrarVersionesFinalesAlfresco(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita){
 		System.out.println("administrar Versiones Finales Alfresco-->"+idDistribucionInicialPercapita);
 		if(idDistribucionInicialPercapita == null){
 			throw new IllegalArgumentException("proceso: "+ idDistribucionInicialPercapita + " no puede ser nulo");
 		}
-        return 1;
+		DistribucionInicialPercapitaService distribucionInicialPercapitaService = getService(DistribucionInicialPercapitaService.class);
+		distribucionInicialPercapitaService.administrarVersionesFinalesAlfresco(idDistribucionInicialPercapita);
     }
 	
 	@GET
     @Path("/distribucionInicialPerCapita/enviarResolucionesServicioSalud/{idDistribucionInicialPercapita}")
     @Produces("application/json")
-    public Integer enviarResolucionesServicioSalud(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita){
+    public void enviarResolucionesServicioSalud(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita){
 		System.out.println("enviar Resoluciones Servicio Salud-->"+idDistribucionInicialPercapita);
 		if(idDistribucionInicialPercapita == null){
 			throw new IllegalArgumentException("proceso: "+ idDistribucionInicialPercapita + " no puede ser nulo");
 		}
-        return 1;
+		DistribucionInicialPercapitaService distribucionInicialPercapitaService = getService(DistribucionInicialPercapitaService.class);
+		distribucionInicialPercapitaService.enviarResolucionesServicioSalud(idDistribucionInicialPercapita);
     }
 	
 	@GET
-    @Path("/distribucionInicialPerCapita/enviarConsultaRegional/{idDistribucionInicialPercapita}")
+    @Path("/distribucionInicialPerCapita/enviarConsultaRegional/{idDistribucionInicialPercapita}/{oficioConsultaId}")
     @Produces("application/json")
-    public Integer enviarConsultaRegional(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita){
+    public void enviarConsultaRegional(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita, @PathParam("oficioConsultaId") Integer oficioConsultaId){
 		System.out.println("enviar Consulta Regional-->"+idDistribucionInicialPercapita);
 		if(idDistribucionInicialPercapita == null){
 			throw new IllegalArgumentException("proceso: "+ idDistribucionInicialPercapita + " no puede ser nulo");
 		}
-        return 1;
+		if(oficioConsultaId == null){
+			throw new IllegalArgumentException("oficio consulta proceso percapita: "+ oficioConsultaId + " no puede ser nulo");
+		}
+		DistribucionInicialPercapitaService distribucionInicialPercapitaService = getService(DistribucionInicialPercapitaService.class);
+		distribucionInicialPercapitaService.enviarConsultaRegional(idDistribucionInicialPercapita, oficioConsultaId);
     }
 	
 	@GET
