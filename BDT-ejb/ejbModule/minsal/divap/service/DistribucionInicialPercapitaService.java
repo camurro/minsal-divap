@@ -2,6 +2,8 @@ package minsal.divap.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,9 +14,11 @@ import java.util.Map;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.Resource;
+import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.xml.bind.JAXBException;
 
 import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
@@ -35,6 +39,7 @@ import minsal.divap.excel.impl.PercapitaCalculoPercapitaExcelValidator;
 import minsal.divap.excel.impl.PercapitaDesempenoDificilExcelValidator;
 import minsal.divap.exception.ExcelFormatException;
 import minsal.divap.model.mappers.AsignacionDistribucionPercapitaMapper;
+import minsal.divap.model.mappers.ReferenciaDocumentoMapper;
 import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
 import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.BodyVO;
@@ -43,8 +48,13 @@ import minsal.divap.vo.CellTypeExcelVO;
 import minsal.divap.vo.DesempenoDificilVO;
 import minsal.divap.vo.DocumentoVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
+import minsal.divap.vo.ReferenciaDocumentoVO;
+import minsal.divap.vo.RegionVO;
 import minsal.divap.vo.SeguimientoVO;
-import minsal.divap.vo.VariacionPoblacionVO;
+import minsal.divap.vo.ServiciosVO;
+//import minsal.divap.vo.VariacionPoblacionVO;
+import minsal.divap.xml.GeneradorXML;
+import minsal.divap.xml.email.Email;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hwpf.HWPFDocument;
@@ -52,11 +62,13 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import cl.minsal.divap.model.AntecendentesComuna;
 import cl.minsal.divap.model.AntecendentesComunaCalculado;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
+import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
 import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.Usuario;
 
@@ -90,6 +102,7 @@ public class DistribucionInicialPercapitaService {
 	@Resource(name="folderPercapita")
 	private String folderPercapita;
 
+
 	public Integer crearIntanciaDistribucionInicialPercapita(String username){
 		System.out.println("username-->"+username);
 		Usuario usuario = this.usuarioDAO.getUserByUsername(username);
@@ -99,15 +112,35 @@ public class DistribucionInicialPercapitaService {
 	public Integer cargarPlantilla(TipoDocumentosProcesos plantilla, File file){
 		Integer plantillaId = documentService.getPlantillaByType(plantilla);
 		String filename = null;
+		String folderAlfresco = null;
 		switch (plantilla) {
 		case PLANTILLAASIGNACIONDESEMPENODIFICIL:
 			filename = "plantillaDesempenoDificil.xlsx";
+			folderAlfresco = folderTemplatePercapita;
 			break;
 		case PLANTILLAPOBLACIONINSCRITA:
 			filename = "plantillaPercapita.xlsx";
+			folderAlfresco = folderTemplatePercapita;
 			break;	
 		case PLANTILLAOFICIOCONSULTA:
 			filename = "plantillaOficioConsulta.docx";
+			folderAlfresco = folderTemplatePercapita;
+			break;	
+		case PLANTILLACORREOCONSULTAREGIONALPERCAPITA:
+			filename = "plantillaCorreoConsultaRegionalPercapita.xml";
+			folderAlfresco = folderTemplatePercapita;
+			break;
+		case PLANTILLACORREORESOLUCIONESPERCAPITA:
+			filename = "plantillaResolucionesPercapita.xml";
+			folderAlfresco = folderTemplatePercapita;
+			break;
+		case PLANTILLARESOLUCIONREBAJA:
+			filename = "plantillaResolucionRebaja.docx";
+			folderAlfresco = "TEMPLATES/REBAJA";
+			break;	
+		case PLANTILLACORREORESOLUCIONSERVICIOSALUDREBAJA:
+			filename = "plantillaCorreoResolucionRebaja.xml";
+			folderAlfresco = "TEMPLATES/REBAJA";
 			break;	
 		default:
 			break;
@@ -117,7 +150,7 @@ public class DistribucionInicialPercapitaService {
 		String contentType = mimemap.getContentType(filename.toLowerCase());
 		if(plantillaId == null){
 			try {
-				BodyVO response = alfrescoService.uploadDocument(file, contentType, folderTemplatePercapita);
+				BodyVO response = alfrescoService.uploadDocument(file, contentType, folderAlfresco);
 				System.out.println("response upload template --->"+response);
 				plantillaId = documentService.createTemplate(plantilla, response.getNodeRef(), response.getFileName(), contentType);
 			} catch (Exception e) {
@@ -126,7 +159,7 @@ public class DistribucionInicialPercapitaService {
 		}else{
 			Integer referenciaDocumentoId = documentService.getDocumentoIdByPlantillaId(plantillaId);
 			try {
-				BodyVO response = alfrescoService.uploadDocument(file, contentType, folderTemplatePercapita);
+				BodyVO response = alfrescoService.uploadDocument(file, contentType, folderAlfresco);
 				System.out.println("response upload template --->"+response);
 				documentService.updateDocumentTemplate(referenciaDocumentoId, response.getNodeRef(), response.getFileName(), contentType);
 			} catch (Exception e) {
@@ -139,7 +172,7 @@ public class DistribucionInicialPercapitaService {
 	public Integer getIdPlantillaPoblacionInscrita(){
 		Integer plantillaId = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAASIGNACIONDESEMPENODIFICIL);
 		if(plantillaId == null){
-			List<BaseVO> servicios = servicioSaludService.getAllServicios();
+			List<BaseVO> servicios = servicioSaludService.getAllServiciosComunasCFUrbanaRural();
 
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			String filename = tmpDir + File.separator + "plantillaDesempenoDificil.xlsx";
@@ -166,10 +199,10 @@ public class DistribucionInicialPercapitaService {
 	}
 
 	public Integer getIdPlantillaRecursosPerCapita(){
-		
+
 		Integer plantillaId = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAPOBLACIONINSCRITA);
 		if(plantillaId == null){
-			List<BaseVO> servicios = servicioSaludService.getAllServicios();
+			List<BaseVO> servicios = servicioSaludService.getAllServiciosComunasCFUrbanaRural();
 
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			String filename = tmpDir + File.separator + "plantillaPercapita.xlsx";
@@ -279,35 +312,59 @@ public class DistribucionInicialPercapitaService {
 			for(AntecendentesComunaCalculado antecendenteComunaCalculado: antecendentesComunaCalculado){
 				if(antecendenteComunaCalculado.getAntecedentesComuna() != null && antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza() != null){
 					Integer percapitaBasal = antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso().getMontoPercapitalBasal();
+					Integer asignacionAdultoMayor = antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso().getAsignacionAdultoMayor();
+					System.out.println("percapitaBasal="+percapitaBasal+ " antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza().getValor()="+antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza().getValor());
 					Double pobreza = percapitaBasal * antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza().getValor();
+					BigDecimal bd = new BigDecimal(pobreza);
+					bd = bd.setScale(2, RoundingMode.HALF_UP);
+					pobreza = bd.doubleValue();
 					antecendenteComunaCalculado.setPobreza(pobreza);
-					Double ruralidad = (antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso().getMontoPercapitalBasal() + pobreza) * 0.2;
-					antecendenteComunaCalculado.setRuralidad(ruralidad);
-					Double valorReferencialZona = (percapitaBasal + pobreza + ruralidad) * antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona().getValor();
-					antecendenteComunaCalculado.setValorReferencialZona(valorReferencialZona);
-					Double valorPerCapitaComunalMes = percapitaBasal + pobreza + ruralidad +valorReferencialZona;
-					antecendenteComunaCalculado.setValorPerCapitaComunalMes(valorPerCapitaComunalMes);
 					System.out.println("antecendenteComunaCalculado.getAntecedentesComuna().getIdAntecedentesComuna()="+antecendenteComunaCalculado.getAntecedentesComuna().getIdAntecedentesComuna());
-					System.out.println("getAnoAnterior()=" + (getAnoCurso() - 1));
-					Double perCapitaCostoFijo = antecedentesComunaDAO.findPerCapitaCostoFijoByServicioComunaAnoAnterior(antecendenteComunaCalculado.getAntecedentesComuna().getIdComuna().getId(), antecendenteComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId(), (getAnoCurso() - 1));
-					System.out.println("perCapitaCostoFijo="+perCapitaCostoFijo);
 					if(antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion() != null){
-						Integer perCapitaAno = null;
+						Long perCapitaAno = null;
 						if(TipoComuna.RURAL.getId() == antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion().getIdTipoComuna()){
-							perCapitaAno = (int) (((valorPerCapitaComunalMes * antecendenteComunaCalculado.getPoblacion() + antecendenteComunaCalculado.getPoblacionMayor() * antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso().getAsignacionAdultoMayor())*12)/1000);
+							Double ruralidad = (percapitaBasal + pobreza) * 0.2;
+							antecendenteComunaCalculado.setRuralidad(ruralidad);
+							//Hacer calculo con todos los decimales, solo para visualizar dejar con 2 luego de la coma
+							Double valorReferencialZona = (percapitaBasal + pobreza + ruralidad) * antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona().getValor();
+							antecendenteComunaCalculado.setValorReferencialZona(valorReferencialZona);
+							Long valorPerCapitaComunalMes = (long)(percapitaBasal + pobreza + ruralidad + valorReferencialZona);
+							antecendenteComunaCalculado.setValorPerCapitaComunalMes(valorPerCapitaComunalMes.doubleValue());
+							System.out.println("valorPerCapitaComunalMes="+valorPerCapitaComunalMes);
+							System.out.println("antecendenteComunaCalculado.getPoblacion()="+antecendenteComunaCalculado.getPoblacion());
+							System.out.println("antecendenteComunaCalculado.getPoblacionMayor()="+antecendenteComunaCalculado.getPoblacionMayor());
+							System.out.println("asignacionAdultoMayor="+asignacionAdultoMayor);
+							perCapitaAno =  (((valorPerCapitaComunalMes * antecendenteComunaCalculado.getPoblacion() + antecendenteComunaCalculado.getPoblacionMayor() * asignacionAdultoMayor)*12)/1000);
+							System.out.println("perCapitaAno="+perCapitaAno);
+							System.out.println("perCapitaAno="+perCapitaAno);
 						} else if(TipoComuna.URBANA.getId() == antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion().getIdTipoComuna()){
-							perCapitaAno = (int)  ((valorPerCapitaComunalMes * antecendenteComunaCalculado.getPoblacion() + antecendenteComunaCalculado.getPoblacionMayor() * antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso().getAsignacionAdultoMayor())*12)/1000;
+							antecendenteComunaCalculado.setRuralidad(0.0);
+							Double valorReferencialZona = (percapitaBasal + pobreza + 0.0) * antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona().getValor();
+							antecendenteComunaCalculado.setValorReferencialZona(valorReferencialZona);
+							Long valorPerCapitaComunalMes = (long)(percapitaBasal + pobreza + 0.0 + valorReferencialZona);
+							antecendenteComunaCalculado.setValorPerCapitaComunalMes(valorPerCapitaComunalMes.doubleValue());
+							System.out.println("valorPerCapitaComunalMes="+valorPerCapitaComunalMes);
+							System.out.println("antecendenteComunaCalculado.getPoblacion()="+antecendenteComunaCalculado.getPoblacion());
+							System.out.println("antecendenteComunaCalculado.getPoblacionMayor()="+antecendenteComunaCalculado.getPoblacionMayor());
+							System.out.println("asignacionAdultoMayor="+asignacionAdultoMayor);
+							perCapitaAno =  (((valorPerCapitaComunalMes * antecendenteComunaCalculado.getPoblacion() + antecendenteComunaCalculado.getPoblacionMayor() * asignacionAdultoMayor)*12)/1000);
+							System.out.println("perCapitaAno="+perCapitaAno);
+							System.out.println("perCapitaAno="+perCapitaAno);
 						} else if(TipoComuna.COSTOFIJO.getId() == antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion().getIdTipoComuna()){
-							if(antecendenteComunaCalculado.getAntecedentesComuna() != null && antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso() != null){
-								perCapitaAno = (int) (perCapitaCostoFijo * antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso().getInflactor());
-							}else{
-								System.out.println("antecendenteComunaCalculado.getAntecedentesComuna().getIdAntecedentesComuna()-->"+antecendenteComunaCalculado.getAntecedentesComuna().getIdAntecedentesComuna());
-								System.out.println("antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso()-->"+antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso());
-							}
+							antecendenteComunaCalculado.setRuralidad(0.0);
+							Double valorReferencialZona = (percapitaBasal + pobreza + 0.0) * antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona().getValor();
+							antecendenteComunaCalculado.setValorReferencialZona(valorReferencialZona);
+							Long valorPerCapitaComunalMes = (long)(percapitaBasal + pobreza + 0.0 + valorReferencialZona);
+							antecendenteComunaCalculado.setValorPerCapitaComunalMes(valorPerCapitaComunalMes.doubleValue());
+							Double perCapitaCostoFijo = antecedentesComunaDAO.findPerCapitaCostoFijoByServicioComunaAnoAnterior(antecendenteComunaCalculado.getAntecedentesComuna().getIdComuna().getId(), antecendenteComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId(), (getAnoCurso() - 1));
+							System.out.println("perCapitaCostoFijo="+perCapitaCostoFijo);
+							perCapitaAno = (long) (perCapitaCostoFijo * antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso().getInflactor());
 						}
 						if(perCapitaAno != null){
+							System.out.println("perCapitaAno="+perCapitaAno);
 							antecendenteComunaCalculado.setPercapitaAno(perCapitaAno);
-							Integer perCapitaMes = (perCapitaAno *1000)/12;
+							Long perCapitaMes = (perCapitaAno * 1000)/12;
+							System.out.println("perCapitaMes="+perCapitaMes);
 							antecendenteComunaCalculado.setPercapitaMes(perCapitaMes);
 						}
 					}
@@ -339,6 +396,7 @@ public class DistribucionInicialPercapitaService {
 		headers.add("POBLACION AÑO" + getAnoCurso());
 		headers.add("POBLACION MAYOR DE 65 AÑOS" + getAnoCurso());
 		headers.add("PER CAPITA AÑO " + getAnoCurso() + "(m$ " + getAnoCurso() + ")");
+		headers.add("PER CAPITA MES " + getAnoCurso() + "(m$ " + getAnoCurso() + ")");
 		AsignacionDistribucionPercapitaSheetExcel asignacionDistribucionPercapitaSheetExcel = new AsignacionDistribucionPercapitaSheetExcel(headers, antecedentesCalculados);
 		generadorExcel.addSheet( asignacionDistribucionPercapitaSheetExcel, "Hoja 1");
 		try {
@@ -410,18 +468,15 @@ public class DistribucionInicialPercapitaService {
 			System.out.println("crearOficioConsulta filename-->"+filename);
 			System.out.println("crearOficioConsulta template-->"+template);
 			GeneradorWord generadorWord = new GeneradorWord(template);
-			List<VariacionPoblacionVO> variaciones = new ArrayList<VariacionPoblacionVO>();
+			//List<VariacionPoblacionVO> variaciones = new ArrayList<VariacionPoblacionVO>();
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			String contenType = mimemap.getContentType(filename.toLowerCase());
 			System.out.println("template->"+template);
 			System.out.println("filename->"+filename);
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("ano_siguiente", (getAnoCurso() + 1));
-			parameters.put("poblacion_beneficiaria", new Integer(100000));
-			parameters.put("porcentaje", new Double(0.96));
-			parameters.put("ano_curso", getAnoCurso());
-
-
+			parameters.put("{ano_siguiente}", (getAnoCurso() + 1));
+			parameters.put("{poblacion_beneficiaria}", new Integer(100000));
+			parameters.put("{ano_curso}", getAnoCurso());
 			if(template.endsWith(".doc")){
 				System.out.println("Genera archivo doc");
 				generadorWord.saveContent(documentoVO.getContent(), HWPFDocument.class);
@@ -433,8 +488,9 @@ public class DistribucionInicialPercapitaService {
 			}else if(template.endsWith(".docx")){
 				System.out.println("Genera archivo docx");
 				generadorWord.saveContent(documentoVO.getContent(), XWPFDocument.class);
-				GeneradorOficioConsulta generadorOficioConsulta = new GeneradorOficioConsulta(filename, template);
-				generadorOficioConsulta.replaceValues(parameters, variaciones, XWPFDocument.class);
+				GeneradorResolucionAporteEstatal generadorOficioConsulta = new GeneradorResolucionAporteEstatal(filename, template);
+				//generadorOficioConsulta.replaceValues(parameters, variaciones, XWPFDocument.class);
+				generadorOficioConsulta.replaceValues(parameters, XWPFDocument.class);
 				BodyVO response = alfrescoService.uploadDocument(new File(filename), contenType, folderPercapita.replace("{ANO}", getAnoCurso().toString()));
 				System.out.println("response AsignacionRecursosPercapita --->"+response);
 				plantillaId = documentService.createDocumentPercapita(idDistribucionInicialPercapita, TipoDocumentosProcesos.OFICIOCONSULTA, response.getNodeRef(), response.getFileName(), contenType);
@@ -442,6 +498,8 @@ public class DistribucionInicialPercapitaService {
 		}catch(IOException e){
 			e.printStackTrace();
 		} catch (InvalidFormatException e) {
+			e.printStackTrace();
+		} catch (Docx4JException e) {
 			e.printStackTrace();
 		}
 		return plantillaId;
@@ -548,7 +606,7 @@ public class DistribucionInicialPercapitaService {
 							generadorResolucionAporteEstatalUR.replaceValues(parametersAporteEstatalUR, XWPFDocument.class);
 							BodyVO responseAporteEstatalUR = alfrescoService.uploadDocument(new File(filenameAporteEstatalURTmp), contenTypeAporteEstatalUR, folderPercapita.replace("{ANO}", getAnoCurso().toString()));
 							System.out.println("response responseAporteEstatalUR --->"+responseAporteEstatalUR);
-							plantillaIdResolucionAporteEstatalUR = documentService.createDocumentPercapita(idDistribucionInicialPercapita, antecendenteComuna.getIdComuna().getId(), TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF, responseAporteEstatalUR.getNodeRef(), responseAporteEstatalUR.getFileName(), contenTypeAporteEstatalUR);
+							plantillaIdResolucionAporteEstatalUR = documentService.createDocumentPercapita(idDistribucionInicialPercapita, antecendenteComuna.getIdComuna().getId(), TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, responseAporteEstatalUR.getNodeRef(), responseAporteEstatalUR.getFileName(), contenTypeAporteEstatalUR);
 						}
 					}
 				}
@@ -648,6 +706,242 @@ public class DistribucionInicialPercapitaService {
 
 	public ReferenciaDocumentoSummaryVO getLastDocumentoSummaryByDistribucionInicialPercapitaType(Integer idDistribucionInicialPercapita,TipoDocumentosProcesos tipoDocumento){
 		return documentService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, tipoDocumento);
+	}
+
+	public Integer cargarPlantillaCorreo(TipoDocumentosProcesos plantilla, File file){
+		Integer plantillaId = documentService.getPlantillaByType(plantilla);
+		String filename = "plantillaCorreoResolucionRebaja.xml";
+		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
+		filename = tmpDir + File.separator + filename;
+		String contentType = mimemap.getContentType(filename.toLowerCase());
+		if(plantillaId == null){
+			try {
+				BodyVO response = alfrescoService.uploadDocument(file, contentType, folderTemplatePercapita);
+				System.out.println("response upload template --->"+response);
+				plantillaId = documentService.createTemplate(plantilla, response.getNodeRef(), response.getFileName(), contentType);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			plantillaId = documentService.getDocumentoIdByPlantillaId(plantillaId);
+			try {
+				BodyVO response = alfrescoService.uploadDocument(file, contentType, folderTemplatePercapita);
+				System.out.println("response upload template --->"+response);
+				documentService.updateDocumentTemplate(plantillaId, response.getNodeRef(), response.getFileName(), contentType);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return plantillaId;
+	}
+
+	@Asynchronous
+	public void enviarResolucionesServicioSalud(Integer idDistribucionInicialPercapita) {
+		//MODIFICAR LA LOGICA DEL ENVIO DE CORREO ES DISTINTA EN ESTE CASO
+		Integer idPlantillaCorreo = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLACORREORESOLUCIONESPERCAPITA);
+		if(idPlantillaCorreo == null){
+			throw new RuntimeException("No se puede crear plantilla correo notificación Resolución Rebaja Aporte Estatal, la plantilla no esta cargada");
+		}
+		ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryPlantillaCorreoVO = documentService.getDocumentByPlantillaId(idPlantillaCorreo);
+		DocumentoVO documentoPlantillaCorreoVO = documentService.getDocument(referenciaDocumentoSummaryPlantillaCorreoVO.getId());
+		String templatePlantillaCorreo = tmpDirDoc + File.separator + documentoPlantillaCorreoVO.getName();
+		templatePlantillaCorreo = templatePlantillaCorreo.replace(" ", "");
+
+		System.out.println("templatePlantillaCorreo template-->"+templatePlantillaCorreo);
+		GeneradorXML generadorXMLPlantillaResolucionRebaja = new GeneradorXML(templatePlantillaCorreo);
+		Email emailPLantilla = null;
+		try {
+			emailPLantilla = generadorXMLPlantillaResolucionRebaja.createObject(Email.class, documentoPlantillaCorreoVO.getContent());
+		} catch (JAXBException e1) {
+			e1.printStackTrace();
+		}
+		try{
+			List<ServiciosVO> servicios = servicioSaludService.getAllServiciosVO();
+			if(servicios != null && servicios.size() > 0){
+				for(ServiciosVO servicio : servicios){
+					List<String> to = new ArrayList<String>();
+					if(servicio.getDirector() != null && servicio.getDirector().getCorreo() != null){
+						to.add(servicio.getDirector().getCorreo());
+					}
+					List<String> cc = new ArrayList<String>();
+					List<String> cco = new ArrayList<String>();
+					if((servicio.getEncargadoAps() != null) || (servicio.getEncargadoFinanzasAps() != null)){
+						if(servicio.getEncargadoAps() != null &&  servicio.getEncargadoAps().getCorreo() != null){
+							cc.add(servicio.getEncargadoAps().getCorreo());
+						}
+						if(servicio.getEncargadoFinanzasAps() != null &&  servicio.getEncargadoFinanzasAps().getCorreo() != null){
+							cc.add(servicio.getEncargadoFinanzasAps().getCorreo());
+						}
+					}
+					List<EmailService.Adjunto> adjuntos = new ArrayList<EmailService.Adjunto>();
+					List<ReferenciaDocumentoVO> referenciasDocumentos = documentService.getDocumentByTypesServicioDistribucionInicialPercapitaTransaccional(idDistribucionInicialPercapita, servicio.getId_servicio(), new TipoDocumentosProcesos[] { TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF});
+					for(ReferenciaDocumentoVO referenciaDocumentoVO : referenciasDocumentos){
+						DocumentoVO documentDocumentoResolucionVO = documentService.getDocument(referenciaDocumentoVO.getId());
+						String fileNameDocumentoResolucion = tmpDirDoc + File.separator + documentDocumentoResolucionVO.getName();
+						GeneradorWord generadorWordResolucion = new GeneradorWord(fileNameDocumentoResolucion);
+						generadorWordResolucion.saveContent(documentDocumentoResolucionVO.getContent(), XWPFDocument.class);
+						EmailService.Adjunto adjunto = new EmailService.Adjunto();
+						adjunto.setDescripcion("Resolucion");
+						adjunto.setName(documentDocumentoResolucionVO.getName());
+						adjunto.setUrl((new File(fileNameDocumentoResolucion)).toURI().toURL());
+						adjuntos.add(adjunto);
+					}
+					if(emailPLantilla != null && emailPLantilla.getAsunto() != null && emailPLantilla.getCuerpo() != null){
+						emailService.sendMail(to, cc, cco, emailPLantilla.getAsunto(), emailPLantilla.getCuerpo().replaceAll("(\r\n|\n)", "<br />"), adjuntos);
+					}else{
+						emailService.sendMail(to, cc, cco , "Resolucion", "Estimados: <br /> <p> se adjuntan los documentos Resolucion</p>", adjuntos);
+					}
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Asynchronous
+	public void enviarConsultaRegional(Integer idDistribucionInicialPercapita, Integer oficioConsultaId) {
+		Integer idPlantillaCorreo = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLACORREOCONSULTAREGIONALPERCAPITA);
+		if(idPlantillaCorreo == null){
+			throw new RuntimeException("No se puede crear plantilla correo notificación Resolución Rebaja Aporte Estatal, la plantilla no esta cargada");
+		}
+		ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryPlantillaCorreoVO = documentService.getDocumentByPlantillaId(idPlantillaCorreo);
+		DocumentoVO documentoPlantillaCorreoVO = documentService.getDocument(referenciaDocumentoSummaryPlantillaCorreoVO.getId());
+		String templatePlantillaCorreo = tmpDirDoc + File.separator + documentoPlantillaCorreoVO.getName();
+		templatePlantillaCorreo = templatePlantillaCorreo.replace(" ", "");
+
+		System.out.println("templatePlantillaCorreo template-->"+templatePlantillaCorreo);
+		GeneradorXML generadorXMLPlantillaCorreo = new GeneradorXML(templatePlantillaCorreo);
+		Email emailPLantilla = null;
+		try {
+			emailPLantilla = generadorXMLPlantillaCorreo.createObject(Email.class, documentoPlantillaCorreoVO.getContent());
+		} catch (JAXBException jaxBException) {
+			jaxBException.printStackTrace();
+		}
+		try{
+			List<EmailService.Adjunto> adjuntos = new ArrayList<EmailService.Adjunto>();
+			ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryOficioConsulta = documentService.getDocumentById(oficioConsultaId);
+			if(referenciaDocumentoSummaryOficioConsulta == null){
+				List<DocumentoDistribucionInicialPercapita> documentosOficioConsulta  = distribucionInicialPercapitaDAO.getByIdDistribucionInicialPercapitaTipo(idDistribucionInicialPercapita, TipoDocumentosProcesos.OFICIOCONSULTA);
+				if(documentosOficioConsulta != null && documentosOficioConsulta.size() > 0){
+					referenciaDocumentoSummaryOficioConsulta = new ReferenciaDocumentoMapper().getSummary(documentosOficioConsulta.get(0).getIdDocumento());
+				}
+			}
+			DocumentoVO documentDocumentoOficioConsultaVO = documentService.getDocument(referenciaDocumentoSummaryOficioConsulta.getId());
+			String fileNameDocumentoOficioConsulta = tmpDirDoc + File.separator + documentDocumentoOficioConsultaVO.getName();
+			GeneradorWord generadorWordOficioConsulta = new GeneradorWord(fileNameDocumentoOficioConsulta);
+			generadorWordOficioConsulta.saveContent(documentDocumentoOficioConsultaVO.getContent(), XWPFDocument.class);
+			EmailService.Adjunto adjunto = new EmailService.Adjunto();
+			adjunto.setDescripcion("Oficio Consulta");
+			adjunto.setName(documentDocumentoOficioConsultaVO.getName());
+			adjunto.setUrl((new File(fileNameDocumentoOficioConsulta)).toURI().toURL());
+			adjuntos.add(adjunto);
+			List<RegionVO> regiones = servicioSaludService.getAllRegionesVO();
+			if(regiones != null && regiones.size() > 0){
+				for(RegionVO region : regiones){
+					List<String> to = new ArrayList<String>();
+					if(region.getSecretarioRegional() != null && region.getSecretarioRegional().getCorreo() != null){
+						to.add(region.getSecretarioRegional().getCorreo());
+					}
+					List<String> cc = new ArrayList<String>();
+					List<String> cco = new ArrayList<String>();
+					System.out.println("Enviando a region="+region.getDescRegion());
+					if((region.getServicios() != null) || (region.getServicios().size() > 0)){
+						for(ServiciosVO serviciosVO : region.getServicios()){
+							System.out.println("Servicio="+serviciosVO.getNombre_servicio());
+							if(serviciosVO.getEncargadoAps() != null &&  serviciosVO.getEncargadoAps().getCorreo() != null){
+								cc.add(serviciosVO.getEncargadoAps().getCorreo());
+							}
+							if(serviciosVO.getEncargadoFinanzasAps() != null &&  serviciosVO.getEncargadoFinanzasAps().getCorreo() != null){
+								cc.add(serviciosVO.getEncargadoFinanzasAps().getCorreo());
+							}
+						}
+					}
+					if(emailPLantilla != null && emailPLantilla.getAsunto() != null && emailPLantilla.getCuerpo() != null){
+						emailService.sendMail(to, cc, cco, emailPLantilla.getAsunto(), emailPLantilla.getCuerpo().replaceAll("(\r\n|\n)", "<br />"), adjuntos);
+					}else{
+						emailService.sendMail(to, cc, cco , "Oficio Consulta", "Estimados: <br /> <p> se adjuntan los documentos  Oficio Consulta</p>", adjuntos);
+					}
+					System.out.println();
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public Integer getPlantillaCorreo(TareasSeguimiento tareaSeguimiento) {
+		Integer plantillaId = null;
+		switch (tareaSeguimiento) {
+		case HACERSEGUIMIENTOOFICIO:
+			plantillaId = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLACORREOCONSULTAREGIONALPERCAPITA);
+			plantillaId = documentService.getDocumentoIdByPlantillaId(plantillaId);
+			break;
+		case HACERSEGUIMIENTORESOLUCIONES:
+			plantillaId = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLACORREORESOLUCIONESPERCAPITA);
+			plantillaId = documentService.getDocumentoIdByPlantillaId(plantillaId);
+			break;
+		case HACERSEGUIMIENTODECRETO:
+
+			break;
+		case HACERSEGUIMIENTOTOMARAZON:
+
+			break;
+		default:
+			break;
+		}
+		return plantillaId;
+	}
+
+	public Integer cargarPlantillaCorreo(TareasSeguimiento tareaSeguimiento, File file) {
+		Integer plantillaId = null;
+		String filename = null;
+		TipoDocumentosProcesos plantilla = null;
+		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
+		switch (tareaSeguimiento) {
+		case HACERSEGUIMIENTOOFICIO:
+			plantilla = TipoDocumentosProcesos.PLANTILLACORREOCONSULTAREGIONALPERCAPITA;
+			plantillaId = documentService.getPlantillaByType(plantilla);
+			filename = "PlantillaCorreoConsultaRegional.xml";
+			break;
+		case HACERSEGUIMIENTORESOLUCIONES:
+			plantilla = TipoDocumentosProcesos.PLANTILLACORREORESOLUCIONESPERCAPITA;
+			plantillaId = documentService.getPlantillaByType(plantilla);
+			filename = "PlantillaCorreoConsultaResoluciones.xml";
+			break;
+		case HACERSEGUIMIENTODECRETO:
+
+			break;
+		case HACERSEGUIMIENTOTOMARAZON:
+
+			break;
+		default:
+			break;
+		}
+		filename = tmpDir + File.separator + filename;
+		String contentType = mimemap.getContentType(filename.toLowerCase());
+		if(plantillaId == null){
+			try {
+				BodyVO response = alfrescoService.uploadDocument(file, contentType, folderTemplatePercapita);
+				System.out.println("response upload template --->"+response);
+				plantillaId = documentService.createTemplate(plantilla, response.getNodeRef(), response.getFileName(), contentType);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			plantillaId = documentService.getDocumentoIdByPlantillaId(plantillaId);
+			try {
+				BodyVO response = alfrescoService.uploadDocument(file, contentType, folderTemplatePercapita);
+				System.out.println("response upload template --->"+response);
+				documentService.updateDocumentTemplate(plantillaId, response.getNodeRef(), response.getFileName(), contentType);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return plantillaId;
+	}
+
+	public void administrarVersionesFinalesAlfresco(Integer idDistribucionInicialPercapita) {
+		System.out.println("DistribucionInicialPercapitaService administrarVersionesFinalesAlfresco eliminar todas las versiones que no sean finales");
 	}
 
 }

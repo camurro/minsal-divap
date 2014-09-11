@@ -1,10 +1,7 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,8 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -33,6 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
 	@NamedQuery(name = "DistribucionInicialPercapita.findAll", query = "SELECT d FROM DistribucionInicialPercapita d"),
+	@NamedQuery(name = "DistribucionInicialPercapita.findLast", query = "SELECT d FROM DistribucionInicialPercapita d where d.fechaCreacion = (SELECT max(d2.fechaCreacion) FROM DistribucionInicialPercapita d2)"),
 	@NamedQuery(name = "DistribucionInicialPercapita.findByIdDistribucionInicialPercapita", query = "SELECT d FROM DistribucionInicialPercapita d WHERE d.idDistribucionInicialPercapita = :idDistribucionInicialPercapita"),
 	@NamedQuery(name = "DistribucionInicialPercapita.findByFechaCreacion", query = "SELECT d FROM DistribucionInicialPercapita d WHERE d.fechaCreacion = :fechaCreacion")})
 public class DistribucionInicialPercapita implements Serializable {

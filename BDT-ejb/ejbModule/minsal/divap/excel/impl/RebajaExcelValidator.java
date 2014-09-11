@@ -93,15 +93,15 @@ public class RebajaExcelValidator extends ExcelValidator<CumplimientoVO>{
                         }
                         if(!"".equals(getValues().get(4))){
                                 Double value_item1 = Double.parseDouble(getValues().get(4));
-                                cumVO.setValue_item1(value_item1.intValue());
+                                cumVO.setValue_item1(value_item1);
                         }
                         if(!"".equals(getValues().get(5))){
                                 Double value_item2 = Double.parseDouble(getValues().get(5));
-                                cumVO.setValue_item2(value_item2.intValue());
+                                cumVO.setValue_item2(value_item2);
                         }
                         if(!"".equals(getValues().get(6))){
                                 Double value_item3 = Double.parseDouble(getValues().get(6));
-                                cumVO.setValue_item3(value_item3.intValue());
+                                cumVO.setValue_item3(value_item3);
                         }
                 
                 }

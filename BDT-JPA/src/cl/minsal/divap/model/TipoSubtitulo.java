@@ -8,7 +8,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -33,9 +32,8 @@ import javax.xml.bind.annotation.XmlTransient;
 public class TipoSubtitulo implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id_tipo_subtitulo")
+	@Column(name="id_tipo_subtitulo", unique=true, nullable=false)
+	@GeneratedValue
     private Integer idTipoSubtitulo;
     @Basic(optional = false)
     @Column(name = "nombre_subtitulo")

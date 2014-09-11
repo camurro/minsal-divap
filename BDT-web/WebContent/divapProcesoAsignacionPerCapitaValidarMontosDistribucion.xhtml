@@ -156,17 +156,17 @@
 							</f:facet>
 							<h:outputText value="#{_montoDistribucion.region}"/>
 						</p:column>
-						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkComuna}">
-							<f:facet name="header">
-								<h:outputText value="Comuna" />
-							</f:facet>
-							<h:outputText value="#{_montoDistribucion.comuna}"/>
-						</p:column>
 						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkServicio}">
 							<f:facet name="header">
 								<h:outputText value="Servicio" />
 							</f:facet>
 							<h:outputText value="#{_montoDistribucion.servicio}"/>
+						</p:column>
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkComuna}">
+							<f:facet name="header">
+								<h:outputText value="Comuna" />
+							</f:facet>
+							<h:outputText value="#{_montoDistribucion.comuna}"/>
 						</p:column>
 						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkRefAsigZona}">
 							<f:facet name="header">
@@ -204,15 +204,15 @@
 							</f:facet>
 							<h:outputText value="#{_montoDistribucion.valorRefAsignacionZona}"/>
 						</p:column>
-						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkPerCapitaMes}">
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkValorperCapita}">
 							<f:facet name="header">
 								<h:outputText value="Valor per Capita" />
 							</f:facet>
-							<h:outputText value="#{_montoDistribucion.valorPercapitaMes}">
+							<h:outputText value="#{_montoDistribucion.valorPerCapitaComunalMes}">
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
-						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkPerCapitaAno}">
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkPoblacionAno}">
 							<f:facet name="header">
 								<h:outputText value="Poblacion Año" />
 							</f:facet>
@@ -228,22 +228,21 @@
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
-						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkPerCapitaMes}">
-							<f:facet name="header">
-								<h:outputText value="Per Capita Mensual (M$2014)" />
-							</f:facet>
-							<h:outputText value="$ " />
-							<h:outputText value="#{_montoDistribucion.valorPercapitaMes}">
-								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
-							</h:outputText>
-						</p:column>
-
 						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkPerCapitaAno}">
 							<f:facet name="header">
 								<h:outputText value="Per Capita Año (M$2014)" />
 							</f:facet>
 							<h:outputText value="$ " />
 							<h:outputText value="#{_montoDistribucion.valorPercapitaAno}">
+								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
+							</h:outputText>
+						</p:column>
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkPerCapitaMes}">
+							<f:facet name="header">
+								<h:outputText value="Per Capita Mensual (M$2014)" />
+							</f:facet>
+							<h:outputText value="$ " />
+							<h:outputText value="#{_montoDistribucion.valorPercapitaMes}">
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>

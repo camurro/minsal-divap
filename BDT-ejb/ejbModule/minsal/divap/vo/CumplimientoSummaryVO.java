@@ -9,17 +9,17 @@ public class CumplimientoSummaryVO implements Serializable{
 	 */
 	private static final long serialVersionUID = 4119289447105393374L;
 	private Integer IdCumplimiento;
-	private Integer valor;
+	private Double valor;
 	public Integer getIdCumplimiento() {
 		return IdCumplimiento;
 	}
 	public void setIdCumplimiento(Integer idCumplimiento) {
 		IdCumplimiento = idCumplimiento;
 	}
-	public Integer getValor() {
+	public Double getValor() {
 		return valor;
 	}
-	public void setValor(Integer valor) {
+	public void setValor(Double valor) {
 		this.valor = valor;
 	}
 	

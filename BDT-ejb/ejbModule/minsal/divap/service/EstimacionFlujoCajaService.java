@@ -16,29 +16,17 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-
-import cl.minsal.divap.model.AntecendentesComunaCalculado;
-import cl.minsal.divap.model.Caja;
-import cl.minsal.divap.model.DistribucionInicialPercapita;
-import cl.minsal.divap.model.Seguimiento;
-import cl.minsal.divap.model.Usuario;
 import minsal.divap.dao.CajaDAO;
-import minsal.divap.dao.DistribucionInicialPercapitaDAO;
 import minsal.divap.dao.EstimacionFlujoCajaDAO;
 import minsal.divap.dao.SeguimientoDAO;
 import minsal.divap.dao.UsuarioDAO;
 import minsal.divap.doc.GeneradorWord;
 import minsal.divap.doc.GeneradorWordBorradorAporteEstatal;
-import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TareasSeguimiento;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.excel.impl.AsignacionDistribucionPercapitaSheetExcel;
-import minsal.divap.excel.impl.AsignacionRecursosPercapitaSheetExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaSheetExcel;
-import minsal.divap.model.mappers.AsignacionDistribucionPercapitaMapper;
 import minsal.divap.util.Util;
 import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
 import minsal.divap.vo.BaseVO;
@@ -46,6 +34,12 @@ import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.DocumentoVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.SeguimientoVO;
+
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+
+import cl.minsal.divap.model.Caja;
+import cl.minsal.divap.model.Seguimiento;
 
 @Stateless
 @LocalBean
@@ -181,17 +175,17 @@ public class EstimacionFlujoCajaService {
 		return planillaTrabajoId;
 	}
 	
-	//Para hacer el calculo de la propuesta, se debe hacer una copia de los valores del año pasado.
+	//Para hacer el calculo de la propuesta, se debe hacer una copia de los valores del aï¿½o pasado.
 	public Integer calcularPropuesta(Integer idPrograma){
 	
 		//Obtenemos los datos de la caja por el ID de programa.
-		//Modificamos el año y guardamos nuevamente.
+		//Modificamos el aï¿½o y guardamos nuevamente.
 		List<Caja> lst = cajaDAO.getByIDProgramaAno(idPrograma, Util.obtenerAno(new Date()));
 		for (Caja caja : lst) {
 			caja.setAno(caja.getAno() + 1);
 			caja.setId(null);
 		}
-		//Generamos la copia de los datos para el nuevo año
+		//Generamos la copia de los datos para el nuevo aï¿½o
 		cajaDAO.save(lst);
 		
 		

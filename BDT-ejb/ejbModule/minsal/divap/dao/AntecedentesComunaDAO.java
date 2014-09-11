@@ -169,5 +169,19 @@ public class AntecedentesComunaDAO {
 		}
 		return results;
 	}
+	
+	public List<AntecendentesComunaCalculado> findAntecendentesComunaCalculadoByComunasDistribucionInicialPercapita(
+			 List<Integer> comunas, Integer idDistribucionInicialPercapita) {
+		List<AntecendentesComunaCalculado> results = null;
+		try {
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByComunasDistribucionInicialPercapita", AntecendentesComunaCalculado.class);
+			query.setParameter("comunas", comunas);
+			query.setParameter("distribucionInicialPercapita", idDistribucionInicialPercapita);
+			results = query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return results;
+	}
 
 }

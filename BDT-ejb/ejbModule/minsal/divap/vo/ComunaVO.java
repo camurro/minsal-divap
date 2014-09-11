@@ -1,7 +1,6 @@
 package minsal.divap.vo;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class ComunaVO implements Serializable{
 

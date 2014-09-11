@@ -15,6 +15,7 @@ import java.util.List;
 @Table(name="servicio_salud")
 @NamedQueries({
 	@NamedQuery(name="ServicioSalud.findAll", query="SELECT s FROM ServicioSalud s"),
+	@NamedQuery(name="ServicioSalud.findById", query="SELECT s FROM ServicioSalud s  WHERE s.id = :idServicio"),
 	@NamedQuery(name="ServicioSalud.findServiciosByRegion", query="SELECT s FROM ServicioSalud s WHERE s.region.id = :idRegion order by s.id asc")})
 public class ServicioSalud implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -43,6 +44,16 @@ public class ServicioSalud implements Serializable {
 	@JoinColumn(name="id_region")
 	private Region region;
 
+	@JoinColumn(name = "director", referencedColumnName = "id_persona")
+	@ManyToOne(optional = false)
+	private Persona director;
+	@JoinColumn(name = "encargado_finanzas_aps", referencedColumnName = "id_persona")
+	@ManyToOne(optional = false)
+	private Persona encargadoFinanzasAps;
+	@JoinColumn(name = "encargado_aps", referencedColumnName = "id_persona")
+	@ManyToOne(optional = false)
+	private Persona encargadoAps;
+
 	public ServicioSalud() {
 	}
 
@@ -70,7 +81,7 @@ public class ServicioSalud implements Serializable {
 		this.comunas = comunas;
 	}
 
-	
+
 	public List<Establecimiento> getEstablecimientos() {
 		return this.establecimientos;
 	}
@@ -121,6 +132,30 @@ public class ServicioSalud implements Serializable {
 
 	public void setRegion(Region region) {
 		this.region = region;
+	}
+
+	public Persona getDirector() {
+		return director;
+	}
+
+	public void setDirector(Persona director) {
+		this.director = director;
+	}
+
+	public Persona getEncargadoFinanzasAps() {
+		return encargadoFinanzasAps;
+	}
+
+	public void setEncargadoFinanzasAps(Persona encargadoFinanzasAps) {
+		this.encargadoFinanzasAps = encargadoFinanzasAps;
+	}
+
+	public Persona getEncargadoAps() {
+		return encargadoAps;
+	}
+
+	public void setEncargadoAps(Persona encargadoAps) {
+		this.encargadoAps = encargadoAps;
 	}
 
 }

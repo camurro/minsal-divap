@@ -5,7 +5,6 @@ import java.util.List;
 
 import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.vo.PlanillaRebajaCalculadaVO;
-import minsal.divap.vo.RebajaVO;
 
 public class RebajaCalculadaSheetExcel extends ExcelTemplate<PlanillaRebajaCalculadaVO>{
 

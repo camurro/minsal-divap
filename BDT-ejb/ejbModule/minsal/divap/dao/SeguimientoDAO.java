@@ -107,4 +107,16 @@ public class SeguimientoDAO {
 		}
 	}
 
+	public List<Seguimiento> getBitacoraRebaja(Integer idRebaja,
+			TareasSeguimiento tareaSeguimiento) {
+		try {
+			TypedQuery<Seguimiento> query = this.em.createNamedQuery("Seguimiento.findByIdRebaja", Seguimiento.class);
+			query.setParameter("idRebaja", idRebaja);
+			query.setParameter("idTareaSeguimiento", tareaSeguimiento.getId());
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 }

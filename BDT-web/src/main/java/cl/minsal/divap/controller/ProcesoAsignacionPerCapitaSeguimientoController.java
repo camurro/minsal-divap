@@ -1,5 +1,6 @@
 package cl.minsal.divap.controller;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,6 +69,7 @@ implements Serializable {
 
 	private Integer oficioConsultaId;
 	private Integer decretoId;
+	private Integer plantillaCorreoId;
 	private ReferenciaDocumentoSummaryVO documentoPoblacionInscrita;
 
 	private  boolean rechazarRevalorizar_;
@@ -77,6 +79,7 @@ implements Serializable {
 
 	private UploadedFile attachedFile;
 	private UploadedFile file;
+	private UploadedFile file2;
 	private Part fileUpload;
 	private Integer idDistribucionInicialPercapita;
 
@@ -89,7 +92,7 @@ implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
-	
+
 	public void uploadVersion() {
 		if (file != null){
 			System.out.println("uploadVersion file is not null");
@@ -122,12 +125,31 @@ implements Serializable {
 		}
 	}
 
+	public void uploadVersion2() {
+		if (file2 != null){
+			try {
+				System.out.println("uploadVersion2 file2 is not null");
+				String filename = file2.getFileName();
+				filename = filename.replaceAll(" ", "");
+				byte[] contentPlantillaFile = file2.getContents();
+				File file = createTemporalFile(filename, contentPlantillaFile);
+				plantillaCorreoId = distribucionInicialPercapitaService.cargarPlantillaCorreo(this.tareaSeguimiento, file);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			System.out.println("uploadVersion2 file is null");
+			FacesMessage message = new FacesMessage("uploadVersion2 file is null");
+			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
+	}
+
 	public String uploadVersionModal() {
 		if (attachedFile != null){
 			String filename = attachedFile.getFileName();
 			byte[] contentAttachedFile = attachedFile.getContents();
 			Integer docAttachedFile = persistFile(filename,	contentAttachedFile);
-		 System.out.println("docAttachedFile="+docAttachedFile);
+			System.out.println("docAttachedFile="+docAttachedFile);
 		}
 		return null;
 	}
@@ -138,8 +160,15 @@ implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		System.out.println("handleAttachedFile");
 	}
-	
+
 	public void handleFile(FileUploadEvent event) {
+		FacesMessage msg = new FacesMessage("Succesful", event.getFile()
+				.getFileName() + " is uploaded.");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		System.out.println("handleFile");
+	}
+
+	public void handleFile2(FileUploadEvent event) {
 		FacesMessage msg = new FacesMessage("Succesful", event.getFile()
 				.getFileName() + " is uploaded.");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -181,7 +210,7 @@ implements Serializable {
 		}
 		return target;
 	}
-	
+
 	public void buscar() {
 		System.out.println("buscar--> servicioSeleccionado="+servicioSeleccionado);
 		TipoDocumentosProcesos[] tiposDocumentos = {TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF};
@@ -234,6 +263,7 @@ implements Serializable {
 		}
 		documentoPoblacionInscrita = distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA);
 		bitacoraSeguimiento = distribucionInicialPercapitaService.getBitacora(this.idDistribucionInicialPercapita, this.tareaSeguimiento);
+		plantillaCorreoId = distribucionInicialPercapitaService.getPlantillaCorreo(this.tareaSeguimiento);
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
@@ -487,7 +517,7 @@ implements Serializable {
 	public void setDecretoId(Integer decretoId) {
 		this.decretoId = decretoId;
 	}
-	
+
 	public List<ServiciosVO> getServicios() {
 		if(servicios == null){
 			servicios = serviciosService.getAllServiciosVO();
@@ -513,6 +543,22 @@ implements Serializable {
 
 	public void setDocumentos(List<ReferenciaDocumentoVO> documentos) {
 		this.documentos = documentos;
+	}
+
+	public Integer getPlantillaCorreoId() {
+		return plantillaCorreoId;
+	}
+
+	public void setPlantillaCorreoId(Integer plantillaCorreoId) {
+		this.plantillaCorreoId = plantillaCorreoId;
+	}
+
+	public UploadedFile getFile2() {
+		return file2;
+	}
+
+	public void setFile2(UploadedFile file2) {
+		this.file2 = file2;
 	}
 
 	@Override

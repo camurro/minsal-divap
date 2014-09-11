@@ -132,6 +132,24 @@ implements Serializable {
 		checkPerCapitaAno = false;
 		checkAsigDesempenoDificil = false;
 	}
+	
+	private void initCheck(){
+		checkRegion = true;
+		checkComuna = true;
+		checkServicio = true;
+		checkRefAsigZona = true;
+		checkTramoPobreza = true;
+		checkPerCapitaBasal = true;
+		checkPobreza = true;
+		checkRuralidad = true;
+		checkValorRefAsigZona = true;
+		checkValorperCapita = true;
+		checkPoblacionAno = true;
+		checkPoblacionMayor65Anos = true;
+		checkPerCapitaMes = true;
+		checkPerCapitaAno = true;
+		checkAsigDesempenoDificil = true;
+	}
 
 	String actividadSeguimientoTitle = "";
 
@@ -161,10 +179,7 @@ implements Serializable {
 		System.out.println("this.idDistribucionInicialPercapita->"+this.idDistribucionInicialPercapita);
 		this.antecendentesComunaCalculado = distribucionInicialPercapitaService.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(idDistribucionInicialPercapita);
 		if(this.antecendentesComunaCalculado  != null && this.antecendentesComunaCalculado .size() > 0){
-			checkValorperCapita = true;
-			checkPoblacionAno = true;
-			checkPerCapitaMes = true;
-			checkPerCapitaAno = true;
+			initCheck();
 		}
 	}
 

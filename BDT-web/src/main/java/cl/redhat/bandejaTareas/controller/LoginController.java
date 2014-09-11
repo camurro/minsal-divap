@@ -1,7 +1,6 @@
 package cl.redhat.bandejaTareas.controller;
 
 import java.io.Serializable;
-import java.security.Principal;
 import java.util.ArrayList;
 
 import javax.annotation.PostConstruct;

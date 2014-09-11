@@ -25,10 +25,9 @@
 						</h:commandLink>]
 					</div>
 					<h3>Tareas de la Actividad:</h3>
-					<p:panelGrid columns="3" styleClass="uploadFileTable">
+					<p:panelGrid columns="2" styleClass="uploadFileTable">
 						<h:outputLabel for="valorBasicoDesempenoFile" value="Archivo: información de cumplimiento por comuna" styleClass="fileUploadLabel" />
 						<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoRebajaController.cumplimientoFile}" mode="simple" />
-						<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
 					</p:panelGrid>
 					<br />
 					<p:commandButton value="Cargar Archivos" ajax="false" actionListener="#{procesoRebajaController.uploadArchivoCumplimiento}"
@@ -38,8 +37,8 @@
 				</p:panel>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true" ajax="false"
 					icon="ui-icon-seek-first" />
-				<p:commandButton id="botonContinuar" value="Continuar" ajax="false" actionListener="#{procesoRebajaController.enviar}"
-						action="bandejaTareas?faces-redirect=true indexMenu=0" icon="ui-icon-play" disabled="#{not procesoRebajaController.archivosValidos}">
+				<p:commandButton id="botonContinuar" value="Continuar" ajax="false" action="#{procesoRebajaController.enviar}"
+						disabled="#{not procesoRebajaController.archivosValidos}">
 						<f:setPropertyActionListener target="#{procesoRebajaController.target}"
 							value="bandejaTareas.jsf" />
 					</p:commandButton>

@@ -25,10 +25,8 @@ public class ProgramasService {
 	private ProgramasDAO programasDAO;
 
 	public Programa getProgramasByID(Integer idPrograma) {
-		Programa programa = this.programasDAO.getProgramaByID(idPrograma);
-		return programa;
+		return this.programasDAO.getProgramaPorID(idPrograma);
 	}
-	
 	
 	public List<ProgramaVO> getProgramasByUser(String username) {
 		List<ProgramaAno> programas = this.programasDAO.getProgramasByUserAno(username, getAnoCurso());
@@ -71,13 +69,9 @@ public class ProgramasService {
 		}
 		return componentesPrograma;
 	}
-	
-	
 
 	public Programa getProgramaPorID(int programaId) {
-		Programa programa = this.programasDAO.getProgramaPorID(programaId);
-		
-		return programa;
+		return this.programasDAO.getProgramaPorID(programaId);
 	}
 
 }

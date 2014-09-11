@@ -2592,6 +2592,301 @@ INSERT INTO componente_subtitulo(id_componente_subtitulo, componente, subtitulo)
 --26/08/2014
 
 
+--Tabla remesa
+CREATE TABLE remesa
+(
+  idremesa serial NOT NULL, -- identity de la tabla remesa
+  idprograma integer,
+  idestablecimiento integer,
+  idserviciosalud integer NOT NULL,
+  idcomuna integer,
+  anio integer,
+  idmes integer,
+  valordia09 numeric,
+  valordia24 numeric,
+  valordia28 numeric,
+  CONSTRAINT remesa_pkey PRIMARY KEY (idremesa),
+  CONSTRAINT remesa_idcomuna_fkey FOREIGN KEY (idcomuna)
+      REFERENCES comuna (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT remesa_idestablecimiento_fkey FOREIGN KEY (idestablecimiento)
+      REFERENCES establecimiento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT remesa_idmes_fkey FOREIGN KEY (idmes)
+      REFERENCES mes (id_mes) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT remesa_idprograma_fkey FOREIGN KEY (idprograma)
+      REFERENCES programa (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT remesa_idserviciosalud_fkey FOREIGN KEY (idserviciosalud)
+      REFERENCES servicio_salud (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE remesa
+  OWNER TO postgres;
+COMMENT ON TABLE remesa
+  IS 'Tabla que contendra las remesas(pagos) de los programas del sistema';
+COMMENT ON COLUMN remesa.idremesa IS 'identity de la tabla remesa';
+
+
+
+--rebaja 29082014
+
+INSERT INTO tipo_cumplimiento(id_tipo_cumplimiento, descripcion) VALUES (1, 'Actividad General');
+INSERT INTO tipo_cumplimiento(id_tipo_cumplimiento, descripcion) VALUES (2, 'Continuidad de la Atención de Salud');
+INSERT INTO tipo_cumplimiento(id_tipo_cumplimiento, descripcion) VALUES (3, 'Actividad con Garantías Explícitas en Salud');
+
+INSERT INTO tramo(id_tramo, tramo) VALUES (1, 'Tramo 1');
+INSERT INTO tramo(id_tramo, tramo) VALUES (2, 'Tramo 2');
+INSERT INTO tramo(id_tramo, tramo) VALUES (3, 'Tramo 3');
+INSERT INTO tramo(id_tramo, tramo) VALUES (4, 'Tramo 4');
+
+--cumplimiento Actividad General
+INSERT INTO cumplimiento(id_cumplimiento, tramo, tipo_cumplimiento, rebaja, porcentaje_desde, porcentaje_hasta) VALUES (1, 1, 1, 0, 90, 100);
+INSERT INTO cumplimiento(id_cumplimiento, tramo, tipo_cumplimiento, rebaja, porcentaje_desde, porcentaje_hasta) VALUES (2, 2, 1, 4, 80, 89.99);
+INSERT INTO cumplimiento(id_cumplimiento, tramo, tipo_cumplimiento, rebaja, porcentaje_desde, porcentaje_hasta) VALUES (3, 3, 1, 8, 70, 79.99);
+INSERT INTO cumplimiento(id_cumplimiento, tramo, tipo_cumplimiento, rebaja, porcentaje_desde, porcentaje_hasta) VALUES (4, 4, 1, 12, 0, 69.99);
+--cumplimiento Continuidad de la Atención de Salud
+INSERT INTO cumplimiento(id_cumplimiento, tramo, tipo_cumplimiento, rebaja, porcentaje_desde, porcentaje_hasta) VALUES (5, 1, 2, 0, 100, 100);
+INSERT INTO cumplimiento(id_cumplimiento, tramo, tipo_cumplimiento, rebaja, porcentaje_desde, porcentaje_hasta) VALUES (6, 2, 2, 2, 95, 99.99);
+INSERT INTO cumplimiento(id_cumplimiento, tramo, tipo_cumplimiento, rebaja, porcentaje_desde, porcentaje_hasta) VALUES (7, 3, 2, 4, 90, 94.99);
+INSERT INTO cumplimiento(id_cumplimiento, tramo, tipo_cumplimiento, rebaja, porcentaje_desde, porcentaje_hasta) VALUES (8, 4, 2, 8, 0, 89.99);
+--cumplimiento Actividad con Garantías Explícitas en Salud
+INSERT INTO cumplimiento(id_cumplimiento, tramo, tipo_cumplimiento, rebaja, porcentaje_desde, porcentaje_hasta) VALUES (9, 1, 3, 0, 100, 100);
+INSERT INTO cumplimiento(id_cumplimiento, tramo, tipo_cumplimiento, rebaja, porcentaje_desde, porcentaje_hasta) VALUES (10, 2, 3, 2, 95, 99.99);
+INSERT INTO cumplimiento(id_cumplimiento, tramo, tipo_cumplimiento, rebaja, porcentaje_desde, porcentaje_hasta) VALUES (11, 3, 3, 4, 90, 94.99);
+INSERT INTO cumplimiento(id_cumplimiento, tramo, tipo_cumplimiento, rebaja, porcentaje_desde, porcentaje_hasta) VALUES (12, 4, 3, 8, 0, 89.99);
+
+DROP TABLE comuna_rebaja;
+
+CREATE TABLE comuna_cumplimiento_rebaja
+(
+  comuna_cumplimiento_rebaja_id serial NOT NULL,
+  rebaja double precision NOT NULL,
+  CONSTRAINT comuna_cumplimiento_rebaja_pk PRIMARY KEY (comuna_cumplimiento_rebaja_id)
+)
+WITH (
+  OIDS=FALSE
+);
+
+
+DROP TABLE comuna_cumplimiento;
+
+CREATE TABLE comuna_cumplimiento
+(
+  id_comuna_cumplimiento serial NOT NULL,
+  id_comuna integer,
+  id_tipo_cumplimiento integer,
+  valor double precision,
+  id_mes integer,
+  rebaja_calculada integer,
+  rebaja integer NOT NULL,
+  rebaja_final integer,
+  CONSTRAINT comuna_cumplimiento_pkey PRIMARY KEY (id_comuna_cumplimiento),
+  CONSTRAINT comuna_cumplimiento_id_comuna_fkey FOREIGN KEY (id_comuna)
+      REFERENCES comuna (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT comuna_cumplimiento_id_mes_fkey FOREIGN KEY (id_mes)
+      REFERENCES mes (id_mes) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT comuna_cumplimiento_id_tipo_cumplimiento_fkey FOREIGN KEY (id_tipo_cumplimiento)
+      REFERENCES tipo_cumplimiento (id_tipo_cumplimiento) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT comuna_cumplimiento_rebaja_final_fk FOREIGN KEY (rebaja_final)
+      REFERENCES comuna_cumplimiento_rebaja (comuna_cumplimiento_rebaja_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT comuna_cumplimiento_rebaja_fk FOREIGN KEY (rebaja_calculada)
+      REFERENCES comuna_cumplimiento_rebaja (comuna_cumplimiento_rebaja_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT rebaja_fk FOREIGN KEY (rebaja)
+      REFERENCES rebaja (id_rebaja) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+
+INSERT INTO mes(id_mes, nombre) VALUES (1, 'ENERO');
+INSERT INTO mes(id_mes, nombre) VALUES (2, 'FEBRERO');
+INSERT INTO mes(id_mes, nombre) VALUES (3, 'MARZO');
+INSERT INTO mes(id_mes, nombre) VALUES (4, 'ABRIL');
+INSERT INTO mes(id_mes, nombre) VALUES (5, 'MAYO');
+INSERT INTO mes(id_mes, nombre) VALUES (6, 'JUNIO');
+INSERT INTO mes(id_mes, nombre) VALUES (7, 'JULIO');
+INSERT INTO mes(id_mes, nombre) VALUES (8, 'AGOSTO');
+INSERT INTO mes(id_mes, nombre) VALUES (9, 'SEPTIEMBRE');
+INSERT INTO mes(id_mes, nombre) VALUES (10, 'OCTUBRE');
+INSERT INTO mes(id_mes, nombre) VALUES (11, 'NOVIEMBRE');
+INSERT INTO mes(id_mes, nombre) VALUES (12, 'DICIEMBRE');
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (50, 'Base Cumplimiento');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (51, 'Plantilla Resolución Rebaja Aporte Estatal');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (52, 'Resolución Rebaja Aporte Estatal');
+
+INSERT INTO tarea_seguimiento(
+            id_tarea_seguimiento, descripcion)
+    VALUES (10, 'Hacer Seguimiento de Resoluciones de Rebaja');
+
+
+CREATE TABLE persona
+(
+  id_persona serial NOT NULL,
+  nombre text NOT NULL,
+  apellido_paterno text NOT NULL,
+  apellido_materno text,
+  email integer,
+  CONSTRAINT persona_pk PRIMARY KEY (id_persona),
+  CONSTRAINT email_fk FOREIGN KEY (email)
+      REFERENCES email (id_email) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+ALTER TABLE servicio_salud
+  ADD COLUMN director integer;
+ALTER TABLE servicio_salud
+  ADD CONSTRAINT director_fk FOREIGN KEY (director) REFERENCES persona (id_persona) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+INSERT INTO persona(
+            id_persona, nombre, apellido_paterno, apellido_materno, email)
+    VALUES (1, 'LUIS', 'LOPEZ', 'CABRERA', 1);
+
+UPDATE servicio_salud
+   SET  director=1;
+
+
+ALTER TABLE servicio_salud
+   ALTER COLUMN director SET NOT NULL;
+
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (53, 'Plantilla Correo Resoluciones Servicios de Salud - Rebaja');
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (54, 'Plantilla Correo Consulta Regional - percapita');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (55, 'Plantilla Correo Resoluciones - percapita');
+
+ALTER TABLE servicio_salud
+  ADD COLUMN encargado_aps integer;
+ALTER TABLE servicio_salud
+  ADD COLUMN encargado_finanzas_aps integer;
+
+ALTER TABLE servicio_salud
+  ADD CONSTRAINT encargado_aps_fk FOREIGN KEY (encargado_aps) REFERENCES persona (id_persona) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE servicio_salud
+  ADD CONSTRAINT encargado_finanzas_aps_fk FOREIGN KEY (encargado_finanzas_aps) REFERENCES persona (id_persona) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+
+INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email) VALUES (2, 'Encargado', 'APS', 'Servicio', 1);
+INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email) VALUES (3, 'Encargado', 'Finanzas APS', 'Servicio', 1);
+
+UPDATE servicio_salud SET encargado_aps=2;
+UPDATE servicio_salud SET encargado_finanzas_aps=3;
+
+ALTER TABLE servicio_salud
+   ALTER COLUMN encargado_aps SET NOT NULL;
+ALTER TABLE servicio_salud
+   ALTER COLUMN encargado_finanzas_aps SET NOT NULL;
+
+
+ALTER TABLE region
+  ADD COLUMN secretario_regional integer;
+ALTER TABLE region
+  ADD CONSTRAINT secretario_regional_fk FOREIGN KEY (secretario_regional) REFERENCES persona (id_persona) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email) VALUES (4, 'Giovanna', 'Calle', 'Capuma', 1);
+INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email) VALUES (5, 'Patricia', 'Ramírez', 'Rodríguez', 1);
+INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email) VALUES (6, 'Lila', 'Vergara', 'Picón', 1);
+INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email) VALUES (7, 'Brunilda', 'González', 'Anjel', 1);
+INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email) VALUES (8, 'Víctor', 'Arancibia', 'González', 1);
+INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email) VALUES (9, 'María', 'Astudillo', 'Bianchi', 1);
+INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email) VALUES (10, 'Fernando', 'Arenas', 'Pino', 1);
+INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email) VALUES (11, 'Valeria', 'Ortiz', 'Vega', 1);
+INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email) VALUES (12, 'Mauricio', 'Careaga', 'Lemus', 1);
+INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email) VALUES (13, 'Carlos', 'González', 'Lagos', 1);
+INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email) VALUES (14, 'Guillermo', 'Ramírez', 'Andrade', 1);
+INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email) VALUES (15, 'Eugenia', 'Schnacke', 'Valladares', 1);
+INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email) VALUES (16, 'Ana', 'Navarrete', 'Arriaza', 1);
+INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email) VALUES (17, 'Óscar', 'Vargas', 'Zec', 1);
+INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email) VALUES (18, 'Carlos', 'Aranda', 'Puigpinos', 1);
+
+UPDATE region SET secretario_regional=5 WHERE id = 1;
+UPDATE region SET secretario_regional=6 WHERE id = 2;
+UPDATE region SET secretario_regional=7 WHERE id = 3;
+UPDATE region SET secretario_regional=8 WHERE id = 4;
+UPDATE region SET secretario_regional=9 WHERE id = 5;
+UPDATE region SET secretario_regional=10 WHERE id = 6;
+UPDATE region SET secretario_regional=11 WHERE id = 7;
+UPDATE region SET secretario_regional=12 WHERE id = 8;
+UPDATE region SET secretario_regional=13 WHERE id = 9;
+UPDATE region SET secretario_regional=14 WHERE id = 10;
+UPDATE region SET secretario_regional=15 WHERE id = 11;
+UPDATE region SET secretario_regional=16 WHERE id = 12;
+UPDATE region SET secretario_regional=17 WHERE id = 13;
+UPDATE region SET secretario_regional=18 WHERE id = 14;
+UPDATE region SET secretario_regional=4 WHERE id = 15;
+
+ALTER TABLE region
+   ALTER COLUMN secretario_regional SET NOT NULL;
+
+
+ALTER TABLE antecendentes_comuna_calculado
+   ALTER COLUMN percapita_mes TYPE bigint;
+ALTER TABLE antecendentes_comuna_calculado
+   ALTER COLUMN percapita_ano TYPE bigint;
+
+UPDATE ano_en_curso
+   SET monto_percapital_basal=3794;
+
+UPDATE ano_en_curso
+   SET asignacion_adulto_mayor=543;
+
+
+UPDATE antecendentes_comuna SET  clasificacion=2 WHERE id_comuna=8305;
+UPDATE antecendentes_comuna SET  clasificacion=2 WHERE id_comuna=8306;
+UPDATE antecendentes_comuna SET  clasificacion=2 WHERE id_comuna=13110;
+UPDATE antecendentes_comuna SET  clasificacion=2 WHERE id_comuna=8104;
+
+UPDATE antecendentes_comuna SET  clasificacion=3 WHERE id_comuna=1405;
+UPDATE antecendentes_comuna SET  clasificacion=3 WHERE id_comuna=13110;
+
+UPDATE antecendentes_comuna SET  clasificacion=1 WHERE id_comuna=3202;
+UPDATE antecendentes_comuna SET  clasificacion=1 WHERE id_comuna=6112;
+UPDATE antecendentes_comuna SET  clasificacion=1 WHERE id_comuna=8417;
+UPDATE antecendentes_comuna SET  clasificacion=1 WHERE id_comuna=8302;
+UPDATE antecendentes_comuna SET  clasificacion=1 WHERE id_comuna=13502;
+UPDATE antecendentes_comuna SET  clasificacion=1 WHERE id_comuna=10204;
+
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	54345	 WHERE antecedentes_comuna =	463 ;	
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	57006	 WHERE antecedentes_comuna =	464	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	117042	 WHERE antecedentes_comuna =	467	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	60137	 WHERE antecedentes_comuna =	468	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	67372	 WHERE antecedentes_comuna =	469	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	108917	 WHERE antecedentes_comuna =	465	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	111432	 WHERE antecedentes_comuna =	563	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	19748	 WHERE antecedentes_comuna =	470	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	147521	 WHERE antecedentes_comuna =	472	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	69588	 WHERE antecedentes_comuna =	459	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	29111	 WHERE antecedentes_comuna =	460	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	158973	 WHERE antecedentes_comuna =	560	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	139439	 WHERE antecedentes_comuna =	561	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	111980	 WHERE antecedentes_comuna =	695	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	160464	 WHERE antecedentes_comuna =	696	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	161123	 WHERE antecedentes_comuna =	697	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	32104	 WHERE antecedentes_comuna =	698	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	61686	 WHERE antecedentes_comuna =	699	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	124512	 WHERE antecedentes_comuna =	700	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	134394	 WHERE antecedentes_comuna =	562	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	163483	 WHERE antecedentes_comuna =	701	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	133009	 WHERE antecedentes_comuna =	702	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	173290	 WHERE antecedentes_comuna =	703	;
+UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	160058	 WHERE antecedentes_comuna =	704	;
+
 
 
 

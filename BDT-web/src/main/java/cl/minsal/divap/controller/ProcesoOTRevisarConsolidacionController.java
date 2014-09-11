@@ -1,6 +1,5 @@
 package cl.minsal.divap.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,9 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
@@ -19,37 +16,20 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import minsal.divap.enums.BusinessProcess;
+import minsal.divap.service.OTService;
+import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
+import minsal.divap.vo.ColumnaVO;
+import minsal.divap.vo.OTRevisarAntecedentesGlobalVO;
+import minsal.divap.vo.OTRevisarAntecedentesVO;
+import minsal.divap.vo.TaskDataVO;
+import minsal.divap.vo.TaskVO;
+
 import org.apache.log4j.Logger;
-import org.apache.poi.hwpf.HWPFDocument;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.primefaces.component.api.UIColumn;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.CellEditEvent;
 
-import minsal.divap.doc.GeneradorOficioConsulta;
-import minsal.divap.doc.GeneradorWord;
-import minsal.divap.enums.BusinessProcess;
-import minsal.divap.enums.TipoDocumentosProcesos;
-import minsal.divap.excel.GeneradorExcel;
-import minsal.divap.excel.impl.AsignacionRecursosPercapitaSheetExcel;
-import minsal.divap.service.AlfrescoService;
-import minsal.divap.service.DistribucionInicialPercapitaService;
-import minsal.divap.service.OTService;
-import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
-import minsal.divap.vo.BaseVO;
-import minsal.divap.vo.BodyVO;
-import minsal.divap.vo.ColumnaVO;
-import minsal.divap.vo.DocumentoVO;
-import minsal.divap.vo.OTRevisarAntecedentesGlobalVO;
-import minsal.divap.vo.OTRevisarAntecedentesVO;
-import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
-import minsal.divap.vo.TaskDataVO;
-import minsal.divap.vo.TaskVO;
-import minsal.divap.vo.VariacionPoblacionVO;
 import cl.minsal.divap.pojo.ComponentePojo;
-import cl.minsal.divap.pojo.EstimacionFlujoMonitoreoGlobalPojo;
-import cl.minsal.divap.pojo.EstimacionFlujoMonitoreoPojo;
 import cl.minsal.divap.pojo.ProcesosProgramasPojo;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 

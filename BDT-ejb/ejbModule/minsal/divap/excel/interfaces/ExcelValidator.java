@@ -1,16 +1,18 @@
 package minsal.divap.excel.interfaces;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+
+import minsal.divap.exception.ExcelFormatException;
+import minsal.divap.vo.CellTypeExcelVO;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-
-import minsal.divap.exception.ExcelFormatException;
-import minsal.divap.vo.CellTypeExcelVO;
 
 public abstract class ExcelValidator<T>{
 
@@ -61,7 +63,7 @@ public abstract class ExcelValidator<T>{
 					if(cellType.getRequired()){
 						value = hssfRow.getCell(first++).getRichStringCellValue().getString();
 					}else{
-						if(hssfRow.getCell(first++).getCellType() != 3){
+						if(hssfRow.getCell(first).getCellType() != 3){
 							value = hssfRow.getCell(first++).getRichStringCellValue().getString();
 						}
 					}
@@ -77,7 +79,7 @@ public abstract class ExcelValidator<T>{
 					if(cellType.getRequired()){
 						value = "" + hssfRow.getCell(first++).getNumericCellValue();
 					}else{
-						if(hssfRow.getCell(first++).getCellType() != 3){
+						if(hssfRow.getCell(first).getCellType() != 3){
 							value = "" + hssfRow.getCell(first++).getNumericCellValue();
 						}
 					}
@@ -92,8 +94,35 @@ public abstract class ExcelValidator<T>{
 					if(cellType.getRequired()){
 						value = "" + hssfRow.getCell(first++).getBooleanCellValue();
 					}else{
-						if(hssfRow.getCell(first++).getCellType() != 3){
+						if(hssfRow.getCell(first).getCellType() != 3){
 							value = "" + hssfRow.getCell(first++).getBooleanCellValue();
+						}
+					}	
+					values.add(value);
+				}catch (Exception e) {
+					isValidRow = false;
+				}
+				break;
+			case PERCENTAGEFIELD:
+				try{
+					String value = "";
+					if(cellType.getRequired()){
+						if(hssfRow.getCell(first).getCellStyle().getDataFormatString().contains("%")){
+							Double valueTmp = hssfRow.getCell(first++).getNumericCellValue() * 100;
+							value = "" +valueTmp;
+						}else{
+							Double valueTmp = hssfRow.getCell(first++).getNumericCellValue();
+							value = "" + valueTmp;
+						}
+					}else{
+						if(hssfRow.getCell(first).getCellType() != 3){
+							if(hssfRow.getCell(first).getCellStyle().getDataFormatString().contains("%")){
+								Double valueTmp = hssfRow.getCell(first++).getNumericCellValue() * 100;
+								value = "" +valueTmp;
+							}else{
+								Double valueTmp = hssfRow.getCell(first++).getNumericCellValue();
+								value = "" + valueTmp;
+							}
 						}
 					}	
 					values.add(value);
@@ -108,7 +137,7 @@ public abstract class ExcelValidator<T>{
 		}
 		return isValidRow;
 	}
-	
+
 	public boolean validateTypes(XSSFRow xssfRow){
 		if(xssfRow == null){
 			return false;
@@ -119,7 +148,7 @@ public abstract class ExcelValidator<T>{
 		if(getCells() == null || getCells().isEmpty()){
 			return false;
 		}
-		
+
 		int first = getOffsetColumns();
 		boolean isValidRow = true;
 		values = new ArrayList<String>();
@@ -132,7 +161,7 @@ public abstract class ExcelValidator<T>{
 						//System.out.println("xssfRow.getCell("+first+").getRichStringCellValue().getString()-->" + xssfRow.getCell(first).getRichStringCellValue().getString());
 						value = xssfRow.getCell(first++).getRichStringCellValue().getString();
 					}else{
-						if(xssfRow.getCell(first++).getCellType() != 3){
+						if(xssfRow.getCell(first).getCellType() != 3){
 							value = xssfRow.getCell(first++).getRichStringCellValue().getString();
 						}
 					}
@@ -149,7 +178,7 @@ public abstract class ExcelValidator<T>{
 						//System.out.println("xssfRow.getCell("+first+").getNumericCellValue().getString()-->" + xssfRow.getCell(first).getNumericCellValue());
 						value = "" + xssfRow.getCell(first++).getNumericCellValue();
 					}else{
-						if(xssfRow.getCell(first++).getCellType() != 3){
+						if(xssfRow.getCell(first).getCellType() != 3){
 							value = "" + xssfRow.getCell(first++).getNumericCellValue();
 						}
 					}
@@ -164,13 +193,45 @@ public abstract class ExcelValidator<T>{
 					if(cellType.getRequired()){
 						value = "" + xssfRow.getCell(first++).getBooleanCellValue();
 					}else{
-						if(xssfRow.getCell(first++).getCellType() != 3){
+						if(xssfRow.getCell(first).getCellType() != 3){
 							value = "" + xssfRow.getCell(first++).getBooleanCellValue();
 						}
 					}
 					values.add(value);
 				}catch (Exception e) {
 					isValidRow = false;
+				}
+				break;
+			case PERCENTAGEFIELD:
+				try{
+					String value = "";
+					if(cellType.getRequired()){
+						if(xssfRow.getCell(first).getCellStyle().getDataFormatString().contains("%")){
+							Double valueTmp = xssfRow.getCell(first++).getNumericCellValue() * 100;
+							BigDecimal bd = new BigDecimal(valueTmp);
+							bd = bd.setScale(2, RoundingMode.HALF_UP);
+							value = "" + bd.doubleValue();
+						}else{
+							Double valueTmp = xssfRow.getCell(first++).getNumericCellValue();
+							BigDecimal bd = new BigDecimal(valueTmp);
+							bd = bd.setScale(2, RoundingMode.HALF_UP);
+							value = "" + bd.doubleValue();
+						}
+					}else{
+						if(xssfRow.getCell(first).getCellType() != 3){
+							if(xssfRow.getCell(first).getCellStyle().getDataFormatString().contains("%")){
+								Double valueTmp = xssfRow.getCell(first++).getNumericCellValue() * 100;
+								value = "" +valueTmp;
+							}else{
+								Double valueTmp = xssfRow.getCell(first++).getNumericCellValue();
+								value = "" + valueTmp;
+							}
+						}
+					}	
+					values.add(value);
+				}catch (Exception e) {
+					isValidRow = false;
+					e.printStackTrace();
 				}
 				break;
 			}
@@ -252,13 +313,13 @@ public abstract class ExcelValidator<T>{
 	public List<T> getItems() {
 		return items;
 	}
-	
+
 	public List<String> getValues() {
 		return values;
 	}
-	
+
 	public void setValues(List<String> values) {
 		this.values = values;
 	}
-	
+
 }

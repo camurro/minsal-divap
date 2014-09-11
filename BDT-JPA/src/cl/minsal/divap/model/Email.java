@@ -2,6 +2,7 @@ package cl.minsal.divap.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -42,6 +43,8 @@ public class Email implements Serializable {
     private Collection<Destinatarios> destinatariosCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "mailFrom")
     private Collection<Seguimiento> seguimientoCollection;
+    @OneToMany(mappedBy = "email")
+    private Set<Persona> personas;
 
     public Email() {
     }
@@ -97,8 +100,17 @@ public class Email implements Serializable {
     public void setSeguimientoCollection(Collection<Seguimiento> seguimientoCollection) {
         this.seguimientoCollection = seguimientoCollection;
     }
+    
+    @XmlTransient
+    public Set<Persona> getPersonas() {
+		return personas;
+	}
 
-    @Override
+	public void setPersonas(Set<Persona> personas) {
+		this.personas = personas;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (idEmail != null ? idEmail.hashCode() : 0);

@@ -1,6 +1,5 @@
 package cl.minsal.divap.controller;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,95 +13,85 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.inject.Inject;
 import javax.inject.Named;
 
-import minsal.divap.dao.RebajaDAO;
-import minsal.divap.enums.BusinessProcess;
 import minsal.divap.service.RebajaService;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ComunaVO;
 import minsal.divap.vo.DocumentSummaryVO;
-import minsal.divap.vo.RebajaVO;
+import minsal.divap.vo.PlanillaRebajaCalculadaVO;
 import minsal.divap.vo.RegionVO;
 import minsal.divap.vo.ServiciosVO;
-import minsal.divap.vo.TaskDataVO;
-import minsal.divap.vo.TaskVO;
 
-import org.apache.log4j.Logger;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.event.CellEditEvent;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
 
-import cl.minsal.divap.pojo.RebajaPojo;
-import cl.redhat.bandejaTareas.controller.BaseController;
-import cl.redhat.bandejaTareas.controller.divapProcesoRebajaCargarCumplimientoController;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
-import cl.redhat.bandejaTareas.util.BandejaProperties;
 import cl.redhat.bandejaTareas.util.JSONHelper;
 
 @Named("procesoRebajaValidarMontosController")
 @ViewScoped
 public class ProcesoRebajaValidarMontosController extends AbstractTaskMBean
-	implements Serializable {
-	
+implements Serializable {
+
 	private static final long serialVersionUID = -9223198612121852459L;
-	@Inject
-	private transient Logger log;
-	@Inject
-	FacesContext facesContext;
-	
+
 	@EJB
-	UtilitariosService utilitariosService;
+	private UtilitariosService utilitariosService;
 	@EJB
-	RebajaService rebajaService;
-	
+	private RebajaService rebajaService;
+
 	//Variables página
-	private String target;
-	
 	private List<RegionVO> listaRegiones;
 	private String regionSeleccionada;	
 	private List<ServiciosVO> listaServicios;
 	private String servicioSeleccionado;
 	private List<ComunaVO> listaComunas;
 	private List<String> comunasSeleccionadas;
-	private List<ComunaVO> rebajaComunas;
+	private List<PlanillaRebajaCalculadaVO> rebajaComunas;
+	private PlanillaRebajaCalculadaVO selectedPlanilla;  
 	private List<Integer> allDocuments;
 	private List<DocumentSummaryVO> resumenDocumentos;
+	private Integer fisrtTime = 1;
+	private Integer totalIncumplimiento = 0;
 
-	
+	private String posicionElemento;
+	private String columnaElemento;
+	private String valorElemento;
+
+
 	private Integer docRebaja;
 	private String docIdDownload;
-	private ComunaVO rebajaSeleccionada;
+	private String rebajaSeleccionada;
 	private String mesActual;
-	
-	//Variables de salida proceso
+	//Variables de entrada tarea
+	private Integer idProcesoRebaja;
+
+	//Variables de salida tarea
 	private boolean aprobar_;
 	private boolean rechazarRevalorizar_;
 	private boolean rechazarSubirArchivo_;
-	
+
 	@PostConstruct
 	public void init() {
-		log.info("ProcesosRebajaValidarMontosController tocado.");
-		if (!getSessionBean().isLogged()) {
-			log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
-			try {
-				facesContext.getExternalContext().redirect("login.jsf");
-			} catch (IOException e) {
-				log.error(
-						"Error tratando de redireccionar a login por falta de usuario en sesion.",
-						e);
-			}
+		System.out.println("ProcesosRebajaValidarMontosController tocado.");
+		if(sessionExpired()){
+			return;
+		}
+		if(getTaskDataVO().getData().get("_idProcesoRebaja") != null){
+			this.idProcesoRebaja = (Integer)getTaskDataVO().getData().get("_idProcesoRebaja");
 		}
 		buscaDocumentos();
 		cargarListaRegiones();
-		String formato="MMMM";
-		SimpleDateFormat dateFormat = new SimpleDateFormat(formato);
-		setMesActual(dateFormat.format(new Date()));
+		setMesActual(rebajaService.getMesCurso(false));
 	}
-	
+
 	private void buscaDocumentos() {
 		this.docRebaja = (Integer) getTaskDataVO().getData().get("_idDoc");
+		System.out.println("this.docRebaja-->"+this.docRebaja);
 		String todosDocumentos = (String) getTaskDataVO().getData().get("_allDocumentsId");
-		if(todosDocumentos!=null){
+		if(todosDocumentos != null){
 			allDocuments = JSONHelper.fromJSON(todosDocumentos, List.class);
 			allDocuments.add(docRebaja);
 		}else{
@@ -110,13 +99,12 @@ public class ProcesoRebajaValidarMontosController extends AbstractTaskMBean
 			allDocuments.add(docRebaja);
 		}
 		resumenDocumentos = rebajaService.getReferenciaDocumentosById(allDocuments);
-		
 	}
 
 	public void cargarListaRegiones(){
 		listaRegiones = utilitariosService.getAllRegion();
 	}
-	
+
 	public void cargaServicios(){
 		if(regionSeleccionada!=null && !regionSeleccionada.equals("")){
 			listaServicios=utilitariosService.getServiciosByRegion(Integer.parseInt(regionSeleccionada));
@@ -124,23 +112,39 @@ public class ProcesoRebajaValidarMontosController extends AbstractTaskMBean
 			listaServicios = new ArrayList<ServiciosVO>();
 		}
 	}
+
 	public void cargaComunas(){
 		if(servicioSeleccionado!=null && !servicioSeleccionado.equals("")){
 			listaComunas = utilitariosService.getComunasByServicio(Integer.parseInt(servicioSeleccionado));
 		}else{
 			listaComunas = new ArrayList<ComunaVO>();
 		}
+		fisrtTime = 1;
+		totalIncumplimiento = 0;
 	}
-	
+
 	public void buscarRebaja(){
-		List<Integer> comunasId = new ArrayList<Integer>();
+		System.out.println("ProcesoRebajaValidarMontosController:buscarRebaja");
+		List<Integer> idComunas = new ArrayList<Integer>();
 		for(String comunas : comunasSeleccionadas){
-			Integer comunaId = Integer.parseInt(comunas);
-			comunasId.add(comunaId);
+			Integer idComuna = Integer.parseInt(comunas);
+			idComunas.add(idComuna);
 		}
-		String formato="MM";
-		SimpleDateFormat dateFormat = new SimpleDateFormat(formato);
-		rebajaComunas = rebajaService.getRebajasByComuna(comunasId,Integer.parseInt(dateFormat.format(new Date())));
+		rebajaComunas = rebajaService.getRebajasByComuna(this.idProcesoRebaja, idComunas);
+		totalIncumplimiento = rebajaComunas.size();
+		fisrtTime++;
+		System.out.println("ProcesoRebajaValidarMontosController:buscarRebaja fin totalIncumplimiento="+totalIncumplimiento);
+	}
+
+	public void limpiar() {
+		System.out.println("Limpiar-->");
+		this.regionSeleccionada = null;
+		this.servicioSeleccionado = null;
+		this.comunasSeleccionadas = new ArrayList<String>();
+		this.rebajaComunas = new ArrayList<PlanillaRebajaCalculadaVO>();
+		fisrtTime = 1;
+		totalIncumplimiento = 0;
+		System.out.println("fin limpiar");
 	}
 
 	@Override
@@ -154,17 +158,96 @@ public class ProcesoRebajaValidarMontosController extends AbstractTaskMBean
 		parameters.put("allDocumentsId_", JSONHelper.toJSON(allDocuments));
 		return parameters;
 	}
-	
+
 	public String downloadExcelRebaja() {
 		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownload()));
 		setDocumento(documentService.getDocument(docDownload));
 		super.downloadDocument();
 		return null;
 	}
-	
+
 	public void guardaRebaja(){
-		if(rebajaSeleccionada!=null){
-		rebajaService.updateMontosRebajaComuna(rebajaSeleccionada);
+		System.out.println("guardaRebaja Inicio");
+		if(rebajaSeleccionada != null && !rebajaSeleccionada.trim().isEmpty()){
+			Integer posicion = Integer.parseInt(posicionElemento);
+			rebajaService.updateMontosRebajaComuna(rebajaComunas.get(posicion));
+			rebajaComunas.get(posicion).setActualizar(false);
+			System.out.println("Actualizacion ok");
+		}
+		System.out.println("guardaRebaja Fin");
+	}
+
+
+	public void actualizarModelo(){
+		System.out.println("actualizarModelo:posicionElemento="+posicionElemento);
+		System.out.println("actualizarModelo:columnaElemento="+columnaElemento);
+		System.out.println("actualizarModelo:valorElemento="+valorElemento);
+		if((posicionElemento != null) && !(posicionElemento.trim().isEmpty()) 
+				&& (columnaElemento != null) && !(columnaElemento.trim().isEmpty()) 
+				&& (valorElemento != null) && !(valorElemento.trim().isEmpty())){
+			Integer posicion = Integer.parseInt(posicionElemento);
+			Integer columna = Integer.parseInt(columnaElemento);
+			Double valor = Double.parseDouble(valorElemento);
+			rebajaComunas.get(posicion).setActualizar(true);
+			switch (columna) {
+			case 1:
+				rebajaComunas.get(posicion).getCumplimientoRebajasItem1().setRebajaFinal(Double.valueOf(valor));
+				break;
+			case 2:
+				rebajaComunas.get(posicion).getCumplimientoRebajasItem2().setRebajaFinal(Double.valueOf(valor));
+				break;
+			case 3:
+				rebajaComunas.get(posicion).getCumplimientoRebajasItem3().setRebajaFinal(Double.valueOf(valor));
+				break;
+			default:
+				break;
+			}
+			Integer porcentajeRebajaCalculado = 0;
+			Integer porcentajeRebajaFinal = 0;
+			porcentajeRebajaFinal += (( rebajaComunas.get(posicion).getCumplimientoRebajasItem1().getRebajaFinal() == null) ? 0 : rebajaComunas.get(posicion).getCumplimientoRebajasItem1().getRebajaFinal().intValue());
+			porcentajeRebajaCalculado += (( rebajaComunas.get(posicion).getCumplimientoRebajasItem1().getRebajaCalculada() == null) ? 0 : rebajaComunas.get(posicion).getCumplimientoRebajasItem1().getRebajaCalculada().intValue()); 
+			porcentajeRebajaFinal += (( rebajaComunas.get(posicion).getCumplimientoRebajasItem2().getRebajaFinal() == null) ? 0 : rebajaComunas.get(posicion).getCumplimientoRebajasItem2().getRebajaFinal().intValue());
+			porcentajeRebajaCalculado += (( rebajaComunas.get(posicion).getCumplimientoRebajasItem2().getRebajaCalculada() == null) ? 0 : rebajaComunas.get(posicion).getCumplimientoRebajasItem2().getRebajaCalculada().intValue());
+			porcentajeRebajaFinal += (( rebajaComunas.get(posicion).getCumplimientoRebajasItem3().getRebajaFinal() == null) ? 0 : rebajaComunas.get(posicion).getCumplimientoRebajasItem3().getRebajaFinal().intValue());
+			porcentajeRebajaCalculado += (( rebajaComunas.get(posicion).getCumplimientoRebajasItem3().getRebajaCalculada() == null) ? 0 : rebajaComunas.get(posicion).getCumplimientoRebajasItem3().getRebajaCalculada().intValue());
+			rebajaComunas.get(posicion).setTotalRebajaCalculada(porcentajeRebajaCalculado);
+			rebajaComunas.get(posicion).setTotalRebajaRebajaFinal(porcentajeRebajaFinal);
+			Integer montoRebaja = (int)(rebajaComunas.get(posicion).getAporteEstatal() * (porcentajeRebajaFinal/100.0));
+			rebajaComunas.get(posicion).setMontoRebajaMes(montoRebaja);
+			rebajaComunas.get(posicion).setNuevoAporteEstatal(rebajaComunas.get(posicion).getAporteEstatal() - montoRebaja);
+			System.out.println("actualizarModelo:Fin");
+		}
+	}
+
+	public void actualizarDummy(){
+		System.out.println("ProcesoRebajaValidarMontosController:actualizarDummy");
+	}
+
+
+	public void onRowSelect(SelectEvent event) {  
+		FacesMessage msg = new FacesMessage("PlanillaRebajaCalculadaVO Selected", ((PlanillaRebajaCalculadaVO) event.getObject()).getId_comuna()+"");  
+		System.out.println("PlanillaRebajaCalculadaVO Selected"+ ((PlanillaRebajaCalculadaVO) event.getObject()).getId_comuna()+"");
+		FacesContext.getCurrentInstance().addMessage(null, msg);  
+	}  
+
+	public void onRowUnselect(UnselectEvent event) {
+		FacesMessage msg = new FacesMessage("PlanillaRebajaCalculadaVO Unselected", ((PlanillaRebajaCalculadaVO) event.getObject()).getId_comuna()+"");
+		System.out.println("PlanillaRebajaCalculadaVO Unselected"+ ((PlanillaRebajaCalculadaVO) event.getObject()).getId_comuna()+"");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+	}
+
+
+	public void onCellEdit(CellEditEvent event) {
+		try{
+			Object oldValue = event.getOldValue();
+			Object newValue = event.getNewValue();
+			System.out.println("oldValue->" + oldValue + " newValue->" + newValue);
+			if(newValue != null && !newValue.equals(oldValue)) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cell Changed", "Old: " + oldValue + ", New:" + newValue);
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 
@@ -175,7 +258,7 @@ public class ProcesoRebajaValidarMontosController extends AbstractTaskMBean
 		setRechazarSubirArchivo_(false);
 		return super.enviar();
 	}
-	
+
 	public String recargarArchivos(){
 		setAprobar_(false);
 		setRechazarRevalorizar_(false);
@@ -192,7 +275,6 @@ public class ProcesoRebajaValidarMontosController extends AbstractTaskMBean
 
 	@Override
 	public String iniciarProceso() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -261,11 +343,11 @@ public class ProcesoRebajaValidarMontosController extends AbstractTaskMBean
 		this.listaComunas = listaComunas;
 	}
 
-	public List<ComunaVO> getRebajaComunas() {
+	public List<PlanillaRebajaCalculadaVO> getRebajaComunas() {
 		return rebajaComunas;
 	}
 
-	public void setRebajaComunas(List<ComunaVO> rebajaComunas) {
+	public void setRebajaComunas(List<PlanillaRebajaCalculadaVO> rebajaComunas) {
 		this.rebajaComunas = rebajaComunas;
 	}
 
@@ -285,11 +367,11 @@ public class ProcesoRebajaValidarMontosController extends AbstractTaskMBean
 		this.docRebaja = docRebaja;
 	}
 
-	public ComunaVO getRebajaSeleccionada() {
+	public String getRebajaSeleccionada() {
 		return rebajaSeleccionada;
 	}
 
-	public void setRebajaSeleccionada(ComunaVO rebajaSeleccionada) {
+	public void setRebajaSeleccionada(String rebajaSeleccionada) {
 		this.rebajaSeleccionada = rebajaSeleccionada;
 	}
 
@@ -317,12 +399,60 @@ public class ProcesoRebajaValidarMontosController extends AbstractTaskMBean
 		this.resumenDocumentos = resumenDocumentos;
 	}
 
-	public String getTarget() {
-		return target;
+	public Integer getIdProcesoRebaja() {
+		return idProcesoRebaja;
 	}
 
-	public void setTarget(String target) {
-		this.target = target;
+	public void setIdProcesoRebaja(Integer idProcesoRebaja) {
+		this.idProcesoRebaja = idProcesoRebaja;
+	}
+
+	public Integer getFisrtTime() {
+		return fisrtTime;
+	}
+
+	public void setFisrtTime(Integer fisrtTime) {
+		this.fisrtTime = fisrtTime;
+	}
+
+	public PlanillaRebajaCalculadaVO getSelectedPlanilla() {
+		return selectedPlanilla;
+	}
+
+	public void setSelectedPlanilla(PlanillaRebajaCalculadaVO selectedPlanilla) {
+		this.selectedPlanilla = selectedPlanilla;
+	}
+
+	public String getPosicionElemento() {
+		return posicionElemento;
+	}
+
+	public void setPosicionElemento(String posicionElemento) {
+		this.posicionElemento = posicionElemento;
+	}
+
+	public String getColumnaElemento() {
+		return columnaElemento;
+	}
+
+	public void setColumnaElemento(String columnaElemento) {
+		this.columnaElemento = columnaElemento;
+	}
+
+	public String getValorElemento() {
+		return valorElemento;
+	}
+
+	public void setValorElemento(String valorElemento) {
+		this.valorElemento = valorElemento;
+	}
+
+	public Integer getTotalIncumplimiento() {
+		return totalIncumplimiento;
+	}
+
+	public void setTotalIncumplimiento(Integer totalIncumplimiento) {
+		this.totalIncumplimiento = totalIncumplimiento;
 	}
 
 }
