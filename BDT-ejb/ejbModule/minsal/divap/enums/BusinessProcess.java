@@ -14,7 +14,9 @@ public enum BusinessProcess{
     Prueba(4,"minsal_divap.prueba"),
     ESTIMACIONFLUJOCAJA(5,"minsal_divap.EstimacionFlujoCaja"),
     ESTIMACIONFLUJOCAJACONSOLIDADOR(6,"minsal_divap.EstimacionFlujoConsolidador"),
-	OTPROFESIONAL(7,"minsal_divap.TramitacionOrdenTransferenciaProfesional"),OTCONSOLIDADOR(8,"minsal_divap.TramitacionOrdenTransferenciaConsolidador");
+	OTPROFESIONAL(7,"minsal_divap.TramitacionOrdenTransferenciaProfesional"),
+	OTCONSOLIDADOR(8,"minsal_divap.TramitacionOrdenTransferenciaConsolidador"),
+	CONVENIOS(9,"minsal_divap.ProcesoConvenio");;
 
 	private int id;
 	private String name;

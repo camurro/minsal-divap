@@ -8,18 +8,18 @@ public class ComponentesVO implements Serializable{
 
 	private static final long serialVersionUID = -1926890921516075410L;
 
-	private Integer componente_id;
+	private Integer id;
 	private String nombre;
 	private TipoComponenteVO tipoComponente;
 	private List<SubtituloVO> subtitulos;
 	private float peso;
-	
-	public Integer getComponente_id() {
-		return componente_id;
+
+	public Integer getId() {
+		return id;
 	}
 
-	public void setComponente_id(Integer componente_id) {
-		this.componente_id = componente_id;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getNombre() {

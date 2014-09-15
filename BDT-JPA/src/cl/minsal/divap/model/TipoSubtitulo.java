@@ -28,6 +28,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "TipoSubtitulo.findAll", query = "SELECT t FROM TipoSubtitulo t"),
+    @NamedQuery(name = "TipoSubtitulo.findById", query = "SELECT t FROM TipoSubtitulo t WHERE t.idTipoSubtitulo = :idTipoSubtitulo"),
+    @NamedQuery(name = "TipoSubtitulo.findByTipoSubtituloByDependencia", query = "SELECT t FROM TipoSubtitulo t where t.dependencia.idDependenciaPrograma=:idDependenciaPrograma"),
     @NamedQuery(name = "TipoSubtitulo.findByIdTipoSubtitulo", query = "SELECT t FROM TipoSubtitulo t WHERE t.idTipoSubtitulo = :idTipoSubtitulo"),
     @NamedQuery(name = "TipoSubtitulo.findByNombreSubtitulo", query = "SELECT t FROM TipoSubtitulo t WHERE t.nombreSubtitulo = :nombreSubtitulo")})
 public class TipoSubtitulo implements Serializable {

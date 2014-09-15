@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import minsal.divap.enums.TipoDocumentosProcesos;
+import cl.minsal.divap.model.DocumentoConvenio;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.DocumentoOt;
@@ -227,6 +228,22 @@ public class DocumentDAO {
 			throw new RuntimeException(e);
 		}
 		return referenciaDocumento;
+	}
+
+	public DocumentoConvenio save(DocumentoConvenio documentoConvenio) {
+		this.em.persist(documentoConvenio);
+		return documentoConvenio;
+	}
+
+	public List<DocumentoConvenio> getDocumentPopUpConvenio(Integer convenioID) {
+		try {
+			TypedQuery<DocumentoConvenio> query = this.em.createNamedQuery("DocumentoConvenio.findByConvenioID", DocumentoConvenio.class);
+			query.setParameter("idConvenio", convenioID);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
 	}
 
 }

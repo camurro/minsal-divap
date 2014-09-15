@@ -29,7 +29,9 @@ import minsal.divap.vo.DocumentoVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.ReferenciaDocumentoVO;
 import cl.minsal.divap.model.Comuna;
+import cl.minsal.divap.model.Convenio;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
+import cl.minsal.divap.model.DocumentoConvenio;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.DocumentoOt;
@@ -405,6 +407,15 @@ public class DocumentService {
 		rebajaDAO.save(documentoRebaja);
 		System.out.println("luego de aplicar insert del documento rebaja");
 		return referenciaDocumentoId;
+	}
+
+	public void createDocumentConvenio(Convenio convenio,TipoDocumentosProcesos tipoDocumento, Integer referenciaDocumentoId) {
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		DocumentoConvenio documentoConvenio = new DocumentoConvenio();
+		documentoConvenio.setConvenio(convenio);
+		documentoConvenio.setDocumento(referenciaDocumento);
+		fileDAO.save(documentoConvenio);
+		System.out.println("luego de aplicar insert del documento convenio");
 	}
 
 }

@@ -18,45 +18,43 @@
 						<span class="strong">Archivo: </span> Consolidado de Convenios para Servicio de Salud [
 						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
 						<p:commandLink value="Generar y Descargar" />
-						]
+						
 					</div>
-					<br />
-
+					<br/>
 					<div id="tablaSubtitulos" style="display: block;">
 						<p:tabView>
-							<p:tab title="Subtítulo 21">
+							<p:tab title="Subtítulo 21" rendered="#{procesoGITVerificarController.sub21}">
 								<h4>Filtros para la Visualización de Convenios:</h4>
 								<h:panelGrid>
 									<h:panelGrid>
 										<h:outputText value="Componente: " styleClass="inputLabel" />
-										<p:selectOneMenu style="width:450px;">
-											<f:selectItem itemLabel="Mostrar Todo" itemValue="" />
-											<f:selectItem itemLabel="Procedimientos Cutáneos Quirúrgicos de Baja" itemValue="Procedimientos Cutáneos Quirúrgicos de Baja" />
-											<f:selectItem itemLabel="Especialidades Ambulatorias" itemValue="Especialidades Ambulatorias" />
-										</p:selectOneMenu>
+										<p:selectOneMenu id="componente" value="#{procesoGITVerificarController.componenteSeleccionado}" style="width:450px;">
+								<f:selectItem itemLabel="Seleccione un componente" itemValue="" />
+						    <f:selectItems itemLabel="#{componente.nombre}" itemValue="#{componente.id}" var="componente" value="#{procesoGITVerificarController.getComponentesBySubtitulo(1)}" />
+						<p:ajax listener="#{procesoGITVerificarController.getComponentesBySubtitulo(1)}" update=":#{p:component('tabView')}"  /> 
+							</p:selectOneMenu>
 									</h:panelGrid>
 									<h:panelGrid>
 										<h:outputText value="Comuna: " styleClass="inputLabel" />
-										<p:selectOneMenu style="width:450px;">
-											<f:selectItem itemLabel="Mostras Todo" itemValue="" />
-											<f:selectItem itemLabel="Macul" itemValue="Macul" />
-											<f:selectItem itemLabel="Las Condes" itemValue="Las Condes" />
-										</p:selectOneMenu>
+							<p:selectOneMenu id="comuna" value="#{procesoGITVerificarController.comunaSeleccionada}" style="width:450px;">
+								<f:selectItem itemLabel="Seleccione una comuna" itemValue="" />
+								<f:selectItems itemLabel="#{comuna.descComuna}" itemValue="#{comuna.idComuna}" var="comuna" value="#{procesoGITVerificarController.comunas}" />
+								<p:ajax listener="#{procesoGITVerificarController.getComunas}" update=":#{p:component('tabView')},:#{p:component('establecimiento')}" />
+							</p:selectOneMenu>											
 									</h:panelGrid>
 									<h:panelGrid>
-										<h:outputText value="Establecimiento: " styleClass="inputLabel" />
-										<p:selectOneMenu style="width:450px;">
-											<f:selectItem itemLabel="Mostrar Todo" itemValue="" />
-											<f:selectItem itemLabel="Hospital Cordillera" itemValue="Hospital Cordillera" />
-											<f:selectItem itemLabel="COSAM Dr. Luis del Río" itemValue="COSAM Dr. Luis del Río" />
-										</p:selectOneMenu>
+						<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+						 <p:selectOneMenu id="establecimiento" value="#{procesoGITVerificarController.establecimientoSeleccionado}" style="width:450px;">
+								<f:selectItem itemLabel="Seleccione un establecimiento" itemValue="" />
+				            <f:selectItems itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}" var="establecimiento" value="#{procesoGITVerificarController.llenaCboEstablecimientos(1)}" />
+							<p:ajax listener="#{procesoGITVerificarController.getEstablecimientos(comunaSeleccionada)}"  update=":#{p:component('tabView')}"  /> 
+							</p:selectOneMenu>
 									</h:panelGrid>
 								</h:panelGrid>
 								<br />
-
-								<p:dataTable resizableColumns="true" value="#{procesoConveniosController.listResoluciones}" liveResize="true" var="_data" rows="10"
+					
+								<p:dataTable  id="tabView" resizableColumns="true" value="#{procesoGITVerificarController.llenaTabs(1)}"  liveResize="true" var="_data" rows="50"
 									paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
-
 									<p:columnGroup type="header">
 										<p:row>
 											<p:column headerText="Comuna" />
@@ -66,43 +64,53 @@
 											<p:column headerText="Monto Convenio" />
 											<p:column headerText="Convenios Pendietes" />
 											<p:column headerText="Convenio"/>
+											<p:column headerText="Aprobación"/>
 										</p:row>
 									</p:columnGroup>
 
-									<p:column rendered="#{_data.monto!=null}">
-										<span class="textoAjustado textoPequenio centrado">#{_data.comuna}</span>
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<span class="textoAjustado textoPequenio centrado">#{_data.comunaNombre}</span>
 									</p:column>
 									
-									<p:column rendered="#{_data.monto!=null}">
-										<h:outputText value="#{_data.monto}" styleClass="textoPequenio textoAjustado">
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<h:outputText value="#{_data.marcoPresupuestario}" styleClass="textoPequenio textoAjustado">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</p:column>
 
-									<p:column rendered="#{_data.monto!=null}">
-										<span class="textoAjustado textoPequenio centrado">#{_data.resolucion}</span>
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<span class="textoAjustado textoPequenio centrado">#{_data.numeroResolucion}</span>
 									</p:column>
-									<p:column rendered="#{_data.monto!=null}">
-										<h:outputText value="#{_data.fecha}" styleClass="textoPequenio textoAjustado">
-											<f:convertDateTime pattern="dd/MMM/yyyy" />
-										</h:outputText>
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<span class="textoAjustado textoPequenio centrado">#{_data.fecha}</span>
 									</p:column>
-									<p:column rendered="#{_data.monto!=null}">
-										<h:outputText value="#{_data.monto}" styleClass="textoPequenio textoAjustado">
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</p:column>
 
-									<p:column rendered="#{_data.monto!=null}">
+									<p:column rendered="#{_data.convenioMonto!=null}">
 										<h:outputText value="#{0}" styleClass="textoPequenio textoAjustado">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</p:column>
 									<p:column>
-											<h:outputLink rendered="#{_data.monto!=null}">
-												<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
-											</h:outputLink>
+											<h:commandLink   action="#{procesoGITVerificarController.downloadDocAlfresco(_data.idConverio)}">
+												<h:graphicImage  value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+												
+											</h:commandLink >
 										</p:column>
+										<p:column >
+											
+											<h:commandLink   action="#{procesoGITVerificarController.updatefila(_data.idConverio)}"  >
+											  <p:ajax update=":#{p:component('tabView')}"/>
+												<h:graphicImage  value="resources/minsal/images/check-blue.png" styleClass="divapIcons" />
+											</h:commandLink >										
+												
+												
+										</p:column>
+
 
 									<p:columnGroup type="footer">
 										<p:row>
@@ -118,7 +126,7 @@
 											<p:column />
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{466144*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+													<h:outputText value="#{_data.total}" styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
 												</f:facet>
@@ -126,15 +134,25 @@
 
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{0}" styleClass="textoAjustado textoPequenio centrado">
+													<h:outputText value="" styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
 												</f:facet>
 											</p:column>
 											<p:column>
-												
+													<f:facet name="footer">
+													<h:outputText value="" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
 											</p:column>
-
+											<p:column>
+													<f:facet name="footer">
+													<h:outputText value="" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL"  />
+													</h:outputText>
+												</f:facet>
+											</p:column>
 										</p:row>
 									</p:columnGroup>
 
@@ -142,8 +160,409 @@
 
 
 							</p:tab>
-							<p:tab title="Subtítulo 22"></p:tab>
-							<p:tab title="Subtítulo 29"></p:tab>
+							<p:tab title="Subtítulo 22" rendered="#{procesoGITVerificarController.sub22}">
+								<h4>Filtros para la Visualización de Convenios:</h4>
+								<h:panelGrid>
+									<h:panelGrid>
+										<h:outputText value="Componente: " styleClass="inputLabel" />
+										<p:selectOneMenu id="componente22" value="#{procesoGITVerificarController.componenteSeleccionado22}" style="width:450px;">
+								<f:selectItem itemLabel="Seleccione un componente" itemValue="" />
+						    <f:selectItems itemLabel="#{componente.nombre}" itemValue="#{componente.id}" var="componente" value="#{procesoGITVerificarController.getComponentesBySubtitulo(2)}" />
+						<p:ajax listener="#{procesoGITVerificarController.getComponentesBySubtitulo(2)}" update=":#{p:component('tabView22')}"  /> 
+							</p:selectOneMenu>
+									</h:panelGrid>
+									<h:panelGrid>
+										<h:outputText value="Comuna: " styleClass="inputLabel" />
+							<p:selectOneMenu id="comuna22" value="#{procesoGITVerificarController.comunaSeleccionada22}" style="width:450px;">
+								<f:selectItem itemLabel="Seleccione una comuna" itemValue="" />
+								<f:selectItems itemLabel="#{comuna.descComuna}" itemValue="#{comuna.idComuna}" var="comuna" value="#{procesoGITVerificarController.comunas}" />
+								<p:ajax listener="#{procesoGITVerificarController.getComunas}" update=":#{p:component('tabView22')},:#{p:component('establecimiento22')}" />
+							</p:selectOneMenu>											
+									</h:panelGrid>
+									<h:panelGrid>
+						<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+						 <p:selectOneMenu id="establecimiento22" value="#{procesoGITVerificarController.establecimientoSeleccionado22}" style="width:450px;">
+								<f:selectItem itemLabel="Seleccione un establecimiento" itemValue="" />
+				            <f:selectItems itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}" var="establecimiento" value="#{procesoGITVerificarController.llenaCboEstablecimientos(2)}" />
+							<p:ajax listener="#{procesoGITVerificarController.getEstablecimientos(comunaSeleccionada22)}"  update=":#{p:component('tabView22')}"  /> 
+							</p:selectOneMenu>
+									</h:panelGrid>
+								</h:panelGrid>
+								<br />
+					
+								<p:dataTable  id="tabView22" resizableColumns="true" value="#{procesoGITVerificarController.llenaTabs(2)}"  liveResize="true" var="_data" rows="50"
+									paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column headerText="Comuna" />
+											<p:column headerText="Marco Presupuestario" />
+											<p:column headerText="Resolución" />
+											<p:column headerText="Fecha" />
+											<p:column headerText="Monto Convenio" />
+											<p:column headerText="Convenios Pendietes" />
+											<p:column headerText="Convenio"/>
+											<p:column headerText="Aprobación"/>
+										</p:row>
+									</p:columnGroup>
+
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<span class="textoAjustado textoPequenio centrado">#{_data.comunaNombre}</span>
+									</p:column>
+									
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<span class="textoAjustado textoPequenio centrado">#{_data.numeroResolucion}</span>
+									</p:column>
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<h:outputText value="#{_data.fecha}" styleClass="textoPequenio textoAjustado">
+											<f:convertDateTime pattern="dd/MMM/yyyy" />
+										</h:outputText>
+									</p:column>
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<h:outputText value="#{0}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+									<p:column>
+											<h:commandLink   action="#{procesoGITVerificarController.downloadDocAlfresco(_data.idConverio)}">
+												<h:graphicImage  value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+												
+											</h:commandLink >
+										</p:column>
+									<p:column >
+										<h:commandLink   action="#{procesoGITVerificarController.updatefila(_data.idConverio)}"  >
+											<p:ajax update=":#{p:component('tabView22')}"/>
+											<h:graphicImage  value="resources/minsal/images/check-blue.png" styleClass="divapIcons" />
+										</h:commandLink >										
+									</p:column>
+										<p:columnGroup type="footer">
+										<p:row>
+											<p:column />
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{466144*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<p:column />
+											<p:column />
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{_data.total}" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<p:column>
+													<f:facet name="footer">
+													<h:outputText value="" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<p:column>
+													<f:facet name="footer">
+													<h:outputText value="" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL"  />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+										</p:row>
+									</p:columnGroup>
+
+								</p:dataTable>
+						</p:tab>
+							<p:tab title="Subtítulo 24" rendered="#{procesoGITVerificarController.sub24}">
+								<h4>Filtros para la Visualización de Convenios:</h4>
+								<h:panelGrid>
+									<h:panelGrid>
+										<h:outputText value="Componente: " styleClass="inputLabel" />
+										<p:selectOneMenu id="componente24" value="#{procesoGITVerificarController.componenteSeleccionado24}" style="width:450px;">
+								<f:selectItem itemLabel="Seleccione un componente" itemValue="" />
+						    <f:selectItems itemLabel="#{componente.nombre}" itemValue="#{componente.id}" var="componente" value="#{procesoGITVerificarController.getComponentesBySubtitulo(3)}" />
+						<p:ajax listener="#{procesoGITVerificarController.getComponentesBySubtitulo(3)}" update=":#{p:component('tabView24')}"  /> 
+							</p:selectOneMenu>
+									</h:panelGrid>
+									<h:panelGrid>
+										<h:outputText value="Comuna: " styleClass="inputLabel" />
+							<p:selectOneMenu id="comuna24" value="#{procesoGITVerificarController.comunaSeleccionada24}" style="width:450px;">
+								<f:selectItem itemLabel="Seleccione una comuna" itemValue="" />
+								<f:selectItems itemLabel="#{comuna.descComuna}" itemValue="#{comuna.idComuna}" var="comuna" value="#{procesoGITVerificarController.comunas}" />
+								<p:ajax listener="#{procesoGITVerificarController.getComunas}" update=":#{p:component('tabView24')},:#{p:component('establecimiento24')}" />
+							</p:selectOneMenu>											
+									</h:panelGrid>
+									<h:panelGrid>
+						<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+						 <p:selectOneMenu id="establecimiento24" value="#{procesoGITVerificarController.establecimientoSeleccionado24}" style="width:450px;">
+								<f:selectItem itemLabel="Seleccione un establecimiento" itemValue="" />
+				            <f:selectItems itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}" var="establecimiento" value="#{procesoGITVerificarController.llenaCboEstablecimientos(3)}" />
+							<p:ajax listener="#{procesoGITVerificarController.getEstablecimientos(comunaSeleccionada24)}"  update=":#{p:component('tabView24')}"  /> 
+							</p:selectOneMenu>
+									</h:panelGrid>
+								</h:panelGrid>
+								<br />
+					
+								<p:dataTable  id="tabView24" resizableColumns="true" value="#{procesoGITVerificarController.llenaTabs(3)}"  liveResize="true" var="_data" rows="50"
+									paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column headerText="Comuna" />
+											<p:column headerText="Marco Presupuestario" />
+											<p:column headerText="Resolución" />
+											<p:column headerText="Fecha" />
+											<p:column headerText="Monto Convenio" />
+											<p:column headerText="Convenios Pendietes" />
+											<p:column headerText="Convenio"/>
+											<p:column headerText="Aprobación"/>
+										</p:row>
+									</p:columnGroup>
+
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<span class="textoAjustado textoPequenio centrado">#{_data.comunaNombre}</span>
+									</p:column>
+									
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<span class="textoAjustado textoPequenio centrado">#{_data.numeroResolucion}</span>
+									</p:column>
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<h:outputText value="#{_data.fecha}" styleClass="textoPequenio textoAjustado">
+											<f:convertDateTime pattern="dd/MMM/yyyy" />
+										</h:outputText>
+									</p:column>
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<h:outputText value="#{0}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+									<p:column>
+											<h:commandLink   action="#{procesoGITVerificarController.downloadDocAlfresco(_data.idConverio)}">
+												<h:graphicImage  value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+												
+											</h:commandLink >
+										</p:column>
+									<p:column >
+										<h:commandLink   action="#{procesoGITVerificarController.updatefila(_data.idConverio)}"  >
+											<p:ajax update=":#{p:component('tabView24')}"/>
+											<h:graphicImage  value="resources/minsal/images/check-blue.png" styleClass="divapIcons" />
+										</h:commandLink >										
+									</p:column>
+										<p:columnGroup type="footer">
+										<p:row>
+											<p:column />
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{466144*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<p:column />
+											<p:column />
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{_data.total}" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<p:column>
+													<f:facet name="footer">
+													<h:outputText value="" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<p:column>
+													<f:facet name="footer">
+													<h:outputText value="" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL"  />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+										</p:row>
+									</p:columnGroup>
+
+								</p:dataTable>
+							
+							
+							</p:tab>
+								<p:tab title="Subtítulo 29" rendered="#{procesoGITVerificarController.sub29}">
+								<h4>Filtros para la Visualización de Convenios:</h4>
+								<h:panelGrid>
+									<h:panelGrid>
+										<h:outputText value="Componente: " styleClass="inputLabel" />
+										<p:selectOneMenu id="componente29" value="#{procesoGITVerificarController.componenteSeleccionado29}" style="width:450px;">
+								<f:selectItem itemLabel="Seleccione un componente" itemValue="" />
+						    <f:selectItems itemLabel="#{componente.nombre}" itemValue="#{componente.id}" var="componente" value="#{procesoGITVerificarController.getComponentesBySubtitulo(4)}" />
+						<p:ajax listener="#{procesoGITVerificarController.getComponentesBySubtitulo(4)}" update=":#{p:component('tabView29')}"  /> 
+							</p:selectOneMenu>
+									</h:panelGrid>
+									<h:panelGrid>
+										<h:outputText value="Comuna: " styleClass="inputLabel" />
+							<p:selectOneMenu id="comuna29" value="#{procesoGITVerificarController.comunaSeleccionada29}" style="width:450px;">
+								<f:selectItem itemLabel="Seleccione una comuna" itemValue="" />
+								<f:selectItems itemLabel="#{comuna.descComuna}" itemValue="#{comuna.idComuna}" var="comuna" value="#{procesoGITVerificarController.comunas}" />
+								<p:ajax listener="#{procesoGITVerificarController.getComunas}" update=":#{p:component('tabView29')},:#{p:component('establecimiento29')}" />
+							</p:selectOneMenu>											
+									</h:panelGrid>
+									<h:panelGrid>
+						<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+						 <p:selectOneMenu id="establecimiento29" value="#{procesoGITVerificarController.establecimientoSeleccionado29}" style="width:450px;">
+								<f:selectItem itemLabel="Seleccione un establecimiento" itemValue="" />
+				            <f:selectItems itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}" var="establecimiento" value="#{procesoGITVerificarController.llenaCboEstablecimientos(4)}" />
+							<p:ajax listener="#{procesoGITVerificarController.getEstablecimientos(comunaSeleccionada29)}"  update=":#{p:component('tabView29')}"  /> 
+							</p:selectOneMenu>
+									</h:panelGrid>
+								</h:panelGrid>
+								<br />
+					
+								<p:dataTable  id="tabView29" resizableColumns="true" value="#{procesoGITVerificarController.llenaTabs(4)}"  liveResize="true" var="_data" rows="50"
+									paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column headerText="Comuna" />
+											<p:column headerText="Marco Presupuestario" />
+											<p:column headerText="Resolución" />
+											<p:column headerText="Fecha" />
+											<p:column headerText="Monto Convenio" />
+											<p:column headerText="Convenios Pendietes" />
+											<p:column headerText="Convenio"/>
+											<p:column headerText="Aprobación"/>
+										</p:row>
+									</p:columnGroup>
+
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<span class="textoAjustado textoPequenio centrado">#{_data.comunaNombre}</span>
+									</p:column>
+									
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<span class="textoAjustado textoPequenio centrado">#{_data.numeroResolucion}</span>
+									</p:column>
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<h:outputText value="#{_data.fecha}" styleClass="textoPequenio textoAjustado">
+											<f:convertDateTime pattern="dd/MMM/yyyy" />
+										</h:outputText>
+									</p:column>
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+
+									<p:column rendered="#{_data.convenioMonto!=null}">
+										<h:outputText value="#{0}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+									<p:column>
+											<h:commandLink   action="#{procesoGITVerificarController.downloadDocAlfresco(_data.idConverio)}">
+												<h:graphicImage  value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+												
+											</h:commandLink >
+										</p:column>
+									<p:column >
+										<h:commandLink   action="#{procesoGITVerificarController.updatefila(_data.idConverio)}"  >
+											<p:ajax update=":#{p:component('tabView29')}"/>
+											<h:graphicImage  value="resources/minsal/images/check-blue.png" styleClass="divapIcons" />
+										</h:commandLink >										
+									</p:column>
+										<p:columnGroup type="footer">
+										<p:row>
+											<p:column />
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{466144*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<p:column />
+											<p:column />
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{_data.total}" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<p:column>
+													<f:facet name="footer">
+													<h:outputText value="" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<p:column>
+													<f:facet name="footer">
+													<h:outputText value="" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL"  />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+										</p:row>
+									</p:columnGroup>
+
+								</p:dataTable>
+
+
+							</p:tab>
 							<p:tab title="Per Capita"></p:tab>
 							<p:tab title="Ref. Municipal"></p:tab>
 
@@ -153,9 +572,12 @@
 
 					</div>
 					<p:commandButton value="Información de Convenios Correcta para Programa" styleClass="x-btn-text"
-						action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false" icon="ui-icon-seek-first" />
+						action="#{procesoGITVerificarController.informarReparos(false)}" ajax="false" icon="ui-icon-seek-first" />
+					
 					<p:commandButton value="Informar Reparos en Convenios para Programa" styleClass="x-btn-text"
-						action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false" icon="ui-icon-cross" />
+						action="#{procesoGITVerificarController.informarReparos(true)}" ajax="false" icon="ui-icon-cross" >
+						
+							</p:commandButton>
 				</p:panel>
 
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"

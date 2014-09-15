@@ -156,7 +156,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	private Map<String, Integer> servicios = new HashMap<String, Integer>();
 	private Map<String, Integer> programas = new HashMap<String, Integer>();
 	private Integer idProgramaModificar;
-	// Para mostrar los subtitulos según corresponda.
+	// Para mostrar los subtitulos segï¿½n corresponda.
 	private Boolean mostrarSubtitulo21;
 	private Boolean mostrarSubtitulo22;
 	private Boolean mostrarSubtitulo24;
@@ -201,7 +201,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 
 		for (ComponentesVO componentesVO : componentesV) {
 			componentes.put(componentesVO.getNombre(),
-					componentesVO.getComponente_id());
+					componentesVO.getId());
 		}
 		Map<String, Integer> mapOrdenado = new TreeMap<String, Integer>(
 				componentes);
@@ -512,7 +512,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	}
 
 	/*
-	 * Modificación de la celda
+	 * Modificaciï¿½n de la celda
 	 */
 	public void onCellEditSubtitulo22(CellEditEvent event) {
 
@@ -687,7 +687,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	}
 
 	/*
-	 * Modificación de la celda
+	 * Modificaciï¿½n de la celda
 	 */
 	public void onCellEditSubtitulo24(CellEditEvent event) {
 
@@ -867,7 +867,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	}
 
 	/*
-	 * Modificación de la celda
+	 * Modificaciï¿½n de la celda
 	 */
 	public void onCellEditSubtitulo29(CellEditEvent event) {
 
@@ -1031,7 +1031,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 
 			for (CajaVO estimacionFlujoMonitoreoPojo : lst) {
 				if (estimacionFlujoMonitoreoPojo.getComponente()
-						.getComponente_id() == valorComboSubtituloComponente) {
+						.getId() == valorComboSubtituloComponente) {
 					estimacionFlujoMonitoreoPojo.setPesoComponente(Float
 							.valueOf(valorPesoComponente));
 					lstAgregar.add(estimacionFlujoMonitoreoPojo);
@@ -1051,7 +1051,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	}
 
 	/*
-	 * Modificación de la celda
+	 * Modificaciï¿½n de la celda
 	 */
 	public void onCellEditSubtituloComponente(CellEditEvent event) {
 
@@ -1638,7 +1638,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 
 		// TODO: [ASAAVEDRA] De donde se obtiene el peso del componente
 		for (ComponentesVO componente : componentesV) {
-			if (componente.getComponente_id() == valorComboSubtituloComponente) {
+			if (componente.getId() == valorComboSubtituloComponente) {
 				this.valorPesoComponente = String.valueOf(componente.getPeso());
 				this.valorNombreComponente = componente.getNombre();
 			}

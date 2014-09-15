@@ -17,7 +17,8 @@
 						justo pharetra, vitae ultricies est faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.</p>
 					
 					<h4>Seleccionar Programa a Informar:</h4>
-					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoProgramacionController.listadoProgramasServicio}"
+			
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoGITSubirController.programas}"
 						liveResize="true" var="_programas" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
 						styleClass="dataTable">
 						<p:columnGroup type="header">
@@ -33,14 +34,29 @@
 						</p:columnGroup>
 
 						<p:column style="text-align:left;">
-							<span class="textoAjustado">#{_programas.programa}</span>
+							<span class="textoAjustado">#{_programas.nombre}</span>
 						</p:column>
 						<p:column style="text-align:left;">
 							<span class="textoAjustado">#{_programas.descripcion}</span>
 						</p:column>
 						<p:column>
-							<a href="#{_programas.url}.jsf"> <h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons" />
-							</a>
+						
+							<h:commandLink action="#{procesoGITSubirController.comenzar()}" value="INICIA">
+							<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado.nombre}"
+							value="#{_programas.nombre}" />
+							<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado.tipo_programa}"
+							value="#{_programas.tipo_programa}" />
+							<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado.id}"
+							value="#{_programas.id}" />
+							<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado.idProgramaAno}"
+							value="#{_programas.idProgramaAno}" />
+							<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado.descripcion}"
+							value="#{_programas.descripcion}" />
+							<f:setPropertyActionListener target="#{procesoGITSubirController.target}"
+							value="bandejaTareas.jsf" />
+        					<!-- h:graphicImage value="resources/minsal/images/play.png"  styleClass="divapIcons">        					
+							</h:graphicImage-->
+						</h:commandLink>
 						</p:column>
 					</p:dataTable>
 

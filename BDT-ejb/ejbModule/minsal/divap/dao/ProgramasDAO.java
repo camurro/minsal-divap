@@ -4,18 +4,10 @@ package minsal.divap.dao;
 import java.util.List;
 
 import javax.ejb.Singleton;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnit;
 import javax.persistence.TypedQuery;
 
-import org.jbpm.services.task.commands.GetPotentialOwnersForTaskCommand;
-
-import minsal.divap.enums.EstadosProgramas;
 import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.Programa;
@@ -101,20 +93,6 @@ public class ProgramasDAO {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
-	
-	
-	public Programa getProgramaByID(Integer idPrograma){
-		try {
-			TypedQuery<Programa> query = this.em.createNamedQuery("Programa.findById", Programa.class);
-			query.setParameter("id", idPrograma);
-			if (query.getSingleResult()!=null)
-			return query.getSingleResult(); 
-			
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		return null;
 	}
 
 	public ProgramaAno getProgramaAnoByIDProgramaAno(Integer idPrograma, Integer ano) {
@@ -205,7 +183,19 @@ public class ProgramasDAO {
 		}
 		return null;
 	}
-	
+
+	public Programa getProgramaById(Integer id){
+		try {
+			TypedQuery<Programa> query = this.em.createNamedQuery("Programa.findById", Programa.class);
+			query.setParameter("id", id);
+			List<Programa> results = query.getResultList();
+			if (results.size() >= 1)
+				return results.get(0);
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }
 

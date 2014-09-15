@@ -43,10 +43,9 @@ public class ProgramaAno implements Serializable {
 	@JoinColumn(name = "estado", referencedColumnName = "id_estado_programa")
 	@ManyToOne(optional = false)
 	private EstadoPrograma estado;
-	
-	@JoinColumn(name = "estadoFlujoCaja", referencedColumnName = "id_estado_programa")
-	@ManyToOne(optional = false)
-	private EstadoPrograma estadoFlujoCaja;
+    @JoinColumn(name = "estadoflujocaja", referencedColumnName = "id_estado_programa")
+    @ManyToOne
+    private EstadoPrograma estadoFlujoCaja;
 	
 	public EstadoPrograma getEstadoFlujoCaja() {
 		return estadoFlujoCaja;

@@ -70,7 +70,7 @@ public class ProgramasService {
 		for (Programa prog : programa){
 			for (Componente componente : prog.getComponentes()) {
 				ComponentesVO comVO = new ComponentesVO();
-				comVO.setComponente_id(componente.getId());
+				comVO.setId(componente.getId());
 				comVO.setNombre(componente.getNombre());
 				comVO.setPeso(componente.getPeso());
 				componentesPrograma.add(comVO);

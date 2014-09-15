@@ -4,15 +4,11 @@ package minsal.divap.dao;
 import java.util.List;
 
 import javax.ejb.Singleton;
-import javax.jms.Session;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.transaction.Transaction;
 
 import cl.minsal.divap.model.Caja;
-import cl.minsal.divap.model.Email;
-import cl.minsal.divap.model.ReferenciaDocumento;
 
 
 
@@ -91,7 +87,23 @@ public class CajaDAO {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
+	public List<Caja> getByIDSubComponenteComunaProgramaAno(int sub, String componenteSeleccionado, String comunaSeleccionada,
+						String establecimientoSeleccionado, int ano, Integer programa) {
+		try {
+			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByByIDSubComponenteComunaProgramaAno", Caja.class);
+			query.setParameter("idComuna",Integer.parseInt(comunaSeleccionada));
+			query.setParameter("idPrograma",programa);
+			query.setParameter("ano",ano);
+			query.setParameter("idSubtitulo",sub);
+			query.setParameter("idComponente",Integer.parseInt(componenteSeleccionado));
+		
+			List<Caja> results = query.getResultList();
+			return results;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }
 

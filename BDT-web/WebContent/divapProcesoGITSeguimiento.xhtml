@@ -72,28 +72,28 @@
 						<h:panelGrid styleClass="tableFullWidth">
 							<h:panelGrid columns="2" styleClass="tableFullWidth">
 								<h:outputText value="Para: " styleClass="inputLabel" />
-								<h:inputText styleClass="inputText" />
+								<h:inputText  value="#{procesoGTISeguimientoController.paraSeleccionado}" styleClass="inputText" />
 
 								<h:outputText value="CC: " styleClass="inputLabel" />
-								<h:inputText styleClass="inputText" />
+								<h:inputText value="#{procesoGTISeguimientoController.cCSeleccionado}" styleClass="inputText" />
 
 								<h:outputText value="CCO: " styleClass="inputLabel" />
-								<h:inputText styleClass="inputText" />
+								<h:inputText value="#{procesoGTISeguimientoController.cCOSeleccionado}" styleClass="inputText" />
 
 								<h:outputText value="Adjunto: " styleClass="inputLabel" />
 								<h:panelGrid columns="2">
-									<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" mode="simple"
+									<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoGTISeguimientoController.uploadedFile}" mode="simple"
 										styleClass="inputText" />
 									<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
 								</h:panelGrid>
 
 								<h:outputText value="Asunto: " styleClass="inputLabel" />
-								<h:inputText styleClass="inputText" />
+								<h:inputText value="#{procesoGTISeguimientoController.asuntoSeleccionado}" styleClass="inputText" />
 
-								<h:outputText value="Mensaje: " styleClass="inputLabel" />
-								<h:inputTextarea styleClass="inputTextArea" />
+								<h:outputText value="Mensaje : " styleClass="inputLabel" />
+								<h:inputTextarea value="#{procesoGTISeguimientoController.mensajeSeleccionado}" styleClass="inputTextArea" />
 							</h:panelGrid>
-							<p:commandButton styleClass="x-btn-text" style="float:right;" value="Enviar Correo" icon="ui-icon-comment" />
+							<p:commandButton styleClass="x-btn-text" style="float:right;" value="Enviar Correo" action="#{procesoGTISeguimientoController.enviarCorreo()}" icon="ui-icon-comment" />
 						</h:panelGrid>
 						<h3>Tareas de la Actividad:</h3>
 						<p style="">

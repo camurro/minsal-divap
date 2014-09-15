@@ -22,7 +22,7 @@ public class ComponenteMapper implements Mapper<Componente>{
 		if (componente == null)
 			return null;
 		ComponentesVO componentesVO = new ComponentesVO();
-		componentesVO.setComponente_id(componente.getId());
+		componentesVO.setId(componente.getId());
 		componentesVO.setNombre(componente.getNombre());
 		if(componente.getTipoComponente() != null){
 			TipoComponenteVO tipoComponenteVO = new TipoComponenteVO(componente.getTipoComponente().getId(), componente.getTipoComponente().getNombre());
@@ -37,7 +37,6 @@ public class ComponenteMapper implements Mapper<Componente>{
 			componentesVO.setSubtitulos(subtitulos);
 		}
 		return componentesVO;
-
 	}
 
 	@Override

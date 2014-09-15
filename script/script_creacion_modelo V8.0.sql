@@ -2668,7 +2668,7 @@ COMMENT ON CONSTRAINT fk_componente
   
   
   CREATE TABLE public.documento_estimacionflujocaja (
-  id                 integer NOT NULL PRIMARY KEY,
+  id                 serial NOT NULL PRIMARY KEY,
   id_tipo_documento  integer,
   id_documento       integer,
   /* Foreign keys */
@@ -2686,7 +2686,7 @@ COMMENT ON CONSTRAINT fk_componente
 
 CREATE TABLE caja
 (
-  id integer NOT NULL DEFAULT nextval(('public.caja_id_seq'::text)::regclass), -- Identificador para la tabla de caja
+  id serial NOT NULL, -- Identificador para la tabla de caja
   id_programa_ano integer NOT NULL, -- FK del programa
   id_componente integer NOT NULL,
   id_servicio integer NOT NULL,
@@ -2742,7 +2742,7 @@ DROP TABLE documento_estimacionflujocaja;
 
 CREATE TABLE documento_estimacionflujocaja
 (
-  id integer NOT NULL DEFAULT nextval(('public.documento_estimacionflujocaja_id_seq'::text)::regclass),
+  id serial NOT NULL,
   id_tipo_documento integer,
   id_documento integer,
   id_programa_ano integer,
@@ -2760,11 +2760,9 @@ CREATE TABLE documento_estimacionflujocaja
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE documento_estimacionflujocaja
-  OWNER TO postgres;
 
   
-  DROP TABLE estimacion_flujo_caja_seguimiento;
+--DROP TABLE estimacion_flujo_caja_seguimiento;
 
 CREATE TABLE estimacion_flujo_caja_seguimiento
 (
@@ -2787,6 +2785,11 @@ ALTER TABLE estimacion_flujo_caja_seguimiento
 
   
   ALTER TABLE programa_ano ADD COLUMN estadoflujocaja integer;
+
+ALTER TABLE programa_ano
+  ADD CONSTRAINT estado_flujo_caja_fk FOREIGN KEY (estadoflujocaja)
+      REFERENCES estado_programa (id_estado_programa) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 --Tabla remesa
 CREATE TABLE remesa

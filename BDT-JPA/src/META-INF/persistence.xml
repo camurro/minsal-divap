@@ -1,39 +1,3 @@
-<<<<<<< HEAD
-<?xml version="1.0" encoding="UTF-8"?>
-<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-	<persistence-unit name="BDT-JPA">
-		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<jta-data-source>java:jboss/datasources/MinsalDS</jta-data-source>
-		<class>cl.minsal.divap.model.AnoEnCurso</class>
-		<class>cl.minsal.divap.model.AntecendentesComuna</class>
-		<class>cl.minsal.divap.model.Componente</class>
-		<class>cl.minsal.divap.model.Comuna</class>
-		<class>cl.minsal.divap.model.Cuota</class>
-		<class>cl.minsal.divap.model.Establecimiento</class>
-		<class>cl.minsal.divap.model.MarcoPresupuestario</class>
-		<class>cl.minsal.divap.model.MetadataCore</class>
-		<class>cl.minsal.divap.model.Programa</class>
-		<class>cl.minsal.divap.model.ProgramaAno</class>
-		<class>cl.minsal.divap.model.ProgramaMunicipalCore</class>
-		<class>cl.minsal.divap.model.ProgramaServicioCore</class>
-		<class>cl.minsal.divap.model.Region</class>
-		<class>cl.minsal.divap.model.Rol</class>
-		<class>cl.minsal.divap.model.ServicioSalud</class>
-		<class>cl.minsal.divap.model.Usuario</class>
-		<class>cl.minsal.divap.model.DistribucionInicialPercapita</class>
-		<class>cl.minsal.divap.model.Remesa</class>
-		<class>cl.minsal.divap.model.Caja</class>
-		<class>cl.minsal.divap.model.DocumentoOt</class>
-		<class>cl.minsal.divap.model.OrdenTransferencia</class>
-		<class>cl.minsal.divap.model.OtSeguimiento</class>
-		<class>cl.minsal.divap.model.DocumentoEstimacionflujocaja</class>
-		<properties>
-			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-			<property name="hibernate.show_sql" value="true"/>
-			<property name="hibernate.format_sql" value="true"/>
-		</properties>
-	</persistence-unit>
-=======
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 	<persistence-unit name="BDT-JPA">
@@ -63,5 +27,4 @@
 			<property name="hibernate.format_sql" value="true"/>
 		</properties>
 	</persistence-unit>
->>>>>>> percapita4
 </persistence>

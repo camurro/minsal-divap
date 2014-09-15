@@ -31,9 +31,8 @@ import javax.xml.bind.annotation.XmlTransient;
 public class EstadoPrograma implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id_estado_programa")
+	@Column(name="id_estado_programa", unique=true, nullable=false)
+	@GeneratedValue
     private Integer idEstadoPrograma;
     @Basic(optional = false)
     @Column(name = "nombre_estado")
