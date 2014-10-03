@@ -68,6 +68,7 @@ public class CajaService {
 			caja.setDiciembre(cajaVO2.getDiciembre());
 			
 			caja.setTotal(cajaVO2.getTotal());*/
+
 			
 			cajaDAO.save(caja);
 

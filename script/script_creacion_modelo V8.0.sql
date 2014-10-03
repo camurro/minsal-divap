@@ -3366,6 +3366,8 @@ DELETE FROM caja WHERE marco_presupuestario > 2;
 DELETE FROM marco_presupuestario WHERE id_marco_presupuestario > 2;
 UPDATE programa_ano SET estadoflujocaja=1;
 
+INSERT INTO tipo_documento(id_tipo_documento, nombre)  VALUES (16, 'Planilla de Estimación de Flujos de Caja');
+
 
 
 

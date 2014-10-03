@@ -31,7 +31,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Caja.findByProgramaAnoComponenteSubtitulo", query = "SELECT c FROM Caja c WHERE c.idSubtitulo.idTipoSubtitulo = :idTipoSubtitulo and c.idComponente.id = :idComponente and c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno"),
     @NamedQuery(name = "Caja.deleteUsingIdProgramaAno", query = "DELETE FROM Caja c WHERE c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno"),
     @NamedQuery(name = "Caja.findByIdProgramaAnoIdServicio", query = "SELECT c FROM Caja c WHERE c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno and c.marcoPresupuestario.servicioSalud.id = :idServicio"),
+    @NamedQuery(name = "Caja.findBySubtituloAno", query = "SELECT c FROM Caja c WHERE c.idSubtitulo.idTipoSubtitulo = :idSubtitulo and c.marcoPresupuestario.idProgramaAno is not null and c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno "),
     @NamedQuery(name = "Caja.findById", query = "SELECT c FROM Caja c WHERE c.id = :id")})
+
+
 public class Caja implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -53,7 +56,7 @@ public class Caja implements Serializable {
     @JoinColumn(name = "id_componente", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Componente idComponente;
-   
+    
     public Caja() {
     }
 
@@ -133,5 +136,5 @@ public class Caja implements Serializable {
     public String toString() {
         return "cl.minsal.divap.model.Caja[ id=" + id + " ]";
     }
-    
+   
 }

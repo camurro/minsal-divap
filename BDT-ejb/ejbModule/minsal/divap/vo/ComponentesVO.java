@@ -12,7 +12,7 @@ public class ComponentesVO implements Serializable{
 	private String nombre;
 	private TipoComponenteVO tipoComponente;
 	private List<SubtituloVO> subtitulos;
-	private float peso;
+	private Float peso;
 
 	public Integer getId() {
 		return id;
@@ -46,11 +46,11 @@ public class ComponentesVO implements Serializable{
 		this.tipoComponente = tipoComponente;
 	}
 
-	public float getPeso() {
+	public Float getPeso() {
 		return peso;
 	}
 
-	public void setPeso(float peso) {
+	public void setPeso(Float peso) {
 		this.peso = peso;
 	}
 	

@@ -28,6 +28,7 @@ public class ProgramasDAO {
 		try {
 			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.findByIdProgramaAno", ProgramaAno.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
+
 			List <ProgramaAno> programas = query.getResultList(); 
 			if(programas != null && programas.size() > 0){
 				return programas.get(0);
@@ -213,6 +214,25 @@ public class ProgramasDAO {
 		Query queryMarco = this.em.createNamedQuery("MarcoPresupuestario.deleteUsingIdProgramaAno");
 		queryMarco.setParameter("idProgramaAno", idProgramaAno);
 		queryMarco.executeUpdate();
+	}
+	
+	public ProgramaAno getProgramaAnoSiguiente(Integer idPrograma, Integer anoSiguiente) {
+		try {
+			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.findByAnoIdPrograma", ProgramaAno.class);
+			query.setParameter("idPrograma", idPrograma);
+			query.setParameter("ano", anoSiguiente);
+			List<ProgramaAno> results = query.getResultList();
+			if (results.size() >= 1)
+				return results.get(0);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return null;
+	}
+
+	public ProgramaAno save(ProgramaAno programaAno) {
+		this.em.persist(programaAno);
+		return programaAno;
 	}
 
 }

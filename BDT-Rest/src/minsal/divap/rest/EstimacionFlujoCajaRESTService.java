@@ -1,18 +1,13 @@
 
 package minsal.divap.rest;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import minsal.divap.enums.BusinessProcess;
 import minsal.divap.service.EstimacionFlujoCajaService;
-import minsal.divap.service.ProcessService;
 
 
 /**
@@ -30,6 +25,7 @@ public class EstimacionFlujoCajaRESTService extends BaseRest{
     public void calcularPropuesta(@PathParam("idProgramaAno") Integer idProgramaAno, @PathParam("iniciarFlujoCaja") Boolean iniciarFlujoCaja){
 		System.out.println("[CALCULAR PROPUESTA idProgramaAno] -->"+idProgramaAno);
 		System.out.println("[CALCULAR PROPUESTA iniciarFlujoCaja] -->"+iniciarFlujoCaja);
+		
 		EstimacionFlujoCajaService estimacionFlujoCajaService = getService(EstimacionFlujoCajaService.class);
 		System.out.println("[FIN CALCULAR PROPUESTA]");
 		estimacionFlujoCajaService.calcularPropuesta(idProgramaAno, iniciarFlujoCaja);
