@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ProgramaMunicipalCoreComponente.findAll", query = "SELECT p FROM ProgramaMunicipalCoreComponente p"),
     @NamedQuery(name = "ProgramaMunicipalCoreComponente.findByProgramaMunicipalCore", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.programaMunicipalCoreComponentePK.programaMunicipalCore = :programaMunicipalCore"),
     @NamedQuery(name = "ProgramaMunicipalCoreComponente.findByComponente", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.programaMunicipalCoreComponentePK.componente = :componente"),
+    @NamedQuery(name = "ProgramaMunicipalCoreComponente.deleteByProgramasMunicipalCore", query = "DELETE FROM ProgramaMunicipalCoreComponente p WHERE p.programaMunicipalCoreComponentePK.programaMunicipalCore IN (:programasMunicipalCore)"),
     @NamedQuery(name = "ProgramaMunicipalCoreComponente.findByTarifa", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.tarifa = :tarifa"),
     @NamedQuery(name = "ProgramaMunicipalCoreComponente.findByCantidad", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.cantidad = :cantidad")})
 public class ProgramaMunicipalCoreComponente implements Serializable {

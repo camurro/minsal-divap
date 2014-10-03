@@ -1,7 +1,9 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 
 
 /**
@@ -9,86 +11,108 @@ import javax.persistence.*;
  * 
  */
 @Entity
-@Table(name="marco_presupuestario")
-@NamedQuery(name="MarcoPresupuestario.findAll", query="SELECT m FROM MarcoPresupuestario m")
+@Table(name = "marco_presupuestario")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "MarcoPresupuestario.findAll", query = "SELECT m FROM MarcoPresupuestario m"),
+    @NamedQuery(name = "MarcoPresupuestario.findByMarcoInicial", query = "SELECT m FROM MarcoPresupuestario m WHERE m.marcoInicial = :marcoInicial"),
+    @NamedQuery(name = "MarcoPresupuestario.findByMarcoModificado", query = "SELECT m FROM MarcoPresupuestario m WHERE m.marcoModificado = :marcoModificado"),
+    @NamedQuery(name = "MarcoPresupuestario.findByProgramaAnoServicio", query = "SELECT m FROM MarcoPresupuestario m WHERE m.idProgramaAno.idProgramaAno = :idProgramaAno and m.servicioSalud.id = :idServicioSalud"),
+    @NamedQuery(name = "MarcoPresupuestario.findByIdMarcoPresupuestario", query = "SELECT m FROM MarcoPresupuestario m WHERE m.idMarcoPresupuestario = :idMarcoPresupuestario")})
 public class MarcoPresupuestario implements Serializable {
-	private static final long serialVersionUID = 1L;
-
-	@Id
+    private static final long serialVersionUID = 1L;
+    @Basic(optional = false)
+    @Column(name = "marco_inicial")
+    private int marcoInicial;
+    @Basic(optional = false)
+    @Column(name = "marco_modificado")
+    private int marcoModificado;
+    @Id
 	@Column(name="id_marco_presupuestario", unique=true, nullable=false)
 	@GeneratedValue
-	private Integer idMarcoPresupuestario;
+    private Integer idMarcoPresupuestario;
+    @JoinColumn(name = "id_servicio_salud", referencedColumnName = "id")
+    @ManyToOne
+    private ServicioSalud servicioSalud;
+    @JoinColumn(name = "id_programa_ano", referencedColumnName = "id_programa_ano")
+    @ManyToOne
+    private ProgramaAno idProgramaAno;
 
-	@Column(name="marco_inicial")
-	private Integer marcoInicial;
+    public MarcoPresupuestario() {
+    }
 
-	@Column(name="marco_modificado")
-	private Integer marcoModificado;
+    public MarcoPresupuestario(Integer idMarcoPresupuestario) {
+        this.idMarcoPresupuestario = idMarcoPresupuestario;
+    }
 
-	//bi-directional many-to-one association to AnoEnCurso
-	@ManyToOne
-	@JoinColumn(name="ano_ano_en_curso")
-	private AnoEnCurso anoEnCurso;
+    public MarcoPresupuestario(Integer idMarcoPresupuestario, int marcoInicial, int marcoModificado) {
+        this.idMarcoPresupuestario = idMarcoPresupuestario;
+        this.marcoInicial = marcoInicial;
+        this.marcoModificado = marcoModificado;
+    }
 
-	//bi-directional many-to-one association to Programa
-	@ManyToOne
-	@JoinColumn(name="id_programa")
-	private Programa programa;
+    public int getMarcoInicial() {
+        return marcoInicial;
+    }
 
-	//bi-directional many-to-one association to ServicioSalud
-	@ManyToOne
-	@JoinColumn(name="id_servicio_salud")
-	private ServicioSalud servicioSalud;
+    public void setMarcoInicial(int marcoInicial) {
+        this.marcoInicial = marcoInicial;
+    }
 
-	public MarcoPresupuestario() {
-	}
+    public int getMarcoModificado() {
+        return marcoModificado;
+    }
 
-	public Integer getIdMarcoPresupuestario() {
-		return this.idMarcoPresupuestario;
-	}
+    public void setMarcoModificado(int marcoModificado) {
+        this.marcoModificado = marcoModificado;
+    }
 
-	public void setIdMarcoPresupuestario(Integer idMarcoPresupuestario) {
-		this.idMarcoPresupuestario = idMarcoPresupuestario;
-	}
+    public Integer getIdMarcoPresupuestario() {
+        return idMarcoPresupuestario;
+    }
 
-	public Integer getMarcoInicial() {
-		return this.marcoInicial;
-	}
+    public void setIdMarcoPresupuestario(Integer idMarcoPresupuestario) {
+        this.idMarcoPresupuestario = idMarcoPresupuestario;
+    }
 
-	public void setMarcoInicial(Integer marcoInicial) {
-		this.marcoInicial = marcoInicial;
-	}
-
-	public Integer getMarcoModificado() {
-		return this.marcoModificado;
-	}
-
-	public void setMarcoModificado(Integer marcoModificado) {
-		this.marcoModificado = marcoModificado;
-	}
-
-	public AnoEnCurso getAnoEnCurso() {
-		return this.anoEnCurso;
-	}
-
-	public void setAnoEnCurso(AnoEnCurso anoEnCurso) {
-		this.anoEnCurso = anoEnCurso;
-	}
-
-	public Programa getPrograma() {
-		return this.programa;
-	}
-
-	public void setPrograma(Programa programa) {
-		this.programa = programa;
-	}
-
-	public ServicioSalud getServicioSalud() {
-		return this.servicioSalud;
+    public ServicioSalud getServicioSalud() {
+		return servicioSalud;
 	}
 
 	public void setServicioSalud(ServicioSalud servicioSalud) {
 		this.servicioSalud = servicioSalud;
 	}
 
+	public ProgramaAno getIdProgramaAno() {
+        return idProgramaAno;
+    }
+
+    public void setIdProgramaAno(ProgramaAno idProgramaAno) {
+        this.idProgramaAno = idProgramaAno;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idMarcoPresupuestario != null ? idMarcoPresupuestario.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof MarcoPresupuestario)) {
+            return false;
+        }
+        MarcoPresupuestario other = (MarcoPresupuestario) object;
+        if ((this.idMarcoPresupuestario == null && other.idMarcoPresupuestario != null) || (this.idMarcoPresupuestario != null && !this.idMarcoPresupuestario.equals(other.idMarcoPresupuestario))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "cl.minsal.divap.model.MarcoPresupuestario[ idMarcoPresupuestario=" + idMarcoPresupuestario + " ]";
+    }
+    
 }

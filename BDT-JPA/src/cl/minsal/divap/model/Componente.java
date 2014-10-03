@@ -29,7 +29,7 @@ public class Componente implements Serializable {
 	private String nombre;
 	
 	@Column(name = "peso")
-	private float peso;
+	private Float peso;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "componente")
 	private Set<ComponenteSubtitulo> componenteSubtitulos;
 	@JoinColumn(name = "tipo_componente", referencedColumnName = "id")
@@ -112,11 +112,11 @@ public class Componente implements Serializable {
 		this.programaMunicipalCoreComponentes = programaMunicipalCoreComponentes;
 	}
 
-	public float getPeso() {
+	public Float getPeso() {
 		return peso;
 	}
 
-	public void setPeso(float peso) {
+	public void setPeso(Float peso) {
 		this.peso = peso;
 	}
 	

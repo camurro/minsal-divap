@@ -33,10 +33,9 @@ public class ProgramasDAO {
 		try {
 			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.findByIdProgramaAno", ProgramaAno.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
-			List <ProgramaAno> programasAno = query.getResultList(); 
-			for (ProgramaAno programaAno : programasAno) {
-				return programaAno;
-			}
+			List <ProgramaAno> results = query.getResultList(); 
+			if (results.size() >= 1)
+				return results.get(0);
 			return null;
 		
 		} catch (Exception e) {
@@ -165,13 +164,11 @@ public class ProgramasDAO {
 	}
 
 	public AnoEnCurso saveAnoCurso(AnoEnCurso anoCurso) {
-		// TODO Auto-generated method stub
 		this.em.persist(anoCurso);
 		return anoCurso;
 	}
 
 	public AnoEnCurso getAnoEnCursoById(int ano) {
-		// TODO Auto-generated method stub
 		try {
 			TypedQuery<AnoEnCurso> query = this.em.createNamedQuery("AnoEnCurso.findByAno", AnoEnCurso.class);
 			query.setParameter("ano", ano);
@@ -195,6 +192,25 @@ public class ProgramasDAO {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public ProgramaAno getProgramaAnoSiguiente(Integer idPrograma, Integer anoSiguiente) {
+		try {
+			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.findByAnoIdPrograma", ProgramaAno.class);
+			query.setParameter("idPrograma", idPrograma);
+			query.setParameter("ano", anoSiguiente);
+			List<ProgramaAno> results = query.getResultList();
+			if (results.size() >= 1)
+				return results.get(0);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return null;
+	}
+
+	public ProgramaAno save(ProgramaAno programaAno) {
+		this.em.persist(programaAno);
+		return programaAno;
 	}
 
 }

@@ -49,31 +49,31 @@ public class CajaService {
 			Caja caja = cajaDAO.getByID(cajaVO2.getId());
 			caja.setId(cajaVO2.getId());
 
-			caja.setEnero(cajaVO2.getEnero());
-
-			caja.setFebrero(cajaVO2.getFebrero());
-
-			caja.setMarzo(cajaVO2.getMarzo());
-
-			caja.setAbril(cajaVO2.getAbril());
-
-			caja.setMayo(cajaVO2.getMayo());
-
-			caja.setJunio(cajaVO2.getJunio());
-
-			caja.setJulio(cajaVO2.getJulio());
-
-			caja.setAgosto(cajaVO2.getAgosto());
-
-			caja.setSeptiembre(cajaVO2.getSeptiembre());
-
-			caja.setOctubre(cajaVO2.getOctubre());
-
-			caja.setNoviembre(cajaVO2.getNoviembre());
-
-			caja.setDiciembre(cajaVO2.getDiciembre());
-			
-			caja.setTotal(cajaVO2.getTotal());
+//			caja.setEnero(cajaVO2.getEnero());
+//
+//			caja.setFebrero(cajaVO2.getFebrero());
+//
+//			caja.setMarzo(cajaVO2.getMarzo());
+//
+//			caja.setAbril(cajaVO2.getAbril());
+//
+//			caja.setMayo(cajaVO2.getMayo());
+//
+//			caja.setJunio(cajaVO2.getJunio());
+//
+//			caja.setJulio(cajaVO2.getJulio());
+//
+//			caja.setAgosto(cajaVO2.getAgosto());
+//
+//			caja.setSeptiembre(cajaVO2.getSeptiembre());
+//
+//			caja.setOctubre(cajaVO2.getOctubre());
+//
+//			caja.setNoviembre(cajaVO2.getNoviembre());
+//
+//			caja.setDiciembre(cajaVO2.getDiciembre());
+//			
+//			caja.setTotal(cajaVO2.getTotal());
 			
 			cajaDAO.save(caja);
 

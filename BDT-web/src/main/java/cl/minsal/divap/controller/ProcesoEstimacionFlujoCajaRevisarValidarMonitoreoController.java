@@ -66,6 +66,8 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 
 	private boolean reparos;
 	
+	private ProgramaVO programaVO;
+	
 	
 	
 	/*
@@ -161,7 +163,6 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	private Boolean mostrarSubtitulo22;
 	private Boolean mostrarSubtitulo24;
 	private Boolean mostrarSubtitulo29;
-	private int idProgramaAno;
 	private int subtitulo;
 
 	@EJB
@@ -213,18 +214,17 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 
 		//Verificar si se esta modificando o esta iniciando un nuevo proceso.
 		
-		this.idProgramaAno = 0;
+		Integer idProgramaAno = 0;
 		try {
-			this.idProgramaAno = Integer.parseInt(facesContext.getExternalContext()
+			idProgramaAno = Integer.parseInt(facesContext.getExternalContext()
 					.getRequestParameterMap().get("programa"));
 		} catch (Exception e) {
-			// TODO: handle exception
 		}
 		
 		//Se esta iniciadno un nuevo proceso.
-		if (this.idProgramaAno==0)
+		if (idProgramaAno==0)
 		{
-			this.idProgramaAno = (Integer) getTaskDataVO()
+			idProgramaAno = (Integer) getTaskDataVO()
 					.getData().get("idProgramaAno_");
 		}
 		
@@ -250,23 +250,23 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 						e);
 			}
 		}
+		this.programaVO = programaService.getProgramaAno(idProgramaAno);
+		componentesV = programaService.getComponenteByPrograma(programaVO
+				.getId());
 		configurarVisibilidadPaneles();
 		// generaProgramas();
 		// generaServicios();
 		cargarListas();
 		setMes(8);
 		crearColumnasDinamicas();
-		ProgramaVO programaVO = programaService.getProgramaAno(idProgramaAno);
-		componentesV = programaService.getComponenteByPrograma(programaVO
-				.getId());
+		
+		
 		getListadComponente();
 		getListaServicios();
 		// DOCUMENTOS
-		this.docProgramacion = estimacionFlujoCajaService
-				.getIdPlantillaProgramacion();
+		this.docProgramacion = estimacionFlujoCajaService.getIdPlantillaProgramacion();
 
-		this.docPropuesta = estimacionFlujoCajaService
-				.getIdPlantillaPropuesta();
+		this.docPropuesta = estimacionFlujoCajaService.getIdPlantillaPropuesta();
 
 		anoActual = 2014;
 	}
@@ -275,29 +275,34 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		// TODO [ASAAVEDRA] Completar la visibilidad de los paneles segun los
 		// componentes/subtitulos asociados ala programa.
 
-		ProgramaVO programa = programaService.getProgramaAno(idProgramaAno);
-		List<ComponentesVO> s = programa.getComponentes();
-
-		List<SubtituloVO> lst = new ArrayList<SubtituloVO>();
-
-		for (ComponentesVO componentesVO : s) {
-			lst.addAll(componentesVO.getSubtitulos());
-		}
-
-		mostrarSubtitulo21 = false;
-		mostrarSubtitulo22 = false;
-		mostrarSubtitulo24 = false;
-		mostrarSubtitulo29 = false;
-
-		for (SubtituloVO subtituloVO : lst) {
-			if (subtituloVO.getId() == Subtitulo.SUBTITULO21.getId())
-				mostrarSubtitulo21 = true;
-			if (subtituloVO.getId() == Subtitulo.SUBTITULO22.getId())
-				mostrarSubtitulo22 = true;
-			if (subtituloVO.getId() == Subtitulo.SUBTITULO24.getId())
-				mostrarSubtitulo24 = true;
-			if (subtituloVO.getId() == Subtitulo.SUBTITULO29.getId())
-				mostrarSubtitulo29 = true;
+		setMostrarSubtitulo22(false);
+		setMostrarSubtitulo21(false);
+		setMostrarSubtitulo24(false);
+		setMostrarSubtitulo29(false);
+		if(programaVO != null){
+			 List<ComponentesVO> componentes =  programaVO.getComponentes();
+			 if(componentes != null && componentes.size() >0){
+				 for(ComponentesVO componente : componentes ){
+					 List<SubtituloVO> subtitulos = componente.getSubtitulos();
+					 if(subtitulos != null && subtitulos.size() >0){
+						 for(SubtituloVO subtitulo : subtitulos ){
+							 if(subtitulo.getId() == Subtitulo.SUBTITULO22.getId()){
+								 setMostrarSubtitulo22(true);
+							 }
+							 else if(subtitulo.getId() == Subtitulo.SUBTITULO21.getId()){
+								 setMostrarSubtitulo22(true);
+							 }
+							 else if(subtitulo.getId() == Subtitulo.SUBTITULO24.getId()){
+								 setMostrarSubtitulo24(true);
+							 }
+							 else if(subtitulo.getId() == Subtitulo.SUBTITULO29.getId()){
+								 setMostrarSubtitulo29(true);
+							 }
+						 }
+					 }
+						 
+				 }
+			 }
 		}
 
 	}
@@ -410,11 +415,10 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	public void CargarListaSubtitulo21() {
 
 		listadoMonitoreoSubtitulo21 = cajaService.getByProgramaAnoSubtituloVO(
-				idProgramaAno, Util.obtenerAno(new Date()),
+				programaVO.getIdProgramaAno(), Util.obtenerAno(new Date()),
 				Subtitulo.SUBTITULO21.getId());
 		estimacionFlujoMonitoreoGlobalPojoSubtitulo21 = new CajaGlobalVO();
-		estimacionFlujoMonitoreoGlobalPojoSubtitulo21
-				.setCaja(listadoMonitoreoSubtitulo21);
+		estimacionFlujoMonitoreoGlobalPojoSubtitulo21.setCaja(listadoMonitoreoSubtitulo21);
 	}
 
 	/*
@@ -470,7 +474,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	public void CargarListaSubtitulo21ConvenioRemesa() {
 
 		listadoMonitoreoSubtitulo21ConvenioRemesa = cajaService
-				.getByProgramaAnoSubtituloVO(idProgramaAno,
+				.getByProgramaAnoSubtituloVO(programaVO.getIdProgramaAno(),
 						Util.obtenerAno(new Date()),
 						Subtitulo.SUBTITULO21.getId());
 		estimacionFlujoMonitoreoGlobalPojoSubtitulo21ConvenioRemesa = new CajaGlobalVO();
@@ -593,7 +597,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	 */
 	public void CargarListaSubtitulo22() {
 		listadoMonitoreoSubtitulo22 = cajaService.getByProgramaAnoSubtituloVO(
-				idProgramaAno, Util.obtenerAno(new Date()),
+				programaVO.getIdProgramaAno(), Util.obtenerAno(new Date()),
 				Subtitulo.SUBTITULO22.getId());
 		estimacionFlujoMonitoreoGlobalPojoSubtitulo22 = new CajaGlobalVO();
 		estimacionFlujoMonitoreoGlobalPojoSubtitulo22
@@ -642,7 +646,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	 */
 	public void CargarListaSubtitulo22ConvenioRemesa() {
 		listadoMonitoreoSubtitulo22ConvenioRemesa = cajaService
-				.getByProgramaAnoSubtituloVO(idProgramaAno,
+				.getByProgramaAnoSubtituloVO(programaVO.getIdProgramaAno(),
 						Util.obtenerAno(new Date()),
 						Subtitulo.SUBTITULO21.getId());
 		estimacionFlujoMonitoreoGlobalPojoSubtitulo22ConvenioRemesa = new CajaGlobalVO();
@@ -765,7 +769,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	 */
 	public void CargarListaSubtitulo24() {
 		listadoMonitoreoSubtitulo24 = cajaService.getByProgramaAnoSubtituloVO(
-				idProgramaAno, Util.obtenerAno(new Date()),
+				programaVO.getIdProgramaAno(), Util.obtenerAno(new Date()),
 				Subtitulo.SUBTITULO24.getId());
 		estimacionFlujoMonitoreoGlobalPojoSubtitulo24 = new CajaGlobalVO();
 		estimacionFlujoMonitoreoGlobalPojoSubtitulo24
@@ -815,7 +819,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	 */
 	public void CargarListaSubtitulo24ConvenioRemesa() {
 		listadoMonitoreoSubtitulo24ConvenioRemesa = cajaService
-				.getByProgramaAnoSubtituloVO(idProgramaAno,
+				.getByProgramaAnoSubtituloVO(programaVO.getIdProgramaAno(),
 						Util.obtenerAno(new Date()),
 						Subtitulo.SUBTITULO24.getId());
 		estimacionFlujoMonitoreoGlobalPojoSubtitulo24ConvenioRemesa = new CajaGlobalVO();
@@ -945,7 +949,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	 */
 	public void CargarListaSubtitulo29() {
 		listadoMonitoreoSubtitulo29 = cajaService.getByProgramaAnoSubtituloVO(
-				idProgramaAno, Util.obtenerAno(new Date()),
+				programaVO.getIdProgramaAno(), Util.obtenerAno(new Date()),
 				Subtitulo.SUBTITULO29.getId());
 		if (listadoMonitoreoSubtitulo29.size() > 0) {
 			estimacionFlujoMonitoreoGlobalPojoSubtitulo29 = new CajaGlobalVO();
@@ -993,7 +997,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	 */
 	public void CargarListaSubtitulo29ConvenioRemesa() {
 		listadoMonitoreoSubtitulo29ConvenioRemesa = cajaService
-				.getByProgramaAnoSubtituloVO(idProgramaAno,
+				.getByProgramaAnoSubtituloVO(programaVO.getIdProgramaAno(),
 						Util.obtenerAno(new Date()),
 						Subtitulo.SUBTITULO29.getId());
 		estimacionFlujoMonitoreoGlobalPojoSubtitulo29ConvenioRemesa = new CajaGlobalVO();
@@ -1133,22 +1137,22 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		switch (subtitulo) {
 		case 21:
 			listadoMonitoreoSubtituloComponente = cajaService
-			.getByProgramaAnoSubtituloVO(idProgramaAno,
+			.getByProgramaAnoSubtituloVO(programaVO.getIdProgramaAno(),
 					Util.obtenerAno(new Date()), Subtitulo.SUBTITULO21.getId());
 			break;
 		case 22:
 			listadoMonitoreoSubtituloComponente = cajaService
-			.getByProgramaAnoSubtituloVO(idProgramaAno,
+			.getByProgramaAnoSubtituloVO(programaVO.getIdProgramaAno(),
 					Util.obtenerAno(new Date()), Subtitulo.SUBTITULO22.getId());
 			break;
 		case 24:
 			listadoMonitoreoSubtituloComponente = cajaService
-			.getByProgramaAnoSubtituloVO(idProgramaAno,
+			.getByProgramaAnoSubtituloVO(programaVO.getIdProgramaAno(),
 					Util.obtenerAno(new Date()), Subtitulo.SUBTITULO24.getId());
 			break;
 		case 29:
 			listadoMonitoreoSubtituloComponente = cajaService
-			.getByProgramaAnoSubtituloVO(idProgramaAno,
+			.getByProgramaAnoSubtituloVO(programaVO.getIdProgramaAno(),
 					Util.obtenerAno(new Date()), Subtitulo.SUBTITULO29.getId());
 			break;
 
@@ -1861,12 +1865,15 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		this.programas = programas;
 	}
 
-	public int getIdProgramaAno() {
-		return idProgramaAno;
+
+	public ProgramaVO getProgramaVO() {
+		return programaVO;
 	}
 
-	public void setIdProgramaAno(int idProgramaAno) {
-		this.idProgramaAno = idProgramaAno;
+
+	public void setProgramaVO(ProgramaVO programaVO) {
+		this.programaVO = programaVO;
 	}
+	
 
 }

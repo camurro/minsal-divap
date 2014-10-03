@@ -5,9 +5,12 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
+import javax.persistence.NamedQuery;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import minsal.divap.enums.Subtitulo;
+import cl.minsal.divap.model.Caja;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.DistribucionInicialPercapitaSeguimiento;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
@@ -57,6 +60,18 @@ public class EstimacionFlujoCajaDAO {
 		estimacionFlujoCajaSeguimiento.setSeguimiento(seguimiento);
 		this.em.persist(estimacionFlujoCajaSeguimiento);
 		return estimacionFlujoCajaSeguimiento.getId();
+	}
+
+	public List<Caja> getFlujoCajaServicios(Integer idProgramaAno, Subtitulo subtitulo) {
+		
+		try {
+			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findBySubtituloAno", Caja.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idSubtitulo", subtitulo.getId());
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

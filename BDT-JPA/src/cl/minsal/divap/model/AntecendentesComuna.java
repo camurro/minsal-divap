@@ -15,12 +15,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "AntecendentesComuna.findAll", query = "SELECT a FROM AntecendentesComuna a"),
     @NamedQuery(name = "AntecendentesComuna.findByClasificacion", query = "SELECT a FROM AntecendentesComuna a WHERE a.clasificacion = :clasificacion"),
     @NamedQuery(name = "AntecendentesComuna.findByAsignacionZona", query = "SELECT a FROM AntecendentesComuna a WHERE a.asignacionZona = :asignacionZona"),
-    @NamedQuery(name = "AntecendentesComuna.findByClasificacionAno", query = "SELECT a FROM AntecendentesComuna a WHERE a.anoAnoEnCurso.ano = :ano and a.clasificacion.idTipoComuna IN (:clasificacion)"),
+    @NamedQuery(name = "AntecendentesComuna.findByClasificacionAno", query = "SELECT a FROM AntecendentesComuna a WHERE a.anoAnoEnCurso.ano = :ano and a.clasificacion.idTipoComuna IN (:clasificacion) order by a.idComuna.servicioSalud.id asc, a.idComuna.nombre asc"),
     @NamedQuery(name = "AntecendentesComuna.findByTramoPobreza", query = "SELECT a FROM AntecendentesComuna a WHERE a.tramoPobreza = :tramoPobreza"),
     @NamedQuery(name = "AntecendentesComuna.findByAnoEnCurso", query = "SELECT a FROM AntecendentesComuna a WHERE a.anoAnoEnCurso.ano = :anoEnCurso and a.clasificacion is not null"),
     @NamedQuery(name = "AntecendentesComuna.findByDistribucionInicialPercapita", query = "SELECT a FROM AntecendentesComuna a JOIN a.antecendentesComunaCalculadoCollection c WHERE c.distribucionInicialPercapita.idDistribucionInicialPercapita = :idDistribucionInicialPercapita"),
     @NamedQuery(name = "AntecendentesComuna.findByIdAntecedentesComunaByComuna", query = "SELECT a FROM AntecendentesComuna a WHERE a.idComuna.id = :idComuna"),
     @NamedQuery(name = "AntecendentesComuna.findAntecendentesComunaByComunaServicioAno", query = "SELECT a FROM AntecendentesComuna a WHERE a.idComuna.nombre = :nombreComuna and a.idComuna.servicioSalud.nombre = :nombreServicio and a.anoAnoEnCurso.ano  = :anoEnCurso"),
+    @NamedQuery(name = "AntecendentesComuna.groupPercapitaServicio", query = "SELECT a.idComuna.servicioSalud.id, SUM(ac.percapitaAno) FROM AntecendentesComuna a JOIN a.antecendentesComunaCalculadoCollection ac where ac.distribucionInicialPercapita.idDistribucionInicialPercapita = :idDistribucionInicialPercapita GROUP BY a.idComuna.servicioSalud.id"),
     @NamedQuery(name = "AntecendentesComuna.findByIdAntecedentesComuna", query = "SELECT a FROM AntecendentesComuna a WHERE a.idAntecedentesComuna = :idAntecedentesComuna")})
 public class AntecendentesComuna implements Serializable {
     private static final long serialVersionUID = 1L;

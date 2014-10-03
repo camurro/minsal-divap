@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ComunaCumplimiento.findByIdMes", query = "SELECT c FROM ComunaCumplimiento c WHERE c.idMes.idMes= :idMes"),
     @NamedQuery(name = "ComunaCumplimiento.findByValor", query = "SELECT c FROM ComunaCumplimiento c WHERE c.valor = :valor"),
     @NamedQuery(name = "ComunaCumplimiento.findByComuna", query = "SELECT c FROM ComunaCumplimiento c WHERE c.idComuna.id = :idComuna order by c.idComunaCumplimiento asc"),
-    @NamedQuery(name = "ComunaCumplimiento.findByServicio", query = "SELECT DISTINCT(c.idComuna) FROM ComunaCumplimiento c WHERE c.idComuna is not null and c.idComuna.servicioSalud is not null and c.idComuna.servicioSalud.id = :idServicio"),
+    @NamedQuery(name = "ComunaCumplimiento.findByServicio", query = "SELECT DISTINCT(c.idComuna) FROM ComunaCumplimiento c WHERE c.idComuna is not null and c.idComuna.servicioSalud is not null and c.idComuna.servicioSalud.id = :idServicio order by c.idComuna.nombre asc"),
     @NamedQuery(name = "ComunaCumplimiento.findByRebaja", query = "SELECT c FROM ComunaCumplimiento c WHERE c.rebaja.idRebaja = :idRebaja"),
     @NamedQuery(name = "ComunaCumplimiento.deleteUsingIdCumplimiento", query = "DELETE FROM ComunaCumplimiento c WHERE c.idComunaCumplimiento IN (:listaIdCumplimientos)"),
     @NamedQuery(name = "ComunaCumplimiento.findByRebajaComunas", query = "SELECT c FROM ComunaCumplimiento c WHERE c.idComuna.id IN (:listaId) and c.rebaja.idRebaja = :idRebaja"),

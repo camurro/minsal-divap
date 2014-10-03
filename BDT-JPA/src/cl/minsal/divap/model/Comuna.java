@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Comuna.findAll", query = "SELECT c FROM Comuna c"),
     @NamedQuery(name = "Comuna.findById", query = "SELECT c FROM Comuna c WHERE c.id = :id"),
     @NamedQuery(name = "Comuna.findByNombre", query = "SELECT c FROM Comuna c WHERE c.nombre = :nombre"),
-    @NamedQuery(name = "Comuna.findByServicio", query = "SELECT c FROM Comuna c WHERE c.servicioSalud.id = :idServicio order by c.id asc"),
+    @NamedQuery(name = "Comuna.findByServicio", query = "SELECT c FROM Comuna c WHERE c.servicioSalud.id = :idServicio order by c.nombre asc"),
     @NamedQuery(name = "Comuna.findRebajasByComunas", query = "SELECT distinct(c) FROM Comuna c JOIN c.comunaCumplimientoCollection d WHERE c.id IN (:listaId) and d.idMes.idMes= :idMes order by c.id asc"),
     @NamedQuery(name = "Comuna.findByComunaServicioAno", query = "SELECT c FROM Comuna c JOIN c.antecendentesComunas a WHERE c.nombre = :comuna and c.servicioSalud.nombre = :servicio and a.anoAnoEnCurso.ano = :anoCurso")})
 public class Comuna implements Serializable {

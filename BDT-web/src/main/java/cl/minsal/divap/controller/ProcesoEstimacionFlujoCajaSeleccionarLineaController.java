@@ -30,7 +30,7 @@ import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 		AbstractTaskMBean implements Serializable {
 	
-	//TODO: [ASAAVEDRA] Modificar el icono de modificación del programa, según correspondan los estados en lo que se puede modificar.
+	//TODO: [ASAAVEDRA] Modificar el icono de modificaciï¿½n del programa, segï¿½n correspondan los estados en lo que se puede modificar.
 	
 	/*
 	 * Variables
@@ -46,29 +46,55 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 	@EJB
 	private EstimacionFlujoCajaService estimacionFlujoCajaService;
 	
+	private List<ProgramaVO> programas;
+	
 	private String usuario;
+	
+	private Boolean modificar = false;
+	
+	private Integer anoSiguiente;
+	
+	private Integer anoCurso;
 
 	/*
-	 * Se obtiene la lista de programas del usuario por username y año.
+	 * Se obtiene la lista de programas del usuario por username y aï¿½o.
 	 */
-	public List<ProgramaVO> getListadoProgramasServicio() {
-			List<ProgramaVO> programas = programaService
-				.getProgramasByUserAno(getLoggedUsername(), Util.obtenerAno(new Date()));
-		
+
+	public List<ProgramaVO> getProgramas() {
+		if(programas == null){
+			programas = programaService
+						.getProgramasByUserAno(getLoggedUsername(), Util.obtenerAno(new Date()));
+		}
 		return programas;
 	}
+
+
+
+	public void setProgramas(List<ProgramaVO> programas) {
+		this.programas = programas;
+	}
+
+
 
 	/*
 	 * Avanza a la siguiente actividad con el programa seleccionado
 	 */
-	public String continuarProceso(Integer id) {
+	public String iniciar(Integer id) {
 
 		//TODO: [ASAAVEDRA] Transaccional.
-		this.idProgramaAno = estimacionFlujoCajaService.obtenerIdProgramaAno(id);
+		this.idProgramaAno = estimacionFlujoCajaService.obtenerIdProgramaAnoSiguiente(id, getAnoSiguiente());
 		setTarget("bandejaTareas");
-		String pagina = super.enviar();
-		
-		return pagina;
+		setModificar(false);
+		return super.enviar();
+	}
+	
+	public String modificar(Integer id) {
+
+		//TODO: [ASAAVEDRA] Transaccional.
+		this.idProgramaAno = id;
+		setTarget("bandejaTareas");
+		setModificar(true);
+		return super.enviar();
 	}
 
 	@Override
@@ -91,7 +117,9 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 		} else {
 
 		}
-
+		
+		anoCurso = estimacionFlujoCajaService.getAnoCurso();
+		anoSiguiente = estimacionFlujoCajaService.getAnoCurso() + 1; 
 	}
 
 	/*
@@ -100,9 +128,11 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 	@Override
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		System.out.println("createResultData usuario-->"
-				+ getSessionBean().getUsername());
+		System.out.println("createResultData usuario-->"+ getSessionBean().getUsername());
+		System.out.println("idProgramaAno->"+idProgramaAno);
+		System.out.println("modificacion_->"+getModificar());
 		parameters.put("idProgramaAno_", idProgramaAno);
+		parameters.put("modificacion_", getModificar());
 		return parameters;
 	}
 
@@ -136,5 +166,28 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 		this.usuario = usuario;
 	}
 
+	public Boolean getModificar() {
+		return modificar;
+	}
+
+	public void setModificar(Boolean modificar) {
+		this.modificar = modificar;
+	}
+
+	public Integer getAnoSiguiente() {
+		return anoSiguiente;
+	}
+
+	public void setAnoSiguiente(Integer anoSiguiente) {
+		this.anoSiguiente = anoSiguiente;
+	}
+
+	public Integer getAnoCurso() {
+		return anoCurso;
+	}
+
+	public void setAnoCurso(Integer anoCurso) {
+		this.anoCurso = anoCurso;
+	}
 
 }

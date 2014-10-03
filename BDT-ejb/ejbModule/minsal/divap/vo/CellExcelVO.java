@@ -9,7 +9,11 @@ public class CellExcelVO implements Serializable{
 	 */
 	private static final long serialVersionUID = 3606998161454607624L;
 	String name;
+	
+	// columnas que ocupará el dato
 	int colSpan;
+	
+	//filas que ocupará el dato
 	int rowSpan;
 	
 	public CellExcelVO(String name) {

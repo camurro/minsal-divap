@@ -1,8 +1,6 @@
 package cl.minsal.divap.model;
  
 import java.io.Serializable;
-
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -48,13 +46,9 @@ public class Programa implements Serializable {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "programa")
     private Set<ProgramaAno> programasAnos;
-    @OneToMany(mappedBy = "programa")
-    private Set<Cuota> cuotas;
     @JoinColumn(name = "username_usuario", referencedColumnName = "username")
     @ManyToOne
     private Usuario usuario;
-    @OneToMany(mappedBy = "programa")
-    private Set<MarcoPresupuestario> marcoPresupuestarios;
     @OneToMany(mappedBy = "idPrograma")
     private Set<Componente> componentes;
     @OneToMany(mappedBy = "programa")
@@ -90,50 +84,6 @@ public class Programa implements Serializable {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
-	}
-
-	public Set<Cuota> getCuotas() {
-		return this.cuotas;
-	}
-
-	public void setCuotas(Set<Cuota> cuotas) {
-		this.cuotas = cuotas;
-	}
-
-	public Cuota addCuota(Cuota cuota) {
-		getCuotas().add(cuota);
-		cuota.setPrograma(this);
-
-		return cuota;
-	}
-
-	public Cuota removeCuota(Cuota cuota) {
-		getCuotas().remove(cuota);
-		cuota.setPrograma(null);
-
-		return cuota;
-	}
-
-	public Set<MarcoPresupuestario> getMarcoPresupuestarios() {
-		return this.marcoPresupuestarios;
-	}
-
-	public void setMarcoPresupuestarios(Set<MarcoPresupuestario> marcoPresupuestarios) {
-		this.marcoPresupuestarios = marcoPresupuestarios;
-	}
-
-	public MarcoPresupuestario addMarcoPresupuestario(MarcoPresupuestario marcoPresupuestario) {
-		getMarcoPresupuestarios().add(marcoPresupuestario);
-		marcoPresupuestario.setPrograma(this);
-
-		return marcoPresupuestario;
-	}
-
-	public MarcoPresupuestario removeMarcoPresupuestario(MarcoPresupuestario marcoPresupuestario) {
-		getMarcoPresupuestarios().remove(marcoPresupuestario);
-		marcoPresupuestario.setPrograma(null);
-
-		return marcoPresupuestario;
 	}
 
 	public Set<MetadataCore> getMetadataCores() {

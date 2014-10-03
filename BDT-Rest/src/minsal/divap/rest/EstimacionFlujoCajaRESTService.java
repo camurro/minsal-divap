@@ -30,7 +30,7 @@ public class EstimacionFlujoCajaRESTService extends BaseRest{
     @Produces("application/json")
     public Integer calcularPropuesta(@PathParam("idProgramaAno") Integer idProgramaAno){
 		
-		System.out.println("[CALCULAR PROPUESTA] -->"+idProgramaAno);
+		System.out.println("[CALCULAR PROPUESTA programaAno] -->"+idProgramaAno);
 		EstimacionFlujoCajaService estimacionFlujoCajaService = getService(EstimacionFlujoCajaService.class);
 		System.out.println("[FIN CALCULAR PROPUESTA]");
 		return estimacionFlujoCajaService.calcularPropuesta(idProgramaAno);

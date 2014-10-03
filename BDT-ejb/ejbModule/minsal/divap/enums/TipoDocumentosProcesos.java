@@ -13,7 +13,7 @@ public enum TipoDocumentosProcesos{
 	//Plantilla PARA Distribución de Recursos Financieros para Programas de Reforzamiento de APS
 	PLANTILLAPROGRAMAAPSMUNICIPALES(40, "Plantilla Programa APS Municipales"), PLANTILLAPROGRAMAAPSMUNICIPALEXCEPCION(41, "Plantilla Programa APS Municipal – Excepción"), PLANTILLAPROGRAMAAPSSERVICIO(42, "Plantilla Programa APS Servicios"),
 	PROGRAMAAPSMUNICIPAL(43, "Programa APS Municipales"), PROGRAMAAPSMUNICIPALMIXTO(44, "Programa APS Municipal – MIXTO"), PROGRAMAAPSSERVICIO(45, "Programa APS Servicios"),
-	POBLACIONINSCRITA(15, "Población Inscrita Validada"),PLANTILLAPROPUESTA(16, "Planilla Propuesta"),PLANTILLAPROGRAMACION(17, "Planilla Programación"), PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA(50,"Plantilla Ordinario Seguimiento"),
+	POBLACIONINSCRITA(15, "Población Inscrita Validada"),PLANTILLAPROPUESTA(16, "Planilla de Estimación de Flujos de Caja"),PLANTILLAPROGRAMACION(17, "Planilla Programación"), PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA(50,"Plantilla Ordinario Seguimiento"),
 	
 	//Plantilla PARA OT
 	 PLANTILLAORDINARIOOREDENTRANSFERENCIA(43,"Plantilla Ordinario Orden Transferencia"), RESUMENCONSOLIDADOFONASA(44,"Resumen Consolidado Fonasa"),

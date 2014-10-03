@@ -44,6 +44,20 @@ public class ServicioSaludService {
 		}
 		return result;
 	}
+	
+	public List<BaseVO> getNombreServicios(){
+		List<ServicioSalud> serviciosSalud = this.servicioSaludDAO.getServicios();
+		List<BaseVO> result = new ArrayList<BaseVO>();
+		if(serviciosSalud != null){
+			for (ServicioSalud servicioSalud : serviciosSalud){				
+				BaseVO baseVO = new BaseVO();
+				baseVO.setServicio(((servicioSalud.getNombre() != null)?servicioSalud.getNombre():null));
+				result.add(baseVO);				
+			}
+		}
+		return result;
+	}
+	
 
 
 	public List<ServiciosVO> getAllServiciosVO() {

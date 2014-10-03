@@ -30,14 +30,13 @@ public class AnoEnCurso implements Serializable {
 	
 	@Column(name="inflactor")
 	private Double inflactor ;
+	
+	@Column(name="inflactor_marco_presupuestario")
+	private Double inflactorMarcoPresupuestario ;
 
 	//bi-directional many-to-one association to AntecendentesComuna
 	@OneToMany(mappedBy="anoAnoEnCurso")
 	private List<AntecendentesComuna> antecendentesComunas;
-
-	//bi-directional many-to-one association to MarcoPresupuestario
-	@OneToMany(mappedBy="anoEnCurso")
-	private List<MarcoPresupuestario> marcoPresupuestarios;
 
 	public AnoEnCurso() {
 	}
@@ -74,6 +73,14 @@ public class AnoEnCurso implements Serializable {
 		this.inflactor = inflactor;
 	}
 
+	public Double getInflactorMarcoPresupuestario() {
+		return inflactorMarcoPresupuestario;
+	}
+
+	public void setInflactorMarcoPresupuestario(Double inflactorMarcoPresupuestario) {
+		this.inflactorMarcoPresupuestario = inflactorMarcoPresupuestario;
+	}
+
 	public List<AntecendentesComuna> getAntecendentesComunas() {
 		return this.antecendentesComunas;
 	}
@@ -94,28 +101,6 @@ public class AnoEnCurso implements Serializable {
 		antecendentesComuna.setAnoAnoEnCurso(null);
 
 		return antecendentesComuna;
-	}
-
-	public List<MarcoPresupuestario> getMarcoPresupuestarios() {
-		return this.marcoPresupuestarios;
-	}
-
-	public void setMarcoPresupuestarios(List<MarcoPresupuestario> marcoPresupuestarios) {
-		this.marcoPresupuestarios = marcoPresupuestarios;
-	}
-
-	public MarcoPresupuestario addMarcoPresupuestario(MarcoPresupuestario marcoPresupuestario) {
-		getMarcoPresupuestarios().add(marcoPresupuestario);
-		marcoPresupuestario.setAnoEnCurso(this);
-
-		return marcoPresupuestario;
-	}
-
-	public MarcoPresupuestario removeMarcoPresupuestario(MarcoPresupuestario marcoPresupuestario) {
-		getMarcoPresupuestarios().remove(marcoPresupuestario);
-		marcoPresupuestario.setAnoEnCurso(null);
-
-		return marcoPresupuestario;
 	}
 
 }

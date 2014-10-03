@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TipoSubtitulo.findById", query = "SELECT t FROM TipoSubtitulo t WHERE t.idTipoSubtitulo = :idTipoSubtitulo"),
     @NamedQuery(name = "TipoSubtitulo.findByTipoSubtituloByDependencia", query = "SELECT t FROM TipoSubtitulo t where t.dependencia.idDependenciaPrograma=:idDependenciaPrograma"),
     @NamedQuery(name = "TipoSubtitulo.findByIdTipoSubtitulo", query = "SELECT t FROM TipoSubtitulo t WHERE t.idTipoSubtitulo = :idTipoSubtitulo"),
-    @NamedQuery(name = "TipoSubtitulo.findByNombreSubtitulo", query = "SELECT t FROM TipoSubtitulo t WHERE t.nombreSubtitulo = :nombreSubtitulo")})
+    @NamedQuery(name = "TipoSubtitulo.findByNombreSubtitulo", query = "SELECT t FROM TipoSubtitulo t WHERE LOWER(t.nombreSubtitulo) = :nombreSubtitulo")})
 public class TipoSubtitulo implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
