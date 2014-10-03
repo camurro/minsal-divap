@@ -25,6 +25,8 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 	private List<ProgramaVO> programas;
 	private String programaSeleccionado;
 	
+	private Integer anoCurso;
+	
 	@EJB
 	private RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService;
 
@@ -61,10 +63,12 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 					
 					if(programaVO.getDependenciaMunicipal() && programaVO.getDependenciaServicio()){
 						sufijoTipoPrograma.append(" con Dependencia de Servicio de Salud y Municipal");
-					}else if(programaVO.getDependenciaMunicipal()){
-						sufijoTipoPrograma.append(" con Dependencia Municipal");
 					}else{
-						sufijoTipoPrograma.append(" con Dependencia de Servicio de Salud");
+						if(programaVO.getDependenciaMunicipal()){
+							sufijoTipoPrograma.append(" con Dependencia Municipal");
+						}else{
+							sufijoTipoPrograma.append(" con Dependencia de Servicio de Salud");
+						}
 					}
 					parameters.put("sufijoTipoPrograma_", sufijoTipoPrograma.toString());
 				}
@@ -96,6 +100,17 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 
 	public void setProgramas(List<ProgramaVO> programas) {
 		this.programas = programas;
+	}
+
+	public Integer getAnoCurso() {
+		if(anoCurso == null){
+			anoCurso = recursosFinancierosProgramasReforzamientoService.getAnoCurso();
+		}
+		return anoCurso;
+	}
+
+	public void setAnoCurso(Integer anoCurso) {
+		this.anoCurso = anoCurso;
 	}
 
 }

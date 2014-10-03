@@ -2,7 +2,6 @@ package cl.minsal.divap.model;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -46,18 +45,13 @@ public class ProgramaAno implements Serializable {
     @JoinColumn(name = "estadoflujocaja", referencedColumnName = "id_estado_programa")
     @ManyToOne
     private EstadoPrograma estadoFlujoCaja;
-	
-	public EstadoPrograma getEstadoFlujoCaja() {
-		return estadoFlujoCaja;
-	}
-
-	public void setEstadoFlujoCaja(EstadoPrograma estadoFlujoCaja) {
-		this.estadoFlujoCaja = estadoFlujoCaja;
-	}
-
 	@JoinColumn(name = "ano", referencedColumnName = "ano")
 	@ManyToOne(optional = false)
 	private AnoEnCurso ano;
+	@OneToMany(mappedBy = "idPrograma")
+	private Set<Cuota> cuotas;
+	@OneToMany(mappedBy = "idProgramaAno")
+	private Set<MarcoPresupuestario> marcosPresupuestarios;
 	@OneToMany(mappedBy = "programaAnoServicio")
 	private Set<ProgramaServicioCore> programasServiciosCore;
 	@OneToMany(mappedBy = "programaAnoMunicipal")
@@ -104,6 +98,14 @@ public class ProgramaAno implements Serializable {
 	public void setAno(AnoEnCurso ano) {
 		this.ano = ano;
 	}
+	
+	public EstadoPrograma getEstadoFlujoCaja() {
+		return estadoFlujoCaja;
+	}
+
+	public void setEstadoFlujoCaja(EstadoPrograma estadoFlujoCaja) {
+		this.estadoFlujoCaja = estadoFlujoCaja;
+	}
 
 	@XmlTransient
 	public Set<ProgramaMunicipalCore> getProgramasMunicipalesCore() {
@@ -123,6 +125,25 @@ public class ProgramaAno implements Serializable {
 	public void setProgramasServiciosCore(
 			Set<ProgramaServicioCore> programasServiciosCore) {
 		this.programasServiciosCore = programasServiciosCore;
+	}
+	
+	@XmlTransient
+	public Set<Cuota> getCuotas() {
+		return cuotas;
+	}
+
+	public void setCuotas(Set<Cuota> cuotas) {
+		this.cuotas = cuotas;
+	}
+	
+	@XmlTransient
+	public Set<MarcoPresupuestario> getMarcosPresupuestarios() {
+		return marcosPresupuestarios;
+	}
+
+	public void setMarcosPresupuestarios(
+			Set<MarcoPresupuestario> marcosPresupuestarios) {
+		this.marcosPresupuestarios = marcosPresupuestarios;
 	}
 
 	@Override

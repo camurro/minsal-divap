@@ -8,12 +8,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import cl.minsal.divap.model.DistribucionInicialPercapita;
-import cl.minsal.divap.model.DistribucionInicialPercapitaSeguimiento;
-import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.EstimacionFlujoCajaSeguimiento;
-import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.TipoDocumento;
@@ -36,9 +32,7 @@ public class EstimacionFlujoCajaDAO {
 		return documentoEstimacionFlujoCaja.getId();
 	}
 
-	public List<DocumentoEstimacionflujocaja> getDocumentByIDProgramaAnoTipoDocumento(
-			ProgramaAno programaAno, TipoDocumento tipoDocumento) {
-		// TODO Auto-generated method stub
+	public List<DocumentoEstimacionflujocaja> getDocumentByIDProgramaAnoTipoDocumento(ProgramaAno programaAno, TipoDocumento tipoDocumento) {
 		try {
 			TypedQuery<DocumentoEstimacionflujocaja> query = this.em.createNamedQuery("DocumentoEstimacionflujocaja.findByProgramaAnoTipoDocumento", DocumentoEstimacionflujocaja.class);
 			query.setParameter("idProgramaAno", programaAno.getIdProgramaAno());
@@ -49,8 +43,7 @@ public class EstimacionFlujoCajaDAO {
 		}
 	}
 	
-	public Integer createSeguimiento(Integer idProgramaAno,
-			Seguimiento seguimiento) {
+	public Integer createSeguimiento(Integer idProgramaAno, Seguimiento seguimiento) {
 		ProgramaAno programaAno = programaDAO.getProgramaAnoByID(idProgramaAno);
 		EstimacionFlujoCajaSeguimiento estimacionFlujoCajaSeguimiento = new EstimacionFlujoCajaSeguimiento();
 		estimacionFlujoCajaSeguimiento.setProgramaAno(programaAno);

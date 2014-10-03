@@ -21,6 +21,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -66,6 +67,17 @@ public class GeneradorExcel {
 				addSheet((ProgramaAPSMunicipalesSheetExcel)excelSheet, sheetName);
 				return;
 			}
+
+			if(excelSheet instanceof RebajaSheetExcel){
+				addSheet((RebajaSheetExcel)excelSheet, sheetName);
+				return;
+			}
+
+			if(excelSheet instanceof RebajaCalculadaSheetExcel){
+				addSheet((RebajaCalculadaSheetExcel)excelSheet, sheetName);
+				return;
+			}
+
 			XSSFSheet sheet = null;
 			sheet = workbook.createSheet(sheetName);
 			int currentRow = 0;
@@ -134,6 +146,128 @@ public class GeneradorExcel {
 		}
 	}
 
+	private void addSheet(RebajaSheetExcel excelSheet, String sheetName){
+		try{
+			XSSFSheet sheet = null;
+			sheet = workbook.createSheet(sheetName);
+			int currentRow = 0;
+			for(; currentRow < excelSheet.getOffsetRows(); ){
+				sheet.createRow(currentRow++);
+			}
+
+			XSSFRow row = sheet.createRow(currentRow++);
+			List<String> headers = excelSheet.getHeaders();
+			List<String> subHeaders = ((RebajaSheetExcel)excelSheet).getSubHeaders();
+
+			CellStyle style = workbook.createCellStyle();
+			style.setFillBackgroundColor(IndexedColors.BLUE.getIndex());
+			style.setFillPattern(CellStyle.ALIGN_FILL);
+			Font font = workbook.createFont();
+			font.setColor(IndexedColors.WHITE.getIndex());
+			style.setFont(font);
+
+
+			List<Integer> merged = new ArrayList<Integer>();
+			List<String> titulos = new ArrayList<String>();
+
+			for (int i = 0; i < headers.size(); i++) {
+				String[] datos = headers.get(i).split(",");
+				merged.add(Integer.parseInt(datos[0]));
+				titulos.add(datos[1]);
+			}
+
+			int pos=0;
+			for (int i = 0; i < titulos.size(); i++) {
+				int longitud = merged.get(i);
+				for (int j = 0; j < longitud; j++) {
+					XSSFCell cell = row.createCell(pos++);
+					cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+					if(j==0){
+						cell.setCellValue(titulos.get(i));
+					}else{
+						cell.setCellValue("");
+					}
+					cell.setCellStyle(style);
+				}
+			}
+
+			int posicion=0;
+			for (int i = 0; i < merged.size(); i++) {	
+				if(i==0){
+					sheet.addMergedRegion(new CellRangeAddress(0,0,posicion,merged.get(i)-1));
+					posicion+=merged.get(i);
+				}else{
+					sheet.addMergedRegion(new CellRangeAddress(0,0,posicion,posicion+merged.get(i)-1));
+					posicion+=merged.get(i);
+				}
+			}
+
+
+			XSSFRow row2 = sheet.createRow(currentRow++);
+
+
+			for (int element = 0, skipPosition = 0; element < subHeaders.size(); element++) {
+				if(element == 0){
+					for (; skipPosition < excelSheet.getOffsetColumns(); skipPosition++) {
+						row.createCell(skipPosition);
+					}
+				}
+				XSSFCell cell = row2.createCell(skipPosition++);
+				cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+				cell.setCellValue(subHeaders.get(element));
+				cell.setCellStyle(style);
+
+			}
+
+			List<List<Object>>  datalist = excelSheet.getDataList();
+			for(List<Object> rowData : datalist){
+				int skipPosition = 0;
+				XSSFRow newRow = sheet.createRow(currentRow++);
+				for (; skipPosition < excelSheet.getOffsetColumns(); skipPosition++) {
+					newRow.createCell(skipPosition);
+				}
+
+				for (int element = 0; element < rowData.size(); element++) {
+					XSSFCell cell = newRow.createCell(skipPosition++);
+					if(rowData.get(element) instanceof String){
+						cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+						cell.setCellValue(rowData.get(element).toString());
+					}else if(rowData.get(element) instanceof Boolean){
+						cell.setCellType(XSSFCell.CELL_TYPE_BOOLEAN);
+						boolean value = (Boolean)rowData.get(element);
+						cell.setCellValue(value);
+					}else if((rowData.get(element) instanceof Integer) || (rowData.get(element) instanceof Long) || (rowData.get(element) instanceof Double) || (rowData.get(element) instanceof Float)){
+						cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+						Double value = null;
+						if(rowData.get(element) instanceof Integer){
+							value = Double.valueOf(((Integer)rowData.get(element)).toString());
+						}
+						if(rowData.get(element) instanceof Long){
+							value = Double.valueOf(((Long)rowData.get(element)).toString());
+						}
+						if(rowData.get(element) instanceof Double){
+							value = (Double)rowData.get(element);
+						}
+						if(rowData.get(element) instanceof Float){
+							value = Double.valueOf(((Float)rowData.get(element)).toString());
+						}
+						cell.setCellValue(value);
+					}
+				}
+				for( ;skipPosition < subHeaders.size(); skipPosition++){
+					System.out.println("celda posicion skipPosition="+skipPosition);
+					XSSFCell cell = newRow.createCell(skipPosition);
+					CellStyle stylePercentage = workbook.createCellStyle();
+					stylePercentage.setDataFormat(workbook.createDataFormat().getFormat("0.00%"));
+					cell.setCellStyle(stylePercentage);
+				}
+			}
+			numberSheet++;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
 	private void addSheet(ProgramaAPSMunicipalesSheetExcel excelSheet, String sheetName){
 		XSSFSheet sheet = workbook.createSheet(sheetName);
 		List<CellExcelVO> header = excelSheet.getHeaderComplex();
@@ -147,17 +281,25 @@ public class GeneradorExcel {
 		int currentRow = 0;
 		int maxRowSpan = 0;
 		int maxColSpan = 0;
+		int addRow = 0;
 		if(header != null && header.size() > 0){
 			for(CellExcelVO cellExcelVO : header){
-				if(maxColSpan == 0){
+				if(cellExcelVO.getRowSpan() > maxRowSpan){
 					maxRowSpan = cellExcelVO.getRowSpan();
 				}
-				maxColSpan += cellExcelVO.getColSpan();
+				if(cellExcelVO.getRowSpan() == maxRowSpan){
+					maxColSpan += cellExcelVO.getColSpan();
+				}else{
+					addRow++;
+					if(addRow == maxRowSpan){
+						maxColSpan += cellExcelVO.getColSpan();
+					}
+				}
 			}
-			for(; currentRow < maxRowSpan;){
-				XSSFRow row = sheet.createRow(currentRow++);
-				for(int currentCol= 0; currentCol < maxColSpan;){
-					XSSFCell cell = row.createCell(currentCol++);
+			for( ; currentRow < maxRowSpan ; currentRow++){
+				XSSFRow row = sheet.createRow(currentRow);
+				for(int currentCol= 0; currentCol < maxColSpan; currentCol++){
+					XSSFCell cell = row.createCell(currentCol);
 					cell.setCellType(XSSFCell.CELL_TYPE_STRING);
 					cell.setCellStyle(style);
 				}
@@ -172,42 +314,103 @@ public class GeneradorExcel {
 					XSSFCell cell = row.getCell(colsReplace);
 					cell.setCellValue(cellExcelVO.getName());
 					colsReplace += cellExcelVO.getColSpan();
-					sheet.addMergedRegion(new CellRangeAddress(rowsReplace, cellExcelVO.getRowSpan(), colsReplace, cellExcelVO.getColSpan()));
+					sheet.addMergedRegion(new CellRangeAddress(rowsReplace, (cellExcelVO.getRowSpan() - 1), colsReplace - cellExcelVO.getColSpan(), colsReplace -1 ));
 				}else{
-					XSSFRow row = sheet.getRow(appendRow++) ;
+					XSSFRow row = sheet.getRow(appendRow) ;
 					XSSFCell cell = row.getCell(colsReplace);
 					cell.setCellValue(cellExcelVO.getName());
-					colsReplace += cellExcelVO.getColSpan();
-					sheet.addMergedRegion(new CellRangeAddress(appendRow, cellExcelVO.getRowSpan(), colsReplace, cellExcelVO.getColSpan()));
+					System.out.println("CellRangeAddress("+appendRow+","+appendRow+","+colsReplace+","+(colsReplace + cellExcelVO.getColSpan()-1)+")");
+					sheet.addMergedRegion(new CellRangeAddress(appendRow, appendRow, colsReplace, (colsReplace + cellExcelVO.getColSpan()-1)));
+					appendRow++;
 				}
 			}
 		}
-		/*if(subHeader != null && subHeader.size() > 0){
+		if(subHeader != null && subHeader.size() > 0){
 			int rows = 0;
 			int cols = 0;
+			addRow = 0;
+			maxColSpan = 0;
 			for(CellExcelVO cellExcelVO : subHeader){
-				if(cols == 0){
-					rows = currentRow;
-					rows += cellExcelVO.getRowSpan();
+				if(cellExcelVO.getRowSpan() > rows){
+					rows = cellExcelVO.getRowSpan();
 				}
-				cols += cellExcelVO.getColSpan();
+				if(cellExcelVO.getColSpan() > cols){
+					cols = cellExcelVO.getColSpan();
+				}
+				if(cellExcelVO.getRowSpan() == maxRowSpan){
+					maxColSpan += cellExcelVO.getColSpan();
+				}else{
+					addRow++;
+					if(addRow == maxRowSpan){
+						maxColSpan += cellExcelVO.getColSpan();
+					}
+				}
 			}
-			for(; currentRow < rows;){
-				XSSFRow row = sheet.createRow(currentRow++);
-				for(int currentCol= 0; currentCol < cols;){
-					XSSFCell cell = row.createCell(currentCol++);
+			maxRowSpan = maxRowSpan + rows;
+			int rowsReplace = currentRow;
+			int appendRow = currentRow;
+			
+
+			System.out.println("maxRowSpan="+maxRowSpan+"maxColSpan="+maxColSpan+" rowsReplace="+rowsReplace+" appendRow="+appendRow);
+
+			for( ; currentRow < maxRowSpan ; currentRow++){
+				XSSFRow row = sheet.createRow(currentRow);
+				for(int currentCol= 0; currentCol <= maxColSpan; currentCol++){
+					XSSFCell cell = row.createCell(currentCol);
 					cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-					cell.setCellStyle(style);
+					CellStyle cellStyle = workbook.createCellStyle();
+					cellStyle.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+					cell.setCellStyle(cellStyle);
 				}
 			}
+			int colsReplace = 0;
+			int appendCol = 0;
+			int lastColSpan=0;
 			for(CellExcelVO cellExcelVO : subHeader){
-				XSSFRow row = sheet.getRow(rowsReplace) ;
-				XSSFCell cell = row.getCell(colsReplace);
-				cell.setCellValue(cellExcelVO.getName());
-				colsReplace += cellExcelVO.getColSpan();
-				sheet.addMergedRegion(new CellRangeAddress(rowsReplace, cellExcelVO.getRowSpan(), colsReplace, cellExcelVO.getColSpan()));
+				System.out.println("rows="+rows+" cellExcelVO.getRowSpan()="+cellExcelVO.getRowSpan()+" cellExcelVO.getColSpan()="+cellExcelVO.getColSpan()+" cellExcelVO.getName()="+cellExcelVO.getName());
+				if(rows == cellExcelVO.getRowSpan()){
+					System.out.println("if true");
+					appendCol = 0;
+					appendRow = rowsReplace;
+					XSSFRow row = sheet.getRow(rowsReplace) ;
+					XSSFCell cell = row.getCell(colsReplace);
+					cell.setCellValue(cellExcelVO.getName());
+					colsReplace += cellExcelVO.getColSpan();
+					lastColSpan=cellExcelVO.getColSpan();
+					sheet.addMergedRegion(new CellRangeAddress(rowsReplace, ((rowsReplace + cellExcelVO.getRowSpan()) - 1), colsReplace - cellExcelVO.getColSpan(), colsReplace -1 ));
+				}else{
+					System.out.println("if false");
+					System.out.println("appendRow="+appendRow);
+					System.out.println("colsReplace="+colsReplace);
+					
+					if(cols == cellExcelVO.getColSpan()){
+						System.out.println("if maxColSpan == cellExcelVO.getColSpan()");
+						XSSFRow row = sheet.getRow(appendRow) ;
+						XSSFCell cell = row.getCell(colsReplace);
+						cell.setCellValue(cellExcelVO.getName());
+						System.out.println("CellRangeAddress("+appendRow+","+appendRow+","+colsReplace+","+(colsReplace + cellExcelVO.getColSpan()-1)+")");
+						sheet.addMergedRegion(new CellRangeAddress(appendRow, appendRow, colsReplace, (colsReplace + cellExcelVO.getColSpan() -1)));
+						if(appendCol == 0){
+							appendCol = colsReplace; 
+						}
+						colsReplace += cellExcelVO.getColSpan();
+						appendRow++;
+					}else{
+						System.out.println("else maxColSpan == cellExcelVO.getColSpan()");
+						System.out.println("appendCol ="+appendCol);
+						XSSFRow row = sheet.getRow(appendRow) ;
+						XSSFCell cell = row.getCell(appendCol);
+						cell.setCellValue(cellExcelVO.getName());
+						System.out.println("CellRangeAddress("+appendRow+","+appendRow+","+appendCol+","+appendCol+")");
+						sheet.addMergedRegion(new CellRangeAddress(appendRow, appendRow, appendCol, appendCol));
+						appendCol += cellExcelVO.getColSpan();
+					}
+				}
 			}
-		}*/
+			for(int columnPosition = 0; columnPosition <= maxColSpan; columnPosition++) {
+				sheet.autoSizeColumn((short) (columnPosition));
+			}
+		}
 	}
 
 	public void addSheetCumplimiento(ExcelTemplate excelSheet, String sheetName){
@@ -327,11 +530,8 @@ public class GeneradorExcel {
 		}
 	}
 
-	public void addSheetRebajaCalculada(ExcelTemplate excelSheet, String sheetName){
+	private void addSheet(RebajaCalculadaSheetExcel excelSheet, String sheetName){
 		try{
-			if(workbook == null){
-				workbook = new XSSFWorkbook();
-			}
 			XSSFSheet sheet = null;
 			sheet = workbook.createSheet(sheetName);
 			int currentRow = 0;
@@ -404,6 +604,7 @@ public class GeneradorExcel {
 			}
 
 			List<List<Object>>  datalist = excelSheet.getDataList();
+			int totalColumn = 0;
 			for(List<Object> rowData : datalist){
 				int skipPosition = 0;
 				XSSFRow newRow = sheet.createRow(currentRow++);
@@ -413,8 +614,17 @@ public class GeneradorExcel {
 				for (int element = 0; element < rowData.size(); element++) {
 					XSSFCell cell = newRow.createCell(skipPosition++);
 					if(rowData.get(element) instanceof String){
-						cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-						cell.setCellValue(rowData.get(element).toString());
+						String data = rowData.get(element).toString(); 
+						if(data.endsWith("%")){
+							CellStyle stylePercentage = workbook.createCellStyle();
+							stylePercentage.setDataFormat(workbook.createDataFormat().getFormat("0.00%"));
+							stylePercentage.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+							cell.setCellStyle(stylePercentage);
+							cell.setCellValue(data);
+						}else{
+							cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+							cell.setCellValue(data);
+						}
 					}else if(rowData.get(element) instanceof Boolean){
 						cell.setCellType(XSSFCell.CELL_TYPE_BOOLEAN);
 						boolean value = (Boolean)rowData.get(element);
@@ -424,8 +634,16 @@ public class GeneradorExcel {
 						Double value = null;
 						if(rowData.get(element) instanceof Integer){
 							value = Double.valueOf(((Integer)rowData.get(element)).toString());
+							if(element > 3){
+								CellStyle styleInteger = workbook.createCellStyle();
+								styleInteger.setDataFormat(workbook.createDataFormat().getFormat("#,##0"));
+								cell.setCellStyle(styleInteger);
+							}
 						}
 						if(rowData.get(element) instanceof Long){
+							CellStyle styleInteger = workbook.createCellStyle();
+							styleInteger.setDataFormat(workbook.createDataFormat().getFormat("#,##0"));
+							cell.setCellStyle(styleInteger);
 							value = Double.valueOf(((Long)rowData.get(element)).toString());
 						}
 						if(rowData.get(element) instanceof Double){
@@ -437,6 +655,12 @@ public class GeneradorExcel {
 						cell.setCellValue(value);
 					}
 				}
+				if(totalColumn == 0){
+					totalColumn = skipPosition;
+				}
+			}
+			for(int columnPosition = 0; columnPosition <  totalColumn; columnPosition++) {
+				sheet.autoSizeColumn((short) (columnPosition));
 			}
 			numberSheet++;
 		}catch(Exception e){

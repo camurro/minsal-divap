@@ -38,14 +38,24 @@ public class TipoSubtituloDAO {
 		}
 	}
 	
-	
-
 	public List<TipoSubtitulo> getTipoSubtituloByDependencia(int id){
 		try {
 			TypedQuery<TipoSubtitulo> query = this.em.createNamedQuery("TipoSubtitulo.findByTipoSubtituloByDependencia", TipoSubtitulo.class);
 			query.setParameter("idDependenciaPrograma", id);
 			return query.getResultList();
-		
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public TipoSubtitulo getTipoSubtituloByName(String name){
+		try {
+			TypedQuery<TipoSubtitulo> query = this.em.createNamedQuery("TipoSubtitulo.findByNombreSubtitulo", TipoSubtitulo.class);
+			query.setParameter("nombreSubtitulo", name.toLowerCase());
+			List<TipoSubtitulo> results = query.getResultList();
+			if (results.size() >= 1)
+				return results.get(0);
+			return null;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

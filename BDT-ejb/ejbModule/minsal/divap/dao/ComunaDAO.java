@@ -8,7 +8,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import cl.minsal.divap.model.Comuna;
-import cl.minsal.divap.model.Convenio;
 
 
 @Singleton

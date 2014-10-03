@@ -1,6 +1,7 @@
 package minsal.divap.vo;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,32 +49,52 @@ public class PlanillaRebajaCalculadaVO implements Serializable{
 		row.add(getId_comuna());
 		row.add(getComuna());
 		row.add(getAporteEstatal());
+		NumberFormat numberFormat = NumberFormat.getNumberInstance();
+		numberFormat.setMinimumFractionDigits(2);
 		if(cumplimientoRebajasItem1 != null  ){
-			row.add(cumplimientoRebajasItem1.getValor());
+			String percentage = numberFormat.format(cumplimientoRebajasItem1.getValor()) + "%";
+			percentage = percentage.replace(".", ",");
+			row.add(percentage);
 		}
 		if(cumplimientoRebajasItem2 != null  ){
-			row.add(cumplimientoRebajasItem2.getValor());
+			String percentage = numberFormat.format(cumplimientoRebajasItem2.getValor()) + "%";
+			percentage = percentage.replace(".", ",");
+			row.add(percentage);
 		}
 		if(cumplimientoRebajasItem3 != null  ){
-			row.add(cumplimientoRebajasItem3.getValor());
+			String percentage = numberFormat.format(cumplimientoRebajasItem3.getValor()) + "%";
+			percentage = percentage.replace(".", ",");
+			row.add(percentage);
 		}
 		if(cumplimientoRebajasItem1 != null  ){
-			row.add(cumplimientoRebajasItem1.getRebajaCalculada());
+			String percentage = numberFormat.format(cumplimientoRebajasItem1.getRebajaCalculada()) + "%";
+			percentage = percentage.replace(".", ",");
+			row.add(percentage);
 		}
 		if(cumplimientoRebajasItem2 != null  ){
-			row.add(cumplimientoRebajasItem2.getRebajaCalculada());
+			String percentage = numberFormat.format(cumplimientoRebajasItem2.getRebajaCalculada()) + "%";
+			percentage = percentage.replace(".", ",");
+			row.add(percentage);
 		}
 		if(cumplimientoRebajasItem3 != null  ){
-			row.add(cumplimientoRebajasItem3.getRebajaCalculada());
+			String percentage = numberFormat.format(cumplimientoRebajasItem3.getRebajaCalculada()) + "%";
+			percentage = percentage.replace(".", ",");
+			row.add(percentage);
 		}
 		if(cumplimientoRebajasItem1 != null  ){
-			row.add(cumplimientoRebajasItem1.getRebajaFinal());
+			String percentage = numberFormat.format(cumplimientoRebajasItem1.getRebajaFinal()) + "%";
+			percentage = percentage.replace(".", ",");
+			row.add(percentage);
 		}
 		if(cumplimientoRebajasItem2 != null  ){
-			row.add(cumplimientoRebajasItem2.getRebajaFinal());
+			String percentage = numberFormat.format(cumplimientoRebajasItem2.getRebajaFinal()) + "%";
+			percentage = percentage.replace(".", ",");
+			row.add(percentage);
 		}
 		if(cumplimientoRebajasItem3 != null  ){
-			row.add(cumplimientoRebajasItem3.getRebajaFinal());
+			String percentage = numberFormat.format(cumplimientoRebajasItem3.getRebajaFinal()) + "%";
+			percentage = percentage.replace(".", ",");
+			row.add(percentage);
 		}
 		row.add(getMontoRebajaMes());
 		row.add(getNuevoAporteEstatal());
@@ -179,7 +200,7 @@ public class PlanillaRebajaCalculadaVO implements Serializable{
 	public void setTotalRebajaRebajaFinal(Integer totalRebajaRebajaFinal) {
 		this.totalRebajaRebajaFinal = totalRebajaRebajaFinal;
 	}
-	
+
 
 	public Boolean getActualizar() {
 		return actualizar;
@@ -195,12 +216,12 @@ public class PlanillaRebajaCalculadaVO implements Serializable{
 				+ ", comuna=" + comuna + ", id_servicio=" + id_servicio
 				+ ", servicio=" + servicio + ", cumplimientoRebajasItem1="
 				+ cumplimientoRebajasItem1  + ", cumplimientoRebajasItem2="
-						+ cumplimientoRebajasItem2  + ", cumplimientoRebajasItem3="
-								+ cumplimientoRebajasItem3 + ", totalRebajaCalculada="
+				+ cumplimientoRebajasItem2  + ", cumplimientoRebajasItem3="
+				+ cumplimientoRebajasItem3 + ", totalRebajaCalculada="
 				+ totalRebajaCalculada + ", totalRebajaRebajaFinal="
 				+ totalRebajaRebajaFinal + ", aporteEstatal=" + aporteEstatal
 				+ ", montoRebajaMes=" + montoRebajaMes
 				+ ", nuevoAporteEstatal=" + nuevoAporteEstatal + "]";
 	}
-	 
+
 }

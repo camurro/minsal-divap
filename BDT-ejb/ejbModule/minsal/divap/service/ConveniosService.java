@@ -257,7 +257,7 @@ public class ConveniosService {
 		Long marcoPresupuestario=123L;
 		for (Caja caj: caja){
 
-			marcoPresupuestario = caj.getMarcoPresupuestario();
+			//marcoPresupuestario = caj.getMarcoPresupuestario();
 		}
 
 		Integer total=0;

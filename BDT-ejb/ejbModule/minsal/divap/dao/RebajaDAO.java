@@ -11,11 +11,13 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import minsal.divap.enums.TipoDocumentosProcesos;
+import minsal.divap.enums.TiposCumplimientos;
 import cl.minsal.divap.model.ComunaCumplimiento;
 import cl.minsal.divap.model.ComunaCumplimientoRebaja;
 import cl.minsal.divap.model.Cumplimiento;
 import cl.minsal.divap.model.DocumentoRebaja;
 import cl.minsal.divap.model.Rebaja;
+import cl.minsal.divap.model.RebajaCorte;
 import cl.minsal.divap.model.RebajaSeguimiento;
 import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.Seguimiento;
@@ -104,14 +106,15 @@ public class RebajaDAO {
 	}
 
 
-	public Integer crearIntanciaRebaja(Usuario usuario) {
+	public Integer crearIntanciaRebaja(Usuario usuario, RebajaCorte rebajaCorte) {
 		try {
 			long current = Calendar.getInstance().getTimeInMillis();
-			Rebaja dto = new Rebaja();
-			dto.setUsuario(usuario);
-			dto.setFechaCreacion(new Date(current));
-			this.em.persist(dto);
-			return dto.getIdRebaja();
+			Rebaja rebaja = new Rebaja();
+			rebaja.setUsuario(usuario);
+			rebaja.setRebajaCorte(rebajaCorte);
+			rebaja.setFechaCreacion(new Date(current));
+			this.em.persist(rebaja);
+			return rebaja.getIdRebaja();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -201,6 +204,32 @@ public class RebajaDAO {
 			List<ComunaCumplimiento> comunaCumplimientos = query.getResultList();
 			if(comunaCumplimientos!=null && comunaCumplimientos.size() > 0)
 				return comunaCumplimientos.get(0);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public TipoCumplimiento getCumplimientoByType(TiposCumplimientos tiposCumplimiento) {
+		try{
+			TypedQuery<TipoCumplimiento> query = this.em.createNamedQuery("TipoCumplimiento.findByIdTipoCumplimiento", TipoCumplimiento.class);
+			query.setParameter("idTipoCumplimiento", tiposCumplimiento.getId());
+			List<TipoCumplimiento> tipoCumplimientos = query.getResultList();
+			if(tipoCumplimientos!=null && tipoCumplimientos.size() > 0)
+				return tipoCumplimientos.get(0);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public RebajaCorte getCorteByMes(Integer mesCorte) {
+		try{
+			TypedQuery<RebajaCorte> query = this.em.createNamedQuery("RebajaCorte.findByMes", RebajaCorte.class);
+			query.setParameter("mesCorte", mesCorte);
+			List<RebajaCorte> cortes = query.getResultList();
+			if(cortes != null && cortes.size() > 0)
+				return cortes.get(0);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

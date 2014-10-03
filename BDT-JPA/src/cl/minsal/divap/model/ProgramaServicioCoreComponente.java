@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "ProgramaServicioCoreComponente.findAll", query = "SELECT p FROM ProgramaServicioCoreComponente p"),
     @NamedQuery(name = "ProgramaServicioCoreComponente.findByProgramaServicioCore", query = "SELECT p FROM ProgramaServicioCoreComponente p WHERE p.programaServicioCoreComponentePK.programaServicioCore = :programaServicioCore"),
+    @NamedQuery(name = "ProgramaServicioCoreComponente.findByIdProgramaAnoIdComponenteIdSubtitulo", query = "SELECT p FROM ProgramaServicioCoreComponente p WHERE p.programaServicioCore1.programaAnoServicio.idProgramaAno = :idProgramaAno and p.servicioCoreComponente.id = :idComponente and p.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
     @NamedQuery(name = "ProgramaServicioCoreComponente.findByComponente", query = "SELECT p FROM ProgramaServicioCoreComponente p WHERE p.programaServicioCoreComponentePK.componente = :componente"),
     @NamedQuery(name = "ProgramaServicioCoreComponente.findByTarifa", query = "SELECT p FROM ProgramaServicioCoreComponente p WHERE p.tarifa = :tarifa"),
     @NamedQuery(name = "ProgramaServicioCoreComponente.findByCantidad", query = "SELECT p FROM ProgramaServicioCoreComponente p WHERE p.cantidad = :cantidad")})
@@ -32,6 +33,8 @@ public class ProgramaServicioCoreComponente implements Serializable {
     private Integer tarifa;
     @Column(name = "cantidad")
     private Integer cantidad;
+    @Column(name = "monto")
+    private Integer monto;
     @JoinColumn(name = "subtitulo", referencedColumnName = "id_tipo_subtitulo")
     @ManyToOne
     private TipoSubtitulo subtitulo;
@@ -76,8 +79,16 @@ public class ProgramaServicioCoreComponente implements Serializable {
     public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
     }
+    
+    public Integer getMonto() {
+		return monto;
+	}
 
-    public TipoSubtitulo getSubtitulo() {
+	public void setMonto(Integer monto) {
+		this.monto = monto;
+	}
+
+	public TipoSubtitulo getSubtitulo() {
 		return subtitulo;
 	}
 

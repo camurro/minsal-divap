@@ -134,7 +134,11 @@ public class DocumentService {
 			String key = ((doc.getNodeRef() == null) ? doc.getPath() : doc.getNodeRef().replace("workspace://SpacesStore/", ""));
 			documentoVO = alfrescoService.download(key);
 			documentoVO.setContentType(doc.getContentType());
+			System.out.println("getDocument doc.getNodeRef()->"+doc.getNodeRef());
+			System.out.println("getDocument doc.getPath()->"+doc.getPath());
 			String filename = ((doc.getNodeRef() != null) ? doc.getPath() : doc.getPath().substring((doc.getPath().lastIndexOf(File.separator) + 1)));
+			filename = filename.replace(" ", "_");
+			System.out.println("getDocument filename-->"+filename);
 			documentoVO.setName(filename);
 		} catch (Exception e) {
 			throw new RuntimeException(e);

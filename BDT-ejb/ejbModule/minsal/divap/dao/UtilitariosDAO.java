@@ -1,5 +1,6 @@
 package minsal.divap.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Singleton;
@@ -7,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import minsal.divap.enums.TipoComuna;
 import cl.minsal.divap.model.Comuna;
 import cl.minsal.divap.model.Region;
 import cl.minsal.divap.model.ServicioSalud;
@@ -49,6 +51,16 @@ public class UtilitariosDAO {
 	}
 	
 	public List<Comuna> getComunasCumplimientoByServicio(Integer idServicio){
+		try {
+			TypedQuery<Comuna> query = this.em.createNamedQuery("ComunaCumplimiento.findByServicio", Comuna.class);
+			query.setParameter("idServicio", idServicio);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public List<Comuna> getComunasCumplimientoByRebajaServicio(Integer idServicio){
 		try {
 			TypedQuery<Comuna> query = this.em.createNamedQuery("ComunaCumplimiento.findByServicio", Comuna.class);
 			query.setParameter("idServicio", idServicio);

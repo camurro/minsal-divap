@@ -9,14 +9,13 @@
 					<h:outputText value="Estimación de Flujos de Caja" />
 				</h1>
 				<p:panel id="Panel">
-					<h2>Listado de Programas 2014 para el usuario #{procesoEstimacionFlujoCajaSeleccionarLineaController.usuario}</h2>
+					<h2>Listado de Programas #{procesoEstimacionFlujoCajaSeleccionarLineaController.anoCurso} para el usuario #{procesoEstimacionFlujoCajaSeleccionarLineaController.usuario}</h2>
 					<p:dataTable id="tablaMisTareas" resizableColumns="true"
-						value="#{procesoEstimacionFlujoCajaSeleccionarLineaController.listadoProgramasServicio}"
-						liveResize="true" var="_programas" rows="10" paginator="false"
+						value="#{procesoEstimacionFlujoCajaSeleccionarLineaController.programas}"
+						liveResize="true" var="_programas" rows="10" paginator="true"
 						paginatorPosition="bottom"
 						emptyMessage="No se encontro información." styleClass="dataTable">
 						<p:columnGroup type="header">
-							<!--  -->
 							<p:row>
 								<p:column headerText="Programa" />
 								<p:column headerText="Descripción" />
@@ -33,26 +32,23 @@
 						</p:column>
 						<p:column>
 							<h:commandLink rendered="${_programas.estadoFlujocaja.id eq 1}"
-								action="#{procesoEstimacionFlujoCajaSeleccionarLineaController.continuarProceso(_programas.idProgramaAno)}">
+								action="#{procesoEstimacionFlujoCajaSeleccionarLineaController.iniciar(_programas.idProgramaAno)}">
 								<h:graphicImage value="resources/minsal/images/play.png"
 									styleClass="divapIcons" />
 							</h:commandLink>
 							<!-- Iniciados. No presentan boton -->
 							<!-- Finalizados. Fondo Color Gris. -->
-							<h:commandLink disabled="true"
-								rendered="${_programas.estadoFlujocaja.id eq 3}">
 								<h:graphicImage value="resources/minsal/images/play_locked.png"
-									styleClass="divapIcons" />
-							</h:commandLink>
+									styleClass="divapIcons" rendered="${_programas.estadoFlujocaja.id eq 5}" />
 						</p:column>
 
 						<p:column>
 							<!-- Modificación del programa año vigente -->
-							<h:link
-								outcome="divapProcesoProgMonitoreo?faces-redirect=true programa=#{_programas.idProgramaAno}">
+							<h:commandLink rendered="${_programas.estadoFlujocaja.id eq 4}"
+							    action="#{procesoEstimacionFlujoCajaSeleccionarLineaController.modificar(_programas.idProgramaAno)}">
 								<h:graphicImage value="resources/minsal/images/play.png"
 									styleClass="divapIcons" />
-							</h:link>
+							</h:commandLink>
 						</p:column>
 					</p:dataTable>
 

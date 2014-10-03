@@ -8,7 +8,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import minsal.divap.enums.Subtitulo;
 import cl.minsal.divap.model.Caja;
+import cl.minsal.divap.model.CajaMonto;
+import cl.minsal.divap.model.MarcoPresupuestario;
+import cl.minsal.divap.model.MontoMes;
 
 
 
@@ -42,6 +46,17 @@ public class CajaDAO {
 
 	}
 	
+	public List<Caja> getByIdProgramaAnoIdServicio(Integer idProgramaAno, Integer idServicio){
+		try {
+			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByIdProgramaAnoIdServicio", Caja.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idServicio", idServicio);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	//Verificar que devuelve
 	//TODO: Guardar la lista
 	public List<Caja> save(List<Caja> caja) {
@@ -60,8 +75,7 @@ public class CajaDAO {
 		return true;
 	}
 
-	public List<Caja> getByIDProgramaAnoSubtitulo(Integer idPrograma,
-			Integer ano, Integer subtitulo) {
+	public List<Caja> getByIDProgramaAnoSubtitulo(Integer idPrograma, Integer ano, Integer subtitulo) {
 		try {
 			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByIdProgramaAnoSubtitulo", Caja.class);
 			query.setParameter("idPrograma",idPrograma);
@@ -97,9 +111,61 @@ public class CajaDAO {
 			query.setParameter("ano",ano);
 			query.setParameter("idSubtitulo",sub);
 			query.setParameter("idComponente",Integer.parseInt(componenteSeleccionado));
-		
-			List<Caja> results = query.getResultList();
-			return results;
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public MarcoPresupuestario save(MarcoPresupuestario marcoPresupuestario) {
+		this.em.persist(marcoPresupuestario);
+		return marcoPresupuestario;
+	}
+
+	public CajaMonto save(CajaMonto cajaMontoActual) {
+		this.em.persist(cajaMontoActual);
+		return cajaMontoActual;
+	}
+
+	public MontoMes save(MontoMes montoMesActual) {
+		this.em.persist(montoMesActual);
+		return montoMesActual;
+	}
+
+	public MarcoPresupuestario getMarcoPresupuestarioByProgramaAnoServicio(Integer idProgramaAno, Integer idServicio) {
+		try {
+			TypedQuery<MarcoPresupuestario> query = this.em.createNamedQuery("MarcoPresupuestario.findByProgramaAnoServicio", MarcoPresupuestario.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idServicioSalud", idServicio);
+			List<MarcoPresupuestario> results = query.getResultList();
+			if(results != null && results.size() > 0){
+				return results.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<Caja> getMonitoreoByProgramaAnoComponenteSubtitulo(Integer idProgramaAno, Integer idComponente, Subtitulo subtitulo) {
+		try {
+			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByProgramaAnoComponenteSubtitulo", Caja.class);
+			query.setParameter("idTipoSubtitulo", subtitulo.getId());
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public List<Caja> getConvenioRemesaByProgramaAnoComponenteSubtitulo(Integer idProgramaAno, Integer idComponente, Subtitulo subtitulo) {
+		try {
+			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByProgramaAnoComponenteSubtitulo", Caja.class);
+			query.setParameter("idTipoSubtitulo", subtitulo.getId());
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			return query.getResultList();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

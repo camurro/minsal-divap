@@ -2,8 +2,6 @@ package cl.minsal.divap.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,23 +12,19 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.service.EstimacionFlujoCajaService;
 import minsal.divap.service.ProgramasService;
-import minsal.divap.util.Util;
 import minsal.divap.vo.ProgramaVO;
 
 import org.apache.log4j.Logger;
 
-import cl.minsal.divap.pojo.ProcesosProgramasPojo;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 @Named("procesoEstimacionFlujoCajaSeleccionarLineaController")
 @ViewScoped
-public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
-		AbstractTaskMBean implements Serializable {
+public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends AbstractTaskMBean implements Serializable {
 	
-	//TODO: [ASAAVEDRA] Modificar el icono de modificación del programa, según correspondan los estados en lo que se puede modificar.
+	//TODO: [ASAAVEDRA] Modificar el icono de modificaciï¿½n del programa, segï¿½n correspondan los estados en lo que se puede modificar.
 	
 	/*
 	 * Variables
@@ -41,34 +35,40 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 	private transient Logger log;
 
 	private Integer idProgramaAno;
+	
 	@EJB
 	private ProgramasService programaService;
 	@EJB
 	private EstimacionFlujoCajaService estimacionFlujoCajaService;
 	
 	private String usuario;
+	
+	private Boolean iniciarFlujoCaja;
+	
+	private Integer anoCurso;
 
 	/*
-	 * Se obtiene la lista de programas del usuario por username y año.
+	 * Se obtiene la lista de programas del usuario por username y aÃ±o.
 	 */
-	public List<ProgramaVO> getListadoProgramasServicio() {
-			List<ProgramaVO> programas = programaService
-				.getProgramasByUserAno(getLoggedUsername(), Util.obtenerAno(new Date()));
-		
-		return programas;
+	public List<ProgramaVO> programas() {
+		return programaService.getProgramasByUserAno(getLoggedUsername(), getAnoCurso());
 	}
 
 	/*
 	 * Avanza a la siguiente actividad con el programa seleccionado
 	 */
-	public String continuarProceso(Integer id) {
-
-		//TODO: [ASAAVEDRA] Transaccional.
-		this.idProgramaAno = estimacionFlujoCajaService.obtenerIdProgramaAno(id);
+	public String iniciar(Integer id) {
+		this.idProgramaAno = id;
+		this.iniciarFlujoCaja = true;
 		setTarget("bandejaTareas");
-		String pagina = super.enviar();
-		
-		return pagina;
+		return super.enviar();
+	}
+	
+	public String modificar(Integer id) {
+		this.idProgramaAno = id;
+		this.iniciarFlujoCaja = false;
+		setTarget("bandejaTareas");
+		return super.enviar();
 	}
 
 	@Override
@@ -103,6 +103,7 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 		System.out.println("createResultData usuario-->"
 				+ getSessionBean().getUsername());
 		parameters.put("idProgramaAno_", idProgramaAno);
+		parameters.put("iniciarFlujoCaja_", iniciarFlujoCaja);
 		return parameters;
 	}
 
@@ -129,6 +130,9 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 	 */
 
 	public String getUsuario() {
+		if(usuario == null){
+			usuario = getLoggedUsername();
+		}
 		return getLoggedUsername();
 	}
 
@@ -136,5 +140,23 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends
 		this.usuario = usuario;
 	}
 
+	public Integer getAnoCurso() {
+		if(anoCurso == null){
+			anoCurso = estimacionFlujoCajaService.getAnoCurso();
+		}
+		return anoCurso;
+	}
+
+	public void setAnoCurso(Integer anoCurso) {
+		this.anoCurso = anoCurso;
+	}
+
+	public Boolean getIniciarFlujoCaja() {
+		return iniciarFlujoCaja;
+	}
+
+	public void setIniciarFlujoCaja(Boolean iniciarFlujoCaja) {
+		this.iniciarFlujoCaja = iniciarFlujoCaja;
+	}
 
 }

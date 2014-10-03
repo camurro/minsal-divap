@@ -11,7 +11,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import minsal.divap.enums.BusinessProcess;
-import minsal.divap.service.DistribucionInicialPercapitaService;
 import minsal.divap.service.EstimacionFlujoCajaService;
 import minsal.divap.service.ProcessService;
 
@@ -24,17 +23,16 @@ import minsal.divap.service.ProcessService;
 @Path("/proceso")
 @RequestScoped
 public class EstimacionFlujoCajaRESTService extends BaseRest{
-
+	
 	@GET
-    @Path("/estimacionFlujoCaja/calcularPropuesta/{idProgramaAno}")
+    @Path("/estimacionFlujoCaja/calcularPropuesta/{idProgramaAno}/{iniciarFlujoCaja}")
     @Produces("application/json")
-    public Integer calcularPropuesta(@PathParam("idProgramaAno") Integer idProgramaAno){
-		
-		System.out.println("[CALCULAR PROPUESTA] -->"+idProgramaAno);
+    public void calcularPropuesta(@PathParam("idProgramaAno") Integer idProgramaAno, @PathParam("iniciarFlujoCaja") Boolean iniciarFlujoCaja){
+		System.out.println("[CALCULAR PROPUESTA idProgramaAno] -->"+idProgramaAno);
+		System.out.println("[CALCULAR PROPUESTA iniciarFlujoCaja] -->"+iniciarFlujoCaja);
 		EstimacionFlujoCajaService estimacionFlujoCajaService = getService(EstimacionFlujoCajaService.class);
 		System.out.println("[FIN CALCULAR PROPUESTA]");
-		return estimacionFlujoCajaService.calcularPropuesta(idProgramaAno);
-		
+		estimacionFlujoCajaService.calcularPropuesta(idProgramaAno, iniciarFlujoCaja);
     }
 	
 	
@@ -59,26 +57,12 @@ public class EstimacionFlujoCajaRESTService extends BaseRest{
     }
 
 	@GET
-    @Path("/estimacionFlujoCaja/notificarUsuarioConsolidador/{idLineaProgramatica}")
+    @Path("/estimacionFlujoCaja/notificarUsuarioConsolidador/{idLineaProgramatica}/{usuario}")
     @Produces("application/json")
-    public Integer notificarUsuarioConsolidador(@PathParam("idLineaProgramatica") Integer idLineaProgramatica){
+    public void notificarUsuarioConsolidador(@PathParam("idLineaProgramatica") Integer idLineaProgramatica, @PathParam("usuario") String usuario){
 		System.out.println("[Notificar a Usuario Consolidador] -->"+idLineaProgramatica);
-		
-		//Iniciar el segundo proceso.
-		ProcessService processService = getService(ProcessService.class);
-		Map<String, Object> parameters = new HashMap<String, Object>();
-		String usuario = "lsuarez";
-		parameters.put("user", usuario);
-		parameters.put("usuario", usuario);		
-		try {
-			processService.startProcess(BusinessProcess.ESTIMACIONFLUJOCAJACONSOLIDADOR, parameters);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		EstimacionFlujoCajaService estimacionFlujoCajaService = getService(EstimacionFlujoCajaService.class);
-		return estimacionFlujoCajaService.notificarUsuarioConsolidador(idLineaProgramatica);
+		estimacionFlujoCajaService.notificarUsuarioConsolidador(idLineaProgramatica, usuario);
     }
 	
 	@GET

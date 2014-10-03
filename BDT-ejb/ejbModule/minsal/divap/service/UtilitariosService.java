@@ -8,6 +8,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
 import minsal.divap.dao.UtilitariosDAO;
+import minsal.divap.enums.TipoComuna;
 import minsal.divap.vo.ComunaVO;
 import minsal.divap.vo.RegionVO;
 import minsal.divap.vo.ServiciosVO;
@@ -59,8 +60,7 @@ public class UtilitariosService {
 	}
 	
 	public List<ComunaVO> getComunasByServicio(Integer idServicio){
-		//List<Comuna> comunas = utilitariosDAO.getComunasByServicio(idServicio);
-		List<Comuna> comunas = utilitariosDAO.getComunasCumplimientoByServicio(idServicio);
+		List<Comuna> comunas = utilitariosDAO.getComunasByServicio(idServicio);
 		List<ComunaVO> comunasVO = new ArrayList<ComunaVO>();
 		for(Comuna comuna : comunas){
 			ComunaVO comunaVO = new ComunaVO();
@@ -70,4 +70,5 @@ public class UtilitariosService {
 		}
 		return comunasVO;
 	}
+	
 }

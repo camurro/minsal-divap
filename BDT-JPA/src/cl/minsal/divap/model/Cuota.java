@@ -1,7 +1,10 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+import java.util.Date;
+
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 
 
 /**
@@ -9,91 +12,108 @@ import javax.persistence.*;
  * 
  */
 @Entity
-@NamedQuery(name="Cuota.findAll", query="SELECT c FROM Cuota c")
+@Table(name = "cuota")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Cuota.findAll", query = "SELECT c FROM Cuota c"),
+    @NamedQuery(name = "Cuota.findById", query = "SELECT c FROM Cuota c WHERE c.id = :id"),
+    @NamedQuery(name = "Cuota.findByNumeroCuota", query = "SELECT c FROM Cuota c WHERE c.numeroCuota = :numeroCuota"),
+    @NamedQuery(name = "Cuota.findByMonto", query = "SELECT c FROM Cuota c WHERE c.monto = :monto"),
+    @NamedQuery(name = "Cuota.findByFechaPago", query = "SELECT c FROM Cuota c WHERE c.fechaPago = :fechaPago")})
 public class Cuota implements Serializable {
-	private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = 1L;
 	@Id
 	@Column(name="id", unique=true, nullable=false)
 	@GeneratedValue
-	private Integer id;
+    private Integer id;
+    @Basic(optional = false)
+    @Column(name = "numero_cuota")
+    private short numeroCuota;
+    @Basic(optional = false)
+    @Column(name = "monto")
+    private int monto;
+    @Column(name = "fecha_pago")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaPago;
+    @JoinColumn(name = "id_programa", referencedColumnName = "id_programa_ano")
+    @ManyToOne
+    private ProgramaAno idPrograma;
 
-	@Column(name="fecha_pago1")
-	private Integer fechaPago1;
+    public Cuota() {
+    }
 
-	@Column(name="fecha_pago2")
-	private Integer fechaPago2;
+    public Cuota(Integer id) {
+        this.id = id;
+    }
 
-	@Column(name="fecha_pago3")
-	private Integer fechaPago3;
+    public Cuota(Integer id, short numeroCuota, int monto) {
+        this.id = id;
+        this.numeroCuota = numeroCuota;
+        this.monto = monto;
+    }
 
-	private Integer monto;
+    public Integer getId() {
+        return id;
+    }
 
-	@Column(name="numero_cuota")
-	private Integer numeroCuota;
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	//bi-directional many-to-one association to Programa
-	@ManyToOne
-	@JoinColumn(name="id_programa")
-	private Programa programa;
+    public short getNumeroCuota() {
+        return numeroCuota;
+    }
 
-	public Cuota() {
-	}
+    public void setNumeroCuota(short numeroCuota) {
+        this.numeroCuota = numeroCuota;
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public int getMonto() {
+        return monto;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setMonto(int monto) {
+        this.monto = monto;
+    }
 
-	public Integer getFechaPago1() {
-		return this.fechaPago1;
-	}
+    public Date getFechaPago() {
+        return fechaPago;
+    }
 
-	public void setFechaPago1(Integer fechaPago1) {
-		this.fechaPago1 = fechaPago1;
-	}
+    public void setFechaPago(Date fechaPago) {
+        this.fechaPago = fechaPago;
+    }
 
-	public Integer getFechaPago2() {
-		return this.fechaPago2;
-	}
+    public ProgramaAno getIdPrograma() {
+        return idPrograma;
+    }
 
-	public void setFechaPago2(Integer fechaPago2) {
-		this.fechaPago2 = fechaPago2;
-	}
+    public void setIdPrograma(ProgramaAno idPrograma) {
+        this.idPrograma = idPrograma;
+    }
 
-	public Integer getFechaPago3() {
-		return this.fechaPago3;
-	}
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
 
-	public void setFechaPago3(Integer fechaPago3) {
-		this.fechaPago3 = fechaPago3;
-	}
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Cuota)) {
+            return false;
+        }
+        Cuota other = (Cuota) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
 
-	public Integer getMonto() {
-		return this.monto;
-	}
-
-	public void setMonto(Integer monto) {
-		this.monto = monto;
-	}
-
-	public Integer getNumeroCuota() {
-		return this.numeroCuota;
-	}
-
-	public void setNumeroCuota(Integer numeroCuota) {
-		this.numeroCuota = numeroCuota;
-	}
-
-	public Programa getPrograma() {
-		return this.programa;
-	}
-
-	public void setPrograma(Programa programa) {
-		this.programa = programa;
-	}
-
+    @Override
+    public String toString() {
+        return "cl.minsal.divap.model.Cuota[ id=" + id + " ]";
+    }
+    
 }

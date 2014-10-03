@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import cl.minsal.divap.model.AntecendentesComuna;
@@ -86,6 +87,19 @@ public class AntecedentesComunaDAO {
 			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByDistribucionInicialPercapita", AntecendentesComunaCalculado.class);
 			query.setParameter("distribucionInicialPercapita", idDistribucionInicialPercapita);
 			results = query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return results;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> groupPercapitaServicioByDistribucionInicialPercapita(Integer idDistribucionInicialPercapita) {
+		List<Object[]> results = null;
+		try {
+			Query queryGroupPercapitaServicioByDistribucionInicialPercapita = this.em.createNamedQuery("AntecendentesComuna.groupPercapitaServicio");
+			queryGroupPercapitaServicioByDistribucionInicialPercapita.setParameter("idDistribucionInicialPercapita", idDistribucionInicialPercapita);
+			results = queryGroupPercapitaServicioByDistribucionInicialPercapita.getResultList(); 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

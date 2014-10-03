@@ -251,9 +251,9 @@
 									headerText="Nuevo Aporte Estatal #{procesoRebajaTramitacionController.mesActual}" />
 							</p:row>
 							<p:row>
-								<p:column headerText="item1" />
-								<p:column headerText="item2" />
-								<p:column headerText="item3" />
+								<p:column headerText="#{procesoRebajaTramitacionController.cumplimientoItem1.nombre}" />
+								<p:column headerText="#{procesoRebajaTramitacionController.cumplimientoItem2.nombre}" />
+								<p:column headerText="#{procesoRebajaTramitacionController.cumplimientoItem3.nombre}" />
 
 								<p:column headerText="reb1" />
 								<p:column headerText="reb2" />
@@ -281,55 +281,74 @@
 						
 						<p:column>			
 							<h:outputText value="#{_rebaja.cumplimientoRebajasItem1.valor}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber minFractionDigits="2" />
 							</h:outputText>
+							<h:outputText value="%"/>
 						</p:column>
 						<p:column>			
 							<h:outputText value="#{_rebaja.cumplimientoRebajasItem2.valor}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber minFractionDigits="2" />
 							</h:outputText>
+							<h:outputText value="%"/>
 						</p:column>
 						<p:column>			
 							<h:outputText value="#{_rebaja.cumplimientoRebajasItem3.valor}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber minFractionDigits="2" />
 							</h:outputText>
+							<h:outputText value="%"/>
 						</p:column>
 						
 						<p:column>
 							<h:outputText value="#{_rebaja.cumplimientoRebajasItem1.rebajaCalculada}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber minFractionDigits="2" />
 							</h:outputText>
+							<h:outputText value="%"/>
 						</p:column>
 						<p:column>
 							<h:outputText value="#{_rebaja.cumplimientoRebajasItem2.rebajaCalculada}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber minFractionDigits="2" />
 							</h:outputText>
+							<h:outputText value="%"/>
 						</p:column>
 						<p:column>
 							<h:outputText value="#{_rebaja.cumplimientoRebajasItem3.rebajaCalculada}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber minFractionDigits="2" />
 							</h:outputText>
+							<h:outputText value="%"/>
 						</p:column>
 						 
 						<p:column>
-							<h:outputText value="#{_rebaja.totalRebajaCalculada}"
-								styleClass="textoPequenio textoAjustado">
+							<h:outputText value="#{_rebaja.totalRebajaCalculada}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber minFractionDigits="2" />
 							</h:outputText>
+							<h:outputText value="%"/>
 						</p:column>
 						
 						<p:column>
-							 	<h:outputText   value="#{_rebaja.cumplimientoRebajasItem1.rebajaFinal}" 
-							 		styleClass="textoPequenio textoAjustado" />
+							 	<h:outputText  value="#{_rebaja.cumplimientoRebajasItem1.rebajaFinal}" styleClass="textoPequenio textoAjustado">
+							 		<f:convertNumber minFractionDigits="2" />
+							 	</h:outputText>
+							 	<h:outputText value="%"/>
 						</p:column>
 						
 						<p:column>
-							 	<h:outputText value="#{_rebaja.cumplimientoRebajasItem2.rebajaFinal}" 
-							 		styleClass="textoPequenio textoAjustado"/>
+							 	<h:outputText value="#{_rebaja.cumplimientoRebajasItem2.rebajaFinal}" styleClass="textoPequenio textoAjustado">
+							 		<f:convertNumber minFractionDigits="2" />
+							 	</h:outputText>
+							 	<h:outputText value="%"/>
 						</p:column>
 						<p:column>
-							 	<h:outputText  value="#{_rebaja.cumplimientoRebajasItem3.rebajaFinal}" 
-							 		styleClass="textoPequenio textoAjustado"/>
+							 	<h:outputText  value="#{_rebaja.cumplimientoRebajasItem3.rebajaFinal}" styleClass="textoPequenio textoAjustado">
+							 		<f:convertNumber minFractionDigits="2" />
+							 	</h:outputText>
+							 	<h:outputText value="%"/>
 						</p:column>
 					 
 						<p:column>
-							<h:outputText id="totalFinal"
-								value="#{_rebaja.totalRebajaRebajaFinal}"
-								styleClass="textoPequenio textoAjustado">
+							<h:outputText id="totalFinal" value="#{_rebaja.totalRebajaRebajaFinal}" styleClass="textoPequenio textoAjustado">	
+								<f:convertNumber minFractionDigits="2" />
 							</h:outputText>
+							<h:outputText value="%"/>
 						</p:column>
 
 						<p:column>

@@ -17,21 +17,15 @@ public class CajaService {
 	@EJB
 	private CajaDAO cajaDAO;
 
-	public List<Caja> getByProgramaAnoSubtitulo(Integer idPrograma,
-			Integer ano, Integer subtitulo) {
-
-		List<Caja> lstCaja = cajaDAO.getByIDProgramaAnoSubtitulo(idPrograma,
-				ano, subtitulo);
-
-		return lstCaja;
+	public List<Caja> getByProgramaAnoSubtitulo(Integer idPrograma, Integer ano, Integer subtitulo) {
+		return cajaDAO.getByIDProgramaAnoSubtitulo(idPrograma, ano, subtitulo);
 	}
 
 	public List<CajaVO> getByProgramaAnoSubtituloVO(Integer idPrograma,
 			Integer ano, Integer subtitulo) {
 
 		CajaMapper cajaMapper = new CajaMapper();
-		List<Caja> lstCaja = cajaDAO.getByIDProgramaAnoSubtitulo(idPrograma,
-				ano, subtitulo);
+		List<Caja> lstCaja = cajaDAO.getByIDProgramaAnoSubtitulo(idPrograma, ano, subtitulo);
 		List<CajaVO> lstCajaVO = new ArrayList<CajaVO>();
 
 		// TODO:Implementar en el Mapper que devuelva la lista.
@@ -49,7 +43,7 @@ public class CajaService {
 			Caja caja = cajaDAO.getByID(cajaVO2.getId());
 			caja.setId(cajaVO2.getId());
 
-			caja.setEnero(cajaVO2.getEnero());
+			/*caja.setEnero(cajaVO2.getEnero());
 
 			caja.setFebrero(cajaVO2.getFebrero());
 
@@ -73,7 +67,7 @@ public class CajaService {
 
 			caja.setDiciembre(cajaVO2.getDiciembre());
 			
-			caja.setTotal(cajaVO2.getTotal());
+			caja.setTotal(cajaVO2.getTotal());*/
 			
 			cajaDAO.save(caja);
 

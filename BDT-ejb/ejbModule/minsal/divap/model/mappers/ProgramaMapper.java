@@ -36,6 +36,11 @@ public class ProgramaMapper implements Mapper<ProgramaAno>{
 		}else{
 			programaVO.setEstado(new EstadoProgramaVO());
 		}
+		if (programaAno.getEstadoFlujoCaja()!=null)	{
+			programaVO.setEstadoFlujocaja(new EstadoProgramaVO(programaAno.getEstadoFlujoCaja().getIdEstadoPrograma(), programaAno.getEstadoFlujoCaja().getNombreEstado()));
+		}else{
+			programaVO.setEstadoFlujocaja(new EstadoProgramaVO());
+		}
 		if(programaAno.getPrograma() != null){
 			programaVO.setNombre(programaAno.getPrograma().getNombre());
 			programaVO.setId(programaAno.getPrograma().getId());
@@ -51,11 +56,7 @@ public class ProgramaMapper implements Mapper<ProgramaAno>{
 				}
 				programaVO.setComponentes(componentesVO);
 			}
-			
-//			if (programaAno.getEstadoFlujoCaja()!=null)
-//			{
-//			    programaVO.setEstadoFlujocaja(programaAno.getEstadoFlujoCaja());
-//			}
+		
 		}
 		System.out.println("programaVO.getComponentes().size()==>"+((programaVO.getComponentes() == null) ? 0 : programaVO.getComponentes().size()));
 		if(programaVO.getComponentes() != null && programaVO.getComponentes().size() > 0){

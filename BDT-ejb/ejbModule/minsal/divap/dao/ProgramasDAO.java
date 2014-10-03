@@ -6,12 +6,15 @@ import java.util.List;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
+import cl.minsal.divap.model.ProgramaServicioCoreComponente;
 
 
 
@@ -20,25 +23,16 @@ public class ProgramasDAO {
 
 	@PersistenceContext(unitName="BDT-JPA")
 	private EntityManager em;
-
-//	@PersistenceUnit(unitName="persistenceUnitSqlServer")
-//	private EntityManagerFactory emf;
-////	
-//	@Autowired
-//	private JtaTransactionManager transactionManagerSqlServer;
-	
-	
 	
 	public ProgramaAno getProgramaAnoByID(Integer idProgramaAno){
 		try {
 			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.findByIdProgramaAno", ProgramaAno.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
-			List <ProgramaAno> programasAno = query.getResultList(); 
-			for (ProgramaAno programaAno : programasAno) {
-				return programaAno;
+			List <ProgramaAno> programas = query.getResultList(); 
+			if(programas != null && programas.size() > 0){
+				return programas.get(0);
 			}
 			return null;
-		
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -89,14 +83,12 @@ public class ProgramasDAO {
 	public ProgramaAno getProgramasByIdProgramaAno(Integer idProgramaAno) {
 		try {
 			return em.find(ProgramaAno.class, idProgramaAno);
-			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	public ProgramaAno getProgramaAnoByIDProgramaAno(Integer idPrograma, Integer ano) {
-		// TODO Auto-generated method stub
 		try {
 			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.findByAnoIdPrograma", ProgramaAno.class);
 			query.setParameter("idPrograma", idPrograma);
@@ -111,7 +103,6 @@ public class ProgramasDAO {
 	}
 
 	public EstadoPrograma getEstadoProgramaByIdEstado(Integer idEstadoPrograma) {
-		// TODO Auto-generated method stub
 		try {
 			TypedQuery<EstadoPrograma> query = this.em.createNamedQuery("EstadoPrograma.findByIdEstadoPrograma", EstadoPrograma.class);
 			query.setParameter("idEstadoPrograma", idEstadoPrograma);
@@ -139,7 +130,6 @@ public class ProgramasDAO {
 //	}
 
 	public void guardarEstadoFlujoCaja(Integer idEstado, Integer idProgramaAno) {
-		// TODO Auto-generated method stub
 		ProgramaAno programaAno = getProgramaAnoByID(idProgramaAno);
 		EstadoPrograma estadoPrograma = new EstadoPrograma(idEstado);
 		programaAno.setEstadoFlujoCaja(estadoPrograma);
@@ -148,9 +138,6 @@ public class ProgramasDAO {
 
 	
 	public Integer saveProgramaAno(ProgramaAno programaAno, boolean detach) {
-		// TODO Auto-generated method stub
-	
-		
 		if (detach)
 			this.em.detach(programaAno);
 	
@@ -159,19 +146,14 @@ public class ProgramasDAO {
 			
 		return programaAno.getIdProgramaAno();
 		
-		
-		
-		
 	}
 
 	public AnoEnCurso saveAnoCurso(AnoEnCurso anoCurso) {
-		// TODO Auto-generated method stub
 		this.em.persist(anoCurso);
 		return anoCurso;
 	}
 
 	public AnoEnCurso getAnoEnCursoById(int ano) {
-		// TODO Auto-generated method stub
 		try {
 			TypedQuery<AnoEnCurso> query = this.em.createNamedQuery("AnoEnCurso.findByAno", AnoEnCurso.class);
 			query.setParameter("ano", ano);
@@ -195,6 +177,42 @@ public class ProgramasDAO {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public List<ProgramaMunicipalCoreComponente> getProgramaMunicipales(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo) {
+		try {
+			TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.findByIdProgramaAnoIdComponenteIdSubtitulo", ProgramaMunicipalCoreComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idTipoSubtitulo", idSubtitulo);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<ProgramaServicioCoreComponente> getProgramaServicios(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo) {
+		try {
+			TypedQuery<ProgramaServicioCoreComponente> query = this.em.createNamedQuery("ProgramaServicioCoreComponente.findByIdProgramaAnoIdComponenteIdSubtitulo", ProgramaServicioCoreComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idTipoSubtitulo", idSubtitulo);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public void eliminarPropuesta(Integer idProgramaAno) {
+		Query queryCajaMonto = this.em.createNamedQuery("CajaMonto.deleteUsingIdProgramaAno");
+		queryCajaMonto.setParameter("idProgramaAno", idProgramaAno);
+		queryCajaMonto.executeUpdate();
+		Query queryCaja = this.em.createNamedQuery("Caja.deleteUsingIdProgramaAno");
+		queryCaja.setParameter("idProgramaAno", idProgramaAno);
+		queryCaja.executeUpdate();
+		Query queryMarco = this.em.createNamedQuery("MarcoPresupuestario.deleteUsingIdProgramaAno");
+		queryMarco.setParameter("idProgramaAno", idProgramaAno);
+		queryMarco.executeUpdate();
 	}
 
 }

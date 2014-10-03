@@ -203,25 +203,25 @@
 				<description>Tmp Dir</description>
 				<env-entry-name>tmpDir</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>D:\tmp\excel</env-entry-value>
+				<env-entry-value>/tmp/excel</env-entry-value>
 			</env-entry>
 			<env-entry>
 				<description>Tmp Dir docs</description>
 				<env-entry-name>tmpDirDoc</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>D:\tmp\doc</env-entry-value>
+				<env-entry-value>/tmp/doc</env-entry-value>
 			</env-entry>
 			<env-entry>
 				<description>Template folder percapita</description>
 				<env-entry-name>folderEstimacionFlujoCaja</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>TEMPLATES\PERCAPITA</env-entry-value>
+				<env-entry-value>TEMPLATES/ESTIMACIONFLUJOCAJA</env-entry-value>
 			</env-entry>
 			<env-entry>
 				<description>Process folder percapita</description>
 				<env-entry-name>folderPercapita</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>PROCESOS\{ANO}\PERCAPITA</env-entry-value>
+				<env-entry-value>PROCESOS/{ANO}/ESTIMACIONFLUJOCAJA</env-entry-value>
 			</env-entry>
 		</session>
 		

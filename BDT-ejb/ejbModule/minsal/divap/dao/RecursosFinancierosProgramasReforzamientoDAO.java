@@ -2,13 +2,18 @@ package minsal.divap.dao;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ProgramaMunicipalCore;
+import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
 import cl.minsal.divap.model.Usuario;
 
 
@@ -46,7 +51,39 @@ public class RecursosFinancierosProgramasReforzamientoDAO {
 		return null;
 	}
 
-	
+	public List<ProgramaMunicipalCore> getProgramasCoreByProgramaAno(Integer idProgramaAno) {
+		List<ProgramaMunicipalCore> results = null;
+		try {
+			TypedQuery<ProgramaMunicipalCore> query = this.em.createNamedQuery("ProgramaMunicipalCore.findByProgramaAno", ProgramaMunicipalCore.class);
+			query.setParameter("programaAno", idProgramaAno);
+			results = query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return results;
+	}
+
+	public Integer deleteProgramasMunicipalCore(List<Integer> idsProgramasCore) {
+		System.out.println("Inicio deleteProgramasMunicipalCore" + idsProgramasCore);
+		Query queryProgramaMunicipalCoreComponente = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.deleteByProgramasMunicipalCore");
+		queryProgramaMunicipalCoreComponente.setParameter("programasMunicipalCore", idsProgramasCore);
+		Integer programasMunicipalCoreDelete = queryProgramaMunicipalCoreComponente.executeUpdate();
+		Query queryProgramaMunicipalCore = this.em.createNamedQuery("ProgramaMunicipalCore.deleteByProgramasMunicipalCore");
+		queryProgramaMunicipalCore.setParameter("programasMunicipalCore", idsProgramasCore);
+		programasMunicipalCoreDelete = queryProgramaMunicipalCore.executeUpdate();
+		System.out.println("Fin deleteProgramasMunicipalCore programasMunicipalCoreDelete " + programasMunicipalCoreDelete);
+		return programasMunicipalCoreDelete;
+	}
+
+	public ProgramaMunicipalCore save(ProgramaMunicipalCore programaMunicipalCore) {
+		em.persist(programaMunicipalCore);
+		return programaMunicipalCore;
+	}
+
+	public ProgramaMunicipalCoreComponente save(ProgramaMunicipalCoreComponente programaMunicipalCoreComponente) {
+		em.persist(programaMunicipalCoreComponente);
+		return programaMunicipalCoreComponente;
+	}
 
 	/*public Integer createSeguimiento(Integer idProgramaAno,
 			Seguimiento seguimiento) {

@@ -3088,6 +3088,294 @@ UPDATE antecendentes_comuna_calculado  SET percapita_ano =  	160058	 WHERE antec
 
 
 
+CREATE TABLE rebaja_corte
+(
+  rebaja_corte_id serial NOT NULL,
+  mes_desde integer NOT NULL,
+  mes_hasta integer NOT NULL,
+  mes_rebaja integer NOT NULL,
+  mes_inicio integer NOT NULL,
+  CONSTRAINT rebaja_corte_pk PRIMARY KEY (rebaja_corte_id),
+  CONSTRAINT mes_desde_fk FOREIGN KEY (mes_desde)
+      REFERENCES mes (id_mes) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT mes_hasta_fk FOREIGN KEY (mes_hasta)
+      REFERENCES mes (id_mes) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT mes_inicio_fk FOREIGN KEY (mes_inicio)
+      REFERENCES mes (id_mes) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT mes_rebaja_fk FOREIGN KEY (mes_rebaja)
+      REFERENCES mes (id_mes) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+
+ALTER TABLE rebaja
+  ADD COLUMN rebaja_corte integer;
+
+
+INSERT INTO rebaja_corte(rebaja_corte_id, mes_desde, mes_hasta, mes_rebaja, mes_inicio) VALUES (1, 1, 3, 5, 1);
+INSERT INTO rebaja_corte(rebaja_corte_id, mes_desde, mes_hasta, mes_rebaja, mes_inicio) VALUES (2, 4, 6, 8, 1);
+INSERT INTO rebaja_corte(rebaja_corte_id, mes_desde, mes_hasta, mes_rebaja, mes_inicio) VALUES (3, 7, 8, 10, 1);
+INSERT INTO rebaja_corte(rebaja_corte_id, mes_desde, mes_hasta, mes_rebaja, mes_inicio) VALUES (4, 9, 10, 12, 1);
+
+UPDATE rebaja SET rebaja_corte=1;
+
+ALTER TABLE rebaja
+   ALTER COLUMN rebaja_corte SET NOT NULL;
+
+--Estimacion Flujo Caja 25/09/2014
+
+-DROP TABLE cuota;
+
+CREATE TABLE cuota
+(
+ id serial NOT NULL,
+ numero_cuota smallint NOT NULL,
+ porcentaje integer NOT NULL,
+ id_programa integer,
+ fecha_pago timestamp with time zone,
+ monto integer,
+ id_mes smallint,
+ CONSTRAINT pk_cuota PRIMARY KEY (id ),
+ CONSTRAINT mes_fk FOREIGN KEY (id_mes)
+     REFERENCES mes (id_mes) MATCH SIMPLE
+     ON UPDATE NO ACTION ON DELETE NO ACTION,
+ CONSTRAINT programa_fk FOREIGN KEY (id_programa)
+     REFERENCES programa_ano (id_programa_ano) MATCH SIMPLE
+     ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+ OIDS=FALSE
+);
+
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (46, 17, 2013, 1);
+
+ALTER TABLE marco_presupuestario
+   ALTER COLUMN marco_modificado DROP NOT NULL;
+
+INSERT INTO marco_presupuestario(marco_inicial, marco_modificado, id_marco_presupuestario, id_servicio_salud, id_programa_ano) VALUES (890574, 908771, 1, 10, 46);
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (1, 1, 60, 46);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (2, 2, 40, 46, 10);
+
+ALTER TABLE ano_en_curso ADD COLUMN inflactor_marco_presupuestario numeric;
+ALTER TABLE ano_en_curso ALTER COLUMN inflactor_marco_presupuestario SET NOT NULL;
+ALTER TABLE ano_en_curso ALTER COLUMN inflactor_marco_presupuestario SET DEFAULT 1;
+
+ALTER TABLE caja
+  DROP COLUMN ano;
+
+ALTER TABLE caja
+   ALTER COLUMN marco_presupuestario TYPE integer;
+
+ALTER TABLE caja
+  ADD CONSTRAINT fk_marco_presupuestario FOREIGN KEY (marco_presupuestario) REFERENCES marco_presupuestario (id_marco_presupuestario) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+CREATE TABLE monto_mes
+(
+  porcentaje_monto integer NOT NULL,
+  monto integer NOT NULL,
+  fecha_monto timestamp without time zone NOT NULL,
+  id_monto_mes serial NOT NULL,
+  CONSTRAINT id_monto_mes_pk PRIMARY KEY (id_monto_mes)
+)
+WITH (
+  OIDS=FALSE
+);
+
+
+CREATE TABLE caja_monto
+(
+  caja integer NOT NULL,
+  monto integer NOT NULL,
+  mes integer NOT NULL,
+  CONSTRAINT caja_monto_pk PRIMARY KEY (caja, mes),
+  CONSTRAINT caja_fk FOREIGN KEY (caja)
+      REFERENCES caja (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT mes_fk FOREIGN KEY (mes)
+      REFERENCES mes (id_mes) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT monto_fk FOREIGN KEY (monto)
+      REFERENCES monto_mes (id_monto_mes) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+
+ALTER TABLE caja
+  DROP COLUMN enero;
+ALTER TABLE caja
+  DROP COLUMN febrero;
+ALTER TABLE caja
+  DROP COLUMN marzo;
+ALTER TABLE caja
+  DROP COLUMN abril;
+ALTER TABLE caja
+  DROP COLUMN mayo;
+ALTER TABLE caja
+  DROP COLUMN junio;
+ALTER TABLE caja
+  DROP COLUMN julio;
+ALTER TABLE caja
+  DROP COLUMN agosto;
+ALTER TABLE caja
+  DROP COLUMN septiembre;
+ALTER TABLE caja
+  DROP COLUMN octubre;
+ALTER TABLE caja
+  DROP COLUMN noviembre;
+ALTER TABLE caja
+  DROP COLUMN diciembre;
+ALTER TABLE caja
+  DROP COLUMN total;
+
+
+ALTER TABLE caja
+  DROP COLUMN id_programa_ano;
+ALTER TABLE caja
+  DROP COLUMN id_servicio;
+ALTER TABLE caja
+  DROP COLUMN id_comuna;
+ALTER TABLE caja
+  DROP COLUMN id_establecimiento;
+
+ALTER TABLE caja
+   ALTER COLUMN marco_presupuestario SET NOT NULL;
+
+ALTER TABLE caja
+  ADD CONSTRAINT fk_subtitulo FOREIGN KEY (id_subtitulo) REFERENCES tipo_subtitulo (id_tipo_subtitulo) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE caja ADD COLUMN monto integer;
+ALTER TABLE caja ALTER COLUMN monto SET NOT NULL;
+
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (47, 20, 2013, 1);
+																       
+INSERT INTO marco_presupuestario(marco_inicial, marco_modificado, id_marco_presupuestario, id_servicio_salud, id_programa_ano) VALUES (179063000, 268151000, 2, 17, 47);
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (3, 1, 60, 47);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (4, 2, 40, 47, 10);
+
+INSERT INTO caja(id, id_componente, marco_presupuestario, id_subtitulo, monto) VALUES (1, 27, 2, 1, 20027000);
+
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((20027000 * (10/100.0)) :: int), '2013-01-09', 1);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((20027000 * (5/100.0)) :: int), '2013-02-09', 2);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((20027000 * (5/100.0)) :: int), '2013-03-09', 3);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((20027000 * (20/100.0)) :: int), '2013-04-09', 4);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((20027000 * (20/100.0)) :: int), '2013-05-09', 5);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((20027000 * (10/100.0)) :: int), '2013-06-09', 6);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((20027000 * (10/100.0)) :: int), '2013-07-09', 7);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((20027000 * (5/100.0)) :: int), '2013-08-09', 8);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((20027000 * (10/100.0)) :: int), '2013-09-09', 9);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((20027000 * (5/100.0)) :: int), '2013-10-09', 10);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2013-11-09', 11);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2013-12-09', 12);
+
+INSERT INTO caja_monto(caja, monto, mes) VALUES (1, 1, 1);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (1, 2, 2);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (1, 3, 3);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (1, 4, 4);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (1, 5, 5);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (1, 6, 6);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (1, 7, 7);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (1, 8, 8);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (1, 9, 9);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (1, 10, 10);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (1, 11, 11);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (1, 12, 12);
+
+INSERT INTO caja(id, id_componente, marco_presupuestario, id_subtitulo, monto) VALUES (2, 27, 2, 2, 179062000);
+
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((179062000 * (10/100.0)) :: int), '2013-01-09', 13);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((179062000 * (5/100.0)) :: int), '2013-02-09', 14);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((179062000 * (5/100.0)) :: int), '2013-03-09', 15);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((179062000 * (20/100.0)) :: int), '2013-04-09', 16);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((179062000 * (20/100.0)) :: int), '2013-05-09', 17);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((179062000 * (10/100.0)) :: int), '2013-06-09', 18);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((179062000 * (10/100.0)) :: int), '2013-07-09', 19);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((179062000 * (5/100.0)) :: int), '2013-08-09', 20);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((179062000 * (10/100.0)) :: int), '2013-09-09', 21);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((179062000 * (5/100.0)) :: int), '2013-10-09', 22);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2013-11-09', 23);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2013-12-09', 24);
+
+INSERT INTO caja_monto(caja, monto, mes) VALUES (2, 13, 1);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (2, 14, 2);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (2, 15, 3);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (2, 16, 4);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (2, 17, 5);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (2, 18, 6);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (2, 19, 7);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (2, 20, 8);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (2, 21, 9);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (2, 22, 10);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (2, 23, 11);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (2, 24, 12);
+
+
+INSERT INTO caja(id, id_componente, marco_presupuestario, id_subtitulo, monto) VALUES (3, 27, 2, 4, 69062000);
+
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((69062000 * (10/100.0)) :: int), '2013-01-09', 25);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((69062000 * (5/100.0)) :: int), '2013-02-09', 26);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((69062000 * (5/100.0)) :: int), '2013-03-09', 27);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((69062000 * (20/100.0)) :: int), '2013-04-09', 28);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((69062000 * (20/100.0)) :: int), '2013-05-09', 29);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((69062000 * (10/100.0)) :: int), '2013-06-09', 30);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((69062000 * (10/100.0)) :: int), '2013-07-09', 31);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((69062000 * (5/100.0)) :: int), '2013-08-09', 32);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((69062000 * (10/100.0)) :: int), '2013-09-09', 33);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((69062000 * (5/100.0)) :: int), '2013-10-09', 34);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2013-11-09', 35);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2013-12-09', 36);
+
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 25, 1);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 26, 2);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 27, 3);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 28, 4);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 29, 5);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 30, 6);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 31, 7);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 32, 8);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 33, 9);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 34, 10);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 35, 11);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 36, 12);
+
+
+
+ALTER TABLE programa_municipal_core_componente ADD COLUMN monto integer;
+ALTER TABLE programa_servicio_core_componente  ADD COLUMN monto integer;
+
+UPDATE programa_ano SET estadoflujocaja = 1;
+
+INSERT INTO estado_programa(id_estado_programa, nombre_estado) VALUES (4, 'Revisado');
+INSERT INTO estado_programa(id_estado_programa, nombre_estado) VALUES (5, 'En Revision');
+
+
+
+DELETE FROM caja_monto WHERE caja  > 36;
+DELETE FROM monto_mes WHERE id_monto_mes  > 36;
+DELETE FROM caja WHERE marco_presupuestario > 2;
+DELETE FROM marco_presupuestario WHERE id_marco_presupuestario > 2;
+UPDATE programa_ano SET estadoflujocaja=1;
+
+
+
+
+
+
+
+
+
+
+
 
 
 

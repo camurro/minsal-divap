@@ -1,9 +1,7 @@
 package cl.minsal.divap.controller;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +13,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
+import minsal.divap.enums.TiposCumplimientos;
 import minsal.divap.service.RebajaService;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ComunaVO;
@@ -22,6 +21,7 @@ import minsal.divap.vo.DocumentSummaryVO;
 import minsal.divap.vo.PlanillaRebajaCalculadaVO;
 import minsal.divap.vo.RegionVO;
 import minsal.divap.vo.ServiciosVO;
+import minsal.divap.vo.TipoCumplimientoVO;
 
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.SelectEvent;
@@ -55,6 +55,10 @@ implements Serializable {
 	private List<DocumentSummaryVO> resumenDocumentos;
 	private Integer fisrtTime = 1;
 	private Integer totalIncumplimiento = 0;
+	
+	private TipoCumplimientoVO cumplimientoItem1;
+	private TipoCumplimientoVO cumplimientoItem2;
+	private TipoCumplimientoVO cumplimientoItem3;
 
 	private String posicionElemento;
 	private String columnaElemento;
@@ -142,6 +146,8 @@ implements Serializable {
 		this.servicioSeleccionado = null;
 		this.comunasSeleccionadas = new ArrayList<String>();
 		this.rebajaComunas = new ArrayList<PlanillaRebajaCalculadaVO>();
+		this.listaServicios = new ArrayList<ServiciosVO>();
+		this.listaComunas = new ArrayList<ComunaVO>();
 		fisrtTime = 1;
 		totalIncumplimiento = 0;
 		System.out.println("fin limpiar");
@@ -453,6 +459,39 @@ implements Serializable {
 
 	public void setTotalIncumplimiento(Integer totalIncumplimiento) {
 		this.totalIncumplimiento = totalIncumplimiento;
+	}
+
+	public TipoCumplimientoVO getCumplimientoItem1() {
+		if(cumplimientoItem1 == null){
+			cumplimientoItem1 = rebajaService.getItemCumplimientoByType(TiposCumplimientos.ACTIVIDADGENERAL);
+		}
+		return cumplimientoItem1;
+	}
+
+	public void setCumplimientoItem1(TipoCumplimientoVO cumplimientoItem1) {
+		this.cumplimientoItem1 = cumplimientoItem1;
+	}
+
+	public TipoCumplimientoVO getCumplimientoItem2() {
+		if(cumplimientoItem2 == null){
+			cumplimientoItem2 = rebajaService.getItemCumplimientoByType(TiposCumplimientos.CONTINUIDADATENCIONSALUD);
+		}
+		return cumplimientoItem2;
+	}
+
+	public void setCumplimientoItem2(TipoCumplimientoVO cumplimientoItem2) {
+		this.cumplimientoItem2 = cumplimientoItem2;
+	}
+
+	public TipoCumplimientoVO getCumplimientoItem3() {
+		if(cumplimientoItem3 == null){
+			cumplimientoItem3 = rebajaService.getItemCumplimientoByType(TiposCumplimientos.ACTIVIDADGARANTIASEXPLICITASSALUD);
+		}
+		return cumplimientoItem3;
+	}
+
+	public void setCumplimientoItem3(TipoCumplimientoVO cumplimientoItem3) {
+		this.cumplimientoItem3 = cumplimientoItem3;
 	}
 
 }

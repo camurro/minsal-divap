@@ -35,8 +35,10 @@ import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.excel.impl.RebajaCalculadaSheetExcel;
 import minsal.divap.excel.impl.RebajaExcelValidator;
 import minsal.divap.excel.impl.RebajaSheetExcel;
+import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.exception.ExcelFormatException;
 import minsal.divap.model.mappers.CumplimientoRebajasMapper;
+import minsal.divap.model.mappers.TipoCumplimientoMapper;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.CellTypeExcelVO;
 import minsal.divap.vo.CumplimientoRebajaVO;
@@ -47,6 +49,7 @@ import minsal.divap.vo.PlanillaRebajaCalculadaVO;
 import minsal.divap.vo.RebajaVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.SeguimientoVO;
+import minsal.divap.vo.TipoCumplimientoVO;
 import minsal.divap.xml.GeneradorXML;
 import minsal.divap.xml.email.Email;
 
@@ -66,6 +69,7 @@ import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoRebaja;
 import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.Rebaja;
+import cl.minsal.divap.model.RebajaCorte;
 import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.ServicioSalud;
@@ -110,10 +114,9 @@ public class RebajaService {
 
 
 	public Integer getPlantillaBaseCumplimiento(){
-		Integer plantillaId = documentService.getPlantillaByType(TipoDocumentosProcesos.BASECUMPLIMIENTO);
+		Integer plantillaId = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLABASECUMPLIMIENTO);
 		if(plantillaId == null){
 			List<RebajaVO> servicios = getAllServiciosyComunasConId();
-
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			String filename = tmpDir + File.separator + "plantillaBaseCumplimiento.xlsx";
 			String contenType = mimemap.getContentType(filename.toLowerCase());
@@ -128,9 +131,8 @@ public class RebajaService {
 			subHeaders.add("ID");	
 			subHeaders.add("COMUNA");
 			subHeaders.addAll(getAllTipoCumplimiento());
-
-			RebajaSheetExcel rebajaSheetExcel = new RebajaSheetExcel(headers,subHeaders, servicios);
-			generadorExcel.addSheetCumplimiento(rebajaSheetExcel, "Hoja 1");
+			ExcelTemplate cumplimientoSheetExcel = new RebajaSheetExcel(headers, subHeaders, servicios);
+			generadorExcel.addSheet(cumplimientoSheetExcel, "Hoja 1");
 			try {
 				BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderTemplateRebaja);
 				System.out.println("response rebajaSheetExcel --->"+response);
@@ -445,8 +447,8 @@ public class RebajaService {
 		subHeaders.add("REB. FINAL3");
 		subHeaders.add("");
 		subHeaders.add("");
-		RebajaCalculadaSheetExcel rebajaCalculadaSheetExcel = new RebajaCalculadaSheetExcel(headers, subHeaders, planillaRebajasCalculadas);
-		generadorExcel.addSheetRebajaCalculada(rebajaCalculadaSheetExcel, "Hoja 1");
+		ExcelTemplate rebajaCalculadaSheetExcel = new RebajaCalculadaSheetExcel(headers, subHeaders, planillaRebajasCalculadas);
+		generadorExcel.addSheet(rebajaCalculadaSheetExcel, "Hoja 1");
 		try {
 			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderProcesoRebaja.replace("{ANO}", getAnoCurso().toString()));
 			System.out.println("response rebajaCalculadaSheetExcel --->"+response);
@@ -480,7 +482,9 @@ public class RebajaService {
 	public Integer crearIntanciaRebaja(String username){
 		System.out.println("username--> " + username);
 		Usuario usuario = this.usuarioDAO.getUserByUsername(username);
-		return rebajaDAO.crearIntanciaRebaja(usuario);
+		String mesCurso = getMesCurso(true);
+		RebajaCorte rebajaCorte = rebajaDAO.getCorteByMes(Integer.parseInt(mesCurso));
+		return rebajaDAO.crearIntanciaRebaja(usuario, rebajaCorte);
 	}
 
 	public List<DocumentSummaryVO> getReferenciaDocumentosById(
@@ -751,6 +755,11 @@ public class RebajaService {
 
 	private boolean lessThan(double a, double b, double epsilon){
 		return b - a > epsilon;
+	}
+
+	public TipoCumplimientoVO getItemCumplimientoByType(TiposCumplimientos tiposCumplimiento) {
+		TipoCumplimiento tipoCumplimiento = rebajaDAO.getCumplimientoByType(tiposCumplimiento);
+		return new TipoCumplimientoMapper().getBasic(tipoCumplimiento);
 	}
 
 }

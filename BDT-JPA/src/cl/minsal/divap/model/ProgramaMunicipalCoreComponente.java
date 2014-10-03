@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ProgramaMunicipalCoreComponente.findAll", query = "SELECT p FROM ProgramaMunicipalCoreComponente p"),
     @NamedQuery(name = "ProgramaMunicipalCoreComponente.findByProgramaMunicipalCore", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.programaMunicipalCoreComponentePK.programaMunicipalCore = :programaMunicipalCore"),
     @NamedQuery(name = "ProgramaMunicipalCoreComponente.findByComponente", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.programaMunicipalCoreComponentePK.componente = :componente"),
+    @NamedQuery(name = "ProgramaMunicipalCoreComponente.findByIdProgramaAnoIdComponenteIdSubtitulo", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.programaMunicipalCore.programaAnoMunicipal.idProgramaAno = :idProgramaAno and p.municipalCoreComponente.id = :idComponente and p.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
+    @NamedQuery(name = "ProgramaMunicipalCoreComponente.deleteByProgramasMunicipalCore", query = "DELETE FROM ProgramaMunicipalCoreComponente p WHERE p.programaMunicipalCoreComponentePK.programaMunicipalCore IN (:programasMunicipalCore)"),
     @NamedQuery(name = "ProgramaMunicipalCoreComponente.findByTarifa", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.tarifa = :tarifa"),
     @NamedQuery(name = "ProgramaMunicipalCoreComponente.findByCantidad", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.cantidad = :cantidad")})
 public class ProgramaMunicipalCoreComponente implements Serializable {
@@ -31,6 +33,8 @@ public class ProgramaMunicipalCoreComponente implements Serializable {
     private Integer tarifa;
     @Column(name = "cantidad")
     private Integer cantidad;
+    @Column(name = "monto")
+    private Integer monto;
     @JoinColumn(name = "subtitulo", referencedColumnName = "id_tipo_subtitulo")
     @ManyToOne
     private TipoSubtitulo subtitulo;
@@ -76,7 +80,15 @@ public class ProgramaMunicipalCoreComponente implements Serializable {
         this.cantidad = cantidad;
     }
     
-    public TipoSubtitulo getSubtitulo() {
+    public Integer getMonto() {
+		return monto;
+	}
+
+	public void setMonto(Integer monto) {
+		this.monto = monto;
+	}
+
+	public TipoSubtitulo getSubtitulo() {
         return subtitulo;
     }
 

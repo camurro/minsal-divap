@@ -58,7 +58,6 @@ public class Util {
 	{
 		 String[] mesesNombre = {"Meses","Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
 			        "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" };
-		 
 		 return mesesNombre[mes];
 	}
 	

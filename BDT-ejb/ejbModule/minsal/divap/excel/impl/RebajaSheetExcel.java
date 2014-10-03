@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import minsal.divap.excel.interfaces.ExcelTemplate;
-import minsal.divap.vo.PlanillaRebajaCalculadaVO;
 import minsal.divap.vo.RebajaVO;
 
 public class RebajaSheetExcel extends ExcelTemplate<RebajaVO>{
@@ -13,7 +12,7 @@ public class RebajaSheetExcel extends ExcelTemplate<RebajaVO>{
 	
 	public RebajaSheetExcel(List<String> headers,List<String> subHeaders, List<RebajaVO> items) {
 		super(headers, items);
-		this.subHeaders=subHeaders;
+		this.subHeaders = subHeaders;
 	}
 	
 	public RebajaSheetExcel(List<String> headers, List<RebajaVO> items, Integer offsetRows, Integer offsetColumns){
@@ -40,6 +39,4 @@ public class RebajaSheetExcel extends ExcelTemplate<RebajaVO>{
 	public void setSubHeaders(List<String> subHeaders) {
 		this.subHeaders = subHeaders;
 	}
-
-	
 }
