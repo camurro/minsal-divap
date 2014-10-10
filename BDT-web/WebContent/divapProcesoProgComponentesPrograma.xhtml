@@ -9,8 +9,7 @@
 </style>
 		<script type="text/javascript">
 
-		function cambiaComboSubtituloComponente()
-		{
+		function cambiaComboSubtituloComponente(){
 			document.getElementById('tablaSubtitulos').style.display = 'block';
 			//alert();
 			document.getElementById('lblComponente').value = 'ola';
@@ -22,213 +21,270 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<h:form enctype="multipart/form-data">
+		 
 			<p:panel styleClass="contentPanel">
 				<p:panel id="Panel">
 					<h2>
 						<strong>Tabla:</strong> Valorización por Peso Específico Componentes Programa
 					</h2>
 					<h:panelGrid>
-					<h:form id ="more"> </h:form>
-						<h:outputText value="Componente: " styleClass="inputLabel" />
+						<h:form id ="more">
+							<h:outputText value="Componente: " styleClass="inputLabel" />
 											
-						<p:selectOneMenu id="select5"  style="width:650px;" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorComboSubtituloComponente}">
-            <f:selectItem itemLabel="Seleccione" itemValue="0" />
-            <f:selectItems value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.componentes}" />
-            <p:ajax
-														listener="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.filtrarSubtituloComponente}"
-														update=":#{p:component('formComponente')}"  />
-					
-        </p:selectOneMenu>
-        
-        
+							<p:selectOneMenu id="select5"  style="width:650px;" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorComboSubtituloComponente}">
+	           			 		<f:selectItem itemLabel="Seleccione" itemValue="0" />
+	            				<f:selectItems value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.programa.componentes}" itemLabel="#{componente.nombre}" itemValue="#{componente.id}" var="componente" />
+	            				<p:ajax listener="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.filtrarSubtituloComponente}" update=":formComponente"  />
+	        				</p:selectOneMenu>
+	        			 </h:form>
 					</h:panelGrid>
 					<br />
 					<h:form id="formComponente">
 					<p:panelGrid columns="2" id="display" columnClasses="label,value">
-					<div class="destacaArchivos ui-corner-all" style="padding: 10px;">
-						<span class="strong">Componente:</span> #{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorNombreComponente} <br /> <span
-							class="strong">Peso Componente:</span> #{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorPesoComponente}
-					</div>
+						<div class="destacaArchivos ui-corner-all" style="padding: 10px;">
+							<span class="strong">Componente: #{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorNombreComponente} </span> <br /> 
+							<span class="strong">Peso Componente: 
+								 #{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorPesoComponente}</span>
+						</div>
 					</p:panelGrid>
 					<br />
-					
-								
-								<ui:param name="datoSubtituloComponente" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.estimacionFlujoMonitoreoGlobalPojoSubtituloComponente}" />
-											<h:panelGrid>
-									<p:dataTable resizableColumns="true"
-													value="#{datoSubtituloComponente.estimacionFlujoMonitoreoPojo}"
-													liveResize="true" var="_data" rows="10" paginator="false"
-													paginatorPosition="bottom"
-													emptyMessage="No se encontro información."
-													styleClass="dataTable" 
-													id="tablaSubtitulo21">
+					<h:panelGrid>
+						<p:dataTable resizableColumns="true"
+							value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.estimacionFlujoMonitoreoSubtituloComponente}"
+							liveResize="true" var="_data" rows="10" paginator="false"
+							paginatorPosition="bottom"
+							emptyMessage="No se encontro información."
+							styleClass="dataTable" 
+							id="tablaSubtitulo21">
 
-												
+						
+							<c:if test="#{not procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.iniciarFlujoCaja}">
+							<p:columnGroup type="header">
+								<p:row>
+									<p:column rowspan="3" headerText="Servicio" />
+									<p:column
+										colspan="#{fn:length(procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columns) + 3}"
+										styleClass="textoPequenio"
+										headerText="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.subtituloSeleccionado.nombre} (Cuota #{mes} #{ano})" />
+									<p:column rowspan="3" headerText="Total" />
+								</p:row>
+								<p:row>
+									<p:column rowspan="2" headerText="Marco Presup." />
+									<p:column rowspan="2"
+										headerText="Transf. Acum. a la Fecha" width="200" />
+									<p:column rowspan="2" headerText="Convenios Rec." />
+									<!-- Columna de meses dinámicas  -->
+									<c:forEach
+										items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columns}"
+										var="dynamicColumn">
+										<p:column headerText="#{dynamicColumn.header}" />
+									</c:forEach>
+								</p:row>>
+								<p:row>
+									<c:forEach
+										items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columns}"
+										var="dynamicColumn">
+										<p:column headerText="#{dynamicColumn.property}" />
+									</c:forEach>
+								</p:row>
 
-													<p:columnGroup type="header">
-														<p:row>
-															<p:column rowspan="3" headerText="Servicio" />
-															<p:column
-																colspan="#{fn:length(procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columns) + 3}"
-																styleClass="textoPequenio"
-																headerText="Subtítulo 2x (Cuota #{mes} #{ano})" />
-															<p:column rowspan="3" headerText="Total" />
-														</p:row>
-														<p:row>
-															<p:column rowspan="2" headerText="Marco Presup." />
-															<p:column rowspan="2"
-																headerText="Transf. Acum. a la Fecha" width="200" />
-															<p:column rowspan="2" headerText="Convenios Rec." />
-															<!-- Columna de meses dinámicas  -->
-															<c:forEach
-																items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columns}"
-																var="dynamicColumn">
-																<p:column headerText="#{dynamicColumn.header}" />
-															</c:forEach>
-														</p:row>>
-														<p:row>
-															<c:forEach
-																items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columns}"
-																var="dynamicColumn">
-																<p:column headerText="#{dynamicColumn.property}" />
-															</c:forEach>
-														</p:row>
+							</p:columnGroup>
+							
+							<c:if test="#{not empty procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.estimacionFlujoMonitoreoSubtituloComponente}">
 
-													</p:columnGroup>
+							<p:column>
+								<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+							</p:column>
+							<p:column>
+								<h:outputText value="#{_data.marcoPresupuestario}"
+									styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="currency" maxFractionDigits="0"
+										locale="es_CL" currencySymbol="$" />
+								</h:outputText>
+							</p:column>
 
-													<p:column>
-														<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
-													</p:column>
-													<p:column>
-														<h:outputText value="#{_data.marcoMonto}"
-															styleClass="textoPequenio textoAjustado">
-															<f:convertNumber type="currency" maxFractionDigits="0"
-																locale="es_CL" currencySymbol="$" />
-														</h:outputText>
-													</p:column>
+							<p:column>
+								<h:outputText value="#{_data.transferenciaAcumulada.monto}"
+									styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="currency" maxFractionDigits="0"
+										locale="es_CL" currencySymbol="$" />
+								</h:outputText>
+							</p:column>
+							<p:column>
+								<h:outputText value="#{_data.convenioRecibido.monto}"
+									styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="currency" maxFractionDigits="0"
+										locale="es_CL" currencySymbol="$" />
+								</h:outputText>
+							</p:column>
 
-													<p:column>
-														<h:outputText value="#{_data.transferenciaMonto}"
-															styleClass="textoPequenio textoAjustado">
-															<f:convertNumber type="currency" maxFractionDigits="0"
-																locale="es_CL" currencySymbol="$" />
-														</h:outputText>
-													</p:column>
-													<p:column>
-														<h:outputText value="#{_data.convenioMonto}"
-															styleClass="textoPequenio textoAjustado">
-															<f:convertNumber type="currency" maxFractionDigits="0"
-																locale="es_CL" currencySymbol="$" />
-														</h:outputText>
-													</p:column>
+							<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMonitoreoSubtituloComponentLocal}" var="monto">
+								<c:if test="#{monto.idMes ge numMesActual}">
+								<p:column>
+										<c:if test="#{monto.idMes eq numMesActual}">
+										<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+										</c:if>
+										<c:if test="#{monto.idMes gt numMesActual}">
+											<p:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" />
+										</c:if>
+								</p:column>
+								</c:if>
+							</c:forEach>
 
+							<p:column style="background-color:#{_data.color};">
+								<h:outputText value="#{_data.totalMontos}"
+									styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="currency" maxFractionDigits="0"
+										locale="es_CL" currencySymbol="$" />
+								</h:outputText>
+							</p:column>
 
+							<p:columnGroup type="footer">
+								<p:row>
+									<p:column />
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMarcosPresupuestarioMonitoreoSubtituloComponente}" styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMontosTransferenciasMonitoreoSubtituloComponente}" styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMontosConveniosMonitoreoSubtituloComponente}"	styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+									
+									
+									<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMontosMesMonitoreoSubtituloComponente}" var="montosMes" varStatus="status">
+										<c:if test="#{status.count ge numMesActual}">
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+										</c:if>
+									</c:forEach>
+									
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalMontosMensualesServicioMonitoreoSubtituloComponente}" styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+								</p:row>
+							</p:columnGroup>
+							</c:if>
+							</c:if>
+							<c:if test="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.iniciarFlujoCaja}">
+							<p:columnGroup type="header">
+								<p:row>
+									<p:column rowspan="3" headerText="Servicio" />
+									<p:column
+										colspan="#{fn:length(procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columns) + 1}"
+										styleClass="textoPequenio"
+										headerText="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.subtituloSeleccionado.nombre} (Cuota #{mes} #{ano})" />
+									<p:column rowspan="3" headerText="Total" />
+								</p:row>
+								<p:row>
+									<p:column rowspan="2" headerText="Marco Presup." />
+									<c:forEach
+										items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columns}"
+										var="dynamicColumn">
+										<p:column headerText="#{dynamicColumn.header}" />
+									</c:forEach>
+								</p:row>>
+								<p:row>
+									<c:forEach
+										items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columns}"
+										var="dynamicColumn">
+										<p:column headerText="#{dynamicColumn.property}" />
+									</c:forEach>
+								</p:row>
 
-													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columns}"
-														var="dynamicColumn">
-														<p:column>
-															<p:cellEditor>
-																<f:facet name="output">
-																	<h:outputText
-																		value="#{_data[dynamicColumn.nombreColumna]}"
-																		styleClass="textoPequenio textoAjustado">
-																		<f:convertNumber type="currency" maxFractionDigits="0"
-																			locale="es_CL" currencySymbol="$" />
-																	</h:outputText>
-																</f:facet>
-																<f:facet name="input">
-																	<p:inputText
-																		value="#{_data[dynamicColumn.nombreColumna]}"
-																		style="width:100%"
-																		label="#{dynamicColumn.nombreColumna}" />
+							</p:columnGroup>
+							
+							<c:if test="#{not empty procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.estimacionFlujoMonitoreoSubtituloComponente}">
 
+							<p:column>
+								<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+							</p:column>
+							<p:column>
+								<h:outputText value="#{_data.marcoPresupuestario}"
+									styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="currency" maxFractionDigits="0"
+										locale="es_CL" currencySymbol="$" />
+								</h:outputText>
+							</p:column>
 
-																</f:facet>
-															</p:cellEditor>
-														</p:column>
-													</c:forEach>
+							<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMonitoreoSubtituloComponentLocal}" var="monto">
+								<p:column>
+										<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+								</p:column>
+							</c:forEach>
 
+							<p:column style="background-color:#{_data.color};">
+								<h:outputText value="#{_data.totalMontos}"
+									styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="currency" maxFractionDigits="0"
+										locale="es_CL" currencySymbol="$" />
+								</h:outputText>
+							</p:column>
 
+							<p:columnGroup type="footer">
+								<p:row>
+									<p:column />
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMarcosPresupuestarioMonitoreoSubtituloComponente}" styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+									<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMontosMesMonitoreoSubtituloComponente}" var="montosMes" varStatus="status">
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+									</c:forEach>
+									
+									<p:column>
+										<f:facet name="footer">
+											<h:outputText value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalMontosMensualesServicioMonitoreoSubtituloComponente}" styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</f:facet>
+									</p:column>
+								</p:row>
+							</p:columnGroup>
+							</c:if>
+							</c:if>
 
-													<p:column style="background-color:#{_data.color};">
-														<h:outputText value="#{_data.total}"
-															styleClass="textoPequenio textoAjustado">
-															<f:convertNumber type="currency" maxFractionDigits="0"
-																locale="es_CL" currencySymbol="$" />
-														</h:outputText>
-													</p:column>
-
-													<p:columnGroup type="footer">
-														<p:row>
-															<p:column />
-															<p:column>
-																<f:facet name="footer">
-																	<h:outputText
-																		value="#{datoSubtituloComponente.totalMarcoMonto}"
-																		styleClass="textoAjustado textoPequenio centrado">
-																		<f:convertNumber type="currency" maxFractionDigits="0"
-																			locale="es_CL" currencySymbol="$" />
-																	</h:outputText>
-																</f:facet>
-															</p:column>
-															<p:column>
-																<f:facet name="footer">
-																	<h:outputText
-																		value="#{datoSubtituloComponente.totalTransferenciaMonto}"
-																		styleClass="textoAjustado textoPequenio centrado">
-																		<f:convertNumber type="currency" maxFractionDigits="0"
-																			locale="es_CL" currencySymbol="$" />
-																	</h:outputText>
-																</f:facet>
-															</p:column>
-															<p:column>
-																<f:facet name="footer">
-																	<h:outputText
-																		value="#{datoSubtituloComponente.totalConvenioMonto}"
-																		styleClass="textoAjustado textoPequenio centrado">
-																		<f:convertNumber type="currency" maxFractionDigits="0"
-																			locale="es_CL" currencySymbol="$" />
-																	</h:outputText>
-																</f:facet>
-															</p:column>
-
-															<c:forEach
-																items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columns}"
-																var="dynamicColumn">
-																<p:column>
-																	<f:facet name="footer">
-																		<h:outputText
-																			value="#{datoSubtituloComponente[dynamicColumn.nombreColumna]}"
-																			styleClass="textoAjustado textoPequenio centrado">
-																			<f:convertNumber type="currency"
-																				maxFractionDigits="0" locale="es_CL"
-																				currencySymbol="$" />
-																		</h:outputText>
-																	</f:facet>
-																</p:column>
-															</c:forEach>
-															<p:column>
-																<f:facet name="footer">
-																	<h:outputText value="#{datoSubtituloComponente.total}"
-																		styleClass="textoAjustado textoPequenio centrado">
-																		<f:convertNumber type="currency" maxFractionDigits="0"
-																			locale="es_CL" currencySymbol="$" />
-																	</h:outputText>
-																</f:facet>
-															</p:column>
-														</p:row>
-													</p:columnGroup>
-
-												</p:dataTable>
-												</h:panelGrid>
-</h:form>
-
-								
-								
-			</p:panel>
-			</p:panel>
+						</p:dataTable>
+					</h:panelGrid>
+					</h:form>
 			
-		</h:form>
+			</p:panel>
+			</p:panel>
+
 	</ui:define>
 </ui:composition>

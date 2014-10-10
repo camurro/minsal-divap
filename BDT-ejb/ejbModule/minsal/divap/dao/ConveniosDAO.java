@@ -1,17 +1,14 @@
 package minsal.divap.dao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import minsal.divap.vo.ConveniosVO;
+import minsal.divap.enums.Subtitulo;
 import cl.minsal.divap.model.Convenio;
-import cl.minsal.divap.model.DocumentoConvenio;
 import cl.minsal.divap.model.ReferenciaDocumento;
 
 
@@ -103,16 +100,13 @@ public class ConveniosDAO {
 	}
 	
 	
-	public Convenio setConvenioById(Integer id,Integer numeroResolucion,Integer monto){
+	public Convenio setConvenioById(Integer id, Integer numeroResolucion, Integer monto){
 		try {
-			
-			Convenio con= findById(id);
-			
+			Convenio con = findById(id);
 			if(con != null){
-				con.setMonto(monto.shortValue());
+				con.setMonto(monto);
 				con.setNumeroResolucion(numeroResolucion);
 			}
-					
 		  return null;
 			
 		} catch (Exception e) {
@@ -176,10 +170,17 @@ public class ConveniosDAO {
 		}
 	}
 
-	
-	
-	
-	
-	
+	public List<Convenio> getConveniosSummaryByProgramaAnoComponenteSubtitulo(Integer idProgramaAno, Integer idServicio, Integer idComponente, Subtitulo subtitulo) {
+		try {
+			TypedQuery<Convenio> query = this.em.createNamedQuery("Convenio.findByIdProgramaAnoIdServicioIdComponenteIdSubtitulo", Convenio.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idTipoSubtitulo", subtitulo.getId());
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 }

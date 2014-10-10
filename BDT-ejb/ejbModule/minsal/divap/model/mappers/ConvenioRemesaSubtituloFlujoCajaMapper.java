@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import minsal.divap.vo.CajaMontoSummaryVO;
-import minsal.divap.vo.ConvenioSummaryVO;
+import minsal.divap.vo.ConveniosSummaryVO;
 import minsal.divap.vo.SubtituloFlujoCajaVO;
 import minsal.divap.vo.TransferenciaSummaryVO;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -59,7 +59,7 @@ public class ConvenioRemesaSubtituloFlujoCajaMapper implements Mapper<Caja>{
 			}
 		}
 		subtituloFlujoCajaVO.setCajaMontos(cajasMontosSummaryVO);
-		ConvenioSummaryVO convenioRecibido = new ConvenioSummaryVO();
+		ConveniosSummaryVO convenioRecibido = new ConveniosSummaryVO();
 		convenioRecibido.setMonto(0);
 		convenioRecibido.setPorcentaje(0);
 		subtituloFlujoCajaVO.setConvenioRecibido(convenioRecibido);

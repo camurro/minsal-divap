@@ -241,5 +241,10 @@ public abstract class BaseController {
 						"#{" + name + "}", type)
 						.getValue(FacesContext.getCurrentInstance().getELContext());
 	}
+	
+	public String getRequestParameter(String requestParameter) {
+        return (String) FacesContext.getCurrentInstance().getExternalContext()
+            .getRequestParameterMap().get(requestParameter);
+    }
 
 }

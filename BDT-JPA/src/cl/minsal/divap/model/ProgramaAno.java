@@ -58,6 +58,8 @@ public class ProgramaAno implements Serializable {
 	private Set<ProgramaMunicipalCore> programasMunicipalesCore;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idProgramaAno")
 	private Collection<Remesa> remesaCollection;
+	@OneToMany(mappedBy = "idPrograma")
+    private Set<Convenio> convenios;
 	
 
 	public ProgramaAno() {
@@ -144,6 +146,15 @@ public class ProgramaAno implements Serializable {
 	public void setMarcosPresupuestarios(
 			Set<MarcoPresupuestario> marcosPresupuestarios) {
 		this.marcosPresupuestarios = marcosPresupuestarios;
+	}
+	
+	@XmlTransient
+	public Set<Convenio> getConvenios() {
+		return convenios;
+	}
+
+	public void setConvenios(Set<Convenio> convenios) {
+		this.convenios = convenios;
 	}
 
 	@Override

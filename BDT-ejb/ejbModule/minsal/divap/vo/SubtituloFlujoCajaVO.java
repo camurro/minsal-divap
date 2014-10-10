@@ -16,7 +16,7 @@ public class SubtituloFlujoCajaVO implements Serializable {
 	private String componente;
 	private Integer marcoPresupuestario;
 	private TransferenciaSummaryVO transferenciaAcumulada;
-	private ConvenioSummaryVO convenioRecibido;
+	private ConveniosSummaryVO convenioRecibido;
 	private List<CajaMontoSummaryVO> cajaMontos;
 	private Integer totalMontos;
 	private String color = "#FFB5B5";
@@ -28,7 +28,7 @@ public class SubtituloFlujoCajaVO implements Serializable {
 	public SubtituloFlujoCajaVO(String servicio, Integer idComponente,
 			String componente, Integer marcoPresupuestario,
 			TransferenciaSummaryVO transferenciaAcumulada,
-			ConvenioSummaryVO convenioRecibido,
+			ConveniosSummaryVO convenioRecibido,
 			List<CajaMontoSummaryVO> cajaMontos) {
 		super();
 		this.servicio = servicio;
@@ -81,11 +81,11 @@ public class SubtituloFlujoCajaVO implements Serializable {
 		this.transferenciaAcumulada = transferenciaAcumulada;
 	}
 
-	public ConvenioSummaryVO getConvenioRecibido() {
+	public ConveniosSummaryVO getConvenioRecibido() {
 		return convenioRecibido;
 	}
 
-	public void setConvenioRecibido(ConvenioSummaryVO convenioRecibido) {
+	public void setConvenioRecibido(ConveniosSummaryVO convenioRecibido) {
 		this.convenioRecibido = convenioRecibido;
 	}
 

@@ -27,6 +27,9 @@ public class ProgramaMapper implements Mapper<ProgramaAno>{
 		
 		ProgramaVO programaVO = new ProgramaVO();		
 		programaVO.setIdProgramaAno(programaAno.getIdProgramaAno());
+		if(programaAno.getAno() != null){
+			programaVO.setAno(programaAno.getAno().getAno());
+		}
 		programaVO.setDependenciaMunicipal(false);
 		programaVO.setDependenciaServicio(false);
 		

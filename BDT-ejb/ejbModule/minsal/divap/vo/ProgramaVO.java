@@ -13,6 +13,7 @@ public class ProgramaVO implements Serializable{
 	
 	private Integer id;
 	private Integer idProgramaAno;
+	private Integer ano;
 	private String nombre;
 	private int cantidad_cuotas;
 	private String username;
@@ -122,6 +123,22 @@ public class ProgramaVO implements Serializable{
 	public void setRevisaFonasa(Boolean revisaFonasa) {
 		this.revisaFonasa = revisaFonasa;
 	}
+	
+	public List<ServiciosVO> getServicios() {
+		return servicios;
+	}
+
+	public void setServicios(List<ServiciosVO> servicios) {
+		this.servicios = servicios;
+	}
+
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
 
 	@Override
 	public String toString() {
@@ -131,14 +148,6 @@ public class ProgramaVO implements Serializable{
 				+ ", estado=" + estado + ", dependenciaMunicipal="
 				+ dependenciaMunicipal + ", dependenciaServicio="
 				+ dependenciaServicio + ", componentes=" + componentes + "]";
-	}
-
-	public List<ServiciosVO> getServicios() {
-		return servicios;
-	}
-
-	public void setServicios(List<ServiciosVO> servicios) {
-		this.servicios = servicios;
 	}
 
 }

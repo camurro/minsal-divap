@@ -21,6 +21,7 @@ import javax.ejb.TransactionAttributeType;
 
 import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.CajaDAO;
+import minsal.divap.dao.ConveniosDAO;
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
 import minsal.divap.dao.EstimacionFlujoCajaDAO;
 import minsal.divap.dao.MesDAO;
@@ -46,6 +47,8 @@ import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.CajaMesVO;
 import minsal.divap.vo.CellExcelVO;
+import minsal.divap.vo.ConveniosSummaryVO;
+import minsal.divap.vo.ConveniosVO;
 import minsal.divap.vo.DocumentoVO;
 import minsal.divap.vo.EmailVO;
 import minsal.divap.vo.FlujoCajaVO;
@@ -60,6 +63,7 @@ import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.Caja;
 import cl.minsal.divap.model.CajaMonto;
 import cl.minsal.divap.model.CajaMontoPK;
+import cl.minsal.divap.model.Convenio;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.EstadoPrograma;
@@ -98,6 +102,9 @@ public class EstimacionFlujoCajaService {
 	@Resource(name = "folderTemplateEstimacionFlujoCaja")
 	private String folderTemplateEstimacionFlujoCaja;
 
+	@Resource(name = "folderDocEstimacionFlujoCaja")
+	private String folderDocEstimacionFlujoCaja;
+
 	@EJB
 	private UsuarioDAO usuarioDAO;
 
@@ -124,6 +131,8 @@ public class EstimacionFlujoCajaService {
 
 	@EJB
 	private EmailService emailService;
+	@EJB
+	private ConveniosDAO conveniosDAO;
 
 	// Generar documento
 	public Integer elaborarOrdinarioProgramacionCaja(Integer idLineaProgramatica) {
@@ -321,7 +330,7 @@ public class EstimacionFlujoCajaService {
 							cajaActual.setMonto(totalComponenteSubtitulo);
 							marcoPresupuestario.setMarcoModificado(marcoPresupuestario.getMarcoModificado() + totalComponenteSubtitulo);
 						}
-						
+
 						for (Caja cajaActual : cajas) {
 							if(cajaActual.getCajaMontos() != null && cajaActual.getCajaMontos().size() > 0){
 								for(CajaMonto cajaMonto : cajaActual.getCajaMontos()){
@@ -426,7 +435,7 @@ public class EstimacionFlujoCajaService {
 		Date nowDate = new Date();
 		return Integer.valueOf(formatNowYear.format(nowDate));
 	}
-	
+
 	public String getMesCurso(Boolean numero) {
 		SimpleDateFormat dateFormat = null;
 		String mesCurso = null;
@@ -486,26 +495,26 @@ public class EstimacionFlujoCajaService {
 	}
 
 	public Integer generarPlanillaPropuesta(Integer idLineaProgramatica) {
-        Integer planillaTrabajoId = null;
-        List<CajaMesVO> cajaMeses = new ArrayList<CajaMesVO>();
-        List<FlujoCajaVO> flujoCajaSub21 = new ArrayList<FlujoCajaVO>();
-        List<FlujoCajaVO> flujoCajaSub22 = new ArrayList<FlujoCajaVO>();
-        
-        List<CajaMesVO> cajaMesesResumen = new ArrayList<CajaMesVO>();
-        List<FlujoCajaVO> flujoCajaResumen = new ArrayList<FlujoCajaVO>();
-        
-        List<FlujoCajaVO> flujoCajaSub24 = getFlujoCajaServicios(idLineaProgramatica, Subtitulo.SUBTITULO24);
-        List<FlujoCajaVO> flujoCajaSub29 = getFlujoCajaServicios(idLineaProgramatica, Subtitulo.SUBTITULO29);
-        for(int i=0;i<12;i++){
-            
+		Integer planillaTrabajoId = null;
+		List<CajaMesVO> cajaMeses = new ArrayList<CajaMesVO>();
+		List<FlujoCajaVO> flujoCajaSub21 = getFlujoCajaServicios(idLineaProgramatica, Subtitulo.SUBTITULO21);
+		List<FlujoCajaVO> flujoCajaSub22 = getFlujoCajaServicios(idLineaProgramatica, Subtitulo.SUBTITULO22);
+
+		List<CajaMesVO> cajaMesesResumen = new ArrayList<CajaMesVO>();
+		List<FlujoCajaVO> flujoCajaResumen = new ArrayList<FlujoCajaVO>();
+
+		List<FlujoCajaVO> flujoCajaSub24 = getFlujoCajaServicios(idLineaProgramatica, Subtitulo.SUBTITULO24);
+		List<FlujoCajaVO> flujoCajaSub29 = getFlujoCajaServicios(idLineaProgramatica, Subtitulo.SUBTITULO29);
+		/*for(int i=0;i<12;i++){
+
             CajaMesVO cajaMes = new CajaMesVO();
-            
-            
+
+
             //Para los totales
-            
-            
+
+
             long montoMes = 100000000;
-            
+
             if(i == 0){
                 cajaMes.setMes("enero");
                 cajaMes.setMonto((long)montoMes - 5000000);
@@ -557,7 +566,7 @@ public class EstimacionFlujoCajaService {
                 cajaMeses.add(cajaMes);
             }
         }
-        
+
         for (int i=0; i<5; i++){
             FlujoCajaVO flujo1 = new FlujoCajaVO();
             if(i==1){
@@ -565,7 +574,7 @@ public class EstimacionFlujoCajaService {
                 flujo1.setSubtitulo(cajaMeses);
                 flujoCajaSub21.add(flujo1);
                 flujoCajaSub22.add(flujo1);
-                
+
                 //al final setear montoSubtitulo
             }
             if(i==2){
@@ -596,271 +605,271 @@ public class EstimacionFlujoCajaService {
                 flujoCajaSub22.add(flujo1);
                 //al final setear montoSubtitulo
             }
-            
-        }
-        
-        
-        MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
-        String filename = tmpDir + File.separator
-                + "planillaPropuestaEstimacionFlujoCaja.xlsx";
-        String contenType = mimemap.getContentType(filename.toLowerCase());
-        GeneradorExcel generadorExcel = new GeneradorExcel(filename);
-        List<CellExcelVO> header = new ArrayList<CellExcelVO>();
-        List<FlujoCajaVO> items = null;    
-        List<FlujoCajaVO> totalItems = null;
-        
-        
-        header.add(new CellExcelVO("SERVICIOS DE SALUD", 1, 2));
-        header.add(new CellExcelVO("CHILE CRECE CONTIGO", 12, 1));
-        //header.add(new CellExcelVO("TOTAL CHILE CRECE CONTIGO SUBT. XX AÑO 2014", 1, 2));
-        
-        List<CellExcelVO> subHeader = new ArrayList<CellExcelVO>();
-        
-        subHeader.add(new CellExcelVO("ENERO REAL", 1, 1));
-        subHeader.add(new CellExcelVO("FEBRERO REAL", 1, 1));
-        subHeader.add(new CellExcelVO("MARZO REAL", 1, 1));
-        subHeader.add(new CellExcelVO("ABRIL", 1, 1));
-        subHeader.add(new CellExcelVO("MAYO", 1, 1));
-        subHeader.add(new CellExcelVO("JUNIO", 1, 1));
-        subHeader.add(new CellExcelVO("JULIO", 1, 1));
-        subHeader.add(new CellExcelVO("AGOSTO", 1, 1));
-        subHeader.add(new CellExcelVO("SEPTIEMBRE", 1, 1));
-        subHeader.add(new CellExcelVO("OCTUBRE", 1, 1));
-        subHeader.add(new CellExcelVO("NOVIEMBRE", 1, 1));
-        subHeader.add(new CellExcelVO("DICIEMBRE", 1, 1));
-        
-        List<CellExcelVO> headerTotales = new ArrayList<CellExcelVO>();
-        headerTotales.add(new CellExcelVO("SERVICIOS DE SALUD", 1, 2));
-        headerTotales.add(new CellExcelVO("ENERO REAL", 1, 1));
-        headerTotales.add(new CellExcelVO("FEBRERO REAL", 1, 1));
-        headerTotales.add(new CellExcelVO("MARZO REAL", 1, 1));
-        headerTotales.add(new CellExcelVO("ABRIL", 1, 1));
-        headerTotales.add(new CellExcelVO("MAYO", 1, 1));
-        headerTotales.add(new CellExcelVO("JUNIO", 1, 1));
-        headerTotales.add(new CellExcelVO("JULIO", 1, 1));
-        headerTotales.add(new CellExcelVO("AGOSTO", 1, 1));
-        headerTotales.add(new CellExcelVO("SEPTIEMBRE", 1, 1));
-        headerTotales.add(new CellExcelVO("OCTUBRE", 1, 1));
-        headerTotales.add(new CellExcelVO("NOVIEMBRE", 1, 1));
-        headerTotales.add(new CellExcelVO("DICIEMBRE", 1, 1));
-        headerTotales.add(new CellExcelVO("TOTAL MENSUAL APS SUBT. 24, 21, 22 Y 29 AÑO 2014 ($)", 1, 2));
-        
-        List<CellExcelVO> subHeaderTotales = new ArrayList<CellExcelVO>();
-        for(int i=0;i<12;i++){
-            subHeaderTotales.add(new CellExcelVO("TOTAL MENSUAL", 1, 1));
-        }
-        
-        
-        long totalenero=0;
-        long totalfebrero=0;
-        long totalmarzo=0;
-        long totalabril=0;
-        long totalmayo=0;
-        long totaljunio=0;
-        long totaljulio=0;
-        long totalagosto=0;
-        long totalseptiembre=0;
-        long totaloctubre=0;
-        long totalnoviembre=0;
-        long totaldiciembre=0;
 
-            
-        
-        EstimacionFlujoCajaSubtituloSheetExcel estimacionFlujoCajaSubtituloSheetExcel = new EstimacionFlujoCajaSubtituloSheetExcel(header, subHeader, items);
-        
-        EstimacionFlujoCajaSubtituloSheetExcel estimacionFlujoCajaResumenSheetExcel = new EstimacionFlujoCajaSubtituloSheetExcel(headerTotales, subHeaderTotales, totalItems);
-                
-        
-        CajaMesVO cajaMesResumen = new CajaMesVO();
-        
-        if(flujoCajaSub21 != null && !flujoCajaSub21.isEmpty()){
-            header.add(new CellExcelVO("TOTAL CHILE CRECE \nCONTIGO SUBT. 21 AÑO 2014", 1, 2));
-            estimacionFlujoCajaSubtituloSheetExcel.setItems(flujoCajaSub21);
-            totalItems = estimacionFlujoCajaSubtituloSheetExcel.getItems();
-            for(int i=0;i<totalItems.size();i++){                
-                totalenero=totalItems.get(i).getSubtitulo().get(0).getMonto();
-                totalfebrero+=totalItems.get(i).getSubtitulo().get(1).getMonto();
-                totalmarzo+=totalItems.get(i).getSubtitulo().get(2).getMonto();
-                totalabril+=totalItems.get(i).getSubtitulo().get(3).getMonto();
-                totalmayo+=totalItems.get(i).getSubtitulo().get(4).getMonto();
-                totaljunio+=totalItems.get(i).getSubtitulo().get(5).getMonto();
-                totaljulio+=totalItems.get(i).getSubtitulo().get(6).getMonto();
-                totalagosto+=totalItems.get(i).getSubtitulo().get(7).getMonto();
-                totalseptiembre+=totalItems.get(i).getSubtitulo().get(8).getMonto();
-                totaloctubre+=totalItems.get(i).getSubtitulo().get(9).getMonto();
-                totalnoviembre+=totalItems.get(i).getSubtitulo().get(10).getMonto();
-                totaldiciembre+=totalItems.get(i).getSubtitulo().get(11).getMonto();
-            }
-            
-            
-            generadorExcel.addSheet(estimacionFlujoCajaSubtituloSheetExcel, "21");
-        }
-        if(flujoCajaSub22 != null && !flujoCajaSub22.isEmpty()){
-            header.add(new CellExcelVO("TOTAL CHILE CRECE CONTIGO SUBT. 22 AÑO 2014", 1, 2));
-            estimacionFlujoCajaSubtituloSheetExcel.setItems(flujoCajaSub22);
-            totalItems = estimacionFlujoCajaSubtituloSheetExcel.getItems();
-            for(int i=0;i<totalItems.size();i++){                
-                totalenero=totalItems.get(i).getSubtitulo().get(0).getMonto();
-                totalfebrero+=totalItems.get(i).getSubtitulo().get(1).getMonto();
-                totalmarzo+=totalItems.get(i).getSubtitulo().get(2).getMonto();
-                totalabril+=totalItems.get(i).getSubtitulo().get(3).getMonto();
-                totalmayo+=totalItems.get(i).getSubtitulo().get(4).getMonto();
-                totaljunio+=totalItems.get(i).getSubtitulo().get(5).getMonto();
-                totaljulio+=totalItems.get(i).getSubtitulo().get(6).getMonto();
-                totalagosto+=totalItems.get(i).getSubtitulo().get(7).getMonto();
-                totalseptiembre+=totalItems.get(i).getSubtitulo().get(8).getMonto();
-                totaloctubre+=totalItems.get(i).getSubtitulo().get(9).getMonto();
-                totalnoviembre+=totalItems.get(i).getSubtitulo().get(10).getMonto();
-                totaldiciembre+=totalItems.get(i).getSubtitulo().get(11).getMonto();
-            }
-            
-            generadorExcel.addSheet(estimacionFlujoCajaSubtituloSheetExcel, "22");
-        }
-        if(flujoCajaSub24 != null && !flujoCajaSub24.isEmpty()){
-            header.add(new CellExcelVO("TOTAL CHILE CRECE CONTIGO SUBT. 24 AÑO 2014", 1, 2));
-            estimacionFlujoCajaSubtituloSheetExcel.setItems(flujoCajaSub24);
-            generadorExcel.addSheet(estimacionFlujoCajaSubtituloSheetExcel, "Ref. Mun.");
-        }
-        if(flujoCajaSub29 != null && !flujoCajaSub29.isEmpty()){
-            header.add(new CellExcelVO("TOTAL CHILE CRECE CONTIGO SUBT. 29 AÑO 2014", 1, 2));
-            estimacionFlujoCajaSubtituloSheetExcel.setItems(flujoCajaSub29);
-            generadorExcel.addSheet(estimacionFlujoCajaSubtituloSheetExcel, "29");
-        }
-        
-        for(int i=0; i<12;i++){
-            if(i == 0){
-                cajaMesResumen.setMes("enero");
-                cajaMesResumen.setMonto((long)totalenero);
-                cajaMesesResumen.add(cajaMesResumen);
-            }
-            else if(i == 1){
-                cajaMesResumen.setMes("febrero");
-                cajaMesResumen.setMonto((long)totalfebrero);
-                cajaMesesResumen.add(cajaMesResumen);
-            }else if(i == 2){
-                cajaMesResumen.setMes("marzo");
-                cajaMesResumen.setMonto((long)totalmarzo);
-                cajaMesesResumen.add(cajaMesResumen);
-            }else if(i == 3){
-                cajaMesResumen.setMes("abril");
-                cajaMesResumen.setMonto((long)totalabril);
-                cajaMesesResumen.add(cajaMesResumen);
-            }else if(i == 4){
-                cajaMesResumen.setMes("mayo");
-                cajaMesResumen.setMonto((long)totalmayo);
-                cajaMesesResumen.add(cajaMesResumen);
-            }else if(i == 5){
-                cajaMesResumen.setMes("junio");
-                cajaMesResumen.setMonto((long)totaljunio);
-                cajaMesesResumen.add(cajaMesResumen);
-            }else if(i == 6){
-                cajaMesResumen.setMes("julio");
-                cajaMesResumen.setMonto((long)totaljulio);
-                cajaMesesResumen.add(cajaMesResumen);
-            }else if(i == 7){
-                cajaMesResumen.setMes("agosto");
-                cajaMesResumen.setMonto((long)totalagosto);
-                cajaMesesResumen.add(cajaMesResumen);
-            }else if(i == 8){
-                cajaMesResumen.setMes("septiembre");
-                cajaMesResumen.setMonto((long)totalseptiembre);
-                cajaMesesResumen.add(cajaMesResumen);
-            }else if(i == 9){
-                cajaMesResumen.setMes("octubre");
-                cajaMesResumen.setMonto((long)totaloctubre);
-                cajaMesesResumen.add(cajaMesResumen);
-            }else if(i == 10){
-                cajaMesResumen.setMes("noviembre");
-                cajaMesResumen.setMonto((long)totalnoviembre);
-                cajaMesesResumen.add(cajaMesResumen);
-            }else if(i == 11){
-                cajaMesResumen.setMes("diciembre");
-                cajaMesResumen.setMonto((long)totaldiciembre);
-                cajaMesesResumen.add(cajaMesResumen);
-            }
-        }
-        for (int i=0; i<5; i++){
-            FlujoCajaVO flujoResumen = new FlujoCajaVO();
-            if(i==1){
-                flujoResumen.setServicio("Santiago");
-                flujoResumen.setSubtitulo(cajaMesesResumen);
-                flujoCajaResumen.add(flujoResumen);
-                
-                //al final setear montoSubtitulo
-            }
-            if(i==2){
-                flujoResumen.setServicio("Curico");
-                flujoResumen.setSubtitulo(cajaMesesResumen);
-                flujoCajaResumen.add(flujoResumen);
-                //al final setear montoSubtitulo
-            }
-            if(i==3){
-                flujoResumen.setServicio("Talca");
-                flujoResumen.setSubtitulo(cajaMesesResumen);
-                flujoCajaResumen.add(flujoResumen);
-                //al final setear montoSubtitulo
-            }
-            if(i==4){
-                flujoResumen.setServicio("Concepcion");
-                flujoResumen.setSubtitulo(cajaMesesResumen);
-                flujoCajaResumen.add(flujoResumen);
-                //al final setear montoSubtitulo
-            }
-            if(i==5){
-                flujoResumen.setServicio("Punta Arenas");
-                flujoResumen.setSubtitulo(cajaMesesResumen);
-                flujoCajaResumen.add(flujoResumen);
-                //al final setear montoSubtitulo
-            }
-            
-        }
-        
-        
-        
-        //generadorExcel.addSheet(estimacionFlujoCajaResumenSheetExcel, "Resumen");
-        
-        
-        //############################################################################################33
-        
-        try {
-            BodyVO response = alfrescoService.uploadDocument(generadorExcel
-                    .saveExcel(), contenType, folderEstimacionFlujoCaja
-                    .replace("{ANO}", getAnoCurso().toString()));
-            System.out
-            .println("response AsignacionRecursosPercapitaSheetExcel --->"
-                    + response);
-            ProgramaAno programaAno = programasDAO
-                    .getProgramaAnoByID(idLineaProgramatica);
-            
-            TipoDocumento tipoDocumento = new TipoDocumento(
-                    TipoDocumentosProcesos.PLANTILLAPROPUESTA.getId());
-            planillaTrabajoId = documentService
-                    .createDocumentPropuestaEstimacionFlujoCaja(programaAno,
-                            tipoDocumento, response.getNodeRef(),
-                            response.getFileName(), contenType);
-            // DistribucionInicialPercapita distribucionInicialPercapita =
-            // distribucionInicialPercapitaDAO.findById(idDistribucionInicialPercapita);
-            // planillaTrabajoId =
-            // documentService.createDocumentPercapita(distribucionInicialPercapita,
-            // TipoDocumentosProcesos.PLANILLARESULTADOSCALCULADOS,
-            // response.getNodeRef(), response.getFileName(), contenType);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return planillaTrabajoId;
-    }
-	
+        }*/
+
+
+		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
+		String filename = tmpDir + File.separator
+				+ "planillaPropuestaEstimacionFlujoCaja.xlsx";
+		String contenType = mimemap.getContentType(filename.toLowerCase());
+		GeneradorExcel generadorExcel = new GeneradorExcel(filename);
+		List<CellExcelVO> header = new ArrayList<CellExcelVO>();
+		List<FlujoCajaVO> items = null;    
+		List<FlujoCajaVO> totalItems = null;
+
+
+		header.add(new CellExcelVO("SERVICIOS DE SALUD", 1, 2));
+		header.add(new CellExcelVO("CHILE CRECE CONTIGO", 12, 1));
+		//header.add(new CellExcelVO("TOTAL CHILE CRECE CONTIGO SUBT. XX AÑO 2014", 1, 2));
+
+		List<CellExcelVO> subHeader = new ArrayList<CellExcelVO>();
+
+		subHeader.add(new CellExcelVO("ENERO REAL", 1, 1));
+		subHeader.add(new CellExcelVO("FEBRERO REAL", 1, 1));
+		subHeader.add(new CellExcelVO("MARZO REAL", 1, 1));
+		subHeader.add(new CellExcelVO("ABRIL", 1, 1));
+		subHeader.add(new CellExcelVO("MAYO", 1, 1));
+		subHeader.add(new CellExcelVO("JUNIO", 1, 1));
+		subHeader.add(new CellExcelVO("JULIO", 1, 1));
+		subHeader.add(new CellExcelVO("AGOSTO", 1, 1));
+		subHeader.add(new CellExcelVO("SEPTIEMBRE", 1, 1));
+		subHeader.add(new CellExcelVO("OCTUBRE", 1, 1));
+		subHeader.add(new CellExcelVO("NOVIEMBRE", 1, 1));
+		subHeader.add(new CellExcelVO("DICIEMBRE", 1, 1));
+
+		List<CellExcelVO> headerTotales = new ArrayList<CellExcelVO>();
+		headerTotales.add(new CellExcelVO("SERVICIOS DE SALUD", 1, 2));
+		headerTotales.add(new CellExcelVO("ENERO REAL", 1, 1));
+		headerTotales.add(new CellExcelVO("FEBRERO REAL", 1, 1));
+		headerTotales.add(new CellExcelVO("MARZO REAL", 1, 1));
+		headerTotales.add(new CellExcelVO("ABRIL", 1, 1));
+		headerTotales.add(new CellExcelVO("MAYO", 1, 1));
+		headerTotales.add(new CellExcelVO("JUNIO", 1, 1));
+		headerTotales.add(new CellExcelVO("JULIO", 1, 1));
+		headerTotales.add(new CellExcelVO("AGOSTO", 1, 1));
+		headerTotales.add(new CellExcelVO("SEPTIEMBRE", 1, 1));
+		headerTotales.add(new CellExcelVO("OCTUBRE", 1, 1));
+		headerTotales.add(new CellExcelVO("NOVIEMBRE", 1, 1));
+		headerTotales.add(new CellExcelVO("DICIEMBRE", 1, 1));
+		headerTotales.add(new CellExcelVO("TOTAL MENSUAL APS SUBT. 24, 21, 22 Y 29 AÑO 2014 ($)", 1, 2));
+
+		List<CellExcelVO> subHeaderTotales = new ArrayList<CellExcelVO>();
+		for(int i=0;i<12;i++){
+			subHeaderTotales.add(new CellExcelVO("TOTAL MENSUAL", 1, 1));
+		}
+
+
+		long totalenero=0;
+		long totalfebrero=0;
+		long totalmarzo=0;
+		long totalabril=0;
+		long totalmayo=0;
+		long totaljunio=0;
+		long totaljulio=0;
+		long totalagosto=0;
+		long totalseptiembre=0;
+		long totaloctubre=0;
+		long totalnoviembre=0;
+		long totaldiciembre=0;
+
+
+
+		EstimacionFlujoCajaSubtituloSheetExcel estimacionFlujoCajaSubtituloSheetExcel = new EstimacionFlujoCajaSubtituloSheetExcel(header, subHeader, items);
+
+		EstimacionFlujoCajaSubtituloSheetExcel estimacionFlujoCajaResumenSheetExcel = new EstimacionFlujoCajaSubtituloSheetExcel(headerTotales, subHeaderTotales, totalItems);
+
+
+		CajaMesVO cajaMesResumen = new CajaMesVO();
+
+		if(flujoCajaSub21 != null && !flujoCajaSub21.isEmpty()){
+			header.add(new CellExcelVO("TOTAL CHILE CRECE \nCONTIGO SUBT. 21 AÑO 2014", 1, 2));
+			estimacionFlujoCajaSubtituloSheetExcel.setItems(flujoCajaSub21);
+			totalItems = estimacionFlujoCajaSubtituloSheetExcel.getItems();
+			for(int i=0;i<totalItems.size();i++){                
+				totalenero=totalItems.get(i).getSubtitulo().get(0).getMonto();
+				totalfebrero+=totalItems.get(i).getSubtitulo().get(1).getMonto();
+				totalmarzo+=totalItems.get(i).getSubtitulo().get(2).getMonto();
+				totalabril+=totalItems.get(i).getSubtitulo().get(3).getMonto();
+				totalmayo+=totalItems.get(i).getSubtitulo().get(4).getMonto();
+				totaljunio+=totalItems.get(i).getSubtitulo().get(5).getMonto();
+				totaljulio+=totalItems.get(i).getSubtitulo().get(6).getMonto();
+				totalagosto+=totalItems.get(i).getSubtitulo().get(7).getMonto();
+				totalseptiembre+=totalItems.get(i).getSubtitulo().get(8).getMonto();
+				totaloctubre+=totalItems.get(i).getSubtitulo().get(9).getMonto();
+				totalnoviembre+=totalItems.get(i).getSubtitulo().get(10).getMonto();
+				totaldiciembre+=totalItems.get(i).getSubtitulo().get(11).getMonto();
+			}
+
+
+			generadorExcel.addSheet(estimacionFlujoCajaSubtituloSheetExcel, "21");
+		}
+		if(flujoCajaSub22 != null && !flujoCajaSub22.isEmpty()){
+			header.add(new CellExcelVO("TOTAL CHILE CRECE CONTIGO SUBT. 22 AÑO 2014", 1, 2));
+			estimacionFlujoCajaSubtituloSheetExcel.setItems(flujoCajaSub22);
+			totalItems = estimacionFlujoCajaSubtituloSheetExcel.getItems();
+			for(int i=0;i<totalItems.size();i++){                
+				totalenero=totalItems.get(i).getSubtitulo().get(0).getMonto();
+				totalfebrero+=totalItems.get(i).getSubtitulo().get(1).getMonto();
+				totalmarzo+=totalItems.get(i).getSubtitulo().get(2).getMonto();
+				totalabril+=totalItems.get(i).getSubtitulo().get(3).getMonto();
+				totalmayo+=totalItems.get(i).getSubtitulo().get(4).getMonto();
+				totaljunio+=totalItems.get(i).getSubtitulo().get(5).getMonto();
+				totaljulio+=totalItems.get(i).getSubtitulo().get(6).getMonto();
+				totalagosto+=totalItems.get(i).getSubtitulo().get(7).getMonto();
+				totalseptiembre+=totalItems.get(i).getSubtitulo().get(8).getMonto();
+				totaloctubre+=totalItems.get(i).getSubtitulo().get(9).getMonto();
+				totalnoviembre+=totalItems.get(i).getSubtitulo().get(10).getMonto();
+				totaldiciembre+=totalItems.get(i).getSubtitulo().get(11).getMonto();
+			}
+
+			generadorExcel.addSheet(estimacionFlujoCajaSubtituloSheetExcel, "22");
+		}
+		if(flujoCajaSub24 != null && !flujoCajaSub24.isEmpty()){
+			header.add(new CellExcelVO("TOTAL CHILE CRECE CONTIGO SUBT. 24 AÑO 2014", 1, 2));
+			estimacionFlujoCajaSubtituloSheetExcel.setItems(flujoCajaSub24);
+			generadorExcel.addSheet(estimacionFlujoCajaSubtituloSheetExcel, "Ref. Mun.");
+		}
+		if(flujoCajaSub29 != null && !flujoCajaSub29.isEmpty()){
+			header.add(new CellExcelVO("TOTAL CHILE CRECE CONTIGO SUBT. 29 AÑO 2014", 1, 2));
+			estimacionFlujoCajaSubtituloSheetExcel.setItems(flujoCajaSub29);
+			generadorExcel.addSheet(estimacionFlujoCajaSubtituloSheetExcel, "29");
+		}
+
+		for(int i=0; i<12;i++){
+			if(i == 0){
+				cajaMesResumen.setMes("enero");
+				cajaMesResumen.setMonto((long)totalenero);
+				cajaMesesResumen.add(cajaMesResumen);
+			}
+			else if(i == 1){
+				cajaMesResumen.setMes("febrero");
+				cajaMesResumen.setMonto((long)totalfebrero);
+				cajaMesesResumen.add(cajaMesResumen);
+			}else if(i == 2){
+				cajaMesResumen.setMes("marzo");
+				cajaMesResumen.setMonto((long)totalmarzo);
+				cajaMesesResumen.add(cajaMesResumen);
+			}else if(i == 3){
+				cajaMesResumen.setMes("abril");
+				cajaMesResumen.setMonto((long)totalabril);
+				cajaMesesResumen.add(cajaMesResumen);
+			}else if(i == 4){
+				cajaMesResumen.setMes("mayo");
+				cajaMesResumen.setMonto((long)totalmayo);
+				cajaMesesResumen.add(cajaMesResumen);
+			}else if(i == 5){
+				cajaMesResumen.setMes("junio");
+				cajaMesResumen.setMonto((long)totaljunio);
+				cajaMesesResumen.add(cajaMesResumen);
+			}else if(i == 6){
+				cajaMesResumen.setMes("julio");
+				cajaMesResumen.setMonto((long)totaljulio);
+				cajaMesesResumen.add(cajaMesResumen);
+			}else if(i == 7){
+				cajaMesResumen.setMes("agosto");
+				cajaMesResumen.setMonto((long)totalagosto);
+				cajaMesesResumen.add(cajaMesResumen);
+			}else if(i == 8){
+				cajaMesResumen.setMes("septiembre");
+				cajaMesResumen.setMonto((long)totalseptiembre);
+				cajaMesesResumen.add(cajaMesResumen);
+			}else if(i == 9){
+				cajaMesResumen.setMes("octubre");
+				cajaMesResumen.setMonto((long)totaloctubre);
+				cajaMesesResumen.add(cajaMesResumen);
+			}else if(i == 10){
+				cajaMesResumen.setMes("noviembre");
+				cajaMesResumen.setMonto((long)totalnoviembre);
+				cajaMesesResumen.add(cajaMesResumen);
+			}else if(i == 11){
+				cajaMesResumen.setMes("diciembre");
+				cajaMesResumen.setMonto((long)totaldiciembre);
+				cajaMesesResumen.add(cajaMesResumen);
+			}
+		}
+		for (int i=0; i<5; i++){
+			FlujoCajaVO flujoResumen = new FlujoCajaVO();
+			if(i==1){
+				flujoResumen.setServicio("Santiago");
+				flujoResumen.setSubtitulo(cajaMesesResumen);
+				flujoCajaResumen.add(flujoResumen);
+
+				//al final setear montoSubtitulo
+			}
+			if(i==2){
+				flujoResumen.setServicio("Curico");
+				flujoResumen.setSubtitulo(cajaMesesResumen);
+				flujoCajaResumen.add(flujoResumen);
+				//al final setear montoSubtitulo
+			}
+			if(i==3){
+				flujoResumen.setServicio("Talca");
+				flujoResumen.setSubtitulo(cajaMesesResumen);
+				flujoCajaResumen.add(flujoResumen);
+				//al final setear montoSubtitulo
+			}
+			if(i==4){
+				flujoResumen.setServicio("Concepcion");
+				flujoResumen.setSubtitulo(cajaMesesResumen);
+				flujoCajaResumen.add(flujoResumen);
+				//al final setear montoSubtitulo
+			}
+			if(i==5){
+				flujoResumen.setServicio("Punta Arenas");
+				flujoResumen.setSubtitulo(cajaMesesResumen);
+				flujoCajaResumen.add(flujoResumen);
+				//al final setear montoSubtitulo
+			}
+
+		}
+
+
+
+		//generadorExcel.addSheet(estimacionFlujoCajaResumenSheetExcel, "Resumen");
+
+
+		//############################################################################################33
+
+		try {
+			BodyVO response = alfrescoService.uploadDocument(generadorExcel
+					.saveExcel(), contenType, folderDocEstimacionFlujoCaja
+					.replace("{ANO}", getAnoCurso().toString()));
+			System.out
+			.println("response AsignacionRecursosPercapitaSheetExcel --->"
+					+ response);
+			ProgramaAno programaAno = programasDAO
+					.getProgramaAnoByID(idLineaProgramatica);
+
+			TipoDocumento tipoDocumento = new TipoDocumento(
+					TipoDocumentosProcesos.PLANTILLAPROPUESTA.getId());
+			planillaTrabajoId = documentService
+					.createDocumentPropuestaEstimacionFlujoCaja(programaAno,
+							tipoDocumento, response.getNodeRef(),
+							response.getFileName(), contenType);
+			// DistribucionInicialPercapita distribucionInicialPercapita =
+			// distribucionInicialPercapitaDAO.findById(idDistribucionInicialPercapita);
+			// planillaTrabajoId =
+			// documentService.createDocumentPercapita(distribucionInicialPercapita,
+			// TipoDocumentosProcesos.PLANILLARESULTADOSCALCULADOS,
+			// response.getNodeRef(), response.getFileName(), contenType);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return planillaTrabajoId;
+	}
+
 	private List<FlujoCajaVO> getFlujoCajaServicios(
 			Integer idLineaProgramatica, Subtitulo subtitulo) {
-			List<FlujoCajaVO> flujoCajas = new ArrayList<FlujoCajaVO>();
-			List<Caja> cajas = estimacionFlujoCajaDAO.getFlujoCajaServicios(idLineaProgramatica, subtitulo);
-			if(cajas != null && cajas.size() > 0) {
-				for(Caja caja : cajas) {
-					flujoCajas.add(new FlujoCajaMapper().getBasic(caja));	
-				}
+		List<FlujoCajaVO> flujoCajas = new ArrayList<FlujoCajaVO>();
+		List<Caja> cajas = estimacionFlujoCajaDAO.getFlujoCajaServicios(idLineaProgramatica, subtitulo);
+		if(cajas != null && cajas.size() > 0) {
+			for(Caja caja : cajas) {
+				flujoCajas.add(new FlujoCajaMapper().getBasic(caja));	
 			}
-			return flujoCajas;
 		}
+		return flujoCajas;
+	}
 
 	public Integer eliminarPlanillaPropuesta(Integer idLineaProgramatica) {
 		// TODO Auto-generated method stub
@@ -884,7 +893,7 @@ public class EstimacionFlujoCajaService {
 
 		return 0;
 	}
-	
+
 	@Asynchronous
 	public void notificarUsuarioConsolidador(Integer idProgramaAno, String usuario) {
 		//Iniciar el segundo proceso.
@@ -892,7 +901,7 @@ public class EstimacionFlujoCajaService {
 		programaAno.setEstadoFlujoCaja(new EstadoPrograma(EstadosProgramas.REVISADO.getId()));
 		String mailTo = usuarioDAO.getEmailByUsername(usuario);
 		EmailVO emailVO = new EmailVO();
-		emailVO.setContent("Revisar Consolidación de Estimación de Flujos de Caja <p> para el programaAno " + programaAno.getPrograma().getNombre() +  " que se encuentra disponible en su Bandeja de Tareas.</p>");
+		emailVO.setContent("Revisar Consolidación de Estimación de Flujos de Caja <p> para el programa " + programaAno.getPrograma().getNombre() +  " que se encuentra disponible en su Bandeja de Tareas.</p>");
 		emailVO.setSubject("Revisar Consolidación de Estimación de Flujos de Caja");
 		emailVO.setTo(mailTo);
 		emailService.sendMail(emailVO);
@@ -905,7 +914,6 @@ public class EstimacionFlujoCajaService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		System.out.println("Fin notificarUsuarioConsolidador");
 	}
 
@@ -1054,12 +1062,32 @@ public class EstimacionFlujoCajaService {
 
 	}
 
-	public List<SubtituloFlujoCajaVO> getMonitoreoByProgramaAnoComponenteSubtitulo(Integer IdProgramaAno, Integer idComponente, Subtitulo subtitulo) {
+	public List<SubtituloFlujoCajaVO> getMonitoreoByProgramaAnoComponenteSubtitulo(Integer IdProgramaAno, Integer idComponente, Subtitulo subtitulo, Boolean iniciarFlujoCaja) {
 		List<SubtituloFlujoCajaVO> subtitulosFlujosCaja = new ArrayList<SubtituloFlujoCajaVO>(); 
 		List<Caja> flujosCaja = cajaDAO.getMonitoreoByProgramaAnoComponenteSubtitulo(IdProgramaAno, idComponente, subtitulo);
 		if(flujosCaja != null && flujosCaja.size() > 0){
 			for(Caja caja : flujosCaja){
-				subtitulosFlujosCaja.add(new SubtituloFlujoCajaMapper().getBasic(caja, Integer.parseInt(getMesCurso(true))));
+				SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaMapper().getBasic(caja);
+				if(iniciarFlujoCaja){
+					subtitulosFlujosCaja.add(subtituloFlujoCajaVO);
+				}else{
+					ConveniosSummaryVO convenioRecibido = new ConveniosSummaryVO(0, 0);
+					MarcoPresupuestario marcoPresupuestario = caja.getMarcoPresupuestario();
+					if(marcoPresupuestario != null && marcoPresupuestario.getServicioSalud() != null){
+						List<Convenio> convenios = conveniosDAO.getConveniosSummaryByProgramaAnoComponenteSubtitulo(IdProgramaAno, marcoPresupuestario.getServicioSalud().getId(), idComponente, subtitulo);
+						if(convenios != null && convenios.size() > 0){
+							for(Convenio convenio : convenios){
+								convenioRecibido.setMonto(convenioRecibido.getMonto() + ((convenio.getMonto() == null)?0:convenio.getMonto()));
+							}
+						}
+						if(!convenioRecibido.getMonto().equals(0)){
+							Integer porcentaje = (int)((convenioRecibido.getMonto() * 100.0)/marcoPresupuestario.getMarcoModificado());
+							convenioRecibido.setPorcentaje(porcentaje);
+						}
+					}
+					subtituloFlujoCajaVO.setConvenioRecibido(convenioRecibido);
+					subtitulosFlujosCaja.add(subtituloFlujoCajaVO);
+				}
 			}
 		}
 		return subtitulosFlujosCaja;
@@ -1075,7 +1103,7 @@ public class EstimacionFlujoCajaService {
 		}
 		return subtitulosFlujosCaja;
 	}
-	
+
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Integer obtenerIdProgramaAnoSiguiente(Integer idProgramaAno, Integer anoSiguiente) {
 		ProgramaAno programaAnoActual = programasDAO.getProgramaAnoByID(idProgramaAno);
