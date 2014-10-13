@@ -27,23 +27,27 @@ public class SubtituloFlujoCajaMapper implements Mapper<Caja>{
 		SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaVO();
 		subtituloFlujoCajaVO.setMarcoPresupuestario(caja.getMonto());
 		if(caja.getMarcoPresupuestario() != null){
+			subtituloFlujoCajaVO.setIdMarcoPresupuestario(caja.getMarcoPresupuestario().getIdMarcoPresupuestario());
 			if(caja.getMarcoPresupuestario().getServicioSalud() != null){
 				subtituloFlujoCajaVO.setServicio(caja.getMarcoPresupuestario().getServicioSalud().getNombre());
 			}
 		}
-		if(caja.getIdComponente() != null){
-			subtituloFlujoCajaVO.setIdComponente(caja.getIdComponente().getId());
-			subtituloFlujoCajaVO.setComponente(caja.getIdComponente().getNombre());
+		if(caja.getIdSubtitulo() != null){
+			subtituloFlujoCajaVO.setIdSubtitulo(caja.getIdSubtitulo().getIdTipoSubtitulo());
+			subtituloFlujoCajaVO.setSubtitulo(caja.getIdSubtitulo().getNombreSubtitulo());
 		}
 		TransferenciaSummaryVO transferenciaAcumulada = new TransferenciaSummaryVO();
 		transferenciaAcumulada.setPorcentaje(0);
 		transferenciaAcumulada.setMonto(0);
 		subtituloFlujoCajaVO.setTransferenciaAcumulada(transferenciaAcumulada);
+		ConveniosSummaryVO convenioRecibido = new ConveniosSummaryVO();
+		convenioRecibido.setMonto(0);
+		convenioRecibido.setPorcentaje(0);
+		subtituloFlujoCajaVO.setConvenioRecibido(convenioRecibido);
 		List<CajaMontoSummaryVO> cajasMontosSummaryVO = new ArrayList<CajaMontoSummaryVO>();
 		if(caja.getCajaMontos() != null && caja.getCajaMontos().size() > 0){
 			for(CajaMonto cajaMonto : caja.getCajaMontos()){
 				CajaMontoSummaryVO cajaMontoSummaryVO = new CajaMontoSummaryVO();
-				cajaMontoSummaryVO.setIdCajaMonto(cajaMonto.getCaja().getId());
 				cajaMontoSummaryVO.setIdMes(cajaMonto.getMes().getIdMes());
 				cajaMontoSummaryVO.setNombreMes(cajaMonto.getMes().getNombre());
 				cajaMontoSummaryVO.setMontoMes(cajaMonto.getMonto().getMonto());
@@ -51,10 +55,6 @@ public class SubtituloFlujoCajaMapper implements Mapper<Caja>{
 			}
 		}
 		subtituloFlujoCajaVO.setCajaMontos(cajasMontosSummaryVO);
-		ConveniosSummaryVO convenioRecibido = new ConveniosSummaryVO();
-		convenioRecibido.setMonto(0);
-		convenioRecibido.setPorcentaje(0);
-		subtituloFlujoCajaVO.setConvenioRecibido(convenioRecibido);
 		return subtituloFlujoCajaVO;
 	}
 

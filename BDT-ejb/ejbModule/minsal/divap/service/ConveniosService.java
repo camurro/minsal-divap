@@ -35,7 +35,6 @@ import cl.minsal.divap.model.Comuna;
 import cl.minsal.divap.model.Convenio;
 import cl.minsal.divap.model.DocumentoConvenio;
 import cl.minsal.divap.model.Establecimiento;
-import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.TipoSubtitulo;
@@ -104,7 +103,7 @@ public class ConveniosService {
 			ConveniosVO ConVO = new ConveniosVO();
 			ConVO.setComunaNombre(conve.getIdComuna().getNombre());
 			ConVO.setEstablecimientoNombre(conve.getIdEstablecimiento().getNombre());
-			ConVO.setProgramaNombre(conve.getIdPrograma().getNombre());
+			ConVO.setProgramaNombre(conve.getIdPrograma().getPrograma().getNombre());
 			ConVO.setTipoSubtituloNombreSubtitulo(conve.getIdTipoSubtitulo().getNombreSubtitulo());
 			ConVO.setConvenioMonto(new Integer(conve.getMonto()));
 			ConVO.setIdConverio(conve.getIdConvenio());
@@ -124,7 +123,7 @@ public class ConveniosService {
 			ConveniosVO ConVO = new ConveniosVO();
 			ConVO.setComunaNombre(conve.getIdComuna().getNombre());
 			ConVO.setEstablecimientoNombre(conve.getIdEstablecimiento().getNombre());
-			ConVO.setProgramaNombre(conve.getIdPrograma().getNombre());
+			ConVO.setProgramaNombre(conve.getIdPrograma().getPrograma().getNombre());
 			ConVO.setTipoSubtituloNombreSubtitulo(conve.getIdTipoSubtitulo().getNombreSubtitulo());
 			ConVO.setConvenioMonto(new Integer(conve.getMonto()));
 			ConVO.setIdConverio(conve.getIdConvenio());
@@ -156,13 +155,13 @@ public class ConveniosService {
 		ConveniosVO componentesConvenios = new ConveniosVO();
 		componentesConvenios.setComunaNombre(Convenios.getIdComuna().getNombre());
 		componentesConvenios.setEstablecimientoNombre(Convenios.getIdEstablecimiento().getNombre());
-		componentesConvenios.setProgramaNombre(Convenios.getIdPrograma().getNombre());
+		componentesConvenios.setProgramaNombre(Convenios.getIdPrograma().getPrograma().getNombre());
 		componentesConvenios.setTipoSubtituloNombreSubtitulo(Convenios.getIdTipoSubtitulo().getNombreSubtitulo());
 		componentesConvenios.setConvenioMonto(new Integer(Convenios.getMonto()));
 		componentesConvenios.setIdConverio(Convenios.getIdConvenio());
 		componentesConvenios.setNumeroResolucion(Convenios.getNumeroResolucion());
 		componentesConvenios.setIdSubtitulo(Convenios.getIdTipoSubtitulo().getIdTipoSubtitulo());
-		Collection<Componente>    con = Convenios.getIdPrograma().getComponentes();
+		Collection<Componente>    con = Convenios.getIdPrograma().getPrograma().getComponentes();
 		for (Componente conve : con){
 			componentesConvenios.setComponente(conve.getNombre());
 		}
@@ -199,8 +198,7 @@ public class ConveniosService {
 
 		Componente compo = new Componente();
 		compo = componenteDAO.getComponenteByID(componenete);
-		Programa programa =  new Programa();
-		programa = programasDAO.getProgramaById(idPrograma);
+		ProgramaAno programaAno = programasDAO.getProgramasByIdProgramaAno(idPrograma);
 		Establecimiento establecimiento =  new Establecimiento();
 		establecimiento = establecimientosDAO.getEstablecimientoById(idEstable);
 		Comuna comuna =  new Comuna();
@@ -209,11 +207,11 @@ public class ConveniosService {
 		tiposub = tipoSubtituloDAO.getTipoSubtituloById(idSubti);
 
 
-		con.setIdPrograma(programa);
+		con.setIdPrograma(programaAno);
 		con.setIdComuna(comuna);
 		con.setIdEstablecimiento(establecimiento);
 		con.setIdTipoSubtitulo(tiposub);
-		con.setMonto((short) monto);
+		con.setMonto(monto);
 		con.setNumeroResolucion(numResolucion);
 		con.setComponente(compo);
 		con.setFecha(date);
@@ -273,7 +271,7 @@ public class ConveniosService {
 			ConveniosVO ConVO = new ConveniosVO();
 			ConVO.setComunaNombre(conve.getIdComuna().getNombre());
 			ConVO.setEstablecimientoNombre(conve.getIdEstablecimiento().getNombre());
-			ConVO.setProgramaNombre(conve.getIdPrograma().getNombre());
+			ConVO.setProgramaNombre(conve.getIdPrograma().getPrograma().getNombre());
 			ConVO.setTipoSubtituloNombreSubtitulo(conve.getIdTipoSubtitulo().getNombreSubtitulo());
 			ConVO.setConvenioMonto(new Integer(conve.getMonto()));
 			ConVO.setIdConverio(conve.getIdConvenio());

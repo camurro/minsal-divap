@@ -34,7 +34,7 @@
 			document.getElementById('subtituloSeleccionado:seleccionarSubtitulo').click();  
 		}
 
-		function isNumber(event, id, fila, caja, mes) {
+		function isNumber(event, id, fila, mes) {
 		  if (event) {
 		    var charCode = (event.which) ? event.which : event.keyCode;
 		    if (charCode &lt; 48 || charCode &gt; 57) {
@@ -43,7 +43,6 @@
 		    	}
 		    	if (charCode == 13) {
 			    	$("#formTabView\\:posicionCajaMes").val(fila);
-			    	$("#formTabView\\:cajaMesModificado").val(caja);
 			    	$("#formTabView\\:mesModificado").val(mes);
 		    		document.getElementById(id).click();
 		    		return true;
@@ -142,7 +141,6 @@
 						
 						<h:form id="formTabView">
 						<h:inputHidden  id="posicionCajaMes" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.posicionCajaMesModificado}" />
-						<h:inputHidden  id="cajaMesModificado" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMesModificado}" />
 						<h:inputHidden  id="mesModificado" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.mesModificado}" />
 						<h:inputHidden  id="currentTab" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.activeTab}" />
 						<h:inputHidden  id="tablaModificada" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.tablaModificada}" /> 
@@ -233,19 +231,21 @@
 
 
 													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMontosMonitoreoSubtitulo21Local}" var="monto">
+													    <c:if test="#{monto.idMes lt numMesActual}">
+													  		<c:if test="#{monto.idMes eq (numMesActual-1)}">
+														   	    <p:column>
+																	<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
+																		<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+																	</h:outputText>
+																</p:column>
+															</c:if>
+													    </c:if>
 														<c:if test="#{monto.idMes ge numMesActual}">
-														<p:column>
-																<c:if test="#{monto.idMes eq numMesActual}">
-																<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
-																	<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-																</h:outputText>
-																</c:if>
-																<c:if test="#{monto.idMes gt numMesActual}">
-																	<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', '#{rowIndex}', '#{monto.idCajaMonto}', '#{monto.idMes}');" >
-												                        <f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												           		 	</h:inputText>
-																</c:if>
-														</p:column>
+															<p:column>
+																<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', '#{rowIndex}', '#{monto.idMes}');" >
+											                        <f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											           		 	</h:inputText>
+															</p:column>
 														</c:if>
 													</c:forEach>
 
@@ -285,6 +285,17 @@
 															<p:column></p:column>
 
 															<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMontosMesSubtitulo21}" var="montosMes" varStatus="status">
+															    <c:if test="#{status.count lt numMesActual}">
+															  		<c:if test="#{status.count eq (numMesActual-1)}">
+															  		  <p:column>
+																			<f:facet name="footer">
+																				<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
+																					<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+																				</h:outputText>
+																			</f:facet>
+																		</p:column>
+															  		</c:if>
+														  		</c:if>
 																<c:if test="#{status.count ge numMesActual}">
 																	<p:column>
 																		<f:facet name="footer">
@@ -342,7 +353,7 @@
 													</p:column>
 													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMontosMonitoreoSubtitulo21Local}" var="monto" varStatus="varStatus">
 														<p:column>
-															 <h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', '#{rowIndex}', '#{monto.idCajaMonto}', '#{monto.idMes}');" >
+															 <h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', '#{rowIndex}', '#{monto.idMes}');" >
 												                        <f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												            </h:inputText>
 
@@ -497,19 +508,21 @@
 													</p:column>
 
 													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMontosMonitoreoSubtitulo22Local}" var="monto">
+														<c:if test="#{monto.idMes lt numMesActual}">
+															<c:if test="#{monto.idMes eq (numMesActual-1)}">
+																<p:column>
+																	<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
+																		<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+																	</h:outputText>
+																</p:column>
+															</c:if>
+														</c:if>
 														<c:if test="#{monto.idMes ge numMesActual}">
-														<p:column>
-																<c:if test="#{monto.idMes eq numMesActual}">
-																<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
-																	<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-																</h:outputText>
-																</c:if>
-																<c:if test="#{monto.idMes gt numMesActual}">
-																	<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', '#{rowIndex}', '#{monto.idCajaMonto}', '#{monto.idMes}');" >
-												                        <f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												           			</h:inputText>
-																</c:if>
-														</p:column>
+															<p:column>
+																<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', '#{rowIndex}', '#{monto.idMes}');" >
+											                        <f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											           			</h:inputText>
+															</p:column>
 														</c:if>
 													</c:forEach>
 
@@ -558,20 +571,26 @@
 																</f:facet>
 															</p:column>
 															<p:column />
-															<c:forEach
-																items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMontosMesSubtitulo22}" var="montosMes" varStatus="status">
-																<c:if test="#{status.count gt numMesActual}">
-																<p:column>
-																	<f:facet name="footer">
-																		<h:outputText
-																			value="#{montosMes}"
-																			styleClass="textoAjustado textoPequenio centrado">
-																			<f:convertNumber type="currency"
-																				maxFractionDigits="0" locale="es_CL"
-																				currencySymbol="$" />
-																		</h:outputText>
-																	</f:facet>
-																</p:column>
+															<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMontosMesSubtitulo22}" var="montosMes" varStatus="status">
+															    <c:if test="#{status.count lt numMesActual}">
+															  		<c:if test="#{status.count eq (numMesActual-1)}">
+															  		  <p:column>
+																			<f:facet name="footer">
+																				<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
+																					<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+																				</h:outputText>
+																			</f:facet>
+																		</p:column>
+															  		</c:if>
+														  		</c:if>
+																<c:if test="#{status.count ge numMesActual}">
+																	<p:column>
+																		<f:facet name="footer">
+																			<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
+																				<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+																			</h:outputText>
+																		</f:facet>
+																	</p:column>
 																</c:if>
 															</c:forEach>
 															<p:column>
@@ -629,7 +648,7 @@
 													</p:column>
 													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMontosMonitoreoSubtitulo22Local}" var="monto" varStatus="varStatus">
 														<p:column>	 
-															<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', '#{rowIndex}', '#{monto.idCajaMonto}', '#{monto.idMes}');" >
+															<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', '#{rowIndex}', '#{monto.idMes}');" >
 																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 															</h:inputText>
 														</p:column>
@@ -801,23 +820,23 @@
 													</p:column>
 
 													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMontosMonitoreoSubtitulo24Local}" var="monto">
-														<c:if test="#{monto.idMes ge numMesActual}">
-														<p:column>
-															<c:if test="#{monto.idMes eq numMesActual}">
-															<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
-																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-															</h:outputText>
+														<c:if test="#{monto.idMes lt numMesActual}">
+															<c:if test="#{monto.idMes eq (numMesActual-1)}">
+																<p:column>
+																	<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
+																		<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+																	</h:outputText>
+																</p:column>
 															</c:if>
-															<c:if test="#{monto.idMes gt numMesActual}">
-																<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', '#{rowIndex}', '#{monto.idCajaMonto}', '#{monto.idMes}');" >
+														</c:if>
+														<c:if test="#{monto.idMes ge numMesActual}">
+															<p:column>
+																<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', '#{rowIndex}', '#{monto.idMes}');" >
 												                        <f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												           		</h:inputText>
-															</c:if>
-														</p:column>
+															</p:column>
 														</c:if>
 													</c:forEach>
-
-
 
 													<p:column style="background-color:#{_data.color};">
 														<h:outputText value="#{_data.totalMontos}"
@@ -862,21 +881,26 @@
 																</f:facet>
 															</p:column>
 															<p:column />
-															<c:forEach
-																items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMontosMesSubtitulo24}"
-																var="montosMes" varStatus="status">
+															<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMontosMesSubtitulo24}" var="montosMes" varStatus="status">
+															    <c:if test="#{status.count lt numMesActual}">
+															  		<c:if test="#{status.count eq (numMesActual-1)}">
+															  		  <p:column>
+																			<f:facet name="footer">
+																				<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
+																					<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+																				</h:outputText>
+																			</f:facet>
+																		</p:column>
+															  		</c:if>
+														  		</c:if>
 																<c:if test="#{status.count ge numMesActual}">
-																<p:column>
-																	<f:facet name="footer">
-																		<h:outputText
-																			value="#{montosMes}"
-																			styleClass="textoAjustado textoPequenio centrado">
-																			<f:convertNumber type="currency"
-																				maxFractionDigits="0" locale="es_CL"
-																				currencySymbol="$" />
-																		</h:outputText>
-																	</f:facet>
-																</p:column>
+																	<p:column>
+																		<f:facet name="footer">
+																			<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
+																				<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+																			</h:outputText>
+																		</f:facet>
+																	</p:column>
 																</c:if>
 															</c:forEach>
 															<p:column>
@@ -935,7 +959,7 @@
 
 													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMontosMonitoreoSubtitulo24Local}" var="monto">
 														<p:column>
-															<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', '#{rowIndex}', '#{monto.idCajaMonto}', '#{monto.idMes}');" >
+															<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', '#{rowIndex}', '#{monto.idMes}');" >
 												                        <f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												            </h:inputText>
 														</p:column>
@@ -1103,23 +1127,23 @@
 													</p:column>
 													
 													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMontosMonitoreoSubtitulo29Local}" var="monto">
-														<c:if test="#{monto.idMes ge numMesActual}">
-														<p:column>
-															<c:if test="#{monto.idMes == numMesActual}">
-															<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
-																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-															</h:outputText>
+														<c:if test="#{monto.idMes lt numMesActual}">
+													  		<c:if test="#{monto.idMes eq (numMesActual-1)}">
+														   	    <p:column>
+																	<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
+																		<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+																	</h:outputText>
+																</p:column>
 															</c:if>
-															<c:if test="#{monto.idMes > numMesActual}">
-																<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', '#{rowIndex}', '#{monto.idCajaMonto}', '#{monto.idMes}');" >
+													    </c:if>
+														<c:if test="#{monto.idMes ge numMesActual}">
+															<p:column>
+																<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', '#{rowIndex}', '#{monto.idMes}');" >
 												                        <f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												           		</h:inputText>
-															</c:if>
-														</p:column>
+															</p:column>
 														</c:if>
 													</c:forEach>
-
-
 
 													<p:column style="background-color:#{_data.color};">
 														<h:outputText value="#{_data.totalMontos}"
@@ -1164,17 +1188,23 @@
 																</f:facet>
 															</p:column>
 															<p:column />
-															<c:forEach
-																items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMontosMesSubtitulo29}" var="montosMes" varStatus="status">
+															<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMontosMesSubtitulo29}" var="montosMes" varStatus="status">
+															    <c:if test="#{status.count lt numMesActual}">
+															  		<c:if test="#{status.count eq (numMesActual-1)}">
+															  		  <p:column>
+																			<f:facet name="footer">
+																				<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
+																					<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+																				</h:outputText>
+																			</f:facet>
+																		</p:column>
+															  		</c:if>
+														  		</c:if>
 																<c:if test="#{status.count ge numMesActual}">
 																	<p:column>
 																		<f:facet name="footer">
-																			<h:outputText
-																				value="#{montosMes}"
-																				styleClass="textoAjustado textoPequenio centrado">
-																				<f:convertNumber type="currency"
-																					maxFractionDigits="0" locale="es_CL"
-																					currencySymbol="$" />
+																			<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
+																				<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 																			</h:outputText>
 																		</f:facet>
 																	</p:column>
@@ -1238,7 +1268,7 @@
 													
 													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMontosMonitoreoSubtitulo29Local}" var="monto">
 														<p:column>
-															<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', '#{rowIndex}', '#{monto.idCajaMonto}', '#{monto.idMes}');">
+															<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', '#{rowIndex}', '#{monto.idMes}');">
 																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 															</h:inputText>
 														</p:column>
@@ -1353,15 +1383,10 @@
 
 												<p:row>
 													<p:column headerText="Monto" />
-													<p:column headerText="%" />
-
-													
-													<c:forEach
-														items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columnsInicial}"
-														var="dynamicColumn">
+													<p:column headerText="%" />			
+													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columnsInicial}" var="dynamicColumn">
 														<p:column headerText="#{dynamicColumn.header}" />
 													</c:forEach>
-
 													<p:column headerText="Total" />
 												</p:row>
 											</p:columnGroup>
@@ -1393,14 +1418,16 @@
 												</h:outputText>
 											</p:column>
 											<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMontosLocal}" var="monto" varStatus="status">  
-												<c:if test="#{status.count lt numMesActual}">
-												<p:column>
-													<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
-														<f:convertNumber type="currency" maxFractionDigits="0"
-															locale="es_CL" currencySymbol="$" />
-													</h:outputText>
-												</p:column>
-												</c:if>
+											    <c:if test="#{numMesActual gt 2}">
+											    	<c:if test="#{status.count lt (numMesActual-2)}">
+														<p:column>
+														    <h:outputText value="#LLL{status.count}LLL"/>
+															<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
+																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															</h:outputText>
+														</p:column>
+													</c:if>
+											    </c:if>
 											</c:forEach>
 
 											<p:column>
@@ -1440,17 +1467,19 @@
 													
 
 													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalConvenioRemesaServiciosMontosMesSubtitulo21}" var="montosMes" varStatus="status">
-														<c:if test="#{status.count lt numMesActual}">
-														<p:column>
-															<f:facet name="footer">
-																<h:outputText
-																	value="#{montosMes}"
-																	styleClass="textoAjustado textoPequenio centrado">
-																	<f:convertNumber type="currency" maxFractionDigits="0"
-																		locale="es_CL" currencySymbol="$" />
-																</h:outputText>
-															</f:facet>
-														</p:column>
+														<c:if test="#{numMesActual gt 2}">
+											    			<c:if test="#{status.count lt (numMesActual-2)}">
+																<p:column>
+																	<f:facet name="footer">
+																		<h:outputText
+																			value="#{montosMes}"
+																			styleClass="textoAjustado textoPequenio centrado">
+																			<f:convertNumber type="currency" maxFractionDigits="0"
+																				locale="es_CL" currencySymbol="$" />
+																		</h:outputText>
+																	</f:facet>
+																</p:column>
+															</c:if>
 														</c:if>
 													</c:forEach>
 													<p:column>
@@ -1538,13 +1567,15 @@
 													</p:column>
 													
 													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMontosLocal22}" var="monto" varStatus="status">  
-														<c:if test="#{status.count lt numMesActual}">
-														<p:column>
-															<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
-																<f:convertNumber type="currency" maxFractionDigits="0"
-																	locale="es_CL" currencySymbol="$" />
-															</h:outputText>
-														</p:column>
+														<c:if test="#{numMesActual gt 2}">
+												    		<c:if test="#{status.count lt (numMesActual-2)}">
+																<p:column>
+																	<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
+																		<f:convertNumber type="currency" maxFractionDigits="0"
+																			locale="es_CL" currencySymbol="$" />
+																	</h:outputText>
+																</p:column>
+															</c:if>
 														</c:if>
 													</c:forEach>
 													
@@ -1584,17 +1615,19 @@
 															<p:column />
 															
 															<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalConvenioRemesaServiciosMontosMesSubtitulo22}" var="montosMes" varStatus="status">
-																<c:if test="#{status.count lt numMesActual}">
-																<p:column>
-																	<f:facet name="footer">
-																		<h:outputText
-																			value="#{montosMes}"
-																			styleClass="textoAjustado textoPequenio centrado">
-																			<f:convertNumber type="currency" maxFractionDigits="0"
-																				locale="es_CL" currencySymbol="$" />
-																		</h:outputText>
-																	</f:facet>
-																</p:column>
+																<c:if test="#{numMesActual gt 2}">
+												    				<c:if test="#{status.count lt (numMesActual-2)}">
+																		<p:column>
+																			<f:facet name="footer">
+																				<h:outputText
+																					value="#{montosMes}"
+																					styleClass="textoAjustado textoPequenio centrado">
+																					<f:convertNumber type="currency" maxFractionDigits="0"
+																						locale="es_CL" currencySymbol="$" />
+																				</h:outputText>
+																			</f:facet>
+																		</p:column>
+																	</c:if>
 																</c:if>
 															</c:forEach>
 															
@@ -1683,13 +1716,15 @@
 
 
 													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMontosLocal24}" var="monto" varStatus="status">  
-														<c:if test="#{status.count lt numMesActual}">
-														<p:column>
-															<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
-																<f:convertNumber type="currency" maxFractionDigits="0"
-																	locale="es_CL" currencySymbol="$" />
-															</h:outputText>
-														</p:column>
+														<c:if test="#{numMesActual gt 2}">
+												    		<c:if test="#{status.count lt (numMesActual-2)}">
+																<p:column>
+																	<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
+																		<f:convertNumber type="currency" maxFractionDigits="0"
+																			locale="es_CL" currencySymbol="$" />
+																	</h:outputText>
+																</p:column>
+															</c:if>
 														</c:if>
 													</c:forEach>
 
@@ -1730,17 +1765,19 @@
 															<p:column />
 
 															<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalConvenioRemesaServiciosMontosMesSubtitulo24}" var="montosMes" varStatus="status">
-																<c:if test="#{status.count lt numMesActual}">
-																<p:column>
-																	<f:facet name="footer">
-																		<h:outputText
-																			value="#{montosMes}"
-																			styleClass="textoAjustado textoPequenio centrado">
-																			<f:convertNumber type="currency" maxFractionDigits="0"
-																				locale="es_CL" currencySymbol="$" />
-																		</h:outputText>
-																	</f:facet>
-																</p:column>
+																<c:if test="#{numMesActual gt 2}">
+												    				<c:if test="#{status.count lt (numMesActual-2)}">
+																		<p:column>
+																			<f:facet name="footer">
+																				<h:outputText
+																					value="#{montosMes}"
+																					styleClass="textoAjustado textoPequenio centrado">
+																					<f:convertNumber type="currency" maxFractionDigits="0"
+																						locale="es_CL" currencySymbol="$" />
+																				</h:outputText>
+																			</f:facet>
+																		</p:column>
+																	</c:if>
 																</c:if>
 															</c:forEach>
 
@@ -1828,13 +1865,15 @@
 													</p:column>
 													
 													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMontosLocal29}" var="monto" varStatus="status">  
-														<c:if test="#{status.count lt numMesActual}">
-														<p:column>
-															<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
-																<f:convertNumber type="currency" maxFractionDigits="0"
-																	locale="es_CL" currencySymbol="$" />
-															</h:outputText>
-														</p:column>
+														<c:if test="#{numMesActual gt 2}">
+												    		<c:if test="#{status.count lt (numMesActual-2)}">
+																<p:column>
+																	<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
+																		<f:convertNumber type="currency" maxFractionDigits="0"
+																			locale="es_CL" currencySymbol="$" />
+																	</h:outputText>
+																</p:column>
+															</c:if>
 														</c:if>
 													</c:forEach>
 
@@ -1875,17 +1914,19 @@
 													
 
 													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalConvenioRemesaServiciosMontosMesSubtitulo29}" var="montosMes" varStatus="status">
-														<c:if test="#{status.count lt numMesActual}">
-														<p:column>
-															<f:facet name="footer">
-																<h:outputText
-																	value="#{montosMes}"
-																	styleClass="textoAjustado textoPequenio centrado">
-																	<f:convertNumber type="currency" maxFractionDigits="0"
-																		locale="es_CL" currencySymbol="$" />
-																</h:outputText>
-															</f:facet>
-														</p:column>
+														<c:if test="#{numMesActual gt 2}">
+											    			<c:if test="#{status.count lt (numMesActual-2)}">
+																<p:column>
+																	<f:facet name="footer">
+																		<h:outputText
+																			value="#{montosMes}"
+																			styleClass="textoAjustado textoPequenio centrado">
+																			<f:convertNumber type="currency" maxFractionDigits="0"
+																				locale="es_CL" currencySymbol="$" />
+																		</h:outputText>
+																	</f:facet>
+																</p:column>
+															</c:if>
 														</c:if>
 													</c:forEach>
 													<p:column>

@@ -40,6 +40,7 @@
 					</h:panelGrid>
 					<br />
 					<h:form id="formComponente">
+					<ui:param name="numMesActual" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.numMesActual}" />
 					<p:panelGrid columns="2" id="display" columnClasses="label,value">
 						<div class="destacaArchivos ui-corner-all" style="padding: 10px;">
 							<span class="strong">Componente: #{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorNombreComponente} </span> <br /> 
@@ -121,14 +122,9 @@
 							<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMonitoreoSubtituloComponentLocal}" var="monto">
 								<c:if test="#{monto.idMes ge numMesActual}">
 								<p:column>
-										<c:if test="#{monto.idMes eq numMesActual}">
 										<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
-										</c:if>
-										<c:if test="#{monto.idMes gt numMesActual}">
-											<p:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" />
-										</c:if>
 								</p:column>
 								</c:if>
 							</c:forEach>

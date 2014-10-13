@@ -81,14 +81,13 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	private Integer valorComboSubtituloComponente;
 	private String valorNombreComponente;
 	private String valorPesoComponente;
-	
+
 	private Subtitulo subtitulo21 = Subtitulo.SUBTITULO21;
 	private Subtitulo subtitulo22 = Subtitulo.SUBTITULO22;
 	private Subtitulo subtitulo24 = Subtitulo.SUBTITULO24;
 	private Subtitulo subtitulo29 = Subtitulo.SUBTITULO29;
 
 	private String posicionCajaMesModificado;
-	private String cajaMesModificado;
 	private String mesModificado;
 	private List<ElementoModificadoVO> elementosModificadosSubtitulo21 = new ArrayList<ElementoModificadoVO>();
 	private List<ElementoModificadoVO> elementosModificadosSubtitulo22 = new ArrayList<ElementoModificadoVO>();
@@ -177,7 +176,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	private Long totalConvenioRemesaMontosMensualesServicioSubtitulo29;
 	private List<Long> totalConvenioRemesaServiciosMontosMesSubtitulo29;
 	private Integer rowIndex29 = 0;
-	
+
 	private Integer docProgramacion;
 	private Integer docPropuesta;
 	private Boolean iniciarFlujoCaja;
@@ -191,7 +190,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	@EJB
 	private CajaService cajaService;
 
-	
+
 
 	/*
 	 * ********************************* FIN VARIABLES
@@ -228,22 +227,23 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 			System.out.println("docProgramacion --->" + this.docProgramacion);
 			this.iniciarFlujoCaja = (Boolean) getTaskDataVO().getData().get("_iniciarFlujoCaja");
 			System.out.println("iniciarFlujoCaja --->" + this.iniciarFlujoCaja);
-			/*****SOLO PARA PRUEBAS***/
-			if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
-				setNumMesActual(1);
-			}
-			/*****SOLO PARA PRUEBAS***/
 		}
 
 		String subtituloSeleccionado = getRequestParameter("subtituloSeleccionado");
 		if(subtituloSeleccionado != null){
 			setSubtituloSeleccionado(Subtitulo.getById(Integer.parseInt(subtituloSeleccionado)));
-			if(this.programa != null && this.programa.getComponentes() != null && this.programa.getComponentes().size() == 1){
-				this.valorComboSubtituloComponente = this.programa.getComponentes().get(0).getId();
-				this.valorNombreComponente = this.programa.getComponentes().get(0).getNombre();
-				this.valorPesoComponente = ((this.programa.getComponentes().get(0).getPeso() == null) ? "0" : this.programa.getComponentes().get(0).getPeso().toString()) +"%";
-				estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
-						this.programa.getComponentes().get(0).getId(), getSubtituloSeleccionado(), this.iniciarFlujoCaja);
+			if(this.programa != null && this.programa.getComponentes() != null){
+				if(this.programa.getComponentes().size() == 1){
+					this.valorComboSubtituloComponente = this.programa.getComponentes().get(0).getId();
+					this.valorNombreComponente = this.programa.getComponentes().get(0).getNombre();
+					this.valorPesoComponente = ((this.programa.getComponentes().get(0).getPeso() == null) ? "0" : this.programa.getComponentes().get(0).getPeso().toString()) +"%";
+					List<Integer> idComponentes = new ArrayList<Integer>();
+					idComponentes.add(this.programa.getComponentes().get(0).getId());
+					estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
+							idComponentes, getSubtituloSeleccionado(), this.iniciarFlujoCaja);
+				}else{
+					System.out.println("Por completar caso donde es mas de 1 componente por programa");
+				}
 			}
 		}
 		// DOCUMENTOS
@@ -257,41 +257,52 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		mostrarSubtitulo22 = false;
 		mostrarSubtitulo24 = false;
 		mostrarSubtitulo29 = false;
+		Map<Integer, List<Integer>> componentesPorSubtitulo = new HashMap<Integer, List<Integer>>();
 		for (ComponentesVO componente : getPrograma().getComponentes()) {
 			for(SubtituloVO subtitulo : componente.getSubtitulos()){
-				if (subtitulo.getId() == Subtitulo.SUBTITULO21.getId()){
-					monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), componente.getId(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
-					if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
-						convenioRemesaSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), componente.getId(), Subtitulo.SUBTITULO21);
-						System.out.println("convenioRemesaSubtitulo21FlujoCajaVO.size()-->" + convenioRemesaSubtitulo21FlujoCajaVO.size());
-					}
-					System.out.println("monitoreoSubtitulo21FlujoCajaVO.size()-->"+monitoreoSubtitulo21FlujoCajaVO.size());
-					mostrarSubtitulo21 = true;
-				}else if (subtitulo.getId() == Subtitulo.SUBTITULO22.getId()){
-					monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), componente.getId(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
-					if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
-						convenioRemesaSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), componente.getId(), Subtitulo.SUBTITULO22);
-						System.out.println("convenioRemesaSubtitulo22FlujoCajaVO.size()-->" + convenioRemesaSubtitulo22FlujoCajaVO.size());
-					}
-					mostrarSubtitulo22 = true;
-				}else if (subtitulo.getId() == Subtitulo.SUBTITULO24.getId()){
-					monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), componente.getId(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
-					if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
-						convenioRemesaSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), componente.getId(), Subtitulo.SUBTITULO24);
-						System.out.println("convenioRemesaSubtitulo24FlujoCajaVO.size()-->" + convenioRemesaSubtitulo24FlujoCajaVO.size());
-					}
-					mostrarSubtitulo24 = true;
-				}else if (subtitulo.getId() == Subtitulo.SUBTITULO29.getId()){
-					monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), componente.getId(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
-					if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
-						convenioRemesaSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), componente.getId(), Subtitulo.SUBTITULO29);
-						System.out.println("convenioRemesaSubtitulo29FlujoCajaVO.size()-->" + convenioRemesaSubtitulo29FlujoCajaVO.size());
-					}
-					mostrarSubtitulo29 = true;
+				if(!componentesPorSubtitulo.containsKey(subtitulo.getId())){
+					List<Integer> componentes = new ArrayList<Integer>();
+					componentes.add(componente.getId());
+					componentesPorSubtitulo.put(subtitulo.getId(), componentes);
+				}else{
+					componentesPorSubtitulo.get(subtitulo.getId()).add(componente.getId());
 				}
 			}
 		}
-
+		
+		for (Map.Entry<Integer, List<Integer>> entry : componentesPorSubtitulo.entrySet()) { 
+			System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue()); 
+			if (entry.getKey() == Subtitulo.SUBTITULO21.getId()){
+				monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
+					convenioRemesaSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO21);
+					System.out.println("convenioRemesaSubtitulo21FlujoCajaVO.size()-->" + convenioRemesaSubtitulo21FlujoCajaVO.size());
+				}
+				System.out.println("monitoreoSubtitulo21FlujoCajaVO.size()-->"+monitoreoSubtitulo21FlujoCajaVO.size());
+				mostrarSubtitulo21 = true;
+			}else if (entry.getKey() == Subtitulo.SUBTITULO22.getId()){
+				monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
+					convenioRemesaSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO22);
+					System.out.println("convenioRemesaSubtitulo22FlujoCajaVO.size()-->" + convenioRemesaSubtitulo22FlujoCajaVO.size());
+				}
+				mostrarSubtitulo22 = true;
+			}else if (entry.getKey() == Subtitulo.SUBTITULO24.getId()){
+				monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
+					convenioRemesaSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO24);
+					System.out.println("convenioRemesaSubtitulo24FlujoCajaVO.size()-->" + convenioRemesaSubtitulo24FlujoCajaVO.size());
+				}
+				mostrarSubtitulo24 = true;
+			}else if (entry.getKey() == Subtitulo.SUBTITULO29.getId()){
+				monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
+					convenioRemesaSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO29);
+					System.out.println("convenioRemesaSubtitulo29FlujoCajaVO.size()-->" + convenioRemesaSubtitulo29FlujoCajaVO.size());
+				}
+				mostrarSubtitulo29 = true;
+			}
+		}
 	}
 
 	public void guardarSubtitulo21() {
@@ -301,7 +312,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo21FlujoCajaVO.get(elemento.getPosicionElemento());
 			List<CajaMontoSummaryVO> cajaMontos = subtituloFlujoCajaVO.getCajaMontos();
 			for(CajaMontoSummaryVO cajaMonto : cajaMontos){
-				if(cajaMonto.getIdCajaMonto().equals(elemento.getCajaModificado()) && cajaMonto.getIdMes().equals(elemento.getMesModificado())){
+				if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
 					System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
 				}
 			}
@@ -318,7 +329,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo22FlujoCajaVO.get(elemento.getPosicionElemento());
 			List<CajaMontoSummaryVO> cajaMontos = subtituloFlujoCajaVO.getCajaMontos();
 			for(CajaMontoSummaryVO cajaMonto : cajaMontos){
-				if(cajaMonto.getIdCajaMonto().equals(elemento.getCajaModificado()) && cajaMonto.getIdMes().equals(elemento.getMesModificado())){
+				if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
 					System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
 				}
 			}
@@ -335,7 +346,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo24FlujoCajaVO.get(elemento.getPosicionElemento());
 			List<CajaMontoSummaryVO> cajaMontos = subtituloFlujoCajaVO.getCajaMontos();
 			for(CajaMontoSummaryVO cajaMonto : cajaMontos){
-				if(cajaMonto.getIdCajaMonto().equals(elemento.getCajaModificado()) && cajaMonto.getIdMes().equals(elemento.getMesModificado())){
+				if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
 					System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
 				}
 			}
@@ -352,7 +363,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo29FlujoCajaVO.get(elemento.getPosicionElemento());
 			List<CajaMontoSummaryVO> cajaMontos = subtituloFlujoCajaVO.getCajaMontos();
 			for(CajaMontoSummaryVO cajaMonto : cajaMontos){
-				if(cajaMonto.getIdCajaMonto().equals(elemento.getCajaModificado()) && cajaMonto.getIdMes().equals(elemento.getMesModificado())){
+				if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
 					System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
 				}
 			}
@@ -561,6 +572,9 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		columns = new ArrayList<ColumnaVO>();
 		Integer mes = getNumMesActual();
 		if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
+			if(mes > 1){
+				mes -=1;
+			}
 			for (int i = mes; i < 13; i++) {
 				String nombreMes = Util.obtenerNombreMes(i);
 				if (i == mes) {
@@ -569,17 +583,21 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 					columns.add(new ColumnaVO(nombreMes, "Estimad.", nombreMes.toLowerCase()));
 				}
 			}
+			columnsInicial = new ArrayList<ColumnaVO>();
+			if(mes > 0){
+				mes -=1;
+			}
+			System.out.println("mes->"+mes);
+			for (int i = 1; i <= mes; i++) {
+				String nombreMes = Util.obtenerNombreMes(i);
+				columnsInicial.add(new ColumnaVO(nombreMes, "Real", nombreMes.toLowerCase()));
+			}
 		}else{
 			mes = 1;
 			for (int i = mes; i < 13; i++) {
 				String nombreMes = Util.obtenerNombreMes(i);
 				columns.add(new ColumnaVO(nombreMes, "Estimad.", nombreMes.toLowerCase()));
 			}
-		}
-		columnsInicial = new ArrayList<ColumnaVO>();
-		for (int i = 1; i < mes; i++) {
-			String nombreMes = Util.obtenerNombreMes(i);
-			columnsInicial.add(new ColumnaVO(nombreMes, "Real", nombreMes.toLowerCase()));
 		}
 
 	}
@@ -1273,8 +1291,8 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	public String recalcularSubtitulo21() {
 		System.out.println("recalcularSubtitulo21recalcularSubtitulo21recalcularSubtitulo21");
 		System.out.println("getPosicionCajaMesModificado=" + getPosicionCajaMesModificado() + " getMesModificado()=" + getMesModificado());
-		if(getPosicionCajaMesModificado() != null && getCajaMesModificado() != null && getMesModificado() != null){
-			ElementoModificadoVO elementoModificadoVO = new ElementoModificadoVO(Integer.parseInt(getPosicionCajaMesModificado()), Integer.parseInt(getCajaMesModificado()), Integer.parseInt(getMesModificado()));
+		if(getPosicionCajaMesModificado() != null && getMesModificado() != null){
+			ElementoModificadoVO elementoModificadoVO = new ElementoModificadoVO(Integer.parseInt(getPosicionCajaMesModificado()), Integer.parseInt(getMesModificado()));
 			if(!elementosModificadosSubtitulo21.contains(elementoModificadoVO)){
 				elementosModificadosSubtitulo21.add(elementoModificadoVO);
 			}
@@ -1291,8 +1309,8 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	public String recalcularSubtitulo22() {
 		System.out.println("recalcularSubtitulo22recalcularSubtitulo22recalcularSubtitulo22");
 		System.out.println("getPosicionCajaMesModificado=" + getPosicionCajaMesModificado() + " getMesModificado()=" + getMesModificado());
-		if(getPosicionCajaMesModificado() != null && getCajaMesModificado() != null && getMesModificado() != null){
-			ElementoModificadoVO elementoModificadoVO = new ElementoModificadoVO(Integer.parseInt(getPosicionCajaMesModificado()), Integer.parseInt(getCajaMesModificado()), Integer.parseInt(getMesModificado()));
+		if(getPosicionCajaMesModificado() != null && getMesModificado() != null){
+			ElementoModificadoVO elementoModificadoVO = new ElementoModificadoVO(Integer.parseInt(getPosicionCajaMesModificado()), Integer.parseInt(getMesModificado()));
 			if(!elementosModificadosSubtitulo22.contains(elementoModificadoVO)){
 				elementosModificadosSubtitulo22.add(elementoModificadoVO);
 			}
@@ -1305,8 +1323,8 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	public String recalcularSubtitulo24() {
 		System.out.println("recalcularSubtitulo24recalcularSubtitulo24recalcularSubtitulo24");
 		System.out.println("getPosicionCajaMesModificado=" + getPosicionCajaMesModificado() + " getMesModificado()=" + getMesModificado());
-		if(getPosicionCajaMesModificado() != null && getCajaMesModificado() != null && getMesModificado() != null){
-			ElementoModificadoVO elementoModificadoVO = new ElementoModificadoVO(Integer.parseInt(getPosicionCajaMesModificado()), Integer.parseInt(getCajaMesModificado()), Integer.parseInt(getMesModificado()));
+		if(getPosicionCajaMesModificado() != null && getMesModificado() != null){
+			ElementoModificadoVO elementoModificadoVO = new ElementoModificadoVO(Integer.parseInt(getPosicionCajaMesModificado()), Integer.parseInt(getMesModificado()));
 			if(!elementosModificadosSubtitulo24.contains(elementoModificadoVO)){
 				elementosModificadosSubtitulo24.add(elementoModificadoVO);
 			}
@@ -1319,8 +1337,8 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	public String recalcularSubtitulo29() {
 		System.out.println("recalcularSubtitulo29recalcularSubtitulo29recalcularSubtitulo29");
 		System.out.println("getPosicionCajaMesModificado=" + getPosicionCajaMesModificado() + " getMesModificado()=" + getMesModificado());
-		if(getPosicionCajaMesModificado() != null && getCajaMesModificado() != null && getMesModificado() != null){
-			ElementoModificadoVO elementoModificadoVO = new ElementoModificadoVO(Integer.parseInt(getPosicionCajaMesModificado()), Integer.parseInt(getCajaMesModificado()), Integer.parseInt(getMesModificado()));
+		if(getPosicionCajaMesModificado() != null && getMesModificado() != null){
+			ElementoModificadoVO elementoModificadoVO = new ElementoModificadoVO(Integer.parseInt(getPosicionCajaMesModificado()), Integer.parseInt(getMesModificado()));
 			if(!elementosModificadosSubtitulo29.contains(elementoModificadoVO)){
 				elementosModificadosSubtitulo29.add(elementoModificadoVO);
 			}
@@ -1361,7 +1379,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	public void setSubtitulo29(Subtitulo subtitulo29) {
 		this.subtitulo29 = subtitulo29;
 	}
-	
+
 	public String getValorPesoComponente() {
 		return valorPesoComponente;
 	}
@@ -1375,8 +1393,10 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		if(getValorComboSubtituloComponente() == null || getValorComboSubtituloComponente().intValue() == 0){
 			clearForm();
 		}else{
+			List<Integer> idComponentes = new ArrayList<Integer>();
+			idComponentes.add(getValorComboSubtituloComponente());
 			estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
-					getValorComboSubtituloComponente(), getSubtituloSeleccionado(), this.iniciarFlujoCaja);
+					idComponentes , getSubtituloSeleccionado(), this.iniciarFlujoCaja);
 		}
 	}
 
@@ -1483,7 +1503,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	public void seleccionarSubtitulo(){
 		System.out.println("subtituloSeleccionado->"+getSubtituloSeleccionado());
 	}
-	
+
 	public String descartarCambios(){
 		System.out.println("descartarCambios");
 		setTablaModificada(false);
@@ -1522,14 +1542,6 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 
 	public void setMesModificado(String mesModificado) {
 		this.mesModificado = mesModificado;
-	}
-
-	public String getCajaMesModificado() {
-		return cajaMesModificado;
-	}
-
-	public void setCajaMesModificado(String cajaMesModificado) {
-		this.cajaMesModificado = cajaMesModificado;
 	}
 
 	public Boolean getTablaModificada() {

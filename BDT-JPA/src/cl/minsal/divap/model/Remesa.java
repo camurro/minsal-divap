@@ -6,13 +6,10 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -31,147 +28,135 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Remesa.findAll", query = "SELECT r FROM Remesa r"),
-    @NamedQuery(name = "Remesa.findByIdRemesa", query = "SELECT r FROM Remesa r WHERE r.idRemesa = :idRemesa"),
-    @NamedQuery(name = "Remesa.findByAnio", query = "SELECT r FROM Remesa r WHERE r.anio = :anio"),
-    @NamedQuery(name = "Remesa.findByValorDia09", query = "SELECT r FROM Remesa r WHERE r.valorDia09 = :valorDia09"),
-    @NamedQuery(name = "Remesa.findByValorDia24", query = "SELECT r FROM Remesa r WHERE r.valorDia24 = :valorDia24"),
-    @NamedQuery(name = "Remesa.findByValorDia28", query = "SELECT r FROM Remesa r WHERE r.valorDia28 = :valorDia28")})
+    @NamedQuery(name = "Remesa.findByIdRemesa", query = "SELECT r FROM Remesa r WHERE r.idremesa = :idRemesa"),
+    @NamedQuery(name = "Remesa.findByAnio", query = "SELECT r FROM Remesa r WHERE r.idprograma.ano.ano = :anio"),
+    @NamedQuery(name = "Remesa.findByValorDia09", query = "SELECT r FROM Remesa r WHERE r.valordia09 = :valorDia09"),
+    @NamedQuery(name = "Remesa.findByValorDia24", query = "SELECT r FROM Remesa r WHERE r.valordia24 = :valorDia24"),
+    @NamedQuery(name = "Remesa.findByValorDia28", query = "SELECT r FROM Remesa r WHERE r.valordia28 = :valorDia28"),
+    @NamedQuery(name = "Remesa.findByIdProgramaAnoIdServicioIdSubtitulo", query = "SELECT r FROM Remesa r WHERE r.idprograma.idProgramaAno = :idProgramaAno and r.idserviciosalud.id = :idServicioSalud  and r.tipoSubtitulo.idTipoSubtitulo = :idTipoSubtitulo ORDER BY r.idmes.idMes ASC")})
 public class Remesa implements Serializable  {
     private static final long serialVersionUID = 1L;
     
     @Id
-    @Column(name = "idRemesa",unique=true, nullable=false)
+    @Column(name = "idremesa",unique=true, nullable=false)
 	@GeneratedValue
-    private Integer idRemesa;
-    @Column(name = "anio")
-    private Integer anio;
-    @Column(name = "valorDia09")
-    private long valorDia09;
-    @Column(name = "valorDia24")
-    private long valorDia24;
-    @Column(name = "valorDia28")
-    private long valorDia28;
-    @JoinColumn(name = "idtiposubtitulo", referencedColumnName = "id_tipo_subtitulo")
+    private Integer idremesa;
+    @Column(name = "valordia09")
+    private Integer valordia09;
+    @Column(name = "valordia24")
+    private Integer valordia24;
+    @Column(name = "valordia28")
+    private Integer valordia28;
+    @JoinColumn(name = "tipo_subtitulo", referencedColumnName = "id_tipo_subtitulo")
     @ManyToOne
-    private TipoSubtitulo idtiposubtitulo;
-    
-    @JoinColumn(name = "idServicioSalud", referencedColumnName = "id")
+    private TipoSubtitulo tipoSubtitulo;
+    @JoinColumn(name = "idserviciosalud", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private ServicioSalud idServicioSalud;
-    @JoinColumn(name = "idProgramaAno", referencedColumnName = "id_programa_ano")
+    private ServicioSalud idserviciosalud;
+    @JoinColumn(name = "idprograma", referencedColumnName = "id_programa_ano")
     @ManyToOne
-    private ProgramaAno idProgramaAno;
-
-    @JoinColumn(name = "idMes", referencedColumnName = "id_mes")
+    private ProgramaAno idprograma;
+    @JoinColumn(name = "idmes", referencedColumnName = "id_mes")
     @ManyToOne
-    private Mes idMes;
-    @JoinColumn(name = "idEstablecimiento", referencedColumnName = "id")
+    private Mes idmes;
+    @JoinColumn(name = "idestablecimiento", referencedColumnName = "id")
     @ManyToOne
-    private Establecimiento idEstablecimiento;
-    @JoinColumn(name = "idComuna", referencedColumnName = "id")
+    private Establecimiento idestablecimiento;
+    @JoinColumn(name = "idcomuna", referencedColumnName = "id")
     @ManyToOne
-    private Comuna idComuna;
+    private Comuna idcomuna;
 
     public Remesa() {
     }
 
-    public Remesa(Integer idRemesa) {
-        this.idRemesa = idRemesa;
+    public Remesa(Integer idremesa) {
+        this.idremesa = idremesa;
     }
 
-    public Integer getIdRemesa() {
-        return idRemesa;
+    public Integer getIdremesa() {
+        return idremesa;
     }
 
-    public void setIdRemesa(Integer idRemesa) {
-        this.idRemesa = idRemesa;
+    public void setIdremesa(Integer idremesa) {
+        this.idremesa = idremesa;
     }
 
-    public Integer getAnio() {
-        return anio;
+    public Integer getValordia09() {
+        return valordia09;
     }
 
-    public void setAnio(Integer anio) {
-        this.anio = anio;
+    public void setValordia09(Integer valordia09) {
+        this.valordia09 = valordia09;
     }
 
-    public long getValorDia09() {
-        return valorDia09;
+    public Integer getValordia24() {
+        return valordia24;
     }
 
-    public void setValorDia09(long valorDia09) {
-        this.valorDia09 = valorDia09;
+    public void setValordia24(Integer valordia24) {
+        this.valordia24 = valordia24;
     }
 
-    public long getValorDia24() {
-        return valorDia24;
+    public Integer getValordia28() {
+        return valordia28;
     }
 
-    public void setValorDia24(long valorDia24) {
-        this.valorDia24 = valorDia24;
+    public void setValordia28(Integer valordia28) {
+        this.valordia28 = valordia28;
     }
 
-    public long getValorDia28() {
-        return valorDia28;
+    public TipoSubtitulo getTipoSubtitulo() {
+        return tipoSubtitulo;
     }
 
-    public void setValorDia28(long valorDia28) {
-        this.valorDia28 = valorDia28;
+    public void setTipoSubtitulo(TipoSubtitulo tipoSubtitulo) {
+        this.tipoSubtitulo = tipoSubtitulo;
     }
 
-    public ServicioSalud getIdServicioSalud() {
-        return idServicioSalud;
+    public ServicioSalud getIdserviciosalud() {
+        return idserviciosalud;
     }
 
-    public void setIdServicioSalud(ServicioSalud idServicioSalud) {
-        this.idServicioSalud = idServicioSalud;
+    public void setIdserviciosalud(ServicioSalud idserviciosalud) {
+        this.idserviciosalud = idserviciosalud;
     }
 
-    public ProgramaAno getIdProgramaAno() {
-        return idProgramaAno;
+    public ProgramaAno getIdprograma() {
+        return idprograma;
     }
 
-    public void setIdProgramaAno(ProgramaAno idProgramaAno) {
-        this.idProgramaAno = idProgramaAno;
+    public void setIdprograma(ProgramaAno idprograma) {
+        this.idprograma = idprograma;
     }
 
-    public Mes getIdMes() {
-        return idMes;
+    public Mes getIdmes() {
+        return idmes;
     }
 
-    public void setIdMes(Mes idMes) {
-        this.idMes = idMes;
+    public void setIdmes(Mes idmes) {
+        this.idmes = idmes;
     }
 
-    public Establecimiento getIdEstablecimiento() {
-        return idEstablecimiento;
+    public Establecimiento getIdestablecimiento() {
+        return idestablecimiento;
     }
 
-    public void setIdEstablecimiento(Establecimiento idEstablecimiento) {
-        this.idEstablecimiento = idEstablecimiento;
+    public void setIdestablecimiento(Establecimiento idestablecimiento) {
+        this.idestablecimiento = idestablecimiento;
     }
 
-    public Comuna getIdComuna() {
-        return idComuna;
+    public Comuna getIdcomuna() {
+        return idcomuna;
     }
 
-    public void setIdComuna(Comuna idComuna) {
-        this.idComuna = idComuna;
+    public void setIdcomuna(Comuna idcomuna) {
+        this.idcomuna = idcomuna;
     }
 
-
-    public TipoSubtitulo getIdtiposubtitulo() {
-        return idtiposubtitulo;
-    }
-
-    public void setIdtiposubtitulo(TipoSubtitulo idtiposubtitulo) {
-        this.idtiposubtitulo = idtiposubtitulo;
-    }
-    
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idRemesa != null ? idRemesa.hashCode() : 0);
+        hash += (idremesa != null ? idremesa.hashCode() : 0);
         return hash;
     }
 
@@ -182,7 +167,7 @@ public class Remesa implements Serializable  {
             return false;
         }
         Remesa other = (Remesa) object;
-        if ((this.idRemesa == null && other.idRemesa != null) || (this.idRemesa != null && !this.idRemesa.equals(other.idRemesa))) {
+        if ((this.idremesa == null && other.idremesa != null) || (this.idremesa != null && !this.idremesa.equals(other.idremesa))) {
             return false;
         }
         return true;
@@ -190,21 +175,7 @@ public class Remesa implements Serializable  {
 
     @Override
     public String toString() {
-        return "javaapplication2.Remesa[ idRemesa=" + idRemesa + " ]";
-    }
-    
-    public Remesa(Integer idRemesa,ProgramaAno programaAno,ServicioSalud servicioSalud ,Integer anio,Mes mes,long valor09,long valor24,long valor28)
-    {
-    	setIdRemesa(idRemesa);
-    	setIdProgramaAno(programaAno);
-    	setIdServicioSalud(servicioSalud);
-    	setAnio(anio);
-    	setIdMes(mes);
-    	
-    	setValorDia09(valor09);
-    	setValorDia24(valor24);
-    	setValorDia28(valor28);
-    	
+        return "cl.minsal.divap.model.Remesa[ idremesa=" + idremesa + " ]";
     }
     
 }

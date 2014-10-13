@@ -3390,6 +3390,43 @@ ALTER TABLE convenio
 ALTER TABLE convenio
    ALTER COLUMN monto TYPE integer;
 
+ALTER TABLE remesa
+  DROP COLUMN anio;
+
+ALTER TABLE remesa
+  DROP CONSTRAINT remesa_idprograma_fkey;
+
+ALTER TABLE remesa
+  ADD CONSTRAINT remesa_programa_fk FOREIGN KEY (idprograma)
+      REFERENCES programa_ano (id_programa_ano) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE remesa
+  ADD COLUMN tipo_subtitulo integer NOT NULL;
+
+ALTER TABLE remesa
+  ADD CONSTRAINT tipo_subtitulo_fk FOREIGN KEY (tipo_subtitulo)
+      REFERENCES tipo_subtitulo (id_tipo_subtitulo) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE remesa
+   ALTER COLUMN idprograma SET NOT NULL;
+
+ALTER TABLE remesa
+   ALTER COLUMN valordia09 TYPE integer;
+
+ALTER TABLE remesa
+   ALTER COLUMN valordia24 TYPE integer;
+
+ALTER TABLE remesa
+   ALTER COLUMN valordia28 TYPE integer;
+
+UPDATE componente SET peso=100 WHERE id_programa=20;
+
+
+
+
+
 
 
 

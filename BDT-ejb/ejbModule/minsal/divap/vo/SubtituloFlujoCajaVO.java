@@ -11,9 +11,11 @@ public class SubtituloFlujoCajaVO implements Serializable {
 	 */
 	private static final long serialVersionUID = 4939157865175247881L;
 
+	private Integer idServicio;
 	private String servicio;
-	private Integer idComponente;
-	private String componente;
+	private Integer idSubtitulo;
+	private String subtitulo;
+	private Integer idMarcoPresupuestario;
 	private Integer marcoPresupuestario;
 	private TransferenciaSummaryVO transferenciaAcumulada;
 	private ConveniosSummaryVO convenioRecibido;
@@ -25,19 +27,35 @@ public class SubtituloFlujoCajaVO implements Serializable {
 		super();
 	}
 
-	public SubtituloFlujoCajaVO(String servicio, Integer idComponente,
-			String componente, Integer marcoPresupuestario,
+	
+	public SubtituloFlujoCajaVO(Integer idServicio, String servicio,
+			Integer idSubtitulo, String subtitulo,
+			Integer idMarcoPresupuestario, Integer marcoPresupuestario,
 			TransferenciaSummaryVO transferenciaAcumulada,
 			ConveniosSummaryVO convenioRecibido,
-			List<CajaMontoSummaryVO> cajaMontos) {
+			List<CajaMontoSummaryVO> cajaMontos, Integer totalMontos,
+			String color) {
 		super();
+		this.idServicio = idServicio;
 		this.servicio = servicio;
-		this.idComponente = idComponente;
-		this.componente = componente;
+		this.idSubtitulo = idSubtitulo;
+		this.subtitulo = subtitulo;
+		this.idMarcoPresupuestario = idMarcoPresupuestario;
 		this.marcoPresupuestario = marcoPresupuestario;
 		this.transferenciaAcumulada = transferenciaAcumulada;
 		this.convenioRecibido = convenioRecibido;
 		this.cajaMontos = cajaMontos;
+		this.totalMontos = totalMontos;
+		this.color = color;
+	}
+
+
+	public Integer getMarcoPresupuestario() {
+		return marcoPresupuestario;
+	}
+
+	public void setMarcoPresupuestario(Integer marcoPresupuestario) {
+		this.marcoPresupuestario = marcoPresupuestario;
 	}
 
 	public String getServicio() {
@@ -48,28 +66,20 @@ public class SubtituloFlujoCajaVO implements Serializable {
 		this.servicio = servicio;
 	}
 
-	public Integer getIdComponente() {
-		return idComponente;
+	public Integer getIdSubtitulo() {
+		return idSubtitulo;
 	}
 
-	public void setIdComponente(Integer idComponente) {
-		this.idComponente = idComponente;
+	public void setIdSubtitulo(Integer idSubtitulo) {
+		this.idSubtitulo = idSubtitulo;
 	}
 
-	public String getComponente() {
-		return componente;
+	public String getSubtitulo() {
+		return subtitulo;
 	}
 
-	public void setComponente(String componente) {
-		this.componente = componente;
-	}
-
-	public Integer getMarcoPresupuestario() {
-		return marcoPresupuestario;
-	}
-
-	public void setMarcoPresupuestario(Integer marcoPresupuestario) {
-		this.marcoPresupuestario = marcoPresupuestario;
+	public void setSubtitulo(String subtitulo) {
+		this.subtitulo = subtitulo;
 	}
 
 	public TransferenciaSummaryVO getTransferenciaAcumulada() {
@@ -127,14 +137,79 @@ public class SubtituloFlujoCajaVO implements Serializable {
 		this.color = color;
 	}
 
+	public Integer getIdServicio() {
+		return idServicio;
+	}
+
+
+	public void setIdServicio(Integer idServicio) {
+		this.idServicio = idServicio;
+	}
+
+
+	public Integer getIdMarcoPresupuestario() {
+		return idMarcoPresupuestario;
+	}
+
+
+	public void setIdMarcoPresupuestario(Integer idMarcoPresupuestario) {
+		this.idMarcoPresupuestario = idMarcoPresupuestario;
+	}
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((idMarcoPresupuestario == null) ? 0 : idMarcoPresupuestario
+						.hashCode());
+		result = prime * result
+				+ ((idServicio == null) ? 0 : idServicio.hashCode());
+		result = prime * result
+				+ ((idSubtitulo == null) ? 0 : idSubtitulo.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SubtituloFlujoCajaVO other = (SubtituloFlujoCajaVO) obj;
+		if (idMarcoPresupuestario == null) {
+			if (other.idMarcoPresupuestario != null)
+				return false;
+		} else if (!idMarcoPresupuestario.equals(other.idMarcoPresupuestario))
+			return false;
+		if (idServicio == null) {
+			if (other.idServicio != null)
+				return false;
+		} else if (!idServicio.equals(other.idServicio))
+			return false;
+		if (idSubtitulo == null) {
+			if (other.idSubtitulo != null)
+				return false;
+		} else if (!idSubtitulo.equals(other.idSubtitulo))
+			return false;
+		return true;
+	}
+
 	@Override
 	public String toString() {
-		return "SubtituloFlujoCajaVO [servicio=" + servicio + ", idComponente="
-				+ idComponente + ", componente=" + componente
-				+ ", marcoPresupuestario=" + marcoPresupuestario
-				+ ", transferenciaAcumulada=" + transferenciaAcumulada
-				+ ", convenioRecibido=" + convenioRecibido + ", cajaMontos="
-				+ cajaMontos + "]";
+		return "SubtituloFlujoCajaVO [idServicio=" + idServicio + ", servicio="
+				+ servicio + ", idSubtitulo=" + idSubtitulo + ", subtitulo="
+				+ subtitulo + ", idMarcoPresupuestario="
+				+ idMarcoPresupuestario + ", marcoPresupuestario="
+				+ marcoPresupuestario + ", transferenciaAcumulada="
+				+ transferenciaAcumulada + ", convenioRecibido="
+				+ convenioRecibido + ", cajaMontos=" + cajaMontos
+				+ ", totalMontos=" + totalMontos + ", color=" + color + "]";
 	}
 
 }

@@ -39,12 +39,12 @@ public class ProgramaAno implements Serializable {
 	@JoinColumn(name = "programa", referencedColumnName = "id")
 	@ManyToOne(optional = false)
 	private Programa programa;
+	@JoinColumn(name = "estadoflujocaja", referencedColumnName = "id_estado_programa")
+    @ManyToOne
+    private EstadoPrograma estadoFlujoCaja;
 	@JoinColumn(name = "estado", referencedColumnName = "id_estado_programa")
 	@ManyToOne(optional = false)
 	private EstadoPrograma estado;
-    @JoinColumn(name = "estadoflujocaja", referencedColumnName = "id_estado_programa")
-    @ManyToOne
-    private EstadoPrograma estadoFlujoCaja;
 	@JoinColumn(name = "ano", referencedColumnName = "ano")
 	@ManyToOne(optional = false)
 	private AnoEnCurso ano;
@@ -56,7 +56,7 @@ public class ProgramaAno implements Serializable {
 	private Set<ProgramaServicioCore> programasServiciosCore;
 	@OneToMany(mappedBy = "programaAnoMunicipal")
 	private Set<ProgramaMunicipalCore> programasMunicipalesCore;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idProgramaAno")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idprograma")
 	private Collection<Remesa> remesaCollection;
 	@OneToMany(mappedBy = "idPrograma")
     private Set<Convenio> convenios;

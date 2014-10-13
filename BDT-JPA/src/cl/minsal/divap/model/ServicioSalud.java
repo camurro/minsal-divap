@@ -57,7 +57,7 @@ public class ServicioSalud implements Serializable {
 	private Region region;
 
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idServicioSalud")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idserviciosalud")
 	private Collection<Remesa> remesaCollection;
 
 	@JoinColumn(name = "director", referencedColumnName = "id_persona")

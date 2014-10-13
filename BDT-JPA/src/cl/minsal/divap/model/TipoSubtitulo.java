@@ -52,7 +52,7 @@ public class TipoSubtitulo implements Serializable {
     @OneToMany(mappedBy = "subtitulo")
     private Set<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes;
     
-    @OneToMany(mappedBy = "idtiposubtitulo")
+    @OneToMany(mappedBy = "tipoSubtitulo")
     private Collection<Remesa> remesaCollection;
 
     public TipoSubtitulo() {

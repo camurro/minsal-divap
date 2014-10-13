@@ -170,12 +170,12 @@ public class ConveniosDAO {
 		}
 	}
 
-	public List<Convenio> getConveniosSummaryByProgramaAnoComponenteSubtitulo(Integer idProgramaAno, Integer idServicio, Integer idComponente, Subtitulo subtitulo) {
+	public List<Convenio> getConveniosSummaryByProgramaAnoComponenteSubtitulo(Integer idProgramaAno, Integer idServicio, List<Integer> idComponentes, Subtitulo subtitulo) {
 		try {
 			TypedQuery<Convenio> query = this.em.createNamedQuery("Convenio.findByIdProgramaAnoIdServicioIdComponenteIdSubtitulo", Convenio.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
 			query.setParameter("idServicio", idServicio);
-			query.setParameter("idComponente", idComponente);
+			query.setParameter("idComponentes", idComponentes);
 			query.setParameter("idTipoSubtitulo", subtitulo.getId());
 			return query.getResultList(); 
 		} catch (Exception e) {
