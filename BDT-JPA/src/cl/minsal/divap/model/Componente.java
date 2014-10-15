@@ -27,7 +27,6 @@ public class Componente implements Serializable {
 	private Integer id;
 	@Column(name = "nombre")
 	private String nombre;
-	
 	@Column(name = "peso")
 	private Float peso;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "componente")

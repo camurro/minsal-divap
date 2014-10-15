@@ -24,7 +24,6 @@ import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 @ViewScoped
 public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends AbstractTaskMBean implements Serializable {
 	
-	//TODO: [ASAAVEDRA] Modificar el icono de modificaci�n del programa, seg�n correspondan los estados en lo que se puede modificar.
 	
 	/*
 	 * Variables

@@ -36,14 +36,15 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Convenio.findAll", query = "SELECT c FROM Convenio c"),
-    @NamedQuery(name = "Convenio.findByIDSubComponenteComunaProgramaAnoAprobacion", query = "SELECT c FROM Convenio c WHERE c.idTipoSubtitulo.idTipoSubtitulo=:sub and c.componente.id=:idComponente and c.idComuna.id=:idComuna and c.idPrograma.id=:idPrograma and c.ano.ano=:ano and c.idEstablecimiento.id=:idEstablecimiento and c.aprobacion=:apro ORDER BY  c.monto DESC"),
+    @NamedQuery(name = "Convenio.findByIDSubComponenteComunaProgramaAnoAprobacion", query = "SELECT c FROM Convenio c WHERE c.idTipoSubtitulo.idTipoSubtitulo=:sub and c.componente.id=:idComponente and c.idComuna.id=:idComuna and c.idPrograma.programa.id=:idPrograma and c.idPrograma.ano.ano=:ano and c.idEstablecimiento.id=:idEstablecimiento and c.aprobacion=:apro ORDER BY  c.monto DESC"),
     @NamedQuery(name = "Convenio.findByIdConvenio", query = "SELECT c FROM Convenio c WHERE c.idConvenio = :idConvenio"),
     @NamedQuery(name = "Convenio.findByMonto", query = "SELECT c FROM Convenio c WHERE c.monto = :monto"),
     @NamedQuery(name = "Convenio.findByFecha", query = "SELECT c FROM Convenio c WHERE c.fecha = :fecha"),
-    @NamedQuery(name = "Convenio.findByIDSubComponenteComunaProgramaAno", query = "SELECT c FROM Convenio c WHERE c.idTipoSubtitulo.idTipoSubtitulo=:sub and c.componente.id=:idComponente and c.idComuna.id=:idComuna and c.idPrograma.id=:idPrograma and c.ano.ano=:ano and c.idEstablecimiento.id=:idEstablecimiento ORDER BY  c.monto DESC"),
+    @NamedQuery(name = "Convenio.findByIDSubComponenteComunaProgramaAno", query = "SELECT c FROM Convenio c WHERE c.idTipoSubtitulo.idTipoSubtitulo=:sub and c.componente.id=:idComponente and c.idComuna.id=:idComuna and c.idPrograma.programa.id=:idPrograma and c.idPrograma.ano.ano=:ano and c.idEstablecimiento.id=:idEstablecimiento ORDER BY  c.monto DESC"),
+    @NamedQuery(name = "Convenio.findByIdProgramaAnoIdServicioIdComponenteIdSubtitulo", query = "SELECT c FROM Convenio c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.servicioSalud.id =:idServicio and c.componente.id IN (:idComponentes) and c.idTipoSubtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
     @NamedQuery(name = "Convenio.findByConveniosById", query = "SELECT c FROM Convenio c WHERE c.idConvenio = :id"),
-    @NamedQuery(name = "Convenio.findByComunaEstablecimientoProgramaComponenteMuniORDERMontoDesc", query = "SELECT  c FROM  Convenio c  INNER JOIN c.idPrograma.componentes c2   WHERE    c.idComuna.id = :idComuna AND  c.idEstablecimiento.id = :idEstablecimiento  AND  c.idPrograma.id = :idPrograma   AND c2.id = :idComponente and (c.idTipoSubtitulo.dependencia.idDependenciaPrograma=:muni1 or c.idTipoSubtitulo.dependencia.idDependenciaPrograma=:muni3) ORDER BY  c.monto DESC"),
-    @NamedQuery(name = "Convenio.findByComunaEstablecimientoProgramaComponenteMuni", query = "SELECT  c FROM  Convenio c  INNER JOIN c.idPrograma.componentes c2   WHERE   c.monto = (SELECT MAX( c.monto )  FROM Convenio c where  c.idComuna.id = :idComuna AND  c.idEstablecimiento.id = :idEstablecimiento  AND  c.idPrograma.id = :idPrograma   AND c2.id = :idComponente  and (c.idTipoSubtitulo.dependencia.idDependenciaPrograma=:muni1 or c.idTipoSubtitulo.dependencia.idDependenciaPrograma=:muni3))"),
+    @NamedQuery(name = "Convenio.findByComunaEstablecimientoProgramaComponenteMuniORDERMontoDesc", query = "SELECT  c FROM  Convenio c  INNER JOIN c.idPrograma.programa.componentes c2   WHERE    c.idComuna.id = :idComuna AND  c.idEstablecimiento.id = :idEstablecimiento  AND  c.idPrograma.programa.id = :idPrograma   AND c2.id = :idComponente and (c.idTipoSubtitulo.dependencia.idDependenciaPrograma=:muni1 or c.idTipoSubtitulo.dependencia.idDependenciaPrograma=:muni3) ORDER BY  c.monto DESC"),
+    @NamedQuery(name = "Convenio.findByComunaEstablecimientoProgramaComponenteMuni", query = "SELECT  c FROM  Convenio c  INNER JOIN c.idPrograma.programa.componentes c2   WHERE   c.monto = (SELECT MAX( c.monto )  FROM Convenio c where  c.idComuna.id = :idComuna AND  c.idEstablecimiento.id = :idEstablecimiento  AND  c.idPrograma.programa.id = :idPrograma   AND c2.id = :idComponente  and (c.idTipoSubtitulo.dependencia.idDependenciaPrograma=:muni1 or c.idTipoSubtitulo.dependencia.idDependenciaPrograma=:muni3))"),
   	@NamedQuery(name = "Convenio.findByNumeroResolucion", query = "SELECT c FROM Convenio c WHERE c.numeroResolucion = :numeroResolucion")})
 public class Convenio implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -53,38 +54,37 @@ public class Convenio implements Serializable {
 	@Column(name="id_convenio", unique=true, nullable=false)
 	@GeneratedValue
 	private Integer idConvenio;
-   
     @Basic(optional = false)
     @Column(name = "monto")
-    private short monto;
+    private Integer monto;
     @Column(name = "fecha")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
     @Column(name = "numero_resolucion")
     private Integer numeroResolucion;
+    @Column(name = "aprobacion")
+    private Boolean aprobacion;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "convenio")
+    private Set<DocumentoConvenio> documentoConvenios;
     @JoinColumn(name = "id_tipo_subtitulo", referencedColumnName = "id_tipo_subtitulo")
     @ManyToOne
     private TipoSubtitulo idTipoSubtitulo;
-    @JoinColumn(name = "id_programa", referencedColumnName = "id")
+    @JoinColumn(name = "id_programa", referencedColumnName = "id_programa_ano")
     @ManyToOne
-    private Programa idPrograma;
+    private ProgramaAno idPrograma;
+    @JoinColumn(name = "mes", referencedColumnName = "id_mes")
+    @ManyToOne(optional = false)
+    private Mes mes;
     @JoinColumn(name = "id_establecimiento", referencedColumnName = "id")
     @ManyToOne
     private Establecimiento idEstablecimiento;
     @JoinColumn(name = "id_comuna", referencedColumnName = "id")
     @ManyToOne
     private Comuna idComuna;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "convenio")
-    private Set<DocumentoConvenio> documentoConvenios;
     @JoinColumn(name = "componente", referencedColumnName = "id")
     @ManyToOne
     private Componente componente;
-    @JoinColumn(name = "ano", referencedColumnName = "ano")
-    @ManyToOne
-    private AnoEnCurso ano;
-    @Column(name = "aprobacion")
-    private Boolean aprobacion;
-    
+        
 	public Convenio() {
     }
 
@@ -92,7 +92,7 @@ public class Convenio implements Serializable {
         this.idConvenio = idConvenio;
     }
 
-    public Convenio(Integer idConvenio, short monto) {
+    public Convenio(Integer idConvenio, Integer monto) {
         this.idConvenio = idConvenio;
         this.monto = monto;
     }
@@ -105,11 +105,11 @@ public class Convenio implements Serializable {
         this.idConvenio = idConvenio;
     }
 
-    public short getMonto() {
+    public Integer getMonto() {
         return monto;
     }
 
-    public void setMonto(short monto) {
+    public void setMonto(Integer monto) {
         this.monto = monto;
     }
 
@@ -137,11 +137,11 @@ public class Convenio implements Serializable {
         this.idTipoSubtitulo = idTipoSubtitulo;
     }
 
-    public Programa getIdPrograma() {
+    public ProgramaAno getIdPrograma() {
         return idPrograma;
     }
 
-    public void setIdPrograma(Programa idPrograma) {
+    public void setIdPrograma(ProgramaAno idPrograma) {
         this.idPrograma = idPrograma;
     }
 
@@ -181,14 +181,6 @@ public class Convenio implements Serializable {
         return true;
     }
 
-    public AnoEnCurso getAno() {
-        return ano;
-    }
-
-    public void setAno(AnoEnCurso ano) {
-        this.ano = ano;
-    }
-    
     @Override
     public String toString() {
         return "cl.minsal.divap.model.Convenio[ idConvenio=" + idConvenio + " ]";

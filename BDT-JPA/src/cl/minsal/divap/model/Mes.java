@@ -63,7 +63,7 @@ public class Mes implements Serializable {
         this.nombre = nombre;
     }
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idMes")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idmes")
     private Collection<Remesa> remesaCollection;
 
 

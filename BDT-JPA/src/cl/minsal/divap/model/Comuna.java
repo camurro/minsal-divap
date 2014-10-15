@@ -65,7 +65,7 @@ public class Comuna implements Serializable {
 	@OneToMany(mappedBy = "idComuna")
    	 private Collection<ComunaCumplimiento> comunaCumplimientoCollection;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idComuna")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idcomuna")
 	private Collection<Remesa> remesaCollection;
 
 

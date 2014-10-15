@@ -41,7 +41,7 @@ public class Establecimiento implements Serializable {
 	@JoinColumn(name="id_servicio_salud")
 	private ServicioSalud servicioSalud;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idEstablecimiento")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idestablecimiento")
 	private Collection<Remesa> remesaCollection;
 
 

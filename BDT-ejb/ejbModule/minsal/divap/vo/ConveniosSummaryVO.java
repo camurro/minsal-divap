@@ -2,26 +2,35 @@ package minsal.divap.vo;
 
 import java.io.Serializable;
 
-public class ConvenioSummaryVO implements Serializable{
+public class ConveniosSummaryVO implements Serializable{
 	
 	 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1685852727260040073L;
+	private Integer id;
 	private Integer porcentaje;
 	private Integer monto;
 	
-	public ConvenioSummaryVO() {
+	public ConveniosSummaryVO() {
 		super();
 	}
 	
-	public ConvenioSummaryVO(Integer porcentaje, Integer monto) {
+	public ConveniosSummaryVO(Integer porcentaje, Integer monto) {
 		super();
 		this.porcentaje = porcentaje;
 		this.monto = monto;
 	}
 	
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	public Integer getPorcentaje() {
 		return porcentaje;
 	}

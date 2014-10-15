@@ -1825,10 +1825,10 @@ WITH (
 )
 ;
 
-INSERT INTO tipo_subtitulo(id_tipo_subtitulo, nombre_subtitulo) VALUES (1, 'SUbtítulo 21');
-INSERT INTO tipo_subtitulo(id_tipo_subtitulo, nombre_subtitulo) VALUES (2, 'SUbtítulo 22');
-INSERT INTO tipo_subtitulo(id_tipo_subtitulo, nombre_subtitulo) VALUES (3, 'SUbtítulo 24');
-INSERT INTO tipo_subtitulo(id_tipo_subtitulo, nombre_subtitulo) VALUES (4, 'SUbtítulo 29');
+INSERT INTO tipo_subtitulo(id_tipo_subtitulo, nombre_subtitulo) VALUES (1, 'Subtítulo 21');
+INSERT INTO tipo_subtitulo(id_tipo_subtitulo, nombre_subtitulo) VALUES (2, 'Subtítulo 22');
+INSERT INTO tipo_subtitulo(id_tipo_subtitulo, nombre_subtitulo) VALUES (3, 'Subtítulo 24');
+INSERT INTO tipo_subtitulo(id_tipo_subtitulo, nombre_subtitulo) VALUES (4, 'Subtítulo 29');
 
 
 CREATE TABLE public.programa_subtitulo
@@ -3367,6 +3367,68 @@ DELETE FROM marco_presupuestario WHERE id_marco_presupuestario > 2;
 UPDATE programa_ano SET estadoflujocaja=1;
 
 INSERT INTO tipo_documento(id_tipo_documento, nombre)  VALUES (16, 'Planilla de Estimación de Flujos de Caja');
+
+ALTER TABLE convenio
+  DROP COLUMN ano;
+
+ALTER TABLE convenio
+  DROP CONSTRAINT fk_id_programa;
+
+ALTER TABLE convenio
+  ADD CONSTRAINT programa_fk FOREIGN KEY (id_programa)
+      REFERENCES programa_ano (id_programa_ano) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE convenio
+  ADD COLUMN mes integer NOT NULL;
+
+ALTER TABLE convenio
+  ADD CONSTRAINT mes_fk FOREIGN KEY (mes)
+      REFERENCES mes (id_mes) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE convenio
+   ALTER COLUMN monto TYPE integer;
+
+ALTER TABLE remesa
+  DROP COLUMN anio;
+
+ALTER TABLE remesa
+  DROP CONSTRAINT remesa_idprograma_fkey;
+
+ALTER TABLE remesa
+  ADD CONSTRAINT remesa_programa_fk FOREIGN KEY (idprograma)
+      REFERENCES programa_ano (id_programa_ano) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE remesa
+  ADD COLUMN tipo_subtitulo integer NOT NULL;
+
+ALTER TABLE remesa
+  ADD CONSTRAINT tipo_subtitulo_fk FOREIGN KEY (tipo_subtitulo)
+      REFERENCES tipo_subtitulo (id_tipo_subtitulo) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE remesa
+   ALTER COLUMN idprograma SET NOT NULL;
+
+ALTER TABLE remesa
+   ALTER COLUMN valordia09 TYPE integer;
+
+ALTER TABLE remesa
+   ALTER COLUMN valordia24 TYPE integer;
+
+ALTER TABLE remesa
+   ALTER COLUMN valordia28 TYPE integer;
+
+UPDATE componente SET peso=100 WHERE id_programa=20;
+
+
+
+
+
+
+
 
 
 -- 10 de Octubre 2014

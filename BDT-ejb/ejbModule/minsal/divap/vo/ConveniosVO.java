@@ -1,9 +1,6 @@
 package minsal.divap.vo;
 
 import java.io.Serializable;
-import java.util.List;
-
-import cl.minsal.divap.model.Componente;
 
 
 public class ConveniosVO  implements Serializable {
