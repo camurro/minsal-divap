@@ -91,5 +91,14 @@ public class ServiciosVO implements Serializable{
 	public void setComunas(List<ComunaSummaryVO> comunas) {
 		this.comunas = comunas;
 	}
+
+	@Override
+	public String toString() {
+		return "ServiciosVO [comuna=" + comuna + ", id_servicio=" + id_servicio
+				+ ", nombre_servicio=" + nombre_servicio + ", director="
+				+ director + ", encargadoAps=" + encargadoAps
+				+ ", encargadoFinanzasAps=" + encargadoFinanzasAps
+				+ ", comunas=" + comunas + "]";
+	}
 	
 }

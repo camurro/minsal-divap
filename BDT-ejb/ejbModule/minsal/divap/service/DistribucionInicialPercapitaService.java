@@ -197,6 +197,12 @@ public class DistribucionInicialPercapitaService {
 		}
 		return plantillaId;
 	}
+	
+	
+	public DistribucionInicialPercapita ultimaDistribucionPercapita(){
+		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast();
+		return distribucionInicialPercapita;
+	}
 
 	public Integer getIdPlantillaRecursosPerCapita(){
 
@@ -423,6 +429,22 @@ public class DistribucionInicialPercapitaService {
 		}
 		return antecedentesCalculados;
 	}
+	
+	public List<AsignacionDistribucionPerCapitaVO> findAntecedentesServicioCalculadosByDistribucionInicialPercapita(Integer idDistribucionInicialPercapita){
+		List<AntecendentesComunaCalculado>  antecendentesComunaCalculado = antecedentesComunaDAO.findAntecedentesServicioCalculadosByDistribucionInicialPercapita(idDistribucionInicialPercapita);
+		List<AsignacionDistribucionPerCapitaVO> antecedentesCalculados = new ArrayList<AsignacionDistribucionPerCapitaVO>();
+		if(antecendentesComunaCalculado != null && antecendentesComunaCalculado.size() > 0){
+			for(AntecendentesComunaCalculado antecendenteComunaCalculado : antecendentesComunaCalculado){
+				AsignacionDistribucionPerCapitaVO asignacionDistribucionPerCapitaVO = new AsignacionDistribucionPercapitaMapper().getBasic(antecendenteComunaCalculado);
+				if(asignacionDistribucionPerCapitaVO != null){
+					antecedentesCalculados.add(asignacionDistribucionPerCapitaVO);
+				}
+			}
+		}
+		return antecedentesCalculados;
+	}
+	
+	
 
 	public void procesarCalculoPercapita(HSSFSheet workbook) {
 		throw new NotImplementedException();

@@ -53,12 +53,13 @@ public class EstimacionFlujoCajaRESTService extends BaseRest{
     }
 
 	@GET
-    @Path("/estimacionFlujoCaja/notificarUsuarioConsolidador/{idLineaProgramatica}/{usuario}")
+    @Path("/estimacionFlujoCaja/notificarUsuarioConsolidador/{idLineaProgramatica}/{usuario}/{idPlanillaMonitoreo}")
     @Produces("application/json")
-    public void notificarUsuarioConsolidador(@PathParam("idLineaProgramatica") Integer idLineaProgramatica, @PathParam("usuario") String usuario){
+    public void notificarUsuarioConsolidador(@PathParam("idLineaProgramatica") Integer idLineaProgramatica, @PathParam("usuario") String usuario, @PathParam("idPlanillaMonitoreo") Integer idPlanillaMonitoreo){
 		System.out.println("[Notificar a Usuario Consolidador] -->"+idLineaProgramatica);
+		System.out.println("[Notificar a Usuario Consolidador] idPlanillaMonitoreo -->"+idPlanillaMonitoreo);
 		EstimacionFlujoCajaService estimacionFlujoCajaService = getService(EstimacionFlujoCajaService.class);
-		estimacionFlujoCajaService.notificarUsuarioConsolidador(idLineaProgramatica, usuario);
+		estimacionFlujoCajaService.notificarUsuarioConsolidador(idLineaProgramatica, usuario, idPlanillaMonitoreo);
     }
 	
 	@GET

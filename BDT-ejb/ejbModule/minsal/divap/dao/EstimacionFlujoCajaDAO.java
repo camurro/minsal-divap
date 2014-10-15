@@ -60,6 +60,7 @@ public class EstimacionFlujoCajaDAO {
 			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findBySubtituloAno", Caja.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
 			query.setParameter("idSubtitulo", subtitulo.getId());
+			
 			return query.getResultList(); 
 		} catch (Exception e) {
 			throw new RuntimeException(e);

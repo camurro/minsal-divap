@@ -49,8 +49,8 @@ public class ProgramaServicioCorePK implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (int) programaAno;
-        hash += (int) comuna;
+        hash += programaAno;
+        hash += comuna;
         return hash;
     }
 

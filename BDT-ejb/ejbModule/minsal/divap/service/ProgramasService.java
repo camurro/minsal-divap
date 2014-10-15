@@ -12,10 +12,13 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
 import minsal.divap.dao.ProgramasDAO;
+import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.model.mappers.ProgramaMapper;
+import minsal.divap.model.mappers.ServicioMapper;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ProgramaVO;
+import minsal.divap.vo.ServiciosVO;
 import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.Programa;
@@ -26,6 +29,7 @@ import cl.minsal.divap.model.ProgramaAno;
 public class ProgramasService {
 	@EJB
 	private ProgramasDAO programasDAO;
+	private ServicioSaludDAO serviciosDAO;
 
 	public Programa getProgramasByID(Integer idPrograma) {
 		return this.programasDAO.getProgramaPorID(idPrograma);
@@ -35,6 +39,14 @@ public class ProgramasService {
 		ProgramaVO programa = new ProgramaMapper().getBasic(this.programasDAO.getProgramaAnoByID(idProgramaAno));
 		return programa;
 	}
+	
+	/*
+	public ServiciosVO getServiciosProgramaAno(Integer idProgramaAno) {
+		ServiciosVO servicio = new ServicioMapper().getBasic(this.serviciosDAO.get)
+		//.getBasic(this.programasDAO.getProgramaAnoByID(idProgramaAno));
+		return programa;
+	}
+	*/
 	
 	public List<ProgramaVO> getProgramasByUser(String username) {
 		List<ProgramaAno> programas = this.programasDAO.getProgramasByUserAno(username, getAnoCurso());

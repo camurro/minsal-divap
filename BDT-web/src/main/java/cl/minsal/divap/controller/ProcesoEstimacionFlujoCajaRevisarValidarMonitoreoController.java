@@ -1,5 +1,6 @@
 package cl.minsal.divap.controller;
 
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +29,7 @@ import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.SubtituloFlujoCajaVO;
 import minsal.divap.vo.SubtituloVO;
+import minsal.divap.vo.DocumentoVO;
 
 import org.apache.log4j.Logger;
 import org.primefaces.component.api.UIColumn;
@@ -177,6 +179,8 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 
 	private Integer docProgramacion;
 	private Integer docPropuesta;
+	
+
 
 	/*
 	 * ********************************* FIN VARIABLES
@@ -221,6 +225,9 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		mostrarSubtitulo22 = false;
 		mostrarSubtitulo24 = false;
 		mostrarSubtitulo29 = false;
+		
+		System.out.println("programa = "+getPrograma());
+		
 		for (ComponentesVO componente : getPrograma().getComponentes()) {
 			for(SubtituloVO subtitulo : componente.getSubtitulos()){
 				if (subtitulo.getId() == Subtitulo.SUBTITULO21.getId()){
@@ -285,23 +292,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 
-		/*CajaVO monitore_borrar = new CajaVO();
-
-		for (CajaVO monitoreo_actual : listadoMonitoreoSubtitulo21) {
-
-			if (info.getId() == monitoreo_actual.getId()) {
-				monitore_borrar = monitoreo_actual;
-				break;
-			}
-
-		}
-
-		listadoMonitoreoSubtitulo21.remove(monitore_borrar);
-		listadoMonitoreoSubtitulo21.add(info);
-
-		estimacionFlujoMonitoreoGlobalPojoSubtitulo21
-		.setCaja(listadoMonitoreoSubtitulo21);*/
-
+		
 	}
 
 	public void onCellEditSubtitulo21ConvenioRemesa(CellEditEvent event) {
@@ -831,6 +822,19 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		super.downloadDocument();
 		return null;
 	}
+	
+	public String downloadZip(){
+		String noderef = "http://localhost:8280/alfresco/service/api/node/content/workspace/SpacesStore/5685fe0a-54c6-491d-80cc-568a97a0c8e1?alf_ticket=TICKET_156b88ffbd28a2520d7295e13b50568b74e78db8";
+		try {
+			documentService.getZipFloder(noderef);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
 
 	@Override
 	protected Map<String, Object> createResultData() {

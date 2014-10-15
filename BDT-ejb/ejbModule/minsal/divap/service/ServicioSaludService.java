@@ -14,6 +14,7 @@ import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.enums.TipoComuna;
 import minsal.divap.model.mappers.PersonaMapper;
 import minsal.divap.model.mappers.RegionMapper;
+import minsal.divap.model.mappers.ServicioSaludMapper;
 import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.RegionVO;
 import minsal.divap.vo.ServiciosVO;
@@ -91,9 +92,8 @@ public class ServicioSaludService {
 		return result;
 	}
 	
-	public ServicioSalud getServicioSaludPorID(int idServicioSalud) {
-		ServicioSalud servicioSalud = this.servicioSaludDAO.getServicioSaludPorID(idServicioSalud);
-		return servicioSalud;
+	public ServiciosVO getServicioSaludPorID(Integer idServicioSalud) {
+		return new ServicioSaludMapper().getBasic(servicioSaludDAO.getServicioSaludPorID(idServicioSalud));
 	}
 	
 	public List<RegionVO> getAllRegionesVO() {
