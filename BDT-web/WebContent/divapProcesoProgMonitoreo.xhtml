@@ -727,7 +727,7 @@
 
 									</p:tab>
 									
-									<p:tab title="Subtítulo 24" rendered="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.mostrarSubtitulo24}">
+									<p:tab title="Subtítulo 24" id="tabform24" rendered="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.mostrarSubtitulo24}">
 										
 										<c:if test="#{not procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.iniciarFlujoCaja}">
 											<h4>Monitoreo Mes de #{mes}</h4>
@@ -1033,7 +1033,7 @@
 
 									</p:tab>
 									
-									<p:tab title="Subtítulo 29"	rendered="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.mostrarSubtitulo29}">
+									<p:tab title="Subtítulo 29"	id="tabform29" rendered="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.mostrarSubtitulo29}">
 										
 											<c:if test="#{not procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.iniciarFlujoCaja}">
 												<h4>Monitoreo Mes de #{mes}</h4>
@@ -1419,9 +1419,8 @@
 											</p:column>
 											<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMontosLocal}" var="monto" varStatus="status">  
 											    <c:if test="#{numMesActual gt 2}">
-											    	<c:if test="#{status.count lt (numMesActual-2)}">
+											    	<c:if test="#{status.count le (numMesActual-2)}">
 														<p:column>
-														    <h:outputText value="#LLL{status.count}LLL"/>
 															<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
 																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 															</h:outputText>
@@ -1465,10 +1464,9 @@
 													</p:column>
 													<p:column />
 													
-
 													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalConvenioRemesaServiciosMontosMesSubtitulo21}" var="montosMes" varStatus="status">
-														<c:if test="#{numMesActual gt 2}">
-											    			<c:if test="#{status.count lt (numMesActual-2)}">
+														 <c:if test="#{numMesActual gt 2}">
+												    		<c:if test="#{status.count le (numMesActual-2)}">
 																<p:column>
 																	<f:facet name="footer">
 																		<h:outputText
@@ -1479,7 +1477,7 @@
 																		</h:outputText>
 																	</f:facet>
 																</p:column>
-															</c:if>
+															 </c:if>
 														</c:if>
 													</c:forEach>
 													<p:column>
@@ -1568,7 +1566,7 @@
 													
 													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMontosLocal22}" var="monto" varStatus="status">  
 														<c:if test="#{numMesActual gt 2}">
-												    		<c:if test="#{status.count lt (numMesActual-2)}">
+												    		<c:if test="#{status.count le (numMesActual-2)}">
 																<p:column>
 																	<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
 																		<f:convertNumber type="currency" maxFractionDigits="0"
@@ -1616,7 +1614,7 @@
 															
 															<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalConvenioRemesaServiciosMontosMesSubtitulo22}" var="montosMes" varStatus="status">
 																<c:if test="#{numMesActual gt 2}">
-												    				<c:if test="#{status.count lt (numMesActual-2)}">
+												    				<c:if test="#{status.count le (numMesActual-2)}">
 																		<p:column>
 																			<f:facet name="footer">
 																				<h:outputText
@@ -1717,7 +1715,7 @@
 
 													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMontosLocal24}" var="monto" varStatus="status">  
 														<c:if test="#{numMesActual gt 2}">
-												    		<c:if test="#{status.count lt (numMesActual-2)}">
+												    		<c:if test="#{status.count le (numMesActual-2)}">
 																<p:column>
 																	<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
 																		<f:convertNumber type="currency" maxFractionDigits="0"
@@ -1766,7 +1764,7 @@
 
 															<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalConvenioRemesaServiciosMontosMesSubtitulo24}" var="montosMes" varStatus="status">
 																<c:if test="#{numMesActual gt 2}">
-												    				<c:if test="#{status.count lt (numMesActual-2)}">
+												    				<c:if test="#{status.count le (numMesActual-2)}">
 																		<p:column>
 																			<f:facet name="footer">
 																				<h:outputText
@@ -1866,7 +1864,7 @@
 													
 													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMontosLocal29}" var="monto" varStatus="status">  
 														<c:if test="#{numMesActual gt 2}">
-												    		<c:if test="#{status.count lt (numMesActual-2)}">
+												    		<c:if test="#{status.count le (numMesActual-2)}">
 																<p:column>
 																	<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
 																		<f:convertNumber type="currency" maxFractionDigits="0"
@@ -1915,7 +1913,7 @@
 
 													<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalConvenioRemesaServiciosMontosMesSubtitulo29}" var="montosMes" varStatus="status">
 														<c:if test="#{numMesActual gt 2}">
-											    			<c:if test="#{status.count lt (numMesActual-2)}">
+											    			<c:if test="#{status.count le (numMesActual-2)}">
 																<p:column>
 																	<f:facet name="footer">
 																		<h:outputText
@@ -1982,9 +1980,9 @@
 			<h:form id="conDialog">
 			    <p:growl id="messages1" globalOnly="true"/>
 			    <h:inputHidden  id="currentTab" />
-			    <p:confirmDialog message="Si cambia de pestaña los datos modificados se perderan, Desea Continuar?"
-			        header="Version already exist" severity="alert" widgetVar="confirmation"  closable="false">
-			        <p:commandButton value="Aceptar" update="messages1 :formTabView:tablaModificada" oncomplete="confirmation.hide()" action="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.descartarCambios}" />
+			    <p:confirmDialog message="Si Cambia de Pestaña los Datos Modificados se Perderán, Desea Continuar?"
+			        header="Datos sin Guardar" severity="alert" widgetVar="confirmation"  closable="false">
+			        <p:commandButton value="Aceptar" update="messages1 :formTabView:tablaModificada :formTabView:tabView:tabSubtitulos" oncomplete="confirmation.hide()" action="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.descartarCambios}" />
 			        <p:commandButton value="Cancelar" onclick="confirmation.hide();cancelarDescartar();" type="button" />
 			    </p:confirmDialog>
 			</h:form>

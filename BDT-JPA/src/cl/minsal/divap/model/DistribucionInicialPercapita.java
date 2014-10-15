@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
 	@NamedQuery(name = "DistribucionInicialPercapita.findAll", query = "SELECT d FROM DistribucionInicialPercapita d"),
-	@NamedQuery(name = "DistribucionInicialPercapita.findLast", query = "SELECT d FROM DistribucionInicialPercapita d where d.fechaCreacion = (SELECT max(d2.fechaCreacion) FROM DistribucionInicialPercapita d2)"),
+	@NamedQuery(name = "DistribucionInicialPercapita.findLast", query = "SELECT d FROM DistribucionInicialPercapita d where d.ano.ano = :idAno and d.fechaCreacion is not null order by d.fechaCreacion DESC"),
 	@NamedQuery(name = "DistribucionInicialPercapita.findByIdDistribucionInicialPercapita", query = "SELECT d FROM DistribucionInicialPercapita d WHERE d.idDistribucionInicialPercapita = :idDistribucionInicialPercapita"),
 	@NamedQuery(name = "DistribucionInicialPercapita.findByFechaCreacion", query = "SELECT d FROM DistribucionInicialPercapita d WHERE d.fechaCreacion = :fechaCreacion")})
 public class DistribucionInicialPercapita implements Serializable {
@@ -45,6 +45,9 @@ public class DistribucionInicialPercapita implements Serializable {
 	@JoinColumn(name = "usuario", referencedColumnName = "username")
 	@ManyToOne
 	private Usuario usuario;
+	@JoinColumn(name = "ano", referencedColumnName = "ano")
+    @ManyToOne(optional = false)
+    private AnoEnCurso ano;
 	@OneToMany(mappedBy = "distribucionInicialPercapita")
     private Set<AntecendentesComunaCalculado> antecendentesComunaCalculadoCollection;
 
@@ -95,6 +98,14 @@ public class DistribucionInicialPercapita implements Serializable {
 	public void setAntecendentesComunaCalculadoCollection(
 			Set<AntecendentesComunaCalculado> antecendentesComunaCalculadoCollection) {
 		this.antecendentesComunaCalculadoCollection = antecendentesComunaCalculadoCollection;
+	}
+
+	public AnoEnCurso getAno() {
+		return ano;
+	}
+
+	public void setAno(AnoEnCurso ano) {
+		this.ano = ano;
 	}
 
 	@Override

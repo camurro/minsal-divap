@@ -10,6 +10,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import minsal.divap.enums.TipoDocumentosProcesos;
+import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.DistribucionInicialPercapitaSeguimiento;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
@@ -37,11 +38,12 @@ public class DistribucionInicialPercapitaDAO {
 		return documentoDistribucionInicialPercapita.getIdDocumentoDistribucionInicialPercapita();
 	}
 
-	public Integer crearIntanciaDistribucionInicialPercapita(Usuario usuario){
+	public Integer crearIntanciaDistribucionInicialPercapita(Usuario usuario, AnoEnCurso anoEnCurso){
 		try {
 			long current = Calendar.getInstance().getTimeInMillis();
 			DistribucionInicialPercapita dto = new DistribucionInicialPercapita();
 			dto.setUsuario(usuario);
+			dto.setAno(anoEnCurso);
 			dto.setFechaCreacion(new Date(current));
 			this.em.persist(dto);
 			return dto.getIdDistribucionInicialPercapita();
@@ -61,11 +63,15 @@ public class DistribucionInicialPercapitaDAO {
 		return distribucionInicialPercapitaSeguimiento.getIdDistribucionInicialPercapitaSeguimiento();
 	}
 
-	public DistribucionInicialPercapita findLast() {
+	public DistribucionInicialPercapita findLast(Integer idAno) {
 		try {
 			TypedQuery<DistribucionInicialPercapita> query = this.em.createNamedQuery("DistribucionInicialPercapita.findLast", DistribucionInicialPercapita.class);
-			query.setMaxResults(1);
-			return query.setMaxResults(1).getResultList().get(0);
+			query.setParameter("idAno", idAno);
+			List<DistribucionInicialPercapita> results = query.getResultList();
+			if(results != null && results.size() > 0){
+				return results.get(0);
+			}
+			return null;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

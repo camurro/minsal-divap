@@ -3422,6 +3422,18 @@ ALTER TABLE remesa
    ALTER COLUMN valordia28 TYPE integer;
 
 UPDATE componente SET peso=100 WHERE id_programa=20;
+UPDATE ano_en_curso SET inflactor_marco_presupuestario = 3 WHERE ano = 2014;
+
+ALTER TABLE distribucion_inicial_percapita
+  ADD COLUMN ano integer;
+
+ALTER TABLE distribucion_inicial_percapita
+  ADD CONSTRAINT ano_fk FOREIGN KEY (ano) REFERENCES ano_en_curso (ano) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+UPDATE distribucion_inicial_percapita SET ano = 2014;
+
+ALTER TABLE distribucion_inicial_percapita
+   ALTER COLUMN ano SET NOT NULL;
 
 
 

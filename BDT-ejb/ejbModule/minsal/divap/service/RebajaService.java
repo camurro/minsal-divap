@@ -170,7 +170,7 @@ public class RebajaService {
 		List<PlanillaRebajaCalculadaVO> datosPlanilla = new ArrayList<PlanillaRebajaCalculadaVO>();
 		List<AntecendentesComuna> antecendentesComunas = this.servicioSaludDAO.getAntecentesComunasRebaja(getAnoCurso(), new TipoComuna[] { TipoComuna.RURAL, TipoComuna.URBANA});
 		if((antecendentesComunas != null) && (antecendentesComunas.size() > 0)){
-			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast();
+			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
 			for (AntecendentesComuna antecendenteComuna : antecendentesComunas){
 				System.out.println("servicioSalud.getId()->"+antecendenteComuna.getIdComuna().getServicioSalud().getId()+" comuna.getId()->"+antecendenteComuna.getIdComuna().getId()+" distribucionInicialPercapita.getIdDistribucionInicialPercapita()->"+distribucionInicialPercapita.getIdDistribucionInicialPercapita());
 				List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapita(antecendenteComuna.getIdComuna().getServicioSalud().getId(),
@@ -318,7 +318,7 @@ public class RebajaService {
 
 	public List <PlanillaRebajaCalculadaVO>  getRebajasByComuna(Integer idRebaja , List<Integer> comunas){
 		List <PlanillaRebajaCalculadaVO> planillaRebajaCalculadas = new ArrayList<PlanillaRebajaCalculadaVO>();
-		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast();
+		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
 		for(Integer idComuna : comunas){
 			Comuna comuna = antecedentesComunaDAO.findByComunaById(idComuna);
 			System.out.println("comuna.getServicioSalud().getId()->"+comuna.getServicioSalud().getId()+" comuna.getId()->"+comuna.getId()+" distribucionInicialPercapita.getIdDistribucionInicialPercapita()->"+distribucionInicialPercapita.getIdDistribucionInicialPercapita());

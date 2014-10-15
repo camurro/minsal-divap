@@ -14,8 +14,10 @@ import minsal.divap.excel.impl.RebajaCalculadaSheetExcel;
 import minsal.divap.excel.impl.RebajaSheetExcel;
 import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.vo.CajaMesVO;
+import minsal.divap.vo.CajaMontoSummaryVO;
 import minsal.divap.vo.CellExcelVO;
 import minsal.divap.vo.FlujoCajaVO;
+import minsal.divap.vo.SubtituloFlujoCajaVO;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -85,7 +87,7 @@ public class GeneradorExcel {
 				addSheet((EstimacionFlujoCajaSubtituloSheetExcel)excelSheet, sheetName);
 				return;
 			}
-			
+
 			XSSFSheet sheet = null;
 			sheet = workbook.createSheet(sheetName);
 			int currentRow = 0;
@@ -357,7 +359,7 @@ public class GeneradorExcel {
 			maxRowSpan = maxRowSpan + rows;
 			int rowsReplace = currentRow;
 			int appendRow = currentRow;
-			
+
 
 			System.out.println("maxRowSpan="+maxRowSpan+"maxColSpan="+maxColSpan+" rowsReplace="+rowsReplace+" appendRow="+appendRow);
 
@@ -390,7 +392,7 @@ public class GeneradorExcel {
 					System.out.println("if false");
 					System.out.println("appendRow="+appendRow);
 					System.out.println("colsReplace="+colsReplace);
-					
+
 					if(cols == cellExcelVO.getColSpan()){
 						System.out.println("if maxColSpan == cellExcelVO.getColSpan()");
 						XSSFRow row = sheet.getRow(appendRow) ;
@@ -420,13 +422,12 @@ public class GeneradorExcel {
 			}
 		}
 	}
-	
+
 	private void addSheet(EstimacionFlujoCajaSubtituloSheetExcel excelSheet, String sheetName){
 		XSSFSheet sheet = workbook.createSheet(sheetName);
 		List<CellExcelVO> header = excelSheet.getHeaderComplex();
 		List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
-		List<FlujoCajaVO> items = excelSheet.getItems();
-		
+
 		CellStyle style = workbook.createCellStyle();
 		CellStyle styleTotales = workbook.createCellStyle();
 		styleTotales.setFillPattern(CellStyle.ALIGN_FILL);
@@ -437,7 +438,7 @@ public class GeneradorExcel {
 		styleTotales.setFillBackgroundColor(IndexedColors.WHITE.getIndex());
 		Font fontTotales = workbook.createFont();
 		fontTotales.setColor(IndexedColors.BLACK.getIndex());
-		
+
 		style.setFillPattern(CellStyle.ALIGN_FILL);
 		style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
 		style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
@@ -449,179 +450,77 @@ public class GeneradorExcel {
 		font.setColor(IndexedColors.WHITE.getIndex());
 		style.setFont(font);
 		styleTotales.setFont(fontTotales);
+
 		int currentRow = 0;
+		int currentCol = 0;
 		int maxRowSpan = 0;
 		int maxColSpan = 0;
-		
+
 		if(header != null && header.size() > 0){
 			for(CellExcelVO cellExcelVO : header){
-				if(maxColSpan == 0){
+				if(cellExcelVO.getRowSpan() > maxRowSpan){
 					maxRowSpan = cellExcelVO.getRowSpan();
 				}
 				maxColSpan += cellExcelVO.getColSpan();
 			}
-			for(int i= currentRow; i < maxRowSpan; i++){
-				XSSFRow row = sheet.createRow(i);
-				for(int currentCol= 0; currentCol < maxColSpan;){
-					XSSFCell cell = row.createCell(currentCol);
+			System.out.println("maxColSpan->"+maxColSpan);
+			System.out.println("maxRowSpan->"+maxRowSpan);
+			for(int fila = 0; fila < maxRowSpan; fila++){
+				XSSFRow row = sheet.createRow(fila);
+				for(int columna = 0; columna < maxColSpan; columna++){
+					XSSFCell cell = row.createCell(columna);
 					cell.setCellType(XSSFCell.CELL_TYPE_STRING);
 					cell.setCellStyle(style);
-					currentCol++;
 				}
 			}
-			int rowsReplace = 0; //donde parte la fila que vas a mezclar
-			int colsReplace = 0; //donde parte la culumna que vas a mezclar
-			int appendRow = 0;
-			int contHeader = 0;
-			
-			int fila_actual=0;
-			
+
 			for(CellExcelVO cellExcelVO : header){				
-				if(header.get(contHeader).getName().equalsIgnoreCase("SERVICIOS DE SALUD")){
-					XSSFRow row = sheet.getRow(0) ;
-					XSSFCell cell = row.getCell(0);
-					cell.setCellValue(cellExcelVO.getName());					
-					sheet.addMergedRegion(new CellRangeAddress(0, 1, 0 , 0));
-					sheet.autoSizeColumn(0);
-				}					
-				
-				else if(!header.get(contHeader).getName().startsWith("TOTAL")){
-					XSSFRow row = sheet.getRow(0);
-					XSSFCell cell = row.getCell(1);
-					cell.setCellValue(cellExcelVO.getName());
-					sheet.addMergedRegion(new CellRangeAddress(0, 0, 1, 12));
-				}
-				else{
-					XSSFRow row = sheet.getRow(0);
-					XSSFCell cell = row.getCell(13);
-					cell.setCellValue(cellExcelVO.getName());
-					sheet.addMergedRegion(new CellRangeAddress(0, 1, 13 , 13));
-					sheet.autoSizeColumn(13);
-					appendRow++;
-				}
-				contHeader++;
-			}
-			
-		
-			int posSubHeader = 0;
-			for(CellExcelVO cellExcelVO : subHeader){
-				XSSFRow row = sheet.getRow(1);
-				XSSFCell cell = row.getCell(posSubHeader+1);
+				XSSFRow row = sheet.getRow(currentRow) ;
+				XSSFCell cell = row.getCell(currentCol);
+				System.out.println("cellExcelVO.getName()="+cellExcelVO.getName());
 				cell.setCellValue(cellExcelVO.getName());
-				posSubHeader++;
-			}
-			
-			long totalenero=0;
-			long totalfebrero=0;
-			long totalmarzo=0;
-			long totalabril=0;
-			long totalmayo=0;
-			long totaljunio=0;
-			long totaljulio=0;
-			long totalagosto=0;
-			long totalseptiembre=0;
-			long totaloctubre=0;
-			long totalnoviembre=0;
-			long totaldiciembre=0;
-			
-			//Agragando items
-			for(int i=0; i<items.size(); i++){
-				fila_actual =i+2;
-				XSSFRow row = sheet.createRow(fila_actual);
-				row = sheet.getRow(fila_actual);
-				XSSFCell cell_servicio = row.createCell(0);
-				cell_servicio = row.getCell(0);				
-				cell_servicio.setCellValue(items.get(i).getServicio());				
-				
-				List<CajaMesVO> cajames = items.get(i).getSubtitulo();
-				int col_actual =1;
-				long total_servicio = 0;
-				for(int caja=0; caja<cajames.size(); caja++){
-					XSSFCell cell = row.createCell(col_actual);
-					cell = row.getCell(col_actual);
-					cell.setCellValue(cajames.get(caja).getMonto());
-					total_servicio+=cajames.get(caja).getMonto();
-					col_actual++;
+				sheet.addMergedRegion(new CellRangeAddress(currentRow, (cellExcelVO.getRowSpan()==1) ? currentRow : (cellExcelVO.getRowSpan()-1) , currentCol, (cellExcelVO.getColSpan()==1)?currentCol: cellExcelVO.getColSpan()));
+				if(cellExcelVO.getColSpan()==1){
+					currentCol +=1;
+				}else{
+					currentCol += cellExcelVO.getColSpan();
 				}
-				XSSFCell tot_service = row.createCell(13);
-				tot_service = row.getCell(13);
-				tot_service.setCellValue(total_servicio);
-				
-				fila_actual++;
 			}
-			
-			//Agregando los totales de cada mes
-			XSSFRow totales = sheet.createRow(fila_actual);
-			totales = sheet.getRow(fila_actual);
-			for(int i=0; i<items.size();i++){
-				totalenero+=items.get(i).getSubtitulo().get(0).getMonto();
-				totalfebrero+=items.get(i).getSubtitulo().get(1).getMonto();
-				totalmarzo+=items.get(i).getSubtitulo().get(2).getMonto();
-				totalabril+=items.get(i).getSubtitulo().get(3).getMonto();
-				totalmayo+=items.get(i).getSubtitulo().get(4).getMonto();
-				totaljunio+=items.get(i).getSubtitulo().get(5).getMonto();
-				totaljulio+=items.get(i).getSubtitulo().get(6).getMonto();
-				totalagosto+=items.get(i).getSubtitulo().get(7).getMonto();
-				totalseptiembre+=items.get(i).getSubtitulo().get(8).getMonto();
-				totaloctubre+=items.get(i).getSubtitulo().get(9).getMonto();
-				totalnoviembre+=items.get(i).getSubtitulo().get(10).getMonto();
-				totaldiciembre+=items.get(i).getSubtitulo().get(11).getMonto();
+			currentRow++;	
+		}	
+		currentCol = 1;
+		for(CellExcelVO cellExcelVO : subHeader){
+			XSSFRow row = sheet.getRow(currentRow);
+			XSSFCell cell = row.getCell(currentCol++);
+			cell.setCellValue(cellExcelVO.getName());
+		}
+		currentRow++;
+		currentCol = 0;
+		List<SubtituloFlujoCajaVO> items = excelSheet.getItems();
+		System.out.println("items.size()=" + ((items == null)? 0 : items.size()));
+		
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : items){
+			XSSFRow row = sheet.createRow(currentRow++);
+			XSSFCell cell = row.createCell(currentCol++);
+			cell.setCellValue(subtituloFlujoCajaVO.getServicio());
+			for(CajaMontoSummaryVO cajaMontoSummaryVO : subtituloFlujoCajaVO.getCajaMontos()){
+				cell = row.createCell(currentCol++);
+				cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+				cell.setCellValue(cajaMontoSummaryVO.getMontoMes());
 			}
-			long totaltotal=totalenero+totalfebrero+totalmarzo+totalabril+totalmayo+totaljunio+totaljulio+totalagosto+totalseptiembre+totaloctubre+totalnoviembre+totaldiciembre;
-			
-			XSSFCell cell_tot_servicio = totales.createCell(0);
-			cell_tot_servicio.setCellStyle(styleTotales);
-			
-			cell_tot_servicio = totales.getCell(0);				
-			cell_tot_servicio.setCellValue("TOTAL");
-			
-			
-			
-			for(int i=1;i<14;i++){
-				XSSFCell cell_tot_mes = totales.createCell(i);
-				cell_tot_mes.setCellStyle(styleTotales);
-				cell_tot_mes = totales.getCell(i);
-				if(i==1){
-					cell_tot_mes.setCellValue(totalenero);
-				}
-				else if(i==2){
-					cell_tot_mes.setCellValue(totalfebrero);
-				}else if(i==3){
-					cell_tot_mes.setCellValue(totalmarzo);
-				}else if(i==4){
-					cell_tot_mes.setCellValue(totalabril);
-				}else if(i==5){
-					cell_tot_mes.setCellValue(totalmayo);
-				}else if(i==6){
-					cell_tot_mes.setCellValue(totaljunio);
-				}else if(i==7){
-					cell_tot_mes.setCellValue(totaljulio);
-				}else if(i==8){
-					cell_tot_mes.setCellValue(totalagosto);
-				}else if(i==9){
-					cell_tot_mes.setCellValue(totalseptiembre);
-				}else if(i==10){
-					cell_tot_mes.setCellValue(totaloctubre);
-				}else if(i==11){
-					cell_tot_mes.setCellValue(totalnoviembre);
-				}else if(i==12){
-					cell_tot_mes.setCellValue(totaldiciembre);
-				}else if(i==13){
-					cell_tot_mes.setCellValue(totaltotal);
-				}				
-				
-			}
-			
-			
-		}		
+			cell = row.createCell(currentCol);
+			cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+			cell.setCellValue(subtituloFlujoCajaVO.getTotalMontos());
+			currentCol = 0;
+		}
 	}
-	
+
 	private void addSheetResumenFlujoCaja(EstimacionFlujoCajaSubtituloSheetExcel excelSheet, String sheetName){
 		XSSFSheet sheet = workbook.createSheet(sheetName);
 		List<CellExcelVO> header = excelSheet.getHeaderComplex();
 		List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
-		List<FlujoCajaVO> items = excelSheet.getItems();
-		
+		List<SubtituloFlujoCajaVO> items = excelSheet.getItems();
+
 		CellStyle style = workbook.createCellStyle();
 		style.setFillPattern(CellStyle.ALIGN_FILL);
 		style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
@@ -636,7 +535,7 @@ public class GeneradorExcel {
 		int currentRow = 0;
 		int maxRowSpan = 0;
 		int maxColSpan = 0;
-		
+
 		if(header != null && header.size() > 0){
 			for(CellExcelVO cellExcelVO : header){
 				if(maxColSpan == 0){
@@ -657,9 +556,9 @@ public class GeneradorExcel {
 			int colsReplace = 0; //donde parte la culumna que vas a mezclar
 			int appendRow = 0;
 			int contHeader = 0;
-			
+
 			int fila_actual=0;
-			
+
 			for(CellExcelVO cellExcelVO : header){				
 				if(header.get(contHeader).getName().equalsIgnoreCase("SERVICIOS DE SALUD")){
 					XSSFRow row = sheet.getRow(0) ;
@@ -668,7 +567,7 @@ public class GeneradorExcel {
 					sheet.addMergedRegion(new CellRangeAddress(0, 1, 0 , 0));
 					sheet.autoSizeColumn(0);
 				}					
-				
+
 				else if(!header.get(contHeader).getName().startsWith("TOTAL")){
 					XSSFRow row = sheet.getRow(0);
 					XSSFCell cell = row.getCell(1);
@@ -685,8 +584,8 @@ public class GeneradorExcel {
 				}
 				contHeader++;
 			}
-			
-		
+
+
 			int posSubHeader = 0;
 			for(CellExcelVO cellExcelVO : subHeader){
 				XSSFRow row = sheet.getRow(1);
@@ -694,7 +593,7 @@ public class GeneradorExcel {
 				cell.setCellValue(cellExcelVO.getName());
 				posSubHeader++;
 			}
-			
+
 			long totalenero=0;
 			long totalfebrero=0;
 			long totalmarzo=0;
@@ -707,16 +606,16 @@ public class GeneradorExcel {
 			long totaloctubre=0;
 			long totalnoviembre=0;
 			long totaldiciembre=0;
-			
+
 			//Agragando items
-			for(int i=0; i<items.size(); i++){
+			/*for(int i=0; i<items.size(); i++){
 				fila_actual =i+2;
 				XSSFRow row = sheet.createRow(fila_actual);
 				row = sheet.getRow(fila_actual);
 				XSSFCell cell_servicio = row.createCell(0);
 				cell_servicio = row.getCell(0);				
 				cell_servicio.setCellValue(items.get(i).getServicio());				
-				
+
 				List<CajaMesVO> cajames = items.get(i).getSubtitulo();
 				int col_actual =1;
 				long total_servicio = 0;
@@ -730,10 +629,10 @@ public class GeneradorExcel {
 				XSSFCell tot_service = row.createCell(13);
 				tot_service = row.getCell(13);
 				tot_service.setCellValue(total_servicio);
-				
+
 				fila_actual++;
 			}
-			
+
 			//Agregando los totales de cada mes
 			XSSFRow totales = sheet.createRow(fila_actual);
 			totales = sheet.getRow(fila_actual);
@@ -752,66 +651,66 @@ public class GeneradorExcel {
 				totaldiciembre+=items.get(i).getSubtitulo().get(11).getMonto();
 			}
 			long totaltotal=totalenero+totalfebrero+totalmarzo+totalabril+totalmayo+totaljunio+totaljulio+totalagosto+totalseptiembre+totaloctubre+totalnoviembre+totaldiciembre;
-			
+
 			XSSFCell cell_tot_servicio = totales.createCell(0);
 			cell_tot_servicio = totales.getCell(0);				
 			cell_tot_servicio.setCellValue("TOTAL");
-			
+
 			XSSFCell cell_tot_enero = totales.createCell(1);
 			cell_tot_enero = totales.getCell(1);				
 			cell_tot_enero.setCellValue(totalenero);
-			
+
 			XSSFCell cell_tot_febrero = totales.createCell(2);
 			cell_tot_febrero = totales.getCell(2);				
 			cell_tot_febrero.setCellValue(totalfebrero);
-			
+
 			XSSFCell cell_tot_marzo = totales.createCell(3);
 			cell_tot_marzo = totales.getCell(3);				
 			cell_tot_marzo.setCellValue(totalmarzo);
-			
+
 			XSSFCell cell_tot_abril = totales.createCell(4);
 			cell_tot_abril = totales.getCell(4);				
 			cell_tot_abril.setCellValue(totalabril);
-			
+
 			XSSFCell cell_tot_mayo = totales.createCell(5);
 			cell_tot_mayo = totales.getCell(5);				
 			cell_tot_mayo.setCellValue(totalmayo);
-			
+
 			XSSFCell cell_tot_junio = totales.createCell(6);
 			cell_tot_junio = totales.getCell(6);				
 			cell_tot_junio.setCellValue(totaljunio);
-			
+
 			XSSFCell cell_tot_julio = totales.createCell(7);
 			cell_tot_julio = totales.getCell(7);				
 			cell_tot_julio.setCellValue(totaljulio);
-			
+
 			XSSFCell cell_tot_agosto = totales.createCell(8);
 			cell_tot_agosto = totales.getCell(8);				
 			cell_tot_agosto.setCellValue(totalagosto);
-			
+
 			XSSFCell cell_tot_septiembre = totales.createCell(9);
 			cell_tot_septiembre = totales.getCell(9);				
 			cell_tot_septiembre.setCellValue(totalseptiembre);
-			
+
 			XSSFCell cell_tot_octubre = totales.createCell(10);
 			cell_tot_octubre = totales.getCell(10);				
 			cell_tot_octubre.setCellValue(totaloctubre);
-			
+
 			XSSFCell cell_tot_noviembre = totales.createCell(11);
 			cell_tot_noviembre = totales.getCell(11);				
 			cell_tot_noviembre.setCellValue(totalnoviembre);
-			
+
 			XSSFCell cell_tot_diciembre = totales.createCell(12);
 			cell_tot_diciembre = totales.getCell(12);				
 			cell_tot_diciembre.setCellValue(totaldiciembre);
-			
+
 			XSSFCell cell_tot_total = totales.createCell(13);
 			cell_tot_total = totales.getCell(13);				
-			cell_tot_total.setCellValue(totaltotal);
-			
+			cell_tot_total.setCellValue(totaltotal);*/
+
 		}		
 	}
-	
+
 
 	public void addSheetCumplimiento(ExcelTemplate excelSheet, String sheetName){
 		try{

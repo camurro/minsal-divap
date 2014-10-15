@@ -1,6 +1,8 @@
 package minsal.divap.vo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -25,6 +27,9 @@ public class SubtituloFlujoCajaVO implements Serializable {
 
 	public SubtituloFlujoCajaVO() {
 		super();
+		this.cajaMontos = new ArrayList<CajaMontoSummaryVO>(Arrays.asList(new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), 
+				 new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), 
+				 new CajaMontoSummaryVO(), new CajaMontoSummaryVO()));
 	}
 
 	
@@ -210,6 +215,19 @@ public class SubtituloFlujoCajaVO implements Serializable {
 				+ transferenciaAcumulada + ", convenioRecibido="
 				+ convenioRecibido + ", cajaMontos=" + cajaMontos
 				+ ", totalMontos=" + totalMontos + ", color=" + color + "]";
+	}
+
+
+	public List<Object> getRow() {
+		List<Object> row = new ArrayList<Object>();
+		if(getServicio() != null){
+			row.add(getServicio());			
+		}
+		for(CajaMontoSummaryVO cajaMontoSummaryVO : getCajaMontos()){
+			row.add(cajaMontoSummaryVO.getMontoMes());	
+		}
+		row.add(getTotalMontos());	
+		return row;
 	}
 
 }

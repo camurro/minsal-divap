@@ -171,5 +171,17 @@ public class CajaDAO {
 		}
 	}
 
+	public List<Caja> getByProgramaAnoServicioSubtitulo(Integer idProgramaAno, Integer idServicio, Subtitulo subtitulo) {
+		try {
+			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByProgramaAnoServicioSubtitulo", Caja.class);
+			query.setParameter("idTipoSubtitulo", subtitulo.getId());
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 }
 

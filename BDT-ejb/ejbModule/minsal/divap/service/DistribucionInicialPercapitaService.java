@@ -20,6 +20,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBException;
 
+import minsal.divap.dao.AnoDAO;
 import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
 import minsal.divap.dao.SeguimientoDAO;
@@ -65,6 +66,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.AntecendentesComuna;
 import cl.minsal.divap.model.AntecendentesComunaCalculado;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
@@ -83,6 +85,8 @@ public class DistribucionInicialPercapitaService {
 	private AntecedentesComunaDAO antecedentesComunaDAO;
 	@EJB
 	private SeguimientoDAO seguimientoDAO;
+	@EJB
+	private AnoDAO anoDAO;
 	@EJB
 	private DocumentService documentService;
 	@EJB
@@ -106,7 +110,8 @@ public class DistribucionInicialPercapitaService {
 	public Integer crearIntanciaDistribucionInicialPercapita(String username){
 		System.out.println("username-->"+username);
 		Usuario usuario = this.usuarioDAO.getUserByUsername(username);
-		return distribucionInicialPercapitaDAO.crearIntanciaDistribucionInicialPercapita(usuario);
+		AnoEnCurso anoEnCurso = anoDAO.getAnoById(getAnoCurso());
+		return distribucionInicialPercapitaDAO.crearIntanciaDistribucionInicialPercapita(usuario, anoEnCurso);
 	}
 
 	public Integer cargarPlantilla(TipoDocumentosProcesos plantilla, File file){

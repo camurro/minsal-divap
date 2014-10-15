@@ -60,17 +60,13 @@ public class ProgramaMapper implements Mapper<ProgramaAno>{
 			}
 		
 		}
-		System.out.println("programaVO.getComponentes().size()==>"+((programaVO.getComponentes() == null) ? 0 : programaVO.getComponentes().size()));
 		if(programaVO.getComponentes() != null && programaVO.getComponentes().size() > 0){
 			for(ComponentesVO componenteVO : programaVO.getComponentes()){
-				System.out.println("Antes de determinar si es dependiente municipal o servicio");
 				if(componenteVO.getSubtitulos().contains(new SubtituloVO(Subtitulo.SUBTITULO24.getId()))){
 					programaVO.setDependenciaMunicipal(true);
-					System.out.println("Dependencia municipal");
 				}
 				if((componenteVO.getSubtitulos().contains(new SubtituloVO(Subtitulo.SUBTITULO21.getId()))) || (componenteVO.getSubtitulos().contains(new SubtituloVO(Subtitulo.SUBTITULO22.getId()))) || (componenteVO.getSubtitulos().contains(new SubtituloVO(Subtitulo.SUBTITULO29.getId())))){
 					programaVO.setDependenciaServicio(true);
-					System.out.println("Dependencia servicio");
 				}
 			}
 		}
