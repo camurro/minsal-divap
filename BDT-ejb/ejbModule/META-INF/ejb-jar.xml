@@ -62,7 +62,7 @@
 				<description>Alfresco Password</description>
 				<env-entry-name>alfrescoPassword</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>alfresco</env-entry-value>
+				<env-entry-value>admin</env-entry-value>
 			</env-entry>
 			<env-entry>
 				<description>Alfresco Site</description>
@@ -219,7 +219,7 @@
 			</env-entry>
 			<env-entry>
 				<description>Process folder percapita</description>
-				<env-entry-name>folderPercapita</env-entry-name>
+				<env-entry-name>folderDocEstimacionFlujoCaja</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
 				<env-entry-value>PROCESOS/{ANO}/ESTIMACIONFLUJOCAJA</env-entry-value>
 			</env-entry>

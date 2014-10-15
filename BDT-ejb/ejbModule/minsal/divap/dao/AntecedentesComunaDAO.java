@@ -93,6 +93,20 @@ public class AntecedentesComunaDAO {
 		return results;
 	}
 	
+	public List<AntecendentesComunaCalculado> findAntecedentesServicioCalculadosByDistribucionInicialPercapita(
+			Integer idDistribucionInicialPercapita) {
+		List<AntecendentesComunaCalculado> results = null;
+		try {
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByServicioDistribucionInicialPercapita", AntecendentesComunaCalculado.class);
+			query.setParameter("distribucionInicialPercapita", idDistribucionInicialPercapita);
+			results = query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return results;
+	}
+	
+	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> groupPercapitaServicioByDistribucionInicialPercapita(Integer idDistribucionInicialPercapita) {
 		List<Object[]> results = null;
