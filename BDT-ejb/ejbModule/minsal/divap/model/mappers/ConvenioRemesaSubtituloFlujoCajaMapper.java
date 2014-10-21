@@ -25,7 +25,7 @@ public class ConvenioRemesaSubtituloFlujoCajaMapper implements Mapper<Caja>{
 			return null;
 		}
 		SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaVO();
-		subtituloFlujoCajaVO.setMarcoPresupuestario(caja.getMonto());
+		subtituloFlujoCajaVO.setMarcoPresupuestario(new Long(caja.getMonto()));
 		if(caja.getMarcoPresupuestario() != null){
 			subtituloFlujoCajaVO.setIdMarcoPresupuestario(caja.getMarcoPresupuestario().getIdMarcoPresupuestario());
 			if(caja.getMarcoPresupuestario().getServicioSalud() != null){
@@ -38,7 +38,7 @@ public class ConvenioRemesaSubtituloFlujoCajaMapper implements Mapper<Caja>{
 		}
 		TransferenciaSummaryVO transferenciaAcumulada = new TransferenciaSummaryVO();
 		transferenciaAcumulada.setPorcentaje(0);
-		transferenciaAcumulada.setMonto(0);
+		transferenciaAcumulada.setMonto(0L);
 		subtituloFlujoCajaVO.setTransferenciaAcumulada(transferenciaAcumulada);
 		ConveniosSummaryVO convenioRecibido = new ConveniosSummaryVO();
 		convenioRecibido.setMonto(0);
@@ -50,7 +50,7 @@ public class ConvenioRemesaSubtituloFlujoCajaMapper implements Mapper<Caja>{
 				CajaMontoSummaryVO cajaMontoSummaryVO = new CajaMontoSummaryVO();
 				cajaMontoSummaryVO.setIdMes(cajaMonto.getMes().getIdMes());
 				cajaMontoSummaryVO.setNombreMes(cajaMonto.getMes().getNombre());
-				cajaMontoSummaryVO.setMontoMes(cajaMonto.getMonto().getMonto());
+				cajaMontoSummaryVO.setMontoMes(new Long(cajaMonto.getMonto().getMonto()));
 				cajasMontosSummaryVO.add(cajaMontoSummaryVO);
 			}
 		}

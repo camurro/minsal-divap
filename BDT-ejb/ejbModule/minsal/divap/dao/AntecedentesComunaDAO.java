@@ -197,5 +197,18 @@ public class AntecedentesComunaDAO {
 		}
 		return results;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> groupDesempenoDificilServicioByDistribucionInicialPercapita(Integer idDistribucionInicialPercapita) {
+		List<Object[]> results = null;
+		try {
+			Query queryGroupDesempenoDificilServicioByDistribucionInicialPercapita = this.em.createNamedQuery("AntecendentesComuna.groupDesempenoDificilServicio");
+			queryGroupDesempenoDificilServicioByDistribucionInicialPercapita.setParameter("idDistribucionInicialPercapita", idDistribucionInicialPercapita);
+			results = queryGroupDesempenoDificilServicioByDistribucionInicialPercapita.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return results;
+	}
 
 }

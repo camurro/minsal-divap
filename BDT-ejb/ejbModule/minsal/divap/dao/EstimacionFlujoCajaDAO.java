@@ -6,9 +6,11 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import minsal.divap.enums.Subtitulo;
+import minsal.divap.enums.TipoDocumentosProcesos;
 import cl.minsal.divap.model.Caja;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.EstimacionFlujoCajaSeguimiento;
@@ -45,6 +47,17 @@ public class EstimacionFlujoCajaDAO {
 		}
 	}
 	
+	public List<DocumentoEstimacionflujocaja> getDocumentByIDProgramaAnoTipoDocumento(Integer idProgramaAno, TipoDocumentosProcesos tipoDocumento) {
+		try {
+			TypedQuery<DocumentoEstimacionflujocaja> query = this.em.createNamedQuery("DocumentoEstimacionflujocaja.findByProgramaAnoTipoDocumento", DocumentoEstimacionflujocaja.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idTipoDocumento", tipoDocumento.getId());
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	public Integer createSeguimiento(Integer idProgramaAno, Seguimiento seguimiento) {
 		ProgramaAno programaAno = programaDAO.getProgramaAnoByID(idProgramaAno);
 		EstimacionFlujoCajaSeguimiento estimacionFlujoCajaSeguimiento = new EstimacionFlujoCajaSeguimiento();
@@ -64,6 +77,18 @@ public class EstimacionFlujoCajaDAO {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public Integer deleteDocumentoEstimacionflujoCaja(List<Integer> idDocumentosEstimacion) {
+		Query query = this.em.createNamedQuery("DocumentoEstimacionflujocaja.deleteUsingIds");
+		query.setParameter("idDocumentosEstimacion", idDocumentosEstimacion);
+		return query.executeUpdate();
+	}
+
+	public Integer deleteDocumento(Integer idDocumento) {
+		Query query = this.em.createNamedQuery("ReferenciaDocumento.deleteUsingId");
+		query.setParameter("idDocumento", idDocumento);
+		return query.executeUpdate();
 	}
 
 }

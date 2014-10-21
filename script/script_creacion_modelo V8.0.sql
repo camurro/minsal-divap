@@ -3364,6 +3364,7 @@ DELETE FROM caja_monto WHERE caja  > 36;
 DELETE FROM monto_mes WHERE id_monto_mes  > 36;
 DELETE FROM caja WHERE marco_presupuestario > 2;
 DELETE FROM marco_presupuestario WHERE id_marco_presupuestario > 2;
+DELETE FROM documento_estimacionflujocaja WHERE id_programa_ano = 20;
 UPDATE programa_ano SET estadoflujocaja=1;
 
 INSERT INTO tipo_documento(id_tipo_documento, nombre)  VALUES (16, 'Planilla de Estimación de Flujos de Caja');
@@ -3434,6 +3435,27 @@ UPDATE distribucion_inicial_percapita SET ano = 2014;
 
 ALTER TABLE distribucion_inicial_percapita
    ALTER COLUMN ano SET NOT NULL;
+
+ALTER TABLE plantilla
+  ADD COLUMN id_programa integer;
+
+ALTER TABLE plantilla
+  ADD CONSTRAINT id_programa_fk FOREIGN KEY (id_programa) REFERENCES programa (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE rebaja
+  ADD COLUMN ano integer;
+
+ALTER TABLE rebaja
+  ADD CONSTRAINT ano_fk FOREIGN KEY (ano)
+      REFERENCES ano_en_curso (ano) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+UPDATE rebaja SET  ano=2014;
+
+ALTER TABLE rebaja
+   ALTER COLUMN ano SET NOT NULL;
+
+
 
 
 

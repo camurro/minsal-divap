@@ -246,4 +246,19 @@ public class DocumentDAO {
 		
 	}
 
+	public DocumentoEstimacionflujocaja getDocumentByTypProgramaAno(Integer idProgramaAno, TipoDocumentosProcesos tipoDocumentoProceso) {
+		try {
+			TypedQuery<DocumentoEstimacionflujocaja> query = this.em.createNamedQuery("DocumentoEstimacionflujocaja.findByTypesIdProgramaAno", DocumentoEstimacionflujocaja.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idTipoDocumento", tipoDocumentoProceso.getId());
+			List<DocumentoEstimacionflujocaja> results = query.getResultList(); 
+			if(results != null && results.size() > 0){
+				return results.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 }

@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 
+import minsal.divap.vo.BodyCreateFolderVO;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.DocumentoVO;
 
@@ -29,6 +30,7 @@ import org.apache.commons.httpclient.auth.RFC2617Scheme;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
@@ -249,5 +251,43 @@ public class AlfrescoService {
 			output.write(buffer, 0, bytesRead);
 		}
 		return output.toByteArray();
+	}
+
+	public BodyCreateFolderVO createFolder(String folder) {
+		BodyCreateFolderVO body = null;
+		try {
+			String authTicket = getTicket();
+			String urlString = alfrescoServer + "/site/folder/" + alfrescoSite + "/documentLibrary/" + alfrescoUploadDirectory + "/PROCESOS" + "?alf_ticket="
+					+ authTicket;
+			System.out.println("The upload url::" + urlString);
+			HttpClient client = new HttpClient();
+			System.out.println("folder-->"+folder);
+			PostMethod mPost = new PostMethod(urlString);
+			String jSon = "{\"name\": \""+ folder +"\"}";
+					
+			System.out.println("jSon-->"+jSon);
+			
+			mPost.setRequestEntity(new StringRequestEntity(jSon, "application/json", "UTF-8"));
+			//mPost.setRequestEntity(requestEntity);
+			int statusCode = client.executeMethod(mPost);
+			System.out.println("statusLine>>>" + statusCode + "......"
+					+ "\n status line \n"
+					+mPost.getStatusLine() + "\nbody \n" +mPost.getResponseBodyAsString());
+			if(statusCode == 200){
+				ObjectMapper mapper = new ObjectMapper();
+				body = mapper.readValue(mPost.getResponseBodyAsString(), BodyCreateFolderVO.class);
+				System.out.println("response body->"+body);
+			}else if(statusCode == 500){
+				System.out.println("Error al crear carpeta " + folder);
+				System.out.println(mPost.getResponseBodyAsString());
+			}
+			
+			mPost.releaseConnection();
+
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return body;
+
 	}
 }

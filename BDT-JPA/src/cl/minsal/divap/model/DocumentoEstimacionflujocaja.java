@@ -4,7 +4,6 @@ package cl.minsal.divap.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,7 +25,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "DocumentoEstimacionflujocaja.findAll", query = "SELECT d FROM DocumentoEstimacionflujocaja d"),
     @NamedQuery(name = "DocumentoEstimacionflujocaja.findByProgramaAnoTipoDocumento", query = "SELECT d FROM DocumentoEstimacionflujocaja d WHERE d.idProgramaAno.idProgramaAno = :idProgramaAno and d.idTipoDocumento.idTipoDocumento = :idTipoDocumento"),
-    @NamedQuery(name = "DocumentoEstimacionflujocaja.findById", query = "SELECT d FROM DocumentoEstimacionflujocaja d WHERE d.id = :id")})
+    @NamedQuery(name = "DocumentoEstimacionflujocaja.deleteUsingIds", query = "DELETE FROM DocumentoEstimacionflujocaja d WHERE d.id IN (:idDocumentosEstimacion)"),
+    @NamedQuery(name = "DocumentoEstimacionflujocaja.findById", query = "SELECT d FROM DocumentoEstimacionflujocaja d WHERE d.id = :id"),
+    @NamedQuery(name = "DocumentoEstimacionflujocaja.findByTypesIdProgramaAno", query = "SELECT d FROM DocumentoEstimacionflujocaja d WHERE d.idProgramaAno.idProgramaAno = :idProgramaAno and d.idTipoDocumento.idTipoDocumento = :idTipoDocumento order by d.idDocumento.fechaCreacion DESC")})
 public class DocumentoEstimacionflujocaja implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

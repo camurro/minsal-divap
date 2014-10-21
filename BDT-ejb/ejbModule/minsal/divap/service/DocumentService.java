@@ -384,10 +384,8 @@ public class DocumentService {
 		documentoEstimacionFlujoCaja.setIdProgramaAno(programaAno);
 		documentoEstimacionFlujoCaja.setIdTipoDocumento(tipoDocumentoProceso);
 		documentoEstimacionFlujoCaja.setIdDocumento(referenciaDocumento);
-		//documentoDistribucionInicialPercapita.setIdDocumento(referenciaDocumento);
-		
 		estimacionFlujoCajaDAO.save(documentoEstimacionFlujoCaja);
-		System.out.println("luego de aplicar insert del documento percapita");
+		System.out.println("luego de aplicar insert del documento flujo caja");
 		return referenciaDocumentoId;
 	}
 

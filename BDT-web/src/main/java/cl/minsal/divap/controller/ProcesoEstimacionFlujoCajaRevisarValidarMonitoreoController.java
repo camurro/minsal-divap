@@ -16,7 +16,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import minsal.divap.enums.Subtitulo;
-import minsal.divap.service.CajaService;
 import minsal.divap.service.EstimacionFlujoCajaService;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ServicioSaludService;
@@ -189,10 +188,6 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	private ProgramasService programaService;
 	@EJB
 	private ServicioSaludService servicioSaludService;
-	@EJB
-	private CajaService cajaService;
-
-
 
 	/*
 	 * ********************************* FIN VARIABLES
@@ -217,7 +212,6 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		if(sessionExpired()){
 			return;
 		}
-
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			Integer idProgramaAno = (Integer) getTaskDataVO().getData().get("_idProgramaAno");
 			System.out.println("idProgramaAno --->" + idProgramaAno);
@@ -1542,19 +1536,23 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 				switch (subtituloSeleccionado) {
 				case SUBTITULO21:
 					System.out.println("SUBTITULO21");
-					monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), idComponentes, Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
+							idComponentes, Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					break;
 				case SUBTITULO22:
 					System.out.println("SUBTITULO22");
-					monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), idComponentes, Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
+							idComponentes, Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					break;
 				case SUBTITULO24:
 					System.out.println("SUBTITULO24");
-					monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), idComponentes, Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
+							idComponentes, Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					break;
 				case SUBTITULO29:
 					System.out.println("SUBTITULO29");
-					monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), idComponentes, Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
+							idComponentes, Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					break;
 				default:
 					break;
