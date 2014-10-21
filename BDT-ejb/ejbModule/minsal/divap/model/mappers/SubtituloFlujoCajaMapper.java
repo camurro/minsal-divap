@@ -29,6 +29,7 @@ public class SubtituloFlujoCajaMapper implements Mapper<Caja>{
 		if(caja.getMarcoPresupuestario() != null){
 			subtituloFlujoCajaVO.setIdMarcoPresupuestario(caja.getMarcoPresupuestario().getIdMarcoPresupuestario());
 			if(caja.getMarcoPresupuestario().getServicioSalud() != null){
+				subtituloFlujoCajaVO.setIdServicio(caja.getMarcoPresupuestario().getServicioSalud().getId());
 				subtituloFlujoCajaVO.setServicio(caja.getMarcoPresupuestario().getServicioSalud().getNombre());
 			}
 		}

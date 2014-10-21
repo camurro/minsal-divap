@@ -47,6 +47,20 @@ public class ServicioSaludDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public  ServicioSalud getServicioSaludById(Integer idServicioSalud){
+		try {
+			TypedQuery<ServicioSalud> query = this.em.createNamedQuery("ServicioSalud.findByIdServicioSalud", ServicioSalud.class);
+			query.setParameter("idServicioSalud", idServicioSalud);
+			List<ServicioSalud> results = query.getResultList();
+			if(results != null && results.size() >0){
+				return results.get(0);
+			}
+			return null; 
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
+	}
 
 	public List<AntecendentesComuna> getAntecedentesComunas(Integer anoCurso) {
 		try {

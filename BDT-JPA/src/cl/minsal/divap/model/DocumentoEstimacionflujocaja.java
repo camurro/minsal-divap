@@ -25,7 +25,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "DocumentoEstimacionflujocaja.findAll", query = "SELECT d FROM DocumentoEstimacionflujocaja d"),
     @NamedQuery(name = "DocumentoEstimacionflujocaja.findByProgramaAnoTipoDocumento", query = "SELECT d FROM DocumentoEstimacionflujocaja d WHERE d.idProgramaAno.idProgramaAno = :idProgramaAno and d.idTipoDocumento.idTipoDocumento = :idTipoDocumento"),
-    @NamedQuery(name = "DocumentoEstimacionflujocaja.findById", query = "SELECT d FROM DocumentoEstimacionflujocaja d WHERE d.id = :id")})
+    @NamedQuery(name = "DocumentoEstimacionflujocaja.deleteUsingIds", query = "DELETE FROM DocumentoEstimacionflujocaja d WHERE d.id IN (:idDocumentosEstimacion)"),
+    @NamedQuery(name = "DocumentoEstimacionflujocaja.findById", query = "SELECT d FROM DocumentoEstimacionflujocaja d WHERE d.id = :id"),
+    @NamedQuery(name = "DocumentoEstimacionflujocaja.findByTypesIdProgramaAno", query = "SELECT d FROM DocumentoEstimacionflujocaja d WHERE d.idProgramaAno.idProgramaAno = :idProgramaAno and d.idTipoDocumento.idTipoDocumento = :idTipoDocumento")})
 public class DocumentoEstimacionflujocaja implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -41,6 +43,12 @@ public class DocumentoEstimacionflujocaja implements Serializable {
     @JoinColumn(name = "id_programa_ano", referencedColumnName = "id_programa_ano")
     @ManyToOne
     private ProgramaAno idProgramaAno;
+    @JoinColumn(name = "id_mes", referencedColumnName = "id_mes")
+    @ManyToOne
+    private Mes idMes;
+    @JoinColumn(name = "ano", referencedColumnName = "ano")
+    @ManyToOne
+    private AnoEnCurso ano;
 
     public DocumentoEstimacionflujocaja() {
     }
@@ -80,6 +88,22 @@ public class DocumentoEstimacionflujocaja implements Serializable {
     public void setIdProgramaAno(ProgramaAno idProgramaAno) {
         this.idProgramaAno = idProgramaAno;
     }
+    
+    public Mes getIdMes() {
+        return idMes;
+    }
+
+    public void setIdMes(Mes idMes) {
+        this.idMes = idMes;
+    }
+
+    public AnoEnCurso getAno() {
+        return ano;
+    }
+
+    public void setAno(AnoEnCurso ano) {
+        this.ano = ano;
+    }
 
     @Override
     public int hashCode() {
@@ -105,6 +129,5 @@ public class DocumentoEstimacionflujocaja implements Serializable {
     public String toString() {
         return "javaapplication2.DocumentoEstimacionflujocaja[ id=" + id + " ]";
     }
-    
+   
 }
-

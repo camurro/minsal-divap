@@ -28,9 +28,11 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Caja.findAll", query = "SELECT c FROM Caja c"),
+    @NamedQuery(name = "Caja.findByProgramaAnoComponenteSubtituloServicio", query = "SELECT c FROM Caja c WHERE c.idSubtitulo.idTipoSubtitulo = :idTipoSubtitulo and c.idComponente.id IN (:idComponentes) and c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno and c.marcoPresupuestario.servicioSalud.id = :idServicio"),
     @NamedQuery(name = "Caja.findByProgramaAnoComponenteSubtitulo", query = "SELECT c FROM Caja c WHERE c.idSubtitulo.idTipoSubtitulo = :idTipoSubtitulo and c.idComponente.id IN (:idComponentes) and c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno"),
     @NamedQuery(name = "Caja.deleteUsingIdProgramaAno", query = "DELETE FROM Caja c WHERE c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno"),
     @NamedQuery(name = "Caja.findByIdProgramaAnoIdServicio", query = "SELECT c FROM Caja c WHERE c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno and c.marcoPresupuestario.servicioSalud.id = :idServicio"),
+    @NamedQuery(name = "Caja.findByProgramaAnoServicioSubtitulo", query = "SELECT c FROM Caja c WHERE c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno and c.marcoPresupuestario.servicioSalud.id = :idServicio and c.idSubtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
     @NamedQuery(name = "Caja.findBySubtituloAno", query = "SELECT c FROM Caja c WHERE c.idSubtitulo.idTipoSubtitulo = :idSubtitulo and c.marcoPresupuestario.idProgramaAno is not null and c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno "),
     @NamedQuery(name = "Caja.findById", query = "SELECT c FROM Caja c WHERE c.id = :id")})
 

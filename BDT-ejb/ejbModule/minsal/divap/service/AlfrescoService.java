@@ -92,6 +92,14 @@ public class AlfrescoService {
 	
 	private StoreRef storeRef;
 	
+	private String encoding;
+
+	private static final int BUFFER_SIZE = 1024;
+	private static final String MIMETYPE_ZIP = "application/zip";
+	private static final String TEMP_FILE_PREFIX = "alf";
+	private static final String ZIP_EXTENSION = ".zip";
+	
+	
 	public NodeService getNodeService() {
 		return nodeService;
 	}
@@ -140,12 +148,7 @@ public class AlfrescoService {
 		this.encoding = encoding;
 	}
 
-	private String encoding;
-
-	private static final int BUFFER_SIZE = 1024;
-	private static final String MIMETYPE_ZIP = "application/zip";
-	private static final String TEMP_FILE_PREFIX = "alf";
-	private static final String ZIP_EXTENSION = ".zip";
+	
 
 
 
@@ -444,9 +447,13 @@ public class AlfrescoService {
 
 	public void createZipFile(List<String> nodeIds, List<NodeRef> nr, OutputStream os,
 			boolean noaccent) throws IOException {
+		
+		
+		
 		System.out.println("entra al createZip");
 		File zip = null;
 		StoreRef sref = nr.get(0).getStoreRef();
+		//this.nodeService.getType(nr.get(0));
 		
 		System.out.println("recorriendo la lista nodeIds");
 		for(int i=0; i<nodeIds.size();i++){

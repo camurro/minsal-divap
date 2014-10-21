@@ -35,6 +35,7 @@ import minsal.divap.model.mappers.ReferenciaDocumentoMapper;
 import minsal.divap.vo.DocumentoVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.ReferenciaDocumentoVO;
+import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.Comuna;
 import cl.minsal.divap.model.Convenio;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
@@ -43,6 +44,7 @@ import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.DocumentoOt;
 import cl.minsal.divap.model.DocumentoRebaja;
+import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.OrdenTransferencia;
 import cl.minsal.divap.model.Plantilla;
 import cl.minsal.divap.model.ProgramaAno;
@@ -153,34 +155,6 @@ public class DocumentService {
 		return documentoVO;
 	}
 	
-	public void getZipFloder(NodeRef noderef) throws FileNotFoundException{
-		System.out.println("noderef-> "+noderef);
-		File asdasd = new File("/home/francisco/Escritorio/hola.zip");
-		OutputStream os = null;
-		try {
-			os = new ZipArchiveOutputStream(new File("/home/francisco/Escritorio/doczip/hola.zip"));
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		
-
-		List<String> nodeIds = new ArrayList<String>();
-		nodeIds.add(noderef.getId());
-		System.out.println("cantidad de nodeIds --> "+nodeIds.size());
-		
-		String file = "/home/francisco/Escritorio/doczip/ESTIMACION FLUJO DE CAJA.zip";
-		try {
-			System.out.println("entra al try");
-			alfrescoService.createZipFile(nodeIds, null, os, true);
-		} catch (IOException e) {
-			System.out.println("entra al catch");
-			e.printStackTrace();
-		}
-	}
-	
-
 	public Integer createTemplate(TipoDocumentosProcesos tipoDocumentoProceso,
 			String nodeRef, String filename, String contenType) {
 		long current = Calendar.getInstance().getTimeInMillis();
@@ -423,6 +397,27 @@ public class DocumentService {
 		
 		estimacionFlujoCajaDAO.save(documentoEstimacionFlujoCaja);
 		System.out.println("luego de aplicar insert del documento percapita");
+		return referenciaDocumentoId;
+	}
+	
+	public Integer createDocumentPropuestaConsolidador(TipoDocumento tipoDocumentoProceso,
+			String nodeRef, String filename, String contenType, Integer ano, Integer idMes ) {
+		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
+		AnoEnCurso anoEnCurso = new AnoEnCurso();
+		anoEnCurso.setAno(ano);
+		Mes mesEnCurso = new Mes();
+		mesEnCurso.setIdMes(idMes);
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		DocumentoEstimacionflujocaja documentoEstimacionFlujoCaja = new DocumentoEstimacionflujocaja();
+		documentoEstimacionFlujoCaja.setIdTipoDocumento(tipoDocumentoProceso);
+		documentoEstimacionFlujoCaja.setIdDocumento(referenciaDocumento);
+		documentoEstimacionFlujoCaja.setAno(anoEnCurso);
+		documentoEstimacionFlujoCaja.setIdMes(mesEnCurso);
+		//documentoDistribucionInicialPercapita.setIdDocumento(referenciaDocumento);
+		
+		estimacionFlujoCajaDAO.save(documentoEstimacionFlujoCaja);
+		System.out.println("luego de aplicar insert del documento percapita");
+		System.out.println("referenciaDocumentoId ---> "+referenciaDocumentoId);
 		return referenciaDocumentoId;
 	}
 

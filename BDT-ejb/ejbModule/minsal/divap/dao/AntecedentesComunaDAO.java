@@ -212,4 +212,16 @@ public class AntecedentesComunaDAO {
 		return results;
 	}
 
+	public List<AntecendentesComunaCalculado> findAntecedentesComunaCalculadosByDistribucionInicialPercapitaServicio(
+			Integer idDistribucionInicialPercapita, Integer idServicio) {
+		try {
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByDistribucionInicialPercapitaServicio", AntecendentesComunaCalculado.class);
+			query.setParameter("distribucionInicialPercapita", idDistribucionInicialPercapita);
+			query.setParameter("idServicio", idServicio);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 }

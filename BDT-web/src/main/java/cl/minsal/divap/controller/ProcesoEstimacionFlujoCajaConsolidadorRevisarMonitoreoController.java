@@ -12,11 +12,14 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import minsal.divap.enums.BusinessProcess;
 import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.enums.Subtitulo;
+import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.CajaService;
 import minsal.divap.service.DistribucionInicialPercapitaService;
 import minsal.divap.service.EstimacionFlujoCajaService;
@@ -30,16 +33,22 @@ import minsal.divap.vo.CajaVO;
 import minsal.divap.vo.ColumnaVO;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ComunaVO;
+import minsal.divap.vo.ElementoModificadoVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloFlujoCajaVO;
 import minsal.divap.vo.SubtituloVO;
+import minsal.divap.vo.TaskDataVO;
+import minsal.divap.vo.TaskVO;
 
 import org.apache.log4j.Logger;
 import org.primefaces.component.api.UIColumn;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.CellEditEvent;
+import org.primefaces.event.TabChangeEvent;
+import org.primefaces.event.TabCloseEvent;
 
+import cl.minsal.divap.model.TipoDocumento;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 @Named("procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController")
@@ -50,24 +59,105 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -305892663857134487L;
-
+	private static final long serialVersionUID = 5976924823275715640L;
 	@Inject
 	private transient Logger log;
 	@Inject
 	FacesContext facesContext;
 	private boolean reparos;
 	
-	@EJB
-	private UtilitariosService utilitariosService;
+	private Integer idDistribucionInicialPercapita;
+	private Integer idProgramaAnoPercapita;
+	private Integer idProgramaAno;
+	private Integer idServicio;
 	
+	private Integer valorComboPercapita;
+	
+	private List<ServiciosVO> servicios;
+	private List<ProgramaVO> programas;
+
+	private boolean fromPage = true;
+	
+	
+	private Integer valorComboPrograma;
+	
+	
+	/*
+	 * SUBTITULO 22
+	 */
+	private Integer valorComboSubtituloServicio;
+
+	// Convenio Remesa
+	private Integer valorComboSubtitulo21Componente;
+	private Integer valorComboSubtitulo21Servicio;
+
+	/*
+	 * SUBTITULO 22
+	 */
+	private Integer valorComboSubtitulo22;
+
+	// Convenio Remesa
+	private Integer valorComboSubtitulo22Componente;
+	private Integer valorComboSubtitulo22Servicio;
+
+	/*
+	 * SUBTITULO 24
+	 */
+	private Integer valorComboSubtitulo24;
+	// Convenio Remesa
+	private Integer valorComboSubtitulo24Componente;
+	private Integer valorComboSubtitulo24Servicio;
+
+	/*
+	 * SUBTITULO 29
+	 */
+	private Integer valorComboSubtitulo29;
+
+	// Convenio Remesa
+	private Integer valorComboSubtitulo29Componente;
+	private Integer valorComboSubtitulo29Servicio;
+
+	/*
+	 * SUBTITULO X COMPONENTE
+	 */
+	private Integer valorComboSubtituloComponente;
+	private String valorNombreComponente;
+	private String valorPesoComponente;
+
+	private Subtitulo subtitulo21 = Subtitulo.SUBTITULO21;
+	private Subtitulo subtitulo22 = Subtitulo.SUBTITULO22;
+	private Subtitulo subtitulo24 = Subtitulo.SUBTITULO24;
+	private Subtitulo subtitulo29 = Subtitulo.SUBTITULO29;
+
+	private String posicionCajaMesModificado;
+	private String mesModificado;
+	private List<ElementoModificadoVO> elementosModificadosSubtitulo21 = new ArrayList<ElementoModificadoVO>();
+	private List<ElementoModificadoVO> elementosModificadosSubtitulo22 = new ArrayList<ElementoModificadoVO>();
+	private List<ElementoModificadoVO> elementosModificadosSubtitulo24 = new ArrayList<ElementoModificadoVO>();
+	private List<ElementoModificadoVO> elementosModificadosSubtitulo29 = new ArrayList<ElementoModificadoVO>();
+
 	// Para mostrar los subtitulos según corresponda.
+	
+	
+	
+	private Integer rowIndexMonitoreoSubtituloComponent = 0;
+	private Long totalServiciosMarcosPresupuestarioMonitoreoSubtituloComponente;
+	private Long totalServiciosMontosTransferenciasMonitoreoSubtituloComponente;
+	private Long totalServiciosMontosConveniosMonitoreoSubtituloComponente;
+	private List<Long> totalServiciosMontosMesMonitoreoSubtituloComponente;
+	private Long totalMontosMensualesServicioMonitoreoSubtituloComponente;
+	private Subtitulo subtituloSeleccionado;
+	private Integer activeTab = 0;
+	private Boolean tablaModificada = false;
+	Map<Integer, List<Integer>> componentesPorSubtitulo;
+	Map<Integer, Subtitulo> tabSubtitulo = new HashMap<Integer, Subtitulo>();
+
 	private Boolean mostrarSubtitulo21;
 	private Boolean mostrarSubtitulo22;
 	private Boolean mostrarSubtitulo24;
 	private Boolean mostrarSubtitulo29;
 	private Boolean mostrarPercapita;
-	private List<SubtituloFlujoCajaVO> monitoreoSubtitulo21FlujoCajaVO;
+	private List<SubtituloFlujoCajaVO> monitoreoSubtitulo21FlujoCajaVO; 
 	private Integer rowIndexMonitoreoSubtitulo21 = 0;
 	private List<SubtituloFlujoCajaVO> monitoreoSubtitulo22FlujoCajaVO;
 	private Integer rowIndexMonitoreoSubtitulo22 = 0;
@@ -77,7 +167,8 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	private Integer rowIndexMonitoreoSubtitulo29 = 0;
 	private List<SubtituloFlujoCajaVO> monitoreoPercapitaFlujoCajaVO;
 	private Integer rowIndexMonitoreoPercapita = 0;
-	private List<SubtituloFlujoCajaVO> convenioRemesaSubtitulo21FlujoCajaVO;
+	
+	private List<SubtituloFlujoCajaVO> convenioRemesaSubtitulo21FlujoCajaVO; 
 	private List<SubtituloFlujoCajaVO> convenioRemesaSubtitulo22FlujoCajaVO;
 	private List<SubtituloFlujoCajaVO> convenioRemesaSubtitulo24FlujoCajaVO;
 	private List<SubtituloFlujoCajaVO> convenioRemesaSubtitulo29FlujoCajaVO;
@@ -89,9 +180,12 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	private String mesActual;
 	private Integer numMesActual;
 	
+	
 	private Long totalFinalServiciosPercapita;
-	private Long totalMontosMensualesServicioPercapita;
 	private List<Long> totalServiciosMontosMesPercapita;
+	private List<SubtituloFlujoCajaVO> estimacionFlujoMonitoreoPercapitaComponente;
+	
+	private List<SubtituloFlujoCajaVO> estimacionFlujoMonitoreoSubtituloComponente;
 	
 	private Long totalServiciosMarcosPresupuestariosSubtitulo21;
 	private Long totalServiciosMontosTransferenciasAcumuladasSubtitulo21;
@@ -141,176 +235,20 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	private List<Long> totalConvenioRemesaServiciosMontosMesSubtitulo29;
 	private Integer rowIndex29 = 0;
 
+	private Integer docProgramacion;
+	private Integer docPropuesta;
+	private Boolean iniciarFlujoCaja;
+
 	@EJB
 	private EstimacionFlujoCajaService estimacionFlujoCajaService;
 	@EJB
 	private ProgramasService programaService;
-
 	@EJB
 	private ServicioSaludService servicioSaludService;
-
-	@EJB
-	private DistribucionInicialPercapitaService distribucionInicialPercapitaService;
-	
 	@EJB
 	private CajaService cajaService;
-
-	private Integer docProgramacion;
-	private Integer docPropuesta;
-	
-	
-
-	/*
-	 * SUBTITULO 22
-	 */
-	private Integer valorComboSubtitulo22;
-
-	// Convenio Remesa
-	private Integer valorComboSubtitulo22Componente;
-	private Integer valorComboSubtitulo22Servicio;
-
-	/*
-	 * SUBTITULO 24
-	 */
-	private Integer valorComboSubtitulo24;
-	// Convenio Remesa
-	private Integer valorComboSubtitulo24Componente;
-	private Integer valorComboSubtitulo24Servicio;
-
-	/*
-	 * SUBTITULO 29
-	 */
-	private Integer valorComboSubtitulo29;
-
-	// Convenio Remesa
-	private Integer valorComboSubtitulo29Componente;
-	private Integer valorComboSubtitulo29Servicio;
-
-	/*
-	 * SUBTITULO X COMPONENTE
-	 */
-	private Integer valorComboSubtituloComponente;
-	private String valorNombreComponente;
-	private String valorPesoComponente;
-	
-
-	private String servicioSeleccionado;
-	private String comunaSeleccionada;
-	
-
-	
-	private Integer idDistribucionInicialPercapita;
-	private Integer idProgramaAnoPercapita;
-	
-
-	private List<ServiciosVO> servicios;
-	private List<ComunaVO> comunas;
-
-	public List<ServiciosVO> getServicios() {
-		if(this.servicios == null){
-			this.servicios = utilitariosService.getAllServicios();
-		}
-		return servicios;
-	}
-	
-	public void cargaComunas(){
-		if(servicioSeleccionado != null && !servicioSeleccionado.trim().isEmpty()){
-			comunas = utilitariosService.getComunasByServicio(Integer.parseInt(servicioSeleccionado));
-		}else{
-			comunas = new ArrayList<ComunaVO>();
-		}
-	}
-	
-
-	public Integer getIdDistribucionInicialPercapita() {
-		return idDistribucionInicialPercapita;
-	}
-
-	public void setIdDistribucionInicialPercapita(
-			Integer idDistribucionInicialPercapita) {
-		this.idDistribucionInicialPercapita = idDistribucionInicialPercapita;
-	}
-
-	public Integer getIdProgramaAnoPercapita() {
-		return idProgramaAnoPercapita;
-	}
-
-	public void setIdProgramaAnoPercapita(Integer idProgramaAnoPercapita) {
-		this.idProgramaAnoPercapita = idProgramaAnoPercapita;
-	}
-
-	public void setServicios(List<ServiciosVO> servicios) {
-		this.servicios = servicios;
-	}
-
-	public List<ComunaVO> getComunas() {
-		return comunas;
-	}
-
-	public void setComunas(List<ComunaVO> comunas) {
-		this.comunas = comunas;
-	}
-
-	public String getServicioSeleccionado() {
-		return servicioSeleccionado;
-	}
-
-	public void setServicioSeleccionado(String servicioSeleccionado) {
-		this.servicioSeleccionado = servicioSeleccionado;
-	}
-
-	public String getComunaSeleccionada() {
-		return comunaSeleccionada;
-	}
-
-	public void setComunaSeleccionada(String comunaSeleccionada) {
-		this.comunaSeleccionada = comunaSeleccionada;
-	}
-
-	/*
-	 * SUBTITULO 21
-	 */
-	private Integer valorComboServiciosSubtitulo21;
-
-	// Convenio Remesa
-	private Integer valorComboServiciosSubtitulo21Componente;
-	private Integer valorComboServiciosSubtitulo21Servicio;
-
-	public Integer getvalorComboServiciosSubtitulo21() {
-		return valorComboServiciosSubtitulo21;
-	}
-
-	public void setvalorComboServiciosSubtitulo21(
-			Integer valorComboServiciosSubtitulo21) {
-		this.valorComboServiciosSubtitulo21 = valorComboServiciosSubtitulo21;
-	}
-
-	public Integer getvalorComboServiciosSubtitulo21Componente() {
-		return valorComboServiciosSubtitulo21Componente;
-	}
-
-	public void setvalorComboServiciosSubtitulo21Componente(
-			Integer valorComboServiciosSubtitulo21Componente) {
-		this.valorComboServiciosSubtitulo21Componente = valorComboServiciosSubtitulo21Componente;
-	}
-
-	public Integer getvalorComboServiciosSubtitulo21Servicio() {
-		return valorComboServiciosSubtitulo21Servicio;
-	}
-
-	public void setvalorComboServiciosSubtitulo21Servicio(
-			Integer valorComboServiciosSubtitulo21Servicio) {
-		this.valorComboServiciosSubtitulo21Servicio = valorComboServiciosSubtitulo21Servicio;
-	}
-
-
-	public String getValorPesoComponente() {
-		return valorPesoComponente;
-	}
-
-	public void setValorPesoComponente(String valorPesoComponente) {
-		this.valorPesoComponente = valorPesoComponente;
-	}
+	@EJB
+	private DistribucionInicialPercapitaService distribucionInicialPercapitaService;
 
 
 
@@ -318,52 +256,91 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	 * ********************************* FIN VARIABLES
 	 */
 
-	public String finalizar() {
+	public String finalizar(){
 		setTarget("bandejaTareas");
 		this.reparos = false;
-		return super.enviar();
+		if(fromPage){
+			return iniciarProceso();
+		}else{
+			return super.enviar();
+		}
 	}
 
-	public String continuarProceso() {
-
-		// setIdLineaProgramatica(id);
-		setTarget("bandejaTareas");
-
-		// programaService.guardarEstadoFlujoCaja(EstadosProgramas.REVISADO.getId(),
-		// idLineaProgramatica);
-		return super.enviar();
-	}
-
-	public String conReparos() {
+	public String conReparos(){
 		setTarget("bandejaTareas");
 		this.reparos = true;
-		return super.enviar();
+		if(fromPage){
+			return iniciarProceso();
+		}else{
+			return super.enviar();
+		}
 	}
 
 	@PostConstruct
 	public void init() {
-
-		// Verificar si se esta modificando o esta iniciando un nuevo proceso.
-		if (sessionExpired()) {
+		
+		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
+			docPropuesta = (Integer) getTaskDataVO().getData().get("_idPlanillaMonitoreo");
+			System.out.println("docPropuesta --->" + docPropuesta);
+			fromPage = false;
+		}	
+		
+		if(docPropuesta == null){
+			docPropuesta = estimacionFlujoCajaService.generarPlanillaPropuestaConsolidador(getLoggedUsername());
+			//docPropuesta = 315765;
+		}
+		
+		if(sessionExpired()){
 			return;
 		}
+		
+		this.setIniciarFlujoCaja(false);
+		//TODO cambiar el set de idprogramaAno
+		this.setIdProgramaAno(20);
+		
+		System.out.println("idProgramaAno --->" + this.getIdProgramaAno());
+		setPrograma(programaService.getProgramaAno(this.getIdProgramaAno()));
+		TipoDocumentosProcesos tipoDocumentosProcesos = TipoDocumentosProcesos.getById(16);
+		this.docProgramacion = estimacionFlujoCajaService.getDocumentByTypProgramaAno(this.getIdProgramaAno(), tipoDocumentosProcesos).getId();
+		System.out.println("this.docProgramacion --> "+this.docProgramacion);
+		System.out.println("this.getIdProgramaAno() ---> "+this.getIdProgramaAno());
+		
+		if(getPrograma() != null){
+			setAnoActual(getPrograma().getAno());
+		}
+		
+		
+		this.idProgramaAnoPercapita= this.getIdProgramaAno();
+		this.idDistribucionInicialPercapita = distribucionInicialPercapitaService.ultimaDistribucionPercapita().getIdDistribucionInicialPercapita();
+		System.out.println("docProgramacion --->" + this.docProgramacion);
+		
+		System.out.println("iniciarFlujoCaja --->" + this.iniciarFlujoCaja);
+		
+		estimacionFlujoMonitoreoPercapitaComponente = estimacionFlujoCajaService.getPercapitaByProgramaAno(this.idProgramaAnoPercapita);
+		
 
-		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			Integer idProgramaAno = (Integer) getTaskDataVO().getData().get(
-					"_idProgramaAno");
-			this.programa = programaService.getProgramaAno(idProgramaAno);
-			this.docProgramacion = (Integer) getTaskDataVO().getData().get(
-					"_idPlanillaMonitoreo");
-			this.idDistribucionInicialPercapita = distribucionInicialPercapitaService.ultimaDistribucionPercapita().getIdDistribucionInicialPercapita();
-			System.out.println("idDistribucionInicialPercapita --> "+this.idDistribucionInicialPercapita);
-			this.idProgramaAnoPercapita= idProgramaAno;
-			System.out.println("idProgramaAno en controller --->" + idProgramaAno);
-			System.out.println("docProgramacion --->" + this.docProgramacion);
-			
+		String subtituloSeleccionado = getRequestParameter("subtituloSeleccionado");
+		if(subtituloSeleccionado != null){
+			setSubtituloSeleccionado(Subtitulo.getById(Integer.parseInt(subtituloSeleccionado)));
+			if(this.programa != null && this.programa.getComponentes() != null){
+				if(this.programa.getComponentes().size() == 1){
+					this.valorComboSubtituloComponente = this.programa.getComponentes().get(0).getId();
+					this.valorNombreComponente = this.programa.getComponentes().get(0).getNombre();
+					this.valorPesoComponente = ((this.programa.getComponentes().get(0).getPeso() == null) ? "0" : this.programa.getComponentes().get(0).getPeso().toString()) +"%";
+					List<Integer> idComponentes = new ArrayList<Integer>();
+					idComponentes.add(this.programa.getComponentes().get(0).getId());
+					estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
+							idComponentes, getSubtituloSeleccionado(), this.iniciarFlujoCaja);
+				}else{
+					this.valorComboSubtituloComponente = 0;
+					this.valorNombreComponente = "";
+					this.valorPesoComponente = ""; 
+					estimacionFlujoMonitoreoSubtituloComponente = new ArrayList<SubtituloFlujoCajaVO>();
+				}
+			}
 		}
 		// DOCUMENTOS
-		this.docPropuesta = estimacionFlujoCajaService
-				.getIdPlantillaPropuesta();
+		this.docPropuesta = estimacionFlujoCajaService.getIdPlantillaPropuesta();
 		crearColumnasDinamicas();
 		configurarVisibilidadPaneles();
 	}
@@ -374,420 +351,166 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 		mostrarSubtitulo24 = false;
 		mostrarSubtitulo29 = false;
 		mostrarPercapita = true;
-		
-
-		System.out.println("programa = " + getPrograma());
 		monitoreoPercapitaFlujoCajaVO = estimacionFlujoCajaService.getPercapitaByProgramaAno(this.idProgramaAnoPercapita);
-
+		componentesPorSubtitulo = new HashMap<Integer, List<Integer>>();
 		for (ComponentesVO componente : getPrograma().getComponentes()) {
-			for (SubtituloVO subtitulo : componente.getSubtitulos()) {
-				if (subtitulo.getId() == Subtitulo.SUBTITULO21.getId()) {
-					monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService
-							.getMonitoreoByProgramaAnoComponenteSubtitulo(
-									getPrograma().getIdProgramaAno(),
-									componente.getId(), Subtitulo.SUBTITULO21);
-					System.out
-							.println("monitoreoSubtitulo21FlujoCajaVO.size()-->"
-									+ monitoreoSubtitulo21FlujoCajaVO.size());
-					convenioRemesaSubtitulo21FlujoCajaVO = estimacionFlujoCajaService
-							.getConvenioRemesaByProgramaAnoComponenteSubtitulo(
-									getPrograma().getIdProgramaAno(),
-									componente.getId(), Subtitulo.SUBTITULO21);
-					System.out
-							.println("convenioRemesaSubtitulo21FlujoCajaVO.size()-->"
-									+ convenioRemesaSubtitulo21FlujoCajaVO
-											.size());
-					mostrarSubtitulo21 = true;
-				} else if (subtitulo.getId() == Subtitulo.SUBTITULO22.getId()) {
-					monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService
-							.getMonitoreoByProgramaAnoComponenteSubtitulo(
-									getPrograma().getIdProgramaAno(),
-									componente.getId(), Subtitulo.SUBTITULO22);
-					System.out
-							.println("monitoreoSubtitulo22FlujoCajaVO.size()-->"
-									+ monitoreoSubtitulo22FlujoCajaVO.size());
-					convenioRemesaSubtitulo22FlujoCajaVO = estimacionFlujoCajaService
-							.getConvenioRemesaByProgramaAnoComponenteSubtitulo(
-									getPrograma().getIdProgramaAno(),
-									componente.getId(), Subtitulo.SUBTITULO22);
-					System.out
-							.println("convenioRemesaSubtitulo22FlujoCajaVO.size()-->"
-									+ convenioRemesaSubtitulo22FlujoCajaVO
-											.size());
-					mostrarSubtitulo22 = true;
-				} else if (subtitulo.getId() == Subtitulo.SUBTITULO24.getId()) {
-					monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService
-							.getMonitoreoByProgramaAnoComponenteSubtitulo(
-									getPrograma().getIdProgramaAno(),
-									componente.getId(), Subtitulo.SUBTITULO24);
-					System.out
-							.println("monitoreoSubtitulo24FlujoCajaVO.size()-->"
-									+ monitoreoSubtitulo24FlujoCajaVO.size());
-					convenioRemesaSubtitulo24FlujoCajaVO = estimacionFlujoCajaService
-							.getConvenioRemesaByProgramaAnoComponenteSubtitulo(
-									getPrograma().getIdProgramaAno(),
-									componente.getId(), Subtitulo.SUBTITULO24);
-					System.out
-							.println("convenioRemesaSubtitulo24FlujoCajaVO.size()-->"
-									+ convenioRemesaSubtitulo24FlujoCajaVO
-											.size());
-					mostrarSubtitulo24 = true;
-				} else if (subtitulo.getId() == Subtitulo.SUBTITULO29.getId()) {
-					monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService
-							.getMonitoreoByProgramaAnoComponenteSubtitulo(
-									getPrograma().getIdProgramaAno(),
-									componente.getId(), Subtitulo.SUBTITULO29);
-					System.out
-							.println("monitoreoSubtitulo29FlujoCajaVO.size()-->"
-									+ monitoreoSubtitulo29FlujoCajaVO.size());
-					convenioRemesaSubtitulo29FlujoCajaVO = estimacionFlujoCajaService
-							.getConvenioRemesaByProgramaAnoComponenteSubtitulo(
-									getPrograma().getIdProgramaAno(),
-									componente.getId(), Subtitulo.SUBTITULO29);
-					System.out
-							.println("convenioRemesaSubtitulo29FlujoCajaVO.size()-->"
-									+ convenioRemesaSubtitulo29FlujoCajaVO
-											.size());
-					mostrarSubtitulo29 = true;
+			for(SubtituloVO subtitulo : componente.getSubtitulos()){
+				if(!componentesPorSubtitulo.containsKey(subtitulo.getId())){
+					List<Integer> componentes = new ArrayList<Integer>();
+					componentes.add(componente.getId());
+					componentesPorSubtitulo.put(subtitulo.getId(), componentes);
+				}else{
+					componentesPorSubtitulo.get(subtitulo.getId()).add(componente.getId());
 				}
-				
 			}
 		}
 
+		for (Map.Entry<Integer, List<Integer>> entry : componentesPorSubtitulo.entrySet()) { 
+			System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue()); 
+			if (entry.getKey().equals(Subtitulo.SUBTITULO21.getId())){
+				monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
+					convenioRemesaSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO21);
+					System.out.println("convenioRemesaSubtitulo21FlujoCajaVO.size()-->" + convenioRemesaSubtitulo21FlujoCajaVO.size());
+				}
+				System.out.println("monitoreoSubtitulo21FlujoCajaVO.size()-->"+monitoreoSubtitulo21FlujoCajaVO.size());
+				mostrarSubtitulo21 = true;
+			}else if (entry.getKey().equals(Subtitulo.SUBTITULO22.getId())){
+				monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
+					convenioRemesaSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO22);
+					System.out.println("convenioRemesaSubtitulo22FlujoCajaVO.size()-->" + convenioRemesaSubtitulo22FlujoCajaVO.size());
+				}
+				mostrarSubtitulo22 = true;
+			}else if (entry.getKey().equals(Subtitulo.SUBTITULO24.getId())){
+				monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
+					convenioRemesaSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO24);
+					System.out.println("convenioRemesaSubtitulo24FlujoCajaVO.size()-->" + convenioRemesaSubtitulo24FlujoCajaVO.size());
+				}
+				mostrarSubtitulo24 = true;
+			}else if (entry.getKey().equals(Subtitulo.SUBTITULO29.getId())){
+				monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
+					convenioRemesaSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO29);
+					System.out.println("convenioRemesaSubtitulo29FlujoCajaVO.size()-->" + convenioRemesaSubtitulo29FlujoCajaVO.size());
+				}
+				mostrarSubtitulo29 = true;
+			}
+		}
+		Integer currentTab = 0;
+		if(mostrarSubtitulo21){
+			tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO21);
+		}
+		if(mostrarSubtitulo22){
+			tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO22);
+		}
+		if(mostrarSubtitulo24){
+			tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO24);
+		}
+		if(mostrarSubtitulo29){
+			tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO29);
+		}
 	}
 
 	public void guardarSubtitulo21() {
-		System.out.println("guardarSubtitulo21");
+		System.out.println("Iniciar guardarSubtitulo21");
+		System.out.println("elementosModificadosSubtitulo21.size()="+elementosModificadosSubtitulo21.size());
+		boolean actualizaOK = false;
+		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo21){
+			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo21FlujoCajaVO.get(elemento.getPosicionElemento());
+			List<CajaMontoSummaryVO> cajaMontos = subtituloFlujoCajaVO.getCajaMontos();
+			for(CajaMontoSummaryVO cajaMonto : cajaMontos){
+				if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
+					System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
+					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO21);
+					actualizaOK = true;
+					break;
+				}
+			}
+		}
+		if(actualizaOK){
+			elementosModificadosSubtitulo21.clear();
+			setTablaModificada(false);
+		}
+		System.out.println("Fin guardarSubtitulo21");
 	}
 
 	public void guardarSubtitulo22() {
-		System.out.println("guardarSubtitulo22");
+		System.out.println("Iniciar guardarSubtitulo22");
+		System.out.println("elementosModificadosSubtitulo22.size()="+elementosModificadosSubtitulo22.size());
+		boolean actualizaOK = false;
+		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo22){
+			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo22FlujoCajaVO.get(elemento.getPosicionElemento());
+			List<CajaMontoSummaryVO> cajaMontos = subtituloFlujoCajaVO.getCajaMontos();
+			for(CajaMontoSummaryVO cajaMonto : cajaMontos){
+				if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
+					System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
+					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO22);
+					actualizaOK = true;
+					break;
+				}
+			}
+		}
+		if(actualizaOK){
+			elementosModificadosSubtitulo22.clear();
+			setTablaModificada(false);
+		}
+		System.out.println("Fin guardarSubtitulo22");
 	}
 
 	public void guardarSubtitulo24() {
-		System.out.println("guardarSubtitulo24");
+		System.out.println("Iniciar guardarSubtitulo24");
+		System.out.println("elementosModificadosSubtitulo24.size()="+elementosModificadosSubtitulo24.size());
+		boolean actualizaOK = false;
+		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo24){
+			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo24FlujoCajaVO.get(elemento.getPosicionElemento());
+			List<CajaMontoSummaryVO> cajaMontos = subtituloFlujoCajaVO.getCajaMontos();
+			for(CajaMontoSummaryVO cajaMonto : cajaMontos){
+				if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
+					System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
+					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO24);
+					actualizaOK = true;
+					break;
+				}
+			}
+		}
+		if(actualizaOK){
+			elementosModificadosSubtitulo24.clear();
+			setTablaModificada(false);
+		}
+		System.out.println("Fin guardarSubtitulo24");
 	}
 
 	public void guardarSubtitulo29() {
-		System.out.println("guardarSubtitulo29");
+		System.out.println("Iniciar guardarSubtitulo29");
+		System.out.println("elementosModificadosSubtitulo29.size()="+elementosModificadosSubtitulo29.size());
+		boolean actualizaOK = false;
+		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo29){
+			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo29FlujoCajaVO.get(elemento.getPosicionElemento());
+			List<CajaMontoSummaryVO> cajaMontos = subtituloFlujoCajaVO.getCajaMontos();
+			for(CajaMontoSummaryVO cajaMonto : cajaMontos){
+				if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
+					System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
+					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO29);
+					actualizaOK = true;
+					break;
+				}
+			}
+		}
+		if(actualizaOK){
+			elementosModificadosSubtitulo29.clear();
+			setTablaModificada(false);
+		}
+		System.out.println("Fin guardarSubtitulo29");
 	}
 
-	public void onCellEditSubtitulo21(CellEditEvent event) {
-
-		UIColumn col = (UIColumn) event.getColumn();
-		DataTable o = (DataTable) event.getSource();
-
-		CajaVO info = (CajaVO) o.getRowData();
-
-		Object oldValue = event.getOldValue();
-		Object newValue = event.getNewValue();
-
-		if (newValue != null && !newValue.equals(oldValue)) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cell Changed", "Old: " + oldValue + ", New:" + newValue);
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-
-		/*
-		 * CajaVO monitore_borrar = new CajaVO();
-		 * 
-		 * for (CajaVO monitoreo_actual : listadoMonitoreoSubtitulo21) {
-		 * 
-		 * if (info.getId() == monitoreo_actual.getId()) { monitore_borrar =
-		 * monitoreo_actual; break; }
-		 * 
-		 * }
-		 * 
-		 * listadoMonitoreoSubtitulo21.remove(monitore_borrar);
-		 * listadoMonitoreoSubtitulo21.add(info);
-		 * 
-		 * estimacionFlujoMonitoreoGlobalPojoSubtitulo21
-		 * .setCaja(listadoMonitoreoSubtitulo21);
-		 */
-
+	public Integer getValorComboPercapita() {
+		return valorComboPercapita;
 	}
 
-	public void onCellEditSubtitulo21ConvenioRemesa(CellEditEvent event) {
-
-		UIColumn col = (UIColumn) event.getColumn();
-		DataTable o = (DataTable) event.getSource();
-
-		CajaVO info = (CajaVO) o.getRowData();
-
-		Object oldValue = event.getOldValue();
-		Object newValue = event.getNewValue();
-
-		if (newValue != null && !newValue.equals(oldValue)) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cell Changed", "Old: " + oldValue + ", New:" + newValue);
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-
-		CajaVO monitore_borrar = new CajaVO();
-
-		/*
-		 * for (CajaVO monitoreo_actual :
-		 * listadoMonitoreoSubtitulo21ConvenioRemesa) {
-		 * 
-		 * if (info.getId() == monitoreo_actual.getId()) { monitore_borrar =
-		 * monitoreo_actual; break; }
-		 * 
-		 * }
-		 * 
-		 * listadoMonitoreoSubtitulo21ConvenioRemesa.remove(monitore_borrar);
-		 * listadoMonitoreoSubtitulo21ConvenioRemesa.add(info);
-		 * 
-		 * estimacionFlujoMonitoreoGlobalPojoSubtitulo21ConvenioRemesa
-		 * .setCaja(listadoMonitoreoSubtitulo21ConvenioRemesa);
-		 */
-
-	}
-
-	/*
-	 * Modificación de la celda
-	 */
-	public void onCellEditSubtitulo22(CellEditEvent event) {
-
-		UIColumn col = (UIColumn) event.getColumn();
-		DataTable o = (DataTable) event.getSource();
-
-		CajaVO info = (CajaVO) o.getRowData();
-
-		Object oldValue = event.getOldValue();
-		Object newValue = event.getNewValue();
-
-		if (newValue != null && !newValue.equals(oldValue)) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cell Changed", "Old: " + oldValue + ", New:" + newValue);
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-
-		/*
-		 * CajaVO monitore_borrar = new CajaVO();
-		 * 
-		 * for (CajaVO monitoreo_actual : listadoMonitoreoSubtitulo22) {
-		 * 
-		 * if (info.getId() == monitoreo_actual.getId()) { monitore_borrar =
-		 * monitoreo_actual; break; }
-		 * 
-		 * }
-		 * 
-		 * listadoMonitoreoSubtitulo22.remove(monitore_borrar);
-		 * listadoMonitoreoSubtitulo22.add(info);
-		 * 
-		 * estimacionFlujoMonitoreoGlobalPojoSubtitulo22
-		 * .setCaja(listadoMonitoreoSubtitulo22);
-		 * 
-		 * // MODIFICAR LA LISTA ORIGINAL
-		 * 
-		 * List<CajaVO> lst_monitore_borrar = new ArrayList<CajaVO>();
-		 * List<CajaVO> lst_monitore_agregar = new ArrayList<CajaVO>(); for
-		 * (CajaVO monitoreo_actual : listadoMonitoreoSubtitulo22) { for (CajaVO
-		 * estimacionFlujoMonitoreoPojo :
-		 * estimacionFlujoMonitoreoGlobalPojoSubtitulo22Original .getCaja()) {
-		 * 
-		 * if (estimacionFlujoMonitoreoPojo.getId() == monitoreo_actual
-		 * .getId()) { lst_monitore_borrar.add(estimacionFlujoMonitoreoPojo);
-		 * lst_monitore_agregar.add(monitoreo_actual); } }
-		 * 
-		 * }
-		 * 
-		 * for (CajaVO estimacionFlujoMonitoreoPojo : lst_monitore_borrar) {
-		 * estimacionFlujoMonitoreoGlobalPojoSubtitulo22Original
-		 * .getCaja().remove( estimacionFlujoMonitoreoPojo); }
-		 * 
-		 * for (CajaVO estimacionFlujoMonitoreoPojo : lst_monitore_agregar) {
-		 * estimacionFlujoMonitoreoGlobalPojoSubtitulo22Original .getCaja().add(
-		 * estimacionFlujoMonitoreoPojo); }
-		 * 
-		 * Collections.sort(estimacionFlujoMonitoreoGlobalPojoSubtitulo22
-		 * .getCaja(), Collections.reverseOrder());
-		 */
-
-	}
-
-	/*
-	 * Modificación de la celda
-	 */
-	public void onCellEditSubtitulo24(CellEditEvent event) {
-
-		UIColumn col = (UIColumn) event.getColumn();
-		DataTable o = (DataTable) event.getSource();
-
-		CajaVO info = (CajaVO) o.getRowData();
-
-		Object oldValue = event.getOldValue();
-		Object newValue = event.getNewValue();
-
-		if (newValue != null && !newValue.equals(oldValue)) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cell Changed", "Old: " + oldValue + ", New:" + newValue);
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-
-		// listadoServicios2.add(info);
-
-		/*
-		 * CajaVO monitore_borrar = new CajaVO();
-		 * 
-		 * for (CajaVO monitoreo_actual : listadoMonitoreoSubtitulo24) {
-		 * 
-		 * if (info.getId() == monitoreo_actual.getId()) { monitore_borrar =
-		 * monitoreo_actual; break; }
-		 * 
-		 * }
-		 * 
-		 * listadoMonitoreoSubtitulo24.remove(monitore_borrar);
-		 * listadoMonitoreoSubtitulo24.add(info);
-		 * 
-		 * estimacionFlujoMonitoreoGlobalPojoSubtitulo24
-		 * .setCaja(listadoMonitoreoSubtitulo24);
-		 * 
-		 * // MODIFICAR LA LISTA ORIGINAL
-		 * 
-		 * List<CajaVO> lst_monitore_borrar = new ArrayList<CajaVO>();
-		 * List<CajaVO> lst_monitore_agregar = new ArrayList<CajaVO>(); for
-		 * (CajaVO monitoreo_actual : listadoMonitoreoSubtitulo24) { for (CajaVO
-		 * estimacionFlujoMonitoreoPojo :
-		 * estimacionFlujoMonitoreoGlobalPojoSubtitulo24Original .getCaja()) {
-		 * 
-		 * if (estimacionFlujoMonitoreoPojo.getId() == monitoreo_actual
-		 * .getId()) { lst_monitore_borrar.add(estimacionFlujoMonitoreoPojo);
-		 * lst_monitore_agregar.add(monitoreo_actual); } }
-		 * 
-		 * }
-		 * 
-		 * for (CajaVO estimacionFlujoMonitoreoPojo : lst_monitore_borrar) {
-		 * estimacionFlujoMonitoreoGlobalPojoSubtitulo24Original
-		 * .getCaja().remove( estimacionFlujoMonitoreoPojo); }
-		 * 
-		 * for (CajaVO estimacionFlujoMonitoreoPojo : lst_monitore_agregar) {
-		 * estimacionFlujoMonitoreoGlobalPojoSubtitulo24Original .getCaja().add(
-		 * estimacionFlujoMonitoreoPojo); }
-		 */
-
-	}
-
-	public void onCellEditSubtitulo29(CellEditEvent event) {
-
-		UIColumn col = (UIColumn) event.getColumn();
-		DataTable o = (DataTable) event.getSource();
-
-		CajaVO info = (CajaVO) o.getRowData();
-
-		Object oldValue = event.getOldValue();
-		Object newValue = event.getNewValue();
-
-		if (newValue != null && !newValue.equals(oldValue)) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cell Changed", "Old: " + oldValue + ", New:" + newValue);
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-
-		// listadoServicios2.add(info);
-
-		CajaVO monitore_borrar = new CajaVO();
-
-		/*
-		 * for (CajaVO monitoreo_actual : listadoMonitoreoSubtitulo29) {
-		 * 
-		 * if (info.getId() == monitoreo_actual.getId()) { monitore_borrar =
-		 * monitoreo_actual; break; }
-		 * 
-		 * }
-		 * 
-		 * listadoMonitoreoSubtitulo29.remove(monitore_borrar);
-		 * listadoMonitoreoSubtitulo29.add(info);
-		 * 
-		 * estimacionFlujoMonitoreoGlobalPojoSubtitulo29
-		 * .setCaja(listadoMonitoreoSubtitulo29);
-		 * 
-		 * // MODIFICAR LA LISTA ORIGINAL
-		 * 
-		 * List<CajaVO> lst_monitore_borrar = new ArrayList<CajaVO>();
-		 * List<CajaVO> lst_monitore_agregar = new ArrayList<CajaVO>(); for
-		 * (CajaVO monitoreo_actual : listadoMonitoreoSubtitulo29) { for (CajaVO
-		 * estimacionFlujoMonitoreoPojo :
-		 * estimacionFlujoMonitoreoGlobalPojoSubtitulo29Original .getCaja()) {
-		 * 
-		 * if (estimacionFlujoMonitoreoPojo.getId() == monitoreo_actual
-		 * .getId()) { lst_monitore_borrar.add(estimacionFlujoMonitoreoPojo);
-		 * lst_monitore_agregar.add(monitoreo_actual); } }
-		 * 
-		 * }
-		 * 
-		 * for (CajaVO estimacionFlujoMonitoreoPojo : lst_monitore_borrar) {
-		 * estimacionFlujoMonitoreoGlobalPojoSubtitulo29Original
-		 * .getCaja().remove( estimacionFlujoMonitoreoPojo); }
-		 * 
-		 * for (CajaVO estimacionFlujoMonitoreoPojo : lst_monitore_agregar) {
-		 * estimacionFlujoMonitoreoGlobalPojoSubtitulo29Original .getCaja().add(
-		 * estimacionFlujoMonitoreoPojo); }
-		 */
-
-	}
-
-	/*
-	 * Modificación de la celda
-	 */
-	public void onCellEditSubtituloComponente(CellEditEvent event) {
-
-		UIColumn col = (UIColumn) event.getColumn();
-		DataTable o = (DataTable) event.getSource();
-
-		CajaVO info = (CajaVO) o.getRowData();
-
-		Object oldValue = event.getOldValue();
-		Object newValue = event.getNewValue();
-
-		if (newValue != null && !newValue.equals(oldValue)) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Cell Changed", "Old: " + oldValue + ", New:" + newValue);
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-
-		// listadoServicios2.add(info);
-
-		CajaVO monitore_borrar = new CajaVO();
-
-		/*
-		 * for (CajaVO monitoreo_actual : listadoMonitoreoSubtituloComponente) {
-		 * 
-		 * if (info.getId() == monitoreo_actual.getId()) { monitore_borrar =
-		 * monitoreo_actual; break; }
-		 * 
-		 * }
-		 * 
-		 * listadoMonitoreoSubtituloComponente.remove(monitore_borrar);
-		 * listadoMonitoreoSubtituloComponente.add(info);
-		 * 
-		 * estimacionFlujoMonitoreoGlobalPojoSubtituloComponente
-		 * .setCaja(listadoMonitoreoSubtituloComponente);
-		 * 
-		 * // MODIFICAR LA LISTA ORIGINAL
-		 * 
-		 * List<CajaVO> lst_monitore_borrar = new ArrayList<CajaVO>();
-		 * List<CajaVO> lst_monitore_agregar = new ArrayList<CajaVO>(); for
-		 * (CajaVO monitoreo_actual : listadoMonitoreoSubtituloComponente) { for
-		 * (CajaVO estimacionFlujoMonitoreoPojo :
-		 * estimacionFlujoMonitoreoGlobalPojoSubtituloComponenteOriginal
-		 * .getCaja()) {
-		 * 
-		 * if (estimacionFlujoMonitoreoPojo.getId() == monitoreo_actual
-		 * .getId()) { lst_monitore_borrar.add(estimacionFlujoMonitoreoPojo);
-		 * lst_monitore_agregar.add(monitoreo_actual); } }
-		 * 
-		 * }
-		 * 
-		 * for (CajaVO estimacionFlujoMonitoreoPojo : lst_monitore_borrar) {
-		 * estimacionFlujoMonitoreoGlobalPojoSubtituloComponenteOriginal
-		 * .getCaja().remove( estimacionFlujoMonitoreoPojo); }
-		 * 
-		 * for (CajaVO estimacionFlujoMonitoreoPojo : lst_monitore_agregar) {
-		 * estimacionFlujoMonitoreoGlobalPojoSubtituloComponenteOriginal
-		 * .getCaja().add( estimacionFlujoMonitoreoPojo); }
-		 */
-
+	public void setValorComboPercapita(Integer valorComboPercapita) {
+		this.valorComboPercapita = valorComboPercapita;
 	}
 
 	public Integer getValorComboSubtitulo22() {
@@ -797,9 +520,44 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	public void setValorComboSubtitulo22(Integer valorComboSubtitulo22) {
 		this.valorComboSubtitulo22 = valorComboSubtitulo22;
 	}
+	
+	public Integer getValorComboSubtituloServicio() {
+		return valorComboSubtituloServicio;
+	}
+
+	public void setValorComboSubtituloServicio(Integer valorComboSubtituloServicio) {
+		this.valorComboSubtituloServicio = valorComboSubtituloServicio;
+	}
+
+	public Integer getValorComboSubtitulo21Componente() {
+		return valorComboSubtitulo21Componente;
+	}
+
+	public void setValorComboSubtitulo21Componente(
+			Integer valorComboSubtitulo21Componente) {
+		this.valorComboSubtitulo21Componente = valorComboSubtitulo21Componente;
+	}
+	
+	public Integer getValorComboPrograma() {
+		return valorComboPrograma;
+	}
+
+	public void setValorComboPrograma(
+			Integer valorComboPrograma) {
+		this.valorComboPrograma = valorComboPrograma;
+	}
+
+	public Integer getValorComboSubtitulo21Servicio() {
+		return valorComboSubtitulo21Servicio;
+	}
+
+	public void setValorComboSubtitulo21Servicio(
+			Integer valorComboSubtitulo21Servicio) {
+		this.valorComboSubtitulo21Servicio = valorComboSubtitulo21Servicio;
+	}
 
 	public String getMesActual() {
-		if (mesActual == null) {
+		if(mesActual == null){
 			mesActual = estimacionFlujoCajaService.getMesCurso(false);
 		}
 		return mesActual;
@@ -810,7 +568,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Integer getAnoActual() {
-		if (anoActual == null) {
+		if(anoActual == null){
 			anoActual = estimacionFlujoCajaService.getAnoCurso();
 		}
 		return anoActual;
@@ -847,6 +605,29 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	public List<ColumnaVO> getColumnsInicial() {
 		return columnsInicial;
 	}
+	
+	public List<ProgramaVO> getProgramas() {
+		if(programas == null){
+			programas = programaService.getProgramasByUserAno(getLoggedUsername(), anoActual); //getProgramasByUser(getLoggedUsername());
+		}
+		return programas;
+	}
+
+	public void setProgramas(List<ProgramaVO> programas) {
+		this.programas = programas;
+	}
+
+	public List<ServiciosVO> getServicios() {
+		if(servicios == null){
+			servicios = servicioSaludService.getAllServiciosVO();
+		}
+		return servicios;
+	}
+
+	public void setServicios(List<ServiciosVO> servicios) {
+		this.servicios = servicios;
+	}
+
 
 	public void setColumnsInicial(List<ColumnaVO> columnsInicial) {
 		this.columnsInicial = columnsInicial;
@@ -910,6 +691,23 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 		return valorComboSubtituloComponente;
 	}
 
+	public void setValorComboSubtituloComponente(
+			Integer valorComboSubtituloComponente) {
+		this.valorComboSubtituloComponente = valorComboSubtituloComponente;
+	}
+	
+	public Long getTotalFinalServiciosPercapita() {
+		this.totalFinalServiciosPercapita = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoPercapitaFlujoCajaVO){
+			this.totalFinalServiciosPercapita += subtituloFlujoCajaVO.getTotalMontos();
+		}
+		return totalFinalServiciosPercapita;
+	}
+
+	public void setTotalFinalServiciosPercapita(Long totalFinalServiciosPercapita) {
+		this.totalFinalServiciosPercapita = totalFinalServiciosPercapita;
+	}
+
 	public String getDocIdDownload() {
 		return docIdDownload;
 	}
@@ -932,6 +730,14 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 
 	public void setDocPropuesta(Integer docPropuesta) {
 		this.docPropuesta = docPropuesta;
+	}
+
+	public Boolean getMostrarPercapita() {
+		return mostrarPercapita;
+	}
+
+	public void setMostrarPercapita(Boolean mostrarPercapita) {
+		this.mostrarPercapita = mostrarPercapita;
 	}
 
 	public Boolean getMostrarSubtitulo21() {
@@ -965,14 +771,6 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	public void setMostrarSubtitulo29(Boolean mostrarSubtitulo29) {
 		this.mostrarSubtitulo29 = mostrarSubtitulo29;
 	}
-	
-	public Boolean getMostrarPercapita() {
-		return mostrarPercapita;
-	}
-
-	public void setMostrarPercapita(Boolean mostrarPercapita) {
-		this.mostrarPercapita = mostrarPercapita;
-	}
 
 	public String getValorNombreComponente() {
 		return valorNombreComponente;
@@ -990,36 +788,37 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	 */
 	public void crearColumnasDinamicas() {
 		columns = new ArrayList<ColumnaVO>();
-		Integer mes = Integer.parseInt(estimacionFlujoCajaService
-				.getMesCurso(true));
-		for (int i = mes; i < 13; i++) {
-			String nombreMes = Util.obtenerNombreMes(i);
-			if (i == mes) {
-				columns.add(new ColumnaVO(nombreMes, "Real", nombreMes
-						.toLowerCase()));
-			} else {
-				columns.add(new ColumnaVO(nombreMes, "Estimad.", nombreMes
-						.toLowerCase()));
+		Integer mes = getNumMesActual();
+		if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
+			if(mes > 1){
+				mes -=1;
+			}
+			for (int i = mes; i < 13; i++) {
+				String nombreMes = Util.obtenerNombreMes(i);
+				if (i == mes) {
+					columns.add(new ColumnaVO(nombreMes, "Real", nombreMes.toLowerCase()));
+				} else {
+					columns.add(new ColumnaVO(nombreMes, "Estimad.", nombreMes.toLowerCase()));
+				}
+			}
+			columnsInicial = new ArrayList<ColumnaVO>();
+			if(mes > 0){
+				mes -=1;
+			}
+			System.out.println("mes->"+mes);
+			for (int i = 1; i <= mes; i++) {
+				String nombreMes = Util.obtenerNombreMes(i);
+				columnsInicial.add(new ColumnaVO(nombreMes, "Real", nombreMes.toLowerCase()));
+			}
+		}else{
+			mes = 1;
+			for (int i = mes; i < 13; i++) {
+				String nombreMes = Util.obtenerNombreMes(i);
+				columns.add(new ColumnaVO(nombreMes, "Estimad.", nombreMes.toLowerCase()));
 			}
 		}
-		columnsInicial = new ArrayList<ColumnaVO>();
-		for (int i = 1; i < mes; i++) {
-			String nombreMes = Util.obtenerNombreMes(i);
-			columnsInicial.add(new ColumnaVO(nombreMes, "Real", nombreMes
-					.toLowerCase()));
-		}
 
 	}
-	
-	public void crearColumnasPercapita() {
-		columns = new ArrayList<ColumnaVO>();
-		for (int i = 1; i < 13; i++) {
-			String nombreMes = Util.obtenerNombreMes(i);
-			columns.add(new ColumnaVO(nombreMes, "Real", nombreMes.toLowerCase()));			
-		}
-
-	}
-	
 
 	/* Descargar Archivos */
 	public String downloadTemplate() {
@@ -1039,7 +838,23 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 
 	@Override
 	public String iniciarProceso() {
-		return null;
+		String success = "bandejaTareas";
+		Long procId = iniciarProceso(BusinessProcess.ESTIMACIONFLUJOCAJACONSOLIDADOR);
+		System.out.println("procId-->" + procId);
+		if (procId == null) {
+			success = null;
+		} else {
+			TaskVO task = getUserTasksByProcessId(procId, getSessionBean()
+					.getUsername());
+			if (task != null) {
+				TaskDataVO taskDataVO = getTaskData(task.getId());
+				if (taskDataVO != null) {
+					System.out.println("taskDataVO recuperada=" + taskDataVO);
+					setOnSession("taskDataSeleccionada", taskDataVO);
+				}
+			}
+		}
+		return success;
 	}
 
 	public ProgramaVO getPrograma() {
@@ -1080,11 +895,6 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	public List<SubtituloFlujoCajaVO> getMonitoreoSubtitulo29FlujoCajaVO() {
 		return monitoreoSubtitulo29FlujoCajaVO;
 	}
-
-	public void setMonitoreoSubtitulo29FlujoCajaVO(
-			List<SubtituloFlujoCajaVO> monitoreoSubtitulo29FlujoCajaVO) {
-		this.monitoreoSubtitulo29FlujoCajaVO = monitoreoSubtitulo29FlujoCajaVO;
-	}
 	
 	public List<SubtituloFlujoCajaVO> getMonitoreoPercapitaFlujoCajaVO() {
 		return monitoreoPercapitaFlujoCajaVO;
@@ -1093,6 +903,11 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	public void setMonitoreoPercapitaFlujoCajaVO(
 			List<SubtituloFlujoCajaVO> monitoreoPercapitaFlujoCajaVO) {
 		this.monitoreoPercapitaFlujoCajaVO = monitoreoPercapitaFlujoCajaVO;
+	}
+
+	public void setMonitoreoSubtitulo29FlujoCajaVO(
+			List<SubtituloFlujoCajaVO> monitoreoSubtitulo29FlujoCajaVO) {
+		this.monitoreoSubtitulo29FlujoCajaVO = monitoreoSubtitulo29FlujoCajaVO;
 	}
 
 	public List<SubtituloFlujoCajaVO> getConvenioRemesaSubtitulo21FlujoCajaVO() {
@@ -1140,104 +955,9 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Long getTotalServiciosMarcosPresupuestariosSubtitulo21() {
-		if (this.totalServiciosMarcosPresupuestariosSubtitulo21 == null) {
-			this.totalServiciosMarcosPresupuestariosSubtitulo21 = 0L;
-			this.totalServiciosMontosTransferenciasAcumuladasSubtitulo21 = 0L;
-			this.totalServiciosMontosConveniosSubtitulo21 = 0L;
-			this.totalMontosMensualesServicioSubtitulo21 = 0L;
-			for (SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo21FlujoCajaVO) {
-				System.out.println("*********subtituloFlujoCajaVO-->"
-						+ subtituloFlujoCajaVO);
-				if (this.totalServiciosMontosMesSubtitulo21 == null) {
-					this.totalServiciosMontosMesSubtitulo21 = new ArrayList<Long>(
-							Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L,
-									0L, 0L, 0L));
-					for (int i = 0; i < subtituloFlujoCajaVO.getCajaMontos()
-							.size(); i++) {
-						totalServiciosMontosMesSubtitulo21
-								.set(i, (totalServiciosMontosMesSubtitulo21
-										.get(i) + subtituloFlujoCajaVO
-										.getCajaMontos().get(i).getMontoMes()));
-					}
-				}
-				this.totalServiciosMarcosPresupuestariosSubtitulo21 += subtituloFlujoCajaVO
-						.getMarcoPresupuestario();
-				this.totalServiciosMontosTransferenciasAcumuladasSubtitulo21 += subtituloFlujoCajaVO
-						.getTransferenciaAcumulada().getMonto();
-				this.totalServiciosMontosConveniosSubtitulo21 += subtituloFlujoCajaVO
-						.getConvenioRecibido().getMonto();
-				this.totalMontosMensualesServicioSubtitulo21 += subtituloFlujoCajaVO
-						.getTotalMontos();
-			}
-		}
-		return totalServiciosMarcosPresupuestariosSubtitulo21;
-	}
-	
-	public Long getTotalesServiciosPercapita() {
-		if (this.totalFinalServiciosPercapita == null) {
-			this.totalFinalServiciosPercapita = 0L;
-			this.totalMontosMensualesServicioPercapita = 0L;
-			for (SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoPercapitaFlujoCajaVO) {
-				System.out.println("*********Per Cápita subtituloFlujoCajaVO-->"
-						+ subtituloFlujoCajaVO);
-				if (this.totalServiciosMontosMesPercapita == null) {
-					this.totalServiciosMontosMesPercapita = new ArrayList<Long>(
-							Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L,
-									0L, 0L, 0L));
-					for (int i = 0; i < subtituloFlujoCajaVO.getCajaMontos()
-							.size(); i++) {
-						totalServiciosMontosMesPercapita
-								.set(i, (totalServiciosMontosMesPercapita
-										.get(i) + subtituloFlujoCajaVO
-										.getCajaMontos().get(i).getMontoMes()));
-					}
-				}
-				this.totalFinalServiciosPercapita += subtituloFlujoCajaVO
-						.getMarcoPresupuestario();
-				this.totalMontosMensualesServicioPercapita += subtituloFlujoCajaVO
-						.getTotalMontos();
-			}
-		}
-		return totalFinalServiciosPercapita;
-	}
-	
-	
-	
-
-	public Long filtrarTotalServiciosMarcosPresupuestariosSubtitulo21() {
-		if (this.totalServiciosMarcosPresupuestariosSubtitulo21 == null) {
-			this.totalServiciosMarcosPresupuestariosSubtitulo21 = 0L;
-			this.totalServiciosMontosTransferenciasAcumuladasSubtitulo21 = 0L;
-			this.totalServiciosMontosConveniosSubtitulo21 = 0L;
-			this.totalMontosMensualesServicioSubtitulo21 = 0L;
-			for (SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo21FlujoCajaVO) {
-				System.out.println("*********subtituloFlujoCajaVO-->"
-						+ subtituloFlujoCajaVO);
-				if (this.totalServiciosMontosMesSubtitulo21 == null) {
-					this.totalServiciosMontosMesSubtitulo21 = new ArrayList<Long>(
-							Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L,
-									0L, 0L, 0L));
-					for (int i = 0; i < subtituloFlujoCajaVO.getCajaMontos()
-							.size(); i++) {
-						if (this.valorComboServiciosSubtitulo21
-								.equals(subtituloFlujoCajaVO.getServicio())) {
-							totalServiciosMontosMesSubtitulo21
-									.set(i, (totalServiciosMontosMesSubtitulo21
-											.get(i) + subtituloFlujoCajaVO
-											.getCajaMontos().get(i)
-											.getMontoMes()));
-						}
-					}
-				}
-				this.totalServiciosMarcosPresupuestariosSubtitulo21 += subtituloFlujoCajaVO
-						.getMarcoPresupuestario();
-				this.totalServiciosMontosTransferenciasAcumuladasSubtitulo21 += subtituloFlujoCajaVO
-						.getTransferenciaAcumulada().getMonto();
-				this.totalServiciosMontosConveniosSubtitulo21 += subtituloFlujoCajaVO
-						.getConvenioRecibido().getMonto();
-				this.totalMontosMensualesServicioSubtitulo21 += subtituloFlujoCajaVO
-						.getTotalMontos();
-			}
+		this.totalServiciosMarcosPresupuestariosSubtitulo21 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo21FlujoCajaVO){
+			this.totalServiciosMarcosPresupuestariosSubtitulo21 += subtituloFlujoCajaVO.getMarcoPresupuestario();
 		}
 		return totalServiciosMarcosPresupuestariosSubtitulo21;
 	}
@@ -1248,6 +968,10 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Long getTotalServiciosMontosTransferenciasAcumuladasSubtitulo21() {
+		this.totalServiciosMontosTransferenciasAcumuladasSubtitulo21 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo21FlujoCajaVO){
+			this.totalServiciosMontosTransferenciasAcumuladasSubtitulo21 += subtituloFlujoCajaVO.getTransferenciaAcumulada().getMonto();
+		}
 		return totalServiciosMontosTransferenciasAcumuladasSubtitulo21;
 	}
 
@@ -1257,6 +981,10 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Long getTotalServiciosMontosConveniosSubtitulo21() {
+		this.totalServiciosMontosConveniosSubtitulo21 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo21FlujoCajaVO){
+			this.totalServiciosMontosConveniosSubtitulo21 += subtituloFlujoCajaVO.getConvenioRecibido().getMonto();
+		}
 		return totalServiciosMontosConveniosSubtitulo21;
 	}
 
@@ -1266,8 +994,17 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public List<Long> getTotalServiciosMontosMesSubtitulo21() {
+		this.totalServiciosMontosMesSubtitulo21 = new ArrayList<Long>(Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L));
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo21FlujoCajaVO){
+			for(int i = 0; i < subtituloFlujoCajaVO.getCajaMontos().size(); i++){
+				totalServiciosMontosMesSubtitulo21.set(i, (totalServiciosMontosMesSubtitulo21.get(i) + subtituloFlujoCajaVO.getCajaMontos().get(i).getMontoMes()));  
+			}
+		}
 		return totalServiciosMontosMesSubtitulo21;
 	}
+	
+	
+	
 
 	public void setTotalServiciosMontosMesSubtitulo21(
 			List<Long> totalServiciosMontosMesSubtitulo21) {
@@ -1275,70 +1012,24 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Long getTotalMontosMensualesServicioSubtitulo21() {
+		this.totalMontosMensualesServicioSubtitulo21 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo21FlujoCajaVO){
+			this.totalMontosMensualesServicioSubtitulo21 += subtituloFlujoCajaVO.getTotalMontos();
+		}
 		return totalMontosMensualesServicioSubtitulo21;
 	}
 
+	
+	
 	public void setTotalMontosMensualesServicioSubtitulo21(
 			Long totalMontosMensualesServicioSubtitulo21) {
 		this.totalMontosMensualesServicioSubtitulo21 = totalMontosMensualesServicioSubtitulo21;
 	}
-	
-	public Long getTotalFinalServiciosPercapita() {
-		return totalFinalServiciosPercapita;
-	}
-
-	public void setTotalFinalServiciosPercapita(Long totalFinalServiciosPercapita) {
-		this.totalFinalServiciosPercapita = totalFinalServiciosPercapita;
-	}
-
-	public Long getTotalMontosMensualesServicioPercapita() {
-		return totalMontosMensualesServicioPercapita;
-	}
-
-	public void setTotalMontosMensualesServicioPercapita(
-			Long totalMontosMensualesServicioPercapita) {
-		this.totalMontosMensualesServicioPercapita = totalMontosMensualesServicioPercapita;
-	}
-
-	public List<Long> getTotalServiciosMontosMesPercapita() {
-		return totalServiciosMontosMesPercapita;
-	}
-
-	public void setTotalServiciosMontosMesPercapita(
-			List<Long> totalServiciosMontosMesPercapita) {
-		this.totalServiciosMontosMesPercapita = totalServiciosMontosMesPercapita;
-	}
 
 	public Long getTotalServiciosMarcosPresupuestariosSubtitulo22() {
-		if (this.totalServiciosMarcosPresupuestariosSubtitulo22 == null) {
-			this.totalServiciosMarcosPresupuestariosSubtitulo22 = 0L;
-			this.totalServiciosMontosTransferenciasAcumuladasSubtitulo22 = 0L;
-			this.totalServiciosMontosConveniosSubtitulo22 = 0L;
-			this.totalMontosMensualesServicioSubtitulo22 = 0L;
-			for (SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo22FlujoCajaVO) {
-				System.out.println("*********subtituloFlujoCajaVO22-->"
-						+ subtituloFlujoCajaVO);
-				if (this.totalServiciosMontosMesSubtitulo22 == null) {
-					this.totalServiciosMontosMesSubtitulo22 = new ArrayList<Long>(
-							Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L,
-									0L, 0L, 0L));
-					for (int i = 0; i < subtituloFlujoCajaVO.getCajaMontos()
-							.size(); i++) {
-						totalServiciosMontosMesSubtitulo22
-								.set(i, (totalServiciosMontosMesSubtitulo22
-										.get(i) + subtituloFlujoCajaVO
-										.getCajaMontos().get(i).getMontoMes()));
-					}
-				}
-				this.totalServiciosMarcosPresupuestariosSubtitulo22 += subtituloFlujoCajaVO
-						.getMarcoPresupuestario();
-				this.totalServiciosMontosTransferenciasAcumuladasSubtitulo22 += subtituloFlujoCajaVO
-						.getTransferenciaAcumulada().getMonto();
-				this.totalServiciosMontosConveniosSubtitulo22 += subtituloFlujoCajaVO
-						.getConvenioRecibido().getMonto();
-				this.totalMontosMensualesServicioSubtitulo22 += subtituloFlujoCajaVO
-						.getTotalMontos();
-			}
+		this.totalServiciosMarcosPresupuestariosSubtitulo22 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo22FlujoCajaVO){
+			this.totalServiciosMarcosPresupuestariosSubtitulo22 += subtituloFlujoCajaVO.getMarcoPresupuestario();
 		}
 		return totalServiciosMarcosPresupuestariosSubtitulo22;
 	}
@@ -1349,6 +1040,10 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Long getTotalServiciosMontosTransferenciasAcumuladasSubtitulo22() {
+		this.totalServiciosMontosTransferenciasAcumuladasSubtitulo22 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo22FlujoCajaVO){
+			this.totalServiciosMontosTransferenciasAcumuladasSubtitulo22 += subtituloFlujoCajaVO.getTransferenciaAcumulada().getMonto();
+		}
 		return totalServiciosMontosTransferenciasAcumuladasSubtitulo22;
 	}
 
@@ -1358,6 +1053,10 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Long getTotalServiciosMontosConveniosSubtitulo22() {
+		this.totalServiciosMontosConveniosSubtitulo22 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo22FlujoCajaVO){
+			this.totalServiciosMontosConveniosSubtitulo22 += subtituloFlujoCajaVO.getConvenioRecibido().getMonto();
+		}
 		return totalServiciosMontosConveniosSubtitulo22;
 	}
 
@@ -1367,6 +1066,10 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Long getTotalMontosMensualesServicioSubtitulo22() {
+		this.totalMontosMensualesServicioSubtitulo22 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo22FlujoCajaVO){
+			this.totalMontosMensualesServicioSubtitulo22 += subtituloFlujoCajaVO.getTotalMontos();
+		}
 		return totalMontosMensualesServicioSubtitulo22;
 	}
 
@@ -1376,6 +1079,12 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public List<Long> getTotalServiciosMontosMesSubtitulo22() {
+		this.totalServiciosMontosMesSubtitulo22 = new ArrayList<Long>(Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L));
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo22FlujoCajaVO){
+			for(int i = 0; i < subtituloFlujoCajaVO.getCajaMontos().size(); i++){
+				totalServiciosMontosMesSubtitulo22.set(i, (totalServiciosMontosMesSubtitulo22.get(i) + subtituloFlujoCajaVO.getCajaMontos().get(i).getMontoMes()));  
+			}
+		}
 		return totalServiciosMontosMesSubtitulo22;
 	}
 
@@ -1385,35 +1094,9 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Long getTotalServiciosMarcosPresupuestariosSubtitulo24() {
-		if (this.totalServiciosMarcosPresupuestariosSubtitulo24 == null) {
-			this.totalServiciosMarcosPresupuestariosSubtitulo24 = 0L;
-			this.totalServiciosMontosTransferenciasAcumuladasSubtitulo24 = 0L;
-			this.totalServiciosMontosConveniosSubtitulo24 = 0L;
-			this.totalMontosMensualesServicioSubtitulo24 = 0L;
-			for (SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo24FlujoCajaVO) {
-				System.out.println("*********subtituloFlujoCajaVO24-->"
-						+ subtituloFlujoCajaVO);
-				if (this.totalServiciosMontosMesSubtitulo24 == null) {
-					this.totalServiciosMontosMesSubtitulo24 = new ArrayList<Long>(
-							Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L,
-									0L, 0L, 0L));
-					for (int i = 0; i < subtituloFlujoCajaVO.getCajaMontos()
-							.size(); i++) {
-						totalServiciosMontosMesSubtitulo24
-								.set(i, (totalServiciosMontosMesSubtitulo24
-										.get(i) + subtituloFlujoCajaVO
-										.getCajaMontos().get(i).getMontoMes()));
-					}
-				}
-				this.totalServiciosMarcosPresupuestariosSubtitulo24 += subtituloFlujoCajaVO
-						.getMarcoPresupuestario();
-				this.totalServiciosMontosTransferenciasAcumuladasSubtitulo24 += subtituloFlujoCajaVO
-						.getTransferenciaAcumulada().getMonto();
-				this.totalServiciosMontosConveniosSubtitulo24 += subtituloFlujoCajaVO
-						.getConvenioRecibido().getMonto();
-				this.totalMontosMensualesServicioSubtitulo24 += subtituloFlujoCajaVO
-						.getTotalMontos();
-			}
+		this.totalServiciosMarcosPresupuestariosSubtitulo24 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo24FlujoCajaVO){
+			this.totalServiciosMarcosPresupuestariosSubtitulo24 += subtituloFlujoCajaVO.getMarcoPresupuestario();
 		}
 		return totalServiciosMarcosPresupuestariosSubtitulo24;
 	}
@@ -1424,6 +1107,10 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Long getTotalServiciosMontosTransferenciasAcumuladasSubtitulo24() {
+		this.totalServiciosMontosTransferenciasAcumuladasSubtitulo24 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo24FlujoCajaVO){
+			this.totalServiciosMontosTransferenciasAcumuladasSubtitulo24 += subtituloFlujoCajaVO.getTransferenciaAcumulada().getMonto();
+		}
 		return totalServiciosMontosTransferenciasAcumuladasSubtitulo24;
 	}
 
@@ -1433,6 +1120,10 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Long getTotalServiciosMontosConveniosSubtitulo24() {
+		this.totalServiciosMontosConveniosSubtitulo24 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo24FlujoCajaVO){
+			this.totalServiciosMontosConveniosSubtitulo24 += subtituloFlujoCajaVO.getConvenioRecibido().getMonto();
+		}
 		return totalServiciosMontosConveniosSubtitulo24;
 	}
 
@@ -1442,6 +1133,10 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Long getTotalMontosMensualesServicioSubtitulo24() {
+		this.totalMontosMensualesServicioSubtitulo24 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo24FlujoCajaVO){
+			this.totalMontosMensualesServicioSubtitulo24 += subtituloFlujoCajaVO.getTotalMontos();
+		}
 		return totalMontosMensualesServicioSubtitulo24;
 	}
 
@@ -1451,6 +1146,12 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public List<Long> getTotalServiciosMontosMesSubtitulo24() {
+		this.totalServiciosMontosMesSubtitulo24 = new ArrayList<Long>(Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L));
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo24FlujoCajaVO){
+			for(int i = 0; i < subtituloFlujoCajaVO.getCajaMontos().size(); i++){
+				totalServiciosMontosMesSubtitulo24.set(i, (totalServiciosMontosMesSubtitulo24.get(i) + subtituloFlujoCajaVO.getCajaMontos().get(i).getMontoMes()));  
+			}
+		}
 		return totalServiciosMontosMesSubtitulo24;
 	}
 
@@ -1460,35 +1161,9 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Long getTotalServiciosMarcosPresupuestariosSubtitulo29() {
-		if (this.totalServiciosMarcosPresupuestariosSubtitulo29 == null) {
-			this.totalServiciosMarcosPresupuestariosSubtitulo29 = 0L;
-			this.totalServiciosMontosTransferenciasAcumuladasSubtitulo29 = 0L;
-			this.totalServiciosMontosConveniosSubtitulo29 = 0L;
-			this.totalMontosMensualesServicioSubtitulo29 = 0L;
-			for (SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo29FlujoCajaVO) {
-				System.out.println("*********subtituloFlujoCajaVO29-->"
-						+ subtituloFlujoCajaVO);
-				if (this.totalServiciosMontosMesSubtitulo29 == null) {
-					this.totalServiciosMontosMesSubtitulo29 = new ArrayList<Long>(
-							Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L,
-									0L, 0L, 0L));
-					for (int i = 0; i < subtituloFlujoCajaVO.getCajaMontos()
-							.size(); i++) {
-						totalServiciosMontosMesSubtitulo29
-								.set(i, (totalServiciosMontosMesSubtitulo29
-										.get(i) + subtituloFlujoCajaVO
-										.getCajaMontos().get(i).getMontoMes()));
-					}
-				}
-				this.totalServiciosMarcosPresupuestariosSubtitulo29 += subtituloFlujoCajaVO
-						.getMarcoPresupuestario();
-				this.totalServiciosMontosTransferenciasAcumuladasSubtitulo29 += subtituloFlujoCajaVO
-						.getTransferenciaAcumulada().getMonto();
-				this.totalServiciosMontosConveniosSubtitulo29 += subtituloFlujoCajaVO
-						.getConvenioRecibido().getMonto();
-				this.totalMontosMensualesServicioSubtitulo29 += subtituloFlujoCajaVO
-						.getTotalMontos();
-			}
+		this.totalServiciosMarcosPresupuestariosSubtitulo29 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo29FlujoCajaVO){
+			this.totalServiciosMarcosPresupuestariosSubtitulo29 += subtituloFlujoCajaVO.getMarcoPresupuestario();
 		}
 		return totalServiciosMarcosPresupuestariosSubtitulo29;
 	}
@@ -1499,6 +1174,10 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Long getTotalServiciosMontosTransferenciasAcumuladasSubtitulo29() {
+		this.totalServiciosMontosTransferenciasAcumuladasSubtitulo29 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo29FlujoCajaVO){
+			this.totalServiciosMontosTransferenciasAcumuladasSubtitulo29 += subtituloFlujoCajaVO.getTransferenciaAcumulada().getMonto();
+		}
 		return totalServiciosMontosTransferenciasAcumuladasSubtitulo29;
 	}
 
@@ -1508,6 +1187,10 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Long getTotalServiciosMontosConveniosSubtitulo29() {
+		this.totalServiciosMontosConveniosSubtitulo29 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo29FlujoCajaVO){
+			this.totalServiciosMontosConveniosSubtitulo29 += subtituloFlujoCajaVO.getConvenioRecibido().getMonto();
+		}
 		return totalServiciosMontosConveniosSubtitulo29;
 	}
 
@@ -1517,6 +1200,10 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Long getTotalMontosMensualesServicioSubtitulo29() {
+		this.totalMontosMensualesServicioSubtitulo29 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo29FlujoCajaVO){
+			this.totalMontosMensualesServicioSubtitulo29 += subtituloFlujoCajaVO.getTotalMontos();
+		}
 		return totalMontosMensualesServicioSubtitulo29;
 	}
 
@@ -1526,6 +1213,12 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public List<Long> getTotalServiciosMontosMesSubtitulo29() {
+		this.totalServiciosMontosMesSubtitulo29 = new ArrayList<Long>(Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L));
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo29FlujoCajaVO){
+			for(int i = 0; i < subtituloFlujoCajaVO.getCajaMontos().size(); i++){
+				totalServiciosMontosMesSubtitulo29.set(i, (totalServiciosMontosMesSubtitulo29.get(i) + subtituloFlujoCajaVO.getCajaMontos().get(i).getMontoMes()));  
+			}
+		}
 		return totalServiciosMontosMesSubtitulo29;
 	}
 
@@ -1535,24 +1228,9 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Long getTotalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo21() {
-		if (this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo21 == null) {
-			this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo21 = 0L;
-			this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo21 = 0L;
-			this.totalConvenioRemesaMontosMensualesServicioSubtitulo21 = 0L;
-			for (SubtituloFlujoCajaVO subtituloFlujoCajaVO : convenioRemesaSubtitulo21FlujoCajaVO) {
-				System.out
-						.println("*********convenioRemesaSubtitulo21FlujoCajaVO-->"
-								+ subtituloFlujoCajaVO);
-
-				this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo21 += subtituloFlujoCajaVO
-						.getMarcoPresupuestario();
-				this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo21 += subtituloFlujoCajaVO
-						.getTransferenciaAcumulada().getMonto();
-				this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo21 += subtituloFlujoCajaVO
-						.getTransferenciaAcumulada().getPorcentaje();
-				this.totalConvenioRemesaMontosMensualesServicioSubtitulo21 += subtituloFlujoCajaVO
-						.getTotalMontos();
-			}
+		this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo21 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : convenioRemesaSubtitulo21FlujoCajaVO){
+			this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo21 += subtituloFlujoCajaVO.getMarcoPresupuestario();
 		}
 		return totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo21;
 	}
@@ -1563,6 +1241,10 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Long getTotalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo21() {
+		this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo21 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : convenioRemesaSubtitulo21FlujoCajaVO){
+			this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo21 += subtituloFlujoCajaVO.getTransferenciaAcumulada().getMonto();
+		}
 		return totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo21;
 	}
 
@@ -1572,22 +1254,13 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public List<Long> getTotalConvenioRemesaServiciosMontosMesSubtitulo21() {
-		for (SubtituloFlujoCajaVO subtituloFlujoCajaVO : convenioRemesaSubtitulo21FlujoCajaVO) {
-			System.out
-					.println("*********convenioRemesaSubtitulo21FlujoCajaVO-->"
-							+ subtituloFlujoCajaVO);
-			if (this.totalConvenioRemesaServiciosMontosMesSubtitulo21 == null) {
-				this.totalConvenioRemesaServiciosMontosMesSubtitulo21 = new ArrayList<Long>(
-						Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L,
-								0L, 0L));
-				for (int i = 0; i < subtituloFlujoCajaVO.getCajaMontos().size(); i++) {
-					totalConvenioRemesaServiciosMontosMesSubtitulo21.set(i,
-							(totalConvenioRemesaServiciosMontosMesSubtitulo21
-									.get(i) + subtituloFlujoCajaVO
-									.getCajaMontos().get(i).getMontoMes()));
-				}
+		this.totalConvenioRemesaServiciosMontosMesSubtitulo21 = new ArrayList<Long>(Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L)); 
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : convenioRemesaSubtitulo21FlujoCajaVO){
+			for(int i = 0; i < subtituloFlujoCajaVO.getCajaMontos().size(); i++){
+				totalConvenioRemesaServiciosMontosMesSubtitulo21.set(i, (totalConvenioRemesaServiciosMontosMesSubtitulo21.get(i) + subtituloFlujoCajaVO.getCajaMontos().get(i).getMontoMes()));  
 			}
 		}
+		System.out.println("totalConvenioRemesaServiciosMontosMesSubtitulo21--->"+totalConvenioRemesaServiciosMontosMesSubtitulo21);
 		return totalConvenioRemesaServiciosMontosMesSubtitulo21;
 	}
 
@@ -1597,6 +1270,11 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Long getTotalConvenioRemesaMontosMensualesServicioSubtitulo21() {
+		this.totalConvenioRemesaMontosMensualesServicioSubtitulo21 = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : convenioRemesaSubtitulo21FlujoCajaVO){
+			this.totalConvenioRemesaMontosMensualesServicioSubtitulo21 += subtituloFlujoCajaVO.getTotalMontos();
+		}
+		System.out.println("totalConvenioRemesaMontosMensualesServicioSubtitulo21--->"+totalConvenioRemesaMontosMensualesServicioSubtitulo21);
 		return totalConvenioRemesaMontosMensualesServicioSubtitulo21;
 	}
 
@@ -1606,9 +1284,8 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public Integer getNumMesActual() {
-		if (numMesActual == null) {
-			numMesActual = Integer.parseInt(estimacionFlujoCajaService
-					.getMesCurso(true));
+		if(numMesActual == null){
+			numMesActual = Integer.parseInt(estimacionFlujoCajaService.getMesCurso(true));
 		}
 		return numMesActual;
 	}
@@ -1618,127 +1295,57 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public List<CajaMontoSummaryVO> getCajaMontosLocal() {
-		if (!mostrarSubtitulo21) {
-			return null;
-		}
-		if (getConvenioRemesaSubtitulo21FlujoCajaVO() != null
-				&& getConvenioRemesaSubtitulo21FlujoCajaVO().size() == 0) {
-			return null;
-		}
-		if (rowIndex >= (getConvenioRemesaSubtitulo21FlujoCajaVO().size() - 1)) {
+		if(rowIndex >= (getConvenioRemesaSubtitulo21FlujoCajaVO().size()-1)){
 			rowIndex = 0;
 		}
-		return getConvenioRemesaSubtitulo21FlujoCajaVO().get(rowIndex++)
-				.getCajaMontos();
+		return getConvenioRemesaSubtitulo21FlujoCajaVO().get(rowIndex++).getCajaMontos();
 	}
-
-	public List<CajaMontoSummaryVO> getCajaMontosMonitoreoSubtitulo21Local() {
-		if (!mostrarSubtitulo21) {
-			return null;
-		}
-		if (getMonitoreoSubtitulo21FlujoCajaVO() != null
-				&& getMonitoreoSubtitulo21FlujoCajaVO().size() == 0) {
-			return null;
-		}
-		if (rowIndexMonitoreoSubtitulo21 >= (getMonitoreoSubtitulo21FlujoCajaVO()
-				.size() - 1)) {
-			rowIndexMonitoreoSubtitulo21 = 0;
-		}
-		return getMonitoreoSubtitulo21FlujoCajaVO().get(
-				rowIndexMonitoreoSubtitulo21++).getCajaMontos();
-	}
-
-	
-	
 	
 	public List<CajaMontoSummaryVO> getCajaMontosMonitoreoPercapitaLocal() {
-		if (!mostrarPercapita) {
-			return null;
-		}		
-		if (getMonitoreoPercapitaFlujoCajaVO() != null
-				&& getMonitoreoPercapitaFlujoCajaVO().size() == 0) {
-			return null;
-		}
-		if (rowIndexMonitoreoPercapita >= (getMonitoreoPercapitaFlujoCajaVO()
-				.size() - 1)) {
-			rowIndexMonitoreoPercapita = 0;
+		if(rowIndexMonitoreoPercapita >= (getMonitoreoPercapitaFlujoCajaVO().size()-1)){
+			rowIndexMonitoreoPercapita = 0; 
 		}
 		return getMonitoreoPercapitaFlujoCajaVO().get(rowIndexMonitoreoPercapita++).getCajaMontos();
 	}
-	
-	
-	
-	
+
+	public List<CajaMontoSummaryVO> getCajaMontosMonitoreoSubtitulo21Local() {
+		if(rowIndexMonitoreoSubtitulo21 >= (getMonitoreoSubtitulo21FlujoCajaVO().size()-1)){
+			rowIndexMonitoreoSubtitulo21 = 0; 
+		}
+		return getMonitoreoSubtitulo21FlujoCajaVO().get(rowIndexMonitoreoSubtitulo21++).getCajaMontos();
+	}
+
 	public List<CajaMontoSummaryVO> getCajaMontosMonitoreoSubtitulo22Local() {
-		if (!mostrarSubtitulo22) {
-			return null;
+		if(rowIndexMonitoreoSubtitulo22 >= (getMonitoreoSubtitulo22FlujoCajaVO().size()-1)){
+			rowIndexMonitoreoSubtitulo22 = 0; 
 		}
-		if (getMonitoreoSubtitulo22FlujoCajaVO() != null
-				&& getMonitoreoSubtitulo22FlujoCajaVO().size() == 0) {
-			return null;
-		}
-		if (rowIndexMonitoreoSubtitulo22 >= (getMonitoreoSubtitulo22FlujoCajaVO()
-				.size() - 1)) {
-			rowIndexMonitoreoSubtitulo22 = 0;
-		}
-		return getMonitoreoSubtitulo22FlujoCajaVO().get(
-				rowIndexMonitoreoSubtitulo22++).getCajaMontos();
+		return getMonitoreoSubtitulo22FlujoCajaVO().get(rowIndexMonitoreoSubtitulo22++).getCajaMontos();
 	}
 
 	public List<CajaMontoSummaryVO> getCajaMontosMonitoreoSubtitulo24Local() {
-		if (!mostrarSubtitulo24) {
-			return null;
+		if(rowIndexMonitoreoSubtitulo24 >= (getMonitoreoSubtitulo24FlujoCajaVO().size()-1)){
+			rowIndexMonitoreoSubtitulo24 = 0; 
 		}
-		if (getMonitoreoSubtitulo24FlujoCajaVO() != null
-				&& getMonitoreoSubtitulo24FlujoCajaVO().size() == 0) {
-			return null;
-		}
-		if (rowIndexMonitoreoSubtitulo24 >= (getMonitoreoSubtitulo24FlujoCajaVO()
-				.size() - 1)) {
-			rowIndexMonitoreoSubtitulo24 = 0;
-		}
-		return getMonitoreoSubtitulo24FlujoCajaVO().get(
-				rowIndexMonitoreoSubtitulo24++).getCajaMontos();
+		return getMonitoreoSubtitulo24FlujoCajaVO().get(rowIndexMonitoreoSubtitulo24++).getCajaMontos();
 	}
 
 	public List<CajaMontoSummaryVO> getCajaMontosMonitoreoSubtitulo29Local() {
-		if (!mostrarSubtitulo29) {
-			return null;
+		if(rowIndexMonitoreoSubtitulo29 >= (getMonitoreoSubtitulo29FlujoCajaVO().size()-1)){
+			rowIndexMonitoreoSubtitulo29 = 0; 
 		}
-		if (getMonitoreoSubtitulo29FlujoCajaVO() != null
-				&& getMonitoreoSubtitulo29FlujoCajaVO().size() == 0) {
-			return null;
-		}
-		System.out.println("rowIndexMonitoreoSubtitulo29->"
-				+ rowIndexMonitoreoSubtitulo29
-				+ " getMonitoreoSubtitulo29FlujoCajaVO().size()->"
-				+ getMonitoreoSubtitulo29FlujoCajaVO().size());
-		if (rowIndexMonitoreoSubtitulo29 >= (getMonitoreoSubtitulo29FlujoCajaVO()
-				.size() - 1)) {
-			rowIndexMonitoreoSubtitulo29 = 0;
-		}
-		return getMonitoreoSubtitulo29FlujoCajaVO().get(
-				rowIndexMonitoreoSubtitulo29++).getCajaMontos();
+		return getMonitoreoSubtitulo29FlujoCajaVO().get(rowIndexMonitoreoSubtitulo29++).getCajaMontos();
 	}
 
 	public Long getTotalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo22() {
-		if (this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo22 == null) {
+		if(this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo22 == null){
 			this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo22 = 0L;
 			this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo22 = 0L;
 			this.totalConvenioRemesaMontosMensualesServicioSubtitulo22 = 0L;
-			for (SubtituloFlujoCajaVO subtituloFlujoCajaVO : convenioRemesaSubtitulo22FlujoCajaVO) {
-				System.out
-						.println("*********convenioRemesaSubtitulo22FlujoCajaVO-->"
-								+ subtituloFlujoCajaVO);
-
-				this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo22 += subtituloFlujoCajaVO
-						.getMarcoPresupuestario();
-				this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo22 += subtituloFlujoCajaVO
-						.getTransferenciaAcumulada().getMonto();
-				this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo22 += subtituloFlujoCajaVO
-						.getTransferenciaAcumulada().getPorcentaje();
-				this.totalConvenioRemesaMontosMensualesServicioSubtitulo22 += subtituloFlujoCajaVO
-						.getTotalMontos();
+			for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : convenioRemesaSubtitulo22FlujoCajaVO){
+				this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo22 += subtituloFlujoCajaVO.getMarcoPresupuestario();
+				this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo22 += subtituloFlujoCajaVO.getTransferenciaAcumulada().getMonto();
+				this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo22 += subtituloFlujoCajaVO.getTransferenciaAcumulada().getPorcentaje();
+				this.totalConvenioRemesaMontosMensualesServicioSubtitulo22 += subtituloFlujoCajaVO.getTotalMontos();
 			}
 		}
 		return totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo22;
@@ -1768,20 +1375,11 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public List<Long> getTotalConvenioRemesaServiciosMontosMesSubtitulo22() {
-		for (SubtituloFlujoCajaVO subtituloFlujoCajaVO : convenioRemesaSubtitulo22FlujoCajaVO) {
-			System.out
-					.println("*********convenioRemesaSubtitulo22FlujoCajaVO-->"
-							+ subtituloFlujoCajaVO);
-			if (this.totalConvenioRemesaServiciosMontosMesSubtitulo22 == null) {
-				this.totalConvenioRemesaServiciosMontosMesSubtitulo22 = new ArrayList<Long>(
-						Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L,
-								0L, 0L));
-				for (int i = 0; i < subtituloFlujoCajaVO.getCajaMontos().size(); i++) {
-					totalConvenioRemesaServiciosMontosMesSubtitulo22.set(i,
-							(totalConvenioRemesaServiciosMontosMesSubtitulo22
-									.get(i) + subtituloFlujoCajaVO
-									.getCajaMontos().get(i).getMontoMes()));
-				}
+		this.totalConvenioRemesaServiciosMontosMesSubtitulo22 = new ArrayList<Long>(Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L)); 
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : convenioRemesaSubtitulo22FlujoCajaVO){
+			System.out.println("*********convenioRemesaSubtitulo22FlujoCajaVO-->"+subtituloFlujoCajaVO);
+			for(int i = 0; i < subtituloFlujoCajaVO.getCajaMontos().size(); i++){
+				totalConvenioRemesaServiciosMontosMesSubtitulo22.set(i, (totalConvenioRemesaServiciosMontosMesSubtitulo22.get(i) + subtituloFlujoCajaVO.getCajaMontos().get(i).getMontoMes()));  
 			}
 		}
 		return totalConvenioRemesaServiciosMontosMesSubtitulo22;
@@ -1793,38 +1391,22 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public List<CajaMontoSummaryVO> getCajaMontosLocal22() {
-		if (!mostrarSubtitulo22) {
-			return null;
-		}
-		if (getConvenioRemesaSubtitulo22FlujoCajaVO() != null
-				&& getConvenioRemesaSubtitulo22FlujoCajaVO().size() == 0) {
-			return null;
-		}
-		if (rowIndex22 >= (getConvenioRemesaSubtitulo22FlujoCajaVO().size() - 1)) {
+		if(rowIndex22 >= (getConvenioRemesaSubtitulo22FlujoCajaVO().size()-1)){
 			rowIndex22 = 0;
 		}
-		return getConvenioRemesaSubtitulo22FlujoCajaVO().get(rowIndex22++)
-				.getCajaMontos();
+		return getConvenioRemesaSubtitulo22FlujoCajaVO().get(rowIndex22++).getCajaMontos();
 	}
 
 	public Long getTotalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo24() {
-		if (this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo24 == null) {
+		if(this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo24 == null){
 			this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo24 = 0L;
 			this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo24 = 0L;
 			this.totalConvenioRemesaMontosMensualesServicioSubtitulo24 = 0L;
-			for (SubtituloFlujoCajaVO subtituloFlujoCajaVO : convenioRemesaSubtitulo24FlujoCajaVO) {
-				System.out
-						.println("*********convenioRemesaSubtitulo24FlujoCajaVO-->"
-								+ subtituloFlujoCajaVO);
-
-				this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo24 += subtituloFlujoCajaVO
-						.getMarcoPresupuestario();
-				this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo24 += subtituloFlujoCajaVO
-						.getTransferenciaAcumulada().getMonto();
-				this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo24 += subtituloFlujoCajaVO
-						.getTransferenciaAcumulada().getPorcentaje();
-				this.totalConvenioRemesaMontosMensualesServicioSubtitulo24 += subtituloFlujoCajaVO
-						.getTotalMontos();
+			for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : convenioRemesaSubtitulo24FlujoCajaVO){
+				this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo24 += subtituloFlujoCajaVO.getMarcoPresupuestario();
+				this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo24 += subtituloFlujoCajaVO.getTransferenciaAcumulada().getMonto();
+				this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo24 += subtituloFlujoCajaVO.getTransferenciaAcumulada().getPorcentaje();
+				this.totalConvenioRemesaMontosMensualesServicioSubtitulo24 += subtituloFlujoCajaVO.getTotalMontos();
 			}
 		}
 		return totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo24;
@@ -1854,25 +1436,11 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public List<Long> getTotalConvenioRemesaServiciosMontosMesSubtitulo24() {
-		if (convenioRemesaSubtitulo24FlujoCajaVO != null
-				&& convenioRemesaSubtitulo24FlujoCajaVO.size() > 0) {
-			for (SubtituloFlujoCajaVO subtituloFlujoCajaVO : convenioRemesaSubtitulo24FlujoCajaVO) {
-				System.out
-						.println("*********convenioRemesaSubtitulo24FlujoCajaVO-->"
-								+ subtituloFlujoCajaVO);
-				if (this.totalConvenioRemesaServiciosMontosMesSubtitulo24 == null) {
-					this.totalConvenioRemesaServiciosMontosMesSubtitulo24 = new ArrayList<Long>(
-							Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L,
-									0L, 0L, 0L));
-					for (int i = 0; i < subtituloFlujoCajaVO.getCajaMontos()
-							.size(); i++) {
-						totalConvenioRemesaServiciosMontosMesSubtitulo24
-								.set(i,
-										(totalConvenioRemesaServiciosMontosMesSubtitulo24
-												.get(i) + subtituloFlujoCajaVO
-												.getCajaMontos().get(i)
-												.getMontoMes()));
-					}
+		this.totalConvenioRemesaServiciosMontosMesSubtitulo24 = new ArrayList<Long>(Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L)); 
+		if(convenioRemesaSubtitulo24FlujoCajaVO != null && convenioRemesaSubtitulo24FlujoCajaVO.size()>0){
+			for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : convenioRemesaSubtitulo24FlujoCajaVO){
+				for(int i = 0; i < subtituloFlujoCajaVO.getCajaMontos().size(); i++){
+					totalConvenioRemesaServiciosMontosMesSubtitulo24.set(i, (totalConvenioRemesaServiciosMontosMesSubtitulo24.get(i) + subtituloFlujoCajaVO.getCajaMontos().get(i).getMontoMes()));  
 				}
 			}
 		}
@@ -1883,45 +1451,25 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 			List<Long> totalConvenioRemesaServiciosMontosMesSubtitulo24) {
 		this.totalConvenioRemesaServiciosMontosMesSubtitulo24 = totalConvenioRemesaServiciosMontosMesSubtitulo24;
 	}
-	
-	
-
-	
-	
 
 	public List<CajaMontoSummaryVO> getCajaMontosLocal24() {
-		if (!mostrarSubtitulo24) {
-			return null;
-		}
-		if (getConvenioRemesaSubtitulo24FlujoCajaVO() != null
-				&& getConvenioRemesaSubtitulo24FlujoCajaVO().size() == 0) {
-			return null;
-		}
-		if (rowIndex24 >= (getConvenioRemesaSubtitulo24FlujoCajaVO().size() - 1)) {
+		if(rowIndex24 >= (getConvenioRemesaSubtitulo24FlujoCajaVO().size()-1)){
 			rowIndex24 = 0;
 		}
-		return getConvenioRemesaSubtitulo24FlujoCajaVO().get(rowIndex24++)
-				.getCajaMontos();
+		return getConvenioRemesaSubtitulo24FlujoCajaVO().get(rowIndex24++).getCajaMontos();
 	}
 
+
 	public Long getTotalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo29() {
-		if (this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo29 == null) {
+		if(this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo29 == null){
 			this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo29 = 0L;
 			this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo29 = 0L;
 			this.totalConvenioRemesaMontosMensualesServicioSubtitulo29 = 0L;
-			for (SubtituloFlujoCajaVO subtituloFlujoCajaVO : convenioRemesaSubtitulo29FlujoCajaVO) {
-				System.out
-						.println("*********convenioRemesaSubtitulo29FlujoCajaVO-->"
-								+ subtituloFlujoCajaVO);
-
-				this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo29 += subtituloFlujoCajaVO
-						.getMarcoPresupuestario();
-				this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo29 += subtituloFlujoCajaVO
-						.getTransferenciaAcumulada().getMonto();
-				this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo29 += subtituloFlujoCajaVO
-						.getTransferenciaAcumulada().getPorcentaje();
-				this.totalConvenioRemesaMontosMensualesServicioSubtitulo29 += subtituloFlujoCajaVO
-						.getTotalMontos();
+			for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : convenioRemesaSubtitulo29FlujoCajaVO){
+				this.totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo29 += subtituloFlujoCajaVO.getMarcoPresupuestario();
+				this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo29 += subtituloFlujoCajaVO.getTransferenciaAcumulada().getMonto();
+				this.totalConvenioRemesaServiciosMontosTransferenciasAcumuladasSubtitulo29 += subtituloFlujoCajaVO.getTransferenciaAcumulada().getPorcentaje();
+				this.totalConvenioRemesaMontosMensualesServicioSubtitulo29 += subtituloFlujoCajaVO.getTotalMontos();
 			}
 		}
 		return totalConvenioRemesaServiciosMarcosPresupuestariosSubtitulo29;
@@ -1951,20 +1499,10 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public List<Long> getTotalConvenioRemesaServiciosMontosMesSubtitulo29() {
-		for (SubtituloFlujoCajaVO subtituloFlujoCajaVO : convenioRemesaSubtitulo29FlujoCajaVO) {
-			System.out
-					.println("*********convenioRemesaSubtitulo29FlujoCajaVO-->"
-							+ subtituloFlujoCajaVO);
-			if (this.totalConvenioRemesaServiciosMontosMesSubtitulo29 == null) {
-				this.totalConvenioRemesaServiciosMontosMesSubtitulo29 = new ArrayList<Long>(
-						Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L,
-								0L, 0L));
-				for (int i = 0; i < subtituloFlujoCajaVO.getCajaMontos().size(); i++) {
-					totalConvenioRemesaServiciosMontosMesSubtitulo29.set(i,
-							(totalConvenioRemesaServiciosMontosMesSubtitulo29
-									.get(i) + subtituloFlujoCajaVO
-									.getCajaMontos().get(i).getMontoMes()));
-				}
+		this.totalConvenioRemesaServiciosMontosMesSubtitulo29 = new ArrayList<Long>(Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L)); 
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : convenioRemesaSubtitulo29FlujoCajaVO){
+			for(int i = 0; i < subtituloFlujoCajaVO.getCajaMontos().size(); i++){
+				totalConvenioRemesaServiciosMontosMesSubtitulo29.set(i, (totalConvenioRemesaServiciosMontosMesSubtitulo29.get(i) + subtituloFlujoCajaVO.getCajaMontos().get(i).getMontoMes()));  
 			}
 		}
 		return totalConvenioRemesaServiciosMontosMesSubtitulo29;
@@ -1976,18 +1514,470 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 
 	public List<CajaMontoSummaryVO> getCajaMontosLocal29() {
-		if (!mostrarSubtitulo29) {
-			return null;
-		}
-		if (getConvenioRemesaSubtitulo29FlujoCajaVO() != null
-				&& getConvenioRemesaSubtitulo29FlujoCajaVO().size() == 0) {
-			return null;
-		}
-		if (rowIndex29 >= (getConvenioRemesaSubtitulo29FlujoCajaVO().size() - 1)) {
+		if(rowIndex29 >= (getConvenioRemesaSubtitulo29FlujoCajaVO().size()-1)){
 			rowIndex29 = 0;
 		}
-		return getConvenioRemesaSubtitulo29FlujoCajaVO().get(rowIndex29++)
-				.getCajaMontos();
+		return getConvenioRemesaSubtitulo29FlujoCajaVO().get(rowIndex29++).getCajaMontos();
 	}
+
+	public Boolean getIniciarFlujoCaja() {
+		return iniciarFlujoCaja;
+	}
+
+	public void setIniciarFlujoCaja(Boolean iniciarFlujoCaja) {
+		this.iniciarFlujoCaja = iniciarFlujoCaja;
+	}
+
+	public String recalcularSubtitulo21() {
+		System.out.println("recalcularSubtitulo21recalcularSubtitulo21recalcularSubtitulo21");
+		System.out.println("getPosicionCajaMesModificado=" + getPosicionCajaMesModificado() + " getMesModificado()=" + getMesModificado());
+		if(getPosicionCajaMesModificado() != null && getMesModificado() != null){
+			ElementoModificadoVO elementoModificadoVO = new ElementoModificadoVO(Integer.parseInt(getPosicionCajaMesModificado()), Integer.parseInt(getMesModificado()));
+			if(!elementosModificadosSubtitulo21.contains(elementoModificadoVO)){
+				elementosModificadosSubtitulo21.add(elementoModificadoVO);
+			}
+		}
+		System.out.println("elementosModificadosSubtitulo21.size()="+elementosModificadosSubtitulo21.size());
+		setTablaModificada(true);
+		return null;
+	}
+
+	public void update(AjaxBehaviorEvent  event){
+		System.out.println("update(AjaxBehaviorEvent  event)");
+	}
+
+	public String recalcularSubtitulo22() {
+		System.out.println("recalcularSubtitulo22recalcularSubtitulo22recalcularSubtitulo22");
+		System.out.println("getPosicionCajaMesModificado=" + getPosicionCajaMesModificado() + " getMesModificado()=" + getMesModificado());
+		if(getPosicionCajaMesModificado() != null && getMesModificado() != null){
+			ElementoModificadoVO elementoModificadoVO = new ElementoModificadoVO(Integer.parseInt(getPosicionCajaMesModificado()), Integer.parseInt(getMesModificado()));
+			if(!elementosModificadosSubtitulo22.contains(elementoModificadoVO)){
+				elementosModificadosSubtitulo22.add(elementoModificadoVO);
+			}
+		}
+		System.out.println("elementosModificadosSubtitulo22.size()="+elementosModificadosSubtitulo22.size());
+		setTablaModificada(true);
+		return null;
+	}
+
+	public String recalcularSubtitulo24() {
+		System.out.println("recalcularSubtitulo24recalcularSubtitulo24recalcularSubtitulo24");
+		System.out.println("getPosicionCajaMesModificado=" + getPosicionCajaMesModificado() + " getMesModificado()=" + getMesModificado());
+		if(getPosicionCajaMesModificado() != null && getMesModificado() != null){
+			ElementoModificadoVO elementoModificadoVO = new ElementoModificadoVO(Integer.parseInt(getPosicionCajaMesModificado()), Integer.parseInt(getMesModificado()));
+			if(!elementosModificadosSubtitulo24.contains(elementoModificadoVO)){
+				elementosModificadosSubtitulo24.add(elementoModificadoVO);
+			}
+		}
+		System.out.println("elementosModificadosSubtitulo24.size()="+elementosModificadosSubtitulo24.size());
+		setTablaModificada(true);
+		return null;
+	}
+
+	public String recalcularSubtitulo29() {
+		System.out.println("recalcularSubtitulo29recalcularSubtitulo29recalcularSubtitulo29");
+		System.out.println("getPosicionCajaMesModificado=" + getPosicionCajaMesModificado() + " getMesModificado()=" + getMesModificado());
+		if(getPosicionCajaMesModificado() != null && getMesModificado() != null){
+			ElementoModificadoVO elementoModificadoVO = new ElementoModificadoVO(Integer.parseInt(getPosicionCajaMesModificado()), Integer.parseInt(getMesModificado()));
+			if(!elementosModificadosSubtitulo29.contains(elementoModificadoVO)){
+				elementosModificadosSubtitulo29.add(elementoModificadoVO);
+			}
+		}
+		System.out.println("elementosModificadosSubtitulo29.size()="+elementosModificadosSubtitulo29.size());
+		setTablaModificada(true);
+		return null;
+	}
+
+	public Subtitulo getSubtitulo21() {
+		return subtitulo21;
+	}
+
+	public void setSubtitulo21(Subtitulo subtitulo21) {
+		this.subtitulo21 = subtitulo21;
+	}
+
+	public Subtitulo getSubtitulo22() {
+		return subtitulo22;
+	}
+
+	public void setSubtitulo22(Subtitulo subtitulo22) {
+		this.subtitulo22 = subtitulo22;
+	}
+
+	public Subtitulo getSubtitulo24() {
+		return subtitulo24;
+	}
+
+	public void setSubtitulo24(Subtitulo subtitulo24) {
+		this.subtitulo24 = subtitulo24;
+	}
+
+	public Subtitulo getSubtitulo29() {
+		return subtitulo29;
+	}
+
+	public void setSubtitulo29(Subtitulo subtitulo29) {
+		this.subtitulo29 = subtitulo29;
+	}
+	
+	public Integer getIdDistribucionInicialPercapita() {
+		return idDistribucionInicialPercapita;
+	}
+
+	public void setIdDistribucionInicialPercapita(
+			Integer idDistribucionInicialPercapita) {
+		this.idDistribucionInicialPercapita = idDistribucionInicialPercapita;
+	}
+
+	public Integer getIdProgramaAno() {
+		return idProgramaAno;
+	}
+
+	public void setIdProgramaAno(Integer idProgramaAno) {
+		this.idProgramaAno = idProgramaAno;
+	}
+
+	public Integer getIdProgramaAnoPercapita() {
+		return idProgramaAnoPercapita;
+	}
+
+	public void setIdProgramaAnoPercapita(Integer idProgramaAnoPercapita) {
+		this.idProgramaAnoPercapita = idProgramaAnoPercapita;
+	}
+
+	public Integer getIdServicio() {
+		return idServicio;
+	}
+
+	public void setIdServicio(Integer idServicio) {
+		this.idServicio = idServicio;
+	}
+
+	public String getValorPesoComponente() {
+		return valorPesoComponente;
+	}
+
+	public void setValorPesoComponente(String valorPesoComponente) {
+		this.valorPesoComponente = valorPesoComponente;
+	}
+
+	public void filtrarSubtituloComponente(){
+		System.out.println("filtrarSubtituloComponente() con valorComboSubtituloComponente="+getValorComboSubtituloComponente());
+		if(getValorComboSubtituloComponente() == null || getValorComboSubtituloComponente().intValue() == 0){
+			clearForm();
+		}else{
+			List<Integer> idComponentes = new ArrayList<Integer>();
+			idComponentes.add(getValorComboSubtituloComponente());
+			estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
+					idComponentes , getSubtituloSeleccionado(), this.iniciarFlujoCaja);
+		}
+	}
+	
+	public void filtrarSubtituloComponentePrograma(String subtituloFiltroSeleccionado){
+		if(getValorComboPrograma() == null || getValorComboPrograma().intValue() == 0){
+			clearForm();
+		}else{
+			List<ComponentesVO> componentes = getPrograma().getComponentes();
+			List<Integer> idComponentes = new ArrayList<Integer>();
+			Subtitulo subtituloFiltro = Subtitulo.getById(Integer.parseInt(subtituloFiltroSeleccionado));
+			for(ComponentesVO comp : componentes){
+				for(SubtituloVO subtitulo : comp.getSubtitulos()){
+					if(subtitulo.getId().equals(subtituloFiltro.getId())){
+						idComponentes.add(comp.getId());
+					}
+				}
+			}
+			if(subtituloFiltroSeleccionado.equals("1")){
+				monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(
+						getValorComboPrograma(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
+			}
+			if(subtituloFiltroSeleccionado.equals("2")){
+				monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(
+						getValorComboPrograma(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
+			}
+			if(subtituloFiltroSeleccionado.equals("3")){
+				monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(
+						getValorComboPrograma(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
+			}
+			if(subtituloFiltroSeleccionado.equals("4")){
+				monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(
+						getValorComboPrograma(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
+			}
+			
+		}
+	}
+	
+	public void filtrarSubtituloComponenteProgramaServicio(String subtituloFiltroSeleccionado){
+		if(getValorComboSubtituloServicio() == null || getValorComboSubtituloServicio().intValue() == 0){
+			clearForm();
+		}else{
+			List<ComponentesVO> componentes = getPrograma().getComponentes();
+			List<Integer> idComponentes = new ArrayList<Integer>();
+			Subtitulo subtituloFiltro = Subtitulo.getById(Integer.parseInt(subtituloFiltroSeleccionado));
+			for(ComponentesVO comp : componentes){
+				for(SubtituloVO subtitulo : comp.getSubtitulos()){
+					if(subtitulo.getId().equals(subtituloFiltro.getId())){
+						idComponentes.add(comp.getId());
+					}
+				}
+			}
+			if(subtituloFiltroSeleccionado.equals("1")){
+				monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtituloServicio(
+						programa.getIdProgramaAno(), idComponentes, subtituloFiltro, this.iniciarFlujoCaja, getValorComboSubtituloServicio());
+			}
+			if(subtituloFiltroSeleccionado.equals("2")){
+				monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtituloServicio(
+						programa.getIdProgramaAno(), idComponentes, subtituloFiltro, this.iniciarFlujoCaja, getValorComboSubtituloServicio());
+			}
+			if(subtituloFiltroSeleccionado.equals("3")){
+				monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtituloServicio(
+						programa.getIdProgramaAno(), idComponentes, subtituloFiltro, this.iniciarFlujoCaja, getValorComboSubtituloServicio());
+			}
+			if(subtituloFiltroSeleccionado.equals("4")){
+				monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtituloServicio(
+						programa.getIdProgramaAno(), idComponentes, subtituloFiltro, this.iniciarFlujoCaja, getValorComboSubtituloServicio());
+			}
+			
+					
+		}
+	}
+	
+
+	
+	
+	
+	public void filtrarPercapitaServicio(){	
+		if(getValorComboPercapita() == null || getValorComboPercapita().intValue() == 0){
+			clearForm();
+		}
+		else{
+			monitoreoPercapitaFlujoCajaVO = estimacionFlujoCajaService.getPercapitaByProgramaAno(this.idProgramaAnoPercapita, getValorComboPercapita());
+		}
+	}
+	
+	
+
+	private void clearForm() {
+		setEstimacionFlujoMonitoreoSubtituloComponente(new ArrayList<SubtituloFlujoCajaVO>());
+		setTotalServiciosMarcosPresupuestarioMonitoreoSubtituloComponente(0L);
+		setTotalServiciosMontosMesMonitoreoSubtituloComponente(new ArrayList<Long>(Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L)));
+		setTotalMontosMensualesServicioMonitoreoSubtituloComponente(0L);
+		setMonitoreoSubtitulo21FlujoCajaVO(new ArrayList<SubtituloFlujoCajaVO>());
+		setMonitoreoSubtitulo22FlujoCajaVO(new ArrayList<SubtituloFlujoCajaVO>());
+		setMonitoreoSubtitulo24FlujoCajaVO(new ArrayList<SubtituloFlujoCajaVO>());
+		setMonitoreoSubtitulo29FlujoCajaVO(new ArrayList<SubtituloFlujoCajaVO>());
+		
+		setEstimacionFlujoMonitoreoPercapitaComponente(new ArrayList<SubtituloFlujoCajaVO>());
+		setMonitoreoPercapitaFlujoCajaVO(new ArrayList<SubtituloFlujoCajaVO>());
+		setTotalFinalServiciosPercapita(0L);
+		setTotalServiciosMontosMesPercapita(new ArrayList<Long>(Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L)));
+		
+		
+		
+		setValorNombreComponente("");
+		setValorPesoComponente("");
+	}
+
+	public List<SubtituloFlujoCajaVO> getEstimacionFlujoMonitoreoSubtituloComponente() {
+		return estimacionFlujoMonitoreoSubtituloComponente;
+	}
+
+	public void setEstimacionFlujoMonitoreoSubtituloComponente(
+			List<SubtituloFlujoCajaVO> estimacionFlujoMonitoreoSubtituloComponente) {
+		this.estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoMonitoreoSubtituloComponente;
+	}
+	
+	public List<SubtituloFlujoCajaVO> getEstimacionFlujoMonitoreoPercapitaComponente() {
+		return estimacionFlujoMonitoreoPercapitaComponente;
+	}
+	public List<Long> getTotalServiciosMontosMesPercapita() {
+		this.totalServiciosMontosMesPercapita = new ArrayList<Long>(Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L));
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoPercapitaFlujoCajaVO){
+			for(int i = 0; i < subtituloFlujoCajaVO.getCajaMontos().size(); i++){
+				totalServiciosMontosMesPercapita.set(i, (totalServiciosMontosMesPercapita.get(i) + subtituloFlujoCajaVO.getCajaMontos().get(i).getMontoMes()));  
+			}
+		}
+		
+		
+		
+		return totalServiciosMontosMesPercapita;
+	}
+
+	public void setTotalServiciosMontosMesPercapita(
+			List<Long> totalServiciosMontosMesPercapita) {
+		this.totalServiciosMontosMesPercapita = totalServiciosMontosMesPercapita;
+	}
+	
+	public void setEstimacionFlujoMonitoreoPercapitaComponente(
+			List<SubtituloFlujoCajaVO> estimacionFlujoMonitoreoPercapitaComponente) {
+		this.estimacionFlujoMonitoreoPercapitaComponente = estimacionFlujoMonitoreoPercapitaComponente;
+	}
+
+	public List<CajaMontoSummaryVO> getCajaMonitoreoSubtituloComponentLocal() {
+		if(rowIndexMonitoreoSubtituloComponent >= (getEstimacionFlujoMonitoreoSubtituloComponente().size()-1)){
+			rowIndexMonitoreoSubtituloComponent = 0; 
+		}
+		return getEstimacionFlujoMonitoreoSubtituloComponente().get(rowIndexMonitoreoSubtituloComponent++).getCajaMontos();
+	}
+
+	public Long getTotalServiciosMarcosPresupuestarioMonitoreoSubtituloComponente() {
+		this.totalServiciosMarcosPresupuestarioMonitoreoSubtituloComponente = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : estimacionFlujoMonitoreoSubtituloComponente){
+			this.totalServiciosMarcosPresupuestarioMonitoreoSubtituloComponente += subtituloFlujoCajaVO.getMarcoPresupuestario();
+		}
+		return totalServiciosMarcosPresupuestarioMonitoreoSubtituloComponente;
+	}
+
+	public void setTotalServiciosMarcosPresupuestarioMonitoreoSubtituloComponente(
+			Long totalServiciosMarcosPresupuestarioMonitoreoSubtituloComponente) {
+		this.totalServiciosMarcosPresupuestarioMonitoreoSubtituloComponente = totalServiciosMarcosPresupuestarioMonitoreoSubtituloComponente;
+	}
+
+	public Long getTotalServiciosMontosTransferenciasMonitoreoSubtituloComponente() {
+		this.totalServiciosMontosTransferenciasMonitoreoSubtituloComponente = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : estimacionFlujoMonitoreoSubtituloComponente){
+			this.totalServiciosMontosTransferenciasMonitoreoSubtituloComponente += subtituloFlujoCajaVO.getTransferenciaAcumulada().getMonto();
+		}
+		return totalServiciosMontosTransferenciasMonitoreoSubtituloComponente;
+	}
+
+	public void setTotalServiciosMontosTransferenciasMonitoreoSubtituloComponente(
+			Long totalServiciosMontosTransferenciasMonitoreoSubtituloComponente) {
+		this.totalServiciosMontosTransferenciasMonitoreoSubtituloComponente = totalServiciosMontosTransferenciasMonitoreoSubtituloComponente;
+	}
+
+	public Long getTotalServiciosMontosConveniosMonitoreoSubtituloComponente() {
+		this.totalServiciosMontosConveniosMonitoreoSubtituloComponente = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : estimacionFlujoMonitoreoSubtituloComponente){
+			this.totalServiciosMontosConveniosMonitoreoSubtituloComponente += subtituloFlujoCajaVO.getConvenioRecibido().getMonto();
+		}
+		return totalServiciosMontosConveniosMonitoreoSubtituloComponente;
+	}
+
+	public void setTotalServiciosMontosConveniosMonitoreoSubtituloComponente(
+			Long totalServiciosMontosConveniosMonitoreoSubtituloComponente) {
+		this.totalServiciosMontosConveniosMonitoreoSubtituloComponente = totalServiciosMontosConveniosMonitoreoSubtituloComponente;
+	}
+
+	public List<Long> getTotalServiciosMontosMesMonitoreoSubtituloComponente() {
+		this.totalServiciosMontosMesMonitoreoSubtituloComponente = new ArrayList<Long>(Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L));
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : estimacionFlujoMonitoreoSubtituloComponente){
+			for(int i = 0; i < subtituloFlujoCajaVO.getCajaMontos().size(); i++){
+				totalServiciosMontosMesMonitoreoSubtituloComponente.set(i, (totalServiciosMontosMesMonitoreoSubtituloComponente.get(i) + subtituloFlujoCajaVO.getCajaMontos().get(i).getMontoMes()));  
+			}
+		}
+		return totalServiciosMontosMesMonitoreoSubtituloComponente;
+	}
+
+	public void setTotalServiciosMontosMesMonitoreoSubtituloComponente(
+			List<Long> totalServiciosMontosMesMonitoreoSubtituloComponente) {
+		this.totalServiciosMontosMesMonitoreoSubtituloComponente = totalServiciosMontosMesMonitoreoSubtituloComponente;
+	}
+
+	public Long getTotalMontosMensualesServicioMonitoreoSubtituloComponente() {
+		this.totalMontosMensualesServicioMonitoreoSubtituloComponente = 0L;
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : estimacionFlujoMonitoreoSubtituloComponente){
+			this.totalMontosMensualesServicioMonitoreoSubtituloComponente += subtituloFlujoCajaVO.getTotalMontos();
+		}
+		return totalMontosMensualesServicioMonitoreoSubtituloComponente;
+	}
+
+	public void setTotalMontosMensualesServicioMonitoreoSubtituloComponente(
+			Long totalMontosMensualesServicioMonitoreoSubtituloComponente) {
+		this.totalMontosMensualesServicioMonitoreoSubtituloComponente = totalMontosMensualesServicioMonitoreoSubtituloComponente;
+	}
+
+	public Subtitulo getSubtituloSeleccionado() {
+		return subtituloSeleccionado;
+	}
+
+	public void setSubtituloSeleccionado(Subtitulo subtituloSeleccionado) {
+		this.subtituloSeleccionado = subtituloSeleccionado;
+	}
+
+	public void seleccionarSubtitulo(){
+		System.out.println("subtituloSeleccionado->"+getSubtituloSeleccionado());
+	}
+
+	public String descartarCambios(){
+		System.out.println("descartarCambios");
+		String currentTab = getRequestParameter("conDialog:currentTab");
+		System.out.println("currentTab-->"+currentTab);
+		if(currentTab != null){
+			Subtitulo subtituloSeleccionado = tabSubtitulo.get(Integer.parseInt(currentTab));
+			if(subtituloSeleccionado != null){
+				List<Integer> idComponentes = componentesPorSubtitulo.get(subtituloSeleccionado.getId());
+				switch (subtituloSeleccionado) {
+				case SUBTITULO21:
+					System.out.println("SUBTITULO21");
+					monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), idComponentes, Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					break;
+				case SUBTITULO22:
+					System.out.println("SUBTITULO22");
+					monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), idComponentes, Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					break;
+				case SUBTITULO24:
+					System.out.println("SUBTITULO24");
+					monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), idComponentes, Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					break;
+				case SUBTITULO29:
+					System.out.println("SUBTITULO29");
+					monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), idComponentes, Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					break;
+				default:
+					break;
+				}
+				setTablaModificada(false);
+			}
+		}
+		return null;
+	}
+	public void onTabChange(TabChangeEvent event) {
+		System.out.println("Tab Changed, Active Tab: " + event.getTab().getTitle());
+		System.out.println("event.getTab().getId(): " + event.getTab().getId());
+	}
+
+	public void onTabClose(TabCloseEvent event) {
+		System.out.println("Tab Closed Closed tab: " + event.getTab().getTitle());
+	}
+
+	public Integer getActiveTab() {
+		System.out.println("getActiveTab "+activeTab);
+		return activeTab;
+	}
+
+	public void setActiveTab(Integer activeTab) {
+		System.out.println("setActiveTab "+activeTab);
+		this.activeTab = activeTab;
+	}
+
+	public String getPosicionCajaMesModificado() {
+		return posicionCajaMesModificado;
+	}
+
+	public void setPosicionCajaMesModificado(String posicionCajaMesModificado) {
+		this.posicionCajaMesModificado = posicionCajaMesModificado;
+	}
+
+	public String getMesModificado() {
+		return mesModificado;
+	}
+
+	public void setMesModificado(String mesModificado) {
+		this.mesModificado = mesModificado;
+	}
+
+	public Boolean getTablaModificada() {
+		return tablaModificada;
+	}
+
+	public void setTablaModificada(Boolean tablaModificada) {
+		this.tablaModificada = tablaModificada;
+	}
+
+	 
+	
+	
+
 
 }

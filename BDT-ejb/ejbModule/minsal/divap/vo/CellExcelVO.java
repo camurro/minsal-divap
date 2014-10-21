@@ -45,6 +45,11 @@ public class CellExcelVO implements Serializable{
 	public void setRowSpan(int rowSpan) {
 		this.rowSpan = rowSpan;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "CellExcelVO [name=" + name + ", colSpan=" + colSpan
+				+ ", rowSpan=" + rowSpan + "]";
+	}
 	
 }

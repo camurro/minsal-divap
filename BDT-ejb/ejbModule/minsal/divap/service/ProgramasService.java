@@ -40,13 +40,13 @@ public class ProgramasService {
 		return programa;
 	}
 	
-	/*
+	
 	public ServiciosVO getServiciosProgramaAno(Integer idProgramaAno) {
-		ServiciosVO servicio = new ServicioMapper().getBasic(this.serviciosDAO.get)
+		//ServiciosVO servicio = new ServicioMapper().getBasic(this.serviciosDAO.get)
 		//.getBasic(this.programasDAO.getProgramaAnoByID(idProgramaAno));
-		return programa;
+		return null;
 	}
-	*/
+	
 	
 	public List<ProgramaVO> getProgramasByUser(String username) {
 		List<ProgramaAno> programas = this.programasDAO.getProgramasByUserAno(username, getAnoCurso());

@@ -1,5 +1,7 @@
 package minsal.divap.dao;
 
+import java.util.List;
+
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -18,6 +20,14 @@ public class MesDAO {
 			TypedQuery<Mes> query = this.em.createNamedQuery("Mes.findByIdMes", Mes.class);
 			query.setParameter("idMes", idMes);
 			return query.getSingleResult(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	public List<Mes> getAll(){
+		try {
+			TypedQuery<Mes> query = this.em.createNamedQuery("Mes.findAll", Mes.class);
+			return query.getResultList();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

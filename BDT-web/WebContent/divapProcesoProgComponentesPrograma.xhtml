@@ -31,21 +31,28 @@
 						<h:form id ="more">
 							<h:outputText value="Componente: " styleClass="inputLabel" />
 											
+											
+											
+											
 							<p:selectOneMenu id="select5"  style="width:650px;" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorComboSubtituloComponente}">
 	           			 		<f:selectItem itemLabel="Seleccione" itemValue="0" />
 	            				<f:selectItems value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.programa.componentes}" itemLabel="#{componente.nombre}" itemValue="#{componente.id}" var="componente" />
 	            				<p:ajax listener="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.filtrarSubtituloComponente}" update=":formComponente"  />
 	        				</p:selectOneMenu>
+	        				
+	        				
+	        				
+	        				
 	        			 </h:form>
 					</h:panelGrid>
+					
 					<br />
 					<h:form id="formComponente">
 					<ui:param name="numMesActual" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.numMesActual}" />
 					<p:panelGrid columns="2" id="display" columnClasses="label,value">
 						<div class="destacaArchivos ui-corner-all" style="padding: 10px;">
 							<span class="strong">Componente: #{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorNombreComponente} </span> <br /> 
-							<span class="strong">Peso Componente: 
-								 #{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorPesoComponente}</span>
+							<span class="strong">Peso Componente: #{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorPesoComponente}</span>
 						</div>
 					</p:panelGrid>
 					<br />

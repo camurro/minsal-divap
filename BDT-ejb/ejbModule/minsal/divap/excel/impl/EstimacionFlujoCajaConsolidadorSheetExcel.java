@@ -7,22 +7,21 @@ import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.vo.CellExcelVO;
 import minsal.divap.vo.SubtituloFlujoCajaVO;
 
-public class EstimacionFlujoCajaSubtituloSheetExcel extends ExcelTemplate<SubtituloFlujoCajaVO> {
+public class EstimacionFlujoCajaConsolidadorSheetExcel extends ExcelTemplate<SubtituloFlujoCajaVO>{
 	private List<CellExcelVO> headerComplex = null;
 	private List<CellExcelVO> subHeadeComplex = null;
-
-	public EstimacionFlujoCajaSubtituloSheetExcel(List<CellExcelVO> header, List<CellExcelVO> subHeader, List<SubtituloFlujoCajaVO> items) {
+	
+	public EstimacionFlujoCajaConsolidadorSheetExcel(List<CellExcelVO> header, List<CellExcelVO> subHeader, List<SubtituloFlujoCajaVO> items) {
 		super(null, items);
 		headerComplex = header;
 		subHeadeComplex = subHeader;
 	}
 	
-	public EstimacionFlujoCajaSubtituloSheetExcel(List<CellExcelVO> header, List<CellExcelVO> subHeader, List<SubtituloFlujoCajaVO> items, Integer offsetRows, Integer offsetColumns) {
+	public EstimacionFlujoCajaConsolidadorSheetExcel(List<CellExcelVO> header, List<CellExcelVO> subHeader, List<SubtituloFlujoCajaVO> items, Integer offsetRows, Integer offsetColumns) {
 		super(null, items);
 		headerComplex = header;
 		subHeadeComplex = subHeader;	
 	}
-		
 
 	public List<CellExcelVO> getHeaderComplex() {
 		return headerComplex;
@@ -51,6 +50,4 @@ public class EstimacionFlujoCajaSubtituloSheetExcel extends ExcelTemplate<Subtit
 		}
 		return dataList;
 	}
-	
-
 }

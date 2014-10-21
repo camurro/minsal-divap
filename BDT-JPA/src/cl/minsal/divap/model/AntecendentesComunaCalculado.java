@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 	
 	
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByDistribucionInicialPercapita", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita order by a.antecedentesComuna.idComuna.servicioSalud.id asc"),	
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByDistribucionInicialPercapitaServicio", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita and a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio order by a.antecedentesComuna.idComuna.servicioSalud.id asc"),
 	
 	
 	
