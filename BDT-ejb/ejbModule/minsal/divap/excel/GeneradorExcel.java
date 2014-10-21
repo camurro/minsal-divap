@@ -16,6 +16,11 @@ import minsal.divap.excel.impl.RebajaSheetExcel;
 import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.vo.CajaMontoSummaryVO;
 import minsal.divap.vo.CellExcelVO;
+<<<<<<< HEAD
+=======
+import minsal.divap.vo.FlujoCajaVO;
+import minsal.divap.vo.ResumenConsolidadorVO;
+>>>>>>> estimacionFlujoCaja2
 import minsal.divap.vo.SubtituloFlujoCajaVO;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -590,11 +595,26 @@ public class GeneradorExcel {
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	
+	
+	
+>>>>>>> estimacionFlujoCaja2
 	private void addSheet(EstimacionFlujoCajaConsolidadorSheetExcel excelSheet, String sheetName){
-		XSSFSheet sheet = workbook.createSheet(sheetName);
+		XSSFSheet sheet = null;
+		Boolean hojaNueva = null;
+		int index = workbook.getSheetIndex(sheetName);
+		if(index == -1){
+			hojaNueva = true;
+			sheet = workbook.createSheet(sheetName);
+		} else {
+			hojaNueva = false;
+			sheet = workbook.getSheetAt(index);
+		}
+
 		List<CellExcelVO> header = excelSheet.getHeaderComplex();
 		List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
-
 		CellStyle style = workbook.createCellStyle();
 		CellStyle styleTotales = workbook.createCellStyle();
 		styleTotales.setFillPattern(CellStyle.ALIGN_FILL);
@@ -619,9 +639,16 @@ public class GeneradorExcel {
 		styleTotales.setFont(fontTotales);
 
 		int currentRow = 0;
-		int currentCol = 0;
+		int currentCol = ((hojaNueva)?0:14);
 		int maxRowSpan = 0;
 		int maxColSpan = 0;
+
+		XSSFFont fontHeader = workbook.createFont();
+		fontHeader.setColor(IndexedColors.BLACK.getIndex());
+		fontHeader.setBold(true);
+		CellStyle cellStyleHeader = workbook.createCellStyle();
+		cellStyleHeader.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+		cellStyleHeader.setFont(fontHeader);
 
 		if(header != null && header.size() > 0){
 			for(CellExcelVO cellExcelVO : header){
@@ -633,34 +660,57 @@ public class GeneradorExcel {
 			System.out.println("maxColSpan->"+maxColSpan);
 			System.out.println("maxRowSpan->"+maxRowSpan);
 			for(int fila = 0; fila < maxRowSpan; fila++){
-				XSSFRow row = sheet.createRow(fila);
-				for(int columna = 0; columna < maxColSpan; columna++){
+				XSSFRow row = null;
+				if(hojaNueva){
+					row = sheet.createRow(fila);
+				}else{
+					row = sheet.getRow(fila);
+				}
+				for(int columna = currentCol; columna < (maxColSpan+currentCol); columna++){
 					XSSFCell cell = row.createCell(columna);
 					cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-					cell.setCellStyle(style);
+					cell.setCellStyle(cellStyleHeader);
 				}
 			}
+<<<<<<< HEAD
 
 			for(CellExcelVO cellExcelVO : header){               
+=======
+			boolean first = true;
+			for(CellExcelVO cellExcelVO : header){	
+				if(!hojaNueva && first){
+					first = false;
+					continue;
+				}
+>>>>>>> estimacionFlujoCaja2
 				XSSFRow row = sheet.getRow(currentRow) ;
 				XSSFCell cell = row.getCell(currentCol);
-				System.out.println("cellExcelVO.getName()="+cellExcelVO.getName());
+
+				cell.setCellStyle(cellStyleHeader);
 				cell.setCellValue(cellExcelVO.getName());
-				sheet.addMergedRegion(new CellRangeAddress(currentRow, (cellExcelVO.getRowSpan()==1) ? currentRow : (cellExcelVO.getRowSpan()-1) , currentCol, (cellExcelVO.getColSpan()==1)?currentCol: cellExcelVO.getColSpan()));
+				sheet.addMergedRegion(new CellRangeAddress(currentRow, (cellExcelVO.getRowSpan()==1) ? currentRow : (cellExcelVO.getRowSpan()-1) , currentCol, (cellExcelVO.getColSpan()==1)?currentCol: (currentCol + cellExcelVO.getColSpan() - 1)));
 				if(cellExcelVO.getColSpan()==1){
 					currentCol +=1;
 				}else{
 					currentCol += cellExcelVO.getColSpan();
 				}
 			}
+<<<<<<< HEAD
 			currentRow++;   
 		}   
 		currentCol = 1;
+=======
+			currentRow++;	
+		}	
+		currentCol = ((hojaNueva)?1:14);
+>>>>>>> estimacionFlujoCaja2
 		for(CellExcelVO cellExcelVO : subHeader){
 			XSSFRow row = sheet.getRow(currentRow);
 			XSSFCell cell = row.getCell(currentCol++);
 			cell.setCellValue(cellExcelVO.getName());
+			
 		}
+<<<<<<< HEAD
 		currentRow++;
 		currentCol = 0;
 		List<SubtituloFlujoCajaVO> items = excelSheet.getItems();
@@ -679,7 +729,56 @@ public class GeneradorExcel {
 			cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
 			cell.setCellValue(subtituloFlujoCajaVO.getTotalMontos());
 			currentCol = 0;
+=======
+		
+		for(int columnPosition = 0; columnPosition <= maxColSpan; columnPosition++) {
+			sheet.autoSizeColumn((short) (columnPosition));
+>>>>>>> estimacionFlujoCaja2
 		}
+		currentRow=3;
+		currentCol = ((hojaNueva)?0:14);
+		int inicialCol = currentCol;
+		List<ResumenConsolidadorVO> items = excelSheet.getItems();
+		System.out.println("items.size()=" + ((items == null)? 0 : items.size()));
+		/*if(items != null){
+			int lastRow = items.size();
+			int contElementos = 1;
+			CellStyle cellStyleLong = workbook.createCellStyle();
+			cellStyleLong.setDataFormat(workbook.createDataFormat().getFormat("#,##0"));
+			cellStyleHeader.setDataFormat(workbook.createDataFormat().getFormat("#,##0")); 
+			for(ResumenConsolidadorVO resumenConsolidadorVO : items){
+				if(contElementos != lastRow){
+					XSSFRow row = null;
+					XSSFCell cell = null;
+					if(hojaNueva){
+						row = sheet.createRow(currentRow++);
+						cell = row.createCell(currentCol++);
+						cell.setCellValue(resumenConsolidadorVO.getCodigoServicio());
+						row = sheet.createRow(currentRow++);
+						cell = row.createCell(currentCol++);
+						cell.setCellValue(resumenConsolidadorVO.getServicio());
+					}else{
+						row = sheet.getRow(currentRow++);
+					}
+					for(Long monto : resumenConsolidadorVO.getMontos()){
+						cell = row.createCell(currentCol++);
+						cell.setCellStyle(cellStyleLong);
+						cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+						cell.setCellValue(monto);
+					}
+					cell = row.createCell(currentCol);
+					cell.setCellStyle(cellStyleHeader);
+					cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+					cell.setCellValue(resumenConsolidadorVO.getTotal());
+					currentCol = ((hojaNueva)?0:14);
+				} else {
+					
+					
+				}
+				contElementos++;
+			}
+		}*/
+
 	}
 
 

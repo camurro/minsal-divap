@@ -5,19 +5,19 @@ import java.util.List;
 
 import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.vo.CellExcelVO;
-import minsal.divap.vo.SubtituloFlujoCajaVO;
+import minsal.divap.vo.ResumenConsolidadorVO;
 
-public class EstimacionFlujoCajaConsolidadorSheetExcel extends ExcelTemplate<SubtituloFlujoCajaVO>{
+public class EstimacionFlujoCajaConsolidadorSheetExcel extends ExcelTemplate<ResumenConsolidadorVO>{
 	private List<CellExcelVO> headerComplex = null;
 	private List<CellExcelVO> subHeadeComplex = null;
 	
-	public EstimacionFlujoCajaConsolidadorSheetExcel(List<CellExcelVO> header, List<CellExcelVO> subHeader, List<SubtituloFlujoCajaVO> items) {
+	public EstimacionFlujoCajaConsolidadorSheetExcel(List<CellExcelVO> header, List<CellExcelVO> subHeader, List<ResumenConsolidadorVO> items) {
 		super(null, items);
 		headerComplex = header;
 		subHeadeComplex = subHeader;
 	}
 	
-	public EstimacionFlujoCajaConsolidadorSheetExcel(List<CellExcelVO> header, List<CellExcelVO> subHeader, List<SubtituloFlujoCajaVO> items, Integer offsetRows, Integer offsetColumns) {
+	public EstimacionFlujoCajaConsolidadorSheetExcel(List<CellExcelVO> header, List<CellExcelVO> subHeader, List<ResumenConsolidadorVO> items, Integer offsetRows, Integer offsetColumns) {
 		super(null, items);
 		headerComplex = header;
 		subHeadeComplex = subHeader;	
@@ -42,8 +42,8 @@ public class EstimacionFlujoCajaConsolidadorSheetExcel extends ExcelTemplate<Sub
 	@Override
 	public List<List<Object>> getDataList() {
 		List<List<Object>> dataList = new ArrayList<List<Object>>();
-		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : getItems()){
-			List<Object> row = subtituloFlujoCajaVO.getRow();
+		for(ResumenConsolidadorVO resumenConsolidadorVO : getItems()){
+			List<Object> row = resumenConsolidadorVO.getRow();
 			if(row != null){
 				dataList.add(row);
 			}						
