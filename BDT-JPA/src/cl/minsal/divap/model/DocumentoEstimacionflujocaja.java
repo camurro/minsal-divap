@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "DocumentoEstimacionflujocaja.findByProgramaAnoTipoDocumento", query = "SELECT d FROM DocumentoEstimacionflujocaja d WHERE d.idProgramaAno.idProgramaAno = :idProgramaAno and d.idTipoDocumento.idTipoDocumento = :idTipoDocumento"),
     @NamedQuery(name = "DocumentoEstimacionflujocaja.deleteUsingIds", query = "DELETE FROM DocumentoEstimacionflujocaja d WHERE d.id IN (:idDocumentosEstimacion)"),
     @NamedQuery(name = "DocumentoEstimacionflujocaja.findById", query = "SELECT d FROM DocumentoEstimacionflujocaja d WHERE d.id = :id"),
-    @NamedQuery(name = "DocumentoEstimacionflujocaja.findByTypesIdProgramaAno", query = "SELECT d FROM DocumentoEstimacionflujocaja d WHERE d.idProgramaAno.idProgramaAno = :idProgramaAno and d.idTipoDocumento.idTipoDocumento = :idTipoDocumento")})
+    @NamedQuery(name = "DocumentoEstimacionflujocaja.findByTypesIdProgramaAno", query = "SELECT d FROM DocumentoEstimacionflujocaja d WHERE d.idProgramaAno.idProgramaAno = :idProgramaAno and d.idTipoDocumento.idTipoDocumento = :idTipoDocumento order by d.idDocumento.fechaCreacion DESC")})
 public class DocumentoEstimacionflujocaja implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

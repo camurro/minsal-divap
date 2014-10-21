@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "ReferenciaDocumento.findByPath", query = "SELECT r FROM ReferenciaDocumento r WHERE r.path = :path"),
     @NamedQuery(name = "ReferenciaDocumento.findByDocumentoFinal", query = "SELECT r FROM ReferenciaDocumento r WHERE r.documentoFinal = :documentoFinal"),
     @NamedQuery(name = "ReferenciaDocumento.findByNodeRef", query = "SELECT r FROM ReferenciaDocumento r WHERE r.nodeRef = :nodeRef"),
+    @NamedQuery(name = "ReferenciaDocumento.deleteUsingId", query = "DELETE FROM ReferenciaDocumento r WHERE r.id = :idDocumento"),
     @NamedQuery(name = "ReferenciaDocumento.findByFechaCreacion", query = "SELECT r FROM ReferenciaDocumento r WHERE r.fechaCreacion = :fechaCreacion")})
 public class ReferenciaDocumento implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -60,6 +61,8 @@ public class ReferenciaDocumento implements Serializable {
             @JoinColumn(name = "rebaja", referencedColumnName = "id_rebaja")})
     @ManyToMany
     private Collection<Rebaja> rebajaCollection;
+    @OneToMany(mappedBy = "idDocumento")
+    private Set<DocumentoEstimacionflujocaja> documentosEstimacionflujocaja;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idDocumento")
     private Set<DocumentoDistribucionInicialPercapita> documentoDistribucionInicialPercapitaCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idReferenciaDocumento")
@@ -125,6 +128,16 @@ public class ReferenciaDocumento implements Serializable {
         this.rebajaCollection = rebajaCollection;
     }
     
+    @XmlTransient
+	public Set<DocumentoEstimacionflujocaja> getDocumentosEstimacionflujocaja() {
+		return documentosEstimacionflujocaja;
+	}
+
+	public void setDocumentosEstimacionflujocaja(
+			Set<DocumentoEstimacionflujocaja> documentosEstimacionflujocaja) {
+		this.documentosEstimacionflujocaja = documentosEstimacionflujocaja;
+	}
+
 	public Set<DocumentoDistribucionInicialPercapita> getDocumentoDistribucionInicialPercapitaCollection() {
 		return documentoDistribucionInicialPercapitaCollection;
 	}

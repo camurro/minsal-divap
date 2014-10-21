@@ -332,7 +332,6 @@ public class DistribucionInicialPercapitaService {
 					antecendenteComunaCalculado.setPobreza(pobreza);
 					System.out.println("antecendenteComunaCalculado.getAntecedentesComuna().getIdAntecedentesComuna()="+antecendenteComunaCalculado.getAntecedentesComuna().getIdAntecedentesComuna());
 					if(antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion() != null){
-						Long perCapitaAno = null;
 						if(TipoComuna.RURAL.getId() == antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion().getIdTipoComuna()){
 							Double ruralidad = (percapitaBasal + pobreza) * 0.2;
 							antecendenteComunaCalculado.setRuralidad(ruralidad);
@@ -345,9 +344,12 @@ public class DistribucionInicialPercapitaService {
 							System.out.println("antecendenteComunaCalculado.getPoblacion()="+antecendenteComunaCalculado.getPoblacion());
 							System.out.println("antecendenteComunaCalculado.getPoblacionMayor()="+antecendenteComunaCalculado.getPoblacionMayor());
 							System.out.println("asignacionAdultoMayor="+asignacionAdultoMayor);
-							perCapitaAno =  (((valorPerCapitaComunalMes * antecendenteComunaCalculado.getPoblacion() + antecendenteComunaCalculado.getPoblacionMayor() * asignacionAdultoMayor)*12)/1000);
-							System.out.println("perCapitaAno="+perCapitaAno);
-							System.out.println("perCapitaAno="+perCapitaAno);
+							Long perCapitaMes = (valorPerCapitaComunalMes * antecendenteComunaCalculado.getPoblacion() + antecendenteComunaCalculado.getPoblacionMayor() * asignacionAdultoMayor);
+							System.out.println("perCapitaMes= "+perCapitaMes);
+							antecendenteComunaCalculado.setPercapitaMes(perCapitaMes);
+							Long perCapitaAno = perCapitaMes * 12;
+							System.out.println("perCapitaAno= "+perCapitaAno);
+							antecendenteComunaCalculado.setPercapitaAno(perCapitaAno);
 						} else if(TipoComuna.URBANA.getId() == antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion().getIdTipoComuna()){
 							antecendenteComunaCalculado.setRuralidad(0.0);
 							Double valorReferencialZona = (percapitaBasal + pobreza + 0.0) * antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona().getValor();
@@ -358,9 +360,12 @@ public class DistribucionInicialPercapitaService {
 							System.out.println("antecendenteComunaCalculado.getPoblacion()="+antecendenteComunaCalculado.getPoblacion());
 							System.out.println("antecendenteComunaCalculado.getPoblacionMayor()="+antecendenteComunaCalculado.getPoblacionMayor());
 							System.out.println("asignacionAdultoMayor="+asignacionAdultoMayor);
-							perCapitaAno =  (((valorPerCapitaComunalMes * antecendenteComunaCalculado.getPoblacion() + antecendenteComunaCalculado.getPoblacionMayor() * asignacionAdultoMayor)*12)/1000);
+							Long perCapitaMes =  (valorPerCapitaComunalMes * antecendenteComunaCalculado.getPoblacion() + antecendenteComunaCalculado.getPoblacionMayor() * asignacionAdultoMayor);
+							System.out.println("perCapitaMes="+perCapitaMes);
+							antecendenteComunaCalculado.setPercapitaMes(perCapitaMes);
+							Long perCapitaAno = perCapitaMes * 12;
 							System.out.println("perCapitaAno="+perCapitaAno);
-							System.out.println("perCapitaAno="+perCapitaAno);
+							antecendenteComunaCalculado.setPercapitaAno(perCapitaAno);
 						} else if(TipoComuna.COSTOFIJO.getId() == antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion().getIdTipoComuna()){
 							antecendenteComunaCalculado.setRuralidad(0.0);
 							Double valorReferencialZona = (percapitaBasal + pobreza + 0.0) * antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona().getValor();
@@ -369,14 +374,13 @@ public class DistribucionInicialPercapitaService {
 							antecendenteComunaCalculado.setValorPerCapitaComunalMes(valorPerCapitaComunalMes.doubleValue());
 							Double perCapitaCostoFijo = antecedentesComunaDAO.findPerCapitaCostoFijoByServicioComunaAnoAnterior(antecendenteComunaCalculado.getAntecedentesComuna().getIdComuna().getId(), antecendenteComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId(), (getAnoCurso() - 1));
 							System.out.println("perCapitaCostoFijo="+perCapitaCostoFijo);
-							perCapitaAno = (long) (perCapitaCostoFijo * antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso().getInflactor());
-						}
-						if(perCapitaAno != null){
-							System.out.println("perCapitaAno="+perCapitaAno);
-							antecendenteComunaCalculado.setPercapitaAno(perCapitaAno);
-							Long perCapitaMes = (perCapitaAno * 1000)/12;
+							perCapitaCostoFijo = ((perCapitaCostoFijo == null) ? 0.0 : perCapitaCostoFijo);
+							Long perCapitaMes = (long) (perCapitaCostoFijo * antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso().getInflactor());
 							System.out.println("perCapitaMes="+perCapitaMes);
 							antecendenteComunaCalculado.setPercapitaMes(perCapitaMes);
+							Long perCapitaAno = perCapitaMes * 12;
+							System.out.println("perCapitaAno="+perCapitaAno);
+							antecendenteComunaCalculado.setPercapitaAno(perCapitaAno);
 						}
 					}
 				}

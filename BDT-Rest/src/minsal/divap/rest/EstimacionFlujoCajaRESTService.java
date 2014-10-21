@@ -48,16 +48,13 @@ public class EstimacionFlujoCajaRESTService extends BaseRest {
 	}
 
 	@GET
-	@Path("/estimacionFlujoCaja/eliminarPlanillaPropuesta/{idLineaProgramatica}")
-	@Produces("application/json")
-	public Integer eliminarPlanillaPropuesta(
-			@PathParam("idLineaProgramatica") Integer idLineaProgramatica) {
-		System.out.println("[Eliminar Planilla] -->" + idLineaProgramatica);
-		// EstimacionFlujoCajaService estimacionFlujoCajaService =
-		// getService(EstimacionFlujoCajaService.class);
-		return 1; // estimacionFlujoCajaService.eliminarPlanillaPropuesta(idLineaProgramatica);
-
-	}
+    @Path("/estimacionFlujoCaja/eliminarPlanillaPropuesta/{idProgramaAno}")
+    @Produces("application/json")
+    public void eliminarPlanillaPropuesta(@PathParam("idProgramaAno") Integer idProgramaAno){
+		System.out.println("[Eliminar Planilla] -->"+idProgramaAno);
+		EstimacionFlujoCajaService estimacionFlujoCajaService = getService(EstimacionFlujoCajaService.class);
+		estimacionFlujoCajaService.eliminarPlanillaPropuesta(idProgramaAno);
+    }
 
 	@GET
 	@Path("/estimacionFlujoCaja/notificarUsuarioConsolidador/{idLineaProgramatica}/{usuario}/{idPlanillaMonitoreo}")

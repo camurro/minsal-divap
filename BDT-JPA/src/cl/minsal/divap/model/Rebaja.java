@@ -43,6 +43,9 @@ public class Rebaja implements Serializable {
 	@JoinColumn(name = "rebaja_corte", referencedColumnName = "rebaja_corte_id")
 	@ManyToOne(optional = false)
 	private RebajaCorte rebajaCorte;
+	@JoinColumn(name = "ano", referencedColumnName = "ano")
+    @ManyToOne(optional = false)
+    private AnoEnCurso ano;
 	@Column(name = "fecha_creacion")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date fechaCreacion;
@@ -82,6 +85,14 @@ public class Rebaja implements Serializable {
 
 	public void setRebajaCorte(RebajaCorte rebajaCorte) {
 		this.rebajaCorte = rebajaCorte;
+	}
+
+	public AnoEnCurso getAno() {
+		return ano;
+	}
+
+	public void setAno(AnoEnCurso ano) {
+		this.ano = ano;
 	}
 
 	public Date getFechaCreacion() {

@@ -48,6 +48,9 @@ public class Plantilla implements Serializable {
     @JoinColumn(name = "documento", referencedColumnName = "id")
     @ManyToOne
     private ReferenciaDocumento documento;
+    @JoinColumn(name = "id_programa", referencedColumnName = "id")
+    @ManyToOne
+    private Programa idPrograma;
 
     public Plantilla() {
     }
@@ -99,6 +102,14 @@ public class Plantilla implements Serializable {
 
 	public void setDocumento(ReferenciaDocumento documento) {
 		this.documento = documento;
+	}
+
+	public Programa getIdPrograma() {
+		return idPrograma;
+	}
+
+	public void setIdPrograma(Programa idPrograma) {
+		this.idPrograma = idPrograma;
 	}
 
 	@Override

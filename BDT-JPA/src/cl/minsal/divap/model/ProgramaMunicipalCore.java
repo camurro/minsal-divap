@@ -26,14 +26,13 @@ public class ProgramaMunicipalCore implements Serializable {
 	@Column(name="id_programa_municipal_core", unique=true, nullable=false)
 	@GeneratedValue
 	private Integer idProgramaMunicipalCore;
-	@JoinColumn(name = "programa_ano", referencedColumnName = "id_programa_ano", insertable = false, updatable = false)
+	@JoinColumn(name = "programa_ano", referencedColumnName = "id_programa_ano")
 	@ManyToOne(optional = false)
 	private ProgramaAno programaAnoMunicipal;
-	
 	@JoinColumn(name = "establecimiento", referencedColumnName = "id")
 	@ManyToOne
 	private Establecimiento establecimiento;
-	@JoinColumn(name = "comuna", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "comuna", referencedColumnName = "id")
 	@ManyToOne(optional = false)
 	private Comuna comuna;
 

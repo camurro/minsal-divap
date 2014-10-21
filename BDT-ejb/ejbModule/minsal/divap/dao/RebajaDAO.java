@@ -12,6 +12,7 @@ import javax.persistence.TypedQuery;
 
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.enums.TiposCumplimientos;
+import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.ComunaCumplimiento;
 import cl.minsal.divap.model.ComunaCumplimientoRebaja;
 import cl.minsal.divap.model.Cumplimiento;
@@ -106,11 +107,12 @@ public class RebajaDAO {
 	}
 
 
-	public Integer crearIntanciaRebaja(Usuario usuario, RebajaCorte rebajaCorte) {
+	public Integer crearIntanciaRebaja(Usuario usuario, RebajaCorte rebajaCorte, AnoEnCurso anoCurso) {
 		try {
 			long current = Calendar.getInstance().getTimeInMillis();
 			Rebaja rebaja = new Rebaja();
 			rebaja.setUsuario(usuario);
+			rebaja.setAno(anoCurso);
 			rebaja.setRebajaCorte(rebajaCorte);
 			rebaja.setFechaCreacion(new Date(current));
 			this.em.persist(rebaja);
