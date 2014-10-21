@@ -28,7 +28,8 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name="ServicioSalud.findAll", query="SELECT s FROM ServicioSalud s"),
 	@NamedQuery(name="ServicioSalud.findById", query="SELECT s FROM ServicioSalud s  WHERE s.id = :idServicio"),
 	@NamedQuery(name="ServicioSalud.findServiciosByRegion", query="SELECT s FROM ServicioSalud s WHERE s.region.id = :idRegion order by s.id asc"),
-	@NamedQuery(name = "ServicioSalud.findByIdServicioSalud", query = "SELECT s FROM ServicioSalud s WHERE s.id = :idServicioSalud")})
+	@NamedQuery(name = "ServicioSalud.findByIdServicioSalud", query = "SELECT s FROM ServicioSalud s WHERE s.id = :idServicioSalud"),
+	@NamedQuery(name="ServicioSalud.findAllOrderId", query="SELECT s FROM ServicioSalud s order by s.id ASC"),})
 public class ServicioSalud implements Serializable {
 	private static final long serialVersionUID = 1L;
 

@@ -30,6 +30,15 @@ public class ServicioSaludDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public List<ServicioSalud> getServiciosOrderId() {
+		try {
+			TypedQuery<ServicioSalud> query = this.em.createNamedQuery("ServicioSalud.findAllOrderId", ServicioSalud.class);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	public  ServicioSalud getServicioSaludPorID(Integer idServicioSalud){
 		try {

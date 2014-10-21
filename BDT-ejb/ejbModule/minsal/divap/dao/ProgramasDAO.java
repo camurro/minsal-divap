@@ -1,6 +1,7 @@
 
 package minsal.divap.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Singleton;
@@ -9,7 +10,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import minsal.divap.enums.Subtitulo;
 import cl.minsal.divap.model.AnoEnCurso;
+import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
@@ -233,6 +236,27 @@ public class ProgramasDAO {
 	public ProgramaAno save(ProgramaAno programaAno) {
 		this.em.persist(programaAno);
 		return programaAno;
+	}
+
+	public List<ProgramaAno> getProgramasBySubtitulo(Integer anoCurso, Subtitulo subtitulo) {
+		try {
+			List<ProgramaAno> programasAno = null;
+			TypedQuery<Componente> queryComponente = this.em.createNamedQuery("Componente.findByIdSubtitulo", Componente.class);
+			queryComponente.setParameter("idTipoSubtitulo", subtitulo.getId());
+			List<Componente> componentes =  queryComponente.getResultList();
+			if(componentes != null && componentes.size() > 0){
+				List<Integer> idComponentes = new ArrayList<Integer>();
+				for(Componente componente : componentes){
+					idComponentes.add(componente.getId());
+				}
+				TypedQuery<ProgramaAno> queryProgramas = this.em.createNamedQuery("ProgramaAno.findByComponente", ProgramaAno.class);
+				queryProgramas.setParameter("idComponentes", idComponentes);
+				programasAno = queryProgramas.getResultList();
+			}
+			return programasAno;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }
