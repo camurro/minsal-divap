@@ -99,8 +99,8 @@ public class ProcesoEstimacionFlujoCajaConsolidadorHacerSeguimientoController ex
 		}
 		idLineaProgramatica = 1;
 		//CORREO
-		planillaProgramacionFlujoCaja = estimacionFlujoCajaService.getLastDocumentSummaryEstimacionFlujoCajaType(idLineaProgramatica, TipoDocumentosProcesos.PLANTILLAPROPUESTA);// distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA);
-		bitacoraSeguimiento = estimacionFlujoCajaService.getBitacora(idLineaProgramatica,TareasSeguimiento.HACERSEGUIMIENTOESTIMACIONFLUJOCAJA);
+		planillaProgramacionFlujoCaja = estimacionFlujoCajaService.getLastDocumentSummaryEstimacionFlujoCajaTipoDocumento(TipoDocumentosProcesos.PLANTILLAPROPUESTA);// distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA);
+		bitacoraSeguimiento = estimacionFlujoCajaService.getBitacora(TareasSeguimiento.HACERSEGUIMIENTOESTIMACIONFLUJOCAJA);
 		tareaSeguimiento = TareasSeguimiento.HACERSEGUIMIENTOESTIMACIONFLUJOCAJA;
 
 	
@@ -455,23 +455,10 @@ public class ProcesoEstimacionFlujoCajaConsolidadorHacerSeguimientoController ex
 			//switch (tareaSeguimiento) {
 			//case HACERSEGUIMIENTOOFICIO:
 				tipoDocumento = TipoDocumentosProcesos.PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA;
-				estimacionFlujoCajaService.moveToAlfresco(idLineaProgramatica, docNewVersion,tipoDocumento,versionFinal);
+				estimacionFlujoCajaService.moveToAlfresco(null, docNewVersion,tipoDocumento,versionFinal);
 				this.setOrdinarioProgramacionCajaId(docNewVersion);
-				//distribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, tipoDocumento, versionFinal);
-			//	this.oficioConsultaId = docNewVersion;
-			//	break;
-			//case HACERSEGUIMIENTORESOLUCIONES:
-			//	break;	
-			//case HACERSEGUIMIENTOTOMARAZON:
-			//	break;
-			//case HACERSEGUIMIENTODECRETO:
-			//	tipoDocumento = TipoDocumentosProcesos.BORRADORAPORTEESTATAL;
-			//	distribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, tipoDocumento, versionFinal);
-			//	this.decretoId = docNewVersion;
-			//	break;	
-			//default:
-			//	break;
-			//}
+			
+				
 		}else{
 			System.out.println("uploadVersion file is null");
 			FacesMessage message = new FacesMessage("uploadVersion file is null");

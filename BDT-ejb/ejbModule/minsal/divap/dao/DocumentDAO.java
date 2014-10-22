@@ -190,6 +190,22 @@ public class DocumentDAO {
         return referenciaDocumento;
     }
 
+    public ReferenciaDocumento getLastDocumentByTipoDocumentoEstimacionFlujoCaja(TipoDocumentosProcesos tipoDocumento) {
+        ReferenciaDocumento referenciaDocumento = null;
+        try {
+            TypedQuery<DocumentoEstimacionflujocaja> query = this.em.createNamedQuery("DocumentoEstimacionflujocaja.findByTipoDocumento", DocumentoEstimacionflujocaja.class);
+            query.setParameter("idTipoDocumento", tipoDocumento.getId());
+            List<DocumentoEstimacionflujocaja> referenciasDocumentos = query.getResultList();
+            if(referenciasDocumentos != null && referenciasDocumentos.size() > 0){
+                referenciaDocumento = referenciasDocumentos.get(0).getIdDocumento();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return referenciaDocumento;
+    }
+    
+    
     public List<DocumentoDistribucionInicialPercapita> getDocumentosByTypeServicioDistribucionInicialPercapita(
             Integer idDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos... tiposDocumentoProceso) {
         try {

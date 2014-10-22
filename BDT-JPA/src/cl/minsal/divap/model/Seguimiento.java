@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Seguimiento.findById", query = "SELECT s FROM Seguimiento s WHERE s.id = :id"),
     @NamedQuery(name = "Seguimiento.findByIdInstancia", query = "SELECT s FROM Seguimiento s WHERE s.idInstancia = :idInstancia"),
     @NamedQuery(name = "Seguimiento.findByIdEstimacionFlujoCaja", query = "SELECT s FROM Seguimiento s JOIN s.estimacionFlujoCajaSeguimientoCollection d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.programaAno.idProgramaAno = :idProgramaAno"),
+    @NamedQuery(name = "Seguimiento.findByIdEstimacionFlujoCajaConsolidador", query = "SELECT s FROM Seguimiento s JOIN s.estimacionFlujoCajaSeguimientoCollection d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento"),
     @NamedQuery(name = "Seguimiento.findByIdDistribucionInicialTarea", query = "SELECT s FROM Seguimiento s JOIN s.distribucionInicialPercapitaSeguimientoCollection d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.distribucionInicialPercapita.idDistribucionInicialPercapita = :idDistribucionInicialPercapita order by s.fechaEnvio desc"),
     @NamedQuery(name = "Seguimiento.findByIdRebaja", query = "SELECT s FROM Seguimiento s JOIN s.rebajaSeguimientos d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.rebaja.idRebaja = :idRebaja"),
     @NamedQuery(name = "Seguimiento.findBySubject", query = "SELECT s FROM Seguimiento s WHERE s.subject = :subject"),

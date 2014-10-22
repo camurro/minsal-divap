@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "DocumentoEstimacionflujocaja.findAll", query = "SELECT d FROM DocumentoEstimacionflujocaja d"),
     @NamedQuery(name = "DocumentoEstimacionflujocaja.findByProgramaAnoTipoDocumento", query = "SELECT d FROM DocumentoEstimacionflujocaja d WHERE d.idProgramaAno.idProgramaAno = :idProgramaAno and d.idTipoDocumento.idTipoDocumento = :idTipoDocumento"),
+    @NamedQuery(name = "DocumentoEstimacionflujocaja.findByTipoDocumento", query = "SELECT d FROM DocumentoEstimacionflujocaja d WHERE d.idTipoDocumento.idTipoDocumento = :idTipoDocumento"),
     @NamedQuery(name = "DocumentoEstimacionflujocaja.deleteUsingIds", query = "DELETE FROM DocumentoEstimacionflujocaja d WHERE d.id IN (:idDocumentosEstimacion)"),
     @NamedQuery(name = "DocumentoEstimacionflujocaja.findById", query = "SELECT d FROM DocumentoEstimacionflujocaja d WHERE d.id = :id"),
     @NamedQuery(name = "DocumentoEstimacionflujocaja.findByTypesIdProgramaAno", query = "SELECT d FROM DocumentoEstimacionflujocaja d WHERE d.idProgramaAno.idProgramaAno = :idProgramaAno and d.idTipoDocumento.idTipoDocumento = :idTipoDocumento")})

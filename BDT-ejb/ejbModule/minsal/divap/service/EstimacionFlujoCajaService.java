@@ -86,6 +86,7 @@ import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
 import cl.minsal.divap.model.ProgramaServicioCoreComponente;
+import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.Remesa;
 import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.ServicioSalud;
@@ -149,10 +150,9 @@ public class EstimacionFlujoCajaService {
 	private ServicioSaludDAO servicioSaludDAO;
 
 	// Generar documento
-	public Integer elaborarOrdinarioProgramacionCaja(Integer idLineaProgramatica) {
+	public Integer elaborarOrdinarioProgramacionCaja() {
 
-		// return
-		// distribucionInicialPercapitaService.valorizarDisponibilizarPlanillaTrabajo(idDistribucionInicialPercapita);
+		
 
 		Integer plantillaBorradorOrdinarioProgramacionCaja = documentService
 				.getPlantillaByType(TipoDocumentosProcesos.PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA);
@@ -188,8 +188,7 @@ public class EstimacionFlujoCajaService {
 							.toLowerCase());
 			System.out.println("contenTypeBorradorAporteEstatal->"
 					+ contentType);
-			// generadorWordPlantillaBorradorDecretoAporteEstatal.saveContent(documentoBorradorAporteEstatalVO.getContent(),
-			// XWPFDocument.class);
+			
 			generadorWordPlantillaBorradorOrdinarioProgramacionCaja
 			.saveContent(documentoBorradorOrdinarioProgramacionCajaVO
 					.getContent(), XWPFDocument.class);
@@ -210,22 +209,13 @@ public class EstimacionFlujoCajaService {
 							.toString()));
 			System.out.println("response responseBorradorAporteEstatal --->"
 					+ response);
-			// TODO: Crear documento para estimacion flujo de caja.
-			// plantillaIdBorradorDecretoAporteEstatal =
-			// documentService.createDocumentPercapita(idDistribucionInicialPercapita,
-			// TipoDocumentosProcesos.BORRADORAPORTEESTATAL,
-			// responseBorradorAporteEstatal.getNodeRef(),
-			// responseBorradorAporteEstatal.getFileName(),
-			// contenTypeBorradorAporteEstatal);
+		
 
-			ProgramaAno programaAno = programasDAO
-					.getProgramaAnoByID(idLineaProgramatica);
 			TipoDocumento tipoDocumento = new TipoDocumento(
 					TipoDocumentosProcesos.PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA
 					.getId());
 			plantillaBorradorOrdinarioProgramacionCaja = documentService
-					.createDocumentPropuestaEstimacionFlujoCaja(programaAno,
-							tipoDocumento, response.getNodeRef(),
+					.createDocumentOrdinarioProgramacióndeCaja(tipoDocumento, response.getNodeRef(),
 							response.getFileName(), contentType);
 
 		} catch (IOException e) {
@@ -466,6 +456,8 @@ public class EstimacionFlujoCajaService {
 			TareasSeguimiento tareaSeguimiento, String subject, String body,
 			String username, List<String> para, List<String> conCopia,
 			List<String> conCopiaOculta, List<Integer> documentos) {
+		
+		Integer referenciaDocId = 0;
 		String from = usuarioDAO.getEmailByUsername(username);
 		if (from == null) {
 			throw new RuntimeException("Usuario no tiene un email valido");
@@ -490,6 +482,7 @@ public class EstimacionFlujoCajaService {
 						contenType);
 			}
 		}
+		
 		Integer idSeguimiento = seguimientoService.createSeguimiento(
 				tareaSeguimiento, subject, body, from, para, conCopia,
 				conCopiaOculta, documentosTmp);
@@ -497,14 +490,11 @@ public class EstimacionFlujoCajaService {
 				.getSeguimientoById(idSeguimiento);
 
 		estimacionFlujoCajaDAO.createSeguimiento(idLineaProgramatica,seguimiento);
-		return 1;// distribucionInicialPercapitaDAO.createSeguimiento(idDistribucionInicialPercapita,
-		// seguimiento);
+		return 1;
 	}
 
-	public List<SeguimientoVO> getBitacora(
-			Integer idProgramaAno,
-			TareasSeguimiento tareaSeguimiento) {
-		return seguimientoService.getBitacoraEstimacionFlujoCaja(idProgramaAno,	tareaSeguimiento);
+	public List<SeguimientoVO> getBitacora(TareasSeguimiento tareaSeguimiento) {
+		return seguimientoService.getBitacoraEstimacionFlujoCaja(tareaSeguimiento);
 	}
 
 	
@@ -1049,6 +1039,14 @@ public class EstimacionFlujoCajaService {
 		return documentService.getLastDocumentoSummaryByEstimacionFlujoCajaType(idProgramaAno, tipoDocumento);
 
 	}
+	
+	public ReferenciaDocumentoSummaryVO getLastDocumentSummaryEstimacionFlujoCajaTipoDocumento(TipoDocumentosProcesos tipoDocumento) {
+		// TODO Auto-generated method stub
+		return documentService.getLastDocumentoSummaryByEstimacionFlujoCajaTipoDocumento(tipoDocumento);
+
+	}
+	
+	
 
 	//Obtiene el id del programa para el a�o siguiente para hacer la estimacion del flujo de caja.
 	public Integer obtenerIdProgramaAno(Integer id) {
