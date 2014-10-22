@@ -20,7 +20,7 @@ public enum TipoDocumentosProcesos{
     
 	BASECUMPLIMIENTO(50, "Base Cumplimiento"), PLANTILLARESOLUCIONREBAJA(51,"Plantilla Resolución Rebaja Aporte Estatal"), RESOLUCIONREBAJA(52,"Resolución Rebaja Aporte Estatal"),
 	PLANTILLACORREORESOLUCIONSERVICIOSALUDREBAJA(53,"Plantilla Correo Resoluciones Servicios de Salud - Rebaja"), PLANTILLACORREOCONSULTAREGIONALPERCAPITA(54,"Plantilla Correo Consulta Regional - percapita"),
-	PLANTILLACORREORESOLUCIONESPERCAPITA(55,"Plantilla Correo Resoluciones - percapita"),
+	PLANTILLACORREORESOLUCIONESPERCAPITA(55,"Plantilla Correo Resoluciones - percapita"), PLANTILLAOFICIOPROGRAMACIONCAJA(56,"Plantilla Oficio Programación Caja"),
 	
 	CONVENIOS(50,"Convenios Documentos");
 

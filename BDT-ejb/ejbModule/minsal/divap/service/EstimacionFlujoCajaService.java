@@ -42,6 +42,7 @@ import minsal.divap.excel.impl.EstimacionFlujoCajaConsolidadorSheetExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaSheetExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaSubtituloSheetExcel;
 import minsal.divap.model.mappers.FlujoCajaMapper;
+import minsal.divap.model.mappers.ServicioMapper;
 import minsal.divap.model.mappers.SubtituloFlujoCajaMapper;
 import minsal.divap.util.Util;
 import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
@@ -49,18 +50,15 @@ import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.CajaMontoSummaryVO;
 import minsal.divap.vo.CellExcelVO;
-import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ConveniosSummaryVO;
 import minsal.divap.vo.DocumentoVO;
 import minsal.divap.vo.EmailVO;
 import minsal.divap.vo.FlujoCajaVO;
-import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.ResumenConsolidadorVO;
 import minsal.divap.vo.SeguimientoVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloFlujoCajaVO;
-import minsal.divap.vo.SubtituloVO;
 import minsal.divap.vo.TransferenciaSummaryVO;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -79,7 +77,6 @@ import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.MarcoPresupuestario;
 import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.MontoMes;
-import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
 import cl.minsal.divap.model.ProgramaServicioCoreComponente;
@@ -495,50 +492,48 @@ public class EstimacionFlujoCajaService {
 		return seguimientoService.getBitacoraEstimacionFlujoCaja(idProgramaAno,	tareaSeguimiento);
 	}
 
-	
+
 	public Integer generarPlanillaPropuestaConsolidador(String username) {
 		Integer planillaTrabajoId = null;
 		//obtengo todos los programas del usuario
-		
+
 		//obtengo lista de servicios
 		Integer mes = Integer.parseInt(getMesCurso(true));
 		List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
-		
+
 		List<ResumenConsolidadorVO> resumenConsolidadorSubtitulo21 = new ArrayList<ResumenConsolidadorVO>();
 		List<ResumenConsolidadorVO> resumenConsolidadorSubtitulo22 = new ArrayList<ResumenConsolidadorVO>();
 		List<ResumenConsolidadorVO> resumenConsolidadorSubtitulo24 = new ArrayList<ResumenConsolidadorVO>();
 		List<ResumenConsolidadorVO> resumenConsolidadorSubtitulo29 = new ArrayList<ResumenConsolidadorVO>();
-		
+
 		List<ProgramaAno> programasSubtitulo21 = programasDAO.getProgramasBySubtitulo(getAnoCurso(), Subtitulo.SUBTITULO21);
 		List<ProgramaAno> programasSubtitulo22 = programasDAO.getProgramasBySubtitulo(getAnoCurso(), Subtitulo.SUBTITULO22);
 		List<ProgramaAno> programasSubtitulo24 = programasDAO.getProgramasBySubtitulo(getAnoCurso(), Subtitulo.SUBTITULO24);
 		List<ProgramaAno> programasSubtitulo29 = programasDAO.getProgramasBySubtitulo(getAnoCurso(), Subtitulo.SUBTITULO29);
-		
+
 		List<CellExcelVO> header = new ArrayList<CellExcelVO>();
 		List<CellExcelVO> subHeader = new ArrayList<CellExcelVO>();
 		header.add(new CellExcelVO("COD SS", 1, 2));
 		header.add(new CellExcelVO("SERVICIOS DE SALUD", 1, 2));
-		
+
 		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
-		String filename = tmpDir + File.separator + "planillaPropuestaEstimacionFlujoCajaConsolidador.xlsx";
+		String filename = tmpDir + File.separator + "planillaPropuestaEstimacionFlujoCajaConsolidador" + getMesCurso(false) + ".xlsx";
 		String contenType = mimemap.getContentType(filename.toLowerCase());
-		
+
 		GeneradorExcel generadorExcel = new GeneradorExcel(filename);
-		
+
 		if(servicios != null && servicios.size() > 0){
 			for(ServicioSalud servicioSalud : servicios){
 				ResumenConsolidadorVO resumenConsolidadorVO = new ResumenConsolidadorVO();
 				resumenConsolidadorVO.setCodigoServicio(servicioSalud.getId().toString());
 				resumenConsolidadorVO.setServicio(servicioSalud.getNombre());
-				EstimacionFlujoCajaConsolidadorSheetExcel estimacionFlujoCajaConsolidadorSheetExcel = null;
 				if(programasSubtitulo21 != null && programasSubtitulo21.size() > 0){
 					List<Long> montos = new ArrayList<Long>();
-					header.add(new CellExcelVO("SUBTÍTULO 21", programasSubtitulo21.size(), 1));			
+					header.add(new CellExcelVO("SUBTÍTULO 21", programasSubtitulo21.size() + 1, 1));			
 					for(ProgramaAno programaAno : programasSubtitulo21) {
 						subHeader.add(new CellExcelVO(programaAno.getPrograma().getNombre(), 1, 1));
 					}
 					subHeader.add(new CellExcelVO("TOTAL REF. SERVICIOS SUBT. 21", 1, 1));
-					estimacionFlujoCajaConsolidadorSheetExcel = new EstimacionFlujoCajaConsolidadorSheetExcel(header, subHeader, null);
 					for(ProgramaAno programaAno : programasSubtitulo21) {
 						List<Caja> cajas = cajaDAO.getByProgramaAnoServicioSubtitulo(programaAno.getIdProgramaAno(), servicioSalud.getId(), Subtitulo.SUBTITULO21);
 						if(cajas != null && cajas.size() > 0){
@@ -553,30 +548,30 @@ public class EstimacionFlujoCajaService {
 									montos.add(totalMes);
 								}
 							}
+						}else{
+							montos.add(0L);
 						}
 					}
 					resumenConsolidadorVO.setMontos(montos);
 					resumenConsolidadorSubtitulo21.add(resumenConsolidadorVO);
 				}
-				estimacionFlujoCajaConsolidadorSheetExcel.setItems(resumenConsolidadorSubtitulo21);
-				generadorExcel.addSheet(estimacionFlujoCajaConsolidadorSheetExcel, getMesCurso(false));
 			}
-			for(int i=0;i<subHeader.size();i++){
-				System.out.println("subHeader.get(i) ---> "+subHeader.get(i));
-			}
+			EstimacionFlujoCajaConsolidadorSheetExcel estimacionFlujoCajaConsolidadorSheetExcel = new EstimacionFlujoCajaConsolidadorSheetExcel(header, subHeader, null);
+			estimacionFlujoCajaConsolidadorSheetExcel.setItems(resumenConsolidadorSubtitulo21);
+			generadorExcel.addSheet(estimacionFlujoCajaConsolidadorSheetExcel, getMesCurso(false));
 		}
-		
- 
-	
-		
-		
+
+
+
+
+
 		//estimacionFlujoCajaSubtituloSheetExcel.setItems(flujoCajaSub22);
-		
-		
-	
+
+
+
 		//String mes = getMesCurso(false);
-		
-		
+
+
 		try {
 			BodyVO response = alfrescoService.uploadDocument(generadorExcel
 					.saveExcel(), contenType, folderDocEstimacionFlujoCaja
@@ -591,18 +586,18 @@ public class EstimacionFlujoCajaService {
 			planillaTrabajoId = documentService
 					.createDocumentPropuestaConsolidador(tipoDocumento, response.getNodeRef(),
 							response.getFileName(), contenType, getAnoCurso(), Integer.parseInt(getMesCurso(true)));
-		
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		System.out.println("planillaTrabajoId --> "+planillaTrabajoId);
-		
+
 		return planillaTrabajoId;
-		
+
 	}
-	
-	
+
+
 	public Integer generarPlanillaPropuesta(Integer idProgramaAno) {
 		Integer planillaTrabajoId = null;
 		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
@@ -1150,8 +1145,8 @@ public class EstimacionFlujoCajaService {
 	}
 
 	public List<SubtituloFlujoCajaVO> getMonitoreoByProgramaAnoComponenteSubtituloServicio(Integer idProgramaAno, List<Integer> idComponentes, Subtitulo subtitulo, Boolean iniciarFlujoCaja, Integer idServicio) {
-		
-		
+
+
 		List<SubtituloFlujoCajaVO> subtitulosFlujosCaja = new ArrayList<SubtituloFlujoCajaVO>();
 		List<Caja> flujosCaja = cajaDAO.getMonitoreoByProgramaAnoComponenteSubtituloServicio(idProgramaAno, idComponentes, subtitulo, idServicio);
 		if(flujosCaja != null && flujosCaja.size() > 0){
@@ -1217,8 +1212,8 @@ public class EstimacionFlujoCajaService {
 		return subtitulosFlujosCaja;
 
 	}
-	
-	
+
+
 	public List<SubtituloFlujoCajaVO> getMonitoreoByProgramaAnoComponenteSubtitulo(Integer idProgramaAno, List<Integer> idComponentes, Subtitulo subtitulo, Boolean iniciarFlujoCaja) {
 		List<SubtituloFlujoCajaVO> subtitulosFlujosCaja = new ArrayList<SubtituloFlujoCajaVO>(); 
 		List<Caja> flujosCaja = cajaDAO.getMonitoreoByProgramaAnoComponenteSubtitulo(idProgramaAno, idComponentes, subtitulo);
@@ -1378,14 +1373,14 @@ public class EstimacionFlujoCajaService {
 			}
 		}
 	}
-	
-	
+
+
 	public List<SubtituloFlujoCajaVO> getPercapitaByProgramaAno(Integer idProgramaAno, Integer idServicio) {
 		DistribucionInicialPercapita  distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
 		List<AntecendentesComunaCalculado> antecendentesComunasCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaServicio(distribucionInicialPercapita.getIdDistribucionInicialPercapita(), idServicio);
 		List<SubtituloFlujoCajaVO> resultado = new ArrayList<SubtituloFlujoCajaVO>();
 		Map<Integer, Long> percapitaServicio = new HashMap<Integer, Long>();
-		 
+
 		System.out.println("antecendentesComunasCalculado.size() --> "+antecendentesComunasCalculado.size());
 		if(antecendentesComunasCalculado != null && antecendentesComunasCalculado.size()>0){
 			for(AntecendentesComunaCalculado antecendentesComunaCalculado : antecendentesComunasCalculado){
@@ -1398,96 +1393,190 @@ public class EstimacionFlujoCajaService {
 				}
 			}
 		}
-		 
-		 
-		 for (Integer key : percapitaServicio.keySet()) {
-			 Long valor = percapitaServicio.get(key); //ojo que en key se guarda el 
-			 SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaVO();
-			 ServicioSalud servicioSalud = servicioSaludService.getServicioSaludPorID(key);
-			 if(servicioSalud != null) {
-				 subtituloFlujoCajaVO.setServicio(servicioSalud.getNombre());
-				 subtituloFlujoCajaVO.setIdServicio(servicioSalud.getId());
-			 }
-			 List<CajaMontoSummaryVO> cajaMontos = new ArrayList<CajaMontoSummaryVO>();
-			 Long montoMensual = valor / 12;
-			 for(int i=0; i<12; i++){
-				 CajaMontoSummaryVO caja = new CajaMontoSummaryVO();
-				 caja.setIdMes(i+1);
-				 caja.setMontoMes(montoMensual);
-				 cajaMontos.add(i, caja);
-			 }			 
-			 
-			 subtituloFlujoCajaVO.setCajaMontos(cajaMontos);
-			 subtituloFlujoCajaVO.setMarcoPresupuestario(montoMensual*12);
-			 resultado.add(subtituloFlujoCajaVO);
-			 
-		 } 
-		
-		 
-		
+
+
+		for (Integer key : percapitaServicio.keySet()) {
+			Long valor = percapitaServicio.get(key); //ojo que en key se guarda el 
+			SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaVO();
+			ServicioSalud servicioSalud = servicioSaludService.getServicioSaludPorID(key);
+			if(servicioSalud != null) {
+				subtituloFlujoCajaVO.setServicio(servicioSalud.getNombre());
+				subtituloFlujoCajaVO.setIdServicio(servicioSalud.getId());
+			}
+			List<CajaMontoSummaryVO> cajaMontos = new ArrayList<CajaMontoSummaryVO>();
+			Long montoMensual = valor / 12;
+			for(int i=0; i<12; i++){
+				CajaMontoSummaryVO caja = new CajaMontoSummaryVO();
+				caja.setIdMes(i+1);
+				caja.setMontoMes(montoMensual);
+				cajaMontos.add(i, caja);
+			}			 
+
+			subtituloFlujoCajaVO.setCajaMontos(cajaMontos);
+			subtituloFlujoCajaVO.setMarcoPresupuestario(montoMensual*12);
+			resultado.add(subtituloFlujoCajaVO);
+
+		} 
+
+
+
 		return resultado;
-		
+
 	}
-public List<SubtituloFlujoCajaVO> getPercapitaByProgramaAno(Integer idProgramaAno) {
-		
+	public List<SubtituloFlujoCajaVO> getPercapitaByProgramaAno(Integer idProgramaAno) {
+
 		DistribucionInicialPercapita  distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
 		Integer id_disperc = distribucionInicialPercapita.getIdDistribucionInicialPercapita();
 		System.out.println("id_disperc --> "+id_disperc);
-		
-		
+
+
 		List<AntecendentesComunaCalculado> antecendentesComunasCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(distribucionInicialPercapita.getIdDistribucionInicialPercapita());
 		List<SubtituloFlujoCajaVO> resultado = new ArrayList<SubtituloFlujoCajaVO>();
 		Map<Integer, Long> percapitaServicio = new HashMap<Integer, Long>();
-		 
+
 		System.out.println("antecendentesComunasCalculado.size() --> "+antecendentesComunasCalculado.size());
 		if(antecendentesComunasCalculado != null && antecendentesComunasCalculado.size()>0){
 			for(AntecendentesComunaCalculado antecendentesComunaCalculado : antecendentesComunasCalculado){
 				if(percapitaServicio.containsKey(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId())){
-					Long valor = percapitaServicio.get(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId());
-					valor+= antecendentesComunaCalculado.getPercapitaAno();
+					Long valor = ((percapitaServicio.get(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId()) == null) ? 0 : percapitaServicio.get(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId()));
+					valor+= ((antecendentesComunaCalculado.getPercapitaAno() == null) ? 0 : antecendentesComunaCalculado.getPercapitaAno());
 					percapitaServicio.put(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId(), valor);
 				}else{
 					percapitaServicio.put(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId(), antecendentesComunaCalculado.getPercapitaAno());
 				}
 			}
 		}
-		 
-		 
-		 for (Integer key : percapitaServicio.keySet()) {
-			 Long valor = percapitaServicio.get(key); //ojo que en key se guarda el 
-			 SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaVO();
-			 ServicioSalud servicioSalud = servicioSaludService.getServicioSaludPorID(key);
-			 if(servicioSalud != null) {
-				 subtituloFlujoCajaVO.setServicio(servicioSalud.getNombre());
-				 subtituloFlujoCajaVO.setIdServicio(servicioSalud.getId());
-			 }
-			 List<CajaMontoSummaryVO> cajaMontos = new ArrayList<CajaMontoSummaryVO>();
-			 Long montoMensual = valor / 12;
-			 for(int i=0; i<12; i++){
-				 CajaMontoSummaryVO caja = new CajaMontoSummaryVO();
-				 caja.setIdMes(i+1);
-				 caja.setMontoMes(montoMensual);
-				 cajaMontos.add(i, caja);
-			 }			 
-			 
-			 subtituloFlujoCajaVO.setCajaMontos(cajaMontos);
-			 subtituloFlujoCajaVO.setMarcoPresupuestario(montoMensual*12);
-			 resultado.add(subtituloFlujoCajaVO);
-			 
-		 } 
-		
-		 
-		
+
+
+		for (Integer key : percapitaServicio.keySet()) {
+			Long valor = percapitaServicio.get(key); //ojo que en key se guarda el 
+			SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaVO();
+			ServicioSalud servicioSalud = servicioSaludService.getServicioSaludPorID(key);
+			if(servicioSalud != null) {
+				subtituloFlujoCajaVO.setServicio(servicioSalud.getNombre());
+				subtituloFlujoCajaVO.setIdServicio(servicioSalud.getId());
+			}
+			List<CajaMontoSummaryVO> cajaMontos = new ArrayList<CajaMontoSummaryVO>();
+			Long montoMensual = valor / 12;
+			for(int i=0; i<12; i++){
+				CajaMontoSummaryVO caja = new CajaMontoSummaryVO();
+				caja.setIdMes(i+1);
+				caja.setMontoMes(montoMensual);
+				cajaMontos.add(i, caja);
+			}			 
+
+			subtituloFlujoCajaVO.setCajaMontos(cajaMontos);
+			subtituloFlujoCajaVO.setMarcoPresupuestario(montoMensual*12);
+			resultado.add(subtituloFlujoCajaVO);
+
+		} 
+
 		return resultado;
 	}
 
-public DocumentoEstimacionflujocaja getDocumentByTypProgramaAno(Integer idProgramaAno, TipoDocumentosProcesos tipoDocumentoProceso){
-	return documentDAO.getDocumentByTypProgramaAno(idProgramaAno, tipoDocumentoProceso);
-	
-}
+	public DocumentoEstimacionflujocaja getDocumentByTypProgramaAno(Integer idProgramaAno, TipoDocumentosProcesos tipoDocumentoProceso){
+		return documentDAO.getDocumentByTypProgramaAno(idProgramaAno, tipoDocumentoProceso);
 
+	}
 
+	public List<ServiciosVO> getServicioByProgramaAnoSubtitulo(Integer valorComboPrograma, Subtitulo subtitulo) {
+		List<ServiciosVO> servicios = new ArrayList<ServiciosVO>();
+		List<Caja> cajas = cajaDAO.getCajaByProgramaAnoSubtitulo(valorComboPrograma, subtitulo);
+		if(cajas != null && cajas.size() > 0){
+			for(Caja caja : cajas){
+				if(caja.getMarcoPresupuestario() != null && caja.getMarcoPresupuestario().getServicioSalud() != null){
+					ServiciosVO serviciosVO = new ServicioMapper().getBasic(caja.getMarcoPresupuestario().getServicioSalud());
+					servicios.add(serviciosVO);
+				}
+			}
+		}
+		return servicios;
+	}
 
-	
+	public List<SubtituloFlujoCajaVO> getPercapitaByAno() {
+		DistribucionInicialPercapita  distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
+		System.out.println("distribucionInicialPercapita.getIdDistribucionInicialPercapita() --> "+distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+		List<AntecendentesComunaCalculado> antecendentesComunasCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+		
+		List<SubtituloFlujoCajaVO> resultado = new ArrayList<SubtituloFlujoCajaVO>();
+		Map<Integer, Long> percapitaServicio = new HashMap<Integer, Long>();
+		System.out.println("antecendentesComunasCalculado.size() --> "+antecendentesComunasCalculado.size());
+		if(antecendentesComunasCalculado != null && antecendentesComunasCalculado.size()>0){
+			for(AntecendentesComunaCalculado antecendentesComunaCalculado : antecendentesComunasCalculado){
+				if(percapitaServicio.containsKey(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId())){
+					Long valor = ((percapitaServicio.get(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId()) == null) ? 0 : percapitaServicio.get(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId()));
+					valor+= ((antecendentesComunaCalculado.getPercapitaMes() == null) ? 0 : antecendentesComunaCalculado.getPercapitaMes());
+					percapitaServicio.put(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId(), valor);
+				}else{
+					percapitaServicio.put(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId(), antecendentesComunaCalculado.getPercapitaMes());
+				}
+			}
+		}
+		for (Integer key : percapitaServicio.keySet()) {
+			Long montoMensual = percapitaServicio.get(key);
+			SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaVO();
+			ServicioSalud servicioSalud = servicioSaludService.getServicioSaludPorID(key);
+			if(servicioSalud != null) {
+				subtituloFlujoCajaVO.setServicio(servicioSalud.getNombre());
+				subtituloFlujoCajaVO.setIdServicio(servicioSalud.getId());
+			}
+			List<CajaMontoSummaryVO> cajaMontos = new ArrayList<CajaMontoSummaryVO>();
+			for(int i=0; i<12 ; i++){
+				CajaMontoSummaryVO caja = new CajaMontoSummaryVO();
+				caja.setIdMes(i+1);
+				caja.setMontoMes(montoMensual);
+				cajaMontos.add(caja);
+			}			 
+
+			subtituloFlujoCajaVO.setCajaMontos(cajaMontos);
+			subtituloFlujoCajaVO.setMarcoPresupuestario(0L);
+			resultado.add(subtituloFlujoCajaVO);
+
+		} 
+		return resultado;
+	}
+
+	public List<SubtituloFlujoCajaVO> getPercapitaByAnoServicio(Integer idServicio) {
+		DistribucionInicialPercapita  distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
+		System.out.println("distribucionInicialPercapita.getIdDistribucionInicialPercapita() --> "+distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+		List<AntecendentesComunaCalculado> antecendentesComunasCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaServicio(distribucionInicialPercapita.getIdDistribucionInicialPercapita(),  idServicio);
+		
+		List<SubtituloFlujoCajaVO> resultado = new ArrayList<SubtituloFlujoCajaVO>();
+		Map<Integer, Long> percapitaServicio = new HashMap<Integer, Long>();
+		System.out.println("antecendentesComunasCalculado.size() --> "+antecendentesComunasCalculado.size());
+		if(antecendentesComunasCalculado != null && antecendentesComunasCalculado.size()>0){
+			for(AntecendentesComunaCalculado antecendentesComunaCalculado : antecendentesComunasCalculado){
+				if(percapitaServicio.containsKey(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId())){
+					Long valor = ((percapitaServicio.get(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId()) == null) ? 0 : percapitaServicio.get(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId()));
+					valor+= ((antecendentesComunaCalculado.getPercapitaMes() == null) ? 0 : antecendentesComunaCalculado.getPercapitaMes());
+					percapitaServicio.put(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId(), valor);
+				}else{
+					percapitaServicio.put(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId(), antecendentesComunaCalculado.getPercapitaMes());
+				}
+			}
+		}
+		for (Integer key : percapitaServicio.keySet()) {
+			Long montoMensual = percapitaServicio.get(key);
+			SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaVO();
+			ServicioSalud servicioSalud = servicioSaludService.getServicioSaludPorID(key);
+			if(servicioSalud != null) {
+				subtituloFlujoCajaVO.setServicio(servicioSalud.getNombre());
+				subtituloFlujoCajaVO.setIdServicio(servicioSalud.getId());
+			}
+			List<CajaMontoSummaryVO> cajaMontos = new ArrayList<CajaMontoSummaryVO>();
+			for(int i=0; i<12 ; i++){
+				CajaMontoSummaryVO caja = new CajaMontoSummaryVO();
+				caja.setIdMes(i+1);
+				caja.setMontoMes(montoMensual);
+				cajaMontos.add(caja);
+			}			 
+
+			subtituloFlujoCajaVO.setCajaMontos(cajaMontos);
+			subtituloFlujoCajaVO.setMarcoPresupuestario(0L);
+			resultado.add(subtituloFlujoCajaVO);
+
+		} 
+		return resultado;
+	}
 
 }

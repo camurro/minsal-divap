@@ -147,6 +147,10 @@ public class DistribucionInicialPercapitaService {
 			filename = "plantillaCorreoResolucionRebaja.xml";
 			folderAlfresco = "TEMPLATES/REBAJA";
 			break;	
+		case PLANTILLAOFICIOPROGRAMACIONCAJA:
+			filename = "plantillaOficioProgramacionCaja.docx";
+			folderAlfresco = "TEMPLATES/ESTIMACIONFLUJOCAJA";
+			break;
 		default:
 			break;
 		}

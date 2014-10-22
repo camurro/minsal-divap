@@ -699,7 +699,7 @@ public class GeneradorExcel {
 		int inicialCol = currentCol;
 		List<ResumenConsolidadorVO> items = excelSheet.getItems();
 		System.out.println("items.size()=" + ((items == null)? 0 : items.size()));
-		/*if(items != null){
+		if(items != null){
 			int lastRow = items.size();
 			int contElementos = 1;
 			CellStyle cellStyleLong = workbook.createCellStyle();
@@ -736,7 +736,7 @@ public class GeneradorExcel {
 				}
 				contElementos++;
 			}
-		}*/
+		}
 
 	}
     

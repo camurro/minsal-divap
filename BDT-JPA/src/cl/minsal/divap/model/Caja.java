@@ -34,7 +34,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Caja.findByIdProgramaAnoIdServicio", query = "SELECT c FROM Caja c WHERE c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno and c.marcoPresupuestario.servicioSalud.id = :idServicio"),
     @NamedQuery(name = "Caja.findByProgramaAnoServicioSubtitulo", query = "SELECT c FROM Caja c WHERE c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno and c.marcoPresupuestario.servicioSalud.id = :idServicio and c.idSubtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
     @NamedQuery(name = "Caja.findBySubtituloAno", query = "SELECT c FROM Caja c WHERE c.idSubtitulo.idTipoSubtitulo = :idSubtitulo and c.marcoPresupuestario.idProgramaAno is not null and c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno "),
-    @NamedQuery(name = "Caja.findById", query = "SELECT c FROM Caja c WHERE c.id = :id")})
+    @NamedQuery(name = "Caja.findById", query = "SELECT c FROM Caja c WHERE c.id = :id"),
+    @NamedQuery(name = "Caja.findByProgramaAnoSubtitulo", query = "SELECT c FROM Caja c WHERE c.idSubtitulo.idTipoSubtitulo = :idTipoSubtitulo and c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno")})
 
 
 public class Caja implements Serializable {

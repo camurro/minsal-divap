@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
-import javax.persistence.NamedQuery;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
@@ -202,9 +201,16 @@ public class CajaDAO {
 		}
 	}
 
-	
-
-	
+	public List<Caja> getCajaByProgramaAnoSubtitulo(Integer valorComboPrograma, Subtitulo subtitulo) {
+		try {
+			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByProgramaAnoSubtitulo", Caja.class);
+			query.setParameter("idTipoSubtitulo", subtitulo.getId());
+			query.setParameter("idProgramaAno", valorComboPrograma);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }
 

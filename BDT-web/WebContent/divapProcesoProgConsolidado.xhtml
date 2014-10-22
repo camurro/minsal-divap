@@ -81,7 +81,6 @@
 				</h1>
 				<p:panel id="panel2">
 					<h2>Consolidado de Revisión y Validación de Monitoreos por Programa</h2>
-					<h2>Programa: #{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programa.nombre}</h2>
 					<p class="parrafo">Lorem ipsum dolor sit amet, consectetur
 						adipiscing elit. Praesent egestas tempor nulla eget ultricies.
 						Morbi pulvinar elit at justo pharetra, vitae ultricies est
@@ -93,9 +92,7 @@
 	
 						<h:graphicImage value="resources/minsal/images/search.png" styleClass="divapIcons" />
 						<p:lightBox iframe="true" width="1400px">
-							<h:outputLink value="http://localhost:8080/BDT-web/divapProcesoProgProgramasMonitoreados.jsf">
-								<f:param name="programa"
-								value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programa.idProgramaAno}" />
+							<h:outputLink value="divapProcesoProgProgramasMonitoreados.jsf">
 								Ver Detalle por Programa
 							</h:outputLink>
 						</p:lightBox>
@@ -163,24 +160,24 @@
 								<p:tabView id="tabSubtitulos" widgetVar="detailsTab" activeIndex="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.activeTab}" dynamic="true" cache="false">
 									 <p:ajax event="tabChange" onstart="checkChanges();" listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.onTabChange}" update="tabSubtitulos :formTabView:currentTab" />
       								 <p:ajax event="tabClose" listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.onTabClose}" />
-										<p:tab title="Subtítulo 21" id="tabform" rendered="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.mostrarSubtitulo21}">
+										<p:tab title="Subtítulo 21" id="tabform">
 										<h4>Filtros para el Monitoreo:</h4>
 										
 										<h:panelGrid>
 												<h:outputText value="Programa: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbProgramaSub21" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma}">
+												<p:selectOneMenu style="width:650px;" id="cbProgramaSub21" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma21}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
-			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponentePrograma(1)}" update="tabladatos" >
+			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programasSubtitulo21}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
+			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponentePrograma(1)}" update="tabladatos cbServicioSub21" >
 			           								</p:ajax>
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>	
 										
 										<h:panelGrid>
 												<h:outputText value="Servicio: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbServicioSub21" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio}">
+												<p:selectOneMenu style="width:650px;" id="cbServicioSub21" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio21}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
-			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios21}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
 			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponenteProgramaServicio(1)}" update="tabladatos" />
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>		
@@ -430,24 +427,24 @@
 
 									</p:tab>
 						
-									<p:tab title="Subtítulo 22" id="tabform22" rendered="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.mostrarSubtitulo22}">
+									<p:tab title="Subtítulo 22" id="tabform22">
 									<h4>Filtros para el Monitoreo:</h4>
 										
 										<h:panelGrid>
 												<h:outputText value="Programa: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbProgramaSub22" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma}">
+												<p:selectOneMenu style="width:650px;" id="cbProgramaSub22" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma22}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
-			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponentePrograma(2)}" update="tablaSubtitulo22" >
+			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programasSubtitulo22}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
+			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponentePrograma(2)}" update="tablaSubtitulo22 cbServicioSub22" >
 			           								</p:ajax>
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>	
 										
 										<h:panelGrid>
 												<h:outputText value="Servicio: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbServicioSub22" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio}">
+												<p:selectOneMenu style="width:650px;" id="cbServicioSub22" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio22}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
-			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios22}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
 			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponenteProgramaServicio(2)}" update="tablaSubtitulo22" />
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>	
@@ -728,24 +725,24 @@
 
 									</p:tab>
 									
-									<p:tab title="Subtítulo 24" id="tabform24" rendered="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.mostrarSubtitulo24}">
+									<p:tab title="Subtítulo 24" id="tabform24">
 									<h4>Filtros para el Monitoreo:</h4>
 										
 										<h:panelGrid>
 												<h:outputText value="Programa: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbProgramaSub24" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma}">
+												<p:selectOneMenu style="width:650px;" id="cbProgramaSub24" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma24}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
-			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponentePrograma(3)}" update="tablaSubtitulo24" >
+			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programasSubtitulo24}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
+			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponentePrograma(3)}" update="tablaSubtitulo24 cbServicioSub24" >
 			           								</p:ajax>
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>	
 										
 										<h:panelGrid>
 												<h:outputText value="Servicio: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbServicioSub24" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio}">
+												<p:selectOneMenu style="width:650px;" id="cbServicioSub24" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio24}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
-			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios24}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
 			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponenteProgramaServicio(3)}" update="tablaSubtitulo24" />
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>
@@ -1035,23 +1032,23 @@
 
 									</p:tab>
 									
-									<p:tab title="Subtítulo 29"	id="tabform29" rendered="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.mostrarSubtitulo29}">
+									<p:tab title="Subtítulo 29"	id="tabform29">
 									<h4>Filtros para el Monitoreo:</h4>
 										<h:panelGrid>
 												<h:outputText value="Programa: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbProgramaSub29" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma}">
+												<p:selectOneMenu style="width:650px;" id="cbProgramaSub29" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma29}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
-			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponentePrograma(4)}" update="tablaSubtitulo29" >
+			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programasSubtitulo29}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
+			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponentePrograma(4)}" update="tablaSubtitulo29 cbServicioSub29" >
 			           								</p:ajax>
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>	
 										
 										<h:panelGrid>
 												<h:outputText value="Servicio: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbServicioSub29" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio}">
+												<p:selectOneMenu style="width:650px;" id="cbServicioSub29" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio29}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
-			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios29}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
 			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponenteProgramaServicio(4)}" update="tablaSubtitulo29" />
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>
@@ -1350,7 +1347,7 @@
 								</p:tabView>
 							</p:tab>
 							
-							<p:tab title="Per Cápita" id="tabform" rendered="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.mostrarPercapita}">
+							<p:tab title="Per Cápita" id="tabform">
 										<h4>Filtros para el Monitoreo:</h4>
 										
 										<h:panelGrid>
@@ -1401,7 +1398,7 @@
 													<c:if test="#{not empty procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.monitoreoPercapitaFlujoCajaVO}">
 													<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.cajaMontosMonitoreoPercapitaLocal}" var="monto">
 														<p:column>
-																<h:outputText value="#{_data.totalMontos/12}" styleClass="textoPequenio textoAjustado">
+																<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
 																	<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 																</h:outputText>
 														</p:column>
@@ -1443,16 +1440,6 @@
 													
 												</p:dataTable>
 											
-											<br />
-											<h:panelGrid columns="2">
-
-												<h:graphicImage value="resources/minsal/images/search.png"
-													styleClass="divapIcons" />
-												
-											</h:panelGrid>
-											<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk"
-												action="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.guardarSubtitulo21}"
-												ajax="true" value="Guardar" />
 										</h:panelGrid>
 
 									</p:tab>
@@ -1464,11 +1451,6 @@
 						<p:commandButton value="Todos los Programas Ingresados | Iniciar Seguimiento Ordinarios"
 							styleClass="x-btn-text"
 							action="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.finalizar}"
-							ajax="false" icon="ui-icon-seek-first" />
-							
-						<p:commandButton value="Reparos"
-							styleClass="x-btn-text"
-							action="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.conReparos}"
 							ajax="false" icon="ui-icon-seek-first" />
 						</h:form>
 					</div>

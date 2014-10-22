@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.enums.EstadosProgramas;
+import minsal.divap.enums.Subtitulo;
 import minsal.divap.model.mappers.ProgramaMapper;
 import minsal.divap.model.mappers.ServicioMapper;
 import minsal.divap.vo.ComponentesVO;
@@ -109,6 +110,20 @@ public class ProgramasService {
 		EstadoPrograma estadoPrograma = new EstadoPrograma(encurso.getId());
 		programaAno.setEstadoFlujoCaja(estadoPrograma);
 		this.programasDAO.saveProgramaAno(programaAno, false);
+	}
+
+	public List<ProgramaVO> getProgramasBySubtitulo(Integer anoCurso, Subtitulo subtitulo) {
+		List<ProgramaVO> programas = new ArrayList<ProgramaVO>();
+		List<ProgramaAno> programasAno = programasDAO.getProgramasBySubtitulo(anoCurso, subtitulo);
+		if(programasAno != null && programasAno.size() > 0){
+			for(ProgramaAno programaAno : programasAno){
+				ProgramaVO programaVO = new ProgramaMapper().getBasic(programaAno);
+				if(!programas.contains(programaVO)){
+					programas.add(programaVO);
+				}
+			}
+		}
+		return programas;
 	}
 
 }
