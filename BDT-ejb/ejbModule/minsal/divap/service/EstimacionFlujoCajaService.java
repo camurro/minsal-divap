@@ -1027,11 +1027,8 @@ public class EstimacionFlujoCajaService {
 	}
 
 	@Asynchronous
-	public void notificarUsuarioConsolidador(Integer idProgramaAno,
-			String usuario, Integer idPlanillaMonitoreo) {
+	public void notificarUsuarioConsolidador(Integer idProgramaAno, String usuario) {
 		// Iniciar el segundo proceso.
-		
-		System.out.println("idPlanillaMonitoreo --> "+idPlanillaMonitoreo);
 		ProgramaAno programaAno = programasDAO
 				.getProgramaAnoByID(idProgramaAno);
 		programaAno.setEstadoFlujoCaja(new EstadoPrograma(
