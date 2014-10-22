@@ -149,7 +149,9 @@ public class AlfrescoService {
 	public BodyVO uploadDocument(File file, String contentType, String folder) {
 		BodyVO body = null;
 		try {
+			System.out.println("alfrescoServer-->"+ alfrescoServer);
 			String authTicket = getTicket();
+			System.out.println("authTicket-->"+authTicket);
 			String urlString = alfrescoServer + "/upload?alf_ticket="
 					+ authTicket;
 			System.out.println("The upload url::" + urlString);

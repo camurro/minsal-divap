@@ -31,6 +31,7 @@ import minsal.divap.dao.RemesaDAO;
 import minsal.divap.dao.SeguimientoDAO;
 import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.dao.UsuarioDAO;
+import minsal.divap.doc.GeneradorResolucionAporteEstatal;
 import minsal.divap.doc.GeneradorWord;
 import minsal.divap.doc.GeneradorWordBorradorAporteEstatal;
 import minsal.divap.enums.EstadosProgramas;
@@ -63,6 +64,7 @@ import minsal.divap.vo.TransferenciaSummaryVO;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
 
 import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.AntecendentesComunaCalculado;
@@ -151,7 +153,7 @@ public class EstimacionFlujoCajaService {
 		
 
 		Integer plantillaBorradorOrdinarioProgramacionCaja = documentService
-				.getPlantillaByType(TipoDocumentosProcesos.PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA);
+				.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAOFICIOPROGRAMACIONCAJA);
 		if (plantillaBorradorOrdinarioProgramacionCaja == null) {
 			throw new RuntimeException(
 					"No se puede crear Borrador Decreto Aporte Estatal, la plantilla no esta cargada");
@@ -177,38 +179,34 @@ public class EstimacionFlujoCajaService {
 			System.out.println("templateBorradorAporteEstatal template-->"
 					+ templateOrdinarioProgramacionCaja);
 			GeneradorWord generadorWordPlantillaBorradorOrdinarioProgramacionCaja = new GeneradorWord(
-					filenameBorradorOrdinarioProgramacionCaja);
+					templateOrdinarioProgramacionCaja);
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			String contentType = mimemap
-					.getContentType(filenameBorradorOrdinarioProgramacionCaja
+					.getContentType(templateOrdinarioProgramacionCaja
 							.toLowerCase());
 			System.out.println("contenTypeBorradorAporteEstatal->"
 					+ contentType);
 			
-			generadorWordPlantillaBorradorOrdinarioProgramacionCaja
-			.saveContent(documentoBorradorOrdinarioProgramacionCajaVO
+			generadorWordPlantillaBorradorOrdinarioProgramacionCaja.saveContent(documentoBorradorOrdinarioProgramacionCajaVO
 					.getContent(), XWPFDocument.class);
 
 			Map<String, Object> parametersBorradorAporteEstatal = new HashMap<String, Object>();
-			parametersBorradorAporteEstatal.put("{ano}",
-					Util.obtenerAno(new Date()));
-			parametersBorradorAporteEstatal.put("{mes}",
-					Util.obtenerNombreMes(Util.obtenerMes(new Date())));
-			GeneradorWordBorradorAporteEstatal generadorWordDecretoBorradorAporteEstatal = new GeneradorWordBorradorAporteEstatal(
+			parametersBorradorAporteEstatal.put("{ano}",Util.obtenerAno(new Date()));
+			parametersBorradorAporteEstatal.put("{mes}",Util.obtenerNombreMes(Util.obtenerMes(new Date())));
+					GeneradorResolucionAporteEstatal generadorWordDecretoBorradorAporteEstatal = new GeneradorResolucionAporteEstatal(
 					filenameBorradorOrdinarioProgramacionCaja,
 					templateOrdinarioProgramacionCaja);
-			generadorWordDecretoBorradorAporteEstatal.replaceValues(
-					parametersBorradorAporteEstatal, null, XWPFDocument.class);
+			generadorWordDecretoBorradorAporteEstatal.replaceValues(parametersBorradorAporteEstatal, XWPFDocument.class);
 			BodyVO response = alfrescoService.uploadDocument(new File(
 					filenameBorradorOrdinarioProgramacionCaja), contentType,
-					folderEstimacionFlujoCaja.replace("{ANO}", getAnoCurso()
+					folderDocEstimacionFlujoCaja.replace("{ANO}", getAnoCurso()
 							.toString()));
 			System.out.println("response responseBorradorAporteEstatal --->"
 					+ response);
 		
 
 			TipoDocumento tipoDocumento = new TipoDocumento(
-					TipoDocumentosProcesos.PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA
+					TipoDocumentosProcesos.PLANTILLAOFICIOPROGRAMACIONCAJA
 					.getId());
 			plantillaBorradorOrdinarioProgramacionCaja = documentService
 					.createDocumentOrdinarioProgramacióndeCaja(tipoDocumento, response.getNodeRef(),
@@ -217,6 +215,8 @@ public class EstimacionFlujoCajaService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidFormatException e) {
+			e.printStackTrace();
+		} catch (Docx4JException e) {
 			e.printStackTrace();
 		}
 		return plantillaBorradorOrdinarioProgramacionCaja;
