@@ -29,6 +29,7 @@ import minsal.divap.dao.MesDAO;
 import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.dao.RemesaDAO;
 import minsal.divap.dao.SeguimientoDAO;
+import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.dao.UsuarioDAO;
 import minsal.divap.doc.GeneradorWord;
 import minsal.divap.doc.GeneradorWordBorradorAporteEstatal;
@@ -55,6 +56,7 @@ import minsal.divap.vo.EmailVO;
 import minsal.divap.vo.FlujoCajaVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
+import minsal.divap.vo.ResumenConsolidadorVO;
 import minsal.divap.vo.SeguimientoVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloFlujoCajaVO;
@@ -142,6 +144,8 @@ public class EstimacionFlujoCajaService {
 	private ConveniosDAO conveniosDAO;
 	@EJB
 	private RemesaDAO remesasDAO;
+	@EJB
+	private ServicioSaludDAO servicioSaludDAO;
 
 	// Generar documento
 	public Integer elaborarOrdinarioProgramacionCaja(Integer idLineaProgramatica) {
@@ -493,129 +497,82 @@ public class EstimacionFlujoCajaService {
 
 	
 	public Integer generarPlanillaPropuestaConsolidador(String username) {
-		System.out.println("aqui estamos");
 		Integer planillaTrabajoId = null;
 		//obtengo todos los programas del usuario
-		List<Programa> programas = programasDAO.getProgramasByUser(username);
 		
+		//obtengo lista de servicios
+		Integer mes = Integer.parseInt(getMesCurso(true));
+		List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
 		
+		List<ResumenConsolidadorVO> resumenConsolidadorSubtitulo21 = new ArrayList<ResumenConsolidadorVO>();
+		List<ResumenConsolidadorVO> resumenConsolidadorSubtitulo22 = new ArrayList<ResumenConsolidadorVO>();
+		List<ResumenConsolidadorVO> resumenConsolidadorSubtitulo24 = new ArrayList<ResumenConsolidadorVO>();
+		List<ResumenConsolidadorVO> resumenConsolidadorSubtitulo29 = new ArrayList<ResumenConsolidadorVO>();
+		
+		List<ProgramaAno> programasSubtitulo21 = programasDAO.getProgramasBySubtitulo(getAnoCurso(), Subtitulo.SUBTITULO21);
+		List<ProgramaAno> programasSubtitulo22 = programasDAO.getProgramasBySubtitulo(getAnoCurso(), Subtitulo.SUBTITULO22);
+		List<ProgramaAno> programasSubtitulo24 = programasDAO.getProgramasBySubtitulo(getAnoCurso(), Subtitulo.SUBTITULO24);
+		List<ProgramaAno> programasSubtitulo29 = programasDAO.getProgramasBySubtitulo(getAnoCurso(), Subtitulo.SUBTITULO29);
 		
 		List<CellExcelVO> header = new ArrayList<CellExcelVO>();
 		List<CellExcelVO> subHeader = new ArrayList<CellExcelVO>();
 		header.add(new CellExcelVO("COD SS", 1, 2));
 		header.add(new CellExcelVO("SERVICIOS DE SALUD", 1, 2));
-		List<SubtituloFlujoCajaVO> flujoCajaSub21 = new ArrayList<SubtituloFlujoCajaVO>();
-		List<SubtituloFlujoCajaVO> flujoCajaSub22 = new ArrayList<SubtituloFlujoCajaVO>();
-		List<SubtituloFlujoCajaVO> flujoCajaSub24 = new ArrayList<SubtituloFlujoCajaVO>();
-		List<SubtituloFlujoCajaVO> flujoCajaSub29 = new ArrayList<SubtituloFlujoCajaVO>();
 		
-		
-		
-		
-		List<Integer> idComponentes21 = new ArrayList<Integer>();
-		List<Integer> idComponentes22 = new ArrayList<Integer>();
-		List<Integer> idComponentes24 = new ArrayList<Integer>();
-		List<Integer> idComponentes29 = new ArrayList<Integer>();
-		
-		List<ProgramaVO> programas21 = new ArrayList<ProgramaVO>();
-		List<ProgramaVO> programas22 = new ArrayList<ProgramaVO>();
-		List<ProgramaVO> programas24 = new ArrayList<ProgramaVO>();
-		List<ProgramaVO> programas29 = new ArrayList<ProgramaVO>();
-		
-		
-		//recorro cada programa a través de su índice
-		for(int i=0;i<programas.size();i++){
-			ProgramaVO progr = programasService.getProgramaAno(programas.get(i).getId());
-			//ProgramaAno programaAno = programasDAO.getProgramaAnoByID(programas.get(i).getId());
-			
-			List<ComponentesVO> componentes = progr.getComponentes();
-			
-			System.out.println("componentes.size --> "+componentes.size());
-			
-			Subtitulo subtituloFiltro21 = Subtitulo.getById(1);
-			Subtitulo subtituloFiltro22 = Subtitulo.getById(2);
-			Subtitulo subtituloFiltro24 = Subtitulo.getById(3);
-			Subtitulo subtituloFiltro29 = Subtitulo.getById(4);
-			
-			for(ComponentesVO comp : componentes){
-				for(SubtituloVO subtitulo : comp.getSubtitulos()){
-					if(subtitulo.getId().equals(subtituloFiltro21.getId())){
-						idComponentes21.add(comp.getId());
-						programas21.add(progr);
-					}
-					if(subtitulo.getId().equals(subtituloFiltro22.getId())){
-						idComponentes22.add(comp.getId());
-						programas22.add(progr);
-					}
-					if(subtitulo.getId().equals(subtituloFiltro24.getId())){
-						idComponentes24.add(comp.getId());
-						programas24.add(progr);
-					}
-					if(subtitulo.getId().equals(subtituloFiltro29.getId())){
-						idComponentes29.add(comp.getId());
-						programas29.add(progr);
-					}
-					
-				}
-			}			
-		}
-		
-		header.add(new CellExcelVO("SUBTÍTULO 24", programas24.size() , 1));
-		header.add(new CellExcelVO("SUBTÍTULO 21", programas21.size() , 1));
-		header.add(new CellExcelVO("SUBTÍTULO 22", programas22.size() , 1));
-		header.add(new CellExcelVO("SUBTÍTULO 29", programas29.size() , 1));
-		
-		for(int pr=0;pr<programas24.size();pr++){
-			subHeader.add(new CellExcelVO(programas24.get(pr).getNombre().toUpperCase() , 1, 1));
-			System.out.println("programas que tienen subtítulo 24 --> "+programas24.get(pr).getNombre());
-			flujoCajaSub24 = getMonitoreoByProgramaAnoComponenteSubtitulo(programas24.get(pr).getIdProgramaAno(), idComponentes24, Subtitulo.SUBTITULO24, true);
-			System.out.println("flujoCajaSub24.size() ---> "+flujoCajaSub24.size());
-		}
-		subHeader.add(new CellExcelVO("TOTAL REF. MUNICIPAL ($)",1, 1));	
-		
-		for(int pr=0;pr<programas21.size();pr++){
-			subHeader.add(new CellExcelVO(programas21.get(pr).getNombre().toUpperCase() , 1, 1));
-			System.out.println("programas que tienen subtítulo 21 --> "+programas21.get(pr).getNombre());
-			flujoCajaSub21 = getMonitoreoByProgramaAnoComponenteSubtitulo(programas21.get(pr).getIdProgramaAno(), idComponentes21, Subtitulo.SUBTITULO21, true);	
-			System.out.println("flujoCajaSub21.size() ---> "+flujoCajaSub21.size());
-			
-		}
-		subHeader.add(new CellExcelVO("TOTAL REF. SERVICIOS SUBT. 21",1, 1));	
-		
-		for(int pr=0;pr<programas22.size();pr++){
-			subHeader.add(new CellExcelVO(programas22.get(pr).getNombre().toUpperCase() , 1, 1));
-			System.out.println("programas que tienen subtítulo 22 --> "+programas22.get(pr).getNombre());
-			flujoCajaSub22 = getMonitoreoByProgramaAnoComponenteSubtitulo(programas22.get(pr).getIdProgramaAno(), idComponentes22, Subtitulo.SUBTITULO22, true);	
-			System.out.println("flujoCajaSub22.size() ---> "+flujoCajaSub22.size());
-			
-		}
-		subHeader.add(new CellExcelVO("TOTAL REF. SERVICIOS SUBT. 22",1, 1));
-		
-		for(int pr=0;pr<programas29.size();pr++){
-			subHeader.add(new CellExcelVO(programas29.get(pr).getNombre().toUpperCase() , 1, 1));
-			System.out.println("programas que tienen subtítulo 29 --> "+programas29.get(pr).getNombre());
-			flujoCajaSub29 = getMonitoreoByProgramaAnoComponenteSubtitulo(programas29.get(pr).getIdProgramaAno(), idComponentes29, Subtitulo.SUBTITULO29, true);	
-			System.out.println("flujoCajaSub29.size() ---> "+flujoCajaSub29.size());
-			
-		}
-		subHeader.add(new CellExcelVO("TOTAL REF. SERVICIOS SUBT. 29",1, 1));
-		
-		
-		
-		for(int i=0;i<header.size();i++){
-			System.out.println("header "+i+"  --> "+header.get(i));
-		}
-		for(int j=0;j<subHeader.size();j++){
-			System.out.println("subHeader "+j+" --> "+subHeader.get(j));
-		}
-		
-		EstimacionFlujoCajaConsolidadorSheetExcel estimacionFlujoCajaConsolidadorSheetExcel = new EstimacionFlujoCajaConsolidadorSheetExcel(header, subHeader, null);
-
 		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 		String filename = tmpDir + File.separator + "planillaPropuestaEstimacionFlujoCajaConsolidador.xlsx";
 		String contenType = mimemap.getContentType(filename.toLowerCase());
+		
 		GeneradorExcel generadorExcel = new GeneradorExcel(filename);
-		generadorExcel.addSheet(estimacionFlujoCajaConsolidadorSheetExcel, "Octubre");
+		
+		if(servicios != null && servicios.size() > 0){
+			for(ServicioSalud servicioSalud : servicios){
+				ResumenConsolidadorVO resumenConsolidadorVO = new ResumenConsolidadorVO();
+				resumenConsolidadorVO.setCodigoServicio(servicioSalud.getId().toString());
+				resumenConsolidadorVO.setServicio(servicioSalud.getNombre());
+				EstimacionFlujoCajaConsolidadorSheetExcel estimacionFlujoCajaConsolidadorSheetExcel = null;
+				if(programasSubtitulo21 != null && programasSubtitulo21.size() > 0){
+					List<Long> montos = new ArrayList<Long>();
+					header.add(new CellExcelVO("SUBTÍTULO 21", programasSubtitulo21.size(), 1));			
+					for(ProgramaAno programaAno : programasSubtitulo21) {
+						subHeader.add(new CellExcelVO(programaAno.getPrograma().getNombre(), 1, 1));
+					}
+					subHeader.add(new CellExcelVO("TOTAL REF. SERVICIOS SUBT. 21", 1, 1));
+					estimacionFlujoCajaConsolidadorSheetExcel = new EstimacionFlujoCajaConsolidadorSheetExcel(header, subHeader, null);
+					for(ProgramaAno programaAno : programasSubtitulo21) {
+						List<Caja> cajas = cajaDAO.getByProgramaAnoServicioSubtitulo(programaAno.getIdProgramaAno(), servicioSalud.getId(), Subtitulo.SUBTITULO21);
+						if(cajas != null && cajas.size() > 0){
+							for(Caja caja : cajas) {
+								if(caja.getCajaMontos() != null && caja.getCajaMontos().size() > 0){
+									Long totalMes = 0L;
+									for(CajaMonto cajaMonto : caja.getCajaMontos()){
+										if(mes.equals(cajaMonto.getMes().getIdMes())){
+											totalMes+=cajaMonto.getMonto().getMonto();
+										}
+									}
+									montos.add(totalMes);
+								}
+							}
+						}
+					}
+					resumenConsolidadorVO.setMontos(montos);
+					resumenConsolidadorSubtitulo21.add(resumenConsolidadorVO);
+				}
+				estimacionFlujoCajaConsolidadorSheetExcel.setItems(resumenConsolidadorSubtitulo21);
+				generadorExcel.addSheet(estimacionFlujoCajaConsolidadorSheetExcel, getMesCurso(false));
+			}
+			for(int i=0;i<subHeader.size();i++){
+				System.out.println("subHeader.get(i) ---> "+subHeader.get(i));
+			}
+		}
+		
+ 
+	
+		
+		
+		//estimacionFlujoCajaSubtituloSheetExcel.setItems(flujoCajaSub22);
+		
+		
 	
 		//String mes = getMesCurso(false);
 		
