@@ -107,10 +107,9 @@ public class SeguimientoDAO {
 		}
 	}
 
-	public List<Seguimiento> getBitacoraEstimacionFlujoCaja(Integer idProgramaAno, TareasSeguimiento tareaSeguimiento) {
+	public List<Seguimiento> getBitacoraEstimacionFlujoCaja(TareasSeguimiento tareaSeguimiento) {
 		try {
-			TypedQuery<Seguimiento> query = this.em.createNamedQuery("Seguimiento.findByIdEstimacionFlujoCaja", Seguimiento.class);
-			query.setParameter("idProgramaAno", idProgramaAno);
+			TypedQuery<Seguimiento> query = this.em.createNamedQuery("Seguimiento.findByIdEstimacionFlujoCajaConsolidador", Seguimiento.class);
 			query.setParameter("idTareaSeguimiento", tareaSeguimiento.getId());
 			return query.getResultList();
 		} catch (Exception e) {

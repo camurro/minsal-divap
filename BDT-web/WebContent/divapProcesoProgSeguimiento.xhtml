@@ -173,7 +173,7 @@
 			}
 			
 			function checkListEmails(){
-				/*  var emailsPara = document.getElementById("formSeguimiento:to").value;
+				  var emailsPara = document.getElementById("formSeguimiento:to").value;
 				 var result = checkEmails(emailsPara, true);
 				 if(!result){
 					 $("#formSeguimiento\\:to").addClass("ui-state-error");
@@ -207,7 +207,7 @@
 					 $("#formSeguimiento\\:body").addClass("ui-state-error");
 					 return false;
 				 }
-				  */
+				  
 				 return true;
 			}	
 
@@ -354,15 +354,18 @@
 						</p>
 						<h:panelGrid styleClass="tableFullWidth">
 						<p:commandButton styleClass="x-btn-text" value="Finalizar Seguimiento | Actividad" icon="ui-icon-check"
-							action="#{procesoEstimacionFlujoCajaConsolidadorHacerSeguimientoController.continuarProceso}"  id="continuarProceso"/>
+							action="#{procesoEstimacionFlujoCajaConsolidadorHacerSeguimientoController.continuarProceso}"  id="continuarProceso"
+							style="#{(procesoEstimacionFlujoCajaConsolidadorHacerSeguimientoController.versionFinal) ? 'display: block' : 'display: none'}"
+							/>
+							
 
 						<div style="clear: both;"></div>
 						</h:panelGrid>
 						
-				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+						<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />
 					
-					</h:form>
+				</h:form>
 								
 		
 			
@@ -372,7 +375,7 @@
 				id="hiddenId" />
 			<h:commandButton id="linkDownload"
 				action="#{procesoEstimacionFlujoCajaConsolidadorHacerSeguimientoController.downloadPlanilla}"
-				style="display: none"></h:commandButton>
+				style="display: none"></h:commandButton>				
 		</h:form>
 		
 		

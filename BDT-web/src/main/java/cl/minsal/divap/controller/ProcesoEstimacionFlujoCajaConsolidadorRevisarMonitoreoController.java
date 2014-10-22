@@ -258,12 +258,9 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 
 	public String finalizar(){
 		setTarget("bandejaTareas");
-		this.reparos = false;
-		if(fromPage){
-			return iniciarProceso();
-		}else{
-			return super.enviar();
-		}
+		this.reparos = false;		
+		return iniciarProceso();
+		
 	}
 
 	public String conReparos(){
@@ -608,7 +605,12 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	
 	public List<ProgramaVO> getProgramas() {
 		if(programas == null){
-			programas = programaService.getProgramasByUserAno(getLoggedUsername(), anoActual); //getProgramasByUser(getLoggedUsername());
+			programas = programaService.getProgramasByUserAno(getLoggedUsername(), anoActual);
+			for(int i=0;i<programas.size();i++){
+				Integer idProg = programas.get(i).getIdProgramaAno();
+				
+			}
+			
 		}
 		return programas;
 	}
