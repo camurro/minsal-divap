@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
@@ -17,22 +16,16 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import minsal.divap.enums.BusinessProcess;
-import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.enums.Subtitulo;
-import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.CajaService;
 import minsal.divap.service.DistribucionInicialPercapitaService;
 import minsal.divap.service.EstimacionFlujoCajaService;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ServicioSaludService;
-import minsal.divap.service.UtilitariosService;
 import minsal.divap.util.Util;
-import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
 import minsal.divap.vo.CajaMontoSummaryVO;
-import minsal.divap.vo.CajaVO;
 import minsal.divap.vo.ColumnaVO;
 import minsal.divap.vo.ComponentesVO;
-import minsal.divap.vo.ComunaVO;
 import minsal.divap.vo.ElementoModificadoVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ServiciosVO;
@@ -42,13 +35,9 @@ import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskVO;
 
 import org.apache.log4j.Logger;
-import org.primefaces.component.api.UIColumn;
-import org.primefaces.component.datatable.DataTable;
-import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.TabCloseEvent;
 
-import cl.minsal.divap.model.TipoDocumento;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 @Named("procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController")
@@ -73,19 +62,29 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	
 	private Integer valorComboPercapita;
 	
+	private List<ServiciosVO> servicios21;
+	private List<ServiciosVO> servicios22;
+	private List<ServiciosVO> servicios24;
+	private List<ServiciosVO> servicios29;
 	private List<ServiciosVO> servicios;
-	private List<ProgramaVO> programas;
+	private List<ProgramaVO> programasSubtitulo21;
+	private List<ProgramaVO> programasSubtitulo22;
+	private List<ProgramaVO> programasSubtitulo24;
+	private List<ProgramaVO> programasSubtitulo29;
 
-	private boolean fromPage = true;
 	
-	
-	private Integer valorComboPrograma;
-	
+	private Integer valorComboPrograma21;
+	private Integer valorComboPrograma22;
+	private Integer valorComboPrograma24;
+	private Integer valorComboPrograma29;
 	
 	/*
 	 * SUBTITULO 22
 	 */
-	private Integer valorComboSubtituloServicio;
+	private Integer valorComboSubtituloServicio21;
+	private Integer valorComboSubtituloServicio22;
+	private Integer valorComboSubtituloServicio24;
+	private Integer valorComboSubtituloServicio29;
 
 	// Convenio Remesa
 	private Integer valorComboSubtitulo21Componente;
@@ -152,11 +151,6 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	Map<Integer, List<Integer>> componentesPorSubtitulo;
 	Map<Integer, Subtitulo> tabSubtitulo = new HashMap<Integer, Subtitulo>();
 
-	private Boolean mostrarSubtitulo21;
-	private Boolean mostrarSubtitulo22;
-	private Boolean mostrarSubtitulo24;
-	private Boolean mostrarSubtitulo29;
-	private Boolean mostrarPercapita;
 	private List<SubtituloFlujoCajaVO> monitoreoSubtitulo21FlujoCajaVO; 
 	private Integer rowIndexMonitoreoSubtitulo21 = 0;
 	private List<SubtituloFlujoCajaVO> monitoreoSubtitulo22FlujoCajaVO;
@@ -175,7 +169,6 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	private Integer anoActual;
 	private List<ColumnaVO> columns;
 	private List<ColumnaVO> columnsInicial;
-	private ProgramaVO programa;
 	private String docIdDownload;
 	private String mesActual;
 	private Integer numMesActual;
@@ -260,154 +253,29 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 		setTarget("bandejaTareas");
 		this.reparos = false;		
 		return iniciarProceso();
-		
 	}
 
 	public String conReparos(){
 		setTarget("bandejaTareas");
 		this.reparos = true;
-		if(fromPage){
 			return iniciarProceso();
-		}else{
-			return super.enviar();
-		}
 	}
 
 	@PostConstruct
 	public void init() {
 		
-		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			docPropuesta = (Integer) getTaskDataVO().getData().get("_idPlanillaMonitoreo");
-			System.out.println("docPropuesta --->" + docPropuesta);
-			fromPage = false;
-		}	
-		
 		if(docPropuesta == null){
 			docPropuesta = estimacionFlujoCajaService.generarPlanillaPropuestaConsolidador(getLoggedUsername());
-			//docPropuesta = 315765;
 		}
-		
 		if(sessionExpired()){
 			return;
 		}
-		
-		this.setIniciarFlujoCaja(false);
-		//TODO cambiar el set de idprogramaAno
-		this.setIdProgramaAno(20);
-		
-		System.out.println("idProgramaAno --->" + this.getIdProgramaAno());
-		setPrograma(programaService.getProgramaAno(this.getIdProgramaAno()));
-		TipoDocumentosProcesos tipoDocumentosProcesos = TipoDocumentosProcesos.getById(16);
-		this.docProgramacion = estimacionFlujoCajaService.getDocumentByTypProgramaAno(this.getIdProgramaAno(), tipoDocumentosProcesos).getId();
-		System.out.println("this.docProgramacion --> "+this.docProgramacion);
-		System.out.println("this.getIdProgramaAno() ---> "+this.getIdProgramaAno());
-		
-		if(getPrograma() != null){
-			setAnoActual(getPrograma().getAno());
-		}
-		
-		
-		this.idProgramaAnoPercapita= this.getIdProgramaAno();
-		this.idDistribucionInicialPercapita = distribucionInicialPercapitaService.ultimaDistribucionPercapita().getIdDistribucionInicialPercapita();
-		System.out.println("docProgramacion --->" + this.docProgramacion);
-		
-		System.out.println("iniciarFlujoCaja --->" + this.iniciarFlujoCaja);
-		
-		estimacionFlujoMonitoreoPercapitaComponente = estimacionFlujoCajaService.getPercapitaByProgramaAno(this.idProgramaAnoPercapita);
-		
-
-		String subtituloSeleccionado = getRequestParameter("subtituloSeleccionado");
-		if(subtituloSeleccionado != null){
-			setSubtituloSeleccionado(Subtitulo.getById(Integer.parseInt(subtituloSeleccionado)));
-			if(this.programa != null && this.programa.getComponentes() != null){
-				if(this.programa.getComponentes().size() == 1){
-					this.valorComboSubtituloComponente = this.programa.getComponentes().get(0).getId();
-					this.valorNombreComponente = this.programa.getComponentes().get(0).getNombre();
-					this.valorPesoComponente = ((this.programa.getComponentes().get(0).getPeso() == null) ? "0" : this.programa.getComponentes().get(0).getPeso().toString()) +"%";
-					List<Integer> idComponentes = new ArrayList<Integer>();
-					idComponentes.add(this.programa.getComponentes().get(0).getId());
-					estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
-							idComponentes, getSubtituloSeleccionado(), this.iniciarFlujoCaja);
-				}else{
-					this.valorComboSubtituloComponente = 0;
-					this.valorNombreComponente = "";
-					this.valorPesoComponente = ""; 
-					estimacionFlujoMonitoreoSubtituloComponente = new ArrayList<SubtituloFlujoCajaVO>();
-				}
-			}
-		}
-		// DOCUMENTOS
-		this.docPropuesta = estimacionFlujoCajaService.getIdPlantillaPropuesta();
+		setIniciarFlujoCaja(false);
+		this.servicios21 = new ArrayList<ServiciosVO>();
+		this.servicios22 = new ArrayList<ServiciosVO>();
+		this.servicios24 = new ArrayList<ServiciosVO>();
+		this.servicios29 = new ArrayList<ServiciosVO>();
 		crearColumnasDinamicas();
-		configurarVisibilidadPaneles();
-	}
-
-	private void configurarVisibilidadPaneles() {
-		mostrarSubtitulo21 = false;
-		mostrarSubtitulo22 = false;
-		mostrarSubtitulo24 = false;
-		mostrarSubtitulo29 = false;
-		mostrarPercapita = true;
-		monitoreoPercapitaFlujoCajaVO = estimacionFlujoCajaService.getPercapitaByProgramaAno(this.idProgramaAnoPercapita);
-		componentesPorSubtitulo = new HashMap<Integer, List<Integer>>();
-		for (ComponentesVO componente : getPrograma().getComponentes()) {
-			for(SubtituloVO subtitulo : componente.getSubtitulos()){
-				if(!componentesPorSubtitulo.containsKey(subtitulo.getId())){
-					List<Integer> componentes = new ArrayList<Integer>();
-					componentes.add(componente.getId());
-					componentesPorSubtitulo.put(subtitulo.getId(), componentes);
-				}else{
-					componentesPorSubtitulo.get(subtitulo.getId()).add(componente.getId());
-				}
-			}
-		}
-
-		for (Map.Entry<Integer, List<Integer>> entry : componentesPorSubtitulo.entrySet()) { 
-			System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue()); 
-			if (entry.getKey().equals(Subtitulo.SUBTITULO21.getId())){
-				monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
-				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
-					convenioRemesaSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO21);
-					System.out.println("convenioRemesaSubtitulo21FlujoCajaVO.size()-->" + convenioRemesaSubtitulo21FlujoCajaVO.size());
-				}
-				System.out.println("monitoreoSubtitulo21FlujoCajaVO.size()-->"+monitoreoSubtitulo21FlujoCajaVO.size());
-				mostrarSubtitulo21 = true;
-			}else if (entry.getKey().equals(Subtitulo.SUBTITULO22.getId())){
-				monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
-				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
-					convenioRemesaSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO22);
-					System.out.println("convenioRemesaSubtitulo22FlujoCajaVO.size()-->" + convenioRemesaSubtitulo22FlujoCajaVO.size());
-				}
-				mostrarSubtitulo22 = true;
-			}else if (entry.getKey().equals(Subtitulo.SUBTITULO24.getId())){
-				monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
-				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
-					convenioRemesaSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO24);
-					System.out.println("convenioRemesaSubtitulo24FlujoCajaVO.size()-->" + convenioRemesaSubtitulo24FlujoCajaVO.size());
-				}
-				mostrarSubtitulo24 = true;
-			}else if (entry.getKey().equals(Subtitulo.SUBTITULO29.getId())){
-				monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
-				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
-					convenioRemesaSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO29);
-					System.out.println("convenioRemesaSubtitulo29FlujoCajaVO.size()-->" + convenioRemesaSubtitulo29FlujoCajaVO.size());
-				}
-				mostrarSubtitulo29 = true;
-			}
-		}
-		Integer currentTab = 0;
-		if(mostrarSubtitulo21){
-			tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO21);
-		}
-		if(mostrarSubtitulo22){
-			tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO22);
-		}
-		if(mostrarSubtitulo24){
-			tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO24);
-		}
-		if(mostrarSubtitulo29){
-			tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO29);
-		}
 	}
 
 	public void guardarSubtitulo21() {
@@ -420,7 +288,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 			for(CajaMontoSummaryVO cajaMonto : cajaMontos){
 				if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
 					System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO21);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma21(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO21);
 					actualizaOK = true;
 					break;
 				}
@@ -443,7 +311,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 			for(CajaMontoSummaryVO cajaMonto : cajaMontos){
 				if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
 					System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO22);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma22(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO22);
 					actualizaOK = true;
 					break;
 				}
@@ -466,7 +334,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 			for(CajaMontoSummaryVO cajaMonto : cajaMontos){
 				if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
 					System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO24);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma24(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO24);
 					actualizaOK = true;
 					break;
 				}
@@ -489,7 +357,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 			for(CajaMontoSummaryVO cajaMonto : cajaMontos){
 				if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
 					System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO29);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma29(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO29);
 					actualizaOK = true;
 					break;
 				}
@@ -517,13 +385,41 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	public void setValorComboSubtitulo22(Integer valorComboSubtitulo22) {
 		this.valorComboSubtitulo22 = valorComboSubtitulo22;
 	}
-	
-	public Integer getValorComboSubtituloServicio() {
-		return valorComboSubtituloServicio;
+
+	public Integer getValorComboSubtituloServicio21() {
+		return valorComboSubtituloServicio21;
 	}
 
-	public void setValorComboSubtituloServicio(Integer valorComboSubtituloServicio) {
-		this.valorComboSubtituloServicio = valorComboSubtituloServicio;
+	public void setValorComboSubtituloServicio21(
+			Integer valorComboSubtituloServicio21) {
+		this.valorComboSubtituloServicio21 = valorComboSubtituloServicio21;
+	}
+
+	public Integer getValorComboSubtituloServicio22() {
+		return valorComboSubtituloServicio22;
+	}
+
+	public void setValorComboSubtituloServicio22(
+			Integer valorComboSubtituloServicio22) {
+		this.valorComboSubtituloServicio22 = valorComboSubtituloServicio22;
+	}
+
+	public Integer getValorComboSubtituloServicio24() {
+		return valorComboSubtituloServicio24;
+	}
+
+	public void setValorComboSubtituloServicio24(
+			Integer valorComboSubtituloServicio24) {
+		this.valorComboSubtituloServicio24 = valorComboSubtituloServicio24;
+	}
+
+	public Integer getValorComboSubtituloServicio29() {
+		return valorComboSubtituloServicio29;
+	}
+
+	public void setValorComboSubtituloServicio29(
+			Integer valorComboSubtituloServicio29) {
+		this.valorComboSubtituloServicio29 = valorComboSubtituloServicio29;
 	}
 
 	public Integer getValorComboSubtitulo21Componente() {
@@ -534,14 +430,37 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 			Integer valorComboSubtitulo21Componente) {
 		this.valorComboSubtitulo21Componente = valorComboSubtitulo21Componente;
 	}
-	
-	public Integer getValorComboPrograma() {
-		return valorComboPrograma;
+
+	public Integer getValorComboPrograma21() {
+		return valorComboPrograma21;
 	}
 
-	public void setValorComboPrograma(
-			Integer valorComboPrograma) {
-		this.valorComboPrograma = valorComboPrograma;
+	public void setValorComboPrograma21(Integer valorComboPrograma21) {
+		this.valorComboPrograma21 = valorComboPrograma21;
+	}
+
+	public Integer getValorComboPrograma22() {
+		return valorComboPrograma22;
+	}
+
+	public void setValorComboPrograma22(Integer valorComboPrograma22) {
+		this.valorComboPrograma22 = valorComboPrograma22;
+	}
+
+	public Integer getValorComboPrograma24() {
+		return valorComboPrograma24;
+	}
+
+	public void setValorComboPrograma24(Integer valorComboPrograma24) {
+		this.valorComboPrograma24 = valorComboPrograma24;
+	}
+	
+	public Integer getValorComboPrograma29() {
+		return valorComboPrograma29;
+	}
+
+	public void setValorComboPrograma29(Integer valorComboPrograma29) {
+		this.valorComboPrograma29 = valorComboPrograma29;
 	}
 
 	public Integer getValorComboSubtitulo21Servicio() {
@@ -602,26 +521,86 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	public List<ColumnaVO> getColumnsInicial() {
 		return columnsInicial;
 	}
-	
-	public List<ProgramaVO> getProgramas() {
-		if(programas == null){
-			programas = programaService.getProgramasByUserAno(getLoggedUsername(), anoActual);
-			for(int i=0;i<programas.size();i++){
-				Integer idProg = programas.get(i).getIdProgramaAno();
-				
-			}
-			
+
+	public List<ProgramaVO> getProgramasSubtitulo21() {
+		if(programasSubtitulo21 == null){
+			programasSubtitulo21 = programaService.getProgramasBySubtitulo(getAnoActual(), Subtitulo.SUBTITULO21);
 		}
-		return programas;
+		return programasSubtitulo21;
 	}
 
-	public void setProgramas(List<ProgramaVO> programas) {
-		this.programas = programas;
+	public void setProgramasSubtitulo21(List<ProgramaVO> programasSubtitulo21) {
+		this.programasSubtitulo21 = programasSubtitulo21;
+	}
+
+	public List<ProgramaVO> getProgramasSubtitulo22() {
+		if(programasSubtitulo22 == null){
+			programasSubtitulo22 = programaService.getProgramasBySubtitulo(getAnoActual(), Subtitulo.SUBTITULO22);
+		}
+		return programasSubtitulo22;
+	}
+
+	public void setProgramasSubtitulo22(List<ProgramaVO> programasSubtitulo22) {
+		this.programasSubtitulo22 = programasSubtitulo22;
+	}
+
+	public List<ProgramaVO> getProgramasSubtitulo24() {
+		if(programasSubtitulo24 == null){
+			programasSubtitulo24 = programaService.getProgramasBySubtitulo(getAnoActual(), Subtitulo.SUBTITULO24);
+		}
+		return programasSubtitulo24;
+	}
+
+	public void setProgramasSubtitulo24(List<ProgramaVO> programasSubtitulo24) {
+		this.programasSubtitulo24 = programasSubtitulo24;
+	}
+
+	public List<ProgramaVO> getProgramasSubtitulo29() {
+		if(programasSubtitulo29 == null){
+			programasSubtitulo29 = programaService.getProgramasBySubtitulo(getAnoActual(), Subtitulo.SUBTITULO29);
+		}
+		return programasSubtitulo29;
+	}
+
+	public void setProgramasSubtitulo29(List<ProgramaVO> programasSubtitulo29) {
+		this.programasSubtitulo29 = programasSubtitulo29;
+	}
+	
+	public List<ServiciosVO> getServicios21() {
+		return servicios21;
+	}
+
+	public void setServicios21(List<ServiciosVO> servicios21) {
+		this.servicios21 = servicios21;
+	}
+
+	public List<ServiciosVO> getServicios22() {
+		return servicios22;
+	}
+
+	public void setServicios22(List<ServiciosVO> servicios22) {
+		this.servicios22 = servicios22;
+	}
+
+	public List<ServiciosVO> getServicios24() {
+		return servicios24;
+	}
+
+	public void setServicios24(List<ServiciosVO> servicios24) {
+		this.servicios24 = servicios24;
+	}
+
+	public List<ServiciosVO> getServicios29() {
+		return servicios29;
+	}
+
+	public void setServicios29(List<ServiciosVO> servicios29) {
+		this.servicios29 = servicios29;
 	}
 
 	public List<ServiciosVO> getServicios() {
 		if(servicios == null){
-			servicios = servicioSaludService.getAllServiciosVO();
+			servicios = servicioSaludService.getServiciosOrderId();
 		}
 		return servicios;
 	}
@@ -629,7 +608,6 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	public void setServicios(List<ServiciosVO> servicios) {
 		this.servicios = servicios;
 	}
-
 
 	public void setColumnsInicial(List<ColumnaVO> columnsInicial) {
 		this.columnsInicial = columnsInicial;
@@ -700,8 +678,10 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	
 	public Long getTotalFinalServiciosPercapita() {
 		this.totalFinalServiciosPercapita = 0L;
-		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoPercapitaFlujoCajaVO){
-			this.totalFinalServiciosPercapita += subtituloFlujoCajaVO.getTotalMontos();
+		if(monitoreoPercapitaFlujoCajaVO != null && monitoreoPercapitaFlujoCajaVO.size() > 0){
+			for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoPercapitaFlujoCajaVO){
+				this.totalFinalServiciosPercapita += subtituloFlujoCajaVO.getTotalMontos();
+			}
 		}
 		return totalFinalServiciosPercapita;
 	}
@@ -732,46 +712,6 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 
 	public void setDocPropuesta(Integer docPropuesta) {
 		this.docPropuesta = docPropuesta;
-	}
-
-	public Boolean getMostrarPercapita() {
-		return mostrarPercapita;
-	}
-
-	public void setMostrarPercapita(Boolean mostrarPercapita) {
-		this.mostrarPercapita = mostrarPercapita;
-	}
-
-	public Boolean getMostrarSubtitulo21() {
-		return mostrarSubtitulo21;
-	}
-
-	public void setMostrarSubtitulo21(Boolean mostrarSubtitulo21) {
-		this.mostrarSubtitulo21 = mostrarSubtitulo21;
-	}
-
-	public Boolean getMostrarSubtitulo22() {
-		return mostrarSubtitulo22;
-	}
-
-	public void setMostrarSubtitulo22(Boolean mostrarSubtitulo22) {
-		this.mostrarSubtitulo22 = mostrarSubtitulo22;
-	}
-
-	public Boolean getMostrarSubtitulo24() {
-		return mostrarSubtitulo24;
-	}
-
-	public void setMostrarSubtitulo24(Boolean mostrarSubtitulo24) {
-		this.mostrarSubtitulo24 = mostrarSubtitulo24;
-	}
-
-	public Boolean getMostrarSubtitulo29() {
-		return mostrarSubtitulo29;
-	}
-
-	public void setMostrarSubtitulo29(Boolean mostrarSubtitulo29) {
-		this.mostrarSubtitulo29 = mostrarSubtitulo29;
 	}
 
 	public String getValorNombreComponente() {
@@ -859,14 +799,6 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 		return success;
 	}
 
-	public ProgramaVO getPrograma() {
-		return programa;
-	}
-
-	public void setPrograma(ProgramaVO programa) {
-		this.programa = programa;
-	}
-
 	public List<SubtituloFlujoCajaVO> getMonitoreoSubtitulo21FlujoCajaVO() {
 		return monitoreoSubtitulo21FlujoCajaVO;
 	}
@@ -899,6 +831,9 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 	
 	public List<SubtituloFlujoCajaVO> getMonitoreoPercapitaFlujoCajaVO() {
+		if(monitoreoPercapitaFlujoCajaVO == null){
+			monitoreoPercapitaFlujoCajaVO = estimacionFlujoCajaService.getPercapitaByAno();
+		}
 		return monitoreoPercapitaFlujoCajaVO;
 	}
 
@@ -1004,9 +939,6 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 		}
 		return totalServiciosMontosMesSubtitulo21;
 	}
-	
-	
-	
 
 	public void setTotalServiciosMontosMesSubtitulo21(
 			List<Long> totalServiciosMontosMesSubtitulo21) {
@@ -1020,8 +952,6 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 		}
 		return totalMontosMensualesServicioSubtitulo21;
 	}
-
-	
 	
 	public void setTotalMontosMensualesServicioSubtitulo21(
 			Long totalMontosMensualesServicioSubtitulo21) {
@@ -1662,102 +1592,147 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	public void setValorPesoComponente(String valorPesoComponente) {
 		this.valorPesoComponente = valorPesoComponente;
 	}
-
-	public void filtrarSubtituloComponente(){
-		System.out.println("filtrarSubtituloComponente() con valorComboSubtituloComponente="+getValorComboSubtituloComponente());
-		if(getValorComboSubtituloComponente() == null || getValorComboSubtituloComponente().intValue() == 0){
-			clearForm();
-		}else{
-			List<Integer> idComponentes = new ArrayList<Integer>();
-			idComponentes.add(getValorComboSubtituloComponente());
-			estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
-					idComponentes , getSubtituloSeleccionado(), this.iniciarFlujoCaja);
-		}
-	}
 	
 	public void filtrarSubtituloComponentePrograma(String subtituloFiltroSeleccionado){
-		if(getValorComboPrograma() == null || getValorComboPrograma().intValue() == 0){
-			clearForm();
-		}else{
-			List<ComponentesVO> componentes = getPrograma().getComponentes();
-			List<Integer> idComponentes = new ArrayList<Integer>();
-			Subtitulo subtituloFiltro = Subtitulo.getById(Integer.parseInt(subtituloFiltroSeleccionado));
-			for(ComponentesVO comp : componentes){
-				for(SubtituloVO subtitulo : comp.getSubtitulos()){
-					if(subtitulo.getId().equals(subtituloFiltro.getId())){
-						idComponentes.add(comp.getId());
-					}
+		Subtitulo subtituloFiltro = Subtitulo.getById(Integer.parseInt(subtituloFiltroSeleccionado));
+		switch (subtituloFiltro) {
+			case SUBTITULO21:
+				System.out.println("case SUBTITULO21");
+				monitoreoSubtitulo21FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
+				setValorComboSubtituloServicio21(0);
+				if(getValorComboPrograma21() == null || getValorComboPrograma21().intValue() == 0){
+					this.servicios21 = new ArrayList<ServiciosVO>();
+				}else{
+					this.servicios21 = estimacionFlujoCajaService.getServicioByProgramaAnoSubtitulo(getValorComboPrograma21(), subtituloFiltro);
 				}
-			}
-			if(subtituloFiltroSeleccionado.equals("1")){
-				monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(
-						getValorComboPrograma(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
-			}
-			if(subtituloFiltroSeleccionado.equals("2")){
-				monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(
-						getValorComboPrograma(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
-			}
-			if(subtituloFiltroSeleccionado.equals("3")){
-				monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(
-						getValorComboPrograma(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
-			}
-			if(subtituloFiltroSeleccionado.equals("4")){
-				monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(
-						getValorComboPrograma(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
-			}
-			
+				break;
+			case SUBTITULO22:
+				System.out.println("case SUBTITULO22");
+				monitoreoSubtitulo22FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
+				setValorComboSubtituloServicio22(0);
+				if(getValorComboPrograma22() == null || getValorComboPrograma22().intValue() == 0){
+					this.servicios22 = new ArrayList<ServiciosVO>();
+				}else{
+					this.servicios22 = estimacionFlujoCajaService.getServicioByProgramaAnoSubtitulo(getValorComboPrograma21(), subtituloFiltro);
+				}
+				break;
+			case SUBTITULO24:
+				System.out.println("case SUBTITULO24");
+				monitoreoSubtitulo24FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
+				setValorComboSubtituloServicio24(0);
+				if(getValorComboPrograma24() == null || getValorComboPrograma24().intValue() == 0){
+					this.servicios24 = new ArrayList<ServiciosVO>();
+				}else{
+					this.servicios24 = estimacionFlujoCajaService.getServicioByProgramaAnoSubtitulo(getValorComboPrograma21(), subtituloFiltro);
+				}
+				break;
+			case SUBTITULO29:
+				System.out.println("case SUBTITULO29");
+				monitoreoSubtitulo29FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
+				setValorComboSubtituloServicio29(0);
+				if(getValorComboPrograma29() == null || getValorComboPrograma29().intValue() == 0){
+					this.servicios29 = new ArrayList<ServiciosVO>();
+				}else{
+					this.servicios29 = estimacionFlujoCajaService.getServicioByProgramaAnoSubtitulo(getValorComboPrograma21(), subtituloFiltro);
+				}
+				break;
+			default:
+				break;
 		}
 	}
 	
 	public void filtrarSubtituloComponenteProgramaServicio(String subtituloFiltroSeleccionado){
-		if(getValorComboSubtituloServicio() == null || getValorComboSubtituloServicio().intValue() == 0){
-			clearForm();
-		}else{
-			List<ComponentesVO> componentes = getPrograma().getComponentes();
-			List<Integer> idComponentes = new ArrayList<Integer>();
-			Subtitulo subtituloFiltro = Subtitulo.getById(Integer.parseInt(subtituloFiltroSeleccionado));
-			for(ComponentesVO comp : componentes){
-				for(SubtituloVO subtitulo : comp.getSubtitulos()){
-					if(subtitulo.getId().equals(subtituloFiltro.getId())){
-						idComponentes.add(comp.getId());
+		Subtitulo subtituloFiltro = Subtitulo.getById(Integer.parseInt(subtituloFiltroSeleccionado));
+		switch (subtituloFiltro) {
+			case SUBTITULO21:
+				System.out.println("case SUBTITULO21");
+				if(getValorComboSubtituloServicio21() == null || getValorComboPrograma21().intValue() == 0){
+					monitoreoSubtitulo21FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
+				}else{
+					List<Integer> idComponentes = new ArrayList<Integer>();
+					List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(getValorComboPrograma21()).getComponentes();
+					for(ComponentesVO comp : componentes){
+						for(SubtituloVO subtitulo : comp.getSubtitulos()){
+							if(subtitulo.getId().equals(subtituloFiltro.getId())){
+								idComponentes.add(comp.getId());
+								break;
+							}
+						}
 					}
+					this.monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtituloServicio(
+							getValorComboPrograma21(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja, getValorComboSubtituloServicio21());
 				}
-			}
-			if(subtituloFiltroSeleccionado.equals("1")){
-				monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtituloServicio(
-						programa.getIdProgramaAno(), idComponentes, subtituloFiltro, this.iniciarFlujoCaja, getValorComboSubtituloServicio());
-			}
-			if(subtituloFiltroSeleccionado.equals("2")){
-				monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtituloServicio(
-						programa.getIdProgramaAno(), idComponentes, subtituloFiltro, this.iniciarFlujoCaja, getValorComboSubtituloServicio());
-			}
-			if(subtituloFiltroSeleccionado.equals("3")){
-				monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtituloServicio(
-						programa.getIdProgramaAno(), idComponentes, subtituloFiltro, this.iniciarFlujoCaja, getValorComboSubtituloServicio());
-			}
-			if(subtituloFiltroSeleccionado.equals("4")){
-				monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtituloServicio(
-						programa.getIdProgramaAno(), idComponentes, subtituloFiltro, this.iniciarFlujoCaja, getValorComboSubtituloServicio());
-			}
-			
-					
+				break;
+			case SUBTITULO22:
+				System.out.println("case SUBTITULO22");
+				if(getValorComboPrograma22() == null || getValorComboPrograma22().intValue() == 0){
+					monitoreoSubtitulo22FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
+				}else{
+					List<Integer> idComponentes = new ArrayList<Integer>();
+					List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(getValorComboPrograma22()).getComponentes();
+					for(ComponentesVO comp : componentes){
+						for(SubtituloVO subtitulo : comp.getSubtitulos()){
+							if(subtitulo.getId().equals(subtituloFiltro.getId())){
+								idComponentes.add(comp.getId());
+								break;
+							}
+						}
+					}
+					this.monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtituloServicio(
+							getValorComboPrograma22(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja, getValorComboSubtituloServicio22()); 
+				}
+				break;
+			case SUBTITULO24:
+				System.out.println("case SUBTITULO24");
+				if(getValorComboPrograma24() == null || getValorComboPrograma24().intValue() == 0){
+					monitoreoSubtitulo24FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
+				}else{
+					List<Integer> idComponentes = new ArrayList<Integer>();
+					List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(getValorComboPrograma24()).getComponentes();
+					for(ComponentesVO comp : componentes){
+						for(SubtituloVO subtitulo : comp.getSubtitulos()){
+							if(subtitulo.getId().equals(subtituloFiltro.getId())){
+								idComponentes.add(comp.getId());
+								break;
+							}
+						}
+					}
+					this.monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtituloServicio(
+							getValorComboPrograma24(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja, getValorComboSubtituloServicio24());
+				}
+				break;
+			case SUBTITULO29:
+				System.out.println("case SUBTITULO29");
+				if(getValorComboPrograma29() == null || getValorComboPrograma29().intValue() == 0){
+					monitoreoSubtitulo29FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
+				}else{
+					List<Integer> idComponentes = new ArrayList<Integer>();
+					List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(getValorComboPrograma29()).getComponentes();
+					for(ComponentesVO comp : componentes){
+						for(SubtituloVO subtitulo : comp.getSubtitulos()){
+							if(subtitulo.getId().equals(subtituloFiltro.getId())){
+								idComponentes.add(comp.getId());
+								break;
+							}
+						}
+					}
+					this.monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtituloServicio(
+							getValorComboPrograma29(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja, getValorComboSubtituloServicio29());
+				}
+				break;
+			default:
+				break;
 		}
 	}
-	
-
-	
-	
 	
 	public void filtrarPercapitaServicio(){	
 		if(getValorComboPercapita() == null || getValorComboPercapita().intValue() == 0){
-			clearForm();
+			monitoreoPercapitaFlujoCajaVO = estimacionFlujoCajaService.getPercapitaByAno();
 		}
 		else{
-			monitoreoPercapitaFlujoCajaVO = estimacionFlujoCajaService.getPercapitaByProgramaAno(this.idProgramaAnoPercapita, getValorComboPercapita());
+			monitoreoPercapitaFlujoCajaVO = estimacionFlujoCajaService.getPercapitaByAnoServicio(getValorComboPercapita());
 		}
 	}
-	
-	
 
 	private void clearForm() {
 		setEstimacionFlujoMonitoreoSubtituloComponente(new ArrayList<SubtituloFlujoCajaVO>());
@@ -1768,14 +1743,10 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 		setMonitoreoSubtitulo22FlujoCajaVO(new ArrayList<SubtituloFlujoCajaVO>());
 		setMonitoreoSubtitulo24FlujoCajaVO(new ArrayList<SubtituloFlujoCajaVO>());
 		setMonitoreoSubtitulo29FlujoCajaVO(new ArrayList<SubtituloFlujoCajaVO>());
-		
 		setEstimacionFlujoMonitoreoPercapitaComponente(new ArrayList<SubtituloFlujoCajaVO>());
 		setMonitoreoPercapitaFlujoCajaVO(new ArrayList<SubtituloFlujoCajaVO>());
 		setTotalFinalServiciosPercapita(0L);
 		setTotalServiciosMontosMesPercapita(new ArrayList<Long>(Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L)));
-		
-		
-		
 		setValorNombreComponente("");
 		setValorPesoComponente("");
 	}
@@ -1794,14 +1765,13 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	}
 	public List<Long> getTotalServiciosMontosMesPercapita() {
 		this.totalServiciosMontosMesPercapita = new ArrayList<Long>(Arrays.asList(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L));
-		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoPercapitaFlujoCajaVO){
-			for(int i = 0; i < subtituloFlujoCajaVO.getCajaMontos().size(); i++){
-				totalServiciosMontosMesPercapita.set(i, (totalServiciosMontosMesPercapita.get(i) + subtituloFlujoCajaVO.getCajaMontos().get(i).getMontoMes()));  
+		if(monitoreoPercapitaFlujoCajaVO != null && monitoreoPercapitaFlujoCajaVO.size() > 0){
+			for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoPercapitaFlujoCajaVO){
+				for(int i = 0; i < subtituloFlujoCajaVO.getCajaMontos().size(); i++){
+					totalServiciosMontosMesPercapita.set(i, (totalServiciosMontosMesPercapita.get(i) + subtituloFlujoCajaVO.getCajaMontos().get(i).getMontoMes()));  
+				}
 			}
 		}
-		
-		
-		
 		return totalServiciosMontosMesPercapita;
 	}
 
@@ -1912,19 +1882,19 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 				switch (subtituloSeleccionado) {
 				case SUBTITULO21:
 					System.out.println("SUBTITULO21");
-					monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), idComponentes, Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getValorComboPrograma21(), idComponentes, Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					break;
 				case SUBTITULO22:
 					System.out.println("SUBTITULO22");
-					monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), idComponentes, Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getValorComboPrograma22(), idComponentes, Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					break;
 				case SUBTITULO24:
 					System.out.println("SUBTITULO24");
-					monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), idComponentes, Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getValorComboPrograma24(), idComponentes, Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					break;
 				case SUBTITULO29:
 					System.out.println("SUBTITULO29");
-					monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), idComponentes, Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getValorComboPrograma29(), idComponentes, Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					break;
 				default:
 					break;
@@ -1976,10 +1946,5 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 	public void setTablaModificada(Boolean tablaModificada) {
 		this.tablaModificada = tablaModificada;
 	}
-
-	 
-	
-	
-
 
 }

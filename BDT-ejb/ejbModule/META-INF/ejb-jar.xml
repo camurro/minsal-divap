@@ -62,7 +62,7 @@
 				<description>Alfresco Password</description>
 				<env-entry-name>alfrescoPassword</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>admin</env-entry-value>
+				<env-entry-value>alfresco</env-entry-value>
 			</env-entry>
 			<env-entry>
 				<description>Alfresco Site</description>

@@ -249,8 +249,9 @@ public class ProgramasDAO {
 				for(Componente componente : componentes){
 					idComponentes.add(componente.getId());
 				}
-				TypedQuery<ProgramaAno> queryProgramas = this.em.createNamedQuery("ProgramaAno.findByComponente", ProgramaAno.class);
+				TypedQuery<ProgramaAno> queryProgramas = this.em.createNamedQuery("ProgramaAno.findByAnoComponente", ProgramaAno.class);
 				queryProgramas.setParameter("idComponentes", idComponentes);
+				queryProgramas.setParameter("ano", anoCurso);
 				programasAno = queryProgramas.getResultList();
 			}
 			return programasAno;

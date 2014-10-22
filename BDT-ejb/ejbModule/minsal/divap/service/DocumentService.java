@@ -2,15 +2,11 @@ package minsal.divap.service;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.zip.GZIPOutputStream;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.Resource;
@@ -18,9 +14,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-
-import org.alfresco.service.cmr.repository.NodeRef;
-import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 
 import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;

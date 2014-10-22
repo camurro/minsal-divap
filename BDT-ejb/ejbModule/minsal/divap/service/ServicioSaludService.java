@@ -119,4 +119,16 @@ public class ServicioSaludService {
 		return Integer.valueOf(formatNowYear.format(nowDate)); 
 	}
 
+	public List<ServiciosVO> getServiciosOrderId() {
+		List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
+		List<ServiciosVO> serviciosVO = new ArrayList<ServiciosVO>();
+		if(servicios != null && servicios.size() > 0){
+			for(ServicioSalud servicioSalud : servicios){
+				ServiciosVO servicioVO = new ServicioMapper().getBasic(servicioSalud);
+				serviciosVO.add(servicioVO);
+			}
+		}
+		return serviciosVO;
+	}
+
 }

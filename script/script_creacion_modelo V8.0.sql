@@ -3551,5 +3551,8 @@ ALTER TABLE documento_estimacionflujocaja
       ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (56, 'Plantilla Oficio Programación Caja');
+
+
 
 
