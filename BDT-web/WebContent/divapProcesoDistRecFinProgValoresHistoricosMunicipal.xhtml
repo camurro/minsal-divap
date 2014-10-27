@@ -3,7 +3,7 @@
 	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
 
 	<ui:define name="content">
-		<h:form enctype="multipart/form-data">
+		<h:form enctype="multipart/form-data" id="form">
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="Distribución de Recursos Financieros por Programa" />
@@ -18,153 +18,42 @@
 						porttitor enim, eget ullamcorper felis augue eget lacus.</p>
 					<br />
 					<p>
-						<span class="strong" id="inflactor"><h:outputText value="Inflactor Subtítulo 24" id="inflactor" />: </span>1,4
+						<span class="strong" id="inflactor"><h:outputText value="Inflactor Subtítulo 24" id="inflactor" />: #{procesoDistRecFinHistoricoMunicipalController.inflactorS24}</span>
 						<p:tooltip for="inflactor" value="Este inflactor es idéntico para cada Comuna, se debe modificar en mantenedor." showEffect="slide"
 							hideEffect="slide" />
 					</p>
 					<h3>Filtros del Programa:</h3>
-					<h:panelGrid id="busqueda_mis_tareas">
-						<h:panelGrid>
-							<h:outputText value="Servicio: " styleClass="inputLabel" />
-							<p:selectOneMenu onchange="document.getElementById('tablaSubtitulos').style.display = 'block';">
-								<f:selectItem itemLabel="Metropolitano Oriente" itemValue="Metropolitano Oriente" />
-								<f:selectItem itemLabel="Concepción" itemValue="Concepción" />
-								<f:selectItem itemLabel="Talcahuano" itemValue="Concepción" />
-								<f:selectItem itemLabel="Iquique" itemValue="Concepción" />
-								<f:selectItem itemLabel="Seleccione" itemValue="" />
+					<h:panelGrid id="busqueda_mis_tareas" columns="5">
+						<h:panelGrid columns="2">
+								<h:outputText value="Componente " styleClass="inputLabel" />
+								<p:selectOneMenu id="componentes"  value="#{procesoDistRecFinHistoricoMunicipalController.componenteSeleccionado}">
+								<p:ajax listener="#{procesoDistRecFinHistoricoMunicipalController.seleccionComponente}" update="" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />  
+								<f:selectItems value="#{procesoDistRecFinHistoricoMunicipalController.listaComponentes}" itemLabel="#{componente.nombre}" var="componente" itemValue="#{componente.id}"/> 
 							</p:selectOneMenu>
-						</h:panelGrid>
+							</h:panelGrid>
+					
+							<h:panelGrid columns="2">
+								<h:outputText value="Servicio: " styleClass="inputLabel" />
+								<p:selectOneMenu id="servicios"  value="#{procesoDistRecFinHistoricoMunicipalController.servicioSeleccionado}">
+								<f:selectItem itemLabel="Seleccione" itemValue="" />  
+								<f:selectItems value="#{procesoDistRecFinHistoricoMunicipalController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
+							</p:selectOneMenu>
+							</h:panelGrid>
+						
+						<h:panelGrid columns="1">
+							<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoDistRecFinHistoricoMunicipalController.cargaComunas}"  update="form:tablaResultados"/>
+					</h:panelGrid>
 					</h:panelGrid>
 					<br />
-					<div id="tablaSubtitulos" style="display: none;">
+					<div id="tablaSubtitulos">
 						<h3>Valores Históricos del Programa</h3>
-						<h:form id="form1">
 							<h:panelGrid>
-								<!-- <p:dataTable resizableColumns="true" value="#{procesoDistRecFinController.listadoValorHistorico}" liveResize="true" var="_historico"
-									rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
-									<p:columnGroup type="header">
-										<p:row>
-											<p:column rowspan="2" headerText="Municipalidad" />
-											<p:column colspan="3" headerText="Subtítulo 21" />
-											<p:column colspan="3" headerText="Subtítulo 22" />
-											<p:column colspan="3" headerText="Subtítulo 29" />
-											<p:column rowspan="2" headerText="Total" />
-										</p:row>
-										<p:row>
-											<p:column headerText="Val. Hist." />
-											<p:column headerText="Inflactor" />
-											<p:column headerText="SubTotal" />
-											<p:column headerText="Val. Hist." />
-											<p:column headerText="Inflactor" />
-											<p:column headerText="SubTotal" />
-											<p:column headerText="Val. Hist." />
-											<p:column headerText="Inflactor" />
-											<p:column headerText="SubTotal" />
-										</p:row>
-									</p:columnGroup>
-									<p:column>
-										<span class="textoAjustado textoPequenio">#{_historico.servicioSalud}</span>
-									</p:column>
-									<p:column>
-										<h:outputText value="#{_historico.valorHistoricoS21}" styleClass="divapProcesoDistRecFinProgInput">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" />
-										</h:outputText>
-									</p:column>
-									<p:column>
-										<p:inputText value="#{_historico.inflactorS21}" styleClass="divapProcesoDistRecFinProgInput">
-											<p:ajax event="keyup" update="total,subTotal21,subTotal22,subTotal29" />
-											<f:convertNumber maxFractionDigits="2" />
-										</p:inputText>
-									</p:column>
-									<p:column>
-										<p:inputText styleClass="divapProcesoDistRecFinProgInput" value="#{_historico.totalS21}" id="subTotal21">
-											<f:convertNumber maxFractionDigits="0" groupingUsed="false" />
-										</p:inputText>
-									</p:column>
-
-									<p:column>
-										<h:outputText value="#{_historico.valorHistoricoS22}" styleClass="divapProcesoDistRecFinProgInput">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" />
-										</h:outputText>
-									</p:column>
-									<p:column>
-										<p:inputText value="#{_historico.inflactorS22}" styleClass="divapProcesoDistRecFinProgInput">
-											<p:ajax event="keyup" update="total,subTotal21,subTotal22,subTotal29" />
-											<f:convertNumber maxFractionDigits="2" />
-										</p:inputText>
-									</p:column>
-									<p:column>
-										<p:inputText styleClass="divapProcesoDistRecFinProgInput" value="#{_historico.totalS22}" id="subTotal22">
-											<f:convertNumber maxFractionDigits="0" groupingUsed="false" />
-										</p:inputText>
-									</p:column>
-
-									<p:column>
-										<h:outputText value="#{_historico.valorHistoricoS29}" styleClass="divapProcesoDistRecFinProgInput">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" />
-										</h:outputText>
-									</p:column>
-									<p:column>
-										<p:inputText value="#{_historico.inflactorS29}" styleClass="divapProcesoDistRecFinProgInput">
-											<p:ajax event="keyup" update="total,subTotal21,subTotal22,subTotal29" />
-											<f:convertNumber maxFractionDigits="2" />
-										</p:inputText>
-									</p:column>
-									<p:column>
-										<p:inputText styleClass="divapProcesoDistRecFinProgInput" value="#{_historico.totalS29}" id="subTotal29">
-											<f:convertNumber maxFractionDigits="0" groupingUsed="false" />
-										</p:inputText>
-									</p:column>
-
-									<p:column>
-										<h:outputText styleClass="textoAjustado divapProcesoDistRecFinProgInput" value="#{_historico.totalS21+_historico.totalS22+_historico.totalS29}"
-											id="total">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" />
-										</h:outputText>
-									</p:column>
-								</p:dataTable> -->
-
-								<!-- 
-							<p:dataTable resizableColumns="true" value="#{procesoDistRecFinController.listadoValorHistorico}" liveResize="true" var="_historico"
-								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
-								<p:columnGroup type="header">
-									<p:row>
-										<p:column rowspan="2" headerText="Servicio Salud" />
-										<p:column colspan="2" headerText="Subtítulo 24" />
-										<p:column rowspan="2" headerText="Total" />
-									</p:row>
-									<p:row>
-										<p:column headerText="Val. Hist." />
-										<p:column headerText="Inflactor" />
-									</p:row>
-								</p:columnGroup>
-								<p:column styleClass="textoAjustado textoPequenio">#{_historico.servicioSalud}</p:column>
-								<p:column>
-									<h:outputText value="#{_historico.valorHistoricoS24}" styleClass="divapProcesoDistRecFinProgInput">
-											<p:ajax event="keyup" update="totales" /> 
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" />
-									</h:outputText>
-								</p:column>
-								<p:column>
-									 <p:inputText value="#{_historico.inflactorS24}" styleClass="divapProcesoDistRecFinProgInput">
-										<p:ajax event="keyup" update="totales" />
-										<f:convertNumber maxFractionDigits="2" />
-									</p:inputText>
-								</p:column>
-								<p:column>
-									<p:inputText styleClass="divapProcesoDistRecFinProgInput" value="#{_historico.totalS24}" id="totales">
-										<f:convertNumber maxFractionDigits="0" groupingUsed="false" />
-									</p:inputText>
-								</p:column>
-							</p:dataTable>
-							-->
-
-								<p:dataTable resizableColumns="true" value="#{procesoDistRecFinController.listadoValorHistorico}" liveResize="true" var="_historico"
-									rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+								<p:dataTable resizableColumns="true" value="#{procesoDistRecFinHistoricoMunicipalController.listadoHistoricoMunicipal}" liveResize="true" var="_historico"
+									rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" id="tablaResultados">
 									<p:columnGroup type="header">
 										<p:row>
 											<p:column rowspan="2" headerText="Comuna" />
-											<p:column rowspan="2" headerText="Establecimiento" />
 											<p:column colspan="2" headerText="Subtítulo 24" />
 										</p:row>
 										<p:row>
@@ -174,28 +63,15 @@
 										</p:row>
 									</p:columnGroup>
 									<p:column>
-										<span class="textoAjustado textoPequenio">#{_historico.comuna}</span>
+										<span class="textoAjustado textoPequenio">#{_historico.nombreComuna}</span>
 									</p:column>
 									<p:column>
-										<span class="textoAjustado textoPequenio">#{_historico.servicioSalud}</span>
-									</p:column>
-									<p:column>
-										<h:outputText value="#{_historico.valorHistoricoS24}" styleClass="divapProcesoDistRecFinProgInput">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<h:outputText value="#{_historico.totalAnoAnterior}" styleClass="divapProcesoDistRecFinProgInput">
+										<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" locale="es_CL" currencySymbol="$"/>
 										</h:outputText>
 									</p:column>
-									<!-- <p:column>
-									<p:inputText value="#{_historico.inflactorS24}" styleClass="divapProcesoDistRecFinProgInput">
-										<p:ajax event="keyup" update="total" />
-										<f:convertNumber maxFractionDigits="2" />
-
-									<h:outputText value="#{_historico.inflactorS24}" styleClass="textoAjustado divapProcesoDistRecFinProgInput">
-										<f:convertNumber maxFractionDigits="2" />
-									</h:outputText>
-								</p:column>
-								 -->
 									<p:column>
-										<p:inputText styleClass="textoAjustado divapProcesoDistRecFinProgInput" value="#{_historico.totalS24}" id="subtotal">
+										<p:inputText styleClass="textoAjustado divapProcesoDistRecFinProgInput" value="222" id="subtotal">
 											<p:ajax event="keyup" update="total,subtotal" />
 											<f:convertNumber maxFractionDigits="0" groupingUsed="true" />
 										</p:inputText>
@@ -204,19 +80,17 @@
 									<p:columnGroup type="footer">
 										<p:row>
 											<p:column />
-											<p:column />
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS24-9997}" id="totalHistorico" styleClass="textoAjustado">
-														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													<h:outputText value="#{procesoDistRecFinHistoricoMunicipalController.totalS24Pasado}" id="totalHistorico" styleClass="textoAjustado">
+													<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" locale="es_CL" currencySymbol="$"/>
 													</h:outputText>
 												</f:facet>
 											</p:column>
 
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS24}" id="total" styleClass="textoAjustado">
-														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													<h:outputText value="2323" id="total" styleClass="textoAjustado">
 													</h:outputText>
 												</f:facet>
 											</p:column>
@@ -229,7 +103,6 @@
 							<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" action="#" ajax="true" value="Guardar" />
 							<p:commandButton value="Finalizar" styleClass="x-btn-text"
 								action="divapProcesoDistRecFinProgSeguimientoDocumentacion?faces-redirect=true" ajax="false" icon="ui-icon-seek-first" />
-						</h:form>
 					</div>
 				</p:panel>
 

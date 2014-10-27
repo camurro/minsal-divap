@@ -9,8 +9,11 @@ import javax.ejb.Stateless;
 
 import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.ComponenteSubtitulo;
+import cl.minsal.divap.model.Dependencia;
 import minsal.divap.dao.ComponenteDAO;
 import minsal.divap.vo.ComponentesVO;
+import minsal.divap.vo.DependenciaVO;
+import minsal.divap.vo.SubtituloVO;
 
 
 
@@ -51,6 +54,23 @@ public class ComponenteService {
 				ComponentesVO comVO = new ComponentesVO();
 				comVO.setId(componente.getId());
 				comVO.setNombre(componente.getNombre());
+				comVO.setPeso(componente.getPeso());
+				List<SubtituloVO> listaSubVO = new ArrayList<SubtituloVO>(); 
+				for(ComponenteSubtitulo comSub : componente.getComponenteSubtitulos()){
+					SubtituloVO subVO = new SubtituloVO();
+					subVO.setId(comSub.getSubtitulo().getIdTipoSubtitulo());
+					subVO.setNombre(comSub.getSubtitulo().getNombreSubtitulo());
+					
+					DependenciaVO dependencia = new DependenciaVO();
+					dependencia.setId(comSub.getSubtitulo().getDependencia().getIdDependenciaPrograma());
+					dependencia.setNombre(comSub.getSubtitulo().getDependencia().getNombre());
+					subVO.setDependencia(dependencia);
+					listaSubVO.add(subVO);
+					
+				}
+				comVO.setSubtitulos(listaSubVO);
+				
+				
 				componentesPrograma.add(comVO);
 			
 		}
@@ -73,5 +93,15 @@ public class ComponenteService {
 		
 		
 	}
+	
+	public Componente getComponenteById(Integer idComponente) {
+		//	List<ComponenteSubtitulo> componentes = this.componenteDAO.getComponenteByProgramaSubtitulo(programaId, sub);
+			Componente componente = this.componenteDAO.getComponenteByID(idComponente);
+			
+			return componente;
+			
+			
+			
+		}
 
 }

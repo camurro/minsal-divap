@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name = "ProgramaServicioCore.findAll", query = "SELECT p FROM ProgramaServicioCore p"),
 	@NamedQuery(name = "ProgramaServicioCore.findByIdProgramaServicioCore", query = "SELECT p FROM ProgramaServicioCore p WHERE p.idProgramaServicioCore = :idProgramaServicioCore"),
 	@NamedQuery(name = "ProgramaServicioCore.findByProgramaAno", query = "SELECT p FROM ProgramaServicioCore p WHERE p.programaAnoServicio.idProgramaAno = :programaAno"),
+	@NamedQuery(name = "ProgramaServicioCore.deleteByProgramasServicioCore", query = "DELETE FROM ProgramaServicioCore p WHERE p.idProgramaServicioCore IN (:programasServicioCore)"),
 	@NamedQuery(name = "ProgramaServicioCore.findByComuna", query = "SELECT p FROM ProgramaServicioCore p WHERE p.comuna.id = :comuna")})
 public class ProgramaServicioCore implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -45,7 +46,7 @@ public class ProgramaServicioCore implements Serializable {
 	@ManyToOne(optional = false)
 	private Establecimiento establecimiento;
 	@JoinColumn(name = "comuna", referencedColumnName = "id")
-	@ManyToOne(optional = false)
+	@ManyToOne
 	private Comuna comuna;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "programaServicioCore1")
 	private Set<ProgramaServicioCoreComponente> programaServicioCoreComponentes;

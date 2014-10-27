@@ -5,11 +5,14 @@ import java.util.List;
 
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
+import javax.persistence.NamedQuery;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import minsal.divap.vo.ProgramaMunicipalVO;
 import cl.minsal.divap.model.AnoEnCurso;
+import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
@@ -23,6 +26,7 @@ public class ProgramasDAO {
 
 	@PersistenceContext(unitName="BDT-JPA")
 	private EntityManager em;
+	
 	
 	public ProgramaAno getProgramaAnoByID(Integer idProgramaAno){
 		try {
@@ -61,7 +65,7 @@ public class ProgramasDAO {
 	
 	public  Programa getProgramaPorID(int programaId){
 		try {
-			TypedQuery<Programa> query = this.em.createNamedQuery("Programa.findProgramaPorID", Programa.class);
+			TypedQuery<Programa> query = this.em.createNamedQuery("Programa.findById", Programa.class);
 			query.setParameter("id", programaId);
 			return query.getSingleResult(); 
 		} catch (Exception e) {
@@ -191,6 +195,18 @@ public class ProgramasDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public List<ProgramaMunicipalCoreComponente> getHistoricoMunicipal(Integer idProgramaAno, Integer idComponente, Integer idServicio) {
+		try {
+			TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.findByIdProgramaAnoIdComponenteIdServicio", ProgramaMunicipalCoreComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idServicio", idServicio);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	public List<ProgramaServicioCoreComponente> getProgramaServicios(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo) {
 		try {
@@ -234,6 +250,109 @@ public class ProgramasDAO {
 		this.em.persist(programaAno);
 		return programaAno;
 	}
+	
+	public List<ProgramaMunicipalCoreComponente> findByServicioComponente(Integer idComponente, Integer idServicio){
+		try {
+			TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.findByServicioComponente", ProgramaMunicipalCoreComponente.class);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idServicio", idServicio);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
+	public List<ProgramaServicioCoreComponente> findByServicioComponenteServicios(
+			Integer idComponente, Integer idServicio) {
+		try {
+			System.out.println("idComponente="+idComponente+" idServicio="+idServicio);
+			TypedQuery<ProgramaServicioCoreComponente> query = this.em.createNamedQuery("ProgramaServicioCoreComponente.findByServicioComponente", ProgramaServicioCoreComponente.class);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idServicio", idServicio);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
 
+	public ProgramaMunicipalCoreComponente getProgramaMunicipalCoreComponente(
+			Integer idProgramaMunicipalCore, Integer idComponente) {
+		try{
+		TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.findByProgramaMunicipalCoreComponentePK", ProgramaMunicipalCoreComponente.class);
+		query.setParameter("idProgramaMunicipalCore", idProgramaMunicipalCore);
+		query.setParameter("idComponente", idComponente);
+		List<ProgramaMunicipalCoreComponente> results = query.getResultList();
+		if (results.size() >= 1)
+			return results.get(0);
+	} catch (Exception e) {
+		throw new RuntimeException(e);
+	}
+	return null;
+	}
+	
+	public ProgramaServicioCoreComponente getProgramaServicioCoreComponenteEstablecimiento(
+			Integer idComponente, Integer idEstablecimiento, Integer idSubtitulo) {
+		try{
+		TypedQuery<ProgramaServicioCoreComponente> query = this.em.createNamedQuery("ProgramaServicioCoreComponente.findByProgramaServicioCoreComponentePKEstablecimiento", ProgramaServicioCoreComponente.class);
+		query.setParameter("idComponente", idComponente);
+		query.setParameter("idEstablecimiento", idEstablecimiento);
+		query.setParameter("idSubtitulo", idSubtitulo);
+		List<ProgramaServicioCoreComponente> results = query.getResultList();
+		if (results.size() >= 1)
+			return results.get(0);
+	} catch (Exception e) {
+		throw new RuntimeException(e);
+	}
+	return null;
+	}
+
+	
+	public List<Object[]> getResumenMunicipal(Integer idProgramaAno, Integer idTipoSubtitulo){
+		List<Object[]> results = null;
+		try {
+			Query queryGetResumen = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.getResumen");
+			queryGetResumen.setParameter("idProgramaAno", idProgramaAno);
+			queryGetResumen.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			results = queryGetResumen.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return results;
+		
+	}
+
+	public List<Object[]> getResumenServicio(Integer idProgramaAno,
+			Integer idSubtitulo) {
+		List<Object[]> results = null;
+		try {
+			Query queryGetResumen = this.em.createNamedQuery("ProgramaServicioCoreComponente.getResumen");
+			queryGetResumen.setParameter("idProgramaAno", idProgramaAno);
+			queryGetResumen.setParameter("idTipoSubtitulo", idSubtitulo);
+			results = queryGetResumen.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return results;
+	}
+
+	public Integer getIdProgramaAnoAnterior(Integer programaSeleccionado,
+			int anoAnterior) {
+		try{
+			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.getIdProgramaAnoAnterior", ProgramaAno.class);
+			query.setParameter("idPrograma", programaSeleccionado);
+			query.setParameter("ano", anoAnterior);
+			List<ProgramaAno> results = query.getResultList();
+			if (results.size() >= 1)
+				return results.get(0).getIdProgramaAno();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return  null;
+	}
+
+	
 }
 

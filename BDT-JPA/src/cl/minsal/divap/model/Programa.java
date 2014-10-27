@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.xml.bind.annotation.XmlTransient;
 
 
@@ -50,6 +51,7 @@ public class Programa implements Serializable {
     @ManyToOne
     private Usuario usuario;
     @OneToMany(mappedBy = "idPrograma")
+    @OrderBy("id ASC")
     private Set<Componente> componentes;
     @OneToMany(mappedBy = "programa")
     private Set<MetadataCore> metadataCores;

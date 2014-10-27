@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlTransient;
@@ -20,7 +21,9 @@ import javax.xml.bind.annotation.XmlTransient;
  * 
  */
 @Entity
-@NamedQuery(name="Establecimiento.findAll", query="SELECT e FROM Establecimiento e")
+@NamedQueries({
+	@NamedQuery(name="Establecimiento.findAll", query="SELECT e FROM Establecimiento e order by e.servicioSalud.id asc"),
+    @NamedQuery(name="Establecimiento.findByCodigo", query = "SELECT e FROM Establecimiento e WHERE e.codigo = :codigo")})
 public class Establecimiento implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -29,7 +32,12 @@ public class Establecimiento implements Serializable {
 	@GeneratedValue
 	private Integer id;
 
-	private String nombre;
+	   @Column(name = "nombre")
+	    private String nombre;
+	    @Column(name = "codigo")
+	    private String codigo;
+	    @Column(name = "tipo")
+	    private String tipo;
 
 	//bi-directional many-to-one association to Comuna
 	@ManyToOne
@@ -88,6 +96,22 @@ public class Establecimiento implements Serializable {
 
 	public void setServicioSalud(ServicioSalud servicioSalud) {
 		this.servicioSalud = servicioSalud;
+	}
+
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 
 }

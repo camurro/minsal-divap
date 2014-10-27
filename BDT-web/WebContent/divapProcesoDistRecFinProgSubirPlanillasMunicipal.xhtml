@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jstl/core" 
+	template="/WEB-INF/templates/default.xhtml">
 
 	<ui:define name="content">
 		<h:form enctype="multipart/form-data">
@@ -9,38 +13,37 @@
 					<h:outputText value="Distribución de Recursos Financieros por Programa" />
 				</h1>
 				<p:panel id="Panel">
-					<h2>Programa Municipal | VIDA SANA: INTERVENCIÓN EN FACTORES DE RIESGO DE ENFERMEDADES CRÓNICAS ASOCIADAS A LA MALNUTRICIÓN EN
-						NIÑOS, NIÑAS, ADOLESCENTES, ADULTOS Y MUJERES POSTPARTO</h2>
+					<h2>Programa #{procesoDistRecFinProgSubirPlanillasController.programa.nombre} </h2>
 					<h3>
 						<strong>Actividad: </strong>Descargar Planillas Base y Subir Planillas Llenas
 					</h3>
-					<p class="parrafo">La tarea corresponde a nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est
-						faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.nulla eget ultricies. Morbi pulvinar elit at
-						justo pharetra, vitae ultricies est faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.</p>
+					<p class="parrafo">La tarea corresponde a DESCRIPCION.</p>
 					<div class="destacaArchivos ui-corner-all">
 						<h3>Descargar Planilla Base del Programa</h3>
 						<ul class="versionesArchivo">
-							<li><h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <a target="_self"
-								href="minsalDocs/Planilla Base VIDA SANA INTERVENCION EN FACTORES DE RIESGO DE ENFERMEDADES CRONICAS ASOCIADAS A LA MALNUTRICION EN NINOS NINAS ADOLESCENTES ADULTOS Y MUJERES POSTPARTO - Municipal.xls">Planilla
-									Base VIDA SANA INTERVENCIÓN EN FACTORES DE RIESGO DE ENFERMEDADES CRONICAS ASOCIADAS A LA MALNUTRICION EN NINOS NINAS ADOLESCENTES
-									ADULTOS Y MUJERES POSTPARTO - Municipal.xls" </a></li>
+								<li><h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> 
+									<h:commandLink
+										action="#{procesoDistRecFinProgSubirPlanillasController.downloadTemplate}"
+										value="Planilla Base #{procesoDistRecFinProgSubirPlanillasController.programa.nombre} - Municipal.xlsx">
+										<f:setPropertyActionListener
+											target="#{procesoDistRecFinProgSubirPlanillasController.docIdDownload}"
+											value="#{procesoDistRecFinProgSubirPlanillasController.plantillaMunicipal}" />
+									</h:commandLink>
+								</li>							
 						</ul>
 					</div>
 					<h3>Subir planillas con información del programa:</h3>
 					<p:panelGrid columns="2" styleClass="uploadFileTable">
 						<h:outputLabel for="valorBasicoDesempenoFile"
-							value="Archivo: Planilla VIDA SANA INTERVENCIÓN EN  FACTORES DE RIESGO DE ENFERMEDADES CRONICAS ASOCIADAS A LA MALNUTRICION EN NINOS NINAS ADOLESCENTES ADULTOS Y MUJERES POSTPARTO - Municipal.xls"
+							value="Archivo: Planilla #{procesoDistRecFinProgSubirPlanillasController.programa.nombre} - Municipal.xlsx"
 							styleClass="textoAjustado fileUploadLabel" />
-						<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" mode="simple" />
+						<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoDistRecFinProgSubirPlanillasController.planillaMuncipal}" mode="simple" />
 					</p:panelGrid>
-					<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
 					<br />
 					<br />
-					<br />
-					<br />
-					<p:commandButton value="Finalizar Actividad | Todos los Archivos fueron cargados" ajax="false"
-						actionListener="#{procesoAsignacionPerCapitaController.uploadArchivosValorizacion}"
-						action="divapProcesoDistRecFinProgMunicipal?faces-redirect=true" icon="ui-icon-upload" />
+					<p:commandButton value="Finalizar Actividad | Todos los Archivos fueron cargados" ajax="false" action="#{procesoDistRecFinProgSubirPlanillasController.enviar}" icon="ui-icon-upload" >
+						 <f:setPropertyActionListener target="#{procesoDistRecFinProgSubirPlanillasController.target}" value="bandejaTareas.jsf" />
+					</p:commandButton>
 				</p:panel>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />

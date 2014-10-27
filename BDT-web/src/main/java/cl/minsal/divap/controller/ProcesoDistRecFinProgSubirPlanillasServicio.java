@@ -23,15 +23,14 @@ import org.primefaces.model.UploadedFile;
 
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
-@Named ("procesoDistRecFinProgSubirPlanillasController" ) 
+@Named ("procesoDistRecFinProgSubirPlanillasServicioController" ) 
 @ViewScoped 
-public class ProcesoDistRecFinProgSubirPlanillas extends AbstractTaskMBean implements Serializable {
+public class ProcesoDistRecFinProgSubirPlanillasServicio extends AbstractTaskMBean implements Serializable {
 
 	private static final long serialVersionUID = 8979055329731411696L;
 	private ProgramaVO programa;
 	private Integer plantillaMunicipal;
 	private Integer plantillaServicios;
-	private UploadedFile planillaMuncipal;
 	private UploadedFile planillaServicio;
 	private List<Integer> docIds;
 	private String docIdDownload;
@@ -67,15 +66,14 @@ public class ProcesoDistRecFinProgSubirPlanillas extends AbstractTaskMBean imple
 		try{
 		docIds = new ArrayList<Integer>();
 		List<ComponentesVO> componentes = programa.getComponentes();
-		if (planillaMuncipal != null){
-			String filename = planillaMuncipal.getFileName();
-			
+		if (planillaServicio != null){
+			String filename = planillaServicio.getFileName();
 			
 					
-			byte[] contentPlanillaMuncipal = planillaMuncipal.getContents();
-			recursosFinancierosProgramasReforzamientoService.procesarPlanillaMunicipal(programa.getIdProgramaAno(), 
-									GeneradorExcel.fromContent(contentPlanillaMuncipal, XSSFWorkbook.class),componentes);
-			Integer docPlanillaMuncipal = persistFile(filename, contentPlanillaMuncipal);
+			byte[] contentPlanillaServicio = planillaServicio.getContents();
+			recursosFinancierosProgramasReforzamientoService.procesarPlanillaServicio(programa.getIdProgramaAno(), 
+									GeneradorExcel.fromContent(contentPlanillaServicio, XSSFWorkbook.class),componentes);
+			Integer docPlanillaMuncipal = persistFile(filename, contentPlanillaServicio);
 			if (docPlanillaMuncipal != null) {
 				docIds.add(docPlanillaMuncipal);
 			}
@@ -105,14 +103,6 @@ public class ProcesoDistRecFinProgSubirPlanillas extends AbstractTaskMBean imple
 		return parameters;
 	}
 	
-	public UploadedFile getPlanillaMuncipal() {
-		return planillaMuncipal;
-	}
-
-	public void setPlanillaMuncipal(UploadedFile planillaMuncipal) {
-		this.planillaMuncipal = planillaMuncipal;
-	}
-
 	public UploadedFile getPlanillaServicio() {
 		return planillaServicio;
 	}

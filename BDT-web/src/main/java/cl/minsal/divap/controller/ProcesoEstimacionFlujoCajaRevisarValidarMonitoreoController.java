@@ -16,7 +16,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import minsal.divap.enums.Subtitulo;
-import minsal.divap.service.CajaService;
 import minsal.divap.service.EstimacionFlujoCajaService;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ServicioSaludService;
@@ -187,8 +186,6 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	private ProgramasService programaService;
 	@EJB
 	private ServicioSaludService servicioSaludService;
-	@EJB
-	private CajaService cajaService;
 
 
 

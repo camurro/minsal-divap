@@ -121,4 +121,11 @@ public class RecursosFinancierosProgramasReforzamientoRESTService extends BaseRe
 		}
     }
 	
+	@GET
+    @Path("/recursosFinancierosProgramasReforzamiento/calcularActualDesdeHistorico/{idPrograma}")
+    @Produces("application/json")
+	public void calcularActualDesdeHistorico(@PathParam("idPrograma") Integer idPrograma){
+		System.out.println("**************************************************************");
+	}
+	
 }

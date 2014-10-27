@@ -1,9 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+<ui:define name="zonaJavaScript">
+		<style type="text/css">
+.ui-state-error {
+	margin-left: 0px;
+}
+</style>
+		<script type="text/javascript">
+
+		function isNumber(event, id, fila, precioCantidad) {
+		  if (event) {
+		    var charCode = (event.which) ? event.which : event.keyCode;
+		    if (charCode &lt; 48 || charCode &gt; 57) {
+		    	if (charCode == 8 || charCode == 46 || charCode == 35 || charCode == 36 || charCode == 37 || charCode == 39){ 
+			    	return true;
+		    	}
+		    	if (charCode == 13) {
+			    	$("#form\\:posicionElemento").val(fila);
+			    	$("#form\\:precioCantidad").val(precioCantidad);
+		    		document.getElementById(id).click();
+		    		return true;
+		    	}
+		       return false;
+		    }
+		  }
+		  return true;
+		}
+
+
+		</script>
+	</ui:define>
 
 	<ui:define name="content">
-		<h:form enctype="multipart/form-data">
+		<h:form enctype="multipart/form-data" id="form">
+			<h:inputHidden  id="posicionElemento" value="#{procesoDistRecFinController.posicionElemento}" />
+			<h:inputHidden  id="precioCantidad" value="#{procesoDistRecFinController.precioCantidad}" />
+			<p:commandButton id="botonPrecio" value="recalcularTotales" update="tablaResultados" action="#{procesoDistRecFinController.recalcularTotales}" style="display: none"/>
+			
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="Distribución de Recursos Financieros por Programa" />
@@ -20,62 +54,44 @@
 
 					<h:panelGrid columns="2">
 						<h:graphicImage value="resources/minsal/images/search.png" styleClass="divapIcons" />
-						<p:lightBox iframe="true" width="950px">
-							<h:outputLink value="/divapProcesoDistRecFinProgProgramas.jsf">Ver Resumen Parcial del Programa</h:outputLink>
+						<p:lightBox iframe="true" width="950px" id="resumen">
+							<h:outputLink value="divapProcesoDistRecFinProgProgramas.jsf">Ver Resumen Parcial del Programa</h:outputLink>
 						</p:lightBox>
 					</h:panelGrid>
 					<br />
 
 					<h3>Filtros del Programa:</h3>
-					<h:panelGrid id="busqueda_mis_tareas">
-						<h:panelGrid>
-							<h:outputText value="Componente: " styleClass="inputLabel" />
-							<p:selectOneMenu>
-								<f:selectItem itemLabel="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES"
-									itemValue="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
-								<f:selectItem itemLabel="Seleccione" itemValue="" />
+					<h:panelGrid id="busqueda_mis_tareas" columns="5">
+						<h:panelGrid columns="2">
+								<h:outputText value="Componente " styleClass="inputLabel" />
+								<p:selectOneMenu id="componentes"  value="#{procesoDistRecFinController.componenteSeleccionado}">
+								<p:ajax listener="#{procesoDistRecFinController.seleccionComponente}" update="" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />  
+								<f:selectItems value="#{procesoDistRecFinController.listaComponentes}" itemLabel="#{componente.nombre}" var="componente" itemValue="#{componente.id}"/> 
 							</p:selectOneMenu>
-						</h:panelGrid>
-
-						<h:panelGrid>
-							<h:outputText value="Subcomponente: " styleClass="inputLabel" />
-							<p:selectOneMenu>
-								<f:selectItem itemLabel="Subcomponente 1" itemValue="Subcomponente 1 Alcohol" />
-								<f:selectItem itemLabel="Subcomponente 2" itemValue="Subcomponente 2 Alcohol" />
-								<f:selectItem itemLabel="Seleccione" itemValue="" />
-							</p:selectOneMenu>
-						</h:panelGrid>
-
-						<h:panelGrid>
-							<h:panelGrid>
-								<h:outputText value="Actividad: " styleClass="inputLabel" />
-								<p:selectOneMenu>
-									<f:selectItem itemLabel="Actividad 1" itemValue="Actividad 1" />
-									<f:selectItem itemLabel="Seleccione" itemValue="" />
-								</p:selectOneMenu>
 							</h:panelGrid>
-						</h:panelGrid>
-						<h:panelGrid>
-							<h:outputText value="Servicio: " styleClass="inputLabel" />
-							<p:selectOneMenu onchange="document.getElementById('tablaSubtitulos').style.display = 'block';">
-								<f:selectItem itemLabel="Metropolitano Oriente" itemValue="Metropolitano Oriente" />
-								<f:selectItem itemLabel="Concepción" itemValue="Concepción" />
-								<f:selectItem itemLabel="Talcahuano" itemValue="Concepción" />
-								<f:selectItem itemLabel="Iquique" itemValue="Concepción" />
-								<f:selectItem itemLabel="Seleccione" itemValue="" />
+					
+							<h:panelGrid columns="2">
+								<h:outputText value="Servicio: " styleClass="inputLabel" />
+								<p:selectOneMenu id="servicios"  value="#{procesoDistRecFinController.servicioSeleccionado}">
+								<f:selectItem itemLabel="Seleccione" itemValue="" />  
+								<f:selectItems value="#{procesoDistRecFinController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
 							</p:selectOneMenu>
-						</h:panelGrid>
+							</h:panelGrid>
+						
+						<h:panelGrid columns="1">
+							<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoDistRecFinController.cargaComunas}"  update="form:tablaResultados"/>
 					</h:panelGrid>
+					</h:panelGrid>
+					
 					<br />
-					<div id="tablaSubtitulos" style="display: none;">
+					
+					<div id="tablaSubtitulos">
 						<h3>Subtítulos del Programa</h3>
-						<h:form id="form">
 							<h:panelGrid>
-								<p:dataTable resizableColumns="true" value="#{procesoDistRecFinController.listadoEstablecimientos}" liveResize="true"
-									var="_establecimiento" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
-									styleClass="dataTable">
+								<p:dataTable resizableColumns="true" value="#{procesoDistRecFinController.detalleComunas}" liveResize="true"
+									var="_detalle" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+									styleClass="dataTable" id="tablaResultados" rowIndexVar="rowIndex">
 
 									<p:columnGroup type="header">
 										<p:row>
@@ -92,22 +108,21 @@
 									</p:columnGroup>
 
 									<p:column>
-										<span class="textoAjustado textoPequenio">#{_establecimiento.comuna.nombreComuna}</span>
+										<span class="textoAjustado textoPequenio">#{_detalle.nombreComuna}</span>
 									</p:column>
 
 									<p:column>
-										<p:inputText value="#{_establecimiento.pS24}" styleClass="divapProcesoDistRecFinProgInput">
-											<p:ajax event="keyup" update="totales,total" />
+										
+										<h:inputText value="#{_detalle.precio}" styleClass="divapProcesoDistRecFinProgInput"  onkeypress="return isNumber(event, 'form:botonPrecio', '#{rowIndex}', '1');">
 											<f:convertNumber groupingUsed="false" maxFractionDigits="0" />
-										</p:inputText>
+										</h:inputText>
 									</p:column>
 									<p:column>
-										<p:inputText value="#{_establecimiento.qS24}" styleClass="divapProcesoDistRecFinProgInput">
-											<p:ajax event="keyup" update="totales,total" />
-										</p:inputText>
+										<h:inputText value="#{_detalle.cantidad}" styleClass="divapProcesoDistRecFinProgInput" onkeypress="return isNumber(event, 'form:botonPrecio', '#{rowIndex}', '2');">
+										</h:inputText>
 									</p:column>
 									<p:column>
-										<h:outputText styleClass="textoAjustado" value="#{_establecimiento.tS24}" id="totales">
+										<h:outputText styleClass="textoAjustado" value="#{_detalle.total}" id="totales">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</p:column>
@@ -119,7 +134,7 @@
 
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS24}" id="total" styleClass="textoAjustado">
+													<h:outputText value="#{procesoDistRecFinController.totalPxQ}" id="total" styleClass="textoAjustado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
 												</f:facet>
@@ -129,11 +144,10 @@
 								</p:dataTable>
 							</h:panelGrid>
 
-							<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" action="#" ajax="true" value="Guardar" />
-							<p:commandButton value="Finalizar" styleClass="x-btn-text" action="#{procesoDistRecFinValidarMontosController.enviar}" ajax="false" icon="ui-icon-seek-first" >
-								<f:setPropertyActionListener target="#{procesoDistRecFinValidarMontosController.target}" value="bandejaTareas.jsf" />
+							<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" action="#{procesoDistRecFinController.guardar}" ajax="true" value="Guardar" update="form:resumen"/>
+							<p:commandButton value="Finalizar" styleClass="x-btn-text" action="#{procesoDistRecFinController.enviar}" ajax="false" icon="ui-icon-seek-first" >
+								<f:setPropertyActionListener target="#{procesoDistRecFinController.target}" value="bandejaTareas.jsf" />
 							</p:commandButton>
-						</h:form>
 					</div>
 				</p:panel>
 

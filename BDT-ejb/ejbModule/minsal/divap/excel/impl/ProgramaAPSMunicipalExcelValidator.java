@@ -1,6 +1,10 @@
 package minsal.divap.excel.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import minsal.divap.excel.interfaces.ExcelValidator;
 import minsal.divap.exception.ExcelFormatException;
@@ -15,6 +19,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 public class ProgramaAPSMunicipalExcelValidator extends ExcelValidator<ProgramaAPSMunicipalVO>{
 	private ProgramaMunicipalSummaryVO programaMunicipalSummaryVO;
+	
+	
 	
 	public ProgramaAPSMunicipalExcelValidator(Integer numberField, List<CellTypeExcelVO> cells) {
 		super(numberField, cells);
@@ -70,7 +76,7 @@ public class ProgramaAPSMunicipalExcelValidator extends ExcelValidator<ProgramaA
 			throw new ExcelFormatException("Se debe especificar la cantidad de columnas a leer desde la hoja de cálculo");
 		}
 		
-		programaMunicipalSummaryVO = getHeader(sheet, 0, 4);
+		//programaMunicipalSummaryVO = getHeader(sheet, 0, 4);
 		
 		int first = getOffsetRows();
 		if(getOmitHeader()){
@@ -118,5 +124,70 @@ public class ProgramaAPSMunicipalExcelValidator extends ExcelValidator<ProgramaA
 		}
 		return programaAPSMunicipalVO;
 	}
+
+	public void validaArmaItems(XSSFSheet sheet, int totalCeldasPxQ) throws ExcelFormatException {
+		if(sheet == null){
+			throw new ExcelFormatException("La hoja de cálculo esta nula");
+		}
+		if(getNumberField() <= 0){
+			throw new ExcelFormatException("Se debe especificar la cantidad de columnas a leer desde la hoja de cálculo");
+		}
+		
+		//programaMunicipalSummaryVO = getHeader(sheet, 0, 4);
+		
+		int first = getOffsetRows();
+		if(getOmitHeader()){
+			first +=1;
+		}
+		int last = sheet.getPhysicalNumberOfRows();
+		for(;first<=last;first++){
+			XSSFRow xssfRow = sheet.getRow(first);
+			//System.out.println("xssfRow-->"+xssfRow);
+			if(!empty(xssfRow)){
+				if(!validateTypes(xssfRow)){
+					throw new ExcelFormatException("Los datos de la fila " + first + " no son válidos ");
+				}
+				add(armaObjeto(totalCeldasPxQ));
+			}
+		}
+		
+	}
+
+	private ProgramaAPSMunicipalVO armaObjeto(int totalCeldasPxQ) {
+		ProgramaAPSMunicipalVO programaAPSMunicipalVO = new ProgramaAPSMunicipalVO();
+		if(getValues().size() == getCells().size()){
+			if(!"".equals(getValues().get(0))){
+				Double servicio = Double.parseDouble(getValues().get(0));
+				programaAPSMunicipalVO.setIdServicio(servicio.intValue());
+			}
+			if(!"".equals(getValues().get(1))){
+				programaAPSMunicipalVO.setServicio(getValues().get(1));
+			}
+			if(!"".equals(getValues().get(2))){
+				Double comuna = Double.parseDouble(getValues().get(2));
+				programaAPSMunicipalVO.setIdComuna(comuna.intValue());
+			}
+			if(!"".equals(getValues().get(3))){
+				programaAPSMunicipalVO.setComuna(getValues().get(3));
+			}
+			int posicion=4;
+			for(int i=0; i< totalCeldasPxQ/2; i++){
+				if(!"".equals(getValues().get(posicion))){
+					Double tarifa = Double.parseDouble(getValues().get(posicion));
+					programaAPSMunicipalVO.getProgramaMunicipalSummary().getComponentes().get(0).getSubtitulos().get(0).setTarifa(tarifa.intValue());
+				}
+				if(!"".equals(getValues().get(posicion+1))){
+					Double cantidad = Double.parseDouble(getValues().get(posicion+1));
+					programaAPSMunicipalVO.getProgramaMunicipalSummary().getComponentes().get(0).getSubtitulos().get(0).setCantidad(cantidad.intValue());
+				}
+				posicion++;
+			}
+			
+			
+		}
+		return programaAPSMunicipalVO;
+	}
+
+
 
 }

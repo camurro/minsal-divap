@@ -61,4 +61,17 @@ public class TipoSubtituloDAO {
 		}
 	}
 
+	public Double getInfactorById(int idSubtitulo) {
+		try {
+			TypedQuery<TipoSubtitulo> query = this.em.createNamedQuery("TipoSubtitulo.findById", TipoSubtitulo.class);
+			query.setParameter("idTipoSubtitulo", idSubtitulo);
+			List<TipoSubtitulo> results = query.getResultList();
+			if (results.size() >= 1)
+				return Double.valueOf(results.get(0).getInflactor());
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 }

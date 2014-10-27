@@ -13,6 +13,8 @@ public class ProgramaAPSMunicipalVO implements Serializable{
 	private String servicio;
 	private Integer idComuna;
 	private String comuna;
+	private Integer cantidad;
+	private Integer tarifa;
 	private ProgramaMunicipalSummaryVO programaMunicipalSummary;
 	
 	public ProgramaAPSMunicipalVO(){
@@ -76,6 +78,23 @@ public class ProgramaAPSMunicipalVO implements Serializable{
 	public void setProgramaMunicipalSummary(
 			ProgramaMunicipalSummaryVO programaMunicipalSummary) {
 		this.programaMunicipalSummary = programaMunicipalSummary;
+	}
+
+	
+	public Integer getCantidad() {
+		return cantidad;
+	}
+
+	public void setCantidad(Integer cantidad) {
+		this.cantidad = cantidad;
+	}
+
+	public Integer getTarifa() {
+		return tarifa;
+	}
+
+	public void setTarifa(Integer tarifa) {
+		this.tarifa = tarifa;
 	}
 
 	@Override

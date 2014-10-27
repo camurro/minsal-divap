@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "Comuna.findAll", query = "SELECT c FROM Comuna c"),
+    @NamedQuery(name = "Comuna.findAll", query = "SELECT c FROM Comuna c order by c.servicioSalud.id asc, c.nombre asc"),
     @NamedQuery(name = "Comuna.findById", query = "SELECT c FROM Comuna c WHERE c.id = :id"),
     @NamedQuery(name = "Comuna.findByNombre", query = "SELECT c FROM Comuna c WHERE c.nombre = :nombre"),
     @NamedQuery(name = "Comuna.findByServicio", query = "SELECT c FROM Comuna c WHERE c.servicioSalud.id = :idServicio order by c.nombre asc"),

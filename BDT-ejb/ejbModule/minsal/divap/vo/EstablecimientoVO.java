@@ -13,6 +13,8 @@ public class EstablecimientoVO  implements Serializable {
 	private String nombre;
 	private int id_servicio_salud;
 	private int id_comuna;
+	private String codigoEstablecimiento;
+	
 	public int getId() {
 		return id;
 	}
@@ -36,6 +38,12 @@ public class EstablecimientoVO  implements Serializable {
 	}
 	public void setId_comuna(int id_comuna) {
 		this.id_comuna = id_comuna;
+	}
+	public String getCodigoEstablecimiento() {
+		return codigoEstablecimiento;
+	}
+	public void setCodigoEstablecimiento(String codigoEstablecimiento) {
+		this.codigoEstablecimiento = codigoEstablecimiento;
 	}
 
 	

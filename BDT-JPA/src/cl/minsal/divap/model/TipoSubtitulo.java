@@ -49,6 +49,9 @@ public class TipoSubtitulo implements Serializable {
     @JoinColumn(name = "dependencia", referencedColumnName = "id_dependencia_programa")
     @ManyToOne(optional = false)
     private Dependencia dependencia;
+    @Basic(optional = false)
+    @Column(name = "inflactor")
+    private String inflactor;
     @OneToMany(mappedBy = "subtitulo")
     private Set<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes;
     
@@ -153,5 +156,14 @@ public class TipoSubtitulo implements Serializable {
     public String toString() {
         return "cl.minsal.divap.model.TipoSubtitulo[ idTipoSubtitulo=" + idTipoSubtitulo + " ]";
     }
+
+	public String getInflactor() {
+		return inflactor;
+	}
+
+	public void setInflactor(String inflactor) {
+		this.inflactor = inflactor;
+	}
+    
     
 }

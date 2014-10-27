@@ -40,5 +40,9 @@ public class SubtituloService {
 		}
 		return result;
 	}
+	
+	public Double getInflactor(int idSubtitulo){
+		return this.tipoSubtituloDAO.getInfactorById(idSubtitulo);
+	}
 
 }

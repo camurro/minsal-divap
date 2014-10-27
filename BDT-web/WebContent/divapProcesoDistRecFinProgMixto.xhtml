@@ -1,17 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml"
+	 xmlns:c="http://java.sun.com/jsp/jstl/core">
+<ui:define name="zonaJavaScript">
+		<style type="text/css">
+.ui-state-error {
+	margin-left: 0px;
+}
+</style>
+		<script type="text/javascript">
 
+		function refresca() {
+		  document.getElementById("form:refrescarTabla").click();
+		}
+
+		function isNumber(event, id, fila, precioCantidad, subtitulo) {
+			  if (event) {
+			    var charCode = (event.which) ? event.which : event.keyCode;
+			    if (charCode &lt; 48 || charCode &gt; 57) {
+			    	if (charCode == 8 || charCode == 46 || charCode == 35 || charCode == 36 || charCode == 37 || charCode == 39){ 
+				    	return true;
+			    	}
+			    	if (charCode == 13) {
+				    	$("#form\\:posicionElemento").val(fila);
+				    	$("#form\\:precioCantidad").val(precioCantidad);
+				    	$("#form\\:subtitulo").val(subtitulo);
+			    		document.getElementById(id).click();
+			    		return true;
+			    	}
+			       return false;
+			    }
+			  }
+			  return true;
+			}
+
+		function isNumberMun(event, id, fila, precioCantidad) {
+			  if (event) {
+			    var charCode = (event.which) ? event.which : event.keyCode;
+			    if (charCode &lt; 48 || charCode &gt; 57) {
+			    	if (charCode == 8 || charCode == 46 || charCode == 35 || charCode == 36 || charCode == 37 || charCode == 39){ 
+				    	return true;
+			    	}
+			    	if (charCode == 13) {
+				    	$("#form\\:posicionElemento").val(fila);
+				    	$("#form\\:precioCantidad").val(precioCantidad);
+			    		document.getElementById(id).click();
+			    		return true;
+			    	}
+			       return false;
+			    }
+			  }
+			  return true;
+			}
+
+		</script>
+	</ui:define>
 	<ui:define name="content">
-		<h:form enctype="multipart/form-data">
+		<h:form enctype="multipart/form-data" id="form">
+		<p:commandButton id="refrescarTabla" value="refrescar" action="#{procesoDistRecFinMixtoController.refrescar}" style="display: none" update="form:tabs:tablaResultados form:tabs:tablaServicios"/>
+		
+		<h:inputHidden  id="posicionElemento" value="#{procesoDistRecFinMixtoController.posicionElemento}" />
+			<h:inputHidden  id="precioCantidad" value="#{procesoDistRecFinMixtoController.precioCantidad}" />
+			<h:inputHidden  id="subtitulo" value="#{procesoDistRecFinMixtoController.subtitulo}" />
+			<p:commandButton id="botonPrecio" value="recalcularTotales" update="form:tabs:tablaResultados form:tabs:tablaServicios" action="#{procesoDistRecFinMixtoController.recalcularTotales}" style="display: none"/>
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="Distribución de Recursos Financieros por Programa" />
 				</h1>
 				<p:panel id="Panel">
 					<h2>
-						<span class="strong">Programa Mixto | </span>APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES
-					</h2>
+						<span class="strong">Programa Mixto | </span> NOMBRE PROGRAMA</h2>
 					<p class="parrafo">La Planilla de Trabajo con Montos de Distribución contiene lorem ipsum dolor sit amet, consectetur adipiscing
 						elit. Praesent egestas tempor nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est dignissim, justo nisi
 						porttitor enim, eget ullamcorper felis augue eget lacus.</p>
@@ -19,291 +77,241 @@
 
 					<h:panelGrid columns="2">
 						<h:graphicImage value="resources/minsal/images/search.png" styleClass="divapIcons" />
-						<p:lightBox iframe="true" width="950px">
-							<h:outputLink value="http://localhost:8080/BandejaTareas-web/divapProcesoDistRecFinProgProgramas.jsf">Ver Resumen Parcial del Programa</h:outputLink>
+						<p:lightBox iframe="true" width="950px"  id="resumen">
+							<h:outputLink value="divapProcesoDistRecFinProgProgramasMixtoResumen.jsf">Ver Resumen Parcial del Programa</h:outputLink>
 						</p:lightBox>
 					</h:panelGrid>
 					<br />
-
-
 					<h3>Filtros del Programa:</h3>
-					<h:panelGrid id="busqueda_mis_tareas">
-						<h:panelGrid>
-							<h:outputText value="Componente: " styleClass="inputLabel" />
-							<p:selectOneMenu>
-								<f:selectItem itemLabel="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES"
-									itemValue="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
-								<f:selectItem itemLabel="Seleccione" itemValue="" />
+					<h:panelGrid id="busqueda_mis_tareas" columns="5">
+						<h:panelGrid columns="2">
+								<h:outputText value="Componente " styleClass="inputLabel" />
+								<p:selectOneMenu id="componentes"  value="#{procesoDistRecFinMixtoController.componenteSeleccionado}">
+								<p:ajax listener="#{procesoDistRecFinMixtoController.seleccionComponente}" update="" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />  
+								<f:selectItems value="#{procesoDistRecFinMixtoController.listaComponentes}" itemLabel="#{componente.nombre}" var="componente" itemValue="#{componente.id}"/> 
 							</p:selectOneMenu>
-						</h:panelGrid>
-
-						<h:panelGrid>
-							<h:outputText value="Subcomponente: " styleClass="inputLabel" />
-							<p:selectOneMenu>
-								<f:selectItem itemLabel="Subcomponente 1" itemValue="Subcomponente 1 Alcohol" />
-								<f:selectItem itemLabel="Subcomponente 2" itemValue="Subcomponente 2 Alcohol" />
-								<f:selectItem itemLabel="Seleccione" itemValue="" />
-							</p:selectOneMenu>
-						</h:panelGrid>
-
-						<h:panelGrid>
-							<h:panelGrid>
-								<h:outputText value="Actividad: " styleClass="inputLabel" />
-								<p:selectOneMenu>
-									<f:selectItem itemLabel="Actividad 1" itemValue="Actividad 1" />
-									<f:selectItem itemLabel="Seleccione" itemValue="" />
-								</p:selectOneMenu>
 							</h:panelGrid>
-						</h:panelGrid>
-						<h:panelGrid>
-							<h:outputText value="Servicio: " styleClass="inputLabel" />
-							<p:selectOneMenu onchange="document.getElementById('tablaSubtitulos').style.display = 'block';">
-								<f:selectItem itemLabel="Metropolitano Oriente" itemValue="Metropolitano Oriente" />
-								<f:selectItem itemLabel="Concepción" itemValue="Concepción" />
-								<f:selectItem itemLabel="Talcahuano" itemValue="Concepción" />
-								<f:selectItem itemLabel="Iquique" itemValue="Concepción" />
-								<f:selectItem itemLabel="Seleccione" itemValue="" />
+					
+							<h:panelGrid columns="2">
+								<h:outputText value="Servicio: " styleClass="inputLabel" />
+								<p:selectOneMenu id="servicios"  value="#{procesoDistRecFinMixtoController.servicioSeleccionado}">
+								<f:selectItem itemLabel="Seleccione" itemValue="" />  
+								<f:selectItems value="#{procesoDistRecFinMixtoController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
 							</p:selectOneMenu>
-						</h:panelGrid>
+							</h:panelGrid>
+						
+						<h:panelGrid columns="1">
+							<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoDistRecFinMixtoController.buscarResultados()}" update="form:tabs:tablaResultados form:tabs:tablaServicios"/>
 					</h:panelGrid>
-					<br />
-					<br />
-					<div id="tablaSubtitulos" style="display: none;">
-						<p:tabView id="tabView">
+					</h:panelGrid>
+					<div id="resultados" style="display: block;">
+						<p:tabView id="tabs">
+							<p:tab title="Municipal" id="tabMunicipal">
+								<h:panelGrid>
+								<p:dataTable resizableColumns="true" value="#{procesoDistRecFinMixtoController.detalleComunas}" liveResize="true"
+									var="_detalle" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+									styleClass="dataTable" id="tablaResultados" rowIndexVar="rowIndex">
 
-							<p:tab id="tab1" title="Municipal">
-								<h3>Subtítulos Programa Municipal</h3>
-								<h:form id="form3">
-									<h:panelGrid>
-										<p:dataTable resizableColumns="true" value="#{procesoDistRecFinController.listadoEstablecimientos}" liveResize="true"
-											var="_establecimiento" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
-											styleClass="dataTable">
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column rowspan="2" headerText="Comuna" width="170" />
 
-											<p:columnGroup type="header">
-												<p:row>
-													<p:column rowspan="2" headerText="Comuna" width="170" />
+											<p:column colspan="2" headerText="Subtítulo 24" />
 
-													<p:column colspan="2" headerText="Subtítulo 24" />
-
-													<p:column rowspan="2" headerText="Total" />
-												</p:row>
-												<p:row>
-													<p:column headerText="Tarifa" />
-													<p:column headerText="Cantidad" />
-												</p:row>
-											</p:columnGroup>
-
-											<p:column>
-												<span class="textoAjustado textoPequenio">#{_establecimiento.comuna.nombreComuna}</span>
-											</p:column>
-
-											<p:column>
-												<p:inputText value="#{_establecimiento.pS24}" styleClass="divapProcesoDistRecFinProgInput">
-													<p:ajax event="keyup" update="totales,total" />
-													<f:convertNumber groupingUsed="false" maxFractionDigits="0" />
-												</p:inputText>
-											</p:column>
-											<p:column>
-												<p:inputText value="#{_establecimiento.qS24}" styleClass="divapProcesoDistRecFinProgInput">
-													<p:ajax event="keyup" update="totales,total" />
-												</p:inputText>
-											</p:column>
-											<p:column>
-												<h:outputText styleClass="textoAjustado" value="#{_establecimiento.tS24}" id="totales">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</p:column>
-
-											<p:columnGroup type="footer">
-												<p:row>
-													<p:column />
-													<p:column colspan="2" />
-
-													<p:column>
-														<f:facet name="footer">
-															<h:outputText value="#{procesoDistRecFinController.totalS24}" id="total" styleClass="textoAjustado">
-																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-															</h:outputText>
-														</f:facet>
-													</p:column>
-												</p:row>>
-									</p:columnGroup>
-										</p:dataTable>
-									</h:panelGrid>
-
-									<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" action="#" ajax="true" value="Guardar" />
-									<p:commandButton value="Finalizar" styleClass="x-btn-text" action="#{procesoDistRecFinValidarMontosController.enviar}" ajax="false" icon="ui-icon-seek-first" >
-										<f:setPropertyActionListener target="#{procesoDistRecFinValidarMontosController.target}" value="bandejaTareas.jsf" />
-									</p:commandButton>
-								</h:form>
-							</p:tab>
-							<h3>Subtítulos Programa Servicio de Salud</h3>
-							<p:tab id="tab2" title="Servicio de Salud">
-								<h3>Filtros del Programa:</h3>
-								<h:panelGrid id="busqueda_mis_tareas">
-									<h:panelGrid>
-										<h:outputText value="Comuna: " styleClass="inputLabel" />
-										<p:selectOneMenu>
-											<f:selectItem itemLabel="Seleccione" itemValue="" />
-											<f:selectItem itemLabel="Macul" itemValue="Macul" />
-											<f:selectItem itemLabel="La Florida" itemValue="Concepción" />
-											<f:selectItem itemLabel="Puente Alto" itemValue="Concepción" />
-											<f:selectItem itemLabel="La Reina" itemValue="Concepción" />
-										</p:selectOneMenu>
-									</h:panelGrid>
-								</h:panelGrid>
-								<br />
-								<h:form id="form">
-									<h:panelGrid>
-										<p:dataTable resizableColumns="true" value="#{procesoDistRecFinController.listadoEstablecimientos}" liveResize="true"
-											var="_establecimiento" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
-											styleClass="dataTable">
-											<p:columnGroup type="header">
-												<p:row>
-													<p:column rowspan="2" headerText="Establecimiento" width="170" />
-
-													<p:column colspan="3" headerText="Subtítulo 21" />
-													<p:column colspan="3" headerText="Subtítulo 22" />
-													<p:column colspan="3" headerText="Subtítulo 29" />
-
-													<p:column rowspan="2" headerText="Total" />
-												</p:row>
-												<p:row>
-													<p:column headerText="Tarifa" />
-													<p:column headerText="Cantidad" />
-													<p:column headerText="SubTotal" />
-
-													<p:column headerText="Tarifa" />
-													<p:column headerText="Cantidad" />
-													<p:column headerText="SubTotal" />
-
-													<p:column headerText="Tarifa" />
-													<p:column headerText="Cantidad" />
-													<p:column headerText="SubTotal" />
-
-												</p:row>
-											</p:columnGroup>
-
-											<p:column>
-												<span class="textoAjustado textoPequenio">#{_establecimiento.nombreOficial}</span>
-											</p:column>
-
-											<p:column>
-												<p:inputText value="#{_establecimiento.pS21}" styleClass="divapProcesoDistRecFinProgInput">
-													<p:ajax event="keyup" update="totales,subTotal21,subTotal22,subTotal29,totalS21,totalS22,totalS29,total" />
-													<f:convertNumber groupingUsed="false" maxFractionDigits="0" />
-												</p:inputText>
-											</p:column>
-											<p:column>
-												<p:inputText value="#{_establecimiento.qS21}" styleClass="divapProcesoDistRecFinProgInput">
-													<p:ajax event="keyup" update="totales,subTotal21,subTotal22,subTotal29,totalS21,totalS22,totalS29,total" />
-												</p:inputText>
-											</p:column>
-											<p:column>
-												<h:outputText styleClass="textoAjustado textoPequenio" value="#{_establecimiento.tS21}" id="subTotal21">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</p:column>
-
-											<p:column>
-												<p:inputText value="#{_establecimiento.pS22}" styleClass="divapProcesoDistRecFinProgInput">
-													<p:ajax event="keyup" update="totales,subTotal21,subTotal22,subTotal29,totalS21,totalS22,totalS29,total" />
-													<f:convertNumber groupingUsed="false" maxFractionDigits="0" />
-												</p:inputText>
-											</p:column>
-											<p:column>
-												<p:inputText value="#{_establecimiento.qS22}" styleClass="divapProcesoDistRecFinProgInput">
-													<p:ajax event="keyup" update="totales,subTotal21,subTotal22,subTotal29,totalS21,totalS22,totalS29,total" />
-												</p:inputText>
-											</p:column>
-											<p:column>
-												<h:outputText styleClass="textoAjustado textoPequenio" value="#{_establecimiento.tS22}" id="subTotal22">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</p:column>
-
-											<p:column>
-												<p:inputText value="#{_establecimiento.pS29}" styleClass="divapProcesoDistRecFinProgInput">
-													<p:ajax event="keyup" update="totales,subTotal21,subTotal22,subTotal29,totalS21,totalS22,totalS29,total" />
-													<f:convertNumber groupingUsed="false" maxFractionDigits="0" />
-												</p:inputText>
-											</p:column>
-											<p:column>
-												<p:inputText value="#{_establecimiento.qS29}" styleClass="divapProcesoDistRecFinProgInput">
-													<p:ajax event="keyup" update="totales,subTotal21,subTotal22,subTotal29,totalS21,totalS22,totalS29,total" />
-												</p:inputText>
-											</p:column>
-											<p:column>
-												<h:outputText styleClass="textoAjustado textoPequenio" value="#{_establecimiento.tS29}" id="subTotal29">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</p:column>
-
-											<p:column>
-												<h:outputText styleClass="textoAjustado textoPequenio"
-													value="#{_establecimiento.tS21+_establecimiento.tS22+_establecimiento.tS29}" id="totales">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</p:column>
-
-											<p:columnGroup type="footer">
-												<p:row>
-													<p:column />
-													<p:column colspan="2" />
-													<p:column>
-														<f:facet name="footer">
-															<h:outputText value="#{procesoDistRecFinController.totalS21}" id="totalS21" styleClass="textoAjustado textoPequenio">
-																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-															</h:outputText>
-														</f:facet>
-													</p:column>
-
-													<p:column colspan="2" />
-													<p:column>
-														<f:facet name="footer">
-															<h:outputText value="#{procesoDistRecFinController.totalS22}" id="totalS22" styleClass="textoAjustado textoPequenio">
-																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-															</h:outputText>
-														</f:facet>
-													</p:column>
-
-
-													<p:column colspan="2" />
-													<p:column>
-														<f:facet name="footer">
-															<h:outputText value="#{procesoDistRecFinController.totalS29}" id="totalS29" styleClass="textoAjustado textoPequenio">
-																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-															</h:outputText>
-														</f:facet>
-													</p:column>
-
-
-
-													<p:column>
-														<f:facet name="footer">
-															<h:outputText
-																value="#{procesoDistRecFinController.totalS21+procesoDistRecFinController.totalS22+procesoDistRecFinController.totalS29}"
-																id="total" styleClass="textoAjustado textoPequenio">
-																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-															</h:outputText>
-														</f:facet>
-													</p:column>
-												</p:row>>
+											<p:column rowspan="2" headerText="Total" />
+										</p:row>
+										<p:row>
+											<p:column headerText="Tarifa" />
+											<p:column headerText="Cantidad" />
+										</p:row>
 									</p:columnGroup>
 
-										</p:dataTable>
-										<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" action="#" ajax="true" value="Guardar" />
+									<p:column>
+										<span class="textoAjustado textoPequenio">#{_detalle.nombreComuna}</span>
+									</p:column>
 
-									</h:panelGrid>
-								</h:form>
+									<p:column>
+										
+										<h:inputText value="#{_detalle.precio}" styleClass="divapProcesoDistRecFinProgInput"  onkeypress="return isNumberMun(event, 'form:botonPrecio', '#{rowIndex}', '1');">
+											<f:convertNumber groupingUsed="false" maxFractionDigits="0" />
+										</h:inputText>
+									</p:column>
+									<p:column>
+										<h:inputText value="#{_detalle.cantidad}" styleClass="divapProcesoDistRecFinProgInput" onkeypress="return isNumberMun(event, 'form:botonPrecio', '#{rowIndex}', '2');">
+										</h:inputText>
+									</p:column>
+									<p:column>
+										<h:outputText styleClass="textoAjustado" value="#{_detalle.total}" id="totales">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+
+									<p:columnGroup type="footer">
+										<p:row>
+											<p:column />
+											<p:column colspan="2" />
+
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoDistRecFinMixtoController.totalPxQ}" id="total" styleClass="textoAjustado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+										</p:row>>
+									</p:columnGroup>
+								</p:dataTable>
+							</h:panelGrid>
 							</p:tab>
-						</p:tabView>
-						<p:commandButton value="Finalizar" styleClass="x-btn-text"
-							action="divapProcesoDistRecFinProgSeguimientoDocumentacion?faces-redirect=true" ajax="false" icon="ui-icon-seek-first" />
-					</div>
+							<p:tab title="Servicio">
+				<h:panelGrid>
+								<p:dataTable resizableColumns="true" value="#{procesoDistRecFinMixtoController.detalleEstablecimientos}" liveResize="true"
+									var="_establecimiento" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+									styleClass="dataTable" id="tablaServicios" rowIndexVar="rowIndex">
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column rowspan="2" headerText="Establecimiento" width="170" />
+											<c:if test="#{procesoDistRecFinMixtoController.tiene21}">
+												<p:column colspan="3" headerText="Subtítulo 21" />
+											</c:if>
+											<c:if test="#{procesoDistRecFinMixtoController.tiene22}">
+												<p:column colspan="3" headerText="Subtítulo 22" />
+											</c:if>
+											<c:if test="#{procesoDistRecFinMixtoController.tiene29}">
+												<p:column colspan="3" headerText="Subtítulo 29" />
+											</c:if>
 
+											<p:column rowspan="2" headerText="Total" />
+										</p:row>
+										<p:row>
+										<c:if test="#{procesoDistRecFinMixtoController.tiene21}">
+											<p:column headerText="Tarifa" />
+											<p:column headerText="Cantidad" />
+											<p:column headerText="SubTotal" />
+										</c:if>
+										<c:if test="#{procesoDistRecFinMixtoController.tiene22}">
+											<p:column headerText="Tarifa" />
+											<p:column headerText="Cantidad" />
+											<p:column headerText="SubTotal" />
+										</c:if>
+										<c:if test="#{procesoDistRecFinMixtoController.tiene29}">
+											<p:column headerText="Tarifa" />
+											<p:column headerText="Cantidad" />
+											<p:column headerText="SubTotal" />
+										</c:if>
+										</p:row>
+									</p:columnGroup>
+
+									<p:column>
+										<span class="textoAjustado textoPequenio">#{_establecimiento.nombreEstablecimiento}</span>
+									</p:column>
+									<c:if test="#{procesoDistRecFinMixtoController.tiene21}">
+											<p:column>
+												<h:inputText value="#{_establecimiento.subtitulo21.monto}" styleClass="divapProcesoDistRecFinProgInput" onkeypress="return isNumber(event, 'form:botonPrecio', '#{rowIndex}', '1',#{_establecimiento.subtitulo21.id});">
+												</h:inputText>
+											</p:column>
+											<p:column>
+												<h:inputText value="#{_establecimiento.subtitulo21.cantidad}" styleClass="divapProcesoDistRecFinProgInput" onkeypress="return isNumber(event, 'form:botonPrecio', '#{rowIndex}', '2',#{_establecimiento.subtitulo21.id});">
+												</h:inputText>
+											</p:column>
+											<p:column>
+												<h:outputText styleClass="textoAjustado textoPequenio" value="#{_establecimiento.subtitulo21.total}" id="subTotal21">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+									</c:if>
+			
+									<c:if test="#{procesoDistRecFinMixtoController.tiene22}">
+											<p:column>
+												<h:inputText value="#{_establecimiento.subtitulo22.monto}" styleClass="divapProcesoDistRecFinProgInput" onkeypress="return isNumber(event, 'form:botonPrecio', '#{rowIndex}', '1',#{_establecimiento.subtitulo22.id});">
+												</h:inputText>
+											</p:column>
+											<p:column>
+												<h:inputText value="#{_establecimiento.subtitulo22.cantidad}" styleClass="divapProcesoDistRecFinProgInput" onkeypress="return isNumber(event, 'form:botonPrecio', '#{rowIndex}', '2',#{_establecimiento.subtitulo22.id});">
+												</h:inputText>
+											</p:column>
+											<p:column>
+												<h:outputText styleClass="textoAjustado textoPequenio" value="#{_establecimiento.subtitulo22.total}" id="subTotal22">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+									</c:if>
+									<c:if test="#{procesoDistRecFinMixtoController.tiene29}">
+											<p:column>
+												<h:inputText value="#{_establecimiento.subtitulo29.monto}" styleClass="divapProcesoDistRecFinProgInput" onkeypress="return isNumber(event, 'form:botonPrecio', '#{rowIndex}', '1',#{_establecimiento.subtitulo29.id});">
+												</h:inputText>
+											</p:column>
+											<p:column>
+												<h:inputText value="#{_establecimiento.subtitulo29.cantidad}" styleClass="divapProcesoDistRecFinProgInput" onkeypress="return isNumber(event, 'form:botonPrecio', '#{rowIndex}', '2',#{_establecimiento.subtitulo29.id});">
+												</h:inputText>
+											</p:column>
+											<p:column>
+												<h:outputText styleClass="textoAjustado textoPequenio" value="#{_establecimiento.subtitulo29.total}" id="subTotal29">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+									</c:if>
+									<p:column>
+										<h:outputText styleClass="textoAjustado textoPequenio" value="#{_establecimiento.totalEstablecimiento}">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</p:column>
+									<p:columnGroup type="footer">
+										<p:row>
+											<p:column />
+											
+											<c:if test="#{procesoDistRecFinMixtoController.tiene21}">
+											<p:column colspan="2" />											
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoDistRecFinMixtoController.total21}" id="totalS21" styleClass="textoAjustado textoPequenio">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											</c:if>
+											<c:if test="#{procesoDistRecFinMixtoController.tiene22}">
+											<p:column colspan="2" />
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoDistRecFinMixtoController.total22}" id="totalS22" styleClass="textoAjustado textoPequenio">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											</c:if>
+											<c:if test="#{procesoDistRecFinMixtoController.tiene29}">
+											<p:column colspan="2" />
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoDistRecFinMixtoController.total29}" id="totalS29" styleClass="textoAjustado textoPequenio">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											</c:if>
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText
+														value="#{procesoDistRecFinMixtoController.totalFinal}"
+														id="total" styleClass="textoAjustado textoPequenio">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+										</p:row>>
+									</p:columnGroup>
+
+								</p:dataTable>
+							</h:panelGrid>
+							</p:tab>
+					</p:tabView>
+				</div>
+				<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk"  action="#{procesoDistRecFinMixtoController.guardar}" ajax="true" value="Guardar" update="form:resumen" />
+				<p:commandButton value="Finalizar" styleClass="x-btn-text" action="#{procesoDistRecFinMixtoController.enviar}" ajax="false" icon="ui-icon-seek-first" >
+								<f:setPropertyActionListener target="#{procesoDistRecFinMixtoController.target}" value="bandejaTareas.jsf" />
+							</p:commandButton>
 				</p:panel>
 
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"

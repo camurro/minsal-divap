@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -21,10 +22,12 @@ import javax.inject.Named;
 
 import minsal.divap.service.ComponenteService;
 import minsal.divap.service.ProgramasService;
+import minsal.divap.service.SubtituloService;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ComunaVO;
 import minsal.divap.vo.ProgramaAPSMunicipalVO;
+import minsal.divap.vo.ProgramaMunicipalHistoricoVO;
 import minsal.divap.vo.ProgramaMunicipalVO;
 import minsal.divap.vo.ResumenProgramaVO;
 import minsal.divap.vo.ServiciosVO;
@@ -41,10 +44,14 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
 
-@Named ( "procesoDistRecFinController" ) 
+@Named ( "procesoDistRecFinHistoricoMunicipalController" ) 
 @ViewScoped 
-public class ProcesoDistRecFinController extends AbstractTaskMBean implements Serializable  {
-	private static final long serialVersionUID = 8979055329731411696L;
+public class ProcesoDistRecFinHistoricoMunicipalController extends AbstractTaskMBean implements Serializable  {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8097601336202053671L;
 	@Inject private transient Logger log;
 	@Inject private BandejaProperties bandejaProperties;
 	@Inject FacesContext facesContext;
@@ -55,6 +62,8 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 	private ComponenteService componenteService;
 	@EJB
 	private ProgramasService programasService;
+	@EJB
+	private SubtituloService subtituloService;
 	
 	private String servicioSeleccionado;
 	private List<ServiciosVO> listaServicios;
@@ -62,7 +71,7 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 	private String componenteSeleccionado;
 	private List<ComponentesVO> listaComponentes;
 	
-	private List<ProgramaMunicipalVO> detalleComunas;
+	private List<ProgramaMunicipalHistoricoVO> listadoHistoricoMunicipal;
 	
 	private String posicionElemento;
 	private String precioCantidad;
@@ -72,6 +81,10 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 	
 	private Integer programaSeleccionado;
 	private Integer totalResumen24;
+	
+	private Double inflactorS24;
+	private Integer totalS24Pasado;
+	private Integer totalS24actual;
 	
 	
 	@PostConstruct 
@@ -91,6 +104,7 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 		}
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes= componenteService.getComponenteByPrograma(programaSeleccionado);
+		inflactorS24 = subtituloService.getInflactor(3);
 		armarResumenPrograma();
 	}
 	
@@ -103,8 +117,8 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 	}
 
 	public String recalcularTotales(){
-		detalleComunas.get(Integer.valueOf(getPosicionElemento())).setTotal( detalleComunas.get(Integer.valueOf(getPosicionElemento())).getCantidad() * detalleComunas.get(Integer.valueOf(getPosicionElemento())).getPrecio() );
-		getTotalesPxQ(detalleComunas);
+		//listadoHistoricoMunicipal.get(Integer.valueOf(getPosicionElemento())).setTotal( listadoHistoricoMunicipal.get(Integer.valueOf(getPosicionElemento())).getCantidad() * listadoHistoricoMunicipal.get(Integer.valueOf(getPosicionElemento())).getPrecio() );
+		//getTotalesPxQ(listadoHistoricoMunicipal);
 		return null;
 	}
 	public void seleccionComponente(){
@@ -113,22 +127,39 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 		}
 	}
 	public void cargaComunas(){
-		detalleComunas = programasService.findByServicioComponente(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado));
-		getTotalesPxQ(detalleComunas);
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.YEAR, -1);
+		int year = now.get(Calendar.YEAR);
+		int idProgramaAnoAnterior = programasService.getIdProgramaAnoAnterior(programaSeleccionado,Integer.parseInt(String.valueOf(year)));
+		listadoHistoricoMunicipal = programasService.getHistoricoMunicipal(idProgramaAnoAnterior, Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado));
+		calcularAnoActual(listadoHistoricoMunicipal);
+		getTotales(listadoHistoricoMunicipal);
 	}
 
-	private Integer getTotalesPxQ(List<ProgramaMunicipalVO> detalleComunas){
-		totalPxQ=0;
-		for (int i=0;i<detalleComunas.size();i++) {
+	private void calcularAnoActual(
+			List<ProgramaMunicipalHistoricoVO> listadoHistoricoMunicipal) {
+		for(ProgramaMunicipalHistoricoVO prog : listadoHistoricoMunicipal){
+			ProgramaMunicipalHistoricoVO obj = new ProgramaMunicipalHistoricoVO();
+		}
+		
+	}
+
+	private Integer getTotales(List<ProgramaMunicipalHistoricoVO> listadoHistoricoMunicipal){
+		/*for (int i=0;i<detalleComunas.size();i++) {
 					totalPxQ=totalPxQ+detalleComunas.get(i).getTotal();	
 		}
-		return totalPxQ;
+		return totalPxQ;*/
+		totalS24Pasado=0;
+		for(ProgramaMunicipalHistoricoVO prog : listadoHistoricoMunicipal){
+			totalS24Pasado += prog.getTotalAnoAnterior();
+		}
+		return null;
 	}
 	
 	public void guardar(){
 		System.out.println("Guardar los cambios:"+ componenteSeleccionado+" servicio: "+servicioSeleccionado);
-		System.out.println(detalleComunas.get(0).getNombreComuna());
-		programasService.guardarProgramaReforzamiento(detalleComunas);
+		System.out.println(listadoHistoricoMunicipal.get(0).getNombreComuna());
+		//programasService.guardarProgramaReforzamiento(listadoHistoricoMunicipal);
 		armarResumenPrograma();
 	}
 
@@ -191,12 +222,15 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 		this.listaComponentes = listaComponentes;
 	}
 
-	public List<ProgramaMunicipalVO> getDetalleComunas() {
-		return detalleComunas;
+	
+
+	public List<ProgramaMunicipalHistoricoVO> getListadoHistoricoMunicipal() {
+		return listadoHistoricoMunicipal;
 	}
 
-	public void setDetalleComunas(List<ProgramaMunicipalVO> detalleComunas) {
-		this.detalleComunas = detalleComunas;
+	public void setListadoHistoricoMunicipal(
+			List<ProgramaMunicipalHistoricoVO> listadoHistoricoMunicipal) {
+		this.listadoHistoricoMunicipal = listadoHistoricoMunicipal;
 	}
 
 	public String getPosicionElemento() {
@@ -245,6 +279,30 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 
 	public void setTotalResumen24(Integer totalResumen24) {
 		this.totalResumen24 = totalResumen24;
+	}
+
+	public Integer getTotalS24Pasado() {
+		return totalS24Pasado;
+	}
+
+	public void setTotalS24Pasado(Integer totalS24Pasado) {
+		this.totalS24Pasado = totalS24Pasado;
+	}
+
+	public Integer getTotalS24actual() {
+		return totalS24actual;
+	}
+
+	public void setTotalS24actual(Integer totalS24actual) {
+		this.totalS24actual = totalS24actual;
+	}
+
+	public Double getInflactorS24() {
+		return inflactorS24;
+	}
+
+	public void setInflactorS24(Double inflactorS24) {
+		this.inflactorS24 = inflactorS24;
 	}
 	
 }

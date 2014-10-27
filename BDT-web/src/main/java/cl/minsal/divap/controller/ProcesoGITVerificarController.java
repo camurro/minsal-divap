@@ -15,7 +15,6 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import minsal.divap.enums.BusinessProcess;
-import minsal.divap.service.CajaService;
 import minsal.divap.service.ComponenteService;
 import minsal.divap.service.ComunaService;
 import minsal.divap.service.ConveniosService;
@@ -128,7 +127,7 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 			programaVO = programaService.getProgramaAnoPorID(programaSeleccionado);
 		}
 		
-		Programa pro = new Programa();
+		/*Programa pro = new Programa();
 		pro = programaService.getProgramasByID(programaVO.getId());
 		subtitulos =	subtituloService.getSubtituloByDependenciaPrograma(pro.getDependencia().getIdDependenciaPrograma());
 		 setSub21(false);
@@ -151,7 +150,7 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 		      }
 			   
 		}
-	
+	*/
 	
 	}
 

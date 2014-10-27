@@ -23,18 +23,25 @@ import org.primefaces.model.UploadedFile;
 
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
-@Named ("procesoDistRecFinProgSubirPlanillasController" ) 
+@Named ("procesoDistRecFinProgSubirPlanillasControllerMixto" ) 
 @ViewScoped 
-public class ProcesoDistRecFinProgSubirPlanillas extends AbstractTaskMBean implements Serializable {
+public class ProcesoDistRecFinProgSubirPlanillasMixto extends AbstractTaskMBean implements Serializable {
 
-	private static final long serialVersionUID = 8979055329731411696L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7639282069264916505L;
 	private ProgramaVO programa;
 	private Integer plantillaMunicipal;
 	private Integer plantillaServicios;
 	private UploadedFile planillaMuncipal;
 	private UploadedFile planillaServicio;
 	private List<Integer> docIds;
-	private String docIdDownload;
+	private String docIdDownloadMunicipal;
+	private String docIdDownloadServicio;
+	
+	
 
 	@EJB
 	private RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService;
@@ -55,8 +62,15 @@ public class ProcesoDistRecFinProgSubirPlanillas extends AbstractTaskMBean imple
 		}
 	}
 	
-	public String downloadTemplate() {
-		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownload()));
+	public String downloadTemplateMunicipal() {
+		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownloadMunicipal()));
+		setDocumento(documentService.getDocument(docDownload));
+		super.downloadDocument();
+		return null;
+	}
+	
+	public String downloadTemplateServicio() {
+		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownloadServicio()));
 		setDocumento(documentService.getDocument(docDownload));
 		super.downloadDocument();
 		return null;
@@ -68,10 +82,8 @@ public class ProcesoDistRecFinProgSubirPlanillas extends AbstractTaskMBean imple
 		docIds = new ArrayList<Integer>();
 		List<ComponentesVO> componentes = programa.getComponentes();
 		if (planillaMuncipal != null){
-			String filename = planillaMuncipal.getFileName();
-			
-			
-					
+			String filename = planillaMuncipal.getFileName();			
+								
 			byte[] contentPlanillaMuncipal = planillaMuncipal.getContents();
 			recursosFinancierosProgramasReforzamientoService.procesarPlanillaMunicipal(programa.getIdProgramaAno(), 
 									GeneradorExcel.fromContent(contentPlanillaMuncipal, XSSFWorkbook.class),componentes);
@@ -84,6 +96,7 @@ public class ProcesoDistRecFinProgSubirPlanillas extends AbstractTaskMBean imple
 		if (planillaServicio != null){
 			String filename = planillaServicio.getFileName();
 			byte[] contentPlanillaServicio = planillaServicio.getContents();
+					
 			recursosFinancierosProgramasReforzamientoService.procesarPlanillaServicio(programa.getIdProgramaAno(), GeneradorExcel.fromContent(contentPlanillaServicio,
 							XSSFWorkbook.class),componentes);
 			Integer docPlanillaServicio = persistFile(filename, contentPlanillaServicio);
@@ -150,12 +163,22 @@ public class ProcesoDistRecFinProgSubirPlanillas extends AbstractTaskMBean imple
 		this.plantillaServicios = plantillaServicios;
 	}
 
-	public String getDocIdDownload() {
-		return docIdDownload;
+	public String getDocIdDownloadMunicipal() {
+		return docIdDownloadMunicipal;
 	}
 
-	public void setDocIdDownload(String docIdDownload) {
-		this.docIdDownload = docIdDownload;
+	public void setDocIdDownloadMunicipal(String docIdDownloadMunicipal) {
+		this.docIdDownloadMunicipal = docIdDownloadMunicipal;
 	}
+
+	public String getDocIdDownloadServicio() {
+		return docIdDownloadServicio;
+	}
+
+	public void setDocIdDownloadServicio(String docIdDownloadServicio) {
+		this.docIdDownloadServicio = docIdDownloadServicio;
+	}
+
+
 
 }

@@ -9,21 +9,15 @@
 					<h2>
 						<strong>Tabla:</strong> Resumen Parcial del Programa
 					</h2>
-					<p:dataTable id="tablaMisTareas" resizableColumns="true" liveResize="true" var="_proceso" rows="10" paginator="false"
-						value="#{procesoDistRecFinController.listadoProgramas}" paginatorPosition="bottom" emptyMessage="No se encontro información."
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" liveResize="true" var="_proceso" rows="30" paginator="false"
+						value="#{procesoDistRecFinController.resumenPrograma}" paginatorPosition="bottom" emptyMessage="No se encontro información."
 						styleClass="dataTable">
 						<p:columnGroup type="header">
 							<!--  -->
 							<p:row>
 								<p:column colspan="2" headerText="Serv. de Salud" />
-
-								<p:column rowspan="2" headerText="Subtítulo 21" />
-								<p:column rowspan="2" headerText="Subtítulo 22" />
 								<p:column rowspan="2" headerText="Subtítulo 24" />
-								<p:column rowspan="2" headerText="Subtítulo 29" />
 								<p:column rowspan="2" headerText="Total" />
-								<!-- <p:column rowspan="2" headerText="Avance" /> -->
-								<!-- <p:column rowspan="2" headerText="Estado" /> -->
 							</p:row>
 							<p:row>
 								<p:column headerText="Cod." />
@@ -31,96 +25,42 @@
 							</p:row>
 						</p:columnGroup>
 
-						<p:column>#{_proceso.codServicio}</p:column>
-						<p:column>#{_proceso.gloServicio}</p:column>
+						<p:column>#{_proceso.idServicio}</p:column>
+						<p:column>#{_proceso.nombreServicio}</p:column>
 						<p:column>
 							<h:outputText value="$ " />
-							<h:outputText value="#{_proceso.s21}">
+							<h:outputText value="#{_proceso.totalS24}">
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
 						<p:column>
 							<h:outputText value="$ " />
-							<h:outputText value="#{_proceso.s22}">
+							<h:outputText value="#{_proceso.totalS24}">
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
-						<p:column>
-							<h:outputText value="$ " />
-							<h:outputText value="#{_proceso.s24}">
-								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
-							</h:outputText>
-						</p:column>
-						<p:column>
-							<h:outputText value="$ " />
-							<h:outputText value="#{_proceso.s29}">
-								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
-							</h:outputText>
-						</p:column>
-						<p:column>
-							<h:outputText value="$ " />
-							<h:outputText value="#{_proceso.s21+_proceso.s22+_proceso.s24+_proceso.s29}">
-								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
-							</h:outputText>
-						</p:column>
-						<!-- 
-						<p:column>
-							<h:outputText value="#{_proceso.avance}">
-								<f:convertNumber type="percent" />
-							</h:outputText>
-						</p:column>
-						<p:column>
-							<h:graphicImage value="resources/minsal/images/#{_proceso.estado}.png" styleClass="divapIcons" />
-						</p:column> -->
-						
+										
 						<p:columnGroup type="footer">
-										<p:row>
-											<p:column colspan="2"/>
-											<p:column>
-												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS21}" styleClass="textoAjustado">
-														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-													</h:outputText>
-												</f:facet>
-											</p:column>
-
-											<p:column>
-												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS22}" styleClass="textoAjustado">
-														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-													</h:outputText>
-												</f:facet>
-											</p:column>
-											
-											<p:column>
-												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS22}" styleClass="textoAjustado">
-														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-													</h:outputText>
-												</f:facet>
-											</p:column>
-
-											<p:column>
-												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS29}" styleClass="textoAjustado">
-														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-													</h:outputText>
-												</f:facet>
-											</p:column>
-
-
-
-											<p:column>
-												<f:facet name="footer">
-													<h:outputText
-														value="#{procesoDistRecFinController.totalS21+procesoDistRecFinController.totalS22+procesoDistRecFinController.totalS29}"
-														id="totales" styleClass="textoAjustado">
-														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-													</h:outputText>
-												</f:facet>
-											</p:column>
-										</p:row>>
-									</p:columnGroup>
+							<p:row>
+								<p:column colspan="2"></p:column>
+								<p:column>
+									<f:facet name="footer">
+										<h:outputText value="$ " />
+										<h:outputText value="#{procesoDistRecFinController.totalResumen24}">
+											<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
+										</h:outputText>
+									</f:facet>
+								</p:column>
+								<p:column>
+									<f:facet name="footer">
+										<h:outputText value="$ " />
+										<h:outputText value="#{procesoDistRecFinController.totalResumen24}">
+											<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
+										</h:outputText>
+									</f:facet>
+								</p:column>
+							</p:row>
+						</p:columnGroup>
 					</p:dataTable>
 				</p:panel>
 			</p:panel>

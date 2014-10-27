@@ -26,6 +26,7 @@ import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.model.mappers.PercapitaReferenciaDocumentoMapper;
 import minsal.divap.model.mappers.ReferenciaDocumentoMapper;
 import minsal.divap.vo.DocumentoVO;
+import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.ReferenciaDocumentoVO;
 import cl.minsal.divap.model.Comuna;
@@ -38,6 +39,7 @@ import cl.minsal.divap.model.DocumentoOt;
 import cl.minsal.divap.model.DocumentoRebaja;
 import cl.minsal.divap.model.OrdenTransferencia;
 import cl.minsal.divap.model.Plantilla;
+import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.Rebaja;
 import cl.minsal.divap.model.ReferenciaDocumento;
@@ -157,6 +159,28 @@ public class DocumentService {
 		plantilla.setTipoPlantilla(tipoPlantilla);
 		plantilla.setFechaCreacion(new Date(current));
 		plantilla.setFechaVigencia(null);
+		
+		fileDAO.save(plantilla);
+		return referenciaDocumento.getId();
+	}
+	
+	public Integer createTemplateProgramas(TipoDocumentosProcesos tipoDocumentoProceso,
+			String nodeRef, String filename, String contenType, ProgramaVO programa) {
+		long current = Calendar.getInstance().getTimeInMillis();
+		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		TipoDocumento tipoPlantilla = new TipoDocumento(tipoDocumentoProceso.getId());
+		Plantilla plantilla = new Plantilla();
+		plantilla.setDocumento(referenciaDocumento);
+		plantilla.setTipoPlantilla(tipoPlantilla);
+		plantilla.setFechaCreacion(new Date(current));
+		plantilla.setFechaVigencia(null);
+		
+		Programa prog = new Programa();
+		prog.setId(programa.getId());
+		
+		plantilla.setIdPrograma(prog);
+		
 		fileDAO.save(plantilla);
 		return referenciaDocumento.getId();
 	}
@@ -420,6 +444,11 @@ public class DocumentService {
 		documentoConvenio.setDocumento(referenciaDocumento);
 		fileDAO.save(documentoConvenio);
 		System.out.println("luego de aplicar insert del documento convenio");
+	}
+
+	public Integer getPlantillaByTypeAndProgram(TipoDocumentosProcesos tipoDocumentoProceso,
+			Integer programaSeleccionado) {
+		return fileDAO.getPlantillaByTypeAndProgram(tipoDocumentoProceso,programaSeleccionado);
 	}
 
 }

@@ -32,8 +32,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Plantilla implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-  	@Column(name="id_plantilla", unique=true, nullable=false)
-  	@GeneratedValue
+      @Column(name="id_plantilla", unique=true, nullable=false)
+      @GeneratedValue
     private Integer idPlantilla;
     @Basic(optional = false)
     @Column(name = "fecha_creacion")
@@ -48,6 +48,9 @@ public class Plantilla implements Serializable {
     @JoinColumn(name = "documento", referencedColumnName = "id")
     @ManyToOne
     private ReferenciaDocumento documento;
+    @JoinColumn(name = "id_programa", referencedColumnName = "id")
+    @ManyToOne
+    private Programa idPrograma;
 
     public Plantilla() {
     }
@@ -94,14 +97,22 @@ public class Plantilla implements Serializable {
     }
 
     public ReferenciaDocumento getDocumento() {
-		return documento;
-	}
+        return documento;
+    }
 
-	public void setDocumento(ReferenciaDocumento documento) {
-		this.documento = documento;
-	}
+    public void setDocumento(ReferenciaDocumento documento) {
+        this.documento = documento;
+    }
 
-	@Override
+    public Programa getIdPrograma() {
+        return idPrograma;
+    }
+
+    public void setIdPrograma(Programa idPrograma) {
+        this.idPrograma = idPrograma;
+    }
+
+    @Override
     public int hashCode() {
         int hash = 0;
         hash += (idPlantilla != null ? idPlantilla.hashCode() : 0);

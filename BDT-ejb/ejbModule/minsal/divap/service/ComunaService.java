@@ -9,6 +9,8 @@ import javax.ejb.Stateless;
 
 import minsal.divap.dao.ComunaDAO;
 import minsal.divap.vo.ComunaVO;
+import minsal.divap.vo.ProgramaAPSVO;
+import minsal.divap.vo.ServicioComunaVO;
 import cl.minsal.divap.model.Comuna;
 
 @Stateless
@@ -21,20 +23,32 @@ public class ComunaService {
 	
 	
 	public List<ComunaVO> getComunas() {
-		
-	
-	List<ComunaVO> ComunasVO = new ArrayList<ComunaVO>();
-	List<Comuna> comunas = this.comunaDAO.getComuna();
-	if(comunas != null && comunas.size() > 0){
-		for(Comuna comuna : comunas){
-			ComunaVO comunaVO = new ComunaVO();
-	
-		
-			comunaVO.setIdComuna(comuna.getId());
-			comunaVO.setDescComuna(comuna.getNombre());
-			ComunasVO.add(comunaVO);
+		List<ComunaVO> ComunasVO = new ArrayList<ComunaVO>();
+		List<Comuna> comunas = this.comunaDAO.getComuna();
+		if(comunas != null && comunas.size() > 0){
+			for(Comuna comuna : comunas){
+				ComunaVO comunaVO = new ComunaVO();
+				comunaVO.setIdComuna(comuna.getId());
+				comunaVO.setDescComuna(comuna.getNombre());
+				ComunasVO.add(comunaVO);
+			}
 		}
+		return ComunasVO;
 	}
-	return ComunasVO;
-}
+	
+	public List<ProgramaAPSVO> getServiciosComunas(){
+		List<ProgramaAPSVO> servicioComunaVOList = new ArrayList<ProgramaAPSVO>();
+		List<Comuna> comunas = this.comunaDAO.getComuna();
+		if(comunas != null && comunas.size() > 0){
+			for(Comuna comuna : comunas){
+				ProgramaAPSVO servicioComunaVO = new ProgramaAPSVO();
+				servicioComunaVO.setIdComuna(comuna.getId());
+				servicioComunaVO.setComuna(comuna.getNombre());
+				servicioComunaVO.setIdServicioSalud(comuna.getServicioSalud().getId());
+				servicioComunaVO.setServicioSalud(comuna.getServicioSalud().getNombre());
+				servicioComunaVOList.add(servicioComunaVO);
+			}
+		}
+		return servicioComunaVOList;
+	}
 }

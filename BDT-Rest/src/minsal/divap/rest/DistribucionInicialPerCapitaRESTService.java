@@ -172,5 +172,6 @@ public class DistribucionInicialPerCapitaRESTService extends BaseRest{
 		return distribucionInicialPercapitaService.crearIntanciaDistribucionInicialPercapita(usuarioId);
     }
 	
+
 	
 }

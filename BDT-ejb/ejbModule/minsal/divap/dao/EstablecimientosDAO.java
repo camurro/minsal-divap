@@ -41,6 +41,28 @@ public class EstablecimientosDAO {
 			throw new RuntimeException(e);
 		}
 	}
+
+	public List<Establecimiento> getEstablecimientos() {
+		try {
+			TypedQuery<Establecimiento> query = this.em.createNamedQuery("Establecimiento.findAll", Establecimiento.class);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public Establecimiento getEstablecimientoByCodigo(String codigoEstablecimiento) {
+		try {
+			TypedQuery<Establecimiento> query = this.em.createNamedQuery("Establecimiento.findByCodigo", Establecimiento.class);
+			query.setParameter("codigo", codigoEstablecimiento);
+			List<Establecimiento> results = query.getResultList();
+			if (results.size() >= 1)
+				return results.get(0);
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 	
 }

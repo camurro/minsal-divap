@@ -14,6 +14,8 @@ import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.ProgramaMunicipalCore;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
+import cl.minsal.divap.model.ProgramaServicioCore;
+import cl.minsal.divap.model.ProgramaServicioCoreComponente;
 import cl.minsal.divap.model.Usuario;
 
 
@@ -62,6 +64,18 @@ public class RecursosFinancierosProgramasReforzamientoDAO {
 		}
 		return results;
 	}
+	
+	public List<ProgramaServicioCore> getProgramaServicioCoreByProgramaAno(Integer idProgramaAno) {
+		List<ProgramaServicioCore> results = null;
+		try {
+			TypedQuery<ProgramaServicioCore> query = this.em.createNamedQuery("ProgramaServicioCore.findByProgramaAno", ProgramaServicioCore.class);
+			query.setParameter("programaAno", idProgramaAno);
+			results = query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return results;
+	}
 
 	public Integer deleteProgramasMunicipalCore(List<Integer> idsProgramasCore) {
 		System.out.println("Inicio deleteProgramasMunicipalCore" + idsProgramasCore);
@@ -74,6 +88,20 @@ public class RecursosFinancierosProgramasReforzamientoDAO {
 		System.out.println("Fin deleteProgramasMunicipalCore programasMunicipalCoreDelete " + programasMunicipalCoreDelete);
 		return programasMunicipalCoreDelete;
 	}
+	
+	public Integer deleteProgramasServiciosCore(List<Integer> idsProgramasCore) {
+		System.out.println("Inicio deleteProgramasServiciosCore" + idsProgramasCore);
+		Query queryProgramaServiciosCoreComponente = this.em.createNamedQuery("ProgramaServicioCoreComponente.deleteByProgramasServicioCore");
+		queryProgramaServiciosCoreComponente.setParameter("programasServicioCore", idsProgramasCore);
+		Integer programasServiciosCoreDelete = queryProgramaServiciosCoreComponente.executeUpdate();
+		
+		Query queryProgramaServicioCore = this.em.createNamedQuery("ProgramaServicioCore.deleteByProgramasServicioCore");
+		queryProgramaServicioCore.setParameter("programasServicioCore", idsProgramasCore);
+		programasServiciosCoreDelete = queryProgramaServicioCore.executeUpdate();
+		System.out.println("Fin deleteProgramasServiciosCore programasServiciosCoreDelete " + programasServiciosCoreDelete);
+		return programasServiciosCoreDelete;
+	}
+	
 
 	public ProgramaMunicipalCore save(ProgramaMunicipalCore programaMunicipalCore) {
 		em.persist(programaMunicipalCore);
@@ -83,6 +111,19 @@ public class RecursosFinancierosProgramasReforzamientoDAO {
 	public ProgramaMunicipalCoreComponente save(ProgramaMunicipalCoreComponente programaMunicipalCoreComponente) {
 		em.persist(programaMunicipalCoreComponente);
 		return programaMunicipalCoreComponente;
+	}
+
+	public ProgramaServicioCore save(ProgramaServicioCore programaServicioCore) {
+		em.persist(programaServicioCore);
+		return programaServicioCore;
+		
+	}
+
+	public ProgramaServicioCoreComponente save(
+			ProgramaServicioCoreComponente programaServicioCoreComponente) {
+		em.persist(programaServicioCoreComponente);
+		return programaServicioCoreComponente;
+		
 	}
 
 	/*public Integer createSeguimiento(Integer idProgramaAno,
