@@ -29,14 +29,12 @@ public class ProgramaMunicipalCore implements Serializable {
 	@JoinColumn(name = "programa_ano", referencedColumnName = "id_programa_ano")
     @ManyToOne(optional = false)
     private ProgramaAno programaAnoMunicipal;
-	
 	@JoinColumn(name = "establecimiento", referencedColumnName = "id")
 	@ManyToOne
 	private Establecimiento establecimiento;
 	@JoinColumn(name = "comuna", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Comuna comuna;
-
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "programaMunicipalCore")
 	private Set<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes;
 

@@ -58,6 +58,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject
 	private transient Logger log;
+	FacesContext facesContext;
 
 
 	/*
@@ -508,7 +509,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 	}
 	
 	 /*
-	  * Modificación de la celda
+	  * Modificaciï¿½n de la celda
 	  */
 	 public void onCellEditSubtitulo21(CellEditEvent event) {
 		 
@@ -591,7 +592,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 			CajaVO.setConvenioPorcentaje(10);
 			CajaVO.setDiciembre(12);
 			CajaVO.setEnero(1);
-			CajaVO.setEstablecimiento("Establecimiento");
+			CajaVO.setEstablecimiento("Servicio1");
 			CajaVO.setFebrero(2);
 			CajaVO.setId(1);
 			CajaVO.setJulio(7);
@@ -619,7 +620,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 			CajaVO.setConvenioPorcentaje(150);
 			CajaVO.setDiciembre(152);
 			CajaVO.setEnero(51);
-			CajaVO.setEstablecimiento("Establecimiento 2");
+			CajaVO.setEstablecimiento("Servicio 2");
 			CajaVO.setFebrero(52);
 			CajaVO.setId(15);
 			CajaVO.setJulio(57);
@@ -678,7 +679,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 		}
 		
 		 /*
-		  * Modificación de la celda
+		  * Modificaciï¿½n de la celda
 		  */
 		 public void onCellEditSubtitulo22(CellEditEvent event) {
 			 
@@ -849,7 +850,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 			}
 			
 			 /*
-			  * Modificación de la celda
+			  * Modificaciï¿½n de la celda
 			  */
 			 public void onCellEditSubtitulo24(CellEditEvent event) {
 				 
@@ -1019,7 +1020,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 				}
 				
 				 /*
-				  * Modificación de la celda
+				  * Modificaciï¿½n de la celda
 				  */
 				 public void onCellEditSubtitulo29(CellEditEvent event) {
 					 
@@ -1189,7 +1190,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 					}
 					
 					 /*
-					  * Modificación de la celda
+					  * Modificaciï¿½n de la celda
 					  */
 					 public void onCellEditSubtituloPerCapita(CellEditEvent event) {
 						 

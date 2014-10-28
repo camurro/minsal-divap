@@ -24,6 +24,7 @@ public class ComponenteMapper implements Mapper<Componente>{
 		ComponentesVO componentesVO = new ComponentesVO();
 		componentesVO.setId(componente.getId());
 		componentesVO.setNombre(componente.getNombre());
+		componentesVO.setPeso(componente.getPeso());
 		if(componente.getTipoComponente() != null){
 			TipoComponenteVO tipoComponenteVO = new TipoComponenteVO(componente.getTipoComponente().getId(), componente.getTipoComponente().getNombre());
 			componentesVO.setTipoComponente(tipoComponenteVO);

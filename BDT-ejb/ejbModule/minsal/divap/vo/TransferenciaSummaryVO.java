@@ -10,15 +10,15 @@ public class TransferenciaSummaryVO implements Serializable{
 	 */
 	private static final long serialVersionUID = 4212552704753536630L;
 	private Integer porcentaje;
-	private Integer monto;
+	private Long monto;
 	
 	public TransferenciaSummaryVO() {
 		super();
 		this.porcentaje = 0;
-		this.monto = 0;
+		this.monto = 0L;
 	}
 	
-	public TransferenciaSummaryVO(Integer porcentaje, Integer monto) {
+	public TransferenciaSummaryVO(Integer porcentaje, Long monto) {
 		super();
 		this.porcentaje = porcentaje;
 		this.monto = monto;
@@ -30,10 +30,10 @@ public class TransferenciaSummaryVO implements Serializable{
 	public void setPorcentaje(Integer porcentaje) {
 		this.porcentaje = porcentaje;
 	}
-	public Integer getMonto() {
+	public Long getMonto() {
 		return monto;
 	}
-	public void setMonto(Integer monto) {
+	public void setMonto(Long monto) {
 		this.monto = monto;
 	}
 

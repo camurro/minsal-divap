@@ -112,7 +112,7 @@ public class Plantilla implements Serializable {
         this.idPrograma = idPrograma;
     }
 
-    @Override
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (idPlantilla != null ? idPlantilla.hashCode() : 0);

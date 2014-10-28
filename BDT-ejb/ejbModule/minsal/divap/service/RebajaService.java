@@ -20,6 +20,7 @@ import javax.xml.bind.JAXBException;
 
 import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
+import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.dao.RebajaDAO;
 import minsal.divap.dao.SeguimientoDAO;
 import minsal.divap.dao.ServicioSaludDAO;
@@ -59,6 +60,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 
+import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.AntecendentesComuna;
 import cl.minsal.divap.model.AntecendentesComunaCalculado;
 import cl.minsal.divap.model.Comuna;
@@ -87,6 +89,8 @@ public class RebajaService {
 	private ServicioSaludDAO servicioSaludDAO;
 	@EJB
 	private RebajaDAO rebajaDAO;
+	@EJB
+	private ProgramasDAO programasDAO;
 	@EJB
 	private SeguimientoDAO seguimientoDAO;
 	@EJB
@@ -170,7 +174,7 @@ public class RebajaService {
 		List<PlanillaRebajaCalculadaVO> datosPlanilla = new ArrayList<PlanillaRebajaCalculadaVO>();
 		List<AntecendentesComuna> antecendentesComunas = this.servicioSaludDAO.getAntecentesComunasRebaja(getAnoCurso(), new TipoComuna[] { TipoComuna.RURAL, TipoComuna.URBANA});
 		if((antecendentesComunas != null) && (antecendentesComunas.size() > 0)){
-			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast();
+			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
 			for (AntecendentesComuna antecendenteComuna : antecendentesComunas){
 				System.out.println("servicioSalud.getId()->"+antecendenteComuna.getIdComuna().getServicioSalud().getId()+" comuna.getId()->"+antecendenteComuna.getIdComuna().getId()+" distribucionInicialPercapita.getIdDistribucionInicialPercapita()->"+distribucionInicialPercapita.getIdDistribucionInicialPercapita());
 				List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapita(antecendenteComuna.getIdComuna().getServicioSalud().getId(),
@@ -318,7 +322,7 @@ public class RebajaService {
 
 	public List <PlanillaRebajaCalculadaVO>  getRebajasByComuna(Integer idRebaja , List<Integer> comunas){
 		List <PlanillaRebajaCalculadaVO> planillaRebajaCalculadas = new ArrayList<PlanillaRebajaCalculadaVO>();
-		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast();
+		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
 		for(Integer idComuna : comunas){
 			Comuna comuna = antecedentesComunaDAO.findByComunaById(idComuna);
 			System.out.println("comuna.getServicioSalud().getId()->"+comuna.getServicioSalud().getId()+" comuna.getId()->"+comuna.getId()+" distribucionInicialPercapita.getIdDistribucionInicialPercapita()->"+distribucionInicialPercapita.getIdDistribucionInicialPercapita());
@@ -484,7 +488,8 @@ public class RebajaService {
 		Usuario usuario = this.usuarioDAO.getUserByUsername(username);
 		String mesCurso = getMesCurso(true);
 		RebajaCorte rebajaCorte = rebajaDAO.getCorteByMes(Integer.parseInt(mesCurso));
-		return rebajaDAO.crearIntanciaRebaja(usuario, rebajaCorte);
+		AnoEnCurso anoCurso = programasDAO.getAnoEnCursoById(getAnoCurso());
+		return rebajaDAO.crearIntanciaRebaja(usuario, rebajaCorte, anoCurso);
 	}
 
 	public List<DocumentSummaryVO> getReferenciaDocumentosById(

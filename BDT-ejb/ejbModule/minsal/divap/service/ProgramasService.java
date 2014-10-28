@@ -14,16 +14,18 @@ import javax.ejb.Stateless;
 
 import minsal.divap.dao.ComponenteDAO;
 import minsal.divap.dao.ProgramasDAO;
+import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.enums.EstadosProgramas;
+import minsal.divap.enums.Subtitulo;
 import minsal.divap.model.mappers.ProgramaMapper;
 import minsal.divap.vo.ComponentesVO;
-import minsal.divap.vo.EstablecimientoVO;
 import minsal.divap.vo.ProgramaMunicipalHistoricoVO;
 import minsal.divap.vo.ProgramaMunicipalVO;
 import minsal.divap.vo.ProgramaServicioVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ResumenProgramaServiciosVO;
 import minsal.divap.vo.ResumenProgramaVO;
+import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloProgramasVO;
 import minsal.divap.vo.SubtituloVO;
 import cl.minsal.divap.model.Componente;
@@ -31,7 +33,6 @@ import cl.minsal.divap.model.ComponenteSubtitulo;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
-import cl.minsal.divap.model.ProgramaMunicipalCore;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
 import cl.minsal.divap.model.ProgramaServicioCoreComponente;
 
@@ -42,6 +43,8 @@ public class ProgramasService {
 	private ProgramasDAO programasDAO;
 	@EJB
 	private ComponenteDAO componenteDAO;
+	@EJB
+	private ServicioSaludDAO serviciosDAO;
 
 	public Programa getProgramasByID(Integer idPrograma) {
 		return this.programasDAO.getProgramaPorID(idPrograma);
@@ -51,6 +54,14 @@ public class ProgramasService {
 		ProgramaVO programa = new ProgramaMapper().getBasic(this.programasDAO.getProgramaAnoByID(idProgramaAno));
 		return programa;
 	}
+	
+	
+	public ServiciosVO getServiciosProgramaAno(Integer idProgramaAno) {
+		//ServiciosVO servicio = new ServicioMapper().getBasic(this.serviciosDAO.get)
+		//.getBasic(this.programasDAO.getProgramaAnoByID(idProgramaAno));
+		return null;
+	}
+	
 	
 	public List<ProgramaVO> getProgramasByUser(String username) {
 		List<ProgramaAno> programas = this.programasDAO.getProgramasByUserAno(username, getAnoCurso());
@@ -361,5 +372,19 @@ public class ProgramasService {
 	
 
 	
+
+	public List<ProgramaVO> getProgramasBySubtitulo(Integer anoCurso, Subtitulo subtitulo) {
+		List<ProgramaVO> programas = new ArrayList<ProgramaVO>();
+		List<ProgramaAno> programasAno = programasDAO.getProgramasBySubtitulo(anoCurso, subtitulo);
+		if(programasAno != null && programasAno.size() > 0){
+			for(ProgramaAno programaAno : programasAno){
+				ProgramaVO programaVO = new ProgramaMapper().getBasic(programaAno);
+				if(!programas.contains(programaVO)){
+					programas.add(programaVO);
+				}
+			}
+		}
+		return programas;
+	}
 
 }

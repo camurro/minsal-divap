@@ -1,6 +1,8 @@
 package minsal.divap.vo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -16,24 +18,27 @@ public class SubtituloFlujoCajaVO implements Serializable {
 	private Integer idSubtitulo;
 	private String subtitulo;
 	private Integer idMarcoPresupuestario;
-	private Integer marcoPresupuestario;
+	private Long marcoPresupuestario;
 	private TransferenciaSummaryVO transferenciaAcumulada;
 	private ConveniosSummaryVO convenioRecibido;
 	private List<CajaMontoSummaryVO> cajaMontos;
-	private Integer totalMontos;
+	private Long totalMontos;
 	private String color = "#FFB5B5";
 
 	public SubtituloFlujoCajaVO() {
 		super();
+		this.cajaMontos = new ArrayList<CajaMontoSummaryVO>(Arrays.asList(new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), 
+				 new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), 
+				 new CajaMontoSummaryVO(), new CajaMontoSummaryVO()));
 	}
 
 	
 	public SubtituloFlujoCajaVO(Integer idServicio, String servicio,
 			Integer idSubtitulo, String subtitulo,
-			Integer idMarcoPresupuestario, Integer marcoPresupuestario,
+			Integer idMarcoPresupuestario, Long marcoPresupuestario,
 			TransferenciaSummaryVO transferenciaAcumulada,
 			ConveniosSummaryVO convenioRecibido,
-			List<CajaMontoSummaryVO> cajaMontos, Integer totalMontos,
+			List<CajaMontoSummaryVO> cajaMontos, Long totalMontos,
 			String color) {
 		super();
 		this.idServicio = idServicio;
@@ -50,11 +55,11 @@ public class SubtituloFlujoCajaVO implements Serializable {
 	}
 
 
-	public Integer getMarcoPresupuestario() {
+	public Long getMarcoPresupuestario() {
 		return marcoPresupuestario;
 	}
 
-	public void setMarcoPresupuestario(Integer marcoPresupuestario) {
+	public void setMarcoPresupuestario(Long marcoPresupuestario) {
 		this.marcoPresupuestario = marcoPresupuestario;
 	}
 
@@ -107,8 +112,8 @@ public class SubtituloFlujoCajaVO implements Serializable {
 		this.cajaMontos = cajaMontos;
 	}
 
-	public Integer getTotalMontos() {
-		totalMontos = 0;
+	public Long getTotalMontos() {
+		totalMontos = 0L;
 		if(cajaMontos != null && cajaMontos.size() > 0){
 			for(CajaMontoSummaryVO monto : cajaMontos){
 				totalMontos += monto.getMontoMes();
@@ -117,7 +122,7 @@ public class SubtituloFlujoCajaVO implements Serializable {
 		return totalMontos;
 	}
 
-	public void setTotalMontos(Integer totalMontos) {
+	public void setTotalMontos(Long totalMontos) {
 		this.totalMontos = totalMontos;
 	}
 
@@ -210,6 +215,19 @@ public class SubtituloFlujoCajaVO implements Serializable {
 				+ transferenciaAcumulada + ", convenioRecibido="
 				+ convenioRecibido + ", cajaMontos=" + cajaMontos
 				+ ", totalMontos=" + totalMontos + ", color=" + color + "]";
+	}
+
+
+	public List<Object> getRow() {
+		List<Object> row = new ArrayList<Object>();
+		if(getServicio() != null){
+			row.add(getServicio());			
+		}
+		for(CajaMontoSummaryVO cajaMontoSummaryVO : getCajaMontos()){
+			row.add(cajaMontoSummaryVO.getMontoMes());	
+		}
+		row.add(getTotalMontos());	
+		return row;
 	}
 
 }

@@ -1,23 +1,23 @@
 package minsal.divap.excel.impl;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.vo.CellExcelVO;
-import minsal.divap.vo.FlujoCajaVO;
+import minsal.divap.vo.SubtituloFlujoCajaVO;
 
-public class EstimacionFlujoCajaSubtituloSheetExcel extends ExcelTemplate<FlujoCajaVO> {
+public class EstimacionFlujoCajaSubtituloSheetExcel extends ExcelTemplate<SubtituloFlujoCajaVO> {
 	private List<CellExcelVO> headerComplex = null;
 	private List<CellExcelVO> subHeadeComplex = null;
 
-	public EstimacionFlujoCajaSubtituloSheetExcel(List<CellExcelVO> header, List<CellExcelVO> subHeader, List<FlujoCajaVO> items) {
+	public EstimacionFlujoCajaSubtituloSheetExcel(List<CellExcelVO> header, List<CellExcelVO> subHeader, List<SubtituloFlujoCajaVO> items) {
 		super(null, items);
 		headerComplex = header;
 		subHeadeComplex = subHeader;
 	}
 	
-	public EstimacionFlujoCajaSubtituloSheetExcel(List<CellExcelVO> header, List<CellExcelVO> subHeader, List<FlujoCajaVO> items, Integer offsetRows, Integer offsetColumns) {
+	public EstimacionFlujoCajaSubtituloSheetExcel(List<CellExcelVO> header, List<CellExcelVO> subHeader, List<SubtituloFlujoCajaVO> items, Integer offsetRows, Integer offsetColumns) {
 		super(null, items);
 		headerComplex = header;
 		subHeadeComplex = subHeader;	
@@ -43,13 +43,12 @@ public class EstimacionFlujoCajaSubtituloSheetExcel extends ExcelTemplate<FlujoC
 	@Override
 	public List<List<Object>> getDataList() {
 		List<List<Object>> dataList = new ArrayList<List<Object>>();
-		for(FlujoCajaVO flujoCajaVO : getItems()){
-			List<Object> row = flujoCajaVO.getRow();
+		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : getItems()){
+			List<Object> row = subtituloFlujoCajaVO.getRow();
 			if(row != null){
 				dataList.add(row);
 			}						
 		}
-		
 		return dataList;
 	}
 	

@@ -1,7 +1,10 @@
 package minsal.divap.service;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.activation.MimetypesFileTypeMap;
@@ -10,6 +13,7 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
+import minsal.divap.dao.AnoDAO;
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
 import minsal.divap.dao.UsuarioDAO;
 import minsal.divap.enums.TipoDocumentosProcesos;
@@ -17,6 +21,7 @@ import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.excel.impl.AsignacionRecursosPercapitaSheetExcel;
 import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.BodyVO;
+import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.Usuario;
 
 @Stateless
@@ -26,6 +31,8 @@ public class ReliquidacionService {
 	private DistribucionInicialPercapitaDAO distribucionInicialPercapitaDAO;
 	@EJB
 	private UsuarioDAO usuarioDAO;
+	@EJB
+	private AnoDAO anoDAO;
 	@EJB
 	private DocumentService documentService;
 	@EJB
@@ -41,9 +48,15 @@ public class ReliquidacionService {
 	public Integer crearIntanciaDistribucionInicialPercapita(String username){
 		System.out.println("username-->"+username);
 		Usuario usuario = this.usuarioDAO.getUserByUsername(username);
-		return distribucionInicialPercapitaDAO.crearIntanciaDistribucionInicialPercapita(usuario);
+		AnoEnCurso anoEnCurso = anoDAO.getAnoById(getAnoCurso());
+		return distribucionInicialPercapitaDAO.crearIntanciaDistribucionInicialPercapita(usuario, anoEnCurso);
 	}
-
+	
+	private Integer getAnoCurso() {
+		DateFormat formatNowYear = new SimpleDateFormat("yyyy");
+		Date nowDate = new Date();
+		return Integer.valueOf(formatNowYear.format(nowDate)); 
+	}
 
 	public Integer getIdPlantillaPoblacionInscrita(){
 		Integer plantillaId = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAASIGNACIONDESEMPENODIFICIL);

@@ -146,8 +146,26 @@ public class CajaDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public List<Caja> getMonitoreoByProgramaAnoComponenteSubtituloServicio(Integer idProgramaAno, List<Integer> idComponentes, Subtitulo subtitulo,
+			Integer idServicio) {
+		
+		try {
+			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByProgramaAnoComponenteSubtituloServicio", Caja.class);
+			query.setParameter("idTipoSubtitulo", subtitulo.getId());
+			query.setParameter("idComponentes", idComponentes);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idServicio", idServicio);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	public List<Caja> getMonitoreoByProgramaAnoComponenteSubtitulo(Integer idProgramaAno, List<Integer> idComponentes, Subtitulo subtitulo) {
+		System.out.println("idProgramaAno --> "+idProgramaAno);
+		System.out.println("subtitulo --> "+subtitulo);
+		System.out.println("idComponente[0] --> "+idComponentes.get(0));
 		try {
 			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByProgramaAnoComponenteSubtitulo", Caja.class);
 			query.setParameter("idTipoSubtitulo", subtitulo.getId());
@@ -165,6 +183,29 @@ public class CajaDAO {
 			query.setParameter("idTipoSubtitulo", subtitulo.getId());
 			query.setParameter("idComponentes", idComponentes);
 			query.setParameter("idProgramaAno", idProgramaAno);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<Caja> getByProgramaAnoServicioSubtitulo(Integer idProgramaAno, Integer idServicio, Subtitulo subtitulo) {
+		try {
+			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByProgramaAnoServicioSubtitulo", Caja.class);
+			query.setParameter("idTipoSubtitulo", subtitulo.getId());
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<Caja> getCajaByProgramaAnoSubtitulo(Integer valorComboPrograma, Subtitulo subtitulo) {
+		try {
+			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByProgramaAnoSubtitulo", Caja.class);
+			query.setParameter("idTipoSubtitulo", subtitulo.getId());
+			query.setParameter("idProgramaAno", valorComboPrograma);
 			return query.getResultList();
 		} catch (Exception e) {
 			throw new RuntimeException(e);

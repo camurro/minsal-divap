@@ -14,6 +14,7 @@ import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.enums.TipoComuna;
 import minsal.divap.model.mappers.PersonaMapper;
 import minsal.divap.model.mappers.RegionMapper;
+import minsal.divap.model.mappers.ServicioMapper;
 import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.RegionVO;
 import minsal.divap.vo.ServiciosVO;
@@ -96,6 +97,11 @@ public class ServicioSaludService {
 		return servicioSalud;
 	}
 	
+	public ServiciosVO getServicioSaludById(Integer idServicioSalud) {
+		ServicioSalud servicioSalud = this.servicioSaludDAO.getServicioSaludById(idServicioSalud);
+		return new ServicioMapper().getBasic(servicioSalud);
+	}
+	
 	public List<RegionVO> getAllRegionesVO() {
 		List<Region> regiones = this.servicioSaludDAO.getAllRegion();
 		List<RegionVO> result = new ArrayList<RegionVO>();
@@ -111,6 +117,18 @@ public class ServicioSaludService {
 		DateFormat formatNowYear = new SimpleDateFormat("yyyy");
 		Date nowDate = new Date();
 		return Integer.valueOf(formatNowYear.format(nowDate)); 
+	}
+
+	public List<ServiciosVO> getServiciosOrderId() {
+		List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
+		List<ServiciosVO> serviciosVO = new ArrayList<ServiciosVO>();
+		if(servicios != null && servicios.size() > 0){
+			for(ServicioSalud servicioSalud : servicios){
+				ServiciosVO servicioVO = new ServicioMapper().getBasic(servicioSalud);
+				serviciosVO.add(servicioVO);
+			}
+		}
+		return serviciosVO;
 	}
 
 }

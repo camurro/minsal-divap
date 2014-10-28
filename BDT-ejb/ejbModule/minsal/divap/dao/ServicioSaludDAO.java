@@ -30,12 +30,42 @@ public class ServicioSaludDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public List<ServicioSalud> getServiciosOrderId() {
+		try {
+			TypedQuery<ServicioSalud> query = this.em.createNamedQuery("ServicioSalud.findAllOrderId", ServicioSalud.class);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-	public  ServicioSalud getServicioSaludPorID(int idServicioSalud){
+	public  ServicioSalud getServicioSaludPorID(Integer idServicioSalud){
+		try {
+			System.out.println("getServicioSaludPorID idServicioSalud="+idServicioSalud);
+			TypedQuery<ServicioSalud> query = this.em.createNamedQuery("ServicioSalud.findByIdServicioSalud", ServicioSalud.class);
+			query.setParameter("idServicioSalud", idServicioSalud);
+			List<ServicioSalud> result =  query.getResultList();
+			System.out.println("result result="+result);
+			if(result != null && result.size() >0 ){
+				return result.get(0);
+			}
+			return null;
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public  ServicioSalud getServicioSaludById(Integer idServicioSalud){
 		try {
 			TypedQuery<ServicioSalud> query = this.em.createNamedQuery("ServicioSalud.findByIdServicioSalud", ServicioSalud.class);
-			query.setParameter("id", idServicioSalud);
-			return query.getSingleResult(); 
+			query.setParameter("idServicioSalud", idServicioSalud);
+			List<ServicioSalud> results = query.getResultList();
+			if(results != null && results.size() >0){
+				return results.get(0);
+			}
+			return null; 
 		}catch(Exception e){
 			throw new RuntimeException(e);
 		}

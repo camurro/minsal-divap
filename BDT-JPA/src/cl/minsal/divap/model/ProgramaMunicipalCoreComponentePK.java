@@ -50,8 +50,8 @@ public class ProgramaMunicipalCoreComponentePK implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (int) programaMunicipalCore;
-        hash += (int) componente;
+        hash += programaMunicipalCore;
+        hash += componente;
         return hash;
     }
 

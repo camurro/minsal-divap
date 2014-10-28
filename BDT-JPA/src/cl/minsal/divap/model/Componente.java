@@ -19,7 +19,8 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name = "Componente.findAll", query = "SELECT c FROM Componente c"),
 	@NamedQuery(name = "Componente.findById", query = "SELECT c FROM Componente c WHERE c.id = :id"),
 	@NamedQuery(name = "Componente.findByPrograma", query = "SELECT c FROM Componente c WHERE c.idPrograma.id = :id order by c.id asc"),
-	@NamedQuery(name = "Componente.findByNombre", query = "SELECT c FROM Componente c WHERE c.nombre = :nombre")})
+	@NamedQuery(name = "Componente.findByNombre", query = "SELECT c FROM Componente c WHERE c.nombre = :nombre"),
+	@NamedQuery(name = "Componente.findByIdSubtitulo", query = "SELECT c FROM Componente c inner join c.componenteSubtitulos cs WHERE cs.subtitulo.idTipoSubtitulo = :idTipoSubtitulo")})
 public class Componente implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id

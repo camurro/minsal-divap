@@ -93,6 +93,20 @@ public class AntecedentesComunaDAO {
 		return results;
 	}
 	
+	public List<AntecendentesComunaCalculado> findAntecedentesServicioCalculadosByDistribucionInicialPercapita(
+			Integer idDistribucionInicialPercapita) {
+		List<AntecendentesComunaCalculado> results = null;
+		try {
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByServicioDistribucionInicialPercapita", AntecendentesComunaCalculado.class);
+			query.setParameter("distribucionInicialPercapita", idDistribucionInicialPercapita);
+			results = query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return results;
+	}
+	
+	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> groupPercapitaServicioByDistribucionInicialPercapita(Integer idDistribucionInicialPercapita) {
 		List<Object[]> results = null;
@@ -196,6 +210,31 @@ public class AntecedentesComunaDAO {
 			throw new RuntimeException(e);
 		}
 		return results;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> groupDesempenoDificilServicioByDistribucionInicialPercapita(Integer idDistribucionInicialPercapita) {
+		List<Object[]> results = null;
+		try {
+			Query queryGroupDesempenoDificilServicioByDistribucionInicialPercapita = this.em.createNamedQuery("AntecendentesComuna.groupDesempenoDificilServicio");
+			queryGroupDesempenoDificilServicioByDistribucionInicialPercapita.setParameter("idDistribucionInicialPercapita", idDistribucionInicialPercapita);
+			results = queryGroupDesempenoDificilServicioByDistribucionInicialPercapita.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return results;
+	}
+
+	public List<AntecendentesComunaCalculado> findAntecedentesComunaCalculadosByDistribucionInicialPercapitaServicio(
+			Integer idDistribucionInicialPercapita, Integer idServicio) {
+		try {
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByDistribucionInicialPercapitaServicio", AntecendentesComunaCalculado.class);
+			query.setParameter("distribucionInicialPercapita", idDistribucionInicialPercapita);
+			query.setParameter("idServicio", idServicio);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

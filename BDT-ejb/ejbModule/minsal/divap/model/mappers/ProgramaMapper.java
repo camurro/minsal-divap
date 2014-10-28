@@ -7,10 +7,13 @@ import minsal.divap.enums.Subtitulo;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.EstadoProgramaVO;
 import minsal.divap.vo.ProgramaVO;
+import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloVO;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import cl.minsal.divap.model.Componente;
+import cl.minsal.divap.model.MarcoPresupuestario;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ServicioSalud;
 
 public class ProgramaMapper implements Mapper<ProgramaAno>{
 
@@ -60,19 +63,23 @@ public class ProgramaMapper implements Mapper<ProgramaAno>{
 			}
 		
 		}
-		System.out.println("programaVO.getComponentes().size()==>"+((programaVO.getComponentes() == null) ? 0 : programaVO.getComponentes().size()));
 		if(programaVO.getComponentes() != null && programaVO.getComponentes().size() > 0){
 			for(ComponentesVO componenteVO : programaVO.getComponentes()){
-				System.out.println("Antes de determinar si es dependiente municipal o servicio");
 				if(componenteVO.getSubtitulos().contains(new SubtituloVO(Subtitulo.SUBTITULO24.getId()))){
 					programaVO.setDependenciaMunicipal(true);
-					System.out.println("Dependencia municipal");
 				}
 				if((componenteVO.getSubtitulos().contains(new SubtituloVO(Subtitulo.SUBTITULO21.getId()))) || (componenteVO.getSubtitulos().contains(new SubtituloVO(Subtitulo.SUBTITULO22.getId()))) || (componenteVO.getSubtitulos().contains(new SubtituloVO(Subtitulo.SUBTITULO29.getId())))){
 					programaVO.setDependenciaServicio(true);
-					System.out.println("Dependencia servicio");
 				}
 			}
+		}
+		if(programaAno.getMarcosPresupuestarios() != null && programaAno.getMarcosPresupuestarios().size() >0){
+			List<ServiciosVO> servicios = new ArrayList<ServiciosVO>();
+			for(MarcoPresupuestario marcoPresupuestario: programaAno.getMarcosPresupuestarios()){
+				ServicioSalud servicioSalud = marcoPresupuestario.getServicioSalud();
+				servicios.add(new ServicioMapper().getBasic(servicioSalud));
+			}
+			programaVO.setServicios(servicios);
 		}
 		return programaVO;
 	}
