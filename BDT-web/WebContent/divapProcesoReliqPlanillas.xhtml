@@ -9,18 +9,38 @@
 					<h:outputText value="Reliquidación" />
 				</h1>
 				<p:panel id="Panel">
-					<h2><h:outputLabel value="#{procesoReliquidacionPlanillasController.programaSeleccionado.nombre}" /></h2>
-					<p class="parrafo"><h:outputLabel value="#{procesoReliquidacionPlanillasController.programaSeleccionado.descripcion}" /></p>
+					<h2><h:outputLabel value="#{procesoReliquidacionPlanillasController.programa.nombre}" /></h2>
+					<p class="parrafo"><h:outputLabel value="#{procesoReliquidacionPlanillasController.programa.descripcion}" /></p>
 					<h3>
 						<strong>Actividad: </strong>Descargar Planillas Base y Subir Planillas Llenas
 					</h3>
 					<div class="destacaArchivos ui-corner-all">
 						<h3>Descargar Planilla Base del Programa</h3>
 						<ul class="versionesArchivo">
-								<li><h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <a target="_self"
-								href="#">Planilla Base Cumplimiento PROGRAMA - Municipal.xls</a></li>
-								<li><h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <a target="_self"
-								href="#">Planilla Base Cumplimiento PROGRAMA - Servicio.xls</a></li>
+								
+								<li>
+									<!-- 	<h:graphicImage
+										value="resources/minsal/images/download-alt.png"
+										styleClass="divapIcons" /> <p:commandLink
+										value="Planilla completa actualizada de Programacion de Caja.xls" /> -->
+									Planilla Base Cumplimiento #{procesoReliquidacionPlanillasController.programa.nombre} - Municipal.xls [ <h:graphicImage
+										value="resources/minsal/images/download-alt.png"
+										styleClass="divapIcons" /> <h:commandLink
+										action="#{procesoReliquidacionPlanillasController.downloadTemplate}"
+										value="Bajar">
+										<f:setPropertyActionListener
+											target="#{procesoReliquidacionPlanillasController.docIdMunicipalDownload}"
+											value="#{procesoReliquidacionPlanillasController.docMunicipal}" />
+									</h:commandLink> ]
+
+								</li>
+								
+								<!--  li>
+								
+								<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <a target="_self"
+								href="#">Planilla Base Cumplimiento PROGRAMA - Servicio.xls</a>
+								
+								</li-->
 						</ul>
 					</div>
 					<h3>Subir planillas con información del programa:</h3>
@@ -31,15 +51,7 @@
 						<p:fileUpload id="valorBasicoDesempenoFile3" value="#{procesoReliquidacionPlanillasController.planillaMunicipal}" mode="simple" />
 					</p:panelGrid>
 					<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
-					<br />
-					<br />
-					<p:panelGrid columns="2" styleClass="uploadFileTable">
-						<h:outputLabel for="valorBasicoDesempenoFile4"
-							value="Planilla Base Cumplimiento PROGRAMA - Servicio.xls"
-							styleClass="textoAjustado fileUploadLabel" />
-						<p:fileUpload id="valorBasicoDesempenoFile4" value="#{procesoReliquidacionPlanillasController.planillaServicio}" mode="simple" />
-					</p:panelGrid>
-					<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
+
 					<br />
 					<br />
 					<p:commandButton value="Cargar Archivos" ajax="false"
@@ -47,8 +59,8 @@
 				</p:panel>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />
-				<p:commandButton id="botonContinuar" value="Continuar" ajax="false"	action="#{procesoReliquidacionPlanillasController.enviar}" icon="ui-icon-upload"
-					disabled="#{procesoReliquidacionPlanillasController.archivosCargados}">
+				<p:commandButton id="botonContinuar" value="Continuar" ajax="false"	action="#{procesoReliquidacionPlanillasController.continuar}" icon="ui-icon-upload"
+					disabled="#{procesoReliquidacionPlanillasController.archivosNoValidos}">
 					<f:setPropertyActionListener target="#{procesoReliquidacionPlanillasController.target}"	value="bandejaTareas.jsf" />
 				</p:commandButton>
 			</p:panel>

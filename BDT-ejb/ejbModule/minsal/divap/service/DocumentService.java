@@ -3,6 +3,7 @@ package minsal.divap.service;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -21,6 +22,7 @@ import minsal.divap.dao.DocumentDAO;
 import minsal.divap.dao.DocumentOtDAO;
 import minsal.divap.dao.EstimacionFlujoCajaDAO;
 import minsal.divap.dao.RebajaDAO;
+import minsal.divap.dao.ReliquidacionDAO;
 import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.model.mappers.PercapitaReferenciaDocumentoMapper;
@@ -37,12 +39,15 @@ import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.DocumentoOt;
 import cl.minsal.divap.model.DocumentoRebaja;
+import cl.minsal.divap.model.DocumentoReliquidacion;
 import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.OrdenTransferencia;
 import cl.minsal.divap.model.Plantilla;
+import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.Rebaja;
 import cl.minsal.divap.model.ReferenciaDocumento;
+import cl.minsal.divap.model.Reliquidacion;
 import cl.minsal.divap.model.TipoDocumento;
 
 @Stateless
@@ -58,6 +63,8 @@ public class DocumentService {
 	private RebajaDAO rebajaDAO;
 	@EJB
 	private EstimacionFlujoCajaDAO estimacionFlujoCajaDAO;
+	@EJB
+	private ReliquidacionDAO reliquidacionDAO;
 	@EJB
 	private ServicioSaludDAO servicioSaludDAO;
 	@EJB
@@ -472,6 +479,86 @@ public class DocumentService {
 		documentoConvenio.setDocumento(referenciaDocumento);
 		fileDAO.save(documentoConvenio);
 		System.out.println("luego de aplicar insert del documento convenio");
+	}
+	
+	public Integer createDocumentReliquidacion(ProgramaAno programaAno, TipoDocumento tipoDocumentoProceso,
+			String nodeRef, String filename, String contenType) {
+		
+		
+		
+		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		DocumentoEstimacionflujocaja documentoEstimacionFlujoCaja = new DocumentoEstimacionflujocaja();
+		documentoEstimacionFlujoCaja.setIdProgramaAno(programaAno);
+		documentoEstimacionFlujoCaja.setIdTipoDocumento(tipoDocumentoProceso);
+		documentoEstimacionFlujoCaja.setIdDocumento(referenciaDocumento);
+		estimacionFlujoCajaDAO.save(documentoEstimacionFlujoCaja);
+		System.out.println("luego de aplicar insert del documento flujo caja");
+		return referenciaDocumentoId;
+	}
+	
+	public Integer createDocumentBaseReliquidacion(ProgramaAno programa, TipoDocumento tipoDocumentoProceso,
+			String nodeRef, String filename, String contenType, Integer idReliquidacion, Mes mes) {
+		
+//		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
+//		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+//		DocumentoEstimacionflujocaja documentoEstimacionFlujoCaja = new DocumentoEstimacionflujocaja();
+//		documentoEstimacionFlujoCaja.setIdProgramaAno(programaAno);
+//		documentoEstimacionFlujoCaja.setIdTipoDocumento(tipoDocumentoProceso);
+//		documentoEstimacionFlujoCaja.setIdDocumento(referenciaDocumento);
+		
+		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);	
+		
+		DocumentoReliquidacion documentoReliquidacion = new DocumentoReliquidacion();		
+		documentoReliquidacion.setComuna(null);
+		documentoReliquidacion.setServicio(null);
+		
+		
+		//TODO agregar idProgramaAno a la tabla de TipoDocumento
+		Reliquidacion reliquidacion = new Reliquidacion();
+		reliquidacion.setIdReliquidacion(idReliquidacion);
+		reliquidacion.setMes(mes);
+		
+		documentoReliquidacion.setIdReliquidacion(reliquidacion);
+		documentoReliquidacion.setIdDocumento(referenciaDocumento);
+		documentoReliquidacion.setIdTipoDocumento(tipoDocumentoProceso);
+		reliquidacionDAO.save(documentoReliquidacion);
+		return referenciaDocumentoId;
+	}
+	
+	
+	public String getMesCurso(Boolean numero) {
+		SimpleDateFormat dateFormat = null;
+		String mesCurso = null;
+		if(numero){
+			dateFormat = new SimpleDateFormat("MM");
+			mesCurso = dateFormat.format(new Date());
+		}else{
+			dateFormat = new SimpleDateFormat("MMMM");
+			mesCurso = dateFormat.format(new Date());
+		}
+		return mesCurso;
+	}
+	
+	public Integer getPlantillaByType(TipoDocumentosProcesos template, Integer idPrograma){
+		return fileDAO.getPlantillaByType(template, idPrograma);
+	}
+	
+	public Integer createTemplate(Programa programa, TipoDocumentosProcesos tipoDocumentoProceso,
+			String nodeRef, String filename, String contenType) {
+		long current = Calendar.getInstance().getTimeInMillis();
+		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		TipoDocumento tipoPlantilla = new TipoDocumento(tipoDocumentoProceso.getId());
+		Plantilla plantilla = new Plantilla();
+		plantilla.setDocumento(referenciaDocumento);
+		plantilla.setTipoPlantilla(tipoPlantilla);
+		plantilla.setFechaCreacion(new Date(current));
+		plantilla.setIdPrograma(programa);
+		plantilla.setFechaVigencia(null);
+		fileDAO.save(plantilla);
+		return referenciaDocumento.getId();
 	}
 
 }

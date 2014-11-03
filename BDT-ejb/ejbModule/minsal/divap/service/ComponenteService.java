@@ -73,5 +73,11 @@ public class ComponenteService {
 		
 		
 	}
+	
+	public Componente getComponenteByNombre(String nombre){
+		Componente componente = this.componenteDAO.getComponenteByNombre(nombre);		
+		return componente;		
+	}
+	
 
 }

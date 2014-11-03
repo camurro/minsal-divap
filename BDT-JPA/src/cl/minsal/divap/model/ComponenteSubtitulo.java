@@ -25,10 +25,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ComponenteSubtitulo.findByIdComponenteSubtitulo", query = "SELECT c FROM ComponenteSubtitulo c WHERE c.idComponenteSubtitulo = :idComponenteSubtitulo")})
 public class ComponenteSubtitulo implements Serializable {
     private static final long serialVersionUID = 1L;
-	@Id
-	@Column(name="id_componente_subtitulo", unique=true, nullable=false)
-	@GeneratedValue
+    @Id
+    @Column(name="id_componente_subtitulo", unique=true, nullable=false)
+    @GeneratedValue
     private Integer idComponenteSubtitulo;
+    @Column(name = "peso_subtitulo")
+    private Long pesoSubtitulo;
     @JoinColumn(name = "subtitulo", referencedColumnName = "id_tipo_subtitulo")
     @ManyToOne(optional = false)
     private TipoSubtitulo subtitulo;
@@ -49,6 +51,14 @@ public class ComponenteSubtitulo implements Serializable {
 
     public void setIdComponenteSubtitulo(Integer idComponenteSubtitulo) {
         this.idComponenteSubtitulo = idComponenteSubtitulo;
+    }
+   
+    public Long getPesoSubtitulo() {
+        return pesoSubtitulo;
+    }
+
+    public void setPesoSubtitulo(Long pesoSubtitulo) {
+        this.pesoSubtitulo = pesoSubtitulo;
     }
 
     public TipoSubtitulo getSubtitulo() {
@@ -90,5 +100,5 @@ public class ComponenteSubtitulo implements Serializable {
     public String toString() {
         return "cl.minsal.divap.model.ComponenteSubtitulo[ idComponenteSubtitulo=" + idComponenteSubtitulo + " ]";
     }
-    
+   
 }

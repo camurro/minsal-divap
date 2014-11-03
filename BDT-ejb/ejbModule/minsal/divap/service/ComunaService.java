@@ -17,24 +17,26 @@ public class ComunaService {
 
 	@EJB
 	private ComunaDAO comunaDAO;
-	
-	
-	
+
 	public List<ComunaVO> getComunas() {
-		
-	
-	List<ComunaVO> ComunasVO = new ArrayList<ComunaVO>();
-	List<Comuna> comunas = this.comunaDAO.getComuna();
-	if(comunas != null && comunas.size() > 0){
-		for(Comuna comuna : comunas){
-			ComunaVO comunaVO = new ComunaVO();
-	
-		
-			comunaVO.setIdComuna(comuna.getId());
-			comunaVO.setDescComuna(comuna.getNombre());
-			ComunasVO.add(comunaVO);
+
+		List<ComunaVO> ComunasVO = new ArrayList<ComunaVO>();
+		List<Comuna> comunas = this.comunaDAO.getComuna();
+		if (comunas != null && comunas.size() > 0) {
+			for (Comuna comuna : comunas) {
+				ComunaVO comunaVO = new ComunaVO();
+
+				comunaVO.setIdComuna(comuna.getId());
+				comunaVO.setDescComuna(comuna.getNombre());
+				ComunasVO.add(comunaVO);
+			}
 		}
+		return ComunasVO;
 	}
-	return ComunasVO;
-}
+	
+	public Comuna getComunaById(int id){
+		Comuna comuna = this.comunaDAO.getComunaById(id);		
+		return comuna;	
+	}
+	
 }

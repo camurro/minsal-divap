@@ -39,9 +39,13 @@ import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TareasSeguimiento;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.excel.GeneradorExcel;
+import minsal.divap.excel.impl.CrearPlanillaCumplimientoMunicialProgramaSheetExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaConsolidadorSheetExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaSheetExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaSubtituloSheetExcel;
+import minsal.divap.excel.impl.PlanillaTrabajoCumplimientoReliquidacionMunicipalSheetExcel;
+import minsal.divap.excel.impl.RebajaSheetExcel;
+import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.model.mappers.FlujoCajaMapper;
 import minsal.divap.model.mappers.ServicioMapper;
 import minsal.divap.model.mappers.SubtituloFlujoCajaMapper;
@@ -51,16 +55,22 @@ import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.CajaMontoSummaryVO;
 import minsal.divap.vo.CellExcelVO;
+import minsal.divap.vo.ComponentesVO;
+import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.ConveniosSummaryVO;
+import minsal.divap.vo.CumplimientoApsMunicipalProgramaVO;
 import minsal.divap.vo.DocumentoVO;
 import minsal.divap.vo.EmailVO;
 import minsal.divap.vo.FlujoCajaVO;
+import minsal.divap.vo.ProgramaVO;
+import minsal.divap.vo.RebajaVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.ResumenConsolidadorVO;
 import minsal.divap.vo.SeguimientoVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloFlujoCajaVO;
 import minsal.divap.vo.TransferenciaSummaryVO;
+import minsal.divap.vo.ValorizarReliquidacionSummaryVO;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -120,6 +130,14 @@ public class EstimacionFlujoCajaService {
 
 	@Resource(name = "folderDocEstimacionFlujoCaja")
 	private String folderDocEstimacionFlujoCaja;
+
+	@Resource(name = "folderTemplateReliquidacion")
+	private String folderTemplateReliquidacion;
+
+	@Resource(name = "folderDocReliquidacion")
+	private String folderDocReliquidacion;
+
+
 	@EJB
 	private UsuarioDAO usuarioDAO;
 	@EJB
@@ -150,7 +168,7 @@ public class EstimacionFlujoCajaService {
 	// Generar documento
 	public Integer elaborarOrdinarioProgramacionCaja() {
 
-		
+
 
 		Integer plantillaBorradorOrdinarioProgramacionCaja = documentService
 				.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAOFICIOPROGRAMACIONCAJA);
@@ -186,14 +204,14 @@ public class EstimacionFlujoCajaService {
 							.toLowerCase());
 			System.out.println("contenTypeBorradorAporteEstatal->"
 					+ contentType);
-			
+
 			generadorWordPlantillaBorradorOrdinarioProgramacionCaja.saveContent(documentoBorradorOrdinarioProgramacionCajaVO
 					.getContent(), XWPFDocument.class);
 
 			Map<String, Object> parametersBorradorAporteEstatal = new HashMap<String, Object>();
 			parametersBorradorAporteEstatal.put("{ano}",Util.obtenerAno(new Date()));
 			parametersBorradorAporteEstatal.put("{mes}",Util.obtenerNombreMes(Util.obtenerMes(new Date())));
-					GeneradorResolucionAporteEstatal generadorWordDecretoBorradorAporteEstatal = new GeneradorResolucionAporteEstatal(
+			GeneradorResolucionAporteEstatal generadorWordDecretoBorradorAporteEstatal = new GeneradorResolucionAporteEstatal(
 					filenameBorradorOrdinarioProgramacionCaja,
 					templateOrdinarioProgramacionCaja);
 			generadorWordDecretoBorradorAporteEstatal.replaceValues(parametersBorradorAporteEstatal, XWPFDocument.class);
@@ -203,7 +221,7 @@ public class EstimacionFlujoCajaService {
 							.toString()));
 			System.out.println("response responseBorradorAporteEstatal --->"
 					+ response);
-		
+
 
 			TipoDocumento tipoDocumento = new TipoDocumento(
 					TipoDocumentosProcesos.PLANTILLAOFICIOPROGRAMACIONCAJA
@@ -441,7 +459,7 @@ public class EstimacionFlujoCajaService {
 			TareasSeguimiento tareaSeguimiento, String subject, String body,
 			String username, List<String> para, List<String> conCopia,
 			List<String> conCopiaOculta, List<Integer> documentos) {
-		
+
 		Integer referenciaDocId = 0;
 		String from = usuarioDAO.getEmailByUsername(username);
 		if (from == null) {
@@ -467,7 +485,7 @@ public class EstimacionFlujoCajaService {
 						contenType);
 			}
 		}
-		
+
 		Integer idSeguimiento = seguimientoService.createSeguimiento(
 				tareaSeguimiento, subject, body, from, para, conCopia,
 				conCopiaOculta, documentosTmp);
@@ -1061,14 +1079,14 @@ public class EstimacionFlujoCajaService {
 		return documentService.getLastDocumentoSummaryByEstimacionFlujoCajaType(idProgramaAno, tipoDocumento);
 
 	}
-	
+
 	public ReferenciaDocumentoSummaryVO getLastDocumentSummaryEstimacionFlujoCajaTipoDocumento(TipoDocumentosProcesos tipoDocumento) {
 		// TODO Auto-generated method stub
 		return documentService.getLastDocumentoSummaryByEstimacionFlujoCajaTipoDocumento(tipoDocumento);
 
 	}
-	
-	
+
+
 
 	//Obtiene el id del programa para el a�o siguiente para hacer la estimacion del flujo de caja.
 	public Integer obtenerIdProgramaAno(Integer id) {
@@ -1495,7 +1513,7 @@ public class EstimacionFlujoCajaService {
 		DistribucionInicialPercapita  distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
 		System.out.println("distribucionInicialPercapita.getIdDistribucionInicialPercapita() --> "+distribucionInicialPercapita.getIdDistribucionInicialPercapita());
 		List<AntecendentesComunaCalculado> antecendentesComunasCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(distribucionInicialPercapita.getIdDistribucionInicialPercapita());
-		
+
 		List<SubtituloFlujoCajaVO> resultado = new ArrayList<SubtituloFlujoCajaVO>();
 		Map<Integer, Long> percapitaServicio = new HashMap<Integer, Long>();
 		System.out.println("antecendentesComunasCalculado.size() --> "+antecendentesComunasCalculado.size());
@@ -1538,7 +1556,7 @@ public class EstimacionFlujoCajaService {
 		DistribucionInicialPercapita  distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
 		System.out.println("distribucionInicialPercapita.getIdDistribucionInicialPercapita() --> "+distribucionInicialPercapita.getIdDistribucionInicialPercapita());
 		List<AntecendentesComunaCalculado> antecendentesComunasCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaServicio(distribucionInicialPercapita.getIdDistribucionInicialPercapita(),  idServicio);
-		
+
 		List<SubtituloFlujoCajaVO> resultado = new ArrayList<SubtituloFlujoCajaVO>();
 		Map<Integer, Long> percapitaServicio = new HashMap<Integer, Long>();
 		System.out.println("antecendentesComunasCalculado.size() --> "+antecendentesComunasCalculado.size());

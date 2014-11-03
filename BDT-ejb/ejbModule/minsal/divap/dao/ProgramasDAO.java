@@ -64,7 +64,7 @@ public class ProgramasDAO {
 	
 	public  Programa getProgramaPorID(int programaId){
 		try {
-			TypedQuery<Programa> query = this.em.createNamedQuery("Programa.findProgramaPorID", Programa.class);
+			TypedQuery<Programa> query = this.em.createNamedQuery("Programa.findById", Programa.class);
 			query.setParameter("id", programaId);
 			return query.getSingleResult(); 
 		} catch (Exception e) {

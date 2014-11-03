@@ -69,6 +69,11 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 	
 	private List<ProgramasPojo> listadoProgramas;
 	
+	private Integer idReliquidacion;
+	private Integer idProgramaAno;
+	
+	private ProgramaVO programa;
+	
 	
 	public List<ProgramasPojo> getListadoProgramas() {
 		return listadoProgramas;
@@ -176,295 +181,16 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 
 	@PostConstruct
 	public void init() {
-		log.info("ProcesoReliquidacionProgMunicipalController tocado.");
-		if (!getSessionBean().isLogged()) {
-			log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
-			try {
-				facesContext.getExternalContext().redirect("login.jsf");
-			} catch (IOException e) {
-				log.error("Error tratando de redireccionar a login por falta de usuario en sesion.", e);
-			}
-		}else{	
-			programaSeleccionado = getFromSession("programaSeleccionado", ProgramaVO.class);
-			if(programaSeleccionado==null){
-				String variablePrograma = (String) getTaskDataVO().getData().get("_programa");				
-				programaSeleccionado = (ProgramaVO) JSONHelper.fromJSON(variablePrograma,ProgramaVO.class);
-				setOnSession("programaSeleccionado", programaSeleccionado);
-			}
-			construyeListaComponentes(programaSeleccionado.getId());
-			construyeListaServicios();
+		if(sessionExpired()){
+			return;
 		}
-	
-		
-		
-		ProgramasPojo p;
-		listadoProgramas = new ArrayList<ProgramasPojo>();
-		Random rnd = new Random();
-		
-		p = new ProgramasPojo();
-		p.setCodServicio("00001");
-		p.setGloServicio("Talcahuano");
-		p.setS21((long) rnd.nextInt(9999999));
-		p.setS22((long) rnd.nextInt(9999999));
-		p.setS24((long) rnd.nextInt(9999999));
-		p.setS29((long) rnd.nextInt(9999999));
-		p.setAvance(1f);
-		p.setEstado("green");
-		
-		listadoProgramas.add(p);
-		
-		p = new ProgramasPojo();
-		p.setCodServicio("00002");
-		p.setGloServicio("Concepci��n");
-		p.setS21((long) rnd.nextInt(9999999));
-		p.setS22((long) rnd.nextInt(9999999));
-		p.setS24((long) rnd.nextInt(9999999));
-		p.setS29((long) rnd.nextInt(9999999));
-		p.setAvance(0.4f);
-		p.setEstado("yellow");
-		
-		listadoProgramas.add(p);
-		
-		p = new ProgramasPojo();
-		p.setCodServicio("00003");
-		p.setGloServicio("Metropolitano Sur");
-		p.setS21(0L);
-		p.setS22(0L);
-		p.setS24(0L);
-		p.setS29(0L);
-		p.setAvance(0);
-		p.setEstado("red");
-		
-		listadoProgramas.add(p);
-		
-		p = new ProgramasPojo();
-		p.setCodServicio("00004");
-		p.setGloServicio("Bio Bio");
-		p.setS21((long) rnd.nextInt(9999999));
-		p.setS22((long) rnd.nextInt(9999999));
-		p.setS24((long) rnd.nextInt(9999999));
-		p.setS29((long) rnd.nextInt(9999999));
-		p.setAvance(1f);
-		p.setEstado("green");
-		
-		listadoProgramas.add(p);
-		
-		p = new ProgramasPojo();
-		p.setCodServicio("00005");
-		p.setGloServicio("Iquique");
-		p.setS21((long) rnd.nextInt(9999999));
-		p.setS22((long) rnd.nextInt(9999999));
-		p.setS24((long) rnd.nextInt(9999999));
-		p.setS29((long) rnd.nextInt(9999999));
-		p.setAvance(1f);
-		p.setEstado("green");
-		
-		listadoProgramas.add(p);
-		
-		listadoEnvioServicios = new ArrayList<EnvioServiciosPojo>();
-		EnvioServiciosPojo e;
-		
-		e = new EnvioServiciosPojo();
-		e.setServicioSalud("Metropolitano Oriente");
-		e.setEnviado("15 Abril 2014 16:39");
-		listadoEnvioServicios.add(e);
-		
-		e = new EnvioServiciosPojo();
-		e.setServicioSalud("Talcahuano");
-		e.setEnviado("15 Abril 2014 16:39");
-		listadoEnvioServicios.add(e);
-		
-		e = new EnvioServiciosPojo();
-		e.setServicioSalud("Bio Bio");
-		e.setEnviado("15 Abril 2014 16:39");
-		listadoEnvioServicios.add(e);
-		
-		e = new EnvioServiciosPojo();
-		e.setServicioSalud("Iquique");
-		e.setEnviado("15 Abril 2014 16:39");
-		listadoEnvioServicios.add(e);
-		
-		e = new EnvioServiciosPojo();
-		e.setServicioSalud("Alto Hospicio");
-		e.setEnviado("15 Abril 2014 16:39");
-		listadoEnvioServicios.add(e);
-		
-		// LISTADO ESTABLECIMIENTOS
-		listadoEstablecimientos = new ArrayList<EstablecimientoPojo>();
-		listadoComunas = new ArrayList<ComunaPojo>();
-		EstablecimientoPojo est;
-		ComunaPojo com;
-		
-		est = new EstablecimientoPojo();
-		est.setNombreOficial("Centro Comunitario de Salud Familiar Cerro Esmeralda");
-		com = new ComunaPojo();
-		com.setNombreComuna("Iquique");
-		est.setpS21((long) rnd.nextInt(99999));
-		est.setpS22((long) rnd.nextInt(99999));
-		est.setpS24((long) rnd.nextInt(99999));
-		est.setpS29((long) rnd.nextInt(99999));
-		est.setqS21((long) rnd.nextInt(999));
-		est.setqS22((long) rnd.nextInt(999));
-		est.setqS24((long) rnd.nextInt(999));
-		est.setqS29((long) rnd.nextInt(999));
-		est.setComuna(com);
-		
-		listadoEstablecimientos.add(est);
-		
-		est = new EstablecimientoPojo();
-		est.setNombreOficial("Centro Comunitario de Salud Familiar El Boro");
-		com = new ComunaPojo();
-		com.setNombreComuna("Alto Hospicio");
-		est.setpS21((long) rnd.nextInt(99999));
-		est.setpS22((long) rnd.nextInt(99999));
-		est.setpS24((long) rnd.nextInt(99999));
-		est.setpS29((long) rnd.nextInt(99999));
-		est.setqS21((long) rnd.nextInt(999));
-		est.setqS22((long) rnd.nextInt(999));
-		est.setqS24((long) rnd.nextInt(999));
-		est.setqS29((long) rnd.nextInt(999));
-		est.setComuna(com);
-		
-		listadoEstablecimientos.add(est);
-		
-		est = new EstablecimientoPojo();
-		est.setNombreOficial("Clínica Dental Móvil Simple. Pat. RW6740 (Iquique)");
-		com = new ComunaPojo();
-		com.setNombreComuna("Pozo Almonte");
-		est.setpS21((long) rnd.nextInt(99999));
-		est.setpS22((long) rnd.nextInt(99999));
-		est.setpS24((long) rnd.nextInt(99999));
-		est.setpS29((long) rnd.nextInt(99999));
-		est.setqS21((long) rnd.nextInt(999));
-		est.setqS22((long) rnd.nextInt(999));
-		est.setqS24((long) rnd.nextInt(999));
-		est.setqS29((long) rnd.nextInt(999));
-		est.setComuna(com);
-		
-		listadoEstablecimientos.add(est);
-		
-		est = new EstablecimientoPojo();
-		est.setNombreOficial("COSAM Dr. Jorge Seguel Cáceres");
-		com = new ComunaPojo();
-		com.setNombreComuna("Macul");
-		est.setpS21((long) rnd.nextInt(99999));
-		est.setpS22((long) rnd.nextInt(99999));
-		est.setpS24((long) rnd.nextInt(99999));
-		est.setpS29((long) rnd.nextInt(99999));
-		est.setqS21((long) rnd.nextInt(999));
-		est.setqS22((long) rnd.nextInt(999));
-		est.setqS24((long) rnd.nextInt(999));
-		est.setqS29((long) rnd.nextInt(999));
-		est.setComuna(com);
-		
-		listadoEstablecimientos.add(est);
-		
-		est = new EstablecimientoPojo();
-		est.setNombreOficial("COSAM Salvador Allende");
-		com = new ComunaPojo();
-		com.setNombreComuna("Camiña");
-		est.setpS21((long) rnd.nextInt(99999));
-		est.setpS22((long) rnd.nextInt(99999));
-		est.setpS24((long) rnd.nextInt(99999));
-		est.setpS29((long) rnd.nextInt(99999));
-		est.setqS21((long) rnd.nextInt(999));
-		est.setqS22((long) rnd.nextInt(999));
-		est.setqS24((long) rnd.nextInt(999));
-		est.setqS29((long) rnd.nextInt(999));
-		est.setComuna(com);
-		
-		listadoEstablecimientos.add(est);
-		
-		com = new ComunaPojo();
-		com.setNombreComuna("Iquique");
-		
-		listadoComunas.add(com);
-		
-		com = new ComunaPojo();
-		com.setNombreComuna("Alto Hospicio");
-		
-		listadoComunas.add(com);
-		
-		com = new ComunaPojo();
-		com.setNombreComuna("Pozo Almonte");
-		
-		listadoComunas.add(com);
-		
-		com = new ComunaPojo();
-		com.setNombreComuna("Camiña");
-		
-		listadoComunas.add(com);
-		
-		com = new ComunaPojo();
-		com.setNombreComuna("Colchane");
-		
-		listadoComunas.add(com);
-		
-		listadoValorHistorico = new ArrayList<ValorHistoricoPojo>();
-		ValorHistoricoPojo valorHistorico = new ValorHistoricoPojo();
-		valorHistorico.setComuna("Iquique");//alto hospicio, pozo almonte, macul, cami���a
-		valorHistorico.setServicioSalud("Metropolitano Oriente");
-		valorHistorico.setInflactorS21((double) (1.3));
-		valorHistorico.setValorHistoricoS21((long) rnd.nextInt(99999));
-		valorHistorico.setInflactorS22((double) (1.35));
-		valorHistorico.setValorHistoricoS22((long) rnd.nextInt(99999));
-		valorHistorico.setInflactorS24((double) (1.4));
-		valorHistorico.setValorHistoricoS24((long) rnd.nextInt(99999));
-		valorHistorico.setInflactorS29((double) (1.45));
-		valorHistorico.setValorHistoricoS29((long) rnd.nextInt(99999));
-		listadoValorHistorico.add(valorHistorico);
-		
-		valorHistorico = new ValorHistoricoPojo();
-		valorHistorico.setComuna("Alto Hospicio");//alto hospicio, pozo almonte, macul, cami���a
-		valorHistorico.setServicioSalud("Concepcion");
-		valorHistorico.setInflactorS21((double) (1.3));
-		valorHistorico.setValorHistoricoS21((long) rnd.nextInt(99999));
-		valorHistorico.setInflactorS22((double) (1.35));
-		valorHistorico.setValorHistoricoS22((long) rnd.nextInt(99999));
-		valorHistorico.setInflactorS24((double) (1.4));
-		valorHistorico.setValorHistoricoS24((long) rnd.nextInt(99999));
-		valorHistorico.setInflactorS29((double) (1.45));
-		valorHistorico.setValorHistoricoS29((long) rnd.nextInt(99999));
-		listadoValorHistorico.add(valorHistorico);
-
-		valorHistorico = new ValorHistoricoPojo();
-		valorHistorico.setComuna("Pozo Almonte");//alto hospicio, pozo almonte, macul, cami���a
-		valorHistorico.setServicioSalud("Talcahuano");
-		valorHistorico.setInflactorS21((double) (1.3));
-		valorHistorico.setValorHistoricoS21((long) rnd.nextInt(99999));
-		valorHistorico.setInflactorS22((double) (1.35));
-		valorHistorico.setValorHistoricoS22((long) rnd.nextInt(99999));
-		valorHistorico.setInflactorS24((double) (1.4));
-		valorHistorico.setValorHistoricoS24((long) rnd.nextInt(99999));
-		valorHistorico.setInflactorS29((double) (1.45));
-		valorHistorico.setValorHistoricoS29((long) rnd.nextInt(99999));
-		listadoValorHistorico.add(valorHistorico);
-
-		valorHistorico = new ValorHistoricoPojo();
-		valorHistorico.setComuna("Macul");//alto hospicio, pozo almonte, macul, cami���a
-		valorHistorico.setServicioSalud("Iquique");
-		valorHistorico.setInflactorS21((double) (1.3));
-		valorHistorico.setValorHistoricoS21((long) rnd.nextInt(99999));
-		valorHistorico.setInflactorS22((double) (1.35));
-		valorHistorico.setValorHistoricoS22((long) rnd.nextInt(99999));
-		valorHistorico.setInflactorS24((double) (1.4));
-		valorHistorico.setValorHistoricoS24((long) rnd.nextInt(99999));
-		valorHistorico.setInflactorS29((double) (1.45));
-		valorHistorico.setValorHistoricoS29((long) rnd.nextInt(99999));
-		listadoValorHistorico.add(valorHistorico);
-
-		valorHistorico = new ValorHistoricoPojo();
-		valorHistorico.setComuna("Camiña");//alto hospicio, pozo almonte, macul, cami���a
-		valorHistorico.setServicioSalud("Bio Bio");
-		valorHistorico.setInflactorS21((double) (1.3));
-		valorHistorico.setValorHistoricoS21((long) rnd.nextInt(99999));
-		valorHistorico.setInflactorS22((double) (1.35));
-		valorHistorico.setValorHistoricoS22((long) rnd.nextInt(99999));
-		valorHistorico.setInflactorS24((double) (1.4));
-		valorHistorico.setValorHistoricoS24((long) rnd.nextInt(99999));
-		valorHistorico.setInflactorS29((double) (1.45));
-		valorHistorico.setValorHistoricoS29((long) rnd.nextInt(99999));
-		listadoValorHistorico.add(valorHistorico);
+		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
+			this.idProgramaAno = (Integer) getTaskDataVO().getData().get("_idProgramaAno");
+			this.idReliquidacion = (Integer) getTaskDataVO().getData().get("_idReliquidacion");
+			System.out.println("this.idProgramaAno --> "+this.idProgramaAno);
+			System.out.println("this.idReliquidacion --> "+this.idReliquidacion);
+			setPrograma(programaService.getProgramaAno(idProgramaAno));
+		}
 	}
 	
 
@@ -557,6 +283,32 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 	public void setListaServicios(List<ServiciosVO> listaServicios) {
 		this.listaServicios = listaServicios;
 	}
+
+	public Integer getIdReliquidacion() {
+		return idReliquidacion;
+	}
+
+	public void setIdReliquidacion(Integer idReliquidacion) {
+		this.idReliquidacion = idReliquidacion;
+	}
+
+	public Integer getIdProgramaAno() {
+		return idProgramaAno;
+	}
+
+	public void setIdProgramaAno(Integer idProgramaAno) {
+		this.idProgramaAno = idProgramaAno;
+	}
+
+	public ProgramaVO getPrograma() {
+		return programa;
+	}
+
+	public void setPrograma(ProgramaVO programa) {
+		this.programa = programa;
+	}
+	
+	
 
 	
 }

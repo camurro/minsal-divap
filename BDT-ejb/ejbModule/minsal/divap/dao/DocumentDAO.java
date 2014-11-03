@@ -276,5 +276,21 @@ public class DocumentDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public Integer getPlantillaByType(TipoDocumentosProcesos template, Integer idPrograma) {
+		Integer docId = null;
+		try {
+			TypedQuery<Plantilla> query = this.em.createQuery("select p from Plantilla p WHERE p.tipoPlantilla.idTipoDocumento = :idTipoPlantilla and p.idPrograma.id = :idPrograma", Plantilla.class);
+			query.setParameter("idTipoPlantilla", template.getId());
+			query.setParameter("idPrograma", idPrograma);
+			List<Plantilla> plantillas = query.getResultList(); 
+			if(plantillas != null && plantillas.size() > 0){
+				docId = plantillas.get(0).getIdPlantilla();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return docId;
+	}
 
 }

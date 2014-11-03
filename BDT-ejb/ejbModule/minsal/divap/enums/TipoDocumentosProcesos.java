@@ -9,6 +9,7 @@ public enum TipoDocumentosProcesos{
 	PLANTILLARESOLUCIONAPORTEESTATALUR(9,"Plantilla Resoluciones Comunales de Aporte Estatal UR"), PLANTILLARESOLUCIONAPORTEESTATALCF(10,"Plantilla Resoluciones Comunales de Aporte Estatal CF"),
 	RESOLUCIONAPORTEESTATALUR(11,"Resoluciones Comunales de Aporte Estatal UR"), RESOLUCIONAPORTEESTATALCF(12,"Resoluciones Comunales de Aporte Estatal CF"),
 	PLANTILLABORRADORAPORTEESTATAL(13,"Plantilla Borrador decreto aporte estatal"), ASIGNACIONDESEMPENODIFICIL(14, "Asignación de Desempeño Difícil"),
+	PLANTILLABASECUMPLIMIENTOMUNICIPAL(57,"Plantilla Base Cumplimiento Municipal"), PLANTILLABASECUMPLIMIENTOSERVICIO(58,"Plantilla Base Cumplimiento Servicio"),
 	
 	//Plantilla PARA Distribución de Recursos Financieros para Programas de Reforzamiento de APS
 	PLANTILLAPROGRAMAAPSMUNICIPALES(40, "Plantilla Programa APS Municipales"), PLANTILLAPROGRAMAAPSMUNICIPALEXCEPCION(41, "Plantilla Programa APS Municipal – Excepción"), PLANTILLAPROGRAMAAPSSERVICIO(42, "Plantilla Programa APS Servicios"),
@@ -22,7 +23,7 @@ public enum TipoDocumentosProcesos{
 	PLANTILLACORREORESOLUCIONSERVICIOSALUDREBAJA(53,"Plantilla Correo Resoluciones Servicios de Salud - Rebaja"), PLANTILLACORREOCONSULTAREGIONALPERCAPITA(54,"Plantilla Correo Consulta Regional - percapita"),
 	PLANTILLACORREORESOLUCIONESPERCAPITA(55,"Plantilla Correo Resoluciones - percapita"), PLANTILLAOFICIOPROGRAMACIONCAJA(56,"Plantilla Oficio Programación Caja"),
 	
-	CONVENIOS(50,"Convenios Documentos");
+	CONVENIOS(50,"Convenios Documentos"), PLANILLABASECUMPLIMIENTOMUNICIPAL(59,"Planilla Base Cumplimiento Municipal"), PLANILLABASECUMPLIMIENTOSERVICIO(60,"Planilla Base Cumplimiento Servicio");
 
 	private Integer id;
 	private String name;

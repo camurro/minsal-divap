@@ -9,9 +9,9 @@
 					<h:outputText value="Reliquidación" />
 				</h1>
 				<p:panel id="Panel">
-					<h2><h:outputLabel value="#{procesoReliquidacionPlanillasController.programaSeleccionado.nombre}" /></h2>
+					<h2><h:outputLabel value="#{procesoReliquidacionPlanillasController.programa.nombre}" /></h2>
 
-					<p class="parrafo"><h:outputLabel value="#{procesoReliquidacionPlanillasController.programaSeleccionado.descripcion}" /></p>
+					<p class="parrafo"><h:outputLabel value="#{procesoReliquidacionPlanillasController.programa.descripcion}" /></p>
 
 					<!-- ARCHIVOS DE TAREA -->
 					<h3>Archivos disponibles para la Tarea:</h3>
@@ -31,7 +31,7 @@
 							<h:outputText value="Componente: " styleClass="inputLabel" />
 							<p:selectOneMenu>
 								<f:selectItem itemLabel="Seleccione" itemValue="" />  
-								<f:selectItems value="#{procesoReliquidacionMuniController.listadoComponentes}" itemLabel="#{componente.nombre}" var="componente" itemValue="#{componente.componente_id}"/> 
+								<f:selectItems value="#{procesoReliquidacionMuniController.listadoComponentes}" itemLabel="#{componente.nombre}" var="componente" itemValue="#{componente.id}"/> 
 							</p:selectOneMenu>
 						</h:panelGrid>
 						<h:panelGrid>
