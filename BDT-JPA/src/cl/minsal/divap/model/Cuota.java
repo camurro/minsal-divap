@@ -19,7 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Cuota.findById", query = "SELECT c FROM Cuota c WHERE c.id = :id"),
     @NamedQuery(name = "Cuota.findByNumeroCuota", query = "SELECT c FROM Cuota c WHERE c.numeroCuota = :numeroCuota"),
     @NamedQuery(name = "Cuota.findByMonto", query = "SELECT c FROM Cuota c WHERE c.monto = :monto"),
-    @NamedQuery(name = "Cuota.findByFechaPago", query = "SELECT c FROM Cuota c WHERE c.fechaPago = :fechaPago")})
+    @NamedQuery(name = "Cuota.findByFechaPago", query = "SELECT c FROM Cuota c WHERE c.fechaPago = :fechaPago"),
+    @NamedQuery(name = "Cuota.findByIdProgramaAnoNroCuota", query = "SELECT c FROM Cuota c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.numeroCuota = :numeroCuota")})
 public class Cuota implements Serializable {
     private static final long serialVersionUID = 1L;
 	@Id

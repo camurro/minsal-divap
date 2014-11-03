@@ -33,165 +33,188 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name = "ProgramaAno.findByIdProgramaAno", query = "SELECT p FROM ProgramaAno p WHERE p.idProgramaAno = :idProgramaAno"),
 	@NamedQuery(name = "ProgramaAno.findByAnoComponente", query = "SELECT p FROM ProgramaAno p inner join p.programa.componentes pc where pc.id in (:idComponentes) and p.ano.ano = :ano")})
 public class ProgramaAno implements Serializable {
-	private static final long serialVersionUID = 1L;
-	@Id
-	@Column(name="id_programa_ano", unique=true, nullable=false)
-	@GeneratedValue
-	private Integer idProgramaAno;
-	@JoinColumn(name = "programa", referencedColumnName = "id")
-	@ManyToOne(optional = false)
-	private Programa programa;
-	@JoinColumn(name = "estadoflujocaja", referencedColumnName = "id_estado_programa")
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Column(name="id_programa_ano", unique=true, nullable=false)
+    @GeneratedValue
+    private Integer idProgramaAno;
+    @JoinColumn(name = "programa", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Programa programa;
+    @JoinColumn(name = "estadoflujocaja", referencedColumnName = "id_estado_programa")
     @ManyToOne
     private EstadoPrograma estadoFlujoCaja;
-	@JoinColumn(name = "estado", referencedColumnName = "id_estado_programa")
-	@ManyToOne(optional = false)
-	private EstadoPrograma estado;
-	@JoinColumn(name = "ano", referencedColumnName = "ano")
-	@ManyToOne(optional = false)
-	private AnoEnCurso ano;
-	@OneToMany(mappedBy = "idPrograma")
-	private Set<Cuota> cuotas;
-	@OneToMany(mappedBy = "idProgramaAno")
-	private Set<MarcoPresupuestario> marcosPresupuestarios;
-	@OneToMany(mappedBy = "programaAnoServicio")
-	private Set<ProgramaServicioCore> programasServiciosCore;
-	@OneToMany(mappedBy = "programaAnoMunicipal")
-	private Set<ProgramaMunicipalCore> programasMunicipalesCore;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idprograma")
-	private Collection<Remesa> remesaCollection;
-	@OneToMany(mappedBy = "idPrograma")
+    @JoinColumn(name = "estado", referencedColumnName = "id_estado_programa")
+    @ManyToOne(optional = false)
+    private EstadoPrograma estado;
+    @JoinColumn(name = "estadoreliquidacion", referencedColumnName = "id_estado_programa")
+    @ManyToOne(optional = false)
+    private EstadoPrograma estadoreliquidacion;
+    @JoinColumn(name = "estado_convenio", referencedColumnName = "id_estado_programa")
+    @ManyToOne
+    private EstadoPrograma estadoConvenio;
+    @JoinColumn(name = "ano", referencedColumnName = "ano")
+    @ManyToOne(optional = false)
+    private AnoEnCurso ano;
+    @OneToMany(mappedBy = "idPrograma")
+    private Set<Cuota> cuotas;
+    @OneToMany(mappedBy = "idProgramaAno")
+    private Set<MarcoPresupuestario> marcosPresupuestarios;
+    @OneToMany(mappedBy = "programaAnoServicio")
+    private Set<ProgramaServicioCore> programasServiciosCore;
+    @OneToMany(mappedBy = "programaAnoMunicipal")
+    private Set<ProgramaMunicipalCore> programasMunicipalesCore;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idprograma")
+    private Collection<Remesa> remesaCollection;
+    @OneToMany(mappedBy = "idPrograma")
     private Set<Convenio> convenios;
-	
+   
 
-	public ProgramaAno() {
-	}
+    public ProgramaAno() {
+    }
 
-	public ProgramaAno(Integer idProgramaAno) {
-		this.idProgramaAno = idProgramaAno;
-	}
+    public ProgramaAno(Integer idProgramaAno) {
+        this.idProgramaAno = idProgramaAno;
+    }
 
-	public Integer getIdProgramaAno() {
-		return idProgramaAno;
-	}
+    public Integer getIdProgramaAno() {
+        return idProgramaAno;
+    }
 
-	public void setIdProgramaAno(Integer idProgramaAno) {
-		this.idProgramaAno = idProgramaAno;
-	}
+    public void setIdProgramaAno(Integer idProgramaAno) {
+        this.idProgramaAno = idProgramaAno;
+    }
 
-	public Programa getPrograma() {
-		return programa;
-	}
+    public Programa getPrograma() {
+        return programa;
+    }
 
-	public void setPrograma(Programa programa) {
-		this.programa = programa;
-	}
+    public void setPrograma(Programa programa) {
+        this.programa = programa;
+    }
 
-	public EstadoPrograma getEstado() {
-		return estado;
-	}
+    public EstadoPrograma getEstado() {
+        return estado;
+    }
 
-	public void setEstado(EstadoPrograma estado) {
-		this.estado = estado;
-	}
+    public void setEstado(EstadoPrograma estado) {
+        this.estado = estado;
+    }
+   
+    public EstadoPrograma getEstadoreliquidacion() {
+        return estadoreliquidacion;
+    }
 
-	public AnoEnCurso getAno() {
-		return ano;
-	}
+    public void setEstadoreliquidacion(EstadoPrograma estadoreliquidacion) {
+        this.estadoreliquidacion = estadoreliquidacion;
+    }
+   
+    public EstadoPrograma getEstadoConvenio() {
+        return estadoConvenio;
+    }
 
-	public void setAno(AnoEnCurso ano) {
-		this.ano = ano;
-	}
-	
-	public EstadoPrograma getEstadoFlujoCaja() {
-		return estadoFlujoCaja;
-	}
+    public void setEstadoConvenio(EstadoPrograma estadoConvenio) {
+        this.estadoConvenio = estadoConvenio;
+    }
 
-	public void setEstadoFlujoCaja(EstadoPrograma estadoFlujoCaja) {
-		this.estadoFlujoCaja = estadoFlujoCaja;
-	}
+    public AnoEnCurso getAno() {
+        return ano;
+    }
 
-	@XmlTransient
-	public Set<ProgramaMunicipalCore> getProgramasMunicipalesCore() {
-		return programasMunicipalesCore;
-	}
+    public void setAno(AnoEnCurso ano) {
+        this.ano = ano;
+    }
+   
+    public EstadoPrograma getEstadoFlujoCaja() {
+        return estadoFlujoCaja;
+    }
 
-	public void setProgramasMunicipalesCore(
-			Set<ProgramaMunicipalCore> programasMunicipalesCore) {
-		this.programasMunicipalesCore = programasMunicipalesCore;
-	}
+    public void setEstadoFlujoCaja(EstadoPrograma estadoFlujoCaja) {
+        this.estadoFlujoCaja = estadoFlujoCaja;
+    }
 
-	@XmlTransient
-	public Set<ProgramaServicioCore> getProgramasServiciosCore() {
-		return programasServiciosCore;
-	}
+    @XmlTransient
+    public Set<ProgramaMunicipalCore> getProgramasMunicipalesCore() {
+        return programasMunicipalesCore;
+    }
 
-	public void setProgramasServiciosCore(
-			Set<ProgramaServicioCore> programasServiciosCore) {
-		this.programasServiciosCore = programasServiciosCore;
-	}
-	
-	@XmlTransient
-	public Set<Cuota> getCuotas() {
-		return cuotas;
-	}
+    public void setProgramasMunicipalesCore(
+            Set<ProgramaMunicipalCore> programasMunicipalesCore) {
+        this.programasMunicipalesCore = programasMunicipalesCore;
+    }
 
-	public void setCuotas(Set<Cuota> cuotas) {
-		this.cuotas = cuotas;
-	}
-	
-	@XmlTransient
-	public Set<MarcoPresupuestario> getMarcosPresupuestarios() {
-		return marcosPresupuestarios;
-	}
+    @XmlTransient
+    public Set<ProgramaServicioCore> getProgramasServiciosCore() {
+        return programasServiciosCore;
+    }
 
-	public void setMarcosPresupuestarios(
-			Set<MarcoPresupuestario> marcosPresupuestarios) {
-		this.marcosPresupuestarios = marcosPresupuestarios;
-	}
-	
-	@XmlTransient
-	public Set<Convenio> getConvenios() {
-		return convenios;
-	}
+    public void setProgramasServiciosCore(
+            Set<ProgramaServicioCore> programasServiciosCore) {
+        this.programasServiciosCore = programasServiciosCore;
+    }
+   
+    @XmlTransient
+    public Set<Cuota> getCuotas() {
+        return cuotas;
+    }
 
-	public void setConvenios(Set<Convenio> convenios) {
-		this.convenios = convenios;
-	}
+    public void setCuotas(Set<Cuota> cuotas) {
+        this.cuotas = cuotas;
+    }
+   
+    @XmlTransient
+    public Set<MarcoPresupuestario> getMarcosPresupuestarios() {
+        return marcosPresupuestarios;
+    }
 
-	@Override
-	public int hashCode() {
-		int hash = 0;
-		hash += (idProgramaAno != null ? idProgramaAno.hashCode() : 0);
-		return hash;
-	}
+    public void setMarcosPresupuestarios(
+            Set<MarcoPresupuestario> marcosPresupuestarios) {
+        this.marcosPresupuestarios = marcosPresupuestarios;
+    }
+   
+    @XmlTransient
+    public Set<Convenio> getConvenios() {
+        return convenios;
+    }
 
-	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof ProgramaAno)) {
-			return false;
-		}
-		ProgramaAno other = (ProgramaAno) object;
-		if ((this.idProgramaAno == null && other.idProgramaAno != null) || (this.idProgramaAno != null && !this.idProgramaAno.equals(other.idProgramaAno))) {
-			return false;
-		}
-		return true;
-	}
+    public void setConvenios(Set<Convenio> convenios) {
+        this.convenios = convenios;
+    }
 
-	@Override
-	public String toString() {
-		return "cl.minsal.divap.model.ProgramaAno[ idProgramaAno=" + idProgramaAno + " ]";
-	}
-	
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idProgramaAno != null ? idProgramaAno.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof ProgramaAno)) {
+            return false;
+        }
+        ProgramaAno other = (ProgramaAno) object;
+        if ((this.idProgramaAno == null && other.idProgramaAno != null) || (this.idProgramaAno != null && !this.idProgramaAno.equals(other.idProgramaAno))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "cl.minsal.divap.model.ProgramaAno[ idProgramaAno=" + idProgramaAno + " ]";
+    }
+   
 
 
-	@XmlTransient
-	   public Collection<Remesa> getRemesaCollection() {
-	       return remesaCollection;
-	   }
+    @XmlTransient
+       public Collection<Remesa> getRemesaCollection() {
+           return remesaCollection;
+       }
 
-	   public void setRemesaCollection(Collection<Remesa> remesaCollection) {
-	       this.remesaCollection = remesaCollection;
-	   }
+       public void setRemesaCollection(Collection<Remesa> remesaCollection) {
+           this.remesaCollection = remesaCollection;
+       }
 
 }
+

@@ -116,5 +116,18 @@ public class ComponenteDAO {
 
 
 	
+	public Componente getComponenteByNombre(String componente) {
+		try{
+			TypedQuery<Componente> query = this.em.createNamedQuery("Componente.findByNombre", Componente.class);
+			query.setParameter("nombre", componente.toLowerCase());
+			List<Componente> results = query.getResultList();
+			if (results.size() > 0)
+				return results.get(0);
+		}catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return null;
+	}
+
 	
 }

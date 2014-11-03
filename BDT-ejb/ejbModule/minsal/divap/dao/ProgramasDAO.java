@@ -11,11 +11,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-<<<<<<< HEAD
 import minsal.divap.vo.ProgramaMunicipalVO;
-=======
 import minsal.divap.enums.Subtitulo;
->>>>>>> d2fc30b65a72bda7d106769a56be55d537836f49
 import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.EstadoPrograma;
@@ -255,7 +252,6 @@ public class ProgramasDAO {
 		this.em.persist(programaAno);
 		return programaAno;
 	}
-<<<<<<< HEAD
 	
 	public List<ProgramaMunicipalCoreComponente> findByServicioComponente(Integer idComponente, Integer idServicio){
 		try {
@@ -360,7 +356,6 @@ public class ProgramasDAO {
 	}
 
 	
-=======
 
 	public List<ProgramaAno> getProgramasBySubtitulo(Integer anoCurso, Subtitulo subtitulo) {
 		try {
@@ -384,6 +379,5 @@ public class ProgramasDAO {
 		}
 	}
 
->>>>>>> d2fc30b65a72bda7d106769a56be55d537836f49
 }
 

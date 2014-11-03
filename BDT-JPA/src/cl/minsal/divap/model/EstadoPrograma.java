@@ -30,15 +30,18 @@ import javax.xml.bind.annotation.XmlTransient;
 public class EstadoPrograma implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-	@Column(name="id_estado_programa", unique=true, nullable=false)
-	@GeneratedValue
+    @Column(name="id_estado_programa", unique=true, nullable=false)
+    @GeneratedValue
     private Integer idEstadoPrograma;
     @Basic(optional = false)
     @Column(name = "nombre_estado")
     private String nombreEstado;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "estadoreliquidacion")
+    private Set<ProgramaAno> programaAnosReliquidacion;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "estadoConvenio")
+    private Set<ProgramaAno> programaAnosConvenio;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "estado")
     private Set<ProgramaAno> programasAnos;
-    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "estadoFlujoCaja")
     private Set<ProgramaAno> programasAnosFlujoCaja;
 
@@ -68,6 +71,34 @@ public class EstadoPrograma implements Serializable {
 
     public void setNombreEstado(String nombreEstado) {
         this.nombreEstado = nombreEstado;
+    }
+
+    @XmlTransient
+    public Set<ProgramaAno> getProgramaAnosReliquidacion() {
+        return programaAnosReliquidacion;
+    }
+
+    public void setProgramaAnosReliquidacion(
+            Set<ProgramaAno> programaAnosReliquidacion) {
+        this.programaAnosReliquidacion = programaAnosReliquidacion;
+    }
+   
+    @XmlTransient
+    public Set<ProgramaAno> getProgramaAnosConvenio() {
+        return programaAnosConvenio;
+    }
+
+    public void setProgramaAnosConvenio(Set<ProgramaAno> programaAnosConvenio) {
+        this.programaAnosConvenio = programaAnosConvenio;
+    }
+   
+    @XmlTransient
+    public Set<ProgramaAno> getProgramasAnosFlujoCaja() {
+        return programasAnosFlujoCaja;
+    }
+
+    public void setProgramasAnosFlujoCaja(Set<ProgramaAno> programasAnosFlujoCaja) {
+        this.programasAnosFlujoCaja = programasAnosFlujoCaja;
     }
 
     @XmlTransient
@@ -102,5 +133,5 @@ public class EstadoPrograma implements Serializable {
     public String toString() {
         return "cl.minsal.divap.model.EstadoPrograma[ idEstadoPrograma=" + idEstadoPrograma + " ]";
     }
-    
+   
 }

@@ -19230,5 +19230,688 @@ ALTER TABLE documento_estimacionflujocaja
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (56, 'Plantilla Oficio Programación Caja');
 
 
+CREATE TABLE reliquidacion
+(
+  id_reliquidacion serial NOT NULL,
+  usuario text,
+  fecha_creacion time with time zone,
+  mes integer NOT NULL,
+  id_programa_ano integer NOT NULL,
+  CONSTRAINT pk_reliquidacion PRIMARY KEY (id_reliquidacion ),
+  CONSTRAINT fk_mes FOREIGN KEY (mes)
+      REFERENCES mes (id_mes) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_programa_ano FOREIGN KEY (id_programa_ano)
+      REFERENCES programa_ano (id_programa_ano) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE reliquidacion
+  OWNER TO postgres;
+
+
+CREATE TABLE documento_reliquidacion
+(
+  id_documento integer NOT NULL,
+  id_reliquidacion integer NOT NULL,
+  id_tipo_documento integer NOT NULL,
+  servicio integer NOT NULL,
+  comuna integer,
+  establecimiento integer,
+  id_documento_reliquidacion serial NOT NULL,
+  CONSTRAINT pk_id_documento_rel PRIMARY KEY (id_documento_reliquidacion ),
+  CONSTRAINT fk_comuna FOREIGN KEY (comuna)
+      REFERENCES comuna (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_documento FOREIGN KEY (id_documento)
+      REFERENCES referencia_documento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_establecimiento FOREIGN KEY (establecimiento)
+      REFERENCES establecimiento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_reliquidacion FOREIGN KEY (id_reliquidacion)
+      REFERENCES reliquidacion (id_reliquidacion) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_servicio FOREIGN KEY (servicio)
+      REFERENCES servicio_salud (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_tipo_doc FOREIGN KEY (id_tipo_documento)
+      REFERENCES tipo_documento (id_tipo_documento) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE documento_reliquidacion
+  OWNER TO postgres;
+
+
+ALTER TABLE reliquidacion DROP COLUMN usuario;
+ALTER TABLE reliquidacion ADD COLUMN usuario text NOT NULL
+ALTER TABLE reliquidacion ADD CONSTRAINT usuario_fk FOREIGN KEY (usuario) REFERENCES usuario (username) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE reliquidacion
+   ALTER COLUMN id_programa_ano DROP NOT NULL;
+
+
+UPDATE componente_subtitulo
+SET componente=15, subtitulo=1, peso_subtitulo=15
+where id_componente_subtitulo=25; 
+
+UPDATE componente_subtitulo
+SET componente=15, subtitulo=2, peso_subtitulo=25
+where id_componente_subtitulo=25; 
+
+UPDATE componente_subtitulo
+SET componente=16, subtitulo=2, peso_subtitulo=20
+where id_componente_subtitulo=26; 
+
+UPDATE componente_subtitulo
+SET componente=17, subtitulo=2, peso_subtitulo=20
+where id_componente_subtitulo=27;
+
+UPDATE componente_subtitulo
+SET componente=18, subtitulo=2, peso_subtitulo=20
+where id_componente_subtitulo=28; 
+
+
+ALTER TABLE programa_ano ADD COLUMN estadoreliquidacion integer;
+UPDATE programa_ano SET estadoreliquidacion=1;
+ALTER TABLE programa_ano ADD CONSTRAINT fk_estadoreliquidacion FOREIGN KEY (estadoreliquidacion) REFERENCES estado_programa (id_estado_programa) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE programa_ano
+   ALTER COLUMN estadoreliquidacion SET NOT NULL;
+
+
+--######################## Se agrega otro programa con 2 servicios ########################33333
+
+INSERT INTO marco_presupuestario(marco_inicial, marco_modificado, id_marco_presupuestario, id_servicio_salud, id_programa_ano) VALUES (400000000, 500000000, 3, 10, 50);
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (7, 1, 60, 50);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (8, 2, 40, 50, 10);
+
+INSERT INTO caja(id, id_componente, marco_presupuestario, id_subtitulo, monto) VALUES (3, 15, 3, 1, 75000000);
+INSERT INTO caja(id, id_componente, marco_presupuestario, id_subtitulo, monto) VALUES (4, 15, 3, 2, 125000000);
+INSERT INTO caja(id, id_componente, marco_presupuestario, id_subtitulo, monto) VALUES (5, 16, 3, 2, 100000000);
+INSERT INTO caja(id, id_componente, marco_presupuestario, id_subtitulo, monto) VALUES (6, 17, 3, 2, 100000000);
+INSERT INTO caja(id, id_componente, marco_presupuestario, id_subtitulo, monto) VALUES (7, 18, 3, 2, 100000000);
+
+
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((75000000 * (10/100.0)) :: int), '2014-01-09', 37);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((75000000 * (5/100.0)) :: int), '2014-02-09', 38);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((75000000 * (5/100.0)) :: int), '2014-03-09', 39);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((75000000 * (20/100.0)) :: int), '2014-04-09', 40);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((75000000 * (20/100.0)) :: int), '2014-05-09',41);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((75000000 * (10/100.0)) :: int), '2014-06-09', 42);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((75000000 * (10/100.0)) :: int), '2014-07-09', 43);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((75000000 * (5/100.0)) :: int), '2014-08-09', 44);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((75000000 * (10/100.0)) :: int), '2014-09-09', 45);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((75000000 * (5/100.0)) :: int), '2014-10-09', 46);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-11-09', 47);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-12-09', 48);
+
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 37, 1);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 38, 2);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 39, 3);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 40, 4);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 41, 5);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 42, 6);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 43, 7);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 44, 8);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 45, 9);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 46, 10);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 47, 11);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (3, 48, 12);
+
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((125000000 * (10/100.0)) :: int), '2014-01-09', 49);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((125000000 * (5/100.0)) :: int), '2014-02-09', 50);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((125000000 * (5/100.0)) :: int), '2014-03-09', 51);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((125000000 * (20/100.0)) :: int), '2014-04-09', 52);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((125000000 * (10/100.0)) :: int), '2014-05-09',53);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((125000000 * (20/100.0)) :: int), '2014-06-09', 54);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((125000000 * (10/100.0)) :: int), '2014-07-09', 55);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((125000000 * (5/100.0)) :: int), '2014-08-09', 56);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((125000000 * (10/100.0)) :: int), '2014-09-09', 57);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((125000000 * (5/100.0)) :: int), '2014-10-09', 58);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-11-09', 59);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-12-09', 60);
+
+
+INSERT INTO caja_monto(caja, monto, mes) VALUES (4, 49, 1);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (4, 50, 2);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (4, 51, 3);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (4, 52, 4);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (4, 53, 5);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (4, 54, 6);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (4, 55, 7);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (4, 56, 8);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (4, 57, 9);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (4, 58, 10);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (4, 59, 11);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (4, 60, 12);
+
+
+
+
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((100000000 * (10/100.0)) :: int), '2014-01-09', 61);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((100000000 * (5/100.0)) :: int), '2014-02-09', 62);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((100000000 * (5/100.0)) :: int), '2014-03-09', 63);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (25, ((100000000 * (25/100.0)) :: int), '2014-04-09', 64);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((100000000 * (5/100.0)) :: int), '2014-05-09',65);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((100000000 * (20/100.0)) :: int), '2014-06-09', 66);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((100000000 * (10/100.0)) :: int), '2014-07-09', 67);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((100000000 * (5/100.0)) :: int), '2014-08-09', 68);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((100000000 * (10/100.0)) :: int), '2014-09-09', 69);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((100000000 * (5/100.0)) :: int), '2014-10-09', 70);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-11-09', 71);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-12-09', 72);
+
+
+INSERT INTO caja_monto(caja, monto, mes) VALUES (5, 61, 1);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (5, 62, 2);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (5, 63, 3);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (5, 64, 4);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (5, 65, 5);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (5, 66, 6);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (5, 67, 7);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (5, 68, 8);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (5, 69, 9);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (5, 70, 10);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (5, 71, 11);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (5, 72, 12);
+
+
+
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((100000000 * (10/100.0)) :: int), '2014-01-09', 73);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((100000000 * (5/100.0)) :: int), '2014-02-09', 74);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((100000000 * (5/100.0)) :: int), '2014-03-09', 75);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (25, ((100000000 * (25/100.0)) :: int), '2014-04-09', 76);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((100000000 * (5/100.0)) :: int), '2014-05-09',77);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((100000000 * (20/100.0)) :: int), '2014-06-09', 78);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((100000000 * (10/100.0)) :: int), '2014-07-09', 79);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((100000000 * (5/100.0)) :: int), '2014-08-09', 80);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((100000000 * (10/100.0)) :: int), '2014-09-09', 81);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((100000000 * (5/100.0)) :: int), '2014-10-09', 82);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-11-09', 83);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-12-09', 84);
+
+
+INSERT INTO caja_monto(caja, monto, mes) VALUES (6, 73, 1);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (6, 74, 2);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (6, 75, 3);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (6, 76, 4);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (6, 77, 5);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (6, 78, 6);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (6, 79, 7);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (6, 80, 8);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (6, 81, 9);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (6, 82, 10);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (6, 83, 11);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (6, 84, 12);
+
+
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((100000000 * (10/100.0)) :: int), '2014-01-09', 85);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((100000000 * (5/100.0)) :: int), '2014-02-09', 86);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((100000000 * (5/100.0)) :: int), '2014-03-09', 87);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (25, ((100000000 * (25/100.0)) :: int), '2014-04-09', 88);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((100000000 * (5/100.0)) :: int), '2014-05-09',89);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((100000000 * (20/100.0)) :: int), '2014-06-09', 90);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((100000000 * (10/100.0)) :: int), '2014-07-09', 91);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((100000000 * (5/100.0)) :: int), '2014-08-09', 92);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((100000000 * (10/100.0)) :: int), '2014-09-09', 93);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((100000000 * (5/100.0)) :: int), '2014-10-09', 94);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-11-09', 95);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-12-09', 96);
+
+
+INSERT INTO caja_monto(caja, monto, mes) VALUES (7, 85, 1);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (7, 86, 2);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (7, 87, 3);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (7, 88, 4);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (7, 89, 5);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (7, 90, 6);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (7, 91, 7);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (7, 92, 8);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (7, 93, 9);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (7, 94, 10);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (7, 95, 11);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (7, 96, 12);
+
+
+
+--otro servicio ############
+
+INSERT INTO marco_presupuestario(marco_inicial, marco_modificado, id_marco_presupuestario, id_servicio_salud, id_programa_ano) VALUES (300000000, 600000000, 4, 11, 50);
+
+INSERT INTO caja(id, id_componente, marco_presupuestario, id_subtitulo, monto) VALUES (8, 15, 4, 1, 90000000);
+INSERT INTO caja(id, id_componente, marco_presupuestario, id_subtitulo, monto) VALUES (9, 15, 4, 2, 150000000);
+INSERT INTO caja(id, id_componente, marco_presupuestario, id_subtitulo, monto) VALUES (10, 16, 4, 2, 120000000);
+INSERT INTO caja(id, id_componente, marco_presupuestario, id_subtitulo, monto) VALUES (11, 17, 4, 2, 120000000);
+INSERT INTO caja(id, id_componente, marco_presupuestario, id_subtitulo, monto) VALUES (12, 18, 4, 2, 120000000);
+
+
+
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((90000000 * (10/100.0)) :: int), '2014-01-09', 97);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((90000000 * (5/100.0)) :: int), '2014-02-09', 98);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((90000000 * (5/100.0)) :: int), '2014-03-09', 99);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((90000000 * (20/100.0)) :: int), '2014-04-09', 100);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((90000000 * (20/100.0)) :: int), '2014-05-09',101);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((90000000 * (10/100.0)) :: int), '2014-06-09', 102);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((90000000 * (10/100.0)) :: int), '2014-07-09', 103);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((90000000 * (5/100.0)) :: int), '2014-08-09', 104);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((90000000 * (10/100.0)) :: int), '2014-09-09', 105);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((90000000 * (5/100.0)) :: int), '2014-10-09', 106);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-11-09', 107);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-12-09', 108);
+
+INSERT INTO caja_monto(caja, monto, mes) VALUES (8, 97, 1);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (8, 98, 2);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (8, 99, 3);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (8, 100, 4);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (8, 101, 5);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (8, 102, 6);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (8, 103, 7);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (8, 104, 8);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (8, 105, 9);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (8, 106, 10);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (8, 107, 11);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (8, 108, 12);
+
+
+
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((150000000 * (10/100.0)) :: int), '2014-01-09', 109);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((150000000 * (5/100.0)) :: int), '2014-02-09', 110);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((150000000 * (5/100.0)) :: int), '2014-03-09', 111);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((150000000 * (20/100.0)) :: int), '2014-04-09', 112);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((150000000 * (10/100.0)) :: int), '2014-05-09',113);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((150000000 * (20/100.0)) :: int), '2014-06-09', 114);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((150000000 * (10/100.0)) :: int), '2014-07-09', 115);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((150000000 * (5/100.0)) :: int), '2014-08-09', 116);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((150000000 * (10/100.0)) :: int), '2014-09-09', 117);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((150000000 * (5/100.0)) :: int), '2014-10-09', 118);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-11-09', 119);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-12-09', 120);
+
+
+INSERT INTO caja_monto(caja, monto, mes) VALUES (9, 109, 1);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (9, 110, 2);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (9, 111, 3);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (9, 112, 4);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (9, 113, 5);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (9, 114, 6);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (9, 115, 7);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (9, 116, 8);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (9, 117, 9);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (9, 118, 10);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (9, 119, 11);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (9, 120, 12);
+
+
+
+
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((120000000 * (10/100.0)) :: int), '2014-01-09', 121);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((120000000 * (5/100.0)) :: int), '2014-02-09', 122);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((120000000 * (5/100.0)) :: int), '2014-03-09', 123);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (25, ((120000000 * (25/100.0)) :: int), '2014-04-09', 124);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((120000000 * (5/100.0)) :: int), '2014-05-09',125);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((120000000 * (20/100.0)) :: int), '2014-06-09', 126);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((120000000 * (10/100.0)) :: int), '2014-07-09', 127);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((120000000 * (5/100.0)) :: int), '2014-08-09', 128);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((120000000 * (10/100.0)) :: int), '2014-09-09', 129);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((120000000 * (5/100.0)) :: int), '2014-10-09', 130);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-11-09', 131);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-12-09', 132);
+
+
+INSERT INTO caja_monto(caja, monto, mes) VALUES (10, 121, 1);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (10, 122, 2);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (10, 123, 3);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (10, 124, 4);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (10, 125, 5);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (10, 126, 6);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (10, 127, 7);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (10, 128, 8);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (10, 129, 9);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (10, 130, 10);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (10, 131, 11);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (10, 132, 12);
+
+
+
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((120000000 * (10/100.0)) :: int), '2014-01-09', 133);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((120000000 * (5/100.0)) :: int), '2014-02-09', 134);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((120000000 * (5/100.0)) :: int), '2014-03-09', 135);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (25, ((120000000 * (25/100.0)) :: int), '2014-04-09', 136);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((120000000 * (5/100.0)) :: int), '2014-05-09',137);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((120000000 * (20/100.0)) :: int), '2014-06-09', 138);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((120000000 * (10/100.0)) :: int), '2014-07-09', 139);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((120000000 * (5/100.0)) :: int), '2014-08-09', 140);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((120000000 * (10/100.0)) :: int), '2014-09-09', 141);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((120000000 * (5/100.0)) :: int), '2014-10-09', 142);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-11-09', 143);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-12-09', 144);
+
+
+INSERT INTO caja_monto(caja, monto, mes) VALUES (11, 133, 1);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (11, 134, 2);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (11, 135, 3);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (11, 136, 4);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (11, 137, 5);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (11, 138, 6);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (11, 139, 7);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (11, 140, 8);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (11, 141, 9);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (11, 142, 10);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (11, 143, 11);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (11, 144, 12);
+
+
+
+
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((120000000 * (10/100.0)) :: int), '2014-01-09', 145);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((120000000 * (5/100.0)) :: int), '2014-02-09', 146);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((120000000 * (5/100.0)) :: int), '2014-03-09', 147);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (25, ((120000000 * (25/100.0)) :: int), '2014-04-09', 148);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((120000000 * (5/100.0)) :: int), '2014-05-09',149);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (20, ((120000000 * (20/100.0)) :: int), '2014-06-09', 150);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((120000000 * (10/100.0)) :: int), '2014-07-09', 151);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((120000000 * (5/100.0)) :: int), '2014-08-09', 152);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (10, ((120000000 * (10/100.0)) :: int), '2014-09-09', 153);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (5, ((120000000 * (5/100.0)) :: int), '2014-10-09', 154);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-11-09', 155);
+INSERT INTO monto_mes(porcentaje_monto, monto, fecha_monto, id_monto_mes) VALUES (0, 0, '2014-12-09', 156);
+
+
+INSERT INTO caja_monto(caja, monto, mes) VALUES (12, 145, 1);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (12, 146, 2);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (12, 147, 3);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (12, 148, 4);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (12, 149, 5);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (12, 150, 6);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (12, 151, 7);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (12, 152, 8);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (12, 153, 9);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (12, 154, 10);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (12, 155, 11);
+INSERT INTO caja_monto(caja, monto, mes) VALUES (12, 156, 12);
+
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (57, 'Plantilla Base Cumplimiento Municipal');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (58, 'Plantilla Base Cumplimiento Servicio');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (59, 'Planilla Base Cumplimiento Municipal');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (60, 'Planilla Base Cumplimiento Servicio');
+
+INSERT INTO cumplimiento_programa(id_cumplimiento_programa, programa, porcentaje_desde, porcentaje_hasta,rebaja)
+values(1, 12, 0, 19.99, 100);
+INSERT INTO cumplimiento_programa(id_cumplimiento_programa, programa, porcentaje_desde, porcentaje_hasta,rebaja)
+values(2, 12, 20, 29.99, 75);
+INSERT INTO cumplimiento_programa(id_cumplimiento_programa, programa, porcentaje_desde, porcentaje_hasta,rebaja)
+values(3, 12, 30, 39.99, 50);
+INSERT INTO cumplimiento_programa(id_cumplimiento_programa, programa, porcentaje_desde, porcentaje_hasta,rebaja)
+values(4, 12, 40, 100, 100);
+
+
+--###### convenios
+
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (1, 50, NULL, 7201, 1, 14000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (103, 50, NULL, 7201, 2, 14000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (104, 50, NULL, 7202, 2, 13800000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (105, 50, NULL, 7402, 2, 12900000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (106, 50, NULL, 7102, 2, 11000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (107, 50, NULL, 7103, 2, 9000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (108, 50, NULL, 7301, 2, 13000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (109, 50, NULL, 7104, 2, 18000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (110, 50, NULL, 7302, 2, 17000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (111, 50, NULL, 7303, 2, 9000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (112, 50, NULL, 7401, 2, 10000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (113, 50, NULL, 7403, 2, 11500000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (114, 50, NULL, 7105, 2, 14000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (115, 50, NULL, 7304, 2, 13800000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (116, 50, NULL, 7404, 2, 12900000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (117, 50, NULL, 7106, 2, 11000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (118, 50, NULL, 7203, 2, 9000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (119, 50, NULL, 7107, 2, 13000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (120, 50, NULL, 7305, 2, 18000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (121, 50, NULL, 7405, 2, 17000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (122, 50, NULL, 7108, 2, 9000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (123, 50, NULL, 7306, 2, 10000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (124, 50, NULL, 7307, 2, 11500000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (125, 50, NULL, 7109, 2, 14000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (126, 50, NULL, 7406, 2, 13800000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (127, 50, NULL, 7110, 2, 12900000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (128, 50, NULL, 7101, 2, 11000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (129, 50, NULL, 7308, 2, 9000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (130, 50, NULL, 7309, 2, 13000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (131, 50, NULL, 7407, 2, 18000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (132, 50, NULL, 7408, 2, 17000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (133, 50, NULL, 8402, 2, 14000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (134, 50, NULL, 8401, 2, 13800000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (135, 50, NULL, 8406, 2, 12900000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (136, 50, NULL, 8403, 2, 11000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (137, 50, NULL, 8404, 2, 9000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (138, 50, NULL, 8405, 2, 13000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (139, 50, NULL, 8407, 2, 18000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (140, 50, NULL, 8408, 2, 17000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (141, 50, NULL, 8409, 2, 9000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (142, 50, NULL, 8410, 2, 10000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (143, 50, NULL, 8411, 2, 11500000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (144, 50, NULL, 8412, 2, 14000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (145, 50, NULL, 8413, 2, 13800000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (146, 50, NULL, 8414, 2, 12900000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (147, 50, NULL, 8415, 2, 11000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (148, 50, NULL, 8416, 2, 9000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (149, 50, NULL, 8417, 2, 13000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (150, 50, NULL, 8418, 2, 18000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (151, 50, NULL, 8419, 2, 17000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (152, 50, NULL, 8420, 2, 12900000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (153, 50, NULL, 8421, 2, 11000000, NULL, NULL, 16, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (154, 50, NULL, 7201, 2, 14000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (155, 50, NULL, 7202, 2, 13800000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (156, 50, NULL, 7402, 2, 12900000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (157, 50, NULL, 7102, 2, 11000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (158, 50, NULL, 7103, 2, 9000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (159, 50, NULL, 7301, 2, 13000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (160, 50, NULL, 7104, 2, 18000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (161, 50, NULL, 7302, 2, 17000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (162, 50, NULL, 7303, 2, 9000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (163, 50, NULL, 7401, 2, 10000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (164, 50, NULL, 7403, 2, 11500000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (165, 50, NULL, 7105, 2, 14000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (166, 50, NULL, 7304, 2, 13800000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (167, 50, NULL, 7404, 2, 12900000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (168, 50, NULL, 7106, 2, 11000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (169, 50, NULL, 7203, 2, 9000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (170, 50, NULL, 7107, 2, 13000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (171, 50, NULL, 7305, 2, 18000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (172, 50, NULL, 7405, 2, 17000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (173, 50, NULL, 7108, 2, 9000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (174, 50, NULL, 7306, 2, 10000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (175, 50, NULL, 7307, 2, 11500000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (176, 50, NULL, 7109, 2, 14000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (177, 50, NULL, 7406, 2, 13800000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (178, 50, NULL, 7110, 2, 12900000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (179, 50, NULL, 7101, 2, 11000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (180, 50, NULL, 7308, 2, 9000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (181, 50, NULL, 7309, 2, 13000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (182, 50, NULL, 7407, 2, 18000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (183, 50, NULL, 7408, 2, 17000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (184, 50, NULL, 8402, 2, 14000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (185, 50, NULL, 8401, 2, 13800000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (186, 50, NULL, 8406, 2, 12900000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (187, 50, NULL, 8403, 2, 11000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (188, 50, NULL, 8404, 2, 9000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (189, 50, NULL, 8405, 2, 13000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (190, 50, NULL, 8407, 2, 18000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (191, 50, NULL, 8408, 2, 17000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (192, 50, NULL, 8409, 2, 9000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (193, 50, NULL, 8410, 2, 10000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (194, 50, NULL, 8411, 2, 11500000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (195, 50, NULL, 8412, 2, 14000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (196, 50, NULL, 8413, 2, 13800000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (197, 50, NULL, 8414, 2, 12900000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (198, 50, NULL, 8415, 2, 11000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (199, 50, NULL, 8416, 2, 9000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (200, 50, NULL, 8417, 2, 13000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (201, 50, NULL, 8418, 2, 18000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (202, 50, NULL, 8419, 2, 17000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (203, 50, NULL, 8420, 2, 12900000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (204, 50, NULL, 8421, 2, 11000000, NULL, NULL, 17, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (223, 50, NULL, 7405, 2, 17000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (224, 50, NULL, 7108, 2, 9000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (225, 50, NULL, 7306, 2, 10000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (226, 50, NULL, 7307, 2, 11500000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (227, 50, NULL, 7109, 2, 14000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (228, 50, NULL, 7406, 2, 13800000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (229, 50, NULL, 7110, 2, 12900000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (230, 50, NULL, 7101, 2, 11000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (231, 50, NULL, 7308, 2, 9000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (232, 50, NULL, 7309, 2, 13000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (233, 50, NULL, 7407, 2, 18000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (234, 50, NULL, 7408, 2, 17000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (235, 50, NULL, 8402, 2, 14000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (236, 50, NULL, 8401, 2, 13800000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (237, 50, NULL, 8406, 2, 12900000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (238, 50, NULL, 8403, 2, 11000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (239, 50, NULL, 8404, 2, 9000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (2, 50, NULL, 7202, 1, 13800000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (3, 50, NULL, 7402, 1, 12900000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (4, 50, NULL, 7102, 1, 11000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (5, 50, NULL, 7103, 1, 9000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (6, 50, NULL, 7301, 1, 13000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (7, 50, NULL, 7104, 1, 18000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (8, 50, NULL, 7302, 1, 17000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (9, 50, NULL, 7303, 1, 9000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (10, 50, NULL, 7401, 1, 10000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (11, 50, NULL, 7403, 1, 11500000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (12, 50, NULL, 7105, 1, 14000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (13, 50, NULL, 7304, 1, 13800000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (14, 50, NULL, 7404, 1, 12900000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (15, 50, NULL, 7106, 1, 11000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (16, 50, NULL, 7203, 1, 9000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (17, 50, NULL, 7107, 1, 13000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (18, 50, NULL, 7305, 1, 18000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (19, 50, NULL, 7405, 1, 17000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (20, 50, NULL, 7108, 1, 9000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (21, 50, NULL, 7306, 1, 10000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (22, 50, NULL, 7307, 1, 11500000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (23, 50, NULL, 7109, 1, 14000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (24, 50, NULL, 7406, 1, 13800000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (25, 50, NULL, 7110, 1, 12900000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (26, 50, NULL, 7101, 1, 11000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (27, 50, NULL, 7308, 1, 9000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (28, 50, NULL, 7309, 1, 13000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (29, 50, NULL, 7407, 1, 18000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (30, 50, NULL, 7408, 1, 17000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (31, 50, NULL, 8402, 1, 14000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (32, 50, NULL, 8401, 1, 13800000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (33, 50, NULL, 8406, 1, 12900000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (34, 50, NULL, 8403, 1, 11000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (35, 50, NULL, 8404, 1, 9000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (36, 50, NULL, 8405, 1, 13000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (37, 50, NULL, 8407, 1, 18000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (38, 50, NULL, 8408, 1, 17000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (39, 50, NULL, 8409, 1, 9000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (40, 50, NULL, 8410, 1, 10000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (41, 50, NULL, 8411, 1, 11500000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (42, 50, NULL, 8412, 1, 14000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (43, 50, NULL, 8413, 1, 13800000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (44, 50, NULL, 8414, 1, 12900000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (45, 50, NULL, 8415, 1, 11000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (46, 50, NULL, 8416, 1, 9000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (47, 50, NULL, 8417, 1, 13000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (48, 50, NULL, 8418, 1, 18000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (49, 50, NULL, 8419, 1, 17000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (50, 50, NULL, 8420, 1, 12900000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (51, 50, NULL, 8421, 1, 11000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (52, 50, NULL, 7201, 2, 14000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (53, 50, NULL, 7202, 2, 13800000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (54, 50, NULL, 7402, 2, 12900000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (55, 50, NULL, 7102, 2, 11000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (56, 50, NULL, 7103, 2, 9000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (57, 50, NULL, 7301, 2, 13000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (58, 50, NULL, 7104, 2, 18000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (59, 50, NULL, 7302, 2, 17000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (60, 50, NULL, 7303, 2, 9000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (61, 50, NULL, 7401, 2, 10000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (62, 50, NULL, 7403, 2, 11500000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (63, 50, NULL, 7105, 2, 14000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (64, 50, NULL, 7304, 2, 13800000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (65, 50, NULL, 7404, 2, 12900000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (66, 50, NULL, 7106, 2, 11000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (67, 50, NULL, 7203, 2, 9000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (68, 50, NULL, 7107, 2, 13000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (69, 50, NULL, 7305, 2, 18000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (70, 50, NULL, 7405, 2, 17000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (71, 50, NULL, 7108, 2, 9000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (72, 50, NULL, 7306, 2, 10000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (73, 50, NULL, 7307, 2, 11500000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (74, 50, NULL, 7109, 2, 14000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (75, 50, NULL, 7406, 2, 13800000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (76, 50, NULL, 7110, 2, 12900000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (77, 50, NULL, 7101, 2, 11000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (78, 50, NULL, 7308, 2, 9000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (79, 50, NULL, 7309, 2, 13000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (80, 50, NULL, 7407, 2, 18000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (81, 50, NULL, 7408, 2, 17000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (82, 50, NULL, 8402, 2, 14000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (83, 50, NULL, 8401, 2, 13800000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (84, 50, NULL, 8406, 2, 12900000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (85, 50, NULL, 8403, 2, 11000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (86, 50, NULL, 8404, 2, 9000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (87, 50, NULL, 8405, 2, 13000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (88, 50, NULL, 8407, 2, 18000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (89, 50, NULL, 8408, 2, 17000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (90, 50, NULL, 8409, 2, 9000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (91, 50, NULL, 8410, 2, 10000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (92, 50, NULL, 8411, 2, 11500000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (93, 50, NULL, 8412, 2, 14000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (94, 50, NULL, 8413, 2, 13800000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (95, 50, NULL, 8414, 2, 12900000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (96, 50, NULL, 8415, 2, 11000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (97, 50, NULL, 8416, 2, 9000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (98, 50, NULL, 8417, 2, 13000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (99, 50, NULL, 8418, 2, 18000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (100, 50, NULL, 8419, 2, 17000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (101, 50, NULL, 8420, 2, 12900000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (102, 50, NULL, 8421, 2, 11000000, NULL, NULL, 15, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (205, 50, NULL, 7201, 2, 14000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (206, 50, NULL, 7202, 2, 13800000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (207, 50, NULL, 7402, 2, 12900000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (208, 50, NULL, 7102, 2, 11000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (209, 50, NULL, 7103, 2, 9000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (210, 50, NULL, 7301, 2, 13000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (211, 50, NULL, 7104, 2, 18000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (212, 50, NULL, 7302, 2, 17000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (213, 50, NULL, 7303, 2, 9000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (214, 50, NULL, 7401, 2, 10000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (215, 50, NULL, 7403, 2, 11500000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (216, 50, NULL, 7105, 2, 14000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (217, 50, NULL, 7304, 2, 13800000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (218, 50, NULL, 7404, 2, 12900000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (219, 50, NULL, 7106, 2, 11000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (220, 50, NULL, 7203, 2, 9000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (221, 50, NULL, 7107, 2, 13000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (222, 50, NULL, 7305, 2, 18000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (240, 50, NULL, 8405, 2, 13000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (241, 50, NULL, 8407, 2, 18000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (242, 50, NULL, 8408, 2, 17000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (243, 50, NULL, 8409, 2, 9000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (244, 50, NULL, 8410, 2, 10000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (245, 50, NULL, 8411, 2, 11500000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (246, 50, NULL, 8412, 2, 14000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (247, 50, NULL, 8413, 2, 13800000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (248, 50, NULL, 8414, 2, 12900000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (249, 50, NULL, 8415, 2, 11000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (250, 50, NULL, 8416, 2, 9000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (251, 50, NULL, 8417, 2, 13000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (252, 50, NULL, 8418, 2, 18000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (253, 50, NULL, 8419, 2, 17000000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (254, 50, NULL, 8420, 2, 12900000, NULL, NULL, 18, NULL, 10);
+INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (255, 50, NULL, 8421, 2, 11000000, NULL, NULL, 18, NULL, 10);
+
+
+
 
 

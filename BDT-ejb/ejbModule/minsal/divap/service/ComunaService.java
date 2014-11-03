@@ -19,15 +19,14 @@ public class ComunaService {
 
 	@EJB
 	private ComunaDAO comunaDAO;
-	
-	
-	
+
 	public List<ComunaVO> getComunas() {
 		List<ComunaVO> ComunasVO = new ArrayList<ComunaVO>();
 		List<Comuna> comunas = this.comunaDAO.getComuna();
-		if(comunas != null && comunas.size() > 0){
-			for(Comuna comuna : comunas){
+		if (comunas != null && comunas.size() > 0) {
+			for (Comuna comuna : comunas) {
 				ComunaVO comunaVO = new ComunaVO();
+
 				comunaVO.setIdComuna(comuna.getId());
 				comunaVO.setDescComuna(comuna.getNombre());
 				ComunasVO.add(comunaVO);
@@ -51,4 +50,11 @@ public class ComunaService {
 		}
 		return servicioComunaVOList;
 	}
+		
+	
+	public Comuna getComunaById(int id){
+		Comuna comuna = this.comunaDAO.getComunaById(id);		
+		return comuna;	
+	}
+	
 }

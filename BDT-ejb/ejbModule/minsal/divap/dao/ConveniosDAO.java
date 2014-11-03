@@ -55,6 +55,26 @@ public class ConveniosDAO {
 		}
 	}
 	
+	
+	public List<Convenio> getConveniosByIdProgramaAnoIdComponenteIdSubtitulo(Integer idProgramaAno, Integer idComponente, Integer idComuna){
+		try {
+			TypedQuery<Convenio> query = this.em.createNamedQuery("Convenio.findByIdProgramaAnoIdComponenteIdComuna", Convenio.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idComuna", idComuna);
+			List<Convenio> result = query.getResultList();
+			if(result != null && result.size() > 0){
+				return query.getResultList(); 
+			}
+			else{
+				System.out.println("no se encontraron resultados");
+				return null;
+				}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 
 	
 	

@@ -156,6 +156,7 @@ public abstract class ExcelValidator<T>{
 			switch (cellType.getType()) {
 			case STRINGFIELD:
 				try{
+					System.out.println("STRINGFIELD xssfRow.getCell(first).getRichStringCellValue() --> "+xssfRow.getCell(first).getRawValue());
 					String value = "";
 					if(cellType.getRequired()){
 						//System.out.println("xssfRow.getCell("+first+").getRichStringCellValue().getString()-->" + xssfRow.getCell(first).getRichStringCellValue().getString());
@@ -167,15 +168,16 @@ public abstract class ExcelValidator<T>{
 					}
 					values.add(value);
 				}catch (Exception e) {
+					e.printStackTrace();
 					isValidRow = false;
 				}
 				break;
 			case INTEGERFIELD:
 			case DOUBLEFIELD:
 				try{
+					System.out.println("INTEGERFIELD DOUBLEFIELD xssfRow.getCell(first).getRichStringCellValue() --> "+xssfRow.getCell(first).getRawValue());
 					String value = "";
 					if(cellType.getRequired()){
-						//System.out.println("xssfRow.getCell("+first+").getNumericCellValue().getString()-->" + xssfRow.getCell(first).getNumericCellValue());
 						value = "" + xssfRow.getCell(first++).getNumericCellValue();
 					}else{
 						if(xssfRow.getCell(first).getCellType() != 3){
@@ -184,6 +186,7 @@ public abstract class ExcelValidator<T>{
 					}
 					values.add(value);
 				}catch (Exception e) {
+					e.printStackTrace();
 					isValidRow = false;
 				}
 				break;
@@ -199,11 +202,13 @@ public abstract class ExcelValidator<T>{
 					}
 					values.add(value);
 				}catch (Exception e) {
+					e.printStackTrace();
 					isValidRow = false;
 				}
 				break;
 			case PERCENTAGEFIELD:
 				try{
+					System.out.println("PERCENTAGEFIELD xssfRow.getCell(first).getRichStringCellValue() --> "+xssfRow.getCell(first).getRawValue());
 					String value = "";
 					if(cellType.getRequired()){
 						if(xssfRow.getCell(first).getCellStyle().getDataFormatString().contains("%")){

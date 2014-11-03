@@ -57,6 +57,8 @@ public class ProcesoReliquidacionController extends AbstractTaskMBean implements
 	
 	private ProgramaVO programaSeleccionado;
 	
+	private Integer anoCurso;
+	
 	
 	private List<ProgramasPojo> listadoProgramas;
 	
@@ -485,7 +487,7 @@ public class ProcesoReliquidacionController extends AbstractTaskMBean implements
 	@Override
 	public String iniciarProceso() {
 		String success = "divapProcesoReliqProgramas";
-		Long procId = iniciarProceso(BusinessProcess.Prueba);
+		Long procId = iniciarProceso(BusinessProcess.RELIQUIDACION);
 		System.out.println("procId-->"+procId);
 		if(procId == null){
 			 success = null;

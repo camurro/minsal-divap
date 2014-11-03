@@ -257,6 +257,7 @@ public class DistribucionInicialPercapitaService {
 		CellTypeExcelVO fieldFive = new CellTypeExcelVO(true, FieldType.INTEGERFIELD);
 		cells.add(fieldFive);
 		XSSFSheet worksheet = workbook.getSheetAt(0);
+		
 		PercapitaCalculoPercapitaExcelValidator calculoPercapitaExcelValidator = new PercapitaCalculoPercapitaExcelValidator(cells.size(), cells, true, 0, 0);
 		calculoPercapitaExcelValidator.validateFormat(worksheet);		
 		List<CalculoPercapitaVO> items = calculoPercapitaExcelValidator.getItems();
