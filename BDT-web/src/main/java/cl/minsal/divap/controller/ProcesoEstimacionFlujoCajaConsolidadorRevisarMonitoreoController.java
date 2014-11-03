@@ -1613,7 +1613,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 				if(getValorComboPrograma22() == null || getValorComboPrograma22().intValue() == 0){
 					this.servicios22 = new ArrayList<ServiciosVO>();
 				}else{
-					this.servicios22 = estimacionFlujoCajaService.getServicioByProgramaAnoSubtitulo(getValorComboPrograma21(), subtituloFiltro);
+					this.servicios22 = estimacionFlujoCajaService.getServicioByProgramaAnoSubtitulo(getValorComboPrograma22(), subtituloFiltro);
 				}
 				break;
 			case SUBTITULO24:
@@ -1623,7 +1623,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 				if(getValorComboPrograma24() == null || getValorComboPrograma24().intValue() == 0){
 					this.servicios24 = new ArrayList<ServiciosVO>();
 				}else{
-					this.servicios24 = estimacionFlujoCajaService.getServicioByProgramaAnoSubtitulo(getValorComboPrograma21(), subtituloFiltro);
+					this.servicios24 = estimacionFlujoCajaService.getServicioByProgramaAnoSubtitulo(getValorComboPrograma24(), subtituloFiltro);
 				}
 				break;
 			case SUBTITULO29:
@@ -1633,7 +1633,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController
 				if(getValorComboPrograma29() == null || getValorComboPrograma29().intValue() == 0){
 					this.servicios29 = new ArrayList<ServiciosVO>();
 				}else{
-					this.servicios29 = estimacionFlujoCajaService.getServicioByProgramaAnoSubtitulo(getValorComboPrograma21(), subtituloFiltro);
+					this.servicios29 = estimacionFlujoCajaService.getServicioByProgramaAnoSubtitulo(getValorComboPrograma29(), subtituloFiltro);
 				}
 				break;
 			default:

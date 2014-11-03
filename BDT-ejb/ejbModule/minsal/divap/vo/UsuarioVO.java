@@ -11,6 +11,7 @@ public class UsuarioVO extends UsuarioSummaryVO implements Serializable{
 	
 	private String username;
 	private String password;
+	private ServiciosSummaryVO servicio;
 	private Set<String> roles;
 	
 	public UsuarioVO(String username, String password) {
@@ -41,15 +42,21 @@ public class UsuarioVO extends UsuarioSummaryVO implements Serializable{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-
+	
 	public Set<String> getRoles() {
 		return roles;
 	}
-
-
+	
 	public void setRoles(Set<String> roles) {
 		this.roles = roles;
+	}
+
+	public ServiciosSummaryVO getServicio() {
+		return servicio;
+	}
+
+	public void setServicio(ServiciosSummaryVO servicio) {
+		this.servicio = servicio;
 	}
 	
 }

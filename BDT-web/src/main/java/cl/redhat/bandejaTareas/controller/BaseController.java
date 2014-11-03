@@ -13,9 +13,11 @@ import javax.servlet.http.HttpSession;
 
 import minsal.divap.service.DocumentService;
 import minsal.divap.vo.DocumentoVO;
+import minsal.divap.vo.ServiciosSummaryVO;
 
 import org.apache.log4j.Logger;
 import org.primefaces.model.UploadedFile;
+
 
 
 
@@ -64,6 +66,14 @@ public abstract class BaseController {
 		else {
 			log.warn("No user logged, returning empty username");
 			return "";
+		}
+	}
+	
+	public ServiciosSummaryVO getServicio(){
+		if (userUtil != null){ 
+			return userUtil.getServicio();
+		}else {
+			return null;
 		}
 	}
 

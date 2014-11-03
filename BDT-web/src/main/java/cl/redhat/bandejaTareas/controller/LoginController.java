@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import minsal.divap.service.UsuarioService;
+import minsal.divap.vo.ServiciosSummaryVO;
 import minsal.divap.vo.UsuarioVO;
 
 import org.apache.log4j.Logger;
@@ -86,7 +87,10 @@ public class LoginController extends BaseController implements Serializable {
 			if(usuarioVO.getRoles() != null && usuarioVO.getRoles().size() > 0){
 				getSessionBean().setRoles(new ArrayList<String>(usuarioVO.getRoles()));
 			}
-
+			
+			if(usuarioVO.getServicio() != null){
+				getSessionBean().setServicio(new ServiciosSummaryVO(usuarioVO.getServicio()));
+			}
 			boolean isAdmin = true;
 			boolean isCentr = true;
 			boolean isEspec = true;

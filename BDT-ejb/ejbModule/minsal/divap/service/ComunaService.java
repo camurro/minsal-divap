@@ -17,24 +17,32 @@ public class ComunaService {
 
 	@EJB
 	private ComunaDAO comunaDAO;
-	
-	
-	
+
 	public List<ComunaVO> getComunas() {
-		
-	
-	List<ComunaVO> ComunasVO = new ArrayList<ComunaVO>();
-	List<Comuna> comunas = this.comunaDAO.getComuna();
-	if(comunas != null && comunas.size() > 0){
-		for(Comuna comuna : comunas){
-			ComunaVO comunaVO = new ComunaVO();
-	
-		
-			comunaVO.setIdComuna(comuna.getId());
-			comunaVO.setDescComuna(comuna.getNombre());
-			ComunasVO.add(comunaVO);
+		List<ComunaVO> comunasVO = new ArrayList<ComunaVO>();
+		List<Comuna> comunas = this.comunaDAO.getComuna();
+		if(comunas != null && comunas.size() > 0){
+			for(Comuna comuna : comunas){
+				ComunaVO comunaVO = new ComunaVO();
+				comunaVO.setIdComuna(comuna.getId());
+				comunaVO.setDescComuna(comuna.getNombre());
+				comunasVO.add(comunaVO);
+			}
 		}
+		return comunasVO;
 	}
-	return ComunasVO;
-}
+	
+	public List<ComunaVO> getComunasByServicio(Integer idServicio) {
+		List<ComunaVO> comunasVO = new ArrayList<ComunaVO>();
+		List<Comuna> comunas = this.comunaDAO.getComunasByServicio(idServicio);
+		if(comunas != null && comunas.size() > 0){
+			for(Comuna comuna : comunas){
+				ComunaVO comunaVO = new ComunaVO();
+				comunaVO.setIdComuna(comuna.getId());
+				comunaVO.setDescComuna(comuna.getNombre());
+				comunasVO.add(comunaVO);
+			}
+		}
+		return comunasVO;
+	}
 }

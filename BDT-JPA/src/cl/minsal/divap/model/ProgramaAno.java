@@ -46,6 +46,12 @@ public class ProgramaAno implements Serializable {
 	@JoinColumn(name = "estado", referencedColumnName = "id_estado_programa")
 	@ManyToOne(optional = false)
 	private EstadoPrograma estado;
+	@JoinColumn(name = "estadoreliquidacion", referencedColumnName = "id_estado_programa")
+    @ManyToOne(optional = false)
+    private EstadoPrograma estadoreliquidacion;
+	@JoinColumn(name = "estado_convenio", referencedColumnName = "id_estado_programa")
+    @ManyToOne
+    private EstadoPrograma estadoConvenio;
 	@JoinColumn(name = "ano", referencedColumnName = "ano")
 	@ManyToOne(optional = false)
 	private AnoEnCurso ano;
@@ -60,7 +66,7 @@ public class ProgramaAno implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idprograma")
 	private Collection<Remesa> remesaCollection;
 	@OneToMany(mappedBy = "idPrograma")
-    private Set<Convenio> convenios;
+    private Set<ConvenioComuna> convenios;
 	
 
 	public ProgramaAno() {
@@ -92,6 +98,22 @@ public class ProgramaAno implements Serializable {
 
 	public void setEstado(EstadoPrograma estado) {
 		this.estado = estado;
+	}
+	
+	public EstadoPrograma getEstadoreliquidacion() {
+        return estadoreliquidacion;
+    }
+
+    public void setEstadoreliquidacion(EstadoPrograma estadoreliquidacion) {
+        this.estadoreliquidacion = estadoreliquidacion;
+    }
+    
+	public EstadoPrograma getEstadoConvenio() {
+		return estadoConvenio;
+	}
+
+	public void setEstadoConvenio(EstadoPrograma estadoConvenio) {
+		this.estadoConvenio = estadoConvenio;
 	}
 
 	public AnoEnCurso getAno() {
@@ -150,11 +172,11 @@ public class ProgramaAno implements Serializable {
 	}
 	
 	@XmlTransient
-	public Set<Convenio> getConvenios() {
+	public Set<ConvenioComuna> getConvenios() {
 		return convenios;
 	}
 
-	public void setConvenios(Set<Convenio> convenios) {
+	public void setConvenios(Set<ConvenioComuna> convenios) {
 		this.convenios = convenios;
 	}
 

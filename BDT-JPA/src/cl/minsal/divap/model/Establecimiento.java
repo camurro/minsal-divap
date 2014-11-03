@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlTransient;
@@ -20,7 +21,11 @@ import javax.xml.bind.annotation.XmlTransient;
  * 
  */
 @Entity
-@NamedQuery(name="Establecimiento.findAll", query="SELECT e FROM Establecimiento e")
+@NamedQueries({
+	@NamedQuery(name = "Establecimiento.findAll", query = "SELECT e FROM Establecimiento e"),
+	@NamedQuery(name = "Establecimiento.findById", query = "SELECT e FROM Establecimiento e WHERE e.id = :idEstablecimiento"),
+	@NamedQuery(name = "Establecimiento.findEstablecimientosByComuna", query = "SELECT e FROM Establecimiento e WHERE e.comuna.id = :idComuna"),
+	@NamedQuery(name = "Establecimiento.findEstablecimientosByServicio", query = "SELECT e FROM Establecimiento e WHERE e.servicioSalud.id = :idServicio")})
 public class Establecimiento implements Serializable {
 	private static final long serialVersionUID = 1L;
 

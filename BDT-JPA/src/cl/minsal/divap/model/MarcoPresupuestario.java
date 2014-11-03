@@ -19,7 +19,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "MarcoPresupuestario.findByMarcoModificado", query = "SELECT m FROM MarcoPresupuestario m WHERE m.marcoModificado = :marcoModificado"),
     @NamedQuery(name = "MarcoPresupuestario.deleteUsingIdProgramaAno", query = "DELETE FROM MarcoPresupuestario m WHERE m.idProgramaAno.idProgramaAno = :idProgramaAno"),
     @NamedQuery(name = "MarcoPresupuestario.findByProgramaAnoServicio", query = "SELECT m FROM MarcoPresupuestario m WHERE m.idProgramaAno.idProgramaAno = :idProgramaAno and m.servicioSalud.id = :idServicioSalud"),
-    @NamedQuery(name = "MarcoPresupuestario.findByIdMarcoPresupuestario", query = "SELECT m FROM MarcoPresupuestario m WHERE m.idMarcoPresupuestario = :idMarcoPresupuestario")})
+    @NamedQuery(name = "MarcoPresupuestario.findByIdMarcoPresupuestario", query = "SELECT m FROM MarcoPresupuestario m WHERE m.idMarcoPresupuestario = :idMarcoPresupuestario"),
+    @NamedQuery(name = "MarcoPresupuestario.findByProgramaAnoReparosMarcoPresupuestario", query = "SELECT m FROM MarcoPresupuestario m WHERE m.idProgramaAno.idProgramaAno = :idProgramaAno and m.reparosMarcoPresupuestario = :reparosMarcoPresupuestario"),
+    @NamedQuery(name = "MarcoPresupuestario.updateMarcoProgramaAnoReparos", query = "UPDATE MarcoPresupuestario m SET m.reparosMarcoPresupuestario = false WHERE m.idProgramaAno.idProgramaAno = :idProgramaAno"),
+    @NamedQuery(name = "MarcoPresupuestario.findByProgramaAno", query = "SELECT m FROM MarcoPresupuestario m WHERE m.idProgramaAno.idProgramaAno = :idProgramaAno")})
 public class MarcoPresupuestario implements Serializable {
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)
@@ -32,6 +35,9 @@ public class MarcoPresupuestario implements Serializable {
 	@Column(name="id_marco_presupuestario", unique=true, nullable=false)
 	@GeneratedValue
     private Integer idMarcoPresupuestario;
+    @Basic(optional = false)
+    @Column(name = "reparos_marco_presupuestario")
+    private boolean reparosMarcoPresupuestario;
     @JoinColumn(name = "id_servicio_salud", referencedColumnName = "id")
     @ManyToOne
     private ServicioSalud servicioSalud;
@@ -76,7 +82,15 @@ public class MarcoPresupuestario implements Serializable {
         this.idMarcoPresupuestario = idMarcoPresupuestario;
     }
 
-    public ServicioSalud getServicioSalud() {
+    public boolean isReparosMarcoPresupuestario() {
+		return reparosMarcoPresupuestario;
+	}
+
+	public void setReparosMarcoPresupuestario(boolean reparosMarcoPresupuestario) {
+		this.reparosMarcoPresupuestario = reparosMarcoPresupuestario;
+	}
+
+	public ServicioSalud getServicioSalud() {
 		return servicioSalud;
 	}
 

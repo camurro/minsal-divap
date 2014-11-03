@@ -26,7 +26,7 @@ public class ComunaDAO {
 		}
 	}
 	
-	public Comuna getComunaById(int id){
+	public Comuna getComunaById(Integer id){
 		try {
 			TypedQuery<Comuna> query = this.em.createNamedQuery("Comuna.findById", Comuna.class);
 			query.setParameter("id", id);
@@ -34,6 +34,16 @@ public class ComunaDAO {
 			if (results.size() >= 1)
 				return results.get(0);
 			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<Comuna> getComunasByServicio(Integer idServicio) {
+		try {
+			TypedQuery<Comuna> query = this.em.createNamedQuery("Comuna.findByServicio", Comuna.class);
+			query.setParameter("idServicio", idServicio);
+			return query.getResultList(); 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

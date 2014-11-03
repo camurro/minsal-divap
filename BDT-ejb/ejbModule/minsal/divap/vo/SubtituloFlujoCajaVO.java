@@ -24,12 +24,15 @@ public class SubtituloFlujoCajaVO implements Serializable {
 	private List<CajaMontoSummaryVO> cajaMontos;
 	private Long totalMontos;
 	private String color = "#FFB5B5";
+	private boolean ignoreColor;
 
 	public SubtituloFlujoCajaVO() {
 		super();
 		this.cajaMontos = new ArrayList<CajaMontoSummaryVO>(Arrays.asList(new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), 
 				 new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), 
 				 new CajaMontoSummaryVO(), new CajaMontoSummaryVO()));
+		this.ignoreColor = true;
+		this.color = "#3ADF00";
 	}
 
 	
@@ -52,6 +55,8 @@ public class SubtituloFlujoCajaVO implements Serializable {
 		this.cajaMontos = cajaMontos;
 		this.totalMontos = totalMontos;
 		this.color = color;
+		this.ignoreColor = true;
+		this.color = "#3ADF00";
 	}
 
 
@@ -125,15 +130,24 @@ public class SubtituloFlujoCajaVO implements Serializable {
 	public void setTotalMontos(Long totalMontos) {
 		this.totalMontos = totalMontos;
 	}
-
+	
+	public boolean marcoCuadrado(){
+		if(!this.marcoPresupuestario.equals(getTotalMontos())){
+			return false;
+		}
+		return true;
+	}
+	
 	public String getColor() {
 		System.out.println("getColor-- marcoPresupuestario->"+marcoPresupuestario+" getTotalMontos()="+getTotalMontos());
-		if (!this.marcoPresupuestario.equals(getTotalMontos())){
-			System.out.println("no son iguales");
-			this.color = "#FF0000";
-		}else{
-			System.out.println("son iguales");
-			this.color = "#3ADF00";
+		if(!isIgnoreColor()){
+			if (!marcoCuadrado()){
+				System.out.println("no son iguales");
+				this.color = "#FF0000";
+			}else{
+				System.out.println("son iguales");
+				this.color = "#3ADF00";
+			}
 		}
 		return color;
 	}
@@ -159,6 +173,15 @@ public class SubtituloFlujoCajaVO implements Serializable {
 
 	public void setIdMarcoPresupuestario(Integer idMarcoPresupuestario) {
 		this.idMarcoPresupuestario = idMarcoPresupuestario;
+	}
+
+	public boolean isIgnoreColor() {
+		return ignoreColor;
+	}
+
+
+	public void setIgnoreColor(boolean ignoreColor) {
+		this.ignoreColor = ignoreColor;
 	}
 
 

@@ -3,11 +3,16 @@ package minsal.divap.service;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
@@ -15,6 +20,8 @@ import javax.ejb.Stateless;
 import minsal.divap.vo.BodyCreateFolderVO;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.DocumentoVO;
+import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
+import minsal.divap.vo.ReferenciaDocumentoVO;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
@@ -54,6 +61,9 @@ public class AlfrescoService {
 	@Resource(name = "alfrescoUploadDirectory")
 	private String alfrescoUploadDirectory;
 
+	@Resource(name = "tmpDownloadDirectory")
+	private String tmpDownloadDirectory;
+
 	class ConsoleAuthPrompter implements CredentialsProvider {
 
 		private BufferedReader in = null;
@@ -69,7 +79,7 @@ public class AlfrescoService {
 
 		public Credentials getCredentials(final AuthScheme authscheme,
 				final String host, int port, boolean proxy)
-				throws CredentialsNotAvailableException {
+						throws CredentialsNotAvailableException {
 			if (authscheme == null) {
 				return null;
 			}
@@ -231,21 +241,16 @@ public class AlfrescoService {
 					+ "/node/content/workspace/SpacesStore/" + docAlfresco
 					+ "?alf_ticket=" + authTicket;
 			System.out.println("download archivo url:::" + urlString);
-			// Create the POST object and add the parameters
 			HttpMethod downloadMethod = new GetMethod(urlString);
 			HttpClient client = new HttpClient();
 			int statusCode = client.executeMethod(downloadMethod);
 			System.out.println("statusCode>>>" + statusCode + "......");
-			// + "\n status line \n"
-			// +downloadMethod.getStatusLine() + "\nbody \n"
-			// +downloadMethod.getResponseBodyAsString());
 			if (statusCode == 200) {
 				byte[] content = readInputStream(downloadMethod
 						.getResponseBodyAsStream());
 				documentoVO = new DocumentoVO("documentoDescargado",
 						"contentType", content);
 			}
-			
 			downloadMethod.releaseConnection();
 			System.out.println("file download success");
 		} catch (Exception e) {
@@ -275,9 +280,9 @@ public class AlfrescoService {
 			System.out.println("folder-->"+folder);
 			PostMethod mPost = new PostMethod(urlString);
 			String jSon = "{\"name\": \""+ folder +"\"}";
-					
+
 			System.out.println("jSon-->"+jSon);
-			
+
 			mPost.setRequestEntity(new StringRequestEntity(jSon, "application/json", "UTF-8"));
 			//mPost.setRequestEntity(requestEntity);
 			int statusCode = client.executeMethod(mPost);
@@ -292,7 +297,7 @@ public class AlfrescoService {
 				System.out.println("Error al crear carpeta " + folder);
 				System.out.println(mPost.getResponseBodyAsString());
 			}
-			
+
 			mPost.releaseConnection();
 
 		} catch (Exception e) {
@@ -300,5 +305,5 @@ public class AlfrescoService {
 		}
 		return body;
 	}
-	
+
 }

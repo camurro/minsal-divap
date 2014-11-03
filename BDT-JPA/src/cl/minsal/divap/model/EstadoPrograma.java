@@ -36,9 +36,12 @@ public class EstadoPrograma implements Serializable {
     @Basic(optional = false)
     @Column(name = "nombre_estado")
     private String nombreEstado;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "estadoreliquidacion")
+    private Set<ProgramaAno> programaAnosReliquidacion;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "estadoConvenio")
+    private Set<ProgramaAno> programaAnosConvenio;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "estado")
     private Set<ProgramaAno> programasAnos;
-    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "estadoFlujoCaja")
     private Set<ProgramaAno> programasAnosFlujoCaja;
 
@@ -71,6 +74,34 @@ public class EstadoPrograma implements Serializable {
     }
 
     @XmlTransient
+    public Set<ProgramaAno> getProgramaAnosReliquidacion() {
+		return programaAnosReliquidacion;
+	}
+
+	public void setProgramaAnosReliquidacion(
+			Set<ProgramaAno> programaAnosReliquidacion) {
+		this.programaAnosReliquidacion = programaAnosReliquidacion;
+	}
+	
+	@XmlTransient
+	public Set<ProgramaAno> getProgramaAnosConvenio() {
+		return programaAnosConvenio;
+	}
+
+	public void setProgramaAnosConvenio(Set<ProgramaAno> programaAnosConvenio) {
+		this.programaAnosConvenio = programaAnosConvenio;
+	}
+	
+	@XmlTransient
+	public Set<ProgramaAno> getProgramasAnosFlujoCaja() {
+		return programasAnosFlujoCaja;
+	}
+
+	public void setProgramasAnosFlujoCaja(Set<ProgramaAno> programasAnosFlujoCaja) {
+		this.programasAnosFlujoCaja = programasAnosFlujoCaja;
+	}
+
+	@XmlTransient
     public Set<ProgramaAno> getProgramasAnos() {
         return programasAnos;
     }

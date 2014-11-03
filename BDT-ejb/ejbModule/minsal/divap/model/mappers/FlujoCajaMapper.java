@@ -13,7 +13,7 @@ public class FlujoCajaMapper implements Mapper<Caja>{
 
 	
 	@Override
-	public Object getSummary(Caja paramT) {
+	public Object getSummary(Caja caja) {
 		throw new NotImplementedException();
 	}
 

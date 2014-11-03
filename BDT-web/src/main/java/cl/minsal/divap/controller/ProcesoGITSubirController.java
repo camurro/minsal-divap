@@ -12,7 +12,6 @@ import javax.inject.Named;
 
 import minsal.divap.service.ConveniosService;
 import minsal.divap.vo.ProgramaVO;
-import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 
@@ -39,7 +38,6 @@ public class ProcesoGITSubirController extends AbstractTaskMBean implements Seri
 	 
 
 	public List<ProgramaVO> getProgramas() {
-	
 		if(programas == null){
 			programas = conveniosService.getProgramasByUserAno(getLoggedUsername());
 		}
@@ -58,7 +56,6 @@ public class ProcesoGITSubirController extends AbstractTaskMBean implements Seri
 	}
 
 	public String comenzar(){
-		
 		if(programaSeleccionado != null){
 			System.out.println(programaSeleccionado.getNombre());
 			setOnSession("programaSeleccionado", programaSeleccionado);
@@ -74,12 +71,9 @@ public class ProcesoGITSubirController extends AbstractTaskMBean implements Seri
 		return parameters;
 	}
 
-
 	@Override
 	public String iniciarProceso() {
 		return null;
 	} 
-	
-	
 	
 }

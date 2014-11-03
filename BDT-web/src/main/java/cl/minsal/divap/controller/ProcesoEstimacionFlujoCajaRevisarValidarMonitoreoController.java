@@ -32,6 +32,7 @@ import org.apache.log4j.Logger;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.TabCloseEvent;
 
+import cl.minsal.divap.model.MarcoPresupuestario;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 @Named("procesoEstimacionFlujoCajaRevisarValidarMonitoreoController")
@@ -111,6 +112,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	private Boolean mostrarSubtitulo22;
 	private Boolean mostrarSubtitulo24;
 	private Boolean mostrarSubtitulo29;
+	
 	private List<SubtituloFlujoCajaVO> monitoreoSubtitulo21FlujoCajaVO; 
 	private Integer rowIndexMonitoreoSubtitulo21 = 0;
 	private List<SubtituloFlujoCajaVO> monitoreoSubtitulo22FlujoCajaVO;
@@ -195,26 +197,20 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 
 	public String finalizar(){
 		setTarget("bandejaTareas");
-		this.reparos = false;
-		return super.enviar();
-	}
-
-	public String conReparos(){
-		setTarget("bandejaTareas");
-		this.reparos = true;
 		return super.enviar();
 	}
 
 	@PostConstruct
 	public void init() {
-
 		//Verificar si se esta modificando o esta iniciando un nuevo proceso.
 		if(sessionExpired()){
 			return;
 		}
+		setReparos(false);
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			Integer idProgramaAno = (Integer) getTaskDataVO().getData().get("_idProgramaAno");
 			System.out.println("idProgramaAno --->" + idProgramaAno);
+			setReparos(estimacionFlujoCajaService.tieneMarcosConReparos(idProgramaAno));
 			setPrograma(programaService.getProgramaAno(idProgramaAno));
 			if(getPrograma() != null){
 				setAnoActual(getPrograma().getAno());
@@ -223,8 +219,9 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 			System.out.println("docProgramacion --->" + this.docProgramacion);
 			this.iniciarFlujoCaja = (Boolean) getTaskDataVO().getData().get("_iniciarFlujoCaja");
 			System.out.println("iniciarFlujoCaja --->" + this.iniciarFlujoCaja);
+			
 		}
-
+		
 		String subtituloSeleccionado = getRequestParameter("subtituloSeleccionado");
 		if(subtituloSeleccionado != null){
 			setSubtituloSeleccionado(Subtitulo.getById(Integer.parseInt(subtituloSeleccionado)));
@@ -323,19 +320,23 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		boolean actualizaOK = false;
 		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo21){
 			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo21FlujoCajaVO.get(elemento.getPosicionElemento());
-			List<CajaMontoSummaryVO> cajaMontos = subtituloFlujoCajaVO.getCajaMontos();
-			for(CajaMontoSummaryVO cajaMonto : cajaMontos){
-				if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
-					System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO21);
-					actualizaOK = true;
-					break;
+			subtituloFlujoCajaVO.setIgnoreColor(false);
+			if(subtituloFlujoCajaVO.marcoCuadrado()){
+				List<CajaMontoSummaryVO> cajaMontos = subtituloFlujoCajaVO.getCajaMontos();
+				for(CajaMontoSummaryVO cajaMonto : cajaMontos){
+					if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
+						System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
+						estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO21);
+						actualizaOK = true;
+						break;
+					}
 				}
 			}
 		}
 		if(actualizaOK){
 			elementosModificadosSubtitulo21.clear();
 			setTablaModificada(false);
+			setReparos(true);
 		}
 		System.out.println("Fin guardarSubtitulo21");
 	}
@@ -346,19 +347,23 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		boolean actualizaOK = false;
 		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo22){
 			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo22FlujoCajaVO.get(elemento.getPosicionElemento());
-			List<CajaMontoSummaryVO> cajaMontos = subtituloFlujoCajaVO.getCajaMontos();
-			for(CajaMontoSummaryVO cajaMonto : cajaMontos){
-				if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
-					System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO22);
-					actualizaOK = true;
-					break;
+			subtituloFlujoCajaVO.setIgnoreColor(false);
+			if(subtituloFlujoCajaVO.marcoCuadrado()){
+				List<CajaMontoSummaryVO> cajaMontos = subtituloFlujoCajaVO.getCajaMontos();
+				for(CajaMontoSummaryVO cajaMonto : cajaMontos){
+					if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
+						System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
+						estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO22);
+						actualizaOK = true;
+						break;
+					}
 				}
 			}
 		}
 		if(actualizaOK){
 			elementosModificadosSubtitulo22.clear();
 			setTablaModificada(false);
+			setReparos(true);
 		}
 		System.out.println("Fin guardarSubtitulo22");
 	}
@@ -369,19 +374,23 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		boolean actualizaOK = false;
 		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo24){
 			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo24FlujoCajaVO.get(elemento.getPosicionElemento());
-			List<CajaMontoSummaryVO> cajaMontos = subtituloFlujoCajaVO.getCajaMontos();
-			for(CajaMontoSummaryVO cajaMonto : cajaMontos){
-				if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
-					System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO24);
-					actualizaOK = true;
-					break;
+			subtituloFlujoCajaVO.setIgnoreColor(false);
+			if(subtituloFlujoCajaVO.marcoCuadrado()){
+				List<CajaMontoSummaryVO> cajaMontos = subtituloFlujoCajaVO.getCajaMontos();
+				for(CajaMontoSummaryVO cajaMonto : cajaMontos){
+					if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
+						System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
+						estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO24);
+						actualizaOK = true;
+						break;
+					}
 				}
 			}
 		}
 		if(actualizaOK){
 			elementosModificadosSubtitulo24.clear();
 			setTablaModificada(false);
+			setReparos(true);
 		}
 		System.out.println("Fin guardarSubtitulo24");
 	}
@@ -392,19 +401,23 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		boolean actualizaOK = false;
 		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo29){
 			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo29FlujoCajaVO.get(elemento.getPosicionElemento());
-			List<CajaMontoSummaryVO> cajaMontos = subtituloFlujoCajaVO.getCajaMontos();
-			for(CajaMontoSummaryVO cajaMonto : cajaMontos){
-				if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
-					System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO29);
-					actualizaOK = true;
-					break;
+			subtituloFlujoCajaVO.setIgnoreColor(false);
+			if(subtituloFlujoCajaVO.marcoCuadrado()){
+				List<CajaMontoSummaryVO> cajaMontos = subtituloFlujoCajaVO.getCajaMontos();
+				for(CajaMontoSummaryVO cajaMonto : cajaMontos){
+					if(cajaMonto.getIdMes().equals(elemento.getMesModificado())){
+						System.out.println("Actualizar con Nuevo Monto->"+cajaMonto.getMontoMes());
+						estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), cajaMonto, Subtitulo.SUBTITULO29);
+						actualizaOK = true;
+						break;
+					}
 				}
 			}
 		}
 		if(actualizaOK){
 			elementosModificadosSubtitulo29.clear();
 			setTablaModificada(false);
+			setReparos(true);
 		}
 		System.out.println("Fin guardarSubtitulo29");
 	}
@@ -1313,6 +1326,8 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		System.out.println("recalcularSubtitulo21recalcularSubtitulo21recalcularSubtitulo21");
 		System.out.println("getPosicionCajaMesModificado=" + getPosicionCajaMesModificado() + " getMesModificado()=" + getMesModificado());
 		if(getPosicionCajaMesModificado() != null && getMesModificado() != null){
+			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo21FlujoCajaVO.get(Integer.parseInt(getPosicionCajaMesModificado()));
+			subtituloFlujoCajaVO.setIgnoreColor(true);
 			ElementoModificadoVO elementoModificadoVO = new ElementoModificadoVO(Integer.parseInt(getPosicionCajaMesModificado()), Integer.parseInt(getMesModificado()));
 			if(!elementosModificadosSubtitulo21.contains(elementoModificadoVO)){
 				elementosModificadosSubtitulo21.add(elementoModificadoVO);
@@ -1331,6 +1346,8 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		System.out.println("recalcularSubtitulo22recalcularSubtitulo22recalcularSubtitulo22");
 		System.out.println("getPosicionCajaMesModificado=" + getPosicionCajaMesModificado() + " getMesModificado()=" + getMesModificado());
 		if(getPosicionCajaMesModificado() != null && getMesModificado() != null){
+			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo22FlujoCajaVO.get(Integer.parseInt(getPosicionCajaMesModificado()));
+			subtituloFlujoCajaVO.setIgnoreColor(true);
 			ElementoModificadoVO elementoModificadoVO = new ElementoModificadoVO(Integer.parseInt(getPosicionCajaMesModificado()), Integer.parseInt(getMesModificado()));
 			if(!elementosModificadosSubtitulo22.contains(elementoModificadoVO)){
 				elementosModificadosSubtitulo22.add(elementoModificadoVO);
@@ -1345,6 +1362,8 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		System.out.println("recalcularSubtitulo24recalcularSubtitulo24recalcularSubtitulo24");
 		System.out.println("getPosicionCajaMesModificado=" + getPosicionCajaMesModificado() + " getMesModificado()=" + getMesModificado());
 		if(getPosicionCajaMesModificado() != null && getMesModificado() != null){
+			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo24FlujoCajaVO.get(Integer.parseInt(getPosicionCajaMesModificado()));
+			subtituloFlujoCajaVO.setIgnoreColor(true);
 			ElementoModificadoVO elementoModificadoVO = new ElementoModificadoVO(Integer.parseInt(getPosicionCajaMesModificado()), Integer.parseInt(getMesModificado()));
 			if(!elementosModificadosSubtitulo24.contains(elementoModificadoVO)){
 				elementosModificadosSubtitulo24.add(elementoModificadoVO);
@@ -1359,6 +1378,8 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		System.out.println("recalcularSubtitulo29recalcularSubtitulo29recalcularSubtitulo29");
 		System.out.println("getPosicionCajaMesModificado=" + getPosicionCajaMesModificado() + " getMesModificado()=" + getMesModificado());
 		if(getPosicionCajaMesModificado() != null && getMesModificado() != null){
+			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo29FlujoCajaVO.get(Integer.parseInt(getPosicionCajaMesModificado()));
+			subtituloFlujoCajaVO.setIgnoreColor(true);
 			ElementoModificadoVO elementoModificadoVO = new ElementoModificadoVO(Integer.parseInt(getPosicionCajaMesModificado()), Integer.parseInt(getMesModificado()));
 			if(!elementosModificadosSubtitulo29.contains(elementoModificadoVO)){
 				elementosModificadosSubtitulo29.add(elementoModificadoVO);

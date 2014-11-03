@@ -23,6 +23,7 @@ public class ProgramaVO implements Serializable{
 	private Boolean dependenciaServicio;
 	private List<ComponentesVO> componentes;
 	private EstadoProgramaVO estadoFlujocaja;
+	private EstadoProgramaVO estadoConvenio;
 	private List<ServiciosVO> servicios;
 	private Boolean revisaFonasa;
 	
@@ -112,6 +113,14 @@ public class ProgramaVO implements Serializable{
 
 	public void setEstado(EstadoProgramaVO estado) {
 		this.estado = estado;
+	}
+
+	public EstadoProgramaVO getEstadoConvenio() {
+		return estadoConvenio;
+	}
+
+	public void setEstadoConvenio(EstadoProgramaVO estadoConvenio) {
+		this.estadoConvenio = estadoConvenio;
 	}
 
 	public Boolean getRevisaFonasa() {

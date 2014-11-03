@@ -37,7 +37,9 @@ public class Usuario implements Serializable {
 
 	@OneToMany(mappedBy = "usuario")
 	private Set<DistribucionInicialPercapita> distribucionInicialPercapitaCollection;
-
+	@JoinColumn(name = "servicio", referencedColumnName = "id")
+	@ManyToOne
+	private ServicioSalud servicio;
 	//bi-directional many-to-one association to Programa
 	@OneToMany(mappedBy="usuario")
 	private List<Programa> programas;
@@ -109,14 +111,12 @@ public class Usuario implements Serializable {
 	public Programa addPrograma(Programa programa) {
 		getProgramas().add(programa);
 		programa.setUsuario(this);
-
 		return programa;
 	}
 
 	public Programa removePrograma(Programa programa) {
 		getProgramas().remove(programa);
 		programa.setUsuario(null);
-
 		return programa;
 	}
 
@@ -126,6 +126,14 @@ public class Usuario implements Serializable {
 
 	public void setRols(List<Rol> rols) {
 		this.rols = rols;
+	}
+
+	public ServicioSalud getServicio() {
+		return servicio;
+	}
+
+	public void setServicio(ServicioSalud servicio) {
+		this.servicio = servicio;
 	}
 
 	@XmlTransient

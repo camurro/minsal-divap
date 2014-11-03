@@ -33,7 +33,6 @@ import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.dao.UsuarioDAO;
 import minsal.divap.doc.GeneradorResolucionAporteEstatal;
 import minsal.divap.doc.GeneradorWord;
-import minsal.divap.doc.GeneradorWordBorradorAporteEstatal;
 import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TareasSeguimiento;
@@ -72,7 +71,7 @@ import cl.minsal.divap.model.Caja;
 import cl.minsal.divap.model.CajaMonto;
 import cl.minsal.divap.model.CajaMontoPK;
 import cl.minsal.divap.model.Componente;
-import cl.minsal.divap.model.Convenio;
+import cl.minsal.divap.model.ConvenioComuna;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.EstadoPrograma;
@@ -82,7 +81,6 @@ import cl.minsal.divap.model.MontoMes;
 import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
 import cl.minsal.divap.model.ProgramaServicioCoreComponente;
-import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.Remesa;
 import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.ServicioSalud;
@@ -253,6 +251,7 @@ public class EstimacionFlujoCajaService {
 			if(programaAnoAnterior != null){
 				for(MarcoPresupuestario marcoPresupuestarioAnoAnterior : programaAnoAnterior.getMarcosPresupuestarios()){
 					MarcoPresupuestario marcoPresupuestario = new MarcoPresupuestario();
+					marcoPresupuestario.setReparosMarcoPresupuestario(false);
 					marcoPresupuestario.setIdProgramaAno(programaAno);
 					marcoPresupuestario.setMarcoInicial((int)(marcoPresupuestarioAnoAnterior.getMarcoModificado() * programaAno.getAno().getInflactorMarcoPresupuestario()));
 					marcoPresupuestario.setServicioSalud(marcoPresupuestarioAnoAnterior.getServicioSalud());
@@ -591,6 +590,7 @@ public class EstimacionFlujoCajaService {
 	public Integer generarPlanillaPropuesta(Integer idProgramaAno) {
 		Integer planillaTrabajoId = null;
 		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
+		cajaDAO.updateMarcoReparos(idProgramaAno);
 		List<Integer> idComponentes = new ArrayList<Integer>();
 		for(Componente componente : programaAno.getPrograma().getComponentes()){
 			idComponentes.add(componente.getId());
@@ -1169,10 +1169,10 @@ public class EstimacionFlujoCajaService {
 				ConveniosSummaryVO convenioRecibido = new ConveniosSummaryVO(0, 0);
 				TransferenciaSummaryVO transferenciasAcumulada = new TransferenciaSummaryVO(0, 0L);
 				Long marcoPresupuestario = subtituloFlujoCaja.getMarcoPresupuestario();
-				List<Convenio> convenios = conveniosDAO.getConveniosSummaryByProgramaAnoComponenteSubtitulo(idProgramaAno, subtituloFlujoCaja.getIdServicio(), idComponentes, subtitulo);
+				List<ConvenioComuna> convenios = conveniosDAO.getConveniosSummaryByProgramaAnoComponenteSubtitulo(idProgramaAno, subtituloFlujoCaja.getIdServicio(), idComponentes, subtitulo);
 				List<Remesa> remesas = remesasDAO.getRemesasSummaryByProgramaAnoComponenteSubtitulo(idProgramaAno, subtituloFlujoCaja.getIdServicio(), null, subtitulo);
 				if(convenios != null && convenios.size() > 0){
-					for(Convenio convenio : convenios){
+					for(ConvenioComuna convenio : convenios){
 						convenioRecibido.setMonto(convenioRecibido.getMonto() + ((convenio.getMonto() == null)?0:convenio.getMonto()));
 					}
 				}
@@ -1237,10 +1237,10 @@ public class EstimacionFlujoCajaService {
 				ConveniosSummaryVO convenioRecibido = new ConveniosSummaryVO(0, 0);
 				TransferenciaSummaryVO transferenciasAcumulada = new TransferenciaSummaryVO(0, 0L);
 				Long marcoPresupuestario = subtituloFlujoCaja.getMarcoPresupuestario();
-				List<Convenio> convenios = conveniosDAO.getConveniosSummaryByProgramaAnoComponenteSubtitulo(idProgramaAno, subtituloFlujoCaja.getIdServicio(), idComponentes, subtitulo);
+				List<ConvenioComuna> convenios = conveniosDAO.getConveniosSummaryByProgramaAnoComponenteSubtitulo(idProgramaAno, subtituloFlujoCaja.getIdServicio(), idComponentes, subtitulo);
 				List<Remesa> remesas = remesasDAO.getRemesasSummaryByProgramaAnoComponenteSubtitulo(idProgramaAno, subtituloFlujoCaja.getIdServicio(), null, subtitulo);
 				if(convenios != null && convenios.size() > 0){
-					for(Convenio convenio : convenios){
+					for(ConvenioComuna convenio : convenios){
 						convenioRecibido.setMonto(convenioRecibido.getMonto() + ((convenio.getMonto() == null)?0:convenio.getMonto()));
 					}
 				}
@@ -1369,6 +1369,10 @@ public class EstimacionFlujoCajaService {
 					}
 				}
 			}
+		}
+		MarcoPresupuestario marco = cajaDAO.getMarcoPresupuestarioByProgramaAnoServicio(idProgramaAno, IdServicio);
+		if(marco != null){
+			marco.setReparosMarcoPresupuestario(true);
 		}
 	}
 
@@ -1575,6 +1579,15 @@ public class EstimacionFlujoCajaService {
 
 		} 
 		return resultado;
+	}
+
+	public boolean tieneMarcosConReparos(Integer idProgramaAno) {
+		List<MarcoPresupuestario> marcosPresupuestarios = cajaDAO.getMarcoPresupuestarioByProgramaAnoReparos(idProgramaAno, Boolean.TRUE);
+		boolean tieneMarcosConReparos = false;
+		if(marcosPresupuestarios != null && marcosPresupuestarios.size() > 0){
+			tieneMarcosConReparos = true;
+		}
+		return tieneMarcosConReparos;
 	}
 
 }

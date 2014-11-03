@@ -115,25 +115,6 @@
 
 
 								</li>
-								<c:if test="#{not procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.iniciarFlujoCaja}">
-								<li>
-									<!-- <h:graphicImage
-										value="resources/minsal/images/download-alt.png"
-										styleClass="divapIcons" /> <p:commandLink
-										value="Planilla Programacion de Caja - propuesta mes Julio.xls" /> -->
-
-									Planilla Programacion de Caja - propuesta mes Julio.xls [ <h:graphicImage
-										value="resources/minsal/images/download-alt.png"
-										styleClass="divapIcons" /> <h:commandLink
-										action="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.downloadTemplate}"
-										value="Bajar">
-										<f:setPropertyActionListener
-											target="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.docIdDownload}"
-											value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.docPropuesta}" />
-									</h:commandLink> ]
-
-								</li>
-								</c:if>
 							</ul>
 						</div>
 						</h:form>
@@ -411,7 +392,7 @@
 													</h:outputLink>
 												</p:lightBox>
 											</h:panelGrid>
-											<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update=":formTabView:tablaModificada"
+											<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update="tabladatos :formTabView:tablaModificada :completarTarea"
 												actionListener="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.guardarSubtitulo21}"
 												 value="Guardar" />
 											 
@@ -719,7 +700,7 @@
 												</p:lightBox>
 											</h:panelGrid>
 
-											<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update=":formTabView:tablaModificada"
+											<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update="tablaSubtitulo22 :formTabView:tablaModificada :completarTarea"
 												action="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.guardarSubtitulo22}"
 												ajax="true" value="Guardar" />
 											 
@@ -1026,7 +1007,7 @@
 												</p:lightBox>
 											</h:panelGrid>
 
-											<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update=":formTabView:tablaModificada"
+											<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update="tablaSubtitulo24 :formTabView:tablaModificada :completarTarea"
 												action="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.guardarSubtitulo24}"
 												ajax="true" value="Guardar" />
 										</h:panelGrid>
@@ -1340,7 +1321,7 @@
 
 													</p:lightBox>
 												</h:panelGrid>
-												<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update=":formTabView:tablaModificada"
+												<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update="tablaSubtitulo29 :formTabView:tablaModificada :completarTarea"
 													action="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.guardarSubtitulo29}"
 													ajax="true" value="Guardar" />
 												
@@ -1949,17 +1930,17 @@
 						</p:tabView>
 						</h:form>
 						
-						<h:form>
+						<h:form id="completarTarea">
 
-						<p:commandButton value="Finalizar Monitoreo e Informar"
-							styleClass="x-btn-text"
-							action="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.finalizar}"
-							ajax="false" icon="ui-icon-seek-first" />
-							
-						<p:commandButton value="Reparos"
-							styleClass="x-btn-text"
-							action="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.conReparos}"
-							ajax="false" icon="ui-icon-seek-first" />
+							<p:commandButton value="Finalizar Monitoreo e Informar"
+								styleClass="x-btn-text"
+								action="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.finalizar}"
+								ajax="false" icon="ui-icon-seek-first" rendered="#{not procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.reparos}"/>
+								
+							<p:commandButton value="Completar con Reparos"
+								styleClass="x-btn-text"
+								action="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.finalizar}"
+								ajax="false" icon="ui-icon-seek-first" rendered="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.reparos}"/>
 						</h:form>
 					</div>
 
