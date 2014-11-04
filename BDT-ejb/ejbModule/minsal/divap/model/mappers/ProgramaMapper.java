@@ -46,6 +46,16 @@ public class ProgramaMapper implements Mapper<ProgramaAno>{
 		}else{
 			programaVO.setEstadoFlujocaja(new EstadoProgramaVO());
 		}
+		if (programaAno.getEstadoConvenio()!=null)	{
+			programaVO.setEstadoConvenio(new EstadoProgramaVO(programaAno.getEstadoConvenio().getIdEstadoPrograma(), programaAno.getEstadoConvenio().getNombreEstado()));
+		}else{
+			programaVO.setEstadoConvenio(new EstadoProgramaVO());
+		}
+		if (programaAno.getEstadoreliquidacion()!=null)	{
+			programaVO.setEstadoReliquidacion(new EstadoProgramaVO(programaAno.getEstadoreliquidacion().getIdEstadoPrograma(), programaAno.getEstadoreliquidacion().getNombreEstado()));
+		}else{
+			programaVO.setEstadoReliquidacion(new EstadoProgramaVO());
+		}
 		if(programaAno.getPrograma() != null){
 			programaVO.setNombre(programaAno.getPrograma().getNombre());
 			programaVO.setId(programaAno.getPrograma().getId());

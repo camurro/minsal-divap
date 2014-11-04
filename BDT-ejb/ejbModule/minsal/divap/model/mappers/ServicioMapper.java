@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import minsal.divap.vo.ComunaSummaryVO;
+import minsal.divap.vo.ServiciosSummaryVO;
 import minsal.divap.vo.ServiciosVO;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import cl.minsal.divap.model.Comuna;
@@ -12,8 +13,11 @@ import cl.minsal.divap.model.ServicioSalud;
 public class ServicioMapper implements Mapper<ServicioSalud>{
 
 	@Override
-	public Object getSummary(ServicioSalud servicioSalud) {
-		throw new NotImplementedException();
+	public ServiciosSummaryVO getSummary(ServicioSalud servicioSalud) {
+		if (servicioSalud == null)
+			return null;
+		ServiciosSummaryVO serviciosSummaryVO = new ServiciosSummaryVO(servicioSalud.getId(), servicioSalud.getNombre());
+		return serviciosSummaryVO;
 	}
 
 	@Override

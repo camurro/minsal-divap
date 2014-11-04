@@ -34,14 +34,11 @@ public class ReliquidacionDAO {
 	}
 
 
-	public Integer crearInstanciaReliquidacion(Usuario usuario,
-			Mes mesEnCurso) {
-		
-		String nombreUsuario = usuario.getUsername();
+	public Integer crearInstanciaReliquidacion(Usuario usuario, Mes mesEnCurso) {
 		try {
 			long current = Calendar.getInstance().getTimeInMillis();
 			Reliquidacion dto = new Reliquidacion();
-			dto.setUsuario(nombreUsuario);
+			dto.setUsuario(usuario);
 			dto.setMes(mesEnCurso);
 			dto.setFechaCreacion(new Date(current));
 			this.em.persist(dto);

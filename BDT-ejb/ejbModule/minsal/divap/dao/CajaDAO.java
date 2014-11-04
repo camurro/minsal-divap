@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import minsal.divap.enums.Subtitulo;
@@ -210,6 +211,23 @@ public class CajaDAO {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public List<MarcoPresupuestario> getMarcoPresupuestarioByProgramaAnoReparos(Integer idProgramaAno, Boolean value) {
+		try {
+			TypedQuery<MarcoPresupuestario> query = this.em.createNamedQuery("MarcoPresupuestario.findByProgramaAnoReparosMarcoPresupuestario", MarcoPresupuestario.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("reparosMarcoPresupuestario", value);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public int updateMarcoReparos(Integer idProgramaAno) {
+		Query queryUpdate = this.em.createNamedQuery("MarcoPresupuestario.updateMarcoProgramaAnoReparos");
+		queryUpdate.setParameter("idProgramaAno", idProgramaAno);
+		return queryUpdate.executeUpdate();
 	}
 
 }

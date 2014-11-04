@@ -19,7 +19,7 @@
 					<h4>Seleccionar Programa a Informar:</h4>
 			
 					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoGITSubirController.programas}"
-						liveResize="true" var="_programas" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+						liveResize="true" var="_programa" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
 						styleClass="dataTable">
 						<p:columnGroup type="header">
 							<!--  -->
@@ -33,30 +33,26 @@
 							</p:row>
 						</p:columnGroup>
 
-						<p:column style="text-align:left;">
-							<span class="textoAjustado">#{_programas.nombre}</span>
+						<p:column style="text-align:left; #{(programa.estadoConvenio.id == '3')?'background-color: #c0c0c0;':''} ">
+							<span class="textoAjustado">#{_programa.nombre}</span>
 						</p:column>
-						<p:column style="text-align:left;">
-							<span class="textoAjustado">#{_programas.descripcion}</span>
+						<p:column style="text-align:left; #{(programa.estadoConvenio.id == '3')?'background-color: #c0c0c0;':''} ">
+							<span class="textoAjustado">#{_programa.descripcion}</span>
 						</p:column>
 						<p:column>
-						
-							<h:commandLink action="#{procesoGITSubirController.comenzar()}" value="INICIA">
-							<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado.nombre}"
-							value="#{_programas.nombre}" />
-							<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado.tipo_programa}"
-							value="#{_programas.tipo_programa}" />
-							<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado.id}"
-							value="#{_programas.id}" />
-							<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado.idProgramaAno}"
-							value="#{_programas.idProgramaAno}" />
-							<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado.descripcion}"
-							value="#{_programas.descripcion}" />
-							<f:setPropertyActionListener target="#{procesoGITSubirController.target}"
-							value="bandejaTareas.jsf" />
-        					<!-- h:graphicImage value="resources/minsal/images/play.png"  styleClass="divapIcons">        					
-							</h:graphicImage-->
-						</h:commandLink>
+							<h:commandLink action="#{procesoGITSubirController.comenzar}"  rendered="#{_programa.estadoConvenio.id == '1'}>
+								<h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons" />
+								<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado.nombre}"
+								value="#{_programa.nombre}" />
+								<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado.id}"
+								value="#{_programa.id}" />
+								<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado.idProgramaAno}"
+								value="#{_programa.idProgramaAno}" />
+								<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado.descripcion}"
+								value="#{_programa.descripcion}" />
+								<f:setPropertyActionListener target="#{procesoGITSubirController.target}"
+								value="bandejaTareas.jsf" />
+							</h:commandLink>
 						</p:column>
 					</p:dataTable>
 

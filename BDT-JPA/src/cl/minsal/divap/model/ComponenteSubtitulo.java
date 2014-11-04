@@ -52,7 +52,7 @@ public class ComponenteSubtitulo implements Serializable {
     public void setIdComponenteSubtitulo(Integer idComponenteSubtitulo) {
         this.idComponenteSubtitulo = idComponenteSubtitulo;
     }
-   
+    
     public Long getPesoSubtitulo() {
         return pesoSubtitulo;
     }

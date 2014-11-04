@@ -92,7 +92,7 @@
 							icon="ui-icon-arrowrefresh-1-s" />
 						<p:menuitem value="Estimación de Flujos de Caja" url="divapProcesoProgInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
 						<p:menuitem value="Consolidador de Flujos de Caja" url="divapProcesoProgConsolidado.jsf" icon="ui-icon-arrowrefresh-1-s" />
-						<p:menuitem value="Ordenes de Transferenciagggg" url="divapProcesoOTInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
+						<p:menuitem value="Ordenes de Transferencia" url="divapProcesoOTInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
 					</p:submenu>
 					<p:submenu label="Reportes" icon="ui-icon-document">
 						<p:submenu label="Informes Comuna">
@@ -107,8 +107,8 @@
 						<p:menuitem value="Glosa 07" url="divapReporteGlosa07.jsf" icon="ui-icon-document" />
 
 					</p:submenu>
-					<p:submenu label="Servicio de Salud" icon="ui-icon-extlink">
-						<p:menuitem value="Gestión de Convenios y Resoluciones" url="divapServicioConvenios.jsf" icon="ui-icon-pencil" />
+					<p:submenu label="Servicio de Salud" icon="ui-icon-extlink" rendered="#{not empty loginController.servicio}">
+						<p:menuitem value="Gestión de Convenios y Resoluciones" url="divapServicioConvenios.jsf" icon="ui-icon-pencil"/>
 					</p:submenu>
 					<p:menuitem value="Mantenedores" url="#" icon="ui-icon-person" />
 				</p:menubar>

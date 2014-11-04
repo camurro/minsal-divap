@@ -10,6 +10,8 @@ import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Default;
 import javax.inject.Named;
 
+import minsal.divap.vo.ServiciosSummaryVO;
+
 @SessionScoped
 @Stateful
 @Named("userUtil")
@@ -33,6 +35,7 @@ public class UserUtil implements Serializable {
 	private boolean oirs;
 	private boolean espec;
 	private List<String> roles;
+	private ServiciosSummaryVO servicio;
 
 	public void inicializar(String _username, String _password,	String _token,	Date _fechaToken){
 		setUsername(_username);
@@ -46,6 +49,7 @@ public class UserUtil implements Serializable {
 		this.password = null;
 		this.token = null;
 		this.fechaToken = null;
+		this.servicio = null;
 	}
 
 	public String getUsername() {
@@ -139,6 +143,14 @@ public class UserUtil implements Serializable {
 
 	public boolean isEspec() {
 		return espec;
+	}
+
+	public ServiciosSummaryVO getServicio() {
+		return servicio;
+	}
+
+	public void setServicio(ServiciosSummaryVO servicio) {
+		this.servicio = servicio;
 	}
 
 }

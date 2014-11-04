@@ -76,7 +76,6 @@
 				<env-entry-type>java.lang.String</env-entry-type>
 				<env-entry-value>DIVAP</env-entry-value>
 			</env-entry>
-			
 		</session>
 		<session>
 			<ejb-name>DocumentService</ejb-name>
@@ -86,6 +85,12 @@
 				<env-entry-type>java.lang.String</env-entry-type>
 				<env-entry-value>/tmp</env-entry-value>
 				<!-- <env-entry-value>E:\redhatdoc</env-entry-value>  -->
+			</env-entry>
+			<env-entry>
+				<description>Tmp Download Directory</description>
+				<env-entry-name>tmpDownloadDirectory</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>/tmp/download</env-entry-value>
 			</env-entry>
 		</session>
 		<session>
@@ -255,8 +260,34 @@
 				<env-entry-value>PROCESOS\{ANO}\OT</env-entry-value>
 			</env-entry>
 		</session>
-		
-		
+		<!-- DIRECCION PROCESO RELIQUIDACION  -->
+		<session>
+			<ejb-name>ReliquidacionService</ejb-name>
+			<env-entry>
+				<description>Tmp Dir</description>
+				<env-entry-name>tmpDir</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>/tmp/excel</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Tmp Dir docs</description>
+				<env-entry-name>tmpDirDoc</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>/tmp/doc</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Template folder Reliquidacion</description>
+				<env-entry-name>folderTemplateReliquidacion</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>TEMPLATES/RELIQUIDACION</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Process folder Reliquidacion</description>
+				<env-entry-name>folderDocReliquidacion</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>PROCESOS/{ANO}/RELIQUIDACION</env-entry-value>
+			</env-entry>
+		</session>
 	</enterprise-beans>
 	<!-- <ejb-client-jar>BaseEJBClient.jar</ejb-client-jar> -->
 </ejb-jar>

@@ -8,9 +8,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import minsal.divap.enums.Subtitulo;
 import minsal.divap.vo.ComponentesVO;
 import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.ComponenteSubtitulo;
+import cl.minsal.divap.model.ConvenioComuna;
+import cl.minsal.divap.model.ConvenioServicio;
+
 @Singleton
 public class ComponenteDAO {
 	@PersistenceContext(unitName="BDT-JPA")
@@ -19,22 +23,17 @@ public class ComponenteDAO {
 	public List<Componente> getComponentes(){
 		try {
 			TypedQuery<Componente> query = this.em.createNamedQuery("Componente.findAll", Componente.class);
-			
 			return query.getResultList(); 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
-
-	
-	
 	
 	public List<Componente> getComponenteByProgramaSubtitulo(Integer programaId, Integer sub ){
 		try {
-			
 			//toma todos los componenetes por programa 
 			TypedQuery<Componente> query1 = this.em.createNamedQuery("Componente.findByPrograma", Componente.class);
-			query1.setParameter("id", programaId);
+			query1.setParameter("idPrograma", programaId);
 			List<Componente> conpo = query1.getResultList();
 			
 			List<ComponentesVO> componentesPrograma = new ArrayList<ComponentesVO>();
@@ -88,11 +87,10 @@ public class ComponenteDAO {
 		}
 	}
 	
-	
-	public List<Componente> getComponenteByPrograma(Integer programaId){
+	public List<Componente> getComponenteByPrograma(Integer idPrograma){
 		try {
 			TypedQuery<Componente> query = this.em.createNamedQuery("Componente.findByPrograma", Componente.class);
-			query.setParameter("id", programaId);
+			query.setParameter("idPrograma", idPrograma);
 			return query.getResultList(); 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -111,10 +109,6 @@ public class ComponenteDAO {
 			throw new RuntimeException(e);
 		}
 	}
-
-
-
-
 	
 	public Componente getComponenteByNombre(String componente) {
 		try{
@@ -129,5 +123,51 @@ public class ComponenteDAO {
 		return null;
 	}
 
+	public List<Componente> getComponentesByIdProgramaIdSubtitulos(Integer idPrograma, Subtitulo... subtitulos) {
+		try {
+			List<Integer> idSubtitulos = new ArrayList<Integer>();
+			for(Subtitulo subtitulo : subtitulos){
+				idSubtitulos.add(subtitulo.getId());
+			}
+			TypedQuery<Componente> query = this.em.createNamedQuery("Componente.findByIdProgramaIdSubtitulos", Componente.class);
+			query.setParameter("idTipoSubtitulos", idSubtitulos);
+			query.setParameter("idPrograma", idPrograma);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public ConvenioComuna getConvenioComunaByProgramaAnoComponenteSubtituloComuna(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idComuna) {
+		try {
+			TypedQuery<ConvenioComuna> query = this.em.createNamedQuery("ConvenioComuna.findByIdProgramaAnoIdComponenteIdSubtituloIdComuna", ConvenioComuna.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idTipoSubtitulo", idSubtitulo);
+			query.setParameter("idComuna", idComuna);
+			List<ConvenioComuna> results = query.getResultList();
+			if (results.size() > 0)
+				return results.get(0);
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public ConvenioServicio getConvenioServicioByProgramaAnoComponenteSubtituloEstablecimiento(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idEstablecimiento) {
+		try {
+			TypedQuery<ConvenioServicio> query = this.em.createNamedQuery("ConvenioServicio.findByIdProgramaAnoIdComponenteIdSubtituloIdEstablecimiento", ConvenioServicio.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idTipoSubtitulo", idSubtitulo);
+			query.setParameter("idEstablecimiento", idEstablecimiento);
+			List<ConvenioServicio> results = query.getResultList();
+			if (results.size() > 0)
+				return results.get(0);
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 }

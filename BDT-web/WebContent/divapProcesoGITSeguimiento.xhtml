@@ -1,9 +1,110 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="zonaJavaScript">
+		<style type="text/css">
+			.ui-state-error {
+				margin-left: 0px;
+			}
+		</style>
+		<script type="text/javascript">
+			function checkEmail(email) {
+				var regExp = /(^[a-z]([a-z_\.]*)@([a-z_\.]*)([.][a-z]{3})$)|(^[a-z]([a-z_\.]*)@([a-z_\.]*)(\.[a-z]{3})(\.[a-z]{2})*$)/i;
+				return regExp.test(email);
+			}
+			
+			function checkInputText(text, required, message){
+				text = $.trim(text);
+				if(required){
+					if(text == ""){
+						alert(message);
+						return false;
+					}
+				}else{
+					if(text == ""){
+						return true;
+					}
+				}
+				return true;
+			}
+		
+			function checkEmails(emails, required){
+				emails = $.trim(emails);
+				if(required){
+					if(emails == ""){
+						alert("Debe Especificar al menos un destinatario");
+						return false;
+					}
+				}else{
+					if(emails == ""){
+						return true;
+					}
+				}
+				var emailArray = emails.split(",");
+			    var invEmails = "";
+			    for(i = 0; i &lt;  emailArray.length; i++){
+			        if(!checkEmail(emailArray[i])){
+			        	invEmails += emailArray[i] + "\n";
+			        }
+			    }
+			    if(invEmails != ""){
+			        alert( "Error \nEmails no válidos:\n" + invEmails);
+			        return false;
+			    }
+				return true;
+			}
+		
+			function checkListEmails(){
+				 var emailsPara = document.getElementById("formSeguimiento:to").value;
+				 var result = checkEmails(emailsPara, true);
+				 if(!result){
+					 $("#formSeguimiento\\:to").addClass("ui-state-error");
+					 return false;
+				 }
+				 $("#formSeguimiento\\:to").removeClass("ui-state-error");
+				 var emailsCc = document.getElementById("formSeguimiento:cc").value;
+				 result = checkEmails(emailsCc, false);
+				 if(!result){
+					 $("#formSeguimiento\\:cc").addClass("ui-state-error");
+					 return false;
+				 }
+				 $("#formSeguimiento\\:cc").removeClass("ui-state-error");
+				 var emailsCco = document.getElementById("formSeguimiento:cco").value;
+				 result = checkEmails(emailsCco, false);
+				 if(!result){
+					 $("#formSeguimiento\\:cco").addClass("ui-state-error");
+					 return false;
+				 }
+				 $("#formSeguimiento\\:subject").removeClass("ui-state-error");
+				 var subject = document.getElementById("formSeguimiento:subject").value;
+				 result = checkInputText(subject, true, "Debe especificar el asunto del correo");
+				 if(!result){
+					 $("#formSeguimiento\\:subject").addClass("ui-state-error");
+					 return false;
+				 }
+				 $("#formSeguimiento\\:body").removeClass("ui-state-error");
+				 var body = document.getElementById("formSeguimiento:body").value;
+				 result = checkInputText(body, true, "Debe especificar el contenido del correo");
+				 if(!result){
+					 $("#formSeguimiento\\:body").addClass("ui-state-error");
+					 return false;
+				 }
+				 
+				 return true;
+			}	
 
+		  	function downloadDocument(idDoc) {  
+                 document.getElementById('formDownload:hiddenId').value=idDoc;
+                 document.getElementById('formDownload:linkDownload').click();  
+           	}  
+
+		  	function subirDocumentos(){  
+              	 document.getElementById('btnShowModal').click();  
+          	}  
+		</script>
+	</ui:define>
 	<ui:define name="content">
-		<h:form enctype="multipart/form-data">
+		<h:form id="formSeguimiento" enctype="multipart/form-data">
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="Gestión de Información para Transferencia" />
@@ -12,7 +113,7 @@
 					<h2>
 						<span class="strong">Actividad:</span> Seguimiento de Documentación Formal
 					</h2>
-					<p class="parrafo">El #{procesoAsignacionPerCapitaController.actividadSeguimientoTitle} contiene lorem ipsum dolor sit amet,
+					<p class="parrafo">El #{procesoGITSeguimientoController.actividadSeguimientoTitle} contiene lorem ipsum dolor sit amet,
 						consectetur adipiscing elit. Praesent egestas tempor nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est
 						faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo placerat, nisi augue suscipit ante, vel
 						auctor mauris enim eu turpis. Nunc eu erat et eros interdum eleifend eu non sem. Maecenas sollicitudin odio imperdiet orci
@@ -55,7 +156,7 @@
 								</h:panelGrid>
 
 								<h:outputText value="Asunto: " styleClass="inputLabel" />
-								<h:outputText value="Envío archivos de #{procesoAsignacionPerCapitaController.actividadSeguimientoTitle}" />
+								<h:outputText value="Envío archivos de #{procesoGITSeguimientoController.actividadSeguimientoTitle}" />
 
 								<h:outputText value="Mensaje: " styleClass="inputLabel" />
 								<h:outputText
@@ -67,33 +168,32 @@
 					</p:panelGrid>
 					<!-- FIN MENSAJE MOCK -->
 
-					<h:form>
-						<h3>Enviar Correo:</h3>
+						<h3>Seguimiento:</h3>
 						<h:panelGrid styleClass="tableFullWidth">
 							<h:panelGrid columns="2" styleClass="tableFullWidth">
 								<h:outputText value="Para: " styleClass="inputLabel" />
-								<h:inputText  value="#{procesoGTISeguimientoController.paraSeleccionado}" styleClass="inputText" />
+								<p:inputText  value="#{procesoGITSeguimientoController.to}" styleClass="inputText" style="width: 70%;" id="to"/>
 
 								<h:outputText value="CC: " styleClass="inputLabel" />
-								<h:inputText value="#{procesoGTISeguimientoController.cCSeleccionado}" styleClass="inputText" />
+								<p:inputText value="#{procesoGITSeguimientoController.cc}" styleClass="inputText" style="width: 70%;" id="cc"/>
 
 								<h:outputText value="CCO: " styleClass="inputLabel" />
-								<h:inputText value="#{procesoGTISeguimientoController.cCOSeleccionado}" styleClass="inputText" />
+								<p:inputText value="#{procesoGITSeguimientoController.cco}" styleClass="inputText" />
 
 								<h:outputText value="Adjunto: " styleClass="inputLabel" />
 								<h:panelGrid columns="2">
-									<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoGTISeguimientoController.uploadedFile}" mode="simple"
+									<p:fileUpload id="attachedFile" value="#{procesoGITSeguimientoController.handleAttachedFile}" mode="simple"
 										styleClass="inputText" />
-									<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
 								</h:panelGrid>
 
 								<h:outputText value="Asunto: " styleClass="inputLabel" />
-								<h:inputText value="#{procesoGTISeguimientoController.asuntoSeleccionado}" styleClass="inputText" />
+								<p:inputText value="#{procesoGITSeguimientoController.subject}" styleClass="inputText" style="width: 70%;" id="subject"/>
 
 								<h:outputText value="Mensaje : " styleClass="inputLabel" />
-								<h:inputTextarea value="#{procesoGTISeguimientoController.mensajeSeleccionado}" styleClass="inputTextArea" />
+								<p:inputTextarea value="#{procesoGITSeguimientoController.body}" styleClass="inputTextArea"  style="width: 70%;" id="body"/>
 							</h:panelGrid>
-							<p:commandButton styleClass="x-btn-text" style="float:right;" value="Enviar Correo" action="#{procesoGTISeguimientoController.enviarCorreo()}" icon="ui-icon-comment" />
+							<p:commandButton styleClass="x-btn-text" style="float:right;" value="Enviar Correo" onclick="return checkListEmails()"
+								action="#{procesoGITSeguimientoController.sendMail}" id="sendMail" ajax="false" icon="ui-icon-comment" />
 						</h:panelGrid>
 						<h3>Tareas de la Actividad:</h3>
 						<p style="">
@@ -106,7 +206,6 @@
 							action="bandejaTareas?faces-redirect=true indexMenu=0" />
 
 						<div style="clear: both;"></div>
-					</h:form>
 
 				</p:panel>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"

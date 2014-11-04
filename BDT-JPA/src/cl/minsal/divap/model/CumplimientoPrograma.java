@@ -1,7 +1,6 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Set;
 
 import javax.persistence.Basic;
@@ -36,8 +35,8 @@ import javax.xml.bind.annotation.XmlTransient;
 public class CumplimientoPrograma implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-       @Column(name="id_cumplimiento_programa", unique=true, nullable=false)
-       @GeneratedValue
+    @Column(name="id_cumplimiento_programa", unique=true, nullable=false)
+    @GeneratedValue
     private Integer idCumplimientoPrograma;
     @Basic(optional = false)
     @Column(name = "porcentaje_desde")
@@ -110,26 +109,26 @@ public class CumplimientoPrograma implements Serializable {
 
     @XmlTransient
     public Set<ReliquidacionServicio> getReliquidacionServicios() {
-        return reliquidacionServicios;
-    }
+		return reliquidacionServicios;
+	}
 
-    public void setReliquidacionServicios(
-            Set<ReliquidacionServicio> reliquidacionServicios) {
-        this.reliquidacionServicios = reliquidacionServicios;
-    }
+	public void setReliquidacionServicios(
+			Set<ReliquidacionServicio> reliquidacionServicios) {
+		this.reliquidacionServicios = reliquidacionServicios;
+	}
 
-    @XmlTransient
-    public Set<ReliquidacionComuna> getReliquidacionComunas() {
-        return reliquidacionComunas;
-    }
-   
-   
-    public void setReliquidacionComunas(
-            Set<ReliquidacionComuna> reliquidacionComunas) {
-        this.reliquidacionComunas = reliquidacionComunas;
-    }
+	@XmlTransient
+	public Set<ReliquidacionComuna> getReliquidacionComunas() {
+		return reliquidacionComunas;
+	}
+	
+	
+	public void setReliquidacionComunas(
+			Set<ReliquidacionComuna> reliquidacionComunas) {
+		this.reliquidacionComunas = reliquidacionComunas;
+	}
 
-    @Override
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (idCumplimientoPrograma != null ? idCumplimientoPrograma.hashCode() : 0);

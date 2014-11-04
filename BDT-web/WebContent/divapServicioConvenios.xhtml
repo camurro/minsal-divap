@@ -3,14 +3,14 @@
 	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
 
 	<ui:define name="content">
-		<h:form enctype="multipart/form-data">
+		<h:form id="convenios" enctype="multipart/form-data">
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="Gestión  de Información para Transferencia" />
 				</h1>
 				<p:panel id="Panel">
 					<h2>
-						Subir Resoluciones y Convenios por Programa de Reforzamiento Año 2014<br />Servicio de Salud: Metropolitano Oriente
+						Subir Resoluciones y Convenios por Programa de Reforzamiento Año 2014<br />Servicio de Salud: #{loginController.servicio.nombre_servicio}
 					</h2>
 					<p class="parrafo">La tarea corresponde a nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est
 						faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.nulla eget ultricies. Morbi pulvinar elit at
@@ -24,89 +24,69 @@
 						<h:panelGrid>
 							<h:outputText value="Programa: " styleClass="inputLabel" />
 								<p:selectOneMenu id="programa" value="#{procesoConveniosController.programaSeleccionado}" style="width:450px;">
-								<f:selectItem itemLabel="Seleccione un programa" itemValue="" />
-					            <f:selectItems itemLabel="#{programa.nombre}" itemValue="#{programa.id}" var="programa" value="#{procesoConveniosController.programas}" />
-								<p:ajax listener="#{procesoConveniosController.getProgramas}" update=":#{p:component('tabView')},:#{p:component('componente')}" />
-								
-								
+								<f:selectItem itemLabel="Seleccione un programa" itemValue="0" />
+					            <f:selectItems itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" value="#{procesoConveniosController.programas}" />
+								<p:ajax listener="#{procesoConveniosController.cargarComponentesPorPrograma}" update="componente datosTabView" />
 							</p:selectOneMenu>
 						</h:panelGrid>
 						<h:panelGrid>
 							<h:outputText value="Componente: "  styleClass="inputLabel" />
 							<p:selectOneMenu id="componente" value="#{procesoConveniosController.componenteSeleccionado}" style="width:450px;">
-								<f:selectItem itemLabel="Seleccione un componente" itemValue="" />
-						    <f:selectItems itemLabel="#{componente.nombre}" itemValue="#{componente.id}" var="componente" value="#{procesoConveniosController.componentes}" />
-						    <p:ajax listener="#{procesoConveniosController.getComponentes}" update=":#{p:component('tabView')}" />
-							</p:selectOneMenu>
-						</h:panelGrid>
-						<h:panelGrid>
-						
-						</h:panelGrid>
-						<h:panelGrid>
-							<h:outputText value="Comuna: " styleClass="inputLabel" />
-							<p:selectOneMenu id="comuna" value="#{procesoConveniosController.comunaSeleccionada}" style="width:450px;">
-								<f:selectItem itemLabel="Seleccione una comuna" itemValue="" />
-								<f:selectItems itemLabel="#{comuna.descComuna}" itemValue="#{comuna.idComuna}" var="comuna" value="#{procesoConveniosController.comunas}" />
-								<p:ajax listener="#{procesoConveniosController.getComunas}" update=":#{p:component('tabView')},:#{p:component('establecimiento')}" />
-							</p:selectOneMenu>
-						</h:panelGrid>
-						<h:panelGrid>
-							<h:outputText value="Establecimiento: " styleClass="inputLabel" />
-							<p:selectOneMenu id="establecimiento" value="#{procesoConveniosController.establecimientoSeleccionado}" style="width:450px;">
-								<f:selectItem itemLabel="Seleccione un establecimiento" itemValue="" />
-				<f:selectItems itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}" var="establecimiento" value="#{procesoConveniosController.establecimientos}" />
-							<p:ajax listener="#{procesoConveniosController.getEstablecimientos}"  update="#{p:component('tabView')}" /> />
+								<f:selectItem itemLabel="Seleccione un componente" itemValue="0" />
+						   		<f:selectItems itemLabel="#{componente.nombre}" itemValue="#{componente.id}" var="componente" value="#{procesoConveniosController.componentes}" />
+						   		<p:ajax listener="#{procesoConveniosController.cargarDatos}" update="datosTabView" />
 							</p:selectOneMenu>
 						</h:panelGrid>
 					</h:panelGrid>
 					<br />
-					<p:tabView id="tabView">
-						<p:tab id="tab1" title="APS Municipal">
-							<p:dataTable id="Grid1" resizableColumns="true" value="#{procesoConveniosController.conveniosMuni}" liveResize="true" var="_data" rows="10"
+					<h:panelGrid id="datosTabView">
+					<p:tabView id="tabView" rendered="#{not empty procesoConveniosController.programa}" >
+						<p:tab id="tab1" title="APS Municipal" rendered="#{procesoConveniosController.programa.dependenciaMunicipal}">
+							<h:panelGrid>
+								<h:outputText value="Comuna: " styleClass="inputLabel" />
+								<p:selectOneMenu id="comuna" value="#{procesoConveniosController.comunaSeleccionada}" style="width:450px;">
+									<f:selectItem itemLabel="Mostrar Todo" itemValue="0" />
+									<f:selectItems itemLabel="#{_comuna.descComuna}" itemValue="#{_comuna.idComuna}" var="_comuna" value="#{procesoConveniosController.comunas}" />
+									<p:ajax listener="#{procesoConveniosController.cargarDatos}" update="Grid1" />
+								</p:selectOneMenu>
+							</h:panelGrid>
+							<br/>
+							<p:dataTable id="Grid1" resizableColumns="true" value="#{procesoConveniosController.resolucionConveniosMunicipal}" liveResize="true" var="_data" rows="10"
 								paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 								<!-- <p:ajax event="rowToggle" listener="#{tableBean.onRowToggle}" update=":form:growl" />   -->
 								<p:columnGroup type="header">
 									<p:row>
 										<p:column width="15" />
 										<p:column headerText="Comuna" />
-										<p:column headerText="Establecimiento" />
-										<p:column headerText="Programa / Componente / Actividad" />
+										<p:column headerText="Programa / Componente" />
 										<p:column headerText="Subtítulo" />
 										<p:column headerText="Monto" />
 										<p:column headerText="Cargar Información" />
 									</p:row>
 								</p:columnGroup>
-
 								<p:column>
 									<p:rowToggler />
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.comunaNombre}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data.nombreComuna}</span>
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.establecimientoNombre}</span>
-								</p:column>
-
-								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.programaNombre}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data.nombrePrograma}/#{_data.nombreComponente}</span>
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.tipoSubtituloNombreSubtitulo}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data.nombreSubtitulo}</span>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.monto}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
-
 								<p:column>
-									<p:commandButton value="Cargar"  action="#{procesoConveniosController.cargaConvenio(_data.idConverio)}" update=":#{p:component('dlg2')}" oncomplete="dlg2.show();" />
-								
-								
+									<p:commandButton value="Cargar" action="#{procesoConveniosController.cargaConvenio(11)}" update=":#{p:component('dlg2')}" oncomplete="dlg2.show();" />
 								</p:column>
 								<p:rowExpansion>
 									<!-- INICIO EXPANSION --> 
-									    <p:dataTable id="SubGrid1" resizableColumns="true" value="#{procesoConveniosController.getListResolucionesMuni}" liveResize="true" var="_data" rows="10"
+									    <p:dataTable id="SubGrid1" resizableColumns="true" value="#{procesoConveniosController.resolucionesMunicipal}" liveResize="true" var="_dataMunicipal" rows="10"
 										paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 										<!-- <p:ajax event="rowToggle" listener="#{tableBean.onRowToggle}" update=":form:growl" />   -->
 										<p:columnGroup type="header">
@@ -117,45 +97,48 @@
 												<p:column headerText="Convenio" />
 											</p:row>
 										</p:columnGroup>
-
-										
 										<p:column>
-											<h:outputText value="#{_data.fecha}" styleClass="textoPequenio textoAjustado">
+											<h:outputText value="#{_dataMunicipal.fecha}" styleClass="textoPequenio textoAjustado">
 												<f:convertDateTime pattern="dd/MMM/yyyy" />
 											</h:outputText>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio centrado">#{_data.numeroResolucion}</span>
+											<span class="textoAjustado textoPequenio centrado">#{_dataMunicipal.numeroResolucion}</span>
 										</p:column>
 
 										<p:column>
-											<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
+											<h:outputText value="#{_dataMunicipal.convenioMonto}" styleClass="textoPequenio textoAjustado">
 												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 											</h:outputText>
 										</p:column>
 										<p:column>
-											<h:commandLink   action="#{procesoConveniosController.downloadDocAlfresco(_data.idConverio)}">
+											<h:commandLink   action="#{procesoConveniosController.downloadDocAlfresco(_dataMunicipal.idConverio)}">
 												<h:graphicImage  value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
-												
 											</h:commandLink >
 										</p:column>
-
 									</p:dataTable>
-
 									<!-- FIN EXPANSION -->
 								</p:rowExpansion>
 							</p:dataTable>
 						</p:tab>
-						<p:tab id="tab2" title="APS Servicio">
-									<p:dataTable id="Grid2" resizableColumns="true" value="#{procesoConveniosController.conveniosServi}" liveResize="true" var="_data" rows="10"
+						<p:tab id="tab2" title="APS Servicio" rendered="#{procesoConveniosController.programa.dependenciaServicio}">
+								<h:panelGrid>
+									<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+									<p:selectOneMenu id="establecimiento" value="#{procesoConveniosController.establecimientoSeleccionado}" style="width:450px;">
+										<f:selectItem itemLabel="Mostrar Todo" itemValue="0" />
+										<f:selectItems itemLabel="#{_establecimiento.nombre}" itemValue="#{_establecimiento.id}" var="_establecimiento" value="#{procesoConveniosController.establecimientos}" />
+										<p:ajax listener="#{procesoConveniosController.cargarDatos}"  update="Grid2" /> />
+									</p:selectOneMenu>
+								</h:panelGrid>
+								<br/>
+								<p:dataTable id="Grid2" resizableColumns="true" value="#{procesoConveniosController.resolucionConveniosServicio}" liveResize="true" var="_data" rows="10"
 								paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 								<!-- <p:ajax event="rowToggle" listener="#{tableBean.onRowToggle}" update=":form:growl" />   -->
 								<p:columnGroup type="header">
 									<p:row>
 										<p:column width="15" />
-										<p:column headerText="Comuna" />
 										<p:column headerText="Establecimiento" />
-										<p:column headerText="Programa / Componente / Actividad" />
+										<p:column headerText="Programa / Componente" />
 										<p:column headerText="Subtítulo" />
 										<p:column headerText="Monto" />
 										<p:column headerText="Cargar Información" />
@@ -166,33 +149,27 @@
 									<p:rowToggler />
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.comunaNombre}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data.nombreEstablecimiento}</span>
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.establecimientoNombre}</span>
-								</p:column>
-
-								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.programaNombre}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data.nombrePrograma}/#{_data.nombreComponente}</span>
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.tipoSubtituloNombreSubtitulo}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data.nombreSubtitulo}</span>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.monto}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 
 								<p:column>
-									<p:commandButton value="Cargar"  action="#{procesoConveniosController.cargaConvenio(_data.idConverio)}" update=":#{p:component('dlg2')}" oncomplete="dlg2.show();" />
-								
-								
+									<p:commandButton value="Cargar"  action="#{procesoConveniosController.cargaConvenio(11)}" update=":#{p:component('dlg2')}" oncomplete="dlg2.show();" />
 								</p:column>
 								<p:rowExpansion>
 										<!-- INICIO EXPANSION --> 
-									    <p:dataTable id="SubGrid2" resizableColumns="true" value="#{procesoConveniosController.getListResolucionesServi}" liveResize="true" var="_data" rows="10"
-										paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+									    <p:dataTable id="SubGrid2" resizableColumns="true" value="#{procesoConveniosController.resolucionesServicios}" liveResize="true" var="_dataServicios" rows="10"
+											paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 										<!-- <p:ajax event="rowToggle" listener="#{tableBean.onRowToggle}" update=":form:growl" />   -->
 										<p:columnGroup type="header">
 											<p:row>
@@ -202,45 +179,40 @@
 												<p:column headerText="Convenio" />
 											</p:row>
 										</p:columnGroup>
-
-										
 										<p:column>
-											<h:outputText value="#{_data.fecha}" styleClass="textoPequenio textoAjustado">
+											<h:outputText value="#{_dataServicios.fecha}" styleClass="textoPequenio textoAjustado">
 												<f:convertDateTime pattern="dd/MMM/yyyy" />
 											</h:outputText>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio centrado">#{_data.numeroResolucion}</span>
+											<span class="textoAjustado textoPequenio centrado">#{_dataServicios.numeroResolucion}</span>
 										</p:column>
 
 										<p:column>
-											<h:outputText value="#{_data.convenioMonto}" styleClass="textoPequenio textoAjustado">
+											<h:outputText value="#{_dataServicios.convenioMonto}" styleClass="textoPequenio textoAjustado">
 												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 											</h:outputText>
 										</p:column>
 										<p:column>
-											<h:commandLink   action="#{procesoConveniosController.downloadDocAlfresco(_data.idConverio)}">
+											<h:commandLink   action="#{procesoConveniosController.downloadDocAlfresco(_dataServicios.idConverio)}">
 												<h:graphicImage  value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
 												
 											</h:commandLink >
 										</p:column>
-
 									</p:dataTable>
-
 									<!-- FIN EXPANSION -->
 								</p:rowExpansion>
 							</p:dataTable>
 						</p:tab>
 					</p:tabView>
+					</h:panelGrid>
 					<p:growl id="growl2" showDetail="true" />
-
 					<br />
 				</p:panel>
-			
 				
 				<!-- DIALOG PARA SUBIR LEYES -->
 				<p:dialog header="Ingreso de Convenios Leyes" id="leyesDialog" widgetVar="dlg3" modal="true" width="600">
-				<h:panelGrid>
+					<h:panelGrid>
 						<h:outputText value="Ley: " styleClass="inputLabel" />
 						<h:outputText value="RETIRO 20.157" />
 					</h:panelGrid>
@@ -254,10 +226,8 @@
 					</h:panelGrid>
 					<h:panelGrid>
 						<h:outputText value="Fecha de Convenio " styleClass="inputLabel" /><p:calendar></p:calendar>
-						
 						<h:outputText value="TOTAL" styleClass="inputLabel" /><h:outputText value="$18.000.000" styleClass="inputLabel" />
 					</h:panelGrid>
-					
 					<br />
 					<div class="destacaArchivos ui-corner-all">
 						<br />
@@ -270,8 +240,7 @@
 					<p:commandButton value="Guardar" onclick="dlg3.hide();" styleClass="x-btn-text" icon="ui-icon-disk" />
 					<p:commandButton value="Cancelar" onclick="dlg3.hide();" styleClass="x-btn-text" icon="ui-icon-cancel" />
 				</p:dialog>
-				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
-					icon="ui-icon-seek-first" />
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"	icon="ui-icon-seek-first" />
 			</p:panel>
 			
 		
@@ -279,11 +248,10 @@
 		
 			 <h:form id="fromPupup" enctype="multipart/form-data">
 			 	<p:panel styleClass="contentPanel">
-		<p:dialog header="Ingreso de Nuevo Convenio" modal="true"  id="dlg2" widgetVar="dlg2" width="600" >
-					
+					<p:dialog header="Ingreso de Nuevo Convenio" modal="true"  id="dlg2" widgetVar="dlg2" width="600" >
 					<h:panelGrid>
 						<h:outputText value="Comuna: " styleClass="inputLabel" />
-							<h:outputText value="#{procesoConveniosController.convenio.comunaNombre}" />
+						<h:outputText value="#{procesoConveniosController.convenio.comunaNombre}" />
 					</h:panelGrid>
 					<h:panelGrid>
 						<h:outputText value="Establecimiento: " styleClass="inputLabel" />
@@ -308,13 +276,12 @@
 					<h:panelGrid>
 						<h:outputText value="Monto: " styleClass="inputLabel" />
 						<p:inputText value="#{procesoConveniosController.convenio.convenioMonto}" />
-						
 					</h:panelGrid>
 					<br />
 					<div class="destacaArchivos ui-corner-all">
 						<br />
 						<h:panelGrid>
-						<h:outputText value="Seleccionar Archivo Existente: " styleClass="inputLabel" />
+							<h:outputText value="Seleccionar Archivo Existente: " styleClass="inputLabel" />
 							<p:selectOneMenu id="documento" value="#{procesoConveniosController.documentoSeleccionado}" style="width:450px;">
 								<f:selectItem itemLabel="Seleccione un Archivo Existente" itemValue="" />
 							  <f:selectItems itemLabel="#{doc.nombreDocu}"  itemValue="#{doc.id}" var="doc" value="#{procesoConveniosController.getDocumentos}" />	
@@ -331,7 +298,6 @@
 					</div>
 					<p:commandButton value="Guardar" ajax="false" action="#{procesoConveniosController.uploadPopup}"  oncomplete="dlg2.hide();" styleClass="x-btn-text" icon="ui-icon-disk" />
 					<p:commandButton value="Cancelar" onclick="dlg2.hide();"  styleClass="x-btn-text" icon="ui-icon-cancel" />
-				
 				</p:dialog>
 				</p:panel>
 			</h:form>

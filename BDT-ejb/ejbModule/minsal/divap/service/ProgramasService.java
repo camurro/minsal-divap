@@ -14,7 +14,6 @@ import javax.ejb.Stateless;
 
 import minsal.divap.dao.ComponenteDAO;
 import minsal.divap.dao.ProgramasDAO;
-import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.model.mappers.ProgramaMapper;
@@ -43,8 +42,6 @@ public class ProgramasService {
 	private ProgramasDAO programasDAO;
 	@EJB
 	private ComponenteDAO componenteDAO;
-	@EJB
-	private ServicioSaludDAO serviciosDAO;
 
 	public Programa getProgramasByID(Integer idPrograma) {
 		return this.programasDAO.getProgramaPorID(idPrograma);

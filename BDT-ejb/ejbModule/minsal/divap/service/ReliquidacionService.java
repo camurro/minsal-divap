@@ -14,11 +14,6 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import minsal.divap.dao.AnoDAO;
 import minsal.divap.dao.CajaDAO;
 import minsal.divap.dao.ConveniosDAO;
@@ -31,12 +26,10 @@ import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.enums.FieldType;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.excel.GeneradorExcel;
-import minsal.divap.excel.impl.AsignacionRecursosPercapitaSheetExcel;
 import minsal.divap.excel.impl.CrearPlanillaCumplimientoMunicialProgramaSheetExcel;
 import minsal.divap.excel.impl.PlanillaTrabajoCumplimientoReliquidacionMunicipalSheetExcel;
 import minsal.divap.excel.impl.ReliquidacionCalculoExcelValidator;
 import minsal.divap.exception.ExcelFormatException;
-import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.CalculoReliquidacionBaseVO;
 import minsal.divap.vo.CellExcelVO;
@@ -48,12 +41,17 @@ import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.CumplimientoApsMunicipalProgramaVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ServiciosVO;
-import minsal.divap.vo.SubtituloVO;
 import minsal.divap.vo.ValorizarReliquidacionSummaryVO;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.Comuna;
-import cl.minsal.divap.model.Convenio;
+import cl.minsal.divap.model.ConvenioComuna;
 import cl.minsal.divap.model.CumplimientoPrograma;
 import cl.minsal.divap.model.Cuota;
 import cl.minsal.divap.model.EstadoPrograma;
@@ -347,14 +345,11 @@ public class ReliquidacionService {
 	public ComponenteReliquidacionSummaryVO getComponenteReliquidacionSummaryVO(ProgramaVO programa, Integer idServicio, Integer idComponente, Integer idComuna, Integer idReliquidacion){
 		ComponenteReliquidacionSummaryVO resultado = new ComponenteReliquidacionSummaryVO();
 		Long descuentoSegundaCouta = 0L;
-		
-		List<Convenio> convenios = conveniosDAO.getConveniosByIdProgramaAnoIdComponenteIdSubtitulo(programa.getIdProgramaAno(), idComponente, idComuna);
+		List<ConvenioComuna> convenios = conveniosDAO.getConveniosByProgramaAnoComponenteComuna(programa.getIdProgramaAno(), idComponente, idComuna);
 		Integer convenio = 0;
 		for(int i=0; i<convenios.size(); i++){
 			convenio += convenios.get(i).getMonto();
 		}
-		
-		
 		resultado.setConvenio(convenio);
 		Short cuota1 = 1;
 		Short cuota2 = 2;

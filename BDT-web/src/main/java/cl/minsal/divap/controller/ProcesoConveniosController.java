@@ -1,10 +1,7 @@
 package cl.minsal.divap.controller;
-import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -26,11 +23,10 @@ import minsal.divap.vo.ConvenioDocumentoVO;
 import minsal.divap.vo.ConveniosVO;
 import minsal.divap.vo.EstablecimientoVO;
 import minsal.divap.vo.ProgramaVO;
+import minsal.divap.vo.ResolucionConveniosVO;
 
 import org.primefaces.model.UploadedFile;
 
-import cl.minsal.divap.model.ReferenciaDocumento;
-import cl.minsal.divap.pojo.IngresoResolucionPojo;
 import cl.redhat.bandejaTareas.controller.BaseController;
 
 @Named ( "procesoConveniosController" ) 
@@ -38,11 +34,14 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 public class ProcesoConveniosController extends BaseController implements Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	private List<ProgramaVO> programas;
-	private List<ComunaVO> comunas;
-	private List<EstablecimientoVO> establecimientos;
+	private List<ComunaVO> comunas = new ArrayList<ComunaVO>();
+	private List<EstablecimientoVO> establecimientos = new ArrayList<EstablecimientoVO>();
 	private List<ComponentesVO> componentes;
 	private List<ConvenioDocumentoVO> documentos;
-	private List<ConveniosVO> convenios;
+	private List<ResolucionConveniosVO> resolucionConveniosMunicipal;
+	private List<ResolucionConveniosVO> resolucionConveniosServicio;
+	private List<ConveniosVO> resolucionesServicios;
+	private List<ConveniosVO> resolucionesMunicipal;
 	private ConveniosVO convenio;
 	private ProgramaVO programa;
 	private String convenioSeleccionado;
@@ -51,10 +50,9 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	private String componenteSeleccionado;
 	private String establecimientoSeleccionado;
 	private String documentoSeleccionado;
-	private File file;
 	private UploadedFile plantillaFile;
-	
-	
+
+
 	@EJB
 	private ProgramasService programasService;
 	@EJB
@@ -63,55 +61,43 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	private ComunaService comunaService;
 	@EJB
 	private EstablecimientosService establecimientosService;
+	//@EJB
+	//private AlfrescoService alfrescoService;
 	@EJB
-	private AlfrescoService alfrescoService;
-	@EJB
-	private ConveniosService aPSConveniosService;
+	private ConveniosService conveniosService;
 
-
-	
-	
-	
-	List<IngresoResolucionPojo> listResoluciones = new ArrayList<IngresoResolucionPojo>();
-
-	public void downloadDocAlfresco(String id ){
-		
-		
+/*	public void downloadDocAlfresco(String id ){
 		String mensaje="";	
-	try{
-		mensaje = "Archivo Descargado";
-		FacesMessage msg = new FacesMessage(mensaje);
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-		ReferenciaDocumento ref = new ReferenciaDocumento();
-		ref =aPSConveniosService.getReferenciaDocumentoByIdConvenio(Integer.parseInt(id));
-		System.out.println("felipe :"+ref.getId());
-		Integer docDownload = Integer.valueOf(ref.getId());
-		setDocumento(documentService.getDocument(docDownload));
-		super.downloadDocument();
-	}catch(Exception e) {
-		mensaje ="EL convenio no  conteine archivo relacionado";
-		FacesMessage msg = new FacesMessage(mensaje);
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-		
-		throw new RuntimeException(e);
-	}
-				
-	}
-	
-	
-		public void uploadPopup(){
-			String mensaje="";	
-				
-			if(documentoSeleccionado=="" && plantillaFile != null){
-				 String filename = plantillaFile.getFileName();
-					byte[] contentAttachedFile = plantillaFile.getContents();
-					Integer docAttachedFile = persistFile(filename,	contentAttachedFile);
-					
-				try{
-					 mensaje="El Archivo  fue cargado con �xito.";	
-					
-					//if(getComunaSeleccionada() != null && getProgramaSeleccionado() != null && getComponenteSeleccionado() != null  && getEstablecimientoSeleccionado() != null){
-						Integer idconvenioNew=	aPSConveniosService.convenioSave(Integer.parseInt(getProgramaSeleccionado()),
+		try{
+			mensaje = "Archivo Descargado";
+			FacesMessage msg = new FacesMessage(mensaje);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			ReferenciaDocumento ref = new ReferenciaDocumento();
+			ref = conveniosService.getReferenciaDocumentoByIdConvenio(Integer.parseInt(id));
+			System.out.println("felipe :"+ref.getId());
+			Integer docDownload = Integer.valueOf(ref.getId());
+			setDocumento(documentService.getDocument(docDownload));
+			super.downloadDocument();
+		}catch(Exception e) {
+			mensaje ="EL convenio no  conteine archivo relacionado";
+			FacesMessage msg = new FacesMessage(mensaje);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			throw new RuntimeException(e);
+		}
+
+	}*/
+
+	public void uploadPopup(){
+		String mensaje="";	
+		if(documentoSeleccionado.equals("") && plantillaFile != null){
+			String filename = plantillaFile.getFileName();
+			byte[] contentAttachedFile = plantillaFile.getContents();
+			Integer docAttachedFile = persistFile(filename,	contentAttachedFile);
+
+			try{
+				mensaje="El Archivo  fue cargado con �xito.";	
+
+				Integer idconvenioNew=	conveniosService.convenioSave(Integer.parseInt(getProgramaSeleccionado()),
 						Integer.parseInt(getEstablecimientoSeleccionado()),
 						Integer.parseInt(getComunaSeleccionada()),
 						Integer.parseInt(convenio.getIdSubtitulo().toString()),
@@ -119,325 +105,196 @@ public class ProcesoConveniosController extends BaseController implements Serial
 						Integer.parseInt(getComponenteSeleccionado()),
 						Integer.parseInt(convenio.getNumeroResolucion().toString())
 						);
-				aPSConveniosService.moveToAlfresco(idconvenioNew, docAttachedFile, TipoDocumentosProcesos.CONVENIOS);
-					//aPSConveniosService.setConvenioById(convenio.getIdConverio(),convenio.getNumeroResolucion(),convenio.getConvenioMonto());
-				//convenio.getTipoSubtituloNombreSubtitulo();,
-					FacesMessage msg = new FacesMessage(mensaje);
-					FacesContext.getCurrentInstance().addMessage(null, msg);
-					
-				} catch (Exception e) {
-					mensaje ="Los Archivos no fueron cargados.";
-					FacesMessage msg = new FacesMessage(mensaje);
-					FacesContext.getCurrentInstance().addMessage(null, msg);
-					
-					throw new RuntimeException(e);
-					
-				}
-			}else if(documentoSeleccionado !="" && plantillaFile == null){
-				try{
-					mensaje = "Los datos fueron actualizados correctamente.";
-					
-					Integer idconvenioNew=	aPSConveniosService.convenioSave(Integer.parseInt(getProgramaSeleccionado()),
-							Integer.parseInt(getEstablecimientoSeleccionado()),
-							Integer.parseInt(getComunaSeleccionada()),
-							Integer.parseInt(convenio.getIdSubtitulo().toString()),
-							Integer.parseInt(convenio.getConvenioMonto().toString()),
-							Integer.parseInt(getComponenteSeleccionado()),
-							Integer.parseInt(convenio.getNumeroResolucion().toString())
-							);
-					aPSConveniosService.moveToBd(idconvenioNew,Integer.parseInt(getDocumentoSeleccionado()), TipoDocumentosProcesos.CONVENIOS );
-					//actualiza convenio en la bd
-					//aPSConveniosService.setConvenioById(convenio.getIdConverio(),convenio.getNumeroResolucion(),convenio.getConvenioMonto());
-					FacesMessage msg = new FacesMessage(mensaje);
-					FacesContext.getCurrentInstance().addMessage(null, msg);
-					
-				} catch (Exception e) {
-					
-					mensaje ="Los Archivos no fueron actualizados.";
-					FacesMessage msg = new FacesMessage(mensaje);
-					FacesContext.getCurrentInstance().addMessage(null, msg);
-					throw new RuntimeException(e);
-					
-				}
-				
-				
+				conveniosService.moveToAlfresco(idconvenioNew, docAttachedFile, TipoDocumentosProcesos.CONVENIOS);
+				FacesMessage msg = new FacesMessage(mensaje);
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			} catch (Exception e) {
+				mensaje ="Los Archivos no fueron cargados.";
+				FacesMessage msg = new FacesMessage(mensaje);
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+
+				throw new RuntimeException(e);
+
 			}
-			
-		
-	}
-	
+		}else if(!documentoSeleccionado.equals("") && plantillaFile == null){
+			try{
+				mensaje = "Los datos fueron actualizados correctamente.";
 
-	public File getFile() {
-		
-		
-		return file;
-	}
+				Integer idconvenioNew=	conveniosService.convenioSave(Integer.parseInt(getProgramaSeleccionado()),
+						Integer.parseInt(getEstablecimientoSeleccionado()),
+						Integer.parseInt(getComunaSeleccionada()),
+						Integer.parseInt(convenio.getIdSubtitulo().toString()),
+						Integer.parseInt(convenio.getConvenioMonto().toString()),
+						Integer.parseInt(getComponenteSeleccionado()),
+						Integer.parseInt(convenio.getNumeroResolucion().toString())
+						);
+				conveniosService.moveToBd(idconvenioNew,Integer.parseInt(getDocumentoSeleccionado()), TipoDocumentosProcesos.CONVENIOS );
+				//actualiza convenio en la bd
+				//aPSConveniosService.setConvenioById(convenio.getIdConverio(),convenio.getNumeroResolucion(),convenio.getConvenioMonto());
+				FacesMessage msg = new FacesMessage(mensaje);
+				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-
-	public void setFile(File file) {
-		
-		this.file = file;
-	}
-
-
-
-
-
-	
-	public void cargaConvenio(String pramConvenio){
-		convenio = aPSConveniosService.getConvenioById(Integer.parseInt(pramConvenio));
+			} catch (Exception e) {
+				mensaje ="Los Archivos no fueron actualizados.";
+				FacesMessage msg = new FacesMessage(mensaje);
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				throw new RuntimeException(e);
+			}
 		}
+	}
 	
-	
-
-
-	public List<IngresoResolucionPojo> getListResoluciones() {
-		return listResoluciones;
+	@PostConstruct 
+	public void init() {
+		System.out.println("ProcesoConveniosController Alcanzado.");
+		if(sessionExpired()){
+			return;
+		}
+		setComunaSeleccionada("0");
+		setEstablecimientoSeleccionado("0");
+		setPrograma(null);
+		if(getServicio() != null && getServicio().getId_servicio() != null){
+			setComunas(comunaService.getComunasByServicio(getServicio().getId_servicio()));
+			setEstablecimientos(establecimientosService.getEstablecimientosByServicio(getServicio().getId_servicio()));
+		}
 	}
 
-	public void setListResoluciones( List<IngresoResolucionPojo> listResoluciones ) {
-		this.listResoluciones = listResoluciones;
+	public void cargaConvenio(String pramConvenio){
+		convenio = conveniosService.getConvenioById(Integer.parseInt(pramConvenio));
 	}
 
-	
-
-	public List<ConveniosVO> getListResolucionesMuni() {
-	
-		
+	/*public List<ConveniosVO> getListResolucionesMuni() {
 		Integer muni1 = 1;// representa a munisipal
 		Integer muni3 = 3;// representa a mixtos
 		if(getComunaSeleccionada() != null && getProgramaSeleccionado() != null && getComponenteSeleccionado() != null  && getEstablecimientoSeleccionado() != null){
-			convenios = aPSConveniosService.getConveniosForSubGridMuniServi(Integer.parseInt(programaSeleccionado),Integer.parseInt(componenteSeleccionado),Integer.parseInt(comunaSeleccionada),Integer.parseInt(establecimientoSeleccionado),muni1,muni3);
-					
-			
+			convenios = conveniosService.getConveniosForSubGridMuniServi(Integer.parseInt(programaSeleccionado),Integer.parseInt(componenteSeleccionado),Integer.parseInt(comunaSeleccionada),Integer.parseInt(establecimientoSeleccionado),muni1,muni3);
 		}else{
 			convenios = new ArrayList<ConveniosVO>();
 		}
-			
-		
-		
 		return convenios;
-	}
+	}*/
 
-	public List<ConveniosVO> getListResolucionesServi() {
-	
-		
+	/*public List<ConveniosVO> getListResolucionesServi() {
 		Integer muni2 = 2;// representa a Servicios
 		Integer muni3 = 3;// representa a mixtos
 		if(getComunaSeleccionada() != null && getProgramaSeleccionado() != null && getComponenteSeleccionado() != null  && getEstablecimientoSeleccionado() != null){
-			convenios = aPSConveniosService.getConveniosForSubGridMuniServi(Integer.parseInt(programaSeleccionado),Integer.parseInt(componenteSeleccionado),Integer.parseInt(comunaSeleccionada),Integer.parseInt(establecimientoSeleccionado),muni2,muni3);
-					
-			
+			convenios = conveniosService.getConveniosForSubGridMuniServi(Integer.parseInt(programaSeleccionado),Integer.parseInt(componenteSeleccionado),Integer.parseInt(comunaSeleccionada),Integer.parseInt(establecimientoSeleccionado),muni2,muni3);
 		}else{
 			convenios = new ArrayList<ConveniosVO>();
 		}
-			
-		
-		
 		return convenios;
-	}
+	}*/
 
-	
-	
-	
-	public List<ConveniosVO> getConveniosMuni() {
+	/*public List<ConveniosVO> getConveniosMuni() {
 		Integer muni1 = 1;//1 representa a munisipal
 		Integer muni3 = 3;// representa a mixtos
 		if(getComunaSeleccionada() != null && getProgramaSeleccionado() != null && getComponenteSeleccionado() != null  && getEstablecimientoSeleccionado() != null){
-			convenios = aPSConveniosService.getConveniosForGridMuniServi(Integer.parseInt(programaSeleccionado),Integer.parseInt(componenteSeleccionado),Integer.parseInt(comunaSeleccionada),Integer.parseInt(establecimientoSeleccionado),muni1,muni3);
-					
-			
+			convenios = conveniosService.getConveniosForGridMuniServi(Integer.parseInt(programaSeleccionado),Integer.parseInt(componenteSeleccionado),Integer.parseInt(comunaSeleccionada),Integer.parseInt(establecimientoSeleccionado),muni1,muni3);
 		}else{
 			convenios = new ArrayList<ConveniosVO>();
 		}
-			
-		
 		return convenios;
-	}
-
-
+	}*/
 	
-	public List<ConveniosVO> getConveniosServi() {
-	
-		
+	/*public List<ConveniosVO> getConveniosServi() {
 		Integer muni2 = 2;//1 representa a Servicios
 		Integer muni3 = 3;// representa a mixtos
 		if(getComunaSeleccionada() != null && getProgramaSeleccionado() != null && getComponenteSeleccionado() != null  && getEstablecimientoSeleccionado() != null){
-			convenios = aPSConveniosService.getConveniosForGridMuniServi(Integer.parseInt(programaSeleccionado),Integer.parseInt(componenteSeleccionado),Integer.parseInt(comunaSeleccionada),Integer.parseInt(establecimientoSeleccionado),muni2,muni3);
-					
-			
+			convenios = conveniosService.getConveniosForGridMuniServi(Integer.parseInt(programaSeleccionado),Integer.parseInt(componenteSeleccionado),Integer.parseInt(comunaSeleccionada),Integer.parseInt(establecimientoSeleccionado),muni2,muni3);
 		}else{
 			convenios = new ArrayList<ConveniosVO>();
 		}
-			
-		
 		return convenios;
+	}*/
+	
+	public void setEstablecimientos(List<EstablecimientoVO> establecimientos) {
+		this.establecimientos = establecimientos;
 	}
-
-
-
+	
 	public List<EstablecimientoVO> getEstablecimientos() {
-		
-		if(getComunaSeleccionada() != null){
-			establecimientos = establecimientosService.getEstablecimientosByComuna(Integer.parseInt(comunaSeleccionada));
-					
-			
-		}else{
-			establecimientos = new ArrayList<EstablecimientoVO>();
-		}
-				
-		
 		return establecimientos;
 	}
 
-
+	public void setComunas(List<ComunaVO> comunas) {
+		this.comunas = comunas;
+	}
 
 	public List<ComunaVO> getComunas() {
-		if(comunas == null){
-			comunas = comunaService.getComunas();
-		}
-		
-	
 		return comunas;
 	}
 
 	public List<ConvenioDocumentoVO> getDocumentos() {
-		
-
-		
 		if(convenio != null && convenio.getIdConverio()!=null){
-			documentos = aPSConveniosService.getDocumentById(convenio.getIdConverio());
+			documentos = conveniosService.getDocumentById(convenio.getIdConverio());
 		}else{
 			documentos = new ArrayList<ConvenioDocumentoVO>();
 		}
-		
-		
 		return documentos;
 	}
 
-
-	
-	
 	public List<ComponentesVO> getComponentes() {
-		
-		if(getProgramaSeleccionado() != null){
-			componentes = componenteService.getComponenteByPrograma(Integer.parseInt(programaSeleccionado));
-			
+		if(getProgramaSeleccionado() != null && !"0".equals(getProgramaSeleccionado())){
+			componentes = componenteService.getComponenteByPrograma(Integer.parseInt(getProgramaSeleccionado()));
 		}else{
 			componentes = new ArrayList<ComponentesVO>();
 		}
-				
 		return componentes;
 	}
-	
+
+	public List<ResolucionConveniosVO> getResolucionConveniosMunicipal() {
+		return resolucionConveniosMunicipal;
+	}
+
+	public void setResolucionConveniosMunicipal(
+			List<ResolucionConveniosVO> resolucionConveniosMunicipal) {
+		this.resolucionConveniosMunicipal = resolucionConveniosMunicipal;
+	}
+
+	public List<ResolucionConveniosVO> getResolucionConveniosServicio() {
+		return resolucionConveniosServicio;
+	}
+
+	public void setResolucionConveniosServicio(
+			List<ResolucionConveniosVO> resolucionConveniosServicio) {
+		this.resolucionConveniosServicio = resolucionConveniosServicio;
+	}
+
 	public List<ProgramaVO> getProgramas() {
 		if(programas == null){
 			programas = programasService.getProgramasByUser(getLoggedUsername());
 		}
 		return programas;
 	}
-	
-	
-	
-	
-	@PostConstruct public void init() {
-		/*if (!getSessionBean().isLogged()) {
-			log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
-			try {
-				facesContext.getExternalContext().redirect("login.jsf");
-			} catch (IOException e) {
-				log.error("Error tratando de redireccionar a login por falta de usuario en sesion.", e);
-			}
-		}*/
-		Random rnd = new Random();
-		
-		IngresoResolucionPojo irp = new IngresoResolucionPojo();
-		irp.setComuna("Macul");
-		irp.setEstablecimiento("Hospital Cordillera");
-		irp.setFecha(new Date());
-		irp.setComponente("Especialidades Ambulatorias");
-		irp.setSubtitulo(21);
-		irp.setMonto(Long.valueOf(rnd.nextInt(999999)));
-		irp.setArchivo("ruta:/archivo/alfresco");
-		irp.setResolucion(String.valueOf(rnd.nextInt(99999)));
-		
-		listResoluciones.add(irp);
-		
-		irp = new IngresoResolucionPojo();
-		irp.setComuna("Macul");
-		irp.setEstablecimiento("Hospital Cordillera");
-		irp.setComponente("Especialidades Ambulatorias");
-		irp.setSubtitulo(22);
-		
-		listResoluciones.add(irp);
-		
-		irp = new IngresoResolucionPojo();
-		irp.setComuna("Macul");
-		irp.setEstablecimiento("Hospital Cordillera");
-		irp.setComponente("Especialidades Ambulatorias");
-		irp.setSubtitulo(24);
-		
-		listResoluciones.add(irp);
-		
-		irp = new IngresoResolucionPojo();
-		irp.setComuna("Macul");
-		irp.setEstablecimiento("Hospital Cordillera");
-		irp.setComponente("Especialidades Ambulatorias");
-		irp.setSubtitulo(29);
-		
-		listResoluciones.add(irp);
-		
-		irp = new IngresoResolucionPojo();
-		irp.setComuna("Macul");
-		irp.setEstablecimiento("Hospital Cordillera");
-		irp.setFecha(new Date());
-		irp.setComponente("Procedimientos Cutáneos Quirúrgicos de Baja");
-		irp.setSubtitulo(21);
-		irp.setMonto(Long.valueOf(rnd.nextInt(999999)));
-		irp.setArchivo("ruta:/archivo/alfresco");
-		irp.setResolucion(String.valueOf(rnd.nextInt(99999)));
-		
-		listResoluciones.add(irp);
-		
-		irp = new IngresoResolucionPojo();
-		irp.setComuna("Macul");
-		irp.setEstablecimiento("Hospital Cordillera");
-		irp.setFecha(new Date());
-		irp.setComponente("Procedimientos Cutáneos Quirúrgicos de Baja");
-		irp.setSubtitulo(22);
-		irp.setMonto(Long.valueOf(rnd.nextInt(999999)));
-		irp.setArchivo("ruta:/archivo/alfresco");
-		irp.setResolucion(String.valueOf(rnd.nextInt(99999)));
-		
-		listResoluciones.add(irp);
-		
-		irp = new IngresoResolucionPojo();
-		irp.setComuna("Macul");
-		irp.setEstablecimiento("Hospital Cordillera");
-		irp.setFecha(new Date());
-		irp.setComponente("Procedimientos Cutáneos Quirúrgicos de Baja");
-		irp.setSubtitulo(24);
-		irp.setMonto(Long.valueOf(Long.valueOf(rnd.nextInt(999999))));
-		irp.setArchivo("ruta:/archivo/alfresco");
-		irp.setResolucion(String.valueOf(rnd.nextInt(99999)));
-		
-		listResoluciones.add(irp);
-		
-		irp = new IngresoResolucionPojo();
-		irp.setComuna("Macul");
-		irp.setEstablecimiento("Hospital Cordillera");
-		irp.setFecha(new Date());
-		irp.setComponente("Procedimientos Cutáneos Quirúrgicos de Baja");
-		irp.setSubtitulo(29);
-		irp.setMonto(Long.valueOf(rnd.nextInt(999999)));
-		irp.setArchivo("ruta:/archivo/alfresco");
-		irp.setResolucion(String.valueOf(rnd.nextInt(99999)));
-		
-		listResoluciones.add(irp);
+
+	public void cargarComponentesPorPrograma(){
+		System.out.println("ProcesoConveniosController::cargarComponentesPorPrograma programaSeleccionado->" + getProgramaSeleccionado());
+		if(getProgramaSeleccionado() != null && !"0".equals(getProgramaSeleccionado())){
+			programa = programasService.getProgramaAno(Integer.parseInt(getProgramaSeleccionado()));
+			System.out.println("programa.getDependenciaMunicipal()->" + programa.getDependenciaMunicipal() + " programa.getDependenciaServicio()->" + programa.getDependenciaServicio());
+			componentes = componenteService.getComponenteByPrograma(Integer.parseInt(getProgramaSeleccionado()));
+		}else{
+			componentes = new ArrayList<ComponentesVO>();
+			programa = null;
+		}
 	}
 
-	
-	
+	public void cargarDatos(){
+		System.out.println("cargarDatos");
+		if(getPrograma() != null){
+			if(getPrograma().getDependenciaMunicipal() != null && getPrograma().getDependenciaMunicipal()){
+				conveniosService.crearConveniosMunicipal(getServicio().getId_servicio(), getPrograma().getIdProgramaAno());
+				Integer componenteSeleccionado = ((getComponenteSeleccionado() == null || getComponenteSeleccionado().equals("0")) ? null : Integer.parseInt(getComponenteSeleccionado()));
+				Integer comunaSeleccionada = ((getComunaSeleccionada() == null || getComunaSeleccionada().equals("0")) ? null : Integer.parseInt(getComunaSeleccionada()));
+				resolucionConveniosMunicipal = conveniosService.getResolucionConveniosMunicipal(getServicio().getId_servicio(), getPrograma().getIdProgramaAno(), componenteSeleccionado, comunaSeleccionada);
+			}
+			if(getPrograma().getDependenciaServicio() != null && getPrograma().getDependenciaServicio()){
+				conveniosService.crearConveniosServicios(getServicio().getId_servicio(), getPrograma().getIdProgramaAno());
+				Integer componenteSeleccionado = ((getComponenteSeleccionado() == null || getComponenteSeleccionado().equals("0")) ? null : Integer.parseInt(getComponenteSeleccionado()));
+				Integer establecimientoSeleccionado = ((getEstablecimientoSeleccionado() == null || getEstablecimientoSeleccionado().equals("0")) ? null : Integer.parseInt(getEstablecimientoSeleccionado()));
+				resolucionConveniosServicio = conveniosService.getResolucionConveniosServicio(getServicio().getId_servicio(), getPrograma().getIdProgramaAno(), componenteSeleccionado, establecimientoSeleccionado);
+			}
+		}
+	}
 
 
 	public String getComponenteSeleccionado() {
@@ -455,16 +312,6 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	public void setEstablecimientoSeleccionado(String establecimientoSeleccionado) {
 		this.establecimientoSeleccionado = establecimientoSeleccionado;
 	}
-
-	public void setConvenios(List<ConveniosVO> convenios) {
-		this.convenios = convenios;
-	}
-
-	
-	public void setEstablecimientos(List<EstablecimientoVO> establecimientos) {
-		this.establecimientos = establecimientos;
-	}
-
 
 	public String getComunaSeleccionada() {
 		return comunaSeleccionada;
@@ -491,12 +338,10 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	}
 
 	public String getConvenioSeleccionado() {
-		
 		return convenioSeleccionado;
 	}
 
 	public void setConvenioSeleccionado(String convenioSeleccionado) {
-		
 		this.convenioSeleccionado = convenioSeleccionado;
 	}
 
@@ -505,116 +350,52 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	}
 
 	public void setConvenio(ConveniosVO convenio) {
-	
 		this.convenio = convenio;
 	}
-	
-	public ProgramasService getProgramasService() {
-		return programasService;
-	}
-
-
-	public void setProgramasService(ProgramasService programasService) {
-		this.programasService = programasService;
-	}
-
-
-	public ComponenteService getComponenteService() {
-		return componenteService;
-	}
-
-
-	public void setComponenteService(ComponenteService componenteService) {
-		this.componenteService = componenteService;
-	}
-
-
-	public ComunaService getComunaService() {
-		return comunaService;
-	}
-
-
-	public void setComunaService(ComunaService comunaService) {
-		this.comunaService = comunaService;
-	}
-
-
-	public EstablecimientosService getEstablecimientosService() {
-		return establecimientosService;
-	}
-
-
-	public void setEstablecimientosService(
-			EstablecimientosService establecimientosService) {
-		this.establecimientosService = establecimientosService;
-	}
-
-
-	public ConveniosService getaPSConveniosService() {
-		return aPSConveniosService;
-	}
-
-
-	public void setaPSConveniosService(ConveniosService aPSConveniosService) {
-		this.aPSConveniosService = aPSConveniosService;
-	}
-
-
-
-
-	public AlfrescoService getAlfrescoService() {
-		return alfrescoService;
-	}
-
-
-	public void setAlfrescoService(AlfrescoService alfrescoService) {
-		this.alfrescoService = alfrescoService;
-	}
-
-
-
-
-
-
 
 	public UploadedFile getPlantillaFile() {
 		return plantillaFile;
 	}
 
-
-
 	public void setPlantillaFile(UploadedFile plantillaFile) {
 		this.plantillaFile = plantillaFile;
 	}
-
-
 
 	public void setDocumentos(List<ConvenioDocumentoVO> documentos) {
 		this.documentos = documentos;
 	}
 
-
 	public String getDocumentoSeleccionado() {
 		return documentoSeleccionado;
 	}
-
 
 	public void setDocumentoSeleccionado(String documentoSeleccionado) {
 		this.documentoSeleccionado = documentoSeleccionado;
 	}
 
-
 	public ProgramaVO getPrograma() {
 		return programa;
 	}
-
 
 	public void setPrograma(ProgramaVO programa) {
 		this.programa = programa;
 	}
 
+	public List<ConveniosVO> getResolucionesServicios() {
+		return resolucionesServicios;
+	}
 
+	public void setResolucionesServicios(List<ConveniosVO> resolucionesServicios) {
+		this.resolucionesServicios = resolucionesServicios;
+	}
 
+	public List<ConveniosVO> getResolucionesMunicipal() {
+		return resolucionesMunicipal;
+	}
+
+	public void setResolucionesMunicipal(List<ConveniosVO> resolucionesMunicipal) {
+		this.resolucionesMunicipal = resolucionesMunicipal;
+	}
 	
-	
+
 }

@@ -35,11 +35,12 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Reliquidacion implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-       @Column(name="id_reliquidacion", unique=true, nullable=false)
-       @GeneratedValue
+   	@Column(name="id_reliquidacion", unique=true, nullable=false)
+   	@GeneratedValue
     private Integer idReliquidacion;
-    @Column(name = "usuario")
-    private String usuario;
+    @JoinColumn(name = "usuario", referencedColumnName = "username")
+    @ManyToOne
+    private Usuario usuario;
     @Column(name = "fecha_creacion")
     @Temporal(TemporalType.TIME)
     private Date fechaCreacion;
@@ -48,7 +49,7 @@ public class Reliquidacion implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "reliquidacion")
     private Set<ReliquidacionComuna> reliquidacionComunas;
     @JoinColumn(name = "id_programa_ano", referencedColumnName = "id_programa_ano")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private ProgramaAno idProgramaAno;
     @JoinColumn(name = "mes", referencedColumnName = "id_mes")
     @ManyToOne(optional = false)
@@ -71,11 +72,11 @@ public class Reliquidacion implements Serializable {
         this.idReliquidacion = idReliquidacion;
     }
 
-    public String getUsuario() {
+    public Usuario getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(String usuario) {
+    public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
 
@@ -133,7 +134,7 @@ public class Reliquidacion implements Serializable {
         this.documentosReliquidacion = documentosReliquidacion;
     }
 
-    @Override
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (idReliquidacion != null ? idReliquidacion.hashCode() : 0);

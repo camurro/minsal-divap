@@ -1011,19 +1011,6 @@
 													</c:if>
 												</p:dataTable>
 											<br/>
-											<h:panelGrid columns="2">
-
-												<h:graphicImage value="resources/minsal/images/search.png"
-													styleClass="divapIcons" />
-												<p:lightBox iframe="true" width="1400px">
-													<h:outputLink
-														value="divapProcesoProgComponentesPrograma.jsf">
-														<f:param name="subtituloSeleccionado"
-															value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.subtitulo24.id}" />
-															Ver Detalle por Componente
-													</h:outputLink>
-												</p:lightBox>
-											</h:panelGrid>
 
 											<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update=":formTabView:tablaModificada"
 												action="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.guardarSubtitulo24}"
@@ -1323,20 +1310,7 @@
 												</p:dataTable>
 												
 												<br />
-												<h:panelGrid columns="2">
-
-													<h:graphicImage value="resources/minsal/images/search.png"
-														styleClass="divapIcons" />
-													<p:lightBox iframe="true" width="1400px">
-														<h:outputLink
-															value="divapProcesoProgComponentesPrograma.jsf">
-															<f:param name="subtituloSeleccionado"
-																value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.subtitulo29.id}" />
-															Ver Detalle por Componente
-														</h:outputLink>
-
-													</p:lightBox>
-												</h:panelGrid>
+												 
 												<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update=":formTabView:tablaModificada"
 													action="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.guardarSubtitulo29}"
 													ajax="true" value="Guardar" />

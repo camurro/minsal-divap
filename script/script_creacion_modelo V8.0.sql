@@ -19229,6 +19229,135 @@ ALTER TABLE documento_estimacionflujocaja
 
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (56, 'Plantilla Oficio Programación Caja');
 
+ALTER TABLE marco_presupuestario
+  ADD COLUMN reparos_marco_presupuestario boolean;
+
+UPDATE marco_presupuestario SET reparos_marco_presupuestario = FALSE;
+
+ALTER TABLE marco_presupuestario
+   ALTER COLUMN reparos_marco_presupuestario SET NOT NULL;
+
+
+ALTER TABLE programa_ano
+  ADD COLUMN estado_convenio integer;
+
+UPDATE programa_ano SET estado_convenio = 1;
+
+ALTER TABLE programa_ano
+   ALTER COLUMN estado_convenio SET NOT NULL;
+
+ALTER TABLE programa_ano
+  ADD CONSTRAINT estado_convenio_fk FOREIGN KEY (estado_convenio) REFERENCES estado_programa (id_estado_programa) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE documento_convenio
+  ADD COLUMN tipo_documento integer NOT NULL;
+
+ALTER TABLE documento_convenio
+  ADD CONSTRAINT tipo_documento_fk FOREIGN KEY (tipo_documento) REFERENCES tipo_documento (id_tipo_documento)
+   ON UPDATE NO ACTION ON DELETE NO ACTION;
+CREATE INDEX fki_tipo_documento_fk
+  ON documento_convenio(tipo_documento);
+
+
+ALTER TABLE usuario
+  ADD COLUMN servicio integer;
+
+ALTER TABLE usuario
+  ADD CONSTRAINT servicio_pk FOREIGN KEY (servicio) REFERENCES servicio_salud (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE componente_subtitulo
+  ADD COLUMN peso_subtitulo numeric(18,0);
+
+CREATE TABLE convenio_comuna
+(
+  id_programa integer NOT NULL,
+  id_comuna integer NOT NULL,
+  id_tipo_subtitulo integer NOT NULL,
+  monto integer,
+  fecha timestamp with time zone,
+  numero_resolucion integer,
+  componente integer NOT NULL,
+  aprobacion boolean,
+  mes integer,
+  id_convenio_comuna serial NOT NULL,
+  CONSTRAINT convenio_comuna_pk PRIMARY KEY (id_convenio_comuna),
+  CONSTRAINT componente_fk FOREIGN KEY (componente)
+      REFERENCES componente (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_id_comuna FOREIGN KEY (id_comuna)
+      REFERENCES comuna (id) MATCH FULL
+      ON UPDATE CASCADE ON DELETE SET NULL,
+  CONSTRAINT fk_id_tipo_subtitulo FOREIGN KEY (id_tipo_subtitulo)
+      REFERENCES tipo_subtitulo (id_tipo_subtitulo) MATCH FULL
+      ON UPDATE CASCADE ON DELETE SET NULL,
+  CONSTRAINT mes_fk FOREIGN KEY (mes)
+      REFERENCES mes (id_mes) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT programa_fk FOREIGN KEY (id_programa)
+      REFERENCES programa_ano (id_programa_ano) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+CREATE TABLE documento_convenio_comuna
+(
+  convenio integer NOT NULL,
+  documento integer NOT NULL,
+  tipo_documento integer NOT NULL,
+  id_documento_convenio_comuna serial NOT NULL,
+  CONSTRAINT documento_convenio_comuna_pk PRIMARY KEY (id_documento_convenio_comuna),
+  CONSTRAINT convenio_comuna_fk FOREIGN KEY (convenio)
+      REFERENCES convenio_comuna (id_convenio_comuna) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT documentofk FOREIGN KEY (documento)
+      REFERENCES referencia_documento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT tipo_documento_fk FOREIGN KEY (tipo_documento)
+      REFERENCES tipo_documento (id_tipo_documento) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+CREATE TABLE convenio_servicio
+(
+  id_convenio_servicio serial NOT NULL,
+  id_programa integer NOT NULL,
+  id_establecimiento integer NOT NULL,
+  id_tipo_subtitulo integer NOT NULL,
+  monto integer,
+  fecha timestamp with time zone,
+  numero_resolucion integer,
+  componente integer NOT NULL,
+  aprobacion boolean,
+  mes integer,
+  CONSTRAINT convenio_servicio_pk PRIMARY KEY (id_convenio_servicio),
+  CONSTRAINT componente_fk FOREIGN KEY (componente)
+      REFERENCES componente (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT establecimiento_fk FOREIGN KEY (id_establecimiento)
+      REFERENCES establecimiento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT programa_fk FOREIGN KEY (id_programa)
+      REFERENCES programa_ano (id_programa_ano) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT subtitulo_fk FOREIGN KEY (id_tipo_subtitulo)
+      REFERENCES tipo_subtitulo (id_tipo_subtitulo) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+
+
+
+
+
+
 
 CREATE TABLE reliquidacion
 (
@@ -19910,8 +20039,6 @@ INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, i
 INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (253, 50, NULL, 8419, 2, 17000000, NULL, NULL, 18, NULL, 10);
 INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (254, 50, NULL, 8420, 2, 12900000, NULL, NULL, 18, NULL, 10);
 INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (255, 50, NULL, 8421, 2, 11000000, NULL, NULL, 18, NULL, 10);
-
-
 
 
 

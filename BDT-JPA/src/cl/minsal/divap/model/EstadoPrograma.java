@@ -75,33 +75,33 @@ public class EstadoPrograma implements Serializable {
 
     @XmlTransient
     public Set<ProgramaAno> getProgramaAnosReliquidacion() {
-        return programaAnosReliquidacion;
-    }
+		return programaAnosReliquidacion;
+	}
 
-    public void setProgramaAnosReliquidacion(
-            Set<ProgramaAno> programaAnosReliquidacion) {
-        this.programaAnosReliquidacion = programaAnosReliquidacion;
-    }
-   
-    @XmlTransient
-    public Set<ProgramaAno> getProgramaAnosConvenio() {
-        return programaAnosConvenio;
-    }
+	public void setProgramaAnosReliquidacion(
+			Set<ProgramaAno> programaAnosReliquidacion) {
+		this.programaAnosReliquidacion = programaAnosReliquidacion;
+	}
+	
+	@XmlTransient
+	public Set<ProgramaAno> getProgramaAnosConvenio() {
+		return programaAnosConvenio;
+	}
 
-    public void setProgramaAnosConvenio(Set<ProgramaAno> programaAnosConvenio) {
-        this.programaAnosConvenio = programaAnosConvenio;
-    }
-   
-    @XmlTransient
-    public Set<ProgramaAno> getProgramasAnosFlujoCaja() {
-        return programasAnosFlujoCaja;
-    }
+	public void setProgramaAnosConvenio(Set<ProgramaAno> programaAnosConvenio) {
+		this.programaAnosConvenio = programaAnosConvenio;
+	}
+	
+	@XmlTransient
+	public Set<ProgramaAno> getProgramasAnosFlujoCaja() {
+		return programasAnosFlujoCaja;
+	}
 
-    public void setProgramasAnosFlujoCaja(Set<ProgramaAno> programasAnosFlujoCaja) {
-        this.programasAnosFlujoCaja = programasAnosFlujoCaja;
-    }
+	public void setProgramasAnosFlujoCaja(Set<ProgramaAno> programasAnosFlujoCaja) {
+		this.programasAnosFlujoCaja = programasAnosFlujoCaja;
+	}
 
-    @XmlTransient
+	@XmlTransient
     public Set<ProgramaAno> getProgramasAnos() {
         return programasAnos;
     }

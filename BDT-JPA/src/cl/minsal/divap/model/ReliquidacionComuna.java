@@ -80,14 +80,14 @@ public class ReliquidacionComuna implements Serializable {
     }
 
     public Double getPorcentajeCumplimiento() {
-return porcentajeCumplimiento;
-}
+    	return porcentajeCumplimiento;
+    }
 
-public void setPorcentajeCumplimiento(Double porcentajeCumplimiento) {
-this.porcentajeCumplimiento = porcentajeCumplimiento;
-}
+    public void setPorcentajeCumplimiento(Double porcentajeCumplimiento) {
+    	this.porcentajeCumplimiento = porcentajeCumplimiento;
+	}
 
-public ServicioSalud getServicio() {
+	public ServicioSalud getServicio() {
         return servicio;
     }
 

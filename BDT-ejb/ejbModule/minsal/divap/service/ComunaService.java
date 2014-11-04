@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import minsal.divap.dao.ComunaDAO;
 import minsal.divap.vo.ComunaVO;
 import minsal.divap.vo.ProgramaAPSVO;
-import minsal.divap.vo.ServicioComunaVO;
 import cl.minsal.divap.model.Comuna;
 
 @Stateless
@@ -51,10 +50,23 @@ public class ComunaService {
 		return servicioComunaVOList;
 	}
 		
-	
 	public Comuna getComunaById(int id){
 		Comuna comuna = this.comunaDAO.getComunaById(id);		
 		return comuna;	
+	}
+	
+	public List<ComunaVO> getComunasByServicio(Integer idServicio) {
+		List<ComunaVO> comunasVO = new ArrayList<ComunaVO>();
+		List<Comuna> comunas = this.comunaDAO.getComunasByServicio(idServicio);
+		if(comunas != null && comunas.size() > 0){
+			for(Comuna comuna : comunas){
+				ComunaVO comunaVO = new ComunaVO();
+				comunaVO.setIdComuna(comuna.getId());
+				comunaVO.setDescComuna(comuna.getNombre());
+				comunasVO.add(comunaVO);
+			}
+		}
+		return comunasVO;
 	}
 	
 }

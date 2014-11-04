@@ -24,14 +24,14 @@
 							</p:row>
 						</p:columnGroup>
 
-						<p:column style="text-align:left;">
+						<p:column style="text-align:left; #{(_programas.estadoReliquidacion.id == '3')?'background-color: #c0c0c0;':''} ">
 							<span class="textoAjustado">#{_programas.nombre}</span>
 						</p:column>
-						<p:column style="text-align:left;">
+						<p:column style="text-align:left; #{(_programas.estadoReliquidacion.id == '3')?'background-color: #c0c0c0;':''} ">
 							<span class="textoAjustado">#{_programas.descripcion}</span>
 						</p:column>
 						<p:column>
-							<h:commandLink rendered="${_programas.estadoFlujocaja.id eq 1}"
+							<h:commandLink rendered="${_programas.estadoReliquidacion.id eq 1}"
 								action="#{procesoReliquidacionSeleccionarLineaController.iniciar(_programas.idProgramaAno)}">
 								<h:graphicImage value="resources/minsal/images/play.png"
 									styleClass="divapIcons" />
@@ -39,12 +39,12 @@
 							<!-- Iniciados. No presentan boton -->
 							<!-- Finalizados. Fondo Color Gris. -->
 								<h:graphicImage value="resources/minsal/images/play_locked.png"
-									styleClass="divapIcons" rendered="${_programas.estadoFlujocaja.id eq 5}" />
+									styleClass="divapIcons" rendered="${_programas.estadoReliquidacion.id eq 5}" />
 						</p:column>
 
 						<p:column>
 							<!-- Modificación del programa año vigente -->
-							<h:commandLink rendered="${_programas.estadoFlujocaja.id eq 4}"
+							<h:commandLink rendered="${_programas.estadoReliquidacion.id eq 4}"
 							    action="#{procesoReliquidacionSeleccionarLineaController.modificar(_programas.idProgramaAno)}">
 								<h:graphicImage value="resources/minsal/images/play.png"
 									styleClass="divapIcons" />

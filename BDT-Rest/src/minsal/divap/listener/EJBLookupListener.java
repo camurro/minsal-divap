@@ -8,6 +8,7 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
 import minsal.divap.service.AlfrescoService;
+import minsal.divap.service.ConveniosService;
 import minsal.divap.service.DistribucionInicialPercapitaService;
 import minsal.divap.service.DocumentAlfrescoService;
 import minsal.divap.service.EmailService;
@@ -16,6 +17,7 @@ import minsal.divap.service.OTService;
 import minsal.divap.service.ProcessService;
 import minsal.divap.service.RebajaService;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
+import minsal.divap.service.ReliquidacionService;
 
 /**
  * Application Lifecycle Listener implementation class EJBLookupListener
@@ -40,11 +42,14 @@ public class EJBLookupListener implements ServletContextListener {
     private RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService;
     @EJB
 	private AlfrescoService alfrescoService;
-
     @EJB
    	private OTService otService;
     @EJB
 	private ProcessService processService;
+    @EJB
+   	private ConveniosService conveniosService;
+    @EJB
+   	private ReliquidacionService reliquidacionService;
 	/**
 	 * Default constructor. 
 	 */
@@ -65,6 +70,8 @@ public class EJBLookupListener implements ServletContextListener {
 		add(AlfrescoService.class.getName(), this.alfrescoService);
 		add(ProcessService.class.getName(), this.processService);
 		add(OTService.class.getName(), this.otService);
+		add(ConveniosService.class.getName(), this.conveniosService);
+		add(ReliquidacionService.class.getName(), this.reliquidacionService);
 	}
 
 	/**

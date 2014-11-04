@@ -1,11 +1,11 @@
 package cl.minsal.divap.model;
- 
+
 import java.io.Serializable;
- 
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
- 
- 
+
+
 /**
  * The persistent class for the marco_presupuestario database table.
  * 
@@ -32,8 +32,8 @@ public class MarcoPresupuestario implements Serializable {
     @Column(name = "marco_modificado")
     private int marcoModificado;
     @Id
-    @Column(name="id_marco_presupuestario", unique=true, nullable=false)
-    @GeneratedValue
+	@Column(name="id_marco_presupuestario", unique=true, nullable=false)
+	@GeneratedValue
     private Integer idMarcoPresupuestario;
     @Basic(optional = false)
     @Column(name = "reparos_marco_presupuestario")
@@ -44,75 +44,75 @@ public class MarcoPresupuestario implements Serializable {
     @JoinColumn(name = "id_programa_ano", referencedColumnName = "id_programa_ano")
     @ManyToOne
     private ProgramaAno idProgramaAno;
- 
+
     public MarcoPresupuestario() {
     }
- 
+
     public MarcoPresupuestario(Integer idMarcoPresupuestario) {
         this.idMarcoPresupuestario = idMarcoPresupuestario;
     }
- 
+
     public MarcoPresupuestario(Integer idMarcoPresupuestario, int marcoInicial, int marcoModificado) {
         this.idMarcoPresupuestario = idMarcoPresupuestario;
         this.marcoInicial = marcoInicial;
         this.marcoModificado = marcoModificado;
     }
- 
+
     public int getMarcoInicial() {
         return marcoInicial;
     }
- 
+
     public void setMarcoInicial(int marcoInicial) {
         this.marcoInicial = marcoInicial;
     }
- 
+
     public int getMarcoModificado() {
         return marcoModificado;
     }
- 
+
     public void setMarcoModificado(int marcoModificado) {
         this.marcoModificado = marcoModificado;
     }
- 
+
     public Integer getIdMarcoPresupuestario() {
         return idMarcoPresupuestario;
     }
- 
+
     public void setIdMarcoPresupuestario(Integer idMarcoPresupuestario) {
         this.idMarcoPresupuestario = idMarcoPresupuestario;
     }
- 
+
     public boolean isReparosMarcoPresupuestario() {
-        return reparosMarcoPresupuestario;
-    }
- 
-    public void setReparosMarcoPresupuestario(boolean reparosMarcoPresupuestario) {
-        this.reparosMarcoPresupuestario = reparosMarcoPresupuestario;
-    }
- 
-    public ServicioSalud getServicioSalud() {
-        return servicioSalud;
-    }
- 
-    public void setServicioSalud(ServicioSalud servicioSalud) {
-        this.servicioSalud = servicioSalud;
-    }
- 
-    public ProgramaAno getIdProgramaAno() {
+		return reparosMarcoPresupuestario;
+	}
+
+	public void setReparosMarcoPresupuestario(boolean reparosMarcoPresupuestario) {
+		this.reparosMarcoPresupuestario = reparosMarcoPresupuestario;
+	}
+
+	public ServicioSalud getServicioSalud() {
+		return servicioSalud;
+	}
+
+	public void setServicioSalud(ServicioSalud servicioSalud) {
+		this.servicioSalud = servicioSalud;
+	}
+
+	public ProgramaAno getIdProgramaAno() {
         return idProgramaAno;
     }
- 
+
     public void setIdProgramaAno(ProgramaAno idProgramaAno) {
         this.idProgramaAno = idProgramaAno;
     }
- 
+
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (idMarcoPresupuestario != null ? idMarcoPresupuestario.hashCode() : 0);
         return hash;
     }
- 
+
     @Override
     public boolean equals(Object object) {
         if (!(object instanceof MarcoPresupuestario)) {
@@ -124,7 +124,7 @@ public class MarcoPresupuestario implements Serializable {
         }
         return true;
     }
- 
+
     @Override
     public String toString() {
         return "cl.minsal.divap.model.MarcoPresupuestario[ idMarcoPresupuestario=" + idMarcoPresupuestario + " ]";

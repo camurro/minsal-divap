@@ -26,8 +26,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class DocumentoReliquidacion implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-       @Column(name="id_documento_reliquidacion", unique=true, nullable=false)
-       @GeneratedValue
+   	@Column(name="id_documento_reliquidacion", unique=true, nullable=false)
+   	@GeneratedValue
     private Integer idDocumentoReliquidacion;
     @JoinColumn(name = "id_tipo_documento", referencedColumnName = "id_tipo_documento")
     @ManyToOne(optional = false)

@@ -27,8 +27,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ReliquidacionServicio implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-       @Column(name="reliquidacion_servicio_id", unique=true, nullable=false)
-       @GeneratedValue
+   	@Column(name="reliquidacion_servicio_id", unique=true, nullable=false)
+   	@GeneratedValue
     private Integer reliquidacionServicioId;
     @Column(name = "monto")
     private Integer monto;
@@ -147,3 +147,4 @@ public class ReliquidacionServicio implements Serializable {
     }
    
 }
+
