@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 	<ui:define name="content">
 		<h:form enctype="multipart/form-data">
@@ -10,48 +11,61 @@
 				</h1>
 				<p:panel id="Panel">
 					<h2><h:outputLabel value="#{procesoReliquidacionPlanillasController.programa.nombre}" /></h2>
-					<p class="parrafo"><h:outputLabel value="#{procesoReliquidacionPlanillasController.programa.descripcion}" /></p>
+					<p class="parrafo"><h:outputLabel value="" /></p>
 					<h3>
 						<strong>Actividad: </strong>Descargar Planillas Base y Subir Planillas Llenas
 					</h3>
 					<div class="destacaArchivos ui-corner-all">
 						<h3>Descargar Planilla Base del Programa</h3>
 						<ul class="versionesArchivo">
+							<c:if test="#{procesoReliquidacionPlanillasController.programa.dependenciaMunicipal}">
 								
 								<li>
-									<!-- 	<h:graphicImage
-										value="resources/minsal/images/download-alt.png"
-										styleClass="divapIcons" /> <p:commandLink
-										value="Planilla completa actualizada de Programacion de Caja.xls" /> -->
+									 
 									Planilla Base Cumplimiento #{procesoReliquidacionPlanillasController.programa.nombre} - Municipal.xls [ <h:graphicImage
 										value="resources/minsal/images/download-alt.png"
 										styleClass="divapIcons" /> <h:commandLink
 										action="#{procesoReliquidacionPlanillasController.downloadTemplate}"
 										value="Bajar">
 										<f:setPropertyActionListener
-											target="#{procesoReliquidacionPlanillasController.docIdMunicipalDownload}"
+											target="#{procesoReliquidacionPlanillasController.docIdDownload}"
 											value="#{procesoReliquidacionPlanillasController.docMunicipal}" />
 									</h:commandLink> ]
 
 								</li>
-								
-								<!--  li>
-								
-								<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <a target="_self"
-								href="#">Planilla Base Cumplimiento PROGRAMA - Servicio.xls</a>
-								
-								</li-->
+							</c:if>
+							<c:if test="#{procesoReliquidacionPlanillasController.programa.dependenciaServicio}">	
+								<li>
+									Planilla Base Cumplimiento #{procesoReliquidacionPlanillasController.programa.nombre} - Servicio.xls [ <h:graphicImage
+										value="resources/minsal/images/download-alt.png"
+										styleClass="divapIcons" /> <h:commandLink
+										action="#{procesoReliquidacionPlanillasController.downloadTemplate}"
+										value="Bajar">
+										<f:setPropertyActionListener
+											target="#{procesoReliquidacionPlanillasController.docIdDownload}"
+											value="#{procesoReliquidacionPlanillasController.docServicios}" />
+									</h:commandLink> ]
+								</li>
+							</c:if>
 						</ul>
 					</div>
 					<h3>Subir planillas con información del programa:</h3>
-					<p:panelGrid columns="2" styleClass="uploadFileTable">
-						<h:outputLabel for="valorBasicoDesempenoFile3"
-							value="Archivo: Planilla Base Cumplimiento PROGRAMA - Municipal.xls"
-							styleClass="textoAjustado fileUploadLabel" />
-						<p:fileUpload id="valorBasicoDesempenoFile3" value="#{procesoReliquidacionPlanillasController.planillaMunicipal}" mode="simple" />
-					</p:panelGrid>
-					<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
-
+					<c:if test="#{procesoReliquidacionPlanillasController.programa.dependenciaMunicipal}">
+						<p:panelGrid columns="2" styleClass="uploadFileTable">
+							<h:outputLabel for="valorPlanilloMunicipal"
+								value="Archivo: Planilla Base Cumplimiento #{procesoReliquidacionPlanillasController.programa.nombre} - Municipal.xls"
+								styleClass="textoAjustado fileUploadLabel" />
+							<p:fileUpload id="valorPlanilloMunicipal" value="#{procesoReliquidacionPlanillasController.planillaMunicipal}" mode="simple" />
+						</p:panelGrid>
+					</c:if>
+					<c:if test="#{procesoReliquidacionPlanillasController.programa.dependenciaServicio}">
+						<p:panelGrid columns="2" styleClass="uploadFileTable">
+							<h:outputLabel for="valorPlanilloServicio"
+								value="Archivo: Planilla Base Cumplimiento #{procesoReliquidacionPlanillasController.programa.nombre} - Servicio.xls"
+								styleClass="textoAjustado fileUploadLabel" />
+							<p:fileUpload id="valorPlanilloServicio" value="#{procesoReliquidacionPlanillasController.planillaServicio}" mode="simple" />
+						</p:panelGrid>
+					</c:if>
 					<br />
 					<br />
 					<p:commandButton value="Cargar Archivos" ajax="false"

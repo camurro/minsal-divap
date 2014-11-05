@@ -2,6 +2,7 @@ package cl.minsal.divap.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,7 +24,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "ReliquidacionServicio.findAll", query = "SELECT r FROM ReliquidacionServicio r"),
     @NamedQuery(name = "ReliquidacionServicio.findByReliquidacionServicioId", query = "SELECT r FROM ReliquidacionServicio r WHERE r.reliquidacionServicioId = :reliquidacionServicioId"),
-    @NamedQuery(name = "ReliquidacionServicio.findByMonto", query = "SELECT r FROM ReliquidacionServicio r WHERE r.monto = :monto")})
+    @NamedQuery(name = "ReliquidacionServicio.findByMonto", query = "SELECT r FROM ReliquidacionServicio r WHERE r.monto = :monto"),
+    @NamedQuery(name = "ReliquidacionServicio.deleteByIdProgramaAno", query = "DELETE FROM ReliquidacionServicio r WHERE r.programa.idProgramaAno = :idProgramaAno")})
 public class ReliquidacionServicio implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -32,15 +34,18 @@ public class ReliquidacionServicio implements Serializable {
     private Integer reliquidacionServicioId;
     @Column(name = "monto")
     private Integer monto;
+    @Basic(optional = false)
+    @Column(name = "porcentaje_cumplimiento")
+    private Double porcentajeCumplimiento;
     @JoinColumn(name = "servicio", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private ServicioSalud servicio;
     @JoinColumn(name = "reliquidacion", referencedColumnName = "id_reliquidacion")
     @ManyToOne(optional = false)
     private Reliquidacion reliquidacion;
-    @JoinColumn(name = "programa", referencedColumnName = "id")
+    @JoinColumn(name = "programa", referencedColumnName = "id_programa_ano")
     @ManyToOne(optional = false)
-    private Programa programa;
+    private ProgramaAno programa;
     @JoinColumn(name = "establecimiento", referencedColumnName = "id")
     @ManyToOne
     private Establecimiento establecimiento;
@@ -73,8 +78,16 @@ public class ReliquidacionServicio implements Serializable {
     public void setMonto(Integer monto) {
         this.monto = monto;
     }
+    
+    public Double getPorcentajeCumplimiento() {
+		return porcentajeCumplimiento;
+	}
 
-    public ServicioSalud getServicio() {
+	public void setPorcentajeCumplimiento(Double porcentajeCumplimiento) {
+		this.porcentajeCumplimiento = porcentajeCumplimiento;
+	}
+
+	public ServicioSalud getServicio() {
         return servicio;
     }
 
@@ -90,11 +103,11 @@ public class ReliquidacionServicio implements Serializable {
         this.reliquidacion = reliquidacion;
     }
 
-    public Programa getPrograma() {
+    public ProgramaAno getPrograma() {
         return programa;
     }
 
-    public void setPrograma(Programa programa) {
+    public void setPrograma(ProgramaAno programa) {
         this.programa = programa;
     }
 

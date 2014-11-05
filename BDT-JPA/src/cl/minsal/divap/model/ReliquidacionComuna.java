@@ -24,8 +24,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "ReliquidacionComuna.findAll", query = "SELECT r FROM ReliquidacionComuna r"),
     @NamedQuery(name = "ReliquidacionComuna.findByReliquidacionComunaId", query = "SELECT r FROM ReliquidacionComuna r WHERE r.reliquidacionComunaId = :reliquidacionComunaId"),
-    @NamedQuery(name = "ReliquidacionComuna.findByReliquidacionProgramaComponenteServicioComuna", query = "SELECT r FROM ReliquidacionComuna r WHERE r.programa.id = :idPrograma and r.componente.id = :idComponente and r.servicio.id = :idServicio and r.comuna.id = :idComuna and r.reliquidacion.idReliquidacion = :idReliquidacion"),
-    @NamedQuery(name = "ReliquidacionComuna.findByMonto", query = "SELECT r FROM ReliquidacionComuna r WHERE r.monto = :monto")})
+    @NamedQuery(name = "ReliquidacionComuna.findByReliquidacionProgramaComponenteServicioComuna", query = "SELECT r FROM ReliquidacionComuna r WHERE r.programa.programa.id = :idPrograma and r.componente.id = :idComponente and r.servicio.id = :idServicio and r.comuna.id = :idComuna and r.reliquidacion.idReliquidacion = :idReliquidacion"),
+    @NamedQuery(name = "ReliquidacionComuna.findByMonto", query = "SELECT r FROM ReliquidacionComuna r WHERE r.monto = :monto"),
+    @NamedQuery(name = "ReliquidacionComuna.deleteByIdProgramaAno", query = "DELETE FROM ReliquidacionComuna r WHERE r.programa.idProgramaAno = :idProgramaAno")})
 public class ReliquidacionComuna implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -43,9 +44,9 @@ public class ReliquidacionComuna implements Serializable {
     @JoinColumn(name = "reliquidacion", referencedColumnName = "id_reliquidacion")
     @ManyToOne(optional = false)
     private Reliquidacion reliquidacion;
-    @JoinColumn(name = "programa", referencedColumnName = "id")
+    @JoinColumn(name = "programa", referencedColumnName = "id_programa_ano")
     @ManyToOne(optional = false)
-    private Programa programa;
+    private ProgramaAno programa;
     @JoinColumn(name = "cumplimiento", referencedColumnName = "id_cumplimiento_programa")
     @ManyToOne(optional = false)
     private CumplimientoPrograma cumplimiento;
@@ -103,11 +104,11 @@ public class ReliquidacionComuna implements Serializable {
         this.reliquidacion = reliquidacion;
     }
 
-    public Programa getPrograma() {
+    public ProgramaAno getPrograma() {
         return programa;
     }
 
-    public void setPrograma(Programa programa) {
+    public void setPrograma(ProgramaAno programa) {
         this.programa = programa;
     }
 

@@ -34,7 +34,8 @@ public class ComponenteService {
 		return ComponentesVO;
 	}
 
-	public List<ComponentesVO> getComponenteByPrograma(int programaId) {
+	public List<ComponentesVO> getComponenteByPrograma(Integer programaId) {
+		System.out.println("getComponenteByPrograma("+programaId+")");
 		List<Componente> componentes = this.componenteDAO.getComponenteByPrograma(programaId);
 		List<ComponentesVO> componentesPrograma = new ArrayList<ComponentesVO>();
 		for (Componente componente : componentes){
@@ -47,13 +48,11 @@ public class ComponenteService {
 				SubtituloVO subVO = new SubtituloVO();
 				subVO.setId(comSub.getSubtitulo().getIdTipoSubtitulo());
 				subVO.setNombre(comSub.getSubtitulo().getNombreSubtitulo());
-
 				DependenciaVO dependencia = new DependenciaVO();
 				dependencia.setId(comSub.getSubtitulo().getDependencia().getIdDependenciaPrograma());
 				dependencia.setNombre(comSub.getSubtitulo().getDependencia().getNombre());
 				subVO.setDependencia(dependencia);
 				listaSubVO.add(subVO);
-
 			}
 			comVO.setSubtitulos(listaSubVO);
 			componentesPrograma.add(comVO);

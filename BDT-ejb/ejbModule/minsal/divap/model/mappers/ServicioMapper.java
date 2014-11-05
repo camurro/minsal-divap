@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import minsal.divap.vo.ComunaSummaryVO;
+import minsal.divap.vo.EstablecimientoSummaryVO;
 import minsal.divap.vo.ServiciosSummaryVO;
 import minsal.divap.vo.ServiciosVO;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import cl.minsal.divap.model.Comuna;
+import cl.minsal.divap.model.Establecimiento;
 import cl.minsal.divap.model.ServicioSalud;
 
 public class ServicioMapper implements Mapper<ServicioSalud>{
@@ -32,6 +34,13 @@ public class ServicioMapper implements Mapper<ServicioSalud>{
 				comunas.add(new ComunaSummaryVO(comuna.getId(), comuna.getNombre()));
 			}
 			serviciosVO.setComunas(comunas);
+		}
+		if(servicioSalud.getEstablecimientos() != null && servicioSalud.getEstablecimientos().size() > 0){
+			List<EstablecimientoSummaryVO> establecimientos = new ArrayList<EstablecimientoSummaryVO>();
+			for(Establecimiento establecimiento : servicioSalud.getEstablecimientos()){
+				establecimientos.add(new EstablecimientoSummaryVO(establecimiento.getId(), establecimiento.getNombre()));
+			}
+			serviciosVO.setEstableclimientos(establecimientos);
 		}
 		return serviciosVO;
 	}

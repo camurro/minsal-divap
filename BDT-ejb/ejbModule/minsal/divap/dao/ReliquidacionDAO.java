@@ -8,6 +8,7 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import cl.minsal.divap.model.CumplimientoPrograma;
@@ -16,6 +17,7 @@ import cl.minsal.divap.model.DocumentoReliquidacion;
 import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.Reliquidacion;
 import cl.minsal.divap.model.ReliquidacionComuna;
+import cl.minsal.divap.model.ReliquidacionServicio;
 import cl.minsal.divap.model.Usuario;
 
 @Singleton
@@ -63,7 +65,6 @@ public class ReliquidacionDAO {
 
 	public ReliquidacionComuna save(ReliquidacionComuna reliquidacionComuna) {
 		em.persist(reliquidacionComuna);
-		em.flush();
 		return reliquidacionComuna;
 	}
 
@@ -110,16 +111,30 @@ public class ReliquidacionDAO {
 			List<ReliquidacionComuna> results = query.getResultList();
 			if(results != null && results.size()>0) {
 				return results.get(0);
-			}else{
-				System.out.println("no se encuentra");
-				return null;
 			}
-
+			return null;
 		}
 		catch (Exception e){
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}		
+	}
+
+	public ReliquidacionServicio save(ReliquidacionServicio reliquidacionServicio) {
+		em.persist(reliquidacionServicio);
+		return reliquidacionServicio;
+	}
+	
+	public int deleteReliquidacionComuna(Integer idProgramaAno) {
+		Query query = this.em.createNamedQuery("ReliquidacionComuna.deleteByIdProgramaAno");
+		query.setParameter("idProgramaAno", idProgramaAno);
+		return query.executeUpdate();
+	}
+
+	public int deleteReliquidacionServicio(Integer idProgramaAno) {
+		Query query = this.em.createNamedQuery("ReliquidacionServicio.deleteByIdProgramaAno");
+		query.setParameter("idProgramaAno", idProgramaAno);
+		return query.executeUpdate();
 	}
 	
 }

@@ -28,8 +28,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.model.UploadedFile;
 
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
-import minsal.divap.exception.ExcelFormatException;
-import cl.redhat.bandejaTareas.util.JSONHelper;
 
 @Named ("procesoReliquidacionPlanillasController") 
 @ViewScoped
@@ -50,22 +48,16 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 	private boolean archivosCargados = true;
 	private boolean existeError = true;
 	private Integer anoActual;
-	private String docIdMunicipalDownload;
+	private String docIdDownload;
 	private Integer docMunicipal;
-	private Integer docIdServiciosDownload;
 	private Integer docServicios;
 	private Integer cantComponentes;
 	private Integer idReliquidacion;
-	private Integer idProgramaAno;
 	private List<Integer> docIds;
-	
 	@EJB
 	private ProgramasService programaService;
 	@EJB
 	private ReliquidacionService reliquidacionService;
-	
-	
-	
 	
 	@PostConstruct
 	public void init() {
@@ -73,34 +65,38 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 			return;
 		}		
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			this.idProgramaAno = (Integer) getTaskDataVO().getData().get("_idProgramaAno");
-			this.docMunicipal = Integer.parseInt((String) getTaskDataVO().getData().get("_idPlanillasBase"));
+			Integer idProgramaAno = (Integer) getTaskDataVO().getData().get("_idProgramaAno");
 			this.idReliquidacion = (Integer) getTaskDataVO().getData().get("_idReliquidacion");
-			System.out.println("this.idReliquidacion --> "+this.idReliquidacion);
-			ProgramaVO programaAno = programaService.getProgramaAno(idProgramaAno);
-			this.cantComponentes = programaAno.getComponentes().size();
-			
-			System.out.println("idProgramaAno --->" + idProgramaAno);
-			System.out.println("idPlanillaMunicipal --> "+this.docMunicipal);
+			String idPlanillasBase = (String)getTaskDataVO().getData().get("_idPlanillasBase");
+			System.out.println("idPlanillasBase --->" + idPlanillasBase);
 			setPrograma(programaService.getProgramaAno(idProgramaAno));
+			this.cantComponentes = 0;
 			if(getPrograma() != null){
 				setAnoActual(getPrograma().getAno());
+				if(getPrograma().getComponentes() != null){
+					this.cantComponentes = getPrograma().getComponentes().size();
+				}
+				if(idPlanillasBase != null && !idPlanillasBase.trim().isEmpty()){
+					if(getPrograma().getDependenciaMunicipal() && getPrograma().getDependenciaServicio()){
+						String [] splitDocs = idPlanillasBase.split("\\#");
+						if(splitDocs != null && splitDocs.length == 2){
+							this.docMunicipal = Integer.parseInt(splitDocs[0]);
+							this.docServicios = Integer.parseInt(splitDocs[1]);
+						}
+					}else{
+						if(getPrograma().getDependenciaMunicipal()){
+							this.docMunicipal = Integer.parseInt(idPlanillasBase);
+						}else{
+							this.docServicios = Integer.parseInt(idPlanillasBase);
+						}
+					}
+				}
 			}
-			
+			System.out.println("this.idReliquidacion --> "+this.idReliquidacion);
+			System.out.println("idProgramaAno --->" + idProgramaAno);
+			System.out.println("docMunicipal --> "+this.docMunicipal);
+			System.out.println("docServicios --> "+this.docServicios);
 		}
-		
-		
-		
-		log.info("ProcesoReliquidacionPlanillasController tocado.");
-		if (!getSessionBean().isLogged()) {
-			log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
-			try {
-				facesContext.getExternalContext().redirect("login.jsf");
-			} catch (IOException e) {
-				log.error("Error tratando de redireccionar a login por falta de usuario en sesion.", e);
-			}
-		}
-	
 	}
 	
 	public String continuar(){
@@ -109,26 +105,35 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 	}
 
 	public void cargarArchivos(){
-		
-		String mensaje = "Los archivos fueron cargados correctamente.";
-		if(planillaMunicipal != null){
+		docIds = new ArrayList<Integer>();
+		String mensaje = null;
+		if(getPrograma().getDependenciaMunicipal() && getPrograma().getDependenciaServicio()){
 			try {
-				docIds = new ArrayList<Integer>();
-				byte[] contentCalculoReliquidacionFile = planillaMunicipal.getContents();
-				String filename = planillaMunicipal.getFileName();
-				System.out.println("antes del metodo procesarCalculoReliquidacion");
-				System.out.println("getIdProgramaAno() --> "+getIdProgramaAno());
-				System.out.println("getIdReliquidacion() --> "+getIdReliquidacion());
-				
-				reliquidacionService.procesarCalculoReliquidacion(getIdProgramaAno() ,getIdReliquidacion(), GeneradorExcel.fromContent(contentCalculoReliquidacionFile, XSSFWorkbook.class));
-				System.out.println("despues del metodo procesarCalculoReliquidacion");
-				
-				Integer docReliquidacion = persistFile(filename, contentCalculoReliquidacionFile);
-				if(docReliquidacion != null){
-					docIds.add(docReliquidacion);
+				boolean ok = false;
+				if(planillaMunicipal != null){
+					byte[] contentPlanillaMunicipalFile = planillaMunicipal.getContents();
+					String filename = planillaMunicipal.getFileName();
+					reliquidacionService.procesarCalculoReliquidacionMunicipal(getPrograma().getIdProgramaAno() ,getIdReliquidacion(), GeneradorExcel.fromContent(contentPlanillaMunicipalFile, XSSFWorkbook.class));
+					Integer docReliquidacion = persistFile(filename, contentPlanillaMunicipalFile);
+					if(docReliquidacion != null){
+						docIds.add(docReliquidacion);
+					}
+					ok = true;
 				}
-				setArchivosNoValidos(false);
-			
+				if(planillaServicio != null && ok){
+					byte[] contentPlanillaServicioFile = planillaServicio.getContents();
+					String filename = planillaServicio.getFileName();
+					reliquidacionService.procesarCalculoReliquidacionServicio(getPrograma().getIdProgramaAno() ,getIdReliquidacion(), GeneradorExcel.fromContent(contentPlanillaServicioFile, XSSFWorkbook.class));
+					Integer docReliquidacion = persistFile(filename, contentPlanillaServicioFile);
+					if(docReliquidacion != null){
+						docIds.add(docReliquidacion);
+					}
+					setArchivosNoValidos(false);
+					mensaje = "Los archivos fueron cargados correctamente.";
+				}else {
+					mensaje = "Los archivos fueron cargados.";
+					setArchivosNoValidos(false);
+				}
 			}catch (ExcelFormatException e) {
 				mensaje = "Los archivos no son válidos.";
 				setArchivosNoValidos(false);
@@ -142,16 +147,70 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 				setArchivosNoValidos(false);
 				e.printStackTrace();
 			}
-			
-		}else {
-			mensaje = "Los archivos no fueron cargados.";
-			setArchivosNoValidos(false);
+		}else{
+			if(getPrograma().getDependenciaMunicipal()){
+				try {
+					if(planillaMunicipal != null){
+						byte[] contentPlanillaMunicipalFile = planillaMunicipal.getContents();
+						String filename = planillaMunicipal.getFileName();
+						reliquidacionService.procesarCalculoReliquidacionMunicipal(getPrograma().getIdProgramaAno() ,getIdReliquidacion(), GeneradorExcel.fromContent(contentPlanillaMunicipalFile, XSSFWorkbook.class));
+						Integer docReliquidacion = persistFile(filename, contentPlanillaMunicipalFile);
+						if(docReliquidacion != null){
+							docIds.add(docReliquidacion);
+						}
+						setArchivosNoValidos(false);
+						mensaje = "El archivo fue cargado correctamente.";
+					}else {
+						mensaje = "El archivo no fue cargado.";
+						setArchivosNoValidos(false);
+					}
+				}catch (ExcelFormatException e) {
+					mensaje = "El archivo no es válido.";
+					setArchivosNoValidos(false);
+					e.printStackTrace();
+				}catch (InvalidFormatException e) {
+					mensaje = "El archivo no es válido.";
+					setArchivosNoValidos(false);
+					e.printStackTrace();
+				} catch (IOException e) {
+					mensaje = "El archivo no es válido.";
+					setArchivosNoValidos(false);
+					e.printStackTrace();
+				}
+			}else{
+				try {
+					if(planillaServicio != null){
+						byte[] contentPlanillaServicioFile = planillaServicio.getContents();
+						String filename = planillaServicio.getFileName();
+						reliquidacionService.procesarCalculoReliquidacionServicio(getPrograma().getIdProgramaAno() ,getIdReliquidacion(), GeneradorExcel.fromContent(contentPlanillaServicioFile, XSSFWorkbook.class));
+						Integer docReliquidacion = persistFile(filename, contentPlanillaServicioFile);
+						if(docReliquidacion != null){
+							docIds.add(docReliquidacion);
+						}
+						setArchivosNoValidos(false);
+						mensaje = "El archivo fue cargado correctamente.";
+					}else {
+						mensaje = "El archivo no fue cargado.";
+						setArchivosNoValidos(false);
+					}
+				}catch (ExcelFormatException e) {
+					mensaje = "El archivo no es válido.";
+					setArchivosNoValidos(false);
+					e.printStackTrace();
+				}catch (InvalidFormatException e) {
+					mensaje = "El archivo no es válido.";
+					setArchivosNoValidos(false);
+					e.printStackTrace();
+				} catch (IOException e) {
+					mensaje = "El archivo no es válido.";
+					setArchivosNoValidos(false);
+					e.printStackTrace();
+				}
+			}
 		}
 		FacesMessage msg = new FacesMessage(mensaje);
 		FacesContext.getCurrentInstance().addMessage(null, msg);
-		
 	}
-	
 		
 	@Override
 	protected Map<String, Object> createResultData() {
@@ -169,36 +228,26 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 		return parameters;
 	}
 
-
 	@Override
 	public String iniciarProceso() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
 	
 	public UploadedFile getPlanillaMunicipal() {
 		return planillaMunicipal;
 	}
 
-
-
 	public void setPlanillaMunicipal(UploadedFile planillaMunicipal) {
 		this.planillaMunicipal = planillaMunicipal;
 	}
 
-
-
 	public UploadedFile getPlanillaServicio() {
 		return planillaServicio;
 	}
-
-
-
+	
 	public void setPlanillaServicio(UploadedFile planillaServicio) {
 		this.planillaServicio = planillaServicio;
 	}
-
 
 	public ProgramaVO getPrograma() {
 		return programa;
@@ -208,7 +257,6 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 		this.programa = programa;
 	}
 
-	
 	public boolean isArchivosNoValidos() {
 		return archivosNoValidos;
 	}
@@ -232,29 +280,13 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 	public void setAnoActual(Integer anoActual) {
 		this.anoActual = anoActual;
 	}
-
-	public String getDocIdMunicipalDownload() {
-		return docIdMunicipalDownload;
-	}
-
-	public void setDocIdMunicipalDownload(String docIdMunicipalDownload) {
-		this.docIdMunicipalDownload = docIdMunicipalDownload;
-	}
-
+	
 	public Integer getDocMunicipal() {
 		return docMunicipal;
 	}
 
 	public void setDocMunicipal(Integer docMunicipal) {
 		this.docMunicipal = docMunicipal;
-	}
-
-	public Integer getDocIdServiciosDownload() {
-		return docIdServiciosDownload;
-	}
-
-	public void setDocIdServiciosDownload(Integer docIdServiciosDownload) {
-		this.docIdServiciosDownload = docIdServiciosDownload;
 	}
 
 	public Integer getDocServicios() {
@@ -265,13 +297,19 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 		this.docServicios = docServicios;
 	}
 	
-	
 	public String downloadTemplate() {
-		Integer docDownload = Integer.valueOf(Integer
-				.parseInt(getDocIdMunicipalDownload()));
+		Integer docDownload =  Integer.parseInt(getDocIdDownload());
 		setDocumento(documentService.getDocument(docDownload));
 		super.downloadDocument();
 		return null;
+	}
+
+	public String getDocIdDownload() {
+		return docIdDownload;
+	}
+
+	public void setDocIdDownload(String docIdDownload) {
+		this.docIdDownload = docIdDownload;
 	}
 
 	public Integer getCantComponentes() {
@@ -289,16 +327,5 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 	public void setIdReliquidacion(Integer idReliquidacion) {
 		this.idReliquidacion = idReliquidacion;
 	}
-
-	public Integer getIdProgramaAno() {
-		return idProgramaAno;
-	}
-
-	public void setIdProgramaAno(Integer idProgramaAno) {
-		this.idProgramaAno = idProgramaAno;
-	}
-	
-	
-	
 		
 }

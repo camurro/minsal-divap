@@ -19453,10 +19453,11 @@ ALTER TABLE programa_ano ADD CONSTRAINT fk_estadoreliquidacion FOREIGN KEY (esta
 ALTER TABLE programa_ano
    ALTER COLUMN estadoreliquidacion SET NOT NULL;
 
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estado_convenio, estadoreliquidacion, estadoflujocaja) VALUES (50, 12, 2014, 1, 1, 1, 1);
 
 --######################## Se agrega otro programa con 2 servicios ########################33333
 
-INSERT INTO marco_presupuestario(marco_inicial, marco_modificado, id_marco_presupuestario, id_servicio_salud, id_programa_ano) VALUES (400000000, 500000000, 3, 10, 50);
+INSERT INTO marco_presupuestario(marco_inicial, marco_modificado, id_marco_presupuestario, id_servicio_salud, id_programa_ano, reparos_marco_presupuestario) VALUES (400000000, 500000000, 3, 10, 50, false);
 
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (7, 1, 60, 50);
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (8, 2, 40, 50, 10);
@@ -19612,7 +19613,7 @@ INSERT INTO caja_monto(caja, monto, mes) VALUES (7, 96, 12);
 
 --otro servicio ############
 
-INSERT INTO marco_presupuestario(marco_inicial, marco_modificado, id_marco_presupuestario, id_servicio_salud, id_programa_ano) VALUES (300000000, 600000000, 4, 11, 50);
+INSERT INTO marco_presupuestario(marco_inicial, marco_modificado, id_marco_presupuestario, id_servicio_salud, id_programa_ano, reparos_marco_presupuestario) VALUES (300000000, 600000000, 4, 11, 50, false);
 
 INSERT INTO caja(id, id_componente, marco_presupuestario, id_subtitulo, monto) VALUES (8, 15, 4, 1, 90000000);
 INSERT INTO caja(id, id_componente, marco_presupuestario, id_subtitulo, monto) VALUES (9, 15, 4, 2, 150000000);
@@ -20039,6 +20040,24 @@ INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, i
 INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (253, 50, NULL, 8419, 2, 17000000, NULL, NULL, 18, NULL, 10);
 INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (254, 50, NULL, 8420, 2, 12900000, NULL, NULL, 18, NULL, 10);
 INSERT INTO convenio (id_convenio, id_programa, id_establecimiento, id_comuna, id_tipo_subtitulo, monto, fecha, numero_resolucion, componente, aprobacion, mes) VALUES (255, 50, NULL, 8421, 2, 11000000, NULL, NULL, 18, NULL, 10);
+
+ALTER TABLE reliquidacion_comuna
+  ADD COLUMN porcentaje_cumplimiento numeric NOT NULL;
+
+ALTER TABLE reliquidacion_servicio
+  ADD COLUMN porcentaje_cumplimiento numeric NOT NULL;
+
+ALTER TABLE reliquidacion_comuna
+  DROP CONSTRAINT programa_fk;
+ALTER TABLE reliquidacion_comuna
+  ADD CONSTRAINT programa_fk FOREIGN KEY (programa) REFERENCES programa_ano (id_programa_ano) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE reliquidacion_servicio
+  DROP CONSTRAINT programa_fk;
+ALTER TABLE reliquidacion_servicio
+  ADD CONSTRAINT programa_fk FOREIGN KEY (programa) REFERENCES programa_ano (id_programa_ano) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
 
 
 

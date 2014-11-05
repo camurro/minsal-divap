@@ -11,7 +11,6 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import minsal.divap.enums.TipoDocumentosProcesos;
-import minsal.divap.service.AlfrescoService;
 import minsal.divap.service.ComponenteService;
 import minsal.divap.service.ComunaService;
 import minsal.divap.service.ConveniosService;
@@ -234,7 +233,8 @@ public class ProcesoConveniosController extends BaseController implements Serial
 
 	public List<ComponentesVO> getComponentes() {
 		if(getProgramaSeleccionado() != null && !"0".equals(getProgramaSeleccionado())){
-			componentes = componenteService.getComponenteByPrograma(Integer.parseInt(getProgramaSeleccionado()));
+			ProgramaVO programaVO = programasService.getProgramaAno(Integer.parseInt(getProgramaSeleccionado()));
+			componentes = componenteService.getComponenteByPrograma(programaVO.getId());
 		}else{
 			componentes = new ArrayList<ComponentesVO>();
 		}
@@ -271,7 +271,7 @@ public class ProcesoConveniosController extends BaseController implements Serial
 		if(getProgramaSeleccionado() != null && !"0".equals(getProgramaSeleccionado())){
 			programa = programasService.getProgramaAno(Integer.parseInt(getProgramaSeleccionado()));
 			System.out.println("programa.getDependenciaMunicipal()->" + programa.getDependenciaMunicipal() + " programa.getDependenciaServicio()->" + programa.getDependenciaServicio());
-			componentes = componenteService.getComponenteByPrograma(Integer.parseInt(getProgramaSeleccionado()));
+			componentes = componenteService.getComponenteByPrograma(programa.getId());
 		}else{
 			componentes = new ArrayList<ComponentesVO>();
 			programa = null;

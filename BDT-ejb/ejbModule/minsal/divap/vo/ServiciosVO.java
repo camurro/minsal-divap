@@ -16,6 +16,7 @@ public class ServiciosVO implements Serializable{
 	private PersonaVO encargadoAps;
 	private PersonaVO encargadoFinanzasAps;
 	private List<ComunaSummaryVO> comunas;
+	private List<EstablecimientoSummaryVO> estableclimientos;
 	
 	public ServiciosVO(){
 		
@@ -90,6 +91,15 @@ public class ServiciosVO implements Serializable{
 
 	public void setComunas(List<ComunaSummaryVO> comunas) {
 		this.comunas = comunas;
+	}
+
+	public List<EstablecimientoSummaryVO> getEstableclimientos() {
+		return estableclimientos;
+	}
+
+	public void setEstableclimientos(
+			List<EstablecimientoSummaryVO> estableclimientos) {
+		this.estableclimientos = estableclimientos;
 	}
 
 	@Override

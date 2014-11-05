@@ -18,6 +18,7 @@ import minsal.divap.dao.AnoDAO;
 import minsal.divap.dao.CajaDAO;
 import minsal.divap.dao.ConveniosDAO;
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
+import minsal.divap.dao.EstablecimientosDAO;
 import minsal.divap.dao.MesDAO;
 import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.dao.ReliquidacionDAO;
@@ -39,6 +40,7 @@ import minsal.divap.vo.ComponenteReliquidacionSummaryVO;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.CumplimientoApsMunicipalProgramaVO;
+import minsal.divap.vo.EstablecimientoSummaryVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.ValorizarReliquidacionSummaryVO;
@@ -54,6 +56,7 @@ import cl.minsal.divap.model.Comuna;
 import cl.minsal.divap.model.ConvenioComuna;
 import cl.minsal.divap.model.CumplimientoPrograma;
 import cl.minsal.divap.model.Cuota;
+import cl.minsal.divap.model.Establecimiento;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.MarcoPresupuestario;
 import cl.minsal.divap.model.Mes;
@@ -61,6 +64,7 @@ import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.Reliquidacion;
 import cl.minsal.divap.model.ReliquidacionComuna;
+import cl.minsal.divap.model.ReliquidacionServicio;
 import cl.minsal.divap.model.ServicioSalud;
 import cl.minsal.divap.model.TipoDocumento;
 import cl.minsal.divap.model.Usuario;
@@ -96,7 +100,8 @@ public class ReliquidacionService {
 	private ConveniosDAO conveniosDAO;
 	@EJB
 	private CajaDAO cajaDAO;
-	
+	@EJB
+	private EstablecimientosDAO establecimientosDAO;
 
 	private final double EPSILON = 0.0000001;
 
@@ -163,15 +168,16 @@ public class ReliquidacionService {
 
 	public String elaborarPlantillasBaseReliquidacion(Integer idProgramaAno, Integer idReliquidacion) {
 		String planillaTrabajoId = null;
+		Integer plantillaIdMuncipal = null;
+		Integer plantillaIdServicio = null;
 		
-//		List<ValorizarReliquidacionSummaryVO> valorizarReliquidacionSummaryVO = calcularReliquidacionPrograma(idProgramaAno, idReliquidacion);
-//		for(int v=0; v<valorizarReliquidacionSummaryVO.size();v++){
-//			System.out.println("veamos si funciona --> "+valorizarReliquidacionSummaryVO.get(v));
-//		}
-		
-		ProgramaVO programaAno = programasService.getProgramaAno(idProgramaAno);
-		Integer plantillaIdMuncipal = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLABASECUMPLIMIENTOMUNICIPAL, programaAno.getId());
-		Integer plantillaIdServicio = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLABASECUMPLIMIENTOSERVICIO, programaAno.getId());
+		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
+		if(programaVO.getDependenciaMunicipal() != null && programaVO.getDependenciaMunicipal()){
+			plantillaIdMuncipal = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLABASECUMPLIMIENTOMUNICIPAL, programaVO.getId());
+		}
+		if(programaVO.getDependenciaServicio() != null && programaVO.getDependenciaServicio()){
+			plantillaIdServicio = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLABASECUMPLIMIENTOSERVICIO, programaVO.getId());
+		}
 		if(plantillaIdMuncipal != null || plantillaIdServicio != null){
 			System.out.println("las recupera de la BD");
 			if(plantillaIdMuncipal != null){
@@ -182,24 +188,26 @@ public class ReliquidacionService {
 				Integer plantillaId = documentService.getDocumentoIdByPlantillaId(plantillaIdServicio);
 				planillaTrabajoId = ((planillaTrabajoId==null) ? plantillaId.toString() : (planillaTrabajoId+"#"+plantillaId.toString()));
 			}
-
 		}else{
 			System.out.println("son nuevas");
 			List<CellExcelVO> header = new ArrayList<CellExcelVO>();
 			List<CellExcelVO> subHeader = new ArrayList<CellExcelVO>();
-			if(programaAno.getDependenciaMunicipal()){			
-				Integer plantillaMunicipal = plantillaCumplimientoMunicipalNivelPrograma(programaAno, header, subHeader, idReliquidacion);
+			if(programaVO.getDependenciaMunicipal()){		
+				System.out.println("tiene dependencia comuna");
+				Integer plantillaMunicipal = plantillaCumplimientoMunicipalNivelPrograma(programaVO, header, subHeader, idReliquidacion);
 				planillaTrabajoId = plantillaMunicipal.toString();
 			}
-			if(programaAno.getDependenciaServicio()){
-				System.out.println("no tiene dependencia municipal");
-				Integer plantillaServicio = plantillaCumplimientoMunicipalNivelPrograma(programaAno, header, subHeader, idReliquidacion);
+			if(programaVO.getDependenciaServicio()){
+				System.out.println("tiene dependencia servicio");
+				Integer plantillaServicio = plantillaCumplimientoEstablecimientoServicioNivelPrograma(programaVO, header, subHeader, idReliquidacion);
 				planillaTrabajoId = ((planillaTrabajoId==null) ? plantillaServicio.toString() : (planillaTrabajoId+"#"+plantillaServicio.toString()));
 			}
 		}
 		System.out.println("planillaTrabajoId ---> "+planillaTrabajoId);
 		return planillaTrabajoId;
 	}
+
+ 
 
 	public Integer plantillaCumplimientoMunicipalNivelPrograma(ProgramaVO programaAno, List<CellExcelVO> header, List<CellExcelVO> subHeader, Integer idReliquidacion){
 		Integer planillaTrabajoId = null;
@@ -249,15 +257,55 @@ public class ReliquidacionService {
 		}
 		return planillaTrabajoId;
 	}
+	
+	private Integer plantillaCumplimientoEstablecimientoServicioNivelPrograma(ProgramaVO programaAno, List<CellExcelVO> header, List<CellExcelVO> subHeader, Integer idReliquidacion){
+		Integer planillaTrabajoId = null;
+		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
+		String filename = tmpDir + File.separator + "plantillaBaseReliquidacionServicio"+programaAno.getNombre()+".xlsx";
+		String contenType = mimemap.getContentType(filename.toLowerCase());
+		List<ComponentesVO> componentes = programaAno.getComponentes();
+		List<Double> porc_cumplimiento = new ArrayList<Double>();
+		Programa programa = programasDAO.getProgramaPorID(programaAno.getId());
 
+		GeneradorExcel generadorExcel = new GeneradorExcel(filename);
+		header.add(new CellExcelVO("SERVICIOS DE SALUD", 2, 2));
+		header.add(new CellExcelVO("ESTABLECIMIENTO", 2, 2));
+		header.add(new CellExcelVO(programaAno.getNombre().toUpperCase(), (componentes.size()), 1));
+		subHeader.add(new CellExcelVO("ID", 1, 1));
+		subHeader.add(new CellExcelVO("Servicio de Salud", 1, 1));
+		subHeader.add(new CellExcelVO("ID", 1, 1));
+		subHeader.add(new CellExcelVO("Establecimiento", 1, 1));
+		for(int i=0;i<componentes.size();i++){
+			header.add(new CellExcelVO(componentes.get(i).getNombre().toUpperCase(), 1, 1));
+			subHeader.add(new CellExcelVO("% Cumplimiento", 1, 1));
+			porc_cumplimiento.add(null);
+		}
 
-
-
-
-
-
-
-
+		List<ServiciosVO> servicios = programaAno.getServicios();
+		List<CumplimientoApsMunicipalProgramaVO> items = new ArrayList<CumplimientoApsMunicipalProgramaVO>();
+		for(int i=0;i<servicios.size();i++){
+			List<EstablecimientoSummaryVO> comunas = servicios.get(i).getEstableclimientos();
+			for(int j=0;j<comunas.size();j++){				
+				CumplimientoApsMunicipalProgramaVO fila = new CumplimientoApsMunicipalProgramaVO();
+				fila.setIdServicio(servicios.get(i).getId_servicio());
+				fila.setServicio(servicios.get(i).getNombre_servicio());
+				fila.setIdComuna(comunas.get(j).getId());
+				fila.setComuna(comunas.get(j).getNombre());
+				fila.setPorcCumplimiento(porc_cumplimiento);
+				items.add(fila);
+			}
+		}
+		CrearPlanillaCumplimientoMunicialProgramaSheetExcel crearPlanillaCumplimientoMunicialProgramaSheetExcel = new CrearPlanillaCumplimientoMunicialProgramaSheetExcel(header, subHeader, items);
+		generadorExcel.addSheet(crearPlanillaCumplimientoMunicialProgramaSheetExcel, "Cumplimiento APS Municipales");
+		try {
+			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderTemplateReliquidacion.replace("{ANO}", getAnoCurso().toString()));
+			System.out.println("response crearPlanillaCumplimientoMunicialProgramaSheetExcel --->" + response);
+			planillaTrabajoId = documentService.createTemplate(programa, TipoDocumentosProcesos.PLANTILLABASECUMPLIMIENTOSERVICIO, response.getNodeRef(), response.getFileName(), contenType);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return planillaTrabajoId;
+	}
 
 	//#####################valorizar montos #####################
 
@@ -432,10 +480,7 @@ public class ReliquidacionService {
 		
 	}
 	
-	
-
-
-	public void procesarCalculoReliquidacion(Integer idProgramaAno, Integer idReliquidacion, XSSFWorkbook workbook) throws ExcelFormatException{
+	public void procesarCalculoReliquidacionMunicipal(Integer idProgramaAno, Integer idReliquidacion, XSSFWorkbook workbook) throws ExcelFormatException{
 		XSSFSheet sheet = workbook.getSheetAt(0);
 		Iterator<Row> rowIterator = sheet.iterator();
 		int celdas = 0;
@@ -479,7 +524,7 @@ public class ReliquidacionService {
 		cells.add(fieldFour);
 		
 
-		for(int i = 4; i<celdas; i++){
+		for(int i = 4; i < celdas; i++){
 			CellTypeExcelVO porc_cumplimiento = new CellTypeExcelVO(true, FieldType.PERCENTAGEFIELD);
 			cells.add(porc_cumplimiento);
 		}
@@ -489,66 +534,125 @@ public class ReliquidacionService {
 		reliquidacionCalculoExcelValidator.validateFormat(worksheet);
 		List<CalculoReliquidacionBaseVO> items = reliquidacionCalculoExcelValidator.getItems();
 		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
-		
-		
-		// for con nombre componente y porcentaje cumplimiento
+		Reliquidacion reliquidacion = reliquidacionDAO.getReliquidacionById(idReliquidacion);
+		if(reliquidacion.getIdProgramaAno() == null){
+			reliquidacion.setIdProgramaAno(programaAno);
+		}
+		reliquidacionDAO.deleteReliquidacionComuna(idProgramaAno);
 		for(CalculoReliquidacionBaseVO calculoReliquidacionBaseVO : items){
 			ServicioSalud servicio = servicioSaludService.getServicioSaludPorID(calculoReliquidacionBaseVO.getId_servicio());
 			Comuna comuna = comunaService.getComunaById(calculoReliquidacionBaseVO.getId_comuna().intValue());
-//			calculoReliquidacionBaseVO.get
-			Reliquidacion reliquidacion = reliquidacionDAO.getReliquidacionById(idReliquidacion);
-			reliquidacion.setIdProgramaAno(programaAno);
-			
-			
-				
-				// recorre cumplimientos
-				int cc = 0;
-				for(ComponenteCumplimientoVO componenteCumplimientoVO : calculoReliquidacionBaseVO.getComponentesCumplimientoVO()){
-					Componente componente = componenteService.getComponenteByNombre(nombresComponentes.get(cc));
-					ReliquidacionComuna reliquidacionComuna = new ReliquidacionComuna();
-					reliquidacionComuna.setServicio(servicio);
-					reliquidacionComuna.setComuna(comuna);
-					reliquidacionComuna.setReliquidacion(reliquidacion);
-					reliquidacionComuna.setPrograma(programaAno.getPrograma());
-					reliquidacionComuna.setComponente(componente);
-					
-					
-					System.out.println("componenteCumplimientoVO "+componenteCumplimientoVO.getPorcentajeCumplimiento()+" componente --> "+componente.getNombre());
-					
-					
-					reliquidacionComuna.setPorcentajeCumplimiento(componenteCumplimientoVO.getPorcentajeCumplimiento());
-					reliquidacionComuna.setCumplimiento(getCumplimientoPrograma(programaAno, componenteCumplimientoVO));
-					
-					
-					System.out.println("\n \n \n \n \n \n \n \n \n");
-					System.out.println("idComuna -> "+reliquidacionComuna.getComuna().getId()+" servicio -> "+reliquidacionComuna.getServicio().getId()+""
-							+ " idComponente -> "+reliquidacionComuna.getComponente().getId()+" idCumplimiento -> "+reliquidacionComuna.getCumplimiento().getIdCumplimientoPrograma()+""
-							+" porcentaje Cumplimiento -> "+reliquidacionComuna.getPorcentajeCumplimiento());
-					System.out.println("\n \n \n \n \n \n \n \n \n");
-					
-					reliquidacionDAO.save(reliquidacionComuna);	
-					cc++;
-				}
-				//termina for de cumplimientos
-				
-				
-				
-			
-			//termina for componentes
-
+			int contadorComponenete = 0;
+			for(ComponenteCumplimientoVO componenteCumplimientoVO : calculoReliquidacionBaseVO.getComponentesCumplimientoVO()){
+				Componente componente = componenteService.getComponenteByNombre(nombresComponentes.get(contadorComponenete++));
+				ReliquidacionComuna reliquidacionComuna = new ReliquidacionComuna();
+				System.out.println("servicio="+servicio);
+				reliquidacionComuna.setServicio(servicio);
+				System.out.println("comuna="+comuna);
+				reliquidacionComuna.setComuna(comuna);
+				System.out.println("reliquidacion="+reliquidacion);
+				reliquidacionComuna.setReliquidacion(reliquidacion);
+				System.out.println("programaAno.getPrograma()="+programaAno.getPrograma());
+				reliquidacionComuna.setPrograma(programaAno);
+				System.out.println("componente="+componente);
+				reliquidacionComuna.setComponente(componente);
+				System.out.println("componenteCumplimientoVO "+componenteCumplimientoVO.getPorcentajeCumplimiento()+" componente --> "+componente.getNombre());
+				reliquidacionComuna.setPorcentajeCumplimiento(componenteCumplimientoVO.getPorcentajeCumplimiento());
+				reliquidacionComuna.setCumplimiento(getCumplimientoPrograma(programaAno, componenteCumplimientoVO));
+				reliquidacionDAO.save(reliquidacionComuna);	
+			}
 		}
-		// termina for con nombre componente y porcentaje cumplimiento
+	}
+	
+	public void procesarCalculoReliquidacionServicio(Integer idProgramaAno, Integer idReliquidacion, XSSFWorkbook workbook) throws ExcelFormatException{
+		XSSFSheet sheet = workbook.getSheetAt(0);
+		Iterator<Row> rowIterator = sheet.iterator();
+		int celdas = 0;
+		List<String> nombresComponentes = new ArrayList<String>();
+		while(rowIterator.hasNext()) {
+			Row row = rowIterator.next();
+			if (row.getRowNum()==1 ){
+				Iterator<Cell> cellIterator = row.cellIterator();
+				int pos_celda = 0;
+				while(cellIterator.hasNext()) {
+					Cell cell = cellIterator.next();
+					if(pos_celda > 3){
+						nombresComponentes.add(cell.getStringCellValue().toString());
+					}
+					pos_celda++;
+				}
+			}
+			if (row.getRowNum() == 3){
+				Iterator<Cell> cellIterator = row.cellIterator();
+				
+				while(cellIterator.hasNext()) {
+					Cell cell = cellIterator.next();
+					if(cell == null || cell.getCellType() == Cell.CELL_TYPE_BLANK){
+						break;
+					}
+					celdas++;
+					
+				}
+			}else if(row.getRowNum() > 3){
+				break;
+			}
+		}
+		List<CellTypeExcelVO> cells = new ArrayList<CellTypeExcelVO>();
+		CellTypeExcelVO fieldOne = new CellTypeExcelVO(true, FieldType.INTEGERFIELD);
+		cells.add(fieldOne);
+		CellTypeExcelVO fieldTwo = new CellTypeExcelVO(true, FieldType.STRINGFIELD);
+		cells.add(fieldTwo);
+		CellTypeExcelVO fieldThree = new CellTypeExcelVO(true, FieldType.INTEGERFIELD);
+		cells.add(fieldThree);
+		CellTypeExcelVO fieldFour = new CellTypeExcelVO(true, FieldType.STRINGFIELD);
+		cells.add(fieldFour);
+		
 
+		for(int i = 4; i < celdas; i++){
+			CellTypeExcelVO porc_cumplimiento = new CellTypeExcelVO(true, FieldType.PERCENTAGEFIELD);
+			cells.add(porc_cumplimiento);
+		}
+		
+		XSSFSheet worksheet = workbook.getSheetAt(0);
+		ReliquidacionCalculoExcelValidator reliquidacionCalculoExcelValidator = new ReliquidacionCalculoExcelValidator(cells.size(), cells, true, 0, 2);
+		reliquidacionCalculoExcelValidator.validateFormat(worksheet);
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
+		Reliquidacion reliquidacion = reliquidacionDAO.getReliquidacionById(idReliquidacion);
+		if(reliquidacion.getIdProgramaAno() == null){
+			reliquidacion.setIdProgramaAno(programaAno);
+		}
+		reliquidacionDAO.deleteReliquidacionServicio(idProgramaAno);
+		List<CalculoReliquidacionBaseVO> items = reliquidacionCalculoExcelValidator.getItems();
+		for(CalculoReliquidacionBaseVO calculoReliquidacionBaseVO : items){
+			ServicioSalud servicio = servicioSaludService.getServicioSaludPorID(calculoReliquidacionBaseVO.getId_servicio());
+			Establecimiento establecimiento = establecimientosDAO.getEstablecimientoById(calculoReliquidacionBaseVO.getId_comuna().intValue());
+			int contadorComponente = 0;
+			for(ComponenteCumplimientoVO componenteCumplimientoVO : calculoReliquidacionBaseVO.getComponentesCumplimientoVO()){
+				Componente componente = componenteService.getComponenteByNombre(nombresComponentes.get(contadorComponente++));
+				ReliquidacionServicio reliquidacionServicio = new ReliquidacionServicio();
+				System.out.println("servicio="+servicio);
+				reliquidacionServicio.setServicio(servicio);
+				System.out.println("establecimiento="+establecimiento);
+				reliquidacionServicio.setEstablecimiento(establecimiento);
+				System.out.println("reliquidacion="+reliquidacion);
+				reliquidacionServicio.setReliquidacion(reliquidacion);
+				System.out.println("programaAno.getPrograma()="+programaAno.getPrograma());
+				reliquidacionServicio.setPrograma(programaAno);
+				System.out.println("componente="+componente);
+				reliquidacionServicio.setComponente(componente);
+				System.out.println("componenteCumplimientoVO "+componenteCumplimientoVO.getPorcentajeCumplimiento()+" componente --> "+componente.getNombre());
+				reliquidacionServicio.setPorcentajeCumplimiento(componenteCumplimientoVO.getPorcentajeCumplimiento());
+				reliquidacionServicio.setCumplimiento(getCumplimientoPrograma(programaAno, componenteCumplimientoVO));
+				reliquidacionDAO.save(reliquidacionServicio);	
+			}
+		}
 	}
 
 	private CumplimientoPrograma getCumplimientoPrograma(ProgramaAno programaAno, ComponenteCumplimientoVO componenteCumplimientoVO){
 		List<CumplimientoPrograma> cumplimientosPrograma = reliquidacionDAO.getCumplimientoProgramaByPrograma(programaAno.getPrograma().getId());
 		CumplimientoPrograma cumplimientoProgramaSeleccionado = null;
-		if(cumplimientosPrograma != null && cumplimientosPrograma.size()>0){
-			
+		if(cumplimientosPrograma != null && cumplimientosPrograma.size()>0){	
 			for(CumplimientoPrograma cumplimientoPrograma : cumplimientosPrograma){
-				
-				
 				if(( greaterThan(componenteCumplimientoVO.getPorcentajeCumplimiento(), cumplimientoPrograma.getPorcentajeDesde().doubleValue()) || equals(componenteCumplimientoVO.getPorcentajeCumplimiento(), cumplimientoPrograma.getPorcentajeDesde().doubleValue()) ) 
 						&& (lessThan(componenteCumplimientoVO.getPorcentajeCumplimiento(), cumplimientoPrograma.getPorcentajeHasta().doubleValue()) || equals(componenteCumplimientoVO.getPorcentajeCumplimiento(), cumplimientoPrograma.getPorcentajeHasta().doubleValue())) ){
 					cumplimientoProgramaSeleccionado = cumplimientoPrograma;
@@ -557,9 +661,7 @@ public class ReliquidacionService {
 				}
 			}
 		}
-		return cumplimientoProgramaSeleccionado;
-		
-		
+		return cumplimientoProgramaSeleccionado;	
 	}
 
 	private boolean equals(double a, double b){
