@@ -32,21 +32,12 @@ public class DocumentoReliquidacion implements Serializable {
     @JoinColumn(name = "id_tipo_documento", referencedColumnName = "id_tipo_documento")
     @ManyToOne(optional = false)
     private TipoDocumento idTipoDocumento;
-    @JoinColumn(name = "servicio", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private ServicioSalud servicio;
     @JoinColumn(name = "id_reliquidacion", referencedColumnName = "id_reliquidacion")
     @ManyToOne(optional = false)
     private Reliquidacion idReliquidacion;
     @JoinColumn(name = "id_documento", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private ReferenciaDocumento idDocumento;
-    @JoinColumn(name = "establecimiento", referencedColumnName = "id")
-    @ManyToOne
-    private Establecimiento establecimiento;
-    @JoinColumn(name = "comuna", referencedColumnName = "id")
-    @ManyToOne
-    private Comuna comuna;
 
     public DocumentoReliquidacion() {
     }
@@ -71,14 +62,6 @@ public class DocumentoReliquidacion implements Serializable {
         this.idTipoDocumento = idTipoDocumento;
     }
 
-    public ServicioSalud getServicio() {
-        return servicio;
-    }
-
-    public void setServicio(ServicioSalud servicio) {
-        this.servicio = servicio;
-    }
-
     public Reliquidacion getIdReliquidacion() {
         return idReliquidacion;
     }
@@ -93,22 +76,6 @@ public class DocumentoReliquidacion implements Serializable {
 
     public void setIdDocumento(ReferenciaDocumento idDocumento) {
         this.idDocumento = idDocumento;
-    }
-
-    public Establecimiento getEstablecimiento() {
-        return establecimiento;
-    }
-
-    public void setEstablecimiento(Establecimiento establecimiento) {
-        this.establecimiento = establecimiento;
-    }
-
-    public Comuna getComuna() {
-        return comuna;
-    }
-
-    public void setComuna(Comuna comuna) {
-        this.comuna = comuna;
     }
 
     @Override

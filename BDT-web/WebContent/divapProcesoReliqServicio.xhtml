@@ -9,7 +9,7 @@
 					<h:outputText value="Reliquidación" />
 				</h1>
 				<p:panel id="Panel">
-					<h2>Programa APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES</h2>
+					<h2>Programa #{procesoReliquidacionServicioController.programa.nombre}</h2>
 
 					<p class="parrafo">La Planilla de Trabajo con Montos de Distribución contiene lorem ipsum dolor sit amet, consectetur adipiscing
 						elit. Praesent egestas tempor nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est dignissim, justo nisi
@@ -31,22 +31,16 @@
 					<h:panelGrid id="busqueda_mis_tareas">
 						<h:panelGrid>
 							<h:outputText value="Componente: " styleClass="inputLabel" />
-							<p:selectOneMenu>
-								<f:selectItem itemLabel="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES"
-									itemValue="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
-								<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<p:selectOneMenu value="#{procesoReliquidacionServicioController.componenteSeleccionado}">
+							    <f:selectItem itemLabel="Seleccione Componente" itemValue="0" /> 		
+							    <f:selectItems itemLabel="#{componente.nombre}" itemValue="#{componente.id}" var="componente" value="#{procesoReliquidacionServicioController.programa.componentes}" />
 							</p:selectOneMenu>
 						</h:panelGrid>
 						<h:panelGrid>
 							<h:outputText value="Servicio: " styleClass="inputLabel" />
-							<p:selectOneMenu onchange="document.getElementById('tablaSubtitulos').style.display = 'block';">
-								<f:selectItem itemLabel="Metropolitano Oriente" itemValue="Metropolitano Oriente" />
-								<f:selectItem itemLabel="Concepción" itemValue="Concepción" />
-								<f:selectItem itemLabel="Talcahuano" itemValue="Concepción" />
-								<f:selectItem itemLabel="Iquique" itemValue="Concepción" />
-								<f:selectItem itemLabel="Seleccione" itemValue="" />
+							<p:selectOneMenu value="#{procesoReliquidacionServicioController.servicioSeleccionado}">
+								<f:selectItem itemLabel="Seleccione Servicio" itemValue="0" />
+								<f:selectItems itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" value="#{procesoReliquidacionServicioController.servicios}" />
 							</p:selectOneMenu>
 						</h:panelGrid>
 					</h:panelGrid>
@@ -55,7 +49,7 @@
 						<h3>Subtítulos del Programa</h3>
 						<h:form id="form">
 							<h:panelGrid>
-								<p:dataTable resizableColumns="true" value="#{procesoDistRecFinController.listadoEstablecimientos}" liveResize="true"
+								<p:dataTable resizableColumns="true" value="#{procesoReliquidacionServicioController.listadoEstablecimientos}" liveResize="true"
 									var="_establecimiento" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
 									styleClass="dataTable">
 
@@ -155,7 +149,7 @@
 											<p:column />
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS24}" id="total22" styleClass="textoAjustado textoPequenio centrado">
+													<h:outputText value="#{procesoReliquidacionServicioController.totalS24}" id="total22" styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
 												</f:facet>
@@ -163,7 +157,7 @@
 											<p:column />
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS24*0.6}" id="total2" styleClass="textoAjustado textoPequenio centrado">
+													<h:outputText value="#{procesoReliquidacionServicioController.totalS24*0.6}" id="total2" styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
 												</f:facet>
@@ -173,7 +167,7 @@
 
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS24*0.4}" id="total3" styleClass="textoAjustado textoPequenio centrado">
+													<h:outputText value="#{procesoReliquidacionServicioController.totalS24*0.4}" id="total3" styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
 												</f:facet>
@@ -184,7 +178,7 @@
 
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS24*0.524*0.4}" id="total"
+													<h:outputText value="#{procesoReliquidacionServicioController.totalS24*0.524*0.4}" id="total"
 														styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
@@ -192,7 +186,7 @@
 											</p:column>
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS24*0.486*0.4}" id="total5"
+													<h:outputText value="#{procesoReliquidacionServicioController.totalS24*0.486*0.4}" id="total5"
 														styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
@@ -200,7 +194,7 @@
 											</p:column>
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoDistRecFinController.totalS24*0.6+procesoDistRecFinController.totalS24*0.486*0.4}"
+													<h:outputText value="#{procesoReliquidacionServicioController.totalS24*0.6+procesoReliquidacionServicioController.totalS24*0.486*0.4}"
 														styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>

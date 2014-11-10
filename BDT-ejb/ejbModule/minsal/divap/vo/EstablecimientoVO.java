@@ -5,10 +5,6 @@ import java.io.Serializable;
 public class EstablecimientoVO  implements Serializable {
 	
 	private static final long serialVersionUID = -3220915341874133539L;
-	
-	
-	
-	
 	private int id;
 	private String nombre;
 	private int id_servicio_salud;

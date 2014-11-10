@@ -8,7 +8,7 @@ public class ComponenteReliquidacionSummaryVO implements Serializable{
 	 */
 	private static final long serialVersionUID = 171040417440221727L;
 	
-	private Integer convenio;
+	private Long montoConvenio;
 	private Double porc_1cuota;
 	private Long monto_1cuota;
 	private Double porc_2cuota;
@@ -23,11 +23,11 @@ public class ComponenteReliquidacionSummaryVO implements Serializable{
 		super();
 	}
 	
-	public ComponenteReliquidacionSummaryVO(Integer convenio, Double porc_1cuota, Long monto_1cuota,
+	public ComponenteReliquidacionSummaryVO(Long montoConvenio, Double porc_1cuota, Long monto_1cuota,
 			Double porc_2cuota, Long monto_2cuota, Double porc_cumplimiento, Double porc_reliquidacion,
 			Long descuento_2cuota, Long montoFinal_2cuota) {
 		super();
-		this.convenio = convenio;
+		this.montoConvenio = montoConvenio;
 		this.porc_1cuota = porc_1cuota;
 		this.monto_1cuota = monto_1cuota;
 		this.porc_2cuota = porc_2cuota;
@@ -37,14 +37,6 @@ public class ComponenteReliquidacionSummaryVO implements Serializable{
 		this.descuento_2cuota = descuento_2cuota;
 		this.montoFinal_2cuota = montoFinal_2cuota;
 		
-	}
-
-	public Integer getConvenio() {
-		return convenio;
-	}
-
-	public void setConvenio(Integer convenio) {
-		this.convenio = convenio;
 	}
 
 	public Double getPorc_1cuota() {
@@ -111,19 +103,23 @@ public class ComponenteReliquidacionSummaryVO implements Serializable{
 		this.montoFinal_2cuota = montoFinal_2cuota;
 	}
 
+	public Long getMontoConvenio() {
+		return montoConvenio;
+	}
+
+	public void setMontoConvenio(Long montoConvenio) {
+		this.montoConvenio = montoConvenio;
+	}
+
 	@Override
 	public String toString() {
-		return "ComponenteReliquidacionSummaryVO [convenio=" + convenio
-				+ ", porc_1cuota=" + porc_1cuota + ", monto_1cuota="
-				+ monto_1cuota + ", porc_2cuota=" + porc_2cuota
-				+ ", monto_2cuota=" + monto_2cuota + ", porc_cumplimiento="
-				+ porc_cumplimiento + ", porc_reliquidacion="
-				+ porc_reliquidacion + ", descuento_2cuota=" + descuento_2cuota
+		return "ComponenteReliquidacionSummaryVO [ montoConvenio=" + montoConvenio + ", porc_1cuota="
+				+ porc_1cuota + ", monto_1cuota=" + monto_1cuota
+				+ ", porc_2cuota=" + porc_2cuota + ", monto_2cuota="
+				+ monto_2cuota + ", porc_cumplimiento=" + porc_cumplimiento
+				+ ", porc_reliquidacion=" + porc_reliquidacion
+				+ ", descuento_2cuota=" + descuento_2cuota
 				+ ", montoFinal_2cuota=" + montoFinal_2cuota + "]";
 	}
-	
-	
-	
-	
 	
 }

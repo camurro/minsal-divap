@@ -8,13 +8,13 @@ public class CellExcelVO implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 3606998161454607624L;
-	String name;
-	
+	private String name;
 	// columnas que ocupará el dato
-	int colSpan;
-	
+	private int colSpan;
 	//filas que ocupará el dato
-	int rowSpan;
+	private int rowSpan;
+	private int posx;
+	private int posy;
 	
 	public CellExcelVO(String name) {
 		this(name, 1, 1) ;
@@ -46,10 +46,27 @@ public class CellExcelVO implements Serializable{
 		this.rowSpan = rowSpan;
 	}
 
+	public int getPosx() {
+		return posx;
+	}
+
+	public void setPosx(int posx) {
+		this.posx = posx;
+	}
+
+	public int getPosy() {
+		return posy;
+	}
+
+	public void setPosy(int posy) {
+		this.posy = posy;
+	}
+
 	@Override
 	public String toString() {
 		return "CellExcelVO [name=" + name + ", colSpan=" + colSpan
-				+ ", rowSpan=" + rowSpan + "]";
+				+ ", rowSpan=" + rowSpan + ", posx=" + posx + ", posy=" + posy
+				+ "]";
 	}
-	
+
 }

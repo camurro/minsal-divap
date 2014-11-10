@@ -216,12 +216,14 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("usuario", getSessionBean().getUsername());
-		String sufijoTarea = TiposPrograma.ProgramaPxQ.getName();
-		if(getPrograma().getComponentes() != null && getPrograma().getComponentes().size() > 0){
-			if(getPrograma().getComponentes().size() == 1){
-				if((getPrograma().getComponentes().get(0).getTipoComponente()) != null && (getPrograma().getComponentes().get(0).getTipoComponente().getId().equals(TiposPrograma.ProgramaHistorico.getId()) ) ){
-					sufijoTarea = TiposPrograma.ProgramaHistorico.getName();
-				}
+		String sufijoTarea = "";
+		if(getPrograma().getDependenciaMunicipal() && getPrograma().getDependenciaServicio() ){
+			sufijoTarea = "mixto";
+		}else{
+			if(getPrograma().getDependenciaMunicipal()){
+				sufijoTarea = "municipal";
+			}else{
+				sufijoTarea = "servicio";
 			}
 		}
 		parameters.put("sufijoTarea_", sufijoTarea);

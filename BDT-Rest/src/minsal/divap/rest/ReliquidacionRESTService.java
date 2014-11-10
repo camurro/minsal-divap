@@ -75,11 +75,10 @@ public class ReliquidacionRESTService extends BaseRest{
 		return reliquidacionService.crearInstanciaReliquidacion(usuario);
     }
 	
-	
 	@GET
     @Path("/reliquidacion/calcularReliquidacion/{idProgramaAno}/{idReliquidacion}")
 	@Produces("application/json")
-    public Integer calcularReliquidacion(@PathParam("idProgramaAno") Integer idProgramaAno, @PathParam("idReliquidacion") Integer idReliquidacion){
+    public String calcularReliquidacion(@PathParam("idProgramaAno") Integer idProgramaAno, @PathParam("idReliquidacion") Integer idReliquidacion){
 		System.out.println("llega al REST de valorizarMontos -->"+idProgramaAno+"  --> "+idReliquidacion);
 		if(idProgramaAno == null){
 			throw new IllegalArgumentException("proceso: "+ idProgramaAno + " no puede ser nulo");
@@ -100,15 +99,8 @@ public class ReliquidacionRESTService extends BaseRest{
 		if(idReliquidacion == null){
 			throw new IllegalArgumentException("proceso: "+ idReliquidacion + " no puede ser nulo");
 		}
-		
 		ReliquidacionService reliquidacionService = getService(ReliquidacionService.class);
 		return reliquidacionService.elaborarPlantillasBaseReliquidacion(idProgramaAno, idReliquidacion);
     }
-	
-	
-	
-	
-
-	
-	
+		
 }

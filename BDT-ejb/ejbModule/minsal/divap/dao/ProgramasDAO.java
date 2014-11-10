@@ -6,12 +6,10 @@ import java.util.List;
 
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
-import javax.persistence.NamedQuery;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import minsal.divap.vo.ProgramaMunicipalVO;
 import minsal.divap.enums.Subtitulo;
 import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.Componente;
