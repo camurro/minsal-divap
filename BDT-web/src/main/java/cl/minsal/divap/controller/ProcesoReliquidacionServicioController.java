@@ -16,6 +16,7 @@ import minsal.divap.enums.BusinessProcess;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ServicioSaludService;
 import minsal.divap.vo.ComponentesVO;
+import minsal.divap.vo.EstablecimientoVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.TaskDataVO;
@@ -30,9 +31,9 @@ import cl.minsal.divap.pojo.ProgramasPojo;
 import cl.minsal.divap.pojo.ValorHistoricoPojo;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
-@Named("procesoReliquidacionMuniController") 
+@Named("procesoReliquidacionServicioController") 
 @ViewScoped
-public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implements
+public class ProcesoReliquidacionServicioController extends AbstractTaskMBean implements
 				Serializable {
 	
 
@@ -41,26 +42,21 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 	private transient Logger log;
 	@Inject 
 	FacesContext facesContext;
-	
 	@EJB
 	private ProgramasService programaService;
-	
 	@EJB
 	private ServicioSaludService serviciosService;
-	
 	private List<ProgramaVO> listadoProgramasUsuario;
 	private List<ComponentesVO> listadoComponentes;
-	private List<ServiciosVO> listaServicios;
-	
+	private List<ServiciosVO> servicios;
 	private ProgramaVO programaSeleccionado;
-	
 	private List<ProgramasPojo> listadoProgramas;
-	
+	private List<EstablecimientoVO> listadoEstablecimientos;
 	private Integer idReliquidacion;
 	private Integer idProgramaAno;
-	
+	private String componenteSeleccionado;
+	private String servicioSeleccionado;
 	private ProgramaVO programa;
-	
 	
 	public List<ProgramasPojo> getListadoProgramas() {
 		return listadoProgramas;
@@ -81,13 +77,13 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 		this.listadoEnvioServicios = listadoEnvioServicios;
 	}
 	
-	private List<EstablecimientoPojo> listadoEstablecimientos;
 	
-	public List<EstablecimientoPojo> getListadoEstablecimientos() {
+	
+	public List<EstablecimientoVO> getListadoEstablecimientos() {
 		return listadoEstablecimientos;
 	}
 	
-	public void setListadoEstablecimientos( List<EstablecimientoPojo> listadoEstablecimientos ) {
+	public void setListadoEstablecimientos( List<EstablecimientoVO> listadoEstablecimientos ) {
 		this.listadoEstablecimientos = listadoEstablecimientos;
 	}
 	
@@ -120,8 +116,10 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 	
 	public Long getTotalS21() {
 		Long suma = 0L;
-		for(EstablecimientoPojo e : listadoEstablecimientos){
-			suma+=e.gettS21();
+		if(listadoEstablecimientos != null && listadoEstablecimientos.size() >0){
+			for(EstablecimientoVO e : listadoEstablecimientos){
+				//suma+=e.gettS21();
+			}
 		}
 		return suma;
 	}
@@ -132,8 +130,10 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 
 	public Long getTotalS22() {
 		Long suma = 0L;
-		for(EstablecimientoPojo e : listadoEstablecimientos){
-			suma+=e.gettS22();
+		if(listadoEstablecimientos != null && listadoEstablecimientos.size() >0){
+			for(EstablecimientoVO e : listadoEstablecimientos){
+				//suma+=e.gettS22();
+			}
 		}
 		return suma;
 	}
@@ -144,8 +144,10 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 
 	public Long getTotalS24() {
 		Long suma = 0L;
-		for(EstablecimientoPojo e : listadoEstablecimientos){
-			suma+=e.gettS24();
+		if(listadoEstablecimientos != null && listadoEstablecimientos.size() >0){
+			for(EstablecimientoVO e : listadoEstablecimientos){
+				//suma+=e.gettS24();
+			}
 		}
 		return suma;
 	}
@@ -156,8 +158,10 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 
 	public Long getTotalS29() {
 		Long suma = 0L;
-		for(EstablecimientoPojo e : listadoEstablecimientos){
-			suma+=e.gettS29();
+		if(listadoEstablecimientos != null && listadoEstablecimientos.size() >0){
+			for(EstablecimientoVO e : listadoEstablecimientos){
+				//suma+=e.gettS29();
+			}
 		}
 		return suma;
 	}
@@ -180,29 +184,22 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 		}
 	}
 	
-
-	private void construyeListaServicios() {
-		listaServicios = serviciosService.getAllServiciosVO();
-		
-	}
-
-	private void construyeListaComponentes(int programaId) {
-		listadoComponentes=programaService.getComponenteByPrograma(programaId);
-		
-	}
-
 	public Long getTotalServicio(){
 		Long suma = 0L;
-		for(EstablecimientoPojo e : listadoEstablecimientos){
-			suma+=e.gettS21()+e.gettS22()+e.gettS29();
+		if(listadoEstablecimientos != null && listadoEstablecimientos.size() >0){
+			for(EstablecimientoVO e : listadoEstablecimientos){
+				//suma+=e.gettS21()+e.gettS22()+e.gettS29();
+			}
 		}
 		return suma;
 	}
 	
 	public Long getTotalMunicipal(){
 		Long suma = 0L;
-		for(EstablecimientoPojo e : listadoEstablecimientos){
-			suma+=e.gettS24();
+		if(listadoEstablecimientos != null && listadoEstablecimientos.size() >0){
+			for(EstablecimientoVO e : listadoEstablecimientos){
+				//suma+=e.gettS24();
+			}
 		}
 		return suma;
 	}
@@ -263,12 +260,15 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 		this.listadoComponentes = listadoComponentes;
 	}
 
-	public List<ServiciosVO> getListaServicios() {
-		return listaServicios;
+	public List<ServiciosVO> getServicios() {
+		if(servicios == null){
+			servicios = serviciosService.getAllServiciosVO();
+		}
+		return servicios;
 	}
 
-	public void setListaServicios(List<ServiciosVO> listaServicios) {
-		this.listaServicios = listaServicios;
+	public void setServicios(List<ServiciosVO> servicios) {
+		this.servicios = servicios;
 	}
 
 	public Integer getIdReliquidacion() {
@@ -294,8 +294,21 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 	public void setPrograma(ProgramaVO programa) {
 		this.programa = programa;
 	}
-	
-	
 
+	public String getComponenteSeleccionado() {
+		return componenteSeleccionado;
+	}
+
+	public void setComponenteSeleccionado(String componenteSeleccionado) {
+		this.componenteSeleccionado = componenteSeleccionado;
+	}
+
+	public String getServicioSeleccionado() {
+		return servicioSeleccionado;
+	}
+
+	public void setServicioSeleccionado(String servicioSeleccionado) {
+		this.servicioSeleccionado = servicioSeleccionado;
+	}
 	
 }

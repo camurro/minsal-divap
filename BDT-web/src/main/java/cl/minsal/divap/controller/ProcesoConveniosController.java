@@ -22,7 +22,8 @@ import minsal.divap.vo.ConvenioDocumentoVO;
 import minsal.divap.vo.ConveniosVO;
 import minsal.divap.vo.EstablecimientoVO;
 import minsal.divap.vo.ProgramaVO;
-import minsal.divap.vo.ResolucionConveniosVO;
+import minsal.divap.vo.ResolucionConveniosComunaVO;
+import minsal.divap.vo.ResolucionConveniosServicioVO;
 
 import org.primefaces.model.UploadedFile;
 
@@ -37,8 +38,8 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	private List<EstablecimientoVO> establecimientos = new ArrayList<EstablecimientoVO>();
 	private List<ComponentesVO> componentes;
 	private List<ConvenioDocumentoVO> documentos;
-	private List<ResolucionConveniosVO> resolucionConveniosMunicipal;
-	private List<ResolucionConveniosVO> resolucionConveniosServicio;
+	private List<ResolucionConveniosComunaVO> resolucionConveniosMunicipal;
+	private List<ResolucionConveniosServicioVO> resolucionConveniosServicio;
 	private List<ConveniosVO> resolucionesServicios;
 	private List<ConveniosVO> resolucionesMunicipal;
 	private ConveniosVO convenio;
@@ -241,21 +242,21 @@ public class ProcesoConveniosController extends BaseController implements Serial
 		return componentes;
 	}
 
-	public List<ResolucionConveniosVO> getResolucionConveniosMunicipal() {
+	public List<ResolucionConveniosComunaVO> getResolucionConveniosMunicipal() {
 		return resolucionConveniosMunicipal;
 	}
 
 	public void setResolucionConveniosMunicipal(
-			List<ResolucionConveniosVO> resolucionConveniosMunicipal) {
+			List<ResolucionConveniosComunaVO> resolucionConveniosMunicipal) {
 		this.resolucionConveniosMunicipal = resolucionConveniosMunicipal;
 	}
 
-	public List<ResolucionConveniosVO> getResolucionConveniosServicio() {
+	public List<ResolucionConveniosServicioVO> getResolucionConveniosServicio() {
 		return resolucionConveniosServicio;
 	}
 
 	public void setResolucionConveniosServicio(
-			List<ResolucionConveniosVO> resolucionConveniosServicio) {
+			List<ResolucionConveniosServicioVO> resolucionConveniosServicio) {
 		this.resolucionConveniosServicio = resolucionConveniosServicio;
 	}
 

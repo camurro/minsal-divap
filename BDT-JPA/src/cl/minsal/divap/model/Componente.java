@@ -32,6 +32,8 @@ public class Componente implements Serializable {
 	private String nombre;
 	@Column(name = "peso")
 	private Float peso;
+	@OneToMany(mappedBy = "componente")
+    private Set<Cuota> cuotas;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "componente")
 	@OrderBy("idComponenteSubtitulo ASC")
 	private Set<ComponenteSubtitulo> componenteSubtitulos;
@@ -123,4 +125,30 @@ public class Componente implements Serializable {
 		this.peso = peso;
 	}
 	
+	@XmlTransient
+    public Set<Cuota> getCuotas() {
+        return cuotas;
+    }
+
+    public void setCuotas(Set<Cuota> cuotas) {
+        this.cuotas = cuotas;
+    }
+    
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Componente)) {
+            return false;
+        }
+        Componente other = (Componente) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "cl.minsal.divap.model.Componente[ id=" + id + " ]";
+    }
+    
 }

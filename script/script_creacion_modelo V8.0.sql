@@ -20057,7 +20057,283 @@ ALTER TABLE reliquidacion_servicio
 ALTER TABLE reliquidacion_servicio
   ADD CONSTRAINT programa_fk FOREIGN KEY (programa) REFERENCES programa_ano (id_programa_ano) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
+ALTER TABLE cuota
+  ADD COLUMN componente integer;
 
+ALTER TABLE cuota
+  ADD CONSTRAINT componente_fk FOREIGN KEY (componente) REFERENCES componente (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE programa
+  ADD COLUMN reliquidacion boolean NOT NULL DEFAULT true;
+
+ALTER TABLE convenio_comuna
+  DROP COLUMN id_tipo_subtitulo;
+ALTER TABLE convenio_comuna
+  DROP COLUMN componente;
+ALTER TABLE convenio_comuna
+  DROP COLUMN monto;
+
+ALTER TABLE convenio_servicio
+  DROP COLUMN id_tipo_subtitulo;
+ALTER TABLE convenio_servicio
+  DROP COLUMN monto;
+ALTER TABLE convenio_servicio
+  DROP COLUMN componente;
+
+
+CREATE TABLE convenio_comuna_componente
+(
+  id_convenio_comuna_componente serial NOT NULL,
+  componente integer NOT NULL,
+  subtitulo integer NOT NULL,
+  monto integer NOT NULL,
+  convenio_comuna integer NOT NULL,
+  CONSTRAINT convenio_comuna_componente_pk PRIMARY KEY (id_convenio_comuna_componente),
+  CONSTRAINT componente_fk FOREIGN KEY (componente)
+      REFERENCES componente (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT convenio_comuna_fk FOREIGN KEY (convenio_comuna)
+      REFERENCES convenio_comuna (id_convenio_comuna) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT subtitulo_fk FOREIGN KEY (subtitulo)
+      REFERENCES tipo_subtitulo (id_tipo_subtitulo) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+ALTER TABLE convenio_servicio
+  DROP COLUMN monto;
+
+CREATE TABLE convenio_servicio_componente
+(
+  id_convenio_servicio_componente integer NOT NULL DEFAULT nextval('convenio_servicio_componente_id_convenio_servicio_component_seq'::regclass),
+  componente integer NOT NULL,
+  subtitulo integer NOT NULL,
+  monto integer NOT NULL,
+  convenio_servicio integer NOT NULL,
+  CONSTRAINT convenio_servicio_componente_pk PRIMARY KEY (id_convenio_servicio_componente),
+  CONSTRAINT componente_fk FOREIGN KEY (componente)
+      REFERENCES componente (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT convenio_servicio_fk FOREIGN KEY (convenio_servicio)
+      REFERENCES convenio_servicio (id_convenio_servicio) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT subtitulo_fk FOREIGN KEY (subtitulo)
+      REFERENCES tipo_subtitulo (id_tipo_subtitulo) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+ALTER TABLE documento_reliquidacion
+  DROP COLUMN servicio;
+ALTER TABLE documento_reliquidacion
+  DROP COLUMN comuna;
+ALTER TABLE documento_reliquidacion
+  DROP COLUMN establecimiento;
+
+ALTER TABLE convenio_comuna_componente
+  ADD COLUMN monto_rebaja integer;
+
+ALTER TABLE convenio_servicio_componente
+  ADD COLUMN monto_rebaja integer;
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes, componente)
+    VALUES (9, 1, 60, 50, 3, 15);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes, componente)
+    VALUES (10, 2, 40, 50, 10, 15);
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes, componente)
+    VALUES (11, 1, 60, 50, 3, 16);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes, componente)
+    VALUES (12, 2, 40, 50, 10, 16);
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes, componente)
+    VALUES (13, 1, 60, 50, 3, 17);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes, componente)
+    VALUES (14, 2, 40, 50, 10, 17);
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes, componente)
+    VALUES (15, 1, 60, 50, 3, 18);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes, componente)
+    VALUES (16, 2, 40, 50, 10, 18);
+
+INSERT INTO convenio_servicio(id_convenio_servicio, id_programa, id_establecimiento, fecha, numero_resolucion, aprobacion, mes) VALUES (1, 50, 76, now(),  1000, true, 3);
+INSERT INTO convenio_servicio(id_convenio_servicio, id_programa, id_establecimiento, fecha, numero_resolucion, aprobacion, mes) VALUES (2, 50, 77, now(),  1001, true, 3);
+INSERT INTO convenio_servicio(id_convenio_servicio, id_programa, id_establecimiento, fecha, numero_resolucion, aprobacion, mes) VALUES (3, 50, 78, now(),  1002, true, 3);
+INSERT INTO convenio_servicio(id_convenio_servicio, id_programa, id_establecimiento, fecha, numero_resolucion, aprobacion, mes) VALUES (4, 50, 79, now(),  1003, true, 3);
+INSERT INTO convenio_servicio(id_convenio_servicio, id_programa, id_establecimiento, fecha, numero_resolucion, aprobacion, mes) VALUES (5, 50, 80, now(),  1004, true, 3);
+
+INSERT INTO convenio_servicio(id_convenio_servicio, id_programa, id_establecimiento, fecha, numero_resolucion, aprobacion, mes) VALUES (6, 50, 91, now(),  2000, true, 3);
+INSERT INTO convenio_servicio(id_convenio_servicio, id_programa, id_establecimiento, fecha, numero_resolucion, aprobacion, mes) VALUES (7, 50, 92, now(),  2001, true, 3);
+INSERT INTO convenio_servicio(id_convenio_servicio, id_programa, id_establecimiento, fecha, numero_resolucion, aprobacion, mes) VALUES (8, 50, 93, now(),  2002, true, 3);
+INSERT INTO convenio_servicio(id_convenio_servicio, id_programa, id_establecimiento, fecha, numero_resolucion, aprobacion, mes) VALUES (9, 50, 94, now(),  2003, true, 3);
+INSERT INTO convenio_servicio(id_convenio_servicio, id_programa, id_establecimiento, fecha, numero_resolucion, aprobacion, mes) VALUES (10, 50, 95, now(), 2004, true, 3);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (1, 15, 1, 100000, 1);
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (2, 15, 2, 200000, 1);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (3, 16, 2, 100000, 1);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (4, 17, 2, 100000, 1);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (5, 18, 2, 100000, 1);
+
+--------------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (6, 15, 1, 100000, 2);
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (7, 15, 2, 200000, 2);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (8, 16, 2, 100000, 2);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (9, 17, 2, 100000, 2);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (10, 18, 2, 100000, 2);
+
+--------------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (11, 15, 1, 100000, 3);
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (12, 15, 2, 200000, 3);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (13, 16, 2, 100000, 3);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (14, 17, 2, 100000, 3);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (15, 18, 2, 100000, 3);
+
+--------------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (16, 15, 1, 100000, 4);
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (17, 15, 2, 200000, 4);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (18, 16, 2, 100000, 4);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (19, 17, 2, 100000, 4);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (20, 18, 2, 100000, 4);
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (21, 15, 1, 100000, 5);
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (22, 15, 2, 200000, 5);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (23, 16, 2, 100000, 5);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (24, 17, 2, 100000, 5);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (25, 18, 2, 100000, 5);
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (26, 15, 1, 100000, 6);
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (27, 15, 2, 200000, 6);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (28, 16, 2, 100000, 6);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (29, 17, 2, 100000, 6);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (30, 18, 2, 100000, 6);
+
+--------------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (31, 15, 1, 100000, 7);
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (32, 15, 2, 200000, 7);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (33, 16, 2, 100000, 7);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (34, 17, 2, 100000, 7);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (35, 18, 2, 100000, 7);
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (36, 15, 1, 100000, 8);
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (37, 15, 2, 200000, 8);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (38, 16, 2, 100000, 8);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (39, 17, 2, 100000, 8);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (40, 18, 2, 100000, 8);
+
+--------------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (41, 15, 1, 100000, 9);
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (42, 15, 2, 200000, 9);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (43, 16, 2, 100000, 9);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (44, 17, 2, 100000, 9);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (45, 18, 2, 100000, 9);
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (46, 15, 1, 100000, 10);
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (47, 15, 2, 200000, 10);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (48, 16, 2, 100000, 10);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (49, 17, 2, 100000, 10);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (50, 18, 2, 100000, 10);
 
 
 

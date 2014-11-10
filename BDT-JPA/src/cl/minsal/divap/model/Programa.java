@@ -3,6 +3,7 @@ package cl.minsal.divap.model;
 import java.io.Serializable;
 import java.util.Set;
 
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,14 +38,10 @@ public class Programa implements Serializable {
 	@Column(name="id", unique=true, nullable=false)
 	@GeneratedValue
 	private Integer id;
-
 	@Column(name="cantidad_cuotas")
 	private Integer cantidadCuotas;
-
 	private String nombre;
-
 	private String descripcion;
-
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "programa")
     private Set<ProgramaAno> programasAnos;
     @JoinColumn(name = "username_usuario", referencedColumnName = "username")
@@ -57,10 +54,11 @@ public class Programa implements Serializable {
     private Set<MetadataCore> metadataCores;
     @OneToMany(mappedBy = "idPrograma")
     private Set<Seguimiento> seguimientoCollection;
-
     @Column(name = "revisaFonasa")
     private Boolean revisaFonasa;
-    
+    @Basic(optional = false)
+    @Column(name = "reliquidacion")
+    private boolean reliquidacion;
 	public Programa() {
 	}
 
@@ -162,6 +160,14 @@ public class Programa implements Serializable {
 
 	public void setRevisaFonasa(Boolean revisaFonasa) {
 		this.revisaFonasa = revisaFonasa;
+	}
+
+	public boolean isReliquidacion() {
+		return reliquidacion;
+	}
+
+	public void setReliquidacion(boolean reliquidacion) {
+		this.reliquidacion = reliquidacion;
 	}
 	
 }

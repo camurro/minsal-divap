@@ -26,7 +26,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ReliquidacionComuna.findByReliquidacionComunaId", query = "SELECT r FROM ReliquidacionComuna r WHERE r.reliquidacionComunaId = :reliquidacionComunaId"),
     @NamedQuery(name = "ReliquidacionComuna.findByReliquidacionProgramaComponenteServicioComuna", query = "SELECT r FROM ReliquidacionComuna r WHERE r.programa.programa.id = :idPrograma and r.componente.id = :idComponente and r.servicio.id = :idServicio and r.comuna.id = :idComuna and r.reliquidacion.idReliquidacion = :idReliquidacion"),
     @NamedQuery(name = "ReliquidacionComuna.findByMonto", query = "SELECT r FROM ReliquidacionComuna r WHERE r.monto = :monto"),
-    @NamedQuery(name = "ReliquidacionComuna.deleteByIdProgramaAno", query = "DELETE FROM ReliquidacionComuna r WHERE r.programa.idProgramaAno = :idProgramaAno")})
+    @NamedQuery(name = "ReliquidacionComuna.deleteByIdProgramaAno", query = "DELETE FROM ReliquidacionComuna r WHERE r.programa.idProgramaAno = :idProgramaAno"),
+    @NamedQuery(name = "ReliquidacionComuna.findByIdProgramaAnoIdServicioIdReliquidacion", query = "SELECT r FROM ReliquidacionComuna r WHERE r.programa.idProgramaAno = :idProgramaAno and r.servicio.id = :idServicio and r.reliquidacion.idReliquidacion = :idReliquidacion"),
+    @NamedQuery(name = "ReliquidacionComuna.findByIdProgramaAnoIdServicioIdComponentesIdReliquidacion", query = "SELECT r FROM ReliquidacionComuna r WHERE r.programa.idProgramaAno = :idProgramaAno and r.servicio.id = :idServicio and r.componente.id IN (:idComponentes) and r.reliquidacion.idReliquidacion = :idReliquidacion"),
+    @NamedQuery(name = "ReliquidacionComuna.findByIdProgramaAnoIdComunaIdComponenteIdReliquidacion", query = "SELECT r FROM ReliquidacionComuna r WHERE r.programa.idProgramaAno = :idProgramaAno and r.comuna.id = :idComuna and r.componente.id = :idComponente and r.reliquidacion.idReliquidacion = :idReliquidacion")})
 public class ReliquidacionComuna implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

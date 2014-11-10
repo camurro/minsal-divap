@@ -35,13 +35,16 @@ import minsal.divap.vo.ConvenioDocumentoVO;
 import minsal.divap.vo.ConveniosVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
-import minsal.divap.vo.ResolucionConveniosVO;
+import minsal.divap.vo.ResolucionConveniosComunaVO;
+import minsal.divap.vo.ResolucionConveniosServicioVO;
 import cl.minsal.divap.model.Caja;
 import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.ComponenteSubtitulo;
 import cl.minsal.divap.model.Comuna;
 import cl.minsal.divap.model.ConvenioComuna;
+import cl.minsal.divap.model.ConvenioComunaComponente;
 import cl.minsal.divap.model.ConvenioServicio;
+import cl.minsal.divap.model.ConvenioServicioComponente;
 import cl.minsal.divap.model.DocumentoConvenio;
 import cl.minsal.divap.model.Establecimiento;
 import cl.minsal.divap.model.EstadoPrograma;
@@ -122,11 +125,11 @@ public class ConveniosService {
 		ConveniosVO componentesConvenios = new ConveniosVO();
 		componentesConvenios.setComunaNombre(Convenios.getIdComuna().getNombre());
 		componentesConvenios.setProgramaNombre(Convenios.getIdPrograma().getPrograma().getNombre());
-		componentesConvenios.setTipoSubtituloNombreSubtitulo(Convenios.getIdTipoSubtitulo().getNombreSubtitulo());
-		componentesConvenios.setConvenioMonto(new Integer(Convenios.getMonto()));
+//		componentesConvenios.setTipoSubtituloNombreSubtitulo(Convenios.getIdTipoSubtitulo().getNombreSubtitulo());
+//		componentesConvenios.setConvenioMonto(new Integer(Convenios.getMonto()));
 		componentesConvenios.setIdConverio(Convenios.getIdConvenioComuna());
 		componentesConvenios.setNumeroResolucion(Convenios.getNumeroResolucion());
-		componentesConvenios.setIdSubtitulo(Convenios.getIdTipoSubtitulo().getIdTipoSubtitulo());
+//		componentesConvenios.setIdSubtitulo(Convenios.getIdTipoSubtitulo().getIdTipoSubtitulo());
 		Collection<Componente>    con = Convenios.getIdPrograma().getPrograma().getComponentes();
 		for (Componente conve : con){
 			componentesConvenios.setComponente(conve.getNombre());
@@ -173,10 +176,10 @@ public class ConveniosService {
 
 		con.setIdPrograma(programaAno);
 		con.setIdComuna(comuna);
-		con.setIdTipoSubtitulo(tiposub);
-		con.setMonto(monto);
+//		con.setIdTipoSubtitulo(tiposub);
+//		con.setMonto(monto);
 		con.setNumeroResolucion(numResolucion);
-		con.setComponente(compo);
+//		con.setComponente(compo);
 		con.setFecha(date);
 		con.setAprobacion(false);
 		cons =conveniosDAO.save(con);
@@ -226,19 +229,19 @@ public class ConveniosService {
 
 
 		for (ConvenioComuna conve : Convenios){
-			Integer aux = new Integer(conve.getMonto());
-
-			total = total + aux;
+//			Integer aux = new Integer(conve.getMonto());
+//
+//			total = total + aux;
 		}
 		for (ConvenioComuna conve : Convenios){
 			ConveniosVO ConVO = new ConveniosVO();
 			ConVO.setComunaNombre(conve.getIdComuna().getNombre());
 			ConVO.setProgramaNombre(conve.getIdPrograma().getPrograma().getNombre());
-			ConVO.setTipoSubtituloNombreSubtitulo(conve.getIdTipoSubtitulo().getNombreSubtitulo());
-			ConVO.setConvenioMonto(new Integer(conve.getMonto()));
+//			ConVO.setTipoSubtituloNombreSubtitulo(conve.getIdTipoSubtitulo().getNombreSubtitulo());
+//			ConVO.setConvenioMonto(new Integer(conve.getMonto()));
 			ConVO.setIdConverio(conve.getIdConvenioComuna());
 			ConVO.setNumeroResolucion(conve.getNumeroResolucion());
-			ConVO.setIdSubtitulo(conve.getIdTipoSubtitulo().getIdTipoSubtitulo());
+//			ConVO.setIdSubtitulo(conve.getIdTipoSubtitulo().getIdTipoSubtitulo());
 			ConVO.setFecha(conve.getFecha().toString());
 			ConVO.setTotal(total);
 			ConVO.setMarcoPresupuestario( Integer.valueOf(marcoPresupuestario.intValue()));
@@ -271,8 +274,8 @@ public class ConveniosService {
 		System.out.println("ConveniosService::administrarVersionesAlfresco->"+programaSeleccionado);		
 	}
 	
-	public List<ResolucionConveniosVO> getResolucionConveniosMunicipal(Integer idServicio, Integer idProgramaAno, Integer componenteSeleccionado, Integer comunaSeleccionada) {
-		List<ResolucionConveniosVO> resolucionesConvenios = new ArrayList<ResolucionConveniosVO>();
+	public List<ResolucionConveniosComunaVO> getResolucionConveniosMunicipal(Integer idServicio, Integer idProgramaAno, Integer componenteSeleccionado, Integer comunaSeleccionada) {
+		List<ResolucionConveniosComunaVO> resolucionesConvenios = new ArrayList<ResolucionConveniosComunaVO>();
 		List<ConvenioComuna> convenios = null;
 		if(componenteSeleccionado == null && comunaSeleccionada == null){
 			List<Comuna> comunas = comunaDAO.getComunasByServicio(idServicio);
@@ -310,8 +313,8 @@ public class ConveniosService {
 		return resolucionesConvenios;
 	}
 
-	public List<ResolucionConveniosVO> getResolucionConveniosServicio(Integer idServicio, Integer idProgramaAno, Integer componenteSeleccionado, Integer establecimientoSeleccionado) {
-		List<ResolucionConveniosVO> resolucionesConvenios = new ArrayList<ResolucionConveniosVO>();
+	public List<ResolucionConveniosServicioVO> getResolucionConveniosServicio(Integer idServicio, Integer idProgramaAno, Integer componenteSeleccionado, Integer establecimientoSeleccionado) {
+		List<ResolucionConveniosServicioVO> resolucionesConvenios = new ArrayList<ResolucionConveniosServicioVO>();
 		List<ConvenioServicio> convenios = null;
 		if(componenteSeleccionado == null && establecimientoSeleccionado == null){
 			List<Establecimiento> establecimientos = establecimientosDAO.getEstablecimientosByServicio(idServicio);
@@ -352,26 +355,28 @@ public class ConveniosService {
 	private ConvenioComuna createConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idComuna){
 		ConvenioComuna convenioComuna = new ConvenioComuna();
 		Componente componente = componenteDAO.getComponenteByID(idComponente);
-		convenioComuna.setComponente(componente);
 		Comuna comuna = comunaDAO.getComunaById(idComuna);
 		convenioComuna.setIdComuna(comuna);
 		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
 		convenioComuna.setIdPrograma(programaAno);
 		TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloById(idSubtitulo);
-		convenioComuna.setIdTipoSubtitulo(tipoSubtitulo);
+		ConvenioComunaComponente convenioComunaComponente = new ConvenioComunaComponente();
+		convenioComunaComponente.setComponente(componente);
+		convenioComunaComponente.setSubtitulo(tipoSubtitulo);
 		return convenioComuna;
 	}
 	
 	private ConvenioServicio createConvenioServicio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idEstablecimiento) {
 		ConvenioServicio convenioServicio = new ConvenioServicio();
 		Componente componente = componenteDAO.getComponenteByID(idComponente);
-		convenioServicio.setComponente(componente);
 		Establecimiento establecimiento = establecimientosDAO.getEstablecimientoById(idEstablecimiento);
 		convenioServicio.setIdEstablecimiento(establecimiento);
 		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
 		convenioServicio.setIdPrograma(programaAno);
 		TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloById(idSubtitulo);
-		convenioServicio.setIdTipoSubtitulo(tipoSubtitulo);
+		ConvenioServicioComponente convenioServicioComponente = new ConvenioServicioComponente();
+		convenioServicioComponente.setComponente(componente);
+		convenioServicioComponente.setSubtitulo(tipoSubtitulo);
 		return convenioServicio;
 	}
 

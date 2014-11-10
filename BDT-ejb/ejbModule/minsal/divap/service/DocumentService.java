@@ -619,29 +619,13 @@ public class DocumentService {
 		return referenciaDocumentoId;
 	}
 	
-	public Integer createDocumentBaseReliquidacion(ProgramaAno programa, TipoDocumento tipoDocumentoProceso,
-			String nodeRef, String filename, String contenType, Integer idReliquidacion, Mes mes) {
-		
-//		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
-//		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
-//		DocumentoEstimacionflujocaja documentoEstimacionFlujoCaja = new DocumentoEstimacionflujocaja();
-//		documentoEstimacionFlujoCaja.setIdProgramaAno(programaAno);
-//		documentoEstimacionFlujoCaja.setIdTipoDocumento(tipoDocumentoProceso);
-//		documentoEstimacionFlujoCaja.setIdDocumento(referenciaDocumento);
-		
+	public Integer createDocumentBaseReliquidacion(TipoDocumentosProcesos tipoDocumento,
+			String nodeRef, String filename, String contenType, Integer idReliquidacion) {
 		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
+		TipoDocumento tipoDocumentoProceso = new TipoDocumento(tipoDocumento.getId());
 		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);	
-		
-		DocumentoReliquidacion documentoReliquidacion = new DocumentoReliquidacion();		
-		documentoReliquidacion.setComuna(null);
-		documentoReliquidacion.setServicio(null);
-		
-		
-		//TODO agregar idProgramaAno a la tabla de TipoDocumento
-		Reliquidacion reliquidacion = new Reliquidacion();
-		reliquidacion.setIdReliquidacion(idReliquidacion);
-		reliquidacion.setMes(mes);
-		
+		DocumentoReliquidacion documentoReliquidacion = new DocumentoReliquidacion();
+		Reliquidacion reliquidacion = reliquidacionDAO.getReliquidacionById(idReliquidacion);
 		documentoReliquidacion.setIdReliquidacion(reliquidacion);
 		documentoReliquidacion.setIdDocumento(referenciaDocumento);
 		documentoReliquidacion.setIdTipoDocumento(tipoDocumentoProceso);

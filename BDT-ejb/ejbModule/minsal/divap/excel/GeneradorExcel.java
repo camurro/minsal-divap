@@ -81,7 +81,7 @@ public class GeneradorExcel {
                 return;
             }
 
-	if(excelSheet instanceof ProgramaAPSServicioSheetExcel){
+            if(excelSheet instanceof ProgramaAPSServicioSheetExcel){
 				addSheet((ProgramaAPSServicioSheetExcel)excelSheet, sheetName);
 				return;
 			}
@@ -1358,9 +1358,8 @@ count_colums += cellExcelVO.getColSpan();
         cellStyleHeader.setFont(fontHeader);
         
         for(int fila = 0; fila < 2; fila++){
-        	 XSSFRow row = null;
-        	 row = sheet.createRow(fila);
-        	 for(int columna = 0; columna < (header.get(2).getColSpan() + 4 ); columna++){
+        	 XSSFRow row = sheet.createRow(fila);
+        	 for(int columna = 0; columna < (header.get(2).getColSpan() + 5 ); columna++){
         		 XSSFCell cell = row.createCell(columna);
                  cell.setCellType(XSSFCell.CELL_TYPE_STRING);
                  cell.setCellStyle(cellStyleHeader);
@@ -1372,10 +1371,8 @@ count_colums += cellExcelVO.getColSpan();
         int posComponente = 4;
         
         
-        for(int i=0;i<header.size();i++){
-        	
+        for(int i=0; i<header.size(); i++){
         	if(i == 0){
-        		
         		sheet.setDefaultColumnWidth((short) 20); 
         		XSSFRow row = sheet.getRow(0);
         		CellExcelVO cellExcelVO = header.get(i); 
@@ -1383,8 +1380,7 @@ count_colums += cellExcelVO.getColSpan();
             	cell.setCellStyle(cellStyleHeader);
             	cell.setCellValue(cellExcelVO.getName());
             	sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 1));
-        	}
-        	else if(i == 1){
+        	}else if(i == 1){
         		sheet.setDefaultColumnWidth((short) 20); 
         		XSSFRow row = sheet.getRow(0);
         		CellExcelVO cellExcelVO = header.get(i); 
@@ -1409,10 +1405,20 @@ count_colums += cellExcelVO.getColSpan();
         		sheet.setDefaultColumnWidth((short) 45); 
         		XSSFRow row = sheet.getRow(1);
         		CellExcelVO cellExcelVO = header.get(i);
-        		XSSFCell cell = row.getCell(posComponente);
-        		cell.setCellStyle(cellStyleHeader);
-            	cell.setCellValue(cellExcelVO.getName());
-            	posComponente++;            	
+        		System.out.println("cellExcelVO.getName()="+cellExcelVO.getName());
+        		System.out.println("cellExcelVO.getColSpan()="+cellExcelVO.getColSpan());
+        		if(cellExcelVO.getColSpan() == 1){
+	        		XSSFCell cell = row.getCell(posComponente);
+	        		cell.setCellStyle(cellStyleHeader);
+	            	cell.setCellValue(cellExcelVO.getName());
+	            	posComponente++; 
+        		}else{
+        			XSSFCell cell = row.getCell(posComponente);
+	        		cell.setCellStyle(cellStyleHeader);
+	            	cell.setCellValue(cellExcelVO.getName());
+	            	sheet.addMergedRegion(new CellRangeAddress(1, 1, posComponente, (posComponente + cellExcelVO.getColSpan() -1)));
+	            	posComponente = posComponente + cellExcelVO.getColSpan();
+        		}
         	}
         }
         //##### Sub-Headers ########
@@ -1575,11 +1581,12 @@ count_colums += cellExcelVO.getColSpan();
         		sheet.setDefaultColumnWidth((short) 20); 
         		XSSFRow row = sheet.getRow(1);
         		CellExcelVO cellExcelVO = header.get(i);
+        		System.out.println("cellExcelVO.getName()="+cellExcelVO.getName()+" posComponente="+posComponente);
         		XSSFCell cell = row.getCell(posComponente);
         		cell.setCellStyle(cellStyleHeader);
             	cell.setCellValue(cellExcelVO.getName());
             	sheet.addMergedRegion(new CellRangeAddress(1, 1, posComponente, posComponente+cellExcelVO.getColSpan()-1));
-            	posComponente = posComponente+cellExcelVO.getColSpan();
+            	posComponente += cellExcelVO.getColSpan();
         	}
         }
 
@@ -1637,7 +1644,7 @@ count_colums += cellExcelVO.getColSpan();
         				}
         				
         			}
-        			else if(subHeader.get(subh).getName().equalsIgnoreCase("Primera cuota")){
+        			else if(subHeader.get(subh).getName().equalsIgnoreCase("Cuota N° 1")){
         				if(posPrimeraCuota > (header.get(2).getColSpan() + 4)){
         					break;
         				}else{
@@ -1652,7 +1659,7 @@ count_colums += cellExcelVO.getColSpan();
         				}
         				
         			}
-        			else if(subHeader.get(subh).getName().equalsIgnoreCase("Segunda cuota")){
+        			else if(subHeader.get(subh).getName().equalsIgnoreCase("Cuota N° 2")){
         				if(posSegundaCuota > (header.get(2).getColSpan() + 4)){
         					break;
         				}else{

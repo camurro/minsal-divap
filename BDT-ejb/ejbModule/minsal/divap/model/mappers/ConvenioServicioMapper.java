@@ -1,8 +1,13 @@
 package minsal.divap.model.mappers;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import minsal.divap.vo.ConvenioMontoVO;
+import minsal.divap.vo.ResolucionConveniosServicioVO;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import minsal.divap.vo.ResolucionConveniosVO;
 import cl.minsal.divap.model.ConvenioServicio;
+import cl.minsal.divap.model.ConvenioServicioComponente;
 
 public class ConvenioServicioMapper implements Mapper<ConvenioServicio>{
 
@@ -12,25 +17,37 @@ public class ConvenioServicioMapper implements Mapper<ConvenioServicio>{
 	}
 
 	@Override
-	public ResolucionConveniosVO getBasic(ConvenioServicio convenioServicio) {
+	public ResolucionConveniosServicioVO getBasic(ConvenioServicio convenioServicio) {
 		if(convenioServicio == null){
 			return null;
 		}
-		ResolucionConveniosVO resolucionConveniosVO = new ResolucionConveniosVO();
+		ResolucionConveniosServicioVO resolucionConveniosVO = new ResolucionConveniosServicioVO();
 		resolucionConveniosVO.setIdConvenio(convenioServicio.getIdConvenioServicio());
-		Long monto = ((convenioServicio.getMonto() == null)?0L:new Long(convenioServicio.getMonto()));
-		resolucionConveniosVO.setMonto(monto);
-		if(convenioServicio.getComponente() != null){
-			resolucionConveniosVO.setNombreComponente(convenioServicio.getComponente().getNombre());
-		}
 		if(convenioServicio.getIdEstablecimiento() != null){
 			resolucionConveniosVO.setNombreEstablecimiento(convenioServicio.getIdEstablecimiento().getNombre());
 		}
 		if(convenioServicio.getIdPrograma() != null && convenioServicio.getIdPrograma().getPrograma() != null){
 			resolucionConveniosVO.setNombrePrograma(convenioServicio.getIdPrograma().getPrograma().getNombre());
 		}
-		if(convenioServicio.getIdTipoSubtitulo() != null){
-			resolucionConveniosVO.setNombreSubtitulo(convenioServicio.getIdTipoSubtitulo().getNombreSubtitulo());
+		if(convenioServicio.getConvenioServicioComponentes() != null && convenioServicio.getConvenioServicioComponentes().size() > 0){
+			List<ConvenioMontoVO> conveniosServicio = new ArrayList<ConvenioMontoVO>();
+			for(ConvenioServicioComponente convenioServicioComponente : convenioServicio.getConvenioServicioComponentes()){
+				ConvenioMontoVO convenioMontoVO = new ConvenioMontoVO();
+				convenioMontoVO.setIdConvenioMonto(convenioServicioComponente.getIdConvenioServicioComponente());
+				if(convenioServicioComponente.getComponente() != null){
+					convenioMontoVO.setIdComponente(convenioServicioComponente.getComponente().getId());
+					convenioMontoVO.setNombreComponente(convenioServicioComponente.getComponente().getNombre());
+				}
+				if(convenioServicioComponente.getSubtitulo() != null){
+					convenioMontoVO.setIdSubtitulo(convenioServicioComponente.getSubtitulo().getIdTipoSubtitulo());
+					convenioMontoVO.setNombreSubtitulo(convenioServicioComponente.getSubtitulo().getNombreSubtitulo());
+				}
+				convenioMontoVO.setMonto(convenioServicioComponente.getMonto());
+				conveniosServicio.add(convenioMontoVO);
+			}
+			resolucionConveniosVO.setConveniosServicio(conveniosServicio);
+		}else{
+			resolucionConveniosVO.setConveniosServicio(new ArrayList<ConvenioMontoVO>());
 		}
 		return resolucionConveniosVO;
 	}
