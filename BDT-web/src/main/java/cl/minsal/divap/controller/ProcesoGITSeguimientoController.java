@@ -144,8 +144,8 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 				conCopiaOculta = Arrays.asList(this.cco.split("\\,")); 
 			}
 			System.out.println("ProcesoGITSeguimientoController-->sendMail");
-			conveniosService.moveToAlfresco(this.idDistribucionInicialPercapita, docAttachedFile, TipoDocumentosProcesos.POBLACIONINSCRITA, null);
-			conveniosService.createSeguimientoConvenios(idDistribucionInicialPercapita, tareaSeguimiento, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
+			//conveniosService.moveToAlfresco(this.idDistribucionInicialPercapita, docAttachedFile, TipoDocumentosProcesos.POBLACIONINSCRITA, null);
+			//conveniosService.createSeguimientoConvenios(idDistribucionInicialPercapita, tareaSeguimiento, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
 		}catch(Exception e){
 			e.printStackTrace();
 			target = null;

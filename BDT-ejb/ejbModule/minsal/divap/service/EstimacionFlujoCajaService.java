@@ -1191,7 +1191,7 @@ public class EstimacionFlujoCajaService {
 				List<Remesa> remesas = remesasDAO.getRemesasSummaryByProgramaAnoComponenteSubtitulo(idProgramaAno, subtituloFlujoCaja.getIdServicio(), null, subtitulo);
 				if(convenios != null && convenios.size() > 0){
 					for(ConvenioComuna convenio : convenios){
-						convenioRecibido.setMonto(convenioRecibido.getMonto() + ((convenio.getMonto() == null)?0:convenio.getMonto()));
+						//convenioRecibido.setMonto(convenioRecibido.getMonto() + ((convenio.getMonto() == null)?0:convenio.getMonto()));
 					}
 				}
 				if(!convenioRecibido.getMonto().equals(0)){
@@ -1259,7 +1259,7 @@ public class EstimacionFlujoCajaService {
 				List<Remesa> remesas = remesasDAO.getRemesasSummaryByProgramaAnoComponenteSubtitulo(idProgramaAno, subtituloFlujoCaja.getIdServicio(), null, subtitulo);
 				if(convenios != null && convenios.size() > 0){
 					for(ConvenioComuna convenio : convenios){
-						convenioRecibido.setMonto(convenioRecibido.getMonto() + ((convenio.getMonto() == null)?0:convenio.getMonto()));
+						//convenioRecibido.setMonto(convenioRecibido.getMonto() + ((convenio.getMonto() == null)?0:convenio.getMonto()));
 					}
 				}
 				if(!convenioRecibido.getMonto().equals(0)){
