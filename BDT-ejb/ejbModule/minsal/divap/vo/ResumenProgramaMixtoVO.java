@@ -4,11 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import cl.minsal.divap.model.Componente;
-import cl.minsal.divap.model.ProgramaMunicipalCore;
-import cl.minsal.divap.model.ProgramaMunicipalCoreComponentePK;
-import cl.minsal.divap.model.TipoSubtitulo;
-
 
 public class ResumenProgramaMixtoVO implements Serializable{
 
@@ -19,11 +14,11 @@ public class ResumenProgramaMixtoVO implements Serializable{
 	private static final long serialVersionUID = 8342581230266634287L;
 	private Integer idServicio;
 	private String nombreServicio;
-	private Integer totalS21;
-	private Integer totalS22;
-	private Integer totalS24;
-	private Integer totalS29;
-	private Integer totalServicio;
+	private Long totalS21;
+	private Long totalS22;
+	private Long totalS24;
+	private Long totalS29;
+	private Long totalServicio;
 	
 	
 	public Integer getIdServicio() {
@@ -38,27 +33,27 @@ public class ResumenProgramaMixtoVO implements Serializable{
 	public void setNombreServicio(String nombreServicio) {
 		this.nombreServicio = nombreServicio;
 	}
-	public Integer getTotalS21() {
+	public Long getTotalS21() {
 		return totalS21;
 	}
-	public void setTotalS21(Integer totalS21) {
+	public void setTotalS21(Long totalS21) {
 		this.totalS21 = totalS21;
 	}
-	public Integer getTotalS22() {
+	public Long getTotalS22() {
 		return totalS22;
 	}
-	public void setTotalS22(Integer totalS22) {
+	public void setTotalS22(Long totalS22) {
 		this.totalS22 = totalS22;
 	}
-	public Integer getTotalS29() {
+	public Long getTotalS29() {
 		return totalS29;
 	}
-	public void setTotalS29(Integer totalS29) {
+	public void setTotalS29(Long totalS29) {
 		this.totalS29 = totalS29;
 	}
 	
-	public Integer getTotalServicio() {
-		totalServicio=0;
+	public Long getTotalServicio() {
+		totalServicio=0L;
 		if(totalS21!=null){
 			totalServicio += totalS21;
 		}
@@ -73,15 +68,15 @@ public class ResumenProgramaMixtoVO implements Serializable{
 		}
 		return totalServicio;
 	}
-	public void setTotalServicio(Integer totalServicio) {
+	public void setTotalServicio(Long totalServicio) {
 		this.totalServicio = totalServicio;
 	}
 	
 	
-	public Integer getTotalS24() {
+	public Long getTotalS24() {
 		return totalS24;
 	}
-	public void setTotalS24(Integer totalS24) {
+	public void setTotalS24(Long totalS24) {
 		this.totalS24 = totalS24;
 	}
 	@Override
@@ -99,6 +94,33 @@ public class ResumenProgramaMixtoVO implements Serializable{
 		} else if (!idServicio.equals(other.idServicio))
 			return false;
 		return true;
+	}
+	
+	public List<Object> getRow() {
+		List<Object> row = new ArrayList<Object>();
+		
+		if(getIdServicio() != null){
+			row.add(getIdServicio()) ;
+		}
+		if(getNombreServicio() != null){
+			row.add(getNombreServicio());
+		}
+		if(getTotalS21() != null && getTotalS21()> 0){
+			row.add(getTotalS21());
+		}
+		if(getTotalS22() != null && getTotalS22()> 0){
+			row.add(getTotalS22());
+		}
+		if(getTotalS24() != null && getTotalS24()> 0){
+			row.add(getTotalS24());
+		}
+		if(getTotalS29() != null && getTotalS29()> 0){
+			row.add(getTotalS29());
+		}
+		if(getTotalServicio()!=null && getTotalServicio()>0){
+			row.add(getTotalServicio());
+		}
+		return row;
 	}
 	
 	

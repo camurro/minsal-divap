@@ -2,44 +2,82 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jstl/core"
 	template="/WEB-INF/templates/default.xhtml">
+	
+	<ui:define name="zonaJavaScript">
+		<style type="text/css">
+.ui-state-error {
+	margin-left: 0px;
+}
+</style>
+		<script type="text/javascript">
+
+		 function downloadDocument(idDoc) {  
+             document.getElementById('formDownload:hiddenId').value=idDoc;
+             document.getElementById('formDownload:linkDownload').click();  
+         } 
+
+		 setInterval(
+				 function () {
+					 document.getElementById("form:buscarReporte").click();
+					 document.getElementById("form:botonActualizar").click();
+					 }, 10000);
+	        
+		$(document).ready(function() {
+			document.getElementById("form:botonActualizar").click();
+		});
+
+		</script>
+	</ui:define>
 	<ui:define name="content">
-		<h:form enctype="multipart/form-data">
+		<h:form enctype="multipart/form-data" id="form">
+		<p:commandButton id="botonActualizar" value="actualiza" update="form:tablaResultados" style="display: none" action="#{procesoDistRecFinSeguimientoDocumentacionController.actualizar}"/>
+		<p:commandButton id="buscarReporte" value="actualiza" update="form:tablaResultados" style="display: none" action="#{procesoDistRecFinSeguimientoDocumentacionController.buscarReporteCorreos}"/>
+		<h:commandButton id="btnLoadData" value="Hidden" action="#{procesoDistRecFinSeguimientoDocumentacionController.actualizar}" style="display:none" update="form:tablaResultados"/>
 			<p:panel styleClass="contentPanel">
 				<h1>
-					<h:outputText value="Distribución de Recursos Financieros por Programa" />
+					<h:outputText value="Distribución de Recursos Financieros por Programa"/>
 				</h1>
 				<p:panel id="Panel">
 					<h2>
-						<strong>Programa:</strong> PILOTO VIDA SANA: ALCOHOL
+						<strong>Programa:</strong> #{procesoDistRecFinSeguimientoDocumentacionController.programa.nombre}
 					</h2>
-					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoDistRecFinSeguimientoDocumentacionController.listadoEnvioServicios}" liveResize="true"
-						var="_servicio" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
-						styleClass="dataTable">
+					<p:dataTable resizableColumns="true" value="#{procesoDistRecFinSeguimientoDocumentacionController.reporteCorreos}" liveResize="true"
+					var="_reporte" rows="40" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+						styleClass="dataTable"  id="tablaResultados">
 						<p:columnGroup type="header">
 							<p:row>
-								<p:column headerText="Servicio de Salud" width="250" />
+								<p:column headerText="Servicio de Salud" width="245"/>
 								<p:column headerText="Documentos" />
-								<p:column headerText="Fecha de Envío" width="150" />
-								<p:column headerText="Destinatario" footerText="#{procesoDistRecFinSeguimientoDocumentacionController.getTotalMunicipal}" width="70" />
+								<p:column headerText="Fecha de Envío" width="150"/>
+								<p:column headerText="Destinatario" footerText="#{procesoDistRecFinSeguimientoDocumentacionController.getTotalMunicipal}" width="250"/>
 							</p:row>
 						</p:columnGroup>
 
-						<p:column>#{_servicio.servicioSalud}</p:column>
+						<p:column>#{_reporte.nombreServicio}</p:column>
 						<p:column>
-							<span class="textoAjustado"> <h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <p:commandLink
-									value="Planilla Distribucion de Recursos APS Municipal.xls" /> <br />
-							<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <p:commandLink
-									value="Planilla Distribucion de Recursos APS Servicio.xls" />
-							</span><br />
-							<span class="textoAjustado"> <h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <p:commandLink
-									value="Res. de Dist. de Rec. - APS Serv Salud.zip" /> <br />
-							<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <p:commandLink
-									value="Ord. de Dist. de Rec - APS Serv Salud.zip" />
-							</span>
+							<c:forEach items="#{_reporte.adjuntos}" var="adj">
+								<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> 
+							
+									<h:commandLink
+										action="#{procesoDistRecFinSeguimientoDocumentacionController.downloadArchivo}"
+										value="#{adj.nombre}"
+										onclick="downloadDocument(#{adj.id});return false;" >
+									</h:commandLink>
+									<br />
+							</c:forEach>
 						</p:column>
-						<p:column>#{_servicio.enviado}</p:column>
-						<p:column>
-							<span class="textoAjustado">Rodolfo Cáceres - rcaceres@minsal.cl</span>
+						<p:column>#{_reporte.fechaFormat}</p:column>
+						<p:column style="align:left">
+						<h:outputText value="Para:" style="align:left"></h:outputText>
+						
+								<c:forEach items="#{_reporte.to}" var="para">
+									<span class="strong">#{para}</span>
+								</c:forEach>
+							<br/>
+								CC:
+								<c:forEach items="#{_reporte.cc}" var="copia">
+									<span class="strong">#{copia}</span><br /> 
+								</c:forEach>
 						</p:column>
 					</p:dataTable>
 
@@ -52,6 +90,14 @@
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />
 			</p:panel>
+		</h:form>
+				<h:form id="formDownload">
+			<h:inputHidden
+				value="#{procesoDistRecFinSeguimientoDocumentacionController.docIdDownload}"
+				id="hiddenId" />
+			<h:commandButton id="linkDownload"
+				action="#{procesoDistRecFinSeguimientoDocumentacionController.downloadArchivo()}"
+				style="display: none"></h:commandButton>
 		</h:form>
 	</ui:define>
 </ui:composition>

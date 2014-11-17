@@ -13,6 +13,21 @@ body {
 	text-align: center;
 }
 
+.dataTable2{
+	width: 100%;
+	text-align: center;
+	margin: 0 auto;
+}
+
+.dataTable3{
+	width: 50%;
+	text-align: center;
+}
+
+.dataTable2 td{
+	text-align: center;
+}
+
 /*MENUS*/
 .appSubMenu {
 	width: 100%;
@@ -90,6 +105,10 @@ body {
 
 .tableFullWidth {
 	width: 100%;
+}
+
+table.tableFullWidth tr td{
+	word-wrap: break-word
 }
 
 .ui-state-error{

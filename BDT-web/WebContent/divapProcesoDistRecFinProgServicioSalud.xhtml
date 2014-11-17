@@ -112,23 +112,23 @@
 												<p:column colspan="3" headerText="Subtítulo 29" />
 											</c:if>
 
-											<p:column rowspan="2" headerText="Total" />
+											<p:column rowspan="2" headerText="Total ($)" />
 										</p:row>
 										<p:row>
 										<c:if test="#{procesoDistRecFinServicioController.tiene21}">
-											<p:column headerText="Tarifa" />
+											<p:column headerText="Tarifa ($)" />
 											<p:column headerText="Cantidad" />
-											<p:column headerText="SubTotal" />
+											<p:column headerText="SubTotal ($)" />
 										</c:if>
 										<c:if test="#{procesoDistRecFinServicioController.tiene22}">
-											<p:column headerText="Tarifa" />
+											<p:column headerText="Tarifa ($)" />
 											<p:column headerText="Cantidad" />
-											<p:column headerText="SubTotal" />
+											<p:column headerText="SubTotal ($)" />
 										</c:if>
 										<c:if test="#{procesoDistRecFinServicioController.tiene29}">
-											<p:column headerText="Tarifa" />
+											<p:column headerText="Tarifa ($)" />
 											<p:column headerText="Cantidad" />
-											<p:column headerText="SubTotal" />
+											<p:column headerText="SubTotal ($)" />
 										</c:if>
 										</p:row>
 									</p:columnGroup>
@@ -147,7 +147,7 @@
 											</p:column>
 											<p:column>
 												<h:outputText styleClass="textoAjustado textoPequenio" value="#{_establecimiento.subtitulo21.total}" id="subTotal21">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													<f:convertNumber  maxFractionDigits="0"/>
 												</h:outputText>
 											</p:column>
 									</c:if>
@@ -163,7 +163,7 @@
 											</p:column>
 											<p:column>
 												<h:outputText styleClass="textoAjustado textoPequenio" value="#{_establecimiento.subtitulo22.total}" id="subTotal22">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													<f:convertNumber  maxFractionDigits="0"/>
 												</h:outputText>
 											</p:column>
 									</c:if>
@@ -178,13 +178,13 @@
 											</p:column>
 											<p:column>
 												<h:outputText styleClass="textoAjustado textoPequenio" value="#{_establecimiento.subtitulo29.total}" id="subTotal29">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													<f:convertNumber  maxFractionDigits="0"/>
 												</h:outputText>
 											</p:column>
 									</c:if>
 									<p:column>
 										<h:outputText styleClass="textoAjustado textoPequenio" value="#{_establecimiento.totalEstablecimiento}">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											<f:convertNumber  maxFractionDigits="0"/>
 												</h:outputText>
 											</p:column>
 									<p:columnGroup type="footer">
@@ -196,7 +196,7 @@
 											<p:column>
 												<f:facet name="footer">
 													<h:outputText value="#{procesoDistRecFinServicioController.total21}" id="totalS21" styleClass="textoAjustado textoPequenio">
-														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+														<f:convertNumber  maxFractionDigits="0"/>
 													</h:outputText>
 												</f:facet>
 											</p:column>
@@ -206,7 +206,7 @@
 											<p:column>
 												<f:facet name="footer">
 													<h:outputText value="#{procesoDistRecFinServicioController.total22}" id="totalS22" styleClass="textoAjustado textoPequenio">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													<f:convertNumber  maxFractionDigits="0"/>
 													</h:outputText>
 												</f:facet>
 											</p:column>
@@ -216,7 +216,7 @@
 											<p:column>
 												<f:facet name="footer">
 													<h:outputText value="#{procesoDistRecFinServicioController.total29}" id="totalS29" styleClass="textoAjustado textoPequenio">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													<f:convertNumber  maxFractionDigits="0"/>
 													</h:outputText>
 												</f:facet>
 											</p:column>
@@ -226,7 +226,7 @@
 													<h:outputText
 														value="#{procesoDistRecFinServicioController.totalFinal}"
 														id="total" styleClass="textoAjustado textoPequenio">
-														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+														<f:convertNumber  maxFractionDigits="0"/>
 													</h:outputText>
 												</f:facet>
 											</p:column>

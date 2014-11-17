@@ -119,10 +119,10 @@
 
 											<p:column colspan="2" headerText="Subtítulo 24" />
 
-											<p:column rowspan="2" headerText="Total" />
+											<p:column rowspan="2" headerText="Total ($)" />
 										</p:row>
 										<p:row>
-											<p:column headerText="Tarifa" />
+											<p:column headerText="Tarifa ($)" />
 											<p:column headerText="Cantidad" />
 										</p:row>
 									</p:columnGroup>
@@ -134,7 +134,7 @@
 									<p:column>
 										
 										<h:inputText value="#{_detalle.precio}" styleClass="divapProcesoDistRecFinProgInput"  onkeypress="return isNumberMun(event, 'form:botonPrecio', '#{rowIndex}', '1');">
-											<f:convertNumber groupingUsed="false" maxFractionDigits="0" />
+											<f:convertNumber  maxFractionDigits="0"/>
 										</h:inputText>
 									</p:column>
 									<p:column>
@@ -143,7 +143,7 @@
 									</p:column>
 									<p:column>
 										<h:outputText styleClass="textoAjustado" value="#{_detalle.total}" id="totales">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											<f:convertNumber  maxFractionDigits="0"/>
 										</h:outputText>
 									</p:column>
 
@@ -155,7 +155,7 @@
 											<p:column>
 												<f:facet name="footer">
 													<h:outputText value="#{procesoDistRecFinMixtoController.totalPxQ}" id="total" styleClass="textoAjustado">
-														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+														<f:convertNumber  maxFractionDigits="0"/>
 													</h:outputText>
 												</f:facet>
 											</p:column>
@@ -182,23 +182,23 @@
 												<p:column colspan="3" headerText="Subtítulo 29" />
 											</c:if>
 
-											<p:column rowspan="2" headerText="Total" />
+											<p:column rowspan="2" headerText="Total ($)" />
 										</p:row>
 										<p:row>
 										<c:if test="#{procesoDistRecFinMixtoController.tiene21}">
-											<p:column headerText="Tarifa" />
+											<p:column headerText="Tarifa ($)" />
 											<p:column headerText="Cantidad" />
-											<p:column headerText="SubTotal" />
+											<p:column headerText="SubTotal ($)" />
 										</c:if>
 										<c:if test="#{procesoDistRecFinMixtoController.tiene22}">
-											<p:column headerText="Tarifa" />
+											<p:column headerText="Tarifa ($)" />
 											<p:column headerText="Cantidad" />
-											<p:column headerText="SubTotal" />
+											<p:column headerText="SubTotal ($)" />
 										</c:if>
 										<c:if test="#{procesoDistRecFinMixtoController.tiene29}">
-											<p:column headerText="Tarifa" />
+											<p:column headerText="Tarifa ($)" />
 											<p:column headerText="Cantidad" />
-											<p:column headerText="SubTotal" />
+											<p:column headerText="SubTotal ($)" />
 										</c:if>
 										</p:row>
 									</p:columnGroup>
@@ -217,7 +217,7 @@
 											</p:column>
 											<p:column>
 												<h:outputText styleClass="textoAjustado textoPequenio" value="#{_establecimiento.subtitulo21.total}" id="subTotal21">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													<f:convertNumber  maxFractionDigits="0"/>
 												</h:outputText>
 											</p:column>
 									</c:if>
@@ -233,7 +233,7 @@
 											</p:column>
 											<p:column>
 												<h:outputText styleClass="textoAjustado textoPequenio" value="#{_establecimiento.subtitulo22.total}" id="subTotal22">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													<f:convertNumber  maxFractionDigits="0"/>
 												</h:outputText>
 											</p:column>
 									</c:if>
@@ -248,13 +248,13 @@
 											</p:column>
 											<p:column>
 												<h:outputText styleClass="textoAjustado textoPequenio" value="#{_establecimiento.subtitulo29.total}" id="subTotal29">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												<f:convertNumber  maxFractionDigits="0"/>
 												</h:outputText>
 											</p:column>
 									</c:if>
 									<p:column>
 										<h:outputText styleClass="textoAjustado textoPequenio" value="#{_establecimiento.totalEstablecimiento}">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											<f:convertNumber  maxFractionDigits="0"/>
 												</h:outputText>
 											</p:column>
 									<p:columnGroup type="footer">
@@ -266,7 +266,7 @@
 											<p:column>
 												<f:facet name="footer">
 													<h:outputText value="#{procesoDistRecFinMixtoController.total21}" id="totalS21" styleClass="textoAjustado textoPequenio">
-														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+														<f:convertNumber  maxFractionDigits="0"/>
 													</h:outputText>
 												</f:facet>
 											</p:column>
@@ -276,7 +276,7 @@
 											<p:column>
 												<f:facet name="footer">
 													<h:outputText value="#{procesoDistRecFinMixtoController.total22}" id="totalS22" styleClass="textoAjustado textoPequenio">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													<f:convertNumber  maxFractionDigits="0"/>
 													</h:outputText>
 												</f:facet>
 											</p:column>
@@ -286,7 +286,7 @@
 											<p:column>
 												<f:facet name="footer">
 													<h:outputText value="#{procesoDistRecFinMixtoController.total29}" id="totalS29" styleClass="textoAjustado textoPequenio">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													<f:convertNumber  maxFractionDigits="0"/>
 													</h:outputText>
 												</f:facet>
 											</p:column>
@@ -296,7 +296,7 @@
 													<h:outputText
 														value="#{procesoDistRecFinMixtoController.totalFinal}"
 														id="total" styleClass="textoAjustado textoPequenio">
-														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+														<f:convertNumber  maxFractionDigits="0"/>
 													</h:outputText>
 												</f:facet>
 											</p:column>

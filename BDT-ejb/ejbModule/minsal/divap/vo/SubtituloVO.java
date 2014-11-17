@@ -13,6 +13,10 @@ public class SubtituloVO implements Serializable{
 	private String nombre;
 	private DependenciaVO dependencia;
 	
+	private Integer tarifa;
+	private Integer cantidad;
+	private Integer total;
+	
 	public SubtituloVO(){
 		
 	}
@@ -76,6 +80,30 @@ public class SubtituloVO implements Serializable{
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public Integer getTarifa() {
+		return tarifa;
+	}
+
+	public void setTarifa(Integer tarifa) {
+		this.tarifa = tarifa;
+	}
+
+	public Integer getCantidad() {
+		return cantidad;
+	}
+
+	public void setCantidad(Integer cantidad) {
+		this.cantidad = cantidad;
+	}
+
+	public Integer getTotal() {
+		return total;
+	}
+
+	public void setTotal(Integer total) {
+		this.total = total;
 	}
 	
 	

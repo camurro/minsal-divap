@@ -10,12 +10,21 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import minsal.divap.enums.TipoDocumentosProcesos;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
+import cl.minsal.divap.model.DistribucionInicialPercapitaSeguimiento;
+import cl.minsal.divap.model.DocumentoProgramasReforzamiento;
+import cl.minsal.divap.model.DocumentoRebaja;
 import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.ProgramaMunicipalCore;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
 import cl.minsal.divap.model.ProgramaServicioCore;
 import cl.minsal.divap.model.ProgramaServicioCoreComponente;
+import cl.minsal.divap.model.ProgramasReforzamientoSeguimiento;
+import cl.minsal.divap.model.ReporteEmailsAdjuntos;
+import cl.minsal.divap.model.ReporteEmailsDestinatarios;
+import cl.minsal.divap.model.ReporteEmailsEnviados;
+import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.Usuario;
 
 
@@ -126,14 +135,117 @@ public class RecursosFinancierosProgramasReforzamientoDAO {
 		
 	}
 
-	/*public Integer createSeguimiento(Integer idProgramaAno,
-			Seguimiento seguimiento) {
-		ProgramaAno programaAno = findById(idProgramaAno);
-		DistribucionInicialPercapitaSeguimiento distribucionInicialPercapitaSeguimiento = new DistribucionInicialPercapitaSeguimiento();
-		distribucionInicialPercapitaSeguimiento.setDistribucionInicialPercapita(distribucionInicialPercapita);
-		distribucionInicialPercapitaSeguimiento.setSeguimiento(seguimiento);
-		this.em.persist(distribucionInicialPercapitaSeguimiento);
-		return distribucionInicialPercapitaSeguimiento.getIdDistribucionInicialPercapitaSeguimiento();
-	}*/
+	public DocumentoProgramasReforzamiento save(
+			DocumentoProgramasReforzamiento documentoProgramasReforzamiento) {
+		em.persist(documentoProgramasReforzamiento);
+		return documentoProgramasReforzamiento;
+		
+	}
+
+	public List<ProgramaMunicipalCoreComponente> getProgramasCoreComponenteByServicioProgramaAnoComponentesSubtitulo(Integer idServicio, Integer idProgramaAno, 
+			List<Integer> idComponentes, Integer idSubtitulo) {
+		try {
+			TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.findByServicoProgramaAnoComponentesSubtitulo", ProgramaMunicipalCoreComponente.class);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponentes", idComponentes);
+			query.setParameter("idTipoSubtitulo", idSubtitulo);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<ProgramaServicioCoreComponente> getProgramasServicioCoreComponenteByServicioProgramaAnoComponentesSubtitulo(
+			Integer idServicio , Integer idProgramaAno, List<Integer> idComponentes, Integer idSubtitulo) {
+		try {
+			TypedQuery<ProgramaServicioCoreComponente> query = this.em.createNamedQuery("ProgramaServicioCoreComponente.findByServicoProgramaAnoComponentesSubtitulo", ProgramaServicioCoreComponente.class);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponentes", idComponentes);
+			query.setParameter("idTipoSubtitulo", idSubtitulo);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+
+	public Integer createSeguimiento(ProgramaAno programaAno, Seguimiento seguimiento) {
+		// TODO Auto-generated method stub
+		ProgramasReforzamientoSeguimiento programasReforzamientoSeguimiento = new ProgramasReforzamientoSeguimiento();
+		programasReforzamientoSeguimiento.setIdProgramaAno(programaAno);
+		programasReforzamientoSeguimiento.setSeguimiento(seguimiento);
+		this.em.persist(programasReforzamientoSeguimiento);
+		return programasReforzamientoSeguimiento.getId();
+	}
+
+	public List<DocumentoProgramasReforzamiento> getByIdTipo(
+			Integer idProgramaSiguiente,
+			TipoDocumentosProcesos resolucionprogramasaps) {
+		try {
+			TypedQuery<DocumentoProgramasReforzamiento> query = this.em.createNamedQuery("DocumentoProgramasReforzamiento.findByProgramaAnoTipoDocumento", DocumentoProgramasReforzamiento.class);
+			query.setParameter("idProgramaAno", idProgramaSiguiente);
+			query.setParameter("idTipoDocumento", resolucionprogramasaps.getId());
+			return query.getResultList(); 
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public ReporteEmailsEnviados save(ReporteEmailsEnviados reporteEnviados) {
+		em.persist(reporteEnviados);
+		return reporteEnviados;
+	}
+
+	public ReporteEmailsAdjuntos save(ReporteEmailsAdjuntos adjuntoMail) {
+		em.persist(adjuntoMail);
+		return adjuntoMail;
+		
+	}
+
+	public ReporteEmailsDestinatarios save(ReporteEmailsDestinatarios destinatario) {
+		em.persist(destinatario);
+		return destinatario;
+		
+	}
+
+	public List<ReporteEmailsEnviados> getReporteCorreosByIdPrograma(Integer idProgramaAno,
+			boolean modifica, Integer idServicio) {
+		
+		try {
+			TypedQuery<ReporteEmailsEnviados> query = this.em.createNamedQuery("ReporteEmailsEnviados.getReporteCorreosByIdProgramaAndidServicio", ReporteEmailsEnviados.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("modifica", modifica);
+			query.setParameter("idServicio", idServicio);
+			return query.getResultList(); 
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+
+	public List<DocumentoProgramasReforzamiento> getByIdTipo(
+			Integer idProgramaSiguiente, TipoDocumentosProcesos tipoDocumento,
+			Integer idServicio) {
+		try {
+			TypedQuery<DocumentoProgramasReforzamiento> query = this.em.createNamedQuery("DocumentoProgramasReforzamiento.findByProgramaAnoTipoDocumentoIdServicio", DocumentoProgramasReforzamiento.class);
+			query.setParameter("idProgramaAno", idProgramaSiguiente);
+			query.setParameter("idTipoDocumento", tipoDocumento.getId());
+			query.setParameter("idServicio", idServicio);
+			return query.getResultList(); 
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public void deleteDocumentoProgramaAPS(Integer id) {
+		Query queryDeleteDocumento = this.em.createNamedQuery("DocumentoProgramasReforzamiento.deleteById");
+		queryDeleteDocumento.setParameter("id", id);
+		queryDeleteDocumento.executeUpdate();
+	}
 
 }

@@ -11,17 +11,16 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-<<<<<<< HEAD
 import minsal.divap.vo.ProgramaMunicipalVO;
-=======
 import minsal.divap.enums.Subtitulo;
->>>>>>> d2fc30b65a72bda7d106769a56be55d537836f49
 import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ProgramaMunicipalCore;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
+import cl.minsal.divap.model.ProgramaServicioCore;
 import cl.minsal.divap.model.ProgramaServicioCoreComponente;
 
 
@@ -189,6 +188,18 @@ public class ProgramasDAO {
 		}
 	}
 
+	public List<ProgramaMunicipalCoreComponente> getProgramaMunicipales(Integer idProgramaAno, List<Integer> idComponentes, Integer idSubtitulo) {
+		try {
+			TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.findByIdProgramaAnoListaComponentesIdSubtitulo", ProgramaMunicipalCoreComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponentes", idComponentes);
+			query.setParameter("idTipoSubtitulo", idSubtitulo);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	public List<ProgramaMunicipalCoreComponente> getProgramaMunicipales(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo) {
 		try {
 			TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.findByIdProgramaAnoIdComponenteIdSubtitulo", ProgramaMunicipalCoreComponente.class);
@@ -201,9 +212,33 @@ public class ProgramasDAO {
 		}
 	}
 	
+	public List<ProgramaMunicipalCoreComponente> getProgramaMunicipalesDetalle(Integer idProgramaAno, List<Integer> idComponentes, Integer idServicio) {
+		try {
+			TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.findByIdProgramaAnoListaComponenteIdServicio", ProgramaMunicipalCoreComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponentes", idComponentes);
+			query.setParameter("idServicio", idServicio);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	public List<ProgramaMunicipalCoreComponente> getHistoricoMunicipal(Integer idProgramaAno, Integer idComponente, Integer idServicio) {
 		try {
 			TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.findByIdProgramaAnoIdComponenteIdServicio", ProgramaMunicipalCoreComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idServicio", idServicio);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public List<ProgramaServicioCoreComponente> getHistoricoServicio(Integer idProgramaAno, Integer idComponente, Integer idServicio) {
+		try {
+			TypedQuery<ProgramaServicioCoreComponente> query = this.em.createNamedQuery("ProgramaServicioCoreComponente.findByIdProgramaAnoIdComponenteIdServicio", ProgramaServicioCoreComponente.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
 			query.setParameter("idComponente", idComponente);
 			query.setParameter("idServicio", idServicio);
@@ -224,6 +259,29 @@ public class ProgramasDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public List<ProgramaServicioCoreComponente> getProgramaServicios(Integer idProgramaAno) {
+		try {
+			TypedQuery<ProgramaServicioCoreComponente> query = this.em.createNamedQuery("ProgramaServicioCoreComponente.findByIdProgramaAno", ProgramaServicioCoreComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public List<ProgramaServicioCoreComponente> getProgramaServicios(Integer idProgramaAno, Integer idServicio) {
+		try {
+			TypedQuery<ProgramaServicioCoreComponente> query = this.em.createNamedQuery("ProgramaServicioCoreComponente.findByIdProgramaAnoIdServicio", ProgramaServicioCoreComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idServicio", idServicio);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
 
 	public void eliminarPropuesta(Integer idProgramaAno) {
 		Query queryCajaMonto = this.em.createNamedQuery("CajaMonto.deleteUsingIdProgramaAno");
@@ -255,13 +313,14 @@ public class ProgramasDAO {
 		this.em.persist(programaAno);
 		return programaAno;
 	}
-<<<<<<< HEAD
 	
-	public List<ProgramaMunicipalCoreComponente> findByServicioComponente(Integer idComponente, Integer idServicio){
+	public List<ProgramaMunicipalCoreComponente> findByServicioComponente(Integer idComponente, Integer idServicio, Integer idProgramaAno){
 		try {
-			TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.findByServicioComponente", ProgramaMunicipalCoreComponente.class);
+			TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.findByServicioComponentePrograma", ProgramaMunicipalCoreComponente.class);
 			query.setParameter("idComponente", idComponente);
 			query.setParameter("idServicio", idServicio);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			
 			return query.getResultList();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -297,6 +356,19 @@ public class ProgramasDAO {
 		throw new RuntimeException(e);
 	}
 	return null;
+	}
+	
+	public List<ProgramaServicioCoreComponente> getProgramaServicioCoreComponente(
+			Integer idProgramaServicioCore, Integer idComponente) {
+		try{
+			TypedQuery<ProgramaServicioCoreComponente> query = this.em.createNamedQuery("ProgramaServicioCoreComponente.findByProgramaServicioCoreComponentePK", ProgramaServicioCoreComponente.class);
+			query.setParameter("idProgramaServicioCore", idProgramaServicioCore);
+			query.setParameter("idComponente", idComponente);
+			List<ProgramaServicioCoreComponente> results = query.getResultList();
+			return results;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public ProgramaServicioCoreComponente getProgramaServicioCoreComponenteEstablecimiento(
@@ -360,8 +432,6 @@ public class ProgramasDAO {
 	}
 
 	
-=======
-
 	public List<ProgramaAno> getProgramasBySubtitulo(Integer anoCurso, Subtitulo subtitulo) {
 		try {
 			List<ProgramaAno> programasAno = null;
@@ -383,7 +453,96 @@ public class ProgramasDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public ProgramaMunicipalCore findByProgramaAndAnoAndComuna(Integer idPrograma, Integer ano, Integer idComuna){
+		try{
+		TypedQuery<ProgramaMunicipalCore> queryProgramaMunCore = this.em.createNamedQuery("ProgramaMunicipalCore.findByProgramaAndAnoAndComuna", ProgramaMunicipalCore.class);
+		queryProgramaMunCore.setParameter("idPrograma",idPrograma);
+		queryProgramaMunCore.setParameter("ano",ano);
+		queryProgramaMunCore.setParameter("idComuna",idComuna);
+		List<ProgramaMunicipalCore> results = queryProgramaMunCore.getResultList();
+		if (results.size() >= 1)
+			return results.get(0);
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
+		return null;
+	}
+	public ProgramaMunicipalCore save(ProgramaMunicipalCore nuevoCore) {
+		this.em.persist(nuevoCore);
+		return nuevoCore;
+		
+	}
+	
+	public ProgramaServicioCore save(ProgramaServicioCore nuevoCore) {
+		this.em.persist(nuevoCore);
+		return nuevoCore;
+		
+	}
 
->>>>>>> d2fc30b65a72bda7d106769a56be55d537836f49
+	public ProgramaMunicipalCoreComponente save(ProgramaMunicipalCoreComponente nuevoComponente) {
+		this.em.persist(nuevoComponente);
+		return nuevoComponente;
+		
+	}
+
+	public ProgramaServicioCoreComponente save(ProgramaServicioCoreComponente nuevoComponente) {
+		this.em.persist(nuevoComponente);
+		return nuevoComponente;
+	}
+
+	public List<ProgramaMunicipalCore> getProgramaMunicipalCoreById(
+			Integer idPrograma) {
+		try{
+			TypedQuery<ProgramaMunicipalCore> queryProgramaMunCore = this.em.createNamedQuery("ProgramaMunicipalCore.findByProgramaAno", ProgramaMunicipalCore.class);
+			queryProgramaMunCore.setParameter("programaAno",idPrograma);
+			return  queryProgramaMunCore.getResultList();
+			
+			}catch(Exception e){
+				throw new RuntimeException(e);
+			}
+	}
+
+	public List<ProgramaServicioCore> getProgramaServicioCoreById(
+			Integer idPrograma) {
+		try{
+			TypedQuery<ProgramaServicioCore> queryProgramaMunCore = this.em.createNamedQuery("ProgramaServicioCore.findByProgramaAno", ProgramaServicioCore.class);
+			queryProgramaMunCore.setParameter("programaAno",idPrograma);
+			return  queryProgramaMunCore.getResultList();
+			
+			}catch(Exception e){
+				throw new RuntimeException(e);
+			}
+	}
+
+	public List<ProgramaServicioCoreComponente> getProgramaServiciosResumen(
+			Integer idProxAno, List<Integer> idComponentesServicio) {
+		try {
+			TypedQuery<ProgramaServicioCoreComponente> query = this.em.createNamedQuery("ProgramaServicioCoreComponente.findByIdProgramaAnoListaComponentes", ProgramaServicioCoreComponente.class);
+			query.setParameter("idProgramaAno", idProxAno);
+			query.setParameter("idComponentes", idComponentesServicio);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<ProgramaServicioCoreComponente> getProgramaServiciosResumen(
+			Integer idProxAno, Integer idServicio,
+			List<Integer> idComponentesServicio) {
+		try {
+			TypedQuery<ProgramaServicioCoreComponente> query = this.em.createNamedQuery("ProgramaServicioCoreComponente.findByIdProgramaAnoListaComponentesidServicio", ProgramaServicioCoreComponente.class);
+			query.setParameter("idProgramaAno", idProxAno);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idComponentes", idComponentesServicio);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+
+	
+	
 }
 
