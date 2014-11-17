@@ -12,6 +12,9 @@ public class ComponenteSummaryVO implements Serializable{
 	private String nombre;
 	private List<SubtituloSummaryVO> subtitulos = new ArrayList<SubtituloSummaryVO>();
 	
+	public ComponenteSummaryVO() {
+	}
+	
 	public ComponenteSummaryVO(String nombre) {
 		super();
 		this.nombre = nombre;

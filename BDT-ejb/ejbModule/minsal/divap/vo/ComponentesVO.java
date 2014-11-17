@@ -78,6 +78,5 @@ public class ComponentesVO implements Serializable{
 			return false;
 		return true;
 	}
-
 	
 }

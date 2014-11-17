@@ -46,6 +46,7 @@ import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.CalculoPercapitaVO;
 import minsal.divap.vo.CellTypeExcelVO;
+import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.DesempenoDificilVO;
 import minsal.divap.vo.DocumentoVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
@@ -262,7 +263,7 @@ public class DistribucionInicialPercapitaService {
 		calculoPercapitaExcelValidator.validateFormat(worksheet);		
 		List<CalculoPercapitaVO> items = calculoPercapitaExcelValidator.getItems();
 		for(CalculoPercapitaVO calculoPercapitaVO : items){
-			AntecendentesComuna antecendentesComuna = antecedentesComunaDAO.findAntecendentesComunaByComunaServicioAno(calculoPercapitaVO.getServicio(), calculoPercapitaVO.getComuna(), getAnoCurso());
+			AntecendentesComuna antecendentesComuna = antecedentesComunaDAO.findAntecendentesComunaByComunaServicioAno(calculoPercapitaVO.getServicio(), calculoPercapitaVO.getComuna(), getAnoCurso() + 1);
 			if(antecendentesComuna != null){
 				AntecendentesComunaCalculado antecendentesComunaCalculado = antecedentesComunaDAO.findByAntecedentesDistrinbucionInicial(antecendentesComuna.getIdAntecedentesComuna(), idDistribucionInicialPercapita);
 				if( antecendentesComunaCalculado == null){
@@ -304,7 +305,7 @@ public class DistribucionInicialPercapitaService {
 
 		System.out.println("procesarValorBasicoDesempeno->idDistribucionInicialPercapita="+idDistribucionInicialPercapita+" ");
 		for(DesempenoDificilVO desempenoDificilVO : items){
-			AntecendentesComuna antecendentesComuna = antecedentesComunaDAO.findAntecendentesComunaByComunaServicioAno(desempenoDificilVO.getServicio(), desempenoDificilVO.getComuna(), getAnoCurso());
+			AntecendentesComuna antecendentesComuna = antecedentesComunaDAO.findAntecendentesComunaByComunaServicioAno(desempenoDificilVO.getServicio(), desempenoDificilVO.getComuna(), getAnoCurso() + 1);
 			if(antecendentesComuna != null){
 				AntecendentesComunaCalculado antecendentesComunaCalculado = antecedentesComunaDAO.findByAntecedentesDistrinbucionInicial(antecendentesComuna.getIdAntecedentesComuna(), idDistribucionInicialPercapita);
 				if( antecendentesComunaCalculado == null){
@@ -402,25 +403,26 @@ public class DistribucionInicialPercapitaService {
 		String contenType = mimemap.getContentType(filename.toLowerCase());
 		GeneradorExcel generadorExcel = new GeneradorExcel(filename);
 		List<String> headers = new ArrayList<String>();
+		Integer idAnoSiguiente = getAnoCurso() + 1;
 		headers.add("REGION");
 		headers.add("SERVICIO");
 		headers.add("COMUNA");
-		headers.add("CLASIFICACION " + getAnoCurso());
-		headers.add("Ref. Asig_Zon " + getAnoCurso());
+		headers.add("CLASIFICACION " + idAnoSiguiente);
+		headers.add("Ref. Asig_Zon " + idAnoSiguiente);
 		headers.add("Tramo Pobreza");
-		headers.add("Per Capita Basal " + getAnoCurso());
-		headers.add("Pobreza " + getAnoCurso());
-		headers.add("Ruralidad " + getAnoCurso());
-		headers.add("Valor Ref. Asig_Zon " + getAnoCurso());
-		headers.add("Valor Per Capita " + getAnoCurso() + "($/mes " + getAnoCurso() + ")");
-		headers.add("POBLACION AÑO" + getAnoCurso());
-		headers.add("POBLACION MAYOR DE 65 AÑOS" + getAnoCurso());
-		headers.add("PER CAPITA AÑO " + getAnoCurso() + "(m$ " + getAnoCurso() + ")");
-		headers.add("PER CAPITA MES " + getAnoCurso() + "(m$ " + getAnoCurso() + ")");
+		headers.add("Per Capita Basal " + idAnoSiguiente);
+		headers.add("Pobreza " + idAnoSiguiente);
+		headers.add("Ruralidad " + idAnoSiguiente);
+		headers.add("Valor Ref. Asig_Zon " + idAnoSiguiente);
+		headers.add("Valor Per Capita " + idAnoSiguiente + "($/mes " + idAnoSiguiente + ")");
+		headers.add("POBLACION AÑO" + idAnoSiguiente);
+		headers.add("POBLACION MAYOR DE 65 AÑOS" + idAnoSiguiente);
+		headers.add("PER CAPITA AÑO " + idAnoSiguiente + "(m$ " + idAnoSiguiente + ")");
+		headers.add("PER CAPITA MES " + idAnoSiguiente + "(m$ " + idAnoSiguiente + ")");
 		AsignacionDistribucionPercapitaSheetExcel asignacionDistribucionPercapitaSheetExcel = new AsignacionDistribucionPercapitaSheetExcel(headers, antecedentesCalculados);
 		generadorExcel.addSheet( asignacionDistribucionPercapitaSheetExcel, "Hoja 1");
 		try {
-			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderPercapita.replace("{ANO}", getAnoCurso().toString()));
+			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderPercapita.replace("{ANO}", idAnoSiguiente.toString()));
 			System.out.println("response AsignacionRecursosPercapitaSheetExcel --->"+response);
 			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findById(idDistribucionInicialPercapita);
 			planillaTrabajoId = documentService.createDocumentPercapita(distribucionInicialPercapita, TipoDocumentosProcesos.PLANILLARESULTADOSCALCULADOS, response.getNodeRef(), response.getFileName(), contenType);
@@ -732,7 +734,7 @@ public class DistribucionInicialPercapitaService {
 		if(referenciaDocumentoSummary != null){
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			String contenType= mimemap.getContentType(referenciaDocumentoSummary.getPath().toLowerCase());
-			BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummary.getPath()), contenType, folderPercapita.replace("{ANO}", getAnoCurso().toString()));
+			BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummary.getPath()), contenType, folderPercapita.replace("{ANO}", String.valueOf(getAnoCurso() + 1 )));
 			System.out.println("response upload template --->"+response);
 			documentService.updateDocumentTemplate(referenciaDocumentoSummary.getId(), response.getNodeRef(), response.getFileName(), contenType);
 			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findById(idDistribucionInicialPercapita);
@@ -978,6 +980,43 @@ public class DistribucionInicialPercapitaService {
 
 	public void administrarVersionesFinalesAlfresco(Integer idDistribucionInicialPercapita) {
 		System.out.println("DistribucionInicialPercapitaService administrarVersionesFinalesAlfresco eliminar todas las versiones que no sean finales");
+	}
+
+	public void creacionAntecedentesComuna(String usuario) {
+		List<ServiciosVO> servicios = servicioSaludService.getServiciosOrderId();
+		if(servicios != null && servicios.size()>0){
+			for(ServiciosVO servicio : servicios){
+				if(servicio.getComunas() != null && servicio.getComunas().size() > 0){
+					for(ComunaSummaryVO comuna : servicio.getComunas()){
+						Integer idAnoSiguiente = getAnoCurso() + 1;
+						AntecendentesComuna antecendentesComunaSiguiente = antecedentesComunaDAO.getAntecendentesComunaByComunaAno(comuna.getId(), idAnoSiguiente);
+						if(antecendentesComunaSiguiente == null){
+							AntecendentesComuna antecendentesComunaActual = antecedentesComunaDAO.getAntecendentesComunaByComunaAno(comuna.getId(), getAnoCurso());
+							antecendentesComunaSiguiente = new AntecendentesComuna();
+							antecendentesComunaSiguiente.setTramoPobreza(antecendentesComunaActual.getTramoPobreza());
+							antecendentesComunaSiguiente.setAsignacionZona(antecendentesComunaActual.getAsignacionZona());
+							antecendentesComunaSiguiente.setClasificacion(antecendentesComunaActual.getClasificacion());
+							antecendentesComunaSiguiente.setIdComuna(antecendentesComunaActual.getIdComuna());
+							AnoEnCurso anoSiguiente = anoDAO.getAnoById(idAnoSiguiente);
+							if(anoSiguiente == null){
+								AnoEnCurso anoActual = anoDAO.getAnoById(getAnoCurso());
+								anoSiguiente = new AnoEnCurso();
+								anoSiguiente.setAno(getAnoCurso() + 1);
+								anoSiguiente.setMontoPercapitalBasal(anoActual.getMontoPercapitalBasal());
+								anoSiguiente.setAsignacionAdultoMayor(anoActual.getAsignacionAdultoMayor());
+								anoSiguiente.setInflactor(anoActual.getInflactor());
+								anoSiguiente.setInflactorMarcoPresupuestario(anoActual.getInflactorMarcoPresupuestario());
+								alfrescoService.createRepoAlfresco(idAnoSiguiente);
+								anoSiguiente.setRepoAlfresco(true);
+								anoDAO.save(anoSiguiente);
+							}
+							antecendentesComunaSiguiente.setAnoAnoEnCurso(anoSiguiente);
+							antecedentesComunaDAO.save(antecendentesComunaSiguiente);
+						}
+					}
+				}
+			}
+		}
 	}
 
 }

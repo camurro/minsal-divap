@@ -3,25 +3,19 @@ package minsal.divap.service;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 
+import minsal.divap.enums.ProcessFolder;
 import minsal.divap.vo.BodyCreateFolderVO;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.DocumentoVO;
-import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
-import minsal.divap.vo.ReferenciaDocumentoVO;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
@@ -304,6 +298,52 @@ public class AlfrescoService {
 			System.out.println(e);
 		}
 		return body;
+	}
+	
+	public BodyCreateFolderVO createFolder(String parent, String folder) {
+		BodyCreateFolderVO body = null;
+		try {
+			String authTicket = getTicket();
+			String urlString = alfrescoServer + "/site/folder/" + alfrescoSite + "/documentLibrary/" + alfrescoUploadDirectory + "/" + parent + "?alf_ticket="
+					+ authTicket;
+			System.out.println("The upload url::" + urlString);
+			HttpClient client = new HttpClient();
+			System.out.println("folder-->"+folder);
+			System.out.println("parent-->"+parent);
+			PostMethod mPost = new PostMethod(urlString);
+			String jSon = "{\"name\":\""+ folder +"\"}";
+			System.out.println("jSon-->"+jSon);
+
+			mPost.setRequestEntity(new StringRequestEntity(jSon, "application/json", "UTF-8"));
+			//mPost.setRequestEntity(requestEntity);
+			int statusCode = client.executeMethod(mPost);
+			System.out.println("statusLine>>>" + statusCode + "......"
+					+ "\n status line \n"
+					+mPost.getStatusLine() + "\nbody \n" +mPost.getResponseBodyAsString());
+			if(statusCode == 200){
+				ObjectMapper mapper = new ObjectMapper();
+				body = mapper.readValue(mPost.getResponseBodyAsString(), BodyCreateFolderVO.class);
+				System.out.println("response body->"+body);
+			}else if(statusCode == 500){
+				System.out.println("Error al crear carpeta " + folder);
+				System.out.println(mPost.getResponseBodyAsString());
+			}
+
+			mPost.releaseConnection();
+
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return body;
+	}
+
+	public void createRepoAlfresco(Integer ano) {
+		createFolder("PROCESOS", ano.toString());
+		createFolder("PROCESOS" + "/" + ano.toString(), ProcessFolder.ESTIMACIONFLUJOCAJA.getName());
+		createFolder("PROCESOS" + "/" + ano.toString(), ProcessFolder.PERCAPITA.getName());
+		createFolder("PROCESOS" + "/" + ano.toString(), ProcessFolder.REBAJA.getName());
+		createFolder("PROCESOS" + "/" + ano.toString(), ProcessFolder.RECURSOSFINANCIEROSPROGRAMASREFORZAMIENTOAPS.getName());
+		createFolder("PROCESOS" + "/" + ano.toString(), ProcessFolder.RELIQUIDACION.getName());
 	}
 
 }

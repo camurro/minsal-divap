@@ -9,7 +9,6 @@ public class ServiciosVO implements Serializable{
 	private static final long serialVersionUID = -6107779935422525744L;
 
 	private List<ComunaVO> comuna;
-	
 	private int id_servicio;
 	private String nombre_servicio;
 	private PersonaVO director;

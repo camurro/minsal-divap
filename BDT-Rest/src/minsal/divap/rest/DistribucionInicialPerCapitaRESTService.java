@@ -47,6 +47,17 @@ public class DistribucionInicialPerCapitaRESTService extends BaseRest{
     }
 	
 	@GET
+    @Path("/distribucionInicialPerCapita/creacionAntecedentesComuna/{usuario}")
+    public void creacionAntecedentesComuna(@PathParam("usuario") String usuario){
+		System.out.println("creacionAntecedentesComuna -->"+usuario);
+		if(usuario == null){
+			throw new IllegalArgumentException("usuario: "+ usuario + " no puede ser nulo");
+		}
+		DistribucionInicialPercapitaService distribucionInicialPercapitaService = getService(DistribucionInicialPercapitaService.class);
+		distribucionInicialPercapitaService.creacionAntecedentesComuna(usuario);
+    }
+	
+	@GET
     @Path("/distribucionInicialPerCapita/subirAlfresco/{docId}")
     @Produces("application/json")
     public Integer subirAlfresco(@PathParam("docId") Integer docId){

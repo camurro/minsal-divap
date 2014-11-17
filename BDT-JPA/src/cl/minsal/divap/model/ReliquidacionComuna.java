@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ReliquidacionComuna.findAll", query = "SELECT r FROM ReliquidacionComuna r"),
     @NamedQuery(name = "ReliquidacionComuna.findByReliquidacionComunaId", query = "SELECT r FROM ReliquidacionComuna r WHERE r.reliquidacionComunaId = :reliquidacionComunaId"),
     @NamedQuery(name = "ReliquidacionComuna.findByReliquidacionProgramaComponenteServicioComuna", query = "SELECT r FROM ReliquidacionComuna r WHERE r.programa.programa.id = :idPrograma and r.componente.id = :idComponente and r.servicio.id = :idServicio and r.comuna.id = :idComuna and r.reliquidacion.idReliquidacion = :idReliquidacion"),
-    @NamedQuery(name = "ReliquidacionComuna.findByMonto", query = "SELECT r FROM ReliquidacionComuna r WHERE r.monto = :monto"),
+    @NamedQuery(name = "ReliquidacionComuna.findByMonto", query = "SELECT r FROM ReliquidacionComuna r WHERE r.montoRebaja = :monto"),
     @NamedQuery(name = "ReliquidacionComuna.deleteByIdProgramaAno", query = "DELETE FROM ReliquidacionComuna r WHERE r.programa.idProgramaAno = :idProgramaAno"),
     @NamedQuery(name = "ReliquidacionComuna.findByIdProgramaAnoIdServicioIdReliquidacion", query = "SELECT r FROM ReliquidacionComuna r WHERE r.programa.idProgramaAno = :idProgramaAno and r.servicio.id = :idServicio and r.reliquidacion.idReliquidacion = :idReliquidacion"),
     @NamedQuery(name = "ReliquidacionComuna.findByIdProgramaAnoIdServicioIdComponentesIdReliquidacion", query = "SELECT r FROM ReliquidacionComuna r WHERE r.programa.idProgramaAno = :idProgramaAno and r.servicio.id = :idServicio and r.componente.id IN (:idComponentes) and r.reliquidacion.idReliquidacion = :idReliquidacion"),
@@ -36,8 +36,8 @@ public class ReliquidacionComuna implements Serializable {
    	@Column(name="reliquidacion_comuna_id", unique=true, nullable=false)
    	@GeneratedValue
     private Integer reliquidacionComunaId;
-    @Column(name = "monto")
-    private Integer monto;
+	@Column(name = "monto_rebaja")
+	private Integer montoRebaja;
     @Basic(optional = false)
     @Column(name = "porcentaje_cumplimiento")
     private Double porcentajeCumplimiento;
@@ -75,15 +75,15 @@ public class ReliquidacionComuna implements Serializable {
         this.reliquidacionComunaId = reliquidacionComunaId;
     }
 
-    public Integer getMonto() {
-        return monto;
-    }
+    public Integer getMontoRebaja() {
+		return montoRebaja;
+	}
 
-    public void setMonto(Integer monto) {
-        this.monto = monto;
-    }
+	public void setMontoRebaja(Integer montoRebaja) {
+		this.montoRebaja = montoRebaja;
+	}
 
-    public Double getPorcentajeCumplimiento() {
+	public Double getPorcentajeCumplimiento() {
     	return porcentajeCumplimiento;
     }
 

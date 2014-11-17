@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "ReliquidacionServicio.findAll", query = "SELECT r FROM ReliquidacionServicio r"),
     @NamedQuery(name = "ReliquidacionServicio.findByReliquidacionServicioId", query = "SELECT r FROM ReliquidacionServicio r WHERE r.reliquidacionServicioId = :reliquidacionServicioId"),
-    @NamedQuery(name = "ReliquidacionServicio.findByMonto", query = "SELECT r FROM ReliquidacionServicio r WHERE r.monto = :monto"),
+    @NamedQuery(name = "ReliquidacionServicio.findByMonto", query = "SELECT r FROM ReliquidacionServicio r WHERE r.montoRebaja = :monto"),
     @NamedQuery(name = "ReliquidacionServicio.deleteByIdProgramaAno", query = "DELETE FROM ReliquidacionServicio r WHERE r.programa.idProgramaAno = :idProgramaAno"),
     @NamedQuery(name = "ReliquidacionServicio.findByIdProgramaAnoIdServicioIdReliquidacion", query = "SELECT r FROM ReliquidacionServicio r WHERE r.programa.idProgramaAno = :idProgramaAno and r.servicio.id = :idServicio and r.reliquidacion.idReliquidacion = :idReliquidacion"),
     @NamedQuery(name = "ReliquidacionServicio.findByIdProgramaAnoIdEstablecimientoIdComponenteIdReliquidacion", query = "SELECT r FROM ReliquidacionServicio r WHERE r.programa.idProgramaAno = :idProgramaAno and r.establecimiento.id = :idEstablecimiento and r.componente.id = :idComponente and r.reliquidacion.idReliquidacion = :idReliquidacion")})
@@ -34,8 +34,8 @@ public class ReliquidacionServicio implements Serializable {
    	@Column(name="reliquidacion_servicio_id", unique=true, nullable=false)
    	@GeneratedValue
     private Integer reliquidacionServicioId;
-    @Column(name = "monto")
-    private Integer monto;
+	@Column(name = "monto_rebaja")
+	private Integer montoRebaja;
     @Basic(optional = false)
     @Column(name = "porcentaje_cumplimiento")
     private Double porcentajeCumplimiento;
@@ -72,16 +72,16 @@ public class ReliquidacionServicio implements Serializable {
     public void setReliquidacionServicioId(Integer reliquidacionServicioId) {
         this.reliquidacionServicioId = reliquidacionServicioId;
     }
-
-    public Integer getMonto() {
-        return monto;
-    }
-
-    public void setMonto(Integer monto) {
-        this.monto = monto;
-    }
     
-    public Double getPorcentajeCumplimiento() {
+    public Integer getMontoRebaja() {
+		return montoRebaja;
+	}
+
+	public void setMontoRebaja(Integer montoRebaja) {
+		this.montoRebaja = montoRebaja;
+	}
+
+	public Double getPorcentajeCumplimiento() {
 		return porcentajeCumplimiento;
 	}
 

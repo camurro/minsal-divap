@@ -9,25 +9,31 @@ public class ComponenteReliquidacionVO implements Serializable{
 	 */
 	private static final long serialVersionUID = -2777478740400817633L;
 	private Integer numeroResolucion;
+	private Long marcoInicial;
 	private Integer idComponente;
 	private List<CuotaSummaryVO> cuotasSummaryVO;
 	private Double porcentajeCumplimiento;
 	private Double porcentajeReliquidacion;
-	private Integer rebajaUltimaCuota;
-	private Integer montoUltimaCuota;
+	private Long rebajaUltimaCuota;
+	private Long montoUltimaCuota;
 	
 	public ComponenteReliquidacionVO() {
 		super();
+		this.numeroResolucion = 0;
+		this.idComponente = 0;
+		this.porcentajeCumplimiento = 0.0;
+		this.porcentajeReliquidacion = 0.0;
+		this.rebajaUltimaCuota = 0L;
+		this.montoUltimaCuota = 0L;
 	}
 
 	public ComponenteReliquidacionVO(Integer numeroResolucion,
-			Integer idComponente, List<CuotaSummaryVO> cuotasSummaryVO,
+			Integer idComponente,
 			Double porcentajeCumplimiento, Double porcentajeReliquidacion,
-			Integer rebajaUltimaCuota, Integer montoUltimaCuota) {
+			Long rebajaUltimaCuota, Long montoUltimaCuota) {
 		super();
 		this.numeroResolucion = numeroResolucion;
 		this.idComponente = idComponente;
-		this.cuotasSummaryVO = cuotasSummaryVO;
 		this.porcentajeCumplimiento = porcentajeCumplimiento;
 		this.porcentajeReliquidacion = porcentajeReliquidacion;
 		this.rebajaUltimaCuota = rebajaUltimaCuota;
@@ -49,14 +55,6 @@ public class ComponenteReliquidacionVO implements Serializable{
 	public void setNumeroResolucion(Integer numeroResolucion) {
 		this.numeroResolucion = numeroResolucion;
 	}
-
-	public List<CuotaSummaryVO> getCuotasSummaryVO() {
-		return cuotasSummaryVO;
-	}
-	
-	public void setCuotasSummaryVO(List<CuotaSummaryVO> cuotasSummaryVO) {
-		this.cuotasSummaryVO = cuotasSummaryVO;
-	}
 	
 	public Double getPorcentajeCumplimiento() {
 		return porcentajeCumplimiento;
@@ -74,20 +72,36 @@ public class ComponenteReliquidacionVO implements Serializable{
 		this.porcentajeReliquidacion = porcentajeReliquidacion;
 	}
 	
-	public Integer getRebajaUltimaCuota() {
+	public Long getRebajaUltimaCuota() {
 		return rebajaUltimaCuota;
 	}
 	
-	public void setRebajaUltimaCuota(Integer rebajaUltimaCuota) {
+	public void setRebajaUltimaCuota(Long rebajaUltimaCuota) {
 		this.rebajaUltimaCuota = rebajaUltimaCuota;
 	}
 	
-	public Integer getMontoUltimaCuota() {
+	public Long getMontoUltimaCuota() {
 		return montoUltimaCuota;
 	}
 	
-	public void setMontoUltimaCuota(Integer montoUltimaCuota) {
+	public void setMontoUltimaCuota(Long montoUltimaCuota) {
 		this.montoUltimaCuota = montoUltimaCuota;
+	}
+
+	public Long getMarcoInicial() {
+		return marcoInicial;
+	}
+
+	public void setMarcoInicial(Long marcoInicial) {
+		this.marcoInicial = marcoInicial;
+	}
+
+	public List<CuotaSummaryVO> getCuotasSummaryVO() {
+		return cuotasSummaryVO;
+	}
+
+	public void setCuotasSummaryVO(List<CuotaSummaryVO> cuotasSummaryVO) {
+		this.cuotasSummaryVO = cuotasSummaryVO;
 	}
 
 	@Override
@@ -123,5 +137,17 @@ public class ComponenteReliquidacionVO implements Serializable{
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "ComponenteReliquidacionVO [numeroResolucion="
+				+ numeroResolucion + ", idComponente=" + idComponente
+				+ ", porcentajeCumplimiento=" + porcentajeCumplimiento
+				+ ", porcentajeReliquidacion=" + porcentajeReliquidacion
+				+ ", rebajaUltimaCuota=" + rebajaUltimaCuota
+				+ ", montoUltimaCuota=" + montoUltimaCuota + "]";
+	}
+	
+	
 	
 }

@@ -16,6 +16,7 @@ import minsal.divap.dao.ComponenteDAO;
 import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.enums.Subtitulo;
+import minsal.divap.model.mappers.ComponenteMapper;
 import minsal.divap.model.mappers.ProgramaMapper;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ProgramaMunicipalHistoricoVO;
@@ -382,6 +383,20 @@ public class ProgramasService {
 			}
 		}
 		return programas;
+	}
+
+	public List<ComponentesVO> getComponenteByProgramaSubtitulos(Integer programa, Subtitulo... subtitulos) {
+		List<ComponentesVO> componentesVO = new ArrayList<ComponentesVO>();
+		List<Componente> componentes = componenteDAO.getComponentesByIdProgramaIdSubtitulos(programa, subtitulos);
+		if(componentes != null && componentes.size() > 0){
+			for(Componente componente : componentes){
+				ComponentesVO componenteVO = new ComponenteMapper().getBasic(componente);
+				if(!componentesVO.contains(componenteVO)){
+					componentesVO.add(componenteVO);
+				}
+			}
+		}
+		return componentesVO;
 	}
 
 }

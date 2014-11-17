@@ -24,7 +24,7 @@ public class ValorizarReliquidacionSummaryVO implements Serializable{
 	}
 
 	public ValorizarReliquidacionSummaryVO(Integer idServicio, String servicio,
-			Integer idComuna, String comuna,List<ComponenteReliquidacionVO> componentesReliquidacion,
+			Integer idComuna, String comuna, List<ComponenteReliquidacionVO> componentesReliquidacion,
 			Long marcoFinal) {
 		super();
 		this.idServicio = idServicio;
@@ -84,6 +84,7 @@ public class ValorizarReliquidacionSummaryVO implements Serializable{
 		this.marcoFinal = marcoFinal;
 	}
 
+
 	public List<Object> getRow() {
 		List<Object> row = new ArrayList<Object>();
 
@@ -99,10 +100,11 @@ public class ValorizarReliquidacionSummaryVO implements Serializable{
 		if(getComuna() != null){
 			row.add(getComuna());
 		}
+		
 		if(getComponentesReliquidacion() != null && getComponentesReliquidacion().size() > 0){
 			for(ComponenteReliquidacionVO componenteReliquidacionVO : getComponentesReliquidacion()){
-				if(componenteReliquidacionVO.getNumeroResolucion() != null){
-					row.add(componenteReliquidacionVO.getNumeroResolucion());
+				if(componenteReliquidacionVO.getMarcoInicial() != null){
+					row.add(componenteReliquidacionVO.getMarcoInicial());
 				}
 				if(componenteReliquidacionVO.getCuotasSummaryVO() != null && componenteReliquidacionVO.getCuotasSummaryVO().size() > 0){
 					for(CuotaSummaryVO cuotaSummaryVO : componenteReliquidacionVO.getCuotasSummaryVO()){
@@ -131,5 +133,13 @@ public class ValorizarReliquidacionSummaryVO implements Serializable{
 			row.add(getMarcoFinal());
 		}
 		return row;
+	}
+
+	@Override
+	public String toString() {
+		return "ValorizarReliquidacionSummaryVO [idServicio=" + idServicio
+				+ ", servicio=" + servicio + ", idComuna=" + idComuna
+				+ ", comuna=" + comuna + ", componentesReliquidacion="
+				+ componentesReliquidacion + ", marcoFinal=" + marcoFinal + "]";
 	}
 }

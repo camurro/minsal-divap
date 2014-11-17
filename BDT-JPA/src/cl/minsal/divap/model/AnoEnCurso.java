@@ -33,6 +33,9 @@ public class AnoEnCurso implements Serializable {
 	
 	@Column(name="inflactor_marco_presupuestario")
 	private Double inflactorMarcoPresupuestario ;
+	
+	@Column(name="repo_alfresco")
+	private boolean repoAlfresco ;
 
 	//bi-directional many-to-one association to AntecendentesComuna
 	@OneToMany(mappedBy="anoAnoEnCurso")
@@ -101,6 +104,14 @@ public class AnoEnCurso implements Serializable {
 		antecendentesComuna.setAnoAnoEnCurso(null);
 
 		return antecendentesComuna;
+	}
+
+	public boolean isRepoAlfresco() {
+		return repoAlfresco;
+	}
+
+	public void setRepoAlfresco(boolean repoAlfresco) {
+		this.repoAlfresco = repoAlfresco;
 	}
 
 }

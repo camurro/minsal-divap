@@ -36,5 +36,10 @@ public class AnoDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public AnoEnCurso save(AnoEnCurso ano){
+		em.persist(ano);
+		return ano;
+	}
 
 }

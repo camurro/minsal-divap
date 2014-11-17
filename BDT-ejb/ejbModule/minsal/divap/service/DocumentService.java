@@ -720,4 +720,17 @@ public class DocumentService {
 		}
 	}
 
+	public void createDocumentReliquidacion(Reliquidacion reliquidacion, TipoDocumentosProcesos tipoDocumento, Integer referenciaDocumentoId, Boolean lastVersion) {
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		if(lastVersion != null){
+			referenciaDocumento.setDocumentoFinal(lastVersion);
+		}
+		DocumentoReliquidacion documentoReliquidacion = new DocumentoReliquidacion();
+		documentoReliquidacion.setIdTipoDocumento(new TipoDocumento(tipoDocumento.getId()));
+		documentoReliquidacion.setIdDocumento(referenciaDocumento);
+		documentoReliquidacion.setIdReliquidacion(reliquidacion);
+		reliquidacionDAO.save(documentoReliquidacion);
+		System.out.println("luego de aplicar insert del documento reliquidacion");
+	}
+
 }
