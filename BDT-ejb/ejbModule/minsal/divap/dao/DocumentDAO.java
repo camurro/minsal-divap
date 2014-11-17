@@ -15,6 +15,7 @@ import cl.minsal.divap.model.DocumentoConvenio;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.DocumentoOt;
+import cl.minsal.divap.model.DocumentoProgramasReforzamiento;
 import cl.minsal.divap.model.Plantilla;
 import cl.minsal.divap.model.ReferenciaDocumento;
 
@@ -308,6 +309,23 @@ public class DocumentDAO {
 			throw new RuntimeException(e);
 		}
 		return docId;
+	}
+
+	public ReferenciaDocumento getLastDocumentoSummaryByResolucionAPSType(
+			Integer idProgramaAno, TipoDocumentosProcesos tipoDocumento) {
+		ReferenciaDocumento referenciaDocumento = null;
+		try {
+			TypedQuery<DocumentoProgramasReforzamiento> query = this.em.createNamedQuery("DocumentoProgramasReforzamiento.findByProgramaAnoTipoDocumento", DocumentoProgramasReforzamiento.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idTipoDocumento", tipoDocumento.getId());
+			List<DocumentoProgramasReforzamiento> referenciasDocumentos = query.getResultList(); 
+			if(referenciasDocumentos != null && referenciasDocumentos.size() > 0){
+				referenciaDocumento = referenciasDocumentos.get(0).getIdDocumento();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return referenciaDocumento;
 	}
 
 }

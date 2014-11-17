@@ -32,14 +32,14 @@
 							<span class="textoAjustado">#{programa.descripcion}</span>
 						</p:column>
 						<p:column  style=" #{(programa.estado.id == '3')?'background-color: #c0c0c0;':''} ">
-							<h:commandLink action="#{procesoDistRecFinProgProgramasController.enviar}" rendered="#{programa.estado.id == '1'}">
+							<h:commandLink action="#{procesoDistRecFinProgProgramasController.enviar}" rendered="#{programa.estado.id == '1'}" >
 								<h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons" />
 								<f:setPropertyActionListener
 								target="#{procesoDistRecFinProgProgramasController.programaSeleccionado}"
 								value="#{programa.idProgramaAno}" />
 								<f:setPropertyActionListener
 								target="#{procesoDistRecFinProgProgramasController.target}"
-								value="bandejaTareas.jsf" />
+								value="bandejaTareas.jsf"/>
 							</h:commandLink>
 						</p:column>
 					</p:dataTable>
@@ -48,6 +48,8 @@
 
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />
+					
+				
 			</p:panel>
 		</h:form>
 	</ui:define>

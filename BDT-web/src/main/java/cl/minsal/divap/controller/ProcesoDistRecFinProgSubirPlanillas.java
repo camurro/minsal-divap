@@ -11,8 +11,10 @@ import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
+import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.excel.GeneradorExcel;
+import minsal.divap.service.ProgramasService;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ProgramaVO;
@@ -21,6 +23,9 @@ import minsal.divap.vo.SubtituloVO;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.model.UploadedFile;
 
+import cl.minsal.divap.model.AnoEnCurso;
+import cl.minsal.divap.model.EstadoPrograma;
+import cl.minsal.divap.model.ProgramaAno;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 @Named ("procesoDistRecFinProgSubirPlanillasController" ) 
@@ -35,6 +40,13 @@ public class ProcesoDistRecFinProgSubirPlanillas extends AbstractTaskMBean imple
 	private UploadedFile planillaServicio;
 	private List<Integer> docIds;
 	private String docIdDownload;
+	private Integer programaSeleccionado;
+	private Integer IdProgramaProxAno;
+	private boolean template;
+	
+	@EJB
+	private ProgramasService programasService;
+
 
 	@EJB
 	private RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService;
@@ -42,16 +54,18 @@ public class ProcesoDistRecFinProgSubirPlanillas extends AbstractTaskMBean imple
 	@PostConstruct 
 	public void init() {
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			Integer programaSeleccionado = (Integer) getTaskDataVO()
+			programaSeleccionado = (Integer) getTaskDataVO()
 					.getData().get("_programaSeleccionado");
 			programa = recursosFinancierosProgramasReforzamientoService.getProgramaById(programaSeleccionado);
 			System.out.println("programaSeleccionado --->" + programaSeleccionado);
+			template=true;
 			if(programa.getDependenciaMunicipal() != null && programa.getDependenciaMunicipal()){
-				plantillaMunicipal = recursosFinancierosProgramasReforzamientoService.getIdPlantillaProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSMUNICIPALES);
+				plantillaMunicipal = recursosFinancierosProgramasReforzamientoService.getIdPlantillaProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSMUNICIPALES, template);
 			}
 			if(programa.getDependenciaServicio() != null && programa.getDependenciaServicio()){
-				plantillaServicios = recursosFinancierosProgramasReforzamientoService.getIdPlantillaProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSSERVICIO);
+				plantillaServicios = recursosFinancierosProgramasReforzamientoService.getIdPlantillaProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSSERVICIO, template);
 			}
+			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado,programa);
 		}
 	}
 	
@@ -66,31 +80,30 @@ public class ProcesoDistRecFinProgSubirPlanillas extends AbstractTaskMBean imple
 	public String enviar(){
 		try{
 		docIds = new ArrayList<Integer>();
+		
 		List<ComponentesVO> componentes = programa.getComponentes();
 		if (planillaMuncipal != null){
 			String filename = planillaMuncipal.getFileName();
-			
-			
 					
 			byte[] contentPlanillaMuncipal = planillaMuncipal.getContents();
-			recursosFinancierosProgramasReforzamientoService.procesarPlanillaMunicipal(programa.getIdProgramaAno(), 
-									GeneradorExcel.fromContent(contentPlanillaMuncipal, XSSFWorkbook.class),componentes);
+			recursosFinancierosProgramasReforzamientoService.procesarPlanillaMunicipal(false,IdProgramaProxAno, 
+									GeneradorExcel.fromContent(contentPlanillaMuncipal, XSSFWorkbook.class),componentes,4);
 			Integer docPlanillaMuncipal = persistFile(filename, contentPlanillaMuncipal);
 			if (docPlanillaMuncipal != null) {
 				docIds.add(docPlanillaMuncipal);
 			}
-			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(programa.getIdProgramaAno(), docPlanillaMuncipal, TipoDocumentosProcesos.PROGRAMAAPSMUNICIPAL, null);
+			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(IdProgramaProxAno, docPlanillaMuncipal, TipoDocumentosProcesos.PROGRAMAAPSMUNICIPAL, null,false);
 		}
 		if (planillaServicio != null){
 			String filename = planillaServicio.getFileName();
 			byte[] contentPlanillaServicio = planillaServicio.getContents();
-			recursosFinancierosProgramasReforzamientoService.procesarPlanillaServicio(programa.getIdProgramaAno(), GeneradorExcel.fromContent(contentPlanillaServicio,
+			recursosFinancierosProgramasReforzamientoService.procesarPlanillaServicio(IdProgramaProxAno, GeneradorExcel.fromContent(contentPlanillaServicio,
 							XSSFWorkbook.class),componentes);
 			Integer docPlanillaServicio = persistFile(filename, contentPlanillaServicio);
 			if (docPlanillaServicio != null) {
 				docIds.add(docPlanillaServicio);
 			}
-			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(programa.getIdProgramaAno(), docPlanillaServicio, TipoDocumentosProcesos.PROGRAMAAPSSERVICIO, null);
+			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(IdProgramaProxAno, docPlanillaServicio, TipoDocumentosProcesos.PROGRAMAAPSSERVICIO, null,false);
 		}
 		}catch (Exception e) {
 			return null;
@@ -156,6 +169,22 @@ public class ProcesoDistRecFinProgSubirPlanillas extends AbstractTaskMBean imple
 
 	public void setDocIdDownload(String docIdDownload) {
 		this.docIdDownload = docIdDownload;
+	}
+
+	public Integer getProgramaSeleccionado() {
+		return programaSeleccionado;
+	}
+
+	public void setProgramaSeleccionado(Integer programaSeleccionado) {
+		this.programaSeleccionado = programaSeleccionado;
+	}
+
+	public Integer getIdProgramaProxAno() {
+		return IdProgramaProxAno;
+	}
+
+	public void setIdProgramaProxAno(Integer idProgramaProxAno) {
+		IdProgramaProxAno = idProgramaProxAno;
 	}
 
 }

@@ -26,8 +26,10 @@ import minsal.divap.dao.DistribucionInicialPercapitaDAO;
 import minsal.divap.dao.DocumentDAO;
 import minsal.divap.dao.DocumentOtDAO;
 import minsal.divap.dao.EstimacionFlujoCajaDAO;
+import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.dao.RebajaDAO;
 import minsal.divap.dao.ReliquidacionDAO;
+import minsal.divap.dao.RecursosFinancierosProgramasReforzamientoDAO;
 import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.model.mappers.PercapitaReferenciaDocumentoMapper;
@@ -44,6 +46,7 @@ import cl.minsal.divap.model.DocumentoConvenio;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.DocumentoOt;
+import cl.minsal.divap.model.DocumentoProgramasReforzamiento;
 import cl.minsal.divap.model.DocumentoRebaja;
 import cl.minsal.divap.model.DocumentoReliquidacion;
 import cl.minsal.divap.model.Mes;
@@ -71,6 +74,10 @@ public class DocumentService {
 	private EstimacionFlujoCajaDAO estimacionFlujoCajaDAO;
 	@EJB
 	private ReliquidacionDAO reliquidacionDAO;
+	@EJB
+	private RecursosFinancierosProgramasReforzamientoDAO programasReforzamientoDAO;
+	@EJB
+	private ProgramasDAO programasDAO;
 	@EJB
 	private ServicioSaludDAO servicioSaludDAO;
 	@EJB
@@ -549,8 +556,29 @@ public class DocumentService {
 		System.out.println("luego de aplicar insert del documento percapita");
 		return referenciaDocumentoId;
 	}
-
-
+	
+	public Integer createDocumentProgramasReforzamiento(TipoDocumentosProcesos tipoDocumentoProceso,
+			String nodeRef, String filename, String contenType, Integer idProgramaAno) {
+		
+		
+		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
+		
+		DocumentoProgramasReforzamiento documentoProgramasReforzamiento = new DocumentoProgramasReforzamiento();
+		documentoProgramasReforzamiento.setIdProgramaAno(programaAno);
+		documentoProgramasReforzamiento.setIdTipoDocumento(new TipoDocumento(tipoDocumentoProceso.getId()));
+		documentoProgramasReforzamiento.setIdDocumento(referenciaDocumento);
+		
+		//documentoDistribucionInicialPercapita.setIdDocumento(referenciaDocumento);
+		
+		programasReforzamientoDAO.save(documentoProgramasReforzamiento);
+		System.out.println("luego de aplicar insert del documento percapita");
+		return referenciaDocumentoId;
+	}
+	
+	
 	public Integer createDocumentPropuestaConsolidador(TipoDocumento tipoDocumentoProceso,
 			String nodeRef, String filename, String contenType, Integer ano, Integer idMes ) {
 		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
@@ -671,6 +699,15 @@ public class DocumentService {
 			Integer programaSeleccionado) {
 		return fileDAO.getPlantillaByTypeAndProgram(tipoDocumentoProceso,programaSeleccionado);
 	}
+	
+	public ReferenciaDocumentoSummaryVO getLastDocumentoSummaryByResolucionAPSType(
+			Integer idProgramaAno,
+			TipoDocumentosProcesos tipoDocumento) {
+		ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = null;
+		ReferenciaDocumento referenciaDocumento =  fileDAO.getLastDocumentoSummaryByResolucionAPSType(idProgramaAno, tipoDocumento);
+		referenciaDocumentoSummaryVO = new ReferenciaDocumentoMapper().getSummary(referenciaDocumento);
+		return referenciaDocumentoSummaryVO;
+	}
 
 	public void zipFolder(String srcFolder, String destZipFile) throws Exception {
 		ZipOutputStream zip = null;
@@ -733,4 +770,24 @@ public class DocumentService {
 		System.out.println("luego de aplicar insert del documento reliquidacion");
 	}
 
+	
+	public Integer createDocumentProgramasReforzamiento(TipoDocumentosProcesos tipoDocumentoProceso, String nodeRef,
+			String filename, String contentType, Integer idProxAno,
+			Integer idServicio) {
+		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contentType);
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProxAno);
+		
+		DocumentoProgramasReforzamiento documentoProgramasReforzamiento = new DocumentoProgramasReforzamiento();
+		documentoProgramasReforzamiento.setIdProgramaAno(programaAno);
+		documentoProgramasReforzamiento.setIdTipoDocumento(new TipoDocumento(tipoDocumentoProceso.getId()));
+		documentoProgramasReforzamiento.setIdDocumento(referenciaDocumento);
+		documentoProgramasReforzamiento.setIdServicio(servicioSaludDAO.getById(idServicio));
+		
+		programasReforzamientoDAO.save(documentoProgramasReforzamiento);
+		return referenciaDocumentoId;
+		
+	}
+	
 }

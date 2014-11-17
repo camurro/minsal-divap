@@ -113,7 +113,7 @@ public class EmailService {
 				}
 			}
 			email.setSubject(subject);
-			email.setSSL(this.smtpSSL.booleanValue());
+			email.setSSL(this.smtpSSL.booleanValue());	
 			email.setHtmlMsg(content);
 			email.setDebug(false);
 			for (Adjunto adjunto : adjuntos) {

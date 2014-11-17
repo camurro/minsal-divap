@@ -1,10 +1,6 @@
 package minsal.divap.excel.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import minsal.divap.excel.interfaces.ExcelValidator;
 import minsal.divap.exception.ExcelFormatException;

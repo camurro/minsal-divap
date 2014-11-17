@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
 	@NamedQuery(name = "ProgramaMunicipalCore.findAll", query = "SELECT p FROM ProgramaMunicipalCore p"),
 	@NamedQuery(name = "ProgramaMunicipalCore.findByProgramaAno", query = "SELECT p FROM ProgramaMunicipalCore p WHERE p.programaAnoMunicipal.idProgramaAno = :programaAno"),
+	@NamedQuery(name = "ProgramaMunicipalCore.findByProgramaAndAnoAndComuna", query = "SELECT p FROM ProgramaMunicipalCore p WHERE p.programaAnoMunicipal.programa.id = :idPrograma and p.programaAnoMunicipal.ano.ano = :ano and p.comuna.id = :idComuna"),
 	@NamedQuery(name = "ProgramaMunicipalCore.deleteByProgramasMunicipalCore", query = "DELETE FROM ProgramaMunicipalCore p WHERE p.idProgramaMunicipalCore IN (:programasMunicipalCore)"),
 	@NamedQuery(name = "ProgramaMunicipalCore.findByComuna", query = "SELECT p FROM ProgramaMunicipalCore p WHERE p.comuna.id = :comuna")})
 public class ProgramaMunicipalCore implements Serializable {

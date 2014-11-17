@@ -21,12 +21,14 @@ import javax.inject.Named;
 
 import minsal.divap.service.ComponenteService;
 import minsal.divap.service.ProgramasService;
+import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ComunaVO;
 import minsal.divap.vo.ProgramaAPSMunicipalVO;
 import minsal.divap.vo.ProgramaMunicipalVO;
 import minsal.divap.vo.ProgramaServicioVO;
+import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ResumenProgramaServiciosVO;
 import minsal.divap.vo.ResumenProgramaVO;
 import minsal.divap.vo.ServiciosVO;
@@ -59,6 +61,8 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 	private ComponenteService componenteService;
 	@EJB
 	private ProgramasService programasService;
+	@EJB
+	private RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService;
 	
 	private String servicioSeleccionado;
 	private List<ServiciosVO> listaServicios;
@@ -91,6 +95,8 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 	private Integer totalResumen29;
 	private Integer totalResumen;
 	
+	private ProgramaVO programa;
+	
 	
 	@PostConstruct 
 	public void init() {
@@ -108,14 +114,20 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 			programaSeleccionado = (Integer) getTaskDataVO()
 					.getData().get("_programaSeleccionado");
 		}
+		programa = programasService.getProgramaAno(programaSeleccionado);
 		listaServicios = utilitariosService.getAllServicios();
-		listaComponentes= componenteService.getComponenteByPrograma(programaSeleccionado);
+		listaComponentes= componenteService.getComponenteByPrograma(programa.getIdProgramaAno());
+		
 		armarResumenPrograma();
 	}
 	
 	private void armarResumenPrograma() {
 		if(programaSeleccionado!=null){
-			resumenPrograma = programasService.getResumenServicio(programaSeleccionado);
+			Integer anoSiguiente = recursosFinancierosProgramasReforzamientoService.getAnoCurso() + 1;
+			int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programaSeleccionado, anoSiguiente);
+			
+			
+			resumenPrograma = programasService.getResumenServicio(IdProgramaProxAno, programa.getIdProgramaAno());
 			totalResumen21=0;
 			totalResumen22=0;
 			totalResumen29=0;
@@ -407,6 +419,14 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 
 	public void setTotalResumen(Integer totalResumen) {
 		this.totalResumen = totalResumen;
+	}
+
+	public ProgramaVO getPrograma() {
+		return programa;
+	}
+
+	public void setPrograma(ProgramaVO programa) {
+		this.programa = programa;
 	}
 	
 }

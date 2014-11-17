@@ -1,17 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+<ui:define name="zonaJavaScript">
+		<style type="text/css">
+.ui-state-error {
+	margin-left: 0px;
+}
+</style>
+		<script type="text/javascript">
 
+		function refresca() {
+		  document.getElementById("form:refrescarTabla").click();
+		}
+
+		function isNumber(event, id, fila, precioCantidad) {
+			  if (event) {
+			    var charCode = (event.which) ? event.which : event.keyCode;
+			    if (charCode &lt; 48 || charCode &gt; 57) {
+			    	if (charCode == 8 || charCode == 46 || charCode == 35 || charCode == 36 || charCode == 37 || charCode == 39){ 
+				    	return true;
+			    	}
+			    	if (charCode == 13) {
+				    	$("#form\\:posicionElemento").val(fila);
+				    	$("#form\\:precioCantidad").val(precioCantidad);
+			    		document.getElementById(id).click();
+			    		return true;
+			    	}
+			       return false;
+			    }
+			  }
+			  return true;
+			}
+
+		</script>
+	</ui:define>
 	<ui:define name="content">
 		<h:form enctype="multipart/form-data" id="form">
+		<p:commandButton id="refrescarTabla" value="refrescar" action="#{procesoDistRecFinHistoricoMunicipalController.refrescar}" style="display: none" update="form:tablaResultados"/>
+		
+		<h:inputHidden  id="posicionElemento" value="#{procesoDistRecFinHistoricoMunicipalController.posicionElemento}" />
+			<h:inputHidden  id="precioCantidad" value="#{procesoDistRecFinHistoricoMunicipalController.precioCantidad}" />
+			<p:commandButton id="botonPrecio" value="recalcularTotales" update="tablaResultados" action="#{procesoDistRecFinHistoricoMunicipalController.recalcularTotales}" style="display: none"/>
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="Distribución de Recursos Financieros por Programa" />
 				</h1>
 				<p:panel id="Panel">
 					<h2>
-						<span class="strong">Programa Valor Histórico Municipal | </span>APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN
-						ESTABLECIMIENTOS DEPENDIENTES
+							#{procesoDistRecFinHistoricoMunicipalController.programa.nombre}
 					</h2>
 					<p class="parrafo">La Planilla de Trabajo con Montos de Distribución contiene lorem ipsum dolor sit amet, consectetur adipiscing
 						elit. Praesent egestas tempor nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est dignissim, justo nisi
@@ -49,16 +85,16 @@
 					<div id="tablaSubtitulos">
 						<h3>Valores Históricos del Programa</h3>
 							<h:panelGrid>
-								<p:dataTable resizableColumns="true" value="#{procesoDistRecFinHistoricoMunicipalController.listadoHistoricoMunicipal}" liveResize="true" var="_historico"
-									rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" id="tablaResultados">
+								<p:dataTable resizableColumns="true" value="#{procesoDistRecFinHistoricoMunicipalController.listadoHistoricoMunicipalActual}" liveResize="true" var="_historico"
+									rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" id="tablaResultados" rowIndexVar="rowIndex">
 									<p:columnGroup type="header">
 										<p:row>
 											<p:column rowspan="2" headerText="Comuna" />
 											<p:column colspan="2" headerText="Subtítulo 24" />
 										</p:row>
 										<p:row>
-											<p:column headerText="Valor Año 2013" />
-											<p:column headerText="Valor Año 2014" />
+											<p:column headerText="Valor Año #{procesoDistRecFinHistoricoMunicipalController.anoActual} ($)" />
+											<p:column headerText="Valor Año #{procesoDistRecFinHistoricoMunicipalController.anoProximo} ($)" />
 											<!-- <p:column headerText="Inflactor" /> -->
 										</p:row>
 									</p:columnGroup>
@@ -66,14 +102,13 @@
 										<span class="textoAjustado textoPequenio">#{_historico.nombreComuna}</span>
 									</p:column>
 									<p:column>
-										<h:outputText value="#{_historico.totalAnoAnterior}" styleClass="divapProcesoDistRecFinProgInput">
-										<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" locale="es_CL" currencySymbol="$"/>
+										<h:outputText value="#{_historico.totalAnoAnterior}" styleClass="textoAjustado textoPequenio">
+										<f:convertNumber maxFractionDigits="0"/>
 										</h:outputText>
 									</p:column>
 									<p:column>
-										<p:inputText styleClass="textoAjustado divapProcesoDistRecFinProgInput" value="222" id="subtotal">
-											<p:ajax event="keyup" update="total,subtotal" />
-											<f:convertNumber maxFractionDigits="0" groupingUsed="true" />
+										<p:inputText styleClass="textoAjustado textoPequenio" value="#{_historico.totalAnoActual}" id="subtotal" onkeypress="return isNumber(event, 'form:botonPrecio', '#{rowIndex}', '2');">
+											<f:convertNumber maxFractionDigits="0"/>
 										</p:inputText>
 									</p:column>
 
@@ -90,7 +125,8 @@
 
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="2323" id="total" styleClass="textoAjustado">
+													<h:outputText value="#{procesoDistRecFinHistoricoMunicipalController.totalS24Futuro}" id="total" styleClass="textoAjustado">
+													<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" locale="es_CL" currencySymbol="$"/>
 													</h:outputText>
 												</f:facet>
 											</p:column>
@@ -100,9 +136,10 @@
 
 							</h:panelGrid>
 
-							<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" action="#" ajax="true" value="Guardar" />
-							<p:commandButton value="Finalizar" styleClass="x-btn-text"
-								action="divapProcesoDistRecFinProgSeguimientoDocumentacion?faces-redirect=true" ajax="false" icon="ui-icon-seek-first" />
+							<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" action="#{procesoDistRecFinHistoricoMunicipalController.guardar}" ajax="true" value="Guardar" />
+							<p:commandButton value="Finalizar" styleClass="x-btn-text" action="#{procesoDistRecFinHistoricoMunicipalController.enviar}" ajax="false" icon="ui-icon-seek-first" >
+								<f:setPropertyActionListener target="#{procesoDistRecFinHistoricoMunicipalController.target}" value="bandejaTareas.jsf" />
+							</p:commandButton>
 					</div>
 				</p:panel>
 

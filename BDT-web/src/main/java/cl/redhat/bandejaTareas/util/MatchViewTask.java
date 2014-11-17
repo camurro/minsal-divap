@@ -54,6 +54,10 @@ public class MatchViewTask {
 		REVISARVALIDARMONTOSHISTORICOMIXTOL("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontos(programavaloreshistoricoscondependenciadeserviciodesaludymunicipal)","divapProcesoDistRecFinProgValoresHistoricosMixto"),
 		HACERSEGUIMIENTO("minsal_divap.DistribucionRecursosProgramasReforzamiento.hacerseguimientoadocumentos", "divapProcesoDistRecFinProgSeguimientoDocumentacion"),
 		REVISARRESUMENESDOCUMENTOS("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisarresumenenviodocumentos", "divapProcesoDistRecFinProgEnviarDocumentos"),
+		DESCARGARSUBIRVALORIZACIONLEY("minsal_divap.DistribucionRecursosProgramasReforzamiento.descargar/subirplanillaley","divapProcesoDistRecFinProgSubirPlanillasLey"),
+		REVISARVALIDARMONTOSLEY("minsal_divap.DistribucionRecursosProgramasReforzamiento.revisaryvalidarmontosley","divapProcesoDistRecFinProgLey"),
+		
+		
 		
 		PRUEBA("minsal_divap.prueba.primeratarea","divapPrueba"),
 		PRUEBA2("minsal_divap.prueba.segundatarea","divapPrueba"),

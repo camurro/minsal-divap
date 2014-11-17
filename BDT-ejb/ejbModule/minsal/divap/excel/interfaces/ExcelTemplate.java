@@ -2,6 +2,8 @@ package minsal.divap.excel.interfaces;
 
 import java.util.List;
 
+import minsal.divap.vo.ResumenProgramaMixtoVO;
+
 public abstract class ExcelTemplate<T>{
 
 	private Integer offsetRows = 0;
@@ -24,6 +26,7 @@ public abstract class ExcelTemplate<T>{
 		this.offsetColumns = offsetColumns;
 	}
 	
+
 	public Integer getOffsetRows() {
 		return offsetRows;
 	}

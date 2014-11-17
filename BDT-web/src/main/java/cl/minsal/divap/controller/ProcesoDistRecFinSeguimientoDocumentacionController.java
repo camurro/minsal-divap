@@ -1,14 +1,23 @@
 package cl.minsal.divap.controller;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.log4j.Logger;
+
+import minsal.divap.service.ProgramasService;
+import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
+import minsal.divap.vo.ProgramaVO;
+import minsal.divap.vo.ReporteEmailsEnviadosVO;
 import cl.minsal.divap.pojo.EnvioServiciosPojo;
 import cl.minsal.divap.pojo.EstablecimientoPojo;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
@@ -21,11 +30,52 @@ public class ProcesoDistRecFinSeguimientoDocumentacionController extends Abstrac
 	private List<EnvioServiciosPojo> listadoEnvioServicios;
 	private List<EstablecimientoPojo> listadoEstablecimientos;
 	private String actividadSeguimientoTitle;
+	@Inject 
+	private transient Logger log;
+	
 
-	@PostConstruct public void init() {
-		if(sessionExpired()){
-			return;
+	private ProgramaVO programa;
+	private Integer programaSeleccionado;
+	private Integer idProxAno;
+	private List<ReporteEmailsEnviadosVO> reporteCorreos;
+	private String docIdDownload;
+	
+	@EJB
+	private RecursosFinancierosProgramasReforzamientoService reforzamientoService;
+	@EJB
+	private ProgramasService programaService;
+	
+	@PostConstruct
+	public void init() {
+		if (!getSessionBean().isLogged()) {
+			log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
+			try {
+				facesContext.getExternalContext().redirect("login.jsf");
+			} catch (IOException e) {
+				log.error("Error tratando de redireccionar a login por falta de usuario en sesion.", e);
+			}
 		}
+		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
+			programaSeleccionado = (Integer) getTaskDataVO()
+					.getData().get("_programaSeleccionado");
+		}
+		programa = reforzamientoService.getProgramaById(programaSeleccionado);
+		idProxAno = programaService.getIdProgramaAnoAnterior(programaSeleccionado, reforzamientoService.getAnoCurso()+1);
+		
+		reporteCorreos = reforzamientoService.getReporteCorreosByIdPrograma(idProxAno,false);
+	}
+	
+	public String downloadArchivo() {
+		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownload()));
+		setDocumento(documentService.getDocument(docDownload));
+		super.downloadDocument();
+		return null;
+	}
+	
+	public Integer actualizar(){return null;}
+	
+	public void buscarReporteCorreos(){
+		reporteCorreos = reforzamientoService.getReporteCorreosByIdPrograma(idProxAno,false);
 	}
 	
 	public String getActividadSeguimientoTitle() {
@@ -72,4 +122,54 @@ public class ProcesoDistRecFinSeguimientoDocumentacionController extends Abstrac
 	public String iniciarProceso() {
 		return null;
 	}
+
+	public ProgramaVO getPrograma() {
+		return programa;
+	}
+
+	public void setPrograma(ProgramaVO programa) {
+		this.programa = programa;
+	}
+
+	public Integer getProgramaSeleccionado() {
+		return programaSeleccionado;
+	}
+
+	public void setProgramaSeleccionado(Integer programaSeleccionado) {
+		this.programaSeleccionado = programaSeleccionado;
+	}
+
+	public RecursosFinancierosProgramasReforzamientoService getReforzamientoService() {
+		return reforzamientoService;
+	}
+
+	public void setReforzamientoService(
+			RecursosFinancierosProgramasReforzamientoService reforzamientoService) {
+		this.reforzamientoService = reforzamientoService;
+	}
+
+	public Integer getIdProxAno() {
+		return idProxAno;
+	}
+
+	public void setIdProxAno(Integer idProxAno) {
+		this.idProxAno = idProxAno;
+	}
+
+	public List<ReporteEmailsEnviadosVO> getReporteCorreos() {
+		return reporteCorreos;
+	}
+
+	public void setReporteCorreos(List<ReporteEmailsEnviadosVO> reporteCorreos) {
+		this.reporteCorreos = reporteCorreos;
+	}
+
+	public String getDocIdDownload() {
+		return docIdDownload;
+	}
+
+	public void setDocIdDownload(String docIdDownload) {
+		this.docIdDownload = docIdDownload;
+	}
+	
 }

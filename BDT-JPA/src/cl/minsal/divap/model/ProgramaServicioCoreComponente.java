@@ -28,8 +28,14 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ProgramaServicioCoreComponente.findByTarifa", query = "SELECT p FROM ProgramaServicioCoreComponente p WHERE p.tarifa = :tarifa"),
     @NamedQuery(name = "ProgramaServicioCoreComponente.deleteByProgramasServicioCore", query = "DELETE FROM ProgramaServicioCoreComponente p WHERE p.programaServicioCoreComponentePK.programaServicioCore IN (:programasServicioCore)"),
     @NamedQuery(name = "ProgramaServicioCoreComponente.findByServicioComponente", query = "SELECT p FROM ProgramaServicioCoreComponente p WHERE  p.programaServicioCoreComponentePK.componente = :idComponente and p.programaServicioCore1.servicio.id = :idServicio order by p.programaServicioCore1.establecimiento.id asc"),
+    @NamedQuery(name = "ProgramaServicioCoreComponente.findByIdProgramaAnoIdComponenteIdServicio", query = "SELECT p FROM ProgramaServicioCoreComponente p WHERE p.programaServicioCore1.programaAnoServicio.idProgramaAno = :idProgramaAno and p.servicioCoreComponente.id = :idComponente and p.programaServicioCore1.establecimiento.servicioSalud.id = :idServicio order by p.programaServicioCore1.establecimiento.id asc"),
+    @NamedQuery(name = "ProgramaServicioCoreComponente.findByIdProgramaAnoIdServicio", query = "SELECT p FROM ProgramaServicioCoreComponente p WHERE p.programaServicioCore1.programaAnoServicio.idProgramaAno = :idProgramaAno and p.programaServicioCore1.establecimiento.servicioSalud.id = :idServicio order by p.programaServicioCore1.establecimiento.id asc"),
+    @NamedQuery(name = "ProgramaServicioCoreComponente.findByIdProgramaAno", query = "SELECT p FROM ProgramaServicioCoreComponente p WHERE p.programaServicioCore1.programaAnoServicio.idProgramaAno = :idProgramaAno order by p.programaServicioCore1.establecimiento.id asc"),
+    @NamedQuery(name = "ProgramaServicioCoreComponente.findByIdProgramaAnoListaComponentes", query = "SELECT p FROM ProgramaServicioCoreComponente p WHERE p.programaServicioCore1.programaAnoServicio.idProgramaAno = :idProgramaAno and p.servicioCoreComponente.id IN (:idComponentes) order by p.programaServicioCore1.establecimiento.id asc, p.servicioCoreComponente.id asc, p.subtitulo.idTipoSubtitulo asc"),
+    @NamedQuery(name = "ProgramaServicioCoreComponente.findByIdProgramaAnoListaComponentesidServicio", query = "SELECT p FROM ProgramaServicioCoreComponente p WHERE p.programaServicioCore1.programaAnoServicio.idProgramaAno = :idProgramaAno and p.servicioCoreComponente.id IN (:idComponentes) and p.programaServicioCore1.establecimiento.servicioSalud.id = :idServicio order by p.programaServicioCore1.establecimiento.id asc, p.servicioCoreComponente.id asc, p.subtitulo.idTipoSubtitulo asc"),
     @NamedQuery(name = "ProgramaServicioCoreComponente.getResumen", query = "SELECT a.programaServicioCore1.servicio.id, a.programaServicioCore1.servicio.nombre, SUM(a.tarifa) FROM ProgramaServicioCoreComponente a WHERE a.programaServicioCore1.programaAnoServicio.idProgramaAno= :idProgramaAno and  a.subtitulo.idTipoSubtitulo= :idTipoSubtitulo GROUP BY a.programaServicioCore1.servicio.id, a.programaServicioCore1.servicio.nombre ORDER BY a.programaServicioCore1.servicio.id asc"),
-    @NamedQuery(name = "ProgramaServicioCoreComponente.findByCantidad", query = "SELECT p FROM ProgramaServicioCoreComponente p WHERE p.cantidad = :cantidad")})
+    @NamedQuery(name = "ProgramaServicioCoreComponente.findByCantidad", query = "SELECT p FROM ProgramaServicioCoreComponente p WHERE p.cantidad = :cantidad"),
+    @NamedQuery(name = "ProgramaServicioCoreComponente.findByServicoProgramaAnoComponentesSubtitulo", query = "SELECT p FROM ProgramaServicioCoreComponente p WHERE p.programaServicioCore1.establecimiento.servicioSalud.id = :idServicio and p.programaServicioCore1.programaAnoServicio.idProgramaAno = :idProgramaAno and p.servicioCoreComponente.id IN (:idComponentes) and p.subtitulo.idTipoSubtitulo = :idTipoSubtitulo")})
 public class ProgramaServicioCoreComponente implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
@@ -40,7 +46,7 @@ public class ProgramaServicioCoreComponente implements Serializable {
     private Integer cantidad;
     @Column(name = "monto")
     private Integer monto;
-    @JoinColumn(name = "subtitulo", referencedColumnName = "id_tipo_subtitulo")
+    @JoinColumn(name = "subtitulo", referencedColumnName = "id_tipo_subtitulo",insertable = false, updatable = false)
     @ManyToOne
     private TipoSubtitulo subtitulo;
     @JoinColumn(name = "programa_servicio_core", referencedColumnName = "id_programa_servicio_core", insertable = false, updatable = false)
@@ -57,8 +63,8 @@ public class ProgramaServicioCoreComponente implements Serializable {
         this.programaServicioCoreComponentePK = programaServicioCoreComponentePK;
     }
 
-    public ProgramaServicioCoreComponente(int programaServicioCore, int componente) {
-        this.programaServicioCoreComponentePK = new ProgramaServicioCoreComponentePK(programaServicioCore, componente);
+    public ProgramaServicioCoreComponente(int programaServicioCore, int componente, TipoSubtitulo subtitulo) {
+        this.programaServicioCoreComponentePK = new ProgramaServicioCoreComponentePK(programaServicioCore, componente,subtitulo.getIdTipoSubtitulo());
     }
 
     public ProgramaServicioCoreComponentePK getProgramaServicioCoreComponentePK() {
