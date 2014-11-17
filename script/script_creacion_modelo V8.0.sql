@@ -22903,7 +22903,6 @@ WITH (
 ALTER TABLE reporte_emails_enviados
   ADD COLUMN modifica boolean;
 
-<<<<<<< HEAD
 ALTER TABLE marco_presupuestario
   ADD COLUMN reparos_marco_presupuestario boolean;
 
@@ -23749,10 +23748,8 @@ ALTER TABLE convenio_servicio
 ALTER TABLE convenio_servicio
   DROP COLUMN componente;
 
-=======
 ALTER TABLE reporte_emails_enviados
   ADD COLUMN fecha timestamp with time zone;
->>>>>>> programasReforzamiento
 
 CREATE TABLE convenio_comuna_componente
 (
