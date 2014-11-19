@@ -789,5 +789,11 @@ public class DocumentService {
 		return referenciaDocumentoId;
 		
 	}
+
+	public Integer getIdDocumentoFromPlantilla(
+			TipoDocumentosProcesos plantilla) {
+		Integer plantillaId = getPlantillaByType(plantilla);
+		return getDocumentoIdByPlantillaId(plantillaId);
+	}
 	
 }

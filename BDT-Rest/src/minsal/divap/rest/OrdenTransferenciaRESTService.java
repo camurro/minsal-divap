@@ -22,9 +22,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import minsal.divap.service.DistribucionInicialPercapitaService;
-import minsal.divap.service.OTService;
-
 
 /**
  * JAX-RS Example
@@ -36,50 +33,7 @@ import minsal.divap.service.OTService;
 public class OrdenTransferenciaRESTService extends BaseRest{
 
 	
-	@GET
-    @Path("/ot/generarOficioOrdenTransferencia/{idProcesoOT}")
-    @Produces("application/json")
-    public Integer generarOficioOrdenTransferencia(@PathParam("idProcesoOT") Integer idProcesoOT){
-		System.out.println("elaborar oficio proceso-->"+idProcesoOT);
-		if(idProcesoOT == null){
-			throw new IllegalArgumentException("proceso: "+ idProcesoOT + " no puede ser nulo");
-		}
-
-		OTService otService = getService(OTService.class);
-		otService.crearDocumentoOrdinarioOrdenTransferencia(idProcesoOT);
-		return 1;
-    }
-	
-	@GET
-    @Path("/ot/administracionVersionAlfresco/{idProcesoOT}")
-    @Produces("application/json")
-    public Integer administracionVersionAlfresco(@PathParam("idProcesoOT") Integer idProcesoOT){
-		System.out.println("elaborar oficio proceso-->"+idProcesoOT);
-		if(idProcesoOT == null){
-			throw new IllegalArgumentException("proceso: "+ idProcesoOT + " no puede ser nulo");
-		}
-		OTService otService = getService(OTService.class);
-		otService.administracionVersionAlfresco(idProcesoOT);
-	
-		return 1;
 		
-    }
-	
-	@GET
-    @Path("/ot/enviarOrdinarioFonasaServicioSalud/{idProcesoOT}")
-    @Produces("application/json")
-    public Integer enviarOrdinarioFonasaServicioSalud(@PathParam("idProcesoOT") Integer idProcesoOT){
-		System.out.println("elaborar oficio proceso-->"+idProcesoOT);
-		if(idProcesoOT == null){
-			throw new IllegalArgumentException("proceso: "+ idProcesoOT + " no puede ser nulo");
-		}
-		
-		OTService otService = getService(OTService.class);
-		otService.enviarOrdinarioOTServicioSalud(idProcesoOT,"lsuarez");
-		return 1;
-    }
-	
-	
 	@GET
     @Path("/ot/calcularOrdenTransferencia/{idProcesoOT}")
     @Produces("application/json")

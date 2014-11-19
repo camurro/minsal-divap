@@ -21,7 +21,7 @@ import minsal.divap.service.ProgramasService;
 import minsal.divap.util.Util;
 import minsal.divap.vo.ColumnaVO;
 import minsal.divap.vo.ComponentesVO;
-import minsal.divap.vo.OTResumenConsolidadoFonasaProgramasVO;
+import minsal.divap.vo.OTResumenDependienteServicioVO;
 import minsal.divap.vo.OTResumenConsolidadoFonasaVO;
 import minsal.divap.vo.OTRevisarAntecedentesGlobalVO;
 import minsal.divap.vo.OTRevisarAntecedentesVO;
@@ -756,57 +756,57 @@ implements Serializable {
 	}
 	
 	
-	private List<OTResumenConsolidadoFonasaProgramasVO>listaResumenProgramasVOSub21;
+	private List<OTResumenDependienteServicioVO>listaResumenProgramasVOSub21;
 	
 	
-	public List<OTResumenConsolidadoFonasaProgramasVO> getListaResumenProgramasVOSub21() {
+	public List<OTResumenDependienteServicioVO> getListaResumenProgramasVOSub21() {
 		return listaResumenProgramasVOSub21;
 	}
 
 	public void setListaResumenProgramasVOSub21(
-			List<OTResumenConsolidadoFonasaProgramasVO> listaResumenProgramasVOSub21) {
+			List<OTResumenDependienteServicioVO> listaResumenProgramasVOSub21) {
 		this.listaResumenProgramasVOSub21 = listaResumenProgramasVOSub21;
 	}
 	
-	private List<OTResumenConsolidadoFonasaProgramasVO>listaResumenProgramasVOSub22;
+	private List<OTResumenDependienteServicioVO>listaResumenProgramasVOSub22;
 	
 	
-	public List<OTResumenConsolidadoFonasaProgramasVO> getListaResumenProgramasVOSub22() {
+	public List<OTResumenDependienteServicioVO> getListaResumenProgramasVOSub22() {
 		return listaResumenProgramasVOSub22;
 	}
 
 	public void setListaResumenProgramasVOSub22(
-			List<OTResumenConsolidadoFonasaProgramasVO> listaResumenProgramasVOSub22) {
+			List<OTResumenDependienteServicioVO> listaResumenProgramasVOSub22) {
 		this.listaResumenProgramasVOSub22 = listaResumenProgramasVOSub22;
 	}
 	
-	private List<OTResumenConsolidadoFonasaProgramasVO>listaResumenProgramasVOSub29;
+	private List<OTResumenDependienteServicioVO>listaResumenProgramasVOSub29;
 	
 	
-	public List<OTResumenConsolidadoFonasaProgramasVO> getListaResumenProgramasVOSub29() {
+	public List<OTResumenDependienteServicioVO> getListaResumenProgramasVOSub29() {
 		return listaResumenProgramasVOSub29;
 	}
 
 	public void setListaResumenProgramasVOSub29(
-			List<OTResumenConsolidadoFonasaProgramasVO> listaResumenProgramasVOSub29) {
+			List<OTResumenDependienteServicioVO> listaResumenProgramasVOSub29) {
 		this.listaResumenProgramasVOSub29 = listaResumenProgramasVOSub29;
 	}
 	
-	private List<OTResumenConsolidadoFonasaProgramasVO>listaResumenProgramasVOSub24;
+	private List<OTResumenDependienteServicioVO>listaResumenProgramasVOSub24;
 	
 	
-	public List<OTResumenConsolidadoFonasaProgramasVO> getListaResumenProgramasVOSub24() {
+	public List<OTResumenDependienteServicioVO> getListaResumenProgramasVOSub24() {
 		return listaResumenProgramasVOSub24;
 	}
 
 	public void setListaResumenProgramasVOSub24(
-			List<OTResumenConsolidadoFonasaProgramasVO> listaResumenProgramasVOSub24) {
+			List<OTResumenDependienteServicioVO> listaResumenProgramasVOSub24) {
 		this.listaResumenProgramasVOSub24 = listaResumenProgramasVOSub24;
 	}
 
 	//CREACION EXCEL
 	List<List<OTResumenConsolidadoFonasaVO>> listaResumenesConsolidadoVO = new ArrayList<List<OTResumenConsolidadoFonasaVO>>();
-	List<List<OTResumenConsolidadoFonasaProgramasVO>> listaResumenesProgramasVO = new ArrayList<List<OTResumenConsolidadoFonasaProgramasVO>>();
+	List<List<OTResumenDependienteServicioVO>> listaResumenesProgramasVO = new ArrayList<List<OTResumenDependienteServicioVO>>();
 	public void crearArchivoResumenConsolidadorFonasa()
 	{
 		this.idArchivoResumenConsolidadoFonasa = otService.getIdPlantillaOTFonasa(idOrdenTransferencia,columnsProgramas,listaResumenesProgramasVO,listaResumenesConsolidadoVO);
@@ -822,7 +822,7 @@ implements Serializable {
 		oTRevisarAntecedentesGlobalVOSubtitulo21.setListadoResumenConsolidado(listadoResumenConsolidadoSub21);
 		listaResumenesConsolidadoVO.add(listadoResumenConsolidadoSub21);
 		
-		listaResumenProgramasVOSub21 = new ArrayList<OTResumenConsolidadoFonasaProgramasVO>();
+		listaResumenProgramasVOSub21 = new ArrayList<OTResumenDependienteServicioVO>();
 		for (OTResumenConsolidadoFonasaVO obje : oTRevisarAntecedentesGlobalVOSubtitulo21.getListadoResumenConsolidado()) {
 			listaResumenProgramasVOSub21.addAll(obje.getListaOTResumenConsolidadoFonasaProgramasVO());
 		}
@@ -834,7 +834,7 @@ implements Serializable {
 		oTRevisarAntecedentesGlobalVOSubtitulo22.setListadoResumenConsolidado(listadoResumenConsolidadoSub22);
 		listaResumenesConsolidadoVO.add(listadoResumenConsolidadoSub22);
 		
-		listaResumenProgramasVOSub22 = new ArrayList<OTResumenConsolidadoFonasaProgramasVO>();
+		listaResumenProgramasVOSub22 = new ArrayList<OTResumenDependienteServicioVO>();
 		for (OTResumenConsolidadoFonasaVO obje : oTRevisarAntecedentesGlobalVOSubtitulo22.getListadoResumenConsolidado()) {
 			listaResumenProgramasVOSub22.addAll(obje.getListaOTResumenConsolidadoFonasaProgramasVO());
 		}
@@ -846,7 +846,7 @@ implements Serializable {
 		oTRevisarAntecedentesGlobalVOSubtitulo29.setListadoResumenConsolidado(listadoResumenConsolidadoSub29);
 		listaResumenesConsolidadoVO.add(listadoResumenConsolidadoSub29);
 		
-		listaResumenProgramasVOSub29 = new ArrayList<OTResumenConsolidadoFonasaProgramasVO>();
+		listaResumenProgramasVOSub29 = new ArrayList<OTResumenDependienteServicioVO>();
 		for (OTResumenConsolidadoFonasaVO obje : oTRevisarAntecedentesGlobalVOSubtitulo29.getListadoResumenConsolidado()) {
 			listaResumenProgramasVOSub29.addAll(obje.getListaOTResumenConsolidadoFonasaProgramasVO());
 		}
@@ -857,7 +857,7 @@ implements Serializable {
 		oTRevisarAntecedentesGlobalVOMunicipal.setListadoResumenConsolidado(listadoResumenConsolidadoSub24);
 		listaResumenesConsolidadoVO.add(listadoResumenConsolidadoSub24);
 		
-		listaResumenProgramasVOSub24 = new ArrayList<OTResumenConsolidadoFonasaProgramasVO>();
+		listaResumenProgramasVOSub24 = new ArrayList<OTResumenDependienteServicioVO>();
 		for (OTResumenConsolidadoFonasaVO obje : oTRevisarAntecedentesGlobalVOMunicipal.getListadoResumenConsolidado()) {
 			listaResumenProgramasVOSub24.addAll(obje.getListaOTResumenConsolidadoFonasaProgramasVO());
 		}

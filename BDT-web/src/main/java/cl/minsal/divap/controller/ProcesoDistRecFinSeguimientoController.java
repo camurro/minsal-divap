@@ -1,5 +1,6 @@
 package cl.minsal.divap.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -18,8 +20,10 @@ import javax.inject.Named;
 
 import minsal.divap.enums.TareasSeguimiento;
 import minsal.divap.enums.TipoDocumentosProcesos;
+import minsal.divap.service.AlfrescoService;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
+import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.SeguimientoVO;
 
@@ -58,6 +62,8 @@ public class ProcesoDistRecFinSeguimientoController extends AbstractTaskMBean im
 	private RecursosFinancierosProgramasReforzamientoService reforzamientoService;
 	@EJB
 	private ProgramasService programaService;
+	@EJB
+	private AlfrescoService alfrescoService;
 	
 	private String docIdDownloadResolucion;
 	private String docIdDownloadExcelResolucion;
@@ -67,6 +73,9 @@ public class ProcesoDistRecFinSeguimientoController extends AbstractTaskMBean im
 	private Integer excelResolucion;
 	private Integer ordinarioPrograma;
 	private Integer excelOrdinario;
+	
+	private Integer plantillaResolucionCorreo;
+	private Integer plantillaOrdinarioCorreo;
 	
 	private List<SeguimientoVO> bitacoraSeguimiento;
 	private String to;
@@ -103,11 +112,13 @@ public class ProcesoDistRecFinSeguimientoController extends AbstractTaskMBean im
 		if(programa.getDependenciaMunicipal() != null && programa.getDependenciaMunicipal()){
 			resolucionPrograma = reforzamientoService.getIdResolucion(idProxAno, TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS);
 			excelResolucion = reforzamientoService.getIdResolucion(idProxAno, TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS);
+			plantillaResolucionCorreo = documentService.getIdDocumentoFromPlantilla(TipoDocumentosProcesos.PLANTILLARESOLUCIONCORREO);
 			municipal=true;
 		}
 		if(programa.getDependenciaServicio() && !programa.getDependenciaMunicipal()){
 			excelOrdinario = reforzamientoService.getIdResolucion(idProxAno, TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS);
 			ordinarioPrograma = reforzamientoService.getIdResolucion(idProxAno, TipoDocumentosProcesos.ORDINARIOPROGRAMASAPS);
+			plantillaOrdinarioCorreo = documentService.getIdDocumentoFromPlantilla(TipoDocumentosProcesos.PLANTILLAORDINARIOCORREO);
 			servicio=true;
 		}
 		
@@ -156,11 +167,13 @@ public class ProcesoDistRecFinSeguimientoController extends AbstractTaskMBean im
 	}
 	
 	public String downloadResolucion() {
+		System.out.println(getDocIdDownloadResolucion());
 		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownloadResolucion()));
 		setDocumento(documentService.getDocument(docDownload));
 		super.downloadDocument();
 		return null;
 	}
+	
 	
 	public String downloadExcelResolucion() {
 		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownloadExcelResolucion()));
@@ -184,6 +197,44 @@ public class ProcesoDistRecFinSeguimientoController extends AbstractTaskMBean im
 			
 			this.resolucionId = docNewVersion;
 		
+		}else{
+			System.out.println("uploadVersion file is null");
+			FacesMessage message = new FacesMessage("uploadVersion file is null");
+			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
+	}
+	
+	public void uploadVersionResolucionCorreo() {
+		if (file != null){
+			try {
+				System.out.println("uploadVersion file is not null");
+				String filename = file.getFileName();
+				filename = filename.replaceAll(" ", "");
+				byte[] contentPlantillaFile = file.getContents();
+				File file = createTemporalFile(filename, contentPlantillaFile);
+				plantillaResolucionCorreo = reforzamientoService.cargarPlantilla(TipoDocumentosProcesos.PLANTILLARESOLUCIONCORREO, file);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			System.out.println("uploadVersion file is null");
+			FacesMessage message = new FacesMessage("uploadVersion file is null");
+			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
+	}
+	
+	public void uploadVersionOrdinarioCorreo() {
+		if (file != null){
+			try {
+				System.out.println("uploadVersion file is not null");
+				String filename = file.getFileName();
+				filename = filename.replaceAll(" ", "");
+				byte[] contentPlantillaFile = file.getContents();
+				File file = createTemporalFile(filename, contentPlantillaFile);
+				plantillaResolucionCorreo = reforzamientoService.cargarPlantilla(TipoDocumentosProcesos.PLANTILLARESOLUCIONCORREO, file);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
 		}else{
 			System.out.println("uploadVersion file is null");
 			FacesMessage message = new FacesMessage("uploadVersion file is null");
@@ -503,6 +554,22 @@ public class ProcesoDistRecFinSeguimientoController extends AbstractTaskMBean im
 
 	public void setMixto(boolean mixto) {
 		this.mixto = mixto;
+	}
+
+	public Integer getPlantillaResolucionCorreo() {
+		return plantillaResolucionCorreo;
+	}
+
+	public void setPlantillaResolucionCorreo(Integer plantillaResolucionCorreo) {
+		this.plantillaResolucionCorreo = plantillaResolucionCorreo;
+	}
+
+	public Integer getPlantillaOrdinarioCorreo() {
+		return plantillaOrdinarioCorreo;
+	}
+
+	public void setPlantillaOrdinarioCorreo(Integer plantillaOrdinarioCorreo) {
+		this.plantillaOrdinarioCorreo = plantillaOrdinarioCorreo;
 	}
 	
 	

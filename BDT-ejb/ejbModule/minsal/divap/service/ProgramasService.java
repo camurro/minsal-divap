@@ -418,6 +418,8 @@ public class ProgramasService {
 			programaAnoSiguiente.setEstado(new EstadoPrograma(1));
 			programaAnoSiguiente.setEstadoFlujoCaja(new EstadoPrograma(1));
 			programaAnoSiguiente.setPrograma(actual);
+			programaAnoSiguiente.setEstadoConvenio(new EstadoPrograma(1));
+			programaAnoSiguiente.setEstadoreliquidacion(new EstadoPrograma(1));
 			programasDAO.save(programaAnoSiguiente);
 			id= programaAnoSiguiente.getIdProgramaAno();
 		}
@@ -567,6 +569,8 @@ public class ProgramasService {
 			programaAnoSiguiente.setEstado(new EstadoPrograma(1));
 			programaAnoSiguiente.setEstadoFlujoCaja(new EstadoPrograma(1));
 			programaAnoSiguiente.setPrograma(programaAnoActual.getPrograma());
+			programaAnoSiguiente.setEstadoConvenio(new EstadoPrograma(1));
+			programaAnoSiguiente.setEstadoreliquidacion(new EstadoPrograma(1));
 			programasDAO.save(programaAnoSiguiente);
 		} 
 		

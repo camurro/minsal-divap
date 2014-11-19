@@ -56,6 +56,11 @@ public class ProgramaMapper implements Mapper<ProgramaAno>{
 		}else{
 			programaVO.setEstadoReliquidacion(new EstadoProgramaVO());
 		}
+		if (programaAno.getEstadoOT()!=null)	{
+			programaVO.setEstadoOT(new EstadoProgramaVO(programaAno.getEstadoOT().getIdEstadoPrograma(), programaAno.getEstadoOT().getNombreEstado()));
+		}else{
+			programaVO.setEstadoOT(new EstadoProgramaVO());
+		}
 		if(programaAno.getPrograma() != null){
 			programaVO.setNombre(programaAno.getPrograma().getNombre());
 			programaVO.setId(programaAno.getPrograma().getId());

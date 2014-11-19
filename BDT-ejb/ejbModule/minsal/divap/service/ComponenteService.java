@@ -11,6 +11,7 @@ import minsal.divap.dao.ComponenteDAO;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.DependenciaVO;
 import minsal.divap.vo.SubtituloVO;
+import minsal.divap.vo.TipoComponenteVO;
 import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.ComponenteSubtitulo;
 
@@ -77,6 +78,31 @@ public class ComponenteService {
 		//	List<ComponenteSubtitulo> componentes = this.componenteDAO.getComponenteByProgramaSubtitulo(programaId, sub);
 		Componente componente = this.componenteDAO.getComponenteByID(idComponente);
 		return componente;
+	}
+	
+	public ComponentesVO getComponenteVOById(Integer idComponente) {
+		//	List<ComponenteSubtitulo> componentes = this.componenteDAO.getComponenteByProgramaSubtitulo(programaId, sub);
+		Componente componente = this.componenteDAO.getComponenteByID(idComponente);
+		ComponentesVO compoVO = new ComponentesVO();
+		compoVO.setId(componente.getId());
+		compoVO.setNombre(componente.getNombre());
+		compoVO.setPeso(componente.getPeso());
+		
+		List<SubtituloVO> subtitulos = new ArrayList<SubtituloVO>();
+		for(ComponenteSubtitulo compoSubs : componente.getComponenteSubtitulos()){
+			SubtituloVO subVO = new SubtituloVO();
+			subVO.setId(compoSubs.getSubtitulo().getIdTipoSubtitulo());
+			subVO.setNombre(compoSubs.getSubtitulo().getNombreSubtitulo());
+			subtitulos.add(subVO);
+		}
+ 		
+		TipoComponenteVO tipoComponente = new TipoComponenteVO();
+		tipoComponente.setId(componente.getTipoComponente().getId());
+		tipoComponente.setNombre(componente.getTipoComponente().getNombre());
+		
+		compoVO.setSubtitulos(subtitulos);
+		compoVO.setTipoComponente(tipoComponente);
+		return compoVO;
 	}
 	
 	public Componente getComponenteByNombre(String nombre){

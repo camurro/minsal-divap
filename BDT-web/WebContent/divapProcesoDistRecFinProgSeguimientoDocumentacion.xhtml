@@ -259,6 +259,35 @@
 					
 					<div class="destacaArchivos ui-corner-all">
 						<h3>Archivos Disponibles para la Tarea:</h3>
+						<c:if test="#{procesoDistRecFinSeguimientoController.programa.dependenciaMunicipal}">
+							<span class="strong">Archivo: </span> Plantilla de Correo para Resolución[
+								<h:graphicImage value="resources/minsal/images/download-alt.png"
+									styleClass="divapIcons" />
+								<h:commandLink value="Bajar Plantilla"
+								 onclick="downloadDocument(#{procesoDistRecFinSeguimientoController.plantillaResolucionCorreo});return false;" />
+								|
+								<h:graphicImage value="resources/minsal/images/upload-alt.png"
+									styleClass="divapIcons" />
+								<p:commandLink value="Subir Nueva Plantilla" oncomplete="dlgUploadResolucionCorreo.show();" />
+								]
+								<br/>
+						</c:if>
+						<c:if test="#{procesoDistRecFinSeguimientoController.programa.dependenciaServicio and not procesoDistRecFinSeguimientoController.programa.dependenciaMunicipal}">
+							<span class="strong">Archivo: </span> Plantilla de Correo para Ordinario[
+								<h:graphicImage value="resources/minsal/images/download-alt.png"
+									styleClass="divapIcons" />
+								<h:commandLink value="Bajar Plantilla"
+								 onclick="downloadDocument(#{procesoDistRecFinSeguimientoController.plantillaOrdinarioCorreo});return false;" />
+								|
+								<h:graphicImage value="resources/minsal/images/upload-alt.png"
+									styleClass="divapIcons" />
+								<p:commandLink value="Subir Nueva Plantilla" oncomplete="dlgUploadOrdinarioCorreo.show();" />
+								]
+								<br/>
+						</c:if>
+						
+						
+						
 						<c:if test="#{procesoDistRecFinSeguimientoController.mixto}">
 							<span class="strong">Archivo: </span> Resumen País Programa Municipal #{procesoDistRecFinSeguimientoController.programa.nombre}[
 								<h:graphicImage value="resources/minsal/images/download-alt.png"
@@ -473,6 +502,42 @@
 					
 				<p:commandButton value="Cancelar"
 					onclick="dlgUpload.hide()" type="button" />
+			</p:panelGrid>
+			</h:form> 	
+		</p:dialog> 
+		
+		 <p:dialog header="Subir archivos" widgetVar="dlgUploadResolucionCorreo" id="idDlgUploadResolucionCorreo" modal="true" height="150"  appendToBody="true">
+			<h:form id="uploadVersionResolucionCorreo" enctype="multipart/form-data">
+			<p:panelGrid columns="2" >
+				<h:outputText value="Nueva Versión: " />
+				<p:fileUpload id="newVersionFile"
+							fileUploadListener="#{procesoDistRecFinSeguimientoController.handleFile}"
+							value="#{procesoDistRecFinSeguimientoController.file}"
+							update="uploadVersion" mode="simple"  />
+				<p:commandButton value="Aceptar" ajax="false"
+					actionListener="#{procesoDistRecFinSeguimientoController.uploadVersionResolucionCorreo}" update=":lastSeguimiento"
+					oncomplete="if (args &amp;&amp; args.showDialog){dlgUploadResolucionCorreo.hide()}else{ alert('the bean didnt let me open the dialog')}" />
+					
+				<p:commandButton value="Cancelar"
+					onclick="dlgUploadResolucionCorreo.hide()" type="button" />
+			</p:panelGrid>
+			</h:form> 	
+		</p:dialog> 
+		
+		 <p:dialog header="Subir archivos" widgetVar="dlgUploadOrdinarioCorreo" id="idDlgUploadOrdinarioCorreo" modal="true" height="150"  appendToBody="true">
+			<h:form id="uploadVersionOrdinarioCorreo" enctype="multipart/form-data">
+			<p:panelGrid columns="2" >
+				<h:outputText value="Nueva Versión: " />
+				<p:fileUpload id="newVersionFile"
+							fileUploadListener="#{procesoDistRecFinSeguimientoController.handleFile}"
+							value="#{procesoDistRecFinSeguimientoController.file}"
+							update="uploadVersion" mode="simple"  />
+				<p:commandButton value="Aceptar" ajax="false"
+					actionListener="#{procesoDistRecFinSeguimientoController.uploadVersionOrdinarioCorreo}" update=":lastSeguimiento"
+					oncomplete="if (args &amp;&amp; args.showDialog){dlgUploadOrdinarioCorreo.hide()}else{ alert('the bean didnt let me open the dialog')}" />
+					
+				<p:commandButton value="Cancelar"
+					onclick="dlgUploadOrdinarioCorreo.hide()" type="button" />
 			</p:panelGrid>
 			</h:form> 	
 		</p:dialog> 

@@ -101,17 +101,6 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 		return null;
 	}
 
-	public void progress(){try {
-		Thread.sleep(10000);
-		onComplete();
-	} catch (InterruptedException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}}
-	
-	public void onComplete(){
-		
-	}
 	
 	public String getProgramaSeleccionado() {
 		return programaSeleccionado;

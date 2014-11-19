@@ -23442,10 +23442,10 @@ INSERT INTO caja_monto(caja, monto, mes) VALUES (12, 155, 11);
 INSERT INTO caja_monto(caja, monto, mes) VALUES (12, 156, 12);
 
 
-INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (57, 'Plantilla Base Cumplimiento Municipal');
-INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (58, 'Plantilla Base Cumplimiento Servicio');
-INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (59, 'Planilla Base Cumplimiento Municipal');
-INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (60, 'Planilla Base Cumplimiento Servicio');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (74, 'Plantilla Base Cumplimiento Municipal');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (75, 'Plantilla Base Cumplimiento Servicio');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (76, 'Planilla Base Cumplimiento Municipal');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (77, 'Planilla Base Cumplimiento Servicio');
 
 INSERT INTO cumplimiento_programa(id_cumplimiento_programa, programa, porcentaje_desde, porcentaje_hasta,rebaja)
 values(1, 12, 0, 19.99, 100);
@@ -24095,5 +24095,340 @@ UPDATE ano_en_curso SET repo_alfresco=true;
 
 ALTER TABLE ano_en_curso
    ALTER COLUMN repo_alfresco SET NOT NULL;
----asd
+
+--- 18 noviembre
+
+ ALTER TABLE programa_ano
+  ADD COLUMN estado_ot integer NOT NULL;
+
+UPDATE programa_ano SET estado_ot=1;
+
+ALTER TABLE programa_ano
+  ADD CONSTRAINT "estadoOt_fk" FOREIGN KEY (estado_ot) REFERENCES estado_programa (id_estado_programa) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+CREATE TABLE festivos
+(
+  id serial NOT NULL,
+  mes integer,
+  dia integer,
+  CONSTRAINT id_festivo_fk PRIMARY KEY (id),
+  CONSTRAINT mes FOREIGN KEY (mes)
+      REFERENCES mes (id_mes) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+
+ALTER TABLE festivos
+  ADD COLUMN ano integer;
+ALTER TABLE festivos
+  ADD CONSTRAINT ano FOREIGN KEY (ano) REFERENCES ano_en_curso (ano) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+ALTER TABLE festivos
+   ALTER COLUMN mes SET NOT NULL;
+ALTER TABLE festivos
+   ALTER COLUMN dia SET NOT NULL;
+ALTER TABLE festivos
+   ALTER COLUMN ano SET NOT NULL;
+
+
+INSERT INTO festivos(mes, dia, ano)VALUES (1,1,2014);
+INSERT INTO festivos(mes, dia, ano)VALUES (4,18,2014);
+INSERT INTO festivos(mes, dia, ano)VALUES (4,19,2014);
+INSERT INTO festivos(mes, dia, ano)VALUES (5,1,2014);
+INSERT INTO festivos(mes, dia, ano)VALUES (5,21,2014);
+INSERT INTO festivos(mes, dia, ano)VALUES (6,29,2014);
+INSERT INTO festivos(mes, dia, ano)VALUES (7,16,2014);
+INSERT INTO festivos(mes, dia, ano)VALUES (8,15,2014);
+INSERT INTO festivos(mes, dia, ano)VALUES (9,18,2014);
+INSERT INTO festivos(mes, dia, ano)VALUES (9,19,2014);
+INSERT INTO festivos(mes, dia, ano)VALUES (10,12,2014);
+INSERT INTO festivos(mes, dia, ano)VALUES (10,31,2014);
+INSERT INTO festivos(mes, dia, ano)VALUES (11,1,2014);
+INSERT INTO festivos(mes, dia, ano)VALUES (12,8,2014);
+INSERT INTO festivos(mes, dia, ano)VALUES (12,25,2014);
+
+
+INSERT INTO festivos(mes, dia, ano)VALUES (1,1,2015);
+INSERT INTO festivos(mes, dia, ano)VALUES (4,3,2015);
+INSERT INTO festivos(mes, dia, ano)VALUES (4,4,2015);
+INSERT INTO festivos(mes, dia, ano)VALUES (5,1,2015);
+INSERT INTO festivos(mes, dia, ano)VALUES (5,21,2015);
+INSERT INTO festivos(mes, dia, ano)VALUES (6,29,2015);
+INSERT INTO festivos(mes, dia, ano)VALUES (7,16,2015);
+INSERT INTO festivos(mes, dia, ano)VALUES (8,15,2015);
+INSERT INTO festivos(mes, dia, ano)VALUES (9,18,2015);
+INSERT INTO festivos(mes, dia, ano)VALUES (9,19,2015);
+INSERT INTO festivos(mes, dia, ano)VALUES (10,12,2015);
+INSERT INTO festivos(mes, dia, ano)VALUES (10,31,2015);
+INSERT INTO festivos(mes, dia, ano)VALUES (11,1,2015);
+INSERT INTO festivos(mes, dia, ano)VALUES (12,8,2015);
+INSERT INTO festivos(mes, dia, ano)VALUES (12,25,2015);
+
+
+
+CREATE TABLE public.dia
+(
+   id serial, 
+   dia integer, 
+   CONSTRAINT id_dia_pk PRIMARY KEY (id)
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+
+
+INSERT INTO dia(dia) VALUES (1);
+INSERT INTO dia(dia) VALUES (2);
+INSERT INTO dia(dia) VALUES (3);
+INSERT INTO dia(dia) VALUES (4);
+INSERT INTO dia(dia) VALUES (5);
+INSERT INTO dia(dia) VALUES (6);
+INSERT INTO dia(dia) VALUES (7);
+INSERT INTO dia(dia) VALUES (8);
+INSERT INTO dia(dia) VALUES (9);
+INSERT INTO dia(dia) VALUES (10);
+INSERT INTO dia(dia) VALUES (11);
+INSERT INTO dia(dia) VALUES (12);
+INSERT INTO dia(dia) VALUES (13);
+INSERT INTO dia(dia) VALUES (14);
+INSERT INTO dia(dia) VALUES (15);
+INSERT INTO dia(dia) VALUES (16);
+INSERT INTO dia(dia) VALUES (17);
+INSERT INTO dia(dia) VALUES (18);
+INSERT INTO dia(dia) VALUES (19);
+INSERT INTO dia(dia) VALUES (20);
+INSERT INTO dia(dia) VALUES (21);
+INSERT INTO dia(dia) VALUES (22);
+INSERT INTO dia(dia) VALUES (23);
+INSERT INTO dia(dia) VALUES (24);
+INSERT INTO dia(dia) VALUES (25);
+INSERT INTO dia(dia) VALUES (26);
+INSERT INTO dia(dia) VALUES (27);
+INSERT INTO dia(dia) VALUES (28);
+INSERT INTO dia(dia) VALUES (29);
+INSERT INTO dia(dia) VALUES (30);
+INSERT INTO dia(dia) VALUES (31);
+
+ALTER TABLE festivos
+  ADD CONSTRAINT dia_fk FOREIGN KEY (dia) REFERENCES dia (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+CREATE TABLE public.fecha_remesa
+(
+   id serial, 
+   dia integer, 
+   CONSTRAINT id_fecha_remesa_pk PRIMARY KEY (id), 
+   CONSTRAINT dia FOREIGN KEY (dia) REFERENCES dia (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+
+CREATE TABLE public.programa_fecha_remesa
+(
+   id serial, 
+   programa integer, 
+   fecha_remesa integer, 
+   CONSTRAINT programa_fecha_remesa_pk PRIMARY KEY (id), 
+   CONSTRAINT programa_fk FOREIGN KEY (programa) REFERENCES programa (id) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT fecha_remesa_fk FOREIGN KEY (fecha_remesa) REFERENCES fecha_remesa (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+INSERT INTO fecha_remesa(dia) VALUES (9);
+INSERT INTO fecha_remesa(dia) VALUES (24);
+INSERT INTO fecha_remesa(dia) VALUES (28);
+
+
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (1,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (2,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (3,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (4,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (5,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (6,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (7,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (8,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (9,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (10,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (11,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (12,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (13,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (14,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (15,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (16,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (17,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (18,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (19,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (20,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (21,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (22,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (23,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (24,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (25,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (26,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (27,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (28,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (29,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (30,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (31,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (32,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (33,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (34,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (35,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (36,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (37,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (38,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (39,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (40,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (41,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (42,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (43,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (44,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (45,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (46,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (47,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (48,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (49,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (50,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (51,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (52,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (53,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (54,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (55,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (56,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (57,1);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (58,1);
+
+
+
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (1,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (2,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (3,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (4,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (5,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (6,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (7,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (8,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (9,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (10,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (11,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (12,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (13,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (14,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (15,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (16,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (17,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (18,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (19,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (20,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (21,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (22,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (23,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (24,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (25,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (26,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (27,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (28,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (29,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (30,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (31,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (32,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (33,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (34,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (35,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (36,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (37,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (38,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (39,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (40,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (41,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (42,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (43,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (44,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (45,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (46,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (47,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (48,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (49,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (50,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (51,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (52,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (53,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (54,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (55,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (56,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (57,2);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (58,2);
+
+
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (1,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (2,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (3,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (4,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (5,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (6,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (7,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (8,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (9,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (10,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (11,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (12,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (13,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (14,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (15,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (16,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (17,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (18,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (19,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (20,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (21,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (22,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (23,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (24,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (25,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (26,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (27,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (28,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (29,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (30,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (31,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (32,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (33,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (34,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (35,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (36,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (37,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (38,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (39,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (40,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (41,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (42,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (43,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (44,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (45,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (46,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (47,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (48,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (49,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (50,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (51,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (52,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (53,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (54,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (55,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (56,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (57,3);
+INSERT INTO programa_fecha_remesa( programa, fecha_remesa)VALUES (58,3);
+
 

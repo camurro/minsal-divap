@@ -35,6 +35,8 @@ public enum TipoDocumentosProcesos{
 	PLANTILLAAPSDETALLEMUNICIPALHISTORICO(70,"Plantilla APS Detalle Municipal Historico"),
 	PLANTILLAAPSDETALLESERVICIOHISTORICO(71,"Plantilla APS Detalle Servicio Historico"),
 	ADJUNTOCORREO(72,"Adjunto correo"),
+	PLANTILLARESOLUCIONCORREO(73, "Plantilla Resolución Correo"),
+	PLANTILLAORDINARIOCORREO(74,"Plantilla Ordinario Correo"),
 	
 	//Plantilla PARA OT
 	 PLANTILLAORDINARIOOREDENTRANSFERENCIA(43,"Plantilla Ordinario Orden Transferencia"), RESUMENCONSOLIDADOFONASA(44,"Resumen Consolidado Fonasa"),

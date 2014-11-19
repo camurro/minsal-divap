@@ -160,6 +160,14 @@ public class DistribucionInicialPercapitaService {
 			filename = "plantillaOrdinarioProgramasAPS.docx";
 			folderAlfresco = "TEMPLATES/RECURSOSFINANCIEROSPROGRAMASREFORZAMIENTOAPS";
 			break;
+		case PLANTILLARESOLUCIONCORREO:
+			filename = "plantillaResolucionCorreo.xml";
+			folderAlfresco = "TEMPLATES/RECURSOSFINANCIEROSPROGRAMASREFORZAMIENTOAPS";
+			break;
+		case PLANTILLAORDINARIOCORREO:
+			filename = "plantillaOrdinarioCorreo.xml";
+			folderAlfresco = "TEMPLATES/RECURSOSFINANCIEROSPROGRAMASREFORZAMIENTOAPS";
+			break;
 		default:
 			break;
 		}

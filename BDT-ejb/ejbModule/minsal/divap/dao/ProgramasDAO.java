@@ -540,6 +540,20 @@ public class ProgramasDAO {
 		
 	}
 
+	public List<ProgramaServicioCoreComponente> findByServicioComponenteSubtitulo(
+			int idComponentesServicio, int idServicio, Integer idTipoSubtitulo, Integer idProgramaAno) {
+		try {
+			TypedQuery<ProgramaServicioCoreComponente> query = this.em.createNamedQuery("ProgramaServicioCoreComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdServicio", ProgramaServicioCoreComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idComponente", idComponentesServicio);
+			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	
 	
 }

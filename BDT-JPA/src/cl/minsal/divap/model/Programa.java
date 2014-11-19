@@ -59,6 +59,8 @@ public class Programa implements Serializable {
     @Basic(optional = false)
     @Column(name = "reliquidacion")
     private boolean reliquidacion;
+    @OneToMany(mappedBy = "programa")
+    private Set<ProgramaFechaRemesa> programaFechaRemesaSet;
 	public Programa() {
 	}
 
@@ -168,6 +170,15 @@ public class Programa implements Serializable {
 
 	public void setReliquidacion(boolean reliquidacion) {
 		this.reliquidacion = reliquidacion;
+	}
+
+	public Set<ProgramaFechaRemesa> getProgramaFechaRemesaSet() {
+		return programaFechaRemesaSet;
+	}
+
+	public void setProgramaFechaRemesaSet(
+			Set<ProgramaFechaRemesa> programaFechaRemesaSet) {
+		this.programaFechaRemesaSet = programaFechaRemesaSet;
 	}
 	
 }

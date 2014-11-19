@@ -54,6 +54,9 @@ public class ProgramaAno implements Serializable {
 	@JoinColumn(name = "estado_convenio", referencedColumnName = "id_estado_programa")
 	@ManyToOne
 	private EstadoPrograma estadoConvenio;
+	@JoinColumn(name = "estado_ot", referencedColumnName = "id_estado_programa")
+	@ManyToOne
+	private EstadoPrograma estadoOT;
 	@JoinColumn(name = "ano", referencedColumnName = "ano")
 	@ManyToOne(optional = false)
 	private AnoEnCurso ano;
@@ -117,6 +120,14 @@ public class ProgramaAno implements Serializable {
 
 	public void setEstadoConvenio(EstadoPrograma estadoConvenio) {
 		this.estadoConvenio = estadoConvenio;
+	}
+
+	public EstadoPrograma getEstadoOT() {
+		return estadoOT;
+	}
+
+	public void setEstadoOT(EstadoPrograma estadoOT) {
+		this.estadoOT = estadoOT;
 	}
 
 	public AnoEnCurso getAno() {

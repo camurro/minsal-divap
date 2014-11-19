@@ -12,8 +12,10 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
 import minsal.divap.enums.BusinessProcess;
+import minsal.divap.enums.TiposPrograma;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.OTService;
+import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.TaskDataVO;
@@ -29,96 +31,76 @@ implements Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	
 	@EJB
-	private OTService tratamientoOrdenService;
+	private OTService otService;
 	
 	@EJB
 	private ProgramasService programaService;
 	
-	//ID Programa
-	private Integer idProgramaAno;
-	
-	
-	public Integer getIdProgramaAno() {
-		return idProgramaAno;
-	}
+	@EJB
+	private RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService;
 
-	public void setIdProgramaAno(Integer idProgramaAno) {
-		this.idProgramaAno = idProgramaAno;
-	}
+	
+	private List<ProgramaVO> programas;
+	private Integer anoCurso;
+	private String programaSeleccionado;
+	
+	
+	
 
 	@PostConstruct
 	public void init() {
 	}
 
 	@Override
+	public String iniciarProceso() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		
-		parameters.put("revisarPerCapita_", "si");
-		parameters.put("revisarLeyes_", "no");
-		parameters.put("idProgramaAno_", idProgramaAno);
-		
-		/*
-		ProgramaVO programa = programaService.getProgramaAnoPorID(idProgramaAno);
-		if(programa..getTipoPrograma().getId() == 1)//TIPO PERCAPITA
-		{
-			parameters.put("revisarPerCapita_", "si");
-			parameters.put("revisarLeyes_", "no");
+		System.out.println("programaSeleccionado-->"+programaSeleccionado);
+		if(programaSeleccionado != null){
+			Integer paramProgramaSeleccionado = Integer.parseInt(programaSeleccionado);
+			parameters.put("programaSeleccionado_", paramProgramaSeleccionado);
 		}
-		else if(programa.getTipoPrograma().getId() == 2)//TIPO LEYES
-		{
-			parameters.put("revisarLeyes_", "si");
-		}
-		else if(programa.getTipoPrograma().getId() == 3)//TIPO PROGRAMATICA
-		{
-			parameters.put("revisarLeyes_", "no");
-			parameters.put("revisarPerCapita_", "no");
-		}
-		*/
-
 		return parameters;
 	}
 
-	@Override
-	public String iniciarProceso() {
-		String success = "bandejaTareas";
-		Long procId = iniciarProceso(BusinessProcess.OTPROFESIONAL);
-		System.out.println("procId-->"+procId);
-		if(procId == null){
-			 success = null;
-		}else{
-			TaskVO task = getUserTasksByProcessId(procId, getSessionBean().getUsername());
-			if(task != null){
-				TaskDataVO taskDataVO = getTaskData(task.getId());
-				if(taskDataVO != null){
-					System.out.println("taskDataVO recuperada="+taskDataVO);
-					setOnSession("taskDataSeleccionada", taskDataVO);
-				}
-			}
-		}
-		return success;
-	}
-	
-	//Obtiene la lista de programas del usuario
-	public List<ProcesosProgramasPojo> getListadoProgramasServicio() {
-		
-		List<ProcesosProgramasPojo> listadoProgramasServicio = new ArrayList<ProcesosProgramasPojo>();
-		List<ProgramaVO> programas = programaService.getProgramasByUser(getLoggedUsername());
-		
-		for (ProgramaVO programaVO : programas) {
-			ProcesosProgramasPojo p2 = new ProcesosProgramasPojo();
-			p2.setPrograma(programaVO.getNombre());
-			p2.setDescripcion("descripcion");
-			p2.setId(programaVO.getId());
-			listadoProgramasServicio.add(p2);
-		}
-		return listadoProgramasServicio;
-	}
-	
-	// Continua el proceso con el programa seleccionado.
-		public void continuarProceso(Integer id) {
 
-			setIdProgramaAno(id);
-			super.enviar();
+	public List<ProgramaVO> getProgramas() {
+		if(programas == null){
+			programas = otService.getProgramas(getLoggedUsername());
 		}
+		return programas;
+	}
+
+	public void setProgramas(List<ProgramaVO> programas) {
+		this.programas = programas;
+	}
+
+	public Integer getAnoCurso() {
+		if(anoCurso == null){
+			anoCurso = recursosFinancierosProgramasReforzamientoService.getAnoCurso();
+		}
+		return anoCurso;
+	}
+
+	public void setAnoCurso(Integer anoCurso) {
+		this.anoCurso = anoCurso;
+	}
+
+	public String getProgramaSeleccionado() {
+		return programaSeleccionado;
+	}
+
+	public void setProgramaSeleccionado(String programaSeleccionado) {
+		this.programaSeleccionado = programaSeleccionado;
+	}
+
+	
+	
+
+		
 }

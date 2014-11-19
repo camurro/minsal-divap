@@ -31,11 +31,9 @@ public class MatchViewTask {
 
 		
 		// Mapeo paginas de Tramitacion Orden Transferencia Profesional
-		OTSELECCIONARLINEAFINANCIAMIENTO("minsal_divap.TramitacionOrdenTransferenciaProfesional.seleccionarlineadefinanciamiento","divapProcesoOTLineas"),//"divapProcesoProgProgramas"),
-		OTREVISARANTECEDENTESPERCAPITA("minsal_divap.TramitacionOrdenTransferenciaProfesional.revisarantecedentespercapita","divapProcesoOTUsuario"),
-		OTREVISARANTECEDENTESLEYES("minsal_divap.TramitacionOrdenTransferenciaProfesional.revisarantecedentesleyes","divapProcesoOTUsuario"),
-		OTREVISARANTECEDENTESPROGRAMATICA("minsal_divap.TramitacionOrdenTransferenciaProfesional.revisarantecedenteslineaprogramatica","divapProcesoOTUsuario"),
-		
+		OTSELECCIONARLINEAFINANCIAMIENTO("minsal_divap.TramitacionOrdenTransferenciaProfesional.seleccionarlineadefinanciamiento","divapProcesoOTLineas"),
+		OTREVISARANTECEDENTESPROGRAMATICA("minsal_divap.TramitacionOrdenTransferenciaProfesional.revisarantecedentesprograma","divapProcesoOTRevisarAntecedentesProfesional"),
+
 		// Mapeo paginas de Tramitacion Orden Transferencia Consolidador
 		TRAMITACIONORDENREVISARCONSOLIDACION("minsal_divap.TramitacionOrdenTransferenciaConsolidador.revisarconsolidaciondeordenesdetransferencia","divapProcesoOTConsolidador"),
 		TRAMITACIONORDENHACERSEGUIMIENTO("minsal_divap.TramitacionOrdenTransferenciaConsolidador.hacerseguimientoordinariosdeordenesdetransferencia","divapProcesoOTSeguimiento"),

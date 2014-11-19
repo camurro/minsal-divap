@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml"
+                xmlns:c="http://java.sun.com/jsp/jstl/core" 
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                 >
+
+	<ui:define name="content">
+	
+	<h:form enctype="multipart/form-data" id="form"   >
+
+	<p:growl id="msgs" showDetail="true"/>
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Órdenes de Transferencia | Revisión del Profesional" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>Programa: #{procesoOTRevisarAntecedentesController.programa.nombre}</h2>
+					<p class="parrafo">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent egestas tempor nulla eget ultricies. Morbi
+						pulvinar elit at justo pharetra, vitae ultricies est dignissim, justo nisi porttitor enim, eget ullamcorper felis augue eget lacus.</p>
+					<br />
+					<h3>Filtros del Programa:</h3>
+					<h:panelGrid id="busqueda_mis_tareas" columns="5">
+						<h:panelGrid columns="2">
+								<h:outputText value="Componente " styleClass="inputLabel" />
+								<p:selectOneMenu id="componentes"  value="#{procesoOTRevisarAntecedentesController.componenteSeleccionado}">
+								<p:ajax listener="#{procesoOTRevisarAntecedentesController.seleccionComponente}" update="" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />  
+								<f:selectItems value="#{procesoOTRevisarAntecedentesController.listaComponentes}" itemLabel="#{componente.nombre}" var="componente" itemValue="#{componente.id}"/> 
+							</p:selectOneMenu>
+							</h:panelGrid>
+					
+							<h:panelGrid columns="2">
+								<h:outputText value="Servicio: " styleClass="inputLabel" />
+								<p:selectOneMenu id="servicios"  value="#{procesoOTRevisarAntecedentesController.servicioSeleccionado}">
+								<f:selectItem itemLabel="Seleccione" itemValue="" />  
+								<f:selectItems value="#{procesoOTRevisarAntecedentesController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
+							</p:selectOneMenu>
+							</h:panelGrid>
+						
+						<h:panelGrid columns="1">
+							<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoOTRevisarAntecedentesController.buscarResultados}" update="form:tabs"/>
+						</h:panelGrid>
+					</h:panelGrid>
+					<p:tabView id="tabs">
+						<c:if test="#{procesoOTRevisarAntecedentesController.subtitulo24}">
+							<p:tab title="Subtítulo 24" id="tabS24">
+							
+							</p:tab>
+						</c:if>
+						<c:if test="#{procesoOTRevisarAntecedentesController.subtitulo21}">
+							<p:tab title="Subtítulo 21" id="tabS21">
+									<p:dataTable resizableColumns="true" value="#{procesoOTRevisarAntecedentesController.resultadoServicioSub21}" liveResize="true" var="detalleS21"
+										rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+										styleClass="dataTable" id="tablaResultadosS21" rowIndexVar="rowIndex">
+										<p:columnGroup type="header">
+											<p:row>
+												<p:column colspan="2" headerText="Establecimiento" />
+												<p:column rowspan="2" headerText="Marco Presupuestario"/>
+												<p:column colspan="2" headerText="Transferencia Acumulada a la Fecha"/>
+												<p:column colspan="2" headerText="Convenios Recibidos"/>
+												<p:column colspan="2" headerText="Diferencia (Marco-Total)"/>
+												<p:column rowspan="2" headerText="Revisado"/>
+											</p:row>
+											<p:row>
+												<p:column headerText="Código" />
+												<p:column headerText="Establecimiento" />
+												<p:column headerText="Monto" />
+												<p:column headerText="%" />
+												<p:column headerText="Monto" />
+												<p:column headerText="%" />
+												<p:column headerText="Monto" />
+												<p:column headerText="%" />
+											</p:row>
+										</p:columnGroup>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.codigoEstablecimiento}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
+										</p:column>
+									</p:dataTable>
+							</p:tab>
+						</c:if>
+						<c:if test="#{procesoOTRevisarAntecedentesController.subtitulo22}">
+							<p:tab title="Subtítulo 22" id="tabS22">
+								<p:dataTable resizableColumns="true" value="#{procesoOTRevisarAntecedentesController.resultadoServicioSub22}" liveResize="true" var="detalleS22"
+										rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+										styleClass="dataTable" id="tablaResultadosS22" rowIndexVar="rowIndex">
+										<p:columnGroup type="header">
+											<p:row>
+												<p:column colspan="2" headerText="Establecimiento" />
+											</p:row>
+											<p:row>
+												<p:column headerText="Código" />
+												<p:column headerText="Establecimiento" />
+											</p:row>
+										</p:columnGroup>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS22.establecimiento.codigoEstablecimiento}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS22.establecimiento.nombre}</span>
+										</p:column>
+									</p:dataTable>
+							</p:tab>
+						</c:if>
+						<c:if test="#{procesoOTRevisarAntecedentesController.subtitulo29}">
+							<p:tab title="Subtítulo 29" id="tabS29">
+								<p:dataTable resizableColumns="true" value="#{procesoOTRevisarAntecedentesController.resultadoServicioSub29}" liveResize="true" var="detalleS29"
+										rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+										styleClass="dataTable" id="tablaResultadosS29" rowIndexVar="rowIndex">
+										<p:columnGroup type="header">
+											<p:row>
+												<p:column colspan="2" headerText="Establecimiento" />
+											</p:row>
+											<p:row>
+												<p:column headerText="Código" />
+												<p:column headerText="Establecimiento" />
+											</p:row>
+										</p:columnGroup>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS29.establecimiento.codigoEstablecimiento}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS29.establecimiento.nombre}</span>
+										</p:column>
+									</p:dataTable>
+							
+							</p:tab>
+						</c:if>
+							<p:tab title="Per Cápita" id="tabPerCapita">
+							
+							</p:tab>
+					</p:tabView>
+	
+				</p:panel>
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

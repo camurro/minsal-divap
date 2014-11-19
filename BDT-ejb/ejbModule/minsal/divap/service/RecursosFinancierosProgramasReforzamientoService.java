@@ -24,6 +24,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.transaction.Transaction;
+import javax.xml.bind.JAXBException;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -96,6 +97,8 @@ import minsal.divap.vo.ServicioComunaVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloVO;
 import minsal.divap.vo.TipoComponenteVO;
+import minsal.divap.xml.GeneradorXML;
+import minsal.divap.xml.email.Email;
 import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.AntecendentesComuna;
 import cl.minsal.divap.model.AntecendentesComunaCalculado;
@@ -194,6 +197,12 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		case PLANTILLAPROGRAMAAPSSERVICIO:
 			filename = "plantillaProgramasAPSServicio.docx";
 			break;	
+		case PLANTILLARESOLUCIONCORREO:
+			filename = "plantillaResolucionCorreo.xml";
+			break;
+		case PLANTILLAORDINARIOCORREO:
+			filename = "plantillaOrdinarioCorreo.xml";
+			break;
 		default:
 			break;
 		}
@@ -1220,6 +1229,8 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			programaAnoSiguiente.setEstado(new EstadoPrograma(1));
 			programaAnoSiguiente.setEstadoFlujoCaja(new EstadoPrograma(1));
 			programaAnoSiguiente.setPrograma(programaAnoActual.getPrograma());
+			programaAnoSiguiente.setEstadoConvenio(new EstadoPrograma(1));
+			programaAnoSiguiente.setEstadoreliquidacion(new EstadoPrograma(1));
 			programasDAO.save(programaAnoSiguiente);
 		} 
 		
@@ -1860,14 +1871,36 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 		}
 		
 		
+		Integer idPlantillaCorreo = null;
 		if(programa.getDependenciaMunicipal()){
+			idPlantillaCorreo = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLARESOLUCIONCORREO);
+			
 			referenciaDocumento= documentoDAO.getLastDocumentoSummaryByResolucionAPSType(idProgramaSiguiente, TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS);
 			subject = "Resolución de Distribución de Recursos para el Programa "+programa.getNombre();
 		}
 		if(programa.getDependenciaServicio() && !programa.getDependenciaMunicipal()){
+			idPlantillaCorreo = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAORDINARIOCORREO);
+			
 			referenciaDocumento= documentoDAO.getLastDocumentoSummaryByResolucionAPSType(idProgramaSiguiente, TipoDocumentosProcesos.ORDINARIOPROGRAMASAPS);
 			subject = "Ordinario de Distribución de Recursos para el Programa"+programa.getNombre();
 		}
+		
+		ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryPlantillaCorreoVO = documentService.getDocumentByPlantillaId(idPlantillaCorreo);
+		DocumentoVO documentoPlantillaCorreoVO = documentService.getDocument(referenciaDocumentoSummaryPlantillaCorreoVO.getId());
+		String templatePlantillaCorreo = tmpDirDoc + File.separator + documentoPlantillaCorreoVO.getName();
+		templatePlantillaCorreo = templatePlantillaCorreo.replace(" ", "");
+
+		System.out.println("templatePlantillaCorreo template-->"+templatePlantillaCorreo);
+		GeneradorXML generadorXMLPlantillaResolucionRebaja = new GeneradorXML(templatePlantillaCorreo);
+		Email emailPLantilla = null;
+		try {
+			emailPLantilla = generadorXMLPlantillaResolucionRebaja.createObject(Email.class, documentoPlantillaCorreoVO.getContent());
+		} catch (JAXBException e1) {
+			e1.printStackTrace();
+		}
+		
+				
+		
 		
 		if(tipoProgramaPxQ){
 			if(programa.getDependenciaMunicipal() && !programa.getDependenciaServicio()){
@@ -1982,8 +2015,11 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 						cc.add(servicioSalud.getEncargadoFinanzasAps().getEmail().getValor());
 						cc.add(servicioSalud.getEncargadoAps().getEmail().getValor());
 						
-						emailService.sendMail(to,cc,null,subject,"Estimado " + servicioSalud.getDirector().getNombre() + " " + servicioSalud.getDirector().getApellidoPaterno() + " " + ((servicioSalud.getDirector().getApellidoMaterno() != null) ? servicioSalud.getDirector().getApellidoMaterno() : "") + ": <br /> <p> l</p>", adjuntos);
-						
+						if(emailPLantilla != null && emailPLantilla.getAsunto() != null && emailPLantilla.getCuerpo() != null){
+							emailService.sendMail(to,cc,null,emailPLantilla.getAsunto().replace("{nombrePrograma}", programa.getNombre()+" "),emailPLantilla.getCuerpo().replaceAll("(\r\n|\n)", "<br />").replace("{nombrePrograma}", programa.getNombre()+" "), adjuntos);
+						}else{
+							emailService.sendMail(to,cc,null,subject,"Estimado " + servicioSalud.getDirector().getNombre() + " " + servicioSalud.getDirector().getApellidoPaterno() + " " + ((servicioSalud.getDirector().getApellidoMaterno() != null) ? servicioSalud.getDirector().getApellidoMaterno() : "") + ": <br /> <p> l</p>", adjuntos);
+						}
 						
 						ReporteEmailsEnviados reporteEnviados = new ReporteEmailsEnviados();
 						reporteEnviados.setIdProgramaAno(programaAnoSiguiente);
