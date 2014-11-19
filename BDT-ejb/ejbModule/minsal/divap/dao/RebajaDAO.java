@@ -238,4 +238,34 @@ public class RebajaDAO {
 		return null;
 	}
 
+	public List<Rebaja> findRebajaByByUsuarioAno(String usuario, Integer ano){
+		try{
+			TypedQuery<Rebaja> query = this.em.createNamedQuery("Rebaja.findByIdRebaja", Rebaja.class);
+			query.setParameter("usuario", usuario);
+			query.setParameter("ano", ano);
+			return query.getResultList();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
+	
+	public List<ComunaCumplimiento> getCumplimientoPorAnoComuna(int idComuna, int ano) {
+		TypedQuery<ComunaCumplimiento> query = this.em.createNamedQuery("ComunaCumplimiento.findByAnoComuna", ComunaCumplimiento.class);
+		query.setParameter("idComuna", idComuna);
+		query.setParameter("ano", ano);
+		return query.getResultList(); 
+	}
+	
+	public Rebaja getRebajaByRebajaCorteAno(Integer rebajaCorteId, Integer ano){
+		TypedQuery<Rebaja> query = this.em.createNamedQuery("Rebaja.findByRebajaCorteAno", Rebaja.class);
+		query.setParameter("rebajaCorteId", rebajaCorteId);
+		query.setParameter("ano", ano);
+		List<Rebaja> rebajas = query.getResultList();
+		if(rebajas!=null && rebajas.size() > 0)
+			return rebajas.get(0);
+		return null;
+	}
+	
 }

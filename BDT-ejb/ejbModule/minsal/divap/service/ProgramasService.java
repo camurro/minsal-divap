@@ -11,9 +11,11 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.persistence.TypedQuery;
 
+import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.ComponenteDAO;
+import minsal.divap.dao.ComunaDAO;
+import minsal.divap.dao.ConveniosDAO;
 import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.dao.TipoSubtituloDAO;
@@ -22,10 +24,8 @@ import minsal.divap.enums.Subtitulo;
 import minsal.divap.model.mappers.ComponenteMapper;
 import minsal.divap.model.mappers.ProgramaMapper;
 import minsal.divap.vo.ComponentesVO;
-import minsal.divap.vo.ComunaVO;
 import minsal.divap.vo.DependenciaVO;
 import minsal.divap.vo.ProgramaAPSServicioResumenVO;
-import minsal.divap.vo.ProgramaAPSServicioVO;
 import minsal.divap.vo.ProgramaAPSVO;
 import minsal.divap.vo.ProgramaMunicipalHistoricoVO;
 import minsal.divap.vo.ProgramaMunicipalVO;
@@ -47,7 +47,6 @@ import cl.minsal.divap.model.ProgramaMunicipalCore;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
 import cl.minsal.divap.model.ProgramaServicioCore;
 import cl.minsal.divap.model.ProgramaServicioCoreComponente;
-import cl.minsal.divap.model.ServicioSalud;
 import cl.minsal.divap.model.TipoSubtitulo;
 
 @Stateless
@@ -58,6 +57,15 @@ public class ProgramasService {
 	@EJB
 	private ComponenteDAO componenteDAO;
 	@EJB
+	private ServicioSaludDAO servicioSaludDAO;
+	@EJB
+	private AntecedentesComunaDAO antecedentesComunaDAO;
+	@EJB ConveniosDAO conveniosDAO;
+	@EJB ComunaDAO comunaDAO;
+	
+	
+	
+
 	private ServicioSaludDAO serviciosDAO;
 	@EJB
 	private TipoSubtituloDAO tipoSubtituloDAO;
@@ -526,10 +534,6 @@ public class ProgramasService {
 		return listaProgramaServicioVO;
 	}
 
-	
-	
-
-	
 
 	public List<ProgramaVO> getProgramasBySubtitulo(Integer anoCurso, Subtitulo subtitulo) {
 		List<ProgramaVO> programas = new ArrayList<ProgramaVO>();

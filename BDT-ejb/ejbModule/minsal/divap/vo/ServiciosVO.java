@@ -14,6 +14,7 @@ public class ServiciosVO implements Serializable{
 	private PersonaVO director;
 	private PersonaVO encargadoAps;
 	private PersonaVO encargadoFinanzasAps;
+	private RegionSummaryVO region;
 	private List<ComunaSummaryVO> comunas;
 	private List<EstablecimientoSummaryVO> estableclimientos;
 	
@@ -99,6 +100,14 @@ public class ServiciosVO implements Serializable{
 	public void setEstableclimientos(
 			List<EstablecimientoSummaryVO> estableclimientos) {
 		this.estableclimientos = estableclimientos;
+	}
+
+	public RegionSummaryVO getRegion() {
+		return region;
+	}
+
+	public void setRegion(RegionSummaryVO region) {
+		this.region = region;
 	}
 
 	@Override

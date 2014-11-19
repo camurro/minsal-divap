@@ -49,7 +49,9 @@ import minsal.divap.vo.DocumentoVO;
 import minsal.divap.vo.PlanillaRebajaCalculadaVO;
 import minsal.divap.vo.RebajaVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
+import minsal.divap.vo.ReporteRebajaVO;
 import minsal.divap.vo.SeguimientoVO;
+import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.TipoCumplimientoVO;
 import minsal.divap.xml.GeneradorXML;
 import minsal.divap.xml.email.Email;
@@ -766,5 +768,8 @@ public class RebajaService {
 		TipoCumplimiento tipoCumplimiento = rebajaDAO.getCumplimientoByType(tiposCumplimiento);
 		return new TipoCumplimientoMapper().getBasic(tipoCumplimiento);
 	}
+	
+	
+	
 
 }

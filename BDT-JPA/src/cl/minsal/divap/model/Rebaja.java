@@ -30,7 +30,9 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name = "Rebaja.findAll", query = "SELECT r FROM Rebaja r"),
 	@NamedQuery(name = "Rebaja.findByIdRebaja", query = "SELECT r FROM Rebaja r WHERE r.idRebaja = :idRebaja"),
 	@NamedQuery(name = "Rebaja.findByUsuario", query = "SELECT r FROM Rebaja r WHERE r.usuario = :usuario"),
-	@NamedQuery(name = "Rebaja.findByFechaCreacion", query = "SELECT r FROM Rebaja r WHERE r.fechaCreacion = :fechaCreacion")})
+	@NamedQuery(name = "Rebaja.findByFechaCreacion", query = "SELECT r FROM Rebaja r WHERE r.fechaCreacion = :fechaCreacion"),
+	@NamedQuery(name = "Rebaja.findByUsuarioAno", query = "SELECT r FROM Rebaja r WHERE r.usuario.username = :usuario and r.ano.ano = :ano"),
+	@NamedQuery(name = "Rebaja.findByRebajaCorteAno", query = "SELECT r FROM Rebaja r WHERE r.rebajaCorte.rebajaCorteId = :rebajaCorteId and r.ano.ano = :ano")})
 public class Rebaja implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id

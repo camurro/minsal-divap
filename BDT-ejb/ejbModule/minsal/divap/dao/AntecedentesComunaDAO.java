@@ -237,6 +237,38 @@ public class AntecedentesComunaDAO {
 		}
 	}
 	
+	
+	public AntecendentesComunaCalculado findByIdAntecedentesComuna(
+			Integer idAntecedentesComuna) {
+		AntecendentesComunaCalculado entity = null;
+		try {
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByIdAntecedentesComuna", AntecendentesComunaCalculado.class);
+			query.setParameter("idAntecendentesComuna", idAntecedentesComuna);
+			List<AntecendentesComunaCalculado> antecendentesComunaCalculado = query.getResultList(); 
+			if(antecendentesComunaCalculado != null && antecendentesComunaCalculado.size() > 0){
+				entity = antecendentesComunaCalculado.get(0);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return entity;
+	}
+
+	public AntecendentesComunaCalculado findByComunaAno(Integer idComuna, Integer ano) {
+		try {
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByIdComunaAno", AntecendentesComunaCalculado.class);
+			query.setParameter("idComuna", idComuna);
+			query.setParameter("ano", ano);
+			List<AntecendentesComunaCalculado> antecendentesComunaCalculado = query.getResultList(); 
+			if(antecendentesComunaCalculado != null && antecendentesComunaCalculado.size() > 0){
+				return antecendentesComunaCalculado.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	public AntecendentesComuna getAntecendentesComunaByComunaAno(Integer idComuna, Integer ano) {
 		AntecendentesComuna result = null;
 		try {

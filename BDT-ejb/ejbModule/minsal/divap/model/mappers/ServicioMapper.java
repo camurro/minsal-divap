@@ -5,6 +5,7 @@ import java.util.List;
 
 import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.EstablecimientoSummaryVO;
+import minsal.divap.vo.RegionSummaryVO;
 import minsal.divap.vo.ServiciosSummaryVO;
 import minsal.divap.vo.ServiciosVO;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -41,6 +42,12 @@ public class ServicioMapper implements Mapper<ServicioSalud>{
 				establecimientos.add(new EstablecimientoSummaryVO(establecimiento.getId(), establecimiento.getNombre()));
 			}
 			serviciosVO.setEstableclimientos(establecimientos);
+		}
+		if(servicioSalud.getRegion() != null) {
+			RegionSummaryVO region = new RegionSummaryVO();
+			region.setId(servicioSalud.getRegion().getId());
+			region.setNombre(servicioSalud.getRegion().getNombre());
+			serviciosVO.setRegion(region);
 		}
 		return serviciosVO;
 	}

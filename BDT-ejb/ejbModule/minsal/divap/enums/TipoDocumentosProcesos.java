@@ -45,7 +45,9 @@ public enum TipoDocumentosProcesos{
 	PLANTILLACORREORESOLUCIONSERVICIOSALUDREBAJA(53,"Plantilla Correo Resoluciones Servicios de Salud - Rebaja"), PLANTILLACORREOCONSULTAREGIONALPERCAPITA(54,"Plantilla Correo Consulta Regional - percapita"),
 	PLANTILLACORREORESOLUCIONESPERCAPITA(55,"Plantilla Correo Resoluciones - percapita"), PLANTILLAOFICIOPROGRAMACIONCAJA(56,"Plantilla Oficio Programación Caja"),
 	
-	CONVENIOS(50,"Convenios Documentos"), PLANILLABASECUMPLIMIENTOMUNICIPAL(59,"Planilla Base Cumplimiento Municipal"), PLANILLABASECUMPLIMIENTOSERVICIO(60,"Planilla Base Cumplimiento Servicio");
+	CONVENIOS(50,"Convenios Documentos"), PLANILLABASECUMPLIMIENTOMUNICIPAL(59,"Planilla Base Cumplimiento Municipal"), PLANILLABASECUMPLIMIENTOSERVICIO(60,"Planilla Base Cumplimiento Servicio"),
+	
+	REPORTEPOBLACIONPERCAPITA(100,"Reporte Poblacion Per Capita"), REPORTEREBAJA(101,"Reporte Rebaja");
 
 	private Integer id;
 	private String name;

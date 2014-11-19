@@ -24040,6 +24040,72 @@ INSERT INTO cumplimiento_programa(id_cumplimiento_programa, programa, porcentaje
 values(8, 3, 40, 100, 0);
 
 
+------------------------------------------------------ingresando años anteriores para per capita --------------
+
+INSERT INTO ano_en_curso(ano, monto_percapital_basal, asignacion_adulto_mayor, inflactor, inflactor_marco_presupuestario)
+    VALUES (2012, 3794, 543, 1.3070, 1);
+
+
+
+
+-------------------------------------------------------18 noviembre: Se agregan las comunas auxiliares por cada servicio
+
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15203, 'OTRO01',1);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15204, 'OTRO02',2);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15205, 'OTRO03',3);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15206, 'OTRO04',4);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15207, 'OTRO05',5);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15208, 'OTRO06',6);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15209, 'OTRO07',7);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15210, 'OTRO08',8);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15211, 'OTRO09',9);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15212, 'OTRO10',10);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15213, 'OTRO11',11);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15214, 'OTRO12',12);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15215, 'OTRO13',13);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15216, 'OTRO14',14);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15217, 'OTRO15',15);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15218, 'OTRO16',16);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15219, 'OTRO17',17);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15220, 'OTRO18',18);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15221, 'OTRO19',19);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15222, 'OTRO20',20);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15223, 'OTRO21',21);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15224, 'OTRO22',22);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15225, 'OTRO23',23);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15226, 'OTRO24',24);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15227, 'OTRO25',25);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15228, 'OTRO26',26);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15229, 'OTRO27',27);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15230, 'OTRO28',28);
+INSERT INTO comuna(id, nombre, id_servicio_salud) VALUES (15231, 'OTRO42',42);
+
+ALTER TABLE comuna ADD COLUMN comuna_aux boolean;
+
+
+
+CREATE TABLE documento_reportes
+(
+  id_documento_reporte serial NOT NULL,
+  documento integer,
+  tipo_documento integer,
+  CONSTRAINT pk_documento_reportes PRIMARY KEY (id_documento_reporte ),
+  CONSTRAINT fk_referencia_documento FOREIGN KEY (documento)
+      REFERENCES referencia_documento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_tipo_documento FOREIGN KEY (tipo_documento)
+      REFERENCES tipo_documento (id_tipo_documento) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE documento_reportes
+  OWNER TO postgres;
+
+ALTER TABLE documento_reportes ADD COLUMN ano integer;
+ALTER TABLE documento_reportes ADD CONSTRAINT ano_fk FOREIGN KEY (ano) REFERENCES ano_en_curso (ano) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 

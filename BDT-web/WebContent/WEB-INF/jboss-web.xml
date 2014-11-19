@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jboss-web>
+	<security-domain>bpms</security-domain>
+	<!--security-domain>login</security-domain-->
 	<!--  <security-domain>login</security-domain>  -->
 	<security-domain>bpms</security-domain>
 </jboss-web> 

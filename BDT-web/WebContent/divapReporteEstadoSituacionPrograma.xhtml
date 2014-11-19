@@ -19,32 +19,38 @@
 						]
 					</div>
 					<br />
+										<h:panelGrid>
+												<h:outputText value="Programas: " styleClass="inputLabel" />
+												<p:selectOneMenu style="width:650px;" id="cbPrograma" value="#{reporteEstadoSituacionProgramaController.valorComboPrograma}">
+												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
+			           								<f:selectItems value="#{reporteEstadoSituacionProgramaController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
+	 			           							<p:ajax listener="#{reporteEstadoSituacionProgramaController.cargarComponentes}" update="cbComponente tabViewDatos" /> 
+ 			           								 
+			           	 						</p:selectOneMenu>
+										</h:panelGrid>	
+										<h:panelGrid>
+												<h:outputText value="Componentes: " styleClass="inputLabel" />
+												<p:selectOneMenu style="width:650px;" id="cbComponente" value="#{reporteEstadoSituacionProgramaController.valorComboComponente}">
+												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
+			           								<f:selectItems value="#{reporteEstadoSituacionProgramaController.programaSeleccionado.componentes}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="componente" />
+	 			           							<p:ajax listener="#{reporteEstadoSituacionProgramaController.cargarTabla}" update="tabViewDatos" />
+			           	 						</p:selectOneMenu>
+										</h:panelGrid>	
+										
+										<h:panelGrid>
+												<h:outputText value="Servicios: " styleClass="inputLabel" />
+												<p:selectOneMenu style="width:650px;" id="cbServicio" value="#{reporteEstadoSituacionProgramaController.valorComboServicio}">
+												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
+			           								<f:selectItems value="#{reporteEstadoSituacionProgramaController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+				           							<p:ajax listener="#{reporteEstadoSituacionProgramaController.cargarDatosServicio}" update="tabViewDatos" /> 
+			           	 						</p:selectOneMenu>
+										</h:panelGrid>
+										
+										
+					
 
-					<p:tabView>
-						<p:tab title="Subtítulo 21">
-							<h:panelGrid>
-								<h:panelGrid>
-									<h:outputText value="Programa: " styleClass="inputLabel" />
-									<p:selectOneMenu style="width:650px;" id="select1">
-										<f:selectItem itemLabel="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES"
-											itemValue="APOYO A LAS ACCIONES EN EL
-						NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES" />
-										<f:selectItem itemLabel="Seleccione" itemValue="" />
-									</p:selectOneMenu>
-								</h:panelGrid>
-							</h:panelGrid>
-							<h:panelGrid>
-								<h:outputText value="Servicio: " styleClass="inputLabel" />
-								<p:selectOneMenu onchange="document.getElementById('tablaSubtitulos').style.display = 'block';" id="select17" style="width:250px;">
-									<f:selectItem itemLabel="Metropolitano Oriente" itemValue="Metropolitano Oriente" />
-									<f:selectItem itemLabel="Concepción" itemValue="Concepción" />
-									<f:selectItem itemLabel="Talcahuano" itemValue="Concepción" />
-									<f:selectItem itemLabel="Iquique" itemValue="Concepción" />
-									<f:selectItem itemLabel="Seleccione" itemValue="" />
-								</p:selectOneMenu>
-							</h:panelGrid>
-
+					<p:tabView id="tabViewDatos">
+						<p:tab title="Subtítulo 21" rendered="#{procesoProgramacionController.mostrarSubtitulo21}"">
 							<br />
 							<p:dataTable resizableColumns="true" value="#{procesoProgramacionController.listadoServicios}" liveResize="true" var="_data"
 								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">

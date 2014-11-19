@@ -10,6 +10,7 @@ import javax.persistence.TypedQuery;
 
 import minsal.divap.enums.Subtitulo;
 import cl.minsal.divap.model.ConvenioComuna;
+import cl.minsal.divap.model.ConvenioComunaComponente;
 import cl.minsal.divap.model.ConvenioServicio;
 import cl.minsal.divap.model.ReferenciaDocumento;
 
@@ -260,6 +261,38 @@ public class ConveniosDAO {
 			query.setParameter("idServicio", idServicio);
 			query.setParameter("idComponentes", idComponentes);
 			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public ConvenioComuna getConvenioComunaByIdComunaIdProgramaAno(Integer idComuna, Integer idProgramaAno) {
+		try {
+			TypedQuery<ConvenioComuna> query = this.em.createNamedQuery("ConvenioComuna.findByIdComunaIdProgramaAno", ConvenioComuna.class);
+			query.setParameter("idComuna", idComuna);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			List<ConvenioComuna> result = query.getResultList();
+			if(result != null && result.size() >0 ){
+				return result.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+	// c.convenioComuna.idConvenioComuna = :idComuna and c.subtitulo.idTipoSubtitulo = :idSubtitulo and c.componente.id = :idComponente
+	public ConvenioComunaComponente getByIdConvenioComunaIdSubtituloIdComponente(Integer idConvenioComuna, Integer idSubtitulo, Integer idComponente){
+		try {
+			TypedQuery<ConvenioComunaComponente> query = this.em.createNamedQuery("ConvenioComunaComponente.findByIdConvenioComunaIdSubtituloIdComponente", ConvenioComunaComponente.class);
+			query.setParameter("idConvenioComuna", idConvenioComuna);
+			query.setParameter("idSubtitulo", idSubtitulo);
+			query.setParameter("idComponente", idComponente);
+			List<ConvenioComunaComponente> result = query.getResultList();
+			if(result != null && result.size() >0 ){
+				return result.get(0);
+			}
+			return null;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

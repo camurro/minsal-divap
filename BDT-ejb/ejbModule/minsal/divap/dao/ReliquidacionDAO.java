@@ -228,5 +228,22 @@ public class ReliquidacionDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	
+	public List<ReliquidacionServicio> getReliquidacionServicioByProgramaAnoServicioComponente(Integer idProgramaAno, Integer idServicio, Integer idComponente){
+		try{
+			TypedQuery<ReliquidacionServicio> query = this.em.createNamedQuery("ReliquidacionServicio.findByIdProgramaAnoIdServicioIdComponente", ReliquidacionServicio.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idComponente", idComponente);
+			return query.getResultList();
+		}
+		catch (Exception e){
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}		
+	}
+	
+	
 
 }
