@@ -18,8 +18,11 @@ public class ProgramaAPSVO implements Serializable{
 	private String comuna;
 	private Integer tarifa;
 	private Integer cantidad;
+	private Integer total;
 	private TiposPrograma tipoPrograma;
 	private Subtitulo subtitulo;
+	private Integer idPrograma;
+	private Integer idComponente;
 	//TO-DO Componentes
 	public Integer getIdServicioSalud() {
 		return idServicioSalud;
@@ -92,5 +95,25 @@ public class ProgramaAPSVO implements Serializable{
 		}
 		return row;
 	}
+	public Integer getTotal() {
+		return total;
+	}
+	public void setTotal(Integer total) {
+		this.total = total;
+	}
+	public Integer getIdPrograma() {
+		return idPrograma;
+	}
+	public void setIdPrograma(Integer idPrograma) {
+		this.idPrograma = idPrograma;
+	}
+	public Integer getIdComponente() {
+		return idComponente;
+	}
+	public void setIdComponente(Integer idComponente) {
+		this.idComponente = idComponente;
+	}
+
+
 	
 }

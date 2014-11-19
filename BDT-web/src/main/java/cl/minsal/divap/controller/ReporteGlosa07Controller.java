@@ -9,6 +9,7 @@ import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
+import minsal.divap.service.ReportesServices;
 import minsal.divap.service.ServicioSaludService;
 import minsal.divap.vo.ReporteGlosaVO;
 import minsal.divap.vo.ServiciosVO;
@@ -24,6 +25,8 @@ public class ReporteGlosa07Controller extends BaseController implements Serializ
 	private List<ReporteGlosaVO> reporteGlosaVO;
 	@EJB
 	private ServicioSaludService servicioSaludService;
+	@EJB
+	private ReportesServices reportesServices;
 	
 	private Long sumArt49perCapita;
 	private Long sumArt56reforzamientoMunicipal;
@@ -34,7 +37,7 @@ public class ReporteGlosa07Controller extends BaseController implements Serializ
 	
 	@PostConstruct 
 	public void init() {
-		this.reporteGlosaVO = servicioSaludService.getReporteGlosa();
+		this.reporteGlosaVO = reportesServices.getReporteGlosa();
 		this.cantidadFilas = this.reporteGlosaVO.size();
 		
 	}
@@ -42,7 +45,7 @@ public class ReporteGlosa07Controller extends BaseController implements Serializ
 	public void cargarTablaPorServicio(){
 		if(getValorComboServicio() != null){
 			if(getValorComboServicio().intValue() != 0){
-				this.reporteGlosaVO = servicioSaludService.getReporteGlosaPorServicio(getValorComboServicio());
+				this.reporteGlosaVO = reportesServices.getReporteGlosaPorServicio(getValorComboServicio());
 			}
 		}
 		

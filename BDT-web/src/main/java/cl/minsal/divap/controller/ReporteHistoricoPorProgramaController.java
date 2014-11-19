@@ -19,6 +19,7 @@ import org.primefaces.event.TabChangeEvent;
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ReliquidacionService;
+import minsal.divap.service.ReportesServices;
 import minsal.divap.service.ServicioSaludService;
 import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.ProgramaVO;
@@ -61,6 +62,8 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	private ServicioSaludService servicioSaludService;
 	@EJB
 	private ReliquidacionService reliquidacionService;
+	@EJB
+	private ReportesServices reportesServices;
 	
 	private Integer activeTab = 0;
 	Map<Integer, Subtitulo> tabSubtitulo = new HashMap<Integer, Subtitulo>();
@@ -109,15 +112,15 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	
 	
 	public void cargarTablaAll(){
-		this.reporteHistoricoPorProgramaVO = programasService.getReporteHistoricoPorProgramaVOAll(getValorComboPrograma(), this.subtituloSeleccionado);
+		this.reporteHistoricoPorProgramaVO = reportesServices.getReporteHistoricoPorProgramaVOAll(getValorComboPrograma(), this.subtituloSeleccionado);
 	}
 	
 	public void cargarTablaFiltroServicios(){
-		this.reporteHistoricoPorProgramaVO = programasService.getReporteHistoricoPorProgramaVOFiltroServicio(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
+		this.reporteHistoricoPorProgramaVO = reportesServices.getReporteHistoricoPorProgramaVOFiltroServicio(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
 	}
 	
 	public void cargarTablaFiltroServicioComuna(){
-		this.reporteHistoricoPorProgramaVO = programasService.getReporteHistoricoPorProgramaVOFiltroServicioComuna(getValorComboPrograma(), getValorComboServicio(), getValorComboComuna(), this.subtituloSeleccionado);
+		this.reporteHistoricoPorProgramaVO = reportesServices.getReporteHistoricoPorProgramaVOFiltroServicioComuna(getValorComboPrograma(), getValorComboServicio(), getValorComboComuna(), this.subtituloSeleccionado);
 	}
 	public void cargarComunas(){
 		if(getValorComboServicio() != null){

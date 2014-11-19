@@ -1,27 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	template="/WEB-INF/templates/default.xhtml">
 
 	<ui:define name="content">
-		<h:form enctype="multipart/form-data">
+		<h:form enctype="multipart/form-data" id="formMontosReliquidacion">
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="Reliquidación" />
 				</h1>
 				<p:panel id="Panel">
-					<h2><h:outputLabel value="#{procesoReliquidacionMuniController.programa.nombre}" /></h2>
+					<h2><h:outputLabel value="Programa #{procesoReliquidacionMuniController.programa.nombre}" /></h2>
 
-					<p class="parrafo"><h:outputLabel value="#{procesoReliquidacionMuniController.programa.descripcion}" /></p>
+					<p class="parrafo"></p>
 
 					<!-- ARCHIVOS DE TAREA -->
 					<h3>Archivos disponibles para la Tarea:</h3>
 					<div class="destacaArchivos ui-corner-all">
 						<span class="strong">Archivo: </span> Planillas de Reliquidacio para el Programa a Nivel Nacional
 						<ul class="versionesArchivo">
-							<li><h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <p:commandLink
-									value="Planilla Reliquidacion Nivel Nacional para programa NOMBRE PROGRAMA - municipal.xls" /></li>
-							<li><h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> <p:commandLink
-									value="Criterios de Cumplimiento para NOMBRE PROGRAMA.xls" /></li>
+							<li>
+								Planilla Reliquidacion Nivel Nacional para programa  #{procesoReliquidacionMuniController.programa.nombre} - Municipal.xlsx [ <h:graphicImage
+										value="resources/minsal/images/download-alt.png"
+										styleClass="divapIcons" /> <h:commandLink
+										action="#{procesoReliquidacionMuniController.downloadTemplate}"
+										value="Bajar">
+										<f:setPropertyActionListener
+											target="#{procesoReliquidacionMuniController.docIdDownload}"
+											value="#{procesoReliquidacionMuniController.idDocReliquidacionMunicipal}" />
+									</h:commandLink> ]	
+									
+							</li>
+							<li>
+								Planilla Cumplimiento para programa  #{procesoReliquidacionMuniController.programa.nombre} - Municipal.xlsx [ <h:graphicImage
+										value="resources/minsal/images/download-alt.png"
+										styleClass="divapIcons" /> <h:commandLink
+										action="#{procesoReliquidacionMuniController.downloadTemplate}"
+										value="Bajar">
+										<f:setPropertyActionListener
+											target="#{procesoReliquidacionMuniController.docIdDownload}"
+											value="#{procesoReliquidacionMuniController.docBaseMunicipal}" />
+									</h:commandLink> ]	
+							</li>
 						</ul>
 					</div>
 
@@ -29,31 +52,31 @@
 					<h:panelGrid id="busqueda_mis_tareas" columns="3">
 						<h:panelGrid>
 							<h:outputText value="Componente: " styleClass="inputLabel" />
-							<p:selectOneMenu>
-								<f:selectItem itemLabel="Seleccione" itemValue="" />  
-								<f:selectItems value="#{procesoReliquidacionMuniController.listadoComponentes}" itemLabel="#{componente.nombre}" var="componente" itemValue="#{componente.id}"/> 
+							<p:selectOneMenu value="#{procesoReliquidacionMuniController.componenteSeleccionado}">
+								<f:selectItem itemLabel="Seleccione Componente" itemValue="0" />  
+								<f:selectItems value="#{procesoReliquidacionMuniController.componentes}" itemLabel="#{componente.nombre}" var="componente" itemValue="#{componente.id}"/> 
 							</p:selectOneMenu>
 						</h:panelGrid>
 						<h:panelGrid>
 							<h:outputText value="Servicio: " styleClass="inputLabel" />
-							<p:selectOneMenu>
-								<f:selectItem itemLabel="Seleccione" itemValue="" />  
-								<f:selectItems value="#{procesoReliquidacionMuniController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
+							<p:selectOneMenu value="#{procesoReliquidacionMuniController.servicioSeleccionado}">
+								<f:selectItem itemLabel="Seleccione Servicio" itemValue="0" />  
+								<f:selectItems itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" value="#{procesoReliquidacionMuniController.servicios}" /> 
 							</p:selectOneMenu>
 						</h:panelGrid>
 						<h:panelGrid>
-						<br />
-						<p:commandButton value="Buscar" styleClass="x-btn-text" icon="ui-icon-search"
-					action="#{procesoReliquidacionMuniController.buscarReliquidacion}" ajax="false" />
+						<h:panelGrid>
+							<h:outputText value="" styleClass="inputLabel" />
+							<p:commandButton value="Buscar" styleClass="x-btn-text" icon="ui-icon-search" action="#{procesoReliquidacionMuniController.buscarReliquidacion}" update="formMontosReliquidacion:tablaDatos" ajax="false" />
+						</h:panelGrid>
 						</h:panelGrid>
 					</h:panelGrid>
 
 					<div id="tablaSubtitulos">
 						<h3>Subtítulos del Programa</h3>
-						<h:form id="form">
 							<h:panelGrid>
-								<p:dataTable resizableColumns="true" value="#{procesoReliquidacionMuniController.listadoEstablecimientos}" liveResize="true"
-									var="_establecimiento" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+								<p:dataTable id="tablaDatos" resizableColumns="true" value="#{procesoReliquidacionMuniController.reliquidacionMunicipal}" liveResize="true"
+									var="_municipal" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
 									styleClass="dataTable">
 
 									<p:columnGroup type="header">
@@ -61,127 +84,199 @@
 											<p:column rowspan="3" headerText="Comuna" />
 											<p:column rowspan="3" headerText="Convenio" />
 
-											<p:column colspan="8" headerText="Subtítulo 24" />
+											<p:column colspan="8" headerText="#{procesoReliquidacionMuniController.programaComponentesCuotas.componente.nombre}" />
 
 											<p:column rowspan="3" headerText="Marco Final" />
 										</p:row>
 										<p:row>
-											<p:column colspan="2" headerText="Primera Cuota" />
-											<p:column colspan="2" headerText="Segunda Cuota" />
+											<c:forEach var="cuotaVarMunicipal" items="#{procesoReliquidacionMuniController.programaComponentesCuotas.cuotas}">
+												<p:column colspan="2" headerText="Cuota N° #{cuotaVarMunicipal.numeroCuota}" />
+											</c:forEach>
 
 											<p:column colspan="4" headerText="Reliquidación" />
 										</p:row>
 										<p:row>
-											<p:column headerText="%" />
-											<p:column headerText="Monto" />
-
-											<p:column headerText="%" />
-											<p:column headerText="Monto" />
+											<c:forEach var="cuotaVarMunicipal" items="#{procesoReliquidacionMuniController.programaComponentesCuotas.cuotas}">
+												<p:column headerText="%" />
+												<p:column headerText="Monto" />
+											</c:forEach>
 
 
 											<p:column headerText="Cumplimiento" />
 											<p:column headerText="% Reliq." />
-											<p:column headerText="Reb. 2ª Cuota" />
-											<p:column headerText="Monto Final 2ª Cuota" />
+											<p:column headerText="Reb. Última Cuota" />
+											<p:column headerText="Monto Final Última Cuota" />
 										</p:row>
 									</p:columnGroup>
 
+								<c:if test="#{not empty procesoReliquidacionMuniController and fn:length(procesoReliquidacionMuniController.reliquidacionMunicipal) gt 0}">
 									<p:column>
-										<span class="textoAjustado textoPequenio centrado">#{_establecimiento.comuna.nombreComuna}</span>
+										<span class="textoAjustado textoPequenio centrado">#{_municipal.comuna}</span>
 									</p:column>
 
 									<p:column>
-										<h:outputText value="#{_establecimiento.tS24}" styleClass="textoPequenio textoAjustado">
+										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.marcoInicial}" styleClass="textoPequenio textoAjustado">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</p:column>
-
-									<p:column>
-										<span class="textoPequenio">60%</span>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasUno}">
+										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasUno.porcentaje}</span>
 									</p:column>
-									<p:column>
-										<h:outputText value="#{_establecimiento.tS24*0.6}" styleClass="textoPequenio textoAjustado">
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasUno}">
+										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasUno.monto}" styleClass="textoPequenio textoAjustado">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</p:column>
-									<p:column>
-										<span class="textoPequenio">40%</span>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasDos}">
+										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasDos.porcentaje}</span>
 									</p:column>
-									<p:column>
-										<h:outputText value="#{_establecimiento.tS24*0.4}" styleClass="textoPequenio textoAjustado">
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasDos}">
+										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasDos.monto}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasTres}">
+										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasTres.porcentaje}</span>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasTres}">
+										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasTres.monto}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasCuatro}">
+										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasCuatro.porcentaje}</span>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasCuatro}">
+										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasCuatro.monto}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasCinco}">
+										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasCinco.porcentaje}</span>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasCinco}">
+										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasCinco.monto}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasSeis}">
+										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasSeis.porcentaje}</span>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasSeis}">
+										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasSeis.monto}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasSiete}">
+										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasSiete.porcentaje}</span>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasSiete}">
+										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasSiete.monto}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasOcho}">
+										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasOcho.porcentaje}</span>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasOcho}">
+										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasOcho.monto}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasNueve}">
+										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasNueve.porcentaje}</span>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasNueve}">
+										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasNueve.monto}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasDiez}">
+										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasDiez.porcentaje}</span>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasDiez}">
+										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasDiez.monto}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasOnce}">
+										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasOnce.porcentaje}</span>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasOnce}">
+										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasOnce.monto}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										</h:outputText>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasDoce}">
+										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasDoce.porcentaje}</span>
+									</p:column>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasDoce}">
+										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasDoce.monto}" styleClass="textoPequenio textoAjustado">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</p:column>
 									<!-- CUMPLIMIENTO -->
 									<p:column styleClass="destacaArchivos">
-										<h:outputText value="#{_establecimiento.cumplimiento}" styleClass="textoPequenio textoAjustado">
-											<f:convertNumber type="percent" />
+										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.porcentajeCumplimiento}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="percent" minFractionDigits="2" />
 										</h:outputText>
 									</p:column>
 									<!-- MAXIMO CUMPLIMIENTO -->
 
 									<!-- % RELIQ -->
 									<p:column styleClass="destacaArchivos">
-										<h:outputText value="#{_establecimiento.reliquidacion}" styleClass="textoPequenio textoAjustado">
-											<f:convertNumber type="percent" />
+										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.porcentajeReliquidacion}" styleClass="textoPequenio textoAjustado">
+											<f:convertNumber type="percent" minFractionDigits="2"/>
 										</h:outputText>
 									</p:column>
 									<!-- MONTO RELIQ -->
 									<p:column styleClass="destacaArchivos">
-										<h:outputText value="#{_establecimiento.tS24*0.4*_establecimiento.reliquidacion}" styleClass="textoPequenio textoAjustado">
+										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.rebajaUltimaCuota}" styleClass="textoPequenio textoAjustado">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</p:column>
 									<p:column styleClass="destacaArchivos">
 										<h:outputText styleClass="textoAjustado textoPequenio centrado"
-											value="#{_establecimiento.tS24*0.4-(_establecimiento.tS24*0.4*_establecimiento.reliquidacion)}" id="totales">
+											value="#{_municipal.componenteReliquidacionPageVO.montoUltimaCuota}" id="totales">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</p:column>
 
 									<p:column>
 										<h:outputText styleClass="textoAjustado textoPequenio centrado"
-											value="#{_establecimiento.tS24*0.4-(_establecimiento.tS24*0.4*_establecimiento.reliquidacion)+_establecimiento.tS24*0.6}"
+											value="#{_municipal.marcoFinal}"
 											id="totales2">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</p:column>
-
+									</c:if>
 									<p:columnGroup type="footer">
 										<p:row>
 											<p:column />
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoReliquidacionMuniController.totalS24}" id="total22" styleClass="textoAjustado textoPequenio centrado">
+													<h:outputText value="#{procesoReliquidacionMuniController.totalMontoConvenios}" id="total22" styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
 												</f:facet>
 											</p:column>
+											<c:forEach var="montosCuotas" items="#{procesoReliquidacionMuniController.getTotalMontosCuotas}">
 											<p:column />
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoReliquidacionMuniController.totalS24*0.6}" id="total2" styleClass="textoAjustado textoPequenio centrado">
+													<h:outputText value="#{montosCuotas}"  styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
 												</f:facet>
 											</p:column>
-
-											<p:column />
-
-											<p:column>
-												<f:facet name="footer">
-													<h:outputText value="#{procesoReliquidacionMuniController.totalS24*0.4}" id="total3" styleClass="textoAjustado textoPequenio centrado">
-														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-													</h:outputText>
-												</f:facet>
-											</p:column>
+											</c:forEach>
 
 											<p:column />
 											<p:column />
 
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoReliquidacionMuniController.totalS24*0.524*0.4}" id="total"
+													<h:outputText value="#{procesoReliquidacionMuniController.totalRebajaUltimaCouta}" id="total"
 														styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
@@ -189,7 +284,7 @@
 											</p:column>
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoReliquidacionMuniController.totalS24*0.486*0.4}" id="total5"
+													<h:outputText value="#{procesoReliquidacionMuniController.totalUltimaCouta}" id="total5"
 														styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
@@ -197,7 +292,7 @@
 											</p:column>
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoReliquidacionMuniController.totalS24*0.6+procesoReliquidacionMuniController.totalS24*0.486*0.4}"
+													<h:outputText value="#{procesoReliquidacionMuniController.totalMarcoFinal}"
 														styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
@@ -207,12 +302,18 @@
 									</p:columnGroup>
 								</p:dataTable>
 							</h:panelGrid>
+							
+							<br/><br/>
+							<h:panelGrid columns="3">
+							<p:commandButton id="botonContinuar" value="Volver a Cargar Planilla" ajax="false"	action="#{procesoReliquidacionMuniController.continuar}" icon="ui-icon-reload">
+								<f:setPropertyActionListener target="#{procesoReliquidacionMuniController.target}"	value="bandejaTareas.jsf" />
+							</p:commandButton>
+							<h:outputText value=" " />
+							<p:commandButton id="botonContinuarReparos" value="Finalizar | Montos Correctos" ajax="false"	action="#{procesoReliquidacionMuniController.continuarConReparos}" icon="ui-icon-reload">
+								<f:setPropertyActionListener target="#{procesoReliquidacionMuniController.target}"	value="bandejaTareas.jsf" />
+							</p:commandButton>
+							</h:panelGrid>
 
-							<p:commandButton value="Volver a Cargar Planilla" styleClass="x-btn-text"
-								action="divapProcesoReliqSubirPlanillas?faces-redirect=true" ajax="false" icon="ui-icon-reload" />
-							<p:commandButton value="Finalizar | Montos Correctos" styleClass="x-btn-text"
-								action="divapProcesoReliqSeguimientoDocumentacion?faces-redirect=true" ajax="false" icon="ui-icon-seek-first" />
-						</h:form>
 					</div>
 				</p:panel>
 

@@ -16,6 +16,8 @@ public class SubtituloProgramasVO implements Serializable{
 	private Integer monto;
 	private Integer cantidad;
 	private Integer total;
+	private Integer totalFuturo;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -45,6 +47,12 @@ public class SubtituloProgramasVO implements Serializable{
 	}
 	public void setTotal(Integer total) {
 		this.total = total;
+	}
+	public Integer getTotalFuturo() {
+		return totalFuturo;
+	}
+	public void setTotalFuturo(Integer totalFuturo) {
+		this.totalFuturo = totalFuturo;
 	}
 	
 	

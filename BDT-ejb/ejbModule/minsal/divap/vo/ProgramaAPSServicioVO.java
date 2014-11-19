@@ -23,6 +23,7 @@ public class ProgramaAPSServicioVO implements Serializable{
 	private String establecimiento;
 	private Integer tarifa;
 	private Integer cantidad;
+	private Integer total;
 	private TiposPrograma tipoPrograma;
 	private Subtitulo subtitulo;
 	//TO-DO Componentes
@@ -126,6 +127,12 @@ public class ProgramaAPSServicioVO implements Serializable{
 	}
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+	public Integer getTotal() {
+		return total;
+	}
+	public void setTotal(Integer total) {
+		this.total = total;
 	}
 	
 	

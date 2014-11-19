@@ -15,7 +15,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import minsal.divap.enums.TiposPrograma;
+import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.exception.ExcelFormatException;
 import minsal.divap.service.ProgramasService;
@@ -27,6 +27,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.model.UploadedFile;
 
+import cl.redhat.bandejaTareas.util.JSONHelper;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 @Named ("procesoReliquidacionPlanillasController") 
@@ -117,6 +118,7 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 					Integer docReliquidacion = persistFile(filename, contentPlanillaMunicipalFile);
 					if(docReliquidacion != null){
 						docIds.add(docReliquidacion);
+						reliquidacionService.moveToAlfresco(idReliquidacion, docReliquidacion, TipoDocumentosProcesos.PLANILLABASECUMPLIMIENTOMUNICIPAL, null);
 					}
 					ok = true;
 				}
@@ -127,6 +129,7 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 					Integer docReliquidacion = persistFile(filename, contentPlanillaServicioFile);
 					if(docReliquidacion != null){
 						docIds.add(docReliquidacion);
+						reliquidacionService.moveToAlfresco(idReliquidacion, docReliquidacion, TipoDocumentosProcesos.PLANILLABASECUMPLIMIENTOSERVICIO, null);
 					}
 					setArchivosNoValidos(false);
 					mensaje = "Los archivos fueron cargados correctamente.";
@@ -157,6 +160,7 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 						Integer docReliquidacion = persistFile(filename, contentPlanillaMunicipalFile);
 						if(docReliquidacion != null){
 							docIds.add(docReliquidacion);
+							reliquidacionService.moveToAlfresco(idReliquidacion, docReliquidacion, TipoDocumentosProcesos.PLANILLABASECUMPLIMIENTOMUNICIPAL, null);
 						}
 						setArchivosNoValidos(false);
 						mensaje = "El archivo fue cargado correctamente.";
@@ -186,6 +190,7 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 						Integer docReliquidacion = persistFile(filename, contentPlanillaServicioFile);
 						if(docReliquidacion != null){
 							docIds.add(docReliquidacion);
+							reliquidacionService.moveToAlfresco(idReliquidacion, docReliquidacion, TipoDocumentosProcesos.PLANILLABASECUMPLIMIENTOSERVICIO, null);
 						}
 						setArchivosNoValidos(false);
 						mensaje = "El archivo fue cargado correctamente.";
@@ -225,6 +230,10 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 			}else{
 				sufijoTarea = "servicio";
 			}
+		}
+		if (this.docIds != null) {
+			System.out.println("documentos_ -->"+ JSONHelper.toJSON(this.docIds));
+			parameters.put("documentos_", JSONHelper.toJSON(this.docIds));
 		}
 		parameters.put("sufijoTarea_", sufijoTarea);
 		return parameters;

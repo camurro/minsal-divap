@@ -2,7 +2,7 @@ package minsal.divap.enums;
 
 
 public enum TiposPrograma{
-	ProgramaPxQ(1, "PxQ"),  ProgramaHistorico(2,"Historico");
+	ProgramaPxQ(1, "PxQ"),  ProgramaHistorico(2,"Historico"), ProgramaLey(3,"Ley");
 	
 	private Integer id;
 	private String name;

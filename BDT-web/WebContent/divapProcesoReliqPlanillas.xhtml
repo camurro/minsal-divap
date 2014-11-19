@@ -19,9 +19,7 @@
 						<h3>Descargar Planilla Base del Programa</h3>
 						<ul class="versionesArchivo">
 							<c:if test="#{procesoReliquidacionPlanillasController.programa.dependenciaMunicipal}">
-								
 								<li>
-									 
 									Planilla Base Cumplimiento #{procesoReliquidacionPlanillasController.programa.nombre} - Municipal.xls [ <h:graphicImage
 										value="resources/minsal/images/download-alt.png"
 										styleClass="divapIcons" /> <h:commandLink
@@ -31,7 +29,6 @@
 											target="#{procesoReliquidacionPlanillasController.docIdDownload}"
 											value="#{procesoReliquidacionPlanillasController.docMunicipal}" />
 									</h:commandLink> ]
-
 								</li>
 							</c:if>
 							<c:if test="#{procesoReliquidacionPlanillasController.programa.dependenciaServicio}">	

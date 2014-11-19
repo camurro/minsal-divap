@@ -6,6 +6,8 @@ import java.util.List;
 import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.vo.CellExcelVO;
 import minsal.divap.vo.ProgramaAPSVO;
+import minsal.divap.vo.ProgramaMunicipalVO;
+import minsal.divap.vo.ResumenProgramaMixtoVO;
 
 public class ProgramaAPSMunicipalesSheetExcel extends ExcelTemplate<ProgramaAPSVO>{
 	private List<CellExcelVO> headerComplex = null;
@@ -22,6 +24,7 @@ public class ProgramaAPSMunicipalesSheetExcel extends ExcelTemplate<ProgramaAPSV
 		subHeadeComplex = subHeader;
 	}
 	
+
 	@Override
 	public List<List<Object>> getDataList() {
 		List<List<Object>> dataList = new ArrayList<List<Object>>();

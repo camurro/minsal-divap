@@ -159,19 +159,6 @@ public class ReliquidacionDAO {
 		}	
 	}
 
-	public List<Cuota> getCuotasByProgramaAnoComponentes(Integer idProgramaAno, List<Integer> idComponentes) {
-		try{
-			TypedQuery<Cuota> query = this.em.createNamedQuery("Cuota.findByIdProgramaAnoIdComponentes", Cuota.class);
-			query.setParameter("idProgramaAno", idProgramaAno);
-			query.setParameter("idComponentes", idComponentes);
-			return query.getResultList();
-		} catch (Exception e){
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}	
-	}
-
-
 	public List<ReliquidacionComuna> getReliquidacionComunaByProgramaAnoServicioComponenteReliquidacion(Integer idProgramaAno, Integer idServicio, Integer idComponente, Integer idReliquidacion) {
 		try{
 			List<Integer> idComponentes = new ArrayList<Integer>();
@@ -185,13 +172,6 @@ public class ReliquidacionDAO {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-	}
-
-
-	public List<Cuota> getCuotasByProgramaAnoComponente(Integer idProgramaAno, Integer componente) {
-		List<Integer> idComponentes = new ArrayList<Integer>();
-		idComponentes.add(componente);
-		return getCuotasByProgramaAnoComponentes(idProgramaAno, idComponentes);
 	}
 
 	public ReliquidacionComuna getReliquidacionComunaByProgramaAnoComunaComponenteReliquidacion(Integer idProgramaAno, Integer idComuna, Integer idComponente, Integer idReliquidacion) {
@@ -265,4 +245,5 @@ public class ReliquidacionDAO {
 	}
 	
 	
+
 }

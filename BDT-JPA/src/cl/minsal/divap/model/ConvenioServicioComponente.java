@@ -50,8 +50,6 @@ public class ConvenioServicioComponente implements Serializable {
     @JoinColumn(name = "componente", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Componente componente;
-    @Column(name = "monto_rebaja")
-    private Integer montoRebaja;
 
     public ConvenioServicioComponente() {
     }
@@ -104,14 +102,6 @@ public class ConvenioServicioComponente implements Serializable {
     public void setComponente(Componente componente) {
         this.componente = componente;
     }
-
-    public Integer getMontoRebaja() {
-		return montoRebaja;
-	}
-
-	public void setMontoRebaja(Integer montoRebaja) {
-		this.montoRebaja = montoRebaja;
-	}
 
 	@Override
     public int hashCode() {

@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -57,6 +58,7 @@ public class ProgramaAno implements Serializable {
 	@ManyToOne(optional = false)
 	private AnoEnCurso ano;
 	@OneToMany(mappedBy = "idPrograma")
+	@OrderBy("numeroCuota ASC")
 	private Set<Cuota> cuotas;
 	@OneToMany(mappedBy = "idProgramaAno")
 	private Set<MarcoPresupuestario> marcosPresupuestarios;

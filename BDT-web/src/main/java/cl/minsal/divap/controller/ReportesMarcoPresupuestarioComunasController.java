@@ -1,37 +1,26 @@
 package cl.minsal.divap.controller;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
 import javax.inject.Named;
 
 import minsal.divap.enums.Subtitulo;
+import minsal.divap.service.ReportesServices;
 import minsal.divap.service.ServicioSaludService;
 import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.ReporteMarcoPresupuestarioVO;
 import minsal.divap.vo.ServiciosVO;
 
-import org.apache.log4j.Logger;
 import org.primefaces.event.TabChangeEvent;
 
-import cl.minsal.divap.pojo.HistoricoProgramaPojo;
-import cl.minsal.divap.pojo.MarcoPresupuestarioComunaPojo;
-import cl.minsal.divap.pojo.ReportePerCapitaPojo;
-import cl.minsal.divap.pojo.ReporteRebajaPojo;
 import cl.redhat.bandejaTareas.controller.BaseController;
-import cl.redhat.bandejaTareas.util.BandejaProperties;
 
 @Named ( "reportesMarcoPresupuestarioComunasController" )
 @ViewScoped public class ReportesMarcoPresupuestarioComunasController extends BaseController implements Serializable {
@@ -57,6 +46,8 @@ import cl.redhat.bandejaTareas.util.BandejaProperties;
 	
 	@EJB
 	private ServicioSaludService servicioSaludService;
+	@EJB
+	private ReportesServices reportesServices;
 
 
 	@PostConstruct public void init() {
@@ -104,7 +95,7 @@ import cl.redhat.bandejaTareas.util.BandejaProperties;
 	public void cargarTablaServiciosFiltradosComuna(){
 		System.out.println("debiera cargar la tabla");
 		System.out.println("getValorComboComuna() --> "+getValorComboComuna());
-		this.reporteMarcoPresupuestarioVO = servicioSaludService.getReporteMarcoPorComuna(getValorComboServicio(), this.subtituloSeleccionado, getValorComboComuna(), 2014, getLoggedUsername());
+		this.reporteMarcoPresupuestarioVO = reportesServices.getReporteMarcoPorComuna(getValorComboServicio(), this.subtituloSeleccionado, getValorComboComuna(), 2014, getLoggedUsername());
 	}
 	
 	

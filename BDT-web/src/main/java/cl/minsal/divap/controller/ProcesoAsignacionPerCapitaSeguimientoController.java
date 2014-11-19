@@ -279,6 +279,7 @@ implements Serializable {
 		parameters.put("usuario", getSessionBean().getUsername());
 		parameters.put("rechazarRevalorizar_", new Boolean(isRechazarRevalorizar_()));
 		parameters.put("rechazarSubirArchivos_", new Boolean(isRechazarSubirArchivos_()));
+		parameters.put("enviarOficioConsultaRegional_", new Boolean(true));
 		parameters.put("aprobar_", new Boolean(isAprobar_()));
 		return parameters;
 	}
