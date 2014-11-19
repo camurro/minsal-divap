@@ -3,13 +3,13 @@
 	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
 
 	<ui:define name="content">
-		<h:form enctype="multipart/form-data">
+		<h:form id="formTabView" enctype="multipart/form-data">
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="DIVAP Reportes" />
 				</h1>
 				<p:panel id="Panel">
-					<h2>Marco Presupuestario por Comuna</h2>
+					<h2>Marco Presupuestario</h2>
 
 					<div class="destacaArchivos ui-corner-all">
 						<h3>Archivos Disponibles:</h3>
@@ -19,32 +19,16 @@
 						]
 					</div>
 					<br />
+					
+							
 
-					<p:tabView>
-						<p:tab title="Subtítulo 21">
-							<h:panelGrid>
-								<h:outputText value="Servicio: " styleClass="inputLabel" />
-								<p:selectOneMenu onchange="document.getElementById('tablaSubtitulos').style.display = 'block';" id="select17" style="width:250px;">
-									<f:selectItem itemLabel="Metropolitano Oriente" itemValue="Metropolitano Oriente" />
-									<f:selectItem itemLabel="Concepción" itemValue="Concepción" />
-									<f:selectItem itemLabel="Talcahuano" itemValue="Concepción" />
-									<f:selectItem itemLabel="Iquique" itemValue="Concepción" />
-									<f:selectItem itemLabel="Seleccione" itemValue="" />
-								</p:selectOneMenu>
-							</h:panelGrid>
-							<h:panelGrid>
-								<h:outputText value="Comuna: " styleClass="inputLabel" />
-								<p:selectOneMenu>
-									<f:selectItem itemLabel="Macul" itemValue="Metropolitano Oriente" />
-									<f:selectItem itemLabel="La Reina" itemValue="Concepción" />
-									<f:selectItem itemLabel="Las Condes" itemValue="Concepción" />
-									<f:selectItem itemLabel="Puente Alto" itemValue="Concepción" />
-									<f:selectItem itemLabel="Seleccione" itemValue="" />
-								</p:selectOneMenu>
-							</h:panelGrid>
+					<p:tabView id="tabView">
+					<p:ajax event="tabChange" listener="#{reportesMarcoPresupuestarioComunasController.onTabChange}" update="tabView :formTabView:cbServicio :formTabView:cbComuna" />
+						<p:tab id="Sub21" title="Subtítulo 21">
+							
 							<br />
-							<p:dataTable resizableColumns="true" value="#{reportesController.listMarcoPresupuestarioComuna}" liveResize="true" var="_data"
-								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+							<p:dataTable resizableColumns="true" value="#{reportesMarcoPresupuestarioComunasController.reporteMarcoPorComuna}" liveResize="true" var="_data"
+								rows="10" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" scrollable="true">
 
 								<p:columnGroup type="header">
 									<p:row>
@@ -62,26 +46,26 @@
 									<span class="textoAjustado textoPequenio centrado">#{_data.programa}</span>
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.programa}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data.componente}</span>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2014}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marco}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.convenio2014}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.convenios}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 
 								<p:column>
-									<h:outputText value="#{_data.remesas2014}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.remesasAcumuladas}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.porcentajeRemesa2014}">
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.porcentajeCuotaTransferida}">
 										<f:convertNumber type="percent" />
 									</h:outputText>
 								</p:column>
@@ -96,14 +80,14 @@
 										<p:column />
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalMarcos}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{4661930*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalConvenios}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -111,14 +95,14 @@
 
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{((466124430*1.03*5)/12)*6}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalRemesasAcumuladas}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{(((466124430*1.03*9)/12)*6)/(466124430*1.05*5)}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalRemesasAcumuladas}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="percent" />
 												</h:outputText>
 											</f:facet>
@@ -129,9 +113,309 @@
 
 							</p:dataTable>
 						</p:tab>
-						<p:tab title="Subtítulo 22"></p:tab>
-						<p:tab title="Subtítulo 24"></p:tab>
-						<p:tab title="Subtítulo 29"></p:tab>
+						
+						
+						<p:tab id="Sub22" title="Subtítulo 22">
+							
+							<br />
+							<p:dataTable resizableColumns="true" value="#{reportesMarcoPresupuestarioComunasController.reporteMarcoPorComuna}" liveResize="true" var="_data"
+								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" scrollable="true">
+
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column headerText="Líneas Programáticas" />
+										<p:column headerText="Componente" />
+										<p:column headerText="Marco (2014)" />
+										<p:column headerText="Convenios (2014)" />
+										<p:column headerText="Remesas Acumuladas (2014)" />
+										<p:column headerText="% Cuota Transferida al 04/06/2014" />
+										<p:column headerText="Observación" />
+									</p:row>
+								</p:columnGroup>
+
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.programa}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.componente}</span>
+								</p:column>
+								<p:column>
+									<h:outputText value="#{_data.marco}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText value="#{_data.convenios}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+
+								<p:column>
+									<h:outputText value="#{_data.remesasAcumuladas}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.porcentajeCuotaTransferida}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>
+
+								<p:column>
+									<h:outputText value="#{_data.observacion}" styleClass="textoPequenio textoAjustado" />
+								</p:column>
+
+								<p:columnGroup type="footer">
+									<p:row>
+										<p:column />
+										<p:column />
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalMarcos}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalConvenios}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalRemesasAcumuladas}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalRemesasAcumuladas}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="percent" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column></p:column>
+									</p:row>
+								</p:columnGroup>
+
+							</p:dataTable>
+						</p:tab>
+						
+						<p:tab id="Sub24" title="Subtítulo 24">
+						
+						<h:panelGrid>
+								<h:outputText value="Servicio: " styleClass="inputLabel" />
+								<p:selectOneMenu style="width:650px;" id="cbServicio"
+									value="#{reportesMarcoPresupuestarioComunasController.valorComboServicio}">
+									<f:selectItem itemLabel="Seleccione" itemValue="0" />
+									<f:selectItems
+										value="#{reportesMarcoPresupuestarioComunasController.servicios}"
+										itemLabel="#{servicio.nombre_servicio}"
+										itemValue="#{servicio.id_servicio}" var="servicio" />
+									<p:ajax
+										listener="#{reportesMarcoPresupuestarioComunasController.cargarComunas}"
+										update="cbComuna" />
+								</p:selectOneMenu>
+							</h:panelGrid>
+
+							<h:panelGrid>
+								<h:outputText value="Comuna: " styleClass="inputLabel" />
+								<p:selectOneMenu style="width:650px;" id="cbComuna"
+									value="#{reportesMarcoPresupuestarioComunasController.valorComboComuna}">
+									<f:selectItem itemLabel="Seleccione" itemValue="0" />
+									<f:selectItems
+										value="#{reportesMarcoPresupuestarioComunasController.servicioSeleccionado.comunas}"
+										itemLabel="#{comuna.nombre}" itemValue="#{comuna.id}"
+										var="comuna" />
+									<p:ajax
+										listener="#{reportesMarcoPresupuestarioComunasController.cargarTablaServiciosFiltradosComuna}"
+										update="tabView">
+									</p:ajax>
+								</p:selectOneMenu>
+							</h:panelGrid>
+							
+							<br />
+							<p:dataTable resizableColumns="true" value="#{reportesMarcoPresupuestarioComunasController.reporteMarcoPorComuna}" liveResize="true" var="_data"
+								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" scrollable="true">
+
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column headerText="Líneas Programáticas" />
+										<p:column headerText="Componente" />
+										<p:column headerText="Marco (2014)" />
+										<p:column headerText="Convenios (2014)" />
+										<p:column headerText="Remesas Acumuladas (2014)" />
+										<p:column headerText="% Cuota Transferida al 04/06/2014" />
+										<p:column headerText="Observación" />
+									</p:row>
+								</p:columnGroup>
+
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.programa}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.componente}</span>
+								</p:column>
+								<p:column>
+									<h:outputText value="#{_data.marco}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText value="#{_data.convenios}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+
+								<p:column>
+									<h:outputText value="#{_data.remesasAcumuladas}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.porcentajeCuotaTransferida}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>
+
+								<p:column>
+									<h:outputText value="#{_data.observacion}" styleClass="textoPequenio textoAjustado" />
+								</p:column>
+
+								<p:columnGroup type="footer">
+									<p:row>
+										<p:column />
+										<p:column />
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalMarcos}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalConvenios}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalRemesasAcumuladas}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalRemesasAcumuladas}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="percent" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column></p:column>
+									</p:row>
+								</p:columnGroup>
+
+							</p:dataTable>
+						</p:tab>
+						
+						<p:tab id="Sub29" title="Subtítulo 29">
+							
+							<br />
+							<p:dataTable resizableColumns="true" value="#{reportesMarcoPresupuestarioComunasController.reporteMarcoPorComuna}" liveResize="true" var="_data"
+								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" scrollable="true">
+
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column headerText="Líneas Programáticas" />
+										<p:column headerText="Componente" />
+										<p:column headerText="Marco (2014)" />
+										<p:column headerText="Convenios (2014)" />
+										<p:column headerText="Remesas Acumuladas (2014)" />
+										<p:column headerText="% Cuota Transferida al 04/06/2014" />
+										<p:column headerText="Observación" />
+									</p:row>
+								</p:columnGroup>
+
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.programa}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.componente}</span>
+								</p:column>
+								<p:column>
+									<h:outputText value="#{_data.marco}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText value="#{_data.convenios}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+
+								<p:column>
+									<h:outputText value="#{_data.remesasAcumuladas}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.porcentajeCuotaTransferida}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>
+
+								<p:column>
+									<h:outputText value="#{_data.observacion}" styleClass="textoPequenio textoAjustado" />
+								</p:column>
+
+								<p:columnGroup type="footer">
+									<p:row>
+										<p:column />
+										<p:column />
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalMarcos}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalConvenios}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalRemesasAcumuladas}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalRemesasAcumuladas}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="percent" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column></p:column>
+									</p:row>
+								</p:columnGroup>
+
+							</p:dataTable>
+						</p:tab>
+						
 					</p:tabView>
 				</p:panel>
 

@@ -53,6 +53,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	 * SUBTITULO 22
 	 */
 	private Integer valorComboSubtitulo22;
+	
 
 	// Convenio Remesa
 	private Integer valorComboSubtitulo22Componente;

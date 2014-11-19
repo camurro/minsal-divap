@@ -16,6 +16,7 @@ import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ProgramaMunicipalCore;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
 import cl.minsal.divap.model.ProgramaServicioCoreComponente;
 
@@ -375,6 +376,48 @@ public class ProgramasDAO {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public List<ProgramaMunicipalCore> getProgramasMunicipalCoreByComuna(Integer idComuna){
+		try {
+			TypedQuery<ProgramaMunicipalCore> query = this.em.createNamedQuery("ProgramaMunicipalCore.findByComuna", ProgramaMunicipalCore.class);
+			query.setParameter("comuna", idComuna);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+	
+	public ProgramaMunicipalCore getProgramaMunicipalCoreByComunaProgramaAno(Integer idComuna, Integer idProgramaAno){
+		try {
+			TypedQuery<ProgramaMunicipalCore> query = this.em.createNamedQuery("ProgramaMunicipalCore.findByProgramaAnoComuna", ProgramaMunicipalCore.class);
+			query.setParameter("comuna", idComuna);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			List<ProgramaMunicipalCore> result = query.getResultList();
+			if(result != null && result.size() >0 ){
+				return result.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+	
+	
+	public ProgramaMunicipalCoreComponente getByIdProgramaMunicipalCore(
+			Integer idProgramaMunicipalCore) {
+		try{
+		TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.findByIdProgramaMunicipalCore", ProgramaMunicipalCoreComponente.class);
+		query.setParameter("idProgramaMunicipalCore", idProgramaMunicipalCore);
+		List<ProgramaMunicipalCoreComponente> results = query.getResultList();
+		if (results.size() >= 1)
+			return results.get(0);
+	} catch (Exception e) {
+		throw new RuntimeException(e);
+	}
+	return null;
 	}
 
 }

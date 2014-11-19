@@ -28,6 +28,7 @@ import minsal.divap.dao.DocumentOtDAO;
 import minsal.divap.dao.EstimacionFlujoCajaDAO;
 import minsal.divap.dao.RebajaDAO;
 import minsal.divap.dao.ReliquidacionDAO;
+import minsal.divap.dao.ReportesDAO;
 import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.model.mappers.PercapitaReferenciaDocumentoMapper;
@@ -46,6 +47,7 @@ import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.DocumentoOt;
 import cl.minsal.divap.model.DocumentoRebaja;
 import cl.minsal.divap.model.DocumentoReliquidacion;
+import cl.minsal.divap.model.DocumentoReportes;
 import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.OrdenTransferencia;
 import cl.minsal.divap.model.Plantilla;
@@ -77,6 +79,10 @@ public class DocumentService {
 	private AntecedentesComunaDAO antecedentesComunaDAO;
 	@EJB
 	private AlfrescoService alfrescoService;
+	@EJB
+	private ReportesDAO reportesDAO;
+	
+	
 	@Resource(name="tmpDir")
 	private String tmpDir;
 	@Resource(name="tmpDownloadDirectory")
@@ -671,6 +677,10 @@ public class DocumentService {
 			Integer programaSeleccionado) {
 		return fileDAO.getPlantillaByTypeAndProgram(tipoDocumentoProceso,programaSeleccionado);
 	}
+	
+	public ReferenciaDocumentoSummaryVO getDocumentByTypeAnoReportes(TipoDocumentosProcesos tipoDocumentoProceso, Integer ano) {
+		return new ReferenciaDocumentoMapper().getSummary(fileDAO.getDocumentByTypeAnoReportes(tipoDocumentoProceso, ano));
+	}
 
 	public void zipFolder(String srcFolder, String destZipFile) throws Exception {
 		ZipOutputStream zip = null;
@@ -718,6 +728,52 @@ public class DocumentService {
 				addFileToZip(path + "/" + folder.getName(), srcFolder + "/" + fileName, zip);
 			}
 		}
+	}
+	
+	
+	
+	public Integer createDocumentReportePoblacionPercapita(TipoDocumento tipoDocumentoProceso,
+			String nodeRef, String filename, String contenType, Integer ano, Integer idMes ) {
+		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
+		AnoEnCurso anoEnCurso = new AnoEnCurso();
+		anoEnCurso.setAno(ano);
+		Mes mesEnCurso = new Mes();
+		mesEnCurso.setIdMes(idMes);
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		
+		DocumentoReportes documentoReportes = new DocumentoReportes();
+		documentoReportes.setAno(anoEnCurso);
+		
+		documentoReportes.setTipoDocumento(tipoDocumentoProceso);
+		documentoReportes.setDocumento(referenciaDocumento);
+		
+		reportesDAO.save(documentoReportes);
+
+		System.out.println("luego de aplicar insert del documento percapita");
+		System.out.println("referenciaDocumentoId ---> "+referenciaDocumentoId);
+		return referenciaDocumentoId;
+	}
+	
+	public Integer createDocumentReporteRebaja(TipoDocumento tipoDocumentoProceso,
+			String nodeRef, String filename, String contenType, Integer ano, Integer idMes ) {
+		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
+		AnoEnCurso anoEnCurso = new AnoEnCurso();
+		anoEnCurso.setAno(ano);
+		Mes mesEnCurso = new Mes();
+		mesEnCurso.setIdMes(idMes);
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		
+		DocumentoReportes documentoReportes = new DocumentoReportes();
+		documentoReportes.setAno(anoEnCurso);
+		
+		documentoReportes.setTipoDocumento(tipoDocumentoProceso);
+		documentoReportes.setDocumento(referenciaDocumento);
+		
+		reportesDAO.save(documentoReportes);
+
+		System.out.println("luego de aplicar insert del documento percapita");
+		System.out.println("referenciaDocumentoId ---> "+referenciaDocumentoId);
+		return referenciaDocumentoId;
 	}
 
 }

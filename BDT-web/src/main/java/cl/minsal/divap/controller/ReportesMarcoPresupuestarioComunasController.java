@@ -5,16 +5,26 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import minsal.divap.enums.Subtitulo;
+import minsal.divap.service.ServicioSaludService;
+import minsal.divap.vo.ComunaSummaryVO;
+import minsal.divap.vo.ReporteMarcoPresupuestarioVO;
+import minsal.divap.vo.ServiciosVO;
+
 import org.apache.log4j.Logger;
+import org.primefaces.event.TabChangeEvent;
 
 import cl.minsal.divap.pojo.HistoricoProgramaPojo;
 import cl.minsal.divap.pojo.MarcoPresupuestarioComunaPojo;
@@ -25,291 +35,221 @@ import cl.redhat.bandejaTareas.util.BandejaProperties;
 
 @Named ( "reportesMarcoPresupuestarioComunasController" )
 @ViewScoped public class ReportesMarcoPresupuestarioComunasController extends BaseController implements Serializable {
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 4093661401216674878L;
-	@Inject private transient Logger log;
-	@Inject private BandejaProperties bandejaProperties;
-	@Inject FacesContext facesContext;
+	private Integer valorComboServicio;
+	private Integer valorComboComuna;
 	
-	private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+	private List<ServiciosVO> servicios;
+	private ServiciosVO servicioSeleccionado;
+	private List<ComunaSummaryVO> comunas;
+	List<ReporteMarcoPresupuestarioVO> reporteMarcoPresupuestarioVO;
 	
-	private List<MarcoPresupuestarioComunaPojo> listMarcoPresupuestarioComuna = new ArrayList<MarcoPresupuestarioComunaPojo>();
+	private Long totalMarcos;
+	private Long totalConvenios;
+	private Long totalRemesasAcumuladas;
+	private Double totalPorcentajeCuotaTransferida;
+	private Subtitulo subtituloSeleccionado;
 	
-	public List<MarcoPresupuestarioComunaPojo> getListMarcoPresupuestarioComuna() {
-		return listMarcoPresupuestarioComuna;
-	}
+	private Integer activeTab = 0;
+	Map<Integer, Subtitulo> tabSubtitulo = new HashMap<Integer, Subtitulo>();
 	
-	public void setListMarcoPresupuestarioComuna( List<MarcoPresupuestarioComunaPojo> listMarcoPresupuestarioComuna ) {
-		this.listMarcoPresupuestarioComuna = listMarcoPresupuestarioComuna;
-	}
+	
+	@EJB
+	private ServicioSaludService servicioSaludService;
 
-	
-	private List<ReportePerCapitaPojo> listPoblacioNPerCapita = new ArrayList<ReportePerCapitaPojo>();
-	
-	public List<ReportePerCapitaPojo> getListPoblacioNPerCapita() {
-		return listPoblacioNPerCapita;
-	}
-
-	public void setListPoblacioNPerCapita( List<ReportePerCapitaPojo> listPoblacioNPerCapita ) {
-		this.listPoblacioNPerCapita = listPoblacioNPerCapita;
-	}
-	
-	private List<HistoricoProgramaPojo> listHistoricoPrograma = new ArrayList<HistoricoProgramaPojo>();
-	
-	
-
-	public List<HistoricoProgramaPojo> getListHistoricoPrograma() {
-		return listHistoricoPrograma;
-	}
-
-	public void setListHistoricoPrograma( List<HistoricoProgramaPojo> listHistoricoPrograma ) {
-		this.listHistoricoPrograma = listHistoricoPrograma;
-	}
-	
-	private List<ReporteRebajaPojo> listReporteRebaja = new ArrayList<ReporteRebajaPojo>();
-	
-	
-
-	public List<ReporteRebajaPojo> getListReporteRebaja() {
-		return listReporteRebaja;
-	}
-
-	public void setListReporteRebaja( List<ReporteRebajaPojo> listReporteRebaja ) {
-		this.listReporteRebaja = listReporteRebaja;
-	}
 
 	@PostConstruct public void init() {
-		if (!getSessionBean().isLogged()) {
-			log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
-			try {
-				facesContext.getExternalContext().redirect("login.jsf");
-			} catch (IOException e) {
-				log.error("Error tratando de redireccionar a login por falta de usuario en sesion.", e);
+		this.reporteMarcoPresupuestarioVO = new ArrayList<ReporteMarcoPresupuestarioVO>();
+		this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
+		Integer currentTab = 0;
+		tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO21);
+		tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO22);
+		tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO24);
+		tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO29);
+		
+	}
+
+	public void onTabChange(TabChangeEvent event) {
+		System.out.println("Tab Changed, Active Tab: " + event.getTab().getTitle());
+		System.out.println("event.getTab().getId(): " + event.getTab().getId());
+		this.valorComboServicio = 0;
+		this.valorComboComuna = 0;
+		if(event.getTab().getId().equals("Sub21")){
+			this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
+		}
+		if(event.getTab().getId().equals("Sub22")){
+			this.subtituloSeleccionado = Subtitulo.SUBTITULO22;
+		}
+		if(event.getTab().getId().equals("Sub24")){
+			this.subtituloSeleccionado = Subtitulo.SUBTITULO24;
+		}
+		if(event.getTab().getId().equals("Sub29")){
+			this.subtituloSeleccionado = Subtitulo.SUBTITULO29;
+		}
+		System.out.println("this.subtituloSeleccionado --> "+this.subtituloSeleccionado.getNombre());
+	}
+
+
+	public void cargarComunas(){
+		if(getValorComboServicio() != null){
+			if(getValorComboServicio().intValue() != 0){
+				servicioSeleccionado = servicioSaludService.getServicioSaludById(getValorComboServicio());
+				this.comunas = servicioSeleccionado.getComunas();
+				
 			}
 		}
-		Random rnd = new Random();
-		
-		////MARCO PRESUPUESTARIO POR COMUNA
-		MarcoPresupuestarioComunaPojo mpc = new MarcoPresupuestarioComunaPojo();
-		mpc.setPrograma("VIDA SANA: INTERVENCIÓN EN  FACTORES DE RIESGO DE ENFERMEDADES CRÓNICAS ASOCIADAS A LA MALNUTRICIÓN EN NIÑOS, NIÑAS, ADOLESCENTES, ADULTOS Y MUJERES POSTPARTO");
-		mpc.setMarco2014(rnd.nextInt(999999999));
-		mpc.setRemesas2014(mpc.getMarco2014()-rnd.nextInt(99999999));
-		mpc.setConvenio2014(mpc.getMarco2014()-rnd.nextInt(99999999));
-		mpc.setPorcentajeRemesa2014((float) mpc.getRemesas2014()/mpc.getMarco2014());
-		
-		mpc.setServicio("Talcahuano");
-		mpc.setComuna("Alto Hospicio");
-		mpc.setPorcentajeConvenio2014((float) mpc.getConvenio2014()/mpc.getMarco2014());
-		mpc.setConvenioPendiente(mpc.getMarco2014()-mpc.getConvenio2014());
-		
-		if(rnd.nextBoolean()){
-			mpc.setObservacion("Existen recursos no distribuidos en este programa.");
-		}else{
-			mpc.setObservacion("");
-		}
-		listMarcoPresupuestarioComuna.add(mpc);
-		
-		mpc = new MarcoPresupuestarioComunaPojo();
-		mpc.setPrograma("APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES");
-		mpc.setMarco2014(rnd.nextInt(999999999));
-		mpc.setRemesas2014(mpc.getMarco2014()-rnd.nextInt(99999999));
-		mpc.setConvenio2014(mpc.getMarco2014()-rnd.nextInt(99999999));
-		mpc.setPorcentajeRemesa2014((float) mpc.getRemesas2014()/mpc.getMarco2014());
-		
-		mpc.setServicio("Metropolitano Oriente");
-		mpc.setComuna("Macul");
-		mpc.setPorcentajeConvenio2014((float) mpc.getConvenio2014()/mpc.getMarco2014());
-		mpc.setConvenioPendiente(mpc.getMarco2014()-mpc.getConvenio2014());
-		
-		
-		if(rnd.nextBoolean()){
-			mpc.setObservacion("Existen recursos no distribuidos en este programa.");
-		}else{
-			mpc.setObservacion("");
-		}
-		listMarcoPresupuestarioComuna.add(mpc);
-		
-		mpc = new MarcoPresupuestarioComunaPojo();
-		mpc.setPrograma("PILOTO VIDA SANA: ALCOHOL");
-		mpc.setMarco2014(rnd.nextInt(999999999));
-		mpc.setRemesas2014(mpc.getMarco2014()-rnd.nextInt(99999999));
-		mpc.setConvenio2014(mpc.getMarco2014()-rnd.nextInt(99999999));
-		mpc.setPorcentajeRemesa2014((float) mpc.getRemesas2014()/mpc.getMarco2014());
-		
-		mpc.setServicio("Metropolitano Sur");
-		mpc.setComuna("La Reina");
-		mpc.setPorcentajeConvenio2014((float) mpc.getConvenio2014()/mpc.getMarco2014());
-		mpc.setConvenioPendiente(mpc.getMarco2014()-mpc.getConvenio2014());
-		
-		
-		if(rnd.nextBoolean()){
-			mpc.setObservacion("Existen recursos no distribuidos en este programa.");
-		}else{
-			mpc.setObservacion("");
-		}
-		listMarcoPresupuestarioComuna.add(mpc);
-		
-		mpc = new MarcoPresupuestarioComunaPojo();
-		mpc.setPrograma("APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES");
-		mpc.setMarco2014(rnd.nextInt(999999999));
-		mpc.setRemesas2014(mpc.getMarco2014()-rnd.nextInt(99999999));
-		mpc.setConvenio2014(mpc.getMarco2014()-rnd.nextInt(99999999));
-		mpc.setPorcentajeRemesa2014((float) mpc.getRemesas2014()/mpc.getMarco2014());
-		
-		mpc.setServicio("Metropolitano Norte");
-		mpc.setComuna("La Dehesa");
-		mpc.setPorcentajeConvenio2014((float) mpc.getConvenio2014()/mpc.getMarco2014());
-		mpc.setConvenioPendiente(mpc.getMarco2014()-mpc.getConvenio2014());
-		
-		if(rnd.nextBoolean()){
-			mpc.setObservacion("Existen recursos no distribuidos en este programa.");
-		}else{
-			mpc.setObservacion("");
-		}
-		listMarcoPresupuestarioComuna.add(mpc);
-		
-		mpc = new MarcoPresupuestarioComunaPojo();
-		mpc.setPrograma("CAPACITACIÓN Y FORMACIÓN ATENCIÓN PRIMARIA EN LA RED ASISTENCIAL");
-		mpc.setMarco2014(rnd.nextInt(999999999));
-		mpc.setRemesas2014(mpc.getMarco2014()-rnd.nextInt(99999999));
-		mpc.setConvenio2014(mpc.getMarco2014()-rnd.nextInt(99999999));
-		mpc.setPorcentajeRemesa2014((float) mpc.getRemesas2014()/mpc.getMarco2014());
-		
-		mpc.setServicio("Metropolitano Centro");
-		mpc.setComuna("Santiago Centro");
-		mpc.setPorcentajeConvenio2014((float) mpc.getConvenio2014()/mpc.getMarco2014());
-		mpc.setConvenioPendiente(mpc.getMarco2014()-mpc.getConvenio2014());
-		
-		if(rnd.nextBoolean()){
-			mpc.setObservacion("Existen recursos no distribuidos en este programa.");
-		}else{
-			mpc.setObservacion("");
-		}
-		listMarcoPresupuestarioComuna.add(mpc);
-		
-		/////////POBLACION PER CAPITA
-		ReportePerCapitaPojo rpc;
-		
-		rpc = new ReportePerCapitaPojo();
-		rpc.setRegion("Talcahuano");
-		rpc.setServicio("Talcahuano");
-		rpc.setComuna("Alto Hospicio");
-		rpc.setClasificacion("");
-		
-		listPoblacioNPerCapita.add(rpc);
-		
-		rpc = new ReportePerCapitaPojo();
-		rpc.setRegion("Metropolitana");
-		rpc.setServicio("Metropolitano Oriente");
-		rpc.setComuna("Macul");
-		rpc.setClasificacion("");
-		
-		listPoblacioNPerCapita.add(rpc);
-		
-		rpc = new ReportePerCapitaPojo();
-		rpc.setRegion("Metropolitana");
-		rpc.setServicio("Metropolitano Sur");
-		rpc.setComuna("La Reina");
-		rpc.setClasificacion("");
-		
-		listPoblacioNPerCapita.add(rpc);
-		
-		rpc = new ReportePerCapitaPojo();
-		rpc.setRegion("Metropolitana");
-		rpc.setServicio("Metropolitano Norte");
-		rpc.setComuna("La Dehesa");
-		rpc.setClasificacion("");
-		
-		listPoblacioNPerCapita.add(rpc);
-		
-		rpc = new ReportePerCapitaPojo();
-		rpc.setRegion("Metropolitana");
-		rpc.setServicio("Metropolitano Centro");
-		rpc.setComuna("Santiago Centro");
-		rpc.setClasificacion("");
-		
-		listPoblacioNPerCapita.add(rpc);
-		
-		
-		//////HISTORICO PROGRAMA
-		
-		HistoricoProgramaPojo hpp = new HistoricoProgramaPojo();
-		
-		hpp = new HistoricoProgramaPojo();
-		hpp.setRegion("Talcahuano");
-		hpp.setServicio("Talcahuano");
-		hpp.setComuna("Alto Hospicio");
-		
-		listHistoricoPrograma.add(hpp);
-		
-		hpp = new HistoricoProgramaPojo();
-		hpp.setRegion("Metropolitana");
-		hpp.setServicio("Metropolitano Oriente");
-		hpp.setComuna("Macul");
-		
-		listHistoricoPrograma.add(hpp);
-		
-		hpp = new HistoricoProgramaPojo();
-		hpp.setRegion("Metropolitana");
-		hpp.setServicio("Metropolitano Sur");
-		hpp.setComuna("La Reina");
-		
-		listHistoricoPrograma.add(hpp);
-		
-		hpp = new HistoricoProgramaPojo();
-		hpp.setRegion("Metropolitana");
-		hpp.setServicio("Metropolitano Norte");
-		hpp.setComuna("La Dehesa");
-		
-		listHistoricoPrograma.add(hpp);
-		
-		hpp = new HistoricoProgramaPojo();
-		hpp.setRegion("Metropolitana");
-		hpp.setServicio("Metropolitano Centro");
-		hpp.setComuna("Santiago Centro");
-		
-		listHistoricoPrograma.add(hpp);
-		
-/////////REBAJA
-		ReporteRebajaPojo rrp;
-		
-		rrp = new ReporteRebajaPojo();
-		rrp.setRegion("Talcahuano");
-		rrp.setServicio("Talcahuano");
-		rrp.setComuna("Alto Hospicio");
-		
-		listReporteRebaja.add(rrp);
-		
-		rrp = new ReporteRebajaPojo();
-		rrp.setRegion("Metropolitana");
-		rrp.setServicio("Metropolitano Oriente");
-		rrp.setComuna("Macul");
-		
-		listReporteRebaja.add(rrp);
-		
-		rrp = new ReporteRebajaPojo();
-		rrp.setRegion("Metropolitana");
-		rrp.setServicio("Metropolitano Sur");
-		rrp.setComuna("La Reina");
-		
-		listReporteRebaja.add(rrp);
-		
-		rrp = new ReporteRebajaPojo();
-		rrp.setRegion("Metropolitana");
-		rrp.setServicio("Metropolitano Norte");
-		rrp.setComuna("La Dehesa");
-		
-		listReporteRebaja.add(rrp);
-		
-		rrp = new ReporteRebajaPojo();
-		rrp.setRegion("Metropolitana");
-		rrp.setServicio("Metropolitano Centro");
-		rrp.setComuna("Santiago Centro");
-		
-		listReporteRebaja.add(rrp);
-		
-
 	}
+	
+	public void cargarTablaServiciosFiltradosComuna(){
+		System.out.println("debiera cargar la tabla");
+		System.out.println("getValorComboComuna() --> "+getValorComboComuna());
+		this.reporteMarcoPresupuestarioVO = servicioSaludService.getReporteMarcoPorComuna(getValorComboServicio(), this.subtituloSeleccionado, getValorComboComuna(), 2014, getLoggedUsername());
+	}
+	
+	
+	
+	public Integer getValorComboServicio() {
+		return valorComboServicio;
+	}
+
+
+	public void setValorComboServicio(Integer valorComboServicio) {
+		this.valorComboServicio = valorComboServicio;
+	}
+
+
+	public Integer getValorComboComuna() {
+		return valorComboComuna;
+	}
+
+
+	public void setValorComboComuna(Integer valorComboComuna) {
+		this.valorComboComuna = valorComboComuna;
+	}
+
+
+	public List<ServiciosVO> getServicios() {
+		if(servicios == null){
+			servicios = servicioSaludService.getServiciosOrderId();
+		}
+		return servicios;
+	}
+
+
+	public void setServicios(List<ServiciosVO> servicios) {
+		this.servicios = servicios;
+	}
+
+
+	public ServiciosVO getServicioSeleccionado() {
+		return servicioSeleccionado;
+	}
+
+
+	public void setServicioSeleccionado(ServiciosVO servicioSeleccionado) {
+		this.servicioSeleccionado = servicioSeleccionado;
+	}
+
+
+	public List<ComunaSummaryVO> getComunas() {
+		return comunas;
+	}
+
+
+	public void setComunas(List<ComunaSummaryVO> comunas) {
+		this.comunas = comunas;
+	}
+
+
+	public List<ReporteMarcoPresupuestarioVO> getReporteMarcoPorComuna() {
+		return reporteMarcoPresupuestarioVO;
+	}
+
+
+	public void setReporteMarcoPorComuna(
+			List<ReporteMarcoPresupuestarioVO> reporteMarcoPresupuestarioVO) {
+		this.reporteMarcoPresupuestarioVO = reporteMarcoPresupuestarioVO;
+	}
+
+
+	public Long getTotalMarcos() {
+		this.totalMarcos = 0L;
+		for(ReporteMarcoPresupuestarioVO lista : this.reporteMarcoPresupuestarioVO){
+			this.totalMarcos += lista.getMarco();
+		}
+		return totalMarcos;
+	}
+
+
+	public void setTotalMarcos(Long totalMarcos) {
+		this.totalMarcos = totalMarcos;
+	}
+
+
+	public Long getTotalConvenios() {
+		this.totalConvenios = 0L;
+		for(ReporteMarcoPresupuestarioVO lista : this.reporteMarcoPresupuestarioVO){
+			this.totalConvenios += lista.getConvenios();
+		}
+		return totalConvenios;
+	}
+
+
+	public void setTotalConvenios(Long totalConvenios) {
+		this.totalConvenios = totalConvenios;
+	}
+
+
+	public Long getTotalRemesasAcumuladas() {
+		this.totalRemesasAcumuladas = 0L;
+		for(ReporteMarcoPresupuestarioVO lista : this.reporteMarcoPresupuestarioVO){
+			this.totalRemesasAcumuladas += lista.getRemesasAcumuladas();
+		}
+		return totalRemesasAcumuladas;
+	}
+
+
+	public void setTotalRemesasAcumuladas(Long totalRemesasAcumuladas) {
+		this.totalRemesasAcumuladas = totalRemesasAcumuladas;
+	}
+
+
+	public Double getTotalPorcentajeCuotaTransferida() {
+		this.totalPorcentajeCuotaTransferida = 0.0;
+		for(ReporteMarcoPresupuestarioVO lista : this.reporteMarcoPresupuestarioVO){
+			this.totalPorcentajeCuotaTransferida += lista.getPorcentajeCuotaTransferida();
+		}
+		
+		return totalPorcentajeCuotaTransferida*100;
+	}
+
+
+	public void setTotalPorcentajeCuotaTransferida(
+			Double totalPorcentajeCuotaTransferida) {
+		this.totalPorcentajeCuotaTransferida = totalPorcentajeCuotaTransferida;
+	}
+
+
+	public Integer getActiveTab() {
+		System.out.println("getActiveTab "+activeTab);
+		return activeTab;
+	}
+
+
+	public void setActiveTab(Integer activeTab) {
+		this.activeTab = activeTab;
+	}
+
+	public Subtitulo getSubtituloSeleccionado() {
+		return subtituloSeleccionado;
+	}
+
+	public void setSubtituloSeleccionado(Subtitulo subtituloSeleccionado) {
+		this.subtituloSeleccionado = subtituloSeleccionado;
+	}
+	
+	
+	
+	
 }

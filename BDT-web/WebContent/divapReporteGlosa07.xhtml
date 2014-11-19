@@ -23,20 +23,25 @@
 						]
 					</div>
 					<br />
-					<h:panelGrid>
-						<h:outputText value="Servicio: " styleClass="inputLabel" />
-						<p:selectOneMenu onchange="document.getElementById('tablaSubtitulos').style.display = 'block';" id="select17" style="width:250px;">
-							<f:selectItem itemLabel="Metropolitano Oriente" itemValue="Metropolitano Oriente" />
-							<f:selectItem itemLabel="Concepción" itemValue="Concepción" />
-							<f:selectItem itemLabel="Talcahuano" itemValue="Concepción" />
-							<f:selectItem itemLabel="Iquique" itemValue="Concepción" />
-							<f:selectItem itemLabel="Seleccione" itemValue="" />
-						</p:selectOneMenu>
-					</h:panelGrid>
+							<h:panelGrid>
+								<h:outputText value="Servicio: " styleClass="inputLabel" />
+								<p:selectOneMenu style="width:650px;" id="cbServicio"
+									value="#{reporteGlosa07Controller.valorComboServicio}">
+									<f:selectItem itemLabel="Seleccione" itemValue="0" />
+									<f:selectItems
+										value="#{reporteGlosa07Controller.servicios}"
+										itemLabel="#{servicio.nombre_servicio}"
+										itemValue="#{servicio.id_servicio}" var="servicio" />
+									<p:ajax
+										listener="#{reporteGlosa07Controller.cargarTablaPorServicio}"
+										update="tabla" />
+								</p:selectOneMenu>
+							</h:panelGrid>
 
 					<br />
-					<p:dataTable resizableColumns="true" value="#{reportesController.listPoblacioNPerCapita}" liveResize="true" var="_data" rows="10"
-						paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+					<p:dataTable id="tabla" resizableColumns="true" value="#{reporteGlosa07Controller.reporteGlosaVO}" liveResize="true" var="_data" 
+					rows="#{reporteGlosa07Controller.cantidadFilas}"
+						paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" scrollable="true">
 
 						<p:columnGroup type="header">
 							<p:row>
@@ -60,32 +65,31 @@
 						</p:column>
 
 						<p:column>
-							<h:outputText value="#{_data.perCapita}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="#{_data.art49perCapita}" styleClass="textoPequenio textoAjustado">
 								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 							</h:outputText>
 						</p:column>
 						
 						<p:column>
-							<h:outputText value="#{_data.perCapita*1.31}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="#{_data.art56reforzamientoMunicipal}" styleClass="textoPequenio textoAjustado">
 								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 							</h:outputText>
 						</p:column>
 						
 						<p:column>
-							<h:outputText value="#{_data.perCapita*0.37}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="#{_data.totalRemesasEneroMarzo}" styleClass="textoPequenio textoAjustado">
 								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 							</h:outputText>
 						</p:column>
-
-
+						
 						<p:columnGroup type="footer">
 							<p:row>
-								<p:column />
-								<p:column />
-								<p:column />
+								<p:column headerText="" width="100"/>
+								<p:column headerText=""  width="150"/>
+								<p:column headerText=""  width="100"/>
 								<p:column>
 									<f:facet name="footer">
-										<h:outputText value="#{466124430*1.05*5}" styleClass="textoAjustado textoPequenio centrado">
+										<h:outputText value="#{reporteGlosa07Controller.sumArt49perCapita}" styleClass="textoAjustado textoPequenio centrado">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</f:facet>
@@ -93,7 +97,7 @@
 								
 								<p:column>
 									<f:facet name="footer">
-										<h:outputText value="#{466124430*1.05*5*1.31}" styleClass="textoAjustado textoPequenio centrado">
+										<h:outputText value="#{reporteGlosa07Controller.sumArt56reforzamientoMunicipal}" styleClass="textoAjustado textoPequenio centrado">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</f:facet>
@@ -101,7 +105,7 @@
 								
 								<p:column>
 									<f:facet name="footer">
-										<h:outputText value="#{466124430*1.05*5*0.37}" styleClass="textoAjustado textoPequenio centrado">
+										<h:outputText value="#{reporteGlosa07Controller.sumTotalRemesasEneroMarzo}" styleClass="textoAjustado textoPequenio centrado">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</f:facet>
@@ -110,7 +114,9 @@
 							</p:row>
 						</p:columnGroup>
 
+
 					</p:dataTable>
+					
 				</p:panel>
 
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"

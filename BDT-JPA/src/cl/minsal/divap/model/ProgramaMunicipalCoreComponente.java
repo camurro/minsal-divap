@@ -28,7 +28,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ProgramaMunicipalCoreComponente.deleteByProgramasMunicipalCore", query = "DELETE FROM ProgramaMunicipalCoreComponente p WHERE p.programaMunicipalCoreComponentePK.programaMunicipalCore IN (:programasMunicipalCore)"),
     @NamedQuery(name = "ProgramaMunicipalCoreComponente.findByTarifa", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.tarifa = :tarifa"),
     @NamedQuery(name = "ProgramaMunicipalCoreComponente.getResumen", query = "SELECT a.programaMunicipalCore.comuna.servicioSalud.id, a.programaMunicipalCore.comuna.servicioSalud.nombre, SUM(a.tarifa) FROM ProgramaMunicipalCoreComponente a WHERE a.programaMunicipalCore.programaAnoMunicipal.idProgramaAno= :idProgramaAno and  a.subtitulo.idTipoSubtitulo= :idTipoSubtitulo GROUP BY a.programaMunicipalCore.comuna.servicioSalud.id, a.programaMunicipalCore.comuna.servicioSalud.nombre ORDER BY a.programaMunicipalCore.comuna.servicioSalud.id asc"),
-    @NamedQuery(name = "ProgramaMunicipalCoreComponente.findByCantidad", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.cantidad = :cantidad")})
+    @NamedQuery(name = "ProgramaMunicipalCoreComponente.findByCantidad", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.cantidad = :cantidad"),
+    @NamedQuery(name = "ProgramaMunicipalCoreComponente.findByIdProgramaMunicipalCore", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.programaMunicipalCore.idProgramaMunicipalCore = :idProgramaMunicipalCore")})
 public class ProgramaMunicipalCoreComponente implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId

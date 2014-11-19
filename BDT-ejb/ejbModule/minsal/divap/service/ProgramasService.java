@@ -12,28 +12,42 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
+import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.ComponenteDAO;
+import minsal.divap.dao.ComunaDAO;
+import minsal.divap.dao.ConveniosDAO;
 import minsal.divap.dao.ProgramasDAO;
+import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.model.mappers.ProgramaMapper;
 import minsal.divap.vo.ComponentesVO;
+import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.ProgramaMunicipalHistoricoVO;
 import minsal.divap.vo.ProgramaMunicipalVO;
 import minsal.divap.vo.ProgramaServicioVO;
 import minsal.divap.vo.ProgramaVO;
+import minsal.divap.vo.ReporteHistoricoPorProgramaVO;
 import minsal.divap.vo.ResumenProgramaServiciosVO;
 import minsal.divap.vo.ResumenProgramaVO;
+import minsal.divap.vo.ServiciosSummaryVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloProgramasVO;
 import minsal.divap.vo.SubtituloVO;
+import cl.minsal.divap.model.AntecendentesComuna;
+import cl.minsal.divap.model.AntecendentesComunaCalculado;
 import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.ComponenteSubtitulo;
+import cl.minsal.divap.model.Comuna;
+import cl.minsal.divap.model.ConvenioComuna;
+import cl.minsal.divap.model.ConvenioComunaComponente;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ProgramaMunicipalCore;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
 import cl.minsal.divap.model.ProgramaServicioCoreComponente;
+import cl.minsal.divap.model.ServicioSalud;
 
 @Stateless
 @LocalBean
@@ -42,6 +56,15 @@ public class ProgramasService {
 	private ProgramasDAO programasDAO;
 	@EJB
 	private ComponenteDAO componenteDAO;
+	@EJB
+	private ServicioSaludDAO servicioSaludDAO;
+	@EJB
+	private AntecedentesComunaDAO antecedentesComunaDAO;
+	@EJB ConveniosDAO conveniosDAO;
+	@EJB ComunaDAO comunaDAO;
+	
+	
+	
 
 	public Programa getProgramasByID(Integer idPrograma) {
 		return this.programasDAO.getProgramaPorID(idPrograma);
@@ -365,10 +388,6 @@ public class ProgramasService {
 		return listaProgramaMunicipalVO;
 	}
 
-	
-	
-
-	
 
 	public List<ProgramaVO> getProgramasBySubtitulo(Integer anoCurso, Subtitulo subtitulo) {
 		List<ProgramaVO> programas = new ArrayList<ProgramaVO>();
@@ -383,5 +402,6 @@ public class ProgramasService {
 		}
 		return programas;
 	}
-
+	
+	
 }

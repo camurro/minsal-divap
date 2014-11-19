@@ -30,7 +30,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "ConvenioServicioComponente.findAll", query = "SELECT c FROM ConvenioServicioComponente c"),
     @NamedQuery(name = "ConvenioServicioComponente.findByIdConvenioServicioComponente", query = "SELECT c FROM ConvenioServicioComponente c WHERE c.idConvenioServicioComponente = :idConvenioServicioComponente"),
-    @NamedQuery(name = "ConvenioServicioComponente.findByMonto", query = "SELECT c FROM ConvenioServicioComponente c WHERE c.monto = :monto")})
+    @NamedQuery(name = "ConvenioServicioComponente.findByMonto", query = "SELECT c FROM ConvenioServicioComponente c WHERE c.monto = :monto"),
+    @NamedQuery(name = "ConvenioServicioComponente.findByIdProgramaAnoServicioComponenteSubtitulo", query = "SELECT c FROM ConvenioServicioComponente c WHERE c.convenioServicio.idPrograma.idProgramaAno = :idProgramaAno and c.subtitulo.idTipoSubtitulo = :idTipoSubtitulo")})
 public class ConvenioServicioComponente implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

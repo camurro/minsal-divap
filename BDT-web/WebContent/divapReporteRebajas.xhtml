@@ -15,13 +15,19 @@
 						<h3>Archivos Disponibles:</h3>
 						<span class="strong">Archivo: </span> Planilla Reporte Rebajas [
 						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
-						<p:commandLink value="Generar y Descargar" />
+						<h:commandLink
+										action="#{reportesRebajaController.downloadTemplate}"
+										value="Bajar">
+										<f:setPropertyActionListener
+											target="#{reportesRebajaController.docIdDownload}"
+											value="#{reportesRebajaController.idPlanillaRebaja}" />
+									</h:commandLink>
 						]
 					</div>
 					<br />
 
-					<p:dataTable resizableColumns="true" value="#{reportesController.listReporteRebaja}" liveResize="true" var="_data"
-						rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+					<p:dataTable resizableColumns="true" value="#{reportesRebajaController.reporteRebajaVO}" liveResize="true" var="_data"
+						rows="#{reportesRebajaController.reporteRebajaVO.size}" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 
 						<p:columnGroup type="header">
 							<p:row>
@@ -62,51 +68,51 @@
 							<span class="textoAjustado textoPequenio centrado">#{_data.comuna}</span>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_data.montoRebaja1}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="#{_data.fCorte1Monto}" styleClass="textoPequenio textoAjustado">
 								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_data.porcentajeRebaja1}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="#{_data.fCorte1Porcentaje}" styleClass="textoPequenio textoAjustado">
 								<f:convertNumber type="percent" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 							</h:outputText>
 						</p:column>
 						
 						<p:column>
-							<h:outputText value="#{_data.montoRebaja2}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="#{_data.fCorte2Monto}" styleClass="textoPequenio textoAjustado">
 								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_data.porcentajeRebaja2}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="#{_data.fCorte2Porcentaje}" styleClass="textoPequenio textoAjustado">
 								<f:convertNumber type="percent" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 							</h:outputText>
 						</p:column>
 						
 						<p:column>
-							<h:outputText value="#{_data.montoRebaja3}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="#{_data.fCorte3Monto}" styleClass="textoPequenio textoAjustado">
 								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_data.porcentajeRebaja3}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="#{_data.fCorte3Porcentaje}" styleClass="textoPequenio textoAjustado">
 								<f:convertNumber type="percent" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 							</h:outputText>
 						</p:column>
 						
 						<p:column>
-							<h:outputText value="#{_data.montoRebaja4}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="#{_data.fCorte4Monto}" styleClass="textoPequenio textoAjustado">
 								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<h:outputText value="#{_data.porcentajeRebaja4}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="#{_data.fCorte4Porcentaje}" styleClass="textoPequenio textoAjustado">
 								<f:convertNumber type="percent" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 							</h:outputText>
 						</p:column>
 
 						<p:column>
-							<h:outputText value="#{_data.rebajaAplicada}" styleClass="textoPequenio textoAjustado">
+							<h:outputText value="#{_data.rebajaTotal}" styleClass="textoPequenio textoAjustado">
 								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 							</h:outputText>
 						</p:column>
@@ -119,7 +125,7 @@
 								<p:column />
 								<p:column>
 									<f:facet name="footer">
-										<h:outputText value="#{3406734*5}" styleClass="textoAjustado textoPequenio centrado">
+										<h:outputText value="#{reportesRebajaController.montoCorte1}" styleClass="textoAjustado textoPequenio centrado">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</f:facet>
@@ -127,7 +133,7 @@
 								<p:column />
 								<p:column>
 									<f:facet name="footer">
-										<h:outputText value="#{886613*5}" styleClass="textoAjustado textoPequenio centrado">
+										<h:outputText value="#{reportesRebajaController.montoCorte2}" styleClass="textoAjustado textoPequenio centrado">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</f:facet>
@@ -135,7 +141,7 @@
 								<p:column />
 								<p:column>
 									<f:facet name="footer">
-										<h:outputText value="#{886613*5.1}" styleClass="textoAjustado textoPequenio centrado">
+										<h:outputText value="#{reportesRebajaController.montoCorte3}" styleClass="textoAjustado textoPequenio centrado">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</f:facet>
@@ -143,7 +149,7 @@
 								<p:column />
 								<p:column>
 									<f:facet name="footer">
-										<h:outputText value="#{886613*5.2}" styleClass="textoAjustado textoPequenio centrado">
+										<h:outputText value="#{reportesRebajaController.montoCorte4}" styleClass="textoAjustado textoPequenio centrado">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</f:facet>
@@ -152,7 +158,7 @@
 								
 								<p:column>
 									<f:facet name="footer">
-										<h:outputText value="#{7681275*5}" styleClass="textoAjustado textoPequenio centrado">
+										<h:outputText value="#{reportesRebajaController.montoRebajaTotal}" styleClass="textoAjustado textoPequenio centrado">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</f:facet>

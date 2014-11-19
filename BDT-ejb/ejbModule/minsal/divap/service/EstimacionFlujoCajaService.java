@@ -129,8 +129,8 @@ public class EstimacionFlujoCajaService {
 	@Resource(name = "folderDocEstimacionFlujoCaja")
 	private String folderDocEstimacionFlujoCaja;
 
-	@Resource(name = "folderTemplateReliquidacion")
-	private String folderTemplateReliquidacion;
+	@Resource(name = "folderTemplatePercapita")
+	private String folderTemplatePercapita;
 
 	@Resource(name = "folderDocReliquidacion")
 	private String folderDocReliquidacion;

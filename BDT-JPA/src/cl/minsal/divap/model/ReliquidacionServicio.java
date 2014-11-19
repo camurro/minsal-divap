@@ -27,7 +27,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ReliquidacionServicio.findByMonto", query = "SELECT r FROM ReliquidacionServicio r WHERE r.monto = :monto"),
     @NamedQuery(name = "ReliquidacionServicio.deleteByIdProgramaAno", query = "DELETE FROM ReliquidacionServicio r WHERE r.programa.idProgramaAno = :idProgramaAno"),
     @NamedQuery(name = "ReliquidacionServicio.findByIdProgramaAnoIdServicioIdReliquidacion", query = "SELECT r FROM ReliquidacionServicio r WHERE r.programa.idProgramaAno = :idProgramaAno and r.servicio.id = :idServicio and r.reliquidacion.idReliquidacion = :idReliquidacion"),
-    @NamedQuery(name = "ReliquidacionServicio.findByIdProgramaAnoIdEstablecimientoIdComponenteIdReliquidacion", query = "SELECT r FROM ReliquidacionServicio r WHERE r.programa.idProgramaAno = :idProgramaAno and r.establecimiento.id = :idEstablecimiento and r.componente.id = :idComponente and r.reliquidacion.idReliquidacion = :idReliquidacion")})
+    @NamedQuery(name = "ReliquidacionServicio.findByIdProgramaAnoIdEstablecimientoIdComponenteIdReliquidacion", query = "SELECT r FROM ReliquidacionServicio r WHERE r.programa.idProgramaAno = :idProgramaAno and r.establecimiento.id = :idEstablecimiento and r.componente.id = :idComponente and r.reliquidacion.idReliquidacion = :idReliquidacion"),
+    @NamedQuery(name = "ReliquidacionServicio.findByIdProgramaAnoIdServicioIdComponente", query = "SELECT r FROM ReliquidacionServicio r WHERE r.programa.idProgramaAno = :idProgramaAno and r.servicio.id = :idServicio and r.componente.id = :idComponente")})
 public class ReliquidacionServicio implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

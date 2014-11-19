@@ -47,7 +47,8 @@ import javax.xml.bind.annotation.XmlTransient;
   	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdComponenteIdComuna", query = "SELECT c FROM ConvenioComuna c JOIN c.convenioComunaComponentes cc WHERE c.idPrograma.idProgramaAno = :idProgramaAno and cc.componente.id = :idComponente and c.idComuna.id = :idComuna"),
 	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdServicio", query = "SELECT c FROM ConvenioComuna c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.servicioSalud.id = :idServicio"),
 	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdServicioIdComponentes", query = "SELECT c FROM ConvenioComuna c JOIN c.convenioComunaComponentes cc WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.servicioSalud.id = :idServicio and cc.componente.id IN (:idComponentes)"),
-	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdComunaIdMes", query = "SELECT c FROM ConvenioComuna c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.id = :idComuna and c.mes.idMes = :idMes")})
+	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdComunaIdMes", query = "SELECT c FROM ConvenioComuna c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.id = :idComuna and c.mes.idMes = :idMes"),
+	@NamedQuery(name = "ConvenioComuna.findByIdComunaIdProgramaAno", query = "SELECT c FROM ConvenioComuna c WHERE c.idComuna.id = :idComuna and c.idPrograma.idProgramaAno = :idProgramaAno")})
 	
 public class ConvenioComuna implements Serializable {
     private static final long serialVersionUID = 1L;
