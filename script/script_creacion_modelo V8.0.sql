@@ -24162,6 +24162,7 @@ UPDATE ano_en_curso SET repo_alfresco=true;
 ALTER TABLE ano_en_curso
    ALTER COLUMN repo_alfresco SET NOT NULL;
 
+<<<<<<< HEAD
 --- 18 noviembre
 
  ALTER TABLE programa_ano
@@ -24886,5 +24887,145 @@ ALTER TABLE detalle_remesas
   ADD CONSTRAINT mes_fk FOREIGN KEY (mes) REFERENCES mes (id_mes) ON UPDATE NO ACTION ON DELETE NO ACTION;
 ALTER TABLE detalle_remesas
   ADD CONSTRAINT dia_fk FOREIGN KEY (dia) REFERENCES dia (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+---convenios 17-11-2014
+
+CREATE TABLE convenio
+(
+  id_convenio serial NOT NULL,
+  usuario text,
+  fecha_creacion time with time zone,
+  mes integer NOT NULL,
+  id_programa_ano integer,
+  CONSTRAINT pk_convenio PRIMARY KEY (id_convenio),
+  CONSTRAINT fk_mes FOREIGN KEY (mes)
+      REFERENCES mes (id_mes) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_programa_ano FOREIGN KEY (id_programa_ano)
+      REFERENCES programa_ano (id_programa_ano) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT usuario_fk FOREIGN KEY (usuario)
+      REFERENCES usuario (username) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+
+ALTER TABLE convenio_comuna
+  ADD COLUMN convenio integer;
+
+ALTER TABLE convenio_comuna
+  ADD CONSTRAINT convenio_fk FOREIGN KEY (convenio) REFERENCES convenio (id_convenio) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+ALTER TABLE convenio_servicio
+  ADD COLUMN convenio integer;
+
+ALTER TABLE convenio_servicio
+  ADD CONSTRAINT convenio_fk FOREIGN KEY (convenio) REFERENCES convenio (id_convenio) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+CREATE TABLE documento_convenio_servicio
+(
+  convenio integer NOT NULL,
+  documento integer NOT NULL,
+  tipo_documento integer NOT NULL,
+  id_documento_convenio_servicio serial NOT NULL,
+  CONSTRAINT documento_convenio_servicio_pk PRIMARY KEY (id_documento_convenio_servicio),
+  CONSTRAINT convenio_servicio_fk FOREIGN KEY (convenio)
+      REFERENCES convenio_servicio (id_convenio_servicio) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT documentofk FOREIGN KEY (documento)
+      REFERENCES referencia_documento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT tipo_documento_fk FOREIGN KEY (tipo_documento)
+      REFERENCES tipo_documento (id_tipo_documento) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+ALTER TABLE convenio_comuna_componente
+  ADD COLUMN aprobado boolean NOT NULL DEFAULT false;
+
+ALTER TABLE convenio_servicio_componente
+  ADD COLUMN aprobado boolean NOT NULL DEFAULT false;
+
+ALTER TABLE convenio_comuna RENAME aprobacion  TO convenio_valido;
+
+ALTER TABLE convenio_servicio RENAME aprobacion  TO convenio_valido;
+
+CREATE TABLE estado_convenio
+(
+  id_estado_convenio serial NOT NULL,
+  nombre_estado text NOT NULL,
+  CONSTRAINT estado_convenio_pk PRIMARY KEY (id_estado_convenio)
+)
+WITH (
+  OIDS=FALSE
+);
+
+INSERT INTO estado_convenio(id_estado_convenio, nombre_estado) VALUES (1, 'Ingresado');
+INSERT INTO estado_convenio(id_estado_convenio, nombre_estado) VALUES (2, 'Aprobado');
+INSERT INTO estado_convenio(id_estado_convenio, nombre_estado) VALUES (3, 'Rechazo');
+
+ALTER TABLE convenio_comuna
+  ADD COLUMN estado_convenio integer;
+
+ALTER TABLE convenio_comuna
+  ADD CONSTRAINT estadp_convenio_fk FOREIGN KEY (estado_convenio) REFERENCES estado_convenio (id_estado_convenio) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+UPDATE convenio_comuna SET estado_convenio=2;
+
+ALTER TABLE convenio_comuna
+   ALTER COLUMN estado_convenio SET NOT NULL;
+
+ALTER TABLE convenio_comuna
+  DROP COLUMN convenio_valido;
+
+
+
+ALTER TABLE convenio_servicio
+  ADD COLUMN estado_convenio integer;
+
+ALTER TABLE convenio_servicio
+  ADD CONSTRAINT estado_convenio_fk FOREIGN KEY (estado_convenio) REFERENCES estado_convenio (id_estado_convenio) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+UPDATE convenio_servicio SET estado_convenio=2;
+
+ALTER TABLE convenio_servicio
+   ALTER COLUMN estado_convenio SET NOT NULL;
+
+ALTER TABLE convenio_servicio
+  DROP COLUMN convenio_valido;
+
+
+INSERT INTO convenio_servicio(id_convenio_servicio, id_programa, id_establecimiento, fecha, numero_resolucion, estado_convenio, mes) VALUES (16, 50, 76, now(),  3005, 1, 3);
+	
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (61, 15, 1, 100000, 16);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (62, 15, 2, 200000, 16);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (63, 16, 2, 100000, 16);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (64, 17, 2, 100000, 16);
+
+INSERT INTO convenio_servicio_componente(id_convenio_servicio_componente, componente, subtitulo, monto, convenio_servicio)
+    VALUES (65, 18, 2, 100000, 16);
+
+
+
+INSERT INTO convenio_comuna(id_convenio_comuna, id_programa, id_comuna, fecha, numero_resolucion, estado_convenio, mes) VALUES (15, 9, 15202, now(), 4004, 1, 3);
+
+INSERT INTO convenio_comuna_componente(id_convenio_comuna_componente, componente, subtitulo, monto, convenio_comuna) VALUES (15, 11, 3, 100000, 15);
+
+INSERT INTO convenio_comuna(id_convenio_comuna, id_programa, id_comuna, fecha, numero_resolucion, estado_convenio, mes) VALUES (16, 3, 15202, now(), 4005, 1, 3);
+INSERT INTO convenio_comuna_componente(id_convenio_comuna_componente, componente, subtitulo, monto, convenio_comuna) VALUES (16, 3, 3, 100000, 16);
+
+INSERT INTO tipo_componente(id, nombre) VALUES (4, 'Leyes de Retiro');
 
 

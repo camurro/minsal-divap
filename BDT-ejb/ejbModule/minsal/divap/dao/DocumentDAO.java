@@ -11,7 +11,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import minsal.divap.enums.TipoDocumentosProcesos;
-import cl.minsal.divap.model.DocumentoConvenio;
+import cl.minsal.divap.model.DocumentoConvenioComuna;
+import cl.minsal.divap.model.DocumentoConvenioServicio;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.DocumentoOt;
@@ -248,20 +249,24 @@ public class DocumentDAO {
         return referenciaDocumento;
     }
 
-	public DocumentoConvenio save(DocumentoConvenio documentoConvenio) {
-		this.em.persist(documentoConvenio);
-		return documentoConvenio;
-	}
-
-	public List<DocumentoConvenio> getDocumentPopUpConvenio(Integer convenioID) {
+	public List<DocumentoConvenioComuna> getDocumentPopUpConvenioComuna(Integer idConvenioComuna) {
 		try {
-			TypedQuery<DocumentoConvenio> query = this.em.createNamedQuery("DocumentoConvenio.findByConvenioID", DocumentoConvenio.class);
-			query.setParameter("idConvenio", convenioID);
+			TypedQuery<DocumentoConvenioComuna> query = this.em.createNamedQuery("DocumentoConvenioComuna.findByIdConvenioComuna", DocumentoConvenioComuna.class);
+			query.setParameter("idConvenioComuna", idConvenioComuna);
 			return query.getResultList(); 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
+	}
+	
+	public List<DocumentoConvenioServicio> getDocumentPopUpConvenioServicio(Integer idConvenioServicio) {
+		try {
+			TypedQuery<DocumentoConvenioServicio> query = this.em.createNamedQuery("DocumentoConvenioServicio.findByIdConvenioServicio", DocumentoConvenioServicio.class);
+			query.setParameter("idConvenioServicio", idConvenioServicio);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public Integer getPlantillaByTypeAndProgram(
@@ -326,6 +331,7 @@ public class DocumentDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
 	public ReferenciaDocumento getLastDocumentoSummaryByResolucionAPSType(
 			Integer idProgramaAno, TipoDocumentosProcesos tipoDocumento) {
 		ReferenciaDocumento referenciaDocumento = null;
@@ -341,6 +347,16 @@ public class DocumentDAO {
 			throw new RuntimeException(e);
 		}
 		return referenciaDocumento;
+	}
+	
+	public DocumentoConvenioComuna save(DocumentoConvenioComuna documentoConvenioComuna) {
+		this.em.persist(documentoConvenioComuna);
+		return documentoConvenioComuna;
+	}
+	
+	public DocumentoConvenioServicio save(DocumentoConvenioServicio documentoConvenioServicio) {
+		this.em.persist(documentoConvenioServicio);
+		return documentoConvenioServicio;
 	}
 
 }

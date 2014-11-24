@@ -1,13 +1,14 @@
 package minsal.divap.enums;
 
 
-public enum TiposPrograma{
-	ProgramaPxQ(1, "PxQ"),  ProgramaHistorico(2,"Historico"), ProgramaLey(3,"Ley"), LeyesRetiro(4,"Leyes de Retiro");
-	
+public enum EstadosConvenios{
+	INGRESADO(1, "Ingresado"),  APROBADO(2,"Aprobado"), 
+	RECHAZADO(3, "Rechazado");
+
 	private Integer id;
 	private String name;
 
-	private TiposPrograma(Integer id, String name) {
+	private EstadosConvenios(Integer id, String name) {
 		this.id = id; 
 		this.name = name;
 	}
@@ -25,8 +26,8 @@ public enum TiposPrograma{
 		this.name = name;
 	}
 
-	public static TiposPrograma getById(int id){
-		for (TiposPrograma tipoComuna : TiposPrograma.values()) {
+	public static EstadosConvenios getById(int id){
+		for (EstadosConvenios tipoComuna : EstadosConvenios.values()) {
 			if (tipoComuna.id == id)
 				return tipoComuna;
 		}

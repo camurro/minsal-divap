@@ -47,14 +47,17 @@ public class DistribucionInicialPerCapitaRESTService extends BaseRest{
     }
 	
 	@GET
-    @Path("/distribucionInicialPerCapita/creacionAntecedentesComuna/{usuario}")
-    public void creacionAntecedentesComuna(@PathParam("usuario") String usuario){
+    @Path("/distribucionInicialPerCapita/creacionAntecedentesComuna/{usuario}/{idDistribucionInicialPercapita}")
+    public void creacionAntecedentesComuna(@PathParam("usuario") String usuario, @PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita){
 		System.out.println("creacionAntecedentesComuna -->"+usuario);
 		if(usuario == null){
 			throw new IllegalArgumentException("usuario: "+ usuario + " no puede ser nulo");
 		}
+		if(idDistribucionInicialPercapita == null){
+			throw new IllegalArgumentException("idDistribucionInicialPercapita: "+ idDistribucionInicialPercapita + " no puede ser nulo");
+		}
 		DistribucionInicialPercapitaService distribucionInicialPercapitaService = getService(DistribucionInicialPercapitaService.class);
-		distribucionInicialPercapitaService.creacionAntecedentesComuna(usuario);
+		distribucionInicialPercapitaService.creacionAntecedentesComuna(usuario, idDistribucionInicialPercapita);
     }
 	
 	@GET

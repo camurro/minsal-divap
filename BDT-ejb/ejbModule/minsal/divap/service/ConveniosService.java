@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.Resource;
@@ -22,35 +23,47 @@ import minsal.divap.dao.ComunaDAO;
 import minsal.divap.dao.ConveniosDAO;
 import minsal.divap.dao.DocumentDAO;
 import minsal.divap.dao.EstablecimientosDAO;
+import minsal.divap.dao.MesDAO;
 import minsal.divap.dao.ProgramasDAO;
+import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.dao.TipoSubtituloDAO;
+import minsal.divap.dao.UsuarioDAO;
+import minsal.divap.enums.EstadosConvenios;
 import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TipoDocumentosProcesos;
+import minsal.divap.model.mappers.ConvenioComunaComponenteMapper;
 import minsal.divap.model.mappers.ConvenioComunaMapper;
+import minsal.divap.model.mappers.ConvenioServicioComponenteMapper;
 import minsal.divap.model.mappers.ConvenioServicioMapper;
 import minsal.divap.model.mappers.ProgramaMapper;
 import minsal.divap.vo.BodyVO;
+import minsal.divap.vo.ConvenioComunaComponenteVO;
 import minsal.divap.vo.ConvenioDocumentoVO;
+import minsal.divap.vo.ConvenioServicioComponenteVO;
 import minsal.divap.vo.ConveniosVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.ResolucionConveniosComunaVO;
 import minsal.divap.vo.ResolucionConveniosServicioVO;
-import cl.minsal.divap.model.Caja;
 import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.ComponenteSubtitulo;
 import cl.minsal.divap.model.Comuna;
+import cl.minsal.divap.model.Convenio;
 import cl.minsal.divap.model.ConvenioComuna;
 import cl.minsal.divap.model.ConvenioComunaComponente;
 import cl.minsal.divap.model.ConvenioServicio;
 import cl.minsal.divap.model.ConvenioServicioComponente;
-import cl.minsal.divap.model.DocumentoConvenio;
+import cl.minsal.divap.model.DocumentoConvenioComuna;
 import cl.minsal.divap.model.Establecimiento;
+import cl.minsal.divap.model.EstadoConvenio;
 import cl.minsal.divap.model.EstadoPrograma;
+import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.ReferenciaDocumento;
+import cl.minsal.divap.model.ServicioSalud;
 import cl.minsal.divap.model.TipoSubtitulo;
+import cl.minsal.divap.model.Usuario;
 
 
 
@@ -71,17 +84,25 @@ public class ConveniosService {
 	@EJB
 	private ComunaDAO comunaDAO;
 	@EJB
+	private UsuarioDAO usuarioDAO;
+	@EJB
 	private DocumentDAO documentDAO;
 	@EJB
 	private ConveniosDAO conveniosDAO;
 	@EJB
+	private ServicioSaludDAO servicioSaludDAO;
+	@EJB
+	private MesDAO mesDAO;
+	@EJB
 	private DocumentService documentService;
 	@EJB
 	private AlfrescoService alfrescoService;
+	@EJB
+	private EmailService emailService;
 	@Resource(name="folderConvenio")
 	private String folderConvenio;
 
-	public void moveToAlfresco(Integer idconvenio, Integer referenciaDocumentoId, TipoDocumentosProcesos tipoDocumento) {
+	public void moveConvenioComunaToAlfresco(Integer idConvenioComuna, Integer referenciaDocumentoId, TipoDocumentosProcesos tipoDocumento) {
 		ReferenciaDocumentoSummaryVO referenciaDocumentoSummary = documentService.getDocumentSummary(referenciaDocumentoId);
 		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 		String contenType= mimemap.getContentType(referenciaDocumentoSummary.getPath().toLowerCase());
@@ -89,16 +110,21 @@ public class ConveniosService {
 		BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummary.getPath()), contenType, folderConvenio.replace("{ANO}", getAnoCurso().toString()));
 		System.out.println("response upload template --->"+response);
 		documentService.updateDocumentTemplate(referenciaDocumentoSummary.getId(), response.getNodeRef(), response.getFileName(), contenType);
-		ConvenioComuna convenio = conveniosDAO.findById(idconvenio);
-		documentService.createDocumentConvenio(convenio, tipoDocumento, referenciaDocumentoId);
+		ConvenioComuna convenioComuna = conveniosDAO.findConvenioComunaById(idConvenioComuna);
+		documentService.createDocumentConvenioComuna(convenioComuna, tipoDocumento, referenciaDocumentoId);
 	}
 
+	public void moveConvenioServicioToAlfresco(Integer idConvenioServicio, Integer referenciaDocumentoId, TipoDocumentosProcesos tipoDocumento) {
+		ReferenciaDocumentoSummaryVO referenciaDocumentoSummary = documentService.getDocumentSummary(referenciaDocumentoId);
+		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
+		String contenType= mimemap.getContentType(referenciaDocumentoSummary.getPath().toLowerCase());
 
-	public void moveToBd(Integer idconvenio,Integer referenciaDocumentoId,TipoDocumentosProcesos tipoDocumento) {
-		ConvenioComuna convenio = conveniosDAO.findById(idconvenio);
-		documentService.createDocumentConvenio(convenio, tipoDocumento, referenciaDocumentoId);
+		BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummary.getPath()), contenType, folderConvenio.replace("{ANO}", getAnoCurso().toString()));
+		System.out.println("response upload template --->"+response);
+		documentService.updateDocumentTemplate(referenciaDocumentoSummary.getId(), response.getNodeRef(), response.getFileName(), contenType);
+		ConvenioServicio convenioServicio = conveniosDAO.findConvenioServicioById(idConvenioServicio);
+		documentService.createDocumentConvenioServicio(convenioServicio, tipoDocumento, referenciaDocumentoId);
 	}
-
 
 	private Integer getAnoCurso() {
 		DateFormat formatNowYear = new SimpleDateFormat("yyyy");
@@ -106,59 +132,35 @@ public class ConveniosService {
 		return Integer.valueOf(formatNowYear.format(nowDate)); 
 	}
 
-	public void updateConvenioByIdAprobacion(int id,boolean apro) {
-		this.conveniosDAO.updateConvenioByIdAprobacion(id,apro);
-	}
-
-	public void setConvenioById(int id,int numeroResolucion,int monto) {
-		this.conveniosDAO.setConvenioById(id,numeroResolucion,monto);
-	}
-
 	public void setDocumentoConvenioById(String nodoref,String filename,int id) {
 		conveniosDAO.setDocumentoConvenioById(nodoref,filename,id);
 	}
 
-
-
-	public ConveniosVO getConvenioById(int parseInt) {
-		ConvenioComuna Convenios = this.conveniosDAO.getConveniosById(parseInt);
+	public ConveniosVO getConvenioById(int idConvenioComuna) {
+		ConvenioComuna Convenios = this.conveniosDAO.getConvenioComunaById(idConvenioComuna);
 		ConveniosVO componentesConvenios = new ConveniosVO();
 		componentesConvenios.setComunaNombre(Convenios.getIdComuna().getNombre());
 		componentesConvenios.setProgramaNombre(Convenios.getIdPrograma().getPrograma().getNombre());
-//		componentesConvenios.setTipoSubtituloNombreSubtitulo(Convenios.getIdTipoSubtitulo().getNombreSubtitulo());
-//		componentesConvenios.setConvenioMonto(new Integer(Convenios.getMonto()));
 		componentesConvenios.setIdConverio(Convenios.getIdConvenioComuna());
 		componentesConvenios.setNumeroResolucion(Convenios.getNumeroResolucion());
-//		componentesConvenios.setIdSubtitulo(Convenios.getIdTipoSubtitulo().getIdTipoSubtitulo());
-		Collection<Componente>    con = Convenios.getIdPrograma().getPrograma().getComponentes();
+		Collection<Componente> con = Convenios.getIdPrograma().getPrograma().getComponentes();
 		for (Componente conve : con){
 			componentesConvenios.setComponente(conve.getNombre());
 		}
-
-
-
 		return componentesConvenios;
 	}
 
-
-	public List<ConvenioDocumentoVO> getDocumentById(int parseInt) {
-		List<DocumentoConvenio> ConveniosDocumentos = this.documentDAO.getDocumentPopUpConvenio(parseInt);
+	public List<ConvenioDocumentoVO> getDocumentById(int idConvenioComuna) {
+		List<DocumentoConvenioComuna> conveniosDocumentos = this.documentDAO.getDocumentPopUpConvenioComuna(idConvenioComuna);
 		List<ConvenioDocumentoVO> documentosConvenio =  new ArrayList<ConvenioDocumentoVO>();
-		for (DocumentoConvenio convedoc : ConveniosDocumentos){
-
+		for (DocumentoConvenioComuna convedoc : conveniosDocumentos){
 			ConvenioDocumentoVO ConDocVO = new ConvenioDocumentoVO();
 			ConDocVO.setNombreDocu(convedoc.getDocumento().getPath());
 			ConDocVO.setId(convedoc.getDocumento().getId());
 			documentosConvenio.add(ConDocVO);
 		}
 		return documentosConvenio;
-
-
-
-
 	}
-
-
 
 	public Integer  convenioSave(int idPrograma,int idEstable,int idComuna,int idSubti, int monto,int componenete,int numResolucion){
 		ConvenioComuna con = new ConvenioComuna();
@@ -176,26 +178,20 @@ public class ConveniosService {
 
 		con.setIdPrograma(programaAno);
 		con.setIdComuna(comuna);
-//		con.setIdTipoSubtitulo(tiposub);
-//		con.setMonto(monto);
+		//		con.setIdTipoSubtitulo(tiposub);
+		//		con.setMonto(monto);
 		con.setNumeroResolucion(numResolucion);
-//		con.setComponente(compo);
+		//		con.setComponente(compo);
 		con.setFecha(date);
-		con.setAprobacion(false);
+		con.setEstadoConvenio(new EstadoConvenio(EstadosConvenios.INGRESADO.getId()));
 		cons =conveniosDAO.save(con);
 
 		return cons.getIdConvenioComuna();
 	}
 
-
 	public ReferenciaDocumento getReferenciaDocumentoByIdConvenio(Integer idConverio) {
-
 		ReferenciaDocumento ref = new ReferenciaDocumento();
-
-		ref = conveniosDAO.getNodeByIdConvenio(idConverio);
-
-
-		return ref;
+		return conveniosDAO.getNodeByIdConvenio(idConverio);
 	}
 
 	public List<ProgramaVO> getProgramasByUserAno(String username) {
@@ -209,49 +205,6 @@ public class ConveniosService {
 		return result;
 	}
 
-
-
-	public List<ConveniosVO> getConvenioBySubComponenteComunaEstableAnoAprobacion(int sub,
-			String componenteSeleccionado, String comunaSeleccionada,
-			String establecimientoSeleccionado, int ano,Integer programa,boolean apro ) {
-
-		List<Caja> caja =	this.cajaDAO.getByIDSubComponenteComunaProgramaAno(sub,componenteSeleccionado,  comunaSeleccionada, establecimientoSeleccionado, ano, programa);
-
-		Long marcoPresupuestario=123L;
-		for (Caja caj: caja){
-
-			//marcoPresupuestario = caj.getMarcoPresupuestario();
-		}
-
-		Integer total=0;
-		List<ConvenioComuna> Convenios = this.conveniosDAO.getByIDSubComponenteComunaProgramaAnoAprobacion(sub,componenteSeleccionado,  comunaSeleccionada, establecimientoSeleccionado, ano, programa,apro);
-		List<ConveniosVO> componentesConvenios = new ArrayList<ConveniosVO>();
-
-
-		for (ConvenioComuna conve : Convenios){
-//			Integer aux = new Integer(conve.getMonto());
-//
-//			total = total + aux;
-		}
-		for (ConvenioComuna conve : Convenios){
-			ConveniosVO ConVO = new ConveniosVO();
-			ConVO.setComunaNombre(conve.getIdComuna().getNombre());
-			ConVO.setProgramaNombre(conve.getIdPrograma().getPrograma().getNombre());
-//			ConVO.setTipoSubtituloNombreSubtitulo(conve.getIdTipoSubtitulo().getNombreSubtitulo());
-//			ConVO.setConvenioMonto(new Integer(conve.getMonto()));
-			ConVO.setIdConverio(conve.getIdConvenioComuna());
-			ConVO.setNumeroResolucion(conve.getNumeroResolucion());
-//			ConVO.setIdSubtitulo(conve.getIdTipoSubtitulo().getIdTipoSubtitulo());
-			ConVO.setFecha(conve.getFecha().toString());
-			ConVO.setTotal(total);
-			ConVO.setMarcoPresupuestario( Integer.valueOf(marcoPresupuestario.intValue()));
-			componentesConvenios.add(ConVO);
-
-
-		}
-		return componentesConvenios;
-	}
-
 	public void cambiarEstadoPrograma(Integer programaSeleccionado, EstadosProgramas estadoPrograma) {
 		System.out.println("programaSeleccionado-->" + programaSeleccionado + " estadoPrograma.getId()-->"+estadoPrograma.getId());
 		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(programaSeleccionado);
@@ -259,10 +212,52 @@ public class ConveniosService {
 		System.out.println("Cambia estado ok");
 	}
 
-	public void notificarServicioSalud(Integer programaSeleccionado) {
-		System.out.println("ConveniosService::notificarServicioSalud->"+programaSeleccionado);		
+	public void notificarServicioSalud(Integer programaSeleccionado, Integer servicioSeleccionado, Integer idConvenio) {
+		System.out.println("ConveniosService::notificarServicioSalud programaSeleccionado->"+programaSeleccionado);
+		System.out.println("ConveniosService::notificarServicioSalud servicioSeleccionado->"+servicioSeleccionado);
+		System.out.println("ConveniosService::notificarServicioSalud idConvenio->"+idConvenio);
+		ServicioSalud servicioSalud = servicioSaludDAO.getById(servicioSeleccionado);
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(programaSeleccionado);
+		Convenio convenio =  conveniosDAO.getConvenioById(idConvenio);
+		if(servicioSalud != null){
+			List<String> to = new ArrayList<String>();
+			List<String> cc = new ArrayList<String>();
+			String asunto = "Existen Reparos en la Información del Convenio";
+		    StringBuilder contenido = new StringBuilder();
+		    contenido.append("Estimado:");
+		    contenido.append("<p>");
+		    Integer numeroResulucion = -1;
+		    Set<ConvenioComuna> conveniosComuna = convenio.getConveniosComuna();
+		    if(conveniosComuna != null && conveniosComuna.size()  > 0){
+		    	for(ConvenioComuna convenioComuna : conveniosComuna){
+		    		numeroResulucion = convenioComuna.getNumeroResolucion();
+		    		break;
+		    	}
+		    }
+		    Set<ConvenioServicio> conveniosServicio = convenio.getConveniosServicio();
+		    if(conveniosServicio != null && conveniosServicio.size()  > 0){
+		    	for(ConvenioServicio convenioServicio : conveniosServicio){
+		    		numeroResulucion = convenioServicio.getNumeroResolucion();
+		    		break;
+		    	}
+		    }
+		    contenido.append("Existen reparos en la información del convenio con número de resolución ").append(numeroResulucion).append("<br/>");
+		    contenido.append("para la linea programática  ").append(programaAno.getPrograma().getNombre()).append("<br/>");
+		    contenido.append("por favor comuniquese con el encargado de esta linea programática");
+		    contenido.append("</p>");
+		    contenido.append("Saludos Cordiales.");
+			if(servicioSalud.getEncargadoFinanzasAps() != null && servicioSalud.getEncargadoFinanzasAps().getEmail() != null){
+				to.add(servicioSalud.getEncargadoFinanzasAps().getEmail().getValor());
+			}
+			if(servicioSalud.getDirector() != null && servicioSalud.getDirector().getEmail() != null){
+				cc.add(servicioSalud.getDirector().getEmail().getValor());
+			}
+			if(servicioSalud.getEncargadoAps()!= null && servicioSalud.getEncargadoAps().getEmail() != null){
+				cc.add(servicioSalud.getEncargadoAps().getEmail().getValor());
+			}
+			emailService.sendMail(to, cc, null, asunto, contenido.toString());
+		}
 	}
-
 
 	public Integer generarResolucionDisponibilizarAlfresco(
 			Integer programaSeleccionado) {
@@ -273,7 +268,7 @@ public class ConveniosService {
 	public void administrarVersionesAlfresco(Integer programaSeleccionado) {
 		System.out.println("ConveniosService::administrarVersionesAlfresco->"+programaSeleccionado);		
 	}
-	
+
 	public List<ResolucionConveniosComunaVO> getResolucionConveniosMunicipal(Integer idServicio, Integer idProgramaAno, Integer componenteSeleccionado, Integer comunaSeleccionada) {
 		List<ResolucionConveniosComunaVO> resolucionesConvenios = new ArrayList<ResolucionConveniosComunaVO>();
 		List<ConvenioComuna> convenios = null;
@@ -351,7 +346,7 @@ public class ConveniosService {
 		}
 		return resolucionesConvenios;
 	}
-	
+
 	private ConvenioComuna createConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idComuna){
 		ConvenioComuna convenioComuna = new ConvenioComuna();
 		Componente componente = componenteDAO.getComponenteByID(idComponente);
@@ -365,7 +360,7 @@ public class ConveniosService {
 		convenioComunaComponente.setSubtitulo(tipoSubtitulo);
 		return convenioComuna;
 	}
-	
+
 	private ConvenioServicio createConvenioServicio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idEstablecimiento) {
 		ConvenioServicio convenioServicio = new ConvenioServicio();
 		Componente componente = componenteDAO.getComponenteByID(idComponente);
@@ -405,19 +400,19 @@ public class ConveniosService {
 			}
 		}
 		for (Map.Entry<Integer, List<Integer>> entry : componentesBySubtitulo.entrySet()) {
-		    Integer idSubtitulo = entry.getKey();
-		    List<Integer> idComponentes = entry.getValue();
-		    for(Integer idComponente : idComponentes){
-		    	for(Integer idComuna : idComunas){
-		    		ConvenioComuna convenioComuna = componenteDAO.getConvenioComunaByProgramaAnoComponenteSubtituloComuna(idProgramaAno, idComponente, idSubtitulo, idComuna);
-		    		if(convenioComuna == null){
-		    			convenioComuna = createConvenio(idProgramaAno, idComponente, idSubtitulo, idComuna);
+			Integer idSubtitulo = entry.getKey();
+			List<Integer> idComponentes = entry.getValue();
+			for(Integer idComponente : idComponentes){
+				for(Integer idComuna : idComunas){
+					ConvenioComuna convenioComuna = componenteDAO.getConvenioComunaByProgramaAnoComponenteSubtituloComuna(idProgramaAno, idComponente, idSubtitulo, idComuna);
+					if(convenioComuna == null){
+						convenioComuna = createConvenio(idProgramaAno, idComponente, idSubtitulo, idComuna);
 						conveniosDAO.save(convenioComuna);
-		    		}
-		    	}
-		    }
+					}
+				}
+			}
 		}
-		
+
 	}
 
 	public void crearConveniosServicios(Integer idServicio, Integer idProgramaAno) {
@@ -444,18 +439,171 @@ public class ConveniosService {
 			}
 		}
 		for (Map.Entry<Integer, List<Integer>> entry : componentesBySubtitulo.entrySet()) {
-		    Integer idSubtitulo = entry.getKey();
-		    List<Integer> idComponentes = entry.getValue();
-		    for(Integer idComponente : idComponentes){
-		    	for(Integer idEstablecimiento : idEstablecimientos){
-		    		ConvenioServicio convenioServicio = componenteDAO.getConvenioServicioByProgramaAnoComponenteSubtituloEstablecimiento(idProgramaAno, idComponente, idSubtitulo, idEstablecimiento);
-		    		if(convenioServicio == null){
-		    			convenioServicio = createConvenioServicio(idProgramaAno, idComponente, idSubtitulo, idEstablecimiento);
+			Integer idSubtitulo = entry.getKey();
+			List<Integer> idComponentes = entry.getValue();
+			for(Integer idComponente : idComponentes){
+				for(Integer idEstablecimiento : idEstablecimientos){
+					ConvenioServicio convenioServicio = componenteDAO.getConvenioServicioByProgramaAnoComponenteSubtituloEstablecimiento(idProgramaAno, idComponente, idSubtitulo, idEstablecimiento);
+					if(convenioServicio == null){
+						convenioServicio = createConvenioServicio(idProgramaAno, idComponente, idSubtitulo, idEstablecimiento);
 						conveniosDAO.save(convenioServicio);
-		    		}
-		    	}
-		    }
+					}
+				}
+			}
 		}
+	}
+
+	public Integer crearInstanciaConvenio(String username) {
+		System.out.println("usuario-->"+username);
+		Usuario usuario = this.usuarioDAO.getUserByUsername(username);
+		Mes mesEnCurso = mesDAO.getMesPorID(Integer.parseInt(getMesCurso(true)));
+		return conveniosDAO.crearInstanciaConvenio(usuario, mesEnCurso);
+	}
+
+	public String getMesCurso(Boolean numero) {
+		SimpleDateFormat dateFormat = null;
+		String mesCurso = null;
+		if(numero){
+			dateFormat = new SimpleDateFormat("MM");
+			mesCurso = dateFormat.format(new Date());
+		}else{
+			dateFormat = new SimpleDateFormat("MMMM");
+			mesCurso = dateFormat.format(new Date());
+		}
+		return mesCurso;
+	}
+
+
+	public void convenioPorPrograma(Integer idProgramaAno, Integer idConvenio) {
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
+		Convenio convenio =  conveniosDAO.getConvenioById(idConvenio);
+		if(convenio != null){
+			convenio.setIdProgramaAno(programaAno);
+			List<ConvenioServicio> conveniosServicio = conveniosDAO.getConveniosServicioPendientes(idProgramaAno, EstadosConvenios.INGRESADO.getId());
+			if(conveniosServicio != null && conveniosServicio.size() > 0){
+				for(ConvenioServicio convenioServicio : conveniosServicio){
+					convenioServicio.setConvenio(convenio);
+				}
+			}
+			List<ConvenioComuna> conveniosComuna = conveniosDAO.getConveniosComunaPendientes(idProgramaAno, EstadosConvenios.INGRESADO.getId());
+			if(conveniosComuna != null && conveniosComuna.size() > 0){
+				for(ConvenioComuna convenioComuna : conveniosComuna){
+					convenioComuna.setConvenio(convenio);
+				}
+			}
+		}
+	}
+
+	public List<ConvenioComunaComponenteVO> getConveniosComunaComponenteByProgramaAnoComponenteSubtituloServicioConvenioEstadoConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idServicio, Integer idConvenio, EstadosConvenios estadoConvenio){
+		List<ConvenioComunaComponenteVO> conveniosComunaComponenteVO = new ArrayList<ConvenioComunaComponenteVO>();
+		List<ConvenioComunaComponente> results = conveniosDAO.getConveniosComunaComponenteByProgramaAnoComponenteSubtituloServicioConvenioEstadoConvenio(idProgramaAno, idComponente, idSubtitulo, idServicio, idConvenio, estadoConvenio.getId());
+		if(results != null && results.size() > 0){
+			for(ConvenioComunaComponente convenioComunaComponente : results){
+				if(convenioComunaComponente.isAprobado()){
+					continue;
+				}
+				conveniosComunaComponenteVO.add(new ConvenioComunaComponenteMapper().getBasic(convenioComunaComponente));
+			}
+		}
+		return conveniosComunaComponenteVO;
+	}
+
+	public List<ConvenioComunaComponenteVO> getConveniosComunaComponenteByProgramaAnoComponenteSubtituloComunaConvenioEstadoConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idComuna, Integer idConvenio, EstadosConvenios estadoConvenio){
+		List<ConvenioComunaComponenteVO> conveniosComunaComponenteVO = new ArrayList<ConvenioComunaComponenteVO>();
+		List<ConvenioComunaComponente> results = conveniosDAO.getConveniosComunaComponenteByProgramaAnoComponenteSubtituloComunaConvenioEstadoConvenio(idProgramaAno, idComponente, idSubtitulo, idComuna, idConvenio,estadoConvenio.getId());
+		if(results != null && results.size() > 0){
+			for(ConvenioComunaComponente convenioComunaComponente : results){
+				if(convenioComunaComponente.isAprobado()){
+					continue;
+				}
+				conveniosComunaComponenteVO.add(new ConvenioComunaComponenteMapper().getBasic(convenioComunaComponente));
+			}
+		}
+		return conveniosComunaComponenteVO;
+	}
+
+	public List<ConvenioServicioComponenteVO> getConveniosServicioComponenteByProgramaAnoComponenteSubtituloServicioConvenioEstadoConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idServicio, Integer idConvenio, EstadosConvenios estadoConvenio){
+		List<ConvenioServicioComponenteVO> conveniosServicioComponenteVO = new ArrayList<ConvenioServicioComponenteVO>();
+		List<ConvenioServicioComponente> results = conveniosDAO.getConveniosServicioComponenteByProgramaAnoComponenteSubtituloServicioConvenioEstadoConvenio(idProgramaAno, idComponente, idSubtitulo, idServicio, idConvenio, estadoConvenio.getId());
+		if(results != null && results.size() > 0){
+			for(ConvenioServicioComponente convenioServicioComponente : results){
+				if(convenioServicioComponente.isAprobado()){
+					continue;
+				}
+				conveniosServicioComponenteVO.add(new ConvenioServicioComponenteMapper().getBasic(convenioServicioComponente));
+			}
+		}
+		return conveniosServicioComponenteVO;
+	}
+
+	public List<ConvenioServicioComponenteVO> getConveniosServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoConvenioEstadoConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idEstablecimiento, Integer idConvenio, EstadosConvenios estadoConvenio){
+		List<ConvenioServicioComponenteVO> conveniosServicioComponenteVO = new ArrayList<ConvenioServicioComponenteVO>();
+		List<ConvenioServicioComponente> resutls = conveniosDAO.getConveniosServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoConvenioEstadoConvenio(idProgramaAno, idComponente, idSubtitulo, idEstablecimiento, idConvenio, estadoConvenio.getId());
+		if(resutls != null && resutls.size() > 0){
+			for(ConvenioServicioComponente convenioServicioComponente : resutls){
+				if(convenioServicioComponente.isAprobado()){
+					continue;
+				}
+				conveniosServicioComponenteVO.add(new ConvenioServicioComponenteMapper().getBasic(convenioServicioComponente));
+			}
+		}
+		return conveniosServicioComponenteVO;
+	}
+
+	public boolean getConveniosPendientes(Integer idProgramaAno) {
+		int count = conveniosDAO.getCountConveniosServicioPendientes(idProgramaAno, EstadosConvenios.INGRESADO.getId());
+		if(count != 0){
+			return true;
+		}
+		count = conveniosDAO.getCountConveniosComunaPendientes(idProgramaAno, EstadosConvenios.INGRESADO.getId());
+		if(count != 0){
+			return true;
+		}
+		return false;
+	}
+
+	public ConvenioServicioComponenteVO aprobarConvenioServicioComponente(Integer idConvenio, Integer idConvenioServicioComponente) {
+		ConvenioServicioComponente convenioServicioComponenteSeleccionado = conveniosDAO.getConveniosServicioComponenteById(idConvenioServicioComponente);
+		if(convenioServicioComponenteSeleccionado != null){
+			convenioServicioComponenteSeleccionado.setAprobado(Boolean.TRUE);
+			ConvenioServicio convenioServicio = convenioServicioComponenteSeleccionado.getConvenioServicio();
+			boolean aprobado = true;
+			for(ConvenioServicioComponente convenioServicioComponente : convenioServicio.getConvenioServicioComponentes()){
+				if(!convenioServicioComponente.isAprobado()){
+					aprobado = false;
+					break;
+				}
+			}
+			if(aprobado){
+				Convenio convenio = conveniosDAO.findById(idConvenio);
+				convenioServicio.setConvenio(convenio);
+				convenioServicio.setEstadoConvenio(new EstadoConvenio(EstadosConvenios.APROBADO.getId()));
+			}
+		}
+		return new ConvenioServicioComponenteMapper().getBasic(convenioServicioComponenteSeleccionado);
+	}
+
+	public ConvenioComunaComponenteVO aprobarConvenioComunaComponente(Integer idConvenio, Integer idConvenioServicioComponente) {
+		ConvenioComunaComponente convenioComunaComponenteSeleccionado = conveniosDAO.getConveniosComunaComponenteById(idConvenioServicioComponente);
+		if(convenioComunaComponenteSeleccionado != null){
+			convenioComunaComponenteSeleccionado.setAprobado(Boolean.TRUE);
+			ConvenioComuna convenioComuna = convenioComunaComponenteSeleccionado.getConvenioComuna();
+			boolean aprobado = true;
+			for(ConvenioComunaComponente convenioComunaComponente : convenioComuna.getConvenioComunaComponentes()){
+				if(!convenioComunaComponente.isAprobado()){
+					aprobado = false;
+					break;
+				}
+			}
+			if(aprobado){
+				System.out.println("idConvenio="+idConvenio);
+				Convenio convenio = conveniosDAO.findById(idConvenio);
+				System.out.println("convenio="+convenio);
+				convenioComuna.setConvenio(convenio);
+				convenioComuna.setEstadoConvenio(new EstadoConvenio(EstadosConvenios.APROBADO.getId()));
+			}
+		}
+		return new ConvenioComunaComponenteMapper().getBasic(convenioComunaComponenteSeleccionado);
 	}
 	
 	

@@ -17,6 +17,7 @@ import javax.inject.Named;
 
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.ConveniosService;
+import minsal.divap.vo.SeguimientoVO;
 
 import org.apache.log4j.Logger;
 import org.primefaces.event.FileUploadEvent;
@@ -45,6 +46,7 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 	private UploadedFile attachedFile;
 	private String docIdDownload;
 	private List<Integer> docIds;
+	private List<SeguimientoVO> bitacoraSeguimiento;
 	private String actividadSeguimientoTitle = "Seguimiento Resoluciones";
 
 	public String getActividadSeguimientoTitle() {
@@ -215,6 +217,14 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 
 	public void setAttachedFile(UploadedFile attachedFile) {
 		this.attachedFile = attachedFile;
+	}
+
+	public List<SeguimientoVO> getBitacoraSeguimiento() {
+		return bitacoraSeguimiento;
+	}
+
+	public void setBitacoraSeguimiento(List<SeguimientoVO> bitacoraSeguimiento) {
+		this.bitacoraSeguimiento = bitacoraSeguimiento;
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml"
+                xmlns:c="http://java.sun.com/jstl/core">
 	<ui:define name="zonaJavaScript">
 		<style type="text/css">
 			.ui-state-error {
@@ -134,37 +135,42 @@
 					<!-- HISTORIAL DE SEGUIMIENTO -->
 					<h3>Bitácora de Seguimiento:</h3>
 					<!-- INICIO MENSAJE MOCK -->
-					<p:panelGrid columns="2">
+					<p:panelGrid columns="2" rendered="#{not empty procesoGITSeguimientoController.bitacoraSeguimiento}">
+						<c:forEach var="var" items="#{procesoGITSeguimientoController.bitacoraSeguimiento}">
 
-						<h:outputText value="04/04/2014" styleClass="inputLabel" />
+						<h:outputText value="#{var.date}" styleClass="inputLabel" >
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+						</h:outputText>
 
 						<h:panelGrid styleClass="tableFullWidth">
 							<h:panelGrid columns="2" styleClass="tableFullWidth">
 								<h:outputText value="Para: " styleClass="inputLabel" />
-								<h:outputText value="jarriaga@redhat.com" />
+								<h:outputText value="#{var.to}" />
 
-								<h:outputText value="CC: " styleClass="inputLabel" />
-								<h:outputText value="rwattcha@redhat.com, pmura@redhat.com" />
+								<h:outputText value="CC: " styleClass="inputLabel" rendered="#{not empty var.cc}"/>
+								<h:outputText value="#{var.cc}" rendered="#{not empty var.cc}" />
 
-								<h:outputText value="CCO: " styleClass="inputLabel" />
-								<h:outputText value="marcela.minsal@gmail.com" />
+								<h:outputText value="CCO: " styleClass="inputLabel" rendered="#{not empty var.cco}"/>
+								<h:outputText value="#{var.cco}" rendered="#{not empty var.cco}" />
 
-								<h:outputText value="Adjunto: " styleClass="inputLabel" />
-								<h:panelGrid columns="2">
-									<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
-									<p:commandLink value="archivos.zip" />
+								<h:outputText value="Adjunto: " styleClass="inputLabel"
+										rendered="#{not empty var.attached}" />
+								<h:panelGrid columns="2" rendered="#{not empty var.attached}">
+									<h:graphicImage
+										value="resources/minsal/images/download-alt.png"
+										styleClass="divapIcons" />
+									<h:commandLink value="#{var.attached.path}"
+										onclick="downloadDocument(#{var.attached.id});return false;" />
 								</h:panelGrid>
 
 								<h:outputText value="Asunto: " styleClass="inputLabel" />
-								<h:outputText value="Envío archivos de #{procesoGITSeguimientoController.actividadSeguimientoTitle}" />
+								<h:outputText value="#{var.subject}" />
 
 								<h:outputText value="Mensaje: " styleClass="inputLabel" />
-								<h:outputText
-									value="Se valida que nulla eget ultricies. Morbi pulvinar elit
-						at justo pharetra, vitae ultricies est faucibus. Integer id est
-						euismod libero rutrum ultricies. Integer aliquet, sem id commodo. - Robson Watt" />
+								<h:outputText value="#{var.body}" />
 							</h:panelGrid>
 						</h:panelGrid>
+						</c:forEach>
 					</p:panelGrid>
 					<!-- FIN MENSAJE MOCK -->
 

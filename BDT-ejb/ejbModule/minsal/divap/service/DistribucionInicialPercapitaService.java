@@ -354,7 +354,7 @@ public class DistribucionInicialPercapitaService {
 					antecendenteComunaCalculado.setPobreza(pobreza);
 					System.out.println("antecendenteComunaCalculado.getAntecedentesComuna().getIdAntecedentesComuna()="+antecendenteComunaCalculado.getAntecedentesComuna().getIdAntecedentesComuna());
 					if(antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion() != null){
-						if(TipoComuna.RURAL.getId() == antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion().getIdTipoComuna()){
+						if(TipoComuna.RURAL.getId().equals(antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion().getIdTipoComuna())){
 							Double ruralidad = (percapitaBasal + pobreza) * 0.2;
 							antecendenteComunaCalculado.setRuralidad(ruralidad);
 							//Hacer calculo con todos los decimales, solo para visualizar dejar con 2 luego de la coma
@@ -372,7 +372,7 @@ public class DistribucionInicialPercapitaService {
 							Long perCapitaAno = perCapitaMes * 12;
 							System.out.println("perCapitaAno= "+perCapitaAno);
 							antecendenteComunaCalculado.setPercapitaAno(perCapitaAno);
-						} else if(TipoComuna.URBANA.getId() == antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion().getIdTipoComuna()){
+						} else if(TipoComuna.URBANA.getId().equals(antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion().getIdTipoComuna())){
 							antecendenteComunaCalculado.setRuralidad(0.0);
 							Double valorReferencialZona = (percapitaBasal + pobreza + 0.0) * antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona().getValor();
 							antecendenteComunaCalculado.setValorReferencialZona(valorReferencialZona);
@@ -388,7 +388,7 @@ public class DistribucionInicialPercapitaService {
 							Long perCapitaAno = perCapitaMes * 12;
 							System.out.println("perCapitaAno="+perCapitaAno);
 							antecendenteComunaCalculado.setPercapitaAno(perCapitaAno);
-						} else if(TipoComuna.COSTOFIJO.getId() == antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion().getIdTipoComuna()){
+						} else if(TipoComuna.COSTOFIJO.getId().equals(antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion().getIdTipoComuna())){
 							antecendenteComunaCalculado.setRuralidad(0.0);
 							Double valorReferencialZona = (percapitaBasal + pobreza + 0.0) * antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona().getValor();
 							antecendenteComunaCalculado.setValorReferencialZona(valorReferencialZona);
@@ -998,13 +998,13 @@ public class DistribucionInicialPercapitaService {
 		System.out.println("DistribucionInicialPercapitaService administrarVersionesFinalesAlfresco eliminar todas las versiones que no sean finales");
 	}
 
-	public void creacionAntecedentesComuna(String usuario) {
+	public void creacionAntecedentesComuna(String usuario, Integer idDistribucionInicialPercapita) {
 		List<ServiciosVO> servicios = servicioSaludService.getServiciosOrderId();
 		if(servicios != null && servicios.size()>0){
+			Integer idAnoSiguiente = getAnoCurso() + 1;
 			for(ServiciosVO servicio : servicios){
 				if(servicio.getComunas() != null && servicio.getComunas().size() > 0){
 					for(ComunaSummaryVO comuna : servicio.getComunas()){
-						Integer idAnoSiguiente = getAnoCurso() + 1;
 						AntecendentesComuna antecendentesComunaSiguiente = antecedentesComunaDAO.getAntecendentesComunaByComunaAno(comuna.getId(), idAnoSiguiente);
 						if(antecendentesComunaSiguiente == null){
 							AntecendentesComuna antecendentesComunaActual = antecedentesComunaDAO.getAntecendentesComunaByComunaAno(comuna.getId(), getAnoCurso());
@@ -1028,6 +1028,13 @@ public class DistribucionInicialPercapitaService {
 							}
 							antecendentesComunaSiguiente.setAnoAnoEnCurso(anoSiguiente);
 							antecedentesComunaDAO.save(antecendentesComunaSiguiente);
+							if(TipoComuna.COSTOFIJO.getId().equals(antecendentesComunaSiguiente.getClasificacion().getIdTipoComuna())){
+								AntecendentesComunaCalculado antecendentesComunaCalculadoSiguiente = new AntecendentesComunaCalculado();
+								antecendentesComunaCalculadoSiguiente.setAntecedentesComuna(antecendentesComunaSiguiente);
+								DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findById(idDistribucionInicialPercapita);
+								antecendentesComunaCalculadoSiguiente.setDistribucionInicialPercapita(distribucionInicialPercapita);
+								antecedentesComunaDAO.createAntecendentesComunaCalcuado(antecendentesComunaCalculadoSiguiente);
+							}
 						}
 					}
 				}

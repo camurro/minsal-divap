@@ -10,7 +10,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,20 +22,9 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.transaction.Transaction;
 import javax.xml.bind.JAXBException;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.docx4j.openpackaging.exceptions.Docx4JException;
-
-import com.sun.org.apache.xpath.internal.axes.HasPositionalPredChecker;
-
+import minsal.divap.dao.ComponenteDAO;
 import minsal.divap.dao.ComunaDAO;
 import minsal.divap.dao.DocumentDAO;
 import minsal.divap.dao.EstablecimientosDAO;
@@ -49,16 +37,13 @@ import minsal.divap.dao.UsuarioDAO;
 import minsal.divap.doc.GeneradorResolucionAporteEstatal;
 import minsal.divap.doc.GeneradorWord;
 import minsal.divap.enums.EstadosProgramas;
-import minsal.divap.enums.FieldType;
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TareasSeguimiento;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.excel.GeneradorExcel;
-import minsal.divap.excel.impl.PercapitaCalculoPercapitaExcelValidator;
 import minsal.divap.excel.impl.ProgramaAPSDetallesMunicipalesHistoricosSheetExcel;
 import minsal.divap.excel.impl.ProgramaAPSDetallesServiciosHistoricosSheetExcel;
 import minsal.divap.excel.impl.ProgramaAPSLeySheetExcel;
-import minsal.divap.excel.impl.ProgramaAPSMunicipalExcelValidator;
 import minsal.divap.excel.impl.ProgramaAPSMunicipalesDetallesSheetExcel;
 import minsal.divap.excel.impl.ProgramaAPSMunicipalesHistoricosSheetExcel;
 import minsal.divap.excel.impl.ProgramaAPSMunicipalesSheetExcel;
@@ -71,43 +56,36 @@ import minsal.divap.excel.impl.ProgramaAPSServiciosHistoricosSheetExcel;
 import minsal.divap.exception.ExcelFormatException;
 import minsal.divap.model.mappers.ProgramaMapper;
 import minsal.divap.model.mappers.SeguimientoMapper;
-import minsal.divap.service.EmailService.Adjunto;
-import minsal.divap.util.Util;
 import minsal.divap.vo.AdjuntosVO;
 import minsal.divap.vo.BodyVO;
-import minsal.divap.vo.CalculoPercapitaVO;
 import minsal.divap.vo.CellExcelVO;
-import minsal.divap.vo.CellTypeExcelVO;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.DocumentoVO;
-import minsal.divap.vo.ProgramaAPSMunicipalVO;
 import minsal.divap.vo.ProgramaAPSServicioResumenVO;
 import minsal.divap.vo.ProgramaAPSServicioVO;
 import minsal.divap.vo.ProgramaAPSVO;
-import minsal.divap.vo.ProgramaCoreVO;
-import minsal.divap.vo.ProgramaMunicipalHistoricoVO;
-import minsal.divap.vo.ProgramaMunicipalVO;
-import minsal.divap.vo.ProgramaServicioHistoricoVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.ReporteEmailsEnviadosVO;
 import minsal.divap.vo.ResumenProgramaMixtoVO;
 import minsal.divap.vo.SeguimientoVO;
-import minsal.divap.vo.ServicioComunaVO;
-import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloVO;
-import minsal.divap.vo.TipoComponenteVO;
 import minsal.divap.xml.GeneradorXML;
 import minsal.divap.xml.email.Email;
+
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
+
 import cl.minsal.divap.model.AnoEnCurso;
-import cl.minsal.divap.model.AntecendentesComuna;
-import cl.minsal.divap.model.AntecendentesComunaCalculado;
 import cl.minsal.divap.model.Componente;
-import cl.minsal.divap.model.ComponenteSubtitulo;
 import cl.minsal.divap.model.Comuna;
-import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoProgramasReforzamiento;
-import cl.minsal.divap.model.DocumentoRebaja;
 import cl.minsal.divap.model.Establecimiento;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.Programa;
@@ -167,7 +145,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 	@EJB
 	private EstablecimientosService establecimientoService;
 	@EJB
-	private ComponenteService componenteService;
+	private ComponenteDAO componenteDAO;
 	@Resource(name="tmpDir")
 	private String tmpDir;
 	@Resource(name = "tmpDirDoc")
@@ -732,7 +710,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 							TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloById(3);
 							programaMunicipalCoreComponente.setSubtitulo(tipoSubtitulo);
 							
-							Componente componen = componenteService.getComponenteById(componentes.get(j).getId());
+							Componente componen = componenteDAO.getComponenteByID(componentes.get(j).getId());
 							programaMunicipalCoreComponente.setMunicipalCoreComponente(componen);
 								
 							System.out.println("comuna: "+comuna.getNombre()+" P:"+programaMunicipalCoreComponente.getTarifa()+" Q:"+programaMunicipalCoreComponente.getMonto());
@@ -845,10 +823,14 @@ public class RecursosFinancierosProgramasReforzamientoService {
 					int tarifa = (Double.valueOf(xssfRow.getCell(columna).toString())).intValue() * (Double.valueOf(xssfRow.getCell(columna+1).toString())).intValue();
 					programaMunicipalCoreComponente.setTarifa(tarifa);
 					
+<<<<<<< HEAD
 					TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloByName(composMunis.get(j).getSubtitulos().get(k).getNombre());
 					programaMunicipalCoreComponente.setSubtitulo(tipoSubtitulo);
 					
 					Componente componen = componenteService.getComponenteById(composMunis.get(j).getId());
+=======
+					Componente componen = componenteDAO.getComponenteByID(composMunis.get(j).getId());
+>>>>>>> convenios
 					programaMunicipalCoreComponente.setMunicipalCoreComponente(componen);
 						
 					ProgramaMunicipalCoreComponentePK pk = new ProgramaMunicipalCoreComponentePK();
@@ -954,7 +936,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 					TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloByName(composMunis.get(j).getSubtitulos().get(k).getNombre());
 					programaMunicipalCoreComponente.setSubtitulo(tipoSubtitulo);
 					
-					Componente componen = componenteService.getComponenteById(composMunis.get(j).getId());
+					Componente componen = componenteDAO.getComponenteByID(composMunis.get(j).getId());
 					programaMunicipalCoreComponente.setMunicipalCoreComponente(componen);
 						
 					ProgramaMunicipalCoreComponentePK pk = new ProgramaMunicipalCoreComponentePK();
@@ -1087,7 +1069,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 						int tarifa = (Double.valueOf(xssfRow.getCell(columna).toString())).intValue() * (Double.valueOf(xssfRow.getCell(columna+1).toString())).intValue();
 						programaServicioCoreComponente.setTarifa(tarifa);
 						
-						Componente componen = componenteService.getComponenteById(componentes.get(h).getId());
+						Componente componen = componenteDAO.getComponenteByID(componentes.get(h).getId());
 						programaServicioCoreComponente.setServicioCoreComponente(componen);
 						
 						ProgramaServicioCoreComponentePK pk = new ProgramaServicioCoreComponentePK();
@@ -1143,7 +1125,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 					int tarifa = (Double.valueOf(xssfRow.getCell(columna).toString())).intValue() * (Double.valueOf(xssfRow.getCell(columna+1).toString())).intValue();
 					programaServicioCoreComponente.setTarifa(tarifa);
 					
-					Componente componen = componenteService.getComponenteById(composServ.get(j).getId());
+					Componente componen = componenteDAO.getComponenteByID(composServ.get(j).getId());
 					programaServicioCoreComponente.setServicioCoreComponente(componen);
 					
 					ProgramaServicioCoreComponentePK pk = new ProgramaServicioCoreComponentePK();

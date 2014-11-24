@@ -4,9 +4,9 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,8 +42,10 @@ import minsal.divap.vo.ReferenciaDocumentoVO;
 import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.Comuna;
 import cl.minsal.divap.model.ConvenioComuna;
+import cl.minsal.divap.model.ConvenioServicio;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
-import cl.minsal.divap.model.DocumentoConvenio;
+import cl.minsal.divap.model.DocumentoConvenioComuna;
+import cl.minsal.divap.model.DocumentoConvenioServicio;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.DocumentoOt;
@@ -628,13 +630,22 @@ public class DocumentService {
 		return referenciaDocumentoId;
 	}
 
-	public void createDocumentConvenio(ConvenioComuna convenio,TipoDocumentosProcesos tipoDocumento, Integer referenciaDocumentoId) {
+	public void createDocumentConvenioComuna(ConvenioComuna convenio,TipoDocumentosProcesos tipoDocumento, Integer referenciaDocumentoId) {
 		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
-		DocumentoConvenio documentoConvenio = new DocumentoConvenio();
-		documentoConvenio.setConvenio(convenio);
-		documentoConvenio.setDocumento(referenciaDocumento);
-		fileDAO.save(documentoConvenio);
-		System.out.println("luego de aplicar insert del documento convenio");
+		DocumentoConvenioComuna documentoConvenioComuna = new DocumentoConvenioComuna();
+		documentoConvenioComuna.setConvenio(convenio);
+		documentoConvenioComuna.setDocumento(referenciaDocumento);
+		fileDAO.save(documentoConvenioComuna);
+		System.out.println("luego de aplicar insert del documento convenio comuna");
+	}
+	
+	public void createDocumentConvenioServicio(ConvenioServicio convenio,TipoDocumentosProcesos tipoDocumento, Integer referenciaDocumentoId) {
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		DocumentoConvenioServicio documentoConvenioServicio = new DocumentoConvenioServicio();
+		documentoConvenioServicio.setConvenio(convenio);
+		documentoConvenioServicio.setDocumento(referenciaDocumento);
+		fileDAO.save(documentoConvenioServicio);
+		System.out.println("luego de aplicar insert del documento convenio servicio");
 	}
 	
 	public Integer createDocumentReliquidacion(ProgramaAno programaAno, TipoDocumento tipoDocumentoProceso,

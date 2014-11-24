@@ -8,6 +8,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
 import minsal.divap.dao.ComponenteDAO;
+import minsal.divap.model.mappers.ComponenteMapper;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.DependenciaVO;
 import minsal.divap.vo.SubtituloVO;
@@ -74,10 +75,9 @@ public class ComponenteService {
 		return componentesPrograma;
 	}
 
-	public Componente getComponenteById(Integer idComponente) {
-		//	List<ComponenteSubtitulo> componentes = this.componenteDAO.getComponenteByProgramaSubtitulo(programaId, sub);
+	public ComponentesVO getComponenteById(Integer idComponente) {
 		Componente componente = this.componenteDAO.getComponenteByID(idComponente);
-		return componente;
+		return new ComponenteMapper().getBasic(componente);
 	}
 	
 	public ComponentesVO getComponenteVOById(Integer idComponente) {
