@@ -32,7 +32,6 @@ public class ProgramasDAO {
 		try {
 			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.findByIdProgramaAno", ProgramaAno.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
-
 			List <ProgramaAno> programas = query.getResultList(); 
 			if(programas != null && programas.size() > 0){
 				return programas.get(0);

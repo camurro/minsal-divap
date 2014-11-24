@@ -40,16 +40,10 @@
 							<span class="textoAjustado">#{_programa.descripcion}</span>
 						</p:column>
 						<p:column>
-							<h:commandLink action="#{procesoGITSubirController.comenzar}"  rendered="#{_programa.estadoConvenio.id == '1'}>
+							<h:commandLink action="#{procesoGITSubirController.comenzar}"  rendered="#{_programa.estadoConvenio.id == '1'}">
 								<h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons" />
-								<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado.nombre}"
-								value="#{_programa.nombre}" />
-								<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado.id}"
-								value="#{_programa.id}" />
-								<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado.idProgramaAno}"
+								<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado}"
 								value="#{_programa.idProgramaAno}" />
-								<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado.descripcion}"
-								value="#{_programa.descripcion}" />
 								<f:setPropertyActionListener target="#{procesoGITSubirController.target}"
 								value="bandejaTareas.jsf" />
 							</h:commandLink>

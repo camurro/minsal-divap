@@ -34,11 +34,23 @@ import minsal.divap.service.ConveniosService;
 @Path("/proceso")
 @RequestScoped
 public class ConvenioRESTService extends BaseRest{
-	
+
+
 	@GET
-    @Path("/convenio/cambiarEstadoPrograma/{programaSeleccionado}/{estado}")
-    @Produces("application/json")
-    public void cambiarEstadoPrograma(@PathParam("programaSeleccionado") Integer programaSeleccionado, @PathParam("estado") String estado){
+	@Path("/convenio/crearInstanciaConvenio/{usuario}")
+	@Produces("application/json")
+	public Integer crearInstanciaConvenio(@PathParam("usuario") String usuario){
+		System.out.println("crearInstanciaReliquidacion con usuario->"+usuario);
+		if(usuario == null){
+			throw new IllegalArgumentException("usuario: "+ usuario + " no puede ser nulo");
+		}
+		ConveniosService conveniosService = getService(ConveniosService.class);
+		return conveniosService.crearInstanciaConvenio(usuario);
+	}
+
+	@GET
+	@Path("/convenio/cambiarEstadoPrograma/{programaSeleccionado}/{estado}")
+	public void cambiarEstadoPrograma(@PathParam("programaSeleccionado") Integer programaSeleccionado, @PathParam("estado") String estado){
 		System.out.println("Cambiar estado-->"+programaSeleccionado);
 		if(programaSeleccionado == null){
 			throw new IllegalArgumentException("programaSeleccionado: "+ programaSeleccionado + " no puede ser nulo");
@@ -49,42 +61,60 @@ public class ConvenioRESTService extends BaseRest{
 		ConveniosService conveniosService = getService(ConveniosService.class);
 		EstadosProgramas estadoPrograma = EstadosProgramas.getById(Integer.parseInt(estado));
 		conveniosService.cambiarEstadoPrograma(programaSeleccionado, estadoPrograma);
-    }
-	
+	}
+
 	@GET
-    @Path("/convenio/notificarServicioSalud/{programaSeleccionado}")
-    @Produces("application/json")
-    public void notificarServicioSalud(@PathParam("programaSeleccionado") Integer programaSeleccionado){
+	@Path("/convenio/convenioPorPrograma/{programaSeleccionado}/{idConvenio}")
+	public void convenioPorPrograma(@PathParam("programaSeleccionado") Integer programaSeleccionado, @PathParam("idConvenio") Integer idConvenio){
+		System.out.println("Cambiar estado-->"+programaSeleccionado);
+		if(programaSeleccionado == null){
+			throw new IllegalArgumentException("programaSeleccionado: "+ programaSeleccionado + " no puede ser nulo");
+		}
+		if(idConvenio == null){
+			throw new IllegalArgumentException("idConvenio: "+ idConvenio + " no puede ser nulo");
+		}
+		ConveniosService conveniosService = getService(ConveniosService.class);
+		conveniosService.convenioPorPrograma(programaSeleccionado, idConvenio);
+	}	
+
+	@GET
+	@Path("/convenio/notificarServicioSalud/{programaSeleccionado}/{servicioSeleccionado}/{idConvenio}")
+	public void notificarServicioSalud(@PathParam("programaSeleccionado") Integer programaSeleccionado, @PathParam("servicioSeleccionado") Integer servicioSeleccionado, @PathParam("idConvenio") Integer idConvenio){
 		System.out.println("notificarServicioSalud-->"+programaSeleccionado);
 		if(programaSeleccionado == null){
 			throw new IllegalArgumentException("programaSeleccionado: "+ programaSeleccionado + " no puede ser nulo");
 		}
+		if(servicioSeleccionado == null){
+			throw new IllegalArgumentException("servicioSeleccionado: "+ servicioSeleccionado + " no puede ser nulo");
+		}
+		if(idConvenio == null){
+			throw new IllegalArgumentException("idConvenio: "+ idConvenio + " no puede ser nulo");
+		}
 		ConveniosService conveniosService = getService(ConveniosService.class);
-		conveniosService.notificarServicioSalud(programaSeleccionado);
-    }
-	
+		conveniosService.notificarServicioSalud(programaSeleccionado, servicioSeleccionado, idConvenio);
+	}
+
 	@GET
-    @Path("/convenio/generarResolucionDisponibilizarAlfresco/{programaSeleccionado}")
-    @Produces("application/json")
-    public Integer generarResolucionDisponibilizarAlfresco(@PathParam("programaSeleccionado") Integer programaSeleccionado){
+	@Path("/convenio/generarResolucionDisponibilizarAlfresco/{programaSeleccionado}")
+	@Produces("application/json")
+	public Integer generarResolucionDisponibilizarAlfresco(@PathParam("programaSeleccionado") Integer programaSeleccionado){
 		System.out.println("generarResolucionDisponibilizarAlfresco-->"+programaSeleccionado);
 		if(programaSeleccionado == null){
 			throw new IllegalArgumentException("programaSeleccionado: "+ programaSeleccionado + " no puede ser nulo");
 		}
 		ConveniosService conveniosService = getService(ConveniosService.class);
 		return conveniosService.generarResolucionDisponibilizarAlfresco(programaSeleccionado);
-    }
-	
+	}
+
 	@GET
-    @Path("/convenio/administrarVersionesAlfresco/{programaSeleccionado}")
-    @Produces("application/json")
-    public void administrarVersionesAlfresco(@PathParam("programaSeleccionado") Integer programaSeleccionado){
+	@Path("/convenio/administrarVersionesAlfresco/{programaSeleccionado}")
+	public void administrarVersionesAlfresco(@PathParam("programaSeleccionado") Integer programaSeleccionado){
 		System.out.println("administrarVersionesAlfresco-->"+programaSeleccionado);
 		if(programaSeleccionado == null){
 			throw new IllegalArgumentException("programaSeleccionado: "+ programaSeleccionado + " no puede ser nulo");
 		}
 		ConveniosService conveniosService = getService(ConveniosService.class);
 		conveniosService.administrarVersionesAlfresco(programaSeleccionado);
-    }
-	
+	}
+
 }

@@ -25,7 +25,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "ConvenioComunaComponente.findAll", query = "SELECT c FROM ConvenioComunaComponente c"),
     @NamedQuery(name = "ConvenioComunaComponente.findByIdConvenioComunaComponente", query = "SELECT c FROM ConvenioComunaComponente c WHERE c.idConvenioComunaComponente = :idConvenioComunaComponente"),
-    @NamedQuery(name = "ConvenioComunaComponente.findByMonto", query = "SELECT c FROM ConvenioComunaComponente c WHERE c.monto = :monto")})
+    @NamedQuery(name = "ConvenioComunaComponente.findByMonto", query = "SELECT c FROM ConvenioComunaComponente c WHERE c.monto = :monto"),
+    @NamedQuery(name = "ConvenioComunaComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdServicioIdConvenioIdEstadoConvenio", query = "SELECT c FROM ConvenioComunaComponente c WHERE c.convenioComuna.idPrograma.idProgramaAno = :idProgramaAno and c.componente.id = :idComponente and c.subtitulo.idTipoSubtitulo = :idSubtitulo and c.convenioComuna.idComuna.servicioSalud.id = :idServicio and c.convenioComuna.convenio.idConvenio = :idConvenio and c.convenioComuna.estadoConvenio.idEstadoConvenio = :idEstadoConvenio"),
+    @NamedQuery(name = "ConvenioComunaComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdComunaIdConvenioIdEstadoConvenio", query = "SELECT c FROM ConvenioComunaComponente c WHERE c.convenioComuna.idPrograma.idProgramaAno = :idProgramaAno and c.componente.id = :idComponente and c.subtitulo.idTipoSubtitulo = :idSubtitulo and c.convenioComuna.idComuna.id = :idComuna and c.convenioComuna.convenio.idConvenio = :idConvenio and c.convenioComuna.estadoConvenio.idEstadoConvenio = :idEstadoConvenio")})
 public class ConvenioComunaComponente implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -35,6 +37,9 @@ public class ConvenioComunaComponente implements Serializable {
     @Basic(optional = false)
     @Column(name = "monto")
     private int monto;
+    @Basic(optional = false)
+    @Column(name = "aprobado")
+    private boolean aprobado;
     @JoinColumn(name = "subtitulo", referencedColumnName = "id_tipo_subtitulo")
     @ManyToOne(optional = false)
     private TipoSubtitulo subtitulo;
@@ -97,6 +102,14 @@ public class ConvenioComunaComponente implements Serializable {
     public void setComponente(Componente componente) {
         this.componente = componente;
     }
+
+	public boolean isAprobado() {
+		return aprobado;
+	}
+
+	public void setAprobado(boolean aprobado) {
+		this.aprobado = aprobado;
+	}
 
 	@Override
     public int hashCode() {

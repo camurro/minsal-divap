@@ -25,6 +25,7 @@ import minsal.divap.dao.MesDAO;
 import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.dao.ReliquidacionDAO;
 import minsal.divap.dao.UsuarioDAO;
+import minsal.divap.enums.EstadosConvenios;
 import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.enums.FieldType;
 import minsal.divap.enums.Subtitulo;
@@ -481,7 +482,7 @@ public class ReliquidacionService {
 
 	private void calcularReliquidacionComuna(Integer idProgramaAno, Integer idServicio, Integer idReliquidacion){
 		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
-		List<ConvenioComuna> conveniosComunas = conveniosDAO.getConveniosComunaByProgramaAnoServicioAprobacion(idProgramaAno, idServicio, Boolean.TRUE);
+		List<ConvenioComuna> conveniosComunas = conveniosDAO.getConveniosComunaByProgramaAnoServicioEstadoConvenio(idProgramaAno, idServicio, EstadosConvenios.APROBADO.getId());
 		if(conveniosComunas != null && conveniosComunas.size() > 0){
 			for(ConvenioComuna convenioComuna : conveniosComunas){
 				if(convenioComuna.getConvenioComunaComponentes() != null && convenioComuna.getConvenioComunaComponentes().size() > 0){
@@ -532,7 +533,7 @@ public class ReliquidacionService {
 	public void calcularReliquidacionServicio(Integer idProgramaAno, Integer idServicio, Integer idReliquidacion){
 		System.out.println("calcularReliquidacionServicio idProgramaAno="+idProgramaAno+" idServicio="+idServicio+" idReliquidacion="+idReliquidacion);
 		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
-		List<ConvenioServicio> conveniosServicio = conveniosDAO.getConveniosServicioByProgramaAnoServicioAprobacion(idProgramaAno, idServicio, Boolean.TRUE);
+		List<ConvenioServicio> conveniosServicio = conveniosDAO.getConveniosServicioByProgramaAnoServicioEstadoConvenio(idProgramaAno, idServicio, EstadosConvenios.APROBADO.getId());
 		System.out.println("conveniosServicio.size()="+((conveniosServicio!=null) ? conveniosServicio.size(): "0"));
 		if(conveniosServicio != null && conveniosServicio.size() > 0){
 			for(ConvenioServicio convenioServicio : conveniosServicio){
@@ -594,11 +595,10 @@ public class ReliquidacionService {
 	private List<ValorizarReliquidacionSummaryVO> calcularReliquidacionProgramaServicio(Integer idProgramaAno, List<Integer> idComponentes, Integer idReliquidacion) {
 		System.out.println("idReliquidacion ----> "+idReliquidacion);
 		System.out.println("idProgramaAno ---> "+idProgramaAno);
-		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
 		List<ServiciosVO> servicios = servicioSaludService.getServiciosOrderId();
 		List<ValorizarReliquidacionSummaryVO> lista = new ArrayList<ValorizarReliquidacionSummaryVO>();
 		for(ServiciosVO serv: servicios){
-			List<ConvenioServicio> conveniosServicios = conveniosDAO.getConveniosServicioByProgramaAnoServicioAprobacion(idProgramaAno, serv.getId_servicio(), Boolean.TRUE);
+			List<ConvenioServicio> conveniosServicios = conveniosDAO.getConveniosServicioByProgramaAnoServicioEstadoConvenio(idProgramaAno, serv.getId_servicio(), EstadosConvenios.APROBADO.getId());
 			if(conveniosServicios != null && conveniosServicios.size() > 0){
 				for(ConvenioServicio convenioServicio : conveniosServicios){
 					ValorizarReliquidacionSummaryVO valorizarReliquidacionSummaryVO = new ValorizarReliquidacionSummaryVO();
@@ -691,11 +691,10 @@ public class ReliquidacionService {
 	private List<ValorizarReliquidacionSummaryVO> calcularReliquidacionProgramaComuna(Integer idProgramaAno, List<Integer> idComponentes, Integer idReliquidacion) {
 		System.out.println("idReliquidacion ----> "+idReliquidacion);
 		System.out.println("idProgramaAno ---> "+idProgramaAno);
-		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
 		List<ServiciosVO> servicios = servicioSaludService.getServiciosOrderId();
 		List<ValorizarReliquidacionSummaryVO> lista = new ArrayList<ValorizarReliquidacionSummaryVO>();
 		for(ServiciosVO serv: servicios){
-			List<ConvenioComuna> conveniosComunas = conveniosDAO.getConveniosComunaByProgramaAnoServicioAprobacion(idProgramaAno, serv.getId_servicio(), Boolean.TRUE);
+			List<ConvenioComuna> conveniosComunas = conveniosDAO.getConveniosComunaByProgramaAnoServicioEstadoConvenio(idProgramaAno, serv.getId_servicio(), EstadosConvenios.APROBADO.getId());
 			if(conveniosComunas != null && conveniosComunas.size() > 0){
 				for(ConvenioComuna convenioComuna : conveniosComunas){
 					ValorizarReliquidacionSummaryVO valorizarReliquidacionSummaryVO = new ValorizarReliquidacionSummaryVO();
@@ -1005,7 +1004,7 @@ public class ReliquidacionService {
 
 		List<ValorizarReliquidacionPageSummaryVO> lista = new ArrayList<ValorizarReliquidacionPageSummaryVO>();
 		for(ServiciosVO serv : servicios){
-			List<ConvenioServicio> conveniosServicios = conveniosDAO.getConveniosServicioByProgramaAnoServicioAprobacion(idProgramaAno, serv.getId_servicio(), Boolean.TRUE);
+			List<ConvenioServicio> conveniosServicios = conveniosDAO.getConveniosServicioByProgramaAnoServicioEstadoConvenio(idProgramaAno, serv.getId_servicio(), EstadosConvenios.APROBADO.getId());
 			if(conveniosServicios != null && conveniosServicios.size() > 0){
 				for(ConvenioServicio convenioServicio : conveniosServicios){
 					ValorizarReliquidacionPageSummaryVO valorizarReliquidacionSummaryVO = new ValorizarReliquidacionPageSummaryVO();
@@ -1142,7 +1141,7 @@ public class ReliquidacionService {
 
 		List<ValorizarReliquidacionPageSummaryVO> lista = new ArrayList<ValorizarReliquidacionPageSummaryVO>();
 		for(ServiciosVO serv : servicios){
-			List<ConvenioComuna> conveniosComunas = conveniosDAO.getConveniosComunaByProgramaAnoServicioAprobacion(idProgramaAno, serv.getId_servicio(), Boolean.TRUE);
+			List<ConvenioComuna> conveniosComunas = conveniosDAO.getConveniosComunaByProgramaAnoServicioEstadoConvenio(idProgramaAno, serv.getId_servicio(), EstadosConvenios.APROBADO.getId());
 			if(conveniosComunas != null && conveniosComunas.size() > 0){
 				for(ConvenioComuna convenioComuna : conveniosComunas){
 					ValorizarReliquidacionPageSummaryVO valorizarReliquidacionSummaryVO = new ValorizarReliquidacionPageSummaryVO();

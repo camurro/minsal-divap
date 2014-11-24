@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
 	@NamedQuery(name = "ConvenioComuna.findAll", query = "SELECT c FROM ConvenioComuna c"),
-	@NamedQuery(name = "ConvenioComuna.findByIdConvenio", query = "SELECT c FROM ConvenioComuna c WHERE c.idConvenioComuna = :idConvenio"),
+	@NamedQuery(name = "ConvenioComuna.findByIdConvenioComuna", query = "SELECT c FROM ConvenioComuna c WHERE c.idConvenioComuna = :idConvenioComuna"),
 	@NamedQuery(name = "ConvenioComuna.findByFecha", query = "SELECT c FROM ConvenioComuna c WHERE c.fecha = :fecha"),
 	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdServicioIdComponenteIdSubtitulo", query = "SELECT c FROM ConvenioComuna c JOIN c.convenioComunaComponentes cc WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.servicioSalud.id =:idServicio and cc.componente.id IN (:idComponentes) and cc.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
 	@NamedQuery(name = "ConvenioComuna.findByConveniosById", query = "SELECT c FROM ConvenioComuna c WHERE c.idConvenioComuna = :id"),
@@ -48,7 +48,9 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdServicio", query = "SELECT c FROM ConvenioComuna c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.servicioSalud.id = :idServicio"),
 	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdServicioIdComponentes", query = "SELECT c FROM ConvenioComuna c JOIN c.convenioComunaComponentes cc WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.servicioSalud.id = :idServicio and cc.componente.id IN (:idComponentes)"),
 	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdComunaIdMes", query = "SELECT c FROM ConvenioComuna c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.id = :idComuna and c.mes.idMes = :idMes"),
-	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdServicioAprobacion", query = "SELECT c FROM ConvenioComuna c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.servicioSalud.id = :idServicio and c.aprobacion = :aprobacion")})
+	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdServicioIdEstadoConvenio", query = "SELECT c FROM ConvenioComuna c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.servicioSalud.id = :idServicio and c.estadoConvenio.idEstadoConvenio = :idEstadoConvenio"),
+	@NamedQuery(name = "ConvenioComuna.countConvenioComunaByIdProgramaAnoIdEstadoConvenio", query = "SELECT COUNT(c) FROM ConvenioComuna c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.estadoConvenio.idEstadoConvenio = :idEstadoConvenio"),
+	@NamedQuery(name = "ConvenioComuna.findConvenioComunaByIdProgramaAnoIdEstadoConvenio", query = "SELECT c FROM ConvenioComuna c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.estadoConvenio.idEstadoConvenio = :idEstadoConvenio")})
 
 public class ConvenioComuna implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -61,19 +63,23 @@ public class ConvenioComuna implements Serializable {
 	private Date fecha;
 	@Column(name = "numero_resolucion")
 	private Integer numeroResolucion;
-	@Column(name = "aprobacion")
-	private Boolean aprobacion;
 	@JoinColumn(name = "id_programa", referencedColumnName = "id_programa_ano")
 	@ManyToOne
 	private ProgramaAno idPrograma;
 	@JoinColumn(name = "mes", referencedColumnName = "id_mes")
 	@ManyToOne
 	private Mes mes;
+	@JoinColumn(name = "estado_convenio", referencedColumnName = "id_estado_convenio")
+	@ManyToOne(optional = false)
+	private EstadoConvenio estadoConvenio;
+	@JoinColumn(name = "convenio", referencedColumnName = "id_convenio")
+	@ManyToOne
+	private Convenio convenio;
 	@JoinColumn(name = "id_comuna", referencedColumnName = "id")
 	@ManyToOne
 	private Comuna idComuna;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "convenio")
-	private Set<DocumentoConvenio> documentosConvenio;
+	private Set<DocumentoConvenioComuna> documentosConvenio;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "convenioComuna")
 	private Set<ConvenioComunaComponente> convenioComunaComponentes;
 
@@ -165,25 +171,44 @@ public class ConvenioComuna implements Serializable {
 	public String toString() {
 		return "ConvenioComuna [idConvenioComuna=" + idConvenioComuna
 				+ ", fecha=" + fecha + ", numeroResolucion=" + numeroResolucion
-				+ ", aprobacion=" + aprobacion + ", idPrograma=" + idPrograma
+				+ ", convenioValido=" + estadoConvenio + ", idPrograma=" + idPrograma
 				+ ", mes=" + mes + ", idComuna=" + idComuna
 				+ ", documentosConvenio=" + documentosConvenio + "]";
 	}
 
 	@XmlTransient
-	public Set<DocumentoConvenio> getDocumentosConvenio() {
+	public Set<DocumentoConvenioComuna> getDocumentosConvenio() {
 		return documentosConvenio;
 	}
 
-	public void setDocumentoConvenios(Set<DocumentoConvenio> documentosConvenio) {
+	public void setDocumentosConvenio(Set<DocumentoConvenioComuna> documentosConvenio) {
 		this.documentosConvenio = documentosConvenio;
 	}
 
-	public Boolean getAprobacion() {
-		return aprobacion;
+	public EstadoConvenio getEstadoConvenio() {
+		return estadoConvenio;
 	}
 
-	public void setAprobacion(Boolean aprobacion) {
-		this.aprobacion = aprobacion;
+	public void setEstadoConvenio(EstadoConvenio estadoConvenio) {
+		this.estadoConvenio = estadoConvenio;
 	}
+
+	public Convenio getConvenio() {
+		return convenio;
+	}
+
+	public void setConvenio(Convenio convenio) {
+		this.convenio = convenio;
+	}
+
+	public Mes getMes() {
+		return mes;
+	}
+
+	public void setMes(Mes mes) {
+		this.mes = mes;
+	}
+
+
+
 }
