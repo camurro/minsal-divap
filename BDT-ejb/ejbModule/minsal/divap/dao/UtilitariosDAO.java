@@ -1,6 +1,5 @@
 package minsal.divap.dao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Singleton;
@@ -8,8 +7,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import minsal.divap.enums.TipoComuna;
 import cl.minsal.divap.model.Comuna;
+import cl.minsal.divap.model.Festivos;
 import cl.minsal.divap.model.Region;
 import cl.minsal.divap.model.ServicioSalud;
 
@@ -78,5 +77,23 @@ public class UtilitariosDAO {
 			throw new RuntimeException(e);
 		}
 	}
+
+	public Festivos findFestivoByDiaMesAno(Integer mes, int dia,
+			Integer ano) {
+		try {
+			TypedQuery<Festivos> query = this.em.createNamedQuery("Festivos.findByDiaMesAno", Festivos.class);
+			query.setParameter("dia", dia);
+			query.setParameter("mes", mes);
+			query.setParameter("ano", ano);
+			List<Festivos> result = query.getResultList(); 
+			if(result != null && result.size() > 0){
+				return result.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 
 }

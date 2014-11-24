@@ -27,7 +27,7 @@ import minsal.divap.dao.DocumentDAO;
 import minsal.divap.dao.EstimacionFlujoCajaDAO;
 import minsal.divap.dao.MesDAO;
 import minsal.divap.dao.ProgramasDAO;
-import minsal.divap.dao.RemesaDAO;
+import minsal.divap.dao.RemesasDAO;
 import minsal.divap.dao.SeguimientoDAO;
 import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.dao.UsuarioDAO;
@@ -38,13 +38,9 @@ import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TareasSeguimiento;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.excel.GeneradorExcel;
-import minsal.divap.excel.impl.CrearPlanillaCumplimientoMunicialProgramaSheetExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaConsolidadorSheetExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaSheetExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaSubtituloSheetExcel;
-import minsal.divap.excel.impl.PlanillaTrabajoCumplimientoReliquidacionMunicipalSheetExcel;
-import minsal.divap.excel.impl.RebajaSheetExcel;
-import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.model.mappers.FlujoCajaMapper;
 import minsal.divap.model.mappers.ServicioMapper;
 import minsal.divap.model.mappers.SubtituloFlujoCajaMapper;
@@ -54,22 +50,16 @@ import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.CajaMontoSummaryVO;
 import minsal.divap.vo.CellExcelVO;
-import minsal.divap.vo.ComponentesVO;
-import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.ConveniosSummaryVO;
-import minsal.divap.vo.CumplimientoApsMunicipalProgramaVO;
 import minsal.divap.vo.DocumentoVO;
 import minsal.divap.vo.EmailVO;
 import minsal.divap.vo.FlujoCajaVO;
-import minsal.divap.vo.ProgramaVO;
-import minsal.divap.vo.RebajaVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.ResumenConsolidadorVO;
 import minsal.divap.vo.SeguimientoVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloFlujoCajaVO;
 import minsal.divap.vo.TransferenciaSummaryVO;
-import minsal.divap.vo.ValorizarReliquidacionSummaryVO;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -159,7 +149,7 @@ public class EstimacionFlujoCajaService {
 	@EJB
 	private ConveniosDAO conveniosDAO;
 	@EJB
-	private RemesaDAO remesasDAO;
+	private RemesasDAO remesasDAO;
 	@EJB
 	private ServicioSaludDAO servicioSaludDAO;
 

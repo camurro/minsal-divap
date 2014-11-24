@@ -32,18 +32,16 @@ implements Serializable {
 	
 	@EJB
 	private OTService otService;
-	
 	@EJB
 	private ProgramasService programaService;
-	
 	@EJB
 	private RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService;
-
-	
 	private List<ProgramaVO> programas;
 	private Integer anoCurso;
 	private String programaSeleccionado;
 	
+	static private Integer IDPERCAPITA = -1;
+	static private String DESCPERCAPITA = "Línea de Financiamiento Per Cápita";
 	
 	
 
@@ -72,6 +70,11 @@ implements Serializable {
 	public List<ProgramaVO> getProgramas() {
 		if(programas == null){
 			programas = otService.getProgramas(getLoggedUsername());
+			ProgramaVO percapita = new ProgramaVO();
+			percapita.setNombre("PER CAPITA");
+			percapita.setId(IDPERCAPITA);
+			percapita.setDescripcion(DESCPERCAPITA);
+			programas.add(percapita);
 		}
 		return programas;
 	}

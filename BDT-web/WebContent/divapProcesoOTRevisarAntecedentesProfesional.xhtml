@@ -21,15 +21,15 @@
 					<br />
 					<h3>Filtros del Programa:</h3>
 					<h:panelGrid id="busqueda_mis_tareas" columns="5">
+					<c:if test="#{not procesoOTRevisarAntecedentesController.percapita}">
 						<h:panelGrid columns="2">
 								<h:outputText value="Componente " styleClass="inputLabel" />
 								<p:selectOneMenu id="componentes"  value="#{procesoOTRevisarAntecedentesController.componenteSeleccionado}">
-								<p:ajax listener="#{procesoOTRevisarAntecedentesController.seleccionComponente}" update="" />
 								<f:selectItem itemLabel="Seleccione" itemValue="" />  
 								<f:selectItems value="#{procesoOTRevisarAntecedentesController.listaComponentes}" itemLabel="#{componente.nombre}" var="componente" itemValue="#{componente.id}"/> 
 							</p:selectOneMenu>
 							</h:panelGrid>
-					
+					</c:if>
 							<h:panelGrid columns="2">
 								<h:outputText value="Servicio: " styleClass="inputLabel" />
 								<p:selectOneMenu id="servicios"  value="#{procesoOTRevisarAntecedentesController.servicioSeleccionado}">
@@ -43,9 +43,85 @@
 						</h:panelGrid>
 					</h:panelGrid>
 					<p:tabView id="tabs">
+					<c:if test="#{not procesoOTRevisarAntecedentesController.percapita}">
 						<c:if test="#{procesoOTRevisarAntecedentesController.subtitulo24}">
 							<p:tab title="Subtítulo 24" id="tabS24">
-							
+								<p:dataTable resizableColumns="true" value="#{procesoOTRevisarAntecedentesController.resultadoMunicipal}" liveResize="true" var="detalleS24"
+										rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+										styleClass="dataTable" id="tablaResultadosS24" rowIndexVar="rowIndex">
+										<p:columnGroup type="header">
+											<p:row>
+												<p:column rowspan="3" headerText="Comuna" />
+												<p:column rowspan="3" headerText="Marco Presupuestario"/>
+												<p:column colspan="2" rowspan="2" headerText="Transferencia Acumulada a la Fecha"/>
+												<p:column colspan="2" rowspan="2" headerText="Convenios Recibidos"/>
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="#{remesa.mes}"/>
+												</c:forEach>
+												<p:column colspan="2" rowspan="2" headerText="Marco - Remesa Acumulada"/>
+												<p:column rowspan="3" headerText="Revisado"/>
+											</p:row>
+											<p:row>
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="Días de Remesa"/>
+												</c:forEach>
+												
+											</p:row>
+											<p:row>
+												<p:column headerText="Monto" />
+												<p:column headerText="%" />
+												<p:column headerText="Monto" />
+												<p:column headerText="%" />
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+													<c:forEach items="#{remesa.dias}" var="dia">
+														<p:column headerText="#{dia.dia}"/>
+													</c:forEach>
+												</c:forEach>
+												<p:column headerText="Monto" />
+												<p:column headerText="%" />
+											</p:row>
+										</p:columnGroup>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS24.comuna.nombre}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS24.comuna.nombre}</span>
+										</p:column>
+										
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS24.comuna.nombre}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS24.comuna.nombre}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS24.comuna.nombre}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS24.comuna.nombre}</span>
+										</p:column>
+										<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+											<c:forEach items="#{remesa.dias}" var="dia">
+													<p:column>
+														<c:if test="#{dia.bloqueado}">
+															<h:outputText value="bloqueado" /> 
+														</c:if>
+														<c:if test="#{not dia.bloqueado}">
+															OK
+														</c:if>
+													</p:column>
+											</c:forEach>
+										</c:forEach>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS24.comuna.nombre}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS24.comuna.nombre}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS24.comuna.nombre}</span>
+										</p:column>
+									</p:dataTable>
 							</p:tab>
 						</c:if>
 						<c:if test="#{procesoOTRevisarAntecedentesController.subtitulo21}">
@@ -55,45 +131,67 @@
 										styleClass="dataTable" id="tablaResultadosS21" rowIndexVar="rowIndex">
 										<p:columnGroup type="header">
 											<p:row>
-												<p:column colspan="2" headerText="Establecimiento" />
-												<p:column rowspan="2" headerText="Marco Presupuestario"/>
-												<p:column colspan="2" headerText="Transferencia Acumulada a la Fecha"/>
-												<p:column colspan="2" headerText="Convenios Recibidos"/>
-												<p:column colspan="2" headerText="Diferencia (Marco-Total)"/>
-												<p:column rowspan="2" headerText="Revisado"/>
+												<p:column rowspan="3" headerText="Establecimiento" />
+												<p:column rowspan="3" headerText="Marco Presupuestario"/>
+												<p:column colspan="2" rowspan="2" headerText="Transferencia Acumulada a la Fecha"/>
+												<p:column colspan="2" rowspan="2" headerText="Convenios Recibidos"/>
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="#{remesa.mes}"/>
+												</c:forEach>
+												<p:column colspan="2" rowspan="2" headerText="Marco - Remesa Acumulada"/>
+												<p:column rowspan="3" headerText="Revisado"/>
 											</p:row>
 											<p:row>
-												<p:column headerText="Código" />
-												<p:column headerText="Establecimiento" />
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="Días de Remesa"/>
+												</c:forEach>
+												
+											</p:row>
+											<p:row>
 												<p:column headerText="Monto" />
 												<p:column headerText="%" />
 												<p:column headerText="Monto" />
 												<p:column headerText="%" />
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+													<c:forEach items="#{remesa.dias}" var="dia">
+														<p:column headerText="#{dia.dia}"/>
+													</c:forEach>
+												</c:forEach>
 												<p:column headerText="Monto" />
 												<p:column headerText="%" />
 											</p:row>
 										</p:columnGroup>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.codigoEstablecimiento}</span>
-										</p:column>
-										<p:column>
 											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
+											<span class="textoAjustado textoPequenio">#{detalleS21.marcoPresupuestario}</span>
+										</p:column>
+										
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS21.transferenciaAcumulada}</span>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
+											<span class="textoAjustado textoPequenio">#{detalleS21.porcentajeTransferencia}</span>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
+											<span class="textoAjustado textoPequenio">#{detalleS21.conveniosRecibidos}</span>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
+											<span class="textoAjustado textoPequenio">#{detalleS21.porcentajeConveniosRecibidos}</span>
 										</p:column>
-										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
-										</p:column>
+										<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+											<c:forEach items="#{remesa.dias}" var="dia">
+													<p:column>
+														<c:if test="#{dia.bloqueado}">
+															<h:outputText value="bloqueado" /> 
+														</c:if>
+														<c:if test="#{not dia.bloqueado}">
+															OK
+														</c:if>
+													</p:column>
+											</c:forEach>
+										</c:forEach>
 										<p:column>
 											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
 										</p:column>
@@ -113,15 +211,72 @@
 										styleClass="dataTable" id="tablaResultadosS22" rowIndexVar="rowIndex">
 										<p:columnGroup type="header">
 											<p:row>
-												<p:column colspan="2" headerText="Establecimiento" />
+												<p:column rowspan="3" headerText="Establecimiento" />
+												<p:column rowspan="3" headerText="Marco Presupuestario"/>
+												<p:column colspan="2" rowspan="2" headerText="Transferencia Acumulada a la Fecha"/>
+												<p:column colspan="2" rowspan="2" headerText="Convenios Recibidos"/>
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="#{remesa.mes}"/>
+												</c:forEach>
+												<p:column colspan="2" rowspan="2" headerText="Marco - Remesa Acumulada"/>
+												<p:column rowspan="3" headerText="Revisado"/>
 											</p:row>
 											<p:row>
-												<p:column headerText="Código" />
-												<p:column headerText="Establecimiento" />
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="Días de Remesa"/>
+												</c:forEach>
+												
+											</p:row>
+											<p:row>
+												<p:column headerText="Monto" />
+												<p:column headerText="%" />
+												<p:column headerText="Monto" />
+												<p:column headerText="%" />
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+													<c:forEach items="#{remesa.dias}" var="dia">
+														<p:column headerText="#{dia.dia}"/>
+													</c:forEach>
+												</c:forEach>
+												<p:column headerText="Monto" />
+												<p:column headerText="%" />
 											</p:row>
 										</p:columnGroup>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS22.establecimiento.codigoEstablecimiento}</span>
+											<span class="textoAjustado textoPequenio">#{detalleS22.establecimiento.nombre}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS22.marcoPresupuestario}</span>
+										</p:column>
+										
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS22.transferenciaAcumulada}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS22.porcentajeTransferencia}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS22.conveniosRecibidos}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS22.porcentajeConveniosRecibidos}</span>
+										</p:column>
+										<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+											<c:forEach items="#{remesa.dias}" var="dia">
+													<p:column>
+														<c:if test="#{dia.bloqueado}">
+															<h:outputText value="bloqueado" /> 
+														</c:if>
+														<c:if test="#{not dia.bloqueado}">
+															OK
+														</c:if>
+													</p:column>
+											</c:forEach>
+										</c:forEach>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS22.establecimiento.nombre}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS22.establecimiento.nombre}</span>
 										</p:column>
 										<p:column>
 											<span class="textoAjustado textoPequenio">#{detalleS22.establecimiento.nombre}</span>
@@ -136,15 +291,72 @@
 										styleClass="dataTable" id="tablaResultadosS29" rowIndexVar="rowIndex">
 										<p:columnGroup type="header">
 											<p:row>
-												<p:column colspan="2" headerText="Establecimiento" />
+												<p:column rowspan="3" headerText="Establecimiento" />
+												<p:column rowspan="3" headerText="Marco Presupuestario ($)"/>
+												<p:column colspan="2" rowspan="2" headerText="Transferencia Acumulada a la Fecha"/>
+												<p:column colspan="2" rowspan="2" headerText="Convenios Recibidos"/>
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="#{remesa.mes}"/>
+												</c:forEach>
+												<p:column colspan="2" rowspan="2" headerText="Marco - Remesa Acumulada"/>
+												<p:column rowspan="3" headerText="Revisado"/>
 											</p:row>
 											<p:row>
-												<p:column headerText="Código" />
-												<p:column headerText="Establecimiento" />
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="Días de Remesa"/>
+												</c:forEach>
+												
+											</p:row>
+											<p:row>
+												<p:column headerText="Monto ($)" />
+												<p:column headerText="%" />
+												<p:column headerText="Monto ($)" />
+												<p:column headerText="%" />
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+													<c:forEach items="#{remesa.dias}" var="dia">
+														<p:column headerText="#{dia.dia}"/>
+													</c:forEach>
+												</c:forEach>
+												<p:column headerText="Monto ($)" />
+												<p:column headerText="%" />
 											</p:row>
 										</p:columnGroup>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS29.establecimiento.codigoEstablecimiento}</span>
+											<span class="textoAjustado textoPequenio">#{detalleS29.establecimiento.nombre}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS29.marcoPresupuestario}</span>
+										</p:column>
+										
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS29.transferenciaAcumulada}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS29.porcentajeTransferencia}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS29.conveniosRecibidos}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS29.porcentajeConveniosRecibidos}</span>
+										</p:column>
+										<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+											<c:forEach items="#{remesa.dias}" var="dia">
+													<p:column>
+														<c:if test="#{dia.bloqueado}">
+															<h:outputText value="bloqueado" /> 
+														</c:if>
+														<c:if test="#{not dia.bloqueado}">
+															OK
+														</c:if>
+													</p:column>
+											</c:forEach>
+										</c:forEach>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS29.establecimiento.nombre}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleS29.establecimiento.nombre}</span>
 										</p:column>
 										<p:column>
 											<span class="textoAjustado textoPequenio">#{detalleS29.establecimiento.nombre}</span>
@@ -153,9 +365,93 @@
 							
 							</p:tab>
 						</c:if>
+						</c:if>
+						<c:if test="#{procesoOTRevisarAntecedentesController.percapita}">
 							<p:tab title="Per Cápita" id="tabPerCapita">
-							
+								<p:dataTable resizableColumns="true" value="#{procesoOTRevisarAntecedentesController.resultadoPercapita}" liveResize="true" var="detallePercapita"
+										rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+										styleClass="dataTable" id="tablaResultadosPercapita" rowIndexVar="rowIndex">
+										<p:columnGroup type="header">
+											<p:row>
+												<p:column rowspan="3" headerText="Comuna" />
+												<p:column rowspan="3" headerText="Clasificación" />
+												<p:column rowspan="3" headerText="Marco Presupuestario ($)"/>
+												<p:column colspan="2" rowspan="2" headerText="Remesa Acumulada a la Fecha"/>
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="#{remesa.mes}"/>
+												</c:forEach>
+												<p:column colspan="2" rowspan="2" headerText="Marco - Remesa Acumulada"/>
+												<p:column rowspan="3" headerText="Revisado"/>
+											</p:row>
+											<p:row>
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="Días de Remesa"/>
+												</c:forEach>
+												
+											</p:row>
+											<p:row>
+												<p:column headerText="Monto ($)" />
+												<p:column headerText="%" />
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+													<c:forEach items="#{remesa.dias}" var="dia">
+														<p:column headerText="#{dia.dia}"/>
+													</c:forEach>
+												</c:forEach>
+												<p:column headerText="Monto ($)" />
+												<p:column headerText="%" />
+											</p:row>
+										</p:columnGroup>
+											<p:column>
+											<span class="textoAjustado textoPequenio">#{detallePercapita.comuna}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detallePercapita.tipoComuna}</span>
+										</p:column>
+										<p:column>
+											<h:outputText styleClass="textoAjustado textoPequenio" value="#{detallePercapita.marcoPresupuestario}">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
+										</p:column>
+										
+										<p:column>
+											<h:outputText styleClass="textoAjustado textoPequenio" value="#{detallePercapita.transferenciaAcumulada}">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detallePercapita.porcentajeTransferenciaAcumulada}</span>
+										</p:column>
+										<c:forEach items="#{detallePercapita.remesas}" var="remesa">
+											<c:forEach items="#{remesa.dias}" var="dia">
+													<p:column>
+														<c:if test="#{dia.bloqueado}">
+															<h:outputText value="#{dia.monto}" styleClass="textoAjustado textoPequenio">
+																<f:convertNumber  maxFractionDigits="0"/>
+															</h:outputText> 
+														</c:if>
+														<c:if test="#{not dia.bloqueado}">
+															<h:inputText value="#{dia.monto}" styleClass="divapProcesoOTInput">
+																<f:convertNumber  maxFractionDigits="0"/>
+															</h:inputText> 
+														</c:if>
+													</p:column>
+											</c:forEach>
+										</c:forEach>
+										<p:column>
+											<h:outputText styleClass="textoAjustado textoPequenio" value="#{detallePercapita.diferencia}">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detallePercapita.porcentajeDiferencia}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">77</span>
+										</p:column>
+									</p:dataTable>
+								
 							</p:tab>
+						</c:if>
 					</p:tabView>
 	
 				</p:panel>

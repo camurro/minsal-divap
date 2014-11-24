@@ -2,6 +2,7 @@ package cl.minsal.divap.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -16,16 +17,21 @@ import minsal.divap.service.ComponenteService;
 import minsal.divap.service.OTService;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
+import minsal.divap.service.ReportesServices;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ComponentesVO;
+import minsal.divap.vo.OTPerCapitaVO;
 import minsal.divap.vo.OTResumenDependienteServicioVO;
 import minsal.divap.vo.OTResumenMunicipalVO;
 import minsal.divap.vo.ProgramaVO;
+import minsal.divap.vo.RemesasProgramaVO;
+import minsal.divap.vo.ReportePerCapitaVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloVO;
 
 import org.apache.log4j.Logger;
 
+import cl.minsal.divap.model.AntecendentesComunaCalculado;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 @Named("procesoOTRevisarAntecedentesController")
@@ -45,6 +51,8 @@ implements Serializable {
 	private UtilitariosService utilitariosService;
 	@EJB
 	private ComponenteService componenteService;
+	@EJB
+	private ReportesServices reporteService;
 
 	
 	private Integer programaSeleccionado;
@@ -61,15 +69,19 @@ implements Serializable {
 	private List<OTResumenDependienteServicioVO> resultadoServicioSub22;
 	private List<OTResumenDependienteServicioVO> resultadoServicioSub29;
 	private List<OTResumenMunicipalVO> resultadoMunicipal;
+	private List<OTPerCapitaVO> resultadoPercapita;
+	
+	private List<RemesasProgramaVO> remesasPrograma;
 	
 	private boolean subtitulo21;
 	private boolean subtitulo22;
 	private boolean subtitulo29;
 	private boolean subtitulo24;
+	private boolean percapita;
 	
 	
 	@PostConstruct
-	public void init() {
+	public void init() throws NumberFormatException, ParseException {
 		
 		if (!getSessionBean().isLogged()) {
 			log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
@@ -83,49 +95,57 @@ implements Serializable {
 			programaSeleccionado = (Integer) getTaskDataVO()
 					.getData().get("_programaSeleccionado");
 			programa = otService.getProgramaById(programaSeleccionado);
-			programa = recursosFinancierosProgramasReforzamientoService.getProgramaById(programaSeleccionado);
 			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado,programa);
+		}
+		percapita=false;
+		if(programa.getId()< 0){
+			percapita=true;
 		}
 		
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes= componenteService.getComponenteByPrograma(programa.getIdProgramaAno());
 		
+		remesasPrograma = otService.getRemesasPrograma(programa.getIdProgramaAno(), Integer.parseInt(reporteService.getMesCurso(true)));
 	}
 
 
 	
 	
 	public void buscarResultados(){
-		System.out.println("Buscar Resultados para Componente: "+componenteSeleccionado+" Servicio: "+servicioSeleccionado);
-		ComponentesVO componenteVO = componenteService.getComponenteVOById(componenteSeleccionado);
-		subtitulo21=false;
-		subtitulo22=false;
-		subtitulo29=false;
-		subtitulo24=false;
-		for(SubtituloVO subs : componenteVO.getSubtitulos()){
-			System.out.println(subs.getId());
-			if(subs.getId() == Subtitulo.SUBTITULO21.getId()){
-				subtitulo21=true;
-				resultadoServicioSub21 = otService.getDetalleOTServicio(componenteSeleccionado,servicioSeleccionado, 
-						Subtitulo.SUBTITULO21.getId(),programa.getIdProgramaAno());
-			}
-			if(subs.getId() == Subtitulo.SUBTITULO22.getId()){
-				subtitulo22=true;
-				resultadoServicioSub22 = otService.getDetalleOTServicio(componenteSeleccionado,servicioSeleccionado, 
-						Subtitulo.SUBTITULO22.getId(),programa.getIdProgramaAno());
-			}
-			if(subs.getId() == Subtitulo.SUBTITULO29.getId()){
-				subtitulo29=true;
-				resultadoServicioSub29 = otService.getDetalleOTServicio(componenteSeleccionado,servicioSeleccionado, 
-						Subtitulo.SUBTITULO29.getId(),programa.getIdProgramaAno());
-			}
-			if(subs.getId() == Subtitulo.SUBTITULO24.getId()){
-				subtitulo24=true;
-				resultadoMunicipal = otService.getDetalleOTMunicipal(servicioSeleccionado, programa.getIdProgramaAno());
+		
+		if(programa.getId()< 0){
+			resultadoPercapita = otService.getDetallePerCapita(servicioSeleccionado, otService.getAnoCurso(), programa.getIdProgramaAno()); 
+			System.out.println("Resultados PerCapita: "+resultadoPercapita.size());
+		}else{
+			System.out.println("Buscar Resultados para Componente: "+componenteSeleccionado+" Servicio: "+servicioSeleccionado);
+			ComponentesVO componenteVO = componenteService.getComponenteVOById(componenteSeleccionado);
+			subtitulo21=false;
+			subtitulo22=false;
+			subtitulo29=false;
+			subtitulo24=false;
+			for(SubtituloVO subs : componenteVO.getSubtitulos()){
+				System.out.println(subs.getId());
+				if(subs.getId() == Subtitulo.SUBTITULO21.getId()){
+					subtitulo21=true;
+					resultadoServicioSub21 = otService.getDetalleOTServicio(componenteSeleccionado,servicioSeleccionado, 
+							Subtitulo.SUBTITULO21.getId(),programa.getIdProgramaAno());
+				}
+				if(subs.getId() == Subtitulo.SUBTITULO22.getId()){
+					subtitulo22=true;
+					resultadoServicioSub22 = otService.getDetalleOTServicio(componenteSeleccionado,servicioSeleccionado, 
+							Subtitulo.SUBTITULO22.getId(),programa.getIdProgramaAno());
+				}
+				if(subs.getId() == Subtitulo.SUBTITULO29.getId()){
+					subtitulo29=true;
+					resultadoServicioSub29 = otService.getDetalleOTServicio(componenteSeleccionado,servicioSeleccionado, 
+							Subtitulo.SUBTITULO29.getId(),programa.getIdProgramaAno());
+				}
+				if(subs.getId() == Subtitulo.SUBTITULO24.getId()){
+					subtitulo24=true;
+					resultadoMunicipal = otService.getDetalleOTMunicipal(servicioSeleccionado, programa.getIdProgramaAno());
+				}
 			}
 		}
-		
-		
 	}
 	
 	@Override
@@ -266,46 +286,49 @@ implements Serializable {
 		this.resultadoServicioSub29 = resultadoServicioSub29;
 	}
 
-
 	public List<OTResumenMunicipalVO> getResultadoMunicipal() {
 		return resultadoMunicipal;
 	}
-
 
 	public void setResultadoMunicipal(List<OTResumenMunicipalVO> resultadoMunicipal) {
 		this.resultadoMunicipal = resultadoMunicipal;
 	}
 
-
-
-
 	public Integer getServicioSeleccionado() {
 		return servicioSeleccionado;
 	}
 
-
-
-
 	public void setServicioSeleccionado(Integer servicioSeleccionado) {
 		this.servicioSeleccionado = servicioSeleccionado;
 	}
-
-
-
-
 	public Integer getComponenteSeleccionado() {
 		return componenteSeleccionado;
 	}
 
-
-
-
 	public void setComponenteSeleccionado(Integer componenteSeleccionado) {
 		this.componenteSeleccionado = componenteSeleccionado;
 	}
-	
-	
 
-	
+	public List<OTPerCapitaVO> getResultadoPercapita() {
+		return resultadoPercapita;
+	}
+	public void setResultadoPercapita(List<OTPerCapitaVO> resultadoPercapita) {
+		this.resultadoPercapita = resultadoPercapita;
+	}
+
+	public List<RemesasProgramaVO> getRemesasPrograma() {
+		return remesasPrograma;
+	}
+
+	public void setRemesasPrograma(List<RemesasProgramaVO> remesasPrograma) {
+		this.remesasPrograma = remesasPrograma;
+	}
+	public boolean isPercapita() {
+		return percapita;
+	}
+
+	public void setPercapita(boolean percapita) {
+		this.percapita = percapita;
+	}
 
 }

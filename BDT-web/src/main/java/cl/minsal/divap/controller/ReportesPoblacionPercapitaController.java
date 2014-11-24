@@ -88,7 +88,7 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 			if(getValorComboServicio().intValue() != 0){
 				servicioSeleccionado = servicioSaludService.getServicioSaludById(getValorComboServicio());
 				this.comunas = servicioSeleccionado.getComunas();
-				reportesPerCapitaVO = reportesServices.getReportePercapitaServicio(getValorComboServicio(), this.anoSeleccionado, getLoggedUsername());
+				reportesPerCapitaVO = reportesServices.getReportePercapitaServicio(getValorComboServicio(), this.anoSeleccionado);
 			}
 		}
 		

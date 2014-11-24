@@ -57,6 +57,9 @@ public class TipoSubtitulo implements Serializable {
     
     @OneToMany(mappedBy = "tipoSubtitulo")
     private Collection<Remesa> remesaCollection;
+    @OneToMany(mappedBy = "subtitulo")
+    private Set<DetalleRemesas> detalleRemesasSet;
+
 
     public TipoSubtitulo() {
     }
@@ -165,5 +168,13 @@ public class TipoSubtitulo implements Serializable {
 		this.inflactor = inflactor;
 	}
     
+	 @XmlTransient
+	    public Set<DetalleRemesas> getDetalleRemesasSet() {
+	        return detalleRemesasSet;
+	    }
+
+	    public void setDetalleRemesasSet(Set<DetalleRemesas> detalleRemesasSet) {
+	        this.detalleRemesasSet = detalleRemesasSet;
+	    }
     
 }

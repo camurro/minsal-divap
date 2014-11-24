@@ -23,7 +23,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Festivos.findAll", query = "SELECT f FROM Festivos f"),
-    @NamedQuery(name = "Festivos.findById", query = "SELECT f FROM Festivos f WHERE f.id = :id")})
+    @NamedQuery(name = "Festivos.findById", query = "SELECT f FROM Festivos f WHERE f.id = :id"),
+    @NamedQuery(name = "Festivos.findByDiaMesAno", query = "SELECT f FROM Festivos f WHERE f.dia.dia = :dia and f.mes.idMes = :mes and f.ano.ano = :ano")})
 public class Festivos implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

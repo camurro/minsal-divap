@@ -40,7 +40,18 @@ public class Dia implements Serializable {
     private Set<FechaRemesa> fechaRemesaSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dia")
     private Set<Festivos> festivosSet;
+    @OneToMany(mappedBy = "dia")
+    private Set<DetalleRemesas> detalleRemesasSet;
 
+  @XmlTransient
+    public Set<DetalleRemesas> getDetalleRemesasSet() {
+        return detalleRemesasSet;
+    }
+
+    public void setDetalleRemesasSet(Set<DetalleRemesas> detalleRemesasSet) {
+        this.detalleRemesasSet = detalleRemesasSet;
+    }
+    
     public Dia() {
     }
 

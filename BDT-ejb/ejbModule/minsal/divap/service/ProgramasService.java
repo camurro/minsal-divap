@@ -428,6 +428,7 @@ public class ProgramasService {
 			programaAnoSiguiente.setPrograma(actual);
 			programaAnoSiguiente.setEstadoConvenio(new EstadoPrograma(1));
 			programaAnoSiguiente.setEstadoreliquidacion(new EstadoPrograma(1));
+			programaAnoSiguiente.setEstadoOT(new EstadoPrograma(1));
 			programasDAO.save(programaAnoSiguiente);
 			id= programaAnoSiguiente.getIdProgramaAno();
 		}
@@ -575,6 +576,7 @@ public class ProgramasService {
 			programaAnoSiguiente.setPrograma(programaAnoActual.getPrograma());
 			programaAnoSiguiente.setEstadoConvenio(new EstadoPrograma(1));
 			programaAnoSiguiente.setEstadoreliquidacion(new EstadoPrograma(1));
+			programaAnoSiguiente.setEstadoOT(new EstadoPrograma(1));
 			programasDAO.save(programaAnoSiguiente);
 		} 
 		

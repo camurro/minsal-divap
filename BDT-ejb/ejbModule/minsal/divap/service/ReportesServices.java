@@ -90,7 +90,7 @@ public class ReportesServices {
 	
 	
 	
-	public List<ReportePerCapitaVO> getReportePercapitaAll(Integer ano, String usuario) {
+	public List<ReportePerCapitaVO> getReportePercapitaAll(Integer ano) {
 		List<ReportePerCapitaVO> listaReportePerCapitaVO = new ArrayList<ReportePerCapitaVO>();
 
 		List<ServiciosVO> serviciosVO = servicioSaludService.getServiciosOrderId();
@@ -104,17 +104,6 @@ public class ReportesServices {
 				reportePerCapitaVO.setServicio(servicioVO.getNombre_servicio());
 				reportePerCapitaVO.setComuna(comuna.getNombre());
 
-				/*AntecendentesComuna antecendentesComuna = antecedentesComunaDAO
-						.findAntecendentesComunaByComunaServicioAno(
-								servicioSalud.getNombre(), comuna.getNombre(), ano);
-
-				if (antecendentesComuna == null) {
-					continue;
-				}
-
-				AntecendentesComunaCalculado antecendentesComunaCalculado = antecedentesComunaDAO
-						.findByIdAntecedentesComuna(antecendentesComuna
-								.getIdAntecedentesComuna());*/
 				AntecendentesComunaCalculado antecendentesComunaCalculado = antecedentesComunaDAO.findByComunaAno(comuna.getId(), ano);
 				if (antecendentesComunaCalculado == null) {
 					continue;
@@ -192,7 +181,7 @@ public class ReportesServices {
 	}
 
 	public List<ReportePerCapitaVO> getReportePercapitaServicio(
-			Integer idServicio, Integer ano, String usuario) {
+			Integer idServicio, Integer ano) {
 		List<ReportePerCapitaVO> listaReportePerCapitaVO = new ArrayList<ReportePerCapitaVO>();
 
 		ServicioSalud servicioSalud = this.servicioSaludDAO
@@ -208,17 +197,7 @@ public class ReportesServices {
 			reportePerCapitaVO.setServicio(servicioSalud.getNombre());
 			reportePerCapitaVO.setComuna(comuna.getNombre());
 
-			AntecendentesComuna antecendentesComuna = antecedentesComunaDAO
-					.findAntecendentesComunaByComunaServicioAno(
-							servicioSalud.getNombre(), comuna.getNombre(), ano);
-
-			if (antecendentesComuna == null) {
-				continue;
-			}
-
-			AntecendentesComunaCalculado antecendentesComunaCalculado = antecedentesComunaDAO
-					.findByIdAntecedentesComuna(antecendentesComuna
-							.getIdAntecedentesComuna());
+			AntecendentesComunaCalculado antecendentesComunaCalculado = antecedentesComunaDAO.findByComunaAno(comuna.getId(), ano);
 			if (antecendentesComunaCalculado == null) {
 				continue;
 			}
@@ -226,9 +205,9 @@ public class ReportesServices {
 			List<ComunaCumplimiento> comunasCumplimientos = rebajaDAO
 					.getCumplimientoPorAnoComuna(ano, comuna.getId());
 
-			if (antecendentesComuna.getClasificacion() != null) {
-				reportePerCapitaVO.setClasificacion(antecendentesComuna
-						.getClasificacion().getIdTipoComuna().toString());
+			if (antecendentesComunaCalculado.getAntecedentesComuna().getClasificacion() != null) {
+				reportePerCapitaVO.setClasificacion(antecendentesComunaCalculado.getAntecedentesComuna().getClasificacion().
+						getIdTipoComuna().toString());
 			}
 
 			if (antecendentesComunaCalculado.getValorPerCapitaComunalMes() != null) {
@@ -395,10 +374,10 @@ public class ReportesServices {
 		header.add((new CellExcelVO("DESCUENTO POR INCENTIVO AL RETIRO", 1, 1)));
 		header.add((new CellExcelVO("APORTE ESTATAL FINAL", 1, 1)));
 		
-		List<ReportePerCapitaVO> reportePerCapita2011 = this.getReportePercapitaAll(2011, usuario);
-		List<ReportePerCapitaVO> reportePerCapita2012 = this.getReportePercapitaAll(2012, usuario);
-		List<ReportePerCapitaVO> reportePerCapita2013 = this.getReportePercapitaAll(2013, usuario);
-		List<ReportePerCapitaVO> reportePerCapita2014 = this.getReportePercapitaAll(2014, usuario);
+		List<ReportePerCapitaVO> reportePerCapita2011 = this.getReportePercapitaAll(getAnoCurso()-3);
+		List<ReportePerCapitaVO> reportePerCapita2012 = this.getReportePercapitaAll(getAnoCurso()-2);
+		List<ReportePerCapitaVO> reportePerCapita2013 = this.getReportePercapitaAll(getAnoCurso()-1);
+		List<ReportePerCapitaVO> reportePerCapita2014 = this.getReportePercapitaAll(getAnoCurso());
 		
 		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 		String filename = tmpDir + File.separator + "Panilla Poblacion per Capita.xlsx";
@@ -418,10 +397,10 @@ public class ReportesServices {
 		ReportePoblacionPercapitaSheetExcel reportePoblacionPercapitaSheetExcel2014 = new ReportePoblacionPercapitaSheetExcel(header, null);
 		reportePoblacionPercapitaSheetExcel2014.setItems(reportePerCapita2014);
 		
-		generadorExcel.addSheet(reportePoblacionPercapitaSheetExcel2014, "2014");
-		generadorExcel.addSheet(reportePoblacionPercapitaSheetExcel2013, "2013");
-		generadorExcel.addSheet(reportePoblacionPercapitaSheetExcel2012, "2012");
-		generadorExcel.addSheet(reportePoblacionPercapitaSheetExcel2011, "2011");
+		generadorExcel.addSheet(reportePoblacionPercapitaSheetExcel2014, getAnoCurso()+"");
+		generadorExcel.addSheet(reportePoblacionPercapitaSheetExcel2013, getAnoCurso()-1+"");
+		generadorExcel.addSheet(reportePoblacionPercapitaSheetExcel2012, getAnoCurso()-2+"");
+		generadorExcel.addSheet(reportePoblacionPercapitaSheetExcel2011, getAnoCurso()-3+"");
 		
 		System.out.println("folderPercapita --> "+folderReportes);
 		
@@ -469,7 +448,7 @@ public class ReportesServices {
 				reporteMarcoPresupuestarioVO.setComponente(componenteVO.getNombre());
 				
 				AntecendentesComuna antecendentesComuna = antecedentesComunaDAO
-						.findAntecendentesComunaByComunaServicioAno(servicio.getNombre(), comuna.getNombre(), 2014);
+						.findAntecendentesComunaByComunaServicioAno(servicio.getNombre(), comuna.getNombre(), getAnoCurso());
 
 				if (antecendentesComuna == null) {
 					continue;

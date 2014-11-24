@@ -1,34 +1,10 @@
 package cl.minsal.divap.controller;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
-
-import minsal.divap.enums.EstadosProgramas;
-import minsal.divap.enums.Subtitulo;
-import minsal.divap.service.OTService;
-import minsal.divap.service.ProgramasService;
-import minsal.divap.util.Util;
-import minsal.divap.vo.ColumnaVO;
-import minsal.divap.vo.ComponentesVO;
-import minsal.divap.vo.OTResumenDependienteServicioVO;
-import minsal.divap.vo.OTResumenConsolidadoFonasaVO;
-import minsal.divap.vo.OTRevisarAntecedentesGlobalVO;
-import minsal.divap.vo.OTRevisarAntecedentesVO;
-import minsal.divap.vo.ProgramaVO;
-import minsal.divap.vo.SubtituloVO;
-
-import org.apache.log4j.Logger;
 
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
@@ -36,7 +12,19 @@ import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 @ViewScoped
 public class ProcesoOTRevisarConsolidacionController extends AbstractTaskMBean
 implements Serializable {
-	private static final long serialVersionUID = 8979055329731411696L;
+
+	@Override
+	protected Map<String, Object> createResultData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String iniciarProceso() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	/*private static final long serialVersionUID = 8979055329731411696L;
 	@Inject private transient Logger log;
 	@EJB
 	private OTService tratamientoOrdenService;
@@ -59,10 +47,6 @@ implements Serializable {
 	private boolean mostrarSubtitulo22ResumenTotal;
 	private boolean mostrarSubtitulo29ResumenTotal;
 	private boolean mostrarSubtitulo24ResumenTotal;
-	OTRevisarAntecedentesGlobalVO oTRevisarAntecedentesGlobalVOSubtitulo21Original;
-	OTRevisarAntecedentesGlobalVO oTRevisarAntecedentesGlobalVOSubtitulo22Original;
-	OTRevisarAntecedentesGlobalVO oTRevisarAntecedentesGlobalVOSubtitulo29Original;
-	OTRevisarAntecedentesGlobalVO oTRevisarAntecedentesGlobalVOMunicipalOriginal;
 	private Integer valorComboProgramaFiltro;
 	private Integer valorComboProgramaFiltroResumenTotal;
 	private Integer valorComboProgramaRechazo;
@@ -79,48 +63,48 @@ implements Serializable {
 	}
 
 
-	/**
+	*//**
 	 * SUBTITULO 21
 	 * Objeto Global que contiene las listas y el total general
-	 */
+	 *//*
 	OTRevisarAntecedentesGlobalVO oTRevisarAntecedentesGlobalVOSubtitulo21;
 	
-	/**
+	*//**
 	 * SUBTITULO 22
 	 * Objeto Global que contiene las listas y el total general
-	 */
+	 *//*
 	OTRevisarAntecedentesGlobalVO oTRevisarAntecedentesGlobalVOSubtitulo22;
-	/**
+	*//**
 	 * SUBTITULO 29
 	 * Objeto Global que contiene las listas y el total general
-	 */
+	 *//*
 	OTRevisarAntecedentesGlobalVO oTRevisarAntecedentesGlobalVOSubtitulo29;
-	/**
+	*//**
 	 * MUNICIPAL
 	 * Objeto Global que contiene las listas y el total general del tab Ref. Municipal
-	 */
+	 *//*
 	OTRevisarAntecedentesGlobalVO oTRevisarAntecedentesGlobalVOMunicipal;
-	/**
+	*//**
 	 * Lista de columnas dinamicas
-	 */
+	 *//*
 	List<ColumnaVO> columns;
 	Integer diaActual = minsal.divap.util.Util.obtenerDia(new Date());
-	/**
+	*//**
 	 * Lista correspodiente al subtitulo 21
-	 */
+	 *//*
 	List<OTRevisarAntecedentesVO> listadoServiciosSubtitulo21;
 	
-	/**
+	*//**
 	 * Lista correspodiente al subtitulo 22
-	 */
+	 *//*
 	List<OTRevisarAntecedentesVO> listadoServiciosSubtitulo22;
-	/**
+	*//**
 	 * Lista correspodiente al subtitulo 29
-	 */
+	 *//*
 	List<OTRevisarAntecedentesVO> listadoServiciosSubtitulo29;
-	/**
+	*//**
 	 * Lista correspodiente al municipal
-	 */
+	 *//*
 	List<OTRevisarAntecedentesVO> listadoServiciosMunicipal;
 	List<ProgramaVO> listadoProgramaVO;
 
@@ -650,12 +634,12 @@ implements Serializable {
 		
 	//**EVENTO FILTRO COMBO
 		
-	/*
+	
 	 ********************************************************************************************* SUBTITULO 21
-	 */
-	/*
+	 
+	
 	 * Filtra la lista segun los parametros de entrada, en este caso el servicio.
-	 */
+	 
 
 	public void filtrarSubtitulo21()
 		{
@@ -670,12 +654,12 @@ implements Serializable {
 			oTRevisarAntecedentesGlobalVOSubtitulo21.setListadoServicios(lstAgregar);
 		}
 		
-	/*
+	
 	 ********************************************************************************************* SUBTITULO 22
-	 */
-	/*
+	 
+	
 	 * Filtra la lista segun los parametros de entrada, en este caso el servicio.
-	 */
+	 
 
 	public void filtrarSubtitulo22()
 		{
@@ -691,12 +675,12 @@ implements Serializable {
 		}
 		
 		
-	/*
+	
 	 ********************************************************************************************* SUBTITULO 29
-	 */
-	/*
+	 
+	
 	 * Filtra la lista segun los parametros de entrada, en este caso el servicio.
-	 */
+	 
 
 	public void filtrarSubtitulo29()
 		{
@@ -711,12 +695,12 @@ implements Serializable {
 			oTRevisarAntecedentesGlobalVOSubtitulo29.setListadoServicios(lstAgregar);
 		}
 		
-	/*
+	
 	 ********************************************************************************************* MUNICIPAL
-	 */
-	/*
+	 
+	
 	 * Filtra la lista segun los parametros de entrada, en este caso el servicio.
-	 */
+	 
 		
 	public void filtrarMunicipal()
 		{
@@ -732,9 +716,9 @@ implements Serializable {
 		}
 	
 	
-	/**
+	*//**
 	 * Lista de columnas dinamicas
-	 */
+	 *//*
 	List<ColumnaVO> columnsProgramas;
 	
 	public List<ColumnaVO> getColumnsProgramas() {
@@ -875,9 +859,9 @@ implements Serializable {
 	}
 	
 	
-	/**
+	*//**
 	 * Metodos implementacion BPM 
-	 */
+	 *//*
 
 	@Override
 	protected Map<String, Object> createResultData() {
@@ -903,5 +887,5 @@ implements Serializable {
 		return null;
 	}
 	
-
+*/
 }

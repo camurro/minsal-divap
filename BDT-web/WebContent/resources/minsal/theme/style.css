@@ -36,6 +36,11 @@ thead th{
 	font-size: 10px !important;
 }
 
+.divapProcesoOTInput {
+	width: 70px;
+	font-size: 10px !important;
+}
+
 .textoAjustado {
 	white-space: pre-wrap;
 	white-space: -moz-pre-wrap;

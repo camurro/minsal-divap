@@ -8,49 +8,34 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import minsal.divap.enums.Subtitulo;
+import cl.minsal.divap.model.DetalleRemesas;
 import cl.minsal.divap.model.Remesa;
 
 
 @Singleton
-public class RemesaDAO {
+public class RemesasDAO {
 
 	@PersistenceContext(unitName="BDT-JPA")
 	private EntityManager em;
 	
-
-
-	public Integer crearRemesa(Remesa remesa) {
-	
-		this.em.persist(remesa);
-		return remesa.getIdremesa();
-	}
-
-	public Remesa findById(Integer id){
-		return em.find(Remesa.class,id);
+	public List<DetalleRemesas> getRemesasPagadasComunaLaFecha(Integer idProgramaAno, Integer idComuna, Integer idTipoSubtitulo, Integer mes){
 		
-	}
-	
-	public Integer actualizarRemesa(Remesa remesa){
-		try {
-			
-			Remesa remesaActualizar =  findById(remesa.getIdremesa());
-			if(remesaActualizar!=null)
-			{
-			
-				remesaActualizar.setValordia09(remesa.getValordia09());
-				remesaActualizar.setValordia24(remesa.getValordia24());
-				remesaActualizar.setValordia28(remesa.getValordia28());
-				this.em.persist(remesaActualizar);
-				
-				return remesaActualizar.getIdremesa();
-			}
-			return null;
-			
-		} catch (Exception e) {
+		try{
+			TypedQuery<DetalleRemesas> query = this.em.createNamedQuery("DetalleRemesas.getRemesasPagadasComunaLaFecha",DetalleRemesas.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idMes", mes);
+			query.setParameter("idComuna", idComuna);
+			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			query.setParameter("remesaPagada", new Boolean(true));
+			return query.getResultList();
+		}catch(Exception e){
 			throw new RuntimeException(e);
 		}
+		
+		
 	}
 
+	
 	public List<Remesa> getRemesasSummaryByProgramaAnoComponenteSubtitulo(Integer idProgramaAno, Integer idServicio, List<Integer> idComponentes, Subtitulo subtitulo) {
 		try {
 			TypedQuery<Remesa> query = this.em.createNamedQuery("Remesa.findByIdProgramaAnoIdServicioIdSubtitulo", Remesa.class);

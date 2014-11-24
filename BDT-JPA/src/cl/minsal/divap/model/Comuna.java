@@ -68,6 +68,17 @@ public class Comuna implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idcomuna")
 	private Collection<Remesa> remesaCollection;
 
+	 @OneToMany(mappedBy = "comuna")
+	    private Set<DetalleRemesas> detalleRemesasSet;
+
+	@XmlTransient
+	    public Set<DetalleRemesas> getDetalleRemesasSet() {
+	        return detalleRemesasSet;
+	    }
+
+	    public void setDetalleRemesasSet(Set<DetalleRemesas> detalleRemesasSet) {
+	        this.detalleRemesasSet = detalleRemesasSet;
+	    }
 
 	@XmlTransient
 	   public Collection<Remesa> getRemesaCollection() {

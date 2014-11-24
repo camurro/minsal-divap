@@ -16,6 +16,7 @@ import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ProgramaFechaRemesa;
 import cl.minsal.divap.model.ProgramaMunicipalCore;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
 import cl.minsal.divap.model.ProgramaServicioCore;
@@ -597,6 +598,17 @@ public class ProgramasDAO {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public List<ProgramaFechaRemesa> findRemesasByPrograma(Integer idPrograma) {
+		try {
+			TypedQuery<ProgramaFechaRemesa> query = this.em.createNamedQuery("ProgramaFechaRemesa.findByPrograma", ProgramaFechaRemesa.class);
+			query.setParameter("idPrograma", idPrograma);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
 	}
 
 	
