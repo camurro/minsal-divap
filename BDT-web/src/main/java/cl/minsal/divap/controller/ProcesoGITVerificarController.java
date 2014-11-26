@@ -720,7 +720,7 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 		System.out.println("actualizarSub21(" + row + "," + idConvenioServicioComponente + ")");
 		ConvenioServicioComponenteVO conveniosServicioComponente =  conveniosService.aprobarConvenioServicioComponente(idConvenio, idConvenioServicioComponente);
 		if(this.conveniosServicioComponenteSub21 != null && (row < this.conveniosServicioComponenteSub21.size()) && conveniosServicioComponente != null){
-			this.conveniosServicioComponenteSub21.remove(row);
+			this.conveniosServicioComponenteSub21.remove(conveniosServicioComponente);
 		}
 	}
 
@@ -728,7 +728,7 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 		System.out.println("actualizarSub22(" + row + "," + idConvenioServicioComponente + ")");
 		ConvenioServicioComponenteVO conveniosServicioComponente =  conveniosService.aprobarConvenioServicioComponente(idConvenio, idConvenioServicioComponente);
 		if(this.conveniosServicioComponenteSub22 != null && (row < this.conveniosServicioComponenteSub22.size()) && conveniosServicioComponente != null){
-			this.conveniosServicioComponenteSub22.remove(row);
+			this.conveniosServicioComponenteSub22.remove(conveniosServicioComponente);
 		}
 	}
 

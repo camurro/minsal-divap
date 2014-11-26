@@ -1,8 +1,9 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
-import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,8 +12,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -24,23 +27,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "ReliquidacionComuna.findAll", query = "SELECT r FROM ReliquidacionComuna r"),
     @NamedQuery(name = "ReliquidacionComuna.findByReliquidacionComunaId", query = "SELECT r FROM ReliquidacionComuna r WHERE r.reliquidacionComunaId = :reliquidacionComunaId"),
-    @NamedQuery(name = "ReliquidacionComuna.findByReliquidacionProgramaComponenteServicioComuna", query = "SELECT r FROM ReliquidacionComuna r WHERE r.programa.programa.id = :idPrograma and r.componente.id = :idComponente and r.servicio.id = :idServicio and r.comuna.id = :idComuna and r.reliquidacion.idReliquidacion = :idReliquidacion"),
-    @NamedQuery(name = "ReliquidacionComuna.findByMonto", query = "SELECT r FROM ReliquidacionComuna r WHERE r.montoRebaja = :monto"),
+    @NamedQuery(name = "ReliquidacionComuna.findByReliquidacionProgramaComponentesServicioComuna", query = "SELECT r FROM ReliquidacionComuna r JOIN r.reliquidacionComunaComponentes rr WHERE r.programa.programa.id = :idPrograma and rr.componente.id IN (:idComponentes) and r.servicio.id = :idServicio and r.comuna.id = :idComuna and r.reliquidacion.idReliquidacion = :idReliquidacion"),
     @NamedQuery(name = "ReliquidacionComuna.deleteByIdProgramaAno", query = "DELETE FROM ReliquidacionComuna r WHERE r.programa.idProgramaAno = :idProgramaAno"),
     @NamedQuery(name = "ReliquidacionComuna.findByIdProgramaAnoIdServicioIdReliquidacion", query = "SELECT r FROM ReliquidacionComuna r WHERE r.programa.idProgramaAno = :idProgramaAno and r.servicio.id = :idServicio and r.reliquidacion.idReliquidacion = :idReliquidacion"),
-    @NamedQuery(name = "ReliquidacionComuna.findByIdProgramaAnoIdServicioIdComponentesIdReliquidacion", query = "SELECT r FROM ReliquidacionComuna r WHERE r.programa.idProgramaAno = :idProgramaAno and r.servicio.id = :idServicio and r.componente.id IN (:idComponentes) and r.reliquidacion.idReliquidacion = :idReliquidacion"),
-    @NamedQuery(name = "ReliquidacionComuna.findByIdProgramaAnoIdComunaIdComponenteIdReliquidacion", query = "SELECT r FROM ReliquidacionComuna r WHERE r.programa.idProgramaAno = :idProgramaAno and r.comuna.id = :idComuna and r.componente.id = :idComponente and r.reliquidacion.idReliquidacion = :idReliquidacion")})
+    @NamedQuery(name = "ReliquidacionComuna.findByIdProgramaAnoIdServicioIdComponentesIdReliquidacion", query = "SELECT r FROM ReliquidacionComuna r JOIN r.reliquidacionComunaComponentes rr WHERE r.programa.idProgramaAno = :idProgramaAno and r.servicio.id = :idServicio and  rr.componente.id IN (:idComponentes) and r.reliquidacion.idReliquidacion = :idReliquidacion"),
+    @NamedQuery(name = "ReliquidacionComuna.findByIdProgramaAnoIdComunaIdComponentesIdReliquidacion", query = "SELECT r FROM ReliquidacionComuna r JOIN r.reliquidacionComunaComponentes rr WHERE r.programa.idProgramaAno = :idProgramaAno and r.comuna.id = :idComuna and rr.componente.id IN (:idComponentes) and r.reliquidacion.idReliquidacion = :idReliquidacion")})
 public class ReliquidacionComuna implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
    	@Column(name="reliquidacion_comuna_id", unique=true, nullable=false)
    	@GeneratedValue
     private Integer reliquidacionComunaId;
-	@Column(name = "monto_rebaja")
-	private Integer montoRebaja;
-    @Basic(optional = false)
-    @Column(name = "porcentaje_cumplimiento")
-    private Double porcentajeCumplimiento;
     @JoinColumn(name = "servicio", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private ServicioSalud servicio;
@@ -50,16 +47,12 @@ public class ReliquidacionComuna implements Serializable {
     @JoinColumn(name = "programa", referencedColumnName = "id_programa_ano")
     @ManyToOne(optional = false)
     private ProgramaAno programa;
-    @JoinColumn(name = "cumplimiento", referencedColumnName = "id_cumplimiento_programa")
-    @ManyToOne(optional = false)
-    private CumplimientoPrograma cumplimiento;
     @JoinColumn(name = "comuna", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Comuna comuna;
-    @JoinColumn(name = "componente", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Componente componente;
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reliquidacionComuna")
+    private Set<ReliquidacionComunaComponente> reliquidacionComunaComponentes;
+    
     public ReliquidacionComuna() {
     }
 
@@ -74,22 +67,6 @@ public class ReliquidacionComuna implements Serializable {
     public void setReliquidacionComunaId(Integer reliquidacionComunaId) {
         this.reliquidacionComunaId = reliquidacionComunaId;
     }
-
-    public Integer getMontoRebaja() {
-		return montoRebaja;
-	}
-
-	public void setMontoRebaja(Integer montoRebaja) {
-		this.montoRebaja = montoRebaja;
-	}
-
-	public Double getPorcentajeCumplimiento() {
-    	return porcentajeCumplimiento;
-    }
-
-    public void setPorcentajeCumplimiento(Double porcentajeCumplimiento) {
-    	this.porcentajeCumplimiento = porcentajeCumplimiento;
-	}
 
 	public ServicioSalud getServicio() {
         return servicio;
@@ -115,14 +92,6 @@ public class ReliquidacionComuna implements Serializable {
         this.programa = programa;
     }
 
-    public CumplimientoPrograma getCumplimiento() {
-        return cumplimiento;
-    }
-
-    public void setCumplimiento(CumplimientoPrograma cumplimiento) {
-        this.cumplimiento = cumplimiento;
-    }
-
     public Comuna getComuna() {
         return comuna;
     }
@@ -130,16 +99,18 @@ public class ReliquidacionComuna implements Serializable {
     public void setComuna(Comuna comuna) {
         this.comuna = comuna;
     }
+    
+    @XmlTransient
+    public Set<ReliquidacionComunaComponente> getReliquidacionComunaComponentes() {
+		return reliquidacionComunaComponentes;
+	}
 
-    public Componente getComponente() {
-        return componente;
-    }
+	public void setReliquidacionComunaComponentes(
+			Set<ReliquidacionComunaComponente> reliquidacionComunaComponentes) {
+		this.reliquidacionComunaComponentes = reliquidacionComunaComponentes;
+	}
 
-    public void setComponente(Componente componente) {
-        this.componente = componente;
-    }
-
-    @Override
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (reliquidacionComunaId != null ? reliquidacionComunaId.hashCode() : 0);

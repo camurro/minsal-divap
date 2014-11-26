@@ -309,6 +309,33 @@
 				<env-entry-value>PROCESOS/{ANO}/REPORTES</env-entry-value>
 			</env-entry>
 		</session>
+		<session>
+			<ejb-name>ConveniosService</ejb-name>
+			<env-entry>
+				<description>Tmp Dir</description>
+				<env-entry-name>tmpDir</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>/tmp/excel</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Tmp Dir docs</description>
+				<env-entry-name>tmpDirDoc</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>/tmp/doc</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Template folder convenio</description>
+				<env-entry-name>folderTemplateConvenio</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>TEMPLATES/CONVENIO</env-entry-value>
+			</env-entry>
+			<env-entry>
+				<description>Proceso folder convenio</description>
+				<env-entry-name>folderProcesoConvenio</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>PROCESOS/{ANO}/CONVENIO</env-entry-value>
+			</env-entry>
+		</session>
 	</enterprise-beans>
 	<!-- <ejb-client-jar>BaseEJBClient.jar</ejb-client-jar> -->
 </ejb-jar>

@@ -1,8 +1,9 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
-import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,8 +12,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -24,22 +27,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "ReliquidacionServicio.findAll", query = "SELECT r FROM ReliquidacionServicio r"),
     @NamedQuery(name = "ReliquidacionServicio.findByReliquidacionServicioId", query = "SELECT r FROM ReliquidacionServicio r WHERE r.reliquidacionServicioId = :reliquidacionServicioId"),
-    @NamedQuery(name = "ReliquidacionServicio.findByMonto", query = "SELECT r FROM ReliquidacionServicio r WHERE r.montoRebaja = :monto"),
     @NamedQuery(name = "ReliquidacionServicio.deleteByIdProgramaAno", query = "DELETE FROM ReliquidacionServicio r WHERE r.programa.idProgramaAno = :idProgramaAno"),
     @NamedQuery(name = "ReliquidacionServicio.findByIdProgramaAnoIdServicioIdReliquidacion", query = "SELECT r FROM ReliquidacionServicio r WHERE r.programa.idProgramaAno = :idProgramaAno and r.servicio.id = :idServicio and r.reliquidacion.idReliquidacion = :idReliquidacion"),
-    @NamedQuery(name = "ReliquidacionServicio.findByIdProgramaAnoIdEstablecimientoIdComponenteIdReliquidacion", query = "SELECT r FROM ReliquidacionServicio r WHERE r.programa.idProgramaAno = :idProgramaAno and r.establecimiento.id = :idEstablecimiento and r.componente.id = :idComponente and r.reliquidacion.idReliquidacion = :idReliquidacion"),
-    @NamedQuery(name = "ReliquidacionServicio.findByIdProgramaAnoIdServicioIdComponente", query = "SELECT r FROM ReliquidacionServicio r WHERE r.programa.idProgramaAno = :idProgramaAno and r.servicio.id = :idServicio and r.componente.id = :idComponente")})
+    @NamedQuery(name = "ReliquidacionServicio.findByIdProgramaAnoIdEstablecimientoIdComponentesIdReliquidacion", query = "SELECT r FROM ReliquidacionServicio r JOIN r.reliquidacionServicioComponentes rr WHERE r.programa.idProgramaAno = :idProgramaAno and r.establecimiento.id = :idEstablecimiento and rr.componente.id IN (:idComponentes) and r.reliquidacion.idReliquidacion = :idReliquidacion"),
+    @NamedQuery(name = "ReliquidacionServicio.findByIdProgramaAnoIdServicioIdComponentes", query = "SELECT r FROM ReliquidacionServicio r JOIN r.reliquidacionServicioComponentes rr WHERE r.programa.idProgramaAno = :idProgramaAno and r.servicio.id = :idServicio and rr.componente.id IN (:idComponentes)")})
 public class ReliquidacionServicio implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
    	@Column(name="reliquidacion_servicio_id", unique=true, nullable=false)
    	@GeneratedValue
     private Integer reliquidacionServicioId;
-	@Column(name = "monto_rebaja")
-	private Integer montoRebaja;
-    @Basic(optional = false)
-    @Column(name = "porcentaje_cumplimiento")
-    private Double porcentajeCumplimiento;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reliquidacionServicio")
+    private Set<ReliquidacionServicioComponente> reliquidacionServicioComponentes;
     @JoinColumn(name = "servicio", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private ServicioSalud servicio;
@@ -52,12 +51,6 @@ public class ReliquidacionServicio implements Serializable {
     @JoinColumn(name = "establecimiento", referencedColumnName = "id")
     @ManyToOne
     private Establecimiento establecimiento;
-    @JoinColumn(name = "cumplimiento", referencedColumnName = "id_cumplimiento_programa")
-    @ManyToOne(optional = false)
-    private CumplimientoPrograma cumplimiento;
-    @JoinColumn(name = "componente", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Componente componente;
 
     public ReliquidacionServicio() {
     }
@@ -74,22 +67,6 @@ public class ReliquidacionServicio implements Serializable {
         this.reliquidacionServicioId = reliquidacionServicioId;
     }
     
-    public Integer getMontoRebaja() {
-		return montoRebaja;
-	}
-
-	public void setMontoRebaja(Integer montoRebaja) {
-		this.montoRebaja = montoRebaja;
-	}
-
-	public Double getPorcentajeCumplimiento() {
-		return porcentajeCumplimiento;
-	}
-
-	public void setPorcentajeCumplimiento(Double porcentajeCumplimiento) {
-		this.porcentajeCumplimiento = porcentajeCumplimiento;
-	}
-
 	public ServicioSalud getServicio() {
         return servicio;
     }
@@ -121,24 +98,18 @@ public class ReliquidacionServicio implements Serializable {
     public void setEstablecimiento(Establecimiento establecimiento) {
         this.establecimiento = establecimiento;
     }
+    
+    @XmlTransient
+    public Set<ReliquidacionServicioComponente> getReliquidacionServicioComponentes() {
+		return reliquidacionServicioComponentes;
+	}
 
-    public CumplimientoPrograma getCumplimiento() {
-        return cumplimiento;
-    }
+	public void setReliquidacionServicioComponentes(
+			Set<ReliquidacionServicioComponente> reliquidacionServicioComponentes) {
+		this.reliquidacionServicioComponentes = reliquidacionServicioComponentes;
+	}
 
-    public void setCumplimiento(CumplimientoPrograma cumplimiento) {
-        this.cumplimiento = cumplimiento;
-    }
-
-    public Componente getComponente() {
-        return componente;
-    }
-
-    public void setComponente(Componente componente) {
-        this.componente = componente;
-    }
-
-    @Override
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (reliquidacionServicioId != null ? reliquidacionServicioId.hashCode() : 0);

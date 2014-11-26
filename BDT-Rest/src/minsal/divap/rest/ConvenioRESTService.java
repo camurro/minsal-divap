@@ -95,26 +95,45 @@ public class ConvenioRESTService extends BaseRest{
 	}
 
 	@GET
-	@Path("/convenio/generarResolucionDisponibilizarAlfresco/{programaSeleccionado}")
-	@Produces("application/json")
-	public Integer generarResolucionDisponibilizarAlfresco(@PathParam("programaSeleccionado") Integer programaSeleccionado){
+	@Path("/convenio/generarResolucionDisponibilizarAlfresco/{programaSeleccionado}/{idConvenio}")
+	public void generarResolucionDisponibilizarAlfresco(@PathParam("programaSeleccionado") Integer programaSeleccionado, @PathParam("idConvenio") Integer idConvenio){
 		System.out.println("generarResolucionDisponibilizarAlfresco-->"+programaSeleccionado);
 		if(programaSeleccionado == null){
 			throw new IllegalArgumentException("programaSeleccionado: "+ programaSeleccionado + " no puede ser nulo");
 		}
+		if(idConvenio == null){
+			throw new IllegalArgumentException("idConvenio: "+ idConvenio + " no puede ser nulo");
+		}
 		ConveniosService conveniosService = getService(ConveniosService.class);
-		return conveniosService.generarResolucionDisponibilizarAlfresco(programaSeleccionado);
+		conveniosService.generarResolucionDisponibilizarAlfresco(programaSeleccionado, idConvenio);
 	}
 
 	@GET
-	@Path("/convenio/administrarVersionesAlfresco/{programaSeleccionado}")
-	public void administrarVersionesAlfresco(@PathParam("programaSeleccionado") Integer programaSeleccionado){
+	@Path("/convenio/administrarVersionesAlfresco/{programaSeleccionado}/{idConvenio}")
+	public void administrarVersionesAlfresco(@PathParam("programaSeleccionado") Integer programaSeleccionado, @PathParam("idConvenio") Integer idConvenio){
 		System.out.println("administrarVersionesAlfresco-->"+programaSeleccionado);
 		if(programaSeleccionado == null){
 			throw new IllegalArgumentException("programaSeleccionado: "+ programaSeleccionado + " no puede ser nulo");
 		}
+		if(idConvenio == null){
+			throw new IllegalArgumentException("idConvenio: "+ idConvenio + " no puede ser nulo");
+		}
 		ConveniosService conveniosService = getService(ConveniosService.class);
-		conveniosService.administrarVersionesAlfresco(programaSeleccionado);
+		conveniosService.administrarVersionesAlfresco(programaSeleccionado, idConvenio);
+	}
+	
+	@GET
+	@Path("/convenio/administrarVersionesAlfresco/{programaSeleccionado}/{idConvenio}")
+	public void notificarPorCorreo(@PathParam("programaSeleccionado") Integer programaSeleccionado, @PathParam("idConvenio") Integer idConvenio){
+		System.out.println("notificarPorCorreo-->"+programaSeleccionado);
+		if(programaSeleccionado == null){
+			throw new IllegalArgumentException("programaSeleccionado: "+ programaSeleccionado + " no puede ser nulo");
+		}
+		if(idConvenio == null){
+			throw new IllegalArgumentException("idConvenio: "+ idConvenio + " no puede ser nulo");
+		}
+		ConveniosService conveniosService = getService(ConveniosService.class);
+		conveniosService.notificarPorCorreo(programaSeleccionado, idConvenio);
 	}
 
 }

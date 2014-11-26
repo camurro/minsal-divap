@@ -109,7 +109,7 @@
 										</h:commandLink >
 									</p:column>
 									<p:column >
-										<p:selectBooleanCheckbox rendered="#{not _data.aprobado}" value="#{procesoGITVerificarController.convenioServicioComponenteSub21Seleccionado}">
+										<p:selectBooleanCheckbox rendered="#{not _data.aprobado}" value="#{_data.aprobado}">
 								            <p:ajax update="tablaSub21 :formConvenios:tablaBotones" listener="#{procesoGITVerificarController.actualizarSub21(rowIndex21, _data.idConvenioServicioComponente)}" />
 								        </p:selectBooleanCheckbox>
 										<h:graphicImage rendered="#{_data.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />										
@@ -214,7 +214,7 @@
 											</h:commandLink >
 									</p:column>
 									<p:column >
-										<p:selectBooleanCheckbox rendered="#{not _data.aprobado}" value="#{procesoGITVerificarController.convenioServicioComponenteSub22Seleccionado}">
+										<p:selectBooleanCheckbox rendered="#{not _data.aprobado}" value="#{_data.aprobado}">
 								            <p:ajax update="tablaSub22 :formConvenios:tablaBotones" listener="#{procesoGITVerificarController.actualizarSub22(rowIndex22, _data.idConvenioServicioComponente)}" />
 								        </p:selectBooleanCheckbox>
 										<h:graphicImage rendered="#{_data.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />										
@@ -319,7 +319,7 @@
 											</h:commandLink >
 										</p:column>
 									<p:column >
-										<p:selectBooleanCheckbox rendered="#{not _data.aprobado}" value="#{procesoGITVerificarController.convenioServicioComponenteSub24Seleccionado}">
+										<p:selectBooleanCheckbox rendered="#{not _data.aprobado}" value="#{_data.aprobado}">
 								            <p:ajax update="tablaSub24 :formConvenios:tablaBotones" listener="#{procesoGITVerificarController.actualizarSub24(rowIndex24, _data.idConvenioComunaComponente)}" />
 								        </p:selectBooleanCheckbox>
 										<h:graphicImage rendered="#{_data.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />									
@@ -424,7 +424,7 @@
 										</h:commandLink >
 									</p:column>
 									<p:column >
-										 <p:selectBooleanCheckbox rendered="#{not _data.aprobado}" value="#{procesoGITVerificarController.convenioServicioComponenteSub29Seleccionado}">
+										 <p:selectBooleanCheckbox rendered="#{not _data.aprobado}" value="#{_data.aprobado}">
 								            <p:ajax update="tablaSub29 :formConvenios:tablaBotones" listener="#{procesoGITVerificarController.actualizarSub29(rowIndex29, _data.idConvenioServicioComponente)}" />
 								        </p:selectBooleanCheckbox>
 										<h:graphicImage rendered="#{_data.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />									

@@ -3134,23 +3134,27 @@ ALTER TABLE rebaja
 
 CREATE TABLE cuota
 (
- id serial NOT NULL,
- numero_cuota smallint NOT NULL,
- porcentaje integer NOT NULL,
- id_programa integer,
- fecha_pago timestamp with time zone,
- monto integer,
- id_mes smallint,
- CONSTRAINT pk_cuota PRIMARY KEY (id ),
- CONSTRAINT mes_fk FOREIGN KEY (id_mes)
-     REFERENCES mes (id_mes) MATCH SIMPLE
-     ON UPDATE NO ACTION ON DELETE NO ACTION,
- CONSTRAINT programa_fk FOREIGN KEY (id_programa)
-     REFERENCES programa_ano (id_programa_ano) MATCH SIMPLE
-     ON UPDATE NO ACTION ON DELETE NO ACTION
+  id serial NOT NULL,
+  numero_cuota smallint NOT NULL,
+  porcentaje integer NOT NULL,
+  id_programa integer,
+  fecha_pago timestamp with time zone,
+  monto integer,
+  id_mes smallint,
+  componente integer,
+  CONSTRAINT pk_cuota PRIMARY KEY (id),
+  CONSTRAINT componente_fk FOREIGN KEY (componente)
+      REFERENCES componente (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT mes_fk FOREIGN KEY (id_mes)
+      REFERENCES mes (id_mes) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT programa_fk FOREIGN KEY (id_programa)
+      REFERENCES programa_ano (id_programa_ano) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 WITH (
- OIDS=FALSE
+  OIDS=FALSE
 );
 
 INSERT INTO programa_ano(id_programa_ano, programa, ano, estado) VALUES (46, 17, 2013, 1);
@@ -25027,5 +25031,126 @@ INSERT INTO convenio_comuna(id_convenio_comuna, id_programa, id_comuna, fecha, n
 INSERT INTO convenio_comuna_componente(id_convenio_comuna_componente, componente, subtitulo, monto, convenio_comuna) VALUES (16, 3, 3, 100000, 16);
 
 INSERT INTO tipo_componente(id, nombre) VALUES (4, 'Leyes de Retiro');
+
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (14, 'Hacer Seguimiento Resolución de Retiro');
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (65, 'Plantilla Correo Resolucion Retiro');
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (150, 'Documento Adjunto Seguimiento Resolución Retiro');
+
+CREATE TABLE convenio_seguimiento
+(
+  id_convenio_seguimiento serial NOT NULL,
+  convenio integer NOT NULL,
+  seguimiento integer NOT NULL,
+  CONSTRAINT convenio_seguimiento_pk PRIMARY KEY (id_convenio_seguimiento),
+  CONSTRAINT convenio_fk FOREIGN KEY (convenio)
+      REFERENCES convenio (id_convenio) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT seguimiento_fk FOREIGN KEY (seguimiento)
+      REFERENCES seguimiento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+CREATE TABLE documento_convenio
+(
+  id_documento_convenio serial NOT NULL,
+  documento integer NOT NULL,
+  convenio integer NOT NULL,
+  tipo_documento integer NOT NULL,
+  CONSTRAINT documento_convenio_pk PRIMARY KEY (id_documento_convenio),
+  CONSTRAINT convenio_fk FOREIGN KEY (convenio)
+      REFERENCES convenio (id_convenio) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT documento_fk FOREIGN KEY (documento)
+      REFERENCES referencia_documento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT tipo_documento_fk FOREIGN KEY (tipo_documento)
+      REFERENCES tipo_documento (id_tipo_documento) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (151, 'Resolución Retiro');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (152, 'Plantilla Resolución Retiro');
+
+ALTER TABLE documento_convenio
+  ADD COLUMN servicio integer;
+ALTER TABLE documento_convenio
+  ADD CONSTRAINT servicio_fk FOREIGN KEY (servicio) REFERENCES servicio_salud (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+ALTER TABLE reliquidacion_servicio
+  DROP COLUMN componente;
+ALTER TABLE reliquidacion_servicio
+  DROP COLUMN cumplimiento;
+ALTER TABLE reliquidacion_servicio
+  DROP COLUMN monto_rebaja;
+ALTER TABLE reliquidacion_servicio
+  DROP COLUMN porcentaje_cumplimiento;
+
+CREATE TABLE reliquidacion_servicio_componente
+(
+  id_reliquidacion_servicio_componente serial NOT NULL,
+  componente integer NOT NULL,
+  cumplimiento integer NOT NULL,
+  monto_rebaja integer,
+  porcentaje_cumplimiento numeric NOT NULL,
+  reliquidacion_servicio integer NOT NULL,
+  CONSTRAINT reliquidacion_servicio_componente_pk PRIMARY KEY (id_reliquidacion_servicio_componente),
+  CONSTRAINT componente_fk FOREIGN KEY (componente)
+      REFERENCES componente (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT cumplimiento_fk FOREIGN KEY (cumplimiento)
+      REFERENCES cumplimiento_programa (id_cumplimiento_programa) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT reliquidacion_servicio_fk FOREIGN KEY (reliquidacion_servicio)
+      REFERENCES reliquidacion_servicio (reliquidacion_servicio_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+
+ALTER TABLE reliquidacion_comuna
+  DROP COLUMN componente;
+ALTER TABLE reliquidacion_comuna
+  DROP COLUMN monto_rebaja;
+ALTER TABLE reliquidacion_comuna
+  DROP COLUMN cumplimiento;
+ALTER TABLE reliquidacion_comuna
+  DROP COLUMN porcentaje_cumplimiento;
+
+
+CREATE TABLE reliquidacion_comuna_componente
+(
+  id_reliquidacion_comuna_componente serial NOT NULL,
+  componente integer NOT NULL,
+  monto_rebaja integer,
+  cumplimiento integer NOT NULL,
+  porcentaje_cumplimiento numeric NOT NULL,
+  reliquidacion_comuna integer NOT NULL,
+  CONSTRAINT reliquidacion_comuna_componente_pk PRIMARY KEY (id_reliquidacion_comuna_componente),
+  CONSTRAINT componente_fk FOREIGN KEY (componente)
+      REFERENCES componente (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT cumplimiento_fk FOREIGN KEY (cumplimiento)
+      REFERENCES cumplimiento_programa (id_cumplimiento_programa) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT reliquidacion_comuna_fk FOREIGN KEY (reliquidacion_comuna)
+      REFERENCES reliquidacion_comuna (reliquidacion_comuna_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
 
 

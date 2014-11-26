@@ -8,16 +8,21 @@ import java.util.List;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import minsal.divap.enums.Subtitulo;
+import minsal.divap.enums.TipoDocumentosProcesos;
 import cl.minsal.divap.model.Convenio;
 import cl.minsal.divap.model.ConvenioComuna;
 import cl.minsal.divap.model.ConvenioComunaComponente;
+import cl.minsal.divap.model.ConvenioSeguimiento;
 import cl.minsal.divap.model.ConvenioServicio;
 import cl.minsal.divap.model.ConvenioServicioComponente;
+import cl.minsal.divap.model.DocumentoConvenio;
 import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.ReferenciaDocumento;
+import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.Usuario;
 
 
@@ -487,6 +492,62 @@ public class ConveniosDAO {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public Integer createSeguimiento(Integer idConvenio, Seguimiento seguimiento) {
+		Convenio convenio = findById(idConvenio);
+		ConvenioSeguimiento convenioSeguimiento = new ConvenioSeguimiento();
+		convenioSeguimiento.setConvenio(convenio);
+		convenioSeguimiento.setSeguimiento(seguimiento);
+		this.em.persist(convenioSeguimiento);
+		return convenioSeguimiento.getIdConvenioSeguimiento();
+	}
+
+	public DocumentoConvenio save(DocumentoConvenio documentoConvenio) {
+		em.persist(documentoConvenio);
+		return documentoConvenio;
+	}
+
+	public List<DocumentoConvenio> getByIdConvenioTipo(Integer idConvenio, TipoDocumentosProcesos tipoDocumentoProceso) {
+		try{
+			TypedQuery<DocumentoConvenio> query = this.em.createNamedQuery("DocumentoConvenio.findByIdConvenioTipo", DocumentoConvenio.class);
+			query.setParameter("idConvenio", idConvenio);
+			query.setParameter("idTipoDocumento", tipoDocumentoProceso.getId());
+			return query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public List<DocumentoConvenio> getByIdConvenioTipoNotFinal(Integer idConvenio, TipoDocumentosProcesos tipoDocumentoProceso) {
+		try{
+			TypedQuery<DocumentoConvenio> query = this.em.createNamedQuery("DocumentoConvenio.findByIdConvenioTipoNotFinal", DocumentoConvenio.class);
+			query.setParameter("idConvenio", idConvenio);
+			query.setParameter("idTipoDocumento", tipoDocumentoProceso.getId());
+			return query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Integer deleteDocumentoConvenio(Integer idDocumentoConvenio) {
+		List<Integer> idDocumentosConvenio = new ArrayList<Integer>();
+		idDocumentosConvenio.add(idDocumentoConvenio);
+		return deleteDocumentoConvenio(idDocumentosConvenio);
+	}
+	
+	public Integer deleteDocumentoConvenio(List<Integer> idDocumentosConvenio) {
+		Query query = this.em.createNamedQuery("DocumentoConvenio.deleteUsingIds");
+		query.setParameter("idDocumentosConvenio", idDocumentosConvenio);
+		return query.executeUpdate();
+	}
+
+	public Integer deleteDocumento(Integer idDocumento) {
+		Query query = this.em.createNamedQuery("ReferenciaDocumento.deleteUsingId");
+		query.setParameter("idDocumento", idDocumento);
+		return query.executeUpdate();
 	}
 
 }

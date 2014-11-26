@@ -22,6 +22,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import minsal.divap.dao.AntecedentesComunaDAO;
+import minsal.divap.dao.ConveniosDAO;
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
 import minsal.divap.dao.DocumentDAO;
 import minsal.divap.dao.DocumentOtDAO;
@@ -41,9 +42,11 @@ import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.ReferenciaDocumentoVO;
 import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.Comuna;
+import cl.minsal.divap.model.Convenio;
 import cl.minsal.divap.model.ConvenioComuna;
 import cl.minsal.divap.model.ConvenioServicio;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
+import cl.minsal.divap.model.DocumentoConvenio;
 import cl.minsal.divap.model.DocumentoConvenioComuna;
 import cl.minsal.divap.model.DocumentoConvenioServicio;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
@@ -61,6 +64,7 @@ import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.Rebaja;
 import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.Reliquidacion;
+import cl.minsal.divap.model.ServicioSalud;
 import cl.minsal.divap.model.TipoDocumento;
 
 @Stateless
@@ -87,11 +91,11 @@ public class DocumentService {
 	@EJB
 	private AntecedentesComunaDAO antecedentesComunaDAO;
 	@EJB
+	private ConveniosDAO conveniosDAO; 
+	@EJB
 	private AlfrescoService alfrescoService;
 	@EJB
 	private ReportesDAO reportesDAO;
-	
-	
 	@Resource(name="tmpDir")
 	private String tmpDir;
 	@Resource(name="tmpDownloadDirectory")
@@ -650,9 +654,6 @@ public class DocumentService {
 	
 	public Integer createDocumentReliquidacion(ProgramaAno programaAno, TipoDocumento tipoDocumentoProceso,
 			String nodeRef, String filename, String contenType) {
-		
-		
-		
 		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
 		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
 		DocumentoEstimacionflujocaja documentoEstimacionFlujoCaja = new DocumentoEstimacionflujocaja();
@@ -777,8 +778,6 @@ public class DocumentService {
 		}
 	}
 	
-	
-	
 	public Integer createDocumentReportePoblacionPercapita(TipoDocumento tipoDocumentoProceso,
 			String nodeRef, String filename, String contenType, Integer ano, Integer idMes ) {
 		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
@@ -787,15 +786,11 @@ public class DocumentService {
 		Mes mesEnCurso = new Mes();
 		mesEnCurso.setIdMes(idMes);
 		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
-		
 		DocumentoReportes documentoReportes = new DocumentoReportes();
 		documentoReportes.setAno(anoEnCurso);
-		
 		documentoReportes.setTipoDocumento(tipoDocumentoProceso);
 		documentoReportes.setDocumento(referenciaDocumento);
-		
 		reportesDAO.save(documentoReportes);
-
 		System.out.println("luego de aplicar insert del documento percapita");
 		System.out.println("referenciaDocumentoId ---> "+referenciaDocumentoId);
 		return referenciaDocumentoId;
@@ -809,15 +804,11 @@ public class DocumentService {
 		Mes mesEnCurso = new Mes();
 		mesEnCurso.setIdMes(idMes);
 		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
-		
 		DocumentoReportes documentoReportes = new DocumentoReportes();
 		documentoReportes.setAno(anoEnCurso);
-		
 		documentoReportes.setTipoDocumento(tipoDocumentoProceso);
 		documentoReportes.setDocumento(referenciaDocumento);
-		
 		reportesDAO.save(documentoReportes);
-
 		System.out.println("luego de aplicar insert del documento percapita");
 		System.out.println("referenciaDocumentoId ---> "+referenciaDocumentoId);
 		return referenciaDocumentoId;
@@ -842,24 +833,61 @@ public class DocumentService {
 			Integer idServicio) {
 		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contentType);
 		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
-		
 		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProxAno);
-		
 		DocumentoProgramasReforzamiento documentoProgramasReforzamiento = new DocumentoProgramasReforzamiento();
 		documentoProgramasReforzamiento.setIdProgramaAno(programaAno);
 		documentoProgramasReforzamiento.setIdTipoDocumento(new TipoDocumento(tipoDocumentoProceso.getId()));
 		documentoProgramasReforzamiento.setIdDocumento(referenciaDocumento);
 		documentoProgramasReforzamiento.setIdServicio(servicioSaludDAO.getById(idServicio));
-		
 		programasReforzamientoDAO.save(documentoProgramasReforzamiento);
 		return referenciaDocumentoId;
-		
 	}
 
 	public Integer getIdDocumentoFromPlantilla(
 			TipoDocumentosProcesos plantilla) {
 		Integer plantillaId = getPlantillaByType(plantilla);
 		return getDocumentoIdByPlantillaId(plantillaId);
+	}
+	
+	public Integer createDocumentConvenio(Integer idConvenio, Integer idServicio, TipoDocumentosProcesos tipoDocumentoProceso, String nodeRef,
+			String filename, String contentType) {
+		Convenio convenio = conveniosDAO.findById(idConvenio);
+		ServicioSalud servicio = null;
+		if(idServicio != null){
+			servicio = servicioSaludDAO.getServicioSaludById(idServicio);
+		}
+		return createDocumentConvenio(convenio, servicio, tipoDocumentoProceso, nodeRef, filename, contentType, null);
+	}
+
+	public Integer createDocumentConvenio(Convenio convenio, ServicioSalud servicio, 
+			TipoDocumentosProcesos tipoDocumento, String nodeRef,
+			String filename, String contentType, Boolean lastVersion) {
+		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contentType);
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		if(lastVersion != null){
+			referenciaDocumento.setDocumentoFinal(lastVersion);
+		}
+		DocumentoConvenio documentoConvenio = new DocumentoConvenio();
+		documentoConvenio.setTipoDocumento(new TipoDocumento(tipoDocumento.getId()));
+		documentoConvenio.setDocumento(referenciaDocumento);
+		documentoConvenio.setConvenio(convenio);
+		documentoConvenio.setServicio(servicio);
+		conveniosDAO.save(documentoConvenio);
+		System.out.println("luego de aplicar insert del documento convenio");
+		return referenciaDocumentoId;
+	}
+
+	public void createDocumentConvenio(Convenio convenio, TipoDocumentosProcesos tipoDocumento, Integer referenciaDocumentoId, Boolean lastVersion) {
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		if(lastVersion != null){
+			referenciaDocumento.setDocumentoFinal(lastVersion);
+		}
+		DocumentoConvenio documentoConvenio = new DocumentoConvenio();
+		documentoConvenio.setTipoDocumento(new TipoDocumento(tipoDocumento.getId()));
+		documentoConvenio.setDocumento(referenciaDocumento);
+		documentoConvenio.setConvenio(convenio);
+		conveniosDAO.save(documentoConvenio);
+		System.out.println("luego de aplicar insert del documento convenio");
 	}
 	
 }

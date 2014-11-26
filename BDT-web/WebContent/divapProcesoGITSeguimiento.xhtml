@@ -132,6 +132,23 @@
 						<p:commandLink value="Subir Nueva Versión" />
 						]
 					</div>
+					
+					<br />
+					<div class="destacaArchivos ui-corner-all">
+						<h3>Plantilla Envío Correo Resoluciones Servicios de Salud :</h3>
+						<span class="strong">Archivo: </span> Correo de Resoluciones Servicio [
+						<h:graphicImage value="resources/minsal/images/download-alt.png"
+							styleClass="divapIcons" />
+						<h:commandLink id="lastPlantilla" value="Bajar Última Versión"
+						        onclick="downloadDocument(#{procesoGITSeguimientoController.plantillaCorreoId});return false;" />
+						|
+						<h:graphicImage value="resources/minsal/images/upload-alt.png"
+								styleClass="divapIcons" />
+							<p:commandLink value="Subir Nueva Versión"
+								oncomplete="dlgUpload.show();" />
+						]
+					</div>
+					
 					<!-- HISTORIAL DE SEGUIMIENTO -->
 					<h3>Bitácora de Seguimiento:</h3>
 					<!-- INICIO MENSAJE MOCK -->
@@ -218,5 +235,26 @@
 					icon="ui-icon-seek-first" />
 			</p:panel>
 		</h:form>
+		<h:form id="formDownload">
+			<h:inputHidden value="#{procesoGITSeguimientoController.docIdDownload}" id="hiddenId" />
+			<h:commandButton id="linkDownload" action="#{procesoGITSeguimientoController.downloadPlanilla}" style="display: none"/>
+		</h:form>
+		
+		<p:dialog header="Subir archivo" widgetVar="dlgUpload" id="idDlgUpload" modal="true" height="150"  appendToBody="true">
+			<h:form id="uploadVersion" enctype="multipart/form-data">
+			<p:panelGrid columns="2" >
+				<h:outputText value="Nueva Versión: " />
+				<p:fileUpload id="newVersionFile"
+							fileUploadListener="#{procesoGITSeguimientoController.handleFile}"
+							value="#{procesoGITSeguimientoController.file}"
+							update="uploadVersion" mode="simple"  />
+				<p:commandButton value="Aceptar" ajax="false"
+					actionListener="#{procesoGITSeguimientoController.uploadVersion}" update=":lastPlantilla"
+					oncomplete="if (args &amp;&amp; args.showDialog){dlgUpload.hide()}else{ alert('the bean didnt let me open the dialog')}" />
+				<p:commandButton value="Cancelar"
+					onclick="dlgUpload.hide()" type="button" />
+			</p:panelGrid>
+			</h:form> 	
+		</p:dialog> 
 	</ui:define>
 </ui:composition>

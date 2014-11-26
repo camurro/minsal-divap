@@ -1,5 +1,6 @@
 package cl.minsal.divap.controller;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +16,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import minsal.divap.enums.TareasSeguimiento;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.ConveniosService;
 import minsal.divap.vo.SeguimientoVO;
@@ -37,6 +39,8 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 	private ConveniosService conveniosService;
 	private boolean errorCarga = false;
 	private boolean archivosValidos = false;
+	private Integer plantillaCorreoId;
+	private Integer idConvenio;
 	private String to;
 	private String cc;
 	private String cco;
@@ -48,14 +52,7 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 	private List<Integer> docIds;
 	private List<SeguimientoVO> bitacoraSeguimiento;
 	private String actividadSeguimientoTitle = "Seguimiento Resoluciones";
-
-	public String getActividadSeguimientoTitle() {
-		return actividadSeguimientoTitle;
-	}
-
-	public void setActividadSeguimientoTitle(String actividadSeguimientoTitle) {
-		this.actividadSeguimientoTitle = actividadSeguimientoTitle;
-	}
+	private UploadedFile file;
 
 	@PostConstruct
 	public void init() {
@@ -66,7 +63,10 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			this.idResolucion = (Integer) getTaskDataVO().getData().get("_idResolucion");
 			System.out.println("this.idResolucion --->" + this.idResolucion);
+			this.idConvenio = (Integer) getTaskDataVO().getData().get("_idConvenio");
 		}
+		bitacoraSeguimiento = conveniosService.getBitacora(this.idConvenio, TareasSeguimiento.HACERSEGUIMIENTORESOLUCIONRETIRO);
+		plantillaCorreoId = conveniosService.getPlantillaCorreo(TipoDocumentosProcesos.PLANTILLACORREORESOLUCIONRETIRO);
 	}
 	
 	public void handleAttachedFile(FileUploadEvent event) {
@@ -84,8 +84,7 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 		parameters.put("usuario", getSessionBean().getUsername());
 		parameters.put("error_", new Boolean(isErrorCarga()));
 		if (this.docIds != null) {
-			System.out.println("documentos_ -->"
-					+ JSONHelper.toJSON(this.docIds));
+			System.out.println("documentos_ -->" + JSONHelper.toJSON(this.docIds));
 			parameters.put("documentos_", JSONHelper.toJSON(this.docIds));
 		}
 		return parameters;
@@ -146,8 +145,8 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 				conCopiaOculta = Arrays.asList(this.cco.split("\\,")); 
 			}
 			System.out.println("ProcesoGITSeguimientoController-->sendMail");
-			//conveniosService.moveToAlfresco(this.idDistribucionInicialPercapita, docAttachedFile, TipoDocumentosProcesos.POBLACIONINSCRITA, null);
-			//conveniosService.createSeguimientoConvenios(idDistribucionInicialPercapita, tareaSeguimiento, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
+			conveniosService.moveToAlfresco(this.idConvenio, docAttachedFile, TipoDocumentosProcesos.ADJUNTOSEGUIMIENTORESOLUCIONRETIRO, null);
+			conveniosService.createSeguimientoConvenio(this.idConvenio, TareasSeguimiento.HACERSEGUIMIENTORESOLUCIONRETIRO, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
 		}catch(Exception e){
 			e.printStackTrace();
 			target = null;
@@ -231,4 +230,62 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 	public String enviar() {
 		return super.enviar();
 	}
+	
+	public String downloadPlanilla() {
+		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownload()));
+		setDocumento(documentService.getDocument(docDownload));
+		super.downloadDocument();
+		return null;
+	}
+	
+	public void handleFile(FileUploadEvent event) {
+		FacesMessage msg = new FacesMessage("Succesful", event.getFile()
+				.getFileName() + " is uploaded.");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		System.out.println("handleFile");
+	}
+
+	public UploadedFile getFile() {
+		return file;
+	}
+
+	public void setFile(UploadedFile file) {
+		this.file = file;
+	}
+	
+	public Integer getPlantillaCorreoId() {
+		return plantillaCorreoId;
+	}
+
+	public void setPlantillaCorreoId(Integer plantillaCorreoId) {
+		this.plantillaCorreoId = plantillaCorreoId;
+	}
+	
+	public String getActividadSeguimientoTitle() {
+		return actividadSeguimientoTitle;
+	}
+
+	public void setActividadSeguimientoTitle(String actividadSeguimientoTitle) {
+		this.actividadSeguimientoTitle = actividadSeguimientoTitle;
+	}
+
+	public void uploadVersion() {
+		if (file != null){
+			try {
+				System.out.println("uploadVersion file is not null");
+				String filename = file.getFileName();
+				filename = filename.replaceAll(" ", "");
+				byte[] contentPlantillaFile = file.getContents();
+				File file = createTemporalFile(filename, contentPlantillaFile);
+				plantillaCorreoId = conveniosService.cargarPlantillaCorreo(TipoDocumentosProcesos.PLANTILLACORREORESOLUCIONRETIRO, file);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			System.out.println("uploadVersion file is null");
+			FacesMessage message = new FacesMessage("uploadVersion file is null");
+			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
+	}
+
 }
