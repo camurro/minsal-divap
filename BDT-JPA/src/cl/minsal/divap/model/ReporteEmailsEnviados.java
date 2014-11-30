@@ -3,14 +3,12 @@ package cl.minsal.divap.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -55,6 +53,8 @@ public class ReporteEmailsEnviados implements Serializable {
     private Set<ReporteEmailsDestinatarios> reporteEmailsDestinatariosSet;
     @OneToMany(mappedBy = "reporteEmailsEnviado")
     private Set<ReporteEmailsAdjuntos> reporteEmailsAdjuntosSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reporteEmailsEnviados")
+    private Set<ReporteEmailsConvenio> reporteEmailsConvenios;
 
     public ReporteEmailsEnviados() {
     }
@@ -104,7 +104,18 @@ public class ReporteEmailsEnviados implements Serializable {
     public void setReporteEmailsAdjuntosSet(Set<ReporteEmailsAdjuntos> reporteEmailsAdjuntosSet) {
         this.reporteEmailsAdjuntosSet = reporteEmailsAdjuntosSet;
     }
-    public Boolean getModifica() {
+    
+    @XmlTransient
+    public Set<ReporteEmailsConvenio> getReporteEmailsConvenios() {
+		return reporteEmailsConvenios;
+	}
+
+	public void setReporteEmailsConvenios(
+			Set<ReporteEmailsConvenio> reporteEmailsConvenios) {
+		this.reporteEmailsConvenios = reporteEmailsConvenios;
+	}
+
+	public Boolean getModifica() {
         return modifica;
     }
 

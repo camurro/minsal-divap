@@ -5,11 +5,15 @@ import java.io.Serializable;
 public class SubtituloSummaryVO implements Serializable{
 
 	private static final long serialVersionUID = -1926890921516075410L;
-
+	private Integer idSubtitulo;
 	private String nombre;
 	private Integer tarifa;
 	private Integer cantidad;
 	
+	public SubtituloSummaryVO() {
+		super();
+	}
+
 	public SubtituloSummaryVO(String nombre) {
 		super();
 		this.nombre = nombre;
@@ -22,6 +26,14 @@ public class SubtituloSummaryVO implements Serializable{
 		this.cantidad = cantidad;
 	}
 	
+	public Integer getIdSubtitulo() {
+		return idSubtitulo;
+	}
+
+	public void setIdSubtitulo(Integer idSubtitulo) {
+		this.idSubtitulo = idSubtitulo;
+	}
+
 	public String getNombre() {
 		return nombre;
 	}

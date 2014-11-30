@@ -8,6 +8,7 @@ package cl.minsal.divap.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -20,6 +21,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -77,7 +79,8 @@ public class ConvenioServicio implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "convenio")
     private Set<DocumentoConvenioServicio> documentosConvenio;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "convenioServicio")
-    private Set<ConvenioServicioComponente> convenioServicioComponentes;
+    @OrderBy("fecha ASC")
+    private List<ConvenioServicioComponente> convenioServicioComponentes;
     
     public ConvenioServicio() {
     }
@@ -153,12 +156,12 @@ public class ConvenioServicio implements Serializable {
 	}
 
 	@XmlTransient
-    public Set<ConvenioServicioComponente> getConvenioServicioComponentes() {
+    public List<ConvenioServicioComponente> getConvenioServicioComponentes() {
 		return convenioServicioComponentes;
 	}
 
 	public void setConvenioServicioComponentes(
-			Set<ConvenioServicioComponente> convenioServicioComponentes) {
+			List<ConvenioServicioComponente> convenioServicioComponentes) {
 		this.convenioServicioComponentes = convenioServicioComponentes;
 	}
 

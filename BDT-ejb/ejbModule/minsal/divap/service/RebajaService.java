@@ -766,8 +766,5 @@ public class RebajaService {
 		TipoCumplimiento tipoCumplimiento = rebajaDAO.getCumplimientoByType(tiposCumplimiento);
 		return new TipoCumplimientoMapper().getBasic(tipoCumplimiento);
 	}
-	
-	
-	
 
 }

@@ -2,6 +2,7 @@ package cl.minsal.divap.model;
 
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -13,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -28,7 +31,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ConvenioComunaComponente.findByMonto", query = "SELECT c FROM ConvenioComunaComponente c WHERE c.monto = :monto"),
     @NamedQuery(name = "ConvenioComunaComponente.findByIdConvenioComunaIdSubtituloIdComponente", query = "SELECT c FROM ConvenioComunaComponente c WHERE c.convenioComuna.idConvenioComuna = :idConvenioComuna and c.subtitulo.idTipoSubtitulo = :idSubtitulo and c.componente.id = :idComponente"),
     @NamedQuery(name = "ConvenioComunaComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdServicioIdConvenioIdEstadoConvenio", query = "SELECT c FROM ConvenioComunaComponente c WHERE c.convenioComuna.idPrograma.idProgramaAno = :idProgramaAno and c.componente.id = :idComponente and c.subtitulo.idTipoSubtitulo = :idSubtitulo and c.convenioComuna.idComuna.servicioSalud.id = :idServicio and c.convenioComuna.convenio.idConvenio = :idConvenio and c.convenioComuna.estadoConvenio.idEstadoConvenio = :idEstadoConvenio"),
-    @NamedQuery(name = "ConvenioComunaComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdComunaIdConvenioIdEstadoConvenio", query = "SELECT c FROM ConvenioComunaComponente c WHERE c.convenioComuna.idPrograma.idProgramaAno = :idProgramaAno and c.componente.id = :idComponente and c.subtitulo.idTipoSubtitulo = :idSubtitulo and c.convenioComuna.idComuna.id = :idComuna and c.convenioComuna.convenio.idConvenio = :idConvenio and c.convenioComuna.estadoConvenio.idEstadoConvenio = :idEstadoConvenio")})
+    @NamedQuery(name = "ConvenioComunaComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdComunaIdConvenioIdEstadoConvenio", query = "SELECT c FROM ConvenioComunaComponente c WHERE c.convenioComuna.idPrograma.idProgramaAno = :idProgramaAno and c.componente.id = :idComponente and c.subtitulo.idTipoSubtitulo = :idSubtitulo and c.convenioComuna.idComuna.id = :idComuna and c.convenioComuna.convenio.idConvenio = :idConvenio and c.convenioComuna.estadoConvenio.idEstadoConvenio = :idEstadoConvenio order by c.fecha asc"),
+    @NamedQuery(name = "ConvenioComunaComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdComunaIdIdEstadoConvenio", query = "SELECT c FROM ConvenioComunaComponente c WHERE c.convenioComuna.idPrograma.idProgramaAno = :idProgramaAno and c.componente.id = :idComponente and c.subtitulo.idTipoSubtitulo = :idSubtitulo and c.convenioComuna.idComuna.id = :idComuna and c.convenioComuna.convenio is null and c.convenioComuna.estadoConvenio.idEstadoConvenio = :idEstadoConvenio order by c.fecha asc")})
 public class ConvenioComunaComponente implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -41,6 +45,16 @@ public class ConvenioComunaComponente implements Serializable {
     @Basic(optional = false)
     @Column(name = "aprobado")
     private boolean aprobado;
+    @Basic(optional = false)
+    @Column(name = "monto_ingresado")
+    private int montoIngresado;
+    @Basic(optional = false)
+    @Column(name = "fecha")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fecha;
+    @JoinColumn(name = "documento_convenio", referencedColumnName = "id")
+    @ManyToOne
+    private ReferenciaDocumento documentoConvenio;
     @JoinColumn(name = "subtitulo", referencedColumnName = "id_tipo_subtitulo")
     @ManyToOne(optional = false)
     private TipoSubtitulo subtitulo;
@@ -103,6 +117,22 @@ public class ConvenioComunaComponente implements Serializable {
     public void setComponente(Componente componente) {
         this.componente = componente;
     }
+    
+	public Date getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+
+	public ReferenciaDocumento getDocumentoConvenio() {
+		return documentoConvenio;
+	}
+
+	public void setDocumentoConvenio(ReferenciaDocumento documentoConvenio) {
+		this.documentoConvenio = documentoConvenio;
+	}
 
 	public boolean isAprobado() {
 		return aprobado;
@@ -110,6 +140,14 @@ public class ConvenioComunaComponente implements Serializable {
 
 	public void setAprobado(boolean aprobado) {
 		this.aprobado = aprobado;
+	}
+
+	public int getMontoIngresado() {
+		return montoIngresado;
+	}
+
+	public void setMontoIngresado(int montoIngresado) {
+		this.montoIngresado = montoIngresado;
 	}
 
 	@Override
