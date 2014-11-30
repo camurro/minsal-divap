@@ -3,6 +3,8 @@ package minsal.divap.vo;
 import java.io.Serializable;
 import java.util.List;
 
+import cl.minsal.divap.model.Cuota;
+
 public class RemesasProgramaVO implements Serializable{
 
 	/**
@@ -15,6 +17,7 @@ public class RemesasProgramaVO implements Serializable{
 	
 	private List<DiaVO> dias;
 	private Integer cantDias;
+	private Cuota cuota;
 
 	public Integer getIdMes() {
 		return idMes;
@@ -46,6 +49,14 @@ public class RemesasProgramaVO implements Serializable{
 
 	public void setCantDias(Integer cantDias) {
 		this.cantDias = cantDias;
+	}
+
+	public Cuota getCuota() {
+		return cuota;
+	}
+
+	public void setCuota(Cuota cuota) {
+		this.cuota = cuota;
 	}
 	
 	

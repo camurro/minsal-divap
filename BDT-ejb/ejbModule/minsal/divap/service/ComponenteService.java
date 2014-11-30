@@ -37,7 +37,6 @@ public class ComponenteService {
 	}
 
 	public List<ComponentesVO> getComponenteByPrograma(Integer programaId) {
-		System.out.println("getComponenteByPrograma("+programaId+")");
 		List<Componente> componentes = this.componenteDAO.getComponenteByPrograma(programaId);
 		List<ComponentesVO> componentesPrograma = new ArrayList<ComponentesVO>();
 		for (Componente componente : componentes){

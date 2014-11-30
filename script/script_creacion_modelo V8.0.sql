@@ -25154,3 +25154,17 @@ WITH (
 
 
 
+--24 nov
+
+ ALTER TABLE antecendentes_comuna_calculado
+  ADD COLUMN aprobado boolean DEFAULT false;
+
+
+-- 27 nov
+
+ALTER TABLE detalle_remesas
+  ADD COLUMN cuota integer;
+ALTER TABLE detalle_remesas
+  ADD CONSTRAINT cuota_fk FOREIGN KEY (cuota) REFERENCES cuota (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+

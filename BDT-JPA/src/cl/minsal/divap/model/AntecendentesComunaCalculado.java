@@ -39,9 +39,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 	@NamedQuery(name = "AntecendentesComunaCalculado.countByDistribucionInicialPercapita", query = "SELECT count(a) FROM AntecendentesComunaCalculado a WHERE a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByIdAntecedentesComuna", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idAntecedentesComuna = :idAntecendentesComuna"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByIdComunaAno", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.id = :idComuna and a.antecedentesComuna.anoAnoEnCurso.ano = :ano"),
-	@NamedQuery(name = "AntecendentesComunaCalculado.findByIdComunaAnoTiposComuna", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.id = :idComuna and a.antecedentesComuna.anoAnoEnCurso.ano = :ano and a.antecedentesComuna.clasificacion.idTipoComuna IN (:tiposComuna)")})
-
-
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByIdComunaAnoAprobado", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.id = :idComuna and a.antecedentesComuna.anoAnoEnCurso.ano = :ano and a.aprobado = :aprobado"),
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByIdComunaAnoTiposComuna", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.id = :idComuna and a.antecedentesComuna.anoAnoEnCurso.ano = :ano and a.antecedentesComuna.clasificacion.idTipoComuna IN (:tiposComuna)"),
+	@NamedQuery(name = "AntecendentesComunaCalculado.getPerCapitaBasalByIdServicio", query = "SELECT SUM(a.percapitaMes) FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio GROUP BY a.antecedentesComuna.idComuna.servicioSalud.id"),
+	@NamedQuery(name = "AntecendentesComunaCalculado.getDesempenoDificilByIdServicio", query = "SELECT SUM(a.desempenoDificil) FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio GROUP BY a.antecedentesComuna.idComuna.servicioSalud.id")})
 public class AntecendentesComunaCalculado implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -66,6 +67,8 @@ public class AntecendentesComunaCalculado implements Serializable {
 	private Long percapitaMes;
 	@Column(name = "percapita_ano")
 	private Long percapitaAno;
+	@Column(name = "aprobado")
+	private Boolean aprobado;
 	@JoinColumn(name = "distribucion_inicial_percapita", referencedColumnName = "id_distribucion_inicial_percapita")
 	@ManyToOne
 	private DistribucionInicialPercapita distribucionInicialPercapita;
@@ -201,5 +204,12 @@ public class AntecendentesComunaCalculado implements Serializable {
 		return "cl.minsal.divap.model.AntecendentesComunaCalculado[ idAntecendentesComunaCalculado=" + idAntecendentesComunaCalculado + " ]";
 	}
 
+	  public Boolean getAprobado() {
+	        return aprobado;
+	    }
+
+	    public void setAprobado(Boolean aprobado) {
+	        this.aprobado = aprobado;
+	    }
 }
 

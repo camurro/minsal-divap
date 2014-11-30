@@ -20,18 +20,17 @@ import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 import minsal.divap.service.ReportesServices;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ComponentesVO;
+import minsal.divap.vo.DiaVO;
 import minsal.divap.vo.OTPerCapitaVO;
 import minsal.divap.vo.OTResumenDependienteServicioVO;
 import minsal.divap.vo.OTResumenMunicipalVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.RemesasProgramaVO;
-import minsal.divap.vo.ReportePerCapitaVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloVO;
 
 import org.apache.log4j.Logger;
 
-import cl.minsal.divap.model.AntecendentesComunaCalculado;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 @Named("procesoOTRevisarAntecedentesController")
@@ -72,12 +71,20 @@ implements Serializable {
 	private List<OTPerCapitaVO> resultadoPercapita;
 	
 	private List<RemesasProgramaVO> remesasPrograma;
+	private List<RemesasProgramaVO> remesasPerCapita;
 	
 	private boolean subtitulo21;
 	private boolean subtitulo22;
 	private boolean subtitulo29;
 	private boolean subtitulo24;
 	private boolean percapita;
+	
+	
+	private String filaHidden;
+	private String diaHidden;
+	private String mesHidden;
+	private String montoHidden;
+	private String subtituloHidden;
 	
 	
 	@PostConstruct
@@ -105,7 +112,8 @@ implements Serializable {
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes= componenteService.getComponenteByPrograma(programa.getIdProgramaAno());
 		
-		remesasPrograma = otService.getRemesasPrograma(programa.getIdProgramaAno(), Integer.parseInt(reporteService.getMesCurso(true)));
+		remesasPrograma = otService.getRemesasPrograma(programa.getIdProgramaAno(), Integer.parseInt(otService.getMesCurso(true)));
+		remesasPerCapita = otService.getRemesasPerCapita(programa.getIdProgramaAno(), Integer.parseInt(otService.getMesCurso(true)));
 	}
 
 
@@ -142,10 +150,109 @@ implements Serializable {
 				}
 				if(subs.getId() == Subtitulo.SUBTITULO24.getId()){
 					subtitulo24=true;
-					resultadoMunicipal = otService.getDetalleOTMunicipal(servicioSeleccionado, programa.getIdProgramaAno());
+					resultadoMunicipal = otService.getDetalleOTMunicipal(componenteSeleccionado,servicioSeleccionado, programa.getIdProgramaAno());
 				}
 			}
 		}
+	}
+	
+	
+	public void actualizarPerCapita(Integer row, Integer idComuna){
+		System.out.println(resultadoPercapita.size());
+		OTPerCapitaVO registroTabla = resultadoPercapita.get(row);
+		OTPerCapitaVO registroActualizado = otService.actualizarComunaPerCapita(idComuna,registroTabla,programa.getIdProgramaAno());
+		resultadoPercapita.remove(registroActualizado);
+		System.out.println(resultadoPercapita.size());
+	}
+
+	public void actualizarS21(Integer row, String codEstablecimiento){
+		System.out.println("actualizando "+codEstablecimiento);
+		OTResumenDependienteServicioVO registroTabla = resultadoServicioSub21.get(row);
+		if(registroTabla.getIdDetalleRemesa()!=null){
+			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
+		}
+		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO21.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
+		resultadoServicioSub21.remove(registroActualizado);
+	}
+	
+	public void actualizarS22(Integer row, String codEstablecimiento){
+		System.out.println("actualizando "+codEstablecimiento);
+		OTResumenDependienteServicioVO registroTabla = resultadoServicioSub22.get(row);
+		if(registroTabla.getIdDetalleRemesa()!=null){
+			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
+		}
+		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO22.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
+		resultadoServicioSub22.remove(registroActualizado);
+	}
+	
+	public void actualizarS29(Integer row, String codEstablecimiento){
+		System.out.println("actualizando "+codEstablecimiento);
+		OTResumenDependienteServicioVO registroTabla = resultadoServicioSub29.get(row);
+		if(registroTabla.getIdDetalleRemesa()!=null){
+			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
+		}
+		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO29.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
+		resultadoServicioSub29.remove(registroActualizado);
+	}
+	
+	public void actualizarS24(Integer row, Integer idComuna){
+		OTResumenMunicipalVO registroTabla = resultadoMunicipal.get(row);
+		if(registroTabla.getIdDetalleRemesa()!=null){
+			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
+		}
+		OTResumenMunicipalVO registroActualizado = otService.actualizarMunicipal(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO24.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
+		resultadoMunicipal.remove(registroActualizado);
+	}
+	
+
+	public Integer actualizar(){return null;}
+	
+	public String actualizarCamposHidden(){
+		System.out.println("ACTUALIZANDO SUBTITULO "+subtituloHidden);
+		OTResumenDependienteServicioVO registroTabla=null;
+		OTResumenMunicipalVO registroTablaMunicipal = null;
+		boolean servicio=false;
+		if(subtituloHidden.equals("21")){
+			registroTabla = resultadoServicioSub21.get(Integer.parseInt(filaHidden));
+			servicio=true;
+		}
+		if(subtituloHidden.equals("22")){
+			registroTabla = resultadoServicioSub22.get(Integer.parseInt(filaHidden));
+			servicio=true;
+		}
+		if(subtituloHidden.equals("29")){
+			registroTabla = resultadoServicioSub29.get(Integer.parseInt(filaHidden));
+			servicio=true;
+		}
+		if(subtituloHidden.equals("24")){
+			registroTablaMunicipal = resultadoMunicipal.get(Integer.parseInt(filaHidden));
+			servicio=false;
+		}
+		
+		if(servicio){
+			for(RemesasProgramaVO remesa : registroTabla.getRemesas()){
+				if(remesa.getIdMes() == Integer.parseInt(mesHidden)){
+					for(DiaVO dia : remesa.getDias()){
+						if(dia.getDia() == Integer.parseInt(diaHidden)){
+							dia.setMonto(Long.parseLong(montoHidden));	
+						}
+					}
+				}
+			}
+		}else{
+			for(RemesasProgramaVO remesa : registroTablaMunicipal.getRemesas()){
+				if(remesa.getIdMes() == Integer.parseInt(mesHidden)){
+					for(DiaVO dia : remesa.getDias()){
+						if(dia.getDia() == Integer.parseInt(diaHidden)){
+							dia.setMonto(Long.parseLong(montoHidden));	
+						}
+					}
+				}
+			}
+		}
+		
+
+		return null;
 	}
 	
 	@Override
@@ -330,5 +437,90 @@ implements Serializable {
 	public void setPercapita(boolean percapita) {
 		this.percapita = percapita;
 	}
+
+
+
+
+	public String getFilaHidden() {
+		return filaHidden;
+	}
+
+
+
+
+	public void setFilaHidden(String filaHidden) {
+		this.filaHidden = filaHidden;
+	}
+
+
+
+
+	public String getDiaHidden() {
+		return diaHidden;
+	}
+
+
+
+
+	public void setDiaHidden(String diaHidden) {
+		this.diaHidden = diaHidden;
+	}
+
+
+
+
+	public String getMesHidden() {
+		return mesHidden;
+	}
+
+
+
+
+	public void setMesHidden(String mesHidden) {
+		this.mesHidden = mesHidden;
+	}
+
+
+
+
+	public String getMontoHidden() {
+		return montoHidden;
+	}
+
+
+
+
+	public void setMontoHidden(String montoHidden) {
+		this.montoHidden = montoHidden;
+	}
+
+
+
+
+	public List<RemesasProgramaVO> getRemesasPerCapita() {
+		return remesasPerCapita;
+	}
+
+
+
+
+	public void setRemesasPerCapita(List<RemesasProgramaVO> remesasPerCapita) {
+		this.remesasPerCapita = remesasPerCapita;
+	}
+
+
+
+
+	public String getSubtituloHidden() {
+		return subtituloHidden;
+	}
+
+
+
+
+	public void setSubtituloHidden(String subtituloHidden) {
+		this.subtituloHidden = subtituloHidden;
+	}
+
 
 }

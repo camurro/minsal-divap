@@ -4,11 +4,32 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core" 
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                  >
+<ui:define name="zonaJavaScript">
+		<style type="text/css">
+.ui-state-error {
+	margin-left: 0px;
+}
+</style>
+		<script type="text/javascript">
+		function actualizarTabla() {  
+			document.getElementById("form:botonActualizar").click();
+		}
 
+		function actualizarHidden(fila,dia,mes,id,subtitulo) {  
+			$("#form2\\:fila").val(fila);
+			$("#form2\\:dia").val(dia);
+			$("#form2\\:mes").val(mes);
+			$("#form2\\:subtitulo").val(subtitulo);
+			$("#form2\\:monto").val(document.getElementById(id).value);
+			document.getElementById("form2:botonActualizar").click();
+		}
+
+		</script>
+	</ui:define>
 	<ui:define name="content">
 	
 	<h:form enctype="multipart/form-data" id="form"   >
-
+	<p:commandButton id="botonActualizar" value="actualiza" update="form:tabs" style="display: none" action="#{procesoOTRevisarAntecedentesController.actualizar}"/>
 	<p:growl id="msgs" showDetail="true"/>
 			<p:panel styleClass="contentPanel">
 				<h1>
@@ -39,7 +60,7 @@
 							</h:panelGrid>
 						
 						<h:panelGrid columns="1">
-							<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoOTRevisarAntecedentesController.buscarResultados}" update="form:tabs"/>
+							<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoOTRevisarAntecedentesController.buscarResultados}" update="form:tabs" oncomplete="actualizarTabla();"/>
 						</h:panelGrid>
 					</h:panelGrid>
 					<p:tabView id="tabs">
@@ -48,7 +69,7 @@
 							<p:tab title="Subtítulo 24" id="tabS24">
 								<p:dataTable resizableColumns="true" value="#{procesoOTRevisarAntecedentesController.resultadoMunicipal}" liveResize="true" var="detalleS24"
 										rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
-										styleClass="dataTable" id="tablaResultadosS24" rowIndexVar="rowIndex">
+										styleClass="dataTable" id="tablaResultadosS24" rowIndexVar="rowIndexS24">
 										<p:columnGroup type="header">
 											<p:row>
 												<p:column rowspan="3" headerText="Comuna" />
@@ -85,41 +106,59 @@
 											<span class="textoAjustado textoPequenio">#{detalleS24.comuna.nombre}</span>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS24.comuna.nombre}</span>
+											<h:outputText value="#{detalleS24.marcoPresupuestario}"  styleClass="textoAjustado textoPequenio">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
 										</p:column>
 										
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS24.comuna.nombre}</span>
+											<h:outputText value="#{detalleS24.transferenciaAcumulada}"  styleClass="textoAjustado textoPequenio">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS24.comuna.nombre}</span>
+											<h:outputText value="#{detalleS24.porcentajeTransferencia}"  styleClass="textoAjustado textoPequenio">
+											</h:outputText>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS24.comuna.nombre}</span>
+											<h:outputText value="#{detalleS24.conveniosRecibidos}"  styleClass="textoAjustado textoPequenio">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS24.comuna.nombre}</span>
+											<h:outputText value="#{detalleS24.porcentajeConveniosRecibidos}"  styleClass="textoAjustado textoPequenio">
+											</h:outputText>
 										</p:column>
-										<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+										<c:forEach items="#{detalleS24.remesas}" var="remesa">
 											<c:forEach items="#{remesa.dias}" var="dia">
 													<p:column>
 														<c:if test="#{dia.bloqueado}">
-															<h:outputText value="bloqueado" /> 
+															<h:outputText value="#{dia.monto}" styleClass="textoAjustado textoPequenio">
+																<f:convertNumber  maxFractionDigits="0"/>
+															</h:outputText> 
 														</c:if>
 														<c:if test="#{not dia.bloqueado}">
-															OK
+															<p:inputText value="#{dia.monto}" styleClass="divapProcesoOTProgramaInput" onblur="actualizarHidden(#{rowIndexS24},#{dia.dia},#{remesa.idMes},this.id, 24);">
+																			<f:convertNumber  maxFractionDigits="0"/>
+															</p:inputText> 
 														</c:if>
 													</p:column>
 											</c:forEach>
 										</c:forEach>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS24.comuna.nombre}</span>
+											<h:outputText value="#{detalleS24.diferencia}"  styleClass="textoAjustado textoPequenio">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS24.comuna.nombre}</span>
+											<h:outputText value="#{detalleS24.porcentajeDiferencia}"  styleClass="textoAjustado textoPequenio">
+											</h:outputText>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS24.comuna.nombre}</span>
+											<p:selectBooleanCheckbox rendered="#{not detalleS24.aprobado}" value="#{detalleS24.aprobado}">
+								            	<p:ajax update=":form:tabs:tablaResultadosS24" listener="#{procesoOTRevisarAntecedentesController.actualizarS24(rowIndexS29, detalleS24.comuna.idComuna)}"/>
+								        	</p:selectBooleanCheckbox>
+											<h:graphicImage rendered="#{detalleS24.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />	
 										</p:column>
 									</p:dataTable>
 							</p:tab>
@@ -128,12 +167,12 @@
 							<p:tab title="Subtítulo 21" id="tabS21">
 									<p:dataTable resizableColumns="true" value="#{procesoOTRevisarAntecedentesController.resultadoServicioSub21}" liveResize="true" var="detalleS21"
 										rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
-										styleClass="dataTable" id="tablaResultadosS21" rowIndexVar="rowIndex">
+										styleClass="dataTable" id="tablaResultadosS21" rowIndexVar="rowIndexS21">
 										<p:columnGroup type="header">
 											<p:row>
 												<p:column rowspan="3" headerText="Establecimiento" />
 												<p:column rowspan="3" headerText="Marco Presupuestario"/>
-												<p:column colspan="2" rowspan="2" headerText="Transferencia Acumulada a la Fecha"/>
+												<p:column colspan="2" rowspan="2" headerText="Remesa Acumulada a la Fecha"/>
 												<p:column colspan="2" rowspan="2" headerText="Convenios Recibidos"/>
 												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
 													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="#{remesa.mes}"/>
@@ -165,41 +204,56 @@
 											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS21.marcoPresupuestario}</span>
+											<h:outputText value="#{detalleS21.marcoPresupuestario}"  styleClass="textoAjustado textoPequenio">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
 										</p:column>
 										
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS21.transferenciaAcumulada}</span>
+											<h:outputText value="#{detalleS21.transferenciaAcumulada}"  styleClass="textoAjustado textoPequenio">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
 										</p:column>
 										<p:column>
 											<span class="textoAjustado textoPequenio">#{detalleS21.porcentajeTransferencia}</span>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS21.conveniosRecibidos}</span>
+											<h:outputText value="#{detalleS21.conveniosRecibidos}" styleClass="textoAjustado textoPequenio">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
 										</p:column>
 										<p:column>
 											<span class="textoAjustado textoPequenio">#{detalleS21.porcentajeConveniosRecibidos}</span>
 										</p:column>
-										<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+										<c:forEach items="#{detalleS21.remesas}" var="remesa">
 											<c:forEach items="#{remesa.dias}" var="dia">
 													<p:column>
 														<c:if test="#{dia.bloqueado}">
-															<h:outputText value="bloqueado" /> 
+															<h:outputText value="#{dia.monto}" styleClass="textoAjustado textoPequenio">
+																<f:convertNumber  maxFractionDigits="0"/>
+															</h:outputText> 
 														</c:if>
 														<c:if test="#{not dia.bloqueado}">
-															OK
+															<p:inputText value="#{dia.monto}" styleClass="divapProcesoOTProgramaInput" onblur="actualizarHidden(#{rowIndexS21},#{dia.dia},#{remesa.idMes},this.id,21);">
+																			<f:convertNumber  maxFractionDigits="0"/>
+															</p:inputText> 
 														</c:if>
 													</p:column>
 											</c:forEach>
 										</c:forEach>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
+											<h:outputText value="#{detalleS21.diferencia}" styleClass="textoAjustado textoPequenio">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
+											<span class="textoAjustado textoPequenio">#{detalleS21.porcentajeDiferencia}</span>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS21.establecimiento.nombre}</span>
+											<p:selectBooleanCheckbox rendered="#{not detalleS21.aprobado}" value="#{detalleS21.aprobado}">
+								            	<p:ajax update=":form:tabs:tablaResultadosS21" listener="#{procesoOTRevisarAntecedentesController.actualizarS21(rowIndexS21, detalleS21.establecimiento.codigoEstablecimiento)}"/>
+								        	</p:selectBooleanCheckbox>
+											<h:graphicImage rendered="#{detalleS21.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />	
 										</p:column>
 									</p:dataTable>
 							</p:tab>
@@ -208,12 +262,12 @@
 							<p:tab title="Subtítulo 22" id="tabS22">
 								<p:dataTable resizableColumns="true" value="#{procesoOTRevisarAntecedentesController.resultadoServicioSub22}" liveResize="true" var="detalleS22"
 										rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
-										styleClass="dataTable" id="tablaResultadosS22" rowIndexVar="rowIndex">
+										styleClass="dataTable" id="tablaResultadosS22" rowIndexVar="rowIndexS22">
 										<p:columnGroup type="header">
 											<p:row>
 												<p:column rowspan="3" headerText="Establecimiento" />
 												<p:column rowspan="3" headerText="Marco Presupuestario"/>
-												<p:column colspan="2" rowspan="2" headerText="Transferencia Acumulada a la Fecha"/>
+												<p:column colspan="2" rowspan="2" headerText="Remesa Acumulada a la Fecha"/>
 												<p:column colspan="2" rowspan="2" headerText="Convenios Recibidos"/>
 												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
 													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="#{remesa.mes}"/>
@@ -245,41 +299,56 @@
 											<span class="textoAjustado textoPequenio">#{detalleS22.establecimiento.nombre}</span>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS22.marcoPresupuestario}</span>
+											<h:outputText value="#{detalleS22.marcoPresupuestario}"  styleClass="textoAjustado textoPequenio">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
 										</p:column>
 										
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS22.transferenciaAcumulada}</span>
+											<h:outputText value="#{detalleS22.transferenciaAcumulada}"  styleClass="textoAjustado textoPequenio">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
 										</p:column>
 										<p:column>
 											<span class="textoAjustado textoPequenio">#{detalleS22.porcentajeTransferencia}</span>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS22.conveniosRecibidos}</span>
+											<h:outputText value="#{detalleS22.conveniosRecibidos}" styleClass="textoAjustado textoPequenio">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
 										</p:column>
 										<p:column>
 											<span class="textoAjustado textoPequenio">#{detalleS22.porcentajeConveniosRecibidos}</span>
 										</p:column>
-										<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+										<c:forEach items="#{detalleS22.remesas}" var="remesa">
 											<c:forEach items="#{remesa.dias}" var="dia">
 													<p:column>
 														<c:if test="#{dia.bloqueado}">
-															<h:outputText value="bloqueado" /> 
+															<h:outputText value="#{dia.monto}" styleClass="textoAjustado textoPequenio">
+																<f:convertNumber  maxFractionDigits="0"/>
+															</h:outputText> 
 														</c:if>
 														<c:if test="#{not dia.bloqueado}">
-															OK
+															<p:inputText value="#{dia.monto}" styleClass="divapProcesoOTProgramaInput" onblur="actualizarHidden(#{rowIndexS22},#{dia.dia},#{remesa.idMes},this.id,22);">
+																			<f:convertNumber  maxFractionDigits="0"/>
+															</p:inputText> 
 														</c:if>
 													</p:column>
 											</c:forEach>
 										</c:forEach>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS22.establecimiento.nombre}</span>
+											<h:outputText value="#{detalleS22.diferencia}" styleClass="textoAjustado textoPequenio">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS22.establecimiento.nombre}</span>
+											<span class="textoAjustado textoPequenio">#{detalleS22.porcentajeDiferencia}</span>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS22.establecimiento.nombre}</span>
+											<p:selectBooleanCheckbox rendered="#{not detalleS22.aprobado}" value="#{detalleS22.aprobado}">
+								            	<p:ajax update=":form:tabs:tablaResultadosS22" listener="#{procesoOTRevisarAntecedentesController.actualizarS22(rowIndexS22, detalleS22.establecimiento.codigoEstablecimiento)}"/>
+								        	</p:selectBooleanCheckbox>
+											<h:graphicImage rendered="#{detalleS22.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />	
 										</p:column>
 									</p:dataTable>
 							</p:tab>
@@ -288,12 +357,12 @@
 							<p:tab title="Subtítulo 29" id="tabS29">
 								<p:dataTable resizableColumns="true" value="#{procesoOTRevisarAntecedentesController.resultadoServicioSub29}" liveResize="true" var="detalleS29"
 										rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
-										styleClass="dataTable" id="tablaResultadosS29" rowIndexVar="rowIndex">
+										styleClass="dataTable" id="tablaResultadosS29" rowIndexVar="rowIndexS29">
 										<p:columnGroup type="header">
 											<p:row>
 												<p:column rowspan="3" headerText="Establecimiento" />
-												<p:column rowspan="3" headerText="Marco Presupuestario ($)"/>
-												<p:column colspan="2" rowspan="2" headerText="Transferencia Acumulada a la Fecha"/>
+												<p:column rowspan="3" headerText="Marco Presupuestario"/>
+												<p:column colspan="2" rowspan="2" headerText="Remesa Acumulada a la Fecha"/>
 												<p:column colspan="2" rowspan="2" headerText="Convenios Recibidos"/>
 												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
 													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="#{remesa.mes}"/>
@@ -308,16 +377,16 @@
 												
 											</p:row>
 											<p:row>
-												<p:column headerText="Monto ($)" />
+												<p:column headerText="Monto" />
 												<p:column headerText="%" />
-												<p:column headerText="Monto ($)" />
+												<p:column headerText="Monto" />
 												<p:column headerText="%" />
 												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
 													<c:forEach items="#{remesa.dias}" var="dia">
 														<p:column headerText="#{dia.dia}"/>
 													</c:forEach>
 												</c:forEach>
-												<p:column headerText="Monto ($)" />
+												<p:column headerText="Monto" />
 												<p:column headerText="%" />
 											</p:row>
 										</p:columnGroup>
@@ -325,41 +394,56 @@
 											<span class="textoAjustado textoPequenio">#{detalleS29.establecimiento.nombre}</span>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS29.marcoPresupuestario}</span>
+											<h:outputText value="#{detalleS29.marcoPresupuestario}"  styleClass="textoAjustado textoPequenio">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
 										</p:column>
 										
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS29.transferenciaAcumulada}</span>
+											<h:outputText value="#{detalleS29.transferenciaAcumulada}"  styleClass="textoAjustado textoPequenio">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
 										</p:column>
 										<p:column>
 											<span class="textoAjustado textoPequenio">#{detalleS29.porcentajeTransferencia}</span>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS29.conveniosRecibidos}</span>
+											<h:outputText value="#{detalleS29.conveniosRecibidos}" styleClass="textoAjustado textoPequenio">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
 										</p:column>
 										<p:column>
 											<span class="textoAjustado textoPequenio">#{detalleS29.porcentajeConveniosRecibidos}</span>
 										</p:column>
-										<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+										<c:forEach items="#{detalleS29.remesas}" var="remesa">
 											<c:forEach items="#{remesa.dias}" var="dia">
 													<p:column>
 														<c:if test="#{dia.bloqueado}">
-															<h:outputText value="bloqueado" /> 
+															<h:outputText value="#{dia.monto}" styleClass="textoAjustado textoPequenio">
+																<f:convertNumber  maxFractionDigits="0"/>
+															</h:outputText> 
 														</c:if>
 														<c:if test="#{not dia.bloqueado}">
-															OK
+															<p:inputText value="#{dia.monto}" styleClass="divapProcesoOTProgramaInput" onblur="actualizarHidden(#{rowIndexS29},#{dia.dia},#{remesa.idMes},this.id,29);">
+																			<f:convertNumber  maxFractionDigits="0"/>
+															</p:inputText> 
 														</c:if>
 													</p:column>
 											</c:forEach>
 										</c:forEach>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS29.establecimiento.nombre}</span>
+											<h:outputText value="#{detalleS29.diferencia}" styleClass="textoAjustado textoPequenio">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS29.establecimiento.nombre}</span>
+											<span class="textoAjustado textoPequenio">#{detalleS29.porcentajeDiferencia}</span>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">#{detalleS29.establecimiento.nombre}</span>
+											<p:selectBooleanCheckbox rendered="#{not detalleS29.aprobado}" value="#{detalleS29.aprobado}">
+								            	<p:ajax update=":form:tabs:tablaResultadosS29" listener="#{procesoOTRevisarAntecedentesController.actualizarS29(rowIndexS29, detalleS29.establecimiento.codigoEstablecimiento)}"/>
+								        	</p:selectBooleanCheckbox>
+											<h:graphicImage rendered="#{detalleS29.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />	
 										</p:column>
 									</p:dataTable>
 							
@@ -370,21 +454,21 @@
 							<p:tab title="Per Cápita" id="tabPerCapita">
 								<p:dataTable resizableColumns="true" value="#{procesoOTRevisarAntecedentesController.resultadoPercapita}" liveResize="true" var="detallePercapita"
 										rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
-										styleClass="dataTable" id="tablaResultadosPercapita" rowIndexVar="rowIndex">
+										styleClass="dataTable" id="tablaResultadosPercapita" rowIndexVar="rowIndexPerCapita">
 										<p:columnGroup type="header">
 											<p:row>
 												<p:column rowspan="3" headerText="Comuna" />
 												<p:column rowspan="3" headerText="Clasificación" />
 												<p:column rowspan="3" headerText="Marco Presupuestario ($)"/>
 												<p:column colspan="2" rowspan="2" headerText="Remesa Acumulada a la Fecha"/>
-												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPerCapita}" var="remesa">
 													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="#{remesa.mes}"/>
 												</c:forEach>
 												<p:column colspan="2" rowspan="2" headerText="Marco - Remesa Acumulada"/>
 												<p:column rowspan="3" headerText="Revisado"/>
 											</p:row>
 											<p:row>
-												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPerCapita}" var="remesa">
 													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="Días de Remesa"/>
 												</c:forEach>
 												
@@ -392,7 +476,7 @@
 											<p:row>
 												<p:column headerText="Monto ($)" />
 												<p:column headerText="%" />
-												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPrograma}" var="remesa">
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPerCapita}" var="remesa">
 													<c:forEach items="#{remesa.dias}" var="dia">
 														<p:column headerText="#{dia.dia}"/>
 													</c:forEach>
@@ -446,7 +530,10 @@
 											<span class="textoAjustado textoPequenio">#{detallePercapita.porcentajeDiferencia}</span>
 										</p:column>
 										<p:column>
-											<span class="textoAjustado textoPequenio">77</span>
+											<p:selectBooleanCheckbox rendered="#{not detallePercapita.aprobado}" value="#{detallePercapita.aprobado}">
+								            	<p:ajax update=":form:tabs:tablaResultadosPercapita" listener="#{procesoOTRevisarAntecedentesController.actualizarPerCapita(rowIndexPerCapita, detallePercapita.idComuna)}"/>
+								        	</p:selectBooleanCheckbox>
+											<h:graphicImage rendered="#{detallePercapita.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />	
 										</p:column>
 									</p:dataTable>
 								
@@ -458,6 +545,14 @@
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />
 			</p:panel>
+		</h:form>
+		<h:form id="form2">
+			<h:inputHidden value="#{procesoOTRevisarAntecedentesController.filaHidden}" id="fila"/>
+			<h:inputHidden value="#{procesoOTRevisarAntecedentesController.diaHidden}" id="dia"/>
+			<h:inputHidden value="#{procesoOTRevisarAntecedentesController.mesHidden}" id="mes"/>
+			<h:inputHidden value="#{procesoOTRevisarAntecedentesController.montoHidden}" id="monto"/>
+			<h:inputHidden value="#{procesoOTRevisarAntecedentesController.subtituloHidden}" id="subtitulo"/>
+			<p:commandButton id="botonActualizar" value="actualiza" style="display: none" action="#{procesoOTRevisarAntecedentesController.actualizarCamposHidden}"/>
 		</h:form>
 	</ui:define>
 </ui:composition>

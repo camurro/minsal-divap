@@ -24,7 +24,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import cl.minsal.divap.model.TipoDocumento;
 import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;

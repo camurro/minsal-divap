@@ -610,6 +610,56 @@ public class ProgramasDAO {
 		
 	}
 
+	public Long getMPEstablecimientoProgramaAnoComponenteSubtitulo(Integer idEstablecimiento,
+			Integer idProgramaAno, Integer componenteSeleccionado,
+			Integer idTipoSubtitulo) {
+		try {
+			TypedQuery<ProgramaServicioCoreComponente> query = this.em.createNamedQuery("ProgramaServicioCoreComponente.getMPEstablecimientoProgramaAnoComponenteSubtitulo", ProgramaServicioCoreComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idEstablecimiento", idEstablecimiento);
+			query.setParameter("idComponente", componenteSeleccionado);
+			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			List<ProgramaServicioCoreComponente> result = query.getResultList();
+			if(result.size() > 0){
+				return result.get(0).getTarifa().longValue();
+			}else{
+				return 0l;
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public Long getMPComunaProgramaAnoComponenteSubtitulo(Integer idComuna,
+			Integer idProgramaAno, Integer componenteSeleccionado,
+			Integer idTipoSubtitulo) {
+		try {
+			TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.getMPComunaProgramaAnoComponenteSubtitulo", ProgramaMunicipalCoreComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComuna", idComuna);
+			query.setParameter("idComponente", componenteSeleccionado);
+			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			List<ProgramaMunicipalCoreComponente> result = query.getResultList();
+			if(result.size() > 0){
+				return result.get(0).getTarifa().longValue();
+			}else{
+				return 0l;
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<Programa> getProgramasFonasa(boolean revisaFonasa) {
+		try {
+			TypedQuery<Programa> query = this.em.createNamedQuery("Programa.findByRevisaFonasa", Programa.class);
+			query.setParameter("revisaFonasa", new Boolean(revisaFonasa));
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	
 	
 }

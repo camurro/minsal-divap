@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
 	@NamedQuery(name = "ConvenioComuna.findAll", query = "SELECT c FROM ConvenioComuna c"),
+	@NamedQuery(name = "ConvenioComuna.getConvenioComunaByIdConvenio", query = "SELECT c FROM ConvenioComuna c WHERE c.convenio.idConvenio = :idConvenio"),
 	@NamedQuery(name = "ConvenioComuna.findByIdConvenioComuna", query = "SELECT c FROM ConvenioComuna c WHERE c.idConvenioComuna = :idConvenioComuna"),
 	@NamedQuery(name = "ConvenioComuna.findByFecha", query = "SELECT c FROM ConvenioComuna c WHERE c.fecha = :fecha"),
 	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdServicioIdComponenteIdSubtitulo", query = "SELECT c FROM ConvenioComuna c JOIN c.convenioComunaComponentes cc WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.servicioSalud.id =:idServicio and cc.componente.id IN (:idComponentes) and cc.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
