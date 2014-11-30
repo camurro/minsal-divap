@@ -25079,6 +25079,8 @@ WITH (
 
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (151, 'Resolución Retiro');
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (152, 'Plantilla Resolución Retiro');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (153, 'Convenio Servicio');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (154, 'Convenio Comuna');
 
 ALTER TABLE documento_convenio
   ADD COLUMN servicio integer;
@@ -25151,6 +25153,49 @@ CREATE TABLE reliquidacion_comuna_componente
 WITH (
   OIDS=FALSE
 );
+
+
+CREATE TABLE reporte_emails_convenio
+(
+  id_reporte_emails_convenio serial NOT NULL,
+  convenio integer NOT NULL,
+  reporte_emails_enviados integer NOT NULL,
+  CONSTRAINT reporte_emails_convenio_pk PRIMARY KEY (id_reporte_emails_convenio),
+  CONSTRAINT convenio_fk FOREIGN KEY (convenio)
+      REFERENCES convenio (id_convenio) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT reporte_emails_enviados_fk FOREIGN KEY (reporte_emails_enviados)
+      REFERENCES reporte_emails_enviados (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+ALTER TABLE convenio_comuna_componente
+  ADD COLUMN documento_convenio integer;
+ALTER TABLE convenio_comuna_componente
+  ADD CONSTRAINT documento_convenio_fk FOREIGN KEY (documento_convenio) REFERENCES referencia_documento (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE convenio_servicio_componente
+  ADD COLUMN documento_convenio integer;
+ALTER TABLE convenio_servicio_componente
+  ADD CONSTRAINT documento_convenio_fk FOREIGN KEY (documento_convenio) REFERENCES referencia_documento (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+ALTER TABLE convenio_servicio_componente
+  ADD COLUMN monto_ingresado integer NOT NULL DEFAULT 0;
+
+ALTER TABLE convenio_servicio_componente
+  ADD COLUMN fecha timestamp with time zone NOT NULL DEFAULT now();
+
+ALTER TABLE convenio_comuna_componente
+   ADD COLUMN monto_ingresado integer NOT NULL DEFAULT 0;
+
+ALTER TABLE convenio_comuna_componente
+  ADD COLUMN fecha timestamp with time zone NOT NULL DEFAULT now();
+
+
 
 
 

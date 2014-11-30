@@ -44,7 +44,6 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 	private Integer idConvenio;
 	private String docIdDownload;
 	private List<SubtituloVO>  subtitulos;
-	private List<ConveniosVO> convenios;
 	private Integer programaSeleccionado;
 	private Boolean sub21;
 	private Boolean sub22;
@@ -179,14 +178,6 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 		setDocumento(documentService.getDocument(docDownload));
 		super.downloadDocument();
 		return null;
-	}
-
-	public List<ConveniosVO> getConvenios() {
-		return convenios;
-	}
-
-	public void setConvenios(List<ConveniosVO> convenios) {
-		this.convenios = convenios;
 	}
 
 	public ProgramaVO getPrograma() {

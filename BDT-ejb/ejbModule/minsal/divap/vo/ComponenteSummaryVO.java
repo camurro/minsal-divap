@@ -8,7 +8,7 @@ public class ComponenteSummaryVO implements Serializable{
 
 
 	private static final long serialVersionUID = -1926890921516075410L;
-
+	private Integer id;
 	private String nombre;
 	private List<SubtituloSummaryVO> subtitulos = new ArrayList<SubtituloSummaryVO>();
 	
@@ -32,6 +32,14 @@ public class ComponenteSummaryVO implements Serializable{
 		this.subtitulos.add(subtitulo);
 	}
 
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	public String getNombre() {
 		return nombre;
 	}
@@ -50,8 +58,8 @@ public class ComponenteSummaryVO implements Serializable{
 
 	@Override
 	public String toString() {
-		return "ComponenteSummaryVO [nombre=" + nombre + ", subtitulos="
-				+ subtitulos + "]";
+		return "ComponenteSummaryVO [id=" + id + ", nombre=" + nombre
+				+ ", subtitulos=" + subtitulos + "]";
 	}
 	
 }

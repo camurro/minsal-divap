@@ -68,8 +68,8 @@ public class MatchViewTask {
 		//Mapeo páginas de  Gestión de Información de Programas y Leyes para Transferencis(Convenios)
 		CONVENIOSELECCIONARLINEAPROGRAMATICA("minsal_divap.ProcesoConvenio.seleccionarprograma", "divapProcesoGITSubir"),
 		CONVENIOVERIFICARCONVENIOSINFORMADOS("minsal_divap.ProcesoConvenio.verificarconveniosinformadosporprograma", "divapProcesoGITVerificar"),
-		CONVENIOHACERSEGUIMIENTORESOLUCIONES("minsal_divap.ProcesoConvenio.hacerseguimientoderesoluciones", "divapProcesoGITSeguimiento");  
-		
+		CONVENIOHACERSEGUIMIENTORESOLUCIONES("minsal_divap.ProcesoConvenio.hacerseguimientoderesoluciones", "divapProcesoGITSeguimiento"), 
+		CONVENIORESUMENDOCUMENTOSENVIADOS("minsal_divap.ProcesoConvenio.revisarresumendocumentos","");
 		
 		
 		private String key;

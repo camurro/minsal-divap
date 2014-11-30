@@ -72,7 +72,9 @@ public class ProcesoDistRecFinSeguimientoDocumentacionController extends Abstrac
 		return null;
 	}
 	
-	public Integer actualizar(){return null;}
+	public Integer actualizar(){
+		return null;
+	}
 	
 	public void buscarReporteCorreos(){
 		reporteCorreos = reforzamientoService.getReporteCorreosByIdPrograma(idProxAno,false);

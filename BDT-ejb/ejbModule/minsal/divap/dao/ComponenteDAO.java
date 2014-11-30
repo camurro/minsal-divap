@@ -169,5 +169,5 @@ public class ComponenteDAO {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 }

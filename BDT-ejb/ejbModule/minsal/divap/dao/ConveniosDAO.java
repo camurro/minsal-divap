@@ -21,8 +21,14 @@ import cl.minsal.divap.model.ConvenioSeguimiento;
 import cl.minsal.divap.model.ConvenioServicio;
 import cl.minsal.divap.model.ConvenioServicioComponente;
 import cl.minsal.divap.model.DocumentoConvenio;
+import cl.minsal.divap.model.DocumentoConvenioComuna;
+import cl.minsal.divap.model.DocumentoConvenioServicio;
 import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.ReferenciaDocumento;
+import cl.minsal.divap.model.ReporteEmailsAdjuntos;
+import cl.minsal.divap.model.ReporteEmailsConvenio;
+import cl.minsal.divap.model.ReporteEmailsDestinatarios;
+import cl.minsal.divap.model.ReporteEmailsEnviados;
 import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.Usuario;
 
@@ -664,6 +670,87 @@ public class ConveniosDAO {
 		Query query = this.em.createNamedQuery("ReferenciaDocumento.deleteUsingId");
 		query.setParameter("idDocumento", idDocumento);
 		return query.executeUpdate();
+	}
+
+	public ReporteEmailsEnviados save(ReporteEmailsEnviados reporteEmailsEnviados) {
+		em.persist(reporteEmailsEnviados);
+		return reporteEmailsEnviados;
+	}
+
+	public ReporteEmailsAdjuntos save(ReporteEmailsAdjuntos reporteEmailsAdjuntos) {
+		em.persist(reporteEmailsAdjuntos);
+		return reporteEmailsAdjuntos;
+	}
+
+	public ReporteEmailsConvenio save(ReporteEmailsConvenio reporteEmailsConvenio) {
+		em.persist(reporteEmailsConvenio);
+		return reporteEmailsConvenio;
+	}
+
+	public ReporteEmailsDestinatarios save(ReporteEmailsDestinatarios destinatarioConCopiaEncargadoFinanzas) {
+		em.persist(destinatarioConCopiaEncargadoFinanzas);
+		return destinatarioConCopiaEncargadoFinanzas;
+	}
+
+	public List<ReporteEmailsConvenio> getReporteCorreosByConvenio(Integer idConvenio) {
+		try{
+			TypedQuery<ReporteEmailsConvenio> query = this.em.createNamedQuery("ReporteEmailsConvenio.findByIdConveniol", ReporteEmailsConvenio.class);
+			query.setParameter("idConvenio", idConvenio);
+			return query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public List<ConvenioComunaComponente> getConveniosComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idComuna,
+			Integer idEstadoConvenio) {
+		try {
+			TypedQuery<ConvenioComunaComponente> query = this.em.createNamedQuery("ConvenioComunaComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdComunaIdIdEstadoConvenio", ConvenioComunaComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idSubtitulo", idSubtitulo);
+			query.setParameter("idComuna", idComuna);
+			query.setParameter("idEstadoConvenio", idEstadoConvenio);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<ConvenioServicioComponente> getConveniosServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idEstablecimiento,
+			Integer idEstadoConvenio) {
+		try {
+			TypedQuery<ConvenioServicioComponente> query = this.em.createNamedQuery("ConvenioServicioComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdEstablecimientoIdEstadoConvenio", ConvenioServicioComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idSubtitulo", idSubtitulo);
+			query.setParameter("idEstablecimiento", idEstablecimiento);
+			query.setParameter("idEstadoConvenio", idEstadoConvenio);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public ConvenioServicioComponente save(ConvenioServicioComponente convenioServicioComponente) {
+		em.persist(convenioServicioComponente);
+		return convenioServicioComponente;
+	}
+
+	public ConvenioComunaComponente save(ConvenioComunaComponente convenioComunaComponente) {
+		em.persist(convenioComunaComponente);
+		return convenioComunaComponente;
+	}
+	
+	public DocumentoConvenioServicio save(DocumentoConvenioServicio documentoConvenioServicio) {
+		em.persist(documentoConvenioServicio);
+		return documentoConvenioServicio;
+	}
+
+	public DocumentoConvenioComuna save(DocumentoConvenioComuna documentoConvenioComuna) {
+		em.persist(documentoConvenioComuna);
+		return documentoConvenioComuna;
 	}
 
 }

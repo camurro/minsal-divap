@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jstl/core"
+	template="/WEB-INF/templates/default.xhtml">
+	
+	<ui:define name="zonaJavaScript">
+		<style type="text/css">
+.ui-state-error {
+	margin-left: 0px;
+}
+</style>
+		<script type="text/javascript">
+
+		 function downloadDocument(idDoc) {  
+             document.getElementById('formDownload:hiddenId').value=idDoc;
+             document.getElementById('formDownload:linkDownload').click();  
+         } 
+
+		 setInterval(
+				 function () {
+					 document.getElementById("form:buscarReporte").click();
+					 document.getElementById("form:botonActualizar").click();
+					 }, 10000);
+	        
+		$(document).ready(function() {
+			document.getElementById("form:botonActualizar").click();
+		});
+
+		</script>
+	</ui:define>
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data" id="form">
+		<p:commandButton id="botonActualizar" value="actualiza" update="form:tablaResultados" style="display: none" action="#{procesoGITResumenDocumentosController.actualizar}"/>
+		<p:commandButton id="buscarReporte" value="actualiza" update="form:tablaResultados" style="display: none" action="#{procesoGITResumenDocumentosController.buscarReporteCorreos}"/>
+		<p:commandButton id="btnLoadData" value="Hidden" update="form:tablaResultados" style="display:none" action="#{procesoGITResumenDocumentosController.actualizar}"/>
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Distribución de Recursos Financieros por Programa"/>
+				</h1>
+				<p:panel id="Panel">
+					<h2>
+						<strong>Programa:</strong> #{procesoGITResumenDocumentosController.programa.nombre}
+					</h2>
+					<p:dataTable resizableColumns="true" value="#{procesoGITResumenDocumentosController.reporteCorreos}" liveResize="true"
+					var="_reporte" rows="40" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+						styleClass="dataTable"  id="tablaResultados">
+						<p:columnGroup type="header">
+							<p:row>
+								<p:column headerText="Servicio de Salud" width="245"/>
+								<p:column headerText="Documentos" />
+								<p:column headerText="Fecha de Envío" width="150"/>
+								<p:column headerText="Destinatario" width="250"/>
+							</p:row>
+						</p:columnGroup>
+
+						<p:column>#{_reporte.nombreServicio}</p:column>
+						<p:column>
+							<c:forEach items="#{_reporte.adjuntos}" var="adj">
+								<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> 
+									<h:commandLink
+										action="#{procesoGITResumenDocumentosController.downloadArchivo}"
+										value="#{adj.nombre}"
+										onclick="downloadDocument(#{adj.id});return false;" >
+									</h:commandLink>
+									<br />
+							</c:forEach>
+						</p:column>
+						<p:column>#{_reporte.fechaFormat}</p:column>
+						<p:column style="align:left">
+							<h:outputText value="Para:" style="align:left"/>
+							<c:forEach items="#{_reporte.to}" var="para">
+								<span class="strong">#{para}</span>
+							</c:forEach>
+							<br/>
+							CC:
+							<c:forEach items="#{_reporte.cc}" var="copia">
+								<span class="strong">#{copia}</span><br /> 
+							</c:forEach>
+						</p:column>
+					</p:dataTable>
+
+					<p:commandButton value="Finalizar Actividad" styleClass="x-btn-text" action="#{procesoGITResumenDocumentosController.enviar}" ajax="false" icon="ui-icon-disk" >
+						<f:setPropertyActionListener target="#{procesoGITResumenDocumentosController.target}" value="bandejaTareas.jsf" />
+					</p:commandButton>
+				</p:panel>
+
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false" icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+		<h:form id="formDownload">
+			<h:inputHidden value="#{procesoGITResumenDocumentosController.docIdDownload}" id="hiddenId" />
+			<h:commandButton id="linkDownload" action="#{procesoGITResumenDocumentosController.downloadArchivo}" style="display: none"/>
+		</h:form>
+	</ui:define>
+</ui:composition>

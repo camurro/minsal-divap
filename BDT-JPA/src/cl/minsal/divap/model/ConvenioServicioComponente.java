@@ -7,6 +7,7 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -18,6 +19,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -34,9 +37,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ConvenioServicioComponente.findByIdProgramaAnoServicioComponenteSubtitulo", query = "SELECT c FROM ConvenioServicioComponente c WHERE c.convenioServicio.idPrograma.idProgramaAno = :idProgramaAno and c.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
     @NamedQuery(name = "ConvenioServicioComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdServicioIdConvenioIdEstadoConvenio", query = "SELECT c FROM ConvenioServicioComponente c WHERE c.convenioServicio.idPrograma.idProgramaAno = :idProgramaAno and c.componente.id = :idComponente and c.subtitulo.idTipoSubtitulo = :idSubtitulo and c.convenioServicio.idEstablecimiento.servicioSalud.id = :idServicio and c.convenioServicio.convenio.idConvenio = :idConvenio and c.convenioServicio.estadoConvenio.idEstadoConvenio = :idEstadoConvenio"),
     @NamedQuery(name = "ConvenioServicioComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdServicioIdEstadoConvenio", query = "SELECT c FROM ConvenioServicioComponente c WHERE c.convenioServicio.idPrograma.idProgramaAno = :idProgramaAno and c.componente.id = :idComponente and c.subtitulo.idTipoSubtitulo = :idSubtitulo and c.convenioServicio.idEstablecimiento.servicioSalud.id = :idServicio and c.convenioServicio.estadoConvenio.idEstadoConvenio = :idEstadoConvenio order by c.convenioServicio.idEstablecimiento.id asc"),
-    @NamedQuery(name = "ConvenioServicioComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdEstablecimientoIdConvenioIdEstadoConvenio", query = "SELECT c FROM ConvenioServicioComponente c WHERE c.convenioServicio.idPrograma.idProgramaAno = :idProgramaAno and c.componente.id = :idComponente and c.subtitulo.idTipoSubtitulo = :idSubtitulo and c.convenioServicio.idEstablecimiento.id = :idEstablecimiento and c.convenioServicio.convenio.idConvenio = :idConvenio and c.convenioServicio.estadoConvenio.idEstadoConvenio = :idEstadoConvenio"),
-    @NamedQuery(name = "ConvenioServicioComponente.getConveniosPagadosByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio", query = "SELECT c FROM ConvenioServicioComponente c WHERE c.convenioServicio.idPrograma.idProgramaAno = :idProgramaAno and c.componente.id = :idComponente and c.subtitulo.idTipoSubtitulo = :idSubtitulo and c.convenioServicio.idEstablecimiento.id = :idEstablecimiento and c.convenioServicio.estadoConvenio.idEstadoConvenio = :idEstadoConvenio")})
-												   
+    @NamedQuery(name = "ConvenioServicioComponente.getConveniosPagadosByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio", query = "SELECT c FROM ConvenioServicioComponente c WHERE c.convenioServicio.idPrograma.idProgramaAno = :idProgramaAno and c.componente.id = :idComponente and c.subtitulo.idTipoSubtitulo = :idSubtitulo and c.convenioServicio.idEstablecimiento.id = :idEstablecimiento and c.convenioServicio.estadoConvenio.idEstadoConvenio = :idEstadoConvenio"),
+    @NamedQuery(name = "ConvenioServicioComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdEstablecimientoIdConvenioIdEstadoConvenio", query = "SELECT c FROM ConvenioServicioComponente c WHERE c.convenioServicio.idPrograma.idProgramaAno = :idProgramaAno and c.componente.id = :idComponente and c.subtitulo.idTipoSubtitulo = :idSubtitulo and c.convenioServicio.idEstablecimiento.id = :idEstablecimiento and c.convenioServicio.convenio.idConvenio = :idConvenio and c.convenioServicio.estadoConvenio.idEstadoConvenio = :idEstadoConvenio order by c.fecha asc"),
+    @NamedQuery(name = "ConvenioServicioComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdEstablecimientoIdEstadoConvenio", query = "SELECT c FROM ConvenioServicioComponente c WHERE c.convenioServicio.idPrograma.idProgramaAno = :idProgramaAno and c.componente.id = :idComponente and c.subtitulo.idTipoSubtitulo = :idSubtitulo and c.convenioServicio.idEstablecimiento.id = :idEstablecimiento and c.convenioServicio.convenio is null and c.convenioServicio.estadoConvenio.idEstadoConvenio = :idEstadoConvenio order by c.fecha asc")})
 public class ConvenioServicioComponente implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -49,6 +52,16 @@ public class ConvenioServicioComponente implements Serializable {
     @Basic(optional = false)
     @Column(name = "aprobado")
     private boolean aprobado;
+    @Basic(optional = false)
+    @Column(name = "monto_ingresado")
+    private int montoIngresado;
+    @Basic(optional = false)
+    @Column(name = "fecha")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fecha;
+    @JoinColumn(name = "documento_convenio", referencedColumnName = "id")
+    @ManyToOne
+    private ReferenciaDocumento documentoConvenio;
     @JoinColumn(name = "subtitulo", referencedColumnName = "id_tipo_subtitulo")
     @ManyToOne(optional = false)
     private TipoSubtitulo subtitulo;
@@ -87,15 +100,39 @@ public class ConvenioServicioComponente implements Serializable {
         this.monto = monto;
     }
 
-    public TipoSubtitulo getSubtitulo() {
+    public int getMontoIngresado() {
+		return montoIngresado;
+	}
+
+	public void setMontoIngresado(int montoIngresado) {
+		this.montoIngresado = montoIngresado;
+	}
+
+	public ReferenciaDocumento getDocumentoConvenio() {
+		return documentoConvenio;
+	}
+
+	public void setDocumentoConvenio(ReferenciaDocumento documentoConvenio) {
+		this.documentoConvenio = documentoConvenio;
+	}
+
+	public TipoSubtitulo getSubtitulo() {
         return subtitulo;
     }
 
     public void setSubtitulo(TipoSubtitulo subtitulo) {
         this.subtitulo = subtitulo;
     }
+    
+    public Date getFecha() {
+		return fecha;
+	}
 
-    public ConvenioServicio getConvenioServicio() {
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+
+	public ConvenioServicio getConvenioServicio() {
         return convenioServicio;
     }
 
