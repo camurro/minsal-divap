@@ -22,6 +22,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import minsal.divap.enums.EstadosProgramas;
+import minsal.divap.service.OTService;
+import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
+
 
 /**
  * JAX-RS Example
@@ -35,16 +39,19 @@ public class OrdenTransferenciaRESTService extends BaseRest{
 	
 		
 	@GET
-    @Path("/ot/calcularOrdenTransferencia/{idProcesoOT}")
+    @Path("/ordenesDeTransferencia/cambiarEstadoPrograma/{idPrograma}/{estado}")
     @Produces("application/json")
-    public Integer calcularOrdenTransferencia(@PathParam("idProcesoOT") Integer idProcesoOT){
-		System.out.println("elaborar oficio proceso-->"+idProcesoOT);
-		if(idProcesoOT == null){
-			throw new IllegalArgumentException("proceso: "+ idProcesoOT + " no puede ser nulo");
+    public void cambiarEstadoPrograma(@PathParam("idPrograma") Integer idPrograma, @PathParam("estado") String estado){
+		System.out.println("cambiarEstadoPrograma-->"+idPrograma +" estado="+estado);
+		if(idPrograma == null){
+			throw new IllegalArgumentException("id del programa no puede ser nulo");
 		}
-
-		//DistribucionInicialPercapitaService distribucionInicialPercapitaService = getService(DistribucionInicialPercapitaService.class);
-		return 1;//distribucionInicialPercapitaService.crearOficioConsulta(idProcesoOT);
+		if(estado == null){
+			throw new IllegalArgumentException("estado programa: "+ idPrograma + " no puede ser nulo");
+		}
+		OTService ordenTransferenciaService = getService(OTService.class);
+		EstadosProgramas estadoPrograma = EstadosProgramas.getById(Integer.parseInt(estado));
+		ordenTransferenciaService.cambiarEstadoPrograma(idPrograma, estadoPrograma);
     }
 	
 		

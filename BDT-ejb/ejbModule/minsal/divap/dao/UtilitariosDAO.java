@@ -8,7 +8,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import cl.minsal.divap.model.Comuna;
+import cl.minsal.divap.model.Dia;
 import cl.minsal.divap.model.Festivos;
+import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.Region;
 import cl.minsal.divap.model.ServicioSalud;
 
@@ -95,5 +97,32 @@ public class UtilitariosDAO {
 		}
 	}
 
+	public Dia findDiaById(Integer id){
+		try {
+			TypedQuery<Dia> query = this.em.createNamedQuery("Dia.findById", Dia.class);
+			query.setParameter("id", id);
+			List<Dia> result = query.getResultList(); 
+			if(result != null && result.size() > 0){
+				return result.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public Mes findMesById(Integer id){
+		try {
+			TypedQuery<Mes> query = this.em.createNamedQuery("Mes.findByIdMes", Mes.class);
+			query.setParameter("idMes", id);
+			List<Mes> result = query.getResultList(); 
+			if(result != null && result.size() > 0){
+				return result.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }

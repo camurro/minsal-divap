@@ -9,8 +9,8 @@
 					<h2>
 						<strong>Tabla:</strong>MORE Estado Revisión y Validación Ordenes de Transferencia por Programa
 					</h2>
-					<p:dataTable id="tablaMisTareas" resizableColumns="true" liveResize="true" var="_programas" rows="10" paginator="false"
-						value="#{procesoOTRevisarConsolidacionController.listadoProgramasServicio}" paginatorPosition="bottom"
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" liveResize="true" var="_programas" rows="10" paginator="true"
+						value="#{procesoOTRevisarConsolidacionController.listaProgramas}" paginatorPosition="bottom"
 						emptyMessage="No se encontro información." styleClass="dataTable">
 						<p:columnGroup type="header">
 							<!--  -->
@@ -20,8 +20,12 @@
 							</p:row>
 						</p:columnGroup>
 
-						<p:column><span class="textoAjustado">#{_programas.programa}</span></p:column>
-						<p:column><h:graphicImage value="resources/minsal/images/#{_programas.estado}.png" styleClass="divapIcons" /></p:column>
+						<p:column><span class="textoAjustado">#{_programas.nombre}</span></p:column>
+						<p:column>
+							<h:graphicImage value="resources/minsal/images/green.png" styleClass="divapIcons"  rendered="#{_programas.estadoOT.id eq 4}"/> 
+							<h:graphicImage value="resources/minsal/images/red.png" styleClass="divapIcons"  rendered="#{_programas.estadoOT.id eq 1}"/> 
+							<h:graphicImage value="resources/minsal/images/yellow.png" styleClass="divapIcons"  rendered="#{_programas.estadoOT.id eq 5}"/>
+						</p:column>
 					</p:dataTable>
 				</p:panel>
 			</p:panel>

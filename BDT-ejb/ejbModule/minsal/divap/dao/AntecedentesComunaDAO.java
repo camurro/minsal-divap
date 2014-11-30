@@ -256,9 +256,10 @@ public class AntecedentesComunaDAO {
 
 	public AntecendentesComunaCalculado findByComunaAno(Integer idComuna, Integer ano) {
 		try {
-			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByIdComunaAno", AntecendentesComunaCalculado.class);
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByIdComunaAnoAprobado", AntecendentesComunaCalculado.class);
 			query.setParameter("idComuna", idComuna);
 			query.setParameter("ano", ano);
+			query.setParameter("aprobado", new Boolean(false));
 			List<AntecendentesComunaCalculado> antecendentesComunaCalculado = query.getResultList(); 
 			if(antecendentesComunaCalculado != null && antecendentesComunaCalculado.size() > 0){
 				return antecendentesComunaCalculado.get(0);
@@ -305,6 +306,38 @@ public class AntecedentesComunaDAO {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Object getPerCapitaBasalByIdServicio(Integer idServicio) {
+		try {
+			Query query = this.em.createNamedQuery("AntecendentesComunaCalculado.getPerCapitaBasalByIdServicio");
+			query.setParameter("idServicio", idServicio);
+			List<Object> result =  query.getResultList();
+			if(result !=null && result.size()>0){
+				return result.get(0);
+			}
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return 0;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Object getDesempenoDificilByIdServicio(Integer idServicio) {
+		try {
+			Query query = this.em.createNamedQuery("AntecendentesComunaCalculado.getDesempenoDificilByIdServicio");
+			query.setParameter("idServicio", idServicio);
+			List<Object> result =  query.getResultList();
+			if(result !=null && result.size()>0){
+				return result.get(0);
+			}
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return 0;
 	}
 
 }

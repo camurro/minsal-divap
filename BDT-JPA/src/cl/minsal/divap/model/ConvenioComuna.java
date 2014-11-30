@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
 	@NamedQuery(name = "ConvenioComuna.findAll", query = "SELECT c FROM ConvenioComuna c"),
+	@NamedQuery(name = "ConvenioComuna.getConvenioComunaByIdConvenio", query = "SELECT c FROM ConvenioComuna c WHERE c.convenio.idConvenio = :idConvenio"),
 	@NamedQuery(name = "ConvenioComuna.findByIdConvenioComuna", query = "SELECT c FROM ConvenioComuna c WHERE c.idConvenioComuna = :idConvenioComuna"),
 	@NamedQuery(name = "ConvenioComuna.findByFecha", query = "SELECT c FROM ConvenioComuna c WHERE c.fecha = :fecha"),
 	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdServicioIdComponenteIdSubtitulo", query = "SELECT c FROM ConvenioComuna c JOIN c.convenioComunaComponentes cc WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.servicioSalud.id =:idServicio and cc.componente.id IN (:idComponentes) and cc.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
@@ -49,7 +50,6 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdServicioIdComponentes", query = "SELECT c FROM ConvenioComuna c JOIN c.convenioComunaComponentes cc WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.servicioSalud.id = :idServicio and cc.componente.id IN (:idComponentes)"),
 	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdComunaIdMes", query = "SELECT c FROM ConvenioComuna c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.id = :idComuna and c.mes.idMes = :idMes"),
 	@NamedQuery(name = "ConvenioComuna.findByIdComunaIdProgramaAno", query = "SELECT c FROM ConvenioComuna c WHERE c.idComuna.id = :idComuna and c.idPrograma.idProgramaAno = :idProgramaAno"),
-	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdServicioAprobacion", query = "SELECT c FROM ConvenioComuna c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.servicioSalud.id = :idServicio and c.aprobacion = :aprobacion"),
 	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdServicioIdEstadoConvenio", query = "SELECT c FROM ConvenioComuna c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.servicioSalud.id = :idServicio and c.estadoConvenio.idEstadoConvenio = :idEstadoConvenio"),
 	@NamedQuery(name = "ConvenioComuna.countConvenioComunaByIdProgramaAnoIdEstadoConvenio", query = "SELECT COUNT(c) FROM ConvenioComuna c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.estadoConvenio.idEstadoConvenio = :idEstadoConvenio"),
 	@NamedQuery(name = "ConvenioComuna.findConvenioComunaByIdProgramaAnoIdEstadoConvenio", query = "SELECT c FROM ConvenioComuna c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.estadoConvenio.idEstadoConvenio = :idEstadoConvenio")})

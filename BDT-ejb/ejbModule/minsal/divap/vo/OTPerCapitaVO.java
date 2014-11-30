@@ -2,7 +2,6 @@ package minsal.divap.vo;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 public class OTPerCapitaVO implements Serializable{
@@ -17,6 +16,7 @@ public class OTPerCapitaVO implements Serializable{
 	private String porcentajeTransferenciaAcumulada;
 	private Long diferencia;
 	private String porcentajeDiferencia;
+	private boolean aprobado;
 	
 	private List<RemesasProgramaVO> remesas;
 	
@@ -88,6 +88,12 @@ public class OTPerCapitaVO implements Serializable{
 	}
 	public void setRemesas(List<RemesasProgramaVO> remesas) {
 		this.remesas = remesas;
+	}
+	public boolean isAprobado() {
+		return aprobado;
+	}
+	public void setAprobado(boolean aprobado) {
+		this.aprobado = aprobado;
 	}
 	
 	

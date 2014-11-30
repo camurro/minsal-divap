@@ -92,4 +92,5 @@ public class DistribucionInicialPercapitaDAO {
 		return null;
 	}
 
+	
 }

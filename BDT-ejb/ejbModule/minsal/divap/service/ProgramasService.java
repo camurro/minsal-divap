@@ -27,6 +27,7 @@ import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.DependenciaVO;
 import minsal.divap.vo.ProgramaAPSServicioResumenVO;
 import minsal.divap.vo.ProgramaAPSVO;
+import minsal.divap.vo.ProgramaFonasaVO;
 import minsal.divap.vo.ProgramaMunicipalHistoricoVO;
 import minsal.divap.vo.ProgramaMunicipalVO;
 import minsal.divap.vo.ProgramaServicioHistoricoVO;
@@ -959,6 +960,21 @@ public class ProgramasService {
 			
 		}
 		return programaVO;
+	}
+
+	public List<ProgramaFonasaVO> getProgramasFonasa(boolean revisaFonasa) {
+		List<ProgramaFonasaVO> resultado = new ArrayList<ProgramaFonasaVO>();
+		List<Programa> programas = 	programasDAO.getProgramasFonasa(revisaFonasa);
+		
+		for(Programa programa : programas){
+			ProgramaFonasaVO fonasa = new ProgramaFonasaVO();
+			fonasa.setIdPrograma(programa.getId());
+			fonasa.setNombrePrograma(programa.getNombre());
+			resultado.add(fonasa);
+		}
+		return resultado;
+		
+		
 	}
 
 	

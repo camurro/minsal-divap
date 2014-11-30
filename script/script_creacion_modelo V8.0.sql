@@ -25029,3 +25029,17 @@ INSERT INTO convenio_comuna_componente(id_convenio_comuna_componente, componente
 INSERT INTO tipo_componente(id, nombre) VALUES (4, 'Leyes de Retiro');
 
 
+--24 nov
+
+ ALTER TABLE antecendentes_comuna_calculado
+  ADD COLUMN aprobado boolean DEFAULT false;
+
+
+-- 27 nov
+
+ALTER TABLE detalle_remesas
+  ADD COLUMN cuota integer;
+ALTER TABLE detalle_remesas
+  ADD CONSTRAINT cuota_fk FOREIGN KEY (cuota) REFERENCES cuota (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
