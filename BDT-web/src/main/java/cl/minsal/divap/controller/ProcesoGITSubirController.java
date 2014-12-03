@@ -55,7 +55,7 @@ public class ProcesoGITSubirController extends AbstractTaskMBean implements Seri
 		if(programaSeleccionado != null){
 			ProgramaVO programa = programasService.getProgramaAno(programaSeleccionado);
 			for(ComponentesVO componente : programa.getComponentes()){
-				if(TiposPrograma.LeyesRetiro.getId().equals(componente.getTipoComponente().getId())){
+				if(TiposPrograma.ProgramaLey.getId().equals(componente.getTipoComponente().getId())){
 					retiro = true;
 					break;
 				}

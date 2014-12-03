@@ -889,5 +889,23 @@ public class DocumentService {
 		conveniosDAO.save(documentoConvenio);
 		System.out.println("luego de aplicar insert del documento convenio");
 	}
+
+	public ReferenciaDocumentoSummaryVO getLastDocumentoSummaryConvenioByTypeType(Integer idConvenio, TipoDocumentosProcesos tipoDocumento) {
+		ReferenciaDocumento referenciaDocumento =  fileDAO.getLastDocumentByTypeConvenio(idConvenio, tipoDocumento);
+		ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = new ReferenciaDocumentoMapper().getSummary(referenciaDocumento);
+		return referenciaDocumentoSummaryVO;
+	}
+	
+	public List<ReferenciaDocumentoSummaryVO> getVersionFinalConvenioByType(Integer idConvenio, TipoDocumentosProcesos tipoDocumento) {
+		List<ReferenciaDocumentoSummaryVO> versionesFinales = new ArrayList<ReferenciaDocumentoSummaryVO>();
+		List<ReferenciaDocumento> referenciaDocumentos =  fileDAO.getVersionFinalConvenioByType(idConvenio, tipoDocumento);
+		if(referenciaDocumentos != null && referenciaDocumentos.size() > 0){
+			for(ReferenciaDocumento referenciaDocumento : referenciaDocumentos){
+				ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = new ReferenciaDocumentoMapper().getSummary(referenciaDocumento);
+				versionesFinales.add(referenciaDocumentoSummaryVO);
+			}
+		}
+		return versionesFinales;
+	}
 	
 }

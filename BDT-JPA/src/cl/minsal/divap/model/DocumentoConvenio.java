@@ -30,7 +30,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "DocumentoConvenio.findByIdDocumentoConvenio", query = "SELECT d FROM DocumentoConvenio d WHERE d.idDocumentoConvenio = :idDocumentoConvenio"),
     @NamedQuery(name = "DocumentoConvenio.findByIdConvenioTipo", query = "SELECT d FROM DocumentoConvenio d WHERE d.convenio.idConvenio = :idConvenio and d.tipoDocumento.idTipoDocumento = :idTipoDocumento"),
     @NamedQuery(name = "DocumentoConvenio.deleteUsingIds", query = "DELETE FROM DocumentoConvenio d WHERE d.idDocumentoConvenio IN (:idDocumentosConvenio)"),
-    @NamedQuery(name = "findByIdConvenioTipoNotFinal", query = "SELECT d FROM DocumentoConvenio d WHERE d.convenio.idConvenio = :idConvenio and d.tipoDocumento.idTipoDocumento = :idTipoDocumento and d.documento.documentoFinal = false")})
+    @NamedQuery(name = "DocumentoConvenio.findByIdConvenioTipoNotFinal", query = "SELECT d FROM DocumentoConvenio d WHERE d.convenio.idConvenio = :idConvenio and d.tipoDocumento.idTipoDocumento = :idTipoDocumento and d.documento.documentoFinal = false"),
+    @NamedQuery(name = "DocumentoConvenio.findByIdConvenioTipoDocumento", query = "SELECT d FROM DocumentoConvenio d WHERE d.convenio.idConvenio = :idConvenio and d.tipoDocumento.idTipoDocumento = :idTipoDocumento order by d.documento.fechaCreacion asc"),
+    @NamedQuery(name = "DocumentoConvenio.findVersionFinalByIdConvenioTipoDocumento", query = "SELECT d.documento FROM DocumentoConvenio d WHERE d.convenio.idConvenio = :idConvenio and d.tipoDocumento.idTipoDocumento = :idTipoDocumento and d.documento.documentoFinal = true order by d.documento.fechaCreacion asc")})
+
 public class DocumentoConvenio implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

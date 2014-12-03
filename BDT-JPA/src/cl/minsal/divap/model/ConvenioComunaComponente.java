@@ -54,6 +54,8 @@ public class ConvenioComunaComponente implements Serializable {
     @Column(name = "fecha")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
+    @Column(name = "cuota")
+    private Integer cuota;
     @JoinColumn(name = "documento_convenio", referencedColumnName = "id")
     @ManyToOne
     private ReferenciaDocumento documentoConvenio;
@@ -126,6 +128,14 @@ public class ConvenioComunaComponente implements Serializable {
 
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
+	}
+	
+	public Integer getCuota() {
+		return cuota;
+	}
+
+	public void setCuota(Integer cuota) {
+		this.cuota = cuota;
 	}
 
 	public ReferenciaDocumento getDocumentoConvenio() {

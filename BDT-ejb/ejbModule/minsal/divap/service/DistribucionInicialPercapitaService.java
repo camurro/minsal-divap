@@ -168,6 +168,14 @@ public class DistribucionInicialPercapitaService {
 			filename = "plantillaOrdinarioCorreo.xml";
 			folderAlfresco = "TEMPLATES/RECURSOSFINANCIEROSPROGRAMASREFORZAMIENTOAPS";
 			break;
+		case PLANTILLARESOLUCIONRETIRO:
+			filename = "plantillaResolucionRetiro.docx";
+			folderAlfresco = "TEMPLATES/CONVENIO";
+			break;
+		case PLANTILLACORREORESOLUCIONRETIRO:
+			filename = "plantillaCorreoResolucionRetiro.xml";
+			folderAlfresco = "TEMPLATES/CONVENIO";
+			break;
 		default:
 			break;
 		}

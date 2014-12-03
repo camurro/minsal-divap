@@ -29,6 +29,9 @@ public class ConvenioComunaComponenteMapper implements Mapper<ConvenioComunaComp
 				convenioComunaComponenteVO.setIdDocConvenio(documentoConvenioComuna.getDocumento().getId());
 			}
 		}
+		if(convenioComunaComponente.getDocumentoConvenio() != null){
+			convenioComunaComponenteVO.setIdDocConvenio(convenioComunaComponente.getDocumentoConvenio().getId());
+		}
 		return convenioComunaComponenteVO;
 	}
 

@@ -19,6 +19,7 @@ public class CargaConvenioComunaComponenteVO implements Serializable {
 	private DocumentSummaryVO documento;
 	private Integer monto;
 	private Integer montoIngresado;
+	private Integer cuotasDescuento;
 	
 	public CargaConvenioComunaComponenteVO() {
 		super();
@@ -110,6 +111,14 @@ public class CargaConvenioComunaComponenteVO implements Serializable {
 
 	public void setMontoIngresado(Integer montoIngresado) {
 		this.montoIngresado = montoIngresado;
+	}
+
+	public Integer getCuotasDescuento() {
+		return cuotasDescuento;
+	}
+
+	public void setCuotasDescuento(Integer cuotasDescuento) {
+		this.cuotasDescuento = cuotasDescuento;
 	}
 
 	@Override

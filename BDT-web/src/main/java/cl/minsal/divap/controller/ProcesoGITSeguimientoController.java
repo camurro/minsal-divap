@@ -19,6 +19,7 @@ import javax.inject.Named;
 import minsal.divap.enums.TareasSeguimiento;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.ConveniosService;
+import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.SeguimientoVO;
 
 import org.apache.log4j.Logger;
@@ -53,6 +54,7 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 	private List<SeguimientoVO> bitacoraSeguimiento;
 	private String actividadSeguimientoTitle = "Seguimiento Resoluciones";
 	private UploadedFile file;
+	private Boolean lastVersion = false;
 
 	@PostConstruct
 	public void init() {
@@ -61,9 +63,12 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 			return;
 		}
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			this.idResolucion = (Integer) getTaskDataVO().getData().get("_idResolucion");
-			System.out.println("this.idResolucion --->" + this.idResolucion);
 			this.idConvenio = (Integer) getTaskDataVO().getData().get("_idConvenio");
+			System.out.println("this.idConvenio --->" + this.idConvenio);
+		}
+		ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = conveniosService.getLastDocumentSummaryConvenioByType(this.idConvenio, TipoDocumentosProcesos.RESOLUCIONRETIRO);
+		if(referenciaDocumentoSummaryVO != null){
+			this.idResolucion = referenciaDocumentoSummaryVO.getId();
 		}
 		bitacoraSeguimiento = conveniosService.getBitacora(this.idConvenio, TareasSeguimiento.HACERSEGUIMIENTORESOLUCIONRETIRO);
 		plantillaCorreoId = conveniosService.getPlantillaCorreo(TipoDocumentosProcesos.PLANTILLACORREORESOLUCIONRETIRO);
@@ -88,6 +93,10 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 			parameters.put("documentos_", JSONHelper.toJSON(this.docIds));
 		}
 		return parameters;
+	}
+	
+	public void resetLastVersion(){
+		lastVersion = false;
 	}
 
 	@Override
@@ -145,7 +154,6 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 				conCopiaOculta = Arrays.asList(this.cco.split("\\,")); 
 			}
 			System.out.println("ProcesoGITSeguimientoController-->sendMail");
-			conveniosService.moveToAlfresco(this.idConvenio, docAttachedFile, TipoDocumentosProcesos.ADJUNTOSEGUIMIENTORESOLUCIONRETIRO, null);
 			conveniosService.createSeguimientoConvenio(this.idConvenio, TareasSeguimiento.HACERSEGUIMIENTORESOLUCIONRETIRO, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -228,6 +236,13 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 
 	@Override
 	public String enviar() {
+		int numDocFinales = conveniosService.countVersionFinalConvenioByType(this.idConvenio, TipoDocumentosProcesos.RESOLUCIONRETIRO);
+		System.out.println("numDocFinales="+numDocFinales);
+		if(numDocFinales == 0){
+			FacesMessage msg = new FacesMessage("No existe versión final para la resolución de retiro");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return null;
+		}
 		return super.enviar();
 	}
 	
@@ -268,6 +283,14 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 	public void setActividadSeguimientoTitle(String actividadSeguimientoTitle) {
 		this.actividadSeguimientoTitle = actividadSeguimientoTitle;
 	}
+	
+	public Boolean getLastVersion() {
+		return lastVersion;
+	}
+
+	public void setLastVersion(Boolean lastVersion) {
+		this.lastVersion = lastVersion;
+	}
 
 	public void uploadVersion() {
 		if (file != null){
@@ -278,6 +301,26 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 				byte[] contentPlantillaFile = file.getContents();
 				File file = createTemporalFile(filename, contentPlantillaFile);
 				plantillaCorreoId = conveniosService.cargarPlantillaCorreo(TipoDocumentosProcesos.PLANTILLACORREORESOLUCIONRETIRO, file);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			System.out.println("uploadVersion file is null");
+			FacesMessage message = new FacesMessage("uploadVersion file is null");
+			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
+	}
+	
+	public void uploadVersionFinal() {
+		if (file != null){
+			try {
+				System.out.println("uploadVersionFinal file is not null");
+				String filename = file.getFileName();
+				filename = filename.replaceAll(" ", "");
+				byte[] contentResolucionFile = file.getContents();
+				Integer docResolucion = persistFile(filename, contentResolucionFile);
+				conveniosService.moveToAlfresco(this.idConvenio, docResolucion, TipoDocumentosProcesos.RESOLUCIONRETIRO, this.lastVersion);
+				idResolucion = docResolucion;
 			}catch (Exception e) {
 				e.printStackTrace();
 			}

@@ -69,7 +69,7 @@ public class MatchViewTask {
 		CONVENIOSELECCIONARLINEAPROGRAMATICA("minsal_divap.ProcesoConvenio.seleccionarprograma", "divapProcesoGITSubir"),
 		CONVENIOVERIFICARCONVENIOSINFORMADOS("minsal_divap.ProcesoConvenio.verificarconveniosinformadosporprograma", "divapProcesoGITVerificar"),
 		CONVENIOHACERSEGUIMIENTORESOLUCIONES("minsal_divap.ProcesoConvenio.hacerseguimientoderesoluciones", "divapProcesoGITSeguimiento"), 
-		CONVENIORESUMENDOCUMENTOSENVIADOS("minsal_divap.ProcesoConvenio.revisarresumendocumentos","");
+		CONVENIORESUMENDOCUMENTOSENVIADOS("minsal_divap.ProcesoConvenio.revisarresumendocumentos", "divapProcesoGITResumenDocumentos");
 		
 		
 		private String key;

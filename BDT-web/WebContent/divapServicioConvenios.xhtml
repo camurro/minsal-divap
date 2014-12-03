@@ -65,7 +65,7 @@
 								</h:panelGrid>
 							</h:panelGrid>
 							<br/>
-							<p:dataTable id="Grid1" resizableColumns="true" value="#{procesoConveniosController.resolucionConveniosMunicipal}" liveResize="true" var="_data" rows="10"
+							<p:dataTable id="Grid1" resizableColumns="true" value="#{procesoConveniosController.resolucionConveniosMunicipal}" liveResize="true" var="_data24" rows="10"
 								paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" rowIndexVar="rowIndexVarSub24">
 								<p:columnGroup type="header">
 									<p:row>
@@ -81,21 +81,22 @@
 									<p:rowToggler />
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.nombreComuna}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data24.nombreComuna}</span>
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.componente.nombre}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data24.componente.nombre}</span>
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.subtitulo.nombre}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data24.subtitulo.nombre}</span>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.montoIngresado}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data24.montoIngresado}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<p:commandButton value="Cargar" action="#{procesoConveniosController.cargaConvenioSub24(rowIndexVarSub24)}" update=":#{p:component('dlg3')}" oncomplete="dlg3.show();" />
+									<p:commandButton value="#{((_data24.nuevo)? 'Cargar' : 'Modificar')}" action="#{procesoConveniosController.cargaConvenioSub24(rowIndexVarSub24)}" update=":#{p:component('leyesDialog')}" oncomplete="leyesDialog.show();" rendered="#{procesoConveniosController.leyRetiro}"/>
+									<p:commandButton value="#{((_data24.nuevo)? 'Cargar' : 'Modificar')}" action="#{procesoConveniosController.cargaConvenioSub24(rowIndexVarSub24)}" update=":#{p:component('dlg3')}" oncomplete="dlg3.show();" rendered="#{not procesoConveniosController.leyRetiro}"/>
 								</p:column>
 								<p:rowExpansion>
 									<!-- INICIO EXPANSION --> 
@@ -146,7 +147,7 @@
 									</h:panelGrid>
 								</h:panelGrid>
 								<br/>
-								<p:dataTable id="Grid2" resizableColumns="true" value="#{procesoConveniosController.resolucionConveniosServicioSub21}" liveResize="true" var="_data" rows="10"
+								<p:dataTable id="Grid2" resizableColumns="true" value="#{procesoConveniosController.resolucionConveniosServicioSub21}" liveResize="true" var="_data21" rows="10"
 								paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" rowIndexVar="rowIndex21">
 								<p:columnGroup type="header">
 									<p:row>
@@ -163,22 +164,22 @@
 									<p:rowToggler />
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.nombreEstablecimiento}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data21.nombreEstablecimiento}</span>
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.componente.nombre}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data21.componente.nombre}</span>
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.subtitulo.nombre}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data21.subtitulo.nombre}</span>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.montoIngresado}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data21.montoIngresado}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 
 								<p:column>
-									<p:commandButton value="Cargar"  action="#{procesoConveniosController.cargaConvenioSub21(rowIndex21)}" update=":#{p:component('dlg2')}" oncomplete="dlg2.show();" />
+									<p:commandButton value="#{((_data21.nuevo)? 'Cargar' : 'Modificar')}"  action="#{procesoConveniosController.cargaConvenioSub21(rowIndex21)}" update=":#{p:component('dlg2')}" oncomplete="dlg2.show();" />
 								</p:column>
 								<p:rowExpansion>
 										<!-- INICIO EXPANSION --> 
@@ -230,7 +231,7 @@
 									</h:panelGrid>
 								</h:panelGrid>
 								<br/>
-								<p:dataTable id="Grid22" resizableColumns="true" value="#{procesoConveniosController.resolucionConveniosServicioSub22}" liveResize="true" var="_data" rows="10"
+								<p:dataTable id="Grid22" resizableColumns="true" value="#{procesoConveniosController.resolucionConveniosServicioSub22}" liveResize="true" var="_data22" rows="10"
 								paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" rowIndexVar="rowIndex22">
 								<p:columnGroup type="header">
 									<p:row>
@@ -247,22 +248,22 @@
 									<p:rowToggler />
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.nombreEstablecimiento}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data22.nombreEstablecimiento}</span>
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.componente.nombre}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data22.componente.nombre}</span>
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.subtitulo.nombre}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data22.subtitulo.nombre}</span>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.montoIngresado}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data22.montoIngresado}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 
 								<p:column>
-									<p:commandButton value="Cargar"  action="#{procesoConveniosController.cargaConvenioSub22(rowIndex22)}" update=":#{p:component('dlg2')}" oncomplete="dlg2.show();" />
+									<p:commandButton value="#{((_data22.nuevo)? 'Cargar' : 'Modificar')}"  action="#{procesoConveniosController.cargaConvenioSub22(rowIndex22)}" update=":#{p:component('dlg2')}" oncomplete="dlg2.show();" />
 								</p:column>
 								<p:rowExpansion>
 										<!-- INICIO EXPANSION --> 
@@ -314,7 +315,7 @@
 									</h:panelGrid>
 								</h:panelGrid>
 								<br/>
-								<p:dataTable id="Grid29" resizableColumns="true" value="#{procesoConveniosController.resolucionConveniosServicioSub29}" liveResize="true" var="_data" rows="10"
+								<p:dataTable id="Grid29" resizableColumns="true" value="#{procesoConveniosController.resolucionConveniosServicioSub29}" liveResize="true" var="_data29" rows="10"
 								paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" rowIndexVar="rowIndex29">
 								<p:columnGroup type="header">
 									<p:row>
@@ -331,22 +332,22 @@
 									<p:rowToggler />
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.nombreEstablecimiento}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data29.nombreEstablecimiento}</span>
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.componente.nombre}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data29.componente.nombre}</span>
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio centrado">#{_data.subtitulo.nombre}</span>
+									<span class="textoAjustado textoPequenio centrado">#{_data29.subtitulo.nombre}</span>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.montoIngresado}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data29.montoIngresado}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 
 								<p:column>
-									<p:commandButton value="Cargar"  action="#{procesoConveniosController.cargaConvenioSub29(rowIndex29)}" update=":#{p:component('dlg2')}" oncomplete="dlg2.show();" />
+									<p:commandButton value="#{((_data29.nuevo)? 'Cargar' : 'Modificar')}"  action="#{procesoConveniosController.cargaConvenioSub29(rowIndex29)}" update=":#{p:component('dlg2')}" oncomplete="dlg2.show();" />
 								</p:column>
 								<p:rowExpansion>
 										<!-- INICIO EXPANSION --> 
@@ -391,36 +392,6 @@
 					<br />
 				</p:panel>
 				
-				<!-- DIALOG PARA SUBIR LEYES -->
-				<p:dialog header="Ingreso de Convenios Leyes" id="leyesDialog" widgetVar="dlg3" modal="true" width="600">
-					<h:panelGrid>
-						<h:outputText value="Ley: " styleClass="inputLabel" />
-						<h:outputText value="RETIRO 20.157" />
-					</h:panelGrid>
-					<h:panelGrid>
-						<h:outputText value="Subtitulo: " styleClass="inputLabel" />
-						<h:outputText value="24" />
-					</h:panelGrid>
-					<h:panelGrid>
-						<h:outputText value="Comuna: " styleClass="inputLabel" />
-						<h:outputText value="Macul" />
-					</h:panelGrid>
-					<h:panelGrid>
-						<h:outputText value="Fecha de Convenio " styleClass="inputLabel" /><p:calendar></p:calendar>
-						<h:outputText value="TOTAL" styleClass="inputLabel" /><h:outputText value="$18.000.000" styleClass="inputLabel" />
-					</h:panelGrid>
-					<br />
-					<div class="destacaArchivos ui-corner-all">
-						<br />
-						<h:panelGrid>
-							<h:outputText value="Subir Convenio: " styleClass="inputLabel" />
-							<p:fileUpload id="subirArchivoLeyes" value="#{procesoAsignacionPerCapitaController.valorBasicoDesempenoFile}" mode="simple" />
-						</h:panelGrid>
-						<br />
-					</div>
-					<p:commandButton value="Guardar" onclick="dlg3.hide();" styleClass="x-btn-text" icon="ui-icon-disk" />
-					<p:commandButton value="Cancelar" onclick="dlg3.hide();" styleClass="x-btn-text" icon="ui-icon-cancel" />
-				</p:dialog>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"	icon="ui-icon-seek-first" />
 			</p:panel>
 		</h:form>
@@ -429,6 +400,69 @@
 			<h:inputHidden value="#{procesoAsignacionPerCapitaController.docIdDownload}" id="hiddenId" />
 			<h:commandButton id="linkDownload" action="#{procesoAsignacionPerCapitaController.downloadTemplate}" style="display: none"/>
 		</h:form>
+		
+		<h:form id="formLeyes" enctype="multipart/form-data">
+		<!-- DIALOG PARA SUBIR LEYES -->
+		<p:panel styleClass="contentPanel">
+				<p:dialog header="Ingreso de Convenios Leyes" id="leyesDialog" widgetVar="leyesDialog" modal="true" width="600">
+					<h:panelGrid>
+						<h:outputText value="Ley: " styleClass="inputLabel" />
+						<h:outputText value="#{procesoConveniosController.programa.nombre}" />
+					</h:panelGrid>
+					<h:panelGrid>
+					<h:outputText value="Número Resolución: " styleClass="inputLabel" />
+						<p:inputText value="#{procesoConveniosController.convenioComuna.numeroResoucion}" />
+					</h:panelGrid>
+					<h:panelGrid>
+						<h:outputText value="Subtitulo: " styleClass="inputLabel" />
+						<h:outputText value="#{procesoConveniosController.convenioComuna.subtitulo.nombre}" />
+					</h:panelGrid>
+					<h:panelGrid>
+						<h:outputText value="Comuna: " styleClass="inputLabel" />
+						<h:outputText value="#{procesoConveniosController.convenioComuna.nombreComuna}" />
+					</h:panelGrid>
+					<h:panelGrid>
+						<h:outputText value="Fecha de Convenio " styleClass="inputLabel" />
+						 <h:outputText value="#{procesoConveniosController.currentDate}" styleClass="textoPequenio textoAjustado">
+							<f:convertDateTime pattern="dd/MMM/yyyy" />
+						</h:outputText>
+					</h:panelGrid>
+					<h:panelGrid>
+						<h:outputText value="Monto Adelanto: " styleClass="inputLabel" />
+						<p:inputText value="#{procesoConveniosController.convenioComuna.montoIngresado}" />
+					</h:panelGrid>
+					<h:panelGrid>
+						<h:outputText value="Cuotas de Descuento: " styleClass="inputLabel" />
+						<p:inputText value="#{procesoConveniosController.convenioComuna.cuotasDescuento}" />
+					</h:panelGrid>
+					<h:panelGrid>
+						<h:outputText value="Monto Aporte Fiscal: " styleClass="inputLabel" />
+						<h:outputText value="#{procesoConveniosController.montoAdicionalComplementario}" />
+					</h:panelGrid>
+					<h:panelGrid>
+						<h:outputText value="Monto Adicional + Complementario: " styleClass="inputLabel" />
+						<h:outputText value="#{procesoConveniosController.montoAdicionalComplementario}" />
+					</h:panelGrid>
+					<h:panelGrid>
+						<h:outputText value="TOTAL" styleClass="inputLabel" />
+						<h:outputText value="#{procesoConveniosController.totalLey}" styleClass="textoPequenio textoAjustado">
+							<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+						</h:outputText>
+					</h:panelGrid>
+					<br />
+					<div class="destacaArchivos ui-corner-all">
+						<br />
+						<h:panelGrid>
+							<h:outputText value="Subir Convenio: " styleClass="inputLabel" />
+							<p:fileUpload id="subirArchivoLeyes" fileUploadListener="#{procesoConveniosController.handleFileUploadConvenioFile}" value="#{procesoConveniosController.plantillaFile}" mode="simple" />
+						</h:panelGrid>
+						<br />
+					</div>
+					<p:commandButton value="Guardar" ajax="false" action="#{procesoConveniosController.guardarLeyRetiro}" styleClass="x-btn-text" icon="ui-icon-disk" oncomplete="leyesDialog.hide();"/>
+					<p:commandButton value="Cancelar" onclick="leyesDialog.hide();" styleClass="x-btn-text" icon="ui-icon-cancel" />
+				</p:dialog>
+				</p:panel>
+			</h:form>
 		
 		<h:form id="fromPupupComuna" enctype="multipart/form-data">
 		 	<p:panel styleClass="contentPanel">
@@ -462,7 +496,7 @@
 					<br />
 					<h:panelGrid>
 						<h:outputText value="Subir un nuevo Archivo: " styleClass="inputLabel" />
-						<p:fileUpload id="subirArchivo" fileUploadListener="#{procesoConveniosController.handleFileUploadConvenioFile}" value="#{procesoConveniosController.plantillaFile}" mode="simple" />
+						<p:fileUpload id="subirArchivoComuna" fileUploadListener="#{procesoConveniosController.handleFileUploadConvenioFile}" value="#{procesoConveniosController.plantillaFile}" mode="simple" />
 					</h:panelGrid>
 					<br />
 				</div>
@@ -504,7 +538,7 @@
 					<br />
 					<h:panelGrid>
 						<h:outputText value="Subir un nuevo Archivo: " styleClass="inputLabel" />
-						<p:fileUpload id="subirArchivo" value="#{procesoConveniosController.plantillaFile}" mode="simple" />
+						<p:fileUpload id="subirArchivoServicio" fileUploadListener="#{procesoConveniosController.handleFileUploadConvenioFile}" value="#{procesoConveniosController.plantillaFile}" mode="simple" />
 					</h:panelGrid>
 					<br />
 				</div>

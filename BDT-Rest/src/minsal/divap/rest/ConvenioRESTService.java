@@ -80,7 +80,9 @@ public class ConvenioRESTService extends BaseRest{
 	@GET
 	@Path("/convenio/notificarServicioSalud/{programaSeleccionado}/{servicioSeleccionado}/{idConvenio}")
 	public void notificarServicioSalud(@PathParam("programaSeleccionado") Integer programaSeleccionado, @PathParam("servicioSeleccionado") Integer servicioSeleccionado, @PathParam("idConvenio") Integer idConvenio){
-		System.out.println("notificarServicioSalud-->"+programaSeleccionado);
+		System.out.println("notificarServicioSalud programaSeleccionado-->"+programaSeleccionado);
+		System.out.println("notificarServicioSalud servicioSeleccionado-->"+servicioSeleccionado);
+		System.out.println("notificarServicioSalud idConvenio-->"+idConvenio);
 		if(programaSeleccionado == null){
 			throw new IllegalArgumentException("programaSeleccionado: "+ programaSeleccionado + " no puede ser nulo");
 		}
@@ -96,7 +98,7 @@ public class ConvenioRESTService extends BaseRest{
 
 	@GET
 	@Path("/convenio/generarResolucionDisponibilizarAlfresco/{programaSeleccionado}/{idConvenio}")
-	public void generarResolucionDisponibilizarAlfresco(@PathParam("programaSeleccionado") Integer programaSeleccionado, @PathParam("idConvenio") Integer idConvenio){
+	public Integer generarResolucionDisponibilizarAlfresco(@PathParam("programaSeleccionado") Integer programaSeleccionado, @PathParam("idConvenio") Integer idConvenio){
 		System.out.println("generarResolucionDisponibilizarAlfresco-->"+programaSeleccionado);
 		if(programaSeleccionado == null){
 			throw new IllegalArgumentException("programaSeleccionado: "+ programaSeleccionado + " no puede ser nulo");
@@ -105,7 +107,7 @@ public class ConvenioRESTService extends BaseRest{
 			throw new IllegalArgumentException("idConvenio: "+ idConvenio + " no puede ser nulo");
 		}
 		ConveniosService conveniosService = getService(ConveniosService.class);
-		conveniosService.generarResolucionDisponibilizarAlfresco(programaSeleccionado, idConvenio);
+		return conveniosService.generarResolucionDisponibilizarAlfresco(programaSeleccionado, idConvenio);
 	}
 
 	@GET
@@ -123,7 +125,7 @@ public class ConvenioRESTService extends BaseRest{
 	}
 	
 	@GET
-	@Path("/convenio/administrarVersionesAlfresco/{programaSeleccionado}/{idConvenio}")
+	@Path("/convenio/notificarPorCorreo/{programaSeleccionado}/{idConvenio}")
 	public void notificarPorCorreo(@PathParam("programaSeleccionado") Integer programaSeleccionado, @PathParam("idConvenio") Integer idConvenio){
 		System.out.println("notificarPorCorreo-->"+programaSeleccionado);
 		if(programaSeleccionado == null){

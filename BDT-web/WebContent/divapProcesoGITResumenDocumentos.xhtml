@@ -46,14 +46,12 @@
 						styleClass="dataTable"  id="tablaResultados">
 						<p:columnGroup type="header">
 							<p:row>
-								<p:column headerText="Servicio de Salud" width="245"/>
 								<p:column headerText="Documentos" />
 								<p:column headerText="Fecha de Envío" width="150"/>
 								<p:column headerText="Destinatario" width="250"/>
 							</p:row>
 						</p:columnGroup>
 
-						<p:column>#{_reporte.nombreServicio}</p:column>
 						<p:column>
 							<c:forEach items="#{_reporte.adjuntos}" var="adj">
 								<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> 
@@ -71,11 +69,13 @@
 							<c:forEach items="#{_reporte.to}" var="para">
 								<span class="strong">#{para}</span>
 							</c:forEach>
+							<c:if test="#{not empty _reporte.cc}">
 							<br/>
 							CC:
 							<c:forEach items="#{_reporte.cc}" var="copia">
 								<span class="strong">#{copia}</span><br /> 
 							</c:forEach>
+							</c:if>
 						</p:column>
 					</p:dataTable>
 

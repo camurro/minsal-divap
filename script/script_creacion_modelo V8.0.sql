@@ -22081,19 +22081,19 @@ WITH (
 
 -- 7 de noviembre
 
-INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES ('2', 'rwattcha', 'Descripcion de prueba',46,'APLICACIÓN UNIVERSAL');
-INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES ('2', 'rwattcha', 'Descripcion de prueba',47,'CONDUCTORES');
-INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES ('2', 'rwattcha', 'Descripcion de prueba',48,'DESEMPEÑO COLECTIVO FIJO');
-INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES ('2', 'rwattcha', 'Descripcion de prueba',49,'DESEMPEÑO COLECTIVO VARIABLE');
-INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES ('2', 'rwattcha', 'Descripcion de prueba',50,'TECNICO DE NIVEL SUPERIOR');
-INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES ('2', 'rwattcha', 'Descripcion de prueba',51,'ZONAS EXTREMAS');
-INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES ('2', 'rwattcha', 'Descripcion de prueba',52,'DIFERENCIAL SUELDO BASE MINIMO NACIONAL (SBMN)');
-INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES ('2', 'rwattcha', 'Descripcion de prueba',53,'RETIRO ADELANTO LEY 20,157');
-INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES ('2', 'rwattcha', 'Descripcion de prueba',54,'DESCUENTO RETIRO LEY 20,157');
-INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES ('2', 'rwattcha', 'Descripcion de prueba',55,'RETIRO COMPLEMENTARIO LEY 20,250');
-INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES ('2', 'rwattcha', 'Descripcion de prueba',56,'RETIRO ADELANTO LEY 20,589');
-INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES ('2', 'rwattcha', 'Descripcion de prueba',57,'DESCUENTO RETIRO LEY 20,589');
-INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES ('2', 'rwattcha', 'Descripcion de prueba',58,'RETIRO ADICIONAL MAS COMPLEMENTARIO 20,589');
+INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES (2, 'rwattcha', 'Descripcion de prueba',46,'APLICACIÓN UNIVERSAL');
+INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES (2, 'rwattcha', 'Descripcion de prueba',47,'CONDUCTORES');
+INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES (2, 'rwattcha', 'Descripcion de prueba',48,'DESEMPEÑO COLECTIVO FIJO');
+INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES (2, 'rwattcha', 'Descripcion de prueba',49,'DESEMPEÑO COLECTIVO VARIABLE');
+INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES (2, 'rwattcha', 'Descripcion de prueba',50,'TECNICO DE NIVEL SUPERIOR');
+INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES (2, 'rwattcha', 'Descripcion de prueba',51,'ZONAS EXTREMAS');
+INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES (2, 'rwattcha', 'Descripcion de prueba',52,'DIFERENCIAL SUELDO BASE MINIMO NACIONAL (SBMN)');
+INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES (2, 'rwattcha', 'Descripcion de prueba',53,'RETIRO ADELANTO LEY 20,157');
+INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES (2, 'rwattcha', 'Descripcion de prueba',54,'DESCUENTO RETIRO LEY 20,157');
+INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES (2, 'rwattcha', 'Descripcion de prueba',55,'RETIRO COMPLEMENTARIO LEY 20,250');
+INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES (2, 'rwattcha', 'Descripcion de prueba',56,'RETIRO ADELANTO LEY 20,589');
+INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES (2, 'rwattcha', 'Descripcion de prueba',57,'DESCUENTO RETIRO LEY 20,589');
+INSERT INTO programa(cantidad_cuotas, username_usuario, descripcion,id, nombre) VALUES (2, 'rwattcha', 'Descripcion de prueba',58,'RETIRO ADICIONAL MAS COMPLEMENTARIO 20,589');
 
 
 INSERT INTO programa_ano(ano, estado, estadoflujocaja,id_programa_ano, programa) VALUES (2014,1,1,91,46);
@@ -25030,8 +25030,6 @@ INSERT INTO convenio_comuna_componente(id_convenio_comuna_componente, componente
 INSERT INTO convenio_comuna(id_convenio_comuna, id_programa, id_comuna, fecha, numero_resolucion, estado_convenio, mes) VALUES (16, 3, 15202, now(), 4005, 1, 3);
 INSERT INTO convenio_comuna_componente(id_convenio_comuna_componente, componente, subtitulo, monto, convenio_comuna) VALUES (16, 3, 3, 100000, 16);
 
-INSERT INTO tipo_componente(id, nombre) VALUES (4, 'Leyes de Retiro');
-
 INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (14, 'Hacer Seguimiento Resolución de Retiro');
 
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (65, 'Plantilla Correo Resolucion Retiro');
@@ -25211,5 +25209,30 @@ ALTER TABLE detalle_remesas
   ADD COLUMN cuota integer;
 ALTER TABLE detalle_remesas
   ADD CONSTRAINT cuota_fk FOREIGN KEY (cuota) REFERENCES cuota (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+ALTER TABLE convenio_comuna_componente
+  ADD COLUMN cuota integer;
+
+CREATE TABLE institucion
+(
+  id_institucion serial NOT NULL,
+  nombre text NOT NULL,
+  email integer,
+  director integer,
+  CONSTRAINT institucion_pk PRIMARY KEY (id_institucion),
+  CONSTRAINT email_fk FOREIGN KEY (email)
+      REFERENCES email (id_email) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT representante_fk FOREIGN KEY (director)
+      REFERENCES persona (id_persona) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email)VALUES (20, 'JEANETTE', 'VEGA', 'MORALES', 1);
+INSERT INTO institucion(id_institucion, nombre, email, director) VALUES (1, 'FONASA', 1, 20);
 
 

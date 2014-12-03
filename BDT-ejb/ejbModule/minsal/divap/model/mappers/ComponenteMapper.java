@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import minsal.divap.vo.ComponentesVO;
+import minsal.divap.vo.DependenciaVO;
 import minsal.divap.vo.SubtituloVO;
 import minsal.divap.vo.TipoComponenteVO;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -33,6 +34,10 @@ public class ComponenteMapper implements Mapper<Componente>{
 			List<SubtituloVO> subtitulos = new ArrayList<SubtituloVO>();
 			for(ComponenteSubtitulo componenteSubtitulo : componente.getComponenteSubtitulos()){
 				SubtituloVO subtituloVO = new SubtituloVO(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo(), componenteSubtitulo.getSubtitulo().getNombreSubtitulo());
+				DependenciaVO dependencia = new DependenciaVO();
+				dependencia.setId(componenteSubtitulo.getSubtitulo().getDependencia().getIdDependenciaPrograma());
+				dependencia.setNombre(componenteSubtitulo.getSubtitulo().getDependencia().getNombre());
+				subtituloVO.setDependencia(dependencia);
 				subtitulos.add(subtituloVO);
 			}
 			componentesVO.setSubtitulos(subtitulos);

@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import minsal.divap.enums.TipoDocumentosProcesos;
+import cl.minsal.divap.model.DocumentoConvenio;
 import cl.minsal.divap.model.DocumentoConvenioComuna;
 import cl.minsal.divap.model.DocumentoConvenioServicio;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
@@ -357,6 +358,34 @@ public class DocumentDAO {
 	public DocumentoConvenioServicio save(DocumentoConvenioServicio documentoConvenioServicio) {
 		this.em.persist(documentoConvenioServicio);
 		return documentoConvenioServicio;
+	}
+
+	public ReferenciaDocumento getLastDocumentByTypeConvenio(Integer idConvenio, TipoDocumentosProcesos tipoDocumento) {
+		ReferenciaDocumento referenciaDocumento = null;
+		try {
+			TypedQuery<DocumentoConvenio> query = this.em.createNamedQuery("DocumentoConvenio.findByIdConvenioTipoDocumento", DocumentoConvenio.class);
+			query.setParameter("idConvenio", idConvenio);
+			query.setParameter("idTipoDocumento", tipoDocumento.getId());
+			List<DocumentoConvenio> referenciasDocumentos = query.getResultList(); 
+			if(referenciasDocumentos != null && referenciasDocumentos.size() > 0){
+				int size = referenciasDocumentos.size();
+				referenciaDocumento = referenciasDocumentos.get(size-1).getDocumento();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return referenciaDocumento;
+	}
+
+	public List<ReferenciaDocumento> getVersionFinalConvenioByType(Integer idConvenio, TipoDocumentosProcesos tipoDocumento) {
+		try {
+			TypedQuery<ReferenciaDocumento> query = this.em.createNamedQuery("DocumentoConvenio.findVersionFinalByIdConvenioTipoDocumento", ReferenciaDocumento.class);
+			query.setParameter("idConvenio", idConvenio);
+			query.setParameter("idTipoDocumento", tipoDocumento.getId());
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

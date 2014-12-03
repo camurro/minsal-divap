@@ -29,6 +29,11 @@ public class CargaConvenioComunaComponenteMapper implements Mapper<ConvenioComun
 			documento.setDescDocumento(convenioComunaComponente.getDocumentoConvenio().getPath());
 			cargaConvenioComunaComponenteVO.setDocumento(documento);
 		}
+		if(convenioComunaComponente.getCuota() != null){
+			cargaConvenioComunaComponenteVO.setCuotasDescuento(convenioComunaComponente.getCuota());
+		}else{
+			cargaConvenioComunaComponenteVO.setCuotasDescuento(0);
+		}
 		cargaConvenioComunaComponenteVO.setIdComuna(convenioComunaComponente.getConvenioComuna().getIdComuna().getId());
 		cargaConvenioComunaComponenteVO.setNombreComuna(convenioComunaComponente.getConvenioComuna().getIdComuna().getNombre());
 		cargaConvenioComunaComponenteVO.setNuevo(false);

@@ -29,6 +29,9 @@ public class ConvenioServicioComponenteMapper implements Mapper<ConvenioServicio
 				convenioServicioComponenteVO.setIdDocConvenio(documentoConvenioServicio.getDocumento().getId());
 			}
 		}
+		if(convenioServicioComponente.getDocumentoConvenio() != null){
+			convenioServicioComponenteVO.setIdDocConvenio(convenioServicioComponente.getDocumentoConvenio().getId());
+		}
 		return convenioServicioComponenteVO;
 	}
 

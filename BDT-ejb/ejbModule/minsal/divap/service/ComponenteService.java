@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import minsal.divap.dao.ComponenteDAO;
 import minsal.divap.model.mappers.ComponenteMapper;
 import minsal.divap.vo.ComponentesVO;
-import minsal.divap.vo.DependenciaVO;
 import minsal.divap.vo.SubtituloVO;
 import minsal.divap.vo.TipoComponenteVO;
 import cl.minsal.divap.model.Componente;
@@ -40,23 +39,7 @@ public class ComponenteService {
 		List<Componente> componentes = this.componenteDAO.getComponenteByPrograma(programaId);
 		List<ComponentesVO> componentesPrograma = new ArrayList<ComponentesVO>();
 		for (Componente componente : componentes){
-			ComponentesVO comVO = new ComponentesVO();
-			comVO.setId(componente.getId());
-			comVO.setNombre(componente.getNombre());
-			comVO.setPeso(componente.getPeso());
-			List<SubtituloVO> listaSubVO = new ArrayList<SubtituloVO>(); 
-			for(ComponenteSubtitulo comSub : componente.getComponenteSubtitulos()){
-				SubtituloVO subVO = new SubtituloVO();
-				subVO.setId(comSub.getSubtitulo().getIdTipoSubtitulo());
-				subVO.setNombre(comSub.getSubtitulo().getNombreSubtitulo());
-				DependenciaVO dependencia = new DependenciaVO();
-				dependencia.setId(comSub.getSubtitulo().getDependencia().getIdDependenciaPrograma());
-				dependencia.setNombre(comSub.getSubtitulo().getDependencia().getNombre());
-				subVO.setDependencia(dependencia);
-				listaSubVO.add(subVO);
-			}
-			comVO.setSubtitulos(listaSubVO);
-			componentesPrograma.add(comVO);
+			componentesPrograma.add(new ComponenteMapper().getBasic(componente));
 		}
 		return componentesPrograma;
 	}

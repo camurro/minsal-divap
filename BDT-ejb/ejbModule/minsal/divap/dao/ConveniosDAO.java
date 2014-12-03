@@ -11,7 +11,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import minsal.divap.enums.EstadosConvenios;
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import cl.minsal.divap.model.Convenio;
@@ -613,9 +612,6 @@ public class ConveniosDAO {
 		}
 	}
 
-	
-	
-
 	public Integer createSeguimiento(Integer idConvenio, Seguimiento seguimiento) {
 		Convenio convenio = findById(idConvenio);
 		ConvenioSeguimiento convenioSeguimiento = new ConvenioSeguimiento();
@@ -694,7 +690,7 @@ public class ConveniosDAO {
 
 	public List<ReporteEmailsConvenio> getReporteCorreosByConvenio(Integer idConvenio) {
 		try{
-			TypedQuery<ReporteEmailsConvenio> query = this.em.createNamedQuery("ReporteEmailsConvenio.findByIdConveniol", ReporteEmailsConvenio.class);
+			TypedQuery<ReporteEmailsConvenio> query = this.em.createNamedQuery("ReporteEmailsConvenio.findByIdConvenio", ReporteEmailsConvenio.class);
 			query.setParameter("idConvenio", idConvenio);
 			return query.getResultList();
 		} catch (Exception e) {

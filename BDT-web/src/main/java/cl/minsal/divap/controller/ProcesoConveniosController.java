@@ -1,6 +1,7 @@
 package cl.minsal.divap.controller;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -12,6 +13,7 @@ import javax.inject.Named;
 
 import minsal.divap.enums.EstadosConvenios;
 import minsal.divap.enums.Subtitulo;
+import minsal.divap.enums.TiposPrograma;
 import minsal.divap.service.ComponenteService;
 import minsal.divap.service.ComunaService;
 import minsal.divap.service.ConveniosService;
@@ -68,6 +70,11 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	private List<ConveniosVO> resolucionesServicios21;
 	private List<ConveniosVO> resolucionesServicios22;
 	private List<ConveniosVO> resolucionesServicios29;
+	private Boolean leyRetiro;
+	private Date currentDate;
+	private Integer montoAporteEstatal;
+	private Integer montoAdicionalComplementario;
+	private Integer totalLey;
 
 	@EJB
 	private ProgramasService programasService;
@@ -90,6 +97,7 @@ public class ProcesoConveniosController extends BaseController implements Serial
 		setSub22(false);
 		setSub24(false);
 		setSub29(false);
+		setLeyRetiro(false);
 		setComunaSeleccionada("0");
 		setEstablecimientoSeleccionado21("0");
 		setEstablecimientoSeleccionado22("0");
@@ -104,7 +112,7 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	}
 
 	public String cargaConvenioSub24(Integer rowIndex){
-		System.out.println("cargaConvenioSub21 rowIndex="+rowIndex);
+		System.out.println("cargaConvenioSub24 rowIndex="+rowIndex);
 		rowIndexMunicipal = rowIndex;
 		convenioComuna = getResolucionConveniosMunicipal().get(rowIndex);
 		return null;
@@ -161,10 +169,6 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	}
 
 	public void resetSubtitulos(){
-		setSub21(false);
-		setSub22(false);
-		setSub24(false);
-		setSub29(false);
 		setComunaSeleccionada("0");
 		setEstablecimientoSeleccionado21("0");
 		setEstablecimientoSeleccionado22("0");
@@ -218,10 +222,34 @@ public class ProcesoConveniosController extends BaseController implements Serial
 
 	public void cargarComponentesPorPrograma(){
 		System.out.println("ProcesoConveniosController::cargarComponentesPorPrograma programaSeleccionado->" + getProgramaSeleccionado());
+		setSub21(false);
+		setSub22(false);
+		setSub24(false);
+		setSub29(false);
+		setLeyRetiro(false);
+		resetSubtitulos();
 		if(getProgramaSeleccionado() != null && !"0".equals(getProgramaSeleccionado())){
 			programa = programasService.getProgramaAno(Integer.parseInt(getProgramaSeleccionado()));
 			System.out.println("programa.getDependenciaMunicipal()->" + programa.getDependenciaMunicipal() + " programa.getDependenciaServicio()->" + programa.getDependenciaServicio());
 			componentes = componenteService.getComponenteByPrograma(programa.getId());
+			if(componentes != null && componentes.size() > 0){
+				for(ComponentesVO componentesVO : componentes){
+					if(TiposPrograma.ProgramaLey.getId().equals(componentesVO.getTipoComponente().getId())){
+						setLeyRetiro(true);
+					}
+					for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){
+						if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId()) && !getSub21()){
+							setSub21(true);
+						}else if(Subtitulo.SUBTITULO22.getId().equals(subtituloVO.getId()) && !getSub22()){
+							setSub22(true);
+						}else if(Subtitulo.SUBTITULO24.getId().equals(subtituloVO.getId()) && !getSub24()){
+							setSub24(true);
+						}else if(Subtitulo.SUBTITULO29.getId().equals(subtituloVO.getId()) && !getSub29()){
+							setSub29(true);
+						}
+					}
+				}
+			}
 		}else{
 			componentes = new ArrayList<ComponentesVO>();
 			programa = null;
@@ -251,8 +279,14 @@ public class ProcesoConveniosController extends BaseController implements Serial
 			setSub22(false);
 			setSub24(false);
 			setSub29(false);
+			setLeyRetiro(false);
 			Integer idComponente = Integer.parseInt(componenteSeleccionado);
 			ComponentesVO componentesVO = componenteService.getComponenteById(idComponente);
+			if(componentesVO != null){
+				if(TiposPrograma.ProgramaLey.getId().equals(componentesVO.getTipoComponente().getId())){
+					setLeyRetiro(true);
+				}
+			}
 			System.out.println("getPrograma().getIdProgramaAno()="+getPrograma().getIdProgramaAno());
 			System.out.println("idComponente="+idComponente);
 			System.out.println("idServicio=" + getServicio().getId_servicio());
@@ -338,6 +372,29 @@ public class ProcesoConveniosController extends BaseController implements Serial
 				Integer docConvenio = persistFile(filename, contentConvenioFile);
 				conveniosService.moveConvenioToAlfresco(docConvenio);
 				CargaConvenioComunaComponenteVO cargaConvenioComunaComponenteVO = conveniosService.guardarConvenioComunaComponente(getPrograma().getIdProgramaAno(), convenioComuna, docConvenio);
+				getResolucionConveniosMunicipal().set(this.rowIndexMunicipal, cargaConvenioComunaComponenteVO);
+			} catch (Exception e) {
+				mensaje = e.getMessage();
+				e.printStackTrace();
+			}
+		} else {
+			mensaje = "El archivo no fuero cargado.";
+		}
+		FacesMessage msg = new FacesMessage(mensaje);
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		return null;
+	}
+	
+	public String guardarLeyRetiro(){
+		System.out.println("guardarLeyRetiro()");
+		String mensaje = "El archivo fue cargado correctamente.";
+		if (plantillaFile != null) {
+			try {
+				String filename = plantillaFile.getFileName();
+				byte[] contentConvenioFile = plantillaFile.getContents();
+				Integer docConvenio = persistFile(filename, contentConvenioFile);
+				conveniosService.moveConvenioToAlfresco(docConvenio);
+				CargaConvenioComunaComponenteVO cargaConvenioComunaComponenteVO = conveniosService.guardarLeyRetiro(getPrograma().getIdProgramaAno(), convenioComuna, docConvenio);
 				getResolucionConveniosMunicipal().set(this.rowIndexMunicipal, cargaConvenioComunaComponenteVO);
 			} catch (Exception e) {
 				mensaje = e.getMessage();
@@ -546,6 +603,58 @@ public class ProcesoConveniosController extends BaseController implements Serial
 
 	public void setResolucionesServicios29(List<ConveniosVO> resolucionesServicios29) {
 		this.resolucionesServicios29 = resolucionesServicios29;
+	}
+
+	public Boolean getLeyRetiro() {
+		return leyRetiro;
+	}
+
+	public void setLeyRetiro(Boolean leyRetiro) {
+		this.leyRetiro = leyRetiro;
+	}
+
+	public Date getCurrentDate() {
+		if(currentDate == null){
+			currentDate = new Date();
+		}
+		return currentDate;
+	}
+
+	public void setCurrentDate(Date currentDate) {
+		this.currentDate = currentDate;
+	}
+
+	public Integer getMontoAporteEstatal() {
+		if(montoAporteEstatal == null){
+			montoAporteEstatal = 0;
+		}
+		return montoAporteEstatal;
+	}
+
+	public void setMontoAporteEstatal(Integer montoAporteEstatal) {
+		this.montoAporteEstatal = montoAporteEstatal;
+	}
+
+	public Integer getMontoAdicionalComplementario() {
+		if(montoAdicionalComplementario == null){
+			montoAdicionalComplementario = 0;
+		}
+		return montoAdicionalComplementario;
+	}
+
+	public void setMontoAdicionalComplementario(Integer montoAdicionalComplementario) {
+		this.montoAdicionalComplementario = montoAdicionalComplementario;
+	}
+
+	public Integer getTotalLey() {
+		if(totalLey == null){
+			totalLey = 0;
+		}
+		return totalLey;
+	}
+
+	public void setTotalLey(Integer totalLey) {
+		this.totalLey = totalLey;
 	}
 
 }
