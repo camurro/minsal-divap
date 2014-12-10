@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="ComunaCumplimientoRebajaListForm">
+
+        <p:panel header="#{messages.ListComunaCumplimientoRebajaTitle}">
+            <p:contextMenu id="ComunaCumplimientoRebajaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('ComunaCumplimientoRebajaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('ComunaCumplimientoRebajaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('ComunaCumplimientoRebajaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('ComunaCumplimientoRebajaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.ComunaCumplimientoRebajaMenuItem_comunaCumplimientosRebajaFinal}" icon="ui-icon-search"  action="#{comunaCumplimientoRebajaController.navigateComunaCumplimientosRebajaFinal}" disabled="#{empty comunaCumplimientoRebajaController.selected.comunaCumplimientosRebajaFinal}" ajax="false"/>  
+                <p:menuitem value="#{messages.ComunaCumplimientoRebajaMenuItem_comunaCumplimientosRebajaCalculada}" icon="ui-icon-search"  action="#{comunaCumplimientoRebajaController.navigateComunaCumplimientosRebajaCalculada}" disabled="#{empty comunaCumplimientoRebajaController.selected.comunaCumplimientosRebajaCalculada}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{comunaCumplimientoRebajaController.items}"
+                         var="item"
+                         rowKey="#{item.comunaCumplimientoRebajaId}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{comunaCumplimientoRebajaController.selected}">
+
+                <p:ajax event="rowSelect"   update=":ComunaCumplimientoRebajaListForm:createButton :ComunaCumplimientoRebajaListForm:viewButton :ComunaCumplimientoRebajaListForm:editButton :ComunaCumplimientoRebajaListForm:deleteButton :ComunaCumplimientoRebajaListForm:ComunaCumplimientoRebajaDataTableContextMenu" listener="#{comunaCumplimientoRebajaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":ComunaCumplimientoRebajaListForm:createButton :ComunaCumplimientoRebajaListForm:viewButton :ComunaCumplimientoRebajaListForm:editButton :ComunaCumplimientoRebajaListForm:deleteButton :ComunaCumplimientoRebajaListForm:ComunaCumplimientoRebajaDataTableContextMenu" listener="#{comunaCumplimientoRebajaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('ComunaCumplimientoRebajaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.comunaCumplimientoRebajaId}" filterBy="#{item.comunaCumplimientoRebajaId}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListComunaCumplimientoRebajaTitle_comunaCumplimientoRebajaId}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.comunaCumplimientoRebajaId}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.rebaja}" filterBy="#{item.rebaja}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListComunaCumplimientoRebajaTitle_rebaja}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.rebaja}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{comunaCumplimientoRebajaController.prepareCreate}" update=":ComunaCumplimientoRebajaCreateForm" oncomplete="ComunaCumplimientoRebajaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":ComunaCumplimientoRebajaViewForm" oncomplete="ComunaCumplimientoRebajaViewDialog.show()" disabled="#{empty comunaCumplimientoRebajaController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":ComunaCumplimientoRebajaEditForm" oncomplete="ComunaCumplimientoRebajaEditDialog.show()" disabled="#{empty comunaCumplimientoRebajaController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{comunaCumplimientoRebajaController.delete}" update=":growl,datalist" disabled="#{empty comunaCumplimientoRebajaController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

@@ -62,5 +62,15 @@ public class RemesaDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public List<Remesa> getRemesasByComuna(Integer idComuna) {
+		try {
+			TypedQuery<Remesa> query = this.em.createNamedQuery("Remesa.findByComuna", Remesa.class);
+			query.setParameter("idComuna", idComuna);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }

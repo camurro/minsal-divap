@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="ProgramaMunicipalCoreEditDlg" widgetVar="ProgramaMunicipalCoreEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditProgramaMunicipalCoreTitle}" closeOnEscape="true">
+
+            <h:form id="ProgramaMunicipalCoreEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{programaMunicipalCoreController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditProgramaMunicipalCoreLabel_idProgramaMunicipalCore}" for="idProgramaMunicipalCore" />
+                        <h:outputText id="idProgramaMunicipalCore" value="#{programaMunicipalCoreController.selected.idProgramaMunicipalCore}" />
+
+                        <p:outputLabel value="#{messages.EditProgramaMunicipalCoreLabel_programaAnoMunicipal}" for="programaAnoMunicipal" />
+                        <p:selectOneMenu id="programaAnoMunicipal" value="#{programaMunicipalCoreController.selected.programaAnoMunicipal}" required="true" requiredMessage="#{messages.EditProgramaMunicipalCoreRequiredMessage_programaAnoMunicipal}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaAnoController.items}"
+                                           var="programaAnoMunicipalItem"
+                                           itemValue="#{programaAnoMunicipalItem}"
+                                           itemLabel="#{programaAnoMunicipalItem.idProgramaAno.toString()}"
+                                           />
+                            <f:converter binding="#{programaAnoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditProgramaMunicipalCoreLabel_establecimiento}" for="establecimiento" />
+                        <p:selectOneMenu id="establecimiento" value="#{programaMunicipalCoreController.selected.establecimiento}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{establecimientoController.items}"
+                                           var="establecimientoItem"
+                                           itemValue="#{establecimientoItem}"
+                                           itemLabel="#{establecimientoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{establecimientoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditProgramaMunicipalCoreLabel_comuna}" for="comuna" />
+                        <p:selectOneMenu id="comuna" value="#{programaMunicipalCoreController.selected.comuna}" required="true" requiredMessage="#{messages.EditProgramaMunicipalCoreRequiredMessage_comuna}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{comunaController.items}"
+                                           var="comunaItem"
+                                           itemValue="#{comunaItem}"
+                                           itemLabel="#{comunaItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{comunaConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{programaMunicipalCoreController.save}" value="#{messages.Save}" update="display,:ProgramaMunicipalCoreListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ProgramaMunicipalCoreEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ProgramaMunicipalCoreEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

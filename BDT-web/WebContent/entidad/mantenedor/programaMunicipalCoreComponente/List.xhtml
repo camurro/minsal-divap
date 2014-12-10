@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="ProgramaMunicipalCoreComponenteListForm">
+
+        <p:panel header="#{messages.ListProgramaMunicipalCoreComponenteTitle}">
+            <p:contextMenu id="ProgramaMunicipalCoreComponenteDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('ProgramaMunicipalCoreComponenteListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('ProgramaMunicipalCoreComponenteListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('ProgramaMunicipalCoreComponenteListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('ProgramaMunicipalCoreComponenteListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.ProgramaMunicipalCoreComponenteMenuItem_subtitulo}" icon="ui-icon-search"  actionListener="#{programaMunicipalCoreComponenteController.prepareSubtitulo}" update=":TipoSubtituloViewForm" oncomplete="TipoSubtituloViewDialog.show()" disabled="#{empty programaMunicipalCoreComponenteController.selected.subtitulo}"/>  
+                <p:menuitem value="#{messages.ProgramaMunicipalCoreComponenteMenuItem_programaMunicipalCore}" icon="ui-icon-search"  actionListener="#{programaMunicipalCoreComponenteController.prepareProgramaMunicipalCore}" update=":ProgramaMunicipalCoreViewForm" oncomplete="ProgramaMunicipalCoreViewDialog.show()" disabled="#{empty programaMunicipalCoreComponenteController.selected.programaMunicipalCore}"/>  
+                <p:menuitem value="#{messages.ProgramaMunicipalCoreComponenteMenuItem_municipalCoreComponente}" icon="ui-icon-search"  actionListener="#{programaMunicipalCoreComponenteController.prepareMunicipalCoreComponente}" update=":ComponenteViewForm" oncomplete="ComponenteViewDialog.show()" disabled="#{empty programaMunicipalCoreComponenteController.selected.municipalCoreComponente}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{programaMunicipalCoreComponenteController.items}"
+                         var="item"
+                         rowKey="#{item.programaMunicipalCoreComponentePK}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{programaMunicipalCoreComponenteController.selected}">
+
+                <p:ajax event="rowSelect"   update=":ProgramaMunicipalCoreComponenteListForm:createButton :ProgramaMunicipalCoreComponenteListForm:viewButton :ProgramaMunicipalCoreComponenteListForm:editButton :ProgramaMunicipalCoreComponenteListForm:deleteButton :ProgramaMunicipalCoreComponenteListForm:ProgramaMunicipalCoreComponenteDataTableContextMenu" listener="#{programaMunicipalCoreComponenteController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":ProgramaMunicipalCoreComponenteListForm:createButton :ProgramaMunicipalCoreComponenteListForm:viewButton :ProgramaMunicipalCoreComponenteListForm:editButton :ProgramaMunicipalCoreComponenteListForm:deleteButton :ProgramaMunicipalCoreComponenteListForm:ProgramaMunicipalCoreComponenteDataTableContextMenu" listener="#{programaMunicipalCoreComponenteController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('ProgramaMunicipalCoreComponenteListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.tarifa}" filterBy="#{item.tarifa}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaMunicipalCoreComponenteTitle_tarifa}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.tarifa}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.cantidad}" filterBy="#{item.cantidad}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaMunicipalCoreComponenteTitle_cantidad}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.cantidad}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.monto}" filterBy="#{item.monto}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaMunicipalCoreComponenteTitle_monto}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.monto}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.subtitulo.idTipoSubtitulo}" filterBy="#{item.subtitulo.idTipoSubtitulo}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaMunicipalCoreComponenteTitle_subtitulo}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.subtitulo.idTipoSubtitulo}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.programaMunicipalCore.idProgramaMunicipalCore}" filterBy="#{item.programaMunicipalCore.idProgramaMunicipalCore}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaMunicipalCoreComponenteTitle_programaMunicipalCore}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.programaMunicipalCore.idProgramaMunicipalCore}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.municipalCoreComponente.id}" filterBy="#{item.municipalCoreComponente.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaMunicipalCoreComponenteTitle_municipalCoreComponente}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.municipalCoreComponente.id}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{programaMunicipalCoreComponenteController.prepareCreate}" update=":ProgramaMunicipalCoreComponenteCreateForm" oncomplete="ProgramaMunicipalCoreComponenteCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":ProgramaMunicipalCoreComponenteViewForm" oncomplete="ProgramaMunicipalCoreComponenteViewDialog.show()" disabled="#{empty programaMunicipalCoreComponenteController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":ProgramaMunicipalCoreComponenteEditForm" oncomplete="ProgramaMunicipalCoreComponenteEditDialog.show()" disabled="#{empty programaMunicipalCoreComponenteController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{programaMunicipalCoreComponenteController.delete}" update=":growl,datalist" disabled="#{empty programaMunicipalCoreComponenteController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

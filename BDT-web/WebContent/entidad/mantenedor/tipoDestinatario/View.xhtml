@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoDestinatarioViewDlg" widgetVar="TipoDestinatarioViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewTipoDestinatarioTitle}" closeOnEscape="true">
+
+            <h:form id="TipoDestinatarioViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{tipoDestinatarioController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewTipoDestinatarioLabel_descripcion}"/>
+                        <h:outputText value="#{tipoDestinatarioController.selected.descripcion}" title="#{messages.ViewTipoDestinatarioTitle_descripcion}"/>
+
+                        <h:outputText value="#{messages.ViewTipoDestinatarioLabel_idTipoDestinatario}"/>
+                        <h:outputText value="#{tipoDestinatarioController.selected.idTipoDestinatario}" title="#{messages.ViewTipoDestinatarioTitle_idTipoDestinatario}"/>
+
+                        <h:outputText value="#{messages.ViewTipoDestinatarioLabel_descripcionCorta}"/>
+                        <h:outputText value="#{tipoDestinatarioController.selected.descripcionCorta}" title="#{messages.ViewTipoDestinatarioTitle_descripcionCorta}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="TipoDestinatarioViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

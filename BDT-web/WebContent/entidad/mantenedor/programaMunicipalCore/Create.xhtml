@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ProgramaMunicipalCoreCreateDlg" widgetVar="ProgramaMunicipalCoreCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateProgramaMunicipalCoreTitle}" closeOnEscape="true">
+
+            <h:form id="ProgramaMunicipalCoreCreateForm">
+
+                <h:panelGroup id="display" rendered="#{programaMunicipalCoreController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateProgramaMunicipalCoreLabel_programaAnoMunicipal}" for="programaAnoMunicipal" />
+                        <p:selectOneMenu id="programaAnoMunicipal" value="#{programaMunicipalCoreController.selected.programaAnoMunicipal}" required="true" requiredMessage="#{messages.CreateProgramaMunicipalCoreRequiredMessage_programaAnoMunicipal}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaAnoController.items}"
+                                           var="programaAnoMunicipalItem"
+                                           itemValue="#{programaAnoMunicipalItem}"
+                                           itemLabel="#{programaAnoMunicipalItem.idProgramaAno.toString()}"
+                                           />
+                            <f:converter binding="#{programaAnoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateProgramaMunicipalCoreLabel_establecimiento}" for="establecimiento" />
+                        <p:selectOneMenu id="establecimiento" value="#{programaMunicipalCoreController.selected.establecimiento}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{establecimientoController.items}"
+                                           var="establecimientoItem"
+                                           itemValue="#{establecimientoItem}"
+                                           itemLabel="#{establecimientoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{establecimientoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateProgramaMunicipalCoreLabel_comuna}" for="comuna" />
+                        <p:selectOneMenu id="comuna" value="#{programaMunicipalCoreController.selected.comuna}" required="true" requiredMessage="#{messages.CreateProgramaMunicipalCoreRequiredMessage_comuna}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{comunaController.items}"
+                                           var="comunaItem"
+                                           itemValue="#{comunaItem}"
+                                           itemLabel="#{comunaItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{comunaConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{programaMunicipalCoreController.saveNew}" value="#{messages.Save}" update="display,:ProgramaMunicipalCoreListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ProgramaMunicipalCoreCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ProgramaMunicipalCoreCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

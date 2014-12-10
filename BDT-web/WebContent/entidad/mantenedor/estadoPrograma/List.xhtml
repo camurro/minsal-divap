@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="EstadoProgramaListForm">
+
+        <p:panel header="#{messages.ListEstadoProgramaTitle}">
+            <p:contextMenu id="EstadoProgramaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('EstadoProgramaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('EstadoProgramaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('EstadoProgramaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('EstadoProgramaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.EstadoProgramaMenuItem_programaAnosReliquidacion}" icon="ui-icon-search"  action="#{estadoProgramaController.navigateProgramaAnosReliquidacion}" disabled="#{empty estadoProgramaController.selected.programaAnosReliquidacion}" ajax="false"/>  
+                <p:menuitem value="#{messages.EstadoProgramaMenuItem_programaAnosConvenio}" icon="ui-icon-search"  action="#{estadoProgramaController.navigateProgramaAnosConvenio}" disabled="#{empty estadoProgramaController.selected.programaAnosConvenio}" ajax="false"/>  
+                <p:menuitem value="#{messages.EstadoProgramaMenuItem_programasAnosFlujoCaja}" icon="ui-icon-search"  action="#{estadoProgramaController.navigateProgramasAnosFlujoCaja}" disabled="#{empty estadoProgramaController.selected.programasAnosFlujoCaja}" ajax="false"/>  
+                <p:menuitem value="#{messages.EstadoProgramaMenuItem_programasAnos}" icon="ui-icon-search"  action="#{estadoProgramaController.navigateProgramasAnos}" disabled="#{empty estadoProgramaController.selected.programasAnos}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{estadoProgramaController.estadoProgramas}"
+                         var="item"
+                         rowKey="#{item.id_estado_programa}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{estadoProgramaController.seleccionado}">
+
+                <p:ajax event="rowSelect"   update=":EstadoProgramaListForm:createButton :EstadoProgramaListForm:viewButton :EstadoProgramaListForm:editButton :EstadoProgramaListForm:deleteButton :EstadoProgramaListForm:EstadoProgramaDataTableContextMenu" listener="#{estadoProgramaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":EstadoProgramaListForm:createButton :EstadoProgramaListForm:viewButton :EstadoProgramaListForm:editButton :EstadoProgramaListForm:deleteButton :EstadoProgramaListForm:EstadoProgramaDataTableContextMenu" listener="#{estadoProgramaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('EstadoProgramaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.id_estado_programa}" filterBy="#{item.id_estado_programa}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListEstadoProgramaTitle_idEstadoPrograma}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.id_estado_programa}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.nombre_estado}" filterBy="#{item.nombre_estado}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListEstadoProgramaTitle_nombreEstado}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombre_estado}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{estadoProgramaController.prepareCreateEstadoPrograma}" update=":EstadoProgramaCreateForm" oncomplete="EstadoProgramaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"    icon="ui-icon-search" value="#{messages.View}" update=":EstadoProgramaViewForm" oncomplete="EstadoProgramaViewDialog.show()" disabled="#{empty estadoProgramaController.seleccionado}"/>
+            <p:commandButton id="editButton"    icon="ui-icon-pencil" value="#{messages.Edit}" update=":EstadoProgramaEditForm" oncomplete="EstadoProgramaEditDialog.show()" disabled="#{empty estadoProgramaController.seleccionado}"/>
+            <p:commandButton id="deleteButton"  icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{estadoProgramaController.delete}" update=":growl,datalist" disabled="#{empty estadoProgramaController.seleccionado}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

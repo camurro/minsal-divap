@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CuotaCreateDlg" widgetVar="CuotaCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateCuotaTitle}" closeOnEscape="true">
+
+            <h:form id="CuotaCreateForm">
+
+                <h:panelGroup id="display" rendered="#{cuotaController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateCuotaLabel_numeroCuota}" for="numeroCuota" />
+                        <p:inputText id="numeroCuota" value="#{cuotaController.selected.numeroCuota}" title="#{messages.CreateCuotaTitle_numeroCuota}" required="true" requiredMessage="#{messages.CreateCuotaRequiredMessage_numeroCuota}"/>
+
+                        <p:outputLabel value="#{messages.CreateCuotaLabel_porcentaje}" for="porcentaje" />
+                        <p:inputText id="porcentaje" value="#{cuotaController.selected.porcentaje}" title="#{messages.CreateCuotaTitle_porcentaje}" required="true" requiredMessage="#{messages.CreateCuotaRequiredMessage_porcentaje}"/>
+
+                        <p:outputLabel value="#{messages.CreateCuotaLabel_monto}" for="monto" />
+                        <p:inputText id="monto" value="#{cuotaController.selected.monto}" title="#{messages.CreateCuotaTitle_monto}"/>
+
+                        <p:outputLabel value="#{messages.CreateCuotaLabel_fechaPago}" for="fechaPago" />
+                        <p:calendar id="fechaPago" pattern="MM/dd/yyyy HH:mm:ss" value="#{cuotaController.selected.fechaPago}" title="#{messages.CreateCuotaTitle_fechaPago}"  showOn="button"/>
+
+                        <p:outputLabel value="#{messages.CreateCuotaLabel_idPrograma}" for="idPrograma" />
+                        <p:selectOneMenu id="idPrograma" value="#{cuotaController.selected.idPrograma}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaAnoController.items}"
+                                           var="idProgramaItem"
+                                           itemValue="#{idProgramaItem}"
+                                           itemLabel="#{idProgramaItem.idProgramaAno.toString()}"
+                                           />
+                            <f:converter binding="#{programaAnoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateCuotaLabel_idMes}" for="idMes" />
+                        <p:selectOneMenu id="idMes" value="#{cuotaController.selected.idMes}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{mesController.items}"
+                                           var="idMesItem"
+                                           itemValue="#{idMesItem}"
+                                           itemLabel="#{idMesItem.idMes.toString()}"
+                                           />
+                            <f:converter binding="#{mesConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateCuotaLabel_componente}" for="componente" />
+                        <p:selectOneMenu id="componente" value="#{cuotaController.selected.componente}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{componenteController.items}"
+                                           var="componenteItem"
+                                           itemValue="#{componenteItem}"
+                                           itemLabel="#{componenteItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{componenteConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{cuotaController.saveNew}" value="#{messages.Save}" update="display,:CuotaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,CuotaCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="CuotaCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

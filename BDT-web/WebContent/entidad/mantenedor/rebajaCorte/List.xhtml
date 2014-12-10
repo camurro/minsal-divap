@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="RebajaCorteListForm">
+
+        <p:panel header="#{messages.ListRebajaCorteTitle}">
+            <p:contextMenu id="RebajaCorteDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('RebajaCorteListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('RebajaCorteListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('RebajaCorteListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('RebajaCorteListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.RebajaCorteMenuItem_rebajas}" icon="ui-icon-search"  action="#{rebajaCorteController.navigateRebajas}" disabled="#{empty rebajaCorteController.selected.rebajas}" ajax="false"/>  
+                <p:menuitem value="#{messages.RebajaCorteMenuItem_mesRebaja}" icon="ui-icon-search"  actionListener="#{rebajaCorteController.prepareMesRebaja}" update=":MesViewForm" oncomplete="MesViewDialog.show()" disabled="#{empty rebajaCorteController.selected.mesRebaja}"/>  
+                <p:menuitem value="#{messages.RebajaCorteMenuItem_mesHasta}" icon="ui-icon-search"  actionListener="#{rebajaCorteController.prepareMesHasta}" update=":MesViewForm" oncomplete="MesViewDialog.show()" disabled="#{empty rebajaCorteController.selected.mesHasta}"/>  
+                <p:menuitem value="#{messages.RebajaCorteMenuItem_mesDesde}" icon="ui-icon-search"  actionListener="#{rebajaCorteController.prepareMesDesde}" update=":MesViewForm" oncomplete="MesViewDialog.show()" disabled="#{empty rebajaCorteController.selected.mesDesde}"/>  
+                <p:menuitem value="#{messages.RebajaCorteMenuItem_mesInicio}" icon="ui-icon-search"  actionListener="#{rebajaCorteController.prepareMesInicio}" update=":MesViewForm" oncomplete="MesViewDialog.show()" disabled="#{empty rebajaCorteController.selected.mesInicio}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{rebajaCorteController.items}"
+                         var="item"
+                         rowKey="#{item.rebajaCorteId}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{rebajaCorteController.selected}">
+
+                <p:ajax event="rowSelect"   update=":RebajaCorteListForm:createButton :RebajaCorteListForm:viewButton :RebajaCorteListForm:editButton :RebajaCorteListForm:deleteButton :RebajaCorteListForm:RebajaCorteDataTableContextMenu" listener="#{rebajaCorteController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":RebajaCorteListForm:createButton :RebajaCorteListForm:viewButton :RebajaCorteListForm:editButton :RebajaCorteListForm:deleteButton :RebajaCorteListForm:RebajaCorteDataTableContextMenu" listener="#{rebajaCorteController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('RebajaCorteListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.rebajaCorteId}" filterBy="#{item.rebajaCorteId}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRebajaCorteTitle_rebajaCorteId}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.rebajaCorteId}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.mesRebaja.idMes}" filterBy="#{item.mesRebaja.idMes}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRebajaCorteTitle_mesRebaja}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.mesRebaja.idMes}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.mesHasta.idMes}" filterBy="#{item.mesHasta.idMes}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRebajaCorteTitle_mesHasta}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.mesHasta.idMes}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.mesDesde.idMes}" filterBy="#{item.mesDesde.idMes}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRebajaCorteTitle_mesDesde}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.mesDesde.idMes}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.mesInicio.idMes}" filterBy="#{item.mesInicio.idMes}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRebajaCorteTitle_mesInicio}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.mesInicio.idMes}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{rebajaCorteController.prepareCreate}" update=":RebajaCorteCreateForm" oncomplete="RebajaCorteCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":RebajaCorteViewForm" oncomplete="RebajaCorteViewDialog.show()" disabled="#{empty rebajaCorteController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":RebajaCorteEditForm" oncomplete="RebajaCorteEditDialog.show()" disabled="#{empty rebajaCorteController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{rebajaCorteController.delete}" update=":growl,datalist" disabled="#{empty rebajaCorteController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="CuotaListForm">
+
+        <p:panel header="#{messages.ListCuotaTitle}">
+            <p:contextMenu id="CuotaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('CuotaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('CuotaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('CuotaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('CuotaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.CuotaMenuItem_idPrograma}" icon="ui-icon-search"  actionListener="#{cuotaController.prepareIdPrograma}" update=":ProgramaAnoViewForm" oncomplete="ProgramaAnoViewDialog.show()" disabled="#{empty cuotaController.selected.idPrograma}"/>  
+                <p:menuitem value="#{messages.CuotaMenuItem_idMes}" icon="ui-icon-search"  actionListener="#{cuotaController.prepareIdMes}" update=":MesViewForm" oncomplete="MesViewDialog.show()" disabled="#{empty cuotaController.selected.idMes}"/>  
+                <p:menuitem value="#{messages.CuotaMenuItem_componente}" icon="ui-icon-search"  actionListener="#{cuotaController.prepareComponente}" update=":ComponenteViewForm" oncomplete="ComponenteViewDialog.show()" disabled="#{empty cuotaController.selected.componente}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{cuotaController.items}"
+                         var="item"
+                         rowKey="#{item.id}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{cuotaController.selected}">
+
+                <p:ajax event="rowSelect"   update=":CuotaListForm:createButton :CuotaListForm:viewButton :CuotaListForm:editButton :CuotaListForm:deleteButton :CuotaListForm:CuotaDataTableContextMenu" listener="#{cuotaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":CuotaListForm:createButton :CuotaListForm:viewButton :CuotaListForm:editButton :CuotaListForm:deleteButton :CuotaListForm:CuotaDataTableContextMenu" listener="#{cuotaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('CuotaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.id}" filterBy="#{item.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCuotaTitle_id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.numeroCuota}" filterBy="#{item.numeroCuota}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCuotaTitle_numeroCuota}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.numeroCuota}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.porcentaje}" filterBy="#{item.porcentaje}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCuotaTitle_porcentaje}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.porcentaje}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.monto}" filterBy="#{item.monto}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCuotaTitle_monto}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.monto}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.fechaPago}" filterBy="#{item.fechaPago}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCuotaTitle_fechaPago}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.fechaPago}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idPrograma.idProgramaAno}" filterBy="#{item.idPrograma.idProgramaAno}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCuotaTitle_idPrograma}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idPrograma.idProgramaAno}"/>
+                </p:column>
+
+                <!--
+                                    <p:column sortBy="#{item.idMes.idMes}" filterBy="#{item.idMes.idMes}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages.ListCuotaTitle_idMes}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.idMes.idMes}"/>
+                                    </p:column>
+                -->
+                <!--
+                                    <p:column sortBy="#{item.componente.id}" filterBy="#{item.componente.id}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages.ListCuotaTitle_componente}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.componente.id}"/>
+                                    </p:column>
+                -->
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{cuotaController.prepareCreate}" update=":CuotaCreateForm" oncomplete="CuotaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":CuotaViewForm" oncomplete="CuotaViewDialog.show()" disabled="#{empty cuotaController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":CuotaEditForm" oncomplete="CuotaEditDialog.show()" disabled="#{empty cuotaController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{cuotaController.delete}" update=":growl,datalist" disabled="#{empty cuotaController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

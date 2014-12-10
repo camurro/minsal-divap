@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DocumentoConvenioViewDlg" widgetVar="DocumentoConvenioViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewDocumentoConvenioTitle}" closeOnEscape="true">
+
+            <h:form id="DocumentoConvenioViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{documentoConvenioController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewDocumentoConvenioLabel_idDocumentoConvenio}"/>
+                        <h:outputText value="#{documentoConvenioController.selected.idDocumentoConvenio}" title="#{messages.ViewDocumentoConvenioTitle_idDocumentoConvenio}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoConvenioLabel_tipoDocumento}"/>
+                        <h:outputText value="#{documentoConvenioController.selected.tipoDocumento.idTipoDocumento}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoConvenioLabel_documento}"/>
+                        <h:outputText value="#{documentoConvenioController.selected.documento.id}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoConvenioLabel_convenio}"/>
+                        <h:outputText value="#{documentoConvenioController.selected.convenio.idConvenioComuna}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="DocumentoConvenioViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

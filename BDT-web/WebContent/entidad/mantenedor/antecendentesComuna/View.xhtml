@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="AntecendentesComunaViewDlg" widgetVar="AntecendentesComunaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewAntecendentesComunaTitle}" closeOnEscape="true">
+
+            <h:form id="AntecendentesComunaViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{antecendentesComunaController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewAntecendentesComunaLabel_clasificacion}"/>
+                        <h:outputText value="#{antecendentesComunaController.selected.clasificacion.descripcion}"/>
+
+                        <h:outputText value="#{messages.ViewAntecendentesComunaLabel_asignacionZona}"/>
+                        <h:outputText value="#{antecendentesComunaController.selected.asignacionZona.idFactorRefAsigZona}"/>
+
+                        <h:outputText value="#{messages.ViewAntecendentesComunaLabel_tramoPobreza}"/>
+                        <h:outputText value="#{antecendentesComunaController.selected.tramoPobreza.idFactorTramoPobreza}"/>
+
+                        <h:outputText value="#{messages.ViewAntecendentesComunaLabel_idAntecedentesComuna}"/>
+                        <h:outputText value="#{antecendentesComunaController.selected.idAntecedentesComuna}" title="#{messages.ViewAntecendentesComunaTitle_idAntecedentesComuna}"/>
+
+                        <h:outputText value="#{messages.ViewAntecendentesComunaLabel_idComuna}"/>
+                        <h:outputText value="#{antecendentesComunaController.selected.idComuna.id}"/>
+
+                        <h:outputText value="#{messages.ViewAntecendentesComunaLabel_anoAnoEnCurso}"/>
+                        <h:outputText value="#{antecendentesComunaController.selected.anoAnoEnCurso.ano}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="AntecendentesComunaViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

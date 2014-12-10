@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="RemesaListForm">
+
+        <p:panel header="#{messages.ListRemesaTitle}">
+            <p:contextMenu id="RemesaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('RemesaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('RemesaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('RemesaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('RemesaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.RemesaMenuItem_tipoSubtitulo}" icon="ui-icon-search"  actionListener="#{remesaController.prepareTipoSubtitulo}" update=":TipoSubtituloViewForm" oncomplete="TipoSubtituloViewDialog.show()" disabled="#{empty remesaController.selected.tipoSubtitulo}"/>  
+                <p:menuitem value="#{messages.RemesaMenuItem_idserviciosalud}" icon="ui-icon-search"  actionListener="#{remesaController.prepareIdserviciosalud}" update=":ServicioSaludViewForm" oncomplete="ServicioSaludViewDialog.show()" disabled="#{empty remesaController.selected.idserviciosalud}"/>  
+                <p:menuitem value="#{messages.RemesaMenuItem_idprograma}" icon="ui-icon-search"  actionListener="#{remesaController.prepareIdprograma}" update=":ProgramaAnoViewForm" oncomplete="ProgramaAnoViewDialog.show()" disabled="#{empty remesaController.selected.idprograma}"/>  
+                <p:menuitem value="#{messages.RemesaMenuItem_idmes}" icon="ui-icon-search"  actionListener="#{remesaController.prepareIdmes}" update=":MesViewForm" oncomplete="MesViewDialog.show()" disabled="#{empty remesaController.selected.idmes}"/>  
+                <p:menuitem value="#{messages.RemesaMenuItem_idestablecimiento}" icon="ui-icon-search"  actionListener="#{remesaController.prepareIdestablecimiento}" update=":EstablecimientoViewForm" oncomplete="EstablecimientoViewDialog.show()" disabled="#{empty remesaController.selected.idestablecimiento}"/>  
+                <p:menuitem value="#{messages.RemesaMenuItem_idcomuna}" icon="ui-icon-search"  actionListener="#{remesaController.prepareIdcomuna}" update=":ComunaViewForm" oncomplete="ComunaViewDialog.show()" disabled="#{empty remesaController.selected.idcomuna}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{remesaController.items}"
+                         var="item"
+                         rowKey="#{item.idremesa}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{remesaController.selected}">
+
+                <p:ajax event="rowSelect"   update=":RemesaListForm:createButton :RemesaListForm:viewButton :RemesaListForm:editButton :RemesaListForm:deleteButton :RemesaListForm:RemesaDataTableContextMenu" listener="#{remesaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":RemesaListForm:createButton :RemesaListForm:viewButton :RemesaListForm:editButton :RemesaListForm:deleteButton :RemesaListForm:RemesaDataTableContextMenu" listener="#{remesaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('RemesaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idremesa}" filterBy="#{item.idremesa}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRemesaTitle_idremesa}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idremesa}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.valordia09}" filterBy="#{item.valordia09}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRemesaTitle_valordia09}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.valordia09}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.valordia24}" filterBy="#{item.valordia24}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRemesaTitle_valordia24}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.valordia24}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.valordia28}" filterBy="#{item.valordia28}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRemesaTitle_valordia28}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.valordia28}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.tipoSubtitulo.idTipoSubtitulo}" filterBy="#{item.tipoSubtitulo.idTipoSubtitulo}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRemesaTitle_tipoSubtitulo}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.tipoSubtitulo.idTipoSubtitulo}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idserviciosalud.id}" filterBy="#{item.idserviciosalud.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRemesaTitle_idserviciosalud}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idserviciosalud.id}"/>
+                </p:column>
+
+                <!--
+                                    <p:column sortBy="#{item.idprograma.idProgramaAno}" filterBy="#{item.idprograma.idProgramaAno}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages.ListRemesaTitle_idprograma}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.idprograma.idProgramaAno}"/>
+                                    </p:column>
+                -->
+                <!--
+                                    <p:column sortBy="#{item.idmes.idMes}" filterBy="#{item.idmes.idMes}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages.ListRemesaTitle_idmes}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.idmes.idMes}"/>
+                                    </p:column>
+                -->
+                <!--
+                                    <p:column sortBy="#{item.idestablecimiento.id}" filterBy="#{item.idestablecimiento.id}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages.ListRemesaTitle_idestablecimiento}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.idestablecimiento.id}"/>
+                                    </p:column>
+                -->
+                <!--
+                                    <p:column sortBy="#{item.idcomuna.id}" filterBy="#{item.idcomuna.id}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages.ListRemesaTitle_idcomuna}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.idcomuna.id}"/>
+                                    </p:column>
+                -->
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{remesaController.prepareCreate}" update=":RemesaCreateForm" oncomplete="RemesaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":RemesaViewForm" oncomplete="RemesaViewDialog.show()" disabled="#{empty remesaController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":RemesaEditForm" oncomplete="RemesaEditDialog.show()" disabled="#{empty remesaController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{remesaController.delete}" update=":growl,datalist" disabled="#{empty remesaController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

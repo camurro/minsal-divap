@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="ConvenioComunaEditDlg" widgetVar="ConvenioComunaEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditConvenioComunaTitle}" closeOnEscape="true">
+
+            <h:form id="ConvenioComunaEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{convenioComunaController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditConvenioComunaLabel_idConvenioComuna}" for="idConvenioComuna" />
+                        <h:outputText id="idConvenioComuna" value="#{convenioComunaController.selected.idConvenioComuna}" />
+
+                        <p:outputLabel value="#{messages.EditConvenioComunaLabel_fecha}" for="fecha" />
+                        <p:calendar id="fecha" pattern="MM/dd/yyyy HH:mm:ss" value="#{convenioComunaController.selected.fecha}" title="#{messages.EditConvenioComunaTitle_fecha}"  showOn="button"/>
+
+                        <p:outputLabel value="#{messages.EditConvenioComunaLabel_numeroResolucion}" for="numeroResolucion" />
+                        <p:inputText id="numeroResolucion" value="#{convenioComunaController.selected.numeroResolucion}" title="#{messages.EditConvenioComunaTitle_numeroResolucion}"/>
+
+                        <p:outputLabel value="#{messages.EditConvenioComunaLabel_idPrograma}" for="idPrograma" />
+                        <p:selectOneMenu id="idPrograma" value="#{convenioComunaController.selected.idPrograma}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaAnoController.items}"
+                                           var="idProgramaItem"
+                                           itemValue="#{idProgramaItem}"
+                                           itemLabel="#{idProgramaItem.idProgramaAno.toString()}"
+                                           />
+                            <f:converter binding="#{programaAnoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditConvenioComunaLabel_idComuna}" for="idComuna" />
+                        <p:selectOneMenu id="idComuna" value="#{convenioComunaController.selected.idComuna}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{comunaController.items}"
+                                           var="idComunaItem"
+                                           itemValue="#{idComunaItem}"
+                                           itemLabel="#{idComunaItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{comunaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditConvenioComunaLabel_aprobacion}" for="aprobacion" />
+                        <p:selectBooleanCheckbox id="aprobacion" value="#{convenioComunaController.selected.aprobacion}" />
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{convenioComunaController.save}" value="#{messages.Save}" update="display,:ConvenioComunaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ConvenioComunaEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ConvenioComunaEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

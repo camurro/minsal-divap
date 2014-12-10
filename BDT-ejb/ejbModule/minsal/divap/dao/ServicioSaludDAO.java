@@ -11,6 +11,7 @@ import javax.persistence.TypedQuery;
 import minsal.divap.enums.TipoComuna;
 import cl.minsal.divap.model.AntecendentesComuna;
 import cl.minsal.divap.model.Comuna;
+import cl.minsal.divap.model.Persona;
 import cl.minsal.divap.model.Region;
 import cl.minsal.divap.model.ServicioSalud;
 
@@ -147,5 +148,44 @@ public class ServicioSaludDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	
+	public List<Persona> getAllPersonas(){
+		try {
+			TypedQuery<Persona> query = this.em.createNamedQuery("Persona.findAll", Persona.class);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public Persona getPersonaById(Integer idPersona){
+		try {
+			TypedQuery<Persona> query = this.em.createNamedQuery("Persona.findByIdPersona", Persona.class);
+			query.setParameter("idPersona", idPersona);
+			if(query.getResultList() != null && query.getResultList().size() > 0){
+				return query.getResultList().get(0); 
+			}else{
+				return null;
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public Region getRegionById(Integer idRegion) {
+		try {
+			TypedQuery<Region> query = this.em.createNamedQuery("Region.findById", Region.class);
+			query.setParameter("idRegion", idRegion);
+			if(query.getResultList() != null && query.getResultList().size() > 0){
+				return query.getResultList().get(0); 
+			}else{
+				return null;
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 
 }

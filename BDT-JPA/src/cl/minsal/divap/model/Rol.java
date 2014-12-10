@@ -1,7 +1,9 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+
 import java.util.List;
 
 
@@ -10,13 +12,15 @@ import java.util.List;
  * 
  */
 @Entity
-@NamedQuery(name="Rol.findAll", query="SELECT r FROM Rol r")
+@NamedQueries({
+	@NamedQuery(name="Rol.findAll", query="SELECT r FROM Rol r"),
+	@NamedQuery(name="Rol.findByNombre", query="SELECT r FROM Rol r WHERE r.nombre = :nombre")})
 public class Rol implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="nombre", unique=true, nullable=false)
-	@GeneratedValue
+	@Basic(optional = false)
+	@Column(name = "nombre")
 	private String nombre;
 
 	//bi-directional many-to-many association to Usuario

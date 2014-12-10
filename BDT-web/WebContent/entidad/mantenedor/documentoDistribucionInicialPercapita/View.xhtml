@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DocumentoDistribucionInicialPercapitaViewDlg" widgetVar="DocumentoDistribucionInicialPercapitaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewDocumentoDistribucionInicialPercapitaTitle}" closeOnEscape="true">
+
+            <h:form id="DocumentoDistribucionInicialPercapitaViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{documentoDistribucionInicialPercapitaController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewDocumentoDistribucionInicialPercapitaLabel_idDocumentoDistribucionInicialPercapita}"/>
+                        <h:outputText value="#{documentoDistribucionInicialPercapitaController.selected.idDocumentoDistribucionInicialPercapita}" title="#{messages.ViewDocumentoDistribucionInicialPercapitaTitle_idDocumentoDistribucionInicialPercapita}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoDistribucionInicialPercapitaLabel_idDocumento}"/>
+                        <h:outputText value="#{documentoDistribucionInicialPercapitaController.selected.idDocumento.id}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoDistribucionInicialPercapitaLabel_idDistribucionInicialPercapita}"/>
+                        <h:outputText value="#{documentoDistribucionInicialPercapitaController.selected.idDistribucionInicialPercapita.idDistribucionInicialPercapita}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoDistribucionInicialPercapitaLabel_tipoDocumento}"/>
+                        <h:outputText value="#{documentoDistribucionInicialPercapitaController.selected.tipoDocumento.idTipoDocumento}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoDistribucionInicialPercapitaLabel_comuna}"/>
+                        <h:outputText value="#{documentoDistribucionInicialPercapitaController.selected.comuna.id}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="DocumentoDistribucionInicialPercapitaViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

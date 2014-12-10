@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="MesListForm">
+
+        <p:panel header="#{messages.ListMesTitle}">
+            <p:contextMenu id="MesDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('MesListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('MesListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('MesListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('MesListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.MesMenuItem_remesaCollection}" icon="ui-icon-search"  action="#{mesController.navigateRemesaCollection}" disabled="#{empty mesController.selected.remesaCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.MesMenuItem_comunaCumplimientoCollection}" icon="ui-icon-search"  action="#{mesController.navigateComunaCumplimientoCollection}" disabled="#{empty mesController.selected.comunaCumplimientoCollection}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{mesController.items}"
+                         var="item"
+                         rowKey="#{item.idMes}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{mesController.selected}">
+
+                <p:ajax event="rowSelect"   update=":MesListForm:createButton :MesListForm:viewButton :MesListForm:editButton :MesListForm:deleteButton :MesListForm:MesDataTableContextMenu" listener="#{mesController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":MesListForm:createButton :MesListForm:viewButton :MesListForm:editButton :MesListForm:deleteButton :MesListForm:MesDataTableContextMenu" listener="#{mesController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('MesListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idMes}" filterBy="#{item.idMes}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListMesTitle_idMes}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idMes}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.nombre}" filterBy="#{item.nombre}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListMesTitle_nombre}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombre}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{mesController.prepareCreate}" update=":MesCreateForm" oncomplete="MesCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":MesViewForm" oncomplete="MesViewDialog.show()" disabled="#{empty mesController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":MesEditForm" oncomplete="MesEditDialog.show()" disabled="#{empty mesController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{mesController.delete}" update=":growl,datalist" disabled="#{empty mesController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

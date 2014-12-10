@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="EmailEditDlg" widgetVar="EmailEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditEmailTitle}" closeOnEscape="true">
+
+            <h:form id="EmailEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{emailController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditEmailLabel_idEmail}" for="idEmail" />
+                        <h:outputText id="idEmail" value="#{emailController.selected.idEmail}" />
+
+                        <p:outputLabel value="#{messages.EditEmailLabel_valor}" for="valor" />
+                        <p:inputText id="valor" value="#{emailController.selected.valor}" title="#{messages.EditEmailTitle_valor}" required="true" requiredMessage="#{messages.EditEmailRequiredMessage_valor}"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{emailController.save}" value="#{messages.Save}" update="display,:EmailListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,EmailEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="EmailEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

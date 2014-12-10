@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="AdjuntosSeguimientoListForm">
+
+        <p:panel header="#{messages.ListAdjuntosSeguimientoTitle}">
+            <p:contextMenu id="AdjuntosSeguimientoDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('AdjuntosSeguimientoListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('AdjuntosSeguimientoListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('AdjuntosSeguimientoListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('AdjuntosSeguimientoListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.AdjuntosSeguimientoMenuItem_seguimiento}" icon="ui-icon-search"  actionListener="#{adjuntosSeguimientoController.prepareSeguimiento}" update=":SeguimientoViewForm" oncomplete="SeguimientoViewDialog.show()" disabled="#{empty adjuntosSeguimientoController.selected.seguimiento}"/>  
+                <p:menuitem value="#{messages.AdjuntosSeguimientoMenuItem_documento}" icon="ui-icon-search"  actionListener="#{adjuntosSeguimientoController.prepareDocumento}" update=":ReferenciaDocumentoViewForm" oncomplete="ReferenciaDocumentoViewDialog.show()" disabled="#{empty adjuntosSeguimientoController.selected.documento}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{adjuntosSeguimientoController.items}"
+                         var="item"
+                         rowKey="#{item.idAdjuntosSeguimiento}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{adjuntosSeguimientoController.selected}">
+
+                <p:ajax event="rowSelect"   update=":AdjuntosSeguimientoListForm:createButton :AdjuntosSeguimientoListForm:viewButton :AdjuntosSeguimientoListForm:editButton :AdjuntosSeguimientoListForm:deleteButton :AdjuntosSeguimientoListForm:AdjuntosSeguimientoDataTableContextMenu" listener="#{adjuntosSeguimientoController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":AdjuntosSeguimientoListForm:createButton :AdjuntosSeguimientoListForm:viewButton :AdjuntosSeguimientoListForm:editButton :AdjuntosSeguimientoListForm:deleteButton :AdjuntosSeguimientoListForm:AdjuntosSeguimientoDataTableContextMenu" listener="#{adjuntosSeguimientoController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('AdjuntosSeguimientoListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idAdjuntosSeguimiento}" filterBy="#{item.idAdjuntosSeguimiento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAdjuntosSeguimientoTitle_idAdjuntosSeguimiento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idAdjuntosSeguimiento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.seguimiento.id}" filterBy="#{item.seguimiento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAdjuntosSeguimientoTitle_seguimiento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.seguimiento.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.documento.id}" filterBy="#{item.documento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAdjuntosSeguimientoTitle_documento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.documento.id}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{adjuntosSeguimientoController.prepareCreate}" update=":AdjuntosSeguimientoCreateForm" oncomplete="AdjuntosSeguimientoCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":AdjuntosSeguimientoViewForm" oncomplete="AdjuntosSeguimientoViewDialog.show()" disabled="#{empty adjuntosSeguimientoController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":AdjuntosSeguimientoEditForm" oncomplete="AdjuntosSeguimientoEditDialog.show()" disabled="#{empty adjuntosSeguimientoController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{adjuntosSeguimientoController.delete}" update=":growl,datalist" disabled="#{empty adjuntosSeguimientoController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="EstablecimientoEditDlg" widgetVar="EstablecimientoEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditEstablecimientoTitle}" closeOnEscape="true">
+
+            <h:form id="EstablecimientoEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{establecimientoController.establecimientoSeleccionado != null}">
+
+
+                        <h:outputLabel value="#{messages.EditEstablecimientoLabel_id}" for="id" />
+                        <h:outputText id="id" value="#{establecimientoController.establecimientoSeleccionado.idEstablecimiento}" />
+
+                        <p:outputLabel value="#{messages.EditEstablecimientoLabel_nombre}" for="nombre" />
+                        <p:inputText id="nombre" value="#{establecimientoController.establecimientoSeleccionado.nombreEstablecimiento}" title="#{messages.EditEstablecimientoTitle_nombre}"/>
+
+                        <p:outputLabel value="#{messages.EditEstablecimientoLabel_codigo}" for="codigo" />
+                        <p:inputText id="codigo" value="#{establecimientoController.establecimientoSeleccionado.codigo}" title="#{messages.EditEstablecimientoTitle_codigo}"/>
+
+                        <p:outputLabel value="#{messages.EditEstablecimientoLabel_servicioSalud}" for="servicioSalud" />
+                        <p:selectOneMenu id="servicioSalud" value="#{establecimientoController.establecimientoSeleccionado.idServicio}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{establecimientoController.establecimientos}"
+                                           var="servicioSaludItem"
+                                           itemValue="#{servicioSaludItem.idServicio}"
+                                           itemLabel="#{servicioSaludItem.nombreServicio}"
+                                           />
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{establecimientoController.edit}" value="#{messages.Save}" update="display,:EstablecimientoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,EstablecimientoEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="EstablecimientoEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

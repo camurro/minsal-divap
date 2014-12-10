@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="MarcoPresupuestarioListForm">
+
+        <p:panel header="#{messages.ListMarcoPresupuestarioTitle}">
+            <p:contextMenu id="MarcoPresupuestarioDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('MarcoPresupuestarioListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('MarcoPresupuestarioListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('MarcoPresupuestarioListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('MarcoPresupuestarioListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.MarcoPresupuestarioMenuItem_servicioSalud}" icon="ui-icon-search"  actionListener="#{marcoPresupuestarioController.prepareServicioSalud}" update=":ServicioSaludViewForm" oncomplete="ServicioSaludViewDialog.show()" disabled="#{empty marcoPresupuestarioController.selected.servicioSalud}"/>  
+                <p:menuitem value="#{messages.MarcoPresupuestarioMenuItem_idProgramaAno}" icon="ui-icon-search"  actionListener="#{marcoPresupuestarioController.prepareIdProgramaAno}" update=":ProgramaAnoViewForm" oncomplete="ProgramaAnoViewDialog.show()" disabled="#{empty marcoPresupuestarioController.selected.idProgramaAno}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{marcoPresupuestarioController.items}"
+                         var="item"
+                         rowKey="#{item.idMarcoPresupuestario}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{marcoPresupuestarioController.selected}">
+
+                <p:ajax event="rowSelect"   update=":MarcoPresupuestarioListForm:createButton :MarcoPresupuestarioListForm:viewButton :MarcoPresupuestarioListForm:editButton :MarcoPresupuestarioListForm:deleteButton :MarcoPresupuestarioListForm:MarcoPresupuestarioDataTableContextMenu" listener="#{marcoPresupuestarioController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":MarcoPresupuestarioListForm:createButton :MarcoPresupuestarioListForm:viewButton :MarcoPresupuestarioListForm:editButton :MarcoPresupuestarioListForm:deleteButton :MarcoPresupuestarioListForm:MarcoPresupuestarioDataTableContextMenu" listener="#{marcoPresupuestarioController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('MarcoPresupuestarioListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.marcoInicial}" filterBy="#{item.marcoInicial}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListMarcoPresupuestarioTitle_marcoInicial}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.marcoInicial}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.marcoModificado}" filterBy="#{item.marcoModificado}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListMarcoPresupuestarioTitle_marcoModificado}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.marcoModificado}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idMarcoPresupuestario}" filterBy="#{item.idMarcoPresupuestario}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListMarcoPresupuestarioTitle_idMarcoPresupuestario}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idMarcoPresupuestario}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.reparosMarcoPresupuestario}" filterBy="#{item.reparosMarcoPresupuestario}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListMarcoPresupuestarioTitle_reparosMarcoPresupuestario}"/>
+                    </f:facet>
+                    <h:selectBooleanCheckbox id="reparosMarcoPresupuestario" value="#{item.reparosMarcoPresupuestario}" title="#{messages.EditMarcoPresupuestarioTitle_reparosMarcoPresupuestario}"  disabled="true"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.servicioSalud.id}" filterBy="#{item.servicioSalud.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListMarcoPresupuestarioTitle_servicioSalud}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.servicioSalud.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idProgramaAno.idProgramaAno}" filterBy="#{item.idProgramaAno.idProgramaAno}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListMarcoPresupuestarioTitle_idProgramaAno}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idProgramaAno.idProgramaAno}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{marcoPresupuestarioController.prepareCreate}" update=":MarcoPresupuestarioCreateForm" oncomplete="MarcoPresupuestarioCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":MarcoPresupuestarioViewForm" oncomplete="MarcoPresupuestarioViewDialog.show()" disabled="#{empty marcoPresupuestarioController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":MarcoPresupuestarioEditForm" oncomplete="MarcoPresupuestarioEditDialog.show()" disabled="#{empty marcoPresupuestarioController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{marcoPresupuestarioController.delete}" update=":growl,datalist" disabled="#{empty marcoPresupuestarioController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="UsuarioEditDlg" widgetVar="UsuarioEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditUsuarioTitle}" closeOnEscape="true">
+
+            <h:form id="UsuarioEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{usuarioController.seleccionado != null}">
+
+
+                        <h:outputLabel value="#{messages.EditUsuarioLabel_username}" for="username" />
+                        <h:outputText id="username" value="#{usuarioController.seleccionado.username}" />
+                        
+                        <p:outputLabel value="#{messages.EditUsuarioLabel_nombre}" for="nombre" />
+                        <p:inputText id="nombre" value="#{usuarioController.seleccionado.nombre}" title="#{messages.EditUsuarioTitle_nombre}"/>
+
+                        <p:outputLabel value="#{messages.EditUsuarioLabel_apellido}" for="apellido" />
+                        <p:inputText id="apellido" value="#{usuarioController.seleccionado.apellido}" title="#{messages.EditUsuarioTitle_apellido}"/>
+
+                        <p:outputLabel value="#{messages.EditUsuarioLabel_email}" for="email" />
+                        <p:selectOneMenu id="email" value="#{usuarioController.seleccionado.idEmail}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{usuarioController.emails}"
+                                           var="emailItem"
+                                           itemValue="#{emailItem.idEmail}"
+                                           itemLabel="#{emailItem.valor}"
+                                           />
+                        </p:selectOneMenu>
+
+
+                        <p:outputLabel value="#{messages.EditUsuarioLabel_servicio}" for="servicio" />
+                        <p:selectOneMenu id="servicio" value="#{usuarioController.seleccionado.idServicio}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{servicioSaludController.items}"
+                                           var="servicioItem"
+                                           itemValue="#{servicioItem.id}"
+                                           itemLabel="#{servicioItem.nombre}"
+                                           />
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel value="#{messages.CreateRolTitle_nombre}" />
+                        <p:pickList id="pickList" value="#{usuarioController.roles}" var="rolItem" itemLabel="#{rolItem}" itemValue="#{rolItem}"/>
+                        
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{usuarioController.edit}" value="#{messages.Save}" update="display,:UsuarioListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,UsuarioEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="UsuarioEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

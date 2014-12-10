@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="OtSeguimientoCreateDlg" widgetVar="OtSeguimientoCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateOtSeguimientoTitle}" closeOnEscape="true">
+
+            <h:form id="OtSeguimientoCreateForm">
+
+                <h:panelGroup id="display" rendered="#{otSeguimientoController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateOtSeguimientoLabel_seguimiento}" for="seguimiento" />
+                        <p:selectOneMenu id="seguimiento" value="#{otSeguimientoController.selected.seguimiento}" required="true" requiredMessage="#{messages.CreateOtSeguimientoRequiredMessage_seguimiento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{seguimientoController.items}"
+                                           var="seguimientoItem"
+                                           itemValue="#{seguimientoItem}"
+                                           itemLabel="#{seguimientoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{seguimientoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateOtSeguimientoLabel_ordenTransferencia}" for="ordenTransferencia" />
+                        <p:selectOneMenu id="ordenTransferencia" value="#{otSeguimientoController.selected.ordenTransferencia}" required="true" requiredMessage="#{messages.CreateOtSeguimientoRequiredMessage_ordenTransferencia}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{ordenTransferenciaController.items}"
+                                           var="ordenTransferenciaItem"
+                                           itemValue="#{ordenTransferenciaItem}"
+                                           itemLabel="#{ordenTransferenciaItem.idOrdenTransferencia.toString()}"
+                                           />
+                            <f:converter binding="#{ordenTransferenciaConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{otSeguimientoController.saveNew}" value="#{messages.Save}" update="display,:OtSeguimientoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,OtSeguimientoCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="OtSeguimientoCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

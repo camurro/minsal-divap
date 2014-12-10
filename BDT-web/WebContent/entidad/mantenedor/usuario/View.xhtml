@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="UsuarioViewDlg" widgetVar="UsuarioViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewUsuarioTitle}" closeOnEscape="true">
+
+            <h:form id="UsuarioViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{usuarioController.seleccionado != null}">
+
+                        <h:outputText value="#{messages.ViewUsuarioLabel_username}"/>
+                        <h:outputText value="#{usuarioController.seleccionado.username}" title="#{messages.ViewUsuarioTitle_username}"/>
+                        
+                        <h:outputText value="#{messages.ViewUsuarioLabel_nombre}"/>
+                        <h:outputText value="#{usuarioController.seleccionado.nombre}" title="#{messages.ViewUsuarioTitle_nombre}"/>
+
+                        <h:outputText value="#{messages.ViewUsuarioLabel_apellido}"/>
+                        <h:outputText value="#{usuarioController.seleccionado.apellido}" title="#{messages.ViewUsuarioTitle_apellido}"/>
+
+                        <h:outputText value="#{messages.ViewUsuarioLabel_email}"/>
+                        <h:outputText value="#{usuarioController.seleccionado.email}"/>
+
+
+                        <h:outputText value="#{messages.ViewUsuarioLabel_servicio}"/>
+                        <h:outputText value="#{usuarioController.seleccionado.nombreServicio}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="UsuarioViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

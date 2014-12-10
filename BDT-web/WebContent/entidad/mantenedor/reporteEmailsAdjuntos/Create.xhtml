@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ReporteEmailsAdjuntosCreateDlg" widgetVar="ReporteEmailsAdjuntosCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateReporteEmailsAdjuntosTitle}" closeOnEscape="true">
+
+            <h:form id="ReporteEmailsAdjuntosCreateForm">
+
+                <h:panelGroup id="display" rendered="#{reporteEmailsAdjuntosController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateReporteEmailsAdjuntosLabel_reporteEmailsEnviado}" for="reporteEmailsEnviado" />
+                        <p:selectOneMenu id="reporteEmailsEnviado" value="#{reporteEmailsAdjuntosController.selected.reporteEmailsEnviado}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{reporteEmailsEnviadosController.items}"
+                                           var="reporteEmailsEnviadoItem"
+                                           itemValue="#{reporteEmailsEnviadoItem}"
+                                           itemLabel="#{reporteEmailsEnviadoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{reporteEmailsEnviadosConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateReporteEmailsAdjuntosLabel_documento}" for="documento" />
+                        <p:selectOneMenu id="documento" value="#{reporteEmailsAdjuntosController.selected.documento}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{referenciaDocumentoController.items}"
+                                           var="documentoItem"
+                                           itemValue="#{documentoItem}"
+                                           itemLabel="#{documentoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{referenciaDocumentoConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{reporteEmailsAdjuntosController.saveNew}" value="#{messages.Save}" update="display,:ReporteEmailsAdjuntosListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ReporteEmailsAdjuntosCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ReporteEmailsAdjuntosCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

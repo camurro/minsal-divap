@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="ProgramasReforzamientoSeguimientoListForm">
+
+        <p:panel header="#{messages.ListProgramasReforzamientoSeguimientoTitle}">
+            <p:contextMenu id="ProgramasReforzamientoSeguimientoDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('ProgramasReforzamientoSeguimientoListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('ProgramasReforzamientoSeguimientoListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('ProgramasReforzamientoSeguimientoListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('ProgramasReforzamientoSeguimientoListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.ProgramasReforzamientoSeguimientoMenuItem_seguimiento}" icon="ui-icon-search"  actionListener="#{programasReforzamientoSeguimientoController.prepareSeguimiento}" update=":SeguimientoViewForm" oncomplete="SeguimientoViewDialog.show()" disabled="#{empty programasReforzamientoSeguimientoController.selected.seguimiento}"/>  
+                <p:menuitem value="#{messages.ProgramasReforzamientoSeguimientoMenuItem_idProgramaAno}" icon="ui-icon-search"  actionListener="#{programasReforzamientoSeguimientoController.prepareIdProgramaAno}" update=":ProgramaAnoViewForm" oncomplete="ProgramaAnoViewDialog.show()" disabled="#{empty programasReforzamientoSeguimientoController.selected.idProgramaAno}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{programasReforzamientoSeguimientoController.items}"
+                         var="item"
+                         rowKey="#{item.id}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{programasReforzamientoSeguimientoController.selected}">
+
+                <p:ajax event="rowSelect"   update=":ProgramasReforzamientoSeguimientoListForm:createButton :ProgramasReforzamientoSeguimientoListForm:viewButton :ProgramasReforzamientoSeguimientoListForm:editButton :ProgramasReforzamientoSeguimientoListForm:deleteButton :ProgramasReforzamientoSeguimientoListForm:ProgramasReforzamientoSeguimientoDataTableContextMenu" listener="#{programasReforzamientoSeguimientoController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":ProgramasReforzamientoSeguimientoListForm:createButton :ProgramasReforzamientoSeguimientoListForm:viewButton :ProgramasReforzamientoSeguimientoListForm:editButton :ProgramasReforzamientoSeguimientoListForm:deleteButton :ProgramasReforzamientoSeguimientoListForm:ProgramasReforzamientoSeguimientoDataTableContextMenu" listener="#{programasReforzamientoSeguimientoController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('ProgramasReforzamientoSeguimientoListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.id}" filterBy="#{item.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramasReforzamientoSeguimientoTitle_id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.seguimiento.id}" filterBy="#{item.seguimiento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramasReforzamientoSeguimientoTitle_seguimiento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.seguimiento.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idProgramaAno.idProgramaAno}" filterBy="#{item.idProgramaAno.idProgramaAno}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramasReforzamientoSeguimientoTitle_idProgramaAno}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idProgramaAno.idProgramaAno}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{programasReforzamientoSeguimientoController.prepareCreate}" update=":ProgramasReforzamientoSeguimientoCreateForm" oncomplete="ProgramasReforzamientoSeguimientoCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":ProgramasReforzamientoSeguimientoViewForm" oncomplete="ProgramasReforzamientoSeguimientoViewDialog.show()" disabled="#{empty programasReforzamientoSeguimientoController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":ProgramasReforzamientoSeguimientoEditForm" oncomplete="ProgramasReforzamientoSeguimientoEditDialog.show()" disabled="#{empty programasReforzamientoSeguimientoController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{programasReforzamientoSeguimientoController.delete}" update=":growl,datalist" disabled="#{empty programasReforzamientoSeguimientoController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

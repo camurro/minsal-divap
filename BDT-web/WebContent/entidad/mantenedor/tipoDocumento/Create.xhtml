@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoDocumentoCreateDlg" widgetVar="TipoDocumentoCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateTipoDocumentoTitle}" closeOnEscape="true">
+
+            <h:form id="TipoDocumentoCreateForm">
+
+                <h:panelGroup id="display" rendered="#{tipoDocumentoController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateTipoDocumentoLabel_nombre}" for="nombre" />
+                        <p:inputText id="nombre" value="#{tipoDocumentoController.selected.nombre}" title="#{messages.CreateTipoDocumentoTitle_nombre}" required="true" requiredMessage="#{messages.CreateTipoDocumentoRequiredMessage_nombre}"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{tipoDocumentoController.saveNew}" value="#{messages.Save}" update="display,:TipoDocumentoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,TipoDocumentoCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="TipoDocumentoCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

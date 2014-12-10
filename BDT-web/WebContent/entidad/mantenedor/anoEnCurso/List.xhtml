@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="AnoEnCursoListForm">
+
+        <p:panel header="#{messages.ListAnoEnCursoTitle}">
+            <p:contextMenu id="AnoEnCursoDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('AnoEnCursoListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('AnoEnCursoListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('AnoEnCursoListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('AnoEnCursoListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.AnoEnCursoMenuItem_antecendentesComunas}" icon="ui-icon-search"  action="#{anoEnCursoController.navigateAntecendentesComunas}" disabled="#{empty anoEnCursoController.selected.antecendentesComunas}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{anoEnCursoController.anos}"
+                         var="item"
+                         rowKey="#{item.ano}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{anoEnCursoController.seleccionado}">
+
+                <p:ajax event="rowSelect"   update=":AnoEnCursoListForm:createButton :AnoEnCursoListForm:viewButton :AnoEnCursoListForm:editButton :AnoEnCursoListForm:deleteButton :AnoEnCursoListForm:AnoEnCursoDataTableContextMenu" listener="#{anoEnCursoController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":AnoEnCursoListForm:createButton :AnoEnCursoListForm:viewButton :AnoEnCursoListForm:editButton :AnoEnCursoListForm:deleteButton :AnoEnCursoListForm:AnoEnCursoDataTableContextMenu" listener="#{anoEnCursoController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('AnoEnCursoListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.ano}" filterBy="#{item.ano}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAnoEnCursoTitle_ano}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.ano}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.montoPercapitalBasal}" filterBy="#{item.montoPercapitalBasal}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAnoEnCursoTitle_montoPercapitalBasal}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.montoPercapitalBasal}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.asignacionAdultoMayor}" filterBy="#{item.asignacionAdultoMayor}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAnoEnCursoTitle_asignacionAdultoMayor}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.asignacionAdultoMayor}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.inflactor}" filterBy="#{item.inflactor}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAnoEnCursoTitle_inflactor}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.inflactor}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.inflactorMarcoPresupuestario}" filterBy="#{item.inflactorMarcoPresupuestario}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAnoEnCursoTitle_inflactorMarcoPresupuestario}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.inflactorMarcoPresupuestario}"/>
+                </p:column>
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{anoEnCursoController.prepareCreateAnoEnCurso}" update=":AnoEnCursoCreateForm" oncomplete="AnoEnCursoCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{messages.View}" update=":AnoEnCursoViewForm" oncomplete="AnoEnCursoViewDialog.show()" disabled="#{empty anoEnCursoController.seleccionado}"/>
+            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{messages.Edit}" update=":AnoEnCursoEditForm" oncomplete="AnoEnCursoEditDialog.show()" disabled="#{empty anoEnCursoController.seleccionado}"/>
+            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{anoEnCursoController.delete}" update=":growl,datalist" disabled="#{empty anoEnCursoController.seleccionado}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

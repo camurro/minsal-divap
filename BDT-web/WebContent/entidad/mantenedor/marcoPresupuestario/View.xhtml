@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="MarcoPresupuestarioViewDlg" widgetVar="MarcoPresupuestarioViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewMarcoPresupuestarioTitle}" closeOnEscape="true">
+
+            <h:form id="MarcoPresupuestarioViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{marcoPresupuestarioController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewMarcoPresupuestarioLabel_marcoInicial}"/>
+                        <h:outputText value="#{marcoPresupuestarioController.selected.marcoInicial}" title="#{messages.ViewMarcoPresupuestarioTitle_marcoInicial}"/>
+
+                        <h:outputText value="#{messages.ViewMarcoPresupuestarioLabel_marcoModificado}"/>
+                        <h:outputText value="#{marcoPresupuestarioController.selected.marcoModificado}" title="#{messages.ViewMarcoPresupuestarioTitle_marcoModificado}"/>
+
+                        <h:outputText value="#{messages.ViewMarcoPresupuestarioLabel_idMarcoPresupuestario}"/>
+                        <h:outputText value="#{marcoPresupuestarioController.selected.idMarcoPresupuestario}" title="#{messages.ViewMarcoPresupuestarioTitle_idMarcoPresupuestario}"/>
+
+                        <h:outputText value="#{messages.ViewMarcoPresupuestarioLabel_reparosMarcoPresupuestario}"/>
+                        <h:selectBooleanCheckbox id="reparosMarcoPresupuestario" value="#{marcoPresupuestarioController.selected.reparosMarcoPresupuestario}" title="#{messages.EditMarcoPresupuestarioTitle_reparosMarcoPresupuestario}"  disabled="true"/>
+
+                        <h:outputText value="#{messages.ViewMarcoPresupuestarioLabel_servicioSalud}"/>
+                        <h:outputText value="#{marcoPresupuestarioController.selected.servicioSalud.id}"/>
+
+                        <h:outputText value="#{messages.ViewMarcoPresupuestarioLabel_idProgramaAno}"/>
+                        <h:outputText value="#{marcoPresupuestarioController.selected.idProgramaAno.idProgramaAno}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="MarcoPresupuestarioViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

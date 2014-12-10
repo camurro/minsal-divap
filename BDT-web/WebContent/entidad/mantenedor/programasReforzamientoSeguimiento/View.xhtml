@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ProgramasReforzamientoSeguimientoViewDlg" widgetVar="ProgramasReforzamientoSeguimientoViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewProgramasReforzamientoSeguimientoTitle}" closeOnEscape="true">
+
+            <h:form id="ProgramasReforzamientoSeguimientoViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{programasReforzamientoSeguimientoController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewProgramasReforzamientoSeguimientoLabel_id}"/>
+                        <h:outputText value="#{programasReforzamientoSeguimientoController.selected.id}" title="#{messages.ViewProgramasReforzamientoSeguimientoTitle_id}"/>
+
+                        <h:outputText value="#{messages.ViewProgramasReforzamientoSeguimientoLabel_seguimiento}"/>
+                        <h:outputText value="#{programasReforzamientoSeguimientoController.selected.seguimiento.id}"/>
+
+                        <h:outputText value="#{messages.ViewProgramasReforzamientoSeguimientoLabel_idProgramaAno}"/>
+                        <h:outputText value="#{programasReforzamientoSeguimientoController.selected.idProgramaAno.idProgramaAno}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="ProgramasReforzamientoSeguimientoViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

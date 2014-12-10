@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DistribucionInicialPercapitaCreateDlg" widgetVar="DistribucionInicialPercapitaCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateDistribucionInicialPercapitaTitle}" closeOnEscape="true">
+
+            <h:form id="DistribucionInicialPercapitaCreateForm">
+
+                <h:panelGroup id="display" rendered="#{distribucionInicialPercapitaController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateDistribucionInicialPercapitaLabel_fechaCreacion}" for="fechaCreacion" />
+                        <p:calendar id="fechaCreacion" pattern="MM/dd/yyyy HH:mm:ss" value="#{distribucionInicialPercapitaController.selected.fechaCreacion}" title="#{messages.CreateDistribucionInicialPercapitaTitle_fechaCreacion}"  showOn="button"/>
+
+                        <p:outputLabel value="#{messages.CreateDistribucionInicialPercapitaLabel_usuario}" for="usuario" />
+                        <p:selectOneMenu id="usuario" value="#{distribucionInicialPercapitaController.selected.usuario}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{usuarioController.items}"
+                                           var="usuarioItem"
+                                           itemValue="#{usuarioItem}"
+                                           itemLabel="#{usuarioItem.username.toString()}"
+                                           />
+                            <f:converter binding="#{usuarioConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateDistribucionInicialPercapitaLabel_ano}" for="ano" />
+                        <p:selectOneMenu id="ano" value="#{distribucionInicialPercapitaController.selected.ano}" required="true" requiredMessage="#{messages.CreateDistribucionInicialPercapitaRequiredMessage_ano}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{anoEnCursoController.items}"
+                                           var="anoItem"
+                                           itemValue="#{anoItem}"
+                                           itemLabel="#{anoItem.ano.toString()}"
+                                           />
+                            <f:converter binding="#{anoEnCursoConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{distribucionInicialPercapitaController.saveNew}" value="#{messages.Save}" update="display,:DistribucionInicialPercapitaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,DistribucionInicialPercapitaCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="DistribucionInicialPercapitaCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

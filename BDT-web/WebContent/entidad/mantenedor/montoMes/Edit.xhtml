@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="MontoMesEditDlg" widgetVar="MontoMesEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditMontoMesTitle}" closeOnEscape="true">
+
+            <h:form id="MontoMesEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{montoMesController.selected != null}">
+
+                        <p:outputLabel value="#{messages.EditMontoMesLabel_porcentajeMonto}" for="porcentajeMonto" />
+                        <p:inputText id="porcentajeMonto" value="#{montoMesController.selected.porcentajeMonto}" title="#{messages.EditMontoMesTitle_porcentajeMonto}" required="true" requiredMessage="#{messages.EditMontoMesRequiredMessage_porcentajeMonto}"/>
+
+                        <p:outputLabel value="#{messages.EditMontoMesLabel_monto}" for="monto" />
+                        <p:inputText id="monto" value="#{montoMesController.selected.monto}" title="#{messages.EditMontoMesTitle_monto}" required="true" requiredMessage="#{messages.EditMontoMesRequiredMessage_monto}"/>
+
+                        <p:outputLabel value="#{messages.EditMontoMesLabel_fechaMonto}" for="fechaMonto" />
+                        <p:calendar id="fechaMonto" pattern="MM/dd/yyyy HH:mm:ss" value="#{montoMesController.selected.fechaMonto}" title="#{messages.EditMontoMesTitle_fechaMonto}" required="true" requiredMessage="#{messages.EditMontoMesRequiredMessage_fechaMonto}" showOn="button"/>
+
+
+                        <h:outputLabel value="#{messages.EditMontoMesLabel_idMontoMes}" for="idMontoMes" />
+                        <h:outputText id="idMontoMes" value="#{montoMesController.selected.idMontoMes}" />
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{montoMesController.save}" value="#{messages.Save}" update="display,:MontoMesListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,MontoMesEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="MontoMesEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="FactorTramoPobrezaListForm">
+
+        <p:panel header="#{messages.ListFactorTramoPobrezaTitle}">
+            <p:contextMenu id="FactorTramoPobrezaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('FactorTramoPobrezaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('FactorTramoPobrezaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('FactorTramoPobrezaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('FactorTramoPobrezaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.FactorTramoPobrezaMenuItem_antecendentesComunaCollection}" icon="ui-icon-search"  action="#{factorTramoPobrezaController.navigateAntecendentesComunaCollection}" disabled="#{empty factorTramoPobrezaController.selected.antecendentesComunaCollection}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{factorTramoPobrezaController.factoresTramoPobreza}"
+                         var="item"
+                         rowKey="#{item.idFactorTramoPobreza}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{factorTramoPobrezaController.seleccionado}">
+
+                <p:ajax event="rowSelect"   update=":FactorTramoPobrezaListForm:createButton :FactorTramoPobrezaListForm:viewButton :FactorTramoPobrezaListForm:editButton :FactorTramoPobrezaListForm:deleteButton :FactorTramoPobrezaListForm:FactorTramoPobrezaDataTableContextMenu" listener="#{factorTramoPobrezaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":FactorTramoPobrezaListForm:createButton :FactorTramoPobrezaListForm:viewButton :FactorTramoPobrezaListForm:editButton :FactorTramoPobrezaListForm:deleteButton :FactorTramoPobrezaListForm:FactorTramoPobrezaDataTableContextMenu" listener="#{factorTramoPobrezaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('FactorTramoPobrezaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idFactorTramoPobreza}" filterBy="#{item.idFactorTramoPobreza}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListFactorTramoPobrezaTitle_idFactorTramoPobreza}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idFactorTramoPobreza}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.valor}" filterBy="#{item.valor}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListFactorTramoPobrezaTitle_valor}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.valor}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{factorTramoPobrezaController.prepareCreateFactorTramoPobreza}" update=":FactorTramoPobrezaCreateForm" oncomplete="FactorTramoPobrezaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{messages.View}" update=":FactorTramoPobrezaViewForm" oncomplete="FactorTramoPobrezaViewDialog.show()" disabled="#{empty factorTramoPobrezaController.seleccionado}"/>
+            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{messages.Edit}" update=":FactorTramoPobrezaEditForm" oncomplete="FactorTramoPobrezaEditDialog.show()" disabled="#{empty factorTramoPobrezaController.seleccionado}"/>
+            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{factorTramoPobrezaController.delete}" update=":growl,datalist" disabled="#{empty factorTramoPobrezaController.seleccionado}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

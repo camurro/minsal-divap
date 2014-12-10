@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="DocumentoReliquidacionListForm">
+
+        <p:panel header="#{messages.ListDocumentoReliquidacionTitle}">
+            <p:contextMenu id="DocumentoReliquidacionDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('DocumentoReliquidacionListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('DocumentoReliquidacionListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('DocumentoReliquidacionListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('DocumentoReliquidacionListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.DocumentoReliquidacionMenuItem_idTipoDocumento}" icon="ui-icon-search"  actionListener="#{documentoReliquidacionController.prepareIdTipoDocumento}" update=":TipoDocumentoViewForm" oncomplete="TipoDocumentoViewDialog.show()" disabled="#{empty documentoReliquidacionController.selected.idTipoDocumento}"/>  
+                <p:menuitem value="#{messages.DocumentoReliquidacionMenuItem_idReliquidacion}" icon="ui-icon-search"  actionListener="#{documentoReliquidacionController.prepareIdReliquidacion}" update=":ReliquidacionViewForm" oncomplete="ReliquidacionViewDialog.show()" disabled="#{empty documentoReliquidacionController.selected.idReliquidacion}"/>  
+                <p:menuitem value="#{messages.DocumentoReliquidacionMenuItem_idDocumento}" icon="ui-icon-search"  actionListener="#{documentoReliquidacionController.prepareIdDocumento}" update=":ReferenciaDocumentoViewForm" oncomplete="ReferenciaDocumentoViewDialog.show()" disabled="#{empty documentoReliquidacionController.selected.idDocumento}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{documentoReliquidacionController.items}"
+                         var="item"
+                         rowKey="#{item.idDocumentoReliquidacion}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{documentoReliquidacionController.selected}">
+
+                <p:ajax event="rowSelect"   update=":DocumentoReliquidacionListForm:createButton :DocumentoReliquidacionListForm:viewButton :DocumentoReliquidacionListForm:editButton :DocumentoReliquidacionListForm:deleteButton :DocumentoReliquidacionListForm:DocumentoReliquidacionDataTableContextMenu" listener="#{documentoReliquidacionController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":DocumentoReliquidacionListForm:createButton :DocumentoReliquidacionListForm:viewButton :DocumentoReliquidacionListForm:editButton :DocumentoReliquidacionListForm:deleteButton :DocumentoReliquidacionListForm:DocumentoReliquidacionDataTableContextMenu" listener="#{documentoReliquidacionController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('DocumentoReliquidacionListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idDocumentoReliquidacion}" filterBy="#{item.idDocumentoReliquidacion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoReliquidacionTitle_idDocumentoReliquidacion}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idDocumentoReliquidacion}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idTipoDocumento.idTipoDocumento}" filterBy="#{item.idTipoDocumento.idTipoDocumento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoReliquidacionTitle_idTipoDocumento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idTipoDocumento.idTipoDocumento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idReliquidacion.idReliquidacion}" filterBy="#{item.idReliquidacion.idReliquidacion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoReliquidacionTitle_idReliquidacion}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idReliquidacion.idReliquidacion}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idDocumento.id}" filterBy="#{item.idDocumento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoReliquidacionTitle_idDocumento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idDocumento.id}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{documentoReliquidacionController.prepareCreate}" update=":DocumentoReliquidacionCreateForm" oncomplete="DocumentoReliquidacionCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":DocumentoReliquidacionViewForm" oncomplete="DocumentoReliquidacionViewDialog.show()" disabled="#{empty documentoReliquidacionController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":DocumentoReliquidacionEditForm" oncomplete="DocumentoReliquidacionEditDialog.show()" disabled="#{empty documentoReliquidacionController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{documentoReliquidacionController.delete}" update=":growl,datalist" disabled="#{empty documentoReliquidacionController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="ReporteEmailsDestinatariosEditDlg" widgetVar="ReporteEmailsDestinatariosEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditReporteEmailsDestinatariosTitle}" closeOnEscape="true">
+
+            <h:form id="ReporteEmailsDestinatariosEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{reporteEmailsDestinatariosController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditReporteEmailsDestinatariosLabel_id}" for="id" />
+                        <h:outputText id="id" value="#{reporteEmailsDestinatariosController.selected.id}" />
+
+                        <p:outputLabel value="#{messages.EditReporteEmailsDestinatariosLabel_tipoDestinatario}" for="tipoDestinatario" />
+                        <p:selectOneMenu id="tipoDestinatario" value="#{reporteEmailsDestinatariosController.selected.tipoDestinatario}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoDestinatarioController.items}"
+                                           var="tipoDestinatarioItem"
+                                           itemValue="#{tipoDestinatarioItem}"
+                                           itemLabel="#{tipoDestinatarioItem.descripcion.toString()}"
+                                           />
+                            <f:converter binding="#{tipoDestinatarioConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditReporteEmailsDestinatariosLabel_reporteEmailsEnviado}" for="reporteEmailsEnviado" />
+                        <p:selectOneMenu id="reporteEmailsEnviado" value="#{reporteEmailsDestinatariosController.selected.reporteEmailsEnviado}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{reporteEmailsEnviadosController.items}"
+                                           var="reporteEmailsEnviadoItem"
+                                           itemValue="#{reporteEmailsEnviadoItem}"
+                                           itemLabel="#{reporteEmailsEnviadoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{reporteEmailsEnviadosConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditReporteEmailsDestinatariosLabel_destinatario}" for="destinatario" />
+                        <p:selectOneMenu id="destinatario" value="#{reporteEmailsDestinatariosController.selected.destinatario}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{personaController.items}"
+                                           var="destinatarioItem"
+                                           itemValue="#{destinatarioItem}"
+                                           itemLabel="#{destinatarioItem.idPersona.toString()}"
+                                           />
+                            <f:converter binding="#{personaConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{reporteEmailsDestinatariosController.save}" value="#{messages.Save}" update="display,:ReporteEmailsDestinatariosListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ReporteEmailsDestinatariosEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ReporteEmailsDestinatariosEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

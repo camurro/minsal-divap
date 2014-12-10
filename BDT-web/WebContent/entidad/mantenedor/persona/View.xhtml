@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="PersonaViewDlg" widgetVar="PersonaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewPersonaTitle}" closeOnEscape="true">
+
+            <h:form id="PersonaViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{personaController.seleccionado != null}">
+
+                        <h:outputText value="#{messages.ViewPersonaLabel_idPersona}"/>
+                        <h:outputText value="#{personaController.seleccionado.idPersona}" title="#{messages.ViewPersonaTitle_idPersona}"/>
+
+                        <h:outputText value="#{messages.ViewPersonaLabel_nombre}"/>
+                        <h:outputText value="#{personaController.seleccionado.nombre}" title="#{messages.ViewPersonaTitle_nombre}"/>
+
+                        <h:outputText value="#{messages.ViewPersonaLabel_apellidoPaterno}"/>
+                        <h:outputText value="#{personaController.seleccionado.apellidoPaterno}" title="#{messages.ViewPersonaTitle_apellidoPaterno}"/>
+
+                        <h:outputText value="#{messages.ViewPersonaLabel_apellidoMaterno}"/>
+                        <h:outputText value="#{personaController.seleccionado.apellidoMaterno}" title="#{messages.ViewPersonaTitle_apellidoMaterno}"/>
+
+                        <h:outputText value="#{messages.ViewPersonaLabel_email}"/>
+                        <h:outputText value="#{personaController.seleccionado.correo}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="PersonaViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ProgramaMunicipalCoreViewDlg" widgetVar="ProgramaMunicipalCoreViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewProgramaMunicipalCoreTitle}" closeOnEscape="true">
+
+            <h:form id="ProgramaMunicipalCoreViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{programaMunicipalCoreController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewProgramaMunicipalCoreLabel_idProgramaMunicipalCore}"/>
+                        <h:outputText value="#{programaMunicipalCoreController.selected.idProgramaMunicipalCore}" title="#{messages.ViewProgramaMunicipalCoreTitle_idProgramaMunicipalCore}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaMunicipalCoreLabel_programaAnoMunicipal}"/>
+                        <h:outputText value="#{programaMunicipalCoreController.selected.programaAnoMunicipal.idProgramaAno}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaMunicipalCoreLabel_establecimiento}"/>
+                        <h:outputText value="#{programaMunicipalCoreController.selected.establecimiento.id}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaMunicipalCoreLabel_comuna}"/>
+                        <h:outputText value="#{programaMunicipalCoreController.selected.comuna.id}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="ProgramaMunicipalCoreViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

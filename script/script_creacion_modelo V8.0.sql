@@ -24163,3 +24163,11 @@ ALTER TABLE ano_en_curso
    ALTER COLUMN repo_alfresco SET NOT NULL;
 ---asd
 
+
+
+
+-------------------------------------------------- SE AGREGA UN CAMPO A LA TABLA USUARIO PARA SABER SI ES LA 1RA VEZ QUE INICIA SESION
+
+ALTER TABLE usuario ADD COLUMN "primerLogin" boolean NOT NULL DEFAULT true;
+
+

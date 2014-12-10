@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="AntecendentesComunaListForm">
+
+        <p:panel header="#{messages.ListAntecendentesComunaTitle}">
+            <p:contextMenu id="AntecendentesComunaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('AntecendentesComunaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('AntecendentesComunaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('AntecendentesComunaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('AntecendentesComunaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.AntecendentesComunaMenuItem_clasificacion}" icon="ui-icon-search"  actionListener="#{antecendentesComunaController.prepareClasificacion}" update=":TipoComunaViewForm" oncomplete="TipoComunaViewDialog.show()" disabled="#{empty antecendentesComunaController.selected.clasificacion}"/>  
+                <p:menuitem value="#{messages.AntecendentesComunaMenuItem_asignacionZona}" icon="ui-icon-search"  actionListener="#{antecendentesComunaController.prepareAsignacionZona}" update=":FactorRefAsigZonaViewForm" oncomplete="FactorRefAsigZonaViewDialog.show()" disabled="#{empty antecendentesComunaController.selected.asignacionZona}"/>  
+                <p:menuitem value="#{messages.AntecendentesComunaMenuItem_tramoPobreza}" icon="ui-icon-search"  actionListener="#{antecendentesComunaController.prepareTramoPobreza}" update=":FactorTramoPobrezaViewForm" oncomplete="FactorTramoPobrezaViewDialog.show()" disabled="#{empty antecendentesComunaController.selected.tramoPobreza}"/>  
+                <p:menuitem value="#{messages.AntecendentesComunaMenuItem_antecendentesComunaCalculadoCollection}" icon="ui-icon-search"  action="#{antecendentesComunaController.navigateAntecendentesComunaCalculadoCollection}" disabled="#{empty antecendentesComunaController.selected.antecendentesComunaCalculadoCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.AntecendentesComunaMenuItem_idComuna}" icon="ui-icon-search"  actionListener="#{antecendentesComunaController.prepareIdComuna}" update=":ComunaViewForm" oncomplete="ComunaViewDialog.show()" disabled="#{empty antecendentesComunaController.selected.idComuna}"/>  
+                <p:menuitem value="#{messages.AntecendentesComunaMenuItem_anoAnoEnCurso}" icon="ui-icon-search"  actionListener="#{antecendentesComunaController.prepareAnoAnoEnCurso}" update=":AnoEnCursoViewForm" oncomplete="AnoEnCursoViewDialog.show()" disabled="#{empty antecendentesComunaController.selected.anoAnoEnCurso}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{antecendentesComunaController.items}"
+                         var="item"
+                         rowKey="#{item.idAntecedentesComuna}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{antecendentesComunaController.selected}">
+
+                <p:ajax event="rowSelect"   update=":AntecendentesComunaListForm:createButton :AntecendentesComunaListForm:viewButton :AntecendentesComunaListForm:editButton :AntecendentesComunaListForm:deleteButton :AntecendentesComunaListForm:AntecendentesComunaDataTableContextMenu" listener="#{antecendentesComunaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":AntecendentesComunaListForm:createButton :AntecendentesComunaListForm:viewButton :AntecendentesComunaListForm:editButton :AntecendentesComunaListForm:deleteButton :AntecendentesComunaListForm:AntecendentesComunaDataTableContextMenu" listener="#{antecendentesComunaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('AntecendentesComunaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.clasificacion.descripcion}" filterBy="#{item.clasificacion.descripcion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAntecendentesComunaTitle_clasificacion}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.clasificacion.descripcion}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.asignacionZona.idFactorRefAsigZona}" filterBy="#{item.asignacionZona.idFactorRefAsigZona}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAntecendentesComunaTitle_asignacionZona}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.asignacionZona.idFactorRefAsigZona}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.tramoPobreza.idFactorTramoPobreza}" filterBy="#{item.tramoPobreza.idFactorTramoPobreza}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAntecendentesComunaTitle_tramoPobreza}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.tramoPobreza.idFactorTramoPobreza}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idAntecedentesComuna}" filterBy="#{item.idAntecedentesComuna}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAntecendentesComunaTitle_idAntecedentesComuna}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idAntecedentesComuna}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idComuna.id}" filterBy="#{item.idComuna.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAntecendentesComunaTitle_idComuna}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idComuna.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.anoAnoEnCurso.ano}" filterBy="#{item.anoAnoEnCurso.ano}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAntecendentesComunaTitle_anoAnoEnCurso}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.anoAnoEnCurso.ano}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{antecendentesComunaController.prepareCreate}" update=":AntecendentesComunaCreateForm" oncomplete="AntecendentesComunaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":AntecendentesComunaViewForm" oncomplete="AntecendentesComunaViewDialog.show()" disabled="#{empty antecendentesComunaController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":AntecendentesComunaEditForm" oncomplete="AntecendentesComunaEditDialog.show()" disabled="#{empty antecendentesComunaController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{antecendentesComunaController.delete}" update=":growl,datalist" disabled="#{empty antecendentesComunaController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="CumplimientoListForm">
+
+        <p:panel header="#{messages.ListCumplimientoTitle}">
+            <p:contextMenu id="CumplimientoDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('CumplimientoListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('CumplimientoListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('CumplimientoListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('CumplimientoListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.CumplimientoMenuItem_tramo}" icon="ui-icon-search"  actionListener="#{cumplimientoController.prepareTramo}" update=":TramoViewForm" oncomplete="TramoViewDialog.show()" disabled="#{empty cumplimientoController.seleccionado.tramo}"/>  
+                <p:menuitem value="#{messages.CumplimientoMenuItem_tipoCumplimiento}" icon="ui-icon-search"  actionListener="#{cumplimientoController.prepareTipoCumplimiento}" update=":TipoCumplimientoViewForm" oncomplete="TipoCumplimientoViewDialog.show()" disabled="#{empty cumplimientoController.seleccionado.tipoCumplimiento}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{cumplimientoController.cumplimientos}"
+                         var="item"
+                         rowKey="#{item.idCumplimiento}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{cumplimientoController.seleccionado}">
+
+                <p:ajax event="rowSelect"   update=":CumplimientoListForm:createButton :CumplimientoListForm:viewButton :CumplimientoListForm:editButton :CumplimientoListForm:deleteButton :CumplimientoListForm:CumplimientoDataTableContextMenu" listener="#{cumplimientoController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":CumplimientoListForm:createButton :CumplimientoListForm:viewButton :CumplimientoListForm:editButton :CumplimientoListForm:deleteButton :CumplimientoListForm:CumplimientoDataTableContextMenu" listener="#{cumplimientoController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('CumplimientoListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idCumplimiento}" filterBy="#{item.idCumplimiento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCumplimientoTitle_idCumplimiento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idCumplimiento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.rebaja}" filterBy="#{item.rebaja}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCumplimientoTitle_rebaja}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.rebaja}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.porcentajeDesde}" filterBy="#{item.porcentajeDesde}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCumplimientoTitle_porcentajeDesde}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.porcentajeDesde}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.porcentajeHasta}" filterBy="#{item.porcentajeHasta}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCumplimientoTitle_porcentajeHasta}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.porcentajeHasta}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idTramo}" filterBy="#{item.idTramo}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCumplimientoTitle_tramo}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.tramo}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.tipoCumplimiento}" filterBy="#{item.tipoCumplimiento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCumplimientoTitle_tipoCumplimiento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.tipoCumplimiento}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{cumplimientoController.prepareCreateCumplimiento}" update=":CumplimientoCreateForm" oncomplete="CumplimientoCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{messages.View}" update=":CumplimientoViewForm" oncomplete="CumplimientoViewDialog.show()" disabled="#{empty cumplimientoController.seleccionado}"/>
+            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{messages.Edit}" update=":CumplimientoEditForm" oncomplete="CumplimientoEditDialog.show()" disabled="#{empty cumplimientoController.seleccionado}"/>
+            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{cumplimientoController.delete}" update=":growl,datalist" disabled="#{empty cumplimientoController.seleccionado}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

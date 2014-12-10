@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="RegionEditDlg" widgetVar="RegionEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditRegionTitle}" closeOnEscape="true">
+
+            <h:form id="RegionEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{regionController.seleccionado != null}">
+
+
+                        <h:outputLabel value="#{messages.EditRegionLabel_id}" for="id" />
+                        <h:outputText id="id" value="#{regionController.seleccionado.idRegion}" />
+
+                        <p:outputLabel value="#{messages.EditRegionLabel_nombre}" for="nombre" />
+                        <p:inputText id="nombre" value="#{regionController.seleccionado.nombreRegion}" title="#{messages.EditRegionTitle_nombre}"/>
+
+                        <p:outputLabel value="#{messages.EditRegionLabel_secretarioRegional}" for="secretarioRegional" />
+                        <p:selectOneMenu id="secretarioRegional" value="#{regionController.seleccionado.idSecretarioRegional}" required="true" requiredMessage="#{messages.EditRegionRequiredMessage_secretarioRegional}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{regionController.personas}"
+                                           var="secretarioRegionalItem"
+                                           itemValue="#{secretarioRegionalItem.idPersona}"
+                                           itemLabel="#{secretarioRegionalItem.nombre} #{secretarioRegionalItem.apellidoPaterno}"
+                                           />
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{regionController.edit}" value="#{messages.Save}" update="display,:RegionListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,RegionEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="RegionEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

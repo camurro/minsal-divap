@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ConvenioServicioViewDlg" widgetVar="ConvenioServicioViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewConvenioServicioTitle}" closeOnEscape="true">
+
+            <h:form id="ConvenioServicioViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{convenioServicioController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewConvenioServicioLabel_idConvenioServicio}"/>
+                        <h:outputText value="#{convenioServicioController.selected.idConvenioServicio}" title="#{messages.ViewConvenioServicioTitle_idConvenioServicio}"/>
+
+                        <h:outputText value="#{messages.ViewConvenioServicioLabel_fecha}"/>
+                        <h:outputText value="#{convenioServicioController.selected.fecha}" title="#{messages.ViewConvenioServicioTitle_fecha}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+
+                        <h:outputText value="#{messages.ViewConvenioServicioLabel_numeroResolucion}"/>
+                        <h:outputText value="#{convenioServicioController.selected.numeroResolucion}" title="#{messages.ViewConvenioServicioTitle_numeroResolucion}"/>
+
+                        <h:outputText value="#{messages.ViewConvenioServicioLabel_aprobacion}"/>
+                        <h:selectBooleanCheckbox id="aprobacion" value="#{convenioServicioController.selected.aprobacion}" title="#{messages.EditConvenioServicioTitle_aprobacion}"  disabled="true"/>
+
+                        <h:outputText value="#{messages.ViewConvenioServicioLabel_idPrograma}"/>
+                        <h:outputText value="#{convenioServicioController.selected.idPrograma.idProgramaAno}"/>
+
+                        <h:outputText value="#{messages.ViewConvenioServicioLabel_mes}"/>
+                        <h:outputText value="#{convenioServicioController.selected.mes.idMes}"/>
+
+                        <h:outputText value="#{messages.ViewConvenioServicioLabel_idEstablecimiento}"/>
+                        <h:outputText value="#{convenioServicioController.selected.idEstablecimiento.id}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="ConvenioServicioViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

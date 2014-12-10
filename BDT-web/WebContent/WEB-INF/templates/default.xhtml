@@ -95,8 +95,8 @@
 						<p:menuitem value="Ordenes de Transferencia" url="divapProcesoOTInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
 					</p:submenu>
 					<p:submenu label="Reportes" icon="ui-icon-document">
-						<p:submenu label="Informes Comuna">
-							<p:menuitem value="Marco Presupuestario por Comuna" url="divapReporteMarcoPresupuestarioComuna.jsf" icon="ui-icon-document" />
+						<p:submenu label="Informes Comuna - Servicio">
+							<p:menuitem value="Marco Presupuestario por Comuna y Servicios" url="divapReporteMarcoPresupuestarioComuna.jsf" icon="ui-icon-document" />
 							<p:menuitem value="Población per Capita" url="divapReportePoblacionPerCapita.jsf" icon="ui-icon-document" />
 							<p:menuitem value="Histórico por Programa" url="divapReporteHistoricoPorPrograma.jsf" icon="ui-icon-document" />
 						</p:submenu>
@@ -110,7 +110,34 @@
 					<p:submenu label="Servicio de Salud" icon="ui-icon-extlink" rendered="#{not empty loginController.servicio}">
 						<p:menuitem value="Gestión de Convenios y Resoluciones" url="divapServicioConvenios.jsf" icon="ui-icon-pencil"/>
 					</p:submenu>
-					<p:menuitem value="Mantenedores" url="#" icon="ui-icon-person" />
+							
+					
+					<p:submenu label="Mantenedores" icon="ui-icon-document">
+					
+						<p:menuitem value="Año" url="/mantenedor/anoEnCurso/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Comuna" url="/mantenedor/comuna/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Componente" url="/mantenedor/componente/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Cumplimiento" url="/mantenedor/cumplimiento/index.jsf" icon="ui-icon-document" />
+<!-- 						<p:menuitem value="Cumplimiento Programa" url="/mantenedor/cumplimientoPrograma/index.jsf" icon="ui-icon-document" /> -->
+						<p:menuitem value="Establecimiento" url="/mantenedor/establecimiento/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Estado Programa" url="/mantenedor/estadoPrograma/index.jsf" icon="ui-icon-document" />
+<!-- 						<p:menuitem value="Estado Convenio" url="/mantenedor/comuna/index.jsf" icon="ui-icon-document" /> -->
+						<p:menuitem value="Factor Referencia Asignacion Zona" url="/mantenedor/factorRefAsigZona/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Factor Tramo Pobreza" url="/mantenedor/factorTramoPobreza/index.jsf" icon="ui-icon-document" />
+<!-- 						<p:menuitem value="Feriados" url="/mantenedor/comuna/index.jsf" icon="ui-icon-document" /> -->
+						<p:menuitem value="Persona" url="/mantenedor/persona/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Programa" url="/mantenedor/programa/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Region" url="/mantenedor/region/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Rol" url="/mantenedor/rol/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Servicio" url="/mantenedor/servicioSalud/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Subtitulo" url="/mantenedor/tipoSubtitulo/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Tipo Comuna" url="/mantenedor/tipoComuna/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Usuario" url="/mantenedor/usuario/index.jsf" icon="ui-icon-document" />
+						
+					</p:submenu>
+					
+					
+					
 				</p:menubar>
 			</h:form>
 			<!-- FIN MENU -->

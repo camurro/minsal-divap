@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ConvenioComunaComponenteViewDlg" widgetVar="ConvenioComunaComponenteViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewConvenioComunaComponenteTitle}" closeOnEscape="true">
+
+            <h:form id="ConvenioComunaComponenteViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{convenioComunaComponenteController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewConvenioComunaComponenteLabel_idConvenioComunaComponente}"/>
+                        <h:outputText value="#{convenioComunaComponenteController.selected.idConvenioComunaComponente}" title="#{messages.ViewConvenioComunaComponenteTitle_idConvenioComunaComponente}"/>
+
+                        <h:outputText value="#{messages.ViewConvenioComunaComponenteLabel_monto}"/>
+                        <h:outputText value="#{convenioComunaComponenteController.selected.monto}" title="#{messages.ViewConvenioComunaComponenteTitle_monto}"/>
+
+                        <h:outputText value="#{messages.ViewConvenioComunaComponenteLabel_subtitulo}"/>
+                        <h:outputText value="#{convenioComunaComponenteController.selected.subtitulo.idTipoSubtitulo}"/>
+
+                        <h:outputText value="#{messages.ViewConvenioComunaComponenteLabel_convenioComuna}"/>
+                        <h:outputText value="#{convenioComunaComponenteController.selected.convenioComuna.idConvenioComuna}"/>
+
+                        <h:outputText value="#{messages.ViewConvenioComunaComponenteLabel_componente}"/>
+                        <h:outputText value="#{convenioComunaComponenteController.selected.componente.id}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="ConvenioComunaComponenteViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

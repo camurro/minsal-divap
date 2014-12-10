@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="AnoEnCursoViewDlg" widgetVar="AnoEnCursoViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewAnoEnCursoTitle}" closeOnEscape="true">
+
+            <h:form id="AnoEnCursoViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{anoEnCursoController.seleccionado != null}">
+
+                        <h:outputText value="#{messages.ViewAnoEnCursoLabel_ano}"/>
+                        <h:outputText value="#{anoEnCursoController.seleccionado.ano}" title="#{messages.ViewAnoEnCursoTitle_ano}"/>
+
+                        <h:outputText value="#{messages.ViewAnoEnCursoLabel_montoPercapitalBasal}"/>
+                        <h:outputText value="#{anoEnCursoController.seleccionado.montoPercapitalBasal}" title="#{messages.ViewAnoEnCursoTitle_montoPercapitalBasal}"/>
+
+                        <h:outputText value="#{messages.ViewAnoEnCursoLabel_asignacionAdultoMayor}"/>
+                        <h:outputText value="#{anoEnCursoController.seleccionado.asignacionAdultoMayor}" title="#{messages.ViewAnoEnCursoTitle_asignacionAdultoMayor}"/>
+
+                        <h:outputText value="#{messages.ViewAnoEnCursoLabel_inflactor}"/>
+                        <h:outputText value="#{anoEnCursoController.seleccionado.inflactor}" title="#{messages.ViewAnoEnCursoTitle_inflactor}"/>
+
+                        <h:outputText value="#{messages.ViewAnoEnCursoLabel_inflactorMarcoPresupuestario}"/>
+                        <h:outputText value="#{anoEnCursoController.seleccionado.inflactorMarcoPresupuestario}" title="#{messages.ViewAnoEnCursoTitle_inflactorMarcoPresupuestario}"/>
+
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="AnoEnCursoViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

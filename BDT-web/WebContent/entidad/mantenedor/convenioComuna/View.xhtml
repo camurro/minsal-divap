@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ConvenioComunaViewDlg" widgetVar="ConvenioComunaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewConvenioComunaTitle}" closeOnEscape="true">
+
+            <h:form id="ConvenioComunaViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{convenioComunaController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewConvenioComunaLabel_idConvenioComuna}"/>
+                        <h:outputText value="#{convenioComunaController.selected.idConvenioComuna}" title="#{messages.ViewConvenioComunaTitle_idConvenioComuna}"/>
+
+                        <h:outputText value="#{messages.ViewConvenioComunaLabel_fecha}"/>
+                        <h:outputText value="#{convenioComunaController.selected.fecha}" title="#{messages.ViewConvenioComunaTitle_fecha}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+
+                        <h:outputText value="#{messages.ViewConvenioComunaLabel_numeroResolucion}"/>
+                        <h:outputText value="#{convenioComunaController.selected.numeroResolucion}" title="#{messages.ViewConvenioComunaTitle_numeroResolucion}"/>
+
+                        <h:outputText value="#{messages.ViewConvenioComunaLabel_idPrograma}"/>
+                        <h:outputText value="#{convenioComunaController.selected.idPrograma.idProgramaAno}"/>
+
+                        <h:outputText value="#{messages.ViewConvenioComunaLabel_idComuna}"/>
+                        <h:outputText value="#{convenioComunaController.selected.idComuna.id}"/>
+
+                        <h:outputText value="#{messages.ViewConvenioComunaLabel_aprobacion}"/>
+                        <h:selectBooleanCheckbox id="aprobacion" value="#{convenioComunaController.selected.aprobacion}" title="#{messages.EditConvenioComunaTitle_aprobacion}"  disabled="true"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="ConvenioComunaViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

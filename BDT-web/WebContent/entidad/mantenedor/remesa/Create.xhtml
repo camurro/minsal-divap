@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="RemesaCreateDlg" widgetVar="RemesaCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateRemesaTitle}" closeOnEscape="true">
+
+            <h:form id="RemesaCreateForm">
+
+                <h:panelGroup id="display" rendered="#{remesaController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateRemesaLabel_valordia09}" for="valordia09" />
+                        <p:inputText id="valordia09" value="#{remesaController.selected.valordia09}" title="#{messages.CreateRemesaTitle_valordia09}"/>
+
+                        <p:outputLabel value="#{messages.CreateRemesaLabel_valordia24}" for="valordia24" />
+                        <p:inputText id="valordia24" value="#{remesaController.selected.valordia24}" title="#{messages.CreateRemesaTitle_valordia24}"/>
+
+                        <p:outputLabel value="#{messages.CreateRemesaLabel_valordia28}" for="valordia28" />
+                        <p:inputText id="valordia28" value="#{remesaController.selected.valordia28}" title="#{messages.CreateRemesaTitle_valordia28}"/>
+
+                        <p:outputLabel value="#{messages.CreateRemesaLabel_tipoSubtitulo}" for="tipoSubtitulo" />
+                        <p:selectOneMenu id="tipoSubtitulo" value="#{remesaController.selected.tipoSubtitulo}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoSubtituloController.items}"
+                                           var="tipoSubtituloItem"
+                                           itemValue="#{tipoSubtituloItem}"
+                                           itemLabel="#{tipoSubtituloItem.idTipoSubtitulo.toString()}"
+                                           />
+                            <f:converter binding="#{tipoSubtituloConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateRemesaLabel_idserviciosalud}" for="idserviciosalud" />
+                        <p:selectOneMenu id="idserviciosalud" value="#{remesaController.selected.idserviciosalud}" required="true" requiredMessage="#{messages.CreateRemesaRequiredMessage_idserviciosalud}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{servicioSaludController.items}"
+                                           var="idserviciosaludItem"
+                                           itemValue="#{idserviciosaludItem}"
+                                           itemLabel="#{idserviciosaludItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{servicioSaludConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateRemesaLabel_idprograma}" for="idprograma" />
+                        <p:selectOneMenu id="idprograma" value="#{remesaController.selected.idprograma}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaAnoController.items}"
+                                           var="idprogramaItem"
+                                           itemValue="#{idprogramaItem}"
+                                           itemLabel="#{idprogramaItem.idProgramaAno.toString()}"
+                                           />
+                            <f:converter binding="#{programaAnoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateRemesaLabel_idmes}" for="idmes" />
+                        <p:selectOneMenu id="idmes" value="#{remesaController.selected.idmes}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{mesController.items}"
+                                           var="idmesItem"
+                                           itemValue="#{idmesItem}"
+                                           itemLabel="#{idmesItem.idMes.toString()}"
+                                           />
+                            <f:converter binding="#{mesConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateRemesaLabel_idestablecimiento}" for="idestablecimiento" />
+                        <p:selectOneMenu id="idestablecimiento" value="#{remesaController.selected.idestablecimiento}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{establecimientoController.items}"
+                                           var="idestablecimientoItem"
+                                           itemValue="#{idestablecimientoItem}"
+                                           itemLabel="#{idestablecimientoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{establecimientoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateRemesaLabel_idcomuna}" for="idcomuna" />
+                        <p:selectOneMenu id="idcomuna" value="#{remesaController.selected.idcomuna}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{comunaController.items}"
+                                           var="idcomunaItem"
+                                           itemValue="#{idcomunaItem}"
+                                           itemLabel="#{idcomunaItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{comunaConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{remesaController.saveNew}" value="#{messages.Save}" update="display,:RemesaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,RemesaCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="RemesaCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

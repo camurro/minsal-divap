@@ -47,6 +47,7 @@ import cl.minsal.divap.model.ProgramaMunicipalCore;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
 import cl.minsal.divap.model.ProgramaServicioCore;
 import cl.minsal.divap.model.ProgramaServicioCoreComponente;
+import cl.minsal.divap.model.TipoComponente;
 import cl.minsal.divap.model.TipoSubtitulo;
 
 @Stateless
@@ -533,7 +534,9 @@ public class ProgramasService {
 	}
 
 
-	public List<ProgramaVO> getProgramasBySubtitulo(Integer anoCurso, Subtitulo subtitulo) {
+	public List<ProgramaVO> getProgramasBySubtitulo(Subtitulo subtitulo) {
+		System.out.println("carga programas del subtitulo --> "+subtitulo.getNombre());
+		Integer anoCurso = getAnoCurso();
 		List<ProgramaVO> programas = new ArrayList<ProgramaVO>();
 		List<ProgramaAno> programasAno = programasDAO.getProgramasBySubtitulo(anoCurso, subtitulo);
 		if(programasAno != null && programasAno.size() > 0){
@@ -954,6 +957,6 @@ public class ProgramasService {
 		}
 		return programaVO;
 	}
-
+	
 	
 }

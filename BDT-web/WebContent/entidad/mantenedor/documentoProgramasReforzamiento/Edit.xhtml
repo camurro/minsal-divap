@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="DocumentoProgramasReforzamientoEditDlg" widgetVar="DocumentoProgramasReforzamientoEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditDocumentoProgramasReforzamientoTitle}" closeOnEscape="true">
+
+            <h:form id="DocumentoProgramasReforzamientoEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{documentoProgramasReforzamientoController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditDocumentoProgramasReforzamientoLabel_id}" for="id" />
+                        <h:outputText id="id" value="#{documentoProgramasReforzamientoController.selected.id}" />
+
+                        <p:outputLabel value="#{messages.EditDocumentoProgramasReforzamientoLabel_idTipoDocumento}" for="idTipoDocumento" />
+                        <p:selectOneMenu id="idTipoDocumento" value="#{documentoProgramasReforzamientoController.selected.idTipoDocumento}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoDocumentoController.items}"
+                                           var="idTipoDocumentoItem"
+                                           itemValue="#{idTipoDocumentoItem}"
+                                           itemLabel="#{idTipoDocumentoItem.idTipoDocumento.toString()}"
+                                           />
+                            <f:converter binding="#{tipoDocumentoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditDocumentoProgramasReforzamientoLabel_idDocumento}" for="idDocumento" />
+                        <p:selectOneMenu id="idDocumento" value="#{documentoProgramasReforzamientoController.selected.idDocumento}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{referenciaDocumentoController.items}"
+                                           var="idDocumentoItem"
+                                           itemValue="#{idDocumentoItem}"
+                                           itemLabel="#{idDocumentoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{referenciaDocumentoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditDocumentoProgramasReforzamientoLabel_idProgramaAno}" for="idProgramaAno" />
+                        <p:selectOneMenu id="idProgramaAno" value="#{documentoProgramasReforzamientoController.selected.idProgramaAno}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaAnoController.items}"
+                                           var="idProgramaAnoItem"
+                                           itemValue="#{idProgramaAnoItem}"
+                                           itemLabel="#{idProgramaAnoItem.idProgramaAno.toString()}"
+                                           />
+                            <f:converter binding="#{programaAnoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditDocumentoProgramasReforzamientoLabel_idServicio}" for="idServicio" />
+                        <p:selectOneMenu id="idServicio" value="#{documentoProgramasReforzamientoController.selected.idServicio}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{servicioSaludController.items}"
+                                           var="idServicioItem"
+                                           itemValue="#{idServicioItem}"
+                                           itemLabel="#{idServicioItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{servicioSaludConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{documentoProgramasReforzamientoController.save}" value="#{messages.Save}" update="display,:DocumentoProgramasReforzamientoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,DocumentoProgramasReforzamientoEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="DocumentoProgramasReforzamientoEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

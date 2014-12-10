@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DistribucionInicialPercapitaViewDlg" widgetVar="DistribucionInicialPercapitaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewDistribucionInicialPercapitaTitle}" closeOnEscape="true">
+
+            <h:form id="DistribucionInicialPercapitaViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{distribucionInicialPercapitaController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewDistribucionInicialPercapitaLabel_idDistribucionInicialPercapita}"/>
+                        <h:outputText value="#{distribucionInicialPercapitaController.selected.idDistribucionInicialPercapita}" title="#{messages.ViewDistribucionInicialPercapitaTitle_idDistribucionInicialPercapita}"/>
+
+                        <h:outputText value="#{messages.ViewDistribucionInicialPercapitaLabel_fechaCreacion}"/>
+                        <h:outputText value="#{distribucionInicialPercapitaController.selected.fechaCreacion}" title="#{messages.ViewDistribucionInicialPercapitaTitle_fechaCreacion}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+
+                        <h:outputText value="#{messages.ViewDistribucionInicialPercapitaLabel_usuario}"/>
+                        <h:outputText value="#{distribucionInicialPercapitaController.selected.usuario.username}"/>
+
+                        <h:outputText value="#{messages.ViewDistribucionInicialPercapitaLabel_ano}"/>
+                        <h:outputText value="#{distribucionInicialPercapitaController.selected.ano.ano}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="DistribucionInicialPercapitaViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

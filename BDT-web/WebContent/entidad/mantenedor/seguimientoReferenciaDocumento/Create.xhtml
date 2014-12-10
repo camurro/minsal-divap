@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="SeguimientoReferenciaDocumentoCreateDlg" widgetVar="SeguimientoReferenciaDocumentoCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateSeguimientoReferenciaDocumentoTitle}" closeOnEscape="true">
+
+            <h:form id="SeguimientoReferenciaDocumentoCreateForm">
+
+                <h:panelGroup id="display" rendered="#{seguimientoReferenciaDocumentoController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateSeguimientoReferenciaDocumentoLabel_idSeguimiento}" for="idSeguimiento" />
+                        <p:selectOneMenu id="idSeguimiento" value="#{seguimientoReferenciaDocumentoController.selected.idSeguimiento}" required="true" requiredMessage="#{messages.CreateSeguimientoReferenciaDocumentoRequiredMessage_idSeguimiento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{seguimientoController.items}"
+                                           var="idSeguimientoItem"
+                                           itemValue="#{idSeguimientoItem}"
+                                           itemLabel="#{idSeguimientoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{seguimientoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateSeguimientoReferenciaDocumentoLabel_idReferenciaDocumento}" for="idReferenciaDocumento" />
+                        <p:selectOneMenu id="idReferenciaDocumento" value="#{seguimientoReferenciaDocumentoController.selected.idReferenciaDocumento}" required="true" requiredMessage="#{messages.CreateSeguimientoReferenciaDocumentoRequiredMessage_idReferenciaDocumento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{referenciaDocumentoController.items}"
+                                           var="idReferenciaDocumentoItem"
+                                           itemValue="#{idReferenciaDocumentoItem}"
+                                           itemLabel="#{idReferenciaDocumentoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{referenciaDocumentoConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{seguimientoReferenciaDocumentoController.saveNew}" value="#{messages.Save}" update="display,:SeguimientoReferenciaDocumentoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,SeguimientoReferenciaDocumentoCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="SeguimientoReferenciaDocumentoCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

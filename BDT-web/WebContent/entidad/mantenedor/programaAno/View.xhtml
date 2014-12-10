@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ProgramaAnoViewDlg" widgetVar="ProgramaAnoViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewProgramaAnoTitle}" closeOnEscape="true">
+
+            <h:form id="ProgramaAnoViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{programaAnoController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewProgramaAnoLabel_idProgramaAno}"/>
+                        <h:outputText value="#{programaAnoController.selected.idProgramaAno}" title="#{messages.ViewProgramaAnoTitle_idProgramaAno}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaAnoLabel_programa}"/>
+                        <h:outputText value="#{programaAnoController.selected.programa.descripcion}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaAnoLabel_estado}"/>
+                        <h:outputText value="#{programaAnoController.selected.estado.idEstadoPrograma}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaAnoLabel_estadoreliquidacion}"/>
+                        <h:outputText value="#{programaAnoController.selected.estadoreliquidacion.idEstadoPrograma}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaAnoLabel_estadoConvenio}"/>
+                        <h:outputText value="#{programaAnoController.selected.estadoConvenio.idEstadoPrograma}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaAnoLabel_ano}"/>
+                        <h:outputText value="#{programaAnoController.selected.ano.ano}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaAnoLabel_estadoFlujoCaja}"/>
+                        <h:outputText value="#{programaAnoController.selected.estadoFlujoCaja.idEstadoPrograma}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="ProgramaAnoViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

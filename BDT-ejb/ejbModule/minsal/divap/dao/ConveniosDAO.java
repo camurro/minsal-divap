@@ -12,6 +12,7 @@ import minsal.divap.enums.Subtitulo;
 import cl.minsal.divap.model.ConvenioComuna;
 import cl.minsal.divap.model.ConvenioComunaComponente;
 import cl.minsal.divap.model.ConvenioServicio;
+import cl.minsal.divap.model.ConvenioServicioComponente;
 import cl.minsal.divap.model.ReferenciaDocumento;
 
 
@@ -281,7 +282,7 @@ public class ConveniosDAO {
 		}
 		
 	}
-	// c.convenioComuna.idConvenioComuna = :idComuna and c.subtitulo.idTipoSubtitulo = :idSubtitulo and c.componente.id = :idComponente
+	
 	public ConvenioComunaComponente getByIdConvenioComunaIdSubtituloIdComponente(Integer idConvenioComuna, Integer idSubtitulo, Integer idComponente){
 		try {
 			TypedQuery<ConvenioComunaComponente> query = this.em.createNamedQuery("ConvenioComunaComponente.findByIdConvenioComunaIdSubtituloIdComponente", ConvenioComunaComponente.class);
@@ -289,6 +290,26 @@ public class ConveniosDAO {
 			query.setParameter("idSubtitulo", idSubtitulo);
 			query.setParameter("idComponente", idComponente);
 			List<ConvenioComunaComponente> result = query.getResultList();
+			if(result != null && result.size() >0 ){
+				return result.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
+	// WHERE    and c.convenioServicio.idEstablecimiento.id = :idEstablecimiento
+	public ConvenioServicioComponente getConvenioServicioComponenteByIdSubtituloIdComponente(Integer idProgramaAno, Integer idComponente, Integer idTipoSubtitulo, Integer idEstablecimiento){
+		try {
+			TypedQuery<ConvenioServicioComponente> query = this.em.createNamedQuery("ConvenioServicioComponente.findByIdProgramaAnoIdComponenteSubtituloEstablecimiento", ConvenioServicioComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			query.setParameter("idEstablecimiento", idEstablecimiento);
+			
+			List<ConvenioServicioComponente> result = query.getResultList();
 			if(result != null && result.size() >0 ){
 				return result.get(0);
 			}

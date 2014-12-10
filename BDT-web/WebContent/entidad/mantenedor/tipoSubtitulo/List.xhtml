@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="TipoSubtituloListForm">
+
+        <p:panel header="#{messages.ListTipoSubtituloTitle}">
+            <p:contextMenu id="TipoSubtituloDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('TipoSubtituloListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('TipoSubtituloListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('TipoSubtituloListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('TipoSubtituloListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.TipoSubtituloMenuItem_remesaCollection}" icon="ui-icon-search"  action="#{tipoSubtituloController.navigateRemesaCollection}" disabled="#{empty tipoSubtituloController.selected.remesaCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.TipoSubtituloMenuItem_componenteSubtitulos}" icon="ui-icon-search"  action="#{tipoSubtituloController.navigateComponenteSubtitulos}" disabled="#{empty tipoSubtituloController.selected.componenteSubtitulos}" ajax="false"/>  
+                <p:menuitem value="#{messages.TipoSubtituloMenuItem_programaServicioCoreComponentes}" icon="ui-icon-search"  action="#{tipoSubtituloController.navigateProgramaServicioCoreComponentes}" disabled="#{empty tipoSubtituloController.selected.programaServicioCoreComponentes}" ajax="false"/>  
+                <p:menuitem value="#{messages.TipoSubtituloMenuItem_dependencia}" icon="ui-icon-search"  actionListener="#{tipoSubtituloController.prepareDependencia}" update=":DependenciaViewForm" oncomplete="DependenciaViewDialog.show()" disabled="#{empty tipoSubtituloController.selected.dependencia}"/>  
+                <p:menuitem value="#{messages.TipoSubtituloMenuItem_programaMunicipalCoreComponentes}" icon="ui-icon-search"  action="#{tipoSubtituloController.navigateProgramaMunicipalCoreComponentes}" disabled="#{empty tipoSubtituloController.selected.programaMunicipalCoreComponentes}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{tipoSubtituloController.subtitulos}"
+                         var="item"
+                         rowKey="#{item.idSubtitulo}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{tipoSubtituloController.seleccionado}">
+
+                <p:ajax event="rowSelect"   update=":TipoSubtituloListForm:createButton :TipoSubtituloListForm:viewButton :TipoSubtituloListForm:editButton :TipoSubtituloListForm:deleteButton :TipoSubtituloListForm:TipoSubtituloDataTableContextMenu" listener="#{tipoSubtituloController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":TipoSubtituloListForm:createButton :TipoSubtituloListForm:viewButton :TipoSubtituloListForm:editButton :TipoSubtituloListForm:deleteButton :TipoSubtituloListForm:TipoSubtituloDataTableContextMenu" listener="#{tipoSubtituloController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('TipoSubtituloListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idSubtitulo}" filterBy="#{item.idSubtitulo}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListTipoSubtituloTitle_idTipoSubtitulo}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idSubtitulo}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.nombreSubtitulo}" filterBy="#{item.nombreSubtitulo}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListTipoSubtituloTitle_nombreSubtitulo}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombreSubtitulo}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idDependencia}" filterBy="#{item.idDependencia}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListTipoSubtituloTitle_dependencia}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombreDependencia}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.inflactor}" filterBy="#{item.inflactor}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListTipoSubtituloTitle_inflactor}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.inflactor}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{tipoSubtituloController.prepareCreateSubtitulo}" update=":TipoSubtituloCreateForm" oncomplete="TipoSubtituloCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{messages.View}" update=":TipoSubtituloViewForm" oncomplete="TipoSubtituloViewDialog.show()" disabled="#{empty tipoSubtituloController.seleccionado}"/>
+            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{messages.Edit}" update=":TipoSubtituloEditForm" oncomplete="TipoSubtituloEditDialog.show()" disabled="#{empty tipoSubtituloController.seleccionado}"/>
+            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{tipoSubtituloController.delete}" update=":growl,datalist" disabled="#{empty tipoSubtituloController.seleccionado}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

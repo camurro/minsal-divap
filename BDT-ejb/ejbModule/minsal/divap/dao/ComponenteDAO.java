@@ -14,6 +14,7 @@ import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.ComponenteSubtitulo;
 import cl.minsal.divap.model.ConvenioComuna;
 import cl.minsal.divap.model.ConvenioServicio;
+import cl.minsal.divap.model.TipoComponente;
 
 @Singleton
 public class ComponenteDAO {
@@ -168,6 +169,31 @@ public class ComponenteDAO {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public List<TipoComponente> getAllTipoComponente(){
+		try {
+			TypedQuery<TipoComponente> query = this.em.createNamedQuery("TipoComponente.findAll" , TipoComponente.class);
+			List<TipoComponente> result = query.getResultList();
+			return query.getResultList();
+		}catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+	
+	public TipoComponente getTipoComponenteById(Integer idTipoComponente){
+		try {
+			TypedQuery<TipoComponente> query = this.em.createNamedQuery("TipoComponente.findById" , TipoComponente.class);
+			query.setParameter("idTipoComponente", idTipoComponente);
+			List<TipoComponente> result = query.getResultList();
+			if (result.size() > 0)
+				return result.get(0);
+			return null;
+		}catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
 	}
 	
 }

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="DocumentoProgramasReforzamientoListForm">
+
+        <p:panel header="#{messages.ListDocumentoProgramasReforzamientoTitle}">
+            <p:contextMenu id="DocumentoProgramasReforzamientoDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('DocumentoProgramasReforzamientoListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('DocumentoProgramasReforzamientoListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('DocumentoProgramasReforzamientoListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('DocumentoProgramasReforzamientoListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.DocumentoProgramasReforzamientoMenuItem_idTipoDocumento}" icon="ui-icon-search"  actionListener="#{documentoProgramasReforzamientoController.prepareIdTipoDocumento}" update=":TipoDocumentoViewForm" oncomplete="TipoDocumentoViewDialog.show()" disabled="#{empty documentoProgramasReforzamientoController.selected.idTipoDocumento}"/>  
+                <p:menuitem value="#{messages.DocumentoProgramasReforzamientoMenuItem_idDocumento}" icon="ui-icon-search"  actionListener="#{documentoProgramasReforzamientoController.prepareIdDocumento}" update=":ReferenciaDocumentoViewForm" oncomplete="ReferenciaDocumentoViewDialog.show()" disabled="#{empty documentoProgramasReforzamientoController.selected.idDocumento}"/>  
+                <p:menuitem value="#{messages.DocumentoProgramasReforzamientoMenuItem_idProgramaAno}" icon="ui-icon-search"  actionListener="#{documentoProgramasReforzamientoController.prepareIdProgramaAno}" update=":ProgramaAnoViewForm" oncomplete="ProgramaAnoViewDialog.show()" disabled="#{empty documentoProgramasReforzamientoController.selected.idProgramaAno}"/>  
+                <p:menuitem value="#{messages.DocumentoProgramasReforzamientoMenuItem_idServicio}" icon="ui-icon-search"  actionListener="#{documentoProgramasReforzamientoController.prepareIdServicio}" update=":ServicioSaludViewForm" oncomplete="ServicioSaludViewDialog.show()" disabled="#{empty documentoProgramasReforzamientoController.selected.idServicio}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{documentoProgramasReforzamientoController.items}"
+                         var="item"
+                         rowKey="#{item.id}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{documentoProgramasReforzamientoController.selected}">
+
+                <p:ajax event="rowSelect"   update=":DocumentoProgramasReforzamientoListForm:createButton :DocumentoProgramasReforzamientoListForm:viewButton :DocumentoProgramasReforzamientoListForm:editButton :DocumentoProgramasReforzamientoListForm:deleteButton :DocumentoProgramasReforzamientoListForm:DocumentoProgramasReforzamientoDataTableContextMenu" listener="#{documentoProgramasReforzamientoController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":DocumentoProgramasReforzamientoListForm:createButton :DocumentoProgramasReforzamientoListForm:viewButton :DocumentoProgramasReforzamientoListForm:editButton :DocumentoProgramasReforzamientoListForm:deleteButton :DocumentoProgramasReforzamientoListForm:DocumentoProgramasReforzamientoDataTableContextMenu" listener="#{documentoProgramasReforzamientoController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('DocumentoProgramasReforzamientoListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.id}" filterBy="#{item.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoProgramasReforzamientoTitle_id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idTipoDocumento.idTipoDocumento}" filterBy="#{item.idTipoDocumento.idTipoDocumento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoProgramasReforzamientoTitle_idTipoDocumento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idTipoDocumento.idTipoDocumento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idDocumento.id}" filterBy="#{item.idDocumento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoProgramasReforzamientoTitle_idDocumento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idDocumento.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idProgramaAno.idProgramaAno}" filterBy="#{item.idProgramaAno.idProgramaAno}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoProgramasReforzamientoTitle_idProgramaAno}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idProgramaAno.idProgramaAno}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idServicio.id}" filterBy="#{item.idServicio.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoProgramasReforzamientoTitle_idServicio}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idServicio.id}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{documentoProgramasReforzamientoController.prepareCreate}" update=":DocumentoProgramasReforzamientoCreateForm" oncomplete="DocumentoProgramasReforzamientoCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":DocumentoProgramasReforzamientoViewForm" oncomplete="DocumentoProgramasReforzamientoViewDialog.show()" disabled="#{empty documentoProgramasReforzamientoController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":DocumentoProgramasReforzamientoEditForm" oncomplete="DocumentoProgramasReforzamientoEditDialog.show()" disabled="#{empty documentoProgramasReforzamientoController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{documentoProgramasReforzamientoController.delete}" update=":growl,datalist" disabled="#{empty documentoProgramasReforzamientoController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="ProgramaServicioCoreComponenteListForm">
+
+        <p:panel header="#{messages.ListProgramaServicioCoreComponenteTitle}">
+            <p:contextMenu id="ProgramaServicioCoreComponenteDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('ProgramaServicioCoreComponenteListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('ProgramaServicioCoreComponenteListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('ProgramaServicioCoreComponenteListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('ProgramaServicioCoreComponenteListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.ProgramaServicioCoreComponenteMenuItem_subtitulo}" icon="ui-icon-search"  actionListener="#{programaServicioCoreComponenteController.prepareSubtitulo}" update=":TipoSubtituloViewForm" oncomplete="TipoSubtituloViewDialog.show()" disabled="#{empty programaServicioCoreComponenteController.selected.subtitulo}"/>  
+                <p:menuitem value="#{messages.ProgramaServicioCoreComponenteMenuItem_programaServicioCore1}" icon="ui-icon-search"  actionListener="#{programaServicioCoreComponenteController.prepareProgramaServicioCore1}" update=":ProgramaServicioCoreViewForm" oncomplete="ProgramaServicioCoreViewDialog.show()" disabled="#{empty programaServicioCoreComponenteController.selected.programaServicioCore1}"/>  
+                <p:menuitem value="#{messages.ProgramaServicioCoreComponenteMenuItem_servicioCoreComponente}" icon="ui-icon-search"  actionListener="#{programaServicioCoreComponenteController.prepareServicioCoreComponente}" update=":ComponenteViewForm" oncomplete="ComponenteViewDialog.show()" disabled="#{empty programaServicioCoreComponenteController.selected.servicioCoreComponente}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{programaServicioCoreComponenteController.items}"
+                         var="item"
+                         rowKey="#{item.programaServicioCoreComponentePK}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{programaServicioCoreComponenteController.selected}">
+
+                <p:ajax event="rowSelect"   update=":ProgramaServicioCoreComponenteListForm:createButton :ProgramaServicioCoreComponenteListForm:viewButton :ProgramaServicioCoreComponenteListForm:editButton :ProgramaServicioCoreComponenteListForm:deleteButton :ProgramaServicioCoreComponenteListForm:ProgramaServicioCoreComponenteDataTableContextMenu" listener="#{programaServicioCoreComponenteController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":ProgramaServicioCoreComponenteListForm:createButton :ProgramaServicioCoreComponenteListForm:viewButton :ProgramaServicioCoreComponenteListForm:editButton :ProgramaServicioCoreComponenteListForm:deleteButton :ProgramaServicioCoreComponenteListForm:ProgramaServicioCoreComponenteDataTableContextMenu" listener="#{programaServicioCoreComponenteController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('ProgramaServicioCoreComponenteListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.tarifa}" filterBy="#{item.tarifa}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaServicioCoreComponenteTitle_tarifa}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.tarifa}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.cantidad}" filterBy="#{item.cantidad}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaServicioCoreComponenteTitle_cantidad}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.cantidad}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.monto}" filterBy="#{item.monto}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaServicioCoreComponenteTitle_monto}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.monto}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.subtitulo.idTipoSubtitulo}" filterBy="#{item.subtitulo.idTipoSubtitulo}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaServicioCoreComponenteTitle_subtitulo}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.subtitulo.idTipoSubtitulo}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.programaServicioCore1.idProgramaServicioCore}" filterBy="#{item.programaServicioCore1.idProgramaServicioCore}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaServicioCoreComponenteTitle_programaServicioCore1}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.programaServicioCore1.idProgramaServicioCore}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.servicioCoreComponente.id}" filterBy="#{item.servicioCoreComponente.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaServicioCoreComponenteTitle_servicioCoreComponente}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.servicioCoreComponente.id}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{programaServicioCoreComponenteController.prepareCreate}" update=":ProgramaServicioCoreComponenteCreateForm" oncomplete="ProgramaServicioCoreComponenteCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":ProgramaServicioCoreComponenteViewForm" oncomplete="ProgramaServicioCoreComponenteViewDialog.show()" disabled="#{empty programaServicioCoreComponenteController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":ProgramaServicioCoreComponenteEditForm" oncomplete="ProgramaServicioCoreComponenteEditDialog.show()" disabled="#{empty programaServicioCoreComponenteController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{programaServicioCoreComponenteController.delete}" update=":growl,datalist" disabled="#{empty programaServicioCoreComponenteController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

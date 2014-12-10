@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="ConvenioComunaComponenteListForm">
+
+        <p:panel header="#{messages.ListConvenioComunaComponenteTitle}">
+            <p:contextMenu id="ConvenioComunaComponenteDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('ConvenioComunaComponenteListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('ConvenioComunaComponenteListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('ConvenioComunaComponenteListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('ConvenioComunaComponenteListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.ConvenioComunaComponenteMenuItem_subtitulo}" icon="ui-icon-search"  actionListener="#{convenioComunaComponenteController.prepareSubtitulo}" update=":TipoSubtituloViewForm" oncomplete="TipoSubtituloViewDialog.show()" disabled="#{empty convenioComunaComponenteController.selected.subtitulo}"/>  
+                <p:menuitem value="#{messages.ConvenioComunaComponenteMenuItem_convenioComuna}" icon="ui-icon-search"  actionListener="#{convenioComunaComponenteController.prepareConvenioComuna}" update=":ConvenioComunaViewForm" oncomplete="ConvenioComunaViewDialog.show()" disabled="#{empty convenioComunaComponenteController.selected.convenioComuna}"/>  
+                <p:menuitem value="#{messages.ConvenioComunaComponenteMenuItem_componente}" icon="ui-icon-search"  actionListener="#{convenioComunaComponenteController.prepareComponente}" update=":ComponenteViewForm" oncomplete="ComponenteViewDialog.show()" disabled="#{empty convenioComunaComponenteController.selected.componente}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{convenioComunaComponenteController.items}"
+                         var="item"
+                         rowKey="#{item.idConvenioComunaComponente}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{convenioComunaComponenteController.selected}">
+
+                <p:ajax event="rowSelect"   update=":ConvenioComunaComponenteListForm:createButton :ConvenioComunaComponenteListForm:viewButton :ConvenioComunaComponenteListForm:editButton :ConvenioComunaComponenteListForm:deleteButton :ConvenioComunaComponenteListForm:ConvenioComunaComponenteDataTableContextMenu" listener="#{convenioComunaComponenteController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":ConvenioComunaComponenteListForm:createButton :ConvenioComunaComponenteListForm:viewButton :ConvenioComunaComponenteListForm:editButton :ConvenioComunaComponenteListForm:deleteButton :ConvenioComunaComponenteListForm:ConvenioComunaComponenteDataTableContextMenu" listener="#{convenioComunaComponenteController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('ConvenioComunaComponenteListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idConvenioComunaComponente}" filterBy="#{item.idConvenioComunaComponente}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListConvenioComunaComponenteTitle_idConvenioComunaComponente}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idConvenioComunaComponente}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.monto}" filterBy="#{item.monto}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListConvenioComunaComponenteTitle_monto}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.monto}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.subtitulo.idTipoSubtitulo}" filterBy="#{item.subtitulo.idTipoSubtitulo}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListConvenioComunaComponenteTitle_subtitulo}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.subtitulo.idTipoSubtitulo}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.convenioComuna.idConvenioComuna}" filterBy="#{item.convenioComuna.idConvenioComuna}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListConvenioComunaComponenteTitle_convenioComuna}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.convenioComuna.idConvenioComuna}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.componente.id}" filterBy="#{item.componente.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListConvenioComunaComponenteTitle_componente}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.componente.id}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{convenioComunaComponenteController.prepareCreate}" update=":ConvenioComunaComponenteCreateForm" oncomplete="ConvenioComunaComponenteCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":ConvenioComunaComponenteViewForm" oncomplete="ConvenioComunaComponenteViewDialog.show()" disabled="#{empty convenioComunaComponenteController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":ConvenioComunaComponenteEditForm" oncomplete="ConvenioComunaComponenteEditDialog.show()" disabled="#{empty convenioComunaComponenteController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{convenioComunaComponenteController.delete}" update=":growl,datalist" disabled="#{empty convenioComunaComponenteController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

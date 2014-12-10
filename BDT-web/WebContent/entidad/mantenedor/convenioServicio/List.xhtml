@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="ConvenioServicioListForm">
+
+        <p:panel header="#{messages.ListConvenioServicioTitle}">
+            <p:contextMenu id="ConvenioServicioDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('ConvenioServicioListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('ConvenioServicioListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('ConvenioServicioListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('ConvenioServicioListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.ConvenioServicioMenuItem_idPrograma}" icon="ui-icon-search"  actionListener="#{convenioServicioController.prepareIdPrograma}" update=":ProgramaAnoViewForm" oncomplete="ProgramaAnoViewDialog.show()" disabled="#{empty convenioServicioController.selected.idPrograma}"/>  
+                <p:menuitem value="#{messages.ConvenioServicioMenuItem_mes}" icon="ui-icon-search"  actionListener="#{convenioServicioController.prepareMes}" update=":MesViewForm" oncomplete="MesViewDialog.show()" disabled="#{empty convenioServicioController.selected.mes}"/>  
+                <p:menuitem value="#{messages.ConvenioServicioMenuItem_idEstablecimiento}" icon="ui-icon-search"  actionListener="#{convenioServicioController.prepareIdEstablecimiento}" update=":EstablecimientoViewForm" oncomplete="EstablecimientoViewDialog.show()" disabled="#{empty convenioServicioController.selected.idEstablecimiento}"/>  
+                <p:menuitem value="#{messages.ConvenioServicioMenuItem_convenioServicioComponentes}" icon="ui-icon-search"  action="#{convenioServicioController.navigateConvenioServicioComponentes}" disabled="#{empty convenioServicioController.selected.convenioServicioComponentes}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{convenioServicioController.items}"
+                         var="item"
+                         rowKey="#{item.idConvenioServicio}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{convenioServicioController.selected}">
+
+                <p:ajax event="rowSelect"   update=":ConvenioServicioListForm:createButton :ConvenioServicioListForm:viewButton :ConvenioServicioListForm:editButton :ConvenioServicioListForm:deleteButton :ConvenioServicioListForm:ConvenioServicioDataTableContextMenu" listener="#{convenioServicioController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":ConvenioServicioListForm:createButton :ConvenioServicioListForm:viewButton :ConvenioServicioListForm:editButton :ConvenioServicioListForm:deleteButton :ConvenioServicioListForm:ConvenioServicioDataTableContextMenu" listener="#{convenioServicioController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('ConvenioServicioListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idConvenioServicio}" filterBy="#{item.idConvenioServicio}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListConvenioServicioTitle_idConvenioServicio}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idConvenioServicio}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.fecha}" filterBy="#{item.fecha}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListConvenioServicioTitle_fecha}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.fecha}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                </p:column>
+
+
+                <p:column sortBy="#{item.numeroResolucion}" filterBy="#{item.numeroResolucion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListConvenioServicioTitle_numeroResolucion}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.numeroResolucion}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.aprobacion}" filterBy="#{item.aprobacion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListConvenioServicioTitle_aprobacion}"/>
+                    </f:facet>
+                    <h:selectBooleanCheckbox id="aprobacion" value="#{item.aprobacion}" title="#{messages.EditConvenioServicioTitle_aprobacion}"  disabled="true"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idPrograma.idProgramaAno}" filterBy="#{item.idPrograma.idProgramaAno}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListConvenioServicioTitle_idPrograma}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idPrograma.idProgramaAno}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.mes.idMes}" filterBy="#{item.mes.idMes}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListConvenioServicioTitle_mes}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.mes.idMes}"/>
+                </p:column>
+
+                <!--
+                                    <p:column sortBy="#{item.idEstablecimiento.id}" filterBy="#{item.idEstablecimiento.id}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages.ListConvenioServicioTitle_idEstablecimiento}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.idEstablecimiento.id}"/>
+                                    </p:column>
+                -->
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{convenioServicioController.prepareCreate}" update=":ConvenioServicioCreateForm" oncomplete="ConvenioServicioCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":ConvenioServicioViewForm" oncomplete="ConvenioServicioViewDialog.show()" disabled="#{empty convenioServicioController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":ConvenioServicioEditForm" oncomplete="ConvenioServicioEditDialog.show()" disabled="#{empty convenioServicioController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{convenioServicioController.delete}" update=":growl,datalist" disabled="#{empty convenioServicioController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

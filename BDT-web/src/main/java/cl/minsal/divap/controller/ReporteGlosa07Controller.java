@@ -9,6 +9,7 @@ import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
+import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.ReportesServices;
 import minsal.divap.service.ServicioSaludService;
 import minsal.divap.vo.ReporteGlosaVO;
@@ -32,17 +33,34 @@ public class ReporteGlosa07Controller extends BaseController implements Serializ
 	private Long sumArt56reforzamientoMunicipal;
 	private Long sumTotalRemesasEneroMarzo;
 	private Integer cantidadFilas;
-	
+	private Integer idPlanilla;
+	private String docIdDownload;
 	
 	
 	@PostConstruct 
 	public void init() {
-		this.reporteGlosaVO = reportesServices.getReporteGlosa();
+		this.reporteGlosaVO = new ArrayList<ReporteGlosaVO>();
 		this.cantidadFilas = this.reporteGlosaVO.size();
+		this.idPlanilla = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEGLOSA07);
+		if(this.idPlanilla == null){
+			this.idPlanilla = reportesServices.generarPlanillaReporteGlosa07(getLoggedUsername());
+		}
+		System.out.println("this.idPlanilla ---> "+this.idPlanilla);
+		
 		
 	}
 	
+	public String downloadTemplate() {
+		Integer docDownload = Integer.valueOf(Integer
+				.parseInt(getDocIdDownload()));
+		setDocumento(documentService.getDocument(docDownload));
+		super.downloadDocument();
+		return null;
+	}
+	
+	
 	public void cargarTablaPorServicio(){
+		System.out.println("cargarTablaPorServicio --> getValorComboServicio() --> "+getValorComboServicio());
 		if(getValorComboServicio() != null){
 			if(getValorComboServicio().intValue() != 0){
 				this.reporteGlosaVO = reportesServices.getReporteGlosaPorServicio(getValorComboServicio());
@@ -128,6 +146,22 @@ public class ReporteGlosa07Controller extends BaseController implements Serializ
 
 	public void setCantidadFilas(Integer cantidadFilas) {
 		this.cantidadFilas = cantidadFilas;
+	}
+
+	public Integer getIdPlanilla() {
+		return idPlanilla;
+	}
+
+	public void setIdPlanilla(Integer idPlanilla) {
+		this.idPlanilla = idPlanilla;
+	}
+
+	public String getDocIdDownload() {
+		return docIdDownload;
+	}
+
+	public void setDocIdDownload(String docIdDownload) {
+		this.docIdDownload = docIdDownload;
 	}
 	
 

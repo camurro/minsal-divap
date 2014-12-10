@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="RegionListForm">
+
+        <p:panel header="#{messages.ListRegionTitle}">
+            <p:contextMenu id="RegionDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('RegionListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('RegionListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('RegionListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('RegionListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.RegionMenuItem_secretarioRegional}" icon="ui-icon-search"  actionListener="#{regionController.prepareSecretarioRegional}" update=":PersonaViewForm" oncomplete="PersonaViewDialog.show()" disabled="#{empty regionController.selected.secretarioRegional}"/>  
+                <p:menuitem value="#{messages.RegionMenuItem_servicioSaluds}" icon="ui-icon-search"  action="#{regionController.navigateServicioSaluds}" disabled="#{empty regionController.selected.servicioSaluds}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{regionController.regiones}"
+                         var="item"
+                         rowKey="#{item.idRegion}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{regionController.seleccionado}">
+
+                <p:ajax event="rowSelect"   update=":RegionListForm:createButton :RegionListForm:viewButton :RegionListForm:editButton :RegionListForm:deleteButton :RegionListForm:RegionDataTableContextMenu" listener="#{regionController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":RegionListForm:createButton :RegionListForm:viewButton :RegionListForm:editButton :RegionListForm:deleteButton :RegionListForm:RegionDataTableContextMenu" listener="#{regionController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('RegionListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idRegion}" filterBy="#{item.idRegion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRegionTitle_id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idRegion}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.nombreRegion}" filterBy="#{item.nombreRegion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRegionTitle_nombre}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombreRegion}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idSecretarioRegional}" filterBy="#{item.idSecretarioRegional}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRegionTitle_secretarioRegional}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.secretarioRegional}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{regionController.prepareCreateRegion}" update=":RegionCreateForm" oncomplete="RegionCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{messages.View}" update=":RegionViewForm" oncomplete="RegionViewDialog.show()" disabled="#{empty regionController.seleccionado}"/>
+            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{messages.Edit}" update=":RegionEditForm" oncomplete="RegionEditDialog.show()" disabled="#{empty regionController.seleccionado}"/>
+            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{regionController.delete}" update=":growl,datalist" disabled="#{empty regionController.seleccionado}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

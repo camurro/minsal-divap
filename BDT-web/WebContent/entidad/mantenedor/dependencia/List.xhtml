@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="DependenciaListForm">
+
+        <p:panel header="#{messages.ListDependenciaTitle}">
+            <p:contextMenu id="DependenciaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('DependenciaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('DependenciaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('DependenciaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('DependenciaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.DependenciaMenuItem_tipoSubtitulos}" icon="ui-icon-search"  action="#{dependenciaController.navigateTipoSubtitulos}" disabled="#{empty dependenciaController.selected.tipoSubtitulos}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{dependenciaController.items}"
+                         var="item"
+                         rowKey="#{item.idDependenciaPrograma}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{dependenciaController.selected}">
+
+                <p:ajax event="rowSelect"   update=":DependenciaListForm:createButton :DependenciaListForm:viewButton :DependenciaListForm:editButton :DependenciaListForm:deleteButton :DependenciaListForm:DependenciaDataTableContextMenu" listener="#{dependenciaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":DependenciaListForm:createButton :DependenciaListForm:viewButton :DependenciaListForm:editButton :DependenciaListForm:deleteButton :DependenciaListForm:DependenciaDataTableContextMenu" listener="#{dependenciaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('DependenciaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idDependenciaPrograma}" filterBy="#{item.idDependenciaPrograma}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDependenciaTitle_idDependenciaPrograma}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idDependenciaPrograma}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.nombre}" filterBy="#{item.nombre}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDependenciaTitle_nombre}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombre}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{dependenciaController.prepareCreate}" update=":DependenciaCreateForm" oncomplete="DependenciaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":DependenciaViewForm" oncomplete="DependenciaViewDialog.show()" disabled="#{empty dependenciaController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":DependenciaEditForm" oncomplete="DependenciaEditDialog.show()" disabled="#{empty dependenciaController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{dependenciaController.delete}" update=":growl,datalist" disabled="#{empty dependenciaController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

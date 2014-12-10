@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="RebajaEditDlg" widgetVar="RebajaEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditRebajaTitle}" closeOnEscape="true">
+
+            <h:form id="RebajaEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{rebajaController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditRebajaLabel_idRebaja}" for="idRebaja" />
+                        <h:outputText id="idRebaja" value="#{rebajaController.selected.idRebaja}" />
+
+                        <p:outputLabel value="#{messages.EditRebajaLabel_usuario}" for="usuario" />
+                        <p:selectOneMenu id="usuario" value="#{rebajaController.selected.usuario}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{usuarioController.items}"
+                                           var="usuarioItem"
+                                           itemValue="#{usuarioItem}"
+                                           itemLabel="#{usuarioItem.username.toString()}"
+                                           />
+                            <f:converter binding="#{usuarioConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditRebajaLabel_rebajaCorte}" for="rebajaCorte" />
+                        <p:selectOneMenu id="rebajaCorte" value="#{rebajaController.selected.rebajaCorte}" required="true" requiredMessage="#{messages.EditRebajaRequiredMessage_rebajaCorte}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{rebajaCorteController.items}"
+                                           var="rebajaCorteItem"
+                                           itemValue="#{rebajaCorteItem}"
+                                           itemLabel="#{rebajaCorteItem.rebajaCorteId.toString()}"
+                                           />
+                            <f:converter binding="#{rebajaCorteConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditRebajaLabel_ano}" for="ano" />
+                        <p:selectOneMenu id="ano" value="#{rebajaController.selected.ano}" required="true" requiredMessage="#{messages.EditRebajaRequiredMessage_ano}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{anoEnCursoController.items}"
+                                           var="anoItem"
+                                           itemValue="#{anoItem}"
+                                           itemLabel="#{anoItem.ano.toString()}"
+                                           />
+                            <f:converter binding="#{anoEnCursoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditRebajaLabel_fechaCreacion}" for="fechaCreacion" />
+                        <p:calendar id="fechaCreacion" pattern="MM/dd/yyyy HH:mm:ss" value="#{rebajaController.selected.fechaCreacion}" title="#{messages.EditRebajaTitle_fechaCreacion}"  showOn="button"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{rebajaController.save}" value="#{messages.Save}" update="display,:RebajaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,RebajaEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="RebajaEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

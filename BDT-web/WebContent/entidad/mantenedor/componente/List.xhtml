@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="ComponenteListForm">
+
+        <p:panel header="#{messages.ListComponenteTitle}">
+            <p:contextMenu id="ComponenteDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('ComponenteListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('ComponenteListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('ComponenteListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('ComponenteListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.ComponenteMenuItem_idPrograma}" icon="ui-icon-search"  actionListener="#{componenteController.prepareIdPrograma}" update=":ProgramaViewForm" oncomplete="ProgramaViewDialog.show()" disabled="#{empty componenteController.selected.idPrograma}"/>  
+                <p:menuitem value="#{messages.ComponenteMenuItem_componenteSubtitulos}" icon="ui-icon-search"  action="#{componenteController.navigateComponenteSubtitulos}" disabled="#{empty componenteController.selected.componenteSubtitulos}" ajax="false"/>  
+                <p:menuitem value="#{messages.ComponenteMenuItem_tipoComponente}" icon="ui-icon-search"  actionListener="#{componenteController.prepareTipoComponente}" update=":TipoComponenteViewForm" oncomplete="TipoComponenteViewDialog.show()" disabled="#{empty componenteController.selected.tipoComponente}"/>  
+                <p:menuitem value="#{messages.ComponenteMenuItem_programaServicioCoreComponentes}" icon="ui-icon-search"  action="#{componenteController.navigateProgramaServicioCoreComponentes}" disabled="#{empty componenteController.selected.programaServicioCoreComponentes}" ajax="false"/>  
+                <p:menuitem value="#{messages.ComponenteMenuItem_programaMunicipalCoreComponentes}" icon="ui-icon-search"  action="#{componenteController.navigateProgramaMunicipalCoreComponentes}" disabled="#{empty componenteController.selected.programaMunicipalCoreComponentes}" ajax="false"/>  
+                <p:menuitem value="#{messages.ComponenteMenuItem_cuotas}" icon="ui-icon-search"  action="#{componenteController.navigateCuotas}" disabled="#{empty componenteController.selected.cuotas}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{componenteController.componentes}"
+                         var="item"
+                         rowKey="#{item.idComponente}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50,60"
+                         selectionMode="single"
+                         selection="#{componenteController.seleccionado}">
+
+                <p:ajax event="rowSelect"   update=":ComponenteListForm:createButton :ComponenteListForm:viewButton :ComponenteListForm:editButton :ComponenteListForm:deleteButton :ComponenteListForm:ComponenteDataTableContextMenu" listener="#{componenteController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":ComponenteListForm:createButton :ComponenteListForm:viewButton :ComponenteListForm:editButton :ComponenteListForm:deleteButton :ComponenteListForm:ComponenteDataTableContextMenu" listener="#{componenteController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('ComponenteListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idComponente}" filterBy="#{item.idComponente}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListComponenteTitle_id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idComponente}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.nombreComponente}" filterBy="#{item.nombreComponente}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListComponenteTitle_nombre}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombreComponente}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.nombrePrograma}" filterBy="#{item.nombrePrograma}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListComponenteTitle_idPrograma}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombrePrograma}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idTipoComponente}" filterBy="#{item.idTipoComponente}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListComponenteTitle_tipoComponente}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombreTipoComponente}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.peso}" filterBy="#{item.peso}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListComponenteTitle_peso}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.peso}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{componenteController.prepareCreateComponente}" update=":ComponenteCreateForm" oncomplete="ComponenteCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{messages.View}" update=":ComponenteViewForm" oncomplete="ComponenteViewDialog.show()" disabled="#{empty componenteController.seleccionado}"/>
+            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{messages.Edit}" actionListener="#{componenteController.prepareEditComponente}" update=":ComponenteEditForm" oncomplete="ComponenteEditDialog.show()" disabled="#{empty componenteController.seleccionado}"/>
+            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{componenteController.delete}" update=":growl,datalist" disabled="#{empty componenteController.seleccionado}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

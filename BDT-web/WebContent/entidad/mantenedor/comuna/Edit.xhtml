@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="ComunaEditDlg" widgetVar="ComunaEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditComunaTitle}" closeOnEscape="true">
+
+            <h:form id="ComunaEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{comunaController.comunaSeleccionada != null}">
+
+
+                        <h:outputLabel value="#{messages.EditComunaLabel_id}" for="id" />
+                        <h:outputText id="id" value="#{comunaController.comunaSeleccionada.idComuna}" />
+
+                        <p:outputLabel value="#{messages.EditComunaLabel_nombre}" for="nombre" />
+                        <p:inputText id="nombre" value="#{comunaController.comunaSeleccionada.nombreComuna}" title="#{messages.EditComunaTitle_nombre}"/>
+
+                        <p:outputLabel value="#{messages.EditComunaLabel_servicioSalud}" for="servicioSalud" />
+                        <p:selectOneMenu id="servicioSalud" value="#{comunaController.comunaSeleccionada.idServicio}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{comunaController.servicios}"
+                                           var="servicioSaludItem"
+                                           itemValue="#{servicioSaludItem.id_servicio}"
+                                           itemLabel="#{servicioSaludItem.nombre_servicio}"
+                                           />
+                          
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{comunaController.edit}" value="#{messages.Save}" update="display,:ComunaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ComunaEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ComunaEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

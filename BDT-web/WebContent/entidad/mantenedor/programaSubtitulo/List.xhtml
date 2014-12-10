@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="ProgramaSubtituloListForm">
+
+        <p:panel header="#{messages.ListProgramaSubtituloTitle}">
+            <p:contextMenu id="ProgramaSubtituloDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('ProgramaSubtituloListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('ProgramaSubtituloListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('ProgramaSubtituloListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('ProgramaSubtituloListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.ProgramaSubtituloMenuItem_subtitulo}" icon="ui-icon-search"  actionListener="#{programaSubtituloController.prepareSubtitulo}" update=":TipoSubtituloViewForm" oncomplete="TipoSubtituloViewDialog.show()" disabled="#{empty programaSubtituloController.selected.subtitulo}"/>  
+                <p:menuitem value="#{messages.ProgramaSubtituloMenuItem_programa}" icon="ui-icon-search"  actionListener="#{programaSubtituloController.preparePrograma}" update=":ProgramaViewForm" oncomplete="ProgramaViewDialog.show()" disabled="#{empty programaSubtituloController.selected.programa}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{programaSubtituloController.items}"
+                         var="item"
+                         rowKey="#{item.idProgramaSubtitulo}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{programaSubtituloController.selected}">
+
+                <p:ajax event="rowSelect"   update=":ProgramaSubtituloListForm:createButton :ProgramaSubtituloListForm:viewButton :ProgramaSubtituloListForm:editButton :ProgramaSubtituloListForm:deleteButton :ProgramaSubtituloListForm:ProgramaSubtituloDataTableContextMenu" listener="#{programaSubtituloController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":ProgramaSubtituloListForm:createButton :ProgramaSubtituloListForm:viewButton :ProgramaSubtituloListForm:editButton :ProgramaSubtituloListForm:deleteButton :ProgramaSubtituloListForm:ProgramaSubtituloDataTableContextMenu" listener="#{programaSubtituloController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('ProgramaSubtituloListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idProgramaSubtitulo}" filterBy="#{item.idProgramaSubtitulo}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaSubtituloTitle_idProgramaSubtitulo}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idProgramaSubtitulo}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.subtitulo.idTipoSubtitulo}" filterBy="#{item.subtitulo.idTipoSubtitulo}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaSubtituloTitle_subtitulo}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.subtitulo.idTipoSubtitulo}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.programa.descripcion}" filterBy="#{item.programa.descripcion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaSubtituloTitle_programa}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.programa.descripcion}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{programaSubtituloController.prepareCreate}" update=":ProgramaSubtituloCreateForm" oncomplete="ProgramaSubtituloCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":ProgramaSubtituloViewForm" oncomplete="ProgramaSubtituloViewDialog.show()" disabled="#{empty programaSubtituloController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":ProgramaSubtituloEditForm" oncomplete="ProgramaSubtituloEditDialog.show()" disabled="#{empty programaSubtituloController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{programaSubtituloController.delete}" update=":growl,datalist" disabled="#{empty programaSubtituloController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

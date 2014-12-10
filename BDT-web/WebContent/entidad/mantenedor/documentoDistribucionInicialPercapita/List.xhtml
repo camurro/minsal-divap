@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="DocumentoDistribucionInicialPercapitaListForm">
+
+        <p:panel header="#{messages.ListDocumentoDistribucionInicialPercapitaTitle}">
+            <p:contextMenu id="DocumentoDistribucionInicialPercapitaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('DocumentoDistribucionInicialPercapitaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('DocumentoDistribucionInicialPercapitaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('DocumentoDistribucionInicialPercapitaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('DocumentoDistribucionInicialPercapitaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.DocumentoDistribucionInicialPercapitaMenuItem_idDocumento}" icon="ui-icon-search"  actionListener="#{documentoDistribucionInicialPercapitaController.prepareIdDocumento}" update=":ReferenciaDocumentoViewForm" oncomplete="ReferenciaDocumentoViewDialog.show()" disabled="#{empty documentoDistribucionInicialPercapitaController.selected.idDocumento}"/>  
+                <p:menuitem value="#{messages.DocumentoDistribucionInicialPercapitaMenuItem_idDistribucionInicialPercapita}" icon="ui-icon-search"  actionListener="#{documentoDistribucionInicialPercapitaController.prepareIdDistribucionInicialPercapita}" update=":DistribucionInicialPercapitaViewForm" oncomplete="DistribucionInicialPercapitaViewDialog.show()" disabled="#{empty documentoDistribucionInicialPercapitaController.selected.idDistribucionInicialPercapita}"/>  
+                <p:menuitem value="#{messages.DocumentoDistribucionInicialPercapitaMenuItem_tipoDocumento}" icon="ui-icon-search"  actionListener="#{documentoDistribucionInicialPercapitaController.prepareTipoDocumento}" update=":TipoDocumentoViewForm" oncomplete="TipoDocumentoViewDialog.show()" disabled="#{empty documentoDistribucionInicialPercapitaController.selected.tipoDocumento}"/>  
+                <p:menuitem value="#{messages.DocumentoDistribucionInicialPercapitaMenuItem_comuna}" icon="ui-icon-search"  actionListener="#{documentoDistribucionInicialPercapitaController.prepareComuna}" update=":ComunaViewForm" oncomplete="ComunaViewDialog.show()" disabled="#{empty documentoDistribucionInicialPercapitaController.selected.comuna}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{documentoDistribucionInicialPercapitaController.items}"
+                         var="item"
+                         rowKey="#{item.idDocumentoDistribucionInicialPercapita}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{documentoDistribucionInicialPercapitaController.selected}">
+
+                <p:ajax event="rowSelect"   update=":DocumentoDistribucionInicialPercapitaListForm:createButton :DocumentoDistribucionInicialPercapitaListForm:viewButton :DocumentoDistribucionInicialPercapitaListForm:editButton :DocumentoDistribucionInicialPercapitaListForm:deleteButton :DocumentoDistribucionInicialPercapitaListForm:DocumentoDistribucionInicialPercapitaDataTableContextMenu" listener="#{documentoDistribucionInicialPercapitaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":DocumentoDistribucionInicialPercapitaListForm:createButton :DocumentoDistribucionInicialPercapitaListForm:viewButton :DocumentoDistribucionInicialPercapitaListForm:editButton :DocumentoDistribucionInicialPercapitaListForm:deleteButton :DocumentoDistribucionInicialPercapitaListForm:DocumentoDistribucionInicialPercapitaDataTableContextMenu" listener="#{documentoDistribucionInicialPercapitaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('DocumentoDistribucionInicialPercapitaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idDocumentoDistribucionInicialPercapita}" filterBy="#{item.idDocumentoDistribucionInicialPercapita}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoDistribucionInicialPercapitaTitle_idDocumentoDistribucionInicialPercapita}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idDocumentoDistribucionInicialPercapita}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idDocumento.id}" filterBy="#{item.idDocumento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoDistribucionInicialPercapitaTitle_idDocumento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idDocumento.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idDistribucionInicialPercapita.idDistribucionInicialPercapita}" filterBy="#{item.idDistribucionInicialPercapita.idDistribucionInicialPercapita}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoDistribucionInicialPercapitaTitle_idDistribucionInicialPercapita}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idDistribucionInicialPercapita.idDistribucionInicialPercapita}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.tipoDocumento.idTipoDocumento}" filterBy="#{item.tipoDocumento.idTipoDocumento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoDistribucionInicialPercapitaTitle_tipoDocumento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.tipoDocumento.idTipoDocumento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.comuna.id}" filterBy="#{item.comuna.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoDistribucionInicialPercapitaTitle_comuna}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.comuna.id}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{documentoDistribucionInicialPercapitaController.prepareCreate}" update=":DocumentoDistribucionInicialPercapitaCreateForm" oncomplete="DocumentoDistribucionInicialPercapitaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":DocumentoDistribucionInicialPercapitaViewForm" oncomplete="DocumentoDistribucionInicialPercapitaViewDialog.show()" disabled="#{empty documentoDistribucionInicialPercapitaController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":DocumentoDistribucionInicialPercapitaEditForm" oncomplete="DocumentoDistribucionInicialPercapitaEditDialog.show()" disabled="#{empty documentoDistribucionInicialPercapitaController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{documentoDistribucionInicialPercapitaController.delete}" update=":growl,datalist" disabled="#{empty documentoDistribucionInicialPercapitaController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

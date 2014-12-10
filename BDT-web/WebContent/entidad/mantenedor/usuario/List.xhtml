@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="UsuarioListForm">
+
+        <p:panel header="#{messages.ListUsuarioTitle}">
+            <p:contextMenu id="UsuarioDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('UsuarioListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('UsuarioListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('UsuarioListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('UsuarioListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.UsuarioMenuItem_email}" icon="ui-icon-search"  actionListener="#{usuarioController.prepareEmail}" update=":EmailViewForm" oncomplete="EmailViewDialog.show()" disabled="#{empty usuarioController.selected.email}"/>  
+                <p:menuitem value="#{messages.UsuarioMenuItem_programas}" icon="ui-icon-search"  action="#{usuarioController.navigateProgramas}" disabled="#{empty usuarioController.selected.programas}" ajax="false"/>  
+                <p:menuitem value="#{messages.UsuarioMenuItem_rols}" icon="ui-icon-search"  action="#{usuarioController.navigateRols}" disabled="#{empty usuarioController.selected.rols}" ajax="false"/>  
+                <p:menuitem value="#{messages.UsuarioMenuItem_servicio}" icon="ui-icon-search"  actionListener="#{usuarioController.prepareServicio}" update=":ServicioSaludViewForm" oncomplete="ServicioSaludViewDialog.show()" disabled="#{empty usuarioController.selected.servicio}"/>  
+                <p:menuitem value="#{messages.UsuarioMenuItem_distribucionInicialPercapitaCollection}" icon="ui-icon-search"  action="#{usuarioController.navigateDistribucionInicialPercapitaCollection}" disabled="#{empty usuarioController.selected.distribucionInicialPercapitaCollection}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{usuarioController.usuarios}"
+                         var="item"
+                         rowKey="#{item.username}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{usuarioController.seleccionado}">
+
+                <p:ajax event="rowSelect"   update=":UsuarioListForm:createButton :UsuarioListForm:viewButton :UsuarioListForm:editButton :UsuarioListForm:deleteButton :UsuarioListForm:UsuarioDataTableContextMenu" listener="#{usuarioController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":UsuarioListForm:createButton :UsuarioListForm:viewButton :UsuarioListForm:editButton :UsuarioListForm:deleteButton :UsuarioListForm:UsuarioDataTableContextMenu" listener="#{usuarioController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('UsuarioListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.username}" filterBy="#{item.username}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListUsuarioTitle_username}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.username}"/>
+                </p:column>
+
+				<p:column sortBy="#{item.nombre}" filterBy="#{item.nombre}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListUsuarioTitle_nombre}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombre}"/>
+                </p:column>
+
+                <p:column sortBy="#{item.apellido}" filterBy="#{item.apellido}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListUsuarioTitle_apellido}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.apellido}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idEmail}" filterBy="#{item.idEmail}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListUsuarioTitle_email}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.email}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idServicio}" filterBy="#{item.idServicio}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListUsuarioTitle_servicio}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombreServicio}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{usuarioController.prepareCreateUsuario}" update=":UsuarioCreateForm" oncomplete="UsuarioCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{messages.View}" update=":UsuarioViewForm" oncomplete="UsuarioViewDialog.show()" disabled="#{empty usuarioController.seleccionado}"/>
+            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{messages.Edit}" actionListener="#{usuarioController.prepareEditarUsuario}" update=":UsuarioEditForm" oncomplete="UsuarioEditDialog.show()" disabled="#{empty usuarioController.seleccionado}"/>
+            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{usuarioController.delete}" update=":growl,datalist" disabled="#{empty usuarioController.seleccionado}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

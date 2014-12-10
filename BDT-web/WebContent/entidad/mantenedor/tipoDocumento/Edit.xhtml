@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="TipoDocumentoEditDlg" widgetVar="TipoDocumentoEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditTipoDocumentoTitle}" closeOnEscape="true">
+
+            <h:form id="TipoDocumentoEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{tipoDocumentoController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditTipoDocumentoLabel_idTipoDocumento}" for="idTipoDocumento" />
+                        <h:outputText id="idTipoDocumento" value="#{tipoDocumentoController.selected.idTipoDocumento}" />
+
+                        <p:outputLabel value="#{messages.EditTipoDocumentoLabel_nombre}" for="nombre" />
+                        <p:inputText id="nombre" value="#{tipoDocumentoController.selected.nombre}" title="#{messages.EditTipoDocumentoTitle_nombre}" required="true" requiredMessage="#{messages.EditTipoDocumentoRequiredMessage_nombre}"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{tipoDocumentoController.save}" value="#{messages.Save}" update="display,:TipoDocumentoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,TipoDocumentoEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="TipoDocumentoEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

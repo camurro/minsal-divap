@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="MontoMesViewDlg" widgetVar="MontoMesViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewMontoMesTitle}" closeOnEscape="true">
+
+            <h:form id="MontoMesViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{montoMesController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewMontoMesLabel_porcentajeMonto}"/>
+                        <h:outputText value="#{montoMesController.selected.porcentajeMonto}" title="#{messages.ViewMontoMesTitle_porcentajeMonto}"/>
+
+                        <h:outputText value="#{messages.ViewMontoMesLabel_monto}"/>
+                        <h:outputText value="#{montoMesController.selected.monto}" title="#{messages.ViewMontoMesTitle_monto}"/>
+
+                        <h:outputText value="#{messages.ViewMontoMesLabel_fechaMonto}"/>
+                        <h:outputText value="#{montoMesController.selected.fechaMonto}" title="#{messages.ViewMontoMesTitle_fechaMonto}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+
+                        <h:outputText value="#{messages.ViewMontoMesLabel_idMontoMes}"/>
+                        <h:outputText value="#{montoMesController.selected.idMontoMes}" title="#{messages.ViewMontoMesTitle_idMontoMes}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="MontoMesViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

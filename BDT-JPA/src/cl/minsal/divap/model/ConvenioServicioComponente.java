@@ -31,7 +31,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ConvenioServicioComponente.findAll", query = "SELECT c FROM ConvenioServicioComponente c"),
     @NamedQuery(name = "ConvenioServicioComponente.findByIdConvenioServicioComponente", query = "SELECT c FROM ConvenioServicioComponente c WHERE c.idConvenioServicioComponente = :idConvenioServicioComponente"),
     @NamedQuery(name = "ConvenioServicioComponente.findByMonto", query = "SELECT c FROM ConvenioServicioComponente c WHERE c.monto = :monto"),
-    @NamedQuery(name = "ConvenioServicioComponente.findByIdProgramaAnoServicioComponenteSubtitulo", query = "SELECT c FROM ConvenioServicioComponente c WHERE c.convenioServicio.idPrograma.idProgramaAno = :idProgramaAno and c.subtitulo.idTipoSubtitulo = :idTipoSubtitulo")})
+    @NamedQuery(name = "ConvenioServicioComponente.findByIdProgramaAnoServicioComponenteSubtitulo", query = "SELECT c FROM ConvenioServicioComponente c WHERE c.convenioServicio.idPrograma.idProgramaAno = :idProgramaAno and c.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
+    @NamedQuery(name = "ConvenioServicioComponente.findByIdProgramaAnoIdComponenteSubtituloEstablecimiento", query = "SELECT c FROM ConvenioServicioComponente c WHERE c.convenioServicio.idPrograma.idProgramaAno = :idProgramaAno and c.componente.id = :idComponente and c.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and c.convenioServicio.idEstablecimiento.id = :idEstablecimiento")})
 public class ConvenioServicioComponente implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

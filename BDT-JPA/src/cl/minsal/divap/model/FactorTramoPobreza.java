@@ -29,9 +29,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class FactorTramoPobreza implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id_factor_tramo_pobreza")
+	@Column(name="id_factor_tramo_pobreza", unique=true, nullable=false)
+	@GeneratedValue
     private Integer idFactorTramoPobreza;
     @Basic(optional = false)
     @Column(name = "valor")

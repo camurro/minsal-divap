@@ -38,6 +38,9 @@ public class Establecimiento implements Serializable {
 
 	@Column(name = "codigo")
 	private String codigo;
+	
+	@Column(name = "tipo")
+	private String tipo;
 
 	//bi-directional many-to-one association to Comuna
 	@ManyToOne
@@ -87,6 +90,14 @@ public class Establecimiento implements Serializable {
 
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 
 	public Comuna getComuna() {

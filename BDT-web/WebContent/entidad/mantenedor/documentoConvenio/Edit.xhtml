@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="DocumentoConvenioEditDlg" widgetVar="DocumentoConvenioEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditDocumentoConvenioTitle}" closeOnEscape="true">
+
+            <h:form id="DocumentoConvenioEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{documentoConvenioController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditDocumentoConvenioLabel_idDocumentoConvenio}" for="idDocumentoConvenio" />
+                        <h:outputText id="idDocumentoConvenio" value="#{documentoConvenioController.selected.idDocumentoConvenio}" />
+
+                        <p:outputLabel value="#{messages.EditDocumentoConvenioLabel_tipoDocumento}" for="tipoDocumento" />
+                        <p:selectOneMenu id="tipoDocumento" value="#{documentoConvenioController.selected.tipoDocumento}" required="true" requiredMessage="#{messages.EditDocumentoConvenioRequiredMessage_tipoDocumento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoDocumentoController.items}"
+                                           var="tipoDocumentoItem"
+                                           itemValue="#{tipoDocumentoItem}"
+                                           itemLabel="#{tipoDocumentoItem.idTipoDocumento.toString()}"
+                                           />
+                            <f:converter binding="#{tipoDocumentoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditDocumentoConvenioLabel_documento}" for="documento" />
+                        <p:selectOneMenu id="documento" value="#{documentoConvenioController.selected.documento}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{referenciaDocumentoController.items}"
+                                           var="documentoItem"
+                                           itemValue="#{documentoItem}"
+                                           itemLabel="#{documentoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{referenciaDocumentoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditDocumentoConvenioLabel_convenio}" for="convenio" />
+                        <p:selectOneMenu id="convenio" value="#{documentoConvenioController.selected.convenio}" required="true" requiredMessage="#{messages.EditDocumentoConvenioRequiredMessage_convenio}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{convenioComunaController.items}"
+                                           var="convenioItem"
+                                           itemValue="#{convenioItem}"
+                                           itemLabel="#{convenioItem.idConvenioComuna.toString()}"
+                                           />
+                            <f:converter binding="#{convenioComunaConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{documentoConvenioController.save}" value="#{messages.Save}" update="display,:DocumentoConvenioListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,DocumentoConvenioEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="DocumentoConvenioEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

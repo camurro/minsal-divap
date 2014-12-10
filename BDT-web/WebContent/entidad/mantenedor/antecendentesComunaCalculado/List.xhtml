@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="AntecendentesComunaCalculadoListForm">
+
+        <p:panel header="#{messages.ListAntecendentesComunaCalculadoTitle}">
+            <p:contextMenu id="AntecendentesComunaCalculadoDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('AntecendentesComunaCalculadoListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('AntecendentesComunaCalculadoListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('AntecendentesComunaCalculadoListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('AntecendentesComunaCalculadoListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.AntecendentesComunaCalculadoMenuItem_distribucionInicialPercapita}" icon="ui-icon-search"  actionListener="#{antecendentesComunaCalculadoController.prepareDistribucionInicialPercapita}" update=":DistribucionInicialPercapitaViewForm" oncomplete="DistribucionInicialPercapitaViewDialog.show()" disabled="#{empty antecendentesComunaCalculadoController.selected.distribucionInicialPercapita}"/>  
+                <p:menuitem value="#{messages.AntecendentesComunaCalculadoMenuItem_antecedentesComuna}" icon="ui-icon-search"  actionListener="#{antecendentesComunaCalculadoController.prepareAntecedentesComuna}" update=":AntecendentesComunaViewForm" oncomplete="AntecendentesComunaViewDialog.show()" disabled="#{empty antecendentesComunaCalculadoController.selected.antecedentesComuna}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{antecendentesComunaCalculadoController.items}"
+                         var="item"
+                         rowKey="#{item.idAntecendentesComunaCalculado}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{antecendentesComunaCalculadoController.selected}">
+
+                <p:ajax event="rowSelect"   update=":AntecendentesComunaCalculadoListForm:createButton :AntecendentesComunaCalculadoListForm:viewButton :AntecendentesComunaCalculadoListForm:editButton :AntecendentesComunaCalculadoListForm:deleteButton :AntecendentesComunaCalculadoListForm:AntecendentesComunaCalculadoDataTableContextMenu" listener="#{antecendentesComunaCalculadoController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":AntecendentesComunaCalculadoListForm:createButton :AntecendentesComunaCalculadoListForm:viewButton :AntecendentesComunaCalculadoListForm:editButton :AntecendentesComunaCalculadoListForm:deleteButton :AntecendentesComunaCalculadoListForm:AntecendentesComunaCalculadoDataTableContextMenu" listener="#{antecendentesComunaCalculadoController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('AntecendentesComunaCalculadoListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idAntecendentesComunaCalculado}" filterBy="#{item.idAntecendentesComunaCalculado}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAntecendentesComunaCalculadoTitle_idAntecendentesComunaCalculado}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idAntecendentesComunaCalculado}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.poblacion}" filterBy="#{item.poblacion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAntecendentesComunaCalculadoTitle_poblacion}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.poblacion}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.poblacionMayor}" filterBy="#{item.poblacionMayor}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAntecendentesComunaCalculadoTitle_poblacionMayor}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.poblacionMayor}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.desempenoDificil}" filterBy="#{item.desempenoDificil}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAntecendentesComunaCalculadoTitle_desempenoDificil}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.desempenoDificil}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.pobreza}" filterBy="#{item.pobreza}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAntecendentesComunaCalculadoTitle_pobreza}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.pobreza}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.ruralidad}" filterBy="#{item.ruralidad}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListAntecendentesComunaCalculadoTitle_ruralidad}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.ruralidad}"/>
+                </p:column>
+
+                <!--
+                                    <p:column sortBy="#{item.valorReferencialZona}" filterBy="#{item.valorReferencialZona}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages.ListAntecendentesComunaCalculadoTitle_valorReferencialZona}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.valorReferencialZona}"/>
+                                    </p:column>
+                -->
+                <!--
+                                    <p:column sortBy="#{item.distribucionInicialPercapita.idDistribucionInicialPercapita}" filterBy="#{item.distribucionInicialPercapita.idDistribucionInicialPercapita}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages.ListAntecendentesComunaCalculadoTitle_distribucionInicialPercapita}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.distribucionInicialPercapita.idDistribucionInicialPercapita}"/>
+                                    </p:column>
+                -->
+                <!--
+                                    <p:column sortBy="#{item.antecedentesComuna.idAntecedentesComuna}" filterBy="#{item.antecedentesComuna.idAntecedentesComuna}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages.ListAntecendentesComunaCalculadoTitle_antecedentesComuna}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.antecedentesComuna.idAntecedentesComuna}"/>
+                                    </p:column>
+                -->
+                <!--
+                                    <p:column sortBy="#{item.valorPerCapitaComunalMes}" filterBy="#{item.valorPerCapitaComunalMes}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages.ListAntecendentesComunaCalculadoTitle_valorPerCapitaComunalMes}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.valorPerCapitaComunalMes}"/>
+                                    </p:column>
+                -->
+                <!--
+                                    <p:column sortBy="#{item.percapitaMes}" filterBy="#{item.percapitaMes}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages.ListAntecendentesComunaCalculadoTitle_percapitaMes}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.percapitaMes}"/>
+                                    </p:column>
+                -->
+                <!--
+                                    <p:column sortBy="#{item.percapitaAno}" filterBy="#{item.percapitaAno}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages.ListAntecendentesComunaCalculadoTitle_percapitaAno}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.percapitaAno}"/>
+                                    </p:column>
+                -->
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{antecendentesComunaCalculadoController.prepareCreate}" update=":AntecendentesComunaCalculadoCreateForm" oncomplete="AntecendentesComunaCalculadoCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":AntecendentesComunaCalculadoViewForm" oncomplete="AntecendentesComunaCalculadoViewDialog.show()" disabled="#{empty antecendentesComunaCalculadoController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":AntecendentesComunaCalculadoEditForm" oncomplete="AntecendentesComunaCalculadoEditDialog.show()" disabled="#{empty antecendentesComunaCalculadoController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{antecendentesComunaCalculadoController.delete}" update=":growl,datalist" disabled="#{empty antecendentesComunaCalculadoController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

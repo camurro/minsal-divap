@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="ProgramaAnoListForm">
+
+        <p:panel header="#{messages.ListProgramaAnoTitle}">
+            <p:contextMenu id="ProgramaAnoDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('ProgramaAnoListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('ProgramaAnoListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('ProgramaAnoListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('ProgramaAnoListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.ProgramaAnoMenuItem_programa}" icon="ui-icon-search"  actionListener="#{programaAnoController.preparePrograma}" update=":ProgramaViewForm" oncomplete="ProgramaViewDialog.show()" disabled="#{empty programaAnoController.selected.programa}"/>  
+                <p:menuitem value="#{messages.ProgramaAnoMenuItem_estado}" icon="ui-icon-search"  actionListener="#{programaAnoController.prepareEstado}" update=":EstadoProgramaViewForm" oncomplete="EstadoProgramaViewDialog.show()" disabled="#{empty programaAnoController.selected.estado}"/>  
+                <p:menuitem value="#{messages.ProgramaAnoMenuItem_estadoreliquidacion}" icon="ui-icon-search"  actionListener="#{programaAnoController.prepareEstadoreliquidacion}" update=":EstadoProgramaViewForm" oncomplete="EstadoProgramaViewDialog.show()" disabled="#{empty programaAnoController.selected.estadoreliquidacion}"/>  
+                <p:menuitem value="#{messages.ProgramaAnoMenuItem_estadoConvenio}" icon="ui-icon-search"  actionListener="#{programaAnoController.prepareEstadoConvenio}" update=":EstadoProgramaViewForm" oncomplete="EstadoProgramaViewDialog.show()" disabled="#{empty programaAnoController.selected.estadoConvenio}"/>  
+                <p:menuitem value="#{messages.ProgramaAnoMenuItem_ano}" icon="ui-icon-search"  actionListener="#{programaAnoController.prepareAno}" update=":AnoEnCursoViewForm" oncomplete="AnoEnCursoViewDialog.show()" disabled="#{empty programaAnoController.selected.ano}"/>  
+                <p:menuitem value="#{messages.ProgramaAnoMenuItem_estadoFlujoCaja}" icon="ui-icon-search"  actionListener="#{programaAnoController.prepareEstadoFlujoCaja}" update=":EstadoProgramaViewForm" oncomplete="EstadoProgramaViewDialog.show()" disabled="#{empty programaAnoController.selected.estadoFlujoCaja}"/>  
+                <p:menuitem value="#{messages.ProgramaAnoMenuItem_programasMunicipalesCore}" icon="ui-icon-search"  action="#{programaAnoController.navigateProgramasMunicipalesCore}" disabled="#{empty programaAnoController.selected.programasMunicipalesCore}" ajax="false"/>  
+                <p:menuitem value="#{messages.ProgramaAnoMenuItem_programasServiciosCore}" icon="ui-icon-search"  action="#{programaAnoController.navigateProgramasServiciosCore}" disabled="#{empty programaAnoController.selected.programasServiciosCore}" ajax="false"/>  
+                <p:menuitem value="#{messages.ProgramaAnoMenuItem_cuotas}" icon="ui-icon-search"  action="#{programaAnoController.navigateCuotas}" disabled="#{empty programaAnoController.selected.cuotas}" ajax="false"/>  
+                <p:menuitem value="#{messages.ProgramaAnoMenuItem_marcosPresupuestarios}" icon="ui-icon-search"  action="#{programaAnoController.navigateMarcosPresupuestarios}" disabled="#{empty programaAnoController.selected.marcosPresupuestarios}" ajax="false"/>  
+                <p:menuitem value="#{messages.ProgramaAnoMenuItem_convenios}" icon="ui-icon-search"  action="#{programaAnoController.navigateConvenios}" disabled="#{empty programaAnoController.selected.convenios}" ajax="false"/>  
+                <p:menuitem value="#{messages.ProgramaAnoMenuItem_remesaCollection}" icon="ui-icon-search"  action="#{programaAnoController.navigateRemesaCollection}" disabled="#{empty programaAnoController.selected.remesaCollection}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{programaAnoController.items}"
+                         var="item"
+                         rowKey="#{item.idProgramaAno}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{programaAnoController.selected}">
+
+                <p:ajax event="rowSelect"   update=":ProgramaAnoListForm:createButton :ProgramaAnoListForm:viewButton :ProgramaAnoListForm:editButton :ProgramaAnoListForm:deleteButton :ProgramaAnoListForm:ProgramaAnoDataTableContextMenu" listener="#{programaAnoController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":ProgramaAnoListForm:createButton :ProgramaAnoListForm:viewButton :ProgramaAnoListForm:editButton :ProgramaAnoListForm:deleteButton :ProgramaAnoListForm:ProgramaAnoDataTableContextMenu" listener="#{programaAnoController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('ProgramaAnoListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idProgramaAno}" filterBy="#{item.idProgramaAno}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaAnoTitle_idProgramaAno}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idProgramaAno}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.programa.descripcion}" filterBy="#{item.programa.descripcion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaAnoTitle_programa}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.programa.descripcion}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.estado.idEstadoPrograma}" filterBy="#{item.estado.idEstadoPrograma}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaAnoTitle_estado}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.estado.idEstadoPrograma}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.estadoreliquidacion.idEstadoPrograma}" filterBy="#{item.estadoreliquidacion.idEstadoPrograma}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaAnoTitle_estadoreliquidacion}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.estadoreliquidacion.idEstadoPrograma}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.estadoConvenio.idEstadoPrograma}" filterBy="#{item.estadoConvenio.idEstadoPrograma}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaAnoTitle_estadoConvenio}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.estadoConvenio.idEstadoPrograma}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.ano.ano}" filterBy="#{item.ano.ano}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaAnoTitle_ano}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.ano.ano}"/>
+                </p:column>
+
+                <!--
+                                    <p:column sortBy="#{item.estadoFlujoCaja.idEstadoPrograma}" filterBy="#{item.estadoFlujoCaja.idEstadoPrograma}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages.ListProgramaAnoTitle_estadoFlujoCaja}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.estadoFlujoCaja.idEstadoPrograma}"/>
+                                    </p:column>
+                -->
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{programaAnoController.prepareCreate}" update=":ProgramaAnoCreateForm" oncomplete="ProgramaAnoCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":ProgramaAnoViewForm" oncomplete="ProgramaAnoViewDialog.show()" disabled="#{empty programaAnoController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":ProgramaAnoEditForm" oncomplete="ProgramaAnoEditDialog.show()" disabled="#{empty programaAnoController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{programaAnoController.delete}" update=":growl,datalist" disabled="#{empty programaAnoController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="ProgramaServicioCoreComponenteEditDlg" widgetVar="ProgramaServicioCoreComponenteEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditProgramaServicioCoreComponenteTitle}" closeOnEscape="true">
+
+            <h:form id="ProgramaServicioCoreComponenteEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{programaServicioCoreComponenteController.selected != null}">
+
+                        <p:outputLabel value="#{messages.EditProgramaServicioCoreComponenteLabel_tarifa}" for="tarifa" />
+                        <p:inputText id="tarifa" value="#{programaServicioCoreComponenteController.selected.tarifa}" title="#{messages.EditProgramaServicioCoreComponenteTitle_tarifa}"/>
+
+                        <p:outputLabel value="#{messages.EditProgramaServicioCoreComponenteLabel_cantidad}" for="cantidad" />
+                        <p:inputText id="cantidad" value="#{programaServicioCoreComponenteController.selected.cantidad}" title="#{messages.EditProgramaServicioCoreComponenteTitle_cantidad}"/>
+
+                        <p:outputLabel value="#{messages.EditProgramaServicioCoreComponenteLabel_monto}" for="monto" />
+                        <p:inputText id="monto" value="#{programaServicioCoreComponenteController.selected.monto}" title="#{messages.EditProgramaServicioCoreComponenteTitle_monto}"/>
+
+
+                        <h:outputLabel value="#{messages.EditProgramaServicioCoreComponenteLabel_subtitulo}" for="subtitulo" />
+                        <h:outputText id="subtitulo" value="#{programaServicioCoreComponenteController.selected.subtitulo}" />
+
+
+                        <h:outputLabel value="#{messages.EditProgramaServicioCoreComponenteLabel_programaServicioCore1}" for="programaServicioCore1" />
+                        <h:outputText id="programaServicioCore1" value="#{programaServicioCoreComponenteController.selected.programaServicioCore1}" />
+
+
+                        <h:outputLabel value="#{messages.EditProgramaServicioCoreComponenteLabel_servicioCoreComponente}" for="servicioCoreComponente" />
+                        <h:outputText id="servicioCoreComponente" value="#{programaServicioCoreComponenteController.selected.servicioCoreComponente}" />
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{programaServicioCoreComponenteController.save}" value="#{messages.Save}" update="display,:ProgramaServicioCoreComponenteListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ProgramaServicioCoreComponenteEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ProgramaServicioCoreComponenteEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

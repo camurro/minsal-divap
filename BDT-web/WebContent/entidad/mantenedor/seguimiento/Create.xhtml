@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="SeguimientoCreateDlg" widgetVar="SeguimientoCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateSeguimientoTitle}" closeOnEscape="true">
+
+            <h:form id="SeguimientoCreateForm">
+
+                <h:panelGroup id="display" rendered="#{seguimientoController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateSeguimientoLabel_idInstancia}" for="idInstancia" />
+                        <p:inputText id="idInstancia" value="#{seguimientoController.selected.idInstancia}" title="#{messages.CreateSeguimientoTitle_idInstancia}" required="true" requiredMessage="#{messages.CreateSeguimientoRequiredMessage_idInstancia}"/>
+
+                        <p:outputLabel value="#{messages.CreateSeguimientoLabel_subject}" for="subject" />
+                        <p:inputText id="subject" value="#{seguimientoController.selected.subject}" title="#{messages.CreateSeguimientoTitle_subject}" required="true" requiredMessage="#{messages.CreateSeguimientoRequiredMessage_subject}"/>
+
+                        <p:outputLabel value="#{messages.CreateSeguimientoLabel_body}" for="body" />
+                        <p:inputText id="body" value="#{seguimientoController.selected.body}" title="#{messages.CreateSeguimientoTitle_body}"/>
+
+                        <p:outputLabel value="#{messages.CreateSeguimientoLabel_fechaEnvio}" for="fechaEnvio" />
+                        <p:calendar id="fechaEnvio" pattern="MM/dd/yyyy HH:mm:ss" value="#{seguimientoController.selected.fechaEnvio}" title="#{messages.CreateSeguimientoTitle_fechaEnvio}" required="true" requiredMessage="#{messages.CreateSeguimientoRequiredMessage_fechaEnvio}" showOn="button"/>
+
+                        <p:outputLabel value="#{messages.CreateSeguimientoLabel_tareaSeguimiento}" for="tareaSeguimiento" />
+                        <p:selectOneMenu id="tareaSeguimiento" value="#{seguimientoController.selected.tareaSeguimiento}" required="true" requiredMessage="#{messages.CreateSeguimientoRequiredMessage_tareaSeguimiento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tareaSeguimientoController.items}"
+                                           var="tareaSeguimientoItem"
+                                           itemValue="#{tareaSeguimientoItem}"
+                                           itemLabel="#{tareaSeguimientoItem.descripcion.toString()}"
+                                           />
+                            <f:converter binding="#{tareaSeguimientoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateSeguimientoLabel_idPrograma}" for="idPrograma" />
+                        <p:selectOneMenu id="idPrograma" value="#{seguimientoController.selected.idPrograma}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaController.items}"
+                                           var="idProgramaItem"
+                                           itemValue="#{idProgramaItem}"
+                                           itemLabel="#{idProgramaItem.descripcion.toString()}"
+                                           />
+                            <f:converter binding="#{programaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateSeguimientoLabel_mailFrom}" for="mailFrom" />
+                        <p:selectOneMenu id="mailFrom" value="#{seguimientoController.selected.mailFrom}" required="true" requiredMessage="#{messages.CreateSeguimientoRequiredMessage_mailFrom}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{emailController.items}"
+                                           var="mailFromItem"
+                                           itemValue="#{mailFromItem}"
+                                           itemLabel="#{mailFromItem.idEmail.toString()}"
+                                           />
+                            <f:converter binding="#{emailConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{seguimientoController.saveNew}" value="#{messages.Save}" update="display,:SeguimientoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,SeguimientoCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="SeguimientoCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

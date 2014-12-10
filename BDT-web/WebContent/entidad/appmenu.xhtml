@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <h:form id="menuForm">
+            <p:menubar>
+                <p:menuitem value="#{messages.Home}" outcome="/index" icon="ui-icon-home"/>
+                <p:submenu label="#{messages.Maintenance}">
+                    <p:menuitem value="#{messages.AdjuntosSeguimientoHeading}..." outcome="/mantenedor/adjuntosSeguimiento/index" />
+                    <p:menuitem value="#{messages.AnoEnCursoHeading}..." outcome="/mantenedor/anoEnCurso/index" />
+                    <p:menuitem value="#{messages.AntecendentesComunaHeading}..." outcome="/mantenedor/antecendentesComuna/index" />
+                    <p:menuitem value="#{messages.AntecendentesComunaCalculadoHeading}..." outcome="/mantenedor/antecendentesComunaCalculado/index" />
+                    <p:menuitem value="#{messages.CajaHeading}..." outcome="/mantenedor/caja/index" />
+                    <p:menuitem value="#{messages.CajaMontoHeading}..." outcome="/mantenedor/cajaMonto/index" />
+                    <p:menuitem value="#{messages.ComponenteHeading}..." outcome="/mantenedor/componente/index" />
+                    <p:menuitem value="#{messages.ComponenteSubtituloHeading}..." outcome="/mantenedor/componenteSubtitulo/index" />
+                    <p:menuitem value="#{messages.ComunaHeading}..." outcome="/mantenedor/comuna/index" />
+                    <p:menuitem value="#{messages.ComunaCumplimientoHeading}..." outcome="/mantenedor/comunaCumplimiento/index" />
+                    <p:menuitem value="#{messages.ComunaCumplimientoRebajaHeading}..." outcome="/mantenedor/comunaCumplimientoRebaja/index" />
+                    <p:menuitem value="#{messages.ConvenioComunaHeading}..." outcome="/mantenedor/convenioComuna/index" />
+                    <p:menuitem value="#{messages.ConvenioComunaComponenteHeading}..." outcome="/mantenedor/convenioComunaComponente/index" />
+                    <p:menuitem value="#{messages.ConvenioServicioHeading}..." outcome="/mantenedor/convenioServicio/index" />
+                    <p:menuitem value="#{messages.ConvenioServicioComponenteHeading}..." outcome="/mantenedor/convenioServicioComponente/index" />
+                    <p:menuitem value="#{messages.CumplimientoHeading}..." outcome="/mantenedor/cumplimiento/index" />
+                    <p:menuitem value="#{messages.CumplimientoProgramaHeading}..." outcome="/mantenedor/cumplimientoPrograma/index" />
+                    <p:menuitem value="#{messages.CuotaHeading}..." outcome="/mantenedor/cuota/index" />
+                    <p:menuitem value="#{messages.DependenciaHeading}..." outcome="/mantenedor/dependencia/index" />
+                    <p:menuitem value="#{messages.DestinatariosHeading}..." outcome="/mantenedor/destinatarios/index" />
+                    <p:menuitem value="#{messages.DistribucionInicialPercapitaHeading}..." outcome="/mantenedor/distribucionInicialPercapita/index" />
+                    <p:menuitem value="#{messages.DistribucionInicialPercapitaSeguimientoHeading}..." outcome="/mantenedor/distribucionInicialPercapitaSeguimiento/index" />
+                    <p:menuitem value="#{messages.DocumentoConvenioHeading}..." outcome="/mantenedor/documentoConvenio/index" />
+                    <p:menuitem value="#{messages.DocumentoDistribucionInicialPercapitaHeading}..." outcome="/mantenedor/documentoDistribucionInicialPercapita/index" />
+                    <p:menuitem value="#{messages.DocumentoEstimacionflujocajaHeading}..." outcome="/mantenedor/documentoEstimacionflujocaja/index" />
+                    <p:menuitem value="#{messages.DocumentoOtHeading}..." outcome="/mantenedor/documentoOt/index" />
+                    <p:menuitem value="#{messages.DocumentoProgramasReforzamientoHeading}..." outcome="/mantenedor/documentoProgramasReforzamiento/index" />
+                    <p:menuitem value="#{messages.DocumentoRebajaHeading}..." outcome="/mantenedor/documentoRebaja/index" />
+                    <p:menuitem value="#{messages.DocumentoReliquidacionHeading}..." outcome="/mantenedor/documentoReliquidacion/index" />
+                    <p:menuitem value="#{messages.DocumentoReportesHeading}..." outcome="/mantenedor/documentoReportes/index" />
+                    <p:menuitem value="#{messages.EmailHeading}..." outcome="/mantenedor/email/index" />
+                    <p:menuitem value="#{messages.EstablecimientoHeading}..." outcome="/mantenedor/establecimiento/index" />
+                    <p:menuitem value="#{messages.EstadoProgramaHeading}..." outcome="/mantenedor/estadoPrograma/index" />
+                    <p:menuitem value="#{messages.EstadoProgramaFlujocajaHeading}..." outcome="/mantenedor/estadoProgramaFlujocaja/index" />
+                    <p:menuitem value="#{messages.EstimacionFlujoCajaSeguimientoHeading}..." outcome="/mantenedor/estimacionFlujoCajaSeguimiento/index" />
+                    <p:menuitem value="#{messages.FactorRefAsigZonaHeading}..." outcome="/mantenedor/factorRefAsigZona/index" />
+                    <p:menuitem value="#{messages.FactorTramoPobrezaHeading}..." outcome="/mantenedor/factorTramoPobreza/index" />
+                    <p:menuitem value="#{messages.MarcoPresupuestarioHeading}..." outcome="/mantenedor/marcoPresupuestario/index" />
+                    <p:menuitem value="#{messages.MesHeading}..." outcome="/mantenedor/mes/index" />
+                    <p:menuitem value="#{messages.MetadataCoreHeading}..." outcome="/mantenedor/metadataCore/index" />
+                    <p:menuitem value="#{messages.MontoMesHeading}..." outcome="/mantenedor/montoMes/index" />
+                    <p:menuitem value="#{messages.OrdenTransferenciaHeading}..." outcome="/mantenedor/ordenTransferencia/index" />
+                    <p:menuitem value="#{messages.OtSeguimientoHeading}..." outcome="/mantenedor/otSeguimiento/index" />
+                    <p:menuitem value="#{messages.PersonaHeading}..." outcome="/mantenedor/persona/index" />
+                    <p:menuitem value="#{messages.PlantillaHeading}..." outcome="/mantenedor/plantilla/index" />
+                    <p:menuitem value="#{messages.ProgramaHeading}..." outcome="/mantenedor/programa/index" />
+                    <p:menuitem value="#{messages.ProgramaAnoHeading}..." outcome="/mantenedor/programaAno/index" />
+                    <p:menuitem value="#{messages.ProgramaMunicipalCoreHeading}..." outcome="/mantenedor/programaMunicipalCore/index" />
+                    <p:menuitem value="#{messages.ProgramaMunicipalCoreComponenteHeading}..." outcome="/mantenedor/programaMunicipalCoreComponente/index" />
+                    <p:menuitem value="#{messages.ProgramaServicioCoreHeading}..." outcome="/mantenedor/programaServicioCore/index" />
+                    <p:menuitem value="#{messages.ProgramaServicioCoreComponenteHeading}..." outcome="/mantenedor/programaServicioCoreComponente/index" />
+                    <p:menuitem value="#{messages.ProgramaSubtituloHeading}..." outcome="/mantenedor/programaSubtitulo/index" />
+                    <p:menuitem value="#{messages.ProgramasReforzamientoSeguimientoHeading}..." outcome="/mantenedor/programasReforzamientoSeguimiento/index" />
+                    <p:menuitem value="#{messages.RebajaHeading}..." outcome="/mantenedor/rebaja/index" />
+                    <p:menuitem value="#{messages.RebajaCorteHeading}..." outcome="/mantenedor/rebajaCorte/index" />
+                    <p:menuitem value="#{messages.RebajaSeguimientoHeading}..." outcome="/mantenedor/rebajaSeguimiento/index" />
+                    <p:menuitem value="#{messages.ReferenciaDocumentoHeading}..." outcome="/mantenedor/referenciaDocumento/index" />
+                    <p:menuitem value="#{messages.RegionHeading}..." outcome="/mantenedor/region/index" />
+                    <p:menuitem value="#{messages.ReliquidacionHeading}..." outcome="/mantenedor/reliquidacion/index" />
+                    <p:menuitem value="#{messages.ReliquidacionComunaHeading}..." outcome="/mantenedor/reliquidacionComuna/index" />
+                    <p:menuitem value="#{messages.ReliquidacionServicioHeading}..." outcome="/mantenedor/reliquidacionServicio/index" />
+                    <p:menuitem value="#{messages.RemesaHeading}..." outcome="/mantenedor/remesa/index" />
+                    <p:menuitem value="#{messages.ReporteEmailsAdjuntosHeading}..." outcome="/mantenedor/reporteEmailsAdjuntos/index" />
+                    <p:menuitem value="#{messages.ReporteEmailsDestinatariosHeading}..." outcome="/mantenedor/reporteEmailsDestinatarios/index" />
+                    <p:menuitem value="#{messages.ReporteEmailsEnviadosHeading}..." outcome="/mantenedor/reporteEmailsEnviados/index" />
+                    <p:menuitem value="#{messages.RolHeading}..." outcome="/mantenedor/rol/index" />
+                    <p:menuitem value="#{messages.SeguimientoHeading}..." outcome="/mantenedor/seguimiento/index" />
+                    <p:menuitem value="#{messages.SeguimientoReferenciaDocumentoHeading}..." outcome="/mantenedor/seguimientoReferenciaDocumento/index" />
+                    <p:menuitem value="#{messages.ServicioSaludHeading}..." outcome="/mantenedor/servicioSalud/index" />
+                    <p:menuitem value="#{messages.TareaSeguimientoHeading}..." outcome="/mantenedor/tareaSeguimiento/index" />
+                    <p:menuitem value="#{messages.TipoComponenteHeading}..." outcome="/mantenedor/tipoComponente/index" />
+                    <p:menuitem value="#{messages.TipoComunaHeading}..." outcome="/mantenedor/tipoComuna/index" />
+                    <p:menuitem value="#{messages.TipoCumplimientoHeading}..." outcome="/mantenedor/tipoCumplimiento/index" />
+                    <p:menuitem value="#{messages.TipoDestinatarioHeading}..." outcome="/mantenedor/tipoDestinatario/index" />
+                    <p:menuitem value="#{messages.TipoDocumentoHeading}..." outcome="/mantenedor/tipoDocumento/index" />
+                    <p:menuitem value="#{messages.TipoSubtituloHeading}..." outcome="/mantenedor/tipoSubtitulo/index" />
+                    <p:menuitem value="#{messages.TramoHeading}..." outcome="/mantenedor/tramo/index" />
+                    <p:menuitem value="#{messages.UsuarioHeading}..." outcome="/mantenedor/usuario/index" />
+                </p:submenu>
+            </p:menubar>
+        </h:form>
+    </ui:composition>
+
+</html>

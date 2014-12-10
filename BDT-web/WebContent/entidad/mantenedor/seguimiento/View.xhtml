@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="SeguimientoViewDlg" widgetVar="SeguimientoViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewSeguimientoTitle}" closeOnEscape="true">
+
+            <h:form id="SeguimientoViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{seguimientoController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewSeguimientoLabel_id}"/>
+                        <h:outputText value="#{seguimientoController.selected.id}" title="#{messages.ViewSeguimientoTitle_id}"/>
+
+                        <h:outputText value="#{messages.ViewSeguimientoLabel_idInstancia}"/>
+                        <h:outputText value="#{seguimientoController.selected.idInstancia}" title="#{messages.ViewSeguimientoTitle_idInstancia}"/>
+
+                        <h:outputText value="#{messages.ViewSeguimientoLabel_subject}"/>
+                        <h:outputText value="#{seguimientoController.selected.subject}" title="#{messages.ViewSeguimientoTitle_subject}"/>
+
+                        <h:outputText value="#{messages.ViewSeguimientoLabel_body}"/>
+                        <h:outputText value="#{seguimientoController.selected.body}" title="#{messages.ViewSeguimientoTitle_body}"/>
+
+                        <h:outputText value="#{messages.ViewSeguimientoLabel_fechaEnvio}"/>
+                        <h:outputText value="#{seguimientoController.selected.fechaEnvio}" title="#{messages.ViewSeguimientoTitle_fechaEnvio}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+
+                        <h:outputText value="#{messages.ViewSeguimientoLabel_tareaSeguimiento}"/>
+                        <h:outputText value="#{seguimientoController.selected.tareaSeguimiento.descripcion}"/>
+
+                        <h:outputText value="#{messages.ViewSeguimientoLabel_idPrograma}"/>
+                        <h:outputText value="#{seguimientoController.selected.idPrograma.descripcion}"/>
+
+                        <h:outputText value="#{messages.ViewSeguimientoLabel_mailFrom}"/>
+                        <h:outputText value="#{seguimientoController.selected.mailFrom.idEmail}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="SeguimientoViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

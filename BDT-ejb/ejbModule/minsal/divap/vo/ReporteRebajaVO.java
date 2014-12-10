@@ -163,30 +163,48 @@ public class ReporteRebajaVO implements Serializable{
 		}
 		if(getfCorte1Monto() != null){
 			row.add(getfCorte1Monto());
+		}else{
+			row.add("");
 		}
 		if(getfCorte1Porcentaje() != null){
 			row.add(getfCorte1Porcentaje());
+		}else{
+			row.add("");
 		}
 		if(getfCorte2Monto() != null){
 			row.add(getfCorte2Monto());
+		}else{
+			row.add("");
 		}
 		if(getfCorte2Porcentaje() != null){
 			row.add(getfCorte2Porcentaje());
+		}else{
+			row.add("");
 		}
 		if(getfCorte3Monto() != null){
 			row.add(getfCorte3Monto());
+		}else{
+			row.add("");
 		}
 		if(getfCorte3Porcentaje() != null){
 			row.add(getfCorte3Porcentaje());
+		}else{
+			row.add("");
 		}
 		if(getfCorte4Monto() != null){
 			row.add(getfCorte4Monto());
+		}else{
+			row.add("");
 		}
 		if(getfCorte4Porcentaje() != null){
 			row.add(getfCorte4Porcentaje());
+		}else{
+			row.add("");
 		}
 		if(getRebajaTotal() != null){
 			row.add(getRebajaTotal());
+		}else{
+			row.add("");
 		}
 		
 		return row;

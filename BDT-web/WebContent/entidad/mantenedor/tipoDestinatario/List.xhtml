@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="TipoDestinatarioListForm">
+
+        <p:panel header="#{messages.ListTipoDestinatarioTitle}">
+            <p:contextMenu id="TipoDestinatarioDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('TipoDestinatarioListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('TipoDestinatarioListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('TipoDestinatarioListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('TipoDestinatarioListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.TipoDestinatarioMenuItem_destinatariosCollection}" icon="ui-icon-search"  action="#{tipoDestinatarioController.navigateDestinatariosCollection}" disabled="#{empty tipoDestinatarioController.selected.destinatariosCollection}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{tipoDestinatarioController.items}"
+                         var="item"
+                         rowKey="#{item.idTipoDestinatario}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{tipoDestinatarioController.selected}">
+
+                <p:ajax event="rowSelect"   update=":TipoDestinatarioListForm:createButton :TipoDestinatarioListForm:viewButton :TipoDestinatarioListForm:editButton :TipoDestinatarioListForm:deleteButton :TipoDestinatarioListForm:TipoDestinatarioDataTableContextMenu" listener="#{tipoDestinatarioController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":TipoDestinatarioListForm:createButton :TipoDestinatarioListForm:viewButton :TipoDestinatarioListForm:editButton :TipoDestinatarioListForm:deleteButton :TipoDestinatarioListForm:TipoDestinatarioDataTableContextMenu" listener="#{tipoDestinatarioController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('TipoDestinatarioListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.descripcion}" filterBy="#{item.descripcion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListTipoDestinatarioTitle_descripcion}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.descripcion}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idTipoDestinatario}" filterBy="#{item.idTipoDestinatario}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListTipoDestinatarioTitle_idTipoDestinatario}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idTipoDestinatario}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.descripcionCorta}" filterBy="#{item.descripcionCorta}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListTipoDestinatarioTitle_descripcionCorta}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.descripcionCorta}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{tipoDestinatarioController.prepareCreate}" update=":TipoDestinatarioCreateForm" oncomplete="TipoDestinatarioCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":TipoDestinatarioViewForm" oncomplete="TipoDestinatarioViewDialog.show()" disabled="#{empty tipoDestinatarioController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":TipoDestinatarioEditForm" oncomplete="TipoDestinatarioEditDialog.show()" disabled="#{empty tipoDestinatarioController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{tipoDestinatarioController.delete}" update=":growl,datalist" disabled="#{empty tipoDestinatarioController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

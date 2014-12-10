@@ -1302,7 +1302,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		for(ProgramaServicioCore progServ : programaAnoActual.getProgramasServiciosCore()){
 			
 			ProgramaServicioCore nuevoCore = new ProgramaServicioCore();
-			nuevoCore.setComuna(progServ.getComuna());
+			//nuevoCore.setComuna(progServ.getComuna());
 			nuevoCore.setEstablecimiento(progServ.getEstablecimiento());
 			nuevoCore.setProgramaAnoServicio(programaAnoSiguiente);
 			nuevoCore.setServicio(progServ.getServicio());

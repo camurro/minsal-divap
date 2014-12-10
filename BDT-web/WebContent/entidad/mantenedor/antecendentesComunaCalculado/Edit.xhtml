@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="AntecendentesComunaCalculadoEditDlg" widgetVar="AntecendentesComunaCalculadoEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditAntecendentesComunaCalculadoTitle}" closeOnEscape="true">
+
+            <h:form id="AntecendentesComunaCalculadoEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{antecendentesComunaCalculadoController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditAntecendentesComunaCalculadoLabel_idAntecendentesComunaCalculado}" for="idAntecendentesComunaCalculado" />
+                        <h:outputText id="idAntecendentesComunaCalculado" value="#{antecendentesComunaCalculadoController.selected.idAntecendentesComunaCalculado}" />
+
+                        <p:outputLabel value="#{messages.EditAntecendentesComunaCalculadoLabel_poblacion}" for="poblacion" />
+                        <p:inputText id="poblacion" value="#{antecendentesComunaCalculadoController.selected.poblacion}" title="#{messages.EditAntecendentesComunaCalculadoTitle_poblacion}"/>
+
+                        <p:outputLabel value="#{messages.EditAntecendentesComunaCalculadoLabel_poblacionMayor}" for="poblacionMayor" />
+                        <p:inputText id="poblacionMayor" value="#{antecendentesComunaCalculadoController.selected.poblacionMayor}" title="#{messages.EditAntecendentesComunaCalculadoTitle_poblacionMayor}"/>
+
+                        <p:outputLabel value="#{messages.EditAntecendentesComunaCalculadoLabel_desempenoDificil}" for="desempenoDificil" />
+                        <p:inputText id="desempenoDificil" value="#{antecendentesComunaCalculadoController.selected.desempenoDificil}" title="#{messages.EditAntecendentesComunaCalculadoTitle_desempenoDificil}"/>
+
+                        <p:outputLabel value="#{messages.EditAntecendentesComunaCalculadoLabel_pobreza}" for="pobreza" />
+                        <p:inputText id="pobreza" value="#{antecendentesComunaCalculadoController.selected.pobreza}" title="#{messages.EditAntecendentesComunaCalculadoTitle_pobreza}"/>
+
+                        <p:outputLabel value="#{messages.EditAntecendentesComunaCalculadoLabel_ruralidad}" for="ruralidad" />
+                        <p:inputText id="ruralidad" value="#{antecendentesComunaCalculadoController.selected.ruralidad}" title="#{messages.EditAntecendentesComunaCalculadoTitle_ruralidad}"/>
+
+                        <p:outputLabel value="#{messages.EditAntecendentesComunaCalculadoLabel_valorReferencialZona}" for="valorReferencialZona" />
+                        <p:inputText id="valorReferencialZona" value="#{antecendentesComunaCalculadoController.selected.valorReferencialZona}" title="#{messages.EditAntecendentesComunaCalculadoTitle_valorReferencialZona}"/>
+
+                        <p:outputLabel value="#{messages.EditAntecendentesComunaCalculadoLabel_distribucionInicialPercapita}" for="distribucionInicialPercapita" />
+                        <p:selectOneMenu id="distribucionInicialPercapita" value="#{antecendentesComunaCalculadoController.selected.distribucionInicialPercapita}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{distribucionInicialPercapitaController.items}"
+                                           var="distribucionInicialPercapitaItem"
+                                           itemValue="#{distribucionInicialPercapitaItem}"
+                                           itemLabel="#{distribucionInicialPercapitaItem.idDistribucionInicialPercapita.toString()}"
+                                           />
+                            <f:converter binding="#{distribucionInicialPercapitaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditAntecendentesComunaCalculadoLabel_antecedentesComuna}" for="antecedentesComuna" />
+                        <p:selectOneMenu id="antecedentesComuna" value="#{antecendentesComunaCalculadoController.selected.antecedentesComuna}" required="true" requiredMessage="#{messages.EditAntecendentesComunaCalculadoRequiredMessage_antecedentesComuna}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{antecendentesComunaController.items}"
+                                           var="antecedentesComunaItem"
+                                           itemValue="#{antecedentesComunaItem}"
+                                           itemLabel="#{antecedentesComunaItem.idAntecedentesComuna.toString()}"
+                                           />
+                            <f:converter binding="#{antecendentesComunaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditAntecendentesComunaCalculadoLabel_valorPerCapitaComunalMes}" for="valorPerCapitaComunalMes" />
+                        <p:inputText id="valorPerCapitaComunalMes" value="#{antecendentesComunaCalculadoController.selected.valorPerCapitaComunalMes}" title="#{messages.EditAntecendentesComunaCalculadoTitle_valorPerCapitaComunalMes}"/>
+
+                        <p:outputLabel value="#{messages.EditAntecendentesComunaCalculadoLabel_percapitaMes}" for="percapitaMes" />
+                        <p:inputText id="percapitaMes" value="#{antecendentesComunaCalculadoController.selected.percapitaMes}" title="#{messages.EditAntecendentesComunaCalculadoTitle_percapitaMes}"/>
+
+                        <p:outputLabel value="#{messages.EditAntecendentesComunaCalculadoLabel_percapitaAno}" for="percapitaAno" />
+                        <p:inputText id="percapitaAno" value="#{antecendentesComunaCalculadoController.selected.percapitaAno}" title="#{messages.EditAntecendentesComunaCalculadoTitle_percapitaAno}"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{antecendentesComunaCalculadoController.save}" value="#{messages.Save}" update="display,:AntecendentesComunaCalculadoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,AntecendentesComunaCalculadoEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="AntecendentesComunaCalculadoEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="ReporteEmailsEnviadosEditDlg" widgetVar="ReporteEmailsEnviadosEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditReporteEmailsEnviadosTitle}" closeOnEscape="true">
+
+            <h:form id="ReporteEmailsEnviadosEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{reporteEmailsEnviadosController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditReporteEmailsEnviadosLabel_id}" for="id" />
+                        <h:outputText id="id" value="#{reporteEmailsEnviadosController.selected.id}" />
+
+                        <p:outputLabel value="#{messages.EditReporteEmailsEnviadosLabel_idServicio}" for="idServicio" />
+                        <p:selectOneMenu id="idServicio" value="#{reporteEmailsEnviadosController.selected.idServicio}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{servicioSaludController.items}"
+                                           var="idServicioItem"
+                                           itemValue="#{idServicioItem}"
+                                           itemLabel="#{idServicioItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{servicioSaludConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditReporteEmailsEnviadosLabel_idProgramaAno}" for="idProgramaAno" />
+                        <p:selectOneMenu id="idProgramaAno" value="#{reporteEmailsEnviadosController.selected.idProgramaAno}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaAnoController.items}"
+                                           var="idProgramaAnoItem"
+                                           itemValue="#{idProgramaAnoItem}"
+                                           itemLabel="#{idProgramaAnoItem.idProgramaAno.toString()}"
+                                           />
+                            <f:converter binding="#{programaAnoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditReporteEmailsEnviadosLabel_modifica}" for="modifica" />
+                        <p:selectBooleanCheckbox id="modifica" value="#{reporteEmailsEnviadosController.selected.modifica}" />
+
+                        <p:outputLabel value="#{messages.EditReporteEmailsEnviadosLabel_fecha}" for="fecha" />
+                        <p:calendar id="fecha" pattern="MM/dd/yyyy HH:mm:ss" value="#{reporteEmailsEnviadosController.selected.fecha}" title="#{messages.EditReporteEmailsEnviadosTitle_fecha}"  showOn="button"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{reporteEmailsEnviadosController.save}" value="#{messages.Save}" update="display,:ReporteEmailsEnviadosListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ReporteEmailsEnviadosEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ReporteEmailsEnviadosEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

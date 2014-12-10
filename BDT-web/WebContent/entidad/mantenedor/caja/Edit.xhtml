@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="CajaEditDlg" widgetVar="CajaEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditCajaTitle}" closeOnEscape="true">
+
+            <h:form id="CajaEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{cajaController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditCajaLabel_id}" for="id" />
+                        <h:outputText id="id" value="#{cajaController.selected.id}" />
+
+                        <p:outputLabel value="#{messages.EditCajaLabel_monto}" for="monto" />
+                        <p:inputText id="monto" value="#{cajaController.selected.monto}" title="#{messages.EditCajaTitle_monto}" required="true" requiredMessage="#{messages.EditCajaRequiredMessage_monto}"/>
+
+                        <p:outputLabel value="#{messages.EditCajaLabel_idSubtitulo}" for="idSubtitulo" />
+                        <p:selectOneMenu id="idSubtitulo" value="#{cajaController.selected.idSubtitulo}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoSubtituloController.items}"
+                                           var="idSubtituloItem"
+                                           itemValue="#{idSubtituloItem}"
+                                           itemLabel="#{idSubtituloItem.idTipoSubtitulo.toString()}"
+                                           />
+                            <f:converter binding="#{tipoSubtituloConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditCajaLabel_marcoPresupuestario}" for="marcoPresupuestario" />
+                        <p:selectOneMenu id="marcoPresupuestario" value="#{cajaController.selected.marcoPresupuestario}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{marcoPresupuestarioController.items}"
+                                           var="marcoPresupuestarioItem"
+                                           itemValue="#{marcoPresupuestarioItem}"
+                                           itemLabel="#{marcoPresupuestarioItem.idMarcoPresupuestario.toString()}"
+                                           />
+                            <f:converter binding="#{marcoPresupuestarioConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditCajaLabel_idComponente}" for="idComponente" />
+                        <p:selectOneMenu id="idComponente" value="#{cajaController.selected.idComponente}" required="true" requiredMessage="#{messages.EditCajaRequiredMessage_idComponente}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{componenteController.items}"
+                                           var="idComponenteItem"
+                                           itemValue="#{idComponenteItem}"
+                                           itemLabel="#{idComponenteItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{componenteConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{cajaController.save}" value="#{messages.Save}" update="display,:CajaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,CajaEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="CajaEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

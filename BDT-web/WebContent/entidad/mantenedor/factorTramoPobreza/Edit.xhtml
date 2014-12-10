@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="FactorTramoPobrezaEditDlg" widgetVar="FactorTramoPobrezaEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditFactorTramoPobrezaTitle}" closeOnEscape="true">
+
+            <h:form id="FactorTramoPobrezaEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{factorTramoPobrezaController.seleccionado != null}">
+
+
+                        <h:outputLabel value="#{messages.EditFactorTramoPobrezaLabel_idFactorTramoPobreza}" for="idFactorTramoPobreza" />
+                        <h:outputText id="idFactorTramoPobreza" value="#{factorTramoPobrezaController.seleccionado.idFactorTramoPobreza}" />
+
+                        <p:outputLabel value="#{messages.EditFactorTramoPobrezaLabel_valor}" for="valor" />
+                        <p:inputText id="valor" value="#{factorTramoPobrezaController.seleccionado.valor}" title="#{messages.EditFactorTramoPobrezaTitle_valor}" required="true" requiredMessage="#{messages.EditFactorTramoPobrezaRequiredMessage_valor}"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{factorTramoPobrezaController.edit}" value="#{messages.Save}" update="display,:FactorTramoPobrezaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,FactorTramoPobrezaEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="FactorTramoPobrezaEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="RebajaCorteCreateDlg" widgetVar="RebajaCorteCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateRebajaCorteTitle}" closeOnEscape="true">
+
+            <h:form id="RebajaCorteCreateForm">
+
+                <h:panelGroup id="display" rendered="#{rebajaCorteController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateRebajaCorteLabel_mesRebaja}" for="mesRebaja" />
+                        <p:selectOneMenu id="mesRebaja" value="#{rebajaCorteController.selected.mesRebaja}" required="true" requiredMessage="#{messages.CreateRebajaCorteRequiredMessage_mesRebaja}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{mesController.items}"
+                                           var="mesRebajaItem"
+                                           itemValue="#{mesRebajaItem}"
+                                           itemLabel="#{mesRebajaItem.idMes.toString()}"
+                                           />
+                            <f:converter binding="#{mesConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateRebajaCorteLabel_mesHasta}" for="mesHasta" />
+                        <p:selectOneMenu id="mesHasta" value="#{rebajaCorteController.selected.mesHasta}" required="true" requiredMessage="#{messages.CreateRebajaCorteRequiredMessage_mesHasta}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{mesController.items}"
+                                           var="mesHastaItem"
+                                           itemValue="#{mesHastaItem}"
+                                           itemLabel="#{mesHastaItem.idMes.toString()}"
+                                           />
+                            <f:converter binding="#{mesConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateRebajaCorteLabel_mesDesde}" for="mesDesde" />
+                        <p:selectOneMenu id="mesDesde" value="#{rebajaCorteController.selected.mesDesde}" required="true" requiredMessage="#{messages.CreateRebajaCorteRequiredMessage_mesDesde}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{mesController.items}"
+                                           var="mesDesdeItem"
+                                           itemValue="#{mesDesdeItem}"
+                                           itemLabel="#{mesDesdeItem.idMes.toString()}"
+                                           />
+                            <f:converter binding="#{mesConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateRebajaCorteLabel_mesInicio}" for="mesInicio" />
+                        <p:selectOneMenu id="mesInicio" value="#{rebajaCorteController.selected.mesInicio}" required="true" requiredMessage="#{messages.CreateRebajaCorteRequiredMessage_mesInicio}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{mesController.items}"
+                                           var="mesInicioItem"
+                                           itemValue="#{mesInicioItem}"
+                                           itemLabel="#{mesInicioItem.idMes.toString()}"
+                                           />
+                            <f:converter binding="#{mesConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{rebajaCorteController.saveNew}" value="#{messages.Save}" update="display,:RebajaCorteListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,RebajaCorteCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="RebajaCorteCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

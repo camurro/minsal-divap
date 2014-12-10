@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="PersonaListForm">
+
+        <p:panel header="#{messages.ListPersonaTitle}">
+            <p:contextMenu id="PersonaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('PersonaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('PersonaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('PersonaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('PersonaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.PersonaMenuItem_servicioSaludCollection}" icon="ui-icon-search"  action="#{personaController.navigateServicioSaludCollection}" disabled="#{empty personaController.selected.servicioSaludCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.PersonaMenuItem_regiones}" icon="ui-icon-search"  action="#{personaController.navigateRegiones}" disabled="#{empty personaController.selected.regiones}" ajax="false"/>  
+                <p:menuitem value="#{messages.PersonaMenuItem_email}" icon="ui-icon-search"  actionListener="#{personaController.prepareEmail}" update=":EmailViewForm" oncomplete="EmailViewDialog.show()" disabled="#{empty personaController.selected.email}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{personaController.personas}"
+                         var="item"
+                         rowKey="#{item.idPersona}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{personaController.seleccionado}">
+
+                <p:ajax event="rowSelect"   update=":PersonaListForm:createButton :PersonaListForm:viewButton :PersonaListForm:editButton :PersonaListForm:deleteButton :PersonaListForm:PersonaDataTableContextMenu" listener="#{personaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":PersonaListForm:createButton :PersonaListForm:viewButton :PersonaListForm:editButton :PersonaListForm:deleteButton :PersonaListForm:PersonaDataTableContextMenu" listener="#{personaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('PersonaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idPersona}" filterBy="#{item.idPersona}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListPersonaTitle_idPersona}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idPersona}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.nombre}" filterBy="#{item.nombre}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListPersonaTitle_nombre}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombre}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.apellidoPaterno}" filterBy="#{item.apellidoPaterno}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListPersonaTitle_apellidoPaterno}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.apellidoPaterno}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.apellidoMaterno}" filterBy="#{item.apellidoMaterno}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListPersonaTitle_apellidoMaterno}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.apellidoMaterno}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.correo}" filterBy="#{item.correo}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListPersonaTitle_email}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.correo}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{personaController.prepareCreatePersona}" update=":PersonaCreateForm" oncomplete="PersonaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{messages.View}" update=":PersonaViewForm" oncomplete="PersonaViewDialog.show()" disabled="#{empty personaController.seleccionado}"/>
+            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{messages.Edit}" update=":PersonaEditForm" oncomplete="PersonaEditDialog.show()" disabled="#{empty personaController.seleccionado}"/>
+            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{personaController.delete}" update=":growl,datalist" disabled="#{empty personaController.seleccionado}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

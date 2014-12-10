@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import cl.minsal.divap.model.FactorTramoPobreza;
 import cl.minsal.divap.model.Usuario;
 
 
@@ -40,6 +41,15 @@ public class UsuarioDAO {
 			return usuario.getEmail().getValor();
 		}
 		return null;
+	}
+	
+	public List<Usuario> getUserAll(){
+		try {
+			TypedQuery<Usuario> query = this.em.createNamedQuery("Usuario.findAll", Usuario.class);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="EmailCreateDlg" widgetVar="EmailCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateEmailTitle}" closeOnEscape="true">
+
+            <h:form id="EmailCreateForm">
+
+                <h:panelGroup id="display" rendered="#{emailController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateEmailLabel_valor}" for="valor" />
+                        <p:inputText id="valor" value="#{emailController.selected.valor}" title="#{messages.CreateEmailTitle_valor}" required="true" requiredMessage="#{messages.CreateEmailRequiredMessage_valor}"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{emailController.saveNew}" value="#{messages.Save}" update="display,:EmailListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,EmailCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="EmailCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

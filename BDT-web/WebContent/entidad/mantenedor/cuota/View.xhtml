@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CuotaViewDlg" widgetVar="CuotaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewCuotaTitle}" closeOnEscape="true">
+
+            <h:form id="CuotaViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{cuotaController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewCuotaLabel_id}"/>
+                        <h:outputText value="#{cuotaController.selected.id}" title="#{messages.ViewCuotaTitle_id}"/>
+
+                        <h:outputText value="#{messages.ViewCuotaLabel_numeroCuota}"/>
+                        <h:outputText value="#{cuotaController.selected.numeroCuota}" title="#{messages.ViewCuotaTitle_numeroCuota}"/>
+
+                        <h:outputText value="#{messages.ViewCuotaLabel_porcentaje}"/>
+                        <h:outputText value="#{cuotaController.selected.porcentaje}" title="#{messages.ViewCuotaTitle_porcentaje}"/>
+
+                        <h:outputText value="#{messages.ViewCuotaLabel_monto}"/>
+                        <h:outputText value="#{cuotaController.selected.monto}" title="#{messages.ViewCuotaTitle_monto}"/>
+
+                        <h:outputText value="#{messages.ViewCuotaLabel_fechaPago}"/>
+                        <h:outputText value="#{cuotaController.selected.fechaPago}" title="#{messages.ViewCuotaTitle_fechaPago}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+
+                        <h:outputText value="#{messages.ViewCuotaLabel_idPrograma}"/>
+                        <h:outputText value="#{cuotaController.selected.idPrograma.idProgramaAno}"/>
+
+                        <h:outputText value="#{messages.ViewCuotaLabel_idMes}"/>
+                        <h:outputText value="#{cuotaController.selected.idMes.idMes}"/>
+
+                        <h:outputText value="#{messages.ViewCuotaLabel_componente}"/>
+                        <h:outputText value="#{cuotaController.selected.componente.id}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="CuotaViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

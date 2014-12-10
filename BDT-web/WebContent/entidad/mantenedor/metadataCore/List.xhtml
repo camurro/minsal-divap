@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="MetadataCoreListForm">
+
+        <p:panel header="#{messages.ListMetadataCoreTitle}">
+            <p:contextMenu id="MetadataCoreDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('MetadataCoreListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('MetadataCoreListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('MetadataCoreListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('MetadataCoreListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.MetadataCoreMenuItem_programa}" icon="ui-icon-search"  actionListener="#{metadataCoreController.preparePrograma}" update=":ProgramaViewForm" oncomplete="ProgramaViewDialog.show()" disabled="#{empty metadataCoreController.selected.programa}"/>  
+                <p:menuitem value="#{messages.MetadataCoreMenuItem_idTipoPrograma}" icon="ui-icon-search"  actionListener="#{metadataCoreController.prepareIdTipoPrograma}" update=":TipoComponenteViewForm" oncomplete="TipoComponenteViewDialog.show()" disabled="#{empty metadataCoreController.selected.idTipoPrograma}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{metadataCoreController.items}"
+                         var="item"
+                         rowKey="#{item.id}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{metadataCoreController.selected}">
+
+                <p:ajax event="rowSelect"   update=":MetadataCoreListForm:createButton :MetadataCoreListForm:viewButton :MetadataCoreListForm:editButton :MetadataCoreListForm:deleteButton :MetadataCoreListForm:MetadataCoreDataTableContextMenu" listener="#{metadataCoreController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":MetadataCoreListForm:createButton :MetadataCoreListForm:viewButton :MetadataCoreListForm:editButton :MetadataCoreListForm:deleteButton :MetadataCoreListForm:MetadataCoreDataTableContextMenu" listener="#{metadataCoreController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('MetadataCoreListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.id}" filterBy="#{item.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListMetadataCoreTitle_id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.descripcion}" filterBy="#{item.descripcion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListMetadataCoreTitle_descripcion}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.descripcion}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.indiceCore}" filterBy="#{item.indiceCore}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListMetadataCoreTitle_indiceCore}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.indiceCore}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.programa.descripcion}" filterBy="#{item.programa.descripcion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListMetadataCoreTitle_programa}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.programa.descripcion}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idTipoPrograma.id}" filterBy="#{item.idTipoPrograma.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListMetadataCoreTitle_idTipoPrograma}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idTipoPrograma.id}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{metadataCoreController.prepareCreate}" update=":MetadataCoreCreateForm" oncomplete="MetadataCoreCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":MetadataCoreViewForm" oncomplete="MetadataCoreViewDialog.show()" disabled="#{empty metadataCoreController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":MetadataCoreEditForm" oncomplete="MetadataCoreEditDialog.show()" disabled="#{empty metadataCoreController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{metadataCoreController.delete}" update=":growl,datalist" disabled="#{empty metadataCoreController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

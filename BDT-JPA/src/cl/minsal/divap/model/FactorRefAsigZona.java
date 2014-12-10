@@ -31,9 +31,8 @@ import javax.xml.bind.annotation.XmlTransient;
 public class FactorRefAsigZona implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id_factor_ref_asig_zona")
+	@Column(name="id_factor_ref_asig_zona", unique=true, nullable=false)
+	@GeneratedValue
     private Integer idFactorRefAsigZona;
     @Basic(optional = false)
     @Column(name = "zona")

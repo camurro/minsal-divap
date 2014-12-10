@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CumplimientoViewDlg" widgetVar="CumplimientoViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewCumplimientoTitle}" closeOnEscape="true">
+
+            <h:form id="CumplimientoViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{cumplimientoController.seleccionado != null}">
+
+                        <h:outputText value="#{messages.ViewCumplimientoLabel_idCumplimiento}"/>
+                        <h:outputText value="#{cumplimientoController.seleccionado.idCumplimiento}" title="#{messages.ViewCumplimientoTitle_idCumplimiento}"/>
+
+                        <h:outputText value="#{messages.ViewCumplimientoLabel_rebaja}"/>
+                        <h:outputText value="#{cumplimientoController.seleccionado.rebaja}" title="#{messages.ViewCumplimientoTitle_rebaja}"/>
+
+                        <h:outputText value="#{messages.ViewCumplimientoLabel_porcentajeDesde}"/>
+                        <h:outputText value="#{cumplimientoController.seleccionado.porcentajeDesde}" title="#{messages.ViewCumplimientoTitle_porcentajeDesde}"/>
+
+                        <h:outputText value="#{messages.ViewCumplimientoLabel_porcentajeHasta}"/>
+                        <h:outputText value="#{cumplimientoController.seleccionado.porcentajeHasta}" title="#{messages.ViewCumplimientoTitle_porcentajeHasta}"/>
+
+                        <h:outputText value="#{messages.ViewCumplimientoLabel_tramo}"/>
+                        <h:outputText value="#{cumplimientoController.seleccionado.idTramo}"/>
+
+                        <h:outputText value="#{messages.ViewCumplimientoLabel_tipoCumplimiento}"/>
+                        <h:outputText value="#{cumplimientoController.seleccionado.tipoCumplimiento}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="CumplimientoViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

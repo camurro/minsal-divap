@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/entidad/template.xhtml">
+
+    <ui:define name="title">
+        <h:outputText value="#{messages.ComunaCumplimientoTitle}"/>
+    </ui:define>
+
+    <ui:define name="body">
+
+        <ui:include src="/entidad/mantenedor/comunaCumplimiento/List.xhtml"/>
+        <ui:include src="/entidad/mantenedor/comunaCumplimiento/View.xhtml"/>
+        <ui:include src="/entidad/mantenedor/comunaCumplimiento/Edit.xhtml"/>
+        <ui:include src="/entidad/mantenedor/comunaCumplimiento/Create.xhtml"/>
+        <ui:include src="/entidad/mantenedor/comuna/View.xhtml"/>
+        <ui:include src="/entidad/mantenedor/rebaja/View.xhtml"/>
+        <ui:include src="/entidad/mantenedor/comunaCumplimientoRebaja/View.xhtml"/>
+        <ui:include src="/entidad/mantenedor/tipoCumplimiento/View.xhtml"/>
+        <ui:include src="/entidad/mantenedor/mes/View.xhtml"/>
+
+    </ui:define>
+
+</ui:composition>

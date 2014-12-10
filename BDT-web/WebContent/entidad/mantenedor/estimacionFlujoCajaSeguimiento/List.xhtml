@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="EstimacionFlujoCajaSeguimientoListForm">
+
+        <p:panel header="#{messages.ListEstimacionFlujoCajaSeguimientoTitle}">
+            <p:contextMenu id="EstimacionFlujoCajaSeguimientoDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('EstimacionFlujoCajaSeguimientoListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('EstimacionFlujoCajaSeguimientoListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('EstimacionFlujoCajaSeguimientoListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('EstimacionFlujoCajaSeguimientoListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.EstimacionFlujoCajaSeguimientoMenuItem_seguimiento}" icon="ui-icon-search"  actionListener="#{estimacionFlujoCajaSeguimientoController.prepareSeguimiento}" update=":SeguimientoViewForm" oncomplete="SeguimientoViewDialog.show()" disabled="#{empty estimacionFlujoCajaSeguimientoController.selected.seguimiento}"/>  
+                <p:menuitem value="#{messages.EstimacionFlujoCajaSeguimientoMenuItem_programaAno}" icon="ui-icon-search"  actionListener="#{estimacionFlujoCajaSeguimientoController.prepareProgramaAno}" update=":ProgramaAnoViewForm" oncomplete="ProgramaAnoViewDialog.show()" disabled="#{empty estimacionFlujoCajaSeguimientoController.selected.programaAno}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{estimacionFlujoCajaSeguimientoController.items}"
+                         var="item"
+                         rowKey="#{item.id}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{estimacionFlujoCajaSeguimientoController.selected}">
+
+                <p:ajax event="rowSelect"   update=":EstimacionFlujoCajaSeguimientoListForm:createButton :EstimacionFlujoCajaSeguimientoListForm:viewButton :EstimacionFlujoCajaSeguimientoListForm:editButton :EstimacionFlujoCajaSeguimientoListForm:deleteButton :EstimacionFlujoCajaSeguimientoListForm:EstimacionFlujoCajaSeguimientoDataTableContextMenu" listener="#{estimacionFlujoCajaSeguimientoController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":EstimacionFlujoCajaSeguimientoListForm:createButton :EstimacionFlujoCajaSeguimientoListForm:viewButton :EstimacionFlujoCajaSeguimientoListForm:editButton :EstimacionFlujoCajaSeguimientoListForm:deleteButton :EstimacionFlujoCajaSeguimientoListForm:EstimacionFlujoCajaSeguimientoDataTableContextMenu" listener="#{estimacionFlujoCajaSeguimientoController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('EstimacionFlujoCajaSeguimientoListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.id}" filterBy="#{item.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListEstimacionFlujoCajaSeguimientoTitle_id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.seguimiento.id}" filterBy="#{item.seguimiento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListEstimacionFlujoCajaSeguimientoTitle_seguimiento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.seguimiento.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.programaAno.idProgramaAno}" filterBy="#{item.programaAno.idProgramaAno}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListEstimacionFlujoCajaSeguimientoTitle_programaAno}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.programaAno.idProgramaAno}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{estimacionFlujoCajaSeguimientoController.prepareCreate}" update=":EstimacionFlujoCajaSeguimientoCreateForm" oncomplete="EstimacionFlujoCajaSeguimientoCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":EstimacionFlujoCajaSeguimientoViewForm" oncomplete="EstimacionFlujoCajaSeguimientoViewDialog.show()" disabled="#{empty estimacionFlujoCajaSeguimientoController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":EstimacionFlujoCajaSeguimientoEditForm" oncomplete="EstimacionFlujoCajaSeguimientoEditDialog.show()" disabled="#{empty estimacionFlujoCajaSeguimientoController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{estimacionFlujoCajaSeguimientoController.delete}" update=":growl,datalist" disabled="#{empty estimacionFlujoCajaSeguimientoController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

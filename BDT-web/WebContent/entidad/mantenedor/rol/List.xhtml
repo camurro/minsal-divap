@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="RolListForm">
+
+        <p:panel header="#{messages.ListRolTitle}">
+            <p:contextMenu id="RolDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('RolListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('RolListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('RolListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('RolListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.RolMenuItem_usuarios}" icon="ui-icon-search"  action="#{rolController.navigateUsuarios}" disabled="#{empty rolController.selected.usuarios}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{rolController.roles}"
+                         var="item"
+                         rowKey="#{item.nombre}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{rolController.seleccionado}">
+
+                <p:ajax event="rowSelect"   update=":RolListForm:createButton :RolListForm:viewButton :RolListForm:editButton :RolListForm:deleteButton :RolListForm:RolDataTableContextMenu" listener="#{rolController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":RolListForm:createButton :RolListForm:viewButton :RolListForm:editButton :RolListForm:deleteButton :RolListForm:RolDataTableContextMenu" listener="#{rolController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('RolListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.nombre}" filterBy="#{item.nombre}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRolTitle_nombre}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombre}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{rolController.prepareCreateRol}" update=":RolCreateForm" oncomplete="RolCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{messages.View}" update=":RolViewForm" oncomplete="RolViewDialog.show()" disabled="#{empty rolController.seleccionado}"/>
+            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{messages.Edit}" update=":RolEditForm" oncomplete="RolEditDialog.show()" disabled="#{empty rolController.seleccionado}"/>
+            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{rolController.delete}" update=":growl,datalist" disabled="#{empty rolController.seleccionado}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

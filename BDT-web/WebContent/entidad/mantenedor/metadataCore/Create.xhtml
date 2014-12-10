@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="MetadataCoreCreateDlg" widgetVar="MetadataCoreCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateMetadataCoreTitle}" closeOnEscape="true">
+
+            <h:form id="MetadataCoreCreateForm">
+
+                <h:panelGroup id="display" rendered="#{metadataCoreController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateMetadataCoreLabel_descripcion}" for="descripcion" />
+                        <p:inputText id="descripcion" value="#{metadataCoreController.selected.descripcion}" title="#{messages.CreateMetadataCoreTitle_descripcion}"/>
+
+                        <p:outputLabel value="#{messages.CreateMetadataCoreLabel_indiceCore}" for="indiceCore" />
+                        <p:inputText id="indiceCore" value="#{metadataCoreController.selected.indiceCore}" title="#{messages.CreateMetadataCoreTitle_indiceCore}"/>
+
+                        <p:outputLabel value="#{messages.CreateMetadataCoreLabel_programa}" for="programa" />
+                        <p:selectOneMenu id="programa" value="#{metadataCoreController.selected.programa}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaController.items}"
+                                           var="programaItem"
+                                           itemValue="#{programaItem}"
+                                           itemLabel="#{programaItem.descripcion.toString()}"
+                                           />
+                            <f:converter binding="#{programaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateMetadataCoreLabel_idTipoPrograma}" for="idTipoPrograma" />
+                        <p:selectOneMenu id="idTipoPrograma" value="#{metadataCoreController.selected.idTipoPrograma}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoComponenteController.items}"
+                                           var="idTipoProgramaItem"
+                                           itemValue="#{idTipoProgramaItem}"
+                                           itemLabel="#{idTipoProgramaItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{tipoComponenteConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{metadataCoreController.saveNew}" value="#{messages.Save}" update="display,:MetadataCoreListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,MetadataCoreCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="MetadataCoreCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

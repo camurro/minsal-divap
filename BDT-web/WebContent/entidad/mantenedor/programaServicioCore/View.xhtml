@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ProgramaServicioCoreViewDlg" widgetVar="ProgramaServicioCoreViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewProgramaServicioCoreTitle}" closeOnEscape="true">
+
+            <h:form id="ProgramaServicioCoreViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{programaServicioCoreController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewProgramaServicioCoreLabel_idProgramaServicioCore}"/>
+                        <h:outputText value="#{programaServicioCoreController.selected.idProgramaServicioCore}" title="#{messages.ViewProgramaServicioCoreTitle_idProgramaServicioCore}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaServicioCoreLabel_programaAnoServicio}"/>
+                        <h:outputText value="#{programaServicioCoreController.selected.programaAnoServicio.idProgramaAno}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaServicioCoreLabel_establecimiento}"/>
+                        <h:outputText value="#{programaServicioCoreController.selected.establecimiento.id}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaServicioCoreLabel_servicio}"/>
+                        <h:outputText value="#{programaServicioCoreController.selected.servicio.id}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="ProgramaServicioCoreViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

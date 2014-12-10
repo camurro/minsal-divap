@@ -34,7 +34,7 @@ import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.RegionVO;
 import minsal.divap.vo.ReporteGlosaVO;
-import minsal.divap.vo.ReporteMarcoPresupuestarioVO;
+import minsal.divap.vo.ReporteMarcoPresupuestarioComunaVO;
 import minsal.divap.vo.ReportePerCapitaVO;
 import minsal.divap.vo.ServiciosVO;
 import cl.minsal.divap.model.AntecendentesComuna;
@@ -209,7 +209,5 @@ public class ServicioSaludService {
 		}
 		return serviciosVO;
 	}
-	
-	
 
 }

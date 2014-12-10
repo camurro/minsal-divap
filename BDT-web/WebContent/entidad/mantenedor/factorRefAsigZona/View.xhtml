@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="FactorRefAsigZonaViewDlg" widgetVar="FactorRefAsigZonaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewFactorRefAsigZonaTitle}" closeOnEscape="true">
+
+            <h:form id="FactorRefAsigZonaViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{factorRefAsigZonaController.seleccionado != null}">
+
+                        <h:outputText value="#{messages.ViewFactorRefAsigZonaLabel_idFactorRefAsigZona}"/>
+                        <h:outputText value="#{factorRefAsigZonaController.seleccionado.idFactorRefAsigZona}" title="#{messages.ViewFactorRefAsigZonaTitle_idFactorRefAsigZona}"/>
+
+                        <h:outputText value="#{messages.ViewFactorRefAsigZonaLabel_zona}"/>
+                        <h:outputText value="#{factorRefAsigZonaController.seleccionado.zona}" title="#{messages.ViewFactorRefAsigZonaTitle_zona}"/>
+
+                        <h:outputText value="#{messages.ViewFactorRefAsigZonaLabel_valor}"/>
+                        <h:outputText value="#{factorRefAsigZonaController.seleccionado.valor}" title="#{messages.ViewFactorRefAsigZonaTitle_valor}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="FactorRefAsigZonaViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="ConvenioServicioComponenteEditDlg" widgetVar="ConvenioServicioComponenteEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditConvenioServicioComponenteTitle}" closeOnEscape="true">
+
+            <h:form id="ConvenioServicioComponenteEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{convenioServicioComponenteController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditConvenioServicioComponenteLabel_idConvenioServicioComponente}" for="idConvenioServicioComponente" />
+                        <h:outputText id="idConvenioServicioComponente" value="#{convenioServicioComponenteController.selected.idConvenioServicioComponente}" />
+
+                        <p:outputLabel value="#{messages.EditConvenioServicioComponenteLabel_monto}" for="monto" />
+                        <p:inputText id="monto" value="#{convenioServicioComponenteController.selected.monto}" title="#{messages.EditConvenioServicioComponenteTitle_monto}" required="true" requiredMessage="#{messages.EditConvenioServicioComponenteRequiredMessage_monto}"/>
+
+                        <p:outputLabel value="#{messages.EditConvenioServicioComponenteLabel_subtitulo}" for="subtitulo" />
+                        <p:selectOneMenu id="subtitulo" value="#{convenioServicioComponenteController.selected.subtitulo}" required="true" requiredMessage="#{messages.EditConvenioServicioComponenteRequiredMessage_subtitulo}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoSubtituloController.items}"
+                                           var="subtituloItem"
+                                           itemValue="#{subtituloItem}"
+                                           itemLabel="#{subtituloItem.idTipoSubtitulo.toString()}"
+                                           />
+                            <f:converter binding="#{tipoSubtituloConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditConvenioServicioComponenteLabel_convenioServicio}" for="convenioServicio" />
+                        <p:selectOneMenu id="convenioServicio" value="#{convenioServicioComponenteController.selected.convenioServicio}" required="true" requiredMessage="#{messages.EditConvenioServicioComponenteRequiredMessage_convenioServicio}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{convenioServicioController.items}"
+                                           var="convenioServicioItem"
+                                           itemValue="#{convenioServicioItem}"
+                                           itemLabel="#{convenioServicioItem.idConvenioServicio.toString()}"
+                                           />
+                            <f:converter binding="#{convenioServicioConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditConvenioServicioComponenteLabel_componente}" for="componente" />
+                        <p:selectOneMenu id="componente" value="#{convenioServicioComponenteController.selected.componente}" required="true" requiredMessage="#{messages.EditConvenioServicioComponenteRequiredMessage_componente}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{componenteController.items}"
+                                           var="componenteItem"
+                                           itemValue="#{componenteItem}"
+                                           itemLabel="#{componenteItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{componenteConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{convenioServicioComponenteController.save}" value="#{messages.Save}" update="display,:ConvenioServicioComponenteListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ConvenioServicioComponenteEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ConvenioServicioComponenteEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

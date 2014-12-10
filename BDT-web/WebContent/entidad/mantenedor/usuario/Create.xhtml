@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="UsuarioCreateDlg" widgetVar="UsuarioCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateUsuarioTitle}" closeOnEscape="true">
+
+            <h:form id="UsuarioCreateForm">
+
+                <h:panelGroup id="display" rendered="#{usuarioController.seleccionado != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+                    
+                    	<p:outputLabel value="#{messages.CreateUsuarioLabel_username}" for="username" />
+                        <p:inputText id="username" value="#{usuarioController.seleccionado.username}" title="#{messages.CreateUsuarioTitle_username}"/>
+
+                        <p:outputLabel value="#{messages.CreateUsuarioLabel_apellido}" for="apellido" />
+                        <p:inputText id="apellido" value="#{usuarioController.seleccionado.apellido}" title="#{messages.CreateUsuarioTitle_apellido}"/>
+                        
+                        <p:outputLabel value="#{messages.CreateUsuarioLabel_nombre}" for="nombre" />
+                        <p:inputText id="nombre" value="#{usuarioController.seleccionado.nombre}" title="#{messages.CreateUsuarioTitle_nombre}"/>
+
+                        <p:outputLabel value="#{messages.CreateUsuarioLabel_email}" for="email" />
+                        <p:selectOneMenu id="email" value="#{usuarioController.seleccionado.idEmail}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{usuarioController.emails}"
+                                           var="emailItem"
+                                           itemValue="#{emailItem.idEmail}"
+                                           itemLabel="#{emailItem.valor}"
+                                           />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateUsuarioLabel_servicio}" for="servicio" />
+                        <p:selectOneMenu id="servicio" value="#{usuarioController.seleccionado.idServicio}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{usuarioController.servicios}"
+                                           var="servicioItem"
+                                           itemValue="#{servicioItem.id_servicio}"
+                                           itemLabel="#{servicioItem.nombre_servicio}"
+                                           />
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel value="#{messages.CreateRolTitle_nombre}" />
+                        <p:pickList id="pickList" value="#{usuarioController.roles}" var="rolItem" itemLabel="#{rolItem}" itemValue="#{rolItem}"/>
+                        
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{usuarioController.saveNew}" value="#{messages.Save}" update="display,:UsuarioListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,UsuarioCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="UsuarioCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

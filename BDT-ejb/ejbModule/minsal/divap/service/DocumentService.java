@@ -768,7 +768,7 @@ public class DocumentService {
 	
 	
 	
-	public Integer createDocumentReportePoblacionPercapita(TipoDocumento tipoDocumentoProceso,
+	public Integer createDocumentReportes(TipoDocumento tipoDocumentoProceso,
 			String nodeRef, String filename, String contenType, Integer ano, Integer idMes ) {
 		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
 		AnoEnCurso anoEnCurso = new AnoEnCurso();
@@ -784,33 +784,9 @@ public class DocumentService {
 		documentoReportes.setDocumento(referenciaDocumento);
 		
 		reportesDAO.save(documentoReportes);
-
-		System.out.println("luego de aplicar insert del documento percapita");
-		System.out.println("referenciaDocumentoId ---> "+referenciaDocumentoId);
 		return referenciaDocumentoId;
 	}
 	
-	public Integer createDocumentReporteRebaja(TipoDocumento tipoDocumentoProceso,
-			String nodeRef, String filename, String contenType, Integer ano, Integer idMes ) {
-		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
-		AnoEnCurso anoEnCurso = new AnoEnCurso();
-		anoEnCurso.setAno(ano);
-		Mes mesEnCurso = new Mes();
-		mesEnCurso.setIdMes(idMes);
-		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
-		
-		DocumentoReportes documentoReportes = new DocumentoReportes();
-		documentoReportes.setAno(anoEnCurso);
-		
-		documentoReportes.setTipoDocumento(tipoDocumentoProceso);
-		documentoReportes.setDocumento(referenciaDocumento);
-		
-		reportesDAO.save(documentoReportes);
-
-		System.out.println("luego de aplicar insert del documento percapita");
-		System.out.println("referenciaDocumentoId ---> "+referenciaDocumentoId);
-		return referenciaDocumentoId;
-	}
 
 	public void createDocumentReliquidacion(Reliquidacion reliquidacion, TipoDocumentosProcesos tipoDocumento, Integer referenciaDocumentoId, Boolean lastVersion) {
 		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
@@ -844,5 +820,7 @@ public class DocumentService {
 		return referenciaDocumentoId;
 		
 	}
+	
+	
 	
 }

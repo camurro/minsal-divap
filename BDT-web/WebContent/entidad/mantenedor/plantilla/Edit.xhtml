@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="PlantillaEditDlg" widgetVar="PlantillaEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditPlantillaTitle}" closeOnEscape="true">
+
+            <h:form id="PlantillaEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{plantillaController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditPlantillaLabel_idPlantilla}" for="idPlantilla" />
+                        <h:outputText id="idPlantilla" value="#{plantillaController.selected.idPlantilla}" />
+
+                        <p:outputLabel value="#{messages.EditPlantillaLabel_fechaCreacion}" for="fechaCreacion" />
+                        <p:calendar id="fechaCreacion" pattern="MM/dd/yyyy HH:mm:ss" value="#{plantillaController.selected.fechaCreacion}" title="#{messages.EditPlantillaTitle_fechaCreacion}" required="true" requiredMessage="#{messages.EditPlantillaRequiredMessage_fechaCreacion}" showOn="button"/>
+
+                        <p:outputLabel value="#{messages.EditPlantillaLabel_fechaVigencia}" for="fechaVigencia" />
+                        <p:calendar id="fechaVigencia" pattern="MM/dd/yyyy HH:mm:ss" value="#{plantillaController.selected.fechaVigencia}" title="#{messages.EditPlantillaTitle_fechaVigencia}"  showOn="button"/>
+
+                        <p:outputLabel value="#{messages.EditPlantillaLabel_tipoPlantilla}" for="tipoPlantilla" />
+                        <p:selectOneMenu id="tipoPlantilla" value="#{plantillaController.selected.tipoPlantilla}" required="true" requiredMessage="#{messages.EditPlantillaRequiredMessage_tipoPlantilla}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoDocumentoController.items}"
+                                           var="tipoPlantillaItem"
+                                           itemValue="#{tipoPlantillaItem}"
+                                           itemLabel="#{tipoPlantillaItem.idTipoDocumento.toString()}"
+                                           />
+                            <f:converter binding="#{tipoDocumentoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditPlantillaLabel_documento}" for="documento" />
+                        <p:selectOneMenu id="documento" value="#{plantillaController.selected.documento}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{referenciaDocumentoController.items}"
+                                           var="documentoItem"
+                                           itemValue="#{documentoItem}"
+                                           itemLabel="#{documentoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{referenciaDocumentoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditPlantillaLabel_idPrograma}" for="idPrograma" />
+                        <p:selectOneMenu id="idPrograma" value="#{plantillaController.selected.idPrograma}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaController.items}"
+                                           var="idProgramaItem"
+                                           itemValue="#{idProgramaItem}"
+                                           itemLabel="#{idProgramaItem.descripcion.toString()}"
+                                           />
+                            <f:converter binding="#{programaConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{plantillaController.save}" value="#{messages.Save}" update="display,:PlantillaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,PlantillaEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="PlantillaEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

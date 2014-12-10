@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="ReliquidacionServicioEditDlg" widgetVar="ReliquidacionServicioEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditReliquidacionServicioTitle}" closeOnEscape="true">
+
+            <h:form id="ReliquidacionServicioEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{reliquidacionServicioController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditReliquidacionServicioLabel_reliquidacionServicioId}" for="reliquidacionServicioId" />
+                        <h:outputText id="reliquidacionServicioId" value="#{reliquidacionServicioController.selected.reliquidacionServicioId}" />
+
+                        <p:outputLabel value="#{messages.EditReliquidacionServicioLabel_montoRebaja}" for="montoRebaja" />
+                        <p:inputText id="montoRebaja" value="#{reliquidacionServicioController.selected.montoRebaja}" title="#{messages.EditReliquidacionServicioTitle_montoRebaja}"/>
+
+                        <p:outputLabel value="#{messages.EditReliquidacionServicioLabel_porcentajeCumplimiento}" for="porcentajeCumplimiento" />
+                        <p:inputText id="porcentajeCumplimiento" value="#{reliquidacionServicioController.selected.porcentajeCumplimiento}" title="#{messages.EditReliquidacionServicioTitle_porcentajeCumplimiento}" required="true" requiredMessage="#{messages.EditReliquidacionServicioRequiredMessage_porcentajeCumplimiento}"/>
+
+                        <p:outputLabel value="#{messages.EditReliquidacionServicioLabel_servicio}" for="servicio" />
+                        <p:selectOneMenu id="servicio" value="#{reliquidacionServicioController.selected.servicio}" required="true" requiredMessage="#{messages.EditReliquidacionServicioRequiredMessage_servicio}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{servicioSaludController.items}"
+                                           var="servicioItem"
+                                           itemValue="#{servicioItem}"
+                                           itemLabel="#{servicioItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{servicioSaludConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditReliquidacionServicioLabel_reliquidacion}" for="reliquidacion" />
+                        <p:selectOneMenu id="reliquidacion" value="#{reliquidacionServicioController.selected.reliquidacion}" required="true" requiredMessage="#{messages.EditReliquidacionServicioRequiredMessage_reliquidacion}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{reliquidacionController.items}"
+                                           var="reliquidacionItem"
+                                           itemValue="#{reliquidacionItem}"
+                                           itemLabel="#{reliquidacionItem.idReliquidacion.toString()}"
+                                           />
+                            <f:converter binding="#{reliquidacionConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditReliquidacionServicioLabel_programa}" for="programa" />
+                        <p:selectOneMenu id="programa" value="#{reliquidacionServicioController.selected.programa}" required="true" requiredMessage="#{messages.EditReliquidacionServicioRequiredMessage_programa}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaAnoController.items}"
+                                           var="programaItem"
+                                           itemValue="#{programaItem}"
+                                           itemLabel="#{programaItem.idProgramaAno.toString()}"
+                                           />
+                            <f:converter binding="#{programaAnoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditReliquidacionServicioLabel_establecimiento}" for="establecimiento" />
+                        <p:selectOneMenu id="establecimiento" value="#{reliquidacionServicioController.selected.establecimiento}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{establecimientoController.items}"
+                                           var="establecimientoItem"
+                                           itemValue="#{establecimientoItem}"
+                                           itemLabel="#{establecimientoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{establecimientoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditReliquidacionServicioLabel_cumplimiento}" for="cumplimiento" />
+                        <p:selectOneMenu id="cumplimiento" value="#{reliquidacionServicioController.selected.cumplimiento}" required="true" requiredMessage="#{messages.EditReliquidacionServicioRequiredMessage_cumplimiento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{cumplimientoProgramaController.items}"
+                                           var="cumplimientoItem"
+                                           itemValue="#{cumplimientoItem}"
+                                           itemLabel="#{cumplimientoItem.idCumplimientoPrograma.toString()}"
+                                           />
+                            <f:converter binding="#{cumplimientoProgramaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditReliquidacionServicioLabel_componente}" for="componente" />
+                        <p:selectOneMenu id="componente" value="#{reliquidacionServicioController.selected.componente}" required="true" requiredMessage="#{messages.EditReliquidacionServicioRequiredMessage_componente}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{componenteController.items}"
+                                           var="componenteItem"
+                                           itemValue="#{componenteItem}"
+                                           itemLabel="#{componenteItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{componenteConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{reliquidacionServicioController.save}" value="#{messages.Save}" update="display,:ReliquidacionServicioListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ReliquidacionServicioEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ReliquidacionServicioEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

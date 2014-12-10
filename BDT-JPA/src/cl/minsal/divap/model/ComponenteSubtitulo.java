@@ -22,7 +22,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "ComponenteSubtitulo.findAll", query = "SELECT c FROM ComponenteSubtitulo c"),
-    @NamedQuery(name = "ComponenteSubtitulo.findByIdComponenteSubtitulo", query = "SELECT c FROM ComponenteSubtitulo c WHERE c.idComponenteSubtitulo = :idComponenteSubtitulo")})
+    @NamedQuery(name = "ComponenteSubtitulo.findByIdComponenteSubtitulo", query = "SELECT c FROM ComponenteSubtitulo c WHERE c.idComponenteSubtitulo = :idComponenteSubtitulo"),
+    @NamedQuery(name = "ComponenteSubtitulo.findByIdComponente", query = "SELECT c FROM ComponenteSubtitulo c WHERE c.componente.id = :idComponente")})
 public class ComponenteSubtitulo implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

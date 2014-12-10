@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="CumplimientoProgramaListForm">
+
+        <p:panel header="#{messages.ListCumplimientoProgramaTitle}">
+            <p:contextMenu id="CumplimientoProgramaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('CumplimientoProgramaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('CumplimientoProgramaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('CumplimientoProgramaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('CumplimientoProgramaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.CumplimientoProgramaMenuItem_programa}" icon="ui-icon-search"  actionListener="#{cumplimientoProgramaController.preparePrograma}" update=":ProgramaViewForm" oncomplete="ProgramaViewDialog.show()" disabled="#{empty cumplimientoProgramaController.selected.programa}"/>  
+                <p:menuitem value="#{messages.CumplimientoProgramaMenuItem_reliquidacionServicios}" icon="ui-icon-search"  action="#{cumplimientoProgramaController.navigateReliquidacionServicios}" disabled="#{empty cumplimientoProgramaController.selected.reliquidacionServicios}" ajax="false"/>  
+                <p:menuitem value="#{messages.CumplimientoProgramaMenuItem_reliquidacionComunas}" icon="ui-icon-search"  action="#{cumplimientoProgramaController.navigateReliquidacionComunas}" disabled="#{empty cumplimientoProgramaController.selected.reliquidacionComunas}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{cumplimientoProgramaController.items}"
+                         var="item"
+                         rowKey="#{item.idCumplimientoPrograma}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{cumplimientoProgramaController.selected}">
+
+                <p:ajax event="rowSelect"   update=":CumplimientoProgramaListForm:createButton :CumplimientoProgramaListForm:viewButton :CumplimientoProgramaListForm:editButton :CumplimientoProgramaListForm:deleteButton :CumplimientoProgramaListForm:CumplimientoProgramaDataTableContextMenu" listener="#{cumplimientoProgramaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":CumplimientoProgramaListForm:createButton :CumplimientoProgramaListForm:viewButton :CumplimientoProgramaListForm:editButton :CumplimientoProgramaListForm:deleteButton :CumplimientoProgramaListForm:CumplimientoProgramaDataTableContextMenu" listener="#{cumplimientoProgramaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('CumplimientoProgramaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idCumplimientoPrograma}" filterBy="#{item.idCumplimientoPrograma}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCumplimientoProgramaTitle_idCumplimientoPrograma}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idCumplimientoPrograma}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.porcentajeDesde}" filterBy="#{item.porcentajeDesde}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCumplimientoProgramaTitle_porcentajeDesde}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.porcentajeDesde}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.porcentajeHasta}" filterBy="#{item.porcentajeHasta}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCumplimientoProgramaTitle_porcentajeHasta}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.porcentajeHasta}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.rebaja}" filterBy="#{item.rebaja}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCumplimientoProgramaTitle_rebaja}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.rebaja}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.programa.descripcion}" filterBy="#{item.programa.descripcion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCumplimientoProgramaTitle_programa}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.programa.descripcion}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{cumplimientoProgramaController.prepareCreate}" update=":CumplimientoProgramaCreateForm" oncomplete="CumplimientoProgramaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":CumplimientoProgramaViewForm" oncomplete="CumplimientoProgramaViewDialog.show()" disabled="#{empty cumplimientoProgramaController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":CumplimientoProgramaEditForm" oncomplete="CumplimientoProgramaEditDialog.show()" disabled="#{empty cumplimientoProgramaController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{cumplimientoProgramaController.delete}" update=":growl,datalist" disabled="#{empty cumplimientoProgramaController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

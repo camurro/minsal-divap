@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CajaMontoViewDlg" widgetVar="CajaMontoViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewCajaMontoTitle}" closeOnEscape="true">
+
+            <h:form id="CajaMontoViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{cajaMontoController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewCajaMontoLabel_monto}"/>
+                        <h:outputText value="#{cajaMontoController.selected.monto.idMontoMes}"/>
+
+                        <h:outputText value="#{messages.ViewCajaMontoLabel_mes}"/>
+                        <h:outputText value="#{cajaMontoController.selected.mes.idMes}"/>
+
+                        <h:outputText value="#{messages.ViewCajaMontoLabel_caja}"/>
+                        <h:outputText value="#{cajaMontoController.selected.caja.id}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="CajaMontoViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

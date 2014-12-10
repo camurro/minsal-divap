@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="RebajaViewDlg" widgetVar="RebajaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewRebajaTitle}" closeOnEscape="true">
+
+            <h:form id="RebajaViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{rebajaController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewRebajaLabel_idRebaja}"/>
+                        <h:outputText value="#{rebajaController.selected.idRebaja}" title="#{messages.ViewRebajaTitle_idRebaja}"/>
+
+                        <h:outputText value="#{messages.ViewRebajaLabel_usuario}"/>
+                        <h:outputText value="#{rebajaController.selected.usuario.username}"/>
+
+                        <h:outputText value="#{messages.ViewRebajaLabel_rebajaCorte}"/>
+                        <h:outputText value="#{rebajaController.selected.rebajaCorte.rebajaCorteId}"/>
+
+                        <h:outputText value="#{messages.ViewRebajaLabel_ano}"/>
+                        <h:outputText value="#{rebajaController.selected.ano.ano}"/>
+
+                        <h:outputText value="#{messages.ViewRebajaLabel_fechaCreacion}"/>
+                        <h:outputText value="#{rebajaController.selected.fechaCreacion}" title="#{messages.ViewRebajaTitle_fechaCreacion}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="RebajaViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

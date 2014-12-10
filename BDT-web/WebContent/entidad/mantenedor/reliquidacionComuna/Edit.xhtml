@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="ReliquidacionComunaEditDlg" widgetVar="ReliquidacionComunaEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditReliquidacionComunaTitle}" closeOnEscape="true">
+
+            <h:form id="ReliquidacionComunaEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{reliquidacionComunaController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditReliquidacionComunaLabel_reliquidacionComunaId}" for="reliquidacionComunaId" />
+                        <h:outputText id="reliquidacionComunaId" value="#{reliquidacionComunaController.selected.reliquidacionComunaId}" />
+
+                        <p:outputLabel value="#{messages.EditReliquidacionComunaLabel_montoRebaja}" for="montoRebaja" />
+                        <p:inputText id="montoRebaja" value="#{reliquidacionComunaController.selected.montoRebaja}" title="#{messages.EditReliquidacionComunaTitle_montoRebaja}"/>
+
+                        <p:outputLabel value="#{messages.EditReliquidacionComunaLabel_porcentajeCumplimiento}" for="porcentajeCumplimiento" />
+                        <p:inputText id="porcentajeCumplimiento" value="#{reliquidacionComunaController.selected.porcentajeCumplimiento}" title="#{messages.EditReliquidacionComunaTitle_porcentajeCumplimiento}" required="true" requiredMessage="#{messages.EditReliquidacionComunaRequiredMessage_porcentajeCumplimiento}"/>
+
+                        <p:outputLabel value="#{messages.EditReliquidacionComunaLabel_servicio}" for="servicio" />
+                        <p:selectOneMenu id="servicio" value="#{reliquidacionComunaController.selected.servicio}" required="true" requiredMessage="#{messages.EditReliquidacionComunaRequiredMessage_servicio}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{servicioSaludController.items}"
+                                           var="servicioItem"
+                                           itemValue="#{servicioItem}"
+                                           itemLabel="#{servicioItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{servicioSaludConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditReliquidacionComunaLabel_reliquidacion}" for="reliquidacion" />
+                        <p:selectOneMenu id="reliquidacion" value="#{reliquidacionComunaController.selected.reliquidacion}" required="true" requiredMessage="#{messages.EditReliquidacionComunaRequiredMessage_reliquidacion}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{reliquidacionController.items}"
+                                           var="reliquidacionItem"
+                                           itemValue="#{reliquidacionItem}"
+                                           itemLabel="#{reliquidacionItem.idReliquidacion.toString()}"
+                                           />
+                            <f:converter binding="#{reliquidacionConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditReliquidacionComunaLabel_programa}" for="programa" />
+                        <p:selectOneMenu id="programa" value="#{reliquidacionComunaController.selected.programa}" required="true" requiredMessage="#{messages.EditReliquidacionComunaRequiredMessage_programa}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaAnoController.items}"
+                                           var="programaItem"
+                                           itemValue="#{programaItem}"
+                                           itemLabel="#{programaItem.idProgramaAno.toString()}"
+                                           />
+                            <f:converter binding="#{programaAnoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditReliquidacionComunaLabel_cumplimiento}" for="cumplimiento" />
+                        <p:selectOneMenu id="cumplimiento" value="#{reliquidacionComunaController.selected.cumplimiento}" required="true" requiredMessage="#{messages.EditReliquidacionComunaRequiredMessage_cumplimiento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{cumplimientoProgramaController.items}"
+                                           var="cumplimientoItem"
+                                           itemValue="#{cumplimientoItem}"
+                                           itemLabel="#{cumplimientoItem.idCumplimientoPrograma.toString()}"
+                                           />
+                            <f:converter binding="#{cumplimientoProgramaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditReliquidacionComunaLabel_comuna}" for="comuna" />
+                        <p:selectOneMenu id="comuna" value="#{reliquidacionComunaController.selected.comuna}" required="true" requiredMessage="#{messages.EditReliquidacionComunaRequiredMessage_comuna}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{comunaController.items}"
+                                           var="comunaItem"
+                                           itemValue="#{comunaItem}"
+                                           itemLabel="#{comunaItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{comunaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditReliquidacionComunaLabel_componente}" for="componente" />
+                        <p:selectOneMenu id="componente" value="#{reliquidacionComunaController.selected.componente}" required="true" requiredMessage="#{messages.EditReliquidacionComunaRequiredMessage_componente}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{componenteController.items}"
+                                           var="componenteItem"
+                                           itemValue="#{componenteItem}"
+                                           itemLabel="#{componenteItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{componenteConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{reliquidacionComunaController.save}" value="#{messages.Save}" update="display,:ReliquidacionComunaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ReliquidacionComunaEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ReliquidacionComunaEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

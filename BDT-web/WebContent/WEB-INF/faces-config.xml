@@ -21,7 +21,13 @@
 		<resource-bundle>
 			<base-name>messages</base-name>
 			<var>messages</var>
-		</resource-bundle>
-		<message-bundle>messages</message-bundle>
+		</resource-bundle>	
+		<resource-bundle>
+            <base-name>bundle.Bundle</base-name>
+            <var>bundleBundle</var>
+        </resource-bundle>
+		
+			
+<!-- 		<message-bundle>messages</message-bundle> -->
 	</application>
 </faces-config>

@@ -17,13 +17,18 @@ import javax.inject.Named;
 import org.primefaces.event.TabChangeEvent;
 
 import minsal.divap.enums.Subtitulo;
+import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ReliquidacionService;
 import minsal.divap.service.ReportesServices;
 import minsal.divap.service.ServicioSaludService;
 import minsal.divap.vo.ComunaSummaryVO;
+import minsal.divap.vo.EstablecimientoSummaryVO;
 import minsal.divap.vo.ProgramaVO;
-import minsal.divap.vo.ReporteHistoricoPorProgramaVO;
+import minsal.divap.vo.ReporteHistoricoPorProgramaComunaVO;
+import minsal.divap.vo.ReporteHistoricoPorProgramaEstablecimientoVO;
+import minsal.divap.vo.ReporteMarcoPresupuestarioComunaVO;
+import minsal.divap.vo.ReporteMarcoPresupuestarioEstablecimientoVO;
 import minsal.divap.vo.ServiciosVO;
 import cl.redhat.bandejaTareas.controller.BaseController;
 
@@ -37,6 +42,14 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	private Integer valorComboPrograma;
 	private Integer valorComboServicio;
 	private Integer valorComboComuna;
+	private Integer valorComboEstablecimiento;
+	
+	private Integer idPlanillaDocComuna;
+	private String docIdComunaDownload;
+	
+	private Integer idPlanillaDocEstablecimiento;
+	private String docIdEstablecimientoDownload;
+	
 	private Long totalMarco2006;
 	private Long totalMarco2007;
 	private Long totalMarco2008;
@@ -51,7 +64,16 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	private List<ProgramaVO> programas;
 	private List<ServiciosVO> servicios;
 	private List<ComunaSummaryVO> comunas;
-	private List<ReporteHistoricoPorProgramaVO> reporteHistoricoPorProgramaVO;
+	private ProgramaVO programa;
+	
+	
+	private List<ReporteHistoricoPorProgramaComunaVO> reporteHistoricoPorProgramaComunaVO;
+	private List<ReporteHistoricoPorProgramaEstablecimientoVO> reporteHistoricoPorProgramaEstablecimientoVOSub21;
+	private List<ReporteHistoricoPorProgramaEstablecimientoVO> reporteHistoricoPorProgramaEstablecimientoVOSub22;
+	private List<ReporteHistoricoPorProgramaEstablecimientoVO> reporteHistoricoPorProgramaEstablecimientoVOSub29;
+	
+	
+	private List<EstablecimientoSummaryVO> establecimientos;
 	private ServiciosVO servicioSeleccionado;
 	private Integer anoEnCurso;
 	private Subtitulo subtituloSeleccionado;
@@ -71,11 +93,19 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	
 	
 	@PostConstruct public void init() {
-		this.reporteHistoricoPorProgramaVO = new ArrayList<ReporteHistoricoPorProgramaVO>();
+		this.reporteHistoricoPorProgramaComunaVO = new ArrayList<ReporteHistoricoPorProgramaComunaVO>();
+		this.reporteHistoricoPorProgramaEstablecimientoVOSub21 = new ArrayList<ReporteHistoricoPorProgramaEstablecimientoVO>();
+		this.reporteHistoricoPorProgramaEstablecimientoVOSub22 = new ArrayList<ReporteHistoricoPorProgramaEstablecimientoVO>();
+		this.reporteHistoricoPorProgramaEstablecimientoVOSub29 = new ArrayList<ReporteHistoricoPorProgramaEstablecimientoVO>();
+		
+		
 		DateFormat formatNowYear = new SimpleDateFormat("yyyy");
 		Date nowDate = new Date();
 		this.anoEnCurso = Integer.valueOf(formatNowYear.format(nowDate)); 
 		this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
+		
+		this.programa = programasService.getProgramaAno(1);
+		
 		
 		this.servicios = servicioSaludService.getServiciosOrderId();
 		Integer currentTab = 0;
@@ -83,12 +113,32 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 		tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO22);
 		tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO24);
 		tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO29);
+		
+		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEHISTORICOPROGRAMACOMUNA);
+		if(this.idPlanillaDocComuna == null){
+			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteMarcoPresupuestarioComuna();
+		}
+		
+		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEHISTORICOPROGRAMAESTABLECIMIENTO);
+		if(this.idPlanillaDocEstablecimiento == null){
+			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteMarcoPresupuestarioServicios();
+		}
 	
 	}
 	
 	
+	public Integer getActiveTab() {
+		System.out.println("getActiveTab "+activeTab);
+		return activeTab;
+	}
+
+
+	public void setActiveTab(Integer activeTab) {
+		this.activeTab = activeTab;
+	}
+	
 	public void onTabChange(TabChangeEvent event) {
-		this.reporteHistoricoPorProgramaVO = new ArrayList<ReporteHistoricoPorProgramaVO>();
+		this.reporteHistoricoPorProgramaComunaVO = new ArrayList<ReporteHistoricoPorProgramaComunaVO>();
 		System.out.println("Tab Changed, Active Tab: " + event.getTab().getTitle());
 		System.out.println("event.getTab().getId(): " + event.getTab().getId());
 		this.valorComboPrograma = 0;
@@ -96,32 +146,139 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 		this.valorComboComuna = 0;
 		if(event.getTab().getId().equals("Sub21")){
 			this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
+			cargarEstablecimientos();
 		}
 		if(event.getTab().getId().equals("Sub22")){
 			this.subtituloSeleccionado = Subtitulo.SUBTITULO22;
+			cargarEstablecimientos();
 		}
 		if(event.getTab().getId().equals("Sub24")){
 			this.subtituloSeleccionado = Subtitulo.SUBTITULO24;
+			cargarComunas();
 		}
 		if(event.getTab().getId().equals("Sub29")){
 			this.subtituloSeleccionado = Subtitulo.SUBTITULO29;
+			cargarEstablecimientos();
 		}
-		programas = programasService.getProgramasBySubtitulo(anoEnCurso, this.subtituloSeleccionado);
+		programas = programasService.getProgramasBySubtitulo(this.subtituloSeleccionado);
 		System.out.println("this.subtituloSeleccionado --> "+this.subtituloSeleccionado.getNombre());
 	}
 	
 	
-	public void cargarTablaAll(){
-		this.reporteHistoricoPorProgramaVO = reportesServices.getReporteHistoricoPorProgramaVOAll(getValorComboPrograma(), this.subtituloSeleccionado);
+	public void cargarEstablecimientos(){
+		if(getValorComboServicio() != null){
+			if(getValorComboServicio().intValue() != 0){
+				servicioSeleccionado = servicioSaludService.getServicioSaludById(getValorComboServicio());
+				this.establecimientos = servicioSeleccionado.getEstableclimientos();
+
+			}
+		}
+	}
+
+	
+	public String downloadTemplateComuna() {
+		Integer docDownload = Integer.valueOf(Integer
+				.parseInt(getDocIdComunaDownload()));
+		setDocumento(documentService.getDocument(docDownload));
+		super.downloadDocument();
+		return null;
 	}
 	
-	public void cargarTablaFiltroServicios(){
-		this.reporteHistoricoPorProgramaVO = reportesServices.getReporteHistoricoPorProgramaVOFiltroServicio(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
+	public String downloadTemplateEstablecimiento() {
+		Integer docDownload = Integer.valueOf(Integer
+				.parseInt(getDocIdEstablecimientoDownload()));
+		setDocumento(documentService.getDocument(docDownload));
+		super.downloadDocument();
+		return null;
+	}
+
+	public void cargarTablaComunasAll(){
+		this.reporteHistoricoPorProgramaComunaVO = reportesServices.getReporteHistoricoPorProgramaVOAll(getValorComboPrograma(), this.subtituloSeleccionado);
 	}
 	
-	public void cargarTablaFiltroServicioComuna(){
-		this.reporteHistoricoPorProgramaVO = reportesServices.getReporteHistoricoPorProgramaVOFiltroServicioComuna(getValorComboPrograma(), getValorComboServicio(), getValorComboComuna(), this.subtituloSeleccionado);
+	public void cargarTablaEstablecimientosAll(){
+		System.out.println("this.subtituloSeleccionado --> "+this.subtituloSeleccionado);
+		
+		switch (this.subtituloSeleccionado) {
+		case SUBTITULO21:
+			System.out.println("subtitulo 21");
+			this.reporteHistoricoPorProgramaEstablecimientoVOSub21 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOAll(getValorComboPrograma(), this.subtituloSeleccionado);
+			break;
+		case SUBTITULO22:
+			System.out.println("subtitulo 22");
+			this.reporteHistoricoPorProgramaEstablecimientoVOSub22 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOAll(getValorComboPrograma(), this.subtituloSeleccionado);
+			break;
+		case SUBTITULO29:
+			System.out.println("subtitulo 29");
+			this.reporteHistoricoPorProgramaEstablecimientoVOSub29 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOAll(getValorComboPrograma(), this.subtituloSeleccionado);
+			break;
+		default:
+			break;
+		}
+	
 	}
+	
+	
+	public void cargarTablaComunasFiltroServicios(){
+		this.reporteHistoricoPorProgramaComunaVO = reportesServices.getReporteHistoricoPorProgramaVOFiltroServicio(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
+	}
+	
+	public void cargarTablaEstablecimientoFiltroServicios(){
+		this.programa = programasService.getProgramaAno(this.valorComboPrograma);
+		
+		switch (this.subtituloSeleccionado) {
+		case SUBTITULO21:
+			System.out.println("subtitulo 21");
+			this.reporteHistoricoPorProgramaEstablecimientoVOSub21 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicio(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
+			break;
+		case SUBTITULO22:
+			System.out.println("subtitulo 22");
+			this.reporteHistoricoPorProgramaEstablecimientoVOSub22 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicio(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
+			break;
+		case SUBTITULO29:
+			System.out.println("subtitulo 29");
+			this.reporteHistoricoPorProgramaEstablecimientoVOSub29 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicio(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
+			break;
+		default:
+			break;
+		}
+	
+	
+	}
+	
+	public void cargarTablaEstablecimientoFiltroServiciosEstablecimiento(){
+		switch (this.subtituloSeleccionado) {
+		case SUBTITULO21:
+			System.out.println("subtitulo 21");
+			this.reporteHistoricoPorProgramaEstablecimientoVOSub21 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicioEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(),  this.subtituloSeleccionado);
+			break;
+		case SUBTITULO22:
+			System.out.println("subtitulo 22");
+			this.reporteHistoricoPorProgramaEstablecimientoVOSub22 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicioEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(),  this.subtituloSeleccionado);
+			break;
+		case SUBTITULO29:
+			System.out.println("subtitulo 29");
+			this.reporteHistoricoPorProgramaEstablecimientoVOSub29 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicioEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(),  this.subtituloSeleccionado);
+			break;
+		default:
+			break;
+		}
+	
+	
+	}
+	
+	
+	
+	
+	public void cargarTablaComunasFiltroServicioComuna(){
+		this.reporteHistoricoPorProgramaComunaVO = reportesServices.getReporteHistoricoPorProgramaVOFiltroServicioComuna(getValorComboPrograma(), getValorComboServicio(), getValorComboComuna(), this.subtituloSeleccionado);
+	}
+	public void cargarTablaServiciosFiltroServicioEstablecimiento(){
+		this.reporteHistoricoPorProgramaComunaVO = reportesServices.getReporteHistoricoPorProgramaVOFiltroServicioComuna(getValorComboPrograma(), getValorComboServicio(), getValorComboComuna(), this.subtituloSeleccionado);
+	}
+	
+	
+	
 	public void cargarComunas(){
 		if(getValorComboServicio() != null){
 			if(getValorComboServicio().intValue() != 0){
@@ -130,7 +287,6 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 			}
 		}
 		
-		cargarTablaFiltroServicios();
 		
 	}
 	
@@ -158,7 +314,7 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	public List<ProgramaVO> getProgramas() {
 		if(programas == null){
 			System.out.println("programas con subtitulo ---> "+this.subtituloSeleccionado.getNombre());
-			programas = programasService.getProgramasBySubtitulo(anoEnCurso, this.subtituloSeleccionado);
+			programas = programasService.getProgramasBySubtitulo(this.subtituloSeleccionado);
 		}
 		return programas;
 	}
@@ -178,13 +334,13 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 		this.comunas = comunas;
 	}
 
-	public List<ReporteHistoricoPorProgramaVO> getReporteHistoricoPorProgramaVO() {
-		return reporteHistoricoPorProgramaVO;
+	public List<ReporteHistoricoPorProgramaComunaVO> getReporteHistoricoPorProgramaVO() {
+		return reporteHistoricoPorProgramaComunaVO;
 	}
 
 	public void setReporteHistoricoPorProgramaVO(
-			List<ReporteHistoricoPorProgramaVO> reporteHistoricoPorProgramaVO) {
-		this.reporteHistoricoPorProgramaVO = reporteHistoricoPorProgramaVO;
+			List<ReporteHistoricoPorProgramaComunaVO> reporteHistoricoPorProgramaComunaVO) {
+		this.reporteHistoricoPorProgramaComunaVO = reporteHistoricoPorProgramaComunaVO;
 	}
 
 	public ServiciosVO getServicioSeleccionado() {
@@ -211,19 +367,35 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	public void setSubtituloSeleccionado(Subtitulo subtituloSeleccionado) {
 		this.subtituloSeleccionado = subtituloSeleccionado;
 	}
-
-
-	
-	
-	
-	
 	
 
 	public Long getTotalMarco2006() {
 		this.totalMarco2006 = 0L;
-		for(ReporteHistoricoPorProgramaVO lista : this.reporteHistoricoPorProgramaVO){
-			this.totalMarco2006 += lista.getMarco2006();
+		switch (this.subtituloSeleccionado) {
+		case SUBTITULO21:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
+				this.totalMarco2006 += lista.getMarco2006();
+			}
+			break;
+		case SUBTITULO22:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
+				this.totalMarco2006 += lista.getMarco2006();
+			}
+			break;
+		case SUBTITULO24:
+			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
+				this.totalMarco2006 += lista.getMarco2006();
+			}
+			break;
+		case SUBTITULO29:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
+				this.totalMarco2006 += lista.getMarco2006();
+			}
+			break;
+		default:
+			break;
 		}
+		
 		return totalMarco2006;
 	}
 
@@ -236,9 +408,31 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 
 	public Long getTotalMarco2007() {
 		this.totalMarco2007 = 0L;
-		for(ReporteHistoricoPorProgramaVO lista : this.reporteHistoricoPorProgramaVO){
-			this.totalMarco2007 += lista.getMarco2007();
+		switch (this.subtituloSeleccionado) {
+		case SUBTITULO21:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
+				this.totalMarco2007 += lista.getMarco2007();
+			}
+			break;
+		case SUBTITULO22:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
+				this.totalMarco2007 += lista.getMarco2007();
+			}
+			break;
+		case SUBTITULO24:
+			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
+				this.totalMarco2007 += lista.getMarco2007();
+			}
+			break;
+		case SUBTITULO29:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
+				this.totalMarco2007 += lista.getMarco2007();
+			}
+			break;
+		default:
+			break;
 		}
+		
 		return totalMarco2007;
 	}
 
@@ -250,9 +444,31 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 
 	public Long getTotalMarco2008() {
 		this.totalMarco2008 = 0L;
-		for(ReporteHistoricoPorProgramaVO lista : this.reporteHistoricoPorProgramaVO){
-			this.totalMarco2008 += lista.getMarco2008();
+		switch (this.subtituloSeleccionado) {
+		case SUBTITULO21:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
+				this.totalMarco2008 += lista.getMarco2008();
+			}
+			break;
+		case SUBTITULO22:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
+				this.totalMarco2008 += lista.getMarco2008();
+			}
+			break;
+		case SUBTITULO24:
+			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
+				this.totalMarco2008 += lista.getMarco2008();
+			}
+			break;
+		case SUBTITULO29:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
+				this.totalMarco2008 += lista.getMarco2008();
+			}
+			break;
+		default:
+			break;
 		}
+		
 		return totalMarco2008;
 	}
 
@@ -266,9 +482,31 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 
 	public Long getTotalMarco2009() {
 		this.totalMarco2009 = 0L;
-		for(ReporteHistoricoPorProgramaVO lista : this.reporteHistoricoPorProgramaVO){
-			this.totalMarco2009 += lista.getMarco2009();
+		switch (this.subtituloSeleccionado) {
+		case SUBTITULO21:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
+				this.totalMarco2009 += lista.getMarco2009();
+			}
+			break;
+		case SUBTITULO22:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
+				this.totalMarco2009 += lista.getMarco2009();
+			}
+			break;
+		case SUBTITULO24:
+			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
+				this.totalMarco2009 += lista.getMarco2009();
+			}
+			break;
+		case SUBTITULO29:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
+				this.totalMarco2009 += lista.getMarco2009();
+			}
+			break;
+		default:
+			break;
 		}
+		
 		return totalMarco2009;
 	}
 
@@ -282,9 +520,31 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 
 	public Long getTotalMarco2010() {
 		this.totalMarco2010 = 0L;
-		for(ReporteHistoricoPorProgramaVO lista : this.reporteHistoricoPorProgramaVO){
-			this.totalMarco2010 += lista.getMarco2010();
+		switch (this.subtituloSeleccionado) {
+		case SUBTITULO21:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
+				this.totalMarco2010 += lista.getMarco2010();
+			}
+			break;
+		case SUBTITULO22:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
+				this.totalMarco2010 += lista.getMarco2010();
+			}
+			break;
+		case SUBTITULO24:
+			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
+				this.totalMarco2010 += lista.getMarco2010();
+			}
+			break;
+		case SUBTITULO29:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
+				this.totalMarco2010 += lista.getMarco2010();
+			}
+			break;
+		default:
+			break;
 		}
+		
 		return totalMarco2010;
 	}
 
@@ -298,9 +558,31 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 
 	public Long getTotalMarco2011() {
 		this.totalMarco2011 = 0L;
-		for(ReporteHistoricoPorProgramaVO lista : this.reporteHistoricoPorProgramaVO){
-			this.totalMarco2011 += lista.getMarco2011();
+		switch (this.subtituloSeleccionado) {
+		case SUBTITULO21:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
+				this.totalMarco2011 += lista.getMarco2011();
+			}
+			break;
+		case SUBTITULO22:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
+				this.totalMarco2011 += lista.getMarco2011();
+			}
+			break;
+		case SUBTITULO24:
+			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
+				this.totalMarco2011 += lista.getMarco2011();
+			}
+			break;
+		case SUBTITULO29:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
+				this.totalMarco2011 += lista.getMarco2011();
+			}
+			break;
+		default:
+			break;
 		}
+		
 		return totalMarco2011;
 	}
 
@@ -314,9 +596,31 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 
 	public Long getTotalMarco2012() {
 		this.totalMarco2012 = 0L;
-		for(ReporteHistoricoPorProgramaVO lista : this.reporteHistoricoPorProgramaVO){
-			this.totalMarco2012 += lista.getMarco2012();
+		switch (this.subtituloSeleccionado) {
+		case SUBTITULO21:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
+				this.totalMarco2012 += lista.getMarco2012();
+			}
+			break;
+		case SUBTITULO22:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
+				this.totalMarco2012 += lista.getMarco2012();
+			}
+			break;
+		case SUBTITULO24:
+			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
+				this.totalMarco2012 += lista.getMarco2012();
+			}
+			break;
+		case SUBTITULO29:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
+				this.totalMarco2012 += lista.getMarco2012();
+			}
+			break;
+		default:
+			break;
 		}
+		
 		return totalMarco2012;
 	}
 
@@ -330,9 +634,31 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 
 	public Long getTotalMarco2013() {
 		this.totalMarco2013 = 0L;
-		for(ReporteHistoricoPorProgramaVO lista : this.reporteHistoricoPorProgramaVO){
-			this.totalMarco2013 += lista.getMarco2013();
+		switch (this.subtituloSeleccionado) {
+		case SUBTITULO21:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
+				this.totalMarco2013 += lista.getMarco2013();
+			}
+			break;
+		case SUBTITULO22:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
+				this.totalMarco2013 += lista.getMarco2013();
+			}
+			break;
+		case SUBTITULO24:
+			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
+				this.totalMarco2013 += lista.getMarco2013();
+			}
+			break;
+		case SUBTITULO29:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
+				this.totalMarco2013 += lista.getMarco2013();
+			}
+			break;
+		default:
+			break;
 		}
+		
 		return totalMarco2013;
 	}
 
@@ -346,9 +672,31 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 
 	public Long getTotalMarco2014() {
 		this.totalMarco2014 = 0L;
-		for(ReporteHistoricoPorProgramaVO lista : this.reporteHistoricoPorProgramaVO){
-			this.totalMarco2014 += lista.getMarco2014();
+		switch (this.subtituloSeleccionado) {
+		case SUBTITULO21:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
+				this.totalMarco2014 += lista.getMarco2014();
+			}
+			break;
+		case SUBTITULO22:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
+				this.totalMarco2014 += lista.getMarco2014();
+			}
+			break;
+		case SUBTITULO24:
+			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
+				this.totalMarco2014 += lista.getMarco2014();
+			}
+			break;
+		case SUBTITULO29:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
+				this.totalMarco2014 += lista.getMarco2014();
+			}
+			break;
+		default:
+			break;
 		}
+		
 		return totalMarco2014;
 	}
 
@@ -356,6 +704,109 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 
 	public void setTotalMarco2014(Long totalMarco2014) {
 		this.totalMarco2014 = totalMarco2014;
+	}
+
+
+	public Integer getIdPlanillaDocComuna() {
+		return idPlanillaDocComuna;
+	}
+
+
+	public void setIdPlanillaDocComuna(Integer idPlanillaDocComuna) {
+		this.idPlanillaDocComuna = idPlanillaDocComuna;
+	}
+
+
+	public String getDocIdComunaDownload() {
+		return docIdComunaDownload;
+	}
+
+
+	public void setDocIdComunaDownload(String docIdComunaDownload) {
+		this.docIdComunaDownload = docIdComunaDownload;
+	}
+
+
+	public Integer getIdPlanillaDocEstablecimiento() {
+		return idPlanillaDocEstablecimiento;
+	}
+
+
+	public void setIdPlanillaDocEstablecimiento(Integer idPlanillaDocEstablecimiento) {
+		this.idPlanillaDocEstablecimiento = idPlanillaDocEstablecimiento;
+	}
+
+
+	public String getDocIdEstablecimientoDownload() {
+		return docIdEstablecimientoDownload;
+	}
+
+
+	public void setDocIdEstablecimientoDownload(String docIdEstablecimientoDownload) {
+		this.docIdEstablecimientoDownload = docIdEstablecimientoDownload;
+	}
+
+
+	public List<ReporteHistoricoPorProgramaEstablecimientoVO> getReporteHistoricoPorProgramaEstablecimientoVOSub21() {
+		return reporteHistoricoPorProgramaEstablecimientoVOSub21;
+	}
+
+
+	public void setReporteHistoricoPorProgramaEstablecimientoVOSub21(
+			List<ReporteHistoricoPorProgramaEstablecimientoVO> reporteHistoricoPorProgramaEstablecimientoVOSub21) {
+		this.reporteHistoricoPorProgramaEstablecimientoVOSub21 = reporteHistoricoPorProgramaEstablecimientoVOSub21;
+	}
+
+
+	public List<ReporteHistoricoPorProgramaEstablecimientoVO> getReporteHistoricoPorProgramaEstablecimientoVOSub22() {
+		return reporteHistoricoPorProgramaEstablecimientoVOSub22;
+	}
+
+
+	public void setReporteHistoricoPorProgramaEstablecimientoVOSub22(
+			List<ReporteHistoricoPorProgramaEstablecimientoVO> reporteHistoricoPorProgramaEstablecimientoVOSub22) {
+		this.reporteHistoricoPorProgramaEstablecimientoVOSub22 = reporteHistoricoPorProgramaEstablecimientoVOSub22;
+	}
+
+
+	public List<ReporteHistoricoPorProgramaEstablecimientoVO> getReporteHistoricoPorProgramaEstablecimientoVOSub29() {
+		return reporteHistoricoPorProgramaEstablecimientoVOSub29;
+	}
+
+
+	public void setReporteHistoricoPorProgramaEstablecimientoVOSub29(
+			List<ReporteHistoricoPorProgramaEstablecimientoVO> reporteHistoricoPorProgramaEstablecimientoVOSub29) {
+		this.reporteHistoricoPorProgramaEstablecimientoVOSub29 = reporteHistoricoPorProgramaEstablecimientoVOSub29;
+	}
+
+
+	public List<EstablecimientoSummaryVO> getEstablecimientos() {
+		return establecimientos;
+	}
+
+
+	public void setEstablecimientos(List<EstablecimientoSummaryVO> establecimientos) {
+		this.establecimientos = establecimientos;
+	}
+
+
+	public Integer getValorComboEstablecimiento() {
+		return valorComboEstablecimiento;
+	}
+
+
+	public void setValorComboEstablecimiento(Integer valorComboEstablecimiento) {
+		this.valorComboEstablecimiento = valorComboEstablecimiento;
+	}
+
+
+	public ProgramaVO getPrograma() {
+		return programa;
+	}
+
+
+	public void setPrograma(ProgramaVO programa) {
+		this.programa = programa;
 	}
 	
 	

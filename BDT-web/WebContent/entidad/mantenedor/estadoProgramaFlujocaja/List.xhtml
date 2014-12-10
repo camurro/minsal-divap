@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="EstadoProgramaFlujocajaListForm">
+
+        <p:panel header="#{messages.ListEstadoProgramaFlujocajaTitle}">
+            <p:contextMenu id="EstadoProgramaFlujocajaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('EstadoProgramaFlujocajaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('EstadoProgramaFlujocajaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('EstadoProgramaFlujocajaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('EstadoProgramaFlujocajaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{estadoProgramaFlujocajaController.items}"
+                         var="item"
+                         rowKey="#{item.id}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{estadoProgramaFlujocajaController.selected}">
+
+                <p:ajax event="rowSelect"   update=":EstadoProgramaFlujocajaListForm:createButton :EstadoProgramaFlujocajaListForm:viewButton :EstadoProgramaFlujocajaListForm:editButton :EstadoProgramaFlujocajaListForm:deleteButton :EstadoProgramaFlujocajaListForm:EstadoProgramaFlujocajaDataTableContextMenu"/>
+                <p:ajax event="rowUnselect" update=":EstadoProgramaFlujocajaListForm:createButton :EstadoProgramaFlujocajaListForm:viewButton :EstadoProgramaFlujocajaListForm:editButton :EstadoProgramaFlujocajaListForm:deleteButton :EstadoProgramaFlujocajaListForm:EstadoProgramaFlujocajaDataTableContextMenu"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('EstadoProgramaFlujocajaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.id}" filterBy="#{item.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListEstadoProgramaFlujocajaTitle_id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.nombre}" filterBy="#{item.nombre}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListEstadoProgramaFlujocajaTitle_nombre}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombre}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{estadoProgramaFlujocajaController.prepareCreate}" update=":EstadoProgramaFlujocajaCreateForm" oncomplete="EstadoProgramaFlujocajaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":EstadoProgramaFlujocajaViewForm" oncomplete="EstadoProgramaFlujocajaViewDialog.show()" disabled="#{empty estadoProgramaFlujocajaController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":EstadoProgramaFlujocajaEditForm" oncomplete="EstadoProgramaFlujocajaEditDialog.show()" disabled="#{empty estadoProgramaFlujocajaController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{estadoProgramaFlujocajaController.delete}" update=":growl,datalist" disabled="#{empty estadoProgramaFlujocajaController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="RegionViewDlg" widgetVar="RegionViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewRegionTitle}" closeOnEscape="true">
+
+            <h:form id="RegionViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{regionController.seleccionado != null}">
+
+                        <h:outputText value="#{messages.ViewRegionLabel_id}"/>
+                        <h:outputText value="#{regionController.seleccionado.idRegion}" title="#{messages.ViewRegionTitle_id}"/>
+
+                        <h:outputText value="#{messages.ViewRegionLabel_nombre}"/>
+                        <h:outputText value="#{regionController.seleccionado.nombreRegion}" title="#{messages.ViewRegionTitle_nombre}"/>
+
+                        <h:outputText value="#{messages.ViewRegionLabel_secretarioRegional}"/>
+                        <h:outputText value="#{regionController.seleccionado.secretarioRegional}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="RegionViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

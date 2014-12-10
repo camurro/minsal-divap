@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ConvenioServicioComponenteCreateDlg" widgetVar="ConvenioServicioComponenteCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateConvenioServicioComponenteTitle}" closeOnEscape="true">
+
+            <h:form id="ConvenioServicioComponenteCreateForm">
+
+                <h:panelGroup id="display" rendered="#{convenioServicioComponenteController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateConvenioServicioComponenteLabel_monto}" for="monto" />
+                        <p:inputText id="monto" value="#{convenioServicioComponenteController.selected.monto}" title="#{messages.CreateConvenioServicioComponenteTitle_monto}" required="true" requiredMessage="#{messages.CreateConvenioServicioComponenteRequiredMessage_monto}"/>
+
+                        <p:outputLabel value="#{messages.CreateConvenioServicioComponenteLabel_subtitulo}" for="subtitulo" />
+                        <p:selectOneMenu id="subtitulo" value="#{convenioServicioComponenteController.selected.subtitulo}" required="true" requiredMessage="#{messages.CreateConvenioServicioComponenteRequiredMessage_subtitulo}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoSubtituloController.items}"
+                                           var="subtituloItem"
+                                           itemValue="#{subtituloItem}"
+                                           itemLabel="#{subtituloItem.idTipoSubtitulo.toString()}"
+                                           />
+                            <f:converter binding="#{tipoSubtituloConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateConvenioServicioComponenteLabel_convenioServicio}" for="convenioServicio" />
+                        <p:selectOneMenu id="convenioServicio" value="#{convenioServicioComponenteController.selected.convenioServicio}" required="true" requiredMessage="#{messages.CreateConvenioServicioComponenteRequiredMessage_convenioServicio}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{convenioServicioController.items}"
+                                           var="convenioServicioItem"
+                                           itemValue="#{convenioServicioItem}"
+                                           itemLabel="#{convenioServicioItem.idConvenioServicio.toString()}"
+                                           />
+                            <f:converter binding="#{convenioServicioConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateConvenioServicioComponenteLabel_componente}" for="componente" />
+                        <p:selectOneMenu id="componente" value="#{convenioServicioComponenteController.selected.componente}" required="true" requiredMessage="#{messages.CreateConvenioServicioComponenteRequiredMessage_componente}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{componenteController.items}"
+                                           var="componenteItem"
+                                           itemValue="#{componenteItem}"
+                                           itemLabel="#{componenteItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{componenteConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{convenioServicioComponenteController.saveNew}" value="#{messages.Save}" update="display,:ConvenioServicioComponenteListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ConvenioServicioComponenteCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ConvenioServicioComponenteCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

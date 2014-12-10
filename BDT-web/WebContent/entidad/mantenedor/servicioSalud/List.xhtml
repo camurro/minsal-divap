@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="ServicioSaludListForm">
+
+        <p:panel header="#{messages.ListServicioSaludTitle}">
+            <p:contextMenu id="ServicioSaludDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('ServicioSaludListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('ServicioSaludListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('ServicioSaludListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('ServicioSaludListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.ServicioSaludMenuItem_comunas}" icon="ui-icon-search"  action="#{servicioSaludController.navigateComunas}" disabled="#{empty servicioSaludController.selected.comunas}" ajax="false"/>  
+                <p:menuitem value="#{messages.ServicioSaludMenuItem_establecimientos}" icon="ui-icon-search"  action="#{servicioSaludController.navigateEstablecimientos}" disabled="#{empty servicioSaludController.selected.establecimientos}" ajax="false"/>  
+                <p:menuitem value="#{messages.ServicioSaludMenuItem_marcoPresupuestarios}" icon="ui-icon-search"  action="#{servicioSaludController.navigateMarcoPresupuestarios}" disabled="#{empty servicioSaludController.selected.marcoPresupuestarios}" ajax="false"/>  
+                <p:menuitem value="#{messages.ServicioSaludMenuItem_region}" icon="ui-icon-search"  actionListener="#{servicioSaludController.prepareRegion}" update=":RegionViewForm" oncomplete="RegionViewDialog.show()" disabled="#{empty servicioSaludController.selected.region}"/>  
+                <p:menuitem value="#{messages.ServicioSaludMenuItem_remesaCollection}" icon="ui-icon-search"  action="#{servicioSaludController.navigateRemesaCollection}" disabled="#{empty servicioSaludController.selected.remesaCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.ServicioSaludMenuItem_director}" icon="ui-icon-search"  actionListener="#{servicioSaludController.prepareDirector}" update=":PersonaViewForm" oncomplete="PersonaViewDialog.show()" disabled="#{empty servicioSaludController.selected.director}"/>  
+                <p:menuitem value="#{messages.ServicioSaludMenuItem_encargadoFinanzasAps}" icon="ui-icon-search"  actionListener="#{servicioSaludController.prepareEncargadoFinanzasAps}" update=":PersonaViewForm" oncomplete="PersonaViewDialog.show()" disabled="#{empty servicioSaludController.selected.encargadoFinanzasAps}"/>  
+                <p:menuitem value="#{messages.ServicioSaludMenuItem_encargadoAps}" icon="ui-icon-search"  actionListener="#{servicioSaludController.prepareEncargadoAps}" update=":PersonaViewForm" oncomplete="PersonaViewDialog.show()" disabled="#{empty servicioSaludController.selected.encargadoAps}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{servicioSaludController.servicios}"
+                         var="item"
+                         rowKey="#{item.id_servicio}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{servicioSaludController.seleccionado}">
+
+                <p:ajax event="rowSelect"   update=":ServicioSaludListForm:createButton :ServicioSaludListForm:viewButton :ServicioSaludListForm:editButton :ServicioSaludListForm:deleteButton :ServicioSaludListForm:ServicioSaludDataTableContextMenu" listener="#{servicioSaludController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":ServicioSaludListForm:createButton :ServicioSaludListForm:viewButton :ServicioSaludListForm:editButton :ServicioSaludListForm:deleteButton :ServicioSaludListForm:ServicioSaludDataTableContextMenu" listener="#{servicioSaludController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('ServicioSaludListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.id_servicio}" filterBy="#{item.id_servicio}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListServicioSaludTitle_id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.id_servicio}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.nombre_servicio}" filterBy="#{item.nombre_servicio}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListServicioSaludTitle_nombre}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombre_servicio}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.region.id}" filterBy="#{item.region.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListServicioSaludTitle_region}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.region.nombre}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.director.idPersona}" filterBy="#{item.director.idPersona}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListServicioSaludTitle_director}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.director.nombre} #{item.director.apellidoPaterno}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.encargadoFinanzasAps.idPersona}" filterBy="#{item.encargadoFinanzasAps.idPersona}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListServicioSaludTitle_encargadoFinanzasAps}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.encargadoFinanzasAps.nombre} #{item.encargadoFinanzasAps.apellidoPaterno}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.encargadoAps.idPersona}" filterBy="#{item.encargadoAps.idPersona}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListServicioSaludTitle_encargadoAps}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.encargadoAps.nombre} #{item.encargadoAps.apellidoPaterno}"/>
+                </p:column>
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{servicioSaludController.prepareCreateServicio}" update=":ServicioSaludCreateForm" oncomplete="ServicioSaludCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{messages.View}" update=":ServicioSaludViewForm" oncomplete="ServicioSaludViewDialog.show()" disabled="#{empty servicioSaludController.seleccionado}"/>
+            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{messages.Edit}" update=":ServicioSaludEditForm" oncomplete="ServicioSaludEditDialog.show()" disabled="#{empty servicioSaludController.seleccionado}"/>
+            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{servicioSaludController.delete}" update=":growl,datalist" disabled="#{empty servicioSaludController.seleccionado}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="DocumentoConvenioListForm">
+
+        <p:panel header="#{messages.ListDocumentoConvenioTitle}">
+            <p:contextMenu id="DocumentoConvenioDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('DocumentoConvenioListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('DocumentoConvenioListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('DocumentoConvenioListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('DocumentoConvenioListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.DocumentoConvenioMenuItem_tipoDocumento}" icon="ui-icon-search"  actionListener="#{documentoConvenioController.prepareTipoDocumento}" update=":TipoDocumentoViewForm" oncomplete="TipoDocumentoViewDialog.show()" disabled="#{empty documentoConvenioController.selected.tipoDocumento}"/>  
+                <p:menuitem value="#{messages.DocumentoConvenioMenuItem_documento}" icon="ui-icon-search"  actionListener="#{documentoConvenioController.prepareDocumento}" update=":ReferenciaDocumentoViewForm" oncomplete="ReferenciaDocumentoViewDialog.show()" disabled="#{empty documentoConvenioController.selected.documento}"/>  
+                <p:menuitem value="#{messages.DocumentoConvenioMenuItem_convenio}" icon="ui-icon-search"  actionListener="#{documentoConvenioController.prepareConvenio}" update=":ConvenioComunaViewForm" oncomplete="ConvenioComunaViewDialog.show()" disabled="#{empty documentoConvenioController.selected.convenio}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{documentoConvenioController.items}"
+                         var="item"
+                         rowKey="#{item.idDocumentoConvenio}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{documentoConvenioController.selected}">
+
+                <p:ajax event="rowSelect"   update=":DocumentoConvenioListForm:createButton :DocumentoConvenioListForm:viewButton :DocumentoConvenioListForm:editButton :DocumentoConvenioListForm:deleteButton :DocumentoConvenioListForm:DocumentoConvenioDataTableContextMenu" listener="#{documentoConvenioController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":DocumentoConvenioListForm:createButton :DocumentoConvenioListForm:viewButton :DocumentoConvenioListForm:editButton :DocumentoConvenioListForm:deleteButton :DocumentoConvenioListForm:DocumentoConvenioDataTableContextMenu" listener="#{documentoConvenioController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('DocumentoConvenioListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idDocumentoConvenio}" filterBy="#{item.idDocumentoConvenio}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoConvenioTitle_idDocumentoConvenio}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idDocumentoConvenio}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.tipoDocumento.idTipoDocumento}" filterBy="#{item.tipoDocumento.idTipoDocumento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoConvenioTitle_tipoDocumento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.tipoDocumento.idTipoDocumento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.documento.id}" filterBy="#{item.documento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoConvenioTitle_documento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.documento.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.convenio.idConvenioComuna}" filterBy="#{item.convenio.idConvenioComuna}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoConvenioTitle_convenio}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.convenio.idConvenioComuna}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{documentoConvenioController.prepareCreate}" update=":DocumentoConvenioCreateForm" oncomplete="DocumentoConvenioCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":DocumentoConvenioViewForm" oncomplete="DocumentoConvenioViewDialog.show()" disabled="#{empty documentoConvenioController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":DocumentoConvenioEditForm" oncomplete="DocumentoConvenioEditDialog.show()" disabled="#{empty documentoConvenioController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{documentoConvenioController.delete}" update=":growl,datalist" disabled="#{empty documentoConvenioController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

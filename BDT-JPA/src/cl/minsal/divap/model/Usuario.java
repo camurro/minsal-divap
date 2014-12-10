@@ -21,8 +21,8 @@ public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="username", unique=true, nullable=false)
-	@GeneratedValue
+	@Basic(optional = false)
+	@Column(name = "username")
 	private String username;
 
 	private String apellido;
@@ -146,4 +146,15 @@ public class Usuario implements Serializable {
 		this.distribucionInicialPercapitaCollection = distribucionInicialPercapitaCollection;
 	}
 
+	@Override
+	public String toString() {
+		return "Usuario [username=" + username + ", apellido=" + apellido
+				+ ", nombre=" + nombre + ", password=" + password + ", email="
+				+ email + ", distribucionInicialPercapitaCollection="
+				+ distribucionInicialPercapitaCollection + ", servicio="
+				+ servicio + ", programas=" + programas + ", rols=" + rols
+				+ "]";
+	}
+
+	
 }

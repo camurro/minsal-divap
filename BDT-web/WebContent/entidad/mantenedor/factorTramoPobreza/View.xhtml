@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="FactorTramoPobrezaViewDlg" widgetVar="FactorTramoPobrezaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewFactorTramoPobrezaTitle}" closeOnEscape="true">
+
+            <h:form id="FactorTramoPobrezaViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{factorTramoPobrezaController.seleccionado != null}">
+
+                        <h:outputText value="#{messages.ViewFactorTramoPobrezaLabel_idFactorTramoPobreza}"/>
+                        <h:outputText value="#{factorTramoPobrezaController.seleccionado.idFactorTramoPobreza}" title="#{messages.ViewFactorTramoPobrezaTitle_idFactorTramoPobreza}"/>
+
+                        <h:outputText value="#{messages.ViewFactorTramoPobrezaLabel_valor}"/>
+                        <h:outputText value="#{factorTramoPobrezaController.seleccionado.valor}" title="#{messages.ViewFactorTramoPobrezaTitle_valor}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="FactorTramoPobrezaViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>
