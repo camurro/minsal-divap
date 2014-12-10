@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ConvenioServicioCreateDlg" widgetVar="ConvenioServicioCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateConvenioServicioTitle}" closeOnEscape="true">
+
+            <h:form id="ConvenioServicioCreateForm">
+
+                <h:panelGroup id="display" rendered="#{convenioServicioController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateConvenioServicioLabel_fecha}" for="fecha" />
+                        <p:calendar id="fecha" pattern="MM/dd/yyyy HH:mm:ss" value="#{convenioServicioController.selected.fecha}" title="#{messages.CreateConvenioServicioTitle_fecha}"  showOn="button"/>
+
+                        <p:outputLabel value="#{messages.CreateConvenioServicioLabel_numeroResolucion}" for="numeroResolucion" />
+                        <p:inputText id="numeroResolucion" value="#{convenioServicioController.selected.numeroResolucion}" title="#{messages.CreateConvenioServicioTitle_numeroResolucion}"/>
+
+                        <p:outputLabel value="#{messages.CreateConvenioServicioLabel_aprobacion}" for="aprobacion" />
+                        <p:selectBooleanCheckbox id="aprobacion" value="#{convenioServicioController.selected.aprobacion}" />
+
+                        <p:outputLabel value="#{messages.CreateConvenioServicioLabel_idPrograma}" for="idPrograma" />
+                        <p:selectOneMenu id="idPrograma" value="#{convenioServicioController.selected.idPrograma}" required="true" requiredMessage="#{messages.CreateConvenioServicioRequiredMessage_idPrograma}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaAnoController.items}"
+                                           var="idProgramaItem"
+                                           itemValue="#{idProgramaItem}"
+                                           itemLabel="#{idProgramaItem.idProgramaAno.toString()}"
+                                           />
+                            <f:converter binding="#{programaAnoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateConvenioServicioLabel_mes}" for="mes" />
+                        <p:selectOneMenu id="mes" value="#{convenioServicioController.selected.mes}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{mesController.items}"
+                                           var="mesItem"
+                                           itemValue="#{mesItem}"
+                                           itemLabel="#{mesItem.idMes.toString()}"
+                                           />
+                            <f:converter binding="#{mesConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateConvenioServicioLabel_idEstablecimiento}" for="idEstablecimiento" />
+                        <p:selectOneMenu id="idEstablecimiento" value="#{convenioServicioController.selected.idEstablecimiento}" required="true" requiredMessage="#{messages.CreateConvenioServicioRequiredMessage_idEstablecimiento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{establecimientoController.items}"
+                                           var="idEstablecimientoItem"
+                                           itemValue="#{idEstablecimientoItem}"
+                                           itemLabel="#{idEstablecimientoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{establecimientoConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{convenioServicioController.saveNew}" value="#{messages.Save}" update="display,:ConvenioServicioListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ConvenioServicioCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ConvenioServicioCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="ComponenteEditDlg" widgetVar="ComponenteEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditComponenteTitle}" closeOnEscape="true">
+
+            <h:form id="ComponenteEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{componenteController.seleccionado != null}">
+
+
+                        <h:outputLabel value="#{messages.EditComponenteLabel_id}" for="id" />
+                        <h:outputText id="id" value="#{componenteController.seleccionado.idComponente}" />
+
+                        <p:outputLabel value="#{messages.EditComponenteLabel_nombre}" for="nombre" />
+                        <p:inputText id="nombre" value="#{componenteController.seleccionado.nombreComponente}" title="#{messages.EditComponenteTitle_nombre}"/>
+
+                        <p:outputLabel value="#{messages.EditComponenteLabel_idPrograma}" for="idPrograma" />
+                        <p:selectOneMenu id="idPrograma" value="#{componenteController.seleccionado.idPrograma}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaController.items}"
+                                           var="idProgramaItem"
+                                           itemValue="#{idProgramaItem.id}"
+                                           itemLabel="#{idProgramaItem.nombre}"
+                                           />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditComponenteLabel_tipoComponente}" for="tipoComponente" />
+                        <p:selectOneMenu id="tipoComponente" value="#{componenteController.seleccionado.idTipoComponente}" required="true" requiredMessage="#{messages.EditComponenteRequiredMessage_tipoComponente}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{componenteController.tipoComponentes}"
+                                           var="tipoComponenteItem"
+                                           itemValue="#{tipoComponenteItem.id}"
+                                           itemLabel="#{tipoComponenteItem.nombre}"
+                                           />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditComponenteLabel_peso}" for="peso" />
+                        <p:inputText id="peso" value="#{componenteController.seleccionado.peso}" title="#{messages.EditComponenteTitle_peso}"/>
+                        
+                        <p:outputLabel value="#{messages.CreateTipoSubtituloLabel_componenteSubtitulos}" />
+                        <p:pickList id="pickList" value="#{componenteController.subtitulos}" var="subItem" itemLabel="#{subItem}" itemValue="#{subItem}"/>
+                        
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{componenteController.edit}" value="#{messages.Save}" update="display,:ComponenteListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ComponenteEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ComponenteEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

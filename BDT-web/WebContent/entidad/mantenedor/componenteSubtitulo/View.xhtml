@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ComponenteSubtituloViewDlg" widgetVar="ComponenteSubtituloViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewComponenteSubtituloTitle}" closeOnEscape="true">
+
+            <h:form id="ComponenteSubtituloViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{componenteSubtituloController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewComponenteSubtituloLabel_idComponenteSubtitulo}"/>
+                        <h:outputText value="#{componenteSubtituloController.selected.idComponenteSubtitulo}" title="#{messages.ViewComponenteSubtituloTitle_idComponenteSubtitulo}"/>
+
+                        <h:outputText value="#{messages.ViewComponenteSubtituloLabel_pesoSubtitulo}"/>
+                        <h:outputText value="#{componenteSubtituloController.selected.pesoSubtitulo}" title="#{messages.ViewComponenteSubtituloTitle_pesoSubtitulo}"/>
+
+                        <h:outputText value="#{messages.ViewComponenteSubtituloLabel_subtitulo}"/>
+                        <h:outputText value="#{componenteSubtituloController.selected.subtitulo.idTipoSubtitulo}"/>
+
+                        <h:outputText value="#{messages.ViewComponenteSubtituloLabel_componente}"/>
+                        <h:outputText value="#{componenteSubtituloController.selected.componente.id}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="ComponenteSubtituloViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

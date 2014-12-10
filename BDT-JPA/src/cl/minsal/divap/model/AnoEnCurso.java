@@ -14,7 +14,8 @@ import java.util.List;
 @NamedQueries({
     @NamedQuery(name = "AnoEnCurso.findAll", query = "SELECT a FROM AnoEnCurso a"),
     @NamedQuery(name = "AnoEnCurso.findByAno", query = "SELECT a FROM AnoEnCurso a WHERE a.ano = :ano"),
-    @NamedQuery(name = "AnoEnCurso.findByMontoPercapitalBasal", query = "SELECT a FROM AnoEnCurso a WHERE a.montoPercapitalBasal = :montoPercapitalBasal")})
+    @NamedQuery(name = "AnoEnCurso.findByMontoPercapitalBasal", query = "SELECT a FROM AnoEnCurso a WHERE a.montoPercapitalBasal = :montoPercapitalBasal"),
+    @NamedQuery(name = "AnoEnCurso.findAllAnosOrdenados", query = "SELECT a FROM AnoEnCurso a Order By a.ano DESC")})
 public class AnoEnCurso implements Serializable {
 	private static final long serialVersionUID = 1L;
 

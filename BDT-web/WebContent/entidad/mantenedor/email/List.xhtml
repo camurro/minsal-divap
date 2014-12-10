@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="EmailListForm">
+
+        <p:panel header="#{messages.ListEmailTitle}">
+            <p:contextMenu id="EmailDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('EmailListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('EmailListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('EmailListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('EmailListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.EmailMenuItem_usuarioCollection}" icon="ui-icon-search"  action="#{emailController.navigateUsuarioCollection}" disabled="#{empty emailController.selected.usuarioCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.EmailMenuItem_destinatariosCollection}" icon="ui-icon-search"  action="#{emailController.navigateDestinatariosCollection}" disabled="#{empty emailController.selected.destinatariosCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.EmailMenuItem_seguimientoCollection}" icon="ui-icon-search"  action="#{emailController.navigateSeguimientoCollection}" disabled="#{empty emailController.selected.seguimientoCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.EmailMenuItem_personas}" icon="ui-icon-search"  action="#{emailController.navigatePersonas}" disabled="#{empty emailController.selected.personas}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{emailController.items}"
+                         var="item"
+                         rowKey="#{item.idEmail}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{emailController.selected}">
+
+                <p:ajax event="rowSelect"   update=":EmailListForm:createButton :EmailListForm:viewButton :EmailListForm:editButton :EmailListForm:deleteButton :EmailListForm:EmailDataTableContextMenu" listener="#{emailController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":EmailListForm:createButton :EmailListForm:viewButton :EmailListForm:editButton :EmailListForm:deleteButton :EmailListForm:EmailDataTableContextMenu" listener="#{emailController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('EmailListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idEmail}" filterBy="#{item.idEmail}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListEmailTitle_idEmail}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idEmail}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.valor}" filterBy="#{item.valor}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListEmailTitle_valor}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.valor}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{emailController.prepareCreate}" update=":EmailCreateForm" oncomplete="EmailCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":EmailViewForm" oncomplete="EmailViewDialog.show()" disabled="#{empty emailController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":EmailEditForm" oncomplete="EmailEditDialog.show()" disabled="#{empty emailController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{emailController.delete}" update=":growl,datalist" disabled="#{empty emailController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

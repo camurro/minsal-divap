@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="TipoComponenteListForm">
+
+        <p:panel header="#{messages.ListTipoComponenteTitle}">
+            <p:contextMenu id="TipoComponenteDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('TipoComponenteListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('TipoComponenteListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('TipoComponenteListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('TipoComponenteListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.TipoComponenteMenuItem_componentes}" icon="ui-icon-search"  action="#{tipoComponenteController.navigateComponentes}" disabled="#{empty tipoComponenteController.selected.componentes}" ajax="false"/>  
+                <p:menuitem value="#{messages.TipoComponenteMenuItem_metadataCoreCollection}" icon="ui-icon-search"  action="#{tipoComponenteController.navigateMetadataCoreCollection}" disabled="#{empty tipoComponenteController.selected.metadataCoreCollection}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{tipoComponenteController.items}"
+                         var="item"
+                         rowKey="#{item.id}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{tipoComponenteController.selected}">
+
+                <p:ajax event="rowSelect"   update=":TipoComponenteListForm:createButton :TipoComponenteListForm:viewButton :TipoComponenteListForm:editButton :TipoComponenteListForm:deleteButton :TipoComponenteListForm:TipoComponenteDataTableContextMenu" listener="#{tipoComponenteController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":TipoComponenteListForm:createButton :TipoComponenteListForm:viewButton :TipoComponenteListForm:editButton :TipoComponenteListForm:deleteButton :TipoComponenteListForm:TipoComponenteDataTableContextMenu" listener="#{tipoComponenteController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('TipoComponenteListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.id}" filterBy="#{item.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListTipoComponenteTitle_id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.nombre}" filterBy="#{item.nombre}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListTipoComponenteTitle_nombre}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombre}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{tipoComponenteController.prepareCreate}" update=":TipoComponenteCreateForm" oncomplete="TipoComponenteCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":TipoComponenteViewForm" oncomplete="TipoComponenteViewDialog.show()" disabled="#{empty tipoComponenteController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":TipoComponenteEditForm" oncomplete="TipoComponenteEditDialog.show()" disabled="#{empty tipoComponenteController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{tipoComponenteController.delete}" update=":growl,datalist" disabled="#{empty tipoComponenteController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

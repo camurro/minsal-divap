@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="ComunaCumplimientoListForm">
+
+        <p:panel header="#{messages.ListComunaCumplimientoTitle}">
+            <p:contextMenu id="ComunaCumplimientoDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('ComunaCumplimientoListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('ComunaCumplimientoListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('ComunaCumplimientoListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('ComunaCumplimientoListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.ComunaCumplimientoMenuItem_idTipoCumplimiento}" icon="ui-icon-search"  actionListener="#{comunaCumplimientoController.prepareIdTipoCumplimiento}" update=":TipoCumplimientoViewForm" oncomplete="TipoCumplimientoViewDialog.show()" disabled="#{empty comunaCumplimientoController.selected.idTipoCumplimiento}"/>  
+                <p:menuitem value="#{messages.ComunaCumplimientoMenuItem_idMes}" icon="ui-icon-search"  actionListener="#{comunaCumplimientoController.prepareIdMes}" update=":MesViewForm" oncomplete="MesViewDialog.show()" disabled="#{empty comunaCumplimientoController.selected.idMes}"/>  
+                <p:menuitem value="#{messages.ComunaCumplimientoMenuItem_rebaja}" icon="ui-icon-search"  actionListener="#{comunaCumplimientoController.prepareRebaja}" update=":RebajaViewForm" oncomplete="RebajaViewDialog.show()" disabled="#{empty comunaCumplimientoController.selected.rebaja}"/>  
+                <p:menuitem value="#{messages.ComunaCumplimientoMenuItem_rebajaFinal}" icon="ui-icon-search"  actionListener="#{comunaCumplimientoController.prepareRebajaFinal}" update=":ComunaCumplimientoRebajaViewForm" oncomplete="ComunaCumplimientoRebajaViewDialog.show()" disabled="#{empty comunaCumplimientoController.selected.rebajaFinal}"/>  
+                <p:menuitem value="#{messages.ComunaCumplimientoMenuItem_rebajaCalculada}" icon="ui-icon-search"  actionListener="#{comunaCumplimientoController.prepareRebajaCalculada}" update=":ComunaCumplimientoRebajaViewForm" oncomplete="ComunaCumplimientoRebajaViewDialog.show()" disabled="#{empty comunaCumplimientoController.selected.rebajaCalculada}"/>  
+                <p:menuitem value="#{messages.ComunaCumplimientoMenuItem_idComuna}" icon="ui-icon-search"  actionListener="#{comunaCumplimientoController.prepareIdComuna}" update=":ComunaViewForm" oncomplete="ComunaViewDialog.show()" disabled="#{empty comunaCumplimientoController.selected.idComuna}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{comunaCumplimientoController.items}"
+                         var="item"
+                         rowKey="#{item.idComunaCumplimiento}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{comunaCumplimientoController.selected}">
+
+                <p:ajax event="rowSelect"   update=":ComunaCumplimientoListForm:createButton :ComunaCumplimientoListForm:viewButton :ComunaCumplimientoListForm:editButton :ComunaCumplimientoListForm:deleteButton :ComunaCumplimientoListForm:ComunaCumplimientoDataTableContextMenu" listener="#{comunaCumplimientoController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":ComunaCumplimientoListForm:createButton :ComunaCumplimientoListForm:viewButton :ComunaCumplimientoListForm:editButton :ComunaCumplimientoListForm:deleteButton :ComunaCumplimientoListForm:ComunaCumplimientoDataTableContextMenu" listener="#{comunaCumplimientoController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('ComunaCumplimientoListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idComunaCumplimiento}" filterBy="#{item.idComunaCumplimiento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListComunaCumplimientoTitle_idComunaCumplimiento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idComunaCumplimiento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.valor}" filterBy="#{item.valor}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListComunaCumplimientoTitle_valor}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.valor}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idTipoCumplimiento.descripcion}" filterBy="#{item.idTipoCumplimiento.descripcion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListComunaCumplimientoTitle_idTipoCumplimiento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idTipoCumplimiento.descripcion}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idMes.idMes}" filterBy="#{item.idMes.idMes}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListComunaCumplimientoTitle_idMes}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idMes.idMes}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.rebaja.idRebaja}" filterBy="#{item.rebaja.idRebaja}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListComunaCumplimientoTitle_rebaja}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.rebaja.idRebaja}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.rebajaFinal.comunaCumplimientoRebajaId}" filterBy="#{item.rebajaFinal.comunaCumplimientoRebajaId}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListComunaCumplimientoTitle_rebajaFinal}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.rebajaFinal.comunaCumplimientoRebajaId}"/>
+                </p:column>
+
+                <!--
+                                    <p:column sortBy="#{item.rebajaCalculada.comunaCumplimientoRebajaId}" filterBy="#{item.rebajaCalculada.comunaCumplimientoRebajaId}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages.ListComunaCumplimientoTitle_rebajaCalculada}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.rebajaCalculada.comunaCumplimientoRebajaId}"/>
+                                    </p:column>
+                -->
+                <!--
+                                    <p:column sortBy="#{item.idComuna.id}" filterBy="#{item.idComuna.id}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages.ListComunaCumplimientoTitle_idComuna}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.idComuna.id}"/>
+                                    </p:column>
+                -->
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{comunaCumplimientoController.prepareCreate}" update=":ComunaCumplimientoCreateForm" oncomplete="ComunaCumplimientoCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":ComunaCumplimientoViewForm" oncomplete="ComunaCumplimientoViewDialog.show()" disabled="#{empty comunaCumplimientoController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":ComunaCumplimientoEditForm" oncomplete="ComunaCumplimientoEditDialog.show()" disabled="#{empty comunaCumplimientoController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{comunaCumplimientoController.delete}" update=":growl,datalist" disabled="#{empty comunaCumplimientoController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

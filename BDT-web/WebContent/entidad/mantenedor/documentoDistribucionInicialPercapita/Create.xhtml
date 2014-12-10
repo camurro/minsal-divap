@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DocumentoDistribucionInicialPercapitaCreateDlg" widgetVar="DocumentoDistribucionInicialPercapitaCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateDocumentoDistribucionInicialPercapitaTitle}" closeOnEscape="true">
+
+            <h:form id="DocumentoDistribucionInicialPercapitaCreateForm">
+
+                <h:panelGroup id="display" rendered="#{documentoDistribucionInicialPercapitaController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateDocumentoDistribucionInicialPercapitaLabel_idDocumento}" for="idDocumento" />
+                        <p:selectOneMenu id="idDocumento" value="#{documentoDistribucionInicialPercapitaController.selected.idDocumento}" required="true" requiredMessage="#{messages.CreateDocumentoDistribucionInicialPercapitaRequiredMessage_idDocumento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{referenciaDocumentoController.items}"
+                                           var="idDocumentoItem"
+                                           itemValue="#{idDocumentoItem}"
+                                           itemLabel="#{idDocumentoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{referenciaDocumentoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateDocumentoDistribucionInicialPercapitaLabel_idDistribucionInicialPercapita}" for="idDistribucionInicialPercapita" />
+                        <p:selectOneMenu id="idDistribucionInicialPercapita" value="#{documentoDistribucionInicialPercapitaController.selected.idDistribucionInicialPercapita}" required="true" requiredMessage="#{messages.CreateDocumentoDistribucionInicialPercapitaRequiredMessage_idDistribucionInicialPercapita}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{distribucionInicialPercapitaController.items}"
+                                           var="idDistribucionInicialPercapitaItem"
+                                           itemValue="#{idDistribucionInicialPercapitaItem}"
+                                           itemLabel="#{idDistribucionInicialPercapitaItem.idDistribucionInicialPercapita.toString()}"
+                                           />
+                            <f:converter binding="#{distribucionInicialPercapitaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateDocumentoDistribucionInicialPercapitaLabel_tipoDocumento}" for="tipoDocumento" />
+                        <p:selectOneMenu id="tipoDocumento" value="#{documentoDistribucionInicialPercapitaController.selected.tipoDocumento}" required="true" requiredMessage="#{messages.CreateDocumentoDistribucionInicialPercapitaRequiredMessage_tipoDocumento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoDocumentoController.items}"
+                                           var="tipoDocumentoItem"
+                                           itemValue="#{tipoDocumentoItem}"
+                                           itemLabel="#{tipoDocumentoItem.idTipoDocumento.toString()}"
+                                           />
+                            <f:converter binding="#{tipoDocumentoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateDocumentoDistribucionInicialPercapitaLabel_comuna}" for="comuna" />
+                        <p:selectOneMenu id="comuna" value="#{documentoDistribucionInicialPercapitaController.selected.comuna}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{comunaController.items}"
+                                           var="comunaItem"
+                                           itemValue="#{comunaItem}"
+                                           itemLabel="#{comunaItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{comunaConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{documentoDistribucionInicialPercapitaController.saveNew}" value="#{messages.Save}" update="display,:DocumentoDistribucionInicialPercapitaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,DocumentoDistribucionInicialPercapitaCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="DocumentoDistribucionInicialPercapitaCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

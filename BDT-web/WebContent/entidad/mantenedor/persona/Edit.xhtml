@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="PersonaEditDlg" widgetVar="PersonaEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditPersonaTitle}" closeOnEscape="true">
+
+            <h:form id="PersonaEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{personaController.seleccionado != null}">
+
+
+                        <h:outputLabel value="#{messages.EditPersonaLabel_idPersona}" for="idPersona" />
+                        <h:outputText id="idPersona" value="#{personaController.seleccionado.idPersona}" />
+
+                        <p:outputLabel value="#{messages.EditPersonaLabel_nombre}" for="nombre" />
+                        <p:inputText id="nombre" value="#{personaController.seleccionado.nombre}" title="#{messages.EditPersonaTitle_nombre}" required="true" requiredMessage="#{messages.EditPersonaRequiredMessage_nombre}"/>
+
+                        <p:outputLabel value="#{messages.EditPersonaLabel_apellidoPaterno}" for="apellidoPaterno" />
+                        <p:inputText id="apellidoPaterno" value="#{personaController.seleccionado.apellidoPaterno}" title="#{messages.EditPersonaTitle_apellidoPaterno}" required="true" requiredMessage="#{messages.EditPersonaRequiredMessage_apellidoPaterno}"/>
+
+                        <p:outputLabel value="#{messages.EditPersonaLabel_apellidoMaterno}" for="apellidoMaterno" />
+                        <p:inputText id="apellidoMaterno" value="#{personaController.seleccionado.apellidoMaterno}" title="#{messages.EditPersonaTitle_apellidoMaterno}"/>
+
+                        <p:outputLabel value="#{messages.EditPersonaLabel_email}" for="email" />
+                        <p:selectOneMenu id="email" value="#{personaController.seleccionado.correo}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{personaController.emails}"
+                                           var="emailItem"
+                                           itemValue="#{emailItem.valor}"
+                                           itemLabel="#{emailItem.valor}"
+                                           />
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{personaController.edit}" value="#{messages.Save}" update="display,:PersonaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,PersonaEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="PersonaEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

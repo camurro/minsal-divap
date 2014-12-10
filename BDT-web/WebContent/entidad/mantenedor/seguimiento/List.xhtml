@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="SeguimientoListForm">
+
+        <p:panel header="#{messages.ListSeguimientoTitle}">
+            <p:contextMenu id="SeguimientoDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('SeguimientoListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('SeguimientoListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('SeguimientoListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('SeguimientoListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.SeguimientoMenuItem_seguimientoReferenciaDocumentoCollection}" icon="ui-icon-search"  action="#{seguimientoController.navigateSeguimientoReferenciaDocumentoCollection}" disabled="#{empty seguimientoController.selected.seguimientoReferenciaDocumentoCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.SeguimientoMenuItem_distribucionInicialPercapitaSeguimientoCollection}" icon="ui-icon-search"  action="#{seguimientoController.navigateDistribucionInicialPercapitaSeguimientoCollection}" disabled="#{empty seguimientoController.selected.distribucionInicialPercapitaSeguimientoCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.SeguimientoMenuItem_programasReforzamientoSeguimientoCollection}" icon="ui-icon-search"  action="#{seguimientoController.navigateProgramasReforzamientoSeguimientoCollection}" disabled="#{empty seguimientoController.selected.programasReforzamientoSeguimientoCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.SeguimientoMenuItem_otSeguimientoCollection}" icon="ui-icon-search"  action="#{seguimientoController.navigateOtSeguimientoCollection}" disabled="#{empty seguimientoController.selected.otSeguimientoCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.SeguimientoMenuItem_adjuntosSeguimientoCollection}" icon="ui-icon-search"  action="#{seguimientoController.navigateAdjuntosSeguimientoCollection}" disabled="#{empty seguimientoController.selected.adjuntosSeguimientoCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.SeguimientoMenuItem_destinatariosCollection}" icon="ui-icon-search"  action="#{seguimientoController.navigateDestinatariosCollection}" disabled="#{empty seguimientoController.selected.destinatariosCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.SeguimientoMenuItem_tareaSeguimiento}" icon="ui-icon-search"  actionListener="#{seguimientoController.prepareTareaSeguimiento}" update=":TareaSeguimientoViewForm" oncomplete="TareaSeguimientoViewDialog.show()" disabled="#{empty seguimientoController.selected.tareaSeguimiento}"/>  
+                <p:menuitem value="#{messages.SeguimientoMenuItem_idPrograma}" icon="ui-icon-search"  actionListener="#{seguimientoController.prepareIdPrograma}" update=":ProgramaViewForm" oncomplete="ProgramaViewDialog.show()" disabled="#{empty seguimientoController.selected.idPrograma}"/>  
+                <p:menuitem value="#{messages.SeguimientoMenuItem_mailFrom}" icon="ui-icon-search"  actionListener="#{seguimientoController.prepareMailFrom}" update=":EmailViewForm" oncomplete="EmailViewDialog.show()" disabled="#{empty seguimientoController.selected.mailFrom}"/>  
+                <p:menuitem value="#{messages.SeguimientoMenuItem_rebajaSeguimientos}" icon="ui-icon-search"  action="#{seguimientoController.navigateRebajaSeguimientos}" disabled="#{empty seguimientoController.selected.rebajaSeguimientos}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{seguimientoController.items}"
+                         var="item"
+                         rowKey="#{item.id}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{seguimientoController.selected}">
+
+                <p:ajax event="rowSelect"   update=":SeguimientoListForm:createButton :SeguimientoListForm:viewButton :SeguimientoListForm:editButton :SeguimientoListForm:deleteButton :SeguimientoListForm:SeguimientoDataTableContextMenu" listener="#{seguimientoController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":SeguimientoListForm:createButton :SeguimientoListForm:viewButton :SeguimientoListForm:editButton :SeguimientoListForm:deleteButton :SeguimientoListForm:SeguimientoDataTableContextMenu" listener="#{seguimientoController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('SeguimientoListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.id}" filterBy="#{item.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListSeguimientoTitle_id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idInstancia}" filterBy="#{item.idInstancia}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListSeguimientoTitle_idInstancia}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idInstancia}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.subject}" filterBy="#{item.subject}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListSeguimientoTitle_subject}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.subject}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.body}" filterBy="#{item.body}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListSeguimientoTitle_body}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.body}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.fechaEnvio}" filterBy="#{item.fechaEnvio}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListSeguimientoTitle_fechaEnvio}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.fechaEnvio}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                </p:column>
+
+
+                <p:column sortBy="#{item.tareaSeguimiento.descripcion}" filterBy="#{item.tareaSeguimiento.descripcion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListSeguimientoTitle_tareaSeguimiento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.tareaSeguimiento.descripcion}"/>
+                </p:column>
+
+                <!--
+                                    <p:column sortBy="#{item.idPrograma.descripcion}" filterBy="#{item.idPrograma.descripcion}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages.ListSeguimientoTitle_idPrograma}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.idPrograma.descripcion}"/>
+                                    </p:column>
+                -->
+                <!--
+                                    <p:column sortBy="#{item.mailFrom.idEmail}" filterBy="#{item.mailFrom.idEmail}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{messages.ListSeguimientoTitle_mailFrom}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.mailFrom.idEmail}"/>
+                                    </p:column>
+                -->
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{seguimientoController.prepareCreate}" update=":SeguimientoCreateForm" oncomplete="SeguimientoCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":SeguimientoViewForm" oncomplete="SeguimientoViewDialog.show()" disabled="#{empty seguimientoController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":SeguimientoEditForm" oncomplete="SeguimientoEditDialog.show()" disabled="#{empty seguimientoController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{seguimientoController.delete}" update=":growl,datalist" disabled="#{empty seguimientoController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="DistribucionInicialPercapitaSeguimientoListForm">
+
+        <p:panel header="#{messages.ListDistribucionInicialPercapitaSeguimientoTitle}">
+            <p:contextMenu id="DistribucionInicialPercapitaSeguimientoDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('DistribucionInicialPercapitaSeguimientoListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('DistribucionInicialPercapitaSeguimientoListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('DistribucionInicialPercapitaSeguimientoListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('DistribucionInicialPercapitaSeguimientoListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.DistribucionInicialPercapitaSeguimientoMenuItem_seguimiento}" icon="ui-icon-search"  actionListener="#{distribucionInicialPercapitaSeguimientoController.prepareSeguimiento}" update=":SeguimientoViewForm" oncomplete="SeguimientoViewDialog.show()" disabled="#{empty distribucionInicialPercapitaSeguimientoController.selected.seguimiento}"/>  
+                <p:menuitem value="#{messages.DistribucionInicialPercapitaSeguimientoMenuItem_distribucionInicialPercapita}" icon="ui-icon-search"  actionListener="#{distribucionInicialPercapitaSeguimientoController.prepareDistribucionInicialPercapita}" update=":DistribucionInicialPercapitaViewForm" oncomplete="DistribucionInicialPercapitaViewDialog.show()" disabled="#{empty distribucionInicialPercapitaSeguimientoController.selected.distribucionInicialPercapita}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{distribucionInicialPercapitaSeguimientoController.items}"
+                         var="item"
+                         rowKey="#{item.idDistribucionInicialPercapitaSeguimiento}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{distribucionInicialPercapitaSeguimientoController.selected}">
+
+                <p:ajax event="rowSelect"   update=":DistribucionInicialPercapitaSeguimientoListForm:createButton :DistribucionInicialPercapitaSeguimientoListForm:viewButton :DistribucionInicialPercapitaSeguimientoListForm:editButton :DistribucionInicialPercapitaSeguimientoListForm:deleteButton :DistribucionInicialPercapitaSeguimientoListForm:DistribucionInicialPercapitaSeguimientoDataTableContextMenu" listener="#{distribucionInicialPercapitaSeguimientoController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":DistribucionInicialPercapitaSeguimientoListForm:createButton :DistribucionInicialPercapitaSeguimientoListForm:viewButton :DistribucionInicialPercapitaSeguimientoListForm:editButton :DistribucionInicialPercapitaSeguimientoListForm:deleteButton :DistribucionInicialPercapitaSeguimientoListForm:DistribucionInicialPercapitaSeguimientoDataTableContextMenu" listener="#{distribucionInicialPercapitaSeguimientoController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('DistribucionInicialPercapitaSeguimientoListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idDistribucionInicialPercapitaSeguimiento}" filterBy="#{item.idDistribucionInicialPercapitaSeguimiento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDistribucionInicialPercapitaSeguimientoTitle_idDistribucionInicialPercapitaSeguimiento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idDistribucionInicialPercapitaSeguimiento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.seguimiento.id}" filterBy="#{item.seguimiento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDistribucionInicialPercapitaSeguimientoTitle_seguimiento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.seguimiento.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.distribucionInicialPercapita.idDistribucionInicialPercapita}" filterBy="#{item.distribucionInicialPercapita.idDistribucionInicialPercapita}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDistribucionInicialPercapitaSeguimientoTitle_distribucionInicialPercapita}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.distribucionInicialPercapita.idDistribucionInicialPercapita}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{distribucionInicialPercapitaSeguimientoController.prepareCreate}" update=":DistribucionInicialPercapitaSeguimientoCreateForm" oncomplete="DistribucionInicialPercapitaSeguimientoCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":DistribucionInicialPercapitaSeguimientoViewForm" oncomplete="DistribucionInicialPercapitaSeguimientoViewDialog.show()" disabled="#{empty distribucionInicialPercapitaSeguimientoController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":DistribucionInicialPercapitaSeguimientoEditForm" oncomplete="DistribucionInicialPercapitaSeguimientoEditDialog.show()" disabled="#{empty distribucionInicialPercapitaSeguimientoController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{distribucionInicialPercapitaSeguimientoController.delete}" update=":growl,datalist" disabled="#{empty distribucionInicialPercapitaSeguimientoController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

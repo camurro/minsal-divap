@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="MontoMesListForm">
+
+        <p:panel header="#{messages.ListMontoMesTitle}">
+            <p:contextMenu id="MontoMesDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('MontoMesListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('MontoMesListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('MontoMesListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('MontoMesListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.MontoMesMenuItem_cajaMontos}" icon="ui-icon-search"  action="#{montoMesController.navigateCajaMontos}" disabled="#{empty montoMesController.selected.cajaMontos}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{montoMesController.items}"
+                         var="item"
+                         rowKey="#{item.idMontoMes}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{montoMesController.selected}">
+
+                <p:ajax event="rowSelect"   update=":MontoMesListForm:createButton :MontoMesListForm:viewButton :MontoMesListForm:editButton :MontoMesListForm:deleteButton :MontoMesListForm:MontoMesDataTableContextMenu" listener="#{montoMesController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":MontoMesListForm:createButton :MontoMesListForm:viewButton :MontoMesListForm:editButton :MontoMesListForm:deleteButton :MontoMesListForm:MontoMesDataTableContextMenu" listener="#{montoMesController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('MontoMesListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.porcentajeMonto}" filterBy="#{item.porcentajeMonto}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListMontoMesTitle_porcentajeMonto}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.porcentajeMonto}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.monto}" filterBy="#{item.monto}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListMontoMesTitle_monto}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.monto}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.fechaMonto}" filterBy="#{item.fechaMonto}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListMontoMesTitle_fechaMonto}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.fechaMonto}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idMontoMes}" filterBy="#{item.idMontoMes}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListMontoMesTitle_idMontoMes}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idMontoMes}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{montoMesController.prepareCreate}" update=":MontoMesCreateForm" oncomplete="MontoMesCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":MontoMesViewForm" oncomplete="MontoMesViewDialog.show()" disabled="#{empty montoMesController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":MontoMesEditForm" oncomplete="MontoMesEditDialog.show()" disabled="#{empty montoMesController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{montoMesController.delete}" update=":growl,datalist" disabled="#{empty montoMesController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

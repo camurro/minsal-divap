@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="MesEditDlg" widgetVar="MesEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditMesTitle}" closeOnEscape="true">
+
+            <h:form id="MesEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{mesController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditMesLabel_idMes}" for="idMes" />
+                        <h:outputText id="idMes" value="#{mesController.selected.idMes}" />
+
+                        <p:outputLabel value="#{messages.EditMesLabel_nombre}" for="nombre" />
+                        <p:inputText id="nombre" value="#{mesController.selected.nombre}" title="#{messages.EditMesTitle_nombre}"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{mesController.save}" value="#{messages.Save}" update="display,:MesListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,MesEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="MesEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

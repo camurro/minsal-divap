@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="DocumentoOtEditDlg" widgetVar="DocumentoOtEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditDocumentoOtTitle}" closeOnEscape="true">
+
+            <h:form id="DocumentoOtEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{documentoOtController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditDocumentoOtLabel_iddocumentoOt}" for="iddocumentoOt" />
+                        <h:outputText id="iddocumentoOt" value="#{documentoOtController.selected.iddocumentoOt}" />
+
+                        <p:outputLabel value="#{messages.EditDocumentoOtLabel_idTipoDocumento}" for="idTipoDocumento" />
+                        <p:selectOneMenu id="idTipoDocumento" value="#{documentoOtController.selected.idTipoDocumento}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoDocumentoController.items}"
+                                           var="idTipoDocumentoItem"
+                                           itemValue="#{idTipoDocumentoItem}"
+                                           itemLabel="#{idTipoDocumentoItem.idTipoDocumento.toString()}"
+                                           />
+                            <f:converter binding="#{tipoDocumentoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditDocumentoOtLabel_idDocumento}" for="idDocumento" />
+                        <p:selectOneMenu id="idDocumento" value="#{documentoOtController.selected.idDocumento}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{referenciaDocumentoController.items}"
+                                           var="idDocumentoItem"
+                                           itemValue="#{idDocumentoItem}"
+                                           itemLabel="#{idDocumentoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{referenciaDocumentoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditDocumentoOtLabel_idOrdenTransferencia}" for="idOrdenTransferencia" />
+                        <p:selectOneMenu id="idOrdenTransferencia" value="#{documentoOtController.selected.idOrdenTransferencia}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{ordenTransferenciaController.items}"
+                                           var="idOrdenTransferenciaItem"
+                                           itemValue="#{idOrdenTransferenciaItem}"
+                                           itemLabel="#{idOrdenTransferenciaItem.idOrdenTransferencia.toString()}"
+                                           />
+                            <f:converter binding="#{ordenTransferenciaConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{documentoOtController.save}" value="#{messages.Save}" update="display,:DocumentoOtListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,DocumentoOtEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="DocumentoOtEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

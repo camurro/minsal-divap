@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="DocumentoReportesListForm">
+
+        <p:panel header="#{messages.ListDocumentoReportesTitle}">
+            <p:contextMenu id="DocumentoReportesDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('DocumentoReportesListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('DocumentoReportesListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('DocumentoReportesListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('DocumentoReportesListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.DocumentoReportesMenuItem_tipoDocumento}" icon="ui-icon-search"  actionListener="#{documentoReportesController.prepareTipoDocumento}" update=":TipoDocumentoViewForm" oncomplete="TipoDocumentoViewDialog.show()" disabled="#{empty documentoReportesController.selected.tipoDocumento}"/>  
+                <p:menuitem value="#{messages.DocumentoReportesMenuItem_documento}" icon="ui-icon-search"  actionListener="#{documentoReportesController.prepareDocumento}" update=":ReferenciaDocumentoViewForm" oncomplete="ReferenciaDocumentoViewDialog.show()" disabled="#{empty documentoReportesController.selected.documento}"/>  
+                <p:menuitem value="#{messages.DocumentoReportesMenuItem_ano}" icon="ui-icon-search"  actionListener="#{documentoReportesController.prepareAno}" update=":AnoEnCursoViewForm" oncomplete="AnoEnCursoViewDialog.show()" disabled="#{empty documentoReportesController.selected.ano}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{documentoReportesController.items}"
+                         var="item"
+                         rowKey="#{item.idDocumentoReporte}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{documentoReportesController.selected}">
+
+                <p:ajax event="rowSelect"   update=":DocumentoReportesListForm:createButton :DocumentoReportesListForm:viewButton :DocumentoReportesListForm:editButton :DocumentoReportesListForm:deleteButton :DocumentoReportesListForm:DocumentoReportesDataTableContextMenu" listener="#{documentoReportesController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":DocumentoReportesListForm:createButton :DocumentoReportesListForm:viewButton :DocumentoReportesListForm:editButton :DocumentoReportesListForm:deleteButton :DocumentoReportesListForm:DocumentoReportesDataTableContextMenu" listener="#{documentoReportesController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('DocumentoReportesListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idDocumentoReporte}" filterBy="#{item.idDocumentoReporte}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoReportesTitle_idDocumentoReporte}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idDocumentoReporte}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.tipoDocumento.idTipoDocumento}" filterBy="#{item.tipoDocumento.idTipoDocumento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoReportesTitle_tipoDocumento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.tipoDocumento.idTipoDocumento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.documento.id}" filterBy="#{item.documento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoReportesTitle_documento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.documento.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.ano.ano}" filterBy="#{item.ano.ano}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoReportesTitle_ano}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.ano.ano}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{documentoReportesController.prepareCreate}" update=":DocumentoReportesCreateForm" oncomplete="DocumentoReportesCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":DocumentoReportesViewForm" oncomplete="DocumentoReportesViewDialog.show()" disabled="#{empty documentoReportesController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":DocumentoReportesEditForm" oncomplete="DocumentoReportesEditDialog.show()" disabled="#{empty documentoReportesController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{documentoReportesController.delete}" update=":growl,datalist" disabled="#{empty documentoReportesController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

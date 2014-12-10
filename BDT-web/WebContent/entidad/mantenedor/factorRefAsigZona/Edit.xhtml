@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="FactorRefAsigZonaEditDlg" widgetVar="FactorRefAsigZonaEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditFactorRefAsigZonaTitle}" closeOnEscape="true">
+
+            <h:form id="FactorRefAsigZonaEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{factorRefAsigZonaController.seleccionado != null}">
+
+
+                        <h:outputLabel value="#{messages.EditFactorRefAsigZonaLabel_idFactorRefAsigZona}" for="idFactorRefAsigZona" />
+                        <h:outputText id="idFactorRefAsigZona" value="#{factorRefAsigZonaController.seleccionado.idFactorRefAsigZona}" />
+
+                        <p:outputLabel value="#{messages.EditFactorRefAsigZonaLabel_zona}" for="zona" />
+                        <p:inputText id="zona" value="#{factorRefAsigZonaController.seleccionado.zona}" title="#{messages.EditFactorRefAsigZonaTitle_zona}" required="true" requiredMessage="#{messages.EditFactorRefAsigZonaRequiredMessage_zona}"/>
+
+                        <p:outputLabel value="#{messages.EditFactorRefAsigZonaLabel_valor}" for="valor" />
+                        <p:inputText id="valor" value="#{factorRefAsigZonaController.seleccionado.valor}" title="#{messages.EditFactorRefAsigZonaTitle_valor}" required="true" requiredMessage="#{messages.EditFactorRefAsigZonaRequiredMessage_valor}"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{factorRefAsigZonaController.edit}" value="#{messages.Save}" update="display,:FactorRefAsigZonaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,FactorRefAsigZonaEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="FactorRefAsigZonaEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

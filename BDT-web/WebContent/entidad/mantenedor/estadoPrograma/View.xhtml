@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="EstadoProgramaViewDlg" widgetVar="EstadoProgramaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewEstadoProgramaTitle}" closeOnEscape="true">
+
+            <h:form id="EstadoProgramaViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{estadoProgramaController.seleccionado != null}">
+
+                        <h:outputText value="#{messages.ViewEstadoProgramaLabel_idEstadoPrograma}"/>
+                        <h:outputText value="#{estadoProgramaController.seleccionado.id_estado_programa}" title="#{messages.ViewEstadoProgramaTitle_idEstadoPrograma}"/>
+
+                        <h:outputText value="#{messages.ViewEstadoProgramaLabel_nombreEstado}"/>
+                        <h:outputText value="#{estadoProgramaController.seleccionado.nombre_estado}" title="#{messages.ViewEstadoProgramaTitle_nombreEstado}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="EstadoProgramaViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

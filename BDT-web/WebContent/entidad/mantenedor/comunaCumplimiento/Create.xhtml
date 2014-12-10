@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ComunaCumplimientoCreateDlg" widgetVar="ComunaCumplimientoCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateComunaCumplimientoTitle}" closeOnEscape="true">
+
+            <h:form id="ComunaCumplimientoCreateForm">
+
+                <h:panelGroup id="display" rendered="#{comunaCumplimientoController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateComunaCumplimientoLabel_valor}" for="valor" />
+                        <p:inputText id="valor" value="#{comunaCumplimientoController.selected.valor}" title="#{messages.CreateComunaCumplimientoTitle_valor}"/>
+
+                        <p:outputLabel value="#{messages.CreateComunaCumplimientoLabel_idTipoCumplimiento}" for="idTipoCumplimiento" />
+                        <p:selectOneMenu id="idTipoCumplimiento" value="#{comunaCumplimientoController.selected.idTipoCumplimiento}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoCumplimientoController.items}"
+                                           var="idTipoCumplimientoItem"
+                                           itemValue="#{idTipoCumplimientoItem}"
+                                           itemLabel="#{idTipoCumplimientoItem.descripcion.toString()}"
+                                           />
+                            <f:converter binding="#{tipoCumplimientoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateComunaCumplimientoLabel_idMes}" for="idMes" />
+                        <p:selectOneMenu id="idMes" value="#{comunaCumplimientoController.selected.idMes}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{mesController.items}"
+                                           var="idMesItem"
+                                           itemValue="#{idMesItem}"
+                                           itemLabel="#{idMesItem.idMes.toString()}"
+                                           />
+                            <f:converter binding="#{mesConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateComunaCumplimientoLabel_rebaja}" for="rebaja" />
+                        <p:selectOneMenu id="rebaja" value="#{comunaCumplimientoController.selected.rebaja}" required="true" requiredMessage="#{messages.CreateComunaCumplimientoRequiredMessage_rebaja}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{rebajaController.items}"
+                                           var="rebajaItem"
+                                           itemValue="#{rebajaItem}"
+                                           itemLabel="#{rebajaItem.idRebaja.toString()}"
+                                           />
+                            <f:converter binding="#{rebajaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateComunaCumplimientoLabel_rebajaFinal}" for="rebajaFinal" />
+                        <p:selectOneMenu id="rebajaFinal" value="#{comunaCumplimientoController.selected.rebajaFinal}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{comunaCumplimientoRebajaController.items}"
+                                           var="rebajaFinalItem"
+                                           itemValue="#{rebajaFinalItem}"
+                                           itemLabel="#{rebajaFinalItem.comunaCumplimientoRebajaId.toString()}"
+                                           />
+                            <f:converter binding="#{comunaCumplimientoRebajaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateComunaCumplimientoLabel_rebajaCalculada}" for="rebajaCalculada" />
+                        <p:selectOneMenu id="rebajaCalculada" value="#{comunaCumplimientoController.selected.rebajaCalculada}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{comunaCumplimientoRebajaController.items}"
+                                           var="rebajaCalculadaItem"
+                                           itemValue="#{rebajaCalculadaItem}"
+                                           itemLabel="#{rebajaCalculadaItem.comunaCumplimientoRebajaId.toString()}"
+                                           />
+                            <f:converter binding="#{comunaCumplimientoRebajaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateComunaCumplimientoLabel_idComuna}" for="idComuna" />
+                        <p:selectOneMenu id="idComuna" value="#{comunaCumplimientoController.selected.idComuna}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{comunaController.items}"
+                                           var="idComunaItem"
+                                           itemValue="#{idComunaItem}"
+                                           itemLabel="#{idComunaItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{comunaConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{comunaCumplimientoController.saveNew}" value="#{messages.Save}" update="display,:ComunaCumplimientoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ComunaCumplimientoCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ComunaCumplimientoCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

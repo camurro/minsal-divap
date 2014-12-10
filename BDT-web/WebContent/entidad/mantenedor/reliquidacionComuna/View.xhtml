@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ReliquidacionComunaViewDlg" widgetVar="ReliquidacionComunaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewReliquidacionComunaTitle}" closeOnEscape="true">
+
+            <h:form id="ReliquidacionComunaViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{reliquidacionComunaController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewReliquidacionComunaLabel_reliquidacionComunaId}"/>
+                        <h:outputText value="#{reliquidacionComunaController.selected.reliquidacionComunaId}" title="#{messages.ViewReliquidacionComunaTitle_reliquidacionComunaId}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionComunaLabel_montoRebaja}"/>
+                        <h:outputText value="#{reliquidacionComunaController.selected.montoRebaja}" title="#{messages.ViewReliquidacionComunaTitle_montoRebaja}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionComunaLabel_porcentajeCumplimiento}"/>
+                        <h:outputText value="#{reliquidacionComunaController.selected.porcentajeCumplimiento}" title="#{messages.ViewReliquidacionComunaTitle_porcentajeCumplimiento}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionComunaLabel_servicio}"/>
+                        <h:outputText value="#{reliquidacionComunaController.selected.servicio.id}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionComunaLabel_reliquidacion}"/>
+                        <h:outputText value="#{reliquidacionComunaController.selected.reliquidacion.idReliquidacion}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionComunaLabel_programa}"/>
+                        <h:outputText value="#{reliquidacionComunaController.selected.programa.idProgramaAno}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionComunaLabel_cumplimiento}"/>
+                        <h:outputText value="#{reliquidacionComunaController.selected.cumplimiento.idCumplimientoPrograma}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionComunaLabel_comuna}"/>
+                        <h:outputText value="#{reliquidacionComunaController.selected.comuna.id}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionComunaLabel_componente}"/>
+                        <h:outputText value="#{reliquidacionComunaController.selected.componente.id}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="ReliquidacionComunaViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

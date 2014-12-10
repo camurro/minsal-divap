@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="DocumentoRebajaListForm">
+
+        <p:panel header="#{messages.ListDocumentoRebajaTitle}">
+            <p:contextMenu id="DocumentoRebajaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('DocumentoRebajaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('DocumentoRebajaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('DocumentoRebajaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('DocumentoRebajaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.DocumentoRebajaMenuItem_tipoDocumento}" icon="ui-icon-search"  actionListener="#{documentoRebajaController.prepareTipoDocumento}" update=":TipoDocumentoViewForm" oncomplete="TipoDocumentoViewDialog.show()" disabled="#{empty documentoRebajaController.selected.tipoDocumento}"/>  
+                <p:menuitem value="#{messages.DocumentoRebajaMenuItem_documento}" icon="ui-icon-search"  actionListener="#{documentoRebajaController.prepareDocumento}" update=":ReferenciaDocumentoViewForm" oncomplete="ReferenciaDocumentoViewDialog.show()" disabled="#{empty documentoRebajaController.selected.documento}"/>  
+                <p:menuitem value="#{messages.DocumentoRebajaMenuItem_rebaja}" icon="ui-icon-search"  actionListener="#{documentoRebajaController.prepareRebaja}" update=":RebajaViewForm" oncomplete="RebajaViewDialog.show()" disabled="#{empty documentoRebajaController.selected.rebaja}"/>  
+                <p:menuitem value="#{messages.DocumentoRebajaMenuItem_comuna}" icon="ui-icon-search"  actionListener="#{documentoRebajaController.prepareComuna}" update=":ComunaViewForm" oncomplete="ComunaViewDialog.show()" disabled="#{empty documentoRebajaController.selected.comuna}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{documentoRebajaController.items}"
+                         var="item"
+                         rowKey="#{item.idDocumentoRebaja}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{documentoRebajaController.selected}">
+
+                <p:ajax event="rowSelect"   update=":DocumentoRebajaListForm:createButton :DocumentoRebajaListForm:viewButton :DocumentoRebajaListForm:editButton :DocumentoRebajaListForm:deleteButton :DocumentoRebajaListForm:DocumentoRebajaDataTableContextMenu" listener="#{documentoRebajaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":DocumentoRebajaListForm:createButton :DocumentoRebajaListForm:viewButton :DocumentoRebajaListForm:editButton :DocumentoRebajaListForm:deleteButton :DocumentoRebajaListForm:DocumentoRebajaDataTableContextMenu" listener="#{documentoRebajaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('DocumentoRebajaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idDocumentoRebaja}" filterBy="#{item.idDocumentoRebaja}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoRebajaTitle_idDocumentoRebaja}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idDocumentoRebaja}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.tipoDocumento.idTipoDocumento}" filterBy="#{item.tipoDocumento.idTipoDocumento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoRebajaTitle_tipoDocumento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.tipoDocumento.idTipoDocumento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.documento.id}" filterBy="#{item.documento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoRebajaTitle_documento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.documento.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.rebaja.idRebaja}" filterBy="#{item.rebaja.idRebaja}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoRebajaTitle_rebaja}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.rebaja.idRebaja}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.comuna.id}" filterBy="#{item.comuna.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoRebajaTitle_comuna}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.comuna.id}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{documentoRebajaController.prepareCreate}" update=":DocumentoRebajaCreateForm" oncomplete="DocumentoRebajaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":DocumentoRebajaViewForm" oncomplete="DocumentoRebajaViewDialog.show()" disabled="#{empty documentoRebajaController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":DocumentoRebajaEditForm" oncomplete="DocumentoRebajaEditDialog.show()" disabled="#{empty documentoRebajaController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{documentoRebajaController.delete}" update=":growl,datalist" disabled="#{empty documentoRebajaController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

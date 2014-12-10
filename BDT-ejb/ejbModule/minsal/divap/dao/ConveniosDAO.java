@@ -479,6 +479,26 @@ public class ConveniosDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	
+	// WHERE    and c.convenioServicio.idEstablecimiento.id = :idEstablecimiento
+	public ConvenioServicioComponente getConvenioServicioComponenteByIdSubtituloIdComponente(Integer idProgramaAno, Integer idComponente, Integer idTipoSubtitulo, Integer idEstablecimiento){
+		try {
+			TypedQuery<ConvenioServicioComponente> query = this.em.createNamedQuery("ConvenioServicioComponente.findByIdProgramaAnoIdComponenteSubtituloEstablecimiento", ConvenioServicioComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			query.setParameter("idEstablecimiento", idEstablecimiento);
+			
+			List<ConvenioServicioComponente> result = query.getResultList();
+			if(result != null && result.size() >0 ){
+				return result.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	public ConvenioComunaComponente getConveniosComunaComponenteById(Integer idConvenioComunaComponente) {
 		try {

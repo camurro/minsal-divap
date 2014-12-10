@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+                
+                
+                <script type="text/javascript">
+                function cambiaEstadoBoton(){
+ 				 	alert("Un mensaje de prueba");
+ 					$("#ComunaListForm\\:viewButton").css('display',null);
+ 					alert("Un mensaje de prueba");
+                }
+</script>
+              
+
+    <h:form id="ComunaListForm">
+
+        <p:panel header="#{messages.ListComunaTitle}">
+            <p:contextMenu id="ComunaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('ComunaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('ComunaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('ComunaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('ComunaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.ComunaMenuItem_remesaCollection}" icon="ui-icon-search"  action="#{comunaController.navigateRemesaCollection}" disabled="#{empty comunaController.navigateRemesaCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.ComunaMenuItem_antecendentesComunas}" icon="ui-icon-search"  action="#{comunaController.navigateAntecendentesComunas}" disabled="#{empty comunaController.selected.antecendentesComunas}" ajax="false"/>  
+                <p:menuitem value="#{messages.ComunaMenuItem_servicioSalud}" icon="ui-icon-search"  actionListener="#{comunaController.prepareServicioSalud}" update=":ServicioSaludViewForm" oncomplete="ServicioSaludViewDialog.show()" disabled="#{empty comunaController.selected.servicioSalud}"/>  
+                <p:menuitem value="#{messages.ComunaMenuItem_establecimientos}" icon="ui-icon-search"  action="#{comunaController.navigateEstablecimientos}" disabled="#{empty comunaController.selected.establecimientos}" ajax="false"/>  
+                <p:menuitem value="#{messages.ComunaMenuItem_programaMunicipalCores}" icon="ui-icon-search"  action="#{comunaController.navigateProgramaMunicipalCores}" disabled="#{empty comunaController.selected.programaMunicipalCores}" ajax="false"/>  
+                <p:menuitem value="#{messages.ComunaMenuItem_comunaCumplimientoCollection}" icon="ui-icon-search"  action="#{comunaController.navigateComunaCumplimientoCollection}" disabled="#{empty comunaController.selected.comunaCumplimientoCollection}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{comunaController.comunas}"
+                         var="item"
+                         rowKey="#{item.idComuna}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{comunaController.comunaSeleccionada}">
+
+                <p:ajax event="rowSelect"   update=":ComunaListForm:createButton :ComunaListForm:viewButton :ComunaListForm:editButton :ComunaListForm:deleteButton :ComunaListForm:ComunaDataTableContextMenu" listener="#{comunaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":ComunaListForm:createButton :ComunaListForm:viewButton :ComunaListForm:editButton :ComunaListForm:deleteButton :ComunaListForm:ComunaDataTableContextMenu" listener="#{comunaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('ComunaListForm:viewButton').click();"/>  
+
+                <p:column sortBy="#{item.idComuna}" filterBy="#{item.idComuna}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListComunaTitle_id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idComuna}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.nombreComuna}" filterBy="#{item.nombreComuna}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListComunaTitle_nombre}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombreComuna}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idServicio}" filterBy="#{item.idServicio}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListComunaTitle_servicioSalud}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombreServicio}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{comunaController.prepareCreateComuna}" update=":ComunaCreateForm" oncomplete="ComunaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{messages.View}" update=":ComunaViewForm" oncomplete="ComunaViewDialog.show()" disabled="#{empty comunaController.comunaSeleccionada}"/>
+            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{messages.Edit}" update=":ComunaEditForm" oncomplete="ComunaEditDialog.show()" disabled="#{empty comunaController.comunaSeleccionada}"/>
+            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{comunaController.delete}" update=":growl,datalist" disabled="#{empty comunaController.comunaSeleccionada}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

@@ -51,7 +51,7 @@ public class TipoSubtitulo implements Serializable {
     private Dependencia dependencia;
     @Basic(optional = false)
     @Column(name = "inflactor")
-    private String inflactor;
+    private Double inflactor;
     @OneToMany(mappedBy = "subtitulo")
     private Set<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes;
     
@@ -160,11 +160,11 @@ public class TipoSubtitulo implements Serializable {
         return "cl.minsal.divap.model.TipoSubtitulo[ idTipoSubtitulo=" + idTipoSubtitulo + " ]";
     }
 
-	public String getInflactor() {
+	public Double getInflactor() {
 		return inflactor;
 	}
 
-	public void setInflactor(String inflactor) {
+	public void setInflactor(Double inflactor) {
 		this.inflactor = inflactor;
 	}
     

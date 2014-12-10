@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DistribucionInicialPercapitaSeguimientoViewDlg" widgetVar="DistribucionInicialPercapitaSeguimientoViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewDistribucionInicialPercapitaSeguimientoTitle}" closeOnEscape="true">
+
+            <h:form id="DistribucionInicialPercapitaSeguimientoViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{distribucionInicialPercapitaSeguimientoController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewDistribucionInicialPercapitaSeguimientoLabel_idDistribucionInicialPercapitaSeguimiento}"/>
+                        <h:outputText value="#{distribucionInicialPercapitaSeguimientoController.selected.idDistribucionInicialPercapitaSeguimiento}" title="#{messages.ViewDistribucionInicialPercapitaSeguimientoTitle_idDistribucionInicialPercapitaSeguimiento}"/>
+
+                        <h:outputText value="#{messages.ViewDistribucionInicialPercapitaSeguimientoLabel_seguimiento}"/>
+                        <h:outputText value="#{distribucionInicialPercapitaSeguimientoController.selected.seguimiento.id}"/>
+
+                        <h:outputText value="#{messages.ViewDistribucionInicialPercapitaSeguimientoLabel_distribucionInicialPercapita}"/>
+                        <h:outputText value="#{distribucionInicialPercapitaSeguimientoController.selected.distribucionInicialPercapita.idDistribucionInicialPercapita}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="DistribucionInicialPercapitaSeguimientoViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

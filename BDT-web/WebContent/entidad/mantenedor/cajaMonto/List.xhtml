@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="CajaMontoListForm">
+
+        <p:panel header="#{messages.ListCajaMontoTitle}">
+            <p:contextMenu id="CajaMontoDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('CajaMontoListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('CajaMontoListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('CajaMontoListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('CajaMontoListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.CajaMontoMenuItem_monto}" icon="ui-icon-search"  actionListener="#{cajaMontoController.prepareMonto}" update=":MontoMesViewForm" oncomplete="MontoMesViewDialog.show()" disabled="#{empty cajaMontoController.selected.monto}"/>  
+                <p:menuitem value="#{messages.CajaMontoMenuItem_mes}" icon="ui-icon-search"  actionListener="#{cajaMontoController.prepareMes}" update=":MesViewForm" oncomplete="MesViewDialog.show()" disabled="#{empty cajaMontoController.selected.mes}"/>  
+                <p:menuitem value="#{messages.CajaMontoMenuItem_caja}" icon="ui-icon-search"  actionListener="#{cajaMontoController.prepareCaja}" update=":CajaViewForm" oncomplete="CajaViewDialog.show()" disabled="#{empty cajaMontoController.selected.caja}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{cajaMontoController.items}"
+                         var="item"
+                         rowKey="#{item.cajaMontoPK}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{cajaMontoController.selected}">
+
+                <p:ajax event="rowSelect"   update=":CajaMontoListForm:createButton :CajaMontoListForm:viewButton :CajaMontoListForm:editButton :CajaMontoListForm:deleteButton :CajaMontoListForm:CajaMontoDataTableContextMenu" listener="#{cajaMontoController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":CajaMontoListForm:createButton :CajaMontoListForm:viewButton :CajaMontoListForm:editButton :CajaMontoListForm:deleteButton :CajaMontoListForm:CajaMontoDataTableContextMenu" listener="#{cajaMontoController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('CajaMontoListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.monto.idMontoMes}" filterBy="#{item.monto.idMontoMes}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCajaMontoTitle_monto}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.monto.idMontoMes}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.mes.idMes}" filterBy="#{item.mes.idMes}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCajaMontoTitle_mes}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.mes.idMes}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.caja.id}" filterBy="#{item.caja.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCajaMontoTitle_caja}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.caja.id}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{cajaMontoController.prepareCreate}" update=":CajaMontoCreateForm" oncomplete="CajaMontoCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":CajaMontoViewForm" oncomplete="CajaMontoViewDialog.show()" disabled="#{empty cajaMontoController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":CajaMontoEditForm" oncomplete="CajaMontoEditDialog.show()" disabled="#{empty cajaMontoController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{cajaMontoController.delete}" update=":growl,datalist" disabled="#{empty cajaMontoController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

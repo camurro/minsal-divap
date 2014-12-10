@@ -33,7 +33,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Remesa.findByValorDia24", query = "SELECT r FROM Remesa r WHERE r.valordia24 = :valorDia24"),
     @NamedQuery(name = "Remesa.findByValorDia28", query = "SELECT r FROM Remesa r WHERE r.valordia28 = :valorDia28"),
     @NamedQuery(name = "Remesa.findByIdProgramaAnoIdServicioIdSubtitulo", query = "SELECT r FROM Remesa r WHERE r.idprograma.idProgramaAno = :idProgramaAno and r.idserviciosalud.id = :idServicioSalud  and r.tipoSubtitulo.idTipoSubtitulo = :idTipoSubtitulo ORDER BY r.idmes.idMes ASC"),
-    @NamedQuery(name = "Remesa.findByIdProgramaAnoIdSubtituloidEstablecimiento", query = "SELECT r FROM Remesa r WHERE r.idprograma.idProgramaAno = :idProgramaAno and r.idestablecimiento.id = :idEstablecimiento  and r.tipoSubtitulo.idTipoSubtitulo = :idTipoSubtitulo ORDER BY r.idmes.idMes ASC")})
+    @NamedQuery(name = "Remesa.findByIdProgramaAnoIdSubtituloidEstablecimiento", query = "SELECT r FROM Remesa r WHERE r.idprograma.idProgramaAno = :idProgramaAno and r.idestablecimiento.id = :idEstablecimiento  and r.tipoSubtitulo.idTipoSubtitulo = :idTipoSubtitulo ORDER BY r.idmes.idMes ASC"),
+    @NamedQuery(name = "Remesa.findByComuna", query = "SELECT r FROM Remesa r WHERE r.idcomuna.id = :idComuna")})
 public class Remesa implements Serializable  {
     private static final long serialVersionUID = 1L;
     

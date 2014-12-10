@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="DocumentoOtListForm">
+
+        <p:panel header="#{messages.ListDocumentoOtTitle}">
+            <p:contextMenu id="DocumentoOtDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('DocumentoOtListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('DocumentoOtListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('DocumentoOtListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('DocumentoOtListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.DocumentoOtMenuItem_idTipoDocumento}" icon="ui-icon-search"  actionListener="#{documentoOtController.prepareIdTipoDocumento}" update=":TipoDocumentoViewForm" oncomplete="TipoDocumentoViewDialog.show()" disabled="#{empty documentoOtController.selected.idTipoDocumento}"/>  
+                <p:menuitem value="#{messages.DocumentoOtMenuItem_idDocumento}" icon="ui-icon-search"  actionListener="#{documentoOtController.prepareIdDocumento}" update=":ReferenciaDocumentoViewForm" oncomplete="ReferenciaDocumentoViewDialog.show()" disabled="#{empty documentoOtController.selected.idDocumento}"/>  
+                <p:menuitem value="#{messages.DocumentoOtMenuItem_idOrdenTransferencia}" icon="ui-icon-search"  actionListener="#{documentoOtController.prepareIdOrdenTransferencia}" update=":OrdenTransferenciaViewForm" oncomplete="OrdenTransferenciaViewDialog.show()" disabled="#{empty documentoOtController.selected.idOrdenTransferencia}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{documentoOtController.items}"
+                         var="item"
+                         rowKey="#{item.iddocumentoOt}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{documentoOtController.selected}">
+
+                <p:ajax event="rowSelect"   update=":DocumentoOtListForm:createButton :DocumentoOtListForm:viewButton :DocumentoOtListForm:editButton :DocumentoOtListForm:deleteButton :DocumentoOtListForm:DocumentoOtDataTableContextMenu" listener="#{documentoOtController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":DocumentoOtListForm:createButton :DocumentoOtListForm:viewButton :DocumentoOtListForm:editButton :DocumentoOtListForm:deleteButton :DocumentoOtListForm:DocumentoOtDataTableContextMenu" listener="#{documentoOtController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('DocumentoOtListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.iddocumentoOt}" filterBy="#{item.iddocumentoOt}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoOtTitle_iddocumentoOt}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.iddocumentoOt}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idTipoDocumento.idTipoDocumento}" filterBy="#{item.idTipoDocumento.idTipoDocumento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoOtTitle_idTipoDocumento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idTipoDocumento.idTipoDocumento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idDocumento.id}" filterBy="#{item.idDocumento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoOtTitle_idDocumento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idDocumento.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idOrdenTransferencia.idOrdenTransferencia}" filterBy="#{item.idOrdenTransferencia.idOrdenTransferencia}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoOtTitle_idOrdenTransferencia}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idOrdenTransferencia.idOrdenTransferencia}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{documentoOtController.prepareCreate}" update=":DocumentoOtCreateForm" oncomplete="DocumentoOtCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":DocumentoOtViewForm" oncomplete="DocumentoOtViewDialog.show()" disabled="#{empty documentoOtController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":DocumentoOtEditForm" oncomplete="DocumentoOtEditDialog.show()" disabled="#{empty documentoOtController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{documentoOtController.delete}" update=":growl,datalist" disabled="#{empty documentoOtController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

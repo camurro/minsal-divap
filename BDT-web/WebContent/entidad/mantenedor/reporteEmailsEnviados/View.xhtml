@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ReporteEmailsEnviadosViewDlg" widgetVar="ReporteEmailsEnviadosViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewReporteEmailsEnviadosTitle}" closeOnEscape="true">
+
+            <h:form id="ReporteEmailsEnviadosViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{reporteEmailsEnviadosController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewReporteEmailsEnviadosLabel_id}"/>
+                        <h:outputText value="#{reporteEmailsEnviadosController.selected.id}" title="#{messages.ViewReporteEmailsEnviadosTitle_id}"/>
+
+                        <h:outputText value="#{messages.ViewReporteEmailsEnviadosLabel_idServicio}"/>
+                        <h:outputText value="#{reporteEmailsEnviadosController.selected.idServicio.id}"/>
+
+                        <h:outputText value="#{messages.ViewReporteEmailsEnviadosLabel_idProgramaAno}"/>
+                        <h:outputText value="#{reporteEmailsEnviadosController.selected.idProgramaAno.idProgramaAno}"/>
+
+                        <h:outputText value="#{messages.ViewReporteEmailsEnviadosLabel_modifica}"/>
+                        <h:selectBooleanCheckbox id="modifica" value="#{reporteEmailsEnviadosController.selected.modifica}" title="#{messages.EditReporteEmailsEnviadosTitle_modifica}"  disabled="true"/>
+
+                        <h:outputText value="#{messages.ViewReporteEmailsEnviadosLabel_fecha}"/>
+                        <h:outputText value="#{reporteEmailsEnviadosController.selected.fecha}" title="#{messages.ViewReporteEmailsEnviadosTitle_fecha}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="ReporteEmailsEnviadosViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

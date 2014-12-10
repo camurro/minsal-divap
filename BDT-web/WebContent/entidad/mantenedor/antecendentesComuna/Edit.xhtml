@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="AntecendentesComunaEditDlg" widgetVar="AntecendentesComunaEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditAntecendentesComunaTitle}" closeOnEscape="true">
+
+            <h:form id="AntecendentesComunaEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{antecendentesComunaController.selected != null}">
+
+                        <p:outputLabel value="#{messages.EditAntecendentesComunaLabel_clasificacion}" for="clasificacion" />
+                        <p:selectOneMenu id="clasificacion" value="#{antecendentesComunaController.selected.clasificacion}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoComunaController.items}"
+                                           var="clasificacionItem"
+                                           itemValue="#{clasificacionItem}"
+                                           itemLabel="#{clasificacionItem.descripcion.toString()}"
+                                           />
+                            <f:converter binding="#{tipoComunaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditAntecendentesComunaLabel_asignacionZona}" for="asignacionZona" />
+                        <p:selectOneMenu id="asignacionZona" value="#{antecendentesComunaController.selected.asignacionZona}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{factorRefAsigZonaController.items}"
+                                           var="asignacionZonaItem"
+                                           itemValue="#{asignacionZonaItem}"
+                                           itemLabel="#{asignacionZonaItem.idFactorRefAsigZona.toString()}"
+                                           />
+                            <f:converter binding="#{factorRefAsigZonaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditAntecendentesComunaLabel_tramoPobreza}" for="tramoPobreza" />
+                        <p:selectOneMenu id="tramoPobreza" value="#{antecendentesComunaController.selected.tramoPobreza}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{factorTramoPobrezaController.items}"
+                                           var="tramoPobrezaItem"
+                                           itemValue="#{tramoPobrezaItem}"
+                                           itemLabel="#{tramoPobrezaItem.idFactorTramoPobreza.toString()}"
+                                           />
+                            <f:converter binding="#{factorTramoPobrezaConverter}"/>
+                        </p:selectOneMenu>
+
+
+                        <h:outputLabel value="#{messages.EditAntecendentesComunaLabel_idAntecedentesComuna}" for="idAntecedentesComuna" />
+                        <h:outputText id="idAntecedentesComuna" value="#{antecendentesComunaController.selected.idAntecedentesComuna}" />
+
+                        <p:outputLabel value="#{messages.EditAntecendentesComunaLabel_idComuna}" for="idComuna" />
+                        <p:selectOneMenu id="idComuna" value="#{antecendentesComunaController.selected.idComuna}" required="true" requiredMessage="#{messages.EditAntecendentesComunaRequiredMessage_idComuna}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{comunaController.items}"
+                                           var="idComunaItem"
+                                           itemValue="#{idComunaItem}"
+                                           itemLabel="#{idComunaItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{comunaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditAntecendentesComunaLabel_anoAnoEnCurso}" for="anoAnoEnCurso" />
+                        <p:selectOneMenu id="anoAnoEnCurso" value="#{antecendentesComunaController.selected.anoAnoEnCurso}" required="true" requiredMessage="#{messages.EditAntecendentesComunaRequiredMessage_anoAnoEnCurso}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{anoEnCursoController.items}"
+                                           var="anoAnoEnCursoItem"
+                                           itemValue="#{anoAnoEnCursoItem}"
+                                           itemLabel="#{anoAnoEnCursoItem.ano.toString()}"
+                                           />
+                            <f:converter binding="#{anoEnCursoConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{antecendentesComunaController.save}" value="#{messages.Save}" update="display,:AntecendentesComunaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,AntecendentesComunaEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="AntecendentesComunaEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

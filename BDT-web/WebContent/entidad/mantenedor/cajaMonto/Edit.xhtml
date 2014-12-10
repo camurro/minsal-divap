@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="CajaMontoEditDlg" widgetVar="CajaMontoEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditCajaMontoTitle}" closeOnEscape="true">
+
+            <h:form id="CajaMontoEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{cajaMontoController.selected != null}">
+
+                        <p:outputLabel value="#{messages.EditCajaMontoLabel_monto}" for="monto" />
+                        <p:selectOneMenu id="monto" value="#{cajaMontoController.selected.monto}" required="true" requiredMessage="#{messages.EditCajaMontoRequiredMessage_monto}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{montoMesController.items}"
+                                           var="montoItem"
+                                           itemValue="#{montoItem}"
+                                           itemLabel="#{montoItem.idMontoMes.toString()}"
+                                           />
+                            <f:converter binding="#{montoMesConverter}"/>
+                        </p:selectOneMenu>
+
+
+                        <h:outputLabel value="#{messages.EditCajaMontoLabel_mes}" for="mes" />
+                        <h:outputText id="mes" value="#{cajaMontoController.selected.mes}" />
+
+
+                        <h:outputLabel value="#{messages.EditCajaMontoLabel_caja}" for="caja" />
+                        <h:outputText id="caja" value="#{cajaMontoController.selected.caja}" />
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{cajaMontoController.save}" value="#{messages.Save}" update="display,:CajaMontoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,CajaMontoEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="CajaMontoEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

@@ -9,6 +9,7 @@ import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
+import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.RebajaService;
 import minsal.divap.service.ReportesServices;
 import minsal.divap.vo.ReporteRebajaVO;
@@ -37,9 +38,11 @@ public class ReportesRebajaController extends BaseController implements Serializ
 	
 	@PostConstruct
 	public void init(){
-		//this.reporteRebajaVO = reportesServices.getReporteRebaja();
-		this.reporteRebajaVO = new ArrayList<ReporteRebajaVO>();
-		this.idPlanillaRebaja = reportesServices.generarPlanillaReporteRebaja(getLoggedUsername());
+		this.reporteRebajaVO = reportesServices.getReporteRebaja();
+		this.idPlanillaRebaja = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEREBAJA);
+		if(this.idPlanillaRebaja == null){
+			this.idPlanillaRebaja = reportesServices.generarPlanillaReporteRebaja(getLoggedUsername());
+		}
 		
 	}
 	

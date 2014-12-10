@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="PlantillaListForm">
+
+        <p:panel header="#{messages.ListPlantillaTitle}">
+            <p:contextMenu id="PlantillaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('PlantillaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('PlantillaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('PlantillaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('PlantillaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.PlantillaMenuItem_tipoPlantilla}" icon="ui-icon-search"  actionListener="#{plantillaController.prepareTipoPlantilla}" update=":TipoDocumentoViewForm" oncomplete="TipoDocumentoViewDialog.show()" disabled="#{empty plantillaController.selected.tipoPlantilla}"/>  
+                <p:menuitem value="#{messages.PlantillaMenuItem_documento}" icon="ui-icon-search"  actionListener="#{plantillaController.prepareDocumento}" update=":ReferenciaDocumentoViewForm" oncomplete="ReferenciaDocumentoViewDialog.show()" disabled="#{empty plantillaController.selected.documento}"/>  
+                <p:menuitem value="#{messages.PlantillaMenuItem_idPrograma}" icon="ui-icon-search"  actionListener="#{plantillaController.prepareIdPrograma}" update=":ProgramaViewForm" oncomplete="ProgramaViewDialog.show()" disabled="#{empty plantillaController.selected.idPrograma}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{plantillaController.items}"
+                         var="item"
+                         rowKey="#{item.idPlantilla}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{plantillaController.selected}">
+
+                <p:ajax event="rowSelect"   update=":PlantillaListForm:createButton :PlantillaListForm:viewButton :PlantillaListForm:editButton :PlantillaListForm:deleteButton :PlantillaListForm:PlantillaDataTableContextMenu" listener="#{plantillaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":PlantillaListForm:createButton :PlantillaListForm:viewButton :PlantillaListForm:editButton :PlantillaListForm:deleteButton :PlantillaListForm:PlantillaDataTableContextMenu" listener="#{plantillaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('PlantillaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idPlantilla}" filterBy="#{item.idPlantilla}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListPlantillaTitle_idPlantilla}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idPlantilla}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.fechaCreacion}" filterBy="#{item.fechaCreacion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListPlantillaTitle_fechaCreacion}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.fechaCreacion}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                </p:column>
+
+
+                <p:column sortBy="#{item.fechaVigencia}" filterBy="#{item.fechaVigencia}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListPlantillaTitle_fechaVigencia}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.fechaVigencia}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                </p:column>
+
+
+                <p:column sortBy="#{item.tipoPlantilla.idTipoDocumento}" filterBy="#{item.tipoPlantilla.idTipoDocumento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListPlantillaTitle_tipoPlantilla}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.tipoPlantilla.idTipoDocumento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.documento.id}" filterBy="#{item.documento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListPlantillaTitle_documento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.documento.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idPrograma.descripcion}" filterBy="#{item.idPrograma.descripcion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListPlantillaTitle_idPrograma}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idPrograma.descripcion}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{plantillaController.prepareCreate}" update=":PlantillaCreateForm" oncomplete="PlantillaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":PlantillaViewForm" oncomplete="PlantillaViewDialog.show()" disabled="#{empty plantillaController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":PlantillaEditForm" oncomplete="PlantillaEditDialog.show()" disabled="#{empty plantillaController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{plantillaController.delete}" update=":growl,datalist" disabled="#{empty plantillaController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

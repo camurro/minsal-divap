@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="TramoListForm">
+
+        <p:panel header="#{messages.ListTramoTitle}">
+            <p:contextMenu id="TramoDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('TramoListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('TramoListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('TramoListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('TramoListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.TramoMenuItem_cumplimientoCollection}" icon="ui-icon-search"  action="#{tramoController.navigateCumplimientoCollection}" disabled="#{empty tramoController.selected.cumplimientoCollection}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{tramoController.items}"
+                         var="item"
+                         rowKey="#{item.idTramo}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{tramoController.selected}">
+
+                <p:ajax event="rowSelect"   update=":TramoListForm:createButton :TramoListForm:viewButton :TramoListForm:editButton :TramoListForm:deleteButton :TramoListForm:TramoDataTableContextMenu" listener="#{tramoController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":TramoListForm:createButton :TramoListForm:viewButton :TramoListForm:editButton :TramoListForm:deleteButton :TramoListForm:TramoDataTableContextMenu" listener="#{tramoController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('TramoListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idTramo}" filterBy="#{item.idTramo}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListTramoTitle_idTramo}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idTramo}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.tramo}" filterBy="#{item.tramo}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListTramoTitle_tramo}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.tramo}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{tramoController.prepareCreate}" update=":TramoCreateForm" oncomplete="TramoCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":TramoViewForm" oncomplete="TramoViewDialog.show()" disabled="#{empty tramoController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":TramoEditForm" oncomplete="TramoEditDialog.show()" disabled="#{empty tramoController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{tramoController.delete}" update=":growl,datalist" disabled="#{empty tramoController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="PlantillaViewDlg" widgetVar="PlantillaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewPlantillaTitle}" closeOnEscape="true">
+
+            <h:form id="PlantillaViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{plantillaController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewPlantillaLabel_idPlantilla}"/>
+                        <h:outputText value="#{plantillaController.selected.idPlantilla}" title="#{messages.ViewPlantillaTitle_idPlantilla}"/>
+
+                        <h:outputText value="#{messages.ViewPlantillaLabel_fechaCreacion}"/>
+                        <h:outputText value="#{plantillaController.selected.fechaCreacion}" title="#{messages.ViewPlantillaTitle_fechaCreacion}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+
+                        <h:outputText value="#{messages.ViewPlantillaLabel_fechaVigencia}"/>
+                        <h:outputText value="#{plantillaController.selected.fechaVigencia}" title="#{messages.ViewPlantillaTitle_fechaVigencia}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+
+                        <h:outputText value="#{messages.ViewPlantillaLabel_tipoPlantilla}"/>
+                        <h:outputText value="#{plantillaController.selected.tipoPlantilla.idTipoDocumento}"/>
+
+                        <h:outputText value="#{messages.ViewPlantillaLabel_documento}"/>
+                        <h:outputText value="#{plantillaController.selected.documento.id}"/>
+
+                        <h:outputText value="#{messages.ViewPlantillaLabel_idPrograma}"/>
+                        <h:outputText value="#{plantillaController.selected.idPrograma.descripcion}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="PlantillaViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

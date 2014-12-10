@@ -1,7 +1,9 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+
 import java.util.List;
 
 
@@ -10,7 +12,9 @@ import java.util.List;
  * 
  */
 @Entity
-@NamedQuery(name="Region.findAll", query="SELECT r FROM Region r order by r.id asc")
+@NamedQueries({
+	@NamedQuery(name="Region.findAll", query="SELECT r FROM Region r order by r.id asc"),
+	@NamedQuery(name="Region.findById", query="SELECT r FROM Region r WHERE r.id = :idRegion")})
 public class Region implements Serializable {
 	private static final long serialVersionUID = 1L;
 

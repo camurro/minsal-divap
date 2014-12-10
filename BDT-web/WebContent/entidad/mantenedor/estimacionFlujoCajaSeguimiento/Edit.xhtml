@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="EstimacionFlujoCajaSeguimientoEditDlg" widgetVar="EstimacionFlujoCajaSeguimientoEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditEstimacionFlujoCajaSeguimientoTitle}" closeOnEscape="true">
+
+            <h:form id="EstimacionFlujoCajaSeguimientoEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{estimacionFlujoCajaSeguimientoController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditEstimacionFlujoCajaSeguimientoLabel_id}" for="id" />
+                        <h:outputText id="id" value="#{estimacionFlujoCajaSeguimientoController.selected.id}" />
+
+                        <p:outputLabel value="#{messages.EditEstimacionFlujoCajaSeguimientoLabel_seguimiento}" for="seguimiento" />
+                        <p:selectOneMenu id="seguimiento" value="#{estimacionFlujoCajaSeguimientoController.selected.seguimiento}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{seguimientoController.items}"
+                                           var="seguimientoItem"
+                                           itemValue="#{seguimientoItem}"
+                                           itemLabel="#{seguimientoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{seguimientoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditEstimacionFlujoCajaSeguimientoLabel_programaAno}" for="programaAno" />
+                        <p:selectOneMenu id="programaAno" value="#{estimacionFlujoCajaSeguimientoController.selected.programaAno}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaAnoController.items}"
+                                           var="programaAnoItem"
+                                           itemValue="#{programaAnoItem}"
+                                           itemLabel="#{programaAnoItem.idProgramaAno.toString()}"
+                                           />
+                            <f:converter binding="#{programaAnoConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{estimacionFlujoCajaSeguimientoController.save}" value="#{messages.Save}" update="display,:EstimacionFlujoCajaSeguimientoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,EstimacionFlujoCajaSeguimientoEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="EstimacionFlujoCajaSeguimientoEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

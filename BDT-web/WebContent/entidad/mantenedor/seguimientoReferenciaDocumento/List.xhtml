@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="SeguimientoReferenciaDocumentoListForm">
+
+        <p:panel header="#{messages.ListSeguimientoReferenciaDocumentoTitle}">
+            <p:contextMenu id="SeguimientoReferenciaDocumentoDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('SeguimientoReferenciaDocumentoListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('SeguimientoReferenciaDocumentoListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('SeguimientoReferenciaDocumentoListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('SeguimientoReferenciaDocumentoListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.SeguimientoReferenciaDocumentoMenuItem_idSeguimiento}" icon="ui-icon-search"  actionListener="#{seguimientoReferenciaDocumentoController.prepareIdSeguimiento}" update=":SeguimientoViewForm" oncomplete="SeguimientoViewDialog.show()" disabled="#{empty seguimientoReferenciaDocumentoController.selected.idSeguimiento}"/>  
+                <p:menuitem value="#{messages.SeguimientoReferenciaDocumentoMenuItem_idReferenciaDocumento}" icon="ui-icon-search"  actionListener="#{seguimientoReferenciaDocumentoController.prepareIdReferenciaDocumento}" update=":ReferenciaDocumentoViewForm" oncomplete="ReferenciaDocumentoViewDialog.show()" disabled="#{empty seguimientoReferenciaDocumentoController.selected.idReferenciaDocumento}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{seguimientoReferenciaDocumentoController.items}"
+                         var="item"
+                         rowKey="#{item.idSeguimientoReferenciaDocumento}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{seguimientoReferenciaDocumentoController.selected}">
+
+                <p:ajax event="rowSelect"   update=":SeguimientoReferenciaDocumentoListForm:createButton :SeguimientoReferenciaDocumentoListForm:viewButton :SeguimientoReferenciaDocumentoListForm:editButton :SeguimientoReferenciaDocumentoListForm:deleteButton :SeguimientoReferenciaDocumentoListForm:SeguimientoReferenciaDocumentoDataTableContextMenu" listener="#{seguimientoReferenciaDocumentoController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":SeguimientoReferenciaDocumentoListForm:createButton :SeguimientoReferenciaDocumentoListForm:viewButton :SeguimientoReferenciaDocumentoListForm:editButton :SeguimientoReferenciaDocumentoListForm:deleteButton :SeguimientoReferenciaDocumentoListForm:SeguimientoReferenciaDocumentoDataTableContextMenu" listener="#{seguimientoReferenciaDocumentoController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('SeguimientoReferenciaDocumentoListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idSeguimientoReferenciaDocumento}" filterBy="#{item.idSeguimientoReferenciaDocumento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListSeguimientoReferenciaDocumentoTitle_idSeguimientoReferenciaDocumento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idSeguimientoReferenciaDocumento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idSeguimiento.id}" filterBy="#{item.idSeguimiento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListSeguimientoReferenciaDocumentoTitle_idSeguimiento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idSeguimiento.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idReferenciaDocumento.id}" filterBy="#{item.idReferenciaDocumento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListSeguimientoReferenciaDocumentoTitle_idReferenciaDocumento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idReferenciaDocumento.id}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{seguimientoReferenciaDocumentoController.prepareCreate}" update=":SeguimientoReferenciaDocumentoCreateForm" oncomplete="SeguimientoReferenciaDocumentoCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":SeguimientoReferenciaDocumentoViewForm" oncomplete="SeguimientoReferenciaDocumentoViewDialog.show()" disabled="#{empty seguimientoReferenciaDocumentoController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":SeguimientoReferenciaDocumentoEditForm" oncomplete="SeguimientoReferenciaDocumentoEditDialog.show()" disabled="#{empty seguimientoReferenciaDocumentoController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{seguimientoReferenciaDocumentoController.delete}" update=":growl,datalist" disabled="#{empty seguimientoReferenciaDocumentoController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

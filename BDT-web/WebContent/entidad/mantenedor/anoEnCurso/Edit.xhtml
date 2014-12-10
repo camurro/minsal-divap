@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="AnoEnCursoEditDlg" widgetVar="AnoEnCursoEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditAnoEnCursoTitle}" closeOnEscape="true">
+
+            <h:form id="AnoEnCursoEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{anoEnCursoController.seleccionado != null}">
+
+
+                        <h:outputLabel value="#{messages.EditAnoEnCursoLabel_ano}" for="ano" />
+                        <h:outputText id="ano" value="#{anoEnCursoController.seleccionado.ano}" />
+
+                        <p:outputLabel value="#{messages.EditAnoEnCursoLabel_montoPercapitalBasal}" for="montoPercapitalBasal" />
+                        <p:inputText id="montoPercapitalBasal" value="#{anoEnCursoController.seleccionado.montoPercapitalBasal}" title="#{messages.EditAnoEnCursoTitle_montoPercapitalBasal}"/>
+
+                        <p:outputLabel value="#{messages.EditAnoEnCursoLabel_asignacionAdultoMayor}" for="asignacionAdultoMayor" />
+                        <p:inputText id="asignacionAdultoMayor" value="#{anoEnCursoController.seleccionado.asignacionAdultoMayor}" title="#{messages.EditAnoEnCursoTitle_asignacionAdultoMayor}"/>
+
+                        <p:outputLabel value="#{messages.EditAnoEnCursoLabel_inflactor}" for="inflactor" />
+                        <p:inputText id="inflactor" value="#{anoEnCursoController.seleccionado.inflactor}" title="#{messages.EditAnoEnCursoTitle_inflactor}"/>
+
+                        <p:outputLabel value="#{messages.EditAnoEnCursoLabel_inflactorMarcoPresupuestario}" for="inflactorMarcoPresupuestario" />
+                        <p:inputText id="inflactorMarcoPresupuestario" value="#{anoEnCursoController.seleccionado.inflactorMarcoPresupuestario}" title="#{messages.EditAnoEnCursoTitle_inflactorMarcoPresupuestario}"/>
+
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{anoEnCursoController.edit}" value="#{messages.Save}" update="display,:AnoEnCursoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,AnoEnCursoEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="AnoEnCursoEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

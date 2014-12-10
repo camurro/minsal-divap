@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CumplimientoProgramaCreateDlg" widgetVar="CumplimientoProgramaCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateCumplimientoProgramaTitle}" closeOnEscape="true">
+
+            <h:form id="CumplimientoProgramaCreateForm">
+
+                <h:panelGroup id="display" rendered="#{cumplimientoProgramaController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateCumplimientoProgramaLabel_porcentajeDesde}" for="porcentajeDesde" />
+                        <p:inputText id="porcentajeDesde" value="#{cumplimientoProgramaController.selected.porcentajeDesde}" title="#{messages.CreateCumplimientoProgramaTitle_porcentajeDesde}" required="true" requiredMessage="#{messages.CreateCumplimientoProgramaRequiredMessage_porcentajeDesde}"/>
+
+                        <p:outputLabel value="#{messages.CreateCumplimientoProgramaLabel_porcentajeHasta}" for="porcentajeHasta" />
+                        <p:inputText id="porcentajeHasta" value="#{cumplimientoProgramaController.selected.porcentajeHasta}" title="#{messages.CreateCumplimientoProgramaTitle_porcentajeHasta}"/>
+
+                        <p:outputLabel value="#{messages.CreateCumplimientoProgramaLabel_rebaja}" for="rebaja" />
+                        <p:inputText id="rebaja" value="#{cumplimientoProgramaController.selected.rebaja}" title="#{messages.CreateCumplimientoProgramaTitle_rebaja}" required="true" requiredMessage="#{messages.CreateCumplimientoProgramaRequiredMessage_rebaja}"/>
+
+                        <p:outputLabel value="#{messages.CreateCumplimientoProgramaLabel_programa}" for="programa" />
+                        <p:selectOneMenu id="programa" value="#{cumplimientoProgramaController.selected.programa}" required="true" requiredMessage="#{messages.CreateCumplimientoProgramaRequiredMessage_programa}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaController.items}"
+                                           var="programaItem"
+                                           itemValue="#{programaItem}"
+                                           itemLabel="#{programaItem.descripcion.toString()}"
+                                           />
+                            <f:converter binding="#{programaConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{cumplimientoProgramaController.saveNew}" value="#{messages.Save}" update="display,:CumplimientoProgramaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,CumplimientoProgramaCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="CumplimientoProgramaCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

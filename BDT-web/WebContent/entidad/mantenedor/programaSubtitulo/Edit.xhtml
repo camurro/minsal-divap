@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="ProgramaSubtituloEditDlg" widgetVar="ProgramaSubtituloEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditProgramaSubtituloTitle}" closeOnEscape="true">
+
+            <h:form id="ProgramaSubtituloEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{programaSubtituloController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditProgramaSubtituloLabel_idProgramaSubtitulo}" for="idProgramaSubtitulo" />
+                        <h:outputText id="idProgramaSubtitulo" value="#{programaSubtituloController.selected.idProgramaSubtitulo}" />
+
+                        <p:outputLabel value="#{messages.EditProgramaSubtituloLabel_subtitulo}" for="subtitulo" />
+                        <p:selectOneMenu id="subtitulo" value="#{programaSubtituloController.selected.subtitulo}" required="true" requiredMessage="#{messages.EditProgramaSubtituloRequiredMessage_subtitulo}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoSubtituloController.items}"
+                                           var="subtituloItem"
+                                           itemValue="#{subtituloItem}"
+                                           itemLabel="#{subtituloItem.idTipoSubtitulo.toString()}"
+                                           />
+                            <f:converter binding="#{tipoSubtituloConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditProgramaSubtituloLabel_programa}" for="programa" />
+                        <p:selectOneMenu id="programa" value="#{programaSubtituloController.selected.programa}" required="true" requiredMessage="#{messages.EditProgramaSubtituloRequiredMessage_programa}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaController.items}"
+                                           var="programaItem"
+                                           itemValue="#{programaItem}"
+                                           itemLabel="#{programaItem.descripcion.toString()}"
+                                           />
+                            <f:converter binding="#{programaConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{programaSubtituloController.save}" value="#{messages.Save}" update="display,:ProgramaSubtituloListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ProgramaSubtituloEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ProgramaSubtituloEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

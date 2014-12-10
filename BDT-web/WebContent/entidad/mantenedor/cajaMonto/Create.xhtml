@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CajaMontoCreateDlg" widgetVar="CajaMontoCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateCajaMontoTitle}" closeOnEscape="true">
+
+            <h:form id="CajaMontoCreateForm">
+
+                <h:panelGroup id="display" rendered="#{cajaMontoController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateCajaMontoLabel_monto}" for="monto" />
+                        <p:selectOneMenu id="monto" value="#{cajaMontoController.selected.monto}" required="true" requiredMessage="#{messages.CreateCajaMontoRequiredMessage_monto}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{montoMesController.items}"
+                                           var="montoItem"
+                                           itemValue="#{montoItem}"
+                                           itemLabel="#{montoItem.idMontoMes.toString()}"
+                                           />
+                            <f:converter binding="#{montoMesConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateCajaMontoLabel_mes}" for="mes" />
+                        <p:selectOneMenu id="mes" value="#{cajaMontoController.selected.mes}" required="true" requiredMessage="#{messages.CreateCajaMontoRequiredMessage_mes}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{mesController.items}"
+                                           var="mesItem"
+                                           itemValue="#{mesItem}"
+                                           itemLabel="#{mesItem.idMes.toString()}"
+                                           />
+                            <f:converter binding="#{mesConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateCajaMontoLabel_caja}" for="caja" />
+                        <p:selectOneMenu id="caja" value="#{cajaMontoController.selected.caja}" required="true" requiredMessage="#{messages.CreateCajaMontoRequiredMessage_caja}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{cajaController.items}"
+                                           var="cajaItem"
+                                           itemValue="#{cajaItem}"
+                                           itemLabel="#{cajaItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{cajaConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{cajaMontoController.saveNew}" value="#{messages.Save}" update="display,:CajaMontoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,CajaMontoCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="CajaMontoCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

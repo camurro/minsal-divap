@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="ProgramaMunicipalCoreListForm">
+
+        <p:panel header="#{messages.ListProgramaMunicipalCoreTitle}">
+            <p:contextMenu id="ProgramaMunicipalCoreDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('ProgramaMunicipalCoreListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('ProgramaMunicipalCoreListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('ProgramaMunicipalCoreListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('ProgramaMunicipalCoreListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.ProgramaMunicipalCoreMenuItem_programaAnoMunicipal}" icon="ui-icon-search"  actionListener="#{programaMunicipalCoreController.prepareProgramaAnoMunicipal}" update=":ProgramaAnoViewForm" oncomplete="ProgramaAnoViewDialog.show()" disabled="#{empty programaMunicipalCoreController.selected.programaAnoMunicipal}"/>  
+                <p:menuitem value="#{messages.ProgramaMunicipalCoreMenuItem_establecimiento}" icon="ui-icon-search"  actionListener="#{programaMunicipalCoreController.prepareEstablecimiento}" update=":EstablecimientoViewForm" oncomplete="EstablecimientoViewDialog.show()" disabled="#{empty programaMunicipalCoreController.selected.establecimiento}"/>  
+                <p:menuitem value="#{messages.ProgramaMunicipalCoreMenuItem_comuna}" icon="ui-icon-search"  actionListener="#{programaMunicipalCoreController.prepareComuna}" update=":ComunaViewForm" oncomplete="ComunaViewDialog.show()" disabled="#{empty programaMunicipalCoreController.selected.comuna}"/>  
+                <p:menuitem value="#{messages.ProgramaMunicipalCoreMenuItem_programaMunicipalCoreComponentes}" icon="ui-icon-search"  action="#{programaMunicipalCoreController.navigateProgramaMunicipalCoreComponentes}" disabled="#{empty programaMunicipalCoreController.selected.programaMunicipalCoreComponentes}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{programaMunicipalCoreController.items}"
+                         var="item"
+                         rowKey="#{item.idProgramaMunicipalCore}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{programaMunicipalCoreController.selected}">
+
+                <p:ajax event="rowSelect"   update=":ProgramaMunicipalCoreListForm:createButton :ProgramaMunicipalCoreListForm:viewButton :ProgramaMunicipalCoreListForm:editButton :ProgramaMunicipalCoreListForm:deleteButton :ProgramaMunicipalCoreListForm:ProgramaMunicipalCoreDataTableContextMenu" listener="#{programaMunicipalCoreController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":ProgramaMunicipalCoreListForm:createButton :ProgramaMunicipalCoreListForm:viewButton :ProgramaMunicipalCoreListForm:editButton :ProgramaMunicipalCoreListForm:deleteButton :ProgramaMunicipalCoreListForm:ProgramaMunicipalCoreDataTableContextMenu" listener="#{programaMunicipalCoreController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('ProgramaMunicipalCoreListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idProgramaMunicipalCore}" filterBy="#{item.idProgramaMunicipalCore}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaMunicipalCoreTitle_idProgramaMunicipalCore}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idProgramaMunicipalCore}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.programaAnoMunicipal.idProgramaAno}" filterBy="#{item.programaAnoMunicipal.idProgramaAno}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaMunicipalCoreTitle_programaAnoMunicipal}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.programaAnoMunicipal.idProgramaAno}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.establecimiento.id}" filterBy="#{item.establecimiento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaMunicipalCoreTitle_establecimiento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.establecimiento.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.comuna.id}" filterBy="#{item.comuna.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaMunicipalCoreTitle_comuna}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.comuna.id}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{programaMunicipalCoreController.prepareCreate}" update=":ProgramaMunicipalCoreCreateForm" oncomplete="ProgramaMunicipalCoreCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":ProgramaMunicipalCoreViewForm" oncomplete="ProgramaMunicipalCoreViewDialog.show()" disabled="#{empty programaMunicipalCoreController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":ProgramaMunicipalCoreEditForm" oncomplete="ProgramaMunicipalCoreEditDialog.show()" disabled="#{empty programaMunicipalCoreController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{programaMunicipalCoreController.delete}" update=":growl,datalist" disabled="#{empty programaMunicipalCoreController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

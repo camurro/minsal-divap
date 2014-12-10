@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name = "ProgramaServicioCore.findByIdProgramaServicioCore", query = "SELECT p FROM ProgramaServicioCore p WHERE p.idProgramaServicioCore = :idProgramaServicioCore"),
 	@NamedQuery(name = "ProgramaServicioCore.findByProgramaAno", query = "SELECT p FROM ProgramaServicioCore p WHERE p.programaAnoServicio.idProgramaAno = :programaAno"),
 	@NamedQuery(name = "ProgramaServicioCore.deleteByProgramasServicioCore", query = "DELETE FROM ProgramaServicioCore p WHERE p.idProgramaServicioCore IN (:programasServicioCore)"),
-	@NamedQuery(name = "ProgramaServicioCore.findByComuna", query = "SELECT p FROM ProgramaServicioCore p WHERE p.comuna.id = :comuna")})
+	@NamedQuery(name = "ProgramaServicioCore.findByProgramaAnoEstablecimiento", query = "SELECT p FROM ProgramaServicioCore p WHERE p.programaAnoServicio.idProgramaAno = :idProgramaAno and p.establecimiento.id = :idEstablecimiento")})
 public class ProgramaServicioCore implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -45,9 +45,6 @@ public class ProgramaServicioCore implements Serializable {
 	@JoinColumn(name = "establecimiento", referencedColumnName = "id")
 	@ManyToOne(optional = false)
 	private Establecimiento establecimiento;
-	@JoinColumn(name = "comuna", referencedColumnName = "id")
-	@ManyToOne
-	private Comuna comuna;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "programaServicioCore1")
 	private Set<ProgramaServicioCoreComponente> programaServicioCoreComponentes;
 
@@ -81,14 +78,6 @@ public class ProgramaServicioCore implements Serializable {
 
 	public void setEstablecimiento(Establecimiento establecimiento) {
 		this.establecimiento = establecimiento;
-	}
-
-	public Comuna getComuna() {
-		return comuna;
-	}
-
-	public void setComuna(Comuna comuna) {
-		this.comuna = comuna;
 	}
 
 	public ServicioSalud getServicio() {

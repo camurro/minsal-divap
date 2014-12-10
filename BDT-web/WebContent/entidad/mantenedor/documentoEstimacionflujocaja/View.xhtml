@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DocumentoEstimacionflujocajaViewDlg" widgetVar="DocumentoEstimacionflujocajaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewDocumentoEstimacionflujocajaTitle}" closeOnEscape="true">
+
+            <h:form id="DocumentoEstimacionflujocajaViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{documentoEstimacionflujocajaController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewDocumentoEstimacionflujocajaLabel_id}"/>
+                        <h:outputText value="#{documentoEstimacionflujocajaController.selected.id}" title="#{messages.ViewDocumentoEstimacionflujocajaTitle_id}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoEstimacionflujocajaLabel_idTipoDocumento}"/>
+                        <h:outputText value="#{documentoEstimacionflujocajaController.selected.idTipoDocumento.idTipoDocumento}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoEstimacionflujocajaLabel_idDocumento}"/>
+                        <h:outputText value="#{documentoEstimacionflujocajaController.selected.idDocumento.id}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoEstimacionflujocajaLabel_idProgramaAno}"/>
+                        <h:outputText value="#{documentoEstimacionflujocajaController.selected.idProgramaAno.idProgramaAno}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoEstimacionflujocajaLabel_idMes}"/>
+                        <h:outputText value="#{documentoEstimacionflujocajaController.selected.idMes.idMes}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoEstimacionflujocajaLabel_ano}"/>
+                        <h:outputText value="#{documentoEstimacionflujocajaController.selected.ano.ano}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="DocumentoEstimacionflujocajaViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

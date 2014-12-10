@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="CajaListForm">
+
+        <p:panel header="#{messages.ListCajaTitle}">
+            <p:contextMenu id="CajaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('CajaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('CajaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('CajaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('CajaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.CajaMenuItem_cajaMontos}" icon="ui-icon-search"  action="#{cajaController.navigateCajaMontos}" disabled="#{empty cajaController.selected.cajaMontos}" ajax="false"/>  
+                <p:menuitem value="#{messages.CajaMenuItem_idSubtitulo}" icon="ui-icon-search"  actionListener="#{cajaController.prepareIdSubtitulo}" update=":TipoSubtituloViewForm" oncomplete="TipoSubtituloViewDialog.show()" disabled="#{empty cajaController.selected.idSubtitulo}"/>  
+                <p:menuitem value="#{messages.CajaMenuItem_marcoPresupuestario}" icon="ui-icon-search"  actionListener="#{cajaController.prepareMarcoPresupuestario}" update=":MarcoPresupuestarioViewForm" oncomplete="MarcoPresupuestarioViewDialog.show()" disabled="#{empty cajaController.selected.marcoPresupuestario}"/>  
+                <p:menuitem value="#{messages.CajaMenuItem_idComponente}" icon="ui-icon-search"  actionListener="#{cajaController.prepareIdComponente}" update=":ComponenteViewForm" oncomplete="ComponenteViewDialog.show()" disabled="#{empty cajaController.selected.idComponente}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{cajaController.items}"
+                         var="item"
+                         rowKey="#{item.id}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{cajaController.selected}">
+
+                <p:ajax event="rowSelect"   update=":CajaListForm:createButton :CajaListForm:viewButton :CajaListForm:editButton :CajaListForm:deleteButton :CajaListForm:CajaDataTableContextMenu" listener="#{cajaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":CajaListForm:createButton :CajaListForm:viewButton :CajaListForm:editButton :CajaListForm:deleteButton :CajaListForm:CajaDataTableContextMenu" listener="#{cajaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('CajaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.id}" filterBy="#{item.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCajaTitle_id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.monto}" filterBy="#{item.monto}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCajaTitle_monto}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.monto}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idSubtitulo.idTipoSubtitulo}" filterBy="#{item.idSubtitulo.idTipoSubtitulo}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCajaTitle_idSubtitulo}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idSubtitulo.idTipoSubtitulo}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.marcoPresupuestario.idMarcoPresupuestario}" filterBy="#{item.marcoPresupuestario.idMarcoPresupuestario}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCajaTitle_marcoPresupuestario}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.marcoPresupuestario.idMarcoPresupuestario}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idComponente.id}" filterBy="#{item.idComponente.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListCajaTitle_idComponente}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idComponente.id}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{cajaController.prepareCreate}" update=":CajaCreateForm" oncomplete="CajaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":CajaViewForm" oncomplete="CajaViewDialog.show()" disabled="#{empty cajaController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":CajaEditForm" oncomplete="CajaEditDialog.show()" disabled="#{empty cajaController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{cajaController.delete}" update=":growl,datalist" disabled="#{empty cajaController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

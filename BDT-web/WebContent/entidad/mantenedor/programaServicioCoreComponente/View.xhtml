@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ProgramaServicioCoreComponenteViewDlg" widgetVar="ProgramaServicioCoreComponenteViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewProgramaServicioCoreComponenteTitle}" closeOnEscape="true">
+
+            <h:form id="ProgramaServicioCoreComponenteViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{programaServicioCoreComponenteController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewProgramaServicioCoreComponenteLabel_tarifa}"/>
+                        <h:outputText value="#{programaServicioCoreComponenteController.selected.tarifa}" title="#{messages.ViewProgramaServicioCoreComponenteTitle_tarifa}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaServicioCoreComponenteLabel_cantidad}"/>
+                        <h:outputText value="#{programaServicioCoreComponenteController.selected.cantidad}" title="#{messages.ViewProgramaServicioCoreComponenteTitle_cantidad}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaServicioCoreComponenteLabel_monto}"/>
+                        <h:outputText value="#{programaServicioCoreComponenteController.selected.monto}" title="#{messages.ViewProgramaServicioCoreComponenteTitle_monto}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaServicioCoreComponenteLabel_subtitulo}"/>
+                        <h:outputText value="#{programaServicioCoreComponenteController.selected.subtitulo.idTipoSubtitulo}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaServicioCoreComponenteLabel_programaServicioCore1}"/>
+                        <h:outputText value="#{programaServicioCoreComponenteController.selected.programaServicioCore1.idProgramaServicioCore}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaServicioCoreComponenteLabel_servicioCoreComponente}"/>
+                        <h:outputText value="#{programaServicioCoreComponenteController.selected.servicioCoreComponente.id}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="ProgramaServicioCoreComponenteViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

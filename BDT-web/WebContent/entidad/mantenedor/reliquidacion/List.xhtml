@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="ReliquidacionListForm">
+
+        <p:panel header="#{messages.ListReliquidacionTitle}">
+            <p:contextMenu id="ReliquidacionDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('ReliquidacionListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('ReliquidacionListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('ReliquidacionListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('ReliquidacionListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.ReliquidacionMenuItem_usuario}" icon="ui-icon-search"  actionListener="#{reliquidacionController.prepareUsuario}" update=":UsuarioViewForm" oncomplete="UsuarioViewDialog.show()" disabled="#{empty reliquidacionController.selected.usuario}"/>  
+                <p:menuitem value="#{messages.ReliquidacionMenuItem_idProgramaAno}" icon="ui-icon-search"  actionListener="#{reliquidacionController.prepareIdProgramaAno}" update=":ProgramaAnoViewForm" oncomplete="ProgramaAnoViewDialog.show()" disabled="#{empty reliquidacionController.selected.idProgramaAno}"/>  
+                <p:menuitem value="#{messages.ReliquidacionMenuItem_mes}" icon="ui-icon-search"  actionListener="#{reliquidacionController.prepareMes}" update=":MesViewForm" oncomplete="MesViewDialog.show()" disabled="#{empty reliquidacionController.selected.mes}"/>  
+                <p:menuitem value="#{messages.ReliquidacionMenuItem_reliquidacionServicios}" icon="ui-icon-search"  action="#{reliquidacionController.navigateReliquidacionServicios}" disabled="#{empty reliquidacionController.selected.reliquidacionServicios}" ajax="false"/>  
+                <p:menuitem value="#{messages.ReliquidacionMenuItem_reliquidacionComunas}" icon="ui-icon-search"  action="#{reliquidacionController.navigateReliquidacionComunas}" disabled="#{empty reliquidacionController.selected.reliquidacionComunas}" ajax="false"/>  
+                <p:menuitem value="#{messages.ReliquidacionMenuItem_documentosReliquidacion}" icon="ui-icon-search"  action="#{reliquidacionController.navigateDocumentosReliquidacion}" disabled="#{empty reliquidacionController.selected.documentosReliquidacion}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{reliquidacionController.items}"
+                         var="item"
+                         rowKey="#{item.idReliquidacion}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{reliquidacionController.selected}">
+
+                <p:ajax event="rowSelect"   update=":ReliquidacionListForm:createButton :ReliquidacionListForm:viewButton :ReliquidacionListForm:editButton :ReliquidacionListForm:deleteButton :ReliquidacionListForm:ReliquidacionDataTableContextMenu" listener="#{reliquidacionController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":ReliquidacionListForm:createButton :ReliquidacionListForm:viewButton :ReliquidacionListForm:editButton :ReliquidacionListForm:deleteButton :ReliquidacionListForm:ReliquidacionDataTableContextMenu" listener="#{reliquidacionController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('ReliquidacionListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idReliquidacion}" filterBy="#{item.idReliquidacion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListReliquidacionTitle_idReliquidacion}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idReliquidacion}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.usuario.username}" filterBy="#{item.usuario.username}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListReliquidacionTitle_usuario}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.usuario.username}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.fechaCreacion}" filterBy="#{item.fechaCreacion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListReliquidacionTitle_fechaCreacion}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.fechaCreacion}">
+                        <f:convertDateTime pattern="HH:mm:ss" />
+                    </h:outputText>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idProgramaAno.idProgramaAno}" filterBy="#{item.idProgramaAno.idProgramaAno}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListReliquidacionTitle_idProgramaAno}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idProgramaAno.idProgramaAno}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.mes.idMes}" filterBy="#{item.mes.idMes}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListReliquidacionTitle_mes}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.mes.idMes}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{reliquidacionController.prepareCreate}" update=":ReliquidacionCreateForm" oncomplete="ReliquidacionCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":ReliquidacionViewForm" oncomplete="ReliquidacionViewDialog.show()" disabled="#{empty reliquidacionController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":ReliquidacionEditForm" oncomplete="ReliquidacionEditDialog.show()" disabled="#{empty reliquidacionController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{reliquidacionController.delete}" update=":growl,datalist" disabled="#{empty reliquidacionController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

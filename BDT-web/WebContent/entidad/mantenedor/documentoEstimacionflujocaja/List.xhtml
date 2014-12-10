@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="DocumentoEstimacionflujocajaListForm">
+
+        <p:panel header="#{messages.ListDocumentoEstimacionflujocajaTitle}">
+            <p:contextMenu id="DocumentoEstimacionflujocajaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('DocumentoEstimacionflujocajaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('DocumentoEstimacionflujocajaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('DocumentoEstimacionflujocajaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('DocumentoEstimacionflujocajaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.DocumentoEstimacionflujocajaMenuItem_idTipoDocumento}" icon="ui-icon-search"  actionListener="#{documentoEstimacionflujocajaController.prepareIdTipoDocumento}" update=":TipoDocumentoViewForm" oncomplete="TipoDocumentoViewDialog.show()" disabled="#{empty documentoEstimacionflujocajaController.selected.idTipoDocumento}"/>  
+                <p:menuitem value="#{messages.DocumentoEstimacionflujocajaMenuItem_idDocumento}" icon="ui-icon-search"  actionListener="#{documentoEstimacionflujocajaController.prepareIdDocumento}" update=":ReferenciaDocumentoViewForm" oncomplete="ReferenciaDocumentoViewDialog.show()" disabled="#{empty documentoEstimacionflujocajaController.selected.idDocumento}"/>  
+                <p:menuitem value="#{messages.DocumentoEstimacionflujocajaMenuItem_idProgramaAno}" icon="ui-icon-search"  actionListener="#{documentoEstimacionflujocajaController.prepareIdProgramaAno}" update=":ProgramaAnoViewForm" oncomplete="ProgramaAnoViewDialog.show()" disabled="#{empty documentoEstimacionflujocajaController.selected.idProgramaAno}"/>  
+                <p:menuitem value="#{messages.DocumentoEstimacionflujocajaMenuItem_idMes}" icon="ui-icon-search"  actionListener="#{documentoEstimacionflujocajaController.prepareIdMes}" update=":MesViewForm" oncomplete="MesViewDialog.show()" disabled="#{empty documentoEstimacionflujocajaController.selected.idMes}"/>  
+                <p:menuitem value="#{messages.DocumentoEstimacionflujocajaMenuItem_ano}" icon="ui-icon-search"  actionListener="#{documentoEstimacionflujocajaController.prepareAno}" update=":AnoEnCursoViewForm" oncomplete="AnoEnCursoViewDialog.show()" disabled="#{empty documentoEstimacionflujocajaController.selected.ano}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{documentoEstimacionflujocajaController.items}"
+                         var="item"
+                         rowKey="#{item.id}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{documentoEstimacionflujocajaController.selected}">
+
+                <p:ajax event="rowSelect"   update=":DocumentoEstimacionflujocajaListForm:createButton :DocumentoEstimacionflujocajaListForm:viewButton :DocumentoEstimacionflujocajaListForm:editButton :DocumentoEstimacionflujocajaListForm:deleteButton :DocumentoEstimacionflujocajaListForm:DocumentoEstimacionflujocajaDataTableContextMenu" listener="#{documentoEstimacionflujocajaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":DocumentoEstimacionflujocajaListForm:createButton :DocumentoEstimacionflujocajaListForm:viewButton :DocumentoEstimacionflujocajaListForm:editButton :DocumentoEstimacionflujocajaListForm:deleteButton :DocumentoEstimacionflujocajaListForm:DocumentoEstimacionflujocajaDataTableContextMenu" listener="#{documentoEstimacionflujocajaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('DocumentoEstimacionflujocajaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.id}" filterBy="#{item.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoEstimacionflujocajaTitle_id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idTipoDocumento.idTipoDocumento}" filterBy="#{item.idTipoDocumento.idTipoDocumento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoEstimacionflujocajaTitle_idTipoDocumento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idTipoDocumento.idTipoDocumento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idDocumento.id}" filterBy="#{item.idDocumento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoEstimacionflujocajaTitle_idDocumento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idDocumento.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idProgramaAno.idProgramaAno}" filterBy="#{item.idProgramaAno.idProgramaAno}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoEstimacionflujocajaTitle_idProgramaAno}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idProgramaAno.idProgramaAno}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idMes.idMes}" filterBy="#{item.idMes.idMes}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoEstimacionflujocajaTitle_idMes}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idMes.idMes}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.ano.ano}" filterBy="#{item.ano.ano}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDocumentoEstimacionflujocajaTitle_ano}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.ano.ano}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{documentoEstimacionflujocajaController.prepareCreate}" update=":DocumentoEstimacionflujocajaCreateForm" oncomplete="DocumentoEstimacionflujocajaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":DocumentoEstimacionflujocajaViewForm" oncomplete="DocumentoEstimacionflujocajaViewDialog.show()" disabled="#{empty documentoEstimacionflujocajaController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":DocumentoEstimacionflujocajaEditForm" oncomplete="DocumentoEstimacionflujocajaEditDialog.show()" disabled="#{empty documentoEstimacionflujocajaController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{documentoEstimacionflujocajaController.delete}" update=":growl,datalist" disabled="#{empty documentoEstimacionflujocajaController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

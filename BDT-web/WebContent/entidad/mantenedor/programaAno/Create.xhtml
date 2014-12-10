@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ProgramaAnoCreateDlg" widgetVar="ProgramaAnoCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateProgramaAnoTitle}" closeOnEscape="true">
+
+            <h:form id="ProgramaAnoCreateForm">
+
+                <h:panelGroup id="display" rendered="#{programaAnoController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateProgramaAnoLabel_programa}" for="programa" />
+                        <p:selectOneMenu id="programa" value="#{programaAnoController.selected.programa}" required="true" requiredMessage="#{messages.CreateProgramaAnoRequiredMessage_programa}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaController.items}"
+                                           var="programaItem"
+                                           itemValue="#{programaItem}"
+                                           itemLabel="#{programaItem.descripcion.toString()}"
+                                           />
+                            <f:converter binding="#{programaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateProgramaAnoLabel_estado}" for="estado" />
+                        <p:selectOneMenu id="estado" value="#{programaAnoController.selected.estado}" required="true" requiredMessage="#{messages.CreateProgramaAnoRequiredMessage_estado}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{estadoProgramaController.items}"
+                                           var="estadoItem"
+                                           itemValue="#{estadoItem}"
+                                           itemLabel="#{estadoItem.idEstadoPrograma.toString()}"
+                                           />
+                            <f:converter binding="#{estadoProgramaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateProgramaAnoLabel_estadoreliquidacion}" for="estadoreliquidacion" />
+                        <p:selectOneMenu id="estadoreliquidacion" value="#{programaAnoController.selected.estadoreliquidacion}" required="true" requiredMessage="#{messages.CreateProgramaAnoRequiredMessage_estadoreliquidacion}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{estadoProgramaController.items}"
+                                           var="estadoreliquidacionItem"
+                                           itemValue="#{estadoreliquidacionItem}"
+                                           itemLabel="#{estadoreliquidacionItem.idEstadoPrograma.toString()}"
+                                           />
+                            <f:converter binding="#{estadoProgramaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateProgramaAnoLabel_estadoConvenio}" for="estadoConvenio" />
+                        <p:selectOneMenu id="estadoConvenio" value="#{programaAnoController.selected.estadoConvenio}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{estadoProgramaController.items}"
+                                           var="estadoConvenioItem"
+                                           itemValue="#{estadoConvenioItem}"
+                                           itemLabel="#{estadoConvenioItem.idEstadoPrograma.toString()}"
+                                           />
+                            <f:converter binding="#{estadoProgramaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateProgramaAnoLabel_ano}" for="ano" />
+                        <p:selectOneMenu id="ano" value="#{programaAnoController.selected.ano}" required="true" requiredMessage="#{messages.CreateProgramaAnoRequiredMessage_ano}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{anoEnCursoController.items}"
+                                           var="anoItem"
+                                           itemValue="#{anoItem}"
+                                           itemLabel="#{anoItem.ano.toString()}"
+                                           />
+                            <f:converter binding="#{anoEnCursoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateProgramaAnoLabel_estadoFlujoCaja}" for="estadoFlujoCaja" />
+                        <p:selectOneMenu id="estadoFlujoCaja" value="#{programaAnoController.selected.estadoFlujoCaja}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{estadoProgramaController.items}"
+                                           var="estadoFlujoCajaItem"
+                                           itemValue="#{estadoFlujoCajaItem}"
+                                           itemLabel="#{estadoFlujoCajaItem.idEstadoPrograma.toString()}"
+                                           />
+                            <f:converter binding="#{estadoProgramaConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{programaAnoController.saveNew}" value="#{messages.Save}" update="display,:ProgramaAnoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ProgramaAnoCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ProgramaAnoCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

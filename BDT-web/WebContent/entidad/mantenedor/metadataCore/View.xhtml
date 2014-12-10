@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="MetadataCoreViewDlg" widgetVar="MetadataCoreViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewMetadataCoreTitle}" closeOnEscape="true">
+
+            <h:form id="MetadataCoreViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{metadataCoreController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewMetadataCoreLabel_id}"/>
+                        <h:outputText value="#{metadataCoreController.selected.id}" title="#{messages.ViewMetadataCoreTitle_id}"/>
+
+                        <h:outputText value="#{messages.ViewMetadataCoreLabel_descripcion}"/>
+                        <h:outputText value="#{metadataCoreController.selected.descripcion}" title="#{messages.ViewMetadataCoreTitle_descripcion}"/>
+
+                        <h:outputText value="#{messages.ViewMetadataCoreLabel_indiceCore}"/>
+                        <h:outputText value="#{metadataCoreController.selected.indiceCore}" title="#{messages.ViewMetadataCoreTitle_indiceCore}"/>
+
+                        <h:outputText value="#{messages.ViewMetadataCoreLabel_programa}"/>
+                        <h:outputText value="#{metadataCoreController.selected.programa.descripcion}"/>
+
+                        <h:outputText value="#{messages.ViewMetadataCoreLabel_idTipoPrograma}"/>
+                        <h:outputText value="#{metadataCoreController.selected.idTipoPrograma.id}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="MetadataCoreViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

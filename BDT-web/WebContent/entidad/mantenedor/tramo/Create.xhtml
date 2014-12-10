@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TramoCreateDlg" widgetVar="TramoCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateTramoTitle}" closeOnEscape="true">
+
+            <h:form id="TramoCreateForm">
+
+                <h:panelGroup id="display" rendered="#{tramoController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateTramoLabel_tramo}" for="tramo" />
+                        <p:inputText id="tramo" value="#{tramoController.selected.tramo}" title="#{messages.CreateTramoTitle_tramo}" required="true" requiredMessage="#{messages.CreateTramoRequiredMessage_tramo}"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{tramoController.saveNew}" value="#{messages.Save}" update="display,:TramoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,TramoCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="TramoCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

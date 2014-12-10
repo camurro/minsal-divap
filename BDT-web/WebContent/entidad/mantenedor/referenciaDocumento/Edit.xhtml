@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="ReferenciaDocumentoEditDlg" widgetVar="ReferenciaDocumentoEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditReferenciaDocumentoTitle}" closeOnEscape="true">
+
+            <h:form id="ReferenciaDocumentoEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{referenciaDocumentoController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditReferenciaDocumentoLabel_id}" for="id" />
+                        <h:outputText id="id" value="#{referenciaDocumentoController.selected.id}" />
+
+                        <p:outputLabel value="#{messages.EditReferenciaDocumentoLabel_contentType}" for="contentType" />
+                        <p:inputText id="contentType" value="#{referenciaDocumentoController.selected.contentType}" title="#{messages.EditReferenciaDocumentoTitle_contentType}"/>
+
+                        <p:outputLabel value="#{messages.EditReferenciaDocumentoLabel_path}" for="path" />
+                        <p:inputText id="path" value="#{referenciaDocumentoController.selected.path}" title="#{messages.EditReferenciaDocumentoTitle_path}"/>
+
+                        <p:outputLabel value="#{messages.EditReferenciaDocumentoLabel_documentoFinal}" for="documentoFinal" />
+                        <p:selectBooleanCheckbox id="documentoFinal" value="#{referenciaDocumentoController.selected.documentoFinal}" />
+
+                        <p:outputLabel value="#{messages.EditReferenciaDocumentoLabel_nodeRef}" for="nodeRef" />
+                        <p:inputText id="nodeRef" value="#{referenciaDocumentoController.selected.nodeRef}" title="#{messages.EditReferenciaDocumentoTitle_nodeRef}"/>
+
+                        <p:outputLabel value="#{messages.EditReferenciaDocumentoLabel_rebajaCollection}" for="rebajaCollection" />
+                        <p:selectManyMenu id="rebajaCollection" value="#{referenciaDocumentoController.selected.rebajaCollection}" >
+                            <f:selectItems value="#{rebajaController.items}"
+                                           var="rebajaCollectionItem"
+                                           itemValue="#{rebajaCollectionItem}"
+                                           itemLabel="#{rebajaCollectionItem.idRebaja.toString()}"
+                                           />
+                            <f:converter binding="#{rebajaConverter}"/>
+                        </p:selectManyMenu>
+
+                        <p:outputLabel value="#{messages.EditReferenciaDocumentoLabel_fechaCreacion}" for="fechaCreacion" />
+                        <p:calendar id="fechaCreacion" pattern="MM/dd/yyyy HH:mm:ss" value="#{referenciaDocumentoController.selected.fechaCreacion}" title="#{messages.EditReferenciaDocumentoTitle_fechaCreacion}"  showOn="button"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{referenciaDocumentoController.save}" value="#{messages.Save}" update="display,:ReferenciaDocumentoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ReferenciaDocumentoEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ReferenciaDocumentoEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

@@ -9,7 +9,7 @@ public class ServiciosVO implements Serializable{
 	private static final long serialVersionUID = -6107779935422525744L;
 
 	private List<ComunaVO> comuna;
-	private int id_servicio;
+	private Integer id_servicio;
 	private String nombre_servicio;
 	private PersonaVO director;
 	private PersonaVO encargadoAps;
@@ -22,13 +22,13 @@ public class ServiciosVO implements Serializable{
 		
 	}
 	
-	public ServiciosVO(int id_servicio, String nombre_servicio){
+	public ServiciosVO(Integer id_servicio, String nombre_servicio){
 		super();
 		this.id_servicio = id_servicio;
 		this.nombre_servicio = nombre_servicio;
 	}
 	
-	public ServiciosVO(int id_servicio, String nombre_servicio,
+	public ServiciosVO(Integer id_servicio, String nombre_servicio,
 			PersonaVO director, PersonaVO encargadoAps,
 			PersonaVO encargadoFinanzasAps) {
 		super();
@@ -39,11 +39,11 @@ public class ServiciosVO implements Serializable{
 		this.encargadoFinanzasAps = encargadoFinanzasAps;
 	}
 
-	public int getId_servicio() {
+	public Integer getId_servicio() {
 		return id_servicio;
 	}
 	
-	public void setId_servicio(int id_servicio) {
+	public void setId_servicio(Integer id_servicio) {
 		this.id_servicio = id_servicio;
 	}
 	

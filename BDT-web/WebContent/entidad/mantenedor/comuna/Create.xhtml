@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+ 
+        <p:dialog id="ComunaCreateDlg" widgetVar="ComunaCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateComunaTitle}" closeOnEscape="true">
+
+           <h:form id="ComunaCreateForm">
+
+                <h:panelGroup id="display" rendered="#{comunaController.comunaSeleccionada != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateComunaLabel_nombre}" for="nombre" />
+                        <p:inputText id="nombre" value="#{comunaController.comunaSeleccionada.nombreComuna}" title="#{messages.CreateComunaTitle_nombre}"/>
+
+                        <p:outputLabel value="#{messages.CreateComunaLabel_servicioSalud}" for="servicioSalud" />
+                        <p:selectOneMenu id="servicioSalud" value="#{comunaController.comunaSeleccionada.idServicio}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}" itemValue="0"/>
+                            <f:selectItems value="#{comunaController.servicios}"
+                                           var="servicioSaludItem"
+                                           itemValue="#{servicioSaludItem.id_servicio}"
+                                           itemLabel="#{servicioSaludItem.nombre_servicio}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{comunaController.saveNew}" value="#{messages.Save}" update="display,:ComunaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ComunaCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ComunaCreateDialog.hide()"/>
+                </h:panelGroup>
+  			</h:form>
+         
+        </p:dialog>
+         
+        
+
+    </ui:composition>
+
+</html>

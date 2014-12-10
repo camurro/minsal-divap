@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoSubtituloCreateDlg" widgetVar="TipoSubtituloCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateTipoSubtituloTitle}" closeOnEscape="true">
+
+            <h:form id="TipoSubtituloCreateForm">
+
+                <h:panelGroup id="display" rendered="#{tipoSubtituloController.seleccionado != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateTipoSubtituloLabel_nombreSubtitulo}" for="nombreSubtitulo" />
+                        <p:inputText id="nombreSubtitulo" value="#{tipoSubtituloController.seleccionado.nombreSubtitulo}" title="#{messages.CreateTipoSubtituloTitle_nombreSubtitulo}" required="true" requiredMessage="#{messages.CreateTipoSubtituloRequiredMessage_nombreSubtitulo}"/>
+
+                        <p:outputLabel value="#{messages.CreateTipoSubtituloLabel_dependencia}" for="dependencia" />
+                        <p:selectOneMenu id="dependencia" value="#{tipoSubtituloController.seleccionado.idDependencia}" required="true" requiredMessage="#{messages.CreateTipoSubtituloRequiredMessage_dependencia}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoSubtituloController.dependencias}"
+                                           var="dependenciaItem"
+                                           itemValue="#{dependenciaItem.idDependenciaPrograma}"
+                                           itemLabel="#{dependenciaItem.nombre}"
+                                           />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateTipoSubtituloLabel_inflactor}" for="inflactor" />
+                        <p:inputText id="inflactor" value="#{tipoSubtituloController.seleccionado.inflactor}" title="#{messages.CreateTipoSubtituloTitle_inflactor}" required="true" requiredMessage="#{messages.CreateTipoSubtituloRequiredMessage_inflactor}"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{tipoSubtituloController.saveNew}" value="#{messages.Save}" update="display,:TipoSubtituloListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,TipoSubtituloCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="TipoSubtituloCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

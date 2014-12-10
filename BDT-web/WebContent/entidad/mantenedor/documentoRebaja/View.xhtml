@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DocumentoRebajaViewDlg" widgetVar="DocumentoRebajaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewDocumentoRebajaTitle}" closeOnEscape="true">
+
+            <h:form id="DocumentoRebajaViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{documentoRebajaController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewDocumentoRebajaLabel_idDocumentoRebaja}"/>
+                        <h:outputText value="#{documentoRebajaController.selected.idDocumentoRebaja}" title="#{messages.ViewDocumentoRebajaTitle_idDocumentoRebaja}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoRebajaLabel_tipoDocumento}"/>
+                        <h:outputText value="#{documentoRebajaController.selected.tipoDocumento.idTipoDocumento}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoRebajaLabel_documento}"/>
+                        <h:outputText value="#{documentoRebajaController.selected.documento.id}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoRebajaLabel_rebaja}"/>
+                        <h:outputText value="#{documentoRebajaController.selected.rebaja.idRebaja}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoRebajaLabel_comuna}"/>
+                        <h:outputText value="#{documentoRebajaController.selected.comuna.id}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="DocumentoRebajaViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

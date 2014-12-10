@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="ReporteEmailsEnviadosListForm">
+
+        <p:panel header="#{messages.ListReporteEmailsEnviadosTitle}">
+            <p:contextMenu id="ReporteEmailsEnviadosDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('ReporteEmailsEnviadosListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('ReporteEmailsEnviadosListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('ReporteEmailsEnviadosListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('ReporteEmailsEnviadosListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.ReporteEmailsEnviadosMenuItem_idServicio}" icon="ui-icon-search"  actionListener="#{reporteEmailsEnviadosController.prepareIdServicio}" update=":ServicioSaludViewForm" oncomplete="ServicioSaludViewDialog.show()" disabled="#{empty reporteEmailsEnviadosController.selected.idServicio}"/>  
+                <p:menuitem value="#{messages.ReporteEmailsEnviadosMenuItem_idProgramaAno}" icon="ui-icon-search"  actionListener="#{reporteEmailsEnviadosController.prepareIdProgramaAno}" update=":ProgramaAnoViewForm" oncomplete="ProgramaAnoViewDialog.show()" disabled="#{empty reporteEmailsEnviadosController.selected.idProgramaAno}"/>  
+                <p:menuitem value="#{messages.ReporteEmailsEnviadosMenuItem_reporteEmailsDestinatariosSet}" icon="ui-icon-search"  action="#{reporteEmailsEnviadosController.navigateReporteEmailsDestinatariosSet}" disabled="#{empty reporteEmailsEnviadosController.selected.reporteEmailsDestinatariosSet}" ajax="false"/>  
+                <p:menuitem value="#{messages.ReporteEmailsEnviadosMenuItem_reporteEmailsAdjuntosSet}" icon="ui-icon-search"  action="#{reporteEmailsEnviadosController.navigateReporteEmailsAdjuntosSet}" disabled="#{empty reporteEmailsEnviadosController.selected.reporteEmailsAdjuntosSet}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{reporteEmailsEnviadosController.items}"
+                         var="item"
+                         rowKey="#{item.id}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{reporteEmailsEnviadosController.selected}">
+
+                <p:ajax event="rowSelect"   update=":ReporteEmailsEnviadosListForm:createButton :ReporteEmailsEnviadosListForm:viewButton :ReporteEmailsEnviadosListForm:editButton :ReporteEmailsEnviadosListForm:deleteButton :ReporteEmailsEnviadosListForm:ReporteEmailsEnviadosDataTableContextMenu" listener="#{reporteEmailsEnviadosController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":ReporteEmailsEnviadosListForm:createButton :ReporteEmailsEnviadosListForm:viewButton :ReporteEmailsEnviadosListForm:editButton :ReporteEmailsEnviadosListForm:deleteButton :ReporteEmailsEnviadosListForm:ReporteEmailsEnviadosDataTableContextMenu" listener="#{reporteEmailsEnviadosController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('ReporteEmailsEnviadosListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.id}" filterBy="#{item.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListReporteEmailsEnviadosTitle_id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idServicio.id}" filterBy="#{item.idServicio.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListReporteEmailsEnviadosTitle_idServicio}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idServicio.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idProgramaAno.idProgramaAno}" filterBy="#{item.idProgramaAno.idProgramaAno}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListReporteEmailsEnviadosTitle_idProgramaAno}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idProgramaAno.idProgramaAno}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.modifica}" filterBy="#{item.modifica}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListReporteEmailsEnviadosTitle_modifica}"/>
+                    </f:facet>
+                    <h:selectBooleanCheckbox id="modifica" value="#{item.modifica}" title="#{messages.EditReporteEmailsEnviadosTitle_modifica}"  disabled="true"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.fecha}" filterBy="#{item.fecha}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListReporteEmailsEnviadosTitle_fecha}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.fecha}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{reporteEmailsEnviadosController.prepareCreate}" update=":ReporteEmailsEnviadosCreateForm" oncomplete="ReporteEmailsEnviadosCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":ReporteEmailsEnviadosViewForm" oncomplete="ReporteEmailsEnviadosViewDialog.show()" disabled="#{empty reporteEmailsEnviadosController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":ReporteEmailsEnviadosEditForm" oncomplete="ReporteEmailsEnviadosEditDialog.show()" disabled="#{empty reporteEmailsEnviadosController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{reporteEmailsEnviadosController.delete}" update=":growl,datalist" disabled="#{empty reporteEmailsEnviadosController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

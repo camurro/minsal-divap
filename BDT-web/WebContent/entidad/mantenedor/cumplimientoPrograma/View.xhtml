@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CumplimientoProgramaViewDlg" widgetVar="CumplimientoProgramaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewCumplimientoProgramaTitle}" closeOnEscape="true">
+
+            <h:form id="CumplimientoProgramaViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{cumplimientoProgramaController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewCumplimientoProgramaLabel_idCumplimientoPrograma}"/>
+                        <h:outputText value="#{cumplimientoProgramaController.selected.idCumplimientoPrograma}" title="#{messages.ViewCumplimientoProgramaTitle_idCumplimientoPrograma}"/>
+
+                        <h:outputText value="#{messages.ViewCumplimientoProgramaLabel_porcentajeDesde}"/>
+                        <h:outputText value="#{cumplimientoProgramaController.selected.porcentajeDesde}" title="#{messages.ViewCumplimientoProgramaTitle_porcentajeDesde}"/>
+
+                        <h:outputText value="#{messages.ViewCumplimientoProgramaLabel_porcentajeHasta}"/>
+                        <h:outputText value="#{cumplimientoProgramaController.selected.porcentajeHasta}" title="#{messages.ViewCumplimientoProgramaTitle_porcentajeHasta}"/>
+
+                        <h:outputText value="#{messages.ViewCumplimientoProgramaLabel_rebaja}"/>
+                        <h:outputText value="#{cumplimientoProgramaController.selected.rebaja}" title="#{messages.ViewCumplimientoProgramaTitle_rebaja}"/>
+
+                        <h:outputText value="#{messages.ViewCumplimientoProgramaLabel_programa}"/>
+                        <h:outputText value="#{cumplimientoProgramaController.selected.programa.descripcion}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="CumplimientoProgramaViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

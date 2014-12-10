@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="AntecendentesComunaCalculadoViewDlg" widgetVar="AntecendentesComunaCalculadoViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewAntecendentesComunaCalculadoTitle}" closeOnEscape="true">
+
+            <h:form id="AntecendentesComunaCalculadoViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{antecendentesComunaCalculadoController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewAntecendentesComunaCalculadoLabel_idAntecendentesComunaCalculado}"/>
+                        <h:outputText value="#{antecendentesComunaCalculadoController.selected.idAntecendentesComunaCalculado}" title="#{messages.ViewAntecendentesComunaCalculadoTitle_idAntecendentesComunaCalculado}"/>
+
+                        <h:outputText value="#{messages.ViewAntecendentesComunaCalculadoLabel_poblacion}"/>
+                        <h:outputText value="#{antecendentesComunaCalculadoController.selected.poblacion}" title="#{messages.ViewAntecendentesComunaCalculadoTitle_poblacion}"/>
+
+                        <h:outputText value="#{messages.ViewAntecendentesComunaCalculadoLabel_poblacionMayor}"/>
+                        <h:outputText value="#{antecendentesComunaCalculadoController.selected.poblacionMayor}" title="#{messages.ViewAntecendentesComunaCalculadoTitle_poblacionMayor}"/>
+
+                        <h:outputText value="#{messages.ViewAntecendentesComunaCalculadoLabel_desempenoDificil}"/>
+                        <h:outputText value="#{antecendentesComunaCalculadoController.selected.desempenoDificil}" title="#{messages.ViewAntecendentesComunaCalculadoTitle_desempenoDificil}"/>
+
+                        <h:outputText value="#{messages.ViewAntecendentesComunaCalculadoLabel_pobreza}"/>
+                        <h:outputText value="#{antecendentesComunaCalculadoController.selected.pobreza}" title="#{messages.ViewAntecendentesComunaCalculadoTitle_pobreza}"/>
+
+                        <h:outputText value="#{messages.ViewAntecendentesComunaCalculadoLabel_ruralidad}"/>
+                        <h:outputText value="#{antecendentesComunaCalculadoController.selected.ruralidad}" title="#{messages.ViewAntecendentesComunaCalculadoTitle_ruralidad}"/>
+
+                        <h:outputText value="#{messages.ViewAntecendentesComunaCalculadoLabel_valorReferencialZona}"/>
+                        <h:outputText value="#{antecendentesComunaCalculadoController.selected.valorReferencialZona}" title="#{messages.ViewAntecendentesComunaCalculadoTitle_valorReferencialZona}"/>
+
+                        <h:outputText value="#{messages.ViewAntecendentesComunaCalculadoLabel_distribucionInicialPercapita}"/>
+                        <h:outputText value="#{antecendentesComunaCalculadoController.selected.distribucionInicialPercapita.idDistribucionInicialPercapita}"/>
+
+                        <h:outputText value="#{messages.ViewAntecendentesComunaCalculadoLabel_antecedentesComuna}"/>
+                        <h:outputText value="#{antecendentesComunaCalculadoController.selected.antecedentesComuna.idAntecedentesComuna}"/>
+
+                        <h:outputText value="#{messages.ViewAntecendentesComunaCalculadoLabel_valorPerCapitaComunalMes}"/>
+                        <h:outputText value="#{antecendentesComunaCalculadoController.selected.valorPerCapitaComunalMes}" title="#{messages.ViewAntecendentesComunaCalculadoTitle_valorPerCapitaComunalMes}"/>
+
+                        <h:outputText value="#{messages.ViewAntecendentesComunaCalculadoLabel_percapitaMes}"/>
+                        <h:outputText value="#{antecendentesComunaCalculadoController.selected.percapitaMes}" title="#{messages.ViewAntecendentesComunaCalculadoTitle_percapitaMes}"/>
+
+                        <h:outputText value="#{messages.ViewAntecendentesComunaCalculadoLabel_percapitaAno}"/>
+                        <h:outputText value="#{antecendentesComunaCalculadoController.selected.percapitaAno}" title="#{messages.ViewAntecendentesComunaCalculadoTitle_percapitaAno}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="AntecendentesComunaCalculadoViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

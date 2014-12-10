@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="ServicioSaludEditDlg" widgetVar="ServicioSaludEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditServicioSaludTitle}" closeOnEscape="true">
+
+            <h:form id="ServicioSaludEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{servicioSaludController.seleccionado != null}">
+
+
+                        <h:outputLabel value="#{messages.EditServicioSaludLabel_id}" for="id" />
+                        <h:outputText id="id" value="#{servicioSaludController.seleccionado.id_servicio}" />
+
+                        <p:outputLabel value="#{messages.EditServicioSaludLabel_nombre}" for="nombre" />
+                        <p:inputText id="nombre" value="#{servicioSaludController.seleccionado.nombre_servicio}" title="#{messages.EditServicioSaludTitle_nombre}"/>
+
+                        <p:outputLabel value="#{messages.EditServicioSaludLabel_region}" for="region" />
+                        <p:selectOneMenu id="region" value="#{servicioSaludController.seleccionado.region.id}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{servicioSaludController.regiones}"
+                                           var="regionItem"
+                                           itemValue="#{regionItem.idRegion}"
+                                           itemLabel="#{regionItem.nombreRegion}"
+                                           />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditServicioSaludLabel_director}" for="director" />
+                        <p:selectOneMenu id="director" value="#{servicioSaludController.seleccionado.director.idPersona}" required="true" requiredMessage="#{messages.EditServicioSaludRequiredMessage_director}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{servicioSaludController.personas}"
+                                           var="directorItem"
+                                           itemValue="#{directorItem.idPersona}"
+                                           itemLabel="#{directorItem.nombre} #{directorItem.apellidoPaterno}"
+                                           />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditServicioSaludLabel_encargadoFinanzasAps}" for="encargadoFinanzasAps" />
+                        <p:selectOneMenu id="encargadoFinanzasAps" value="#{servicioSaludController.seleccionado.encargadoFinanzasAps.idPersona}" required="true" requiredMessage="#{messages.EditServicioSaludRequiredMessage_encargadoFinanzasAps}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{servicioSaludController.personas}"
+                                           var="encargadoFinanzasApsItem"
+                                           itemValue="#{encargadoFinanzasApsItem.idPersona}"
+                                           itemLabel="#{encargadoFinanzasApsItem.nombre} #{encargadoFinanzasApsItem.apellidoPaterno}"
+                                           />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditServicioSaludLabel_encargadoAps}" for="encargadoAps" />
+                        <p:selectOneMenu id="encargadoAps" value="#{servicioSaludController.seleccionado.encargadoAps.idPersona}" required="true" requiredMessage="#{messages.EditServicioSaludRequiredMessage_encargadoAps}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{servicioSaludController.personas}"
+                                           var="encargadoApsItem"
+                                           itemValue="#{encargadoApsItem.idPersona}"
+                                           itemLabel="#{encargadoApsItem.nombre} #{encargadoApsItem.apellidoPaterno}"
+                                           />
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{servicioSaludController.edit}" value="#{messages.Save}" update="display,:ServicioSaludListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ServicioSaludEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ServicioSaludEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

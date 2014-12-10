@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoComunaCreateDlg" widgetVar="TipoComunaCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateTipoComunaTitle}" closeOnEscape="true">
+
+            <h:form id="TipoComunaCreateForm">
+
+                <h:panelGroup id="display" rendered="#{tipoComunaController.seleccionado != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateTipoComunaLabel_descripcion}" for="descripcion" />
+                        <p:inputText id="descripcion" value="#{tipoComunaController.seleccionado.descripcion}" title="#{messages.CreateTipoComunaTitle_descripcion}" required="true" requiredMessage="#{messages.CreateTipoComunaRequiredMessage_descripcion}"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{tipoComunaController.saveNew}" value="#{messages.Save}" update="display,:TipoComunaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,TipoComunaCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="TipoComunaCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

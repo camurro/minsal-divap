@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ReferenciaDocumentoViewDlg" widgetVar="ReferenciaDocumentoViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewReferenciaDocumentoTitle}" closeOnEscape="true">
+
+            <h:form id="ReferenciaDocumentoViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{referenciaDocumentoController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewReferenciaDocumentoLabel_id}"/>
+                        <h:outputText value="#{referenciaDocumentoController.selected.id}" title="#{messages.ViewReferenciaDocumentoTitle_id}"/>
+
+                        <h:outputText value="#{messages.ViewReferenciaDocumentoLabel_contentType}"/>
+                        <h:outputText value="#{referenciaDocumentoController.selected.contentType}" title="#{messages.ViewReferenciaDocumentoTitle_contentType}"/>
+
+                        <h:outputText value="#{messages.ViewReferenciaDocumentoLabel_path}"/>
+                        <h:outputText value="#{referenciaDocumentoController.selected.path}" title="#{messages.ViewReferenciaDocumentoTitle_path}"/>
+
+                        <h:outputText value="#{messages.ViewReferenciaDocumentoLabel_documentoFinal}"/>
+                        <h:selectBooleanCheckbox id="documentoFinal" value="#{referenciaDocumentoController.selected.documentoFinal}" title="#{messages.EditReferenciaDocumentoTitle_documentoFinal}"  disabled="true"/>
+
+                        <h:outputText value="#{messages.ViewReferenciaDocumentoLabel_nodeRef}"/>
+                        <h:outputText value="#{referenciaDocumentoController.selected.nodeRef}" title="#{messages.ViewReferenciaDocumentoTitle_nodeRef}"/>
+
+                        <h:outputText value="#{messages.ViewReferenciaDocumentoLabel_rebajaCollection}"/>
+                        <h:selectManyMenu>
+                            <f:selectItems value="#{referenciaDocumentoController.selected.rebajaCollection}"
+                                           var="rebajaCollectionItem"
+                                           itemValue="#{rebajaCollectionItem}"
+                                           itemLabel="#{rebajaCollectionItem.idRebaja.toString()}"
+                                           />
+                            <f:converter binding="#{rebajaConverter}"/>
+                        </h:selectManyMenu>
+
+                        <h:outputText value="#{messages.ViewReferenciaDocumentoLabel_fechaCreacion}"/>
+                        <h:outputText value="#{referenciaDocumentoController.selected.fechaCreacion}" title="#{messages.ViewReferenciaDocumentoTitle_fechaCreacion}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="ReferenciaDocumentoViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

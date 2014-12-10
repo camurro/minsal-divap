@@ -583,7 +583,18 @@ public class ProgramasDAO {
 	}
 	return null;
 	}
-
+	
+	public List<ProgramaMunicipalCoreComponente> getByIdComuna(Integer idComuna) {
+		try{
+		TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.findByIdComuna", ProgramaMunicipalCoreComponente.class);
+		query.setParameter("idComuna", idComuna);
+		return query.getResultList();
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
 
 	public List<ProgramaServicioCoreComponente> findByServicioComponenteSubtitulo(
 			int idComponentesServicio, int idServicio, Integer idTipoSubtitulo, Integer idProgramaAno) {
@@ -594,6 +605,22 @@ public class ProgramasDAO {
 			query.setParameter("idComponente", idComponentesServicio);
 			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
 			return query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public ProgramaServicioCoreComponente getProgramaServicioCoreComponenteByProgramaAnoEstablecimientoServicioComponenteSubtitulo(
+			Integer idProgramaAno, Integer idServicio, Integer idEstablecimiento, Integer idComponente, Integer idTipoSubtitulo) {
+		try{
+		TypedQuery<ProgramaServicioCoreComponente> query = this.em.createNamedQuery("ProgramaServicioCoreComponente.findByProgramaAnoEstablecimientoServicioComponenteSubtitulo", ProgramaServicioCoreComponente.class);
+		query.setParameter("idProgramaAno", idProgramaAno);
+		query.setParameter("idEstablecimiento", idEstablecimiento);
+		query.setParameter("idServicio", idServicio);		
+		query.setParameter("idComponente", idComponente);
+		query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+		return query.getResultList().get(0);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -661,6 +688,45 @@ public class ProgramasDAO {
 	}
 
 	
+	public ProgramaServicioCore getProgramaServicioCoreByProgramaAnoEstablecimiento(Integer idProgramaAno, Integer idEstablecimiento){
+		try{
+			TypedQuery<ProgramaServicioCore> query = this.em.createNamedQuery("ProgramaServicioCore.findByProgramaAnoEstablecimiento", ProgramaServicioCore.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idEstablecimiento", idEstablecimiento);
+			return query.getResultList().get(0);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+	}
+	
+	
+	public List<Programa> getAllProgramas() {
+		try {
+			TypedQuery<Programa> query = this.em.createNamedQuery("Programa.findAll", Programa.class);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public List<EstadoPrograma> getAllEstadoProgramas(){
+		try {
+			TypedQuery<EstadoPrograma> query = this.em.createNamedQuery("EstadoPrograma.findAll", EstadoPrograma.class);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public EstadoPrograma getEstadoProgramaById(Integer idEstadoPrograma){
+		try{
+			TypedQuery<EstadoPrograma> query = this.em.createNamedQuery("EstadoPrograma.findByIdEstadoPrograma", EstadoPrograma.class);
+			query.setParameter("idEstadoPrograma", idEstadoPrograma);
+			return query.getResultList().get(0);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+	}
 	
 }
 

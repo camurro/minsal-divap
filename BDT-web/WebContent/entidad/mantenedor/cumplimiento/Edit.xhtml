@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="CumplimientoEditDlg" widgetVar="CumplimientoEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditCumplimientoTitle}" closeOnEscape="true">
+
+            <h:form id="CumplimientoEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{cumplimientoController.seleccionado != null}">
+
+
+                        <h:outputLabel value="#{messages.EditCumplimientoLabel_idCumplimiento}" for="idCumplimiento" />
+                        <h:outputText id="idCumplimiento" value="#{cumplimientoController.seleccionado.idCumplimiento}" />
+
+                        <p:outputLabel value="#{messages.EditCumplimientoLabel_rebaja}" for="rebaja" />
+                        <p:inputText id="rebaja" value="#{cumplimientoController.seleccionado.rebaja}" title="#{messages.EditCumplimientoTitle_rebaja}" required="true" requiredMessage="#{messages.EditCumplimientoRequiredMessage_rebaja}"/>
+
+                        <p:outputLabel value="#{messages.EditCumplimientoLabel_porcentajeDesde}" for="porcentajeDesde" />
+                        <p:inputText id="porcentajeDesde" value="#{cumplimientoController.seleccionado.porcentajeDesde}" title="#{messages.EditCumplimientoTitle_porcentajeDesde}" required="true" requiredMessage="#{messages.EditCumplimientoRequiredMessage_porcentajeDesde}"/>
+
+                        <p:outputLabel value="#{messages.EditCumplimientoLabel_porcentajeHasta}" for="porcentajeHasta" />
+                        <p:inputText id="porcentajeHasta" value="#{cumplimientoController.seleccionado.porcentajeHasta}" title="#{messages.EditCumplimientoTitle_porcentajeHasta}"/>
+
+                        <p:outputLabel value="#{messages.EditCumplimientoLabel_tramo}" for="tramo" />
+                        <p:selectOneMenu id="tramo" value="#{cumplimientoController.seleccionado.idTramo}" required="true" requiredMessage="#{messages.EditCumplimientoRequiredMessage_tramo}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{cumplimientoController.tramos}"
+                                           var="tramoItem"
+                                           itemValue="#{tramoItem.idTramo}"
+                                           itemLabel="#{tramoItem.tramo}"
+                                           />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditCumplimientoLabel_tipoCumplimiento}" for="tipoCumplimiento" />
+                        <p:selectOneMenu id="tipoCumplimiento" value="#{cumplimientoController.seleccionado.idTipoCumplimiento}" required="true" requiredMessage="#{messages.EditCumplimientoRequiredMessage_tipoCumplimiento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{cumplimientoController.tipoCumplimientos}"
+                                           var="tipoCumplimientoItem"
+                                           itemValue="#{tipoCumplimientoItem.idTipoCumplimiento}"
+                                           itemLabel="#{tipoCumplimientoItem.descripcion}"
+                                           />
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{cumplimientoController.edit}" value="#{messages.Save}" update="display,:CumplimientoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,CumplimientoEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="CumplimientoEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

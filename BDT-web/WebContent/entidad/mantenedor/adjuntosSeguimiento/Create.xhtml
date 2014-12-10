@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="AdjuntosSeguimientoCreateDlg" widgetVar="AdjuntosSeguimientoCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateAdjuntosSeguimientoTitle}" closeOnEscape="true">
+
+            <h:form id="AdjuntosSeguimientoCreateForm">
+
+                <h:panelGroup id="display" rendered="#{adjuntosSeguimientoController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateAdjuntosSeguimientoLabel_seguimiento}" for="seguimiento" />
+                        <p:selectOneMenu id="seguimiento" value="#{adjuntosSeguimientoController.selected.seguimiento}" required="true" requiredMessage="#{messages.CreateAdjuntosSeguimientoRequiredMessage_seguimiento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{seguimientoController.items}"
+                                           var="seguimientoItem"
+                                           itemValue="#{seguimientoItem}"
+                                           itemLabel="#{seguimientoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{seguimientoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateAdjuntosSeguimientoLabel_documento}" for="documento" />
+                        <p:selectOneMenu id="documento" value="#{adjuntosSeguimientoController.selected.documento}" required="true" requiredMessage="#{messages.CreateAdjuntosSeguimientoRequiredMessage_documento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{referenciaDocumentoController.items}"
+                                           var="documentoItem"
+                                           itemValue="#{documentoItem}"
+                                           itemLabel="#{documentoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{referenciaDocumentoConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{adjuntosSeguimientoController.saveNew}" value="#{messages.Save}" update="display,:AdjuntosSeguimientoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,AdjuntosSeguimientoCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="AdjuntosSeguimientoCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

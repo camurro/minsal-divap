@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TramoViewDlg" widgetVar="TramoViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewTramoTitle}" closeOnEscape="true">
+
+            <h:form id="TramoViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{tramoController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewTramoLabel_idTramo}"/>
+                        <h:outputText value="#{tramoController.selected.idTramo}" title="#{messages.ViewTramoTitle_idTramo}"/>
+
+                        <h:outputText value="#{messages.ViewTramoLabel_tramo}"/>
+                        <h:outputText value="#{tramoController.selected.tramo}" title="#{messages.ViewTramoTitle_tramo}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="TramoViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

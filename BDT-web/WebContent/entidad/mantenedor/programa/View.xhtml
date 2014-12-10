@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ProgramaViewDlg" widgetVar="ProgramaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewProgramaTitle}" closeOnEscape="true">
+
+            <h:form id="ProgramaViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{programaController.seleccionado != null}">
+
+                        <h:outputText value="#{messages.ViewProgramaLabel_id}"/>
+                        <h:outputText value="#{programaController.seleccionado.idPrograma}" title="#{messages.ViewProgramaTitle_id}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaLabel_cantidadCuotas}"/>
+                        <h:outputText value="#{programaController.seleccionado.cuotas}" title="#{messages.ViewProgramaTitle_cantidadCuotas}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaLabel_nombre}"/>
+                        <h:outputText value="#{programaController.seleccionado.nombrePrograma}" title="#{messages.ViewProgramaTitle_nombre}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaLabel_usuario}"/>
+                        <h:outputText value="#{programaController.seleccionado.nombreUsuario}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaLabel_descripcion}"/>
+                        <h:outputText value="#{programaController.seleccionado.descripcion}" title="#{messages.ViewProgramaTitle_descripcion}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaLabel_revisaFonasa}"/>
+                        <h:selectBooleanCheckbox id="revisaFonasa" value="#{programaController.seleccionado.fonasa}" title="#{messages.EditProgramaTitle_revisaFonasa}"  disabled="true"/>
+
+                        <h:outputText value="#{messages.ViewProgramaLabel_reliquidacion}"/>
+                        <h:selectBooleanCheckbox id="reliquidacion" value="#{programaController.seleccionado.reliquidacion}" title="#{messages.EditProgramaTitle_reliquidacion}"  disabled="true"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="ProgramaViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

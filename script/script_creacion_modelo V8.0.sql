@@ -25236,3 +25236,11 @@ INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, emai
 INSERT INTO institucion(id_institucion, nombre, email, director) VALUES (1, 'FONASA', 1, 20);
 
 
+
+
+
+-------------------------------------------------- SE AGREGA UN CAMPO A LA TABLA USUARIO PARA SABER SI ES LA 1RA VEZ QUE INICIA SESION
+
+ALTER TABLE usuario ADD COLUMN "primerLogin" boolean NOT NULL DEFAULT true;
+
+

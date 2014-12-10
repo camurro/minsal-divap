@@ -778,7 +778,9 @@ public class DocumentService {
 		}
 	}
 	
-	public Integer createDocumentReportePoblacionPercapita(TipoDocumento tipoDocumentoProceso,
+	
+	
+	public Integer createDocumentReportes(TipoDocumento tipoDocumentoProceso,
 			String nodeRef, String filename, String contenType, Integer ano, Integer idMes ) {
 		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
 		AnoEnCurso anoEnCurso = new AnoEnCurso();
@@ -813,6 +815,7 @@ public class DocumentService {
 		System.out.println("referenciaDocumentoId ---> "+referenciaDocumentoId);
 		return referenciaDocumentoId;
 	}
+	
 
 	public void createDocumentReliquidacion(Reliquidacion reliquidacion, TipoDocumentosProcesos tipoDocumento, Integer referenciaDocumentoId, Boolean lastVersion) {
 		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
@@ -907,5 +910,7 @@ public class DocumentService {
 		}
 		return versionesFinales;
 	}
+	
+	
 	
 }

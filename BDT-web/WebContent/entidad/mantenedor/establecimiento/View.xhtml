@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="EstablecimientoViewDlg" widgetVar="EstablecimientoViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewEstablecimientoTitle}" closeOnEscape="true">
+
+            <h:form id="EstablecimientoViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{establecimientoController.establecimientoSeleccionado != null}">
+
+                        <h:outputText value="#{messages.ViewEstablecimientoLabel_id}"/>
+                        <h:outputText value="#{establecimientoController.establecimientoSeleccionado.idEstablecimiento}" title="#{messages.ViewEstablecimientoTitle_id}"/>
+
+                        <h:outputText value="#{messages.ViewEstablecimientoLabel_nombre}"/>
+                        <h:outputText value="#{establecimientoController.establecimientoSeleccionado.nombreEstablecimiento}" title="#{messages.ViewEstablecimientoTitle_nombre}"/>
+
+                        <h:outputText value="#{messages.ViewEstablecimientoLabel_codigo}"/>
+                        <h:outputText value="#{establecimientoController.establecimientoSeleccionado.codigo}" title="#{messages.ViewEstablecimientoTitle_codigo}"/>
+
+                        <h:outputText value="#{messages.ViewEstablecimientoLabel_servicioSalud}"/>
+                        <h:outputText value="#{establecimientoController.establecimientoSeleccionado.nombreServicio}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="EstablecimientoViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

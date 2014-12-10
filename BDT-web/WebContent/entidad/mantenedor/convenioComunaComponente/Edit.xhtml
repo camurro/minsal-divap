@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="ConvenioComunaComponenteEditDlg" widgetVar="ConvenioComunaComponenteEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditConvenioComunaComponenteTitle}" closeOnEscape="true">
+
+            <h:form id="ConvenioComunaComponenteEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{convenioComunaComponenteController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditConvenioComunaComponenteLabel_idConvenioComunaComponente}" for="idConvenioComunaComponente" />
+                        <h:outputText id="idConvenioComunaComponente" value="#{convenioComunaComponenteController.selected.idConvenioComunaComponente}" />
+
+                        <p:outputLabel value="#{messages.EditConvenioComunaComponenteLabel_monto}" for="monto" />
+                        <p:inputText id="monto" value="#{convenioComunaComponenteController.selected.monto}" title="#{messages.EditConvenioComunaComponenteTitle_monto}" required="true" requiredMessage="#{messages.EditConvenioComunaComponenteRequiredMessage_monto}"/>
+
+                        <p:outputLabel value="#{messages.EditConvenioComunaComponenteLabel_subtitulo}" for="subtitulo" />
+                        <p:selectOneMenu id="subtitulo" value="#{convenioComunaComponenteController.selected.subtitulo}" required="true" requiredMessage="#{messages.EditConvenioComunaComponenteRequiredMessage_subtitulo}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoSubtituloController.items}"
+                                           var="subtituloItem"
+                                           itemValue="#{subtituloItem}"
+                                           itemLabel="#{subtituloItem.idTipoSubtitulo.toString()}"
+                                           />
+                            <f:converter binding="#{tipoSubtituloConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditConvenioComunaComponenteLabel_convenioComuna}" for="convenioComuna" />
+                        <p:selectOneMenu id="convenioComuna" value="#{convenioComunaComponenteController.selected.convenioComuna}" required="true" requiredMessage="#{messages.EditConvenioComunaComponenteRequiredMessage_convenioComuna}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{convenioComunaController.items}"
+                                           var="convenioComunaItem"
+                                           itemValue="#{convenioComunaItem}"
+                                           itemLabel="#{convenioComunaItem.idConvenioComuna.toString()}"
+                                           />
+                            <f:converter binding="#{convenioComunaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditConvenioComunaComponenteLabel_componente}" for="componente" />
+                        <p:selectOneMenu id="componente" value="#{convenioComunaComponenteController.selected.componente}" required="true" requiredMessage="#{messages.EditConvenioComunaComponenteRequiredMessage_componente}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{componenteController.items}"
+                                           var="componenteItem"
+                                           itemValue="#{componenteItem}"
+                                           itemLabel="#{componenteItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{componenteConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{convenioComunaComponenteController.save}" value="#{messages.Save}" update="display,:ConvenioComunaComponenteListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ConvenioComunaComponenteEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ConvenioComunaComponenteEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

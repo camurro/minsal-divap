@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="RebajaListForm">
+
+        <p:panel header="#{messages.ListRebajaTitle}">
+            <p:contextMenu id="RebajaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('RebajaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('RebajaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('RebajaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('RebajaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.RebajaMenuItem_usuario}" icon="ui-icon-search"  actionListener="#{rebajaController.prepareUsuario}" update=":UsuarioViewForm" oncomplete="UsuarioViewDialog.show()" disabled="#{empty rebajaController.selected.usuario}"/>  
+                <p:menuitem value="#{messages.RebajaMenuItem_rebajaCorte}" icon="ui-icon-search"  actionListener="#{rebajaController.prepareRebajaCorte}" update=":RebajaCorteViewForm" oncomplete="RebajaCorteViewDialog.show()" disabled="#{empty rebajaController.selected.rebajaCorte}"/>  
+                <p:menuitem value="#{messages.RebajaMenuItem_ano}" icon="ui-icon-search"  actionListener="#{rebajaController.prepareAno}" update=":AnoEnCursoViewForm" oncomplete="AnoEnCursoViewDialog.show()" disabled="#{empty rebajaController.selected.ano}"/>  
+                <p:menuitem value="#{messages.RebajaMenuItem_referenciaDocumentoCollection}" icon="ui-icon-search"  action="#{rebajaController.navigateReferenciaDocumentoCollection}" disabled="#{empty rebajaController.selected.referenciaDocumentoCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.RebajaMenuItem_comunaCumplimientos}" icon="ui-icon-search"  action="#{rebajaController.navigateComunaCumplimientos}" disabled="#{empty rebajaController.selected.comunaCumplimientos}" ajax="false"/>  
+                <p:menuitem value="#{messages.RebajaMenuItem_rebajaSeguimientos}" icon="ui-icon-search"  action="#{rebajaController.navigateRebajaSeguimientos}" disabled="#{empty rebajaController.selected.rebajaSeguimientos}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{rebajaController.items}"
+                         var="item"
+                         rowKey="#{item.idRebaja}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{rebajaController.selected}">
+
+                <p:ajax event="rowSelect"   update=":RebajaListForm:createButton :RebajaListForm:viewButton :RebajaListForm:editButton :RebajaListForm:deleteButton :RebajaListForm:RebajaDataTableContextMenu" listener="#{rebajaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":RebajaListForm:createButton :RebajaListForm:viewButton :RebajaListForm:editButton :RebajaListForm:deleteButton :RebajaListForm:RebajaDataTableContextMenu" listener="#{rebajaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('RebajaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idRebaja}" filterBy="#{item.idRebaja}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRebajaTitle_idRebaja}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idRebaja}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.usuario.username}" filterBy="#{item.usuario.username}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRebajaTitle_usuario}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.usuario.username}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.rebajaCorte.rebajaCorteId}" filterBy="#{item.rebajaCorte.rebajaCorteId}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRebajaTitle_rebajaCorte}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.rebajaCorte.rebajaCorteId}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.ano.ano}" filterBy="#{item.ano.ano}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRebajaTitle_ano}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.ano.ano}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.fechaCreacion}" filterBy="#{item.fechaCreacion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRebajaTitle_fechaCreacion}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.fechaCreacion}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{rebajaController.prepareCreate}" update=":RebajaCreateForm" oncomplete="RebajaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":RebajaViewForm" oncomplete="RebajaViewDialog.show()" disabled="#{empty rebajaController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":RebajaEditForm" oncomplete="RebajaEditDialog.show()" disabled="#{empty rebajaController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{rebajaController.delete}" update=":growl,datalist" disabled="#{empty rebajaController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

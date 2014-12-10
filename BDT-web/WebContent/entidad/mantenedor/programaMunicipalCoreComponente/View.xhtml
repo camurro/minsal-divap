@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ProgramaMunicipalCoreComponenteViewDlg" widgetVar="ProgramaMunicipalCoreComponenteViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewProgramaMunicipalCoreComponenteTitle}" closeOnEscape="true">
+
+            <h:form id="ProgramaMunicipalCoreComponenteViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{programaMunicipalCoreComponenteController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewProgramaMunicipalCoreComponenteLabel_tarifa}"/>
+                        <h:outputText value="#{programaMunicipalCoreComponenteController.selected.tarifa}" title="#{messages.ViewProgramaMunicipalCoreComponenteTitle_tarifa}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaMunicipalCoreComponenteLabel_cantidad}"/>
+                        <h:outputText value="#{programaMunicipalCoreComponenteController.selected.cantidad}" title="#{messages.ViewProgramaMunicipalCoreComponenteTitle_cantidad}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaMunicipalCoreComponenteLabel_monto}"/>
+                        <h:outputText value="#{programaMunicipalCoreComponenteController.selected.monto}" title="#{messages.ViewProgramaMunicipalCoreComponenteTitle_monto}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaMunicipalCoreComponenteLabel_subtitulo}"/>
+                        <h:outputText value="#{programaMunicipalCoreComponenteController.selected.subtitulo.idTipoSubtitulo}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaMunicipalCoreComponenteLabel_programaMunicipalCore}"/>
+                        <h:outputText value="#{programaMunicipalCoreComponenteController.selected.programaMunicipalCore.idProgramaMunicipalCore}"/>
+
+                        <h:outputText value="#{messages.ViewProgramaMunicipalCoreComponenteLabel_municipalCoreComponente}"/>
+                        <h:outputText value="#{programaMunicipalCoreComponenteController.selected.municipalCoreComponente.id}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="ProgramaMunicipalCoreComponenteViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

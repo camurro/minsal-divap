@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ReliquidacionServicioViewDlg" widgetVar="ReliquidacionServicioViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewReliquidacionServicioTitle}" closeOnEscape="true">
+
+            <h:form id="ReliquidacionServicioViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{reliquidacionServicioController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewReliquidacionServicioLabel_reliquidacionServicioId}"/>
+                        <h:outputText value="#{reliquidacionServicioController.selected.reliquidacionServicioId}" title="#{messages.ViewReliquidacionServicioTitle_reliquidacionServicioId}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionServicioLabel_montoRebaja}"/>
+                        <h:outputText value="#{reliquidacionServicioController.selected.montoRebaja}" title="#{messages.ViewReliquidacionServicioTitle_montoRebaja}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionServicioLabel_porcentajeCumplimiento}"/>
+                        <h:outputText value="#{reliquidacionServicioController.selected.porcentajeCumplimiento}" title="#{messages.ViewReliquidacionServicioTitle_porcentajeCumplimiento}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionServicioLabel_servicio}"/>
+                        <h:outputText value="#{reliquidacionServicioController.selected.servicio.id}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionServicioLabel_reliquidacion}"/>
+                        <h:outputText value="#{reliquidacionServicioController.selected.reliquidacion.idReliquidacion}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionServicioLabel_programa}"/>
+                        <h:outputText value="#{reliquidacionServicioController.selected.programa.idProgramaAno}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionServicioLabel_establecimiento}"/>
+                        <h:outputText value="#{reliquidacionServicioController.selected.establecimiento.id}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionServicioLabel_cumplimiento}"/>
+                        <h:outputText value="#{reliquidacionServicioController.selected.cumplimiento.idCumplimientoPrograma}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionServicioLabel_componente}"/>
+                        <h:outputText value="#{reliquidacionServicioController.selected.componente.id}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="ReliquidacionServicioViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

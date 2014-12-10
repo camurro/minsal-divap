@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="RebajaSeguimientoListForm">
+
+        <p:panel header="#{messages.ListRebajaSeguimientoTitle}">
+            <p:contextMenu id="RebajaSeguimientoDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('RebajaSeguimientoListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('RebajaSeguimientoListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('RebajaSeguimientoListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('RebajaSeguimientoListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.RebajaSeguimientoMenuItem_seguimiento}" icon="ui-icon-search"  actionListener="#{rebajaSeguimientoController.prepareSeguimiento}" update=":SeguimientoViewForm" oncomplete="SeguimientoViewDialog.show()" disabled="#{empty rebajaSeguimientoController.selected.seguimiento}"/>  
+                <p:menuitem value="#{messages.RebajaSeguimientoMenuItem_rebaja}" icon="ui-icon-search"  actionListener="#{rebajaSeguimientoController.prepareRebaja}" update=":RebajaViewForm" oncomplete="RebajaViewDialog.show()" disabled="#{empty rebajaSeguimientoController.selected.rebaja}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{rebajaSeguimientoController.items}"
+                         var="item"
+                         rowKey="#{item.idRebajaSeguimiento}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{rebajaSeguimientoController.selected}">
+
+                <p:ajax event="rowSelect"   update=":RebajaSeguimientoListForm:createButton :RebajaSeguimientoListForm:viewButton :RebajaSeguimientoListForm:editButton :RebajaSeguimientoListForm:deleteButton :RebajaSeguimientoListForm:RebajaSeguimientoDataTableContextMenu" listener="#{rebajaSeguimientoController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":RebajaSeguimientoListForm:createButton :RebajaSeguimientoListForm:viewButton :RebajaSeguimientoListForm:editButton :RebajaSeguimientoListForm:deleteButton :RebajaSeguimientoListForm:RebajaSeguimientoDataTableContextMenu" listener="#{rebajaSeguimientoController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('RebajaSeguimientoListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idRebajaSeguimiento}" filterBy="#{item.idRebajaSeguimiento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRebajaSeguimientoTitle_idRebajaSeguimiento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idRebajaSeguimiento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.seguimiento.id}" filterBy="#{item.seguimiento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRebajaSeguimientoTitle_seguimiento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.seguimiento.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.rebaja.idRebaja}" filterBy="#{item.rebaja.idRebaja}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListRebajaSeguimientoTitle_rebaja}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.rebaja.idRebaja}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{rebajaSeguimientoController.prepareCreate}" update=":RebajaSeguimientoCreateForm" oncomplete="RebajaSeguimientoCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":RebajaSeguimientoViewForm" oncomplete="RebajaSeguimientoViewDialog.show()" disabled="#{empty rebajaSeguimientoController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":RebajaSeguimientoEditForm" oncomplete="RebajaSeguimientoEditDialog.show()" disabled="#{empty rebajaSeguimientoController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{rebajaSeguimientoController.delete}" update=":growl,datalist" disabled="#{empty rebajaSeguimientoController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

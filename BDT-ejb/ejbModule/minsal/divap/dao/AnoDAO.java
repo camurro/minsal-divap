@@ -37,6 +37,15 @@ public class AnoDAO {
 		}
 	}
 	
+	public List<AnoEnCurso> getAllAnosOrdenados(){
+		try {
+			TypedQuery<AnoEnCurso> query = this.em.createNamedQuery("AnoEnCurso.findAllAnosOrdenados", AnoEnCurso.class);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	public AnoEnCurso save(AnoEnCurso ano){
 		em.persist(ano);
 		return ano;

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DependenciaViewDlg" widgetVar="DependenciaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewDependenciaTitle}" closeOnEscape="true">
+
+            <h:form id="DependenciaViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{dependenciaController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewDependenciaLabel_idDependenciaPrograma}"/>
+                        <h:outputText value="#{dependenciaController.selected.idDependenciaPrograma}" title="#{messages.ViewDependenciaTitle_idDependenciaPrograma}"/>
+
+                        <h:outputText value="#{messages.ViewDependenciaLabel_nombre}"/>
+                        <h:outputText value="#{dependenciaController.selected.nombre}" title="#{messages.ViewDependenciaTitle_nombre}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="DependenciaViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

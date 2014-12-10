@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="OtSeguimientoViewDlg" widgetVar="OtSeguimientoViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewOtSeguimientoTitle}" closeOnEscape="true">
+
+            <h:form id="OtSeguimientoViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{otSeguimientoController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewOtSeguimientoLabel_idOtSeguimiento}"/>
+                        <h:outputText value="#{otSeguimientoController.selected.idOtSeguimiento}" title="#{messages.ViewOtSeguimientoTitle_idOtSeguimiento}"/>
+
+                        <h:outputText value="#{messages.ViewOtSeguimientoLabel_seguimiento}"/>
+                        <h:outputText value="#{otSeguimientoController.selected.seguimiento.id}"/>
+
+                        <h:outputText value="#{messages.ViewOtSeguimientoLabel_ordenTransferencia}"/>
+                        <h:outputText value="#{otSeguimientoController.selected.ordenTransferencia.idOrdenTransferencia}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="OtSeguimientoViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

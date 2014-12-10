@@ -47,9 +47,14 @@ public enum TipoDocumentosProcesos{
 	
 	CONVENIOS(50,"Convenios Documentos"), PLANILLABASECUMPLIMIENTOMUNICIPAL(59,"Planilla Base Cumplimiento Municipal"), PLANILLABASECUMPLIMIENTOSERVICIO(60,"Planilla Base Cumplimiento Servicio"),
 	
-	REPORTEPOBLACIONPERCAPITA(100,"Reporte Poblacion Per Capita"), REPORTEREBAJA(101,"Reporte Rebaja"), PLANTILLACORREORESOLUCIONRETIRO(65,"Plantilla Correo Resolucion Retiro"),
+	PLANTILLACORREORESOLUCIONRETIRO(65,"Plantilla Correo Resolucion Retiro"),
 	ADJUNTOSEGUIMIENTORESOLUCIONRETIRO(150, "Documento Adjunto Seguimiento Resolución Retiro"), RESOLUCIONRETIRO(151, "Resolución Retiro"), PLANTILLARESOLUCIONRETIRO(152, "Plantilla Resolución Retiro"),
-	CONVENIOSERVICIO(153, "Convenio Servicio"), CONVENIOCOMUNA(154, "Convenio Comuna");
+	CONVENIOSERVICIO(153, "Convenio Servicio"), CONVENIOCOMUNA(154, "Convenio Comuna"),
+	REPORTEPOBLACIONPERCAPITA(100,"Reporte Poblacion Per Capita"), REPORTEREBAJA(101,"Reporte Rebaja"), REPORTEGLOSA07(102,"Reporte Glosa 07"),
+	REPORTEMARCOPRESPUESTARIOCOMUNA(103,"Reporte Marco Presupuestario Comuna"), REPORTEMARCOPRESPUESTARIOSERVICIO(104,"Reporte Marco Presupuestario Servicio"), 
+	REPORTEHISTORICOPROGRAMACOMUNA(105,"Reporte Historico Por Programa - Comuna"), REPORTEHISTORICOPROGRAMAESTABLECIMIENTO(106,"Reporte Historico Por Programa - Establecimiento"),
+	REPORTEMONITOREOPROGRAMACOMUNA(107,"Reporte Monitoreo Programa - Comuna"), REPORTEMONITOREOPROGRAMASERVICIO(108,"Reporte Monitoreo Programa - Servicios"),
+	REPORTEESTADOSITUACIONPROGRAMABYCOMUNA(109,"Reporte Estado Situacion Programa - Comuna"), REPORTEESTADOSITUACIONPROGRAMABYSERVICIO(110,"Reporte Estado Situacion Programa - Servicio");
 
 	private Integer id;
 	private String name;

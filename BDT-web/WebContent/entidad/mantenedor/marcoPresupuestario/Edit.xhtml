@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="MarcoPresupuestarioEditDlg" widgetVar="MarcoPresupuestarioEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditMarcoPresupuestarioTitle}" closeOnEscape="true">
+
+            <h:form id="MarcoPresupuestarioEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{marcoPresupuestarioController.selected != null}">
+
+                        <p:outputLabel value="#{messages.EditMarcoPresupuestarioLabel_marcoInicial}" for="marcoInicial" />
+                        <p:inputText id="marcoInicial" value="#{marcoPresupuestarioController.selected.marcoInicial}" title="#{messages.EditMarcoPresupuestarioTitle_marcoInicial}" required="true" requiredMessage="#{messages.EditMarcoPresupuestarioRequiredMessage_marcoInicial}"/>
+
+                        <p:outputLabel value="#{messages.EditMarcoPresupuestarioLabel_marcoModificado}" for="marcoModificado" />
+                        <p:inputText id="marcoModificado" value="#{marcoPresupuestarioController.selected.marcoModificado}" title="#{messages.EditMarcoPresupuestarioTitle_marcoModificado}" required="true" requiredMessage="#{messages.EditMarcoPresupuestarioRequiredMessage_marcoModificado}"/>
+
+
+                        <h:outputLabel value="#{messages.EditMarcoPresupuestarioLabel_idMarcoPresupuestario}" for="idMarcoPresupuestario" />
+                        <h:outputText id="idMarcoPresupuestario" value="#{marcoPresupuestarioController.selected.idMarcoPresupuestario}" />
+
+                        <p:outputLabel value="#{messages.EditMarcoPresupuestarioLabel_reparosMarcoPresupuestario}" for="reparosMarcoPresupuestario" />
+                        <p:selectBooleanCheckbox id="reparosMarcoPresupuestario" value="#{marcoPresupuestarioController.selected.reparosMarcoPresupuestario}" />
+
+                        <p:outputLabel value="#{messages.EditMarcoPresupuestarioLabel_servicioSalud}" for="servicioSalud" />
+                        <p:selectOneMenu id="servicioSalud" value="#{marcoPresupuestarioController.selected.servicioSalud}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{servicioSaludController.items}"
+                                           var="servicioSaludItem"
+                                           itemValue="#{servicioSaludItem}"
+                                           itemLabel="#{servicioSaludItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{servicioSaludConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditMarcoPresupuestarioLabel_idProgramaAno}" for="idProgramaAno" />
+                        <p:selectOneMenu id="idProgramaAno" value="#{marcoPresupuestarioController.selected.idProgramaAno}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaAnoController.items}"
+                                           var="idProgramaAnoItem"
+                                           itemValue="#{idProgramaAnoItem}"
+                                           itemLabel="#{idProgramaAnoItem.idProgramaAno.toString()}"
+                                           />
+                            <f:converter binding="#{programaAnoConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{marcoPresupuestarioController.save}" value="#{messages.Save}" update="display,:MarcoPresupuestarioListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,MarcoPresupuestarioEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="MarcoPresupuestarioEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

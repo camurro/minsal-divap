@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="EstablecimientoListForm">
+
+        <p:panel header="#{messages.ListEstablecimientoTitle}">
+            <p:contextMenu id="EstablecimientoDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('EstablecimientoListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('EstablecimientoListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('EstablecimientoListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('EstablecimientoListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.EstablecimientoMenuItem_remesaCollection}" icon="ui-icon-search"  action="#{establecimientoController.navigateRemesaCollection}" disabled="#{empty establecimientoController.selected.remesaCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.EstablecimientoMenuItem_comuna}" icon="ui-icon-search"  actionListener="#{establecimientoController.prepareComuna}" update=":ComunaViewForm" oncomplete="ComunaViewDialog.show()" disabled="#{empty establecimientoController.selected.comuna}"/>  
+                <p:menuitem value="#{messages.EstablecimientoMenuItem_servicioSalud}" icon="ui-icon-search"  actionListener="#{establecimientoController.prepareServicioSalud}" update=":ServicioSaludViewForm" oncomplete="ServicioSaludViewDialog.show()" disabled="#{empty establecimientoController.selected.servicioSalud}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{establecimientoController.establecimientos}"
+                         var="item"
+                         rowKey="#{item.idEstablecimiento}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{establecimientoController.establecimientoSeleccionado}">
+
+                <p:ajax event="rowSelect"   update=":EstablecimientoListForm:createButton :EstablecimientoListForm:viewButton :EstablecimientoListForm:editButton :EstablecimientoListForm:deleteButton :EstablecimientoListForm:EstablecimientoDataTableContextMenu" listener="#{establecimientoController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":EstablecimientoListForm:createButton :EstablecimientoListForm:viewButton :EstablecimientoListForm:editButton :EstablecimientoListForm:deleteButton :EstablecimientoListForm:EstablecimientoDataTableContextMenu" listener="#{establecimientoController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('EstablecimientoListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idEstablecimiento}" filterBy="#{item.idEstablecimiento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListEstablecimientoTitle_id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idEstablecimiento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.nombreEstablecimiento}" filterBy="#{item.nombreEstablecimiento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListEstablecimientoTitle_nombre}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombreEstablecimiento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.codigo}" filterBy="#{item.codigo}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListEstablecimientoTitle_codigo}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.codigo}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.idServicio}" filterBy="#{item.idServicio}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListEstablecimientoTitle_servicioSalud}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombreServicio}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{establecimientoController.prepareCreateEstablecimiento}" update=":EstablecimientoCreateForm" oncomplete="EstablecimientoCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{messages.View}" update=":EstablecimientoViewForm" oncomplete="EstablecimientoViewDialog.show()" disabled="#{empty establecimientoController.establecimientoSeleccionado}"/>
+            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{messages.Edit}" update=":EstablecimientoEditForm" oncomplete="EstablecimientoEditDialog.show()" disabled="#{empty establecimientoController.establecimientoSeleccionado}"/>
+            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{establecimientoController.delete}" update=":growl,datalist" disabled="#{empty establecimientoController.establecimientoSeleccionado}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

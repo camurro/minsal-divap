@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="ProgramaListForm">
+
+        <p:panel header="#{messages.ListProgramaTitle}">
+            <p:contextMenu id="ProgramaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('ProgramaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('ProgramaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('ProgramaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('ProgramaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.ProgramaMenuItem_metadataCores}" icon="ui-icon-search"  action="#{programaController.navigateMetadataCores}" disabled="#{empty programaController.selected.metadataCores}" ajax="false"/>  
+                <p:menuitem value="#{messages.ProgramaMenuItem_usuario}" icon="ui-icon-search"  actionListener="#{programaController.prepareUsuario}" update=":UsuarioViewForm" oncomplete="UsuarioViewDialog.show()" disabled="#{empty programaController.selected.usuario}"/>  
+                <p:menuitem value="#{messages.ProgramaMenuItem_programasAnos}" icon="ui-icon-search"  action="#{programaController.navigateProgramasAnos}" disabled="#{empty programaController.selected.programasAnos}" ajax="false"/>  
+                <p:menuitem value="#{messages.ProgramaMenuItem_componentes}" icon="ui-icon-search"  action="#{programaController.navigateComponentes}" disabled="#{empty programaController.selected.componentes}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{programaController.programas}"
+                         var="item"
+                         rowKey="#{item.idPrograma}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{programaController.seleccionado}">
+
+                <p:ajax event="rowSelect"   update=":ProgramaListForm:createButton :ProgramaListForm:viewButton :ProgramaListForm:editButton :ProgramaListForm:deleteButton :ProgramaListForm:ProgramaDataTableContextMenu" listener="#{programaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":ProgramaListForm:createButton :ProgramaListForm:viewButton :ProgramaListForm:editButton :ProgramaListForm:deleteButton :ProgramaListForm:ProgramaDataTableContextMenu" listener="#{programaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('ProgramaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idPrograma}" filterBy="#{item.idPrograma}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaTitle_id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idPrograma}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.cuotas}" filterBy="#{item.cuotas}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaTitle_cantidadCuotas}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.cuotas}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.nombrePrograma}" filterBy="#{item.nombrePrograma}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaTitle_nombre}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombrePrograma}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.nombreUsuario}" filterBy="#{item.nombreUsuario}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaTitle_usuario}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nombreUsuario}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.descripcion}" filterBy="#{item.descripcion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaTitle_descripcion}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.descripcion}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.fonasa}" filterBy="#{item.fonasa}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListProgramaTitle_revisaFonasa}"/>
+                    </f:facet>
+                    <h:selectBooleanCheckbox id="revisaFonasa" value="#{item.fonasa}" title="#{messages.EditProgramaTitle_revisaFonasa}"  disabled="true"/>
+                </p:column>
+
+                <p:column sortBy="#{item.reliquidacion}" filterBy="#{item.reliquidacion}">
+                	<f:facet name="header">
+                    	<h:outputText value="#{messages.ListProgramaTitle_reliquidacion}"/>
+                    </f:facet>
+                    <h:selectBooleanCheckbox id="reliquidacion" value="#{item.reliquidacion}" title="#{messages.EditProgramaTitle_reliquidacion}"  disabled="true"/>
+                </p:column>
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{programaController.prepareCreatePrograma}" update=":ProgramaCreateForm" oncomplete="ProgramaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{messages.View}" update=":ProgramaViewForm" oncomplete="ProgramaViewDialog.show()" disabled="#{empty programaController.seleccionado}"/>
+            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{messages.Edit}" actionListener="#{programaController.prepareEditarPrograma}" update=":ProgramaEditForm" oncomplete="ProgramaEditDialog.show()" disabled="#{empty programaController.seleccionado}"/>
+            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{programaController.delete}" update=":growl,datalist" disabled="#{empty programaController.seleccionado}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

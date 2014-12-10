@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DocumentoReliquidacionViewDlg" widgetVar="DocumentoReliquidacionViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewDocumentoReliquidacionTitle}" closeOnEscape="true">
+
+            <h:form id="DocumentoReliquidacionViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{documentoReliquidacionController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewDocumentoReliquidacionLabel_idDocumentoReliquidacion}"/>
+                        <h:outputText value="#{documentoReliquidacionController.selected.idDocumentoReliquidacion}" title="#{messages.ViewDocumentoReliquidacionTitle_idDocumentoReliquidacion}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoReliquidacionLabel_idTipoDocumento}"/>
+                        <h:outputText value="#{documentoReliquidacionController.selected.idTipoDocumento.idTipoDocumento}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoReliquidacionLabel_idReliquidacion}"/>
+                        <h:outputText value="#{documentoReliquidacionController.selected.idReliquidacion.idReliquidacion}"/>
+
+                        <h:outputText value="#{messages.ViewDocumentoReliquidacionLabel_idDocumento}"/>
+                        <h:outputText value="#{documentoReliquidacionController.selected.idDocumento.id}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="DocumentoReliquidacionViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

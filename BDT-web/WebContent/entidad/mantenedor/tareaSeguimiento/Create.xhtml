@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TareaSeguimientoCreateDlg" widgetVar="TareaSeguimientoCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateTareaSeguimientoTitle}" closeOnEscape="true">
+
+            <h:form id="TareaSeguimientoCreateForm">
+
+                <h:panelGroup id="display" rendered="#{tareaSeguimientoController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateTareaSeguimientoLabel_descripcion}" for="descripcion" />
+                        <p:inputText id="descripcion" value="#{tareaSeguimientoController.selected.descripcion}" title="#{messages.CreateTareaSeguimientoTitle_descripcion}" required="true" requiredMessage="#{messages.CreateTareaSeguimientoRequiredMessage_descripcion}"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{tareaSeguimientoController.saveNew}" value="#{messages.Save}" update="display,:TareaSeguimientoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,TareaSeguimientoCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="TareaSeguimientoCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

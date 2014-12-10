@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DocumentoRebajaCreateDlg" widgetVar="DocumentoRebajaCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateDocumentoRebajaTitle}" closeOnEscape="true">
+
+            <h:form id="DocumentoRebajaCreateForm">
+
+                <h:panelGroup id="display" rendered="#{documentoRebajaController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateDocumentoRebajaLabel_tipoDocumento}" for="tipoDocumento" />
+                        <p:selectOneMenu id="tipoDocumento" value="#{documentoRebajaController.selected.tipoDocumento}" required="true" requiredMessage="#{messages.CreateDocumentoRebajaRequiredMessage_tipoDocumento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoDocumentoController.items}"
+                                           var="tipoDocumentoItem"
+                                           itemValue="#{tipoDocumentoItem}"
+                                           itemLabel="#{tipoDocumentoItem.idTipoDocumento.toString()}"
+                                           />
+                            <f:converter binding="#{tipoDocumentoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateDocumentoRebajaLabel_documento}" for="documento" />
+                        <p:selectOneMenu id="documento" value="#{documentoRebajaController.selected.documento}" required="true" requiredMessage="#{messages.CreateDocumentoRebajaRequiredMessage_documento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{referenciaDocumentoController.items}"
+                                           var="documentoItem"
+                                           itemValue="#{documentoItem}"
+                                           itemLabel="#{documentoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{referenciaDocumentoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateDocumentoRebajaLabel_rebaja}" for="rebaja" />
+                        <p:selectOneMenu id="rebaja" value="#{documentoRebajaController.selected.rebaja}" required="true" requiredMessage="#{messages.CreateDocumentoRebajaRequiredMessage_rebaja}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{rebajaController.items}"
+                                           var="rebajaItem"
+                                           itemValue="#{rebajaItem}"
+                                           itemLabel="#{rebajaItem.idRebaja.toString()}"
+                                           />
+                            <f:converter binding="#{rebajaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateDocumentoRebajaLabel_comuna}" for="comuna" />
+                        <p:selectOneMenu id="comuna" value="#{documentoRebajaController.selected.comuna}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{comunaController.items}"
+                                           var="comunaItem"
+                                           itemValue="#{comunaItem}"
+                                           itemLabel="#{comunaItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{comunaConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{documentoRebajaController.saveNew}" value="#{messages.Save}" update="display,:DocumentoRebajaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,DocumentoRebajaCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="DocumentoRebajaCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

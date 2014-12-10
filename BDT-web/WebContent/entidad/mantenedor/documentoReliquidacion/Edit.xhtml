@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="DocumentoReliquidacionEditDlg" widgetVar="DocumentoReliquidacionEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditDocumentoReliquidacionTitle}" closeOnEscape="true">
+
+            <h:form id="DocumentoReliquidacionEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{documentoReliquidacionController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditDocumentoReliquidacionLabel_idDocumentoReliquidacion}" for="idDocumentoReliquidacion" />
+                        <h:outputText id="idDocumentoReliquidacion" value="#{documentoReliquidacionController.selected.idDocumentoReliquidacion}" />
+
+                        <p:outputLabel value="#{messages.EditDocumentoReliquidacionLabel_idTipoDocumento}" for="idTipoDocumento" />
+                        <p:selectOneMenu id="idTipoDocumento" value="#{documentoReliquidacionController.selected.idTipoDocumento}" required="true" requiredMessage="#{messages.EditDocumentoReliquidacionRequiredMessage_idTipoDocumento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoDocumentoController.items}"
+                                           var="idTipoDocumentoItem"
+                                           itemValue="#{idTipoDocumentoItem}"
+                                           itemLabel="#{idTipoDocumentoItem.idTipoDocumento.toString()}"
+                                           />
+                            <f:converter binding="#{tipoDocumentoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditDocumentoReliquidacionLabel_idReliquidacion}" for="idReliquidacion" />
+                        <p:selectOneMenu id="idReliquidacion" value="#{documentoReliquidacionController.selected.idReliquidacion}" required="true" requiredMessage="#{messages.EditDocumentoReliquidacionRequiredMessage_idReliquidacion}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{reliquidacionController.items}"
+                                           var="idReliquidacionItem"
+                                           itemValue="#{idReliquidacionItem}"
+                                           itemLabel="#{idReliquidacionItem.idReliquidacion.toString()}"
+                                           />
+                            <f:converter binding="#{reliquidacionConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditDocumentoReliquidacionLabel_idDocumento}" for="idDocumento" />
+                        <p:selectOneMenu id="idDocumento" value="#{documentoReliquidacionController.selected.idDocumento}" required="true" requiredMessage="#{messages.EditDocumentoReliquidacionRequiredMessage_idDocumento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{referenciaDocumentoController.items}"
+                                           var="idDocumentoItem"
+                                           itemValue="#{idDocumentoItem}"
+                                           itemLabel="#{idDocumentoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{referenciaDocumentoConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{documentoReliquidacionController.save}" value="#{messages.Save}" update="display,:DocumentoReliquidacionListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,DocumentoReliquidacionEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="DocumentoReliquidacionEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

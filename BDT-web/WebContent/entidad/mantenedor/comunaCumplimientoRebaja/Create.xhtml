@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ComunaCumplimientoRebajaCreateDlg" widgetVar="ComunaCumplimientoRebajaCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateComunaCumplimientoRebajaTitle}" closeOnEscape="true">
+
+            <h:form id="ComunaCumplimientoRebajaCreateForm">
+
+                <h:panelGroup id="display" rendered="#{comunaCumplimientoRebajaController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateComunaCumplimientoRebajaLabel_rebaja}" for="rebaja" />
+                        <p:inputText id="rebaja" value="#{comunaCumplimientoRebajaController.selected.rebaja}" title="#{messages.CreateComunaCumplimientoRebajaTitle_rebaja}" required="true" requiredMessage="#{messages.CreateComunaCumplimientoRebajaRequiredMessage_rebaja}"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{comunaCumplimientoRebajaController.saveNew}" value="#{messages.Save}" update="display,:ComunaCumplimientoRebajaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ComunaCumplimientoRebajaCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ComunaCumplimientoRebajaCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

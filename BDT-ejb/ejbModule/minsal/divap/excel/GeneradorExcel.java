@@ -28,6 +28,14 @@ import minsal.divap.excel.impl.ProgramaAPSServiciosDetallesSheetExcel;
 import minsal.divap.excel.impl.ProgramaAPSServiciosHistoricosSheetExcel;
 import minsal.divap.excel.impl.RebajaCalculadaSheetExcel;
 import minsal.divap.excel.impl.RebajaSheetExcel;
+import minsal.divap.excel.impl.ReporteEstadoSituacionPorComunaSheetExcel;
+import minsal.divap.excel.impl.ReporteGlosa07SheetExcel;
+import minsal.divap.excel.impl.ReporteHistoricoProgramaPorComunaSheetExcel;
+import minsal.divap.excel.impl.ReporteHistoricoProgramaPorEstablecimientoSheetExcel;
+import minsal.divap.excel.impl.ReporteMarcoPresupuestarioComunaSheetExcel;
+import minsal.divap.excel.impl.ReporteMarcoPresupuestarioEstablecimientoSheetExcel;
+import minsal.divap.excel.impl.ReporteMonitoreoProgramaComunaSheetExcel;
+import minsal.divap.excel.impl.ReporteMonitoreoProgramaEstablecimientoSheetExcel;
 import minsal.divap.excel.impl.ReportePoblacionPercapitaSheetExcel;
 import minsal.divap.excel.impl.ReporteRebajaSheetExcel;
 import minsal.divap.excel.interfaces.ExcelTemplate;
@@ -37,6 +45,14 @@ import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ProgramaAPSServicioResumenVO;
 import minsal.divap.vo.ProgramaAPSServicioVO;
 import minsal.divap.vo.CumplimientoApsMunicipalProgramaVO;
+import minsal.divap.vo.ReporteEstadoSituacionByComunaVO;
+import minsal.divap.vo.ReporteGlosaVO;
+import minsal.divap.vo.ReporteHistoricoPorProgramaComunaVO;
+import minsal.divap.vo.ReporteHistoricoPorProgramaEstablecimientoVO;
+import minsal.divap.vo.ReporteMarcoPresupuestarioComunaVO;
+import minsal.divap.vo.ReporteMarcoPresupuestarioEstablecimientoVO;
+import minsal.divap.vo.ReporteMonitoreoProgramaPorComunaVO;
+import minsal.divap.vo.ReporteMonitoreoProgramaPorEstablecimientoVO;
 import minsal.divap.vo.ReportePerCapitaVO;
 import minsal.divap.vo.ReporteRebajaVO;
 import minsal.divap.vo.ProgramaAPSVO;
@@ -149,9 +165,9 @@ public class GeneradorExcel {
             }
             
             if(excelSheet instanceof ProgramaAPSServicioSheetExcel){
-addSheet((ProgramaAPSServicioSheetExcel)excelSheet, sheetName);
-return;
-}
+            	addSheet((ProgramaAPSServicioSheetExcel)excelSheet, sheetName);
+            	return;
+			}
 
             if(excelSheet instanceof RebajaSheetExcel){
                 addSheet((RebajaSheetExcel)excelSheet, sheetName);
@@ -173,7 +189,7 @@ return;
                 return;
             }
 
-if(excelSheet instanceof CrearPlanillaCumplimientoMunicialProgramaSheetExcel){
+            if(excelSheet instanceof CrearPlanillaCumplimientoMunicialProgramaSheetExcel){
                 addSheet((CrearPlanillaCumplimientoMunicialProgramaSheetExcel)excelSheet, sheetName);
                 return;
             }
@@ -192,7 +208,38 @@ if(excelSheet instanceof CrearPlanillaCumplimientoMunicialProgramaSheetExcel){
                 return;
             }
             
-            
+            if(excelSheet instanceof ReporteGlosa07SheetExcel){
+                addSheet((ReporteGlosa07SheetExcel)excelSheet, sheetName);
+                return;
+            }
+            if(excelSheet instanceof ReporteMarcoPresupuestarioComunaSheetExcel){
+                addSheet((ReporteMarcoPresupuestarioComunaSheetExcel)excelSheet, sheetName);
+                return;
+            }
+            if(excelSheet instanceof ReporteMarcoPresupuestarioEstablecimientoSheetExcel){
+                addSheet((ReporteMarcoPresupuestarioEstablecimientoSheetExcel)excelSheet, sheetName);
+                return;
+            }
+            if(excelSheet instanceof ReporteHistoricoProgramaPorComunaSheetExcel){
+                addSheet((ReporteHistoricoProgramaPorComunaSheetExcel)excelSheet, sheetName);
+                return;
+            }
+            if(excelSheet instanceof ReporteHistoricoProgramaPorEstablecimientoSheetExcel){
+                addSheet((ReporteHistoricoProgramaPorEstablecimientoSheetExcel)excelSheet, sheetName);
+                return;
+            }
+            if(excelSheet instanceof ReporteMonitoreoProgramaComunaSheetExcel){
+                addSheet((ReporteMonitoreoProgramaComunaSheetExcel)excelSheet, sheetName);
+                return;
+            }
+            if(excelSheet instanceof ReporteMonitoreoProgramaEstablecimientoSheetExcel){
+                addSheet((ReporteMonitoreoProgramaEstablecimientoSheetExcel)excelSheet, sheetName);
+                return;
+            }
+            if(excelSheet instanceof ReporteEstadoSituacionPorComunaSheetExcel){
+                addSheet((ReporteEstadoSituacionPorComunaSheetExcel)excelSheet, sheetName);
+                return;
+            }
 
             XSSFSheet sheet = null;
             sheet = workbook.createSheet(sheetName);
@@ -4370,7 +4417,6 @@ System.out.println("sheetName="+sheetName);
         		CellExcelVO cellExcelVO = subHeader.get(i); 
         		XSSFCell cell = row.getCell(posSubHeader);
     			cell.setCellStyle(cellStyleHeader); 
-    			System.out.println("cellExcelVO.getName() ---> "+cellExcelVO.getName());
     			cell.setCellValue(cellExcelVO.getName());
     			
             	
@@ -4393,9 +4439,853 @@ System.out.println("sheetName="+sheetName);
             		
             		cellItems = rowItems.createCell(celda);
             		cellItems = rowItems.getCell(celda);
-            		if(item.get(i).getRow().get(celda).toString().equals(null) || item.get(i).getRow().get(celda).toString().equals("")){
-            			cellItems.setCellValue("XXXXXXXXXX");
-            		}
+            		cellItems.setCellValue(item.get(i).getRow().get(celda).toString());
+            	}
+            	filaItem++;
+            }
+            
+    		
+    	}catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    
+    private void addSheet(ReporteMarcoPresupuestarioComunaSheetExcel excelSheet, String sheetName){
+    	try{
+    		XSSFSheet sheet = null;
+            sheet = workbook.createSheet(sheetName);
+            List<CellExcelVO> header = excelSheet.getHeaderComplex();
+            List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
+            List<ReporteMarcoPresupuestarioComunaVO> item = excelSheet.getItems();
+            
+            CellStyle style = workbook.createCellStyle();
+            CellStyle styleTotales = workbook.createCellStyle();
+            styleTotales.setFillPattern(CellStyle.ALIGN_FILL);
+            styleTotales.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderRight(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderTop(CellStyle.BORDER_MEDIUM);
+            styleTotales.setFillBackgroundColor(IndexedColors.WHITE.getIndex());
+            Font fontTotales = workbook.createFont();
+            fontTotales.setColor(IndexedColors.BLACK.getIndex());
+
+            style.setFillPattern(CellStyle.ALIGN_FILL);
+            style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+            style.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            style.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            style.setBorderRight(CellStyle.BORDER_MEDIUM);
+            style.setBorderTop(CellStyle.BORDER_MEDIUM);
+            Font font = workbook.createFont();
+            font.setColor(IndexedColors.WHITE.getIndex());
+            style.setFont(font);
+            styleTotales.setFont(fontTotales);
+            
+            XSSFFont fontHeader = workbook.createFont();
+            fontHeader.setColor(IndexedColors.BLACK.getIndex());
+            fontHeader.setBold(true);
+            CellStyle cellStyleHeader = workbook.createCellStyle();
+            cellStyleHeader.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+            cellStyleHeader.setFont(fontHeader);
+            cellStyleHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+            cellStyleHeader.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderRight(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderTop(CellStyle.BORDER_MEDIUM);
+            
+            for(int fila = 0; fila < (1 + item.size()); fila++){
+            	XSSFRow row = null;
+            	row = sheet.createRow(fila);
+            	for(int columna = 0; columna < 9 ; columna++){
+              		XSSFCell cell = row.createCell(columna);
+                    cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+                    cell.setCellStyle(cellStyleHeader);
+              	 }
+            }
+            for(int i=0;i<header.size();i++){
+            	if(i==0 || i==1){
+            		sheet.setDefaultColumnWidth((short) 15);
+            	}
+            	else if(i==2){
+            		sheet.setDefaultColumnWidth((short) 30); 
+            	}else if(i>2){
+            		sheet.setDefaultColumnWidth((short) 40); 
+            	}
+        		XSSFRow row = sheet.getRow(0);
+        		CellExcelVO cellExcelVO = header.get(i);
+        		XSSFCell cell = row.getCell(i);
+    			cell.setCellStyle(cellStyleHeader);
+            	cell.setCellValue(cellExcelVO.getName());
+            }
+            
+            
+         // ############# items
+            int filaItem = 1;
+            
+            
+            for(int i=0;i<item.size();i++){
+            	int maxColum = item.get(i).getRow().size();
+            	XSSFRow rowItems = sheet.getRow(filaItem);
+            	XSSFCell cellItems = null;        	
+            	
+            	for(int celda = 0; celda < maxColum; celda++ ){
+            		
+            		cellItems = rowItems.createCell(celda);
+            		cellItems = rowItems.getCell(celda);
+            		cellItems.setCellValue(item.get(i).getRow().get(celda).toString());
+            	}
+            	filaItem++;
+            }
+            
+    		
+    	}catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    
+    
+    private void addSheet(ReporteMarcoPresupuestarioEstablecimientoSheetExcel excelSheet, String sheetName){
+    	try{
+    		XSSFSheet sheet = null;
+            sheet = workbook.createSheet(sheetName);
+            List<CellExcelVO> header = excelSheet.getHeaderComplex();
+            List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
+            List<ReporteMarcoPresupuestarioEstablecimientoVO> item = excelSheet.getItems();
+            
+            CellStyle style = workbook.createCellStyle();
+            CellStyle styleTotales = workbook.createCellStyle();
+            styleTotales.setFillPattern(CellStyle.ALIGN_FILL);
+            styleTotales.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderRight(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderTop(CellStyle.BORDER_MEDIUM);
+            styleTotales.setFillBackgroundColor(IndexedColors.WHITE.getIndex());
+            Font fontTotales = workbook.createFont();
+            fontTotales.setColor(IndexedColors.BLACK.getIndex());
+
+            style.setFillPattern(CellStyle.ALIGN_FILL);
+            style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+            style.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            style.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            style.setBorderRight(CellStyle.BORDER_MEDIUM);
+            style.setBorderTop(CellStyle.BORDER_MEDIUM);
+            Font font = workbook.createFont();
+            font.setColor(IndexedColors.WHITE.getIndex());
+            style.setFont(font);
+            styleTotales.setFont(fontTotales);
+            
+            XSSFFont fontHeader = workbook.createFont();
+            fontHeader.setColor(IndexedColors.BLACK.getIndex());
+            fontHeader.setBold(true);
+            CellStyle cellStyleHeader = workbook.createCellStyle();
+            cellStyleHeader.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+            cellStyleHeader.setFont(fontHeader);
+            cellStyleHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+            cellStyleHeader.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderRight(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderTop(CellStyle.BORDER_MEDIUM);
+            
+            for(int fila = 0; fila < (1 + item.size()); fila++){
+            	XSSFRow row = null;
+            	row = sheet.createRow(fila);
+            	for(int columna = 0; columna < 9 ; columna++){
+              		XSSFCell cell = row.createCell(columna);
+                    cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+                    cell.setCellStyle(cellStyleHeader);
+              	 }
+            }
+            for(int i=0;i<header.size();i++){
+            	if(i==0 || i==1){
+            		sheet.setDefaultColumnWidth((short) 15);
+            	}
+            	else if(i==2){
+            		sheet.setDefaultColumnWidth((short) 30); 
+            	}else if(i>2){
+            		sheet.setDefaultColumnWidth((short) 40); 
+            	}
+        		XSSFRow row = sheet.getRow(0);
+        		CellExcelVO cellExcelVO = header.get(i);
+        		XSSFCell cell = row.getCell(i);
+    			cell.setCellStyle(cellStyleHeader);
+            	cell.setCellValue(cellExcelVO.getName());
+            }
+            
+            
+         // ############# items
+            int filaItem = 1;
+            
+            
+            for(int i=0;i<item.size();i++){
+            	int maxColum = item.get(i).getRow().size();
+            	XSSFRow rowItems = sheet.getRow(filaItem);
+            	XSSFCell cellItems = null;        	
+            	
+            	for(int celda = 0; celda < maxColum; celda++ ){
+            		
+            		cellItems = rowItems.createCell(celda);
+            		cellItems = rowItems.getCell(celda);
+            		cellItems.setCellValue(item.get(i).getRow().get(celda).toString());
+            	}
+            	filaItem++;
+            }
+            
+    		
+    	}catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    
+    private void addSheet(ReporteHistoricoProgramaPorComunaSheetExcel excelSheet, String sheetName){
+    	try{
+    		XSSFSheet sheet = null;
+            sheet = workbook.createSheet(sheetName);
+            List<CellExcelVO> header = excelSheet.getHeaderComplex();
+            List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
+            List<ReporteHistoricoPorProgramaComunaVO> item = excelSheet.getItems();
+            
+            CellStyle style = workbook.createCellStyle();
+            CellStyle styleTotales = workbook.createCellStyle();
+            styleTotales.setFillPattern(CellStyle.ALIGN_FILL);
+            styleTotales.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderRight(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderTop(CellStyle.BORDER_MEDIUM);
+            styleTotales.setFillBackgroundColor(IndexedColors.WHITE.getIndex());
+            Font fontTotales = workbook.createFont();
+            fontTotales.setColor(IndexedColors.BLACK.getIndex());
+
+            style.setFillPattern(CellStyle.ALIGN_FILL);
+            style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+            style.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            style.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            style.setBorderRight(CellStyle.BORDER_MEDIUM);
+            style.setBorderTop(CellStyle.BORDER_MEDIUM);
+            Font font = workbook.createFont();
+            font.setColor(IndexedColors.WHITE.getIndex());
+            style.setFont(font);
+            styleTotales.setFont(fontTotales);
+            
+            XSSFFont fontHeader = workbook.createFont();
+            fontHeader.setColor(IndexedColors.BLACK.getIndex());
+            fontHeader.setBold(true);
+            CellStyle cellStyleHeader = workbook.createCellStyle();
+            cellStyleHeader.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+            cellStyleHeader.setFont(fontHeader);
+            cellStyleHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+            cellStyleHeader.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderRight(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderTop(CellStyle.BORDER_MEDIUM);
+            
+            for(int fila = 0; fila < (1 + item.size()); fila++){
+            	XSSFRow row = null;
+            	row = sheet.createRow(fila);
+            	for(int columna = 0; columna < 9 ; columna++){
+              		XSSFCell cell = row.createCell(columna);
+                    cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+                    cell.setCellStyle(cellStyleHeader);
+              	 }
+            }
+            for(int i=0;i<header.size();i++){
+            	if(i==0 || i==1){
+            		sheet.setDefaultColumnWidth((short) 15);
+            	}
+            	else if(i==2){
+            		sheet.setDefaultColumnWidth((short) 30); 
+            	}else if(i>2){
+            		sheet.setDefaultColumnWidth((short) 40); 
+            	}
+        		XSSFRow row = sheet.getRow(0);
+        		CellExcelVO cellExcelVO = header.get(i);
+        		XSSFCell cell = row.getCell(i);
+    			cell.setCellStyle(cellStyleHeader);
+            	cell.setCellValue(cellExcelVO.getName());
+            }
+            
+            
+         // ############# items
+            int filaItem = 1;
+            
+            
+            for(int i=0;i<item.size();i++){
+            	int maxColum = item.get(i).getRow().size();
+            	XSSFRow rowItems = sheet.getRow(filaItem);
+            	XSSFCell cellItems = null;        	
+            	
+            	for(int celda = 0; celda < maxColum; celda++ ){
+            		
+            		cellItems = rowItems.createCell(celda);
+            		cellItems = rowItems.getCell(celda);
+            		cellItems.setCellValue(item.get(i).getRow().get(celda).toString());
+            	}
+            	filaItem++;
+            }
+            
+    		
+    	}catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    private void addSheet(ReporteHistoricoProgramaPorEstablecimientoSheetExcel excelSheet, String sheetName){
+    	try{
+    		XSSFSheet sheet = null;
+            sheet = workbook.createSheet(sheetName);
+            List<CellExcelVO> header = excelSheet.getHeaderComplex();
+            List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
+            List<ReporteHistoricoPorProgramaEstablecimientoVO> item = excelSheet.getItems();
+            
+            CellStyle style = workbook.createCellStyle();
+            CellStyle styleTotales = workbook.createCellStyle();
+            styleTotales.setFillPattern(CellStyle.ALIGN_FILL);
+            styleTotales.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderRight(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderTop(CellStyle.BORDER_MEDIUM);
+            styleTotales.setFillBackgroundColor(IndexedColors.WHITE.getIndex());
+            Font fontTotales = workbook.createFont();
+            fontTotales.setColor(IndexedColors.BLACK.getIndex());
+
+            style.setFillPattern(CellStyle.ALIGN_FILL);
+            style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+            style.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            style.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            style.setBorderRight(CellStyle.BORDER_MEDIUM);
+            style.setBorderTop(CellStyle.BORDER_MEDIUM);
+            Font font = workbook.createFont();
+            font.setColor(IndexedColors.WHITE.getIndex());
+            style.setFont(font);
+            styleTotales.setFont(fontTotales);
+            
+            XSSFFont fontHeader = workbook.createFont();
+            fontHeader.setColor(IndexedColors.BLACK.getIndex());
+            fontHeader.setBold(true);
+            CellStyle cellStyleHeader = workbook.createCellStyle();
+            cellStyleHeader.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+            cellStyleHeader.setFont(fontHeader);
+            cellStyleHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+            cellStyleHeader.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderRight(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderTop(CellStyle.BORDER_MEDIUM);
+            
+            for(int fila = 0; fila < (1 + item.size()); fila++){
+            	XSSFRow row = null;
+            	row = sheet.createRow(fila);
+            	for(int columna = 0; columna < 9 ; columna++){
+              		XSSFCell cell = row.createCell(columna);
+                    cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+                    cell.setCellStyle(cellStyleHeader);
+              	 }
+            }
+            for(int i=0;i<header.size();i++){
+            	if(i==0 || i==1){
+            		sheet.setDefaultColumnWidth((short) 15);
+            	}
+            	else if(i==2){
+            		sheet.setDefaultColumnWidth((short) 30); 
+            	}else if(i>2){
+            		sheet.setDefaultColumnWidth((short) 40); 
+            	}
+        		XSSFRow row = sheet.getRow(0);
+        		CellExcelVO cellExcelVO = header.get(i);
+        		XSSFCell cell = row.getCell(i);
+    			cell.setCellStyle(cellStyleHeader);
+            	cell.setCellValue(cellExcelVO.getName());
+            }
+            
+            
+         // ############# items
+            int filaItem = 1;
+            
+            
+            for(int i=0;i<item.size();i++){
+            	int maxColum = item.get(i).getRow().size();
+            	XSSFRow rowItems = sheet.getRow(filaItem);
+            	XSSFCell cellItems = null;        	
+            	
+            	for(int celda = 0; celda < maxColum; celda++ ){
+            		
+            		cellItems = rowItems.createCell(celda);
+            		cellItems = rowItems.getCell(celda);
+            		cellItems.setCellValue(item.get(i).getRow().get(celda).toString());
+            	}
+            	filaItem++;
+            }
+            
+    		
+    	}catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    
+    
+    private void addSheet(ReporteGlosa07SheetExcel excelSheet, String sheetName){
+    	try{
+    		XSSFSheet sheet = null;
+            sheet = workbook.createSheet(sheetName);
+            List<CellExcelVO> header = excelSheet.getHeaderComplex();
+            List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
+            List<ReporteGlosaVO> item = excelSheet.getItems();
+            
+            CellStyle style = workbook.createCellStyle();
+            CellStyle styleTotales = workbook.createCellStyle();
+            styleTotales.setFillPattern(CellStyle.ALIGN_FILL);
+            styleTotales.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderRight(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderTop(CellStyle.BORDER_MEDIUM);
+            styleTotales.setFillBackgroundColor(IndexedColors.WHITE.getIndex());
+            Font fontTotales = workbook.createFont();
+            fontTotales.setColor(IndexedColors.BLACK.getIndex());
+
+            style.setFillPattern(CellStyle.ALIGN_FILL);
+            style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+            style.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            style.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            style.setBorderRight(CellStyle.BORDER_MEDIUM);
+            style.setBorderTop(CellStyle.BORDER_MEDIUM);
+            Font font = workbook.createFont();
+            font.setColor(IndexedColors.WHITE.getIndex());
+            style.setFont(font);
+            styleTotales.setFont(fontTotales);
+            
+            XSSFFont fontHeader = workbook.createFont();
+            fontHeader.setColor(IndexedColors.BLACK.getIndex());
+            fontHeader.setBold(true);
+            CellStyle cellStyleHeader = workbook.createCellStyle();
+            cellStyleHeader.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+            cellStyleHeader.setFont(fontHeader);
+            cellStyleHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+            cellStyleHeader.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderRight(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderTop(CellStyle.BORDER_MEDIUM);
+            
+            for(int fila = 0; fila < (1 + item.size()); fila++){
+            	XSSFRow row = null;
+            	row = sheet.createRow(fila);
+            	for(int columna = 0; columna < 6 ; columna++){
+              		XSSFCell cell = row.createCell(columna);
+                    cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+                    cell.setCellStyle(cellStyleHeader);
+              	 }
+            }
+            for(int i=0;i<header.size();i++){
+            	if(i>3){
+            		sheet.setDefaultColumnWidth((short) 50); 
+            	}else{
+            		sheet.setDefaultColumnWidth((short) 15);
+            	}
+            	 
+        		XSSFRow row = sheet.getRow(0);
+        		CellExcelVO cellExcelVO = header.get(i);
+        		XSSFCell cell = row.getCell(i);
+    			cell.setCellStyle(cellStyleHeader);
+            	cell.setCellValue(cellExcelVO.getName());
+            }
+            
+            
+         // ############# items
+            int filaItem = 1;
+            
+            
+            for(int i=0;i<item.size();i++){
+            	int maxColum = item.get(i).getRow().size();
+            	XSSFRow rowItems = sheet.getRow(filaItem);
+            	XSSFCell cellItems = null;        	
+            	
+            	for(int celda = 0; celda < maxColum; celda++ ){
+            		
+            		cellItems = rowItems.createCell(celda);
+            		cellItems = rowItems.getCell(celda);
+            		cellItems.setCellValue(item.get(i).getRow().get(celda).toString());
+            	}
+            	filaItem++;
+            }
+            
+    		
+    	}catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    private void addSheet(ReporteMonitoreoProgramaComunaSheetExcel excelSheet, String sheetName){
+    	try{
+    		XSSFSheet sheet = null;
+            sheet = workbook.createSheet(sheetName);
+            List<CellExcelVO> header = excelSheet.getHeaderComplex();
+            List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
+            List<ReporteMonitoreoProgramaPorComunaVO> item = excelSheet.getItems();
+            
+            CellStyle style = workbook.createCellStyle();
+            CellStyle styleTotales = workbook.createCellStyle();
+            styleTotales.setFillPattern(CellStyle.ALIGN_FILL);
+            styleTotales.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderRight(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderTop(CellStyle.BORDER_MEDIUM);
+            styleTotales.setFillBackgroundColor(IndexedColors.WHITE.getIndex());
+            Font fontTotales = workbook.createFont();
+            fontTotales.setColor(IndexedColors.BLACK.getIndex());
+
+            style.setFillPattern(CellStyle.ALIGN_FILL);
+            style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+            style.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            style.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            style.setBorderRight(CellStyle.BORDER_MEDIUM);
+            style.setBorderTop(CellStyle.BORDER_MEDIUM);
+            Font font = workbook.createFont();
+            font.setColor(IndexedColors.WHITE.getIndex());
+            style.setFont(font);
+            styleTotales.setFont(fontTotales);
+            
+            XSSFFont fontHeader = workbook.createFont();
+            fontHeader.setColor(IndexedColors.BLACK.getIndex());
+            fontHeader.setBold(true);
+            CellStyle cellStyleHeader = workbook.createCellStyle();
+            cellStyleHeader.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+            cellStyleHeader.setFont(fontHeader);
+            cellStyleHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+            cellStyleHeader.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderRight(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderTop(CellStyle.BORDER_MEDIUM);
+            
+            for(int fila = 0; fila < (2 + item.size()); fila++){
+            	XSSFRow row = null;
+            	row = sheet.createRow(fila);
+            	for(int columna = 0; columna < 9 ; columna++){
+              		XSSFCell cell = row.createCell(columna);
+                    cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+                    cell.setCellStyle(cellStyleHeader);
+              	 }
+            }
+            int posHeader = 4;
+            for(int i=0;i<header.size();i++){
+            	
+            	if(i<4){
+            		sheet.setDefaultColumnWidth((short) 25); 
+            		XSSFRow row = sheet.getRow(0);
+            		CellExcelVO cellExcelVO = header.get(i); 
+            		XSSFCell cell = row.getCell(i);
+        			cell.setCellStyle(cellStyleHeader);
+                	cell.setCellValue(cellExcelVO.getName());
+                	sheet.addMergedRegion(new CellRangeAddress(0, 1, i, i));
+            	}
+            	else if(i >= 4 && i < 6){
+            		sheet.setDefaultColumnWidth((short) 25); 
+            		XSSFRow row = sheet.getRow(0);
+            		CellExcelVO cellExcelVO = header.get(i);
+            		XSSFCell cell = row.getCell(posHeader);
+        			cell.setCellStyle(cellStyleHeader);
+                	cell.setCellValue(cellExcelVO.getName());
+                	sheet.addMergedRegion(new CellRangeAddress(0, 0, posHeader, (posHeader + 1)));
+                	posHeader = posHeader + 2;
+            	}
+            	if(header.get(i).getName().equals("CONVENIO PENDIENTE")){
+            		sheet.setDefaultColumnWidth((short) 25); 
+            		XSSFRow row = sheet.getRow(0);
+            		CellExcelVO cellExcelVO = header.get(i); 
+            		XSSFCell cell = row.getCell(8);
+        			cell.setCellStyle(cellStyleHeader);
+                	cell.setCellValue(cellExcelVO.getName());
+                	sheet.addMergedRegion(new CellRangeAddress(0, 1, 8, 8));
+            	}
+            	
+            	
+            }
+            int posSubHeader = 4;
+            for(int i=0; i<subHeader.size(); i++){
+            	sheet.setDefaultColumnWidth((short) 25); 
+        		XSSFRow row = sheet.getRow(1);
+        		CellExcelVO cellExcelVO = subHeader.get(i); 
+        		XSSFCell cell = row.getCell(posSubHeader);
+    			cell.setCellStyle(cellStyleHeader); 
+    			cell.setCellValue(cellExcelVO.getName());
+    			
+            	
+            	posSubHeader++;
+            }
+            
+            
+            
+            
+         // ############# items
+            int filaItem = 2;
+            
+            
+            for(int i=0;i<item.size();i++){
+            	int maxColum = item.get(i).getRow().size();
+            	XSSFRow rowItems = sheet.getRow(filaItem);
+            	XSSFCell cellItems = null;        	
+            	
+            	for(int celda = 0; celda < maxColum; celda++ ){
+            		
+            		cellItems = rowItems.createCell(celda);
+            		cellItems = rowItems.getCell(celda);
+            		cellItems.setCellValue(item.get(i).getRow().get(celda).toString());
+            	}
+            	filaItem++;
+            }
+            
+    		
+    	}catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    private void addSheet(ReporteMonitoreoProgramaEstablecimientoSheetExcel excelSheet, String sheetName){
+    	try{
+    		XSSFSheet sheet = null;
+            sheet = workbook.createSheet(sheetName);
+            List<CellExcelVO> header = excelSheet.getHeaderComplex();
+            List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
+            List<ReporteMonitoreoProgramaPorEstablecimientoVO> item = excelSheet.getItems();
+            
+            CellStyle style = workbook.createCellStyle();
+            CellStyle styleTotales = workbook.createCellStyle();
+            styleTotales.setFillPattern(CellStyle.ALIGN_FILL);
+            styleTotales.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderRight(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderTop(CellStyle.BORDER_MEDIUM);
+            styleTotales.setFillBackgroundColor(IndexedColors.WHITE.getIndex());
+            Font fontTotales = workbook.createFont();
+            fontTotales.setColor(IndexedColors.BLACK.getIndex());
+
+            style.setFillPattern(CellStyle.ALIGN_FILL);
+            style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+            style.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            style.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            style.setBorderRight(CellStyle.BORDER_MEDIUM);
+            style.setBorderTop(CellStyle.BORDER_MEDIUM);
+            Font font = workbook.createFont();
+            font.setColor(IndexedColors.WHITE.getIndex());
+            style.setFont(font);
+            styleTotales.setFont(fontTotales);
+            
+            XSSFFont fontHeader = workbook.createFont();
+            fontHeader.setColor(IndexedColors.BLACK.getIndex());
+            fontHeader.setBold(true);
+            CellStyle cellStyleHeader = workbook.createCellStyle();
+            cellStyleHeader.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+            cellStyleHeader.setFont(fontHeader);
+            cellStyleHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+            cellStyleHeader.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderRight(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderTop(CellStyle.BORDER_MEDIUM);
+            
+            for(int fila = 0; fila < (2 + item.size()); fila++){
+            	XSSFRow row = null;
+            	row = sheet.createRow(fila);
+            	for(int columna = 0; columna < 8 ; columna++){
+              		XSSFCell cell = row.createCell(columna);
+                    cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+                    cell.setCellStyle(cellStyleHeader);
+              	 }
+            }
+            int posHeader = 3;
+            for(int i=0;i<header.size();i++){
+            	
+            	if(i<3){
+            		sheet.setDefaultColumnWidth((short) 25); 
+            		XSSFRow row = sheet.getRow(0);
+            		CellExcelVO cellExcelVO = header.get(i); 
+            		XSSFCell cell = row.getCell(i);
+        			cell.setCellStyle(cellStyleHeader);
+                	cell.setCellValue(cellExcelVO.getName());
+                	sheet.addMergedRegion(new CellRangeAddress(0, 1, i, i));
+            	}
+            	else if(i >= 3 && i < 5){
+            		sheet.setDefaultColumnWidth((short) 25); 
+            		XSSFRow row = sheet.getRow(0);
+            		CellExcelVO cellExcelVO = header.get(i);
+            		XSSFCell cell = row.getCell(posHeader);
+        			cell.setCellStyle(cellStyleHeader);
+                	cell.setCellValue(cellExcelVO.getName());
+                	sheet.addMergedRegion(new CellRangeAddress(0, 0, posHeader, (posHeader + 1)));
+                	posHeader = posHeader + 2;
+            	}
+            	if(header.get(i).getName().equals("CONVENIO PENDIENTE")){
+            		sheet.setDefaultColumnWidth((short) 25); 
+            		XSSFRow row = sheet.getRow(0);
+            		CellExcelVO cellExcelVO = header.get(i); 
+            		XSSFCell cell = row.getCell(7);
+        			cell.setCellStyle(cellStyleHeader);
+                	cell.setCellValue(cellExcelVO.getName());
+                	sheet.addMergedRegion(new CellRangeAddress(0, 1, 7, 7));
+            	}
+            	
+            	
+            }
+            int posSubHeader = 3;
+            for(int i=0; i<subHeader.size(); i++){
+            	sheet.setDefaultColumnWidth((short) 25); 
+        		XSSFRow row = sheet.getRow(1);
+        		CellExcelVO cellExcelVO = subHeader.get(i); 
+        		XSSFCell cell = row.getCell(posSubHeader);
+    			cell.setCellStyle(cellStyleHeader); 
+    			cell.setCellValue(cellExcelVO.getName());
+    			
+            	
+            	posSubHeader++;
+            }
+            
+            
+            
+            
+         // ############# items
+            int filaItem = 2;
+            
+            
+            for(int i=0;i<item.size();i++){
+            	int maxColum = item.get(i).getRow().size();
+            	XSSFRow rowItems = sheet.getRow(filaItem);
+            	XSSFCell cellItems = null;        	
+            	
+            	for(int celda = 0; celda < maxColum; celda++ ){
+            		
+            		cellItems = rowItems.createCell(celda);
+            		cellItems = rowItems.getCell(celda);
+            		cellItems.setCellValue(item.get(i).getRow().get(celda).toString());
+            	}
+            	filaItem++;
+            }
+            
+    		
+    	}catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    private void addSheet(ReporteEstadoSituacionPorComunaSheetExcel excelSheet, String sheetName){
+    	try{
+    		XSSFSheet sheet = null;
+            sheet = workbook.createSheet(sheetName);
+            List<CellExcelVO> header = excelSheet.getHeaderComplex();
+            List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
+            List<ReporteEstadoSituacionByComunaVO> item = excelSheet.getItems();
+            
+            CellStyle style = workbook.createCellStyle();
+            CellStyle styleTotales = workbook.createCellStyle();
+            styleTotales.setFillPattern(CellStyle.ALIGN_FILL);
+            styleTotales.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderRight(CellStyle.BORDER_MEDIUM);
+            styleTotales.setBorderTop(CellStyle.BORDER_MEDIUM);
+            styleTotales.setFillBackgroundColor(IndexedColors.WHITE.getIndex());
+            Font fontTotales = workbook.createFont();
+            fontTotales.setColor(IndexedColors.BLACK.getIndex());
+
+            style.setFillPattern(CellStyle.ALIGN_FILL);
+            style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+            style.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            style.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            style.setBorderRight(CellStyle.BORDER_MEDIUM);
+            style.setBorderTop(CellStyle.BORDER_MEDIUM);
+            Font font = workbook.createFont();
+            font.setColor(IndexedColors.WHITE.getIndex());
+            style.setFont(font);
+            styleTotales.setFont(fontTotales);
+            
+            XSSFFont fontHeader = workbook.createFont();
+            fontHeader.setColor(IndexedColors.BLACK.getIndex());
+            fontHeader.setBold(true);
+            CellStyle cellStyleHeader = workbook.createCellStyle();
+            cellStyleHeader.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+            cellStyleHeader.setFont(fontHeader);
+            cellStyleHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+            cellStyleHeader.setBorderBottom(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderLeft(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderRight(CellStyle.BORDER_MEDIUM);
+            cellStyleHeader.setBorderTop(CellStyle.BORDER_MEDIUM);
+            
+            for(int fila = 0; fila < (2 + item.size()); fila++){
+            	XSSFRow row = null;
+            	row = sheet.createRow(fila);
+            	for(int columna = 0; columna < 14 ; columna++){
+              		XSSFCell cell = row.createCell(columna);
+                    cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+                    cell.setCellStyle(cellStyleHeader);
+              	 }
+            }
+            int posHeader = 5;
+            for(int i=0;i<header.size();i++){
+            	
+            	if(i<5){
+            		sheet.setDefaultColumnWidth((short) 25); 
+            		XSSFRow row = sheet.getRow(0);
+            		CellExcelVO cellExcelVO = header.get(i); 
+            		XSSFCell cell = row.getCell(i);
+        			cell.setCellStyle(cellStyleHeader);
+                	cell.setCellValue(cellExcelVO.getName());
+                	sheet.addMergedRegion(new CellRangeAddress(0, 1, i, i));
+            	}
+            	else if(i >= 5 && i < 13){
+            		sheet.setDefaultColumnWidth((short) 25); 
+            		XSSFRow row = sheet.getRow(0);
+            		CellExcelVO cellExcelVO = header.get(i);
+            		XSSFCell cell = row.getCell(posHeader);
+        			cell.setCellStyle(cellStyleHeader);
+                	cell.setCellValue(cellExcelVO.getName());
+                	sheet.addMergedRegion(new CellRangeAddress(0, 0, posHeader, (posHeader + 1)));
+                	posHeader = posHeader + 2;
+            	}
+            	if(header.get(i).getName().equals("INCREMENTO")){
+            		sheet.setDefaultColumnWidth((short) 25); 
+            		XSSFRow row = sheet.getRow(0);
+            		CellExcelVO cellExcelVO = header.get(i); 
+            		XSSFCell cell = row.getCell(7);
+        			cell.setCellStyle(cellStyleHeader);
+                	cell.setCellValue(cellExcelVO.getName());
+                	sheet.addMergedRegion(new CellRangeAddress(0, 1, 13, 13));
+            	}
+            	
+            	
+            }
+            int posSubHeader = 5;
+            for(int i=0; i<subHeader.size(); i++){
+            	sheet.setDefaultColumnWidth((short) 25); 
+        		XSSFRow row = sheet.getRow(1);
+        		CellExcelVO cellExcelVO = subHeader.get(i); 
+        		XSSFCell cell = row.getCell(posSubHeader);
+    			cell.setCellStyle(cellStyleHeader); 
+    			cell.setCellValue(cellExcelVO.getName());
+    			
+            	
+            	posSubHeader++;
+            }
+            
+            
+            
+            
+         // ############# items
+            int filaItem = 2;
+            
+            
+            for(int i=0;i<item.size();i++){
+            	int maxColum = item.get(i).getRow().size();
+            	XSSFRow rowItems = sheet.getRow(filaItem);
+            	XSSFCell cellItems = null;        	
+            	
+            	for(int celda = 0; celda < maxColum; celda++ ){
+            		
+            		cellItems = rowItems.createCell(celda);
+            		cellItems = rowItems.getCell(celda);
             		cellItems.setCellValue(item.get(i).getRow().get(celda).toString());
             	}
             	filaItem++;

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="DocumentoReportesEditDlg" widgetVar="DocumentoReportesEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditDocumentoReportesTitle}" closeOnEscape="true">
+
+            <h:form id="DocumentoReportesEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{documentoReportesController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditDocumentoReportesLabel_idDocumentoReporte}" for="idDocumentoReporte" />
+                        <h:outputText id="idDocumentoReporte" value="#{documentoReportesController.selected.idDocumentoReporte}" />
+
+                        <p:outputLabel value="#{messages.EditDocumentoReportesLabel_tipoDocumento}" for="tipoDocumento" />
+                        <p:selectOneMenu id="tipoDocumento" value="#{documentoReportesController.selected.tipoDocumento}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoDocumentoController.items}"
+                                           var="tipoDocumentoItem"
+                                           itemValue="#{tipoDocumentoItem}"
+                                           itemLabel="#{tipoDocumentoItem.idTipoDocumento.toString()}"
+                                           />
+                            <f:converter binding="#{tipoDocumentoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditDocumentoReportesLabel_documento}" for="documento" />
+                        <p:selectOneMenu id="documento" value="#{documentoReportesController.selected.documento}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{referenciaDocumentoController.items}"
+                                           var="documentoItem"
+                                           itemValue="#{documentoItem}"
+                                           itemLabel="#{documentoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{referenciaDocumentoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditDocumentoReportesLabel_ano}" for="ano" />
+                        <p:selectOneMenu id="ano" value="#{documentoReportesController.selected.ano}" required="true" requiredMessage="#{messages.EditDocumentoReportesRequiredMessage_ano}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{anoEnCursoController.items}"
+                                           var="anoItem"
+                                           itemValue="#{anoItem}"
+                                           itemLabel="#{anoItem.ano.toString()}"
+                                           />
+                            <f:converter binding="#{anoEnCursoConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{documentoReportesController.save}" value="#{messages.Save}" update="display,:DocumentoReportesListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,DocumentoReportesEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="DocumentoReportesEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

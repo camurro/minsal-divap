@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ReliquidacionViewDlg" widgetVar="ReliquidacionViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewReliquidacionTitle}" closeOnEscape="true">
+
+            <h:form id="ReliquidacionViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{reliquidacionController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewReliquidacionLabel_idReliquidacion}"/>
+                        <h:outputText value="#{reliquidacionController.selected.idReliquidacion}" title="#{messages.ViewReliquidacionTitle_idReliquidacion}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionLabel_usuario}"/>
+                        <h:outputText value="#{reliquidacionController.selected.usuario.username}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionLabel_fechaCreacion}"/>
+                        <h:outputText value="#{reliquidacionController.selected.fechaCreacion}" title="#{messages.ViewReliquidacionTitle_fechaCreacion}">
+                            <f:convertDateTime pattern="HH:mm:ss" />
+                        </h:outputText>
+
+                        <h:outputText value="#{messages.ViewReliquidacionLabel_idProgramaAno}"/>
+                        <h:outputText value="#{reliquidacionController.selected.idProgramaAno.idProgramaAno}"/>
+
+                        <h:outputText value="#{messages.ViewReliquidacionLabel_mes}"/>
+                        <h:outputText value="#{reliquidacionController.selected.mes.idMes}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="ReliquidacionViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import cl.minsal.divap.model.Comuna;
+import cl.minsal.divap.model.TipoComuna;
 
 
 @Singleton
@@ -44,6 +45,28 @@ public class ComunaDAO {
 			TypedQuery<Comuna> query = this.em.createNamedQuery("Comuna.findByServicio", Comuna.class);
 			query.setParameter("idServicio", idServicio);
 			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public List<TipoComuna> getAllTipoComuna(){
+		try {
+			TypedQuery<TipoComuna> query = this.em.createNamedQuery("TipoComuna.findAll", TipoComuna.class);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public TipoComuna getTipoComunaById(Integer idTipoComuna){
+		try {
+			TypedQuery<TipoComuna> query = this.em.createNamedQuery("TipoComuna.findByIdTipoComuna", TipoComuna.class);
+			query.setParameter("idTipoComuna", idTipoComuna);
+			List<TipoComuna> results = query.getResultList();
+			if (results.size() >= 1)
+				return results.get(0);
+			return null;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="RebajaSeguimientoEditDlg" widgetVar="RebajaSeguimientoEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditRebajaSeguimientoTitle}" closeOnEscape="true">
+
+            <h:form id="RebajaSeguimientoEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{rebajaSeguimientoController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditRebajaSeguimientoLabel_idRebajaSeguimiento}" for="idRebajaSeguimiento" />
+                        <h:outputText id="idRebajaSeguimiento" value="#{rebajaSeguimientoController.selected.idRebajaSeguimiento}" />
+
+                        <p:outputLabel value="#{messages.EditRebajaSeguimientoLabel_seguimiento}" for="seguimiento" />
+                        <p:selectOneMenu id="seguimiento" value="#{rebajaSeguimientoController.selected.seguimiento}" required="true" requiredMessage="#{messages.EditRebajaSeguimientoRequiredMessage_seguimiento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{seguimientoController.items}"
+                                           var="seguimientoItem"
+                                           itemValue="#{seguimientoItem}"
+                                           itemLabel="#{seguimientoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{seguimientoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditRebajaSeguimientoLabel_rebaja}" for="rebaja" />
+                        <p:selectOneMenu id="rebaja" value="#{rebajaSeguimientoController.selected.rebaja}" required="true" requiredMessage="#{messages.EditRebajaSeguimientoRequiredMessage_rebaja}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{rebajaController.items}"
+                                           var="rebajaItem"
+                                           itemValue="#{rebajaItem}"
+                                           itemLabel="#{rebajaItem.idRebaja.toString()}"
+                                           />
+                            <f:converter binding="#{rebajaConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{rebajaSeguimientoController.save}" value="#{messages.Save}" update="display,:RebajaSeguimientoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,RebajaSeguimientoEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="RebajaSeguimientoEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

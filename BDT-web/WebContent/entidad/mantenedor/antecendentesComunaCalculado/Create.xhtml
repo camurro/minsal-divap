@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="AntecendentesComunaCalculadoCreateDlg" widgetVar="AntecendentesComunaCalculadoCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateAntecendentesComunaCalculadoTitle}" closeOnEscape="true">
+
+            <h:form id="AntecendentesComunaCalculadoCreateForm">
+
+                <h:panelGroup id="display" rendered="#{antecendentesComunaCalculadoController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateAntecendentesComunaCalculadoLabel_poblacion}" for="poblacion" />
+                        <p:inputText id="poblacion" value="#{antecendentesComunaCalculadoController.selected.poblacion}" title="#{messages.CreateAntecendentesComunaCalculadoTitle_poblacion}"/>
+
+                        <p:outputLabel value="#{messages.CreateAntecendentesComunaCalculadoLabel_poblacionMayor}" for="poblacionMayor" />
+                        <p:inputText id="poblacionMayor" value="#{antecendentesComunaCalculadoController.selected.poblacionMayor}" title="#{messages.CreateAntecendentesComunaCalculadoTitle_poblacionMayor}"/>
+
+                        <p:outputLabel value="#{messages.CreateAntecendentesComunaCalculadoLabel_desempenoDificil}" for="desempenoDificil" />
+                        <p:inputText id="desempenoDificil" value="#{antecendentesComunaCalculadoController.selected.desempenoDificil}" title="#{messages.CreateAntecendentesComunaCalculadoTitle_desempenoDificil}"/>
+
+                        <p:outputLabel value="#{messages.CreateAntecendentesComunaCalculadoLabel_pobreza}" for="pobreza" />
+                        <p:inputText id="pobreza" value="#{antecendentesComunaCalculadoController.selected.pobreza}" title="#{messages.CreateAntecendentesComunaCalculadoTitle_pobreza}"/>
+
+                        <p:outputLabel value="#{messages.CreateAntecendentesComunaCalculadoLabel_ruralidad}" for="ruralidad" />
+                        <p:inputText id="ruralidad" value="#{antecendentesComunaCalculadoController.selected.ruralidad}" title="#{messages.CreateAntecendentesComunaCalculadoTitle_ruralidad}"/>
+
+                        <p:outputLabel value="#{messages.CreateAntecendentesComunaCalculadoLabel_valorReferencialZona}" for="valorReferencialZona" />
+                        <p:inputText id="valorReferencialZona" value="#{antecendentesComunaCalculadoController.selected.valorReferencialZona}" title="#{messages.CreateAntecendentesComunaCalculadoTitle_valorReferencialZona}"/>
+
+                        <p:outputLabel value="#{messages.CreateAntecendentesComunaCalculadoLabel_distribucionInicialPercapita}" for="distribucionInicialPercapita" />
+                        <p:selectOneMenu id="distribucionInicialPercapita" value="#{antecendentesComunaCalculadoController.selected.distribucionInicialPercapita}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{distribucionInicialPercapitaController.items}"
+                                           var="distribucionInicialPercapitaItem"
+                                           itemValue="#{distribucionInicialPercapitaItem}"
+                                           itemLabel="#{distribucionInicialPercapitaItem.idDistribucionInicialPercapita.toString()}"
+                                           />
+                            <f:converter binding="#{distribucionInicialPercapitaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateAntecendentesComunaCalculadoLabel_antecedentesComuna}" for="antecedentesComuna" />
+                        <p:selectOneMenu id="antecedentesComuna" value="#{antecendentesComunaCalculadoController.selected.antecedentesComuna}" required="true" requiredMessage="#{messages.CreateAntecendentesComunaCalculadoRequiredMessage_antecedentesComuna}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{antecendentesComunaController.items}"
+                                           var="antecedentesComunaItem"
+                                           itemValue="#{antecedentesComunaItem}"
+                                           itemLabel="#{antecedentesComunaItem.idAntecedentesComuna.toString()}"
+                                           />
+                            <f:converter binding="#{antecendentesComunaConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateAntecendentesComunaCalculadoLabel_valorPerCapitaComunalMes}" for="valorPerCapitaComunalMes" />
+                        <p:inputText id="valorPerCapitaComunalMes" value="#{antecendentesComunaCalculadoController.selected.valorPerCapitaComunalMes}" title="#{messages.CreateAntecendentesComunaCalculadoTitle_valorPerCapitaComunalMes}"/>
+
+                        <p:outputLabel value="#{messages.CreateAntecendentesComunaCalculadoLabel_percapitaMes}" for="percapitaMes" />
+                        <p:inputText id="percapitaMes" value="#{antecendentesComunaCalculadoController.selected.percapitaMes}" title="#{messages.CreateAntecendentesComunaCalculadoTitle_percapitaMes}"/>
+
+                        <p:outputLabel value="#{messages.CreateAntecendentesComunaCalculadoLabel_percapitaAno}" for="percapitaAno" />
+                        <p:inputText id="percapitaAno" value="#{antecendentesComunaCalculadoController.selected.percapitaAno}" title="#{messages.CreateAntecendentesComunaCalculadoTitle_percapitaAno}"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{antecendentesComunaCalculadoController.saveNew}" value="#{messages.Save}" update="display,:AntecendentesComunaCalculadoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,AntecendentesComunaCalculadoCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="AntecendentesComunaCalculadoCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="ReferenciaDocumentoListForm">
+
+        <p:panel header="#{messages.ListReferenciaDocumentoTitle}">
+            <p:contextMenu id="ReferenciaDocumentoDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('ReferenciaDocumentoListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('ReferenciaDocumentoListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('ReferenciaDocumentoListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('ReferenciaDocumentoListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.ReferenciaDocumentoMenuItem_rebajaCollection}" icon="ui-icon-search"  action="#{referenciaDocumentoController.navigateRebajaCollection}" disabled="#{empty referenciaDocumentoController.selected.rebajaCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.ReferenciaDocumentoMenuItem_documentosEstimacionflujocaja}" icon="ui-icon-search"  action="#{referenciaDocumentoController.navigateDocumentosEstimacionflujocaja}" disabled="#{empty referenciaDocumentoController.selected.documentosEstimacionflujocaja}" ajax="false"/>  
+                <p:menuitem value="#{messages.ReferenciaDocumentoMenuItem_documentoDistribucionInicialPercapitaCollection}" icon="ui-icon-search"  action="#{referenciaDocumentoController.navigateDocumentoDistribucionInicialPercapitaCollection}" disabled="#{empty referenciaDocumentoController.selected.documentoDistribucionInicialPercapitaCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.ReferenciaDocumentoMenuItem_seguimientoReferenciaDocumentoCollection}" icon="ui-icon-search"  action="#{referenciaDocumentoController.navigateSeguimientoReferenciaDocumentoCollection}" disabled="#{empty referenciaDocumentoController.selected.seguimientoReferenciaDocumentoCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.ReferenciaDocumentoMenuItem_plantillaCollection}" icon="ui-icon-search"  action="#{referenciaDocumentoController.navigatePlantillaCollection}" disabled="#{empty referenciaDocumentoController.selected.plantillaCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.ReferenciaDocumentoMenuItem_documentosRebaja}" icon="ui-icon-search"  action="#{referenciaDocumentoController.navigateDocumentosRebaja}" disabled="#{empty referenciaDocumentoController.selected.documentosRebaja}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{referenciaDocumentoController.items}"
+                         var="item"
+                         rowKey="#{item.id}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{referenciaDocumentoController.selected}">
+
+                <p:ajax event="rowSelect"   update=":ReferenciaDocumentoListForm:createButton :ReferenciaDocumentoListForm:viewButton :ReferenciaDocumentoListForm:editButton :ReferenciaDocumentoListForm:deleteButton :ReferenciaDocumentoListForm:ReferenciaDocumentoDataTableContextMenu" listener="#{referenciaDocumentoController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":ReferenciaDocumentoListForm:createButton :ReferenciaDocumentoListForm:viewButton :ReferenciaDocumentoListForm:editButton :ReferenciaDocumentoListForm:deleteButton :ReferenciaDocumentoListForm:ReferenciaDocumentoDataTableContextMenu" listener="#{referenciaDocumentoController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('ReferenciaDocumentoListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.id}" filterBy="#{item.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListReferenciaDocumentoTitle_id}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.contentType}" filterBy="#{item.contentType}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListReferenciaDocumentoTitle_contentType}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.contentType}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.path}" filterBy="#{item.path}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListReferenciaDocumentoTitle_path}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.path}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.documentoFinal}" filterBy="#{item.documentoFinal}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListReferenciaDocumentoTitle_documentoFinal}"/>
+                    </f:facet>
+                    <h:selectBooleanCheckbox id="documentoFinal" value="#{item.documentoFinal}" title="#{messages.EditReferenciaDocumentoTitle_documentoFinal}"  disabled="true"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.nodeRef}" filterBy="#{item.nodeRef}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListReferenciaDocumentoTitle_nodeRef}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.nodeRef}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.fechaCreacion}" filterBy="#{item.fechaCreacion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListReferenciaDocumentoTitle_fechaCreacion}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.fechaCreacion}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{referenciaDocumentoController.prepareCreate}" update=":ReferenciaDocumentoCreateForm" oncomplete="ReferenciaDocumentoCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":ReferenciaDocumentoViewForm" oncomplete="ReferenciaDocumentoViewDialog.show()" disabled="#{empty referenciaDocumentoController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":ReferenciaDocumentoEditForm" oncomplete="ReferenciaDocumentoEditDialog.show()" disabled="#{empty referenciaDocumentoController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{referenciaDocumentoController.delete}" update=":growl,datalist" disabled="#{empty referenciaDocumentoController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

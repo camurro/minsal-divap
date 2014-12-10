@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="OtSeguimientoListForm">
+
+        <p:panel header="#{messages.ListOtSeguimientoTitle}">
+            <p:contextMenu id="OtSeguimientoDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('OtSeguimientoListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('OtSeguimientoListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('OtSeguimientoListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('OtSeguimientoListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.OtSeguimientoMenuItem_seguimiento}" icon="ui-icon-search"  actionListener="#{otSeguimientoController.prepareSeguimiento}" update=":SeguimientoViewForm" oncomplete="SeguimientoViewDialog.show()" disabled="#{empty otSeguimientoController.selected.seguimiento}"/>  
+                <p:menuitem value="#{messages.OtSeguimientoMenuItem_ordenTransferencia}" icon="ui-icon-search"  actionListener="#{otSeguimientoController.prepareOrdenTransferencia}" update=":OrdenTransferenciaViewForm" oncomplete="OrdenTransferenciaViewDialog.show()" disabled="#{empty otSeguimientoController.selected.ordenTransferencia}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{otSeguimientoController.items}"
+                         var="item"
+                         rowKey="#{item.idOtSeguimiento}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{otSeguimientoController.selected}">
+
+                <p:ajax event="rowSelect"   update=":OtSeguimientoListForm:createButton :OtSeguimientoListForm:viewButton :OtSeguimientoListForm:editButton :OtSeguimientoListForm:deleteButton :OtSeguimientoListForm:OtSeguimientoDataTableContextMenu" listener="#{otSeguimientoController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":OtSeguimientoListForm:createButton :OtSeguimientoListForm:viewButton :OtSeguimientoListForm:editButton :OtSeguimientoListForm:deleteButton :OtSeguimientoListForm:OtSeguimientoDataTableContextMenu" listener="#{otSeguimientoController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('OtSeguimientoListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idOtSeguimiento}" filterBy="#{item.idOtSeguimiento}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListOtSeguimientoTitle_idOtSeguimiento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idOtSeguimiento}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.seguimiento.id}" filterBy="#{item.seguimiento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListOtSeguimientoTitle_seguimiento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.seguimiento.id}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.ordenTransferencia.idOrdenTransferencia}" filterBy="#{item.ordenTransferencia.idOrdenTransferencia}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListOtSeguimientoTitle_ordenTransferencia}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.ordenTransferencia.idOrdenTransferencia}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{otSeguimientoController.prepareCreate}" update=":OtSeguimientoCreateForm" oncomplete="OtSeguimientoCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":OtSeguimientoViewForm" oncomplete="OtSeguimientoViewDialog.show()" disabled="#{empty otSeguimientoController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":OtSeguimientoEditForm" oncomplete="OtSeguimientoEditDialog.show()" disabled="#{empty otSeguimientoController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{otSeguimientoController.delete}" update=":growl,datalist" disabled="#{empty otSeguimientoController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

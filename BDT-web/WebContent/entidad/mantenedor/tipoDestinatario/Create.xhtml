@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoDestinatarioCreateDlg" widgetVar="TipoDestinatarioCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateTipoDestinatarioTitle}" closeOnEscape="true">
+
+            <h:form id="TipoDestinatarioCreateForm">
+
+                <h:panelGroup id="display" rendered="#{tipoDestinatarioController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateTipoDestinatarioLabel_descripcion}" for="descripcion" />
+                        <p:inputText id="descripcion" value="#{tipoDestinatarioController.selected.descripcion}" title="#{messages.CreateTipoDestinatarioTitle_descripcion}" required="true" requiredMessage="#{messages.CreateTipoDestinatarioRequiredMessage_descripcion}"/>
+
+                        <p:outputLabel value="#{messages.CreateTipoDestinatarioLabel_descripcionCorta}" for="descripcionCorta" />
+                        <p:inputText id="descripcionCorta" value="#{tipoDestinatarioController.selected.descripcionCorta}" title="#{messages.CreateTipoDestinatarioTitle_descripcionCorta}" required="true" requiredMessage="#{messages.CreateTipoDestinatarioRequiredMessage_descripcionCorta}"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{tipoDestinatarioController.saveNew}" value="#{messages.Save}" update="display,:TipoDestinatarioListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,TipoDestinatarioCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="TipoDestinatarioCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

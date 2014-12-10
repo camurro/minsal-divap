@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="DestinatariosEditDlg" widgetVar="DestinatariosEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditDestinatariosTitle}" closeOnEscape="true">
+
+            <h:form id="DestinatariosEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{destinatariosController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditDestinatariosLabel_idDestinatarios}" for="idDestinatarios" />
+                        <h:outputText id="idDestinatarios" value="#{destinatariosController.selected.idDestinatarios}" />
+
+                        <p:outputLabel value="#{messages.EditDestinatariosLabel_tipoDestinatario}" for="tipoDestinatario" />
+                        <p:selectOneMenu id="tipoDestinatario" value="#{destinatariosController.selected.tipoDestinatario}" required="true" requiredMessage="#{messages.EditDestinatariosRequiredMessage_tipoDestinatario}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoDestinatarioController.items}"
+                                           var="tipoDestinatarioItem"
+                                           itemValue="#{tipoDestinatarioItem}"
+                                           itemLabel="#{tipoDestinatarioItem.descripcion.toString()}"
+                                           />
+                            <f:converter binding="#{tipoDestinatarioConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditDestinatariosLabel_destinatario}" for="destinatario" />
+                        <p:selectOneMenu id="destinatario" value="#{destinatariosController.selected.destinatario}" required="true" requiredMessage="#{messages.EditDestinatariosRequiredMessage_destinatario}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{emailController.items}"
+                                           var="destinatarioItem"
+                                           itemValue="#{destinatarioItem}"
+                                           itemLabel="#{destinatarioItem.idEmail.toString()}"
+                                           />
+                            <f:converter binding="#{emailConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditDestinatariosLabel_seguimiento}" for="seguimiento" />
+                        <p:selectOneMenu id="seguimiento" value="#{destinatariosController.selected.seguimiento}" required="true" requiredMessage="#{messages.EditDestinatariosRequiredMessage_seguimiento}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{seguimientoController.items}"
+                                           var="seguimientoItem"
+                                           itemValue="#{seguimientoItem}"
+                                           itemLabel="#{seguimientoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{seguimientoConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{destinatariosController.save}" value="#{messages.Save}" update="display,:DestinatariosListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,DestinatariosEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="DestinatariosEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

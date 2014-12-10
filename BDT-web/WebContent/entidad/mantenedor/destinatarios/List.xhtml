@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="DestinatariosListForm">
+
+        <p:panel header="#{messages.ListDestinatariosTitle}">
+            <p:contextMenu id="DestinatariosDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('DestinatariosListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('DestinatariosListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('DestinatariosListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('DestinatariosListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.DestinatariosMenuItem_tipoDestinatario}" icon="ui-icon-search"  actionListener="#{destinatariosController.prepareTipoDestinatario}" update=":TipoDestinatarioViewForm" oncomplete="TipoDestinatarioViewDialog.show()" disabled="#{empty destinatariosController.selected.tipoDestinatario}"/>  
+                <p:menuitem value="#{messages.DestinatariosMenuItem_destinatario}" icon="ui-icon-search"  actionListener="#{destinatariosController.prepareDestinatario}" update=":EmailViewForm" oncomplete="EmailViewDialog.show()" disabled="#{empty destinatariosController.selected.destinatario}"/>  
+                <p:menuitem value="#{messages.DestinatariosMenuItem_seguimiento}" icon="ui-icon-search"  actionListener="#{destinatariosController.prepareSeguimiento}" update=":SeguimientoViewForm" oncomplete="SeguimientoViewDialog.show()" disabled="#{empty destinatariosController.selected.seguimiento}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{destinatariosController.items}"
+                         var="item"
+                         rowKey="#{item.idDestinatarios}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{destinatariosController.selected}">
+
+                <p:ajax event="rowSelect"   update=":DestinatariosListForm:createButton :DestinatariosListForm:viewButton :DestinatariosListForm:editButton :DestinatariosListForm:deleteButton :DestinatariosListForm:DestinatariosDataTableContextMenu" listener="#{destinatariosController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":DestinatariosListForm:createButton :DestinatariosListForm:viewButton :DestinatariosListForm:editButton :DestinatariosListForm:deleteButton :DestinatariosListForm:DestinatariosDataTableContextMenu" listener="#{destinatariosController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('DestinatariosListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idDestinatarios}" filterBy="#{item.idDestinatarios}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDestinatariosTitle_idDestinatarios}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idDestinatarios}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.tipoDestinatario.descripcion}" filterBy="#{item.tipoDestinatario.descripcion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDestinatariosTitle_tipoDestinatario}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.tipoDestinatario.descripcion}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.destinatario.idEmail}" filterBy="#{item.destinatario.idEmail}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDestinatariosTitle_destinatario}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.destinatario.idEmail}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.seguimiento.id}" filterBy="#{item.seguimiento.id}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDestinatariosTitle_seguimiento}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.seguimiento.id}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{destinatariosController.prepareCreate}" update=":DestinatariosCreateForm" oncomplete="DestinatariosCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":DestinatariosViewForm" oncomplete="DestinatariosViewDialog.show()" disabled="#{empty destinatariosController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":DestinatariosEditForm" oncomplete="DestinatariosEditDialog.show()" disabled="#{empty destinatariosController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{destinatariosController.delete}" update=":growl,datalist" disabled="#{empty destinatariosController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

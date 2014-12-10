@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="OrdenTransferenciaListForm">
+
+        <p:panel header="#{messages.ListOrdenTransferenciaTitle}">
+            <p:contextMenu id="OrdenTransferenciaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('OrdenTransferenciaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('OrdenTransferenciaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('OrdenTransferenciaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('OrdenTransferenciaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.OrdenTransferenciaMenuItem_usuario}" icon="ui-icon-search"  actionListener="#{ordenTransferenciaController.prepareUsuario}" update=":UsuarioViewForm" oncomplete="UsuarioViewDialog.show()" disabled="#{empty ordenTransferenciaController.selected.usuario}"/>  
+                <p:menuitem value="#{messages.OrdenTransferenciaMenuItem_documentoOtCollection}" icon="ui-icon-search"  action="#{ordenTransferenciaController.navigateDocumentoOtCollection}" disabled="#{empty ordenTransferenciaController.selected.documentoOtCollection}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{ordenTransferenciaController.items}"
+                         var="item"
+                         rowKey="#{item.idOrdenTransferencia}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{ordenTransferenciaController.selected}">
+
+                <p:ajax event="rowSelect"   update=":OrdenTransferenciaListForm:createButton :OrdenTransferenciaListForm:viewButton :OrdenTransferenciaListForm:editButton :OrdenTransferenciaListForm:deleteButton :OrdenTransferenciaListForm:OrdenTransferenciaDataTableContextMenu" listener="#{ordenTransferenciaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":OrdenTransferenciaListForm:createButton :OrdenTransferenciaListForm:viewButton :OrdenTransferenciaListForm:editButton :OrdenTransferenciaListForm:deleteButton :OrdenTransferenciaListForm:OrdenTransferenciaDataTableContextMenu" listener="#{ordenTransferenciaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('OrdenTransferenciaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idOrdenTransferencia}" filterBy="#{item.idOrdenTransferencia}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListOrdenTransferenciaTitle_idOrdenTransferencia}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idOrdenTransferencia}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.fechaCreacion}" filterBy="#{item.fechaCreacion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListOrdenTransferenciaTitle_fechaCreacion}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.fechaCreacion}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                </p:column>
+
+
+                <p:column sortBy="#{item.usuario.username}" filterBy="#{item.usuario.username}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListOrdenTransferenciaTitle_usuario}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.usuario.username}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{ordenTransferenciaController.prepareCreate}" update=":OrdenTransferenciaCreateForm" oncomplete="OrdenTransferenciaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":OrdenTransferenciaViewForm" oncomplete="OrdenTransferenciaViewDialog.show()" disabled="#{empty ordenTransferenciaController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":OrdenTransferenciaEditForm" oncomplete="OrdenTransferenciaEditDialog.show()" disabled="#{empty ordenTransferenciaController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{ordenTransferenciaController.delete}" update=":growl,datalist" disabled="#{empty ordenTransferenciaController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

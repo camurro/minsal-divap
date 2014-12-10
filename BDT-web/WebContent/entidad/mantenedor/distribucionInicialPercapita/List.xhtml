@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="DistribucionInicialPercapitaListForm">
+
+        <p:panel header="#{messages.ListDistribucionInicialPercapitaTitle}">
+            <p:contextMenu id="DistribucionInicialPercapitaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('DistribucionInicialPercapitaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('DistribucionInicialPercapitaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('DistribucionInicialPercapitaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('DistribucionInicialPercapitaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.DistribucionInicialPercapitaMenuItem_usuario}" icon="ui-icon-search"  actionListener="#{distribucionInicialPercapitaController.prepareUsuario}" update=":UsuarioViewForm" oncomplete="UsuarioViewDialog.show()" disabled="#{empty distribucionInicialPercapitaController.selected.usuario}"/>  
+                <p:menuitem value="#{messages.DistribucionInicialPercapitaMenuItem_documentoDistribucionInicialPercapitaCollection}" icon="ui-icon-search"  action="#{distribucionInicialPercapitaController.navigateDocumentoDistribucionInicialPercapitaCollection}" disabled="#{empty distribucionInicialPercapitaController.selected.documentoDistribucionInicialPercapitaCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.DistribucionInicialPercapitaMenuItem_antecendentesComunaCalculadoCollection}" icon="ui-icon-search"  action="#{distribucionInicialPercapitaController.navigateAntecendentesComunaCalculadoCollection}" disabled="#{empty distribucionInicialPercapitaController.selected.antecendentesComunaCalculadoCollection}" ajax="false"/>  
+                <p:menuitem value="#{messages.DistribucionInicialPercapitaMenuItem_ano}" icon="ui-icon-search"  actionListener="#{distribucionInicialPercapitaController.prepareAno}" update=":AnoEnCursoViewForm" oncomplete="AnoEnCursoViewDialog.show()" disabled="#{empty distribucionInicialPercapitaController.selected.ano}"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{distribucionInicialPercapitaController.items}"
+                         var="item"
+                         rowKey="#{item.idDistribucionInicialPercapita}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{distribucionInicialPercapitaController.selected}">
+
+                <p:ajax event="rowSelect"   update=":DistribucionInicialPercapitaListForm:createButton :DistribucionInicialPercapitaListForm:viewButton :DistribucionInicialPercapitaListForm:editButton :DistribucionInicialPercapitaListForm:deleteButton :DistribucionInicialPercapitaListForm:DistribucionInicialPercapitaDataTableContextMenu" listener="#{distribucionInicialPercapitaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":DistribucionInicialPercapitaListForm:createButton :DistribucionInicialPercapitaListForm:viewButton :DistribucionInicialPercapitaListForm:editButton :DistribucionInicialPercapitaListForm:deleteButton :DistribucionInicialPercapitaListForm:DistribucionInicialPercapitaDataTableContextMenu" listener="#{distribucionInicialPercapitaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('DistribucionInicialPercapitaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idDistribucionInicialPercapita}" filterBy="#{item.idDistribucionInicialPercapita}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDistribucionInicialPercapitaTitle_idDistribucionInicialPercapita}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idDistribucionInicialPercapita}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.fechaCreacion}" filterBy="#{item.fechaCreacion}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDistribucionInicialPercapitaTitle_fechaCreacion}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.fechaCreacion}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                </p:column>
+
+
+                <p:column sortBy="#{item.usuario.username}" filterBy="#{item.usuario.username}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDistribucionInicialPercapitaTitle_usuario}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.usuario.username}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.ano.ano}" filterBy="#{item.ano.ano}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListDistribucionInicialPercapitaTitle_ano}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.ano.ano}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{distribucionInicialPercapitaController.prepareCreate}" update=":DistribucionInicialPercapitaCreateForm" oncomplete="DistribucionInicialPercapitaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   style="visibility: hidden;" icon="ui-icon-search" value="#{messages.View}" update=":DistribucionInicialPercapitaViewForm" oncomplete="DistribucionInicialPercapitaViewDialog.show()" disabled="#{empty distribucionInicialPercapitaController.selected}"/>
+            <p:commandButton id="editButton"   style="visibility: hidden;" icon="ui-icon-pencil" value="#{messages.Edit}" update=":DistribucionInicialPercapitaEditForm" oncomplete="DistribucionInicialPercapitaEditDialog.show()" disabled="#{empty distribucionInicialPercapitaController.selected}"/>
+            <p:commandButton id="deleteButton" style="visibility: hidden;" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{distribucionInicialPercapitaController.delete}" update=":growl,datalist" disabled="#{empty distribucionInicialPercapitaController.selected}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

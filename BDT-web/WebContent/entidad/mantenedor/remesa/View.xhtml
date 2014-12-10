@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="RemesaViewDlg" widgetVar="RemesaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewRemesaTitle}" closeOnEscape="true">
+
+            <h:form id="RemesaViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{remesaController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewRemesaLabel_idremesa}"/>
+                        <h:outputText value="#{remesaController.selected.idremesa}" title="#{messages.ViewRemesaTitle_idremesa}"/>
+
+                        <h:outputText value="#{messages.ViewRemesaLabel_valordia09}"/>
+                        <h:outputText value="#{remesaController.selected.valordia09}" title="#{messages.ViewRemesaTitle_valordia09}"/>
+
+                        <h:outputText value="#{messages.ViewRemesaLabel_valordia24}"/>
+                        <h:outputText value="#{remesaController.selected.valordia24}" title="#{messages.ViewRemesaTitle_valordia24}"/>
+
+                        <h:outputText value="#{messages.ViewRemesaLabel_valordia28}"/>
+                        <h:outputText value="#{remesaController.selected.valordia28}" title="#{messages.ViewRemesaTitle_valordia28}"/>
+
+                        <h:outputText value="#{messages.ViewRemesaLabel_tipoSubtitulo}"/>
+                        <h:outputText value="#{remesaController.selected.tipoSubtitulo.idTipoSubtitulo}"/>
+
+                        <h:outputText value="#{messages.ViewRemesaLabel_idserviciosalud}"/>
+                        <h:outputText value="#{remesaController.selected.idserviciosalud.id}"/>
+
+                        <h:outputText value="#{messages.ViewRemesaLabel_idprograma}"/>
+                        <h:outputText value="#{remesaController.selected.idprograma.idProgramaAno}"/>
+
+                        <h:outputText value="#{messages.ViewRemesaLabel_idmes}"/>
+                        <h:outputText value="#{remesaController.selected.idmes.idMes}"/>
+
+                        <h:outputText value="#{messages.ViewRemesaLabel_idestablecimiento}"/>
+                        <h:outputText value="#{remesaController.selected.idestablecimiento.id}"/>
+
+                        <h:outputText value="#{messages.ViewRemesaLabel_idcomuna}"/>
+                        <h:outputText value="#{remesaController.selected.idcomuna.id}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="RemesaViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

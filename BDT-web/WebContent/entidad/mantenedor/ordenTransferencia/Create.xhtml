@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="OrdenTransferenciaCreateDlg" widgetVar="OrdenTransferenciaCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateOrdenTransferenciaTitle}" closeOnEscape="true">
+
+            <h:form id="OrdenTransferenciaCreateForm">
+
+                <h:panelGroup id="display" rendered="#{ordenTransferenciaController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateOrdenTransferenciaLabel_fechaCreacion}" for="fechaCreacion" />
+                        <p:calendar id="fechaCreacion" pattern="MM/dd/yyyy HH:mm:ss" value="#{ordenTransferenciaController.selected.fechaCreacion}" title="#{messages.CreateOrdenTransferenciaTitle_fechaCreacion}"  showOn="button"/>
+
+                        <p:outputLabel value="#{messages.CreateOrdenTransferenciaLabel_usuario}" for="usuario" />
+                        <p:selectOneMenu id="usuario" value="#{ordenTransferenciaController.selected.usuario}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{usuarioController.items}"
+                                           var="usuarioItem"
+                                           itemValue="#{usuarioItem}"
+                                           itemLabel="#{usuarioItem.username.toString()}"
+                                           />
+                            <f:converter binding="#{usuarioConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{ordenTransferenciaController.saveNew}" value="#{messages.Save}" update="display,:OrdenTransferenciaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,OrdenTransferenciaCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="OrdenTransferenciaCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

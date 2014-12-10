@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ConvenioServicioComponenteViewDlg" widgetVar="ConvenioServicioComponenteViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewConvenioServicioComponenteTitle}" closeOnEscape="true">
+
+            <h:form id="ConvenioServicioComponenteViewForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" rendered="#{convenioServicioComponenteController.selected != null}">
+
+                        <h:outputText value="#{messages.ViewConvenioServicioComponenteLabel_idConvenioServicioComponente}"/>
+                        <h:outputText value="#{convenioServicioComponenteController.selected.idConvenioServicioComponente}" title="#{messages.ViewConvenioServicioComponenteTitle_idConvenioServicioComponente}"/>
+
+                        <h:outputText value="#{messages.ViewConvenioServicioComponenteLabel_monto}"/>
+                        <h:outputText value="#{convenioServicioComponenteController.selected.monto}" title="#{messages.ViewConvenioServicioComponenteTitle_monto}"/>
+
+                        <h:outputText value="#{messages.ViewConvenioServicioComponenteLabel_subtitulo}"/>
+                        <h:outputText value="#{convenioServicioComponenteController.selected.subtitulo.idTipoSubtitulo}"/>
+
+                        <h:outputText value="#{messages.ViewConvenioServicioComponenteLabel_convenioServicio}"/>
+                        <h:outputText value="#{convenioServicioComponenteController.selected.convenioServicio.idConvenioServicio}"/>
+
+                        <h:outputText value="#{messages.ViewConvenioServicioComponenteLabel_componente}"/>
+                        <h:outputText value="#{convenioServicioComponenteController.selected.componente.id}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{messages.Close}" onclick="ConvenioServicioComponenteViewDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

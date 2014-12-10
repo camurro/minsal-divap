@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="ProgramasReforzamientoSeguimientoEditDlg" widgetVar="ProgramasReforzamientoSeguimientoEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditProgramasReforzamientoSeguimientoTitle}" closeOnEscape="true">
+
+            <h:form id="ProgramasReforzamientoSeguimientoEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{programasReforzamientoSeguimientoController.selected != null}">
+
+
+                        <h:outputLabel value="#{messages.EditProgramasReforzamientoSeguimientoLabel_id}" for="id" />
+                        <h:outputText id="id" value="#{programasReforzamientoSeguimientoController.selected.id}" />
+
+                        <p:outputLabel value="#{messages.EditProgramasReforzamientoSeguimientoLabel_seguimiento}" for="seguimiento" />
+                        <p:selectOneMenu id="seguimiento" value="#{programasReforzamientoSeguimientoController.selected.seguimiento}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{seguimientoController.items}"
+                                           var="seguimientoItem"
+                                           itemValue="#{seguimientoItem}"
+                                           itemLabel="#{seguimientoItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{seguimientoConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.EditProgramasReforzamientoSeguimientoLabel_idProgramaAno}" for="idProgramaAno" />
+                        <p:selectOneMenu id="idProgramaAno" value="#{programasReforzamientoSeguimientoController.selected.idProgramaAno}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaAnoController.items}"
+                                           var="idProgramaAnoItem"
+                                           itemValue="#{idProgramaAnoItem}"
+                                           itemLabel="#{idProgramaAnoItem.idProgramaAno.toString()}"
+                                           />
+                            <f:converter binding="#{programaAnoConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{programasReforzamientoSeguimientoController.save}" value="#{messages.Save}" update="display,:ProgramasReforzamientoSeguimientoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ProgramasReforzamientoSeguimientoEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ProgramasReforzamientoSeguimientoEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

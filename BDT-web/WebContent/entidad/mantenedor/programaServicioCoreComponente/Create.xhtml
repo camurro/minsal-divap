@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ProgramaServicioCoreComponenteCreateDlg" widgetVar="ProgramaServicioCoreComponenteCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateProgramaServicioCoreComponenteTitle}" closeOnEscape="true">
+
+            <h:form id="ProgramaServicioCoreComponenteCreateForm">
+
+                <h:panelGroup id="display" rendered="#{programaServicioCoreComponenteController.selected != null}">
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="#{messages.CreateProgramaServicioCoreComponenteLabel_tarifa}" for="tarifa" />
+                        <p:inputText id="tarifa" value="#{programaServicioCoreComponenteController.selected.tarifa}" title="#{messages.CreateProgramaServicioCoreComponenteTitle_tarifa}"/>
+
+                        <p:outputLabel value="#{messages.CreateProgramaServicioCoreComponenteLabel_cantidad}" for="cantidad" />
+                        <p:inputText id="cantidad" value="#{programaServicioCoreComponenteController.selected.cantidad}" title="#{messages.CreateProgramaServicioCoreComponenteTitle_cantidad}"/>
+
+                        <p:outputLabel value="#{messages.CreateProgramaServicioCoreComponenteLabel_monto}" for="monto" />
+                        <p:inputText id="monto" value="#{programaServicioCoreComponenteController.selected.monto}" title="#{messages.CreateProgramaServicioCoreComponenteTitle_monto}"/>
+
+                        <p:outputLabel value="#{messages.CreateProgramaServicioCoreComponenteLabel_subtitulo}" for="subtitulo" />
+                        <p:selectOneMenu id="subtitulo" value="#{programaServicioCoreComponenteController.selected.subtitulo}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoSubtituloController.items}"
+                                           var="subtituloItem"
+                                           itemValue="#{subtituloItem}"
+                                           itemLabel="#{subtituloItem.idTipoSubtitulo.toString()}"
+                                           />
+                            <f:converter binding="#{tipoSubtituloConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateProgramaServicioCoreComponenteLabel_programaServicioCore1}" for="programaServicioCore1" />
+                        <p:selectOneMenu id="programaServicioCore1" value="#{programaServicioCoreComponenteController.selected.programaServicioCore1}" required="true" requiredMessage="#{messages.CreateProgramaServicioCoreComponenteRequiredMessage_programaServicioCore1}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{programaServicioCoreController.items}"
+                                           var="programaServicioCore1Item"
+                                           itemValue="#{programaServicioCore1Item}"
+                                           itemLabel="#{programaServicioCore1Item.idProgramaServicioCore.toString()}"
+                                           />
+                            <f:converter binding="#{programaServicioCoreConverter}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{messages.CreateProgramaServicioCoreComponenteLabel_servicioCoreComponente}" for="servicioCoreComponente" />
+                        <p:selectOneMenu id="servicioCoreComponente" value="#{programaServicioCoreComponenteController.selected.servicioCoreComponente}" required="true" requiredMessage="#{messages.CreateProgramaServicioCoreComponenteRequiredMessage_servicioCoreComponente}">
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{componenteController.items}"
+                                           var="servicioCoreComponenteItem"
+                                           itemValue="#{servicioCoreComponenteItem}"
+                                           itemLabel="#{servicioCoreComponenteItem.id.toString()}"
+                                           />
+                            <f:converter binding="#{componenteConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{programaServicioCoreComponenteController.saveNew}" value="#{messages.Save}" update="display,:ProgramaServicioCoreComponenteListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ProgramaServicioCoreComponenteCreateDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ProgramaServicioCoreComponenteCreateDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

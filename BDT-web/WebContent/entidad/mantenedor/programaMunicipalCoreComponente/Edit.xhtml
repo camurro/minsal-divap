@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="ProgramaMunicipalCoreComponenteEditDlg" widgetVar="ProgramaMunicipalCoreComponenteEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditProgramaMunicipalCoreComponenteTitle}" closeOnEscape="true">
+
+            <h:form id="ProgramaMunicipalCoreComponenteEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{programaMunicipalCoreComponenteController.selected != null}">
+
+                        <p:outputLabel value="#{messages.EditProgramaMunicipalCoreComponenteLabel_tarifa}" for="tarifa" />
+                        <p:inputText id="tarifa" value="#{programaMunicipalCoreComponenteController.selected.tarifa}" title="#{messages.EditProgramaMunicipalCoreComponenteTitle_tarifa}"/>
+
+                        <p:outputLabel value="#{messages.EditProgramaMunicipalCoreComponenteLabel_cantidad}" for="cantidad" />
+                        <p:inputText id="cantidad" value="#{programaMunicipalCoreComponenteController.selected.cantidad}" title="#{messages.EditProgramaMunicipalCoreComponenteTitle_cantidad}"/>
+
+                        <p:outputLabel value="#{messages.EditProgramaMunicipalCoreComponenteLabel_monto}" for="monto" />
+                        <p:inputText id="monto" value="#{programaMunicipalCoreComponenteController.selected.monto}" title="#{messages.EditProgramaMunicipalCoreComponenteTitle_monto}"/>
+
+                        <p:outputLabel value="#{messages.EditProgramaMunicipalCoreComponenteLabel_subtitulo}" for="subtitulo" />
+                        <p:selectOneMenu id="subtitulo" value="#{programaMunicipalCoreComponenteController.selected.subtitulo}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoSubtituloController.items}"
+                                           var="subtituloItem"
+                                           itemValue="#{subtituloItem}"
+                                           itemLabel="#{subtituloItem.idTipoSubtitulo.toString()}"
+                                           />
+                            <f:converter binding="#{tipoSubtituloConverter}"/>
+                        </p:selectOneMenu>
+
+
+                        <h:outputLabel value="#{messages.EditProgramaMunicipalCoreComponenteLabel_programaMunicipalCore}" for="programaMunicipalCore" />
+                        <h:outputText id="programaMunicipalCore" value="#{programaMunicipalCoreComponenteController.selected.programaMunicipalCore}" />
+
+
+                        <h:outputLabel value="#{messages.EditProgramaMunicipalCoreComponenteLabel_municipalCoreComponente}" for="municipalCoreComponente" />
+                        <h:outputText id="municipalCoreComponente" value="#{programaMunicipalCoreComponenteController.selected.municipalCoreComponente}" />
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{programaMunicipalCoreComponenteController.save}" value="#{messages.Save}" update="display,:ProgramaMunicipalCoreComponenteListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ProgramaMunicipalCoreComponenteEditDialog);"/>
+                    <p:commandButton value="#{messages.Cancel}" onclick="ProgramaMunicipalCoreComponenteEditDialog.hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

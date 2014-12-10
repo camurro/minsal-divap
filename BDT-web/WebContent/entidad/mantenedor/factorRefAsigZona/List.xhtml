@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="FactorRefAsigZonaListForm">
+
+        <p:panel header="#{messages.ListFactorRefAsigZonaTitle}">
+            <p:contextMenu id="FactorRefAsigZonaDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{messages.Create}" onclick="document.getElementById('FactorRefAsigZonaListForm:createButton').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{messages.View}" onclick="document.getElementById('FactorRefAsigZonaListForm:viewButton').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{messages.Edit}" onclick="document.getElementById('FactorRefAsigZonaListForm:editButton').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('FactorRefAsigZonaListForm:deleteButton').click();" icon="ui-icon-trash"/>
+                <p:separator/>
+                <p:menuitem value="#{messages.FactorRefAsigZonaMenuItem_antecendentesComunaCollection}" icon="ui-icon-search"  action="#{factorRefAsigZonaController.navigateAntecendentesComunaCollection}" disabled="#{empty factorRefAsigZonaController.selected.antecendentesComunaCollection}" ajax="false"/>  
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{factorRefAsigZonaController.factorRefAsigZonas}"
+                         var="item"
+                         rowKey="#{item.idFactorRefAsigZona}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{factorRefAsigZonaController.seleccionado}">
+
+                <p:ajax event="rowSelect"   update=":FactorRefAsigZonaListForm:createButton :FactorRefAsigZonaListForm:viewButton :FactorRefAsigZonaListForm:editButton :FactorRefAsigZonaListForm:deleteButton :FactorRefAsigZonaListForm:FactorRefAsigZonaDataTableContextMenu" listener="#{factorRefAsigZonaController.resetParents}"/>
+                <p:ajax event="rowUnselect" update=":FactorRefAsigZonaListForm:createButton :FactorRefAsigZonaListForm:viewButton :FactorRefAsigZonaListForm:editButton :FactorRefAsigZonaListForm:deleteButton :FactorRefAsigZonaListForm:FactorRefAsigZonaDataTableContextMenu" listener="#{factorRefAsigZonaController.resetParents}"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('FactorRefAsigZonaListForm:viewButton').click();"/>
+
+                <p:column sortBy="#{item.idFactorRefAsigZona}" filterBy="#{item.idFactorRefAsigZona}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListFactorRefAsigZonaTitle_idFactorRefAsigZona}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idFactorRefAsigZona}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.zona}" filterBy="#{item.zona}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListFactorRefAsigZonaTitle_zona}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.zona}"/>
+                </p:column>
+
+
+                <p:column sortBy="#{item.valor}" filterBy="#{item.valor}">
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.ListFactorRefAsigZonaTitle_valor}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.valor}"/>
+                </p:column>
+
+
+            </p:dataTable>
+
+            <p:commandButton id="createButton"                             icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{factorRefAsigZonaController.prepareCreateFactorRefAsigZona}" update=":FactorRefAsigZonaCreateForm" oncomplete="FactorRefAsigZonaCreateDialog.show()"/>
+            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{messages.View}" update=":FactorRefAsigZonaViewForm" oncomplete="FactorRefAsigZonaViewDialog.show()" disabled="#{empty factorRefAsigZonaController.seleccionado}"/>
+            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{messages.Edit}" update=":FactorRefAsigZonaEditForm" oncomplete="FactorRefAsigZonaEditDialog.show()" disabled="#{empty factorRefAsigZonaController.seleccionado}"/>
+            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{factorRefAsigZonaController.delete}" update=":growl,datalist" disabled="#{empty factorRefAsigZonaController.seleccionado}"/>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>
