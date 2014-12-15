@@ -23,13 +23,7 @@ import minsal.divap.model.mappers.RegionMapper;
 import minsal.divap.model.mappers.ServicioMapper;
 import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.RegionVO;
-<<<<<<< HEAD
-import minsal.divap.vo.ReporteGlosaVO;
-import minsal.divap.vo.ReporteMarcoPresupuestarioComunaVO;
-import minsal.divap.vo.ReportePerCapitaVO;
-=======
 import minsal.divap.vo.ServiciosSummaryVO;
->>>>>>> e3694b74d1c3504e3db66481fbf2975ca0f51629
 import minsal.divap.vo.ServiciosVO;
 import cl.minsal.divap.model.AntecendentesComuna;
 import cl.minsal.divap.model.Comuna;
