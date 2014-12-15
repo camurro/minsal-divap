@@ -108,49 +108,9 @@ public class ValorizarReliquidacionPageSummaryVO implements Serializable{
 				row.add(getComponenteReliquidacionPageVO().getCuotasUno().getPorcentaje());
 				row.add(getComponenteReliquidacionPageVO().getCuotasUno().getMonto());
 			}
-			if(getComponenteReliquidacionPageVO().getCuotasDos() != null){
-				row.add(getComponenteReliquidacionPageVO().getCuotasDos().getPorcentaje());
-				row.add(getComponenteReliquidacionPageVO().getCuotasDos().getMonto());
-			}
-			if(getComponenteReliquidacionPageVO().getCuotasTres() != null){
-				row.add(getComponenteReliquidacionPageVO().getCuotasTres().getPorcentaje());
-				row.add(getComponenteReliquidacionPageVO().getCuotasTres().getMonto());
-			}
-			if(getComponenteReliquidacionPageVO().getCuotasCuatro() != null){
-				row.add(getComponenteReliquidacionPageVO().getCuotasCuatro().getPorcentaje());
-				row.add(getComponenteReliquidacionPageVO().getCuotasCuatro().getMonto());
-			}
-			if(getComponenteReliquidacionPageVO().getCuotasCinco() != null){
-				row.add(getComponenteReliquidacionPageVO().getCuotasCinco().getPorcentaje());
-				row.add(getComponenteReliquidacionPageVO().getCuotasCinco().getMonto());
-			}
-			if(getComponenteReliquidacionPageVO().getCuotasSeis() != null){
-				row.add(getComponenteReliquidacionPageVO().getCuotasSeis().getPorcentaje());
-				row.add(getComponenteReliquidacionPageVO().getCuotasSeis().getMonto());
-			}
-			if(getComponenteReliquidacionPageVO().getCuotasSiete() != null){
-				row.add(getComponenteReliquidacionPageVO().getCuotasSiete().getPorcentaje());
-				row.add(getComponenteReliquidacionPageVO().getCuotasSiete().getMonto());
-			}
-			if(getComponenteReliquidacionPageVO().getCuotasOcho()!= null){
-				row.add(getComponenteReliquidacionPageVO().getCuotasOcho().getPorcentaje());
-				row.add(getComponenteReliquidacionPageVO().getCuotasOcho().getMonto());
-			}
-			if(getComponenteReliquidacionPageVO().getCuotasNueve() != null){
-				row.add(getComponenteReliquidacionPageVO().getCuotasNueve().getPorcentaje());
-				row.add(getComponenteReliquidacionPageVO().getCuotasNueve().getMonto());
-			}
-			if(getComponenteReliquidacionPageVO().getCuotasDiez() != null){
-				row.add(getComponenteReliquidacionPageVO().getCuotasDiez().getPorcentaje());
-				row.add(getComponenteReliquidacionPageVO().getCuotasDiez().getMonto());
-			}
-			if(getComponenteReliquidacionPageVO().getCuotasOnce() != null){
-				row.add(getComponenteReliquidacionPageVO().getCuotasOnce().getPorcentaje());
-				row.add(getComponenteReliquidacionPageVO().getCuotasOnce().getMonto());
-			}
-			if(getComponenteReliquidacionPageVO().getCuotasDoce() != null){
-				row.add(getComponenteReliquidacionPageVO().getCuotasDoce().getPorcentaje());
-				row.add(getComponenteReliquidacionPageVO().getCuotasDoce().getMonto());
+			if(getComponenteReliquidacionPageVO().getUltimaCuota() != null){
+				row.add(getComponenteReliquidacionPageVO().getUltimaCuota().getPorcentaje());
+				row.add(getComponenteReliquidacionPageVO().getUltimaCuota().getMonto());
 			}
 			if(getComponenteReliquidacionPageVO().getPorcentajeCumplimiento() != null){
 				row.add(getComponenteReliquidacionPageVO().getPorcentajeCumplimiento());

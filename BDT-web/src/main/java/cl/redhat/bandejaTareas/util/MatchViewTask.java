@@ -69,7 +69,17 @@ public class MatchViewTask {
 		CONVENIOSELECCIONARLINEAPROGRAMATICA("minsal_divap.ProcesoConvenio.seleccionarprograma", "divapProcesoGITSubir"),
 		CONVENIOVERIFICARCONVENIOSINFORMADOS("minsal_divap.ProcesoConvenio.verificarconveniosinformadosporprograma", "divapProcesoGITVerificar"),
 		CONVENIOHACERSEGUIMIENTORESOLUCIONES("minsal_divap.ProcesoConvenio.hacerseguimientoderesoluciones", "divapProcesoGITSeguimiento"), 
-		CONVENIORESUMENDOCUMENTOSENVIADOS("minsal_divap.ProcesoConvenio.revisarresumendocumentos", "divapProcesoGITResumenDocumentos");
+		CONVENIORESUMENDOCUMENTOSENVIADOS("minsal_divap.ProcesoConvenio.revisarresumendocumentos", "divapProcesoGITResumenDocumentos"),
+																																											
+		MODHACERSEGUIMIENTOSOLICITUDANTECEDENTES("minsal_divap.ModificacionDistribucionInicialPerCapita.hacerseguimientoordinariosdesolicituddeantecedentespoblacion", "divapProcesoModificacionAsignacionPerCapitaAntecedenteSeguimiento"),
+		MODSUBIRDOCUMENTOS("minsal_divap.ModificacionDistribucionInicialPerCapita.subirdocumentos", "divapProcesoModificacionAsignacionPerCapitaCargarValorizacion"),
+		MODVALIDARRESULTADOSVALORIZACION("minsal_divap.ModificacionDistribucionInicialPerCapita.validarresultadosvalorizacion", "divapProcesoModificacionAsignacionPerCapitaValidarMontosDistribucion"),
+		MODHACERSEGUIMIENTOOFICIO("minsal_divap.ModificacionDistribucionInicialPerCapita.hacerseguimientooficiosconsultaregional", "divapProcesoModificacionAsignacionPerCapitaSeguimiento"),
+		MODHACERSEGUIMIENTODECRETO("minsal_divap.ModificacionDistribucionInicialPerCapita.hacerseguimientodecreto/subirultimaversion", "divapProcesoModificacionAsignacionPerCapitaSeguimiento"),
+		MODHACERSEGUIMIENTORESOLUCIONES("minsal_divap.ModificacionDistribucionInicialPerCapita.hacerseguimientoresoluciones", "divapProcesoModificacionAsignacionPerCapitaSeguimiento"),
+		MODHACERSEGUIMIENTOTOMARAZON("minsal_divap.ModificacionDistribucionInicialPerCapita.hacerseguimientotomaderazon", "divapProcesoModificacionAsignacionPerCapitaSeguimiento"),
+		MODSUBIRDOCUMENTOSFINALES("minsal_divap.ModificacionDistribucionInicialPerCapita.subirdocumentostotalmentetramitados(decretosyresoluciones)", "divapProcesoModificacionAsignacionPerCapitaSubirDocumentosTotalmenteTramitados");
+
 		
 		
 		private String key;

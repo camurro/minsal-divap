@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml"
+                xmlns:c="http://java.sun.com/jstl/core">
+	<ui:define name="zonaJavaScript">
+		<style type="text/css">
+			.ui-state-error {
+				margin-left: 0px;
+			}
+		</style>
+		<script type="text/javascript">
+			function checkEmail(email) {
+				var regExp = /(^[a-z]([a-z_\.]*)@([a-z_\.]*)([.][a-z]{3})$)|(^[a-z]([a-z_\.]*)@([a-z_\.]*)(\.[a-z]{3})(\.[a-z]{2})*$)/i;
+				return regExp.test(email);
+			}
+			
+			function checkInputText(text, required, message){
+				text = $.trim(text);
+				if(required){
+					if(text == ""){
+						alert(message);
+						return false;
+					}
+				}else{
+					if(text == ""){
+						return true;
+					}
+				}
+				return true;
+			}
+		
+			function checkEmails(emails, required){
+				emails = $.trim(emails);
+				if(required){
+					if(emails == ""){
+						alert("Debe Especificar al menos un destinatario");
+						return false;
+					}
+				}else{
+					if(emails == ""){
+						return true;
+					}
+				}
+				var emailArray = emails.split(",");
+			    var invEmails = "";
+			    for(i = 0; i &lt;  emailArray.length; i++){
+			        if(!checkEmail(emailArray[i])){
+			        	invEmails += emailArray[i] + "\n";
+			        }
+			    }
+			    if(invEmails != ""){
+			        alert( "Error \nEmails no válidos:\n" + invEmails);
+			        return false;
+			    }
+				return true;
+			}
+		
+			function checkListEmails(){
+				 var emailsPara = document.getElementById("formSeguimiento:to").value;
+				 var result = checkEmails(emailsPara, true);
+				 if(!result){
+					 $("#formSeguimiento\\:to").addClass("ui-state-error");
+					 return false;
+				 }
+				 $("#formSeguimiento\\:to").removeClass("ui-state-error");
+				 var emailsCc = document.getElementById("formSeguimiento:cc").value;
+				 result = checkEmails(emailsCc, false);
+				 if(!result){
+					 $("#formSeguimiento\\:cc").addClass("ui-state-error");
+					 return false;
+				 }
+				 $("#formSeguimiento\\:cc").removeClass("ui-state-error");
+				 var emailsCco = document.getElementById("formSeguimiento:cco").value;
+				 result = checkEmails(emailsCco, false);
+				 if(!result){
+					 $("#formSeguimiento\\:cco").addClass("ui-state-error");
+					 return false;
+				 }
+				 $("#formSeguimiento\\:subject").removeClass("ui-state-error");
+				 var subject = document.getElementById("formSeguimiento:subject").value;
+				 result = checkInputText(subject, true, "Debe especificar el asunto del correo");
+				 if(!result){
+					 $("#formSeguimiento\\:subject").addClass("ui-state-error");
+					 return false;
+				 }
+				 $("#formSeguimiento\\:body").removeClass("ui-state-error");
+				 var body = document.getElementById("formSeguimiento:body").value;
+				 result = checkInputText(body, true, "Debe especificar el contenido del correo");
+				 if(!result){
+					 $("#formSeguimiento\\:body").addClass("ui-state-error");
+					 return false;
+				 }
+				 
+				 return true;
+			}	
+
+		  	function downloadDocument(idDoc) {  
+                 document.getElementById('formDownload:hiddenId').value=idDoc;
+                 document.getElementById('formDownload:linkDownload').click();  
+           	}  
+
+		  	function subirDocumentos(){  
+              	 document.getElementById('btnShowModal').click();  
+          	}  
+		</script>
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="formSeguimiento" enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Hacer Seguimiento Ordinarios Solicitudes de Antecedentes Población" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>
+						<span class="strong">Actividad:</span> Seguimiento de Documentación Formal
+					</h2>
+					<p class="parrafo">El #{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.actividadSeguimientoTitle} contiene lorem ipsum dolor sit amet,
+						consectetur adipiscing elit. Praesent egestas tempor nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est
+						faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo placerat, nisi augue suscipit ante, vel
+						auctor mauris enim eu turpis. Nunc eu erat et eros interdum eleifend eu non sem. Maecenas sollicitudin odio imperdiet orci
+						sollicitudin convallis. Etiam hendrerit, tellus a lacinia dignissim, justo nisi porttitor enim, eget ullamcorper felis augue eget
+						lacus.</p>
+					<!-- ARCHIVOS DE TAREA -->
+					<!-- <h3>Archivos disponibles para la Tarea:</h3> -->
+					<div class="destacaArchivos ui-corner-all">
+						<h3>Archivos Disponibles para la Tarea:</h3>
+						<span class="strong">Archivo: </span> Ordinarios Solicitudes de Antecedentes Población [
+						<h:graphicImage value="resources/minsal/images/download-alt.png"
+							styleClass="divapIcons" />
+						<h:commandLink id="lastResolucion" value="Bajar Última Versión"
+						        onclick="downloadDocument(#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.idResolucion});return false;" />
+						|
+						<h:graphicImage value="resources/minsal/images/upload-alt.png"
+								styleClass="divapIcons" />
+							<p:commandLink value="Subir Nueva Versión" actionListener="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.resetLastVersion}" update=":formUploadVersion:panelLastVersion"
+								oncomplete="dlgUploadVersion.show();" />
+						]
+					</div>
+					
+					<br />
+					<div class="destacaArchivos ui-corner-all">
+						<h3>Plantilla Envío Correo Ordinarios Solicitudes de Antecedentes Población :</h3>
+						<span class="strong">Archivo: </span> Correo de Ordinarios Solicitudes de Antecedentes Población [
+						<h:graphicImage value="resources/minsal/images/download-alt.png"
+							styleClass="divapIcons" />
+						<h:commandLink id="lastPlantillaCorreo" value="Bajar Última Versión"
+						        onclick="downloadDocument(#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.plantillaCorreoId});return false;" />
+						|
+						<h:graphicImage value="resources/minsal/images/upload-alt.png"
+								styleClass="divapIcons" />
+							<p:commandLink value="Subir Nueva Versión"
+								oncomplete="dlgUpload.show();" />
+						]
+					</div>
+					
+					<!-- HISTORIAL DE SEGUIMIENTO -->
+					<h3>Bitácora de Seguimiento:</h3>
+					<!-- INICIO MENSAJE MOCK -->
+					<p:panelGrid columns="2" rendered="#{not empty procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.bitacoraSeguimiento}">
+						<c:forEach var="var" items="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.bitacoraSeguimiento}">
+
+						<h:outputText value="#{var.date}" styleClass="inputLabel" >
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+						</h:outputText>
+
+						<h:panelGrid styleClass="tableFullWidth">
+							<h:panelGrid columns="2" styleClass="tableFullWidth">
+								<h:outputText value="Para: " styleClass="inputLabel" />
+								<h:outputText value="#{var.to}" />
+
+								<h:outputText value="CC: " styleClass="inputLabel" rendered="#{not empty var.cc}"/>
+								<h:outputText value="#{var.cc}" rendered="#{not empty var.cc}" />
+
+								<h:outputText value="CCO: " styleClass="inputLabel" rendered="#{not empty var.cco}"/>
+								<h:outputText value="#{var.cco}" rendered="#{not empty var.cco}" />
+
+								<h:outputText value="Adjunto: " styleClass="inputLabel"
+										rendered="#{not empty var.attached}" />
+								<h:panelGrid columns="2" rendered="#{not empty var.attached}">
+									<h:graphicImage
+										value="resources/minsal/images/download-alt.png"
+										styleClass="divapIcons" />
+									<h:commandLink value="#{var.attached.path}"
+										onclick="downloadDocument(#{var.attached.id});return false;" />
+								</h:panelGrid>
+
+								<h:outputText value="Asunto: " styleClass="inputLabel" />
+								<h:outputText value="#{var.subject}" />
+
+								<h:outputText value="Mensaje: " styleClass="inputLabel" />
+								<h:outputText value="#{var.body}" />
+							</h:panelGrid>
+						</h:panelGrid>
+						</c:forEach>
+					</p:panelGrid>
+					<!-- FIN MENSAJE MOCK -->
+
+						<h3>Seguimiento:</h3>
+						<h:panelGrid styleClass="tableFullWidth">
+							<h:panelGrid columns="2" styleClass="tableFullWidth">
+								<h:outputText value="Para: " styleClass="inputLabel" />
+								<p:inputText  value="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.to}" styleClass="inputText" style="width: 70%;" id="to"/>
+
+								<h:outputText value="CC: " styleClass="inputLabel" />
+								<p:inputText value="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.cc}" styleClass="inputText" style="width: 70%;" id="cc"/>
+
+								<h:outputText value="CCO: " styleClass="inputLabel" />
+								<p:inputText value="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.cco}"  styleClass="inputText" style="width: 70%;" id="cco" />
+
+								<h:outputText value="Adjunto: " styleClass="inputLabel" />
+								<h:panelGrid columns="2">
+									<p:fileUpload id="attachedFile" value="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.attachedFile}" mode="simple" styleClass="inputText" />
+								</h:panelGrid>
+
+								<h:outputText value="Asunto: " styleClass="inputLabel" />
+								<p:inputText value="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.subject}" styleClass="inputText" style="width: 70%;" id="subject"/>
+
+								<h:outputText value="Mensaje : " styleClass="inputLabel" />
+								<p:inputTextarea value="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.body}" styleClass="inputTextArea"  style="width: 70%;" id="body"/>
+							</h:panelGrid>
+							<p:commandButton styleClass="x-btn-text" style="float:right;" value="Enviar Correo" onclick="return checkListEmails()"
+								action="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.sendMail}" id="sendMail" ajax="false" icon="ui-icon-comment" />
+						</h:panelGrid>
+						<h3>Tareas de la Actividad:</h3>
+						<p style="">
+							En caso de que el seguimiento de la actividad sea exitoso haga clic en <span class="strong">Finalizar Seguimiento</span> para
+							finalizar la actividad y pasar a la siguiente en el flujo del proceso. En caso de que exista algún error en la documentación y sea
+							necesario volver a generar la documentación haga clic en <span class="strong">Reingresar</span>.
+						</p>
+
+						<p:commandButton styleClass="x-btn-text" value="Finalizar Seguimiento | Actividad" icon="ui-icon-check" action="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.enviar}" >
+							<f:setPropertyActionListener
+								target="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.target}"
+								value="bandejaTareas.jsf" />	
+						</p:commandButton>
+
+						<div style="clear: both;"></div>
+
+				</p:panel>
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+		<h:form id="formDownload">
+			<h:inputHidden value="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.docIdDownload}" id="hiddenId" />
+			<h:commandButton id="linkDownload" action="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.downloadPlanilla}" style="display: none"/>
+		</h:form>
+		
+		<p:dialog header="Subir archivo" widgetVar="dlgUpload" id="idDlgUpload" modal="true" height="150"  appendToBody="true">
+			<h:form id="uploadVersion" enctype="multipart/form-data">
+			<p:panelGrid columns="2" >
+				<h:outputText value="Nueva Versión: " />
+				<p:fileUpload id="newVersionFile"
+							fileUploadListener="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.handleFile}"
+							value="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.file}"
+							update="uploadVersion" mode="simple"  />
+				<p:commandButton value="Aceptar" ajax="false"
+					actionListener="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.uploadVersion}" update=":lastPlantillaCorreo"
+					oncomplete="if (args &amp;&amp; args.showDialog){dlgUpload.hide()}else{ alert('the bean didnt let me open the dialog')}" />
+				<p:commandButton value="Cancelar"
+					onclick="dlgUpload.hide()" type="button" />
+			</p:panelGrid>
+			</h:form> 	
+		</p:dialog> 
+		
+		<p:dialog header="Subir archivo" widgetVar="dlgUploadVersion" id="idDlgUploadVersion" modal="true" height="150"  appendToBody="true">
+			<h:form id="formUploadVersion" enctype="multipart/form-data">
+			<p:panelGrid columns="2" id="panelLastVersion">
+				<h:outputText value="Nueva Versión: " />
+				<p:fileUpload id="newVersionRetiroFile"
+							fileUploadListener="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.handleFile}"
+							value="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.file}"
+							update="formUploadVersion" mode="simple"  />
+				<h:outputText value="Versión Final: "  />
+				<h:selectBooleanCheckbox id="checkVersionFinal" value="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.lastVersion}" />
+				<p:commandButton value="Aceptar" ajax="false"
+					actionListener="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.uploadVersionFinal}" update=":lastResolucion"
+					oncomplete="if (args &amp;&amp; args.showDialog){dlgUploadVersion.hide()}else{ alert('the bean didnt let me open the dialog')}" />
+				<p:commandButton value="Cancelar"
+					onclick="dlgUploadVersion.hide()" type="button" />
+			</p:panelGrid>
+			</h:form> 	
+		</p:dialog> 
+	</ui:define>
+</ui:composition>

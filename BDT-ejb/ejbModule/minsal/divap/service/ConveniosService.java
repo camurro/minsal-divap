@@ -44,6 +44,9 @@ import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TareasSeguimiento;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.enums.TiposDestinatarios;
+import minsal.divap.excel.GeneradorExcel;
+import minsal.divap.excel.impl.CrearPlanillaConveniosProgramaSheetExcel;
+import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.model.mappers.CargaConvenioComunaComponenteMapper;
 import minsal.divap.model.mappers.CargaConvenioServicioComponenteMapper;
 import minsal.divap.model.mappers.ConvenioComunaComponenteMapper;
@@ -54,18 +57,24 @@ import minsal.divap.vo.AdjuntosVO;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.CargaConvenioComunaComponenteVO;
 import minsal.divap.vo.CargaConvenioServicioComponenteVO;
+import minsal.divap.vo.CellExcelVO;
 import minsal.divap.vo.ComponenteSummaryVO;
+import minsal.divap.vo.ComponentesVO;
+import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.ConvenioComunaComponenteVO;
 import minsal.divap.vo.ConvenioDocumentoVO;
 import minsal.divap.vo.ConvenioServicioComponenteVO;
 import minsal.divap.vo.ConveniosVO;
 import minsal.divap.vo.DocumentoVO;
+import minsal.divap.vo.EstablecimientoSummaryVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.ReporteEmailsEnviadosVO;
 import minsal.divap.vo.ResolucionConveniosServicioVO;
 import minsal.divap.vo.SeguimientoVO;
+import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloSummaryVO;
+import minsal.divap.vo.SubtituloVO;
 import minsal.divap.xml.GeneradorXML;
 import minsal.divap.xml.email.Email;
 
@@ -131,6 +140,8 @@ public class ConveniosService {
 	@EJB
 	private InstitucionDAO institucionDAO;
 	@EJB
+	private SubtituloService subtituloService;
+	@EJB
 	private SeguimientoDAO seguimientoDAO;
 	@EJB
 	private ProgramasService programasService;
@@ -138,6 +149,8 @@ public class ConveniosService {
 	private DocumentService documentService;
 	@EJB
 	private AlfrescoService alfrescoService;
+	@EJB
+	private ServicioSaludService servicioSaludService;
 	@EJB
 	private SeguimientoService seguimientoService;
 	@EJB
@@ -300,16 +313,16 @@ public class ConveniosService {
 				contenido.append("</thead>");
 				contenido.append("<tbody>");
 				for(Map.Entry<String, Map<Integer, String>> entry : componenteSubtituloResolucionesComuna.entrySet()) {
-					contenido.append("<tr>");
 					String componenteSubtitulo = entry.getKey();
 					String [] splitComponenteSubtitulo = componenteSubtitulo.split("@");
-					contenido.append("<td>").append(splitComponenteSubtitulo[0]).append("</td>");
-					contenido.append("<td>").append(splitComponenteSubtitulo[1]).append("</td>");
 					for (Map.Entry<Integer, String> entryResolucionComuna : entry.getValue().entrySet()){
+						contenido.append("<tr>");
+						contenido.append("<td>").append(splitComponenteSubtitulo[0]).append("</td>");
+						contenido.append("<td>").append(splitComponenteSubtitulo[1]).append("</td>");
 						contenido.append("<td>").append(entryResolucionComuna.getKey()).append(" </td>");
 						contenido.append("<td>").append(entryResolucionComuna.getValue()).append(" </td>");
+						contenido.append("</tr>");
 					}
-					contenido.append("</tr>");
 				}
 				contenido.append("</tbody>");
 				contenido.append("<table>").append("<br/>");
@@ -327,16 +340,16 @@ public class ConveniosService {
 				contenido.append("</thead>");
 				contenido.append("<tbody>");
 				for(Map.Entry<String, Map<Integer, String>> entry : componenteSubtituloResolucionesEstablecimiento.entrySet()) {
-					contenido.append("<tr>");
 					String componenteSubtitulo = entry.getKey();
 					String [] splitComponenteSubtitulo = componenteSubtitulo.split("@");
-					contenido.append("<td>").append(splitComponenteSubtitulo[0]).append("</td>");
-					contenido.append("<td>").append(splitComponenteSubtitulo[1]).append("</td>");
 					for (Map.Entry<Integer, String> entryResolucionEstablecimiento : entry.getValue().entrySet()){
+						contenido.append("<tr>");
+						contenido.append("<td>").append(splitComponenteSubtitulo[0]).append("</td>");
+						contenido.append("<td>").append(splitComponenteSubtitulo[1]).append("</td>");
 						contenido.append("<td>").append(entryResolucionEstablecimiento.getKey()).append(" </td>");
 						contenido.append("<td>").append(entryResolucionEstablecimiento.getValue()).append(" </td>");
+						contenido.append("</tr>");
 					}
-					contenido.append("</tr>");
 				}
 				contenido.append("</tbody>");
 				contenido.append("<table>").append("<br/>");
@@ -1887,6 +1900,182 @@ public class ConveniosService {
 			return versionesFinales.size();
 		}
 		return 0;
+	}
+
+	public Integer planillaMunicipalServicio(Integer programaSeleccionado, Integer idConvenio) {
+		Integer planillaTrabajoId = null;
+		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
+		ProgramaVO programa = programasService.getProgramaAno(programaSeleccionado);
+		String filename = tmpDir + File.separator + "planillaConvenioMunicipal " + programa.getNombre().replace(":", "") + ".xlsx";
+		String contenType = mimemap.getContentType(filename.toLowerCase());
+		Subtitulo[] subtitulosServicio = {Subtitulo.SUBTITULO24};
+		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulosServicio);
+		List<Integer> idComponentes = new ArrayList<Integer>();
+		GeneradorExcel generadorExcel = new GeneradorExcel(filename);
+		List<CellExcelVO> header = new ArrayList<CellExcelVO>();
+		List<CellExcelVO> subHeader = new ArrayList<CellExcelVO>();
+		header.add(new CellExcelVO(programa.getNombre(), (componentes.size() * 5) + 4, 1));
+		header.add(new CellExcelVO("SERVICIOS DE SALUD", 2, 2));
+		header.add(new CellExcelVO("COMUNAS", 2, 2));
+
+		subHeader.add(new CellExcelVO("ID", 1, 1));
+		subHeader.add(new CellExcelVO("Servicio de Salud", 1, 1));
+		subHeader.add(new CellExcelVO("ID", 1, 1));
+		subHeader.add(new CellExcelVO("Comuna", 1, 1));
+		for(int i=0; i< componentes.size() ; i++){
+			header.add(new CellExcelVO(componentes.get(i).getNombre().toUpperCase(), 5, 1));
+			idComponentes.add(componentes.get(i).getId());
+			header.add(new CellExcelVO("Subtítulo 24", 5, 1)); 
+			subHeader.add(new CellExcelVO("Marco Presupuestario", 1, 1));
+			subHeader.add(new CellExcelVO("Resolución", 1, 1));
+			subHeader.add(new CellExcelVO("Fecha", 1, 1));
+			subHeader.add(new CellExcelVO("Monto Convenio", 1, 1));
+			subHeader.add(new CellExcelVO("Convenios Pendientes", 1, 1));
+		}
+		
+		List<ServiciosVO> servicios = servicioSaludService.getServiciosOrderId();
+		List<List<String>> items = new ArrayList<List<String>>();
+		for(int i=0;i<servicios.size();i++){
+			List<ComunaSummaryVO> comunas = servicios.get(i).getComunas();
+			for(int j=0;j<comunas.size();j++){
+				List<String> fila = new ArrayList<String>();
+				fila.add(servicios.get(i).getId_servicio() +"");
+				fila.add(servicios.get(i).getNombre_servicio());
+				fila.add(comunas.get(j).getId().toString());
+				fila.add(comunas.get(j).getNombre());
+				for(int contComponentes = 0; contComponentes< componentes.size() ; contComponentes++){
+					for(SubtituloVO subtituloVO : componentes.get(contComponentes).getSubtitulos()){
+						if(subtituloVO.getId().equals(Subtitulo.SUBTITULO24.getId())){
+							List<ConvenioComunaComponenteVO> conveniosComunaComponente = getConveniosComunaComponenteByProgramaAnoComponenteSubtituloComunaConvenioEstadoConvenio(programaSeleccionado, componentes.get(contComponentes).getId(), subtituloVO.getId(), comunas.get(j).getId(), idConvenio, EstadosConvenios.INGRESADO);
+							if(conveniosComunaComponente != null && conveniosComunaComponente.size() > 0){
+								int size = conveniosComunaComponente.size();
+								ConvenioComunaComponenteVO convenioComunaComponenteVO = conveniosComunaComponente.get(size-1);
+								fila.add(convenioComunaComponenteVO.getMarcoPresupuestario().toString());
+								fila.add(convenioComunaComponenteVO.getResolucion().toString());
+								SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy"); 
+								if(convenioComunaComponenteVO.getFecha() != null){
+									fila.add(sdf.format(convenioComunaComponenteVO.getFecha()));
+								}else{
+									fila.add("");
+								}
+								fila.add(convenioComunaComponenteVO.getMonto().toString());
+								fila.add(convenioComunaComponenteVO.getMontoPendiente().toString());
+							}else{
+								fila.add("0");
+								fila.add("");
+								fila.add("");
+								fila.add("0");
+								fila.add("0");
+							}
+						}
+					}
+				}
+				items.add(fila);
+			}
+		}
+		ExcelTemplate crearPlanillaConveniosProgramaSheetExcel = new CrearPlanillaConveniosProgramaSheetExcel(header, subHeader, items);
+		generadorExcel.addSheet(crearPlanillaConveniosProgramaSheetExcel, "Planilla Convenio Municipal");
+		try {
+			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderProcesoConvenio.replace("{ANO}", getAnoCurso().toString()));
+			System.out.println("response crearPlanillaCumplimientoMunicialProgramaSheetExcel --->" + response);
+			planillaTrabajoId = documentService.createDocumentConvenio(idConvenio, null, TipoDocumentosProcesos.PLANILLACONVENIOMUNICIPAL, response.getNodeRef(), response.getFileName(), contenType);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return planillaTrabajoId;
+	}
+
+	public Integer planillaEstablecimientoServicio(	Integer programaSeleccionado, Integer idConvenio) {
+		Integer planillaTrabajoId = null;
+		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
+		ProgramaVO programa = programasService.getProgramaAno(programaSeleccionado);
+		String filename = tmpDir + File.separator + "planillaConvenioServicio " + programa.getNombre().replace(":", "") + ".xlsx";
+		String contenType = mimemap.getContentType(filename.toLowerCase());
+		Subtitulo[] subtitulosServicio = {Subtitulo.SUBTITULO21, Subtitulo.SUBTITULO22, Subtitulo.SUBTITULO29};
+		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulosServicio);
+		int totalSubtitulos = 0;
+		for(ComponentesVO componentesVO : componentes){
+			for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){
+				if(subtituloVO.getId().equals(Subtitulo.SUBTITULO21.getId()) || subtituloVO.getId().equals(Subtitulo.SUBTITULO22.getId()) || subtituloVO.getId().equals(Subtitulo.SUBTITULO29.getId())){
+					totalSubtitulos++;
+				}
+			}
+		}
+		
+		GeneradorExcel generadorExcel = new GeneradorExcel(filename);
+		List<CellExcelVO> header = new ArrayList<CellExcelVO>();
+		List<CellExcelVO> subHeader = new ArrayList<CellExcelVO>();
+		header.add(new CellExcelVO(programa.getNombre(), (totalSubtitulos * 5) + 4, 1));
+		header.add(new CellExcelVO("SERVICIOS DE SALUD", 2, 2));
+		header.add(new CellExcelVO("ESTABLECIMIENTOS", 2, 2));
+
+		subHeader.add(new CellExcelVO("ID", 1, 1));
+		subHeader.add(new CellExcelVO("Servicio de Salud", 1, 1));
+		subHeader.add(new CellExcelVO("ID", 1, 1));
+		subHeader.add(new CellExcelVO("Establecimiento", 1, 1));
+		for(int i=0; i< componentes.size() ; i++){
+			header.add(new CellExcelVO(componentes.get(i).getNombre().toUpperCase(), 5, 1));
+			for(SubtituloVO subtituloVO : componentes.get(i).getSubtitulos()){
+				if(subtituloVO.getId().equals(Subtitulo.SUBTITULO21.getId()) || subtituloVO.getId().equals(Subtitulo.SUBTITULO22.getId()) || subtituloVO.getId().equals(Subtitulo.SUBTITULO29.getId())){
+					header.add(new CellExcelVO(subtituloVO.getNombre(), 5, 1)); 
+					subHeader.add(new CellExcelVO("Marco Presupuestario", 1, 1));
+					subHeader.add(new CellExcelVO("Resolución", 1, 1));
+					subHeader.add(new CellExcelVO("Fecha", 1, 1));
+					subHeader.add(new CellExcelVO("Monto Convenio", 1, 1));
+					subHeader.add(new CellExcelVO("Convenios Pendientes", 1, 1));
+				}
+			}
+		}
+		List<ServiciosVO> servicios = servicioSaludService.getServiciosOrderId();
+		List<List<String>> items = new ArrayList<List<String>>();
+		for(int i=0;i<servicios.size();i++){
+			List<EstablecimientoSummaryVO> establecimientos = servicios.get(i).getEstableclimientos();
+			for(int j=0;j<establecimientos.size();j++){
+				List<String> fila = new ArrayList<String>();
+				fila.add(servicios.get(i).getId_servicio() +"");
+				fila.add(servicios.get(i).getNombre_servicio());
+				fila.add(establecimientos.get(j).getId().toString());
+				fila.add(establecimientos.get(j).getNombre());
+				for(int contComponentes = 0; contComponentes< componentes.size() ; contComponentes++){
+					for(SubtituloVO subtituloVO : componentes.get(contComponentes).getSubtitulos()){
+						if(subtituloVO.getId().equals(Subtitulo.SUBTITULO21.getId()) || subtituloVO.getId().equals(Subtitulo.SUBTITULO22.getId()) || subtituloVO.getId().equals(Subtitulo.SUBTITULO29.getId())){
+							List<ConvenioServicioComponenteVO> conveniosServicioComponente = getConveniosServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoConvenioEstadoConvenio(programaSeleccionado, componentes.get(contComponentes).getId(), subtituloVO.getId(), establecimientos.get(j).getId(), idConvenio, EstadosConvenios.INGRESADO);
+							if(conveniosServicioComponente != null && conveniosServicioComponente.size() > 0){
+								int size = conveniosServicioComponente.size();
+								ConvenioServicioComponenteVO convenioServicioComponenteVO = conveniosServicioComponente.get(size-1);
+								fila.add(convenioServicioComponenteVO.getMarcoPresupuestario().toString());
+								fila.add(convenioServicioComponenteVO.getResolucion().toString());
+								SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy"); 
+								if(convenioServicioComponenteVO.getFecha() != null){
+									fila.add(sdf.format(convenioServicioComponenteVO.getFecha()));
+								}else{
+									fila.add("");
+								}
+								fila.add(convenioServicioComponenteVO.getMonto().toString());
+								fila.add(convenioServicioComponenteVO.getMontoPendiente().toString());
+							}else{
+								fila.add("0");
+								fila.add("");
+								fila.add("");
+								fila.add("0");
+								fila.add("0");
+							}
+						}
+					}
+				}
+				items.add(fila);
+			}
+		}
+		ExcelTemplate crearPlanillaConveniosProgramaSheetExcel = new CrearPlanillaConveniosProgramaSheetExcel(header, subHeader, items);
+		generadorExcel.addSheet(crearPlanillaConveniosProgramaSheetExcel, "Planilla Convenio Municipal");
+		try {
+			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderProcesoConvenio.replace("{ANO}", getAnoCurso().toString()));
+			System.out.println("response crearPlanillaCumplimientoMunicialProgramaSheetExcel --->" + response);
+			planillaTrabajoId = documentService.createDocumentConvenio(idConvenio, null, TipoDocumentosProcesos.PLANILLACONVENIOMUNICIPAL, response.getNodeRef(), response.getFileName(), contenType);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return planillaTrabajoId;
 	}
 
 }

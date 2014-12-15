@@ -82,8 +82,10 @@
 						<p:menuitem value="Buscar Tareas" url="bandejaTareas.jsf?indexMenu=2" icon="ui-icon-search" />
 					</p:submenu>
 					<p:submenu label="Procesos" icon="ui-icon-extlink">
-						<p:menuitem value="Asignación de Recursos per Capita" url="divapProcesoAsignacionPerCapitaInicio.jsf"
-							icon="ui-icon-arrowrefresh-1-s" />
+						<p:submenu label="Asignación de Recursos per Capita">
+							<p:menuitem value="Asignación y Distribución de Recursos Per Cápita" url="divapProcesoAsignacionPerCapitaInicio.jsf" icon="ui-icon-document" />
+							<p:menuitem value="Modificación de Distribución de Recursos Per Cápita" url="divapProcesoModificacionAsignacionPerCapitaInicio.jsf" icon="ui-icon-document" />
+						</p:submenu>
 						<p:menuitem value="Resoluciones de Rebaja" url="divapProcesoRebajaInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
 						<p:menuitem value="Distribución de Recursos Financieros por Programa" url="divapProcesoDistRecFinProgInicio.jsf"
 							icon="ui-icon-arrowrefresh-1-s" />

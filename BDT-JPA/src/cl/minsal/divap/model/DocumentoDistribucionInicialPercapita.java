@@ -25,7 +25,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 	@NamedQuery(name = "DocumentoDistribucionInicialPercapita.findByTypesServicioIdDistribucionInicialPercapita", query = "SELECT d FROM DocumentoDistribucionInicialPercapita d WHERE d.idDistribucionInicialPercapita.idDistribucionInicialPercapita = :idDistribucionInicialPercapita and d.comuna is not null and d.comuna.servicioSalud.id = :idServicio and d.tipoDocumento.idTipoDocumento IN (:idTiposDocumento)"),
 	@NamedQuery(name = "DocumentoDistribucionInicialPercapita.findByTypesIdDistribucionInicialPercapita", query = "SELECT d FROM DocumentoDistribucionInicialPercapita d WHERE d.idDistribucionInicialPercapita.idDistribucionInicialPercapita = :idDistribucionInicialPercapita and d.tipoDocumento.idTipoDocumento IN (:idTiposDocumento)"),
 	@NamedQuery(name = "DocumentoDistribucionInicialPercapita.findLastByTypeIdDistribucionInicialPercapita", query = "SELECT d FROM DocumentoDistribucionInicialPercapita d WHERE d.idDistribucionInicialPercapita.idDistribucionInicialPercapita = :idDistribucionInicialPercapita and d.tipoDocumento.idTipoDocumento = :idTipoDocumento ORDER BY d.idDocumento.fechaCreacion DESC"),
-	@NamedQuery(name = "DocumentoDistribucionInicialPercapita.findByIdDocumentoDistribucionInicialPercapita", query = "SELECT d FROM DocumentoDistribucionInicialPercapita d WHERE d.idDocumentoDistribucionInicialPercapita = :idDocumentoDistribucionInicialPercapita")})
+	@NamedQuery(name = "DocumentoDistribucionInicialPercapita.findByIdDocumentoDistribucionInicialPercapita", query = "SELECT d FROM DocumentoDistribucionInicialPercapita d WHERE d.idDocumentoDistribucionInicialPercapita = :idDocumentoDistribucionInicialPercapita"),
+	@NamedQuery(name = "DocumentoDistribucionInicialPercapita.findLastByTypesServicioIdDistribucionInicialPercapita", query = "SELECT d FROM DocumentoDistribucionInicialPercapita d WHERE d.idDistribucionInicialPercapita.idDistribucionInicialPercapita = :idDistribucionInicialPercapita and d.servicio.id = :idServicio and d.tipoDocumento.idTipoDocumento IN (:idTiposDocumento) order by d.idDocumento.fechaCreacion desc")})
 public class DocumentoDistribucionInicialPercapita implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -44,6 +45,9 @@ public class DocumentoDistribucionInicialPercapita implements Serializable {
 	@JoinColumn(name = "comuna", referencedColumnName = "id")
 	@ManyToOne
 	private Comuna comuna;
+	@JoinColumn(name = "servicio", referencedColumnName = "id")
+	@ManyToOne
+	private ServicioSalud servicio;
 
 	public DocumentoDistribucionInicialPercapita() {
 	}
@@ -90,6 +94,14 @@ public class DocumentoDistribucionInicialPercapita implements Serializable {
 
 	public void setComuna(Comuna comuna) {
 		this.comuna = comuna;
+	}
+
+	public ServicioSalud getServicio() {
+		return servicio;
+	}
+
+	public void setServicio(ServicioSalud servicio) {
+		this.servicio = servicio;
 	}
 
 	@Override

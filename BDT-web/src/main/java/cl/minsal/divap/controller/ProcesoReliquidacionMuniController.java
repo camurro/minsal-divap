@@ -356,37 +356,7 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 							monto += ((valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasUno() == null)?0L:valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasUno().getMonto());
 							break;
 						case 1:
-							monto += ((valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasDos() == null)?0L:valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasDos().getMonto());
-							break;
-						case 2:
-							monto += ((valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasTres() == null)?0L:valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasTres().getMonto());
-							break;
-						case 3:
-							monto += ((valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasCuatro() == null)?0L:valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasCuatro().getMonto());
-							break;
-						case 4:
-							monto += ((valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasCinco() == null)?0L:valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasCinco().getMonto());
-							break;
-						case 5:
-							monto += ((valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasSeis() == null)?0L:valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasSeis().getMonto());
-							break;
-						case 6:
-							monto += ((valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasSiete() == null)?0L:valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasSiete().getMonto());
-							break;
-						case 7:
-							monto += ((valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasOcho() == null)?0L:valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasOcho().getMonto());
-							break;
-						case 8:
-							monto += ((valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasNueve() == null)?0L:valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasNueve().getMonto());
-							break;
-						case 9:
-							monto += ((valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasDiez() == null)?0L:valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasDiez().getMonto());
-							break;
-						case 10:
-							monto += ((valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasOnce() == null)?0L:valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasOnce().getMonto());
-							break;
-						case 11:
-							monto += ((valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasDoce() == null)?0L:valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getCuotasDoce().getMonto());
+							monto += ((valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getUltimaCuota() == null)?0L:valorizarReliquidacionPageSummaryVO.getComponenteReliquidacionPageVO().getUltimaCuota().getMonto());
 							break;
 						default:
 							break;

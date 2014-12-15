@@ -16,9 +16,10 @@ import cl.minsal.divap.model.DocumentoConvenioComuna;
 import cl.minsal.divap.model.DocumentoConvenioServicio;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
+import cl.minsal.divap.model.DocumentoModificacionPercapita;
 import cl.minsal.divap.model.DocumentoOt;
-import cl.minsal.divap.model.DocumentoReportes;
 import cl.minsal.divap.model.DocumentoProgramasReforzamiento;
+import cl.minsal.divap.model.DocumentoReportes;
 import cl.minsal.divap.model.Plantilla;
 import cl.minsal.divap.model.ReferenciaDocumento;
 
@@ -175,7 +176,7 @@ public class DocumentDAO {
 		}
 		return referenciaDocumento;
 	}
-	
+
 	public ReferenciaDocumento getLastDocumentByTypeEstimacionFlujoCaja(
 			Integer idProgramaAno,
 			TipoDocumentosProcesos tipoDocumento) {
@@ -193,62 +194,62 @@ public class DocumentDAO {
 		}
 		return referenciaDocumento;
 	}
-	
-    public ReferenciaDocumento getLastDocumentByTipoDocumentoEstimacionFlujoCaja(TipoDocumentosProcesos tipoDocumento) {
-        ReferenciaDocumento referenciaDocumento = null;
-        try {
-            TypedQuery<DocumentoEstimacionflujocaja> query = this.em.createNamedQuery("DocumentoEstimacionflujocaja.findByTipoDocumento", DocumentoEstimacionflujocaja.class);
-            query.setParameter("idTipoDocumento", tipoDocumento.getId());
-            List<DocumentoEstimacionflujocaja> referenciasDocumentos = query.getResultList();
-            if(referenciasDocumentos != null && referenciasDocumentos.size() > 0){
-                referenciaDocumento = referenciasDocumentos.get(0).getIdDocumento();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return referenciaDocumento;
-    }
-    
-    
-    public List<DocumentoDistribucionInicialPercapita> getDocumentosByTypeServicioDistribucionInicialPercapita(
-            Integer idDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos... tiposDocumentoProceso) {
-        try {
-            TypedQuery<DocumentoDistribucionInicialPercapita> query = null;
-            List<Integer> tipos = new ArrayList<Integer>();
-            for(TipoDocumentosProcesos tipoDocumentosProcesos: tiposDocumentoProceso){
-                tipos.add(tipoDocumentosProcesos.getId());
-            }
-            if(idServicio == null){
-                query = this.em.createNamedQuery("DocumentoDistribucionInicialPercapita.findByTypesIdDistribucionInicialPercapita", DocumentoDistribucionInicialPercapita.class);
-            }else{
-                query = this.em.createNamedQuery("DocumentoDistribucionInicialPercapita.findByTypesServicioIdDistribucionInicialPercapita", DocumentoDistribucionInicialPercapita.class);
-                query.setParameter("idServicio", idServicio);
-            }
-            query.setParameter("idDistribucionInicialPercapita", idDistribucionInicialPercapita);
-            query.setParameter("idTiposDocumento", tipos);
-            return query.getResultList();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-   
-    public ReferenciaDocumento getLastDocumentByOrdinarioOrdenTransferencia(
-            Integer idOrdenTransferencia,Integer idTipoDocumento) {
-        ReferenciaDocumento referenciaDocumento = null;
-        try {
-            TypedQuery<DocumentoOt> query = this.em.createNamedQuery("DocumentoOt.findLastByidOrdenTransferencia", DocumentoOt.class);
-            query.setParameter("idOrdenTransferencia", idOrdenTransferencia);
-            query.setParameter("idTipoDocumento", idTipoDocumento);
-           
-            List<DocumentoOt> referenciasDocumentos = query.getResultList();
-            if(referenciasDocumentos != null && referenciasDocumentos.size() > 0){
-                referenciaDocumento = referenciasDocumentos.get(0).getIdDocumento();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return referenciaDocumento;
-    }
+
+	public ReferenciaDocumento getLastDocumentByTipoDocumentoEstimacionFlujoCaja(TipoDocumentosProcesos tipoDocumento) {
+		ReferenciaDocumento referenciaDocumento = null;
+		try {
+			TypedQuery<DocumentoEstimacionflujocaja> query = this.em.createNamedQuery("DocumentoEstimacionflujocaja.findByTipoDocumento", DocumentoEstimacionflujocaja.class);
+			query.setParameter("idTipoDocumento", tipoDocumento.getId());
+			List<DocumentoEstimacionflujocaja> referenciasDocumentos = query.getResultList();
+			if(referenciasDocumentos != null && referenciasDocumentos.size() > 0){
+				referenciaDocumento = referenciasDocumentos.get(0).getIdDocumento();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return referenciaDocumento;
+	}
+
+
+	public List<DocumentoDistribucionInicialPercapita> getDocumentosByTypeServicioDistribucionInicialPercapita(
+			Integer idDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos... tiposDocumentoProceso) {
+		try {
+			TypedQuery<DocumentoDistribucionInicialPercapita> query = null;
+			List<Integer> tipos = new ArrayList<Integer>();
+			for(TipoDocumentosProcesos tipoDocumentosProcesos: tiposDocumentoProceso){
+				tipos.add(tipoDocumentosProcesos.getId());
+			}
+			if(idServicio == null){
+				query = this.em.createNamedQuery("DocumentoDistribucionInicialPercapita.findByTypesIdDistribucionInicialPercapita", DocumentoDistribucionInicialPercapita.class);
+			}else{
+				query = this.em.createNamedQuery("DocumentoDistribucionInicialPercapita.findByTypesServicioIdDistribucionInicialPercapita", DocumentoDistribucionInicialPercapita.class);
+				query.setParameter("idServicio", idServicio);
+			}
+			query.setParameter("idDistribucionInicialPercapita", idDistribucionInicialPercapita);
+			query.setParameter("idTiposDocumento", tipos);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public ReferenciaDocumento getLastDocumentByOrdinarioOrdenTransferencia(
+			Integer idOrdenTransferencia,Integer idTipoDocumento) {
+		ReferenciaDocumento referenciaDocumento = null;
+		try {
+			TypedQuery<DocumentoOt> query = this.em.createNamedQuery("DocumentoOt.findLastByidOrdenTransferencia", DocumentoOt.class);
+			query.setParameter("idOrdenTransferencia", idOrdenTransferencia);
+			query.setParameter("idTipoDocumento", idTipoDocumento);
+
+			List<DocumentoOt> referenciasDocumentos = query.getResultList();
+			if(referenciasDocumentos != null && referenciasDocumentos.size() > 0){
+				referenciaDocumento = referenciasDocumentos.get(0).getIdDocumento();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return referenciaDocumento;
+	}
 
 	public List<DocumentoConvenioComuna> getDocumentPopUpConvenioComuna(Integer idConvenioComuna) {
 		try {
@@ -259,7 +260,7 @@ public class DocumentDAO {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public List<DocumentoConvenioServicio> getDocumentPopUpConvenioServicio(Integer idConvenioServicio) {
 		try {
 			TypedQuery<DocumentoConvenioServicio> query = this.em.createNamedQuery("DocumentoConvenioServicio.findByIdConvenioServicio", DocumentoConvenioServicio.class);
@@ -301,7 +302,7 @@ public class DocumentDAO {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public Integer getPlantillaByType(TipoDocumentosProcesos template, Integer idPrograma) {
 		Integer docId = null;
 		try {
@@ -332,7 +333,7 @@ public class DocumentDAO {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public ReferenciaDocumento getLastDocumentoSummaryByResolucionAPSType(
 			Integer idProgramaAno, TipoDocumentosProcesos tipoDocumento) {
 		ReferenciaDocumento referenciaDocumento = null;
@@ -349,12 +350,12 @@ public class DocumentDAO {
 		}
 		return referenciaDocumento;
 	}
-	
+
 	public DocumentoConvenioComuna save(DocumentoConvenioComuna documentoConvenioComuna) {
 		this.em.persist(documentoConvenioComuna);
 		return documentoConvenioComuna;
 	}
-	
+
 	public DocumentoConvenioServicio save(DocumentoConvenioServicio documentoConvenioServicio) {
 		this.em.persist(documentoConvenioServicio);
 		return documentoConvenioServicio;
@@ -368,8 +369,7 @@ public class DocumentDAO {
 			query.setParameter("idTipoDocumento", tipoDocumento.getId());
 			List<DocumentoConvenio> referenciasDocumentos = query.getResultList(); 
 			if(referenciasDocumentos != null && referenciasDocumentos.size() > 0){
-				int size = referenciasDocumentos.size();
-				referenciaDocumento = referenciasDocumentos.get(size-1).getDocumento();
+				referenciaDocumento = referenciasDocumentos.get(0).getDocumento();
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -383,6 +383,106 @@ public class DocumentDAO {
 			query.setParameter("idConvenio", idConvenio);
 			query.setParameter("idTipoDocumento", tipoDocumento.getId());
 			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<ReferenciaDocumento> getVersionFinalModificacionDistribucionInicialByType(Integer idDistribucionInicialPercapita, TipoDocumentosProcesos tipoDocumento) {
+		try {
+			TypedQuery<ReferenciaDocumento> query = this.em.createNamedQuery("DocumentoModificacionPercapita.findVersionFinalByIdModificacionDistribucionInicialTipoDocumento", ReferenciaDocumento.class);
+			query.setParameter("idModificacionDistribucionInicialPercapita", idDistribucionInicialPercapita);
+			query.setParameter("idTipoDocumento", tipoDocumento.getId());
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public ReferenciaDocumento getLastDocumentSummaryModificacionPercapitaByType(Integer idDistribucionInicialPercapita, TipoDocumentosProcesos tipoDocumento) {
+		ReferenciaDocumento referenciaDocumento = null;
+		try {
+			TypedQuery<DocumentoModificacionPercapita> query = this.em.createNamedQuery("DocumentoModificacionPercapita.findByIdModificacionDistribucionTipoDocumento", DocumentoModificacionPercapita.class);
+			query.setParameter("idModificacionDistribucionInicialPercapita", idDistribucionInicialPercapita);
+			query.setParameter("idTipoDocumento", tipoDocumento.getId());
+			List<DocumentoModificacionPercapita> referenciasDocumentos = query.getResultList(); 
+			if(referenciasDocumentos != null && referenciasDocumentos.size() > 0){
+				referenciaDocumento = referenciasDocumentos.get(0).getDocumento();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return referenciaDocumento;
+	}
+
+	public List<ReferenciaDocumento> getVersionFinalModificacionPercapitaByType(Integer idDistribucionInicialPercapita, TipoDocumentosProcesos tipoDocumento) {
+		try {
+			TypedQuery<ReferenciaDocumento> query = this.em.createNamedQuery("DocumentoModificacionPercapita.findVersionFinalByIdModificacionPercapitaTipoDocumento", ReferenciaDocumento.class);
+			query.setParameter("idModificacionDistribucionInicialPercapita", idDistribucionInicialPercapita);
+			query.setParameter("idTipoDocumento", tipoDocumento.getId());
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<DocumentoModificacionPercapita> getDocumentosByTypeServicioModificacionPercapita(Integer idDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos... tiposDocumentoProceso) {
+		try {
+			TypedQuery<DocumentoModificacionPercapita> query = null;
+			List<Integer> tipos = new ArrayList<Integer>();
+			for(TipoDocumentosProcesos tipoDocumentosProcesos: tiposDocumentoProceso){
+				tipos.add(tipoDocumentosProcesos.getId());
+			}
+			if(idServicio == null){
+				query = this.em.createNamedQuery("DocumentoModificacionPercapita.findByTypesIdModificacionPercapita", DocumentoModificacionPercapita.class);
+			}else{
+				query = this.em.createNamedQuery("DocumentoModificacionPercapita.findByTypesServicioIdModificacionPercapita", DocumentoModificacionPercapita.class);
+				query.setParameter("idServicio", idServicio);
+			}
+			query.setParameter("idModificacionDistribucionInicialPercapita", idDistribucionInicialPercapita);
+			query.setParameter("idTiposDocumento", tipos);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public DocumentoModificacionPercapita getLastDocumentosByTypeServicioModificacionPercapita(Integer idDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos... tiposDocumentoProceso) {
+		try {
+			TypedQuery<DocumentoModificacionPercapita> query = null;
+			List<Integer> tipos = new ArrayList<Integer>();
+			for(TipoDocumentosProcesos tipoDocumentosProcesos: tiposDocumentoProceso){
+				tipos.add(tipoDocumentosProcesos.getId());
+			}
+			query = this.em.createNamedQuery("DocumentoModificacionPercapita.findLastByTypesServicioIdModificacionPercapita", DocumentoModificacionPercapita.class);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idModificacionDistribucionInicialPercapita", idDistribucionInicialPercapita);
+			query.setParameter("idTiposDocumento", tipos);
+			List<DocumentoModificacionPercapita> results = query.getResultList();
+			if(results != null && results.size() > 0){
+				return results.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public DocumentoDistribucionInicialPercapita getLastDocumentosByTypeServicioDistribucionInicialPercapita(Integer idDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos... tiposDocumentoProceso) {
+		try {
+			List<Integer> tipos = new ArrayList<Integer>();
+			for(TipoDocumentosProcesos tipoDocumentosProcesos: tiposDocumentoProceso){
+				tipos.add(tipoDocumentosProcesos.getId());
+			}
+			TypedQuery<DocumentoDistribucionInicialPercapita> query = this.em.createNamedQuery("DocumentoDistribucionInicialPercapita.findLastByTypesServicioIdDistribucionInicialPercapita", DocumentoDistribucionInicialPercapita.class);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idDistribucionInicialPercapita", idDistribucionInicialPercapita);
+			query.setParameter("idTiposDocumento", tipos);
+			List<DocumentoDistribucionInicialPercapita> results = query.getResultList();
+			if(results != null && results.size() > 0){
+				return results.get(0);
+			}
+			return null;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

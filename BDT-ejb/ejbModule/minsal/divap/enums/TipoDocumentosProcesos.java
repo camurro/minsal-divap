@@ -49,7 +49,9 @@ public enum TipoDocumentosProcesos{
 	
 	REPORTEPOBLACIONPERCAPITA(100,"Reporte Poblacion Per Capita"), REPORTEREBAJA(101,"Reporte Rebaja"), PLANTILLACORREORESOLUCIONRETIRO(65,"Plantilla Correo Resolucion Retiro"),
 	ADJUNTOSEGUIMIENTORESOLUCIONRETIRO(150, "Documento Adjunto Seguimiento Resolución Retiro"), RESOLUCIONRETIRO(151, "Resolución Retiro"), PLANTILLARESOLUCIONRETIRO(152, "Plantilla Resolución Retiro"),
-	CONVENIOSERVICIO(153, "Convenio Servicio"), CONVENIOCOMUNA(154, "Convenio Comuna");
+	CONVENIOSERVICIO(153, "Convenio Servicio"), CONVENIOCOMUNA(154, "Convenio Comuna"), PLANILLACONVENIOMUNICIPAL(155, "Planilla Convenio Municipal"), PLANILLACONVENIOSERVICIO(156, "Planilla Convenio Servicio"),
+	PLANTILLAORDINARIOSOLICITUDANTECEDENTES(159, "Ordinario Solicitud Antecedentes"), ORDINARIOSOLICITUDANTECEDENTES(160, "Ordinario Solicitud Antecedentes"),
+	PLANTILLACORREOORDINARIOSOLICITUDANTECEDENTES(161, "Plantilla Correo Ordinario Solicitud Antecedentes");
 
 	private Integer id;
 	private String name;

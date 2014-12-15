@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Seguimiento.findByIdEstimacionFlujoCaja", query = "SELECT s FROM Seguimiento s JOIN s.estimacionFlujoCajaSeguimientoCollection d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.programaAno.idProgramaAno = :idProgramaAno"),
     @NamedQuery(name = "Seguimiento.findByIdEstimacionFlujoCajaConsolidador", query = "SELECT s FROM Seguimiento s JOIN s.estimacionFlujoCajaSeguimientoCollection d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento"),
     @NamedQuery(name = "Seguimiento.findByIdDistribucionInicialTarea", query = "SELECT s FROM Seguimiento s JOIN s.distribucionInicialPercapitaSeguimientoCollection d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.distribucionInicialPercapita.idDistribucionInicialPercapita = :idDistribucionInicialPercapita order by s.fechaEnvio desc"),
+    @NamedQuery(name = "Seguimiento.findByIdModificacionDistribucionInicialTarea", query = "SELECT s FROM Seguimiento s JOIN s.modificacionDistribucionInicialPercapitaSeguimientoSet d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.modificacionDistribucionInicialPercapita.idModificacionDistribucionInicialPercapita = :idModificacionDistribucionInicialPercapita order by s.fechaEnvio desc"),
     @NamedQuery(name = "Seguimiento.findByIdRebaja", query = "SELECT s FROM Seguimiento s JOIN s.rebajaSeguimientos d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.rebaja.idRebaja = :idRebaja"),
     @NamedQuery(name = "Seguimiento.findByIdProgramaReforzamiento", query = "SELECT s FROM Seguimiento s JOIN s.programasReforzamientoSeguimientoCollection d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.idProgramaAno.idProgramaAno = :idProgramaAno"),
     @NamedQuery(name = "Seguimiento.findBySubject", query = "SELECT s FROM Seguimiento s WHERE s.subject = :subject"),
@@ -73,6 +74,8 @@ public class Seguimiento implements Serializable {
     private Set<ProgramasReforzamientoSeguimiento> programasReforzamientoSeguimientoCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguimiento")
     private Set<EstimacionFlujoCajaSeguimiento> estimacionFlujoCajaSeguimientoCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguimiento")
+    private Set<ModificacionDistribucionInicialPercapitaSeguimiento> modificacionDistribucionInicialPercapitaSeguimientoSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguimiento")
     private Set<RebajaSeguimiento> rebajaSeguimientos;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguimiento")
@@ -175,8 +178,17 @@ public class Seguimiento implements Serializable {
         this.programasReforzamientoSeguimientoCollection = programasReforzamientoSeguimientoCollection;
     }
     
-    
     @XmlTransient
+    public Set<ModificacionDistribucionInicialPercapitaSeguimiento> getModificacionDistribucionInicialPercapitaSeguimientoSet() {
+		return modificacionDistribucionInicialPercapitaSeguimientoSet;
+	}
+
+	public void setModificacionDistribucionInicialPercapitaSeguimientoSet(
+			Set<ModificacionDistribucionInicialPercapitaSeguimiento> modificacionDistribucionInicialPercapitaSeguimientoSet) {
+		this.modificacionDistribucionInicialPercapitaSeguimientoSet = modificacionDistribucionInicialPercapitaSeguimientoSet;
+	}
+
+	@XmlTransient
     public Set<OtSeguimiento> getOtSeguimientoCollection() {
 		return otSeguimientoCollection;
 	}

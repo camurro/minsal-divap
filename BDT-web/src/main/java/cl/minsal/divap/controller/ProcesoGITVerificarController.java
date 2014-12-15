@@ -1,11 +1,13 @@
 package cl.minsal.divap.controller;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -15,20 +17,28 @@ import javax.inject.Named;
 
 import minsal.divap.enums.EstadosConvenios;
 import minsal.divap.enums.Subtitulo;
+import minsal.divap.enums.TipoDocumentosProcesos;
+import minsal.divap.excel.GeneradorExcel;
+import minsal.divap.excel.impl.CrearPlanillaCumplimientoMunicialProgramaSheetExcel;
 import minsal.divap.service.ComponenteService;
 import minsal.divap.service.ComunaService;
 import minsal.divap.service.ConveniosService;
 import minsal.divap.service.EstablecimientosService;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ServicioSaludService;
+import minsal.divap.vo.BodyVO;
+import minsal.divap.vo.CellExcelVO;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ComunaVO;
 import minsal.divap.vo.ConvenioComunaComponenteVO;
 import minsal.divap.vo.ConvenioServicioComponenteVO;
+import minsal.divap.vo.CumplimientoApsMunicipalProgramaVO;
+import minsal.divap.vo.EstablecimientoSummaryVO;
 import minsal.divap.vo.EstablecimientoVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloVO;
+import cl.minsal.divap.model.Programa;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 
@@ -763,12 +773,25 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 	public void setBusquedaRealizada(boolean busquedaRealizada) {
 		this.busquedaRealizada = busquedaRealizada;
 	}
+	
+	public String downloadPlanillaMunicipal() {
+		Integer docDownload = conveniosService.planillaMunicipalServicio(programaSeleccionado ,idConvenio);
+		setDocumento(documentService.getDocument(docDownload));
+		super.downloadDocument();
+		return null;
+	}
+	public String downloadPlanillaServicios() {
+		Integer docDownload = conveniosService.planillaEstablecimientoServicio(programaSeleccionado ,idConvenio);
+		setDocumento(documentService.getDocument(docDownload));
+		super.downloadDocument();
+		return null;
+	}
 
 	public boolean isMostrarBotonReparos() {
 		mostrarBotonReparos = false;
 		if(isBusquedaRealizada()){
 			if((conveniosServicioComponenteSub21 != null && conveniosServicioComponenteSub21.size() > 0) || (conveniosServicioComponenteSub22 != null && conveniosServicioComponenteSub22.size() > 0) 
-					&& (conveniosServicioComponenteSub29 != null && conveniosServicioComponenteSub29.size() > 0) || (conveniosComunaComponenteSub24 != null && conveniosComunaComponenteSub24.size() > 0)){
+					|| (conveniosServicioComponenteSub29 != null && conveniosServicioComponenteSub29.size() > 0) || (conveniosComunaComponenteSub24 != null && conveniosComunaComponenteSub24.size() > 0)){
 				mostrarBotonReparos = true;
 			}
 		}

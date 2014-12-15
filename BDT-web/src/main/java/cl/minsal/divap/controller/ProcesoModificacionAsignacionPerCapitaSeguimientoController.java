@@ -19,8 +19,8 @@ import javax.servlet.http.Part;
 
 import minsal.divap.enums.TareasSeguimiento;
 import minsal.divap.enums.TipoDocumentosProcesos;
-import minsal.divap.service.DistribucionInicialPercapitaService;
 import minsal.divap.service.DocumentService;
+import minsal.divap.service.ModificacionDistribucionInicialPercapitaService;
 import minsal.divap.service.ServicioSaludService;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.ReferenciaDocumentoVO;
@@ -34,9 +34,9 @@ import org.primefaces.model.UploadedFile;
 
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
-@Named("procesoAsignacionPerCapitaSeguimientoController")
+@Named("procesoModificacionAsignacionPerCapitaSeguimientoController")
 @ViewScoped
-public class ProcesoAsignacionPerCapitaSeguimientoController extends AbstractTaskMBean
+public class ProcesoModificacionAsignacionPerCapitaSeguimientoController extends AbstractTaskMBean
 implements Serializable {
 	/**
 	 * 
@@ -45,7 +45,7 @@ implements Serializable {
 	@Inject
 	private transient Logger log;
 	@EJB
-	private DistribucionInicialPercapitaService distribucionInicialPercapitaService;
+	private ModificacionDistribucionInicialPercapitaService modificacionDistribucionInicialPercapitaService;
 	@EJB
 	private ServicioSaludService serviciosService;
 	@EJB
@@ -105,7 +105,7 @@ implements Serializable {
 			switch (tareaSeguimiento) {
 			case HACERSEGUIMIENTOOFICIO:
 				tipoDocumento = TipoDocumentosProcesos.OFICIOCONSULTA;
-				distribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, tipoDocumento, versionFinal);
+				modificacionDistribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, tipoDocumento, versionFinal);
 				this.oficioConsultaId = docNewVersion;
 				break;
 			case HACERSEGUIMIENTORESOLUCIONES:
@@ -114,7 +114,7 @@ implements Serializable {
 				break;
 			case HACERSEGUIMIENTODECRETO:
 				tipoDocumento = TipoDocumentosProcesos.BORRADORAPORTEESTATAL;
-				distribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, tipoDocumento, versionFinal);
+				modificacionDistribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, tipoDocumento, versionFinal);
 				this.decretoId = docNewVersion;
 				break;	
 			default:
@@ -135,7 +135,7 @@ implements Serializable {
 				filename = filename.replaceAll(" ", "");
 				byte[] contentPlantillaFile = file2.getContents();
 				File file = createTemporalFile(filename, contentPlantillaFile);
-				plantillaCorreoId = distribucionInicialPercapitaService.cargarPlantillaCorreo(this.tareaSeguimiento, file);
+				plantillaCorreoId = modificacionDistribucionInicialPercapitaService.cargarPlantillaCorreo(this.tareaSeguimiento, file);
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -178,7 +178,7 @@ implements Serializable {
 	}
 
 	public String sendMail(){
-		String target = "divapProcesoAsignacionPerCapitaSeguimiento";
+		String target = "divapProcesoModificacionAsignacionPerCapitaSeguimiento";
 		try{
 			List<Integer> documentos = null;
 			if (attachedFile != null){
@@ -205,7 +205,7 @@ implements Serializable {
 				conCopiaOculta = Arrays.asList(this.cco.split("\\,")); 
 			}
 			System.out.println("ProcesoAsignacionPerCapitaSeguimientoController-->sendMail");
-			distribucionInicialPercapitaService.createSeguimientoDistribucionInicialPercapita(idDistribucionInicialPercapita, tareaSeguimiento, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
+			modificacionDistribucionInicialPercapitaService.createSeguimientoModificacionPercapita(idDistribucionInicialPercapita, tareaSeguimiento, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
 		}catch(Exception e){
 			e.printStackTrace();
 			target = null;
@@ -217,9 +217,9 @@ implements Serializable {
 		System.out.println("buscar--> servicioSeleccionado="+servicioSeleccionado);
 		TipoDocumentosProcesos[] tiposDocumentos = {TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF};
 		if(servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty()){
-			serviciosResoluciones = documentService.getDocumentByResolucionTypesServicioDistribucionInicialPercapita(idDistribucionInicialPercapita, null, tiposDocumentos);
+			serviciosResoluciones = documentService.getDocumentResolucionByTypesServicioModificacionPercapita(idDistribucionInicialPercapita, null, tiposDocumentos);
 		}else{
-			serviciosResoluciones = documentService.getDocumentByResolucionTypesServicioDistribucionInicialPercapita(idDistribucionInicialPercapita, Integer.parseInt(servicioSeleccionado), tiposDocumentos);
+			serviciosResoluciones = documentService.getDocumentResolucionByTypesServicioModificacionPercapita(idDistribucionInicialPercapita, Integer.parseInt(servicioSeleccionado), tiposDocumentos);
 		}
 		System.out.println("fin buscar-->");
 	}
@@ -238,27 +238,23 @@ implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		log.info("ProcesosPrincipalController Alcanzado.");
+		log.info("ProcesoModificacionAsignacionPerCapitaSeguimientoController Alcanzado.");
 		if(sessionExpired()){
 			return;
 		}
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			this.idDistribucionInicialPercapita = (Integer) getTaskDataVO()
-					.getData().get("_idDistribucionInicialPercapita");
-			System.out.println("this.idDistribucionInicialPercapita --->"
-					+ this.idDistribucionInicialPercapita);
+			this.idDistribucionInicialPercapita = (Integer) getTaskDataVO().getData().get("_idDistribucionInicialPercapita");
+			System.out.println("this.idDistribucionInicialPercapita --->" + this.idDistribucionInicialPercapita);
 			this.actividadSeguimientoTitle = getTaskDataVO().getTask().getName();
-			System.out.println("this.actividadSeguimientoTitle --->"
-					+ this.actividadSeguimientoTitle);
-			String _tareaSeguimiento = (String) getTaskDataVO()
-					.getData().get("_tareaSeguimiento");
-			ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.OFICIOCONSULTA);
+			System.out.println("this.actividadSeguimientoTitle --->" + this.actividadSeguimientoTitle);
+			String _tareaSeguimiento = (String) getTaskDataVO().getData().get("_tareaSeguimiento");
+			ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = modificacionDistribucionInicialPercapitaService.getLastDocumentSummaryModificacionPercapitaByType(idDistribucionInicialPercapita, TipoDocumentosProcesos.OFICIOCONSULTA);
 			if(referenciaDocumentoSummaryVO != null){
 				this.oficioConsultaId = referenciaDocumentoSummaryVO.getId();
 			}else{
 				this.oficioConsultaId = (Integer) getTaskDataVO().getData().get("_oficioConsultaId");
 			}
-			ReferenciaDocumentoSummaryVO referenciaDocumentoBorradorSummaryVO = distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.BORRADORAPORTEESTATAL);
+			ReferenciaDocumentoSummaryVO referenciaDocumentoBorradorSummaryVO = modificacionDistribucionInicialPercapitaService.getLastDocumentSummaryModificacionPercapitaByType(idDistribucionInicialPercapita, TipoDocumentosProcesos.BORRADORAPORTEESTATAL);
 			if(referenciaDocumentoBorradorSummaryVO != null){
 				this.decretoId = referenciaDocumentoBorradorSummaryVO.getId();
 			}else{
@@ -266,9 +262,9 @@ implements Serializable {
 			}
 			this.tareaSeguimiento = TareasSeguimiento.getById(Integer.valueOf(_tareaSeguimiento));
 		}
-		documentoPoblacionInscrita = distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA);
-		bitacoraSeguimiento = distribucionInicialPercapitaService.getBitacora(this.idDistribucionInicialPercapita, this.tareaSeguimiento);
-		plantillaCorreoId = distribucionInicialPercapitaService.getPlantillaCorreo(this.tareaSeguimiento);
+		documentoPoblacionInscrita = modificacionDistribucionInicialPercapitaService.getLastDocumentSummaryModificacionPercapitaByType(idDistribucionInicialPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA);
+		bitacoraSeguimiento = modificacionDistribucionInicialPercapitaService.getBitacoraModificacionPercapita(this.idDistribucionInicialPercapita, this.tareaSeguimiento);
+		plantillaCorreoId = modificacionDistribucionInicialPercapitaService.getPlantillaCorreo(this.tareaSeguimiento);
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
@@ -474,7 +470,7 @@ implements Serializable {
 		Integer idServicio = Integer.valueOf(Integer.parseInt(getDocIdDownload()));
 		ServiciosSummaryVO serviciosSummaryVO = serviciosService.getServicioSaludSummaryById(idServicio);
 		TipoDocumentosProcesos[] tiposDocumentos = {TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF};
-		List<Integer> documentos = documentService.getDocumentosByDistribucionInicialPercapitaServicioTypes(idDistribucionInicialPercapita, idServicio, tiposDocumentos);
+		List<Integer> documentos = documentService.getDocumentosByModificacionPercapitaServicioTypes(idDistribucionInicialPercapita, idServicio, tiposDocumentos);
 		setDocumento(documentService.getDocument(serviciosSummaryVO.getNombre_servicio(), documentos));
 		super.downloadDocument();
 		return null;
