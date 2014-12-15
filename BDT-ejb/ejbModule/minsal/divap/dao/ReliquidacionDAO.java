@@ -19,7 +19,9 @@ import cl.minsal.divap.model.DocumentoReliquidacion;
 import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.Reliquidacion;
 import cl.minsal.divap.model.ReliquidacionComuna;
+import cl.minsal.divap.model.ReliquidacionComunaComponente;
 import cl.minsal.divap.model.ReliquidacionServicio;
+import cl.minsal.divap.model.ReliquidacionServicioComponente;
 import cl.minsal.divap.model.Usuario;
 
 @Singleton
@@ -137,15 +139,23 @@ public class ReliquidacionDAO {
 	}
 	
 	public int deleteReliquidacionComuna(Integer idProgramaAno) {
-		Query query = this.em.createNamedQuery("ReliquidacionComuna.deleteByIdProgramaAno");
-		query.setParameter("idProgramaAno", idProgramaAno);
-		return query.executeUpdate();
+		Query queryDeleteReliquidacionComunaComponente = this.em.createNamedQuery("ReliquidacionComunaComponente.deleteByIdProgramaAno");
+		queryDeleteReliquidacionComunaComponente.setParameter("idProgramaAno", idProgramaAno);
+		queryDeleteReliquidacionComunaComponente.executeUpdate();
+		
+		Query queryDeleteReliquidacionComuna = this.em.createNamedQuery("ReliquidacionComuna.deleteByIdProgramaAno");
+		queryDeleteReliquidacionComuna.setParameter("idProgramaAno", idProgramaAno);
+		return queryDeleteReliquidacionComuna.executeUpdate();
 	}
 
 	public int deleteReliquidacionServicio(Integer idProgramaAno) {
-		Query query = this.em.createNamedQuery("ReliquidacionServicio.deleteByIdProgramaAno");
-		query.setParameter("idProgramaAno", idProgramaAno);
-		return query.executeUpdate();
+		Query queryDeleteReliquidacionServicioComponente = this.em.createNamedQuery("ReliquidacionServicioComponente.deleteByIdProgramaAno");
+		queryDeleteReliquidacionServicioComponente.setParameter("idProgramaAno", idProgramaAno);
+		queryDeleteReliquidacionServicioComponente.executeUpdate();
+		
+		Query queryDeleteReliquidacionServicio = this.em.createNamedQuery("ReliquidacionServicio.deleteByIdProgramaAno");
+		queryDeleteReliquidacionServicio.setParameter("idProgramaAno", idProgramaAno);
+		return queryDeleteReliquidacionServicio.executeUpdate();
 	}
 
 	public List<Cuota> getCuotasByProgramaAno(Integer idProgramaAno) {
@@ -158,22 +168,7 @@ public class ReliquidacionDAO {
 			throw new RuntimeException(e);
 		}	
 	}
-
-	public List<ReliquidacionComuna> getReliquidacionComunaByProgramaAnoServicioComponenteReliquidacion(Integer idProgramaAno, Integer idServicio, Integer idComponente, Integer idReliquidacion) {
-		try{
-			List<Integer> idComponentes = new ArrayList<Integer>();
-			TypedQuery<ReliquidacionComuna> query = this.em.createNamedQuery("ReliquidacionComuna.findByIdProgramaAnoIdServicioIdComponentesIdReliquidacion", ReliquidacionComuna.class);
-			query.setParameter("idProgramaAno", idProgramaAno);
-			query.setParameter("idServicio", idServicio);
-			query.setParameter("idComponentes", idComponentes);
-			query.setParameter("idReliquidacion", idReliquidacion);
-			return query.getResultList();
-		}catch (Exception e){
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
-	}
-
+	
 	public ReliquidacionComuna getReliquidacionComunaByProgramaAnoComunaComponenteReliquidacion(Integer idProgramaAno, Integer idComuna, Integer idComponente, Integer idReliquidacion) {
 		try{
 			TypedQuery<ReliquidacionComuna> query = this.em.createNamedQuery("ReliquidacionComuna.findByIdProgramaAnoIdComunaIdComponenteIdReliquidacion", ReliquidacionComuna.class);
@@ -192,13 +187,48 @@ public class ReliquidacionDAO {
 		}
 	}
 
-
-	public ReliquidacionServicio getReliquidacionServicioByProgramaAnoEstablecimientoComponenteReliquidacion(Integer idProgramaAno, Integer idEstablecimiento, Integer idComponente, Integer idReliquidacion) {
+	public List<ReliquidacionComuna> getReliquidacionComunaByProgramaAnoServicioComponenteReliquidacion(Integer idProgramaAno, Integer idServicio, Integer idComponente, Integer idReliquidacion) {
 		try{
-			TypedQuery<ReliquidacionServicio> query = this.em.createNamedQuery("ReliquidacionServicio.findByIdProgramaAnoIdEstablecimientoIdComponenteIdReliquidacion", ReliquidacionServicio.class);
+			List<Integer> idComponentes = new ArrayList<Integer>();
+			TypedQuery<ReliquidacionComuna> query = this.em.createNamedQuery("ReliquidacionComuna.findByIdProgramaAnoIdServicioIdComponentesIdReliquidacion", ReliquidacionComuna.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idComponentes", idComponentes);
+			query.setParameter("idReliquidacion", idReliquidacion);
+			return query.getResultList();
+		}catch (Exception e){
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+
+	public ReliquidacionComuna getReliquidacionComunaByProgramaAnoComunaComponenteSubtituloReliquidacion(Integer idProgramaAno, Integer idComuna, Integer idComponente, Integer idSubtitulo, Integer idReliquidacion) {
+		try{
+			TypedQuery<ReliquidacionComuna> query = this.em.createNamedQuery("ReliquidacionComuna.findByIdProgramaAnoIdComunaIdComponenteIdSubtituloIdReliquidacion", ReliquidacionComuna.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComuna", idComuna);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idSubtitulo", idSubtitulo);
+			query.setParameter("idReliquidacion", idReliquidacion);
+			List<ReliquidacionComuna> results = query.getResultList();
+			if(results != null && results.size() > 0){
+				return results.get(0);
+			}
+			return null;
+		}catch (Exception e){
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+
+
+	public ReliquidacionServicio getReliquidacionServicioByProgramaAnoEstablecimientoComponenteSubtituloReliquidacion(Integer idProgramaAno, Integer idEstablecimiento, Integer idComponente, Integer idSubtitulo, Integer idReliquidacion) {
+		try{
+			TypedQuery<ReliquidacionServicio> query = this.em.createNamedQuery("ReliquidacionServicio.findByIdProgramaAnoIdEstablecimientoIdComponenteIdSubtituloIdReliquidacion", ReliquidacionServicio.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
 			query.setParameter("idEstablecimiento", idEstablecimiento);
 			query.setParameter("idComponente", idComponente);
+			query.setParameter("idSubtitulo", idSubtitulo);
 			query.setParameter("idReliquidacion", idReliquidacion);
 			List<ReliquidacionServicio> results = query.getResultList();
 			if(results != null && results.size() > 0){
@@ -244,6 +274,14 @@ public class ReliquidacionDAO {
 		}		
 	}
 	
+	public ReliquidacionComunaComponente save(ReliquidacionComunaComponente reliquidacionComunaComponente) {
+		em.persist(reliquidacionComunaComponente);
+		return reliquidacionComunaComponente;
+	}
 	
+	public ReliquidacionServicioComponente save(ReliquidacionServicioComponente reliquidacionServicioComponente) {
+		em.persist(reliquidacionServicioComponente);
+		return reliquidacionServicioComponente;
+	}
 
 }

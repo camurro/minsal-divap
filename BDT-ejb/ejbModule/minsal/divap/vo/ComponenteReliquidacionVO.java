@@ -11,6 +11,7 @@ public class ComponenteReliquidacionVO implements Serializable{
 	private Integer numeroResolucion;
 	private Long marcoInicial;
 	private Integer idComponente;
+	private Integer idSubtitulo;
 	private List<CuotaSummaryVO> cuotasSummaryVO;
 	private Double porcentajeCumplimiento;
 	private Double porcentajeReliquidacion;
@@ -21,6 +22,7 @@ public class ComponenteReliquidacionVO implements Serializable{
 		super();
 		this.numeroResolucion = 0;
 		this.idComponente = 0;
+		this.idSubtitulo = 0;
 		this.porcentajeCumplimiento = 0.0;
 		this.porcentajeReliquidacion = 0.0;
 		this.rebajaUltimaCuota = 0L;
@@ -28,7 +30,7 @@ public class ComponenteReliquidacionVO implements Serializable{
 	}
 
 	public ComponenteReliquidacionVO(Integer numeroResolucion,
-			Integer idComponente,
+			Integer idComponente, Integer idSubtitulo,
 			Double porcentajeCumplimiento, Double porcentajeReliquidacion,
 			Long rebajaUltimaCuota, Long montoUltimaCuota) {
 		super();
@@ -46,6 +48,14 @@ public class ComponenteReliquidacionVO implements Serializable{
 
 	public void setIdComponente(Integer idComponente) {
 		this.idComponente = idComponente;
+	}
+
+	public Integer getIdSubtitulo() {
+		return idSubtitulo;
+	}
+
+	public void setIdSubtitulo(Integer idSubtitulo) {
+		this.idSubtitulo = idSubtitulo;
 	}
 
 	public Integer getNumeroResolucion() {
@@ -141,7 +151,7 @@ public class ComponenteReliquidacionVO implements Serializable{
 	@Override
 	public String toString() {
 		return "ComponenteReliquidacionVO [numeroResolucion="
-				+ numeroResolucion + ", idComponente=" + idComponente
+				+ numeroResolucion + ", idComponente=" + idComponente + ", idSubtitulo=" + idSubtitulo
 				+ ", porcentajeCumplimiento=" + porcentajeCumplimiento
 				+ ", porcentajeReliquidacion=" + porcentajeReliquidacion
 				+ ", rebajaUltimaCuota=" + rebajaUltimaCuota

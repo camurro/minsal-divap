@@ -177,8 +177,7 @@ public class RebajaService {
 			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
 			for (AntecendentesComuna antecendenteComuna : antecendentesComunas){
 				System.out.println("servicioSalud.getId()->"+antecendenteComuna.getIdComuna().getServicioSalud().getId()+" comuna.getId()->"+antecendenteComuna.getIdComuna().getId()+" distribucionInicialPercapita.getIdDistribucionInicialPercapita()->"+distribucionInicialPercapita.getIdDistribucionInicialPercapita());
-				List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapita(antecendenteComuna.getIdComuna().getServicioSalud().getId(),
-						antecendenteComuna.getIdComuna().getId(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+				List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaVigente(antecendenteComuna.getIdComuna().getServicioSalud().getId(), antecendenteComuna.getIdComuna().getId(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
 				AntecendentesComunaCalculado antecendentesComunaCalculado = ((antecendentesComunaCalculados != null && antecendentesComunaCalculados.size() > 0) ? antecendentesComunaCalculados.get(0): null);
 				System.out.println("antecendentesComunaCalculado->" + antecendentesComunaCalculado);
 				if(antecendentesComunaCalculado == null){
@@ -326,8 +325,7 @@ public class RebajaService {
 		for(Integer idComuna : comunas){
 			Comuna comuna = antecedentesComunaDAO.findByComunaById(idComuna);
 			System.out.println("comuna.getServicioSalud().getId()->"+comuna.getServicioSalud().getId()+" comuna.getId()->"+comuna.getId()+" distribucionInicialPercapita.getIdDistribucionInicialPercapita()->"+distribucionInicialPercapita.getIdDistribucionInicialPercapita());
-			List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapita(comuna.getServicioSalud().getId(),
-					comuna.getId(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+			List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaVigente(comuna.getServicioSalud().getId(),	comuna.getId(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
 			AntecendentesComunaCalculado antecendentesComunaCalculado = ((antecendentesComunaCalculados != null && antecendentesComunaCalculados.size() > 0)? antecendentesComunaCalculados.get(0): null);
 			System.out.println("antecendentesComunaCalculado->" + antecendentesComunaCalculado);
 			if(antecendentesComunaCalculado == null){
@@ -476,9 +474,11 @@ public class RebajaService {
 		if(numero){
 			dateFormat = new SimpleDateFormat("MM");
 			mesCurso = dateFormat.format(new Date());
+			mesCurso = ((Integer.parseInt(mesCurso) > 10) ? "10" : mesCurso);
 		}else{
 			dateFormat = new SimpleDateFormat("MMMM");
 			mesCurso = dateFormat.format(new Date());
+			mesCurso = (("noviembre".equalsIgnoreCase(mesCurso) || "diciembre".equalsIgnoreCase(mesCurso) ) ? "octubre" : mesCurso);
 		}
 		return mesCurso;
 	}

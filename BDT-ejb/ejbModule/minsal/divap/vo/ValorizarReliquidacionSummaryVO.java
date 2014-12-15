@@ -14,7 +14,6 @@ public class ValorizarReliquidacionSummaryVO implements Serializable{
 	private String servicio;
 	private Integer idComuna;
 	private String comuna;
-	
 	private List<ComponenteReliquidacionVO> componentesReliquidacion;
 	private Long marcoFinal;
 

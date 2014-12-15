@@ -47,7 +47,6 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 	private ProgramaVO programa;
 	private boolean archivosNoValidos = true;
 	private boolean archivosCargados = true;
-	private boolean existeError = true;
 	private Integer anoActual;
 	private String docIdDownload;
 	private Integer docMunicipal;

@@ -1,13 +1,11 @@
 package minsal.divap.service;
 
-import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -19,40 +17,24 @@ import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.dao.RebajaDAO;
 import minsal.divap.dao.ReliquidacionDAO;
 import minsal.divap.dao.ServicioSaludDAO;
-import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TipoComuna;
-import minsal.divap.enums.TipoDocumentosProcesos;
-import minsal.divap.excel.GeneradorExcel;
-import minsal.divap.excel.impl.ReportePoblacionPercapitaSheetExcel;
 import minsal.divap.model.mappers.PersonaMapper;
 import minsal.divap.model.mappers.RegionMapper;
 import minsal.divap.model.mappers.ServicioMapper;
 import minsal.divap.vo.BaseVO;
-import minsal.divap.vo.BodyVO;
-import minsal.divap.vo.CellExcelVO;
-import minsal.divap.vo.ComponentesVO;
-import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.RegionVO;
+<<<<<<< HEAD
 import minsal.divap.vo.ReporteGlosaVO;
 import minsal.divap.vo.ReporteMarcoPresupuestarioComunaVO;
 import minsal.divap.vo.ReportePerCapitaVO;
+=======
+import minsal.divap.vo.ServiciosSummaryVO;
+>>>>>>> e3694b74d1c3504e3db66481fbf2975ca0f51629
 import minsal.divap.vo.ServiciosVO;
 import cl.minsal.divap.model.AntecendentesComuna;
-import cl.minsal.divap.model.AntecendentesComunaCalculado;
 import cl.minsal.divap.model.Comuna;
-import cl.minsal.divap.model.ComunaCumplimiento;
-import cl.minsal.divap.model.ConvenioComuna;
-import cl.minsal.divap.model.ConvenioComunaComponente;
-import cl.minsal.divap.model.Cuota;
-import cl.minsal.divap.model.Establecimiento;
-import cl.minsal.divap.model.MarcoPresupuestario;
-import cl.minsal.divap.model.ProgramaAno;
-import cl.minsal.divap.model.ProgramaMunicipalCore;
-import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
-import cl.minsal.divap.model.Rebaja;
 import cl.minsal.divap.model.Region;
 import cl.minsal.divap.model.ServicioSalud;
-import cl.minsal.divap.model.TipoDocumento;
 
 @Stateless
 @LocalBean
@@ -178,6 +160,15 @@ public class ServicioSaludService {
 		ServicioSalud servicioSalud = this.servicioSaludDAO
 				.getServicioSaludById(idServicioSalud);
 		return new ServicioMapper().getBasic(servicioSalud);
+	}
+	
+	public ServiciosSummaryVO getServicioSaludSummaryById(Integer idServicioSalud) {
+		ServicioSalud servicioSalud = this.servicioSaludDAO.getServicioSaludById(idServicioSalud);
+		ServiciosSummaryVO serviciosSummaryVO = null;
+		if(servicioSalud != null){
+			serviciosSummaryVO = new ServiciosSummaryVO(servicioSalud.getId(), servicioSalud.getNombre());
+		}
+		return serviciosSummaryVO;
 	}
 
 	public List<RegionVO> getAllRegionesVO() {

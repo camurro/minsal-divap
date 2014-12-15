@@ -1,7 +1,6 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -26,7 +25,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ReliquidacionComunaComponente.findAll", query = "SELECT r FROM ReliquidacionComunaComponente r"),
     @NamedQuery(name = "ReliquidacionComunaComponente.findByIdReliquidacionComunaComponente", query = "SELECT r FROM ReliquidacionComunaComponente r WHERE r.idReliquidacionComunaComponente = :idReliquidacionComunaComponente"),
     @NamedQuery(name = "ReliquidacionComunaComponente.findByMontoRebaja", query = "SELECT r FROM ReliquidacionComunaComponente r WHERE r.montoRebaja = :montoRebaja"),
-    @NamedQuery(name = "ReliquidacionComunaComponente.findByPorcentajeCumplimiento", query = "SELECT r FROM ReliquidacionComunaComponente r WHERE r.porcentajeCumplimiento = :porcentajeCumplimiento")})
+    @NamedQuery(name = "ReliquidacionComunaComponente.findByPorcentajeCumplimiento", query = "SELECT r FROM ReliquidacionComunaComponente r WHERE r.porcentajeCumplimiento = :porcentajeCumplimiento"),
+    @NamedQuery(name = "ReliquidacionComunaComponente.deleteByIdProgramaAno", query = "DELETE FROM ReliquidacionComunaComponente r WHERE r.reliquidacionComuna.programa.idProgramaAno = :idProgramaAno")})
 public class ReliquidacionComunaComponente implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -37,7 +37,10 @@ public class ReliquidacionComunaComponente implements Serializable {
     private Integer montoRebaja;
     @Basic(optional = false)
     @Column(name = "porcentaje_cumplimiento")
-    private BigInteger porcentajeCumplimiento;
+    private Double porcentajeCumplimiento;
+    @JoinColumn(name = "subtitulo", referencedColumnName = "id_tipo_subtitulo")
+    @ManyToOne(optional = false)
+    private TipoSubtitulo subtitulo;
     @JoinColumn(name = "reliquidacion_comuna", referencedColumnName = "reliquidacion_comuna_id")
     @ManyToOne(optional = false)
     private ReliquidacionComuna reliquidacionComuna;
@@ -55,7 +58,7 @@ public class ReliquidacionComunaComponente implements Serializable {
         this.idReliquidacionComunaComponente = idReliquidacionComunaComponente;
     }
 
-    public ReliquidacionComunaComponente(Integer idReliquidacionComunaComponente, BigInteger porcentajeCumplimiento) {
+    public ReliquidacionComunaComponente(Integer idReliquidacionComunaComponente, Double porcentajeCumplimiento) {
         this.idReliquidacionComunaComponente = idReliquidacionComunaComponente;
         this.porcentajeCumplimiento = porcentajeCumplimiento;
     }
@@ -76,14 +79,22 @@ public class ReliquidacionComunaComponente implements Serializable {
         this.montoRebaja = montoRebaja;
     }
 
-    public BigInteger getPorcentajeCumplimiento() {
+    public Double getPorcentajeCumplimiento() {
         return porcentajeCumplimiento;
     }
 
-    public void setPorcentajeCumplimiento(BigInteger porcentajeCumplimiento) {
+    public void setPorcentajeCumplimiento(Double porcentajeCumplimiento) {
         this.porcentajeCumplimiento = porcentajeCumplimiento;
     }
 
+    public TipoSubtitulo getSubtitulo() {
+        return subtitulo;
+    }
+
+    public void setSubtitulo(TipoSubtitulo subtitulo) {
+        this.subtitulo = subtitulo;
+    }
+    
     public ReliquidacionComuna getReliquidacionComuna() {
         return reliquidacionComuna;
     }

@@ -6,7 +6,6 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -31,7 +30,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ReliquidacionServicioComponente.findAll", query = "SELECT r FROM ReliquidacionServicioComponente r"),
     @NamedQuery(name = "ReliquidacionServicioComponente.findByIdReliquidacionServicioComponente", query = "SELECT r FROM ReliquidacionServicioComponente r WHERE r.idReliquidacionServicioComponente = :idReliquidacionServicioComponente"),
     @NamedQuery(name = "ReliquidacionServicioComponente.findByMontoRebaja", query = "SELECT r FROM ReliquidacionServicioComponente r WHERE r.montoRebaja = :montoRebaja"),
-    @NamedQuery(name = "ReliquidacionServicioComponente.findByPorcentajeCumplimiento", query = "SELECT r FROM ReliquidacionServicioComponente r WHERE r.porcentajeCumplimiento = :porcentajeCumplimiento")})
+    @NamedQuery(name = "ReliquidacionServicioComponente.findByPorcentajeCumplimiento", query = "SELECT r FROM ReliquidacionServicioComponente r WHERE r.porcentajeCumplimiento = :porcentajeCumplimiento"),
+    @NamedQuery(name = "ReliquidacionServicioComponente.deleteByIdProgramaAno", query = "DELETE FROM ReliquidacionServicioComponente r WHERE r.reliquidacionServicio.programa.idProgramaAno = :idProgramaAno")})
 public class ReliquidacionServicioComponente implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -42,10 +42,13 @@ public class ReliquidacionServicioComponente implements Serializable {
     private Integer montoRebaja;
     @Basic(optional = false)
     @Column(name = "porcentaje_cumplimiento")
-    private BigInteger porcentajeCumplimiento;
+    private Double porcentajeCumplimiento;
     @JoinColumn(name = "reliquidacion_servicio", referencedColumnName = "reliquidacion_servicio_id")
     @ManyToOne(optional = false)
     private ReliquidacionServicio reliquidacionServicio;
+    @JoinColumn(name = "subtitulo", referencedColumnName = "id_tipo_subtitulo")
+    @ManyToOne(optional = false)
+    private TipoSubtitulo subtitulo;
     @JoinColumn(name = "cumplimiento", referencedColumnName = "id_cumplimiento_programa")
     @ManyToOne(optional = false)
     private CumplimientoPrograma cumplimiento;
@@ -60,7 +63,7 @@ public class ReliquidacionServicioComponente implements Serializable {
         this.idReliquidacionServicioComponente = idReliquidacionServicioComponente;
     }
 
-    public ReliquidacionServicioComponente(Integer idReliquidacionServicioComponente, BigInteger porcentajeCumplimiento) {
+    public ReliquidacionServicioComponente(Integer idReliquidacionServicioComponente, Double porcentajeCumplimiento) {
         this.idReliquidacionServicioComponente = idReliquidacionServicioComponente;
         this.porcentajeCumplimiento = porcentajeCumplimiento;
     }
@@ -81,15 +84,23 @@ public class ReliquidacionServicioComponente implements Serializable {
         this.montoRebaja = montoRebaja;
     }
 
-    public BigInteger getPorcentajeCumplimiento() {
+    public Double getPorcentajeCumplimiento() {
         return porcentajeCumplimiento;
     }
 
-    public void setPorcentajeCumplimiento(BigInteger porcentajeCumplimiento) {
+    public void setPorcentajeCumplimiento(Double porcentajeCumplimiento) {
         this.porcentajeCumplimiento = porcentajeCumplimiento;
     }
 
-    public ReliquidacionServicio getReliquidacionServicio() {
+    public TipoSubtitulo getSubtitulo() {
+		return subtitulo;
+	}
+
+	public void setSubtitulo(TipoSubtitulo subtitulo) {
+		this.subtitulo = subtitulo;
+	}
+
+	public ReliquidacionServicio getReliquidacionServicio() {
         return reliquidacionServicio;
     }
 

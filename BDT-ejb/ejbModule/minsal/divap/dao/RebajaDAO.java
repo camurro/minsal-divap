@@ -230,8 +230,9 @@ public class RebajaDAO {
 			TypedQuery<RebajaCorte> query = this.em.createNamedQuery("RebajaCorte.findByMes", RebajaCorte.class);
 			query.setParameter("mesCorte", mesCorte);
 			List<RebajaCorte> cortes = query.getResultList();
-			if(cortes != null && cortes.size() > 0)
+			if(cortes != null && cortes.size() > 0){
 				return cortes.get(0);
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

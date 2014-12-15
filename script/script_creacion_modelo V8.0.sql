@@ -25235,6 +25235,129 @@ WITH (
 INSERT INTO persona(id_persona, nombre, apellido_paterno, apellido_materno, email)VALUES (20, 'JEANETTE', 'VEGA', 'MORALES', 1);
 INSERT INTO institucion(id_institucion, nombre, email, director) VALUES (1, 'FONASA', 1, 20);
 
+CREATE TABLE modificacion_distribucion_inicial_percapita
+(
+  id_modificacion_distribucion_inicial_percapita serial NOT NULL,
+  usuario text,
+  fecha_creacion timestamp with time zone,
+  ano integer NOT NULL,
+  CONSTRAINT id_modificacion_distribucion_pk PRIMARY KEY (id_modificacion_distribucion_inicial_percapita),
+  CONSTRAINT ano_fk FOREIGN KEY (ano)
+      REFERENCES ano_en_curso (ano) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT usuario_fk FOREIGN KEY (usuario)
+      REFERENCES usuario (username) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (155, 'Planilla Convenio Municipal');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (156, 'Planilla Convenio Servicio');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (159, 'Plantilla Ordinario Solicitud Antecedentes');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (160, 'Ordinario Solicitud Antecedentes');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (161, 'Plantilla Correo Ordinario Solicitud Antecedentes');
+
+CREATE TABLE documento_modificacion_percapita
+(
+  id_documento_modificacion_percapita serial NOT NULL,
+  documento integer NOT NULL,
+  modificacion_percapita integer NOT NULL,
+  tipo_documento integer NOT NULL,
+  servicio integer,
+  CONSTRAINT documento_modificacion_percapita_pk PRIMARY KEY (id_documento_modificacion_percapita),
+  CONSTRAINT modificacion_percapita_fk FOREIGN KEY (modificacion_percapita)
+      REFERENCES modificacion_distribucion_inicial_percapita (id_modificacion_distribucion_inicial_percapita) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT documento_fk FOREIGN KEY (documento)
+      REFERENCES referencia_documento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT servicio_fk FOREIGN KEY (servicio)
+      REFERENCES servicio_salud (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT tipo_documento_fk FOREIGN KEY (tipo_documento)
+      REFERENCES tipo_documento (id_tipo_documento) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+
+CREATE TABLE reporte_emails_modificacion_percapita
+(
+  id_reporte_emails_modificacion_percapita serial NOT NULL,
+  modificacion_distribucion_inicial_percapita integer NOT NULL,
+  reporte_emails_enviados integer NOT NULL,
+  CONSTRAINT reporte_emails_modificacion_percapita_pk PRIMARY KEY (id_reporte_emails_modificacion_percapita),
+  CONSTRAINT modificacion_percapita_fk FOREIGN KEY (modificacion_distribucion_inicial_percapita)
+      REFERENCES modificacion_distribucion_inicial_percapita (id_modificacion_distribucion_inicial_percapita) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT reporte_emails_enviados_fk FOREIGN KEY (reporte_emails_enviados)
+      REFERENCES reporte_emails_enviados (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (15, 'Hacer Seguimiento Ordinario Solicitud Antecedentes');
+
+CREATE TABLE modificacion_distribucion_inicial_percapita_seguimiento
+(
+  id_modificacion_distribucion_inicial_percapita_seguimiento serial NOT NULL,
+  modificacion_distribucion_inicial_percapita integer NOT NULL,
+  seguimiento integer NOT NULL,
+  CONSTRAINT modificacion_distribucion_inicial_percapita_seguimiento_pk PRIMARY KEY (id_modificacion_distribucion_inicial_percapita_seguimiento),
+  CONSTRAINT modificacion_distribucion_inicial_percapita_fk FOREIGN KEY (modificacion_distribucion_inicial_percapita)
+      REFERENCES modificacion_distribucion_inicial_percapita (id_modificacion_distribucion_inicial_percapita) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT modificacion_distribucion_inicial_percapita_seguimiento_fk FOREIGN KEY (seguimiento)
+      REFERENCES seguimiento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+ALTER TABLE documento_modificacion_percapita
+  ADD COLUMN comuna integer;
+ALTER TABLE documento_modificacion_percapita
+  ADD CONSTRAINT comuna_fk FOREIGN KEY (comuna) REFERENCES comuna (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+--cambios reliquidacion por subtitulo
+
+ALTER TABLE reliquidacion_comuna_componente
+  ADD COLUMN subtitulo integer NOT NULL;
+ALTER TABLE reliquidacion_comuna_componente
+  ADD CONSTRAINT subtitulo_fk FOREIGN KEY (subtitulo) REFERENCES tipo_subtitulo (id_tipo_subtitulo) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE reliquidacion_servicio_componente
+  ADD COLUMN subtitulo integer NOT NULL;
+ALTER TABLE reliquidacion_servicio_componente
+  ADD CONSTRAINT subtitulo_fk FOREIGN KEY (subtitulo) REFERENCES tipo_subtitulo (id_tipo_subtitulo) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+--cambios para modificacion percapita
+ALTER TABLE antecendentes_comuna_calculado
+  ADD COLUMN fecha_vigencia timestamp without time zone;
+
+ALTER TABLE antecendentes_comuna_calculado
+  ADD COLUMN modificacion_percapita integer;
+ALTER TABLE antecendentes_comuna_calculado
+  ADD CONSTRAINT modificacion_percapita_fk FOREIGN KEY (modificacion_percapita) REFERENCES modificacion_distribucion_inicial_percapita (id_modificacion_distribucion_inicial_percapita) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+ALTER TABLE documento_distribucion_inicial_percapita
+  ADD COLUMN servicio integer;
+ALTER TABLE documento_distribucion_inicial_percapita
+  ADD CONSTRAINT servicio_fk FOREIGN KEY (servicio) REFERENCES servicio_salud (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+
+
+
 
 
 

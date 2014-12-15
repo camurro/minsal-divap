@@ -22,6 +22,7 @@ import cl.minsal.divap.model.ConvenioServicioComponente;
 import cl.minsal.divap.model.DocumentoConvenio;
 import cl.minsal.divap.model.DocumentoConvenioComuna;
 import cl.minsal.divap.model.DocumentoConvenioServicio;
+import cl.minsal.divap.model.DocumentoModificacionPercapita;
 import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.ReporteEmailsAdjuntos;
@@ -767,6 +768,41 @@ public class ConveniosDAO {
 	public DocumentoConvenioComuna save(DocumentoConvenioComuna documentoConvenioComuna) {
 		em.persist(documentoConvenioComuna);
 		return documentoConvenioComuna;
+	}
+
+	public DocumentoModificacionPercapita save(DocumentoModificacionPercapita documentoModificacionPercapita) {
+		em.persist(documentoModificacionPercapita);
+		return documentoModificacionPercapita;
+	}
+	
+	public List<ConvenioServicio> getConveniosServicioByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, 
+			Integer idEstablecimiento, Integer idEstadoConvenio) {
+		try {
+			TypedQuery<ConvenioServicio> query = this.em.createNamedQuery("ConvenioServicio.findByIdProgramaAnoIdComponenteIdSubtituloIdEstablecimientoIdEstadoConvenio", ConvenioServicio.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idTipoSubtitulo", idSubtitulo);
+			query.setParameter("idEstablecimiento", idEstablecimiento);
+			query.setParameter("idEstadoConvenio", idEstadoConvenio);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public List<ConvenioComuna> getConveniosComunaByProgramaAnoComponenteSubtituloComunaEstadoConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo,
+			Integer idComuna, Integer idEstadoConvenio) {
+		try {
+			TypedQuery<ConvenioComuna> query = this.em.createNamedQuery("ConvenioComuna.findByIdProgramaAnoIdComponenteIdSubtituloIdComunaIdEstadoConvenio", ConvenioComuna.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idTipoSubtitulo", idSubtitulo);
+			query.setParameter("idComuna", idComuna);
+			query.setParameter("idEstadoConvenio", idEstadoConvenio);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

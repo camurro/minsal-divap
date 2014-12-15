@@ -107,6 +107,17 @@ public class SeguimientoDAO {
 		}
 	}
 	
+	public List<Seguimiento> getBitacoraModificacionPercapita(Integer idDistribucionInicialPercapita, TareasSeguimiento tareaSeguimiento) {
+		try {
+			TypedQuery<Seguimiento> query = this.em.createNamedQuery("Seguimiento.findByIdModificacionDistribucionInicialTarea", Seguimiento.class);
+			query.setParameter("idModificacionDistribucionInicialPercapita", idDistribucionInicialPercapita);
+			query.setParameter("idTareaSeguimiento", tareaSeguimiento.getId());
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	public List<Seguimiento> getBitacoraProgramasReforzamiento(Integer idProgramaAno, TareasSeguimiento tareaSeguimiento) {
 		try {
 			TypedQuery<Seguimiento> query = this.em.createNamedQuery("Seguimiento.findByIdProgramaReforzamiento", Seguimiento.class);

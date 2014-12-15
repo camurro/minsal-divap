@@ -1,6 +1,7 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -29,12 +32,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByPobreza", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.pobreza = :pobreza"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByRuralidad", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.ruralidad = :ruralidad"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByValorReferencialZona", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.valorReferencialZona = :valorReferencialZona"),
-	@NamedQuery(name = "AntecendentesComunaCalculado.findByAntecedentesDistrinbucionInicial", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idAntecedentesComuna = :idAntecendentesComuna and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),
-	@NamedQuery(name = "AntecendentesComunaCalculado.findByDistribucionInicialPercapita", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita order by a.antecedentesComuna.idComuna.servicioSalud.id asc"),	
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByAntecedentesDistrinbucionInicial", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idAntecedentesComuna = :idAntecendentesComuna and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita and a.fechaVigencia is null"),
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByDistribucionInicialPercapitaVigente", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita and a.fechaVigencia is null order by a.antecedentesComuna.idComuna.servicioSalud.id asc"),	
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByDistribucionInicialPercapitaServicio", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita and a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio order by a.antecedentesComuna.idComuna.servicioSalud.id asc"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByComunaServicioAnoCurso", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.id = :idComuna and a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio and a.antecedentesComuna.anoAnoEnCurso.ano = :anoEnCurso"),	
-	@NamedQuery(name = "AntecendentesComunaCalculado.findByComunaServicioDistribucionInicialPercapita", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.id = :idComuna and a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),
-	@NamedQuery(name = "AntecendentesComunaCalculado.findByServicioDistribucionInicialPercapita", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),	
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByComunaServicioDistribucionInicialPercapitaVigente", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.id = :idComuna and a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita and a.fechaVigencia is null"),
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByServicioDistribucionInicialPercapitaVigente", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita and a.fechaVigencia is null"),	
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByComunasDistribucionInicialPercapita", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.id IN (:comunas) and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.countByDistribucionInicialPercapita", query = "SELECT count(a) FROM AntecendentesComunaCalculado a WHERE a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByIdAntecedentesComuna", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idAntecedentesComuna = :idAntecendentesComuna"),
@@ -42,7 +45,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByIdComunaAnoAprobado", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.id = :idComuna and a.antecedentesComuna.anoAnoEnCurso.ano = :ano and a.aprobado = :aprobado"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByIdComunaAnoTiposComuna", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.id = :idComuna and a.antecedentesComuna.anoAnoEnCurso.ano = :ano and a.antecedentesComuna.clasificacion.idTipoComuna IN (:tiposComuna)"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.getPerCapitaBasalByIdServicio", query = "SELECT SUM(a.percapitaMes) FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio GROUP BY a.antecedentesComuna.idComuna.servicioSalud.id"),
-	@NamedQuery(name = "AntecendentesComunaCalculado.getDesempenoDificilByIdServicio", query = "SELECT SUM(a.desempenoDificil) FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio GROUP BY a.antecedentesComuna.idComuna.servicioSalud.id")})
+	@NamedQuery(name = "AntecendentesComunaCalculado.getDesempenoDificilByIdServicio", query = "SELECT SUM(a.desempenoDificil) FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idComuna.servicioSalud.id = :idServicio GROUP BY a.antecedentesComuna.idComuna.servicioSalud.id"),
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByAntecedentesDistrinbucionInicialVigente", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idAntecedentesComuna = :idAntecendentesComuna and a.fechaVigencia is null and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByDistribucionInicialPercapitaVigenteModificacionPercapita", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita and a.fechaVigencia is null and a.modificacionPercapita.idModificacionDistribucionInicialPercapita = :idModificacionPercapita order by a.antecedentesComuna.idComuna.servicioSalud.id asc"),
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByAntecedentesDistrinbucionInicialVigenteModificacionPercapita", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idAntecedentesComuna = :idAntecendentesComuna and a.fechaVigencia is null and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita and a.modificacionPercapita.idModificacionDistribucionInicialPercapita = :idModificacionPercapita")})
 public class AntecendentesComunaCalculado implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -69,9 +75,15 @@ public class AntecendentesComunaCalculado implements Serializable {
 	private Long percapitaAno;
 	@Column(name = "aprobado")
 	private Boolean aprobado;
+	@Column(name = "fecha_vigencia")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date fechaVigencia;
 	@JoinColumn(name = "distribucion_inicial_percapita", referencedColumnName = "id_distribucion_inicial_percapita")
 	@ManyToOne
 	private DistribucionInicialPercapita distribucionInicialPercapita;
+	@JoinColumn(name = "modificacion_percapita", referencedColumnName = "id_modificacion_distribucion_inicial_percapita")
+	@ManyToOne
+	private ModificacionDistribucionInicialPercapita modificacionPercapita;
 	@JoinColumn(name = "antecedentes_comuna", referencedColumnName = "id_antecedentes_comuna")
 	@ManyToOne(optional = false)
 	private AntecendentesComuna antecedentesComuna;
@@ -180,6 +192,23 @@ public class AntecendentesComunaCalculado implements Serializable {
 		this.percapitaAno = percapitaAno;
 	}
 
+	public Date getFechaVigencia() {
+		return fechaVigencia;
+	}
+
+	public void setFechaVigencia(Date fechaVigencia) {
+		this.fechaVigencia = fechaVigencia;
+	}
+
+	public ModificacionDistribucionInicialPercapita getModificacionPercapita() {
+		return modificacionPercapita;
+	}
+
+	public void setModificacionPercapita(
+			ModificacionDistribucionInicialPercapita modificacionPercapita) {
+		this.modificacionPercapita = modificacionPercapita;
+	}
+
 	@Override
 	public int hashCode() {
 		int hash = 0;
@@ -204,12 +233,12 @@ public class AntecendentesComunaCalculado implements Serializable {
 		return "cl.minsal.divap.model.AntecendentesComunaCalculado[ idAntecendentesComunaCalculado=" + idAntecendentesComunaCalculado + " ]";
 	}
 
-	  public Boolean getAprobado() {
-	        return aprobado;
-	    }
+	public Boolean getAprobado() {
+		return aprobado;
+	}
 
-	    public void setAprobado(Boolean aprobado) {
-	        this.aprobado = aprobado;
-	    }
+	public void setAprobado(Boolean aprobado) {
+		this.aprobado = aprobado;
+	}
 }
 

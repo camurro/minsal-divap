@@ -225,7 +225,7 @@
                    document.getElementById('formDownloadResolucion:hiddenId').value=idDoc;
                    document.getElementById('formDownloadResolucion:linkDownload').click();  
                }  
-               
+
 			   function subirDocumentos(){  
                    document.getElementById('btnShowModal').click();  
                }  
@@ -246,10 +246,10 @@
 				<p:panel id="Panel">
 					<h2>
 						<span class="strong">Actividad:</span>
-						#{procesoAsignacionPerCapitaSeguimientoController.actividadSeguimientoTitle}
+						#{procesoModificacionAsignacionPerCapitaSeguimientoController.actividadSeguimientoTitle}
 					</h2>
 					<p class="parrafo">El
-						#{procesoAsignacionPerCapitaSeguimientoController.actividadSeguimientoTitle}
+						#{procesoModificacionAsignacionPerCapitaSeguimientoController.actividadSeguimientoTitle}
 						contiene lorem ipsum dolor sit amet, consectetur adipiscing elit.
 						Praesent egestas tempor nulla eget ultricies. Morbi pulvinar elit
 						at justo pharetra, vitae ultricies est faucibus. Integer id est
@@ -267,18 +267,18 @@
 						<h:graphicImage value="resources/minsal/images/download-alt.png"
 								styleClass="divapIcons" />
 							<h:commandLink value="Bajar Última Versión"
-								onclick="downloadDocument(#{procesoAsignacionPerCapitaSeguimientoController.documentoPoblacionInscrita.id});return false;" />
+								onclick="downloadDocument(#{procesoModificacionAsignacionPerCapitaSeguimientoController.documentoPoblacionInscrita.id});return false;" />
 						
 						]
 						<c:if
-							test="#{procesoAsignacionPerCapitaSeguimientoController.tareaSeguimiento.id == 1}">
+							test="#{procesoModificacionAsignacionPerCapitaSeguimientoController.tareaSeguimiento.id == 1}">
 							
 						<br />
 							<span class="strong">Archivo: </span> Oficio Consulta [
 						<h:graphicImage value="resources/minsal/images/download-alt.png"
 								styleClass="divapIcons" />
 							<h:commandLink id="lastSeguimiento" value="Bajar Última Versión"
-								onclick="downloadDocument(#{procesoAsignacionPerCapitaSeguimientoController.oficioConsultaId});return false;" />
+								onclick="downloadDocument(#{procesoModificacionAsignacionPerCapitaSeguimientoController.oficioConsultaId});return false;" />
 						|
 						<h:graphicImage value="resources/minsal/images/upload-alt.png"
 								styleClass="divapIcons" />
@@ -293,7 +293,7 @@
 						<h:graphicImage value="resources/minsal/images/download-alt.png"
 							styleClass="divapIcons" />
 						<h:commandLink id="lastPlantilla" value="Bajar Última Versión"
-						        onclick="downloadDocument(#{procesoAsignacionPerCapitaSeguimientoController.plantillaCorreoId});return false;" />
+						        onclick="downloadDocument(#{procesoModificacionAsignacionPerCapitaSeguimientoController.plantillaCorreoId});return false;" />
 						|
 						<h:graphicImage value="resources/minsal/images/upload-alt.png"
 								styleClass="divapIcons" />
@@ -304,13 +304,13 @@
 						<br />
 						</c:if>
 						<c:if
-							test="#{procesoAsignacionPerCapitaSeguimientoController.tareaSeguimiento.id == 2}">
+							test="#{procesoModificacionAsignacionPerCapitaSeguimientoController.tareaSeguimiento.id == 2}">
 							<br />
 							<span class="strong">Archivo: </span> Decreto Aporte Estatal [
 						<h:graphicImage value="resources/minsal/images/download-alt.png"
 								styleClass="divapIcons" />
 							<h:commandLink id="lastSeguimiento" value="Bajar Última Versión"
-								onclick="downloadDocument(#{procesoAsignacionPerCapitaSeguimientoController.decretoId});return false;" />
+								onclick="downloadDocument(#{procesoModificacionAsignacionPerCapitaSeguimientoController.decretoId});return false;" />
 						|
 						<h:graphicImage value="resources/minsal/images/upload-alt.png"
 								styleClass="divapIcons" />
@@ -321,13 +321,13 @@
 						</c:if>
 						
 						<c:if
-							test="#{procesoAsignacionPerCapitaSeguimientoController.tareaSeguimiento.id == 3}">
+							test="#{procesoModificacionAsignacionPerCapitaSeguimientoController.tareaSeguimiento.id == 3}">
 							<br />
 							<span class="strong">Archivo: </span> Decreto Montos de Distribución [
 						<h:graphicImage value="resources/minsal/images/download-alt.png"
 								styleClass="divapIcons" />
 							<h:commandLink id="lastSeguimientoDecreto" value="Bajar Última Versión"
-								onclick="downloadDocument(#{procesoAsignacionPerCapitaSeguimientoController.decretoId});return false;" />
+								onclick="downloadDocument(#{procesoModificacionAsignacionPerCapitaSeguimientoController.decretoId});return false;" />
 						|
 						<h:graphicImage value="resources/minsal/images/upload-alt.png"
 								styleClass="divapIcons" />
@@ -338,7 +338,7 @@
 						</c:if>
 						
 						<c:if
-							test="#{procesoAsignacionPerCapitaSeguimientoController.tareaSeguimiento.id == 4}">
+							test="#{procesoModificacionAsignacionPerCapitaSeguimientoController.tareaSeguimiento.id == 4}">
 						<br />
 						<div class="destacaArchivos ui-corner-all">
 						<h3>Plantilla Envío Correo Resoluciones :</h3>
@@ -346,7 +346,7 @@
 						<h:graphicImage value="resources/minsal/images/download-alt.png"
 							styleClass="divapIcons" />
 						<h:commandLink id="lastPlantilla" value="Bajar Última Versión"
-						        onclick="downloadDocument(#{procesoAsignacionPerCapitaSeguimientoController.plantillaCorreoId});return false;" />
+						        onclick="downloadDocument(#{procesoModificacionAsignacionPerCapitaSeguimientoController.plantillaCorreoId});return false;" />
 						|
 						<h:graphicImage value="resources/minsal/images/upload-alt.png"
 								styleClass="divapIcons" />
@@ -359,31 +359,31 @@
 				
 
 						<c:if
-							test="#{procesoAsignacionPerCapitaSeguimientoController.verBusqueda}">
+							test="#{procesoModificacionAsignacionPerCapitaSeguimientoController.verBusqueda}">
 
 							<h:panelGrid columns="3" id="busqueda_mis_tareas2">
 
 								<h:panelGrid columns="2">
 									<h:outputText value="Servicio: " styleClass="inputLabel" />
-									<p:selectOneMenu  id="servicios" value="#{procesoAsignacionPerCapitaSeguimientoController.servicioSeleccionado}">
+									<p:selectOneMenu  id="servicios" value="#{procesoModificacionAsignacionPerCapitaSeguimientoController.servicioSeleccionado}">
 										<f:selectItem itemLabel="Seleccione" itemValue="" />
-										<f:selectItems value="#{procesoAsignacionPerCapitaSeguimientoController.servicios}" itemLabel="#{serv.nombre_servicio}" var="serv" itemValue="#{serv.id_servicio}"/>
+										<f:selectItems value="#{procesoModificacionAsignacionPerCapitaSeguimientoController.servicios}" itemLabel="#{serv.nombre_servicio}" var="serv" itemValue="#{serv.id_servicio}"/>
 									</p:selectOneMenu>
 								</h:panelGrid>
 								
 								<h:panelGrid columns="2">
-									<p:commandButton value="Buscar" actionListener="#{procesoAsignacionPerCapitaSeguimientoController.buscar}" update="formSeguimiento:panelBusqueda" styleClass=" x-btn-text icon-guardar" icon="ui-icon-search" />
-									<p:commandButton value="Limpiar" actionListener="#{procesoAsignacionPerCapitaSeguimientoController.limpiar}" update="formSeguimiento:servicios formSeguimiento:panelBusqueda" styleClass=" x-btn-text icon-guardar" icon="ui-icon-trash" />
+									<p:commandButton value="Buscar" actionListener="#{procesoModificacionAsignacionPerCapitaSeguimientoController.buscar}" update="formSeguimiento:panelBusqueda" styleClass=" x-btn-text icon-guardar" icon="ui-icon-search" />
+									<p:commandButton value="Limpiar" actionListener="#{procesoModificacionAsignacionPerCapitaSeguimientoController.limpiar}" update="formSeguimiento:servicios formSeguimiento:panelBusqueda" styleClass=" x-btn-text icon-guardar" icon="ui-icon-trash" />
 								</h:panelGrid>
 							</h:panelGrid>
 
                             <p:panel id="panelBusqueda">
 							<span class="strong">Archivo: </span> Archivo comprimido con Oficios para Servicio de Salud
 							<ul class="versionesArchivo">
-								<c:forEach var="vardoc" items="#{procesoAsignacionPerCapitaSeguimientoController.serviciosResoluciones}">
+								<c:forEach var="vardoc" items="#{procesoModificacionAsignacionPerCapitaSeguimientoController.serviciosResoluciones}">
 								<li>
 								<p:outputLabel
-										value="Resolucion para Servicio #{vardoc.nombre_servicio}"" /> [ <h:graphicImage
+										value="Resolucion para Servicio #{vardoc.nombre_servicio}"/> [ <h:graphicImage
 										value="resources/minsal/images/download-alt.png"
 										styleClass="divapIcons" /> <h:commandLink  value="Bajar Última Versión"
 								onclick="downloadDocumentResolucion(#{vardoc.id_servicio});return false;" /> | <h:graphicImage
@@ -401,9 +401,9 @@
 					<h3>Bitácora de Seguimiento:</h3>
 					<!-- INICIO MENSAJE MOCK -->
 					<p:panelGrid columns="2"
-						rendered="#{not empty procesoAsignacionPerCapitaSeguimientoController.bitacoraSeguimiento}">
+						rendered="#{not empty procesoModificacionAsignacionPerCapitaSeguimientoController.bitacoraSeguimiento}">
 						<c:forEach var="var"
-							items="#{procesoAsignacionPerCapitaSeguimientoController.bitacoraSeguimiento}">
+							items="#{procesoModificacionAsignacionPerCapitaSeguimientoController.bitacoraSeguimiento}">
 							<h:outputText value="#{var.date}" styleClass="inputLabel">
 								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
 							</h:outputText>
@@ -440,21 +440,21 @@
 						<h:panelGrid columns="2" styleClass="tableFullWidth">
 							<h:outputText value="Para: " styleClass="inputLabel" />
 							<p:inputText styleClass="inputText" style="width: 70%;" id="to"
-								value="#{procesoAsignacionPerCapitaSeguimientoController.to}" />
+								value="#{procesoModificacionAsignacionPerCapitaSeguimientoController.to}" />
 
 							<h:outputText value="CC: " styleClass="inputLabel" />
 							<p:inputText styleClass="inputText" style="width: 70%;" id="cc"
-								value="#{procesoAsignacionPerCapitaSeguimientoController.cc}" />
+								value="#{procesoModificacionAsignacionPerCapitaSeguimientoController.cc}" />
 
 							<h:outputText value="CCO: " styleClass="inputLabel" />
 							<p:inputText styleClass="inputText" style="width: 70%;" id="cco"
-								value="#{procesoAsignacionPerCapitaSeguimientoController.cco}" />
+								value="#{procesoModificacionAsignacionPerCapitaSeguimientoController.cco}" />
 
 							<h:outputText value="Adjunto: " styleClass="inputLabel" />
 							<h:panelGrid columns="2">
 								<p:fileUpload id="attachedFile"
-									fileUploadListener="#{procesoAsignacionPerCapitaSeguimientoController.handleAttachedFile}"
-									value="#{procesoAsignacionPerCapitaSeguimientoController.attachedFile}"
+									fileUploadListener="#{procesoModificacionAsignacionPerCapitaSeguimientoController.handleAttachedFile}"
+									value="#{procesoModificacionAsignacionPerCapitaSeguimientoController.attachedFile}"
 									mode="simple" auto="true"  styleClass="inputText" />
 								
 							</h:panelGrid>
@@ -462,18 +462,18 @@
 							<h:outputText value="Asunto: " styleClass="inputLabel" />
 							<p:inputText styleClass="inputText" style="width: 70%;"
 								id="subject"
-								value="#{procesoAsignacionPerCapitaSeguimientoController.subject}" />
+								value="#{procesoModificacionAsignacionPerCapitaSeguimientoController.subject}" />
 
 							<h:outputText value="Mensaje: " styleClass="inputLabel" />
 							<p:inputTextarea styleClass="inputTextArea" style="width: 70%;"
 								id="body"
-								value="#{procesoAsignacionPerCapitaSeguimientoController.body}"
+								value="#{procesoModificacionAsignacionPerCapitaSeguimientoController.body}"
 								requiredMessage="Debe especificar el mensaje del correo" />
 						</h:panelGrid>
 						<p:commandButton styleClass="x-btn-text"
 							onclick="return checkListEmails()" style="float:right;"
 							value="Enviar Correo" icon="ui-icon-comment" ajax="false"
-							action="#{procesoAsignacionPerCapitaSeguimientoController.sendMail}"
+							action="#{procesoModificacionAsignacionPerCapitaSeguimientoController.sendMail}"
 							id="sendMail" />
 					</h:panelGrid>
 						
@@ -489,53 +489,53 @@
 
 					<p:commandButton styleClass="x-btn-text" value="Re Cargar Archivos"
 						icon="ui-icon-refresh"
-						action="#{procesoAsignacionPerCapitaSeguimientoController.enviar}"
-						rendered="#{procesoAsignacionPerCapitaSeguimientoController.verRecargarArchivos}">
+						action="#{procesoModificacionAsignacionPerCapitaSeguimientoController.enviar}"
+						rendered="#{procesoModificacionAsignacionPerCapitaSeguimientoController.verRecargarArchivos}">
 						<f:setPropertyActionListener
-							target="#{procesoAsignacionPerCapitaSeguimientoController.target}"
+							target="#{procesoModificacionAsignacionPerCapitaSeguimientoController.target}"
 							value="bandejaTareas.jsf" />
 						<f:setPropertyActionListener
-							target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarRevalorizar_}"
+							target="#{procesoModificacionAsignacionPerCapitaSeguimientoController.rechazarRevalorizar_}"
 							value='#{"false"}' />
 						<f:setPropertyActionListener
-							target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarSubirArchivos_}"
+							target="#{procesoModificacionAsignacionPerCapitaSeguimientoController.rechazarSubirArchivos_}"
 							value='#{"true"}' />
 						<f:setPropertyActionListener
-							target="#{procesoAsignacionPerCapitaSeguimientoController.aprobar_}"
+							target="#{procesoModificacionAsignacionPerCapitaSeguimientoController.aprobar_}"
 							value='#{"false"}' />
 					</p:commandButton>
 
 					<p:commandButton styleClass="x-btn-text" value="Re Valorizar"
-						rendered="#{procesoAsignacionPerCapitaSeguimientoController.verRevalorizar}"
+						rendered="#{procesoModificacionAsignacionPerCapitaSeguimientoController.verRevalorizar}"
 						icon="ui-icon-refresh"
-						action="#{procesoAsignacionPerCapitaSeguimientoController.enviar}">
+						action="#{procesoModificacionAsignacionPerCapitaSeguimientoController.enviar}">
 						<f:setPropertyActionListener
-							target="#{procesoAsignacionPerCapitaSeguimientoController.target}"
+							target="#{procesoModificacionAsignacionPerCapitaSeguimientoController.target}"
 							value="bandejaTareas.jsf" />
 						<f:setPropertyActionListener
-							target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarRevalorizar_}"
+							target="#{procesoModificacionAsignacionPerCapitaSeguimientoController.rechazarRevalorizar_}"
 							value='#{"true"}' />
 						<f:setPropertyActionListener
-							target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarSubirArchivos_}"
+							target="#{procesoModificacionAsignacionPerCapitaSeguimientoController.rechazarSubirArchivos_}"
 							value='#{"false"}' />
 						<f:setPropertyActionListener
-							target="#{procesoAsignacionPerCapitaSeguimientoController.aprobar_}"
+							target="#{procesoModificacionAsignacionPerCapitaSeguimientoController.aprobar_}"
 							value='#{"false"}' />
 					</p:commandButton>
 					<p:commandButton styleClass="x-btn-text"
 						value="Finalizar Seguimiento | Actividad" icon="ui-icon-check"
-						action="#{procesoAsignacionPerCapitaSeguimientoController.enviar}">
+						action="#{procesoModificacionAsignacionPerCapitaSeguimientoController.enviar}">
 						<f:setPropertyActionListener
-							target="#{procesoAsignacionPerCapitaSeguimientoController.target}"
+							target="#{procesoModificacionAsignacionPerCapitaSeguimientoController.target}"
 							value="bandejaTareas.jsf" />
 						<f:setPropertyActionListener
-							target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarRevalorizar_}"
+							target="#{procesoModificacionAsignacionPerCapitaSeguimientoController.rechazarRevalorizar_}"
 							value='#{"false"}' />
 						<f:setPropertyActionListener
-							target="#{procesoAsignacionPerCapitaSeguimientoController.rechazarSubirArchivos_}"
+							target="#{procesoModificacionAsignacionPerCapitaSeguimientoController.rechazarSubirArchivos_}"
 							value='#{"false"}' />
 						<f:setPropertyActionListener
-							target="#{procesoAsignacionPerCapitaSeguimientoController.aprobar_}"
+							target="#{procesoModificacionAsignacionPerCapitaSeguimientoController.aprobar_}"
 							value='#{"true"}' />
 					</p:commandButton>
 					<div style="clear: both;"></div>
@@ -553,23 +553,21 @@
 
 		</p:panel>
 
-
-
 		<h:form id="formDownload">
 			<h:inputHidden
-				value="#{procesoAsignacionPerCapitaSeguimientoController.docIdDownload}"
+				value="#{procesoModificacionAsignacionPerCapitaSeguimientoController.docIdDownload}"
 				id="hiddenId" />
 			<h:commandButton id="linkDownload"
-				action="#{procesoAsignacionPerCapitaSeguimientoController.downloadPlanilla}"
+				action="#{procesoModificacionAsignacionPerCapitaSeguimientoController.downloadPlanilla}"
 				style="display: none"></h:commandButton>
 		</h:form>
 		
 		<h:form id="formDownloadResolucion">
 			<h:inputHidden
-				value="#{procesoAsignacionPerCapitaSeguimientoController.docIdDownload}"
+				value="#{procesoModificacionAsignacionPerCapitaSeguimientoController.docIdDownload}"
 				id="hiddenId" />
 			<h:commandButton id="linkDownload"
-				action="#{procesoAsignacionPerCapitaSeguimientoController.downloadResolucion}"
+				action="#{procesoModificacionAsignacionPerCapitaSeguimientoController.downloadResolucion}"
 				style="display: none"></h:commandButton>
 		</h:form>
 			
@@ -578,13 +576,13 @@
 			<p:panelGrid columns="2" >
 				<h:outputText value="Nueva Versión: " />
 				<p:fileUpload id="newVersionFile"
-							fileUploadListener="#{procesoAsignacionPerCapitaSeguimientoController.handleFile}"
-							value="#{procesoAsignacionPerCapitaSeguimientoController.file}"
+							fileUploadListener="#{procesoModificacionAsignacionPerCapitaSeguimientoController.handleFile}"
+							value="#{procesoModificacionAsignacionPerCapitaSeguimientoController.file}"
 							update="uploadVersion" mode="simple"  />
 				<h:outputText value="Versión Final: "  />
-				<h:selectBooleanCheckbox id="checkVersionFinal" value="#{procesoAsignacionPerCapitaSeguimientoController.versionFinal}" />
+				<h:selectBooleanCheckbox id="checkVersionFinal" value="#{procesoModificacionAsignacionPerCapitaSeguimientoController.versionFinal}" />
 				<p:commandButton value="Aceptar" ajax="false"
-					actionListener="#{procesoAsignacionPerCapitaSeguimientoController.uploadVersion}" update=":lastSeguimiento"
+					actionListener="#{procesoModificacionAsignacionPerCapitaSeguimientoController.uploadVersion}" update=":lastSeguimiento"
 					oncomplete="if (args &amp;&amp; args.showDialog){dlgUpload.hide()}else{ alert('the bean didnt let me open the dialog')}" />
 					
 				<p:commandButton value="Cancelar"
@@ -598,11 +596,11 @@
 			<p:panelGrid columns="2" >
 				<h:outputText value="Nueva Versión: " />
 				<p:fileUpload id="newVersionFile2"
-							fileUploadListener="#{procesoAsignacionPerCapitaSeguimientoController.handleFile2}"
-							value="#{procesoAsignacionPerCapitaSeguimientoController.file2}"
+							fileUploadListener="#{procesoModificacionAsignacionPerCapitaSeguimientoController.handleFile2}"
+							value="#{procesoModificacionAsignacionPerCapitaSeguimientoController.file2}"
 							update="uploadVersion2" mode="simple"  />
 				<p:commandButton value="Aceptar" ajax="false"
-					actionListener="#{procesoAsignacionPerCapitaSeguimientoController.uploadVersion2}" update=":lastPlantilla"
+					actionListener="#{procesoModificacionAsignacionPerCapitaSeguimientoController.uploadVersion2}" update=":lastPlantilla"
 					oncomplete="if (args &amp;&amp; args.showDialog){dlgUpload2.hide()}else{ alert('the bean didnt let me open the dialog')}" />
 					
 				<p:commandButton value="Cancelar"

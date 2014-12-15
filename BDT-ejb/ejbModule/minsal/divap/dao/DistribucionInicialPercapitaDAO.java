@@ -14,6 +14,13 @@ import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.DistribucionInicialPercapitaSeguimiento;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
+import cl.minsal.divap.model.DocumentoModificacionPercapita;
+import cl.minsal.divap.model.ModificacionDistribucionInicialPercapita;
+import cl.minsal.divap.model.ModificacionDistribucionInicialPercapitaSeguimiento;
+import cl.minsal.divap.model.ReporteEmailsAdjuntos;
+import cl.minsal.divap.model.ReporteEmailsDestinatarios;
+import cl.minsal.divap.model.ReporteEmailsEnviados;
+import cl.minsal.divap.model.ReporteEmailsModificacionPercapita;
 import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.Usuario;
 
@@ -92,5 +99,67 @@ public class DistribucionInicialPercapitaDAO {
 		return null;
 	}
 
+	public Integer crearIntanciaModificacionDistribucionInicialPercapita(Usuario usuario, AnoEnCurso anoEnCurso) {
+		try {
+			long current = Calendar.getInstance().getTimeInMillis();
+			ModificacionDistribucionInicialPercapita dto = new ModificacionDistribucionInicialPercapita();
+			dto.setUsuario(usuario);
+			dto.setAno(anoEnCurso);
+			dto.setFechaCreacion(new Date(current));
+			this.em.persist(dto);
+			return dto.getIdModificacionDistribucionInicialPercapita();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public ModificacionDistribucionInicialPercapita findModificacionDistribucionInicialById(Integer idDistribucionInicialPercapita) {
+		try{
+			TypedQuery<ModificacionDistribucionInicialPercapita> query = this.em.createNamedQuery("ModificacionDistribucionInicialPercapita.findByIdModificacionDistribucionInicialPercapita", ModificacionDistribucionInicialPercapita.class);
+			query.setParameter("idModificacionDistribucionInicialPercapita", idDistribucionInicialPercapita);
+			List<ModificacionDistribucionInicialPercapita> results = query.getResultList();
+			if(results != null && results.size() > 0){
+				return results.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public DocumentoModificacionPercapita save(DocumentoModificacionPercapita documentoModificacionPercapita) {
+		em.merge(documentoModificacionPercapita);
+		return documentoModificacionPercapita;
+	}
+
+	public ReporteEmailsEnviados save(ReporteEmailsEnviados reporteEmailsEnviados) {
+		em.persist(reporteEmailsEnviados);
+		return reporteEmailsEnviados;
+	}
+
+	public ReporteEmailsDestinatarios save(ReporteEmailsDestinatarios destinatarioPara) {
+		em.persist(destinatarioPara);
+		return destinatarioPara;
+	}
+
+	public ReporteEmailsAdjuntos save(ReporteEmailsAdjuntos reporteEmailsAdjuntos) {
+		em.persist(reporteEmailsAdjuntos);
+		return reporteEmailsAdjuntos;
+	}
+
+	public ReporteEmailsModificacionPercapita save(ReporteEmailsModificacionPercapita reporteEmailsModificacionPercapita) {
+		em.persist(reporteEmailsModificacionPercapita);
+		return reporteEmailsModificacionPercapita;
+	}
+
+	public Integer createSeguimientoModificacion(Integer idDistribucionInicialPercapita, Seguimiento seguimiento) {
+		ModificacionDistribucionInicialPercapita modificacionDistribucionInicialPercapita = findModificacionDistribucionInicialById(idDistribucionInicialPercapita);
+		ModificacionDistribucionInicialPercapitaSeguimiento modificacionDistribucionInicialPercapitaSeguimiento = new ModificacionDistribucionInicialPercapitaSeguimiento();
+		modificacionDistribucionInicialPercapitaSeguimiento.setModificacionDistribucionInicialPercapita(modificacionDistribucionInicialPercapita);
+		modificacionDistribucionInicialPercapitaSeguimiento.setSeguimiento(seguimiento);
+		this.em.persist(modificacionDistribucionInicialPercapitaSeguimiento);
+		return modificacionDistribucionInicialPercapitaSeguimiento.getIdModificacionDistribucionInicialPercapitaSeguimiento();
+	}
 	
 }

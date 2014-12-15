@@ -98,6 +98,19 @@ public class SeguimientoService {
 		return bitacora;
 	}
 	
+	public List<SeguimientoVO> getBitacoraModificacionPercapita(
+			Integer idDistribucionInicialPercapita,
+			TareasSeguimiento tareaSeguimiento) {
+		List<SeguimientoVO> bitacora = new ArrayList<SeguimientoVO>();
+		List<Seguimiento> bitacoraSeguimiento = seguimientoDAO.getBitacoraModificacionPercapita(idDistribucionInicialPercapita, tareaSeguimiento);
+		if(bitacoraSeguimiento != null && bitacoraSeguimiento.size() > 0){
+			for(Seguimiento seguimiento : bitacoraSeguimiento){
+				bitacora.add(new SeguimientoMapper().getBasic(seguimiento));
+			}
+		}
+		return bitacora;
+	}
+	
 	public List<SeguimientoVO> getBitacoraRebaja(
 			Integer idRebaja,
 			TareasSeguimiento tareaSeguimiento) {

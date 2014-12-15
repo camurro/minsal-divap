@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
-
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="zonaJavaScript">
+		<style type="text/css">
+			.ui-state-error {
+				margin-left: 0px;
+			}
+		</style>
+		<script type="text/javascript">
+		  	function downloadDocumentMuncipal() {  
+                 document.getElementById('formDownload:linkDownloadMunicipal').click();  
+           	}  
+		  	function downloadDocumentServicios() {  
+                document.getElementById('formDownload:linkDownloadServicios').click();  
+          	}  
+		</script>
+	</ui:define>
 	<ui:define name="content">
 		<h:form enctype="multipart/form-data" id="formConvenios">
 			<p:panel styleClass="contentPanel">
@@ -9,15 +24,27 @@
 					<h:outputText value="Gestión de Información para Transferencia"/>
 				</h1>
 				<p:panel id="Panel">
-					<h2>Servicio de Salud: Metropolitano Oriente</h2>
 					<h4>Programa: #{procesoGITVerificarController.programa.nombre}</h4>
 					<p class="parrafo">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent egestas tempor nulla eget ultricies. Morbi
 						pulvinar elit at justo pharetra, vitae ultricies est dignissim, justo nisi porttitor enim, eget ullamcorper felis augue eget lacus.</p>
 					<div class="destacaArchivos ui-corner-all">
 						<h3>Datos de Convenio Consolidado para Servicio:</h3>
-						<span class="strong">Archivo: </span> Consolidado de Convenios para Servicio de Salud [
-						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
-						<p:commandLink value="Generar y Descargar" />
+						
+						<span class="strong">Archivo: </span> Consolidado de Convenios [
+						<c:if test="#{procesoGITVerificarController.programa.dependenciaMunicipal}">
+						<h:graphicImage value="resources/minsal/images/download-alt.png"
+							styleClass="divapIcons" />
+						<h:commandLink id="lastMunicipal" value="Dependencia Municipal"
+						        onclick="downloadDocumentMuncipal();return false;" />
+						</c:if>
+						|
+						<c:if test="#{procesoGITVerificarController.programa.dependenciaServicio}">
+						<h:graphicImage value="resources/minsal/images/download-alt.png"
+							styleClass="divapIcons" />
+						<h:commandLink id="lastServicio" value="Dependencia Servicio"
+						        onclick="downloadDocumentServicios();return false;" />
+						</c:if>
+						]
 						
 					</div>
 					<br/>
@@ -66,7 +93,7 @@
 											<p:column headerText="Resolución" />
 											<p:column headerText="Fecha" />
 											<p:column headerText="Monto Convenio" />
-											<p:column headerText="Convenios Pendietes" />
+											<p:column headerText="Convenios Pendientes" />
 											<p:column headerText="Convenio"/>
 											<p:column headerText="Aprobación"/>
 										</p:row>
@@ -171,7 +198,7 @@
 											<p:column headerText="Resolución" />
 											<p:column headerText="Fecha" />
 											<p:column headerText="Monto Convenio" />
-											<p:column headerText="Convenios Pendietes" />
+											<p:column headerText="Convenios Pendientes" />
 											<p:column headerText="Convenio"/>
 											<p:column headerText="Aprobación"/>
 										</p:row>
@@ -276,7 +303,7 @@
 											<p:column headerText="Resolución" />
 											<p:column headerText="Fecha" />
 											<p:column headerText="Monto Convenio" />
-											<p:column headerText="Convenios Pendietes" />
+											<p:column headerText="Convenios Pendientes" />
 											<p:column headerText="Convenio"/>
 											<p:column headerText="Aprobación"/>
 										</p:row>
@@ -381,7 +408,7 @@
 											<p:column headerText="Resolución" />
 											<p:column headerText="Fecha" />
 											<p:column headerText="Monto Convenio" />
-											<p:column headerText="Convenios Pendietes" />
+											<p:column headerText="Convenios Pendientes" />
 											<p:column headerText="Convenio"/>
 											<p:column headerText="Aprobación"/>
 										</p:row>
@@ -489,6 +516,10 @@
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />
 			</p:panel>
+		</h:form>
+		<h:form id="formDownload">
+			<h:commandButton id="linkDownloadMunicipal" action="#{procesoGITVerificarController.downloadPlanillaMunicipal}" style="display: none"/>
+			<h:commandButton id="linkDownloadServicios" action="#{procesoGITVerificarController.downloadPlanillaServicios}" style="display: none"/>
 		</h:form>
 	</ui:define>
 </ui:composition>
