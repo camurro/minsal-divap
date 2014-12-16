@@ -109,4 +109,6 @@ public class Institucion implements Serializable {
         return "cl.minsal.divap.model.Institucion[ idInstitucion=" + idInstitucion + " ]";
     }
     
+
 }
+

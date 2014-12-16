@@ -237,27 +237,25 @@
 				<description>Tmp Dir</description>
 				<env-entry-name>tmpDir</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<!-- <env-entry-value>/tmp/excel</env-entry-value> -->
-				<env-entry-value>E:\redhatexcel</env-entry-value>
+				<env-entry-value>/tmp/excel</env-entry-value>
 			</env-entry>
 			<env-entry>
 				<description>Tmp Dir docs</description>
 				<env-entry-name>tmpDirDoc</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<!--  <env-entry-value>/tmp/doc</env-entry-value>-->
-				<env-entry-value>E:\redhatdoc</env-entry-value>
+				<env-entry-value>/tmp/doc</env-entry-value>
 			</env-entry>
 			<env-entry>
-				<description>Template folder ot</description>
-				<env-entry-name>folderTemplateOT</env-entry-name>
+				<description>Template folder orden transferencia</description>
+				<env-entry-name>folderTemplateOrdenesTransferencia</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>TEMPLATES\OT</env-entry-value>
+				<env-entry-value>TEMPLATES/ORDENESDETRANSFERENCIA</env-entry-value>
 			</env-entry>
 			<env-entry>
-				<description>Process folder ot</description>
-				<env-entry-name>folderOT</env-entry-name>
+				<description>Process folder orden transferencia</description>
+				<env-entry-name>folderOrdenesTransferencia</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>PROCESOS\{ANO}\OT</env-entry-value>
+				<env-entry-value>PROCESOS/{ANO}/ORDENESDETRANSFERENCIA</env-entry-value>
 			</env-entry>
 		</session>
 		<!-- DIRECCION PROCESO RELIQUIDACION  -->

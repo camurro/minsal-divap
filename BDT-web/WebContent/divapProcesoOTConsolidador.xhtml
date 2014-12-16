@@ -848,7 +848,9 @@
 						</p:tabView>
 
 							<p:commandButton value="Ordenes de Transferencia Correctas | Finalizar Revisión Consolidada" styleClass="x-btn-text"
-								action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false" icon="ui-icon-seek-first" />
+								action="#{procesoOTRevisarConsolidacionController.iniciarProceso}" ajax="false" icon="ui-icon-seek-first" disabled="#{procesoOTRevisarConsolidacionController.botonBloqueado}">
+								<f:setPropertyActionListener target="#{procesoOTRevisarConsolidacionController.target}" value="bandejaTareas.jsf" />
+							</p:commandButton>
 					</div>
 
 			</p:panel>

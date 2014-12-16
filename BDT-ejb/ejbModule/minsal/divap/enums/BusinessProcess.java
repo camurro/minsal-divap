@@ -17,7 +17,8 @@ public enum BusinessProcess{
 	OTPROFESIONAL(7,"minsal_divap.TramitacionOrdenTransferenciaProfesional"),
 	OTCONSOLIDADOR(8,"minsal_divap.TramitacionOrdenTransferenciaConsolidador"),
 	CONVENIOS(9,"minsal_divap.ProcesoConvenio"),
-	MODIFICACIONPERCAPITA(10,"minsal_divap.ModificacionDistribucionInicialPerCapita");
+	MODIFICACIONPERCAPITA(11,"minsal_divap.ModificacionDistribucionInicialPerCapita"),
+	MODIFICACIONRECURSOSFINANCIEROSAPS(10,"minsal_divap.ModificacionDistribucionRecursosProgramasReforzamiento");
 
 	private int id;
 	private String name;

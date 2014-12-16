@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+<ui:define name="zonaJavaScript">
+		<style type="text/css">
+.ui-state-error {
+	margin-left: 0px;
+}
+</style>
+		<script type="text/javascript">
+
+		function isNumber(event, id, fila, precioCantidad) {
+		  if (event) {
+		    var charCode = (event.which) ? event.which : event.keyCode;
+		    if (charCode &lt; 48 || charCode &gt; 57) {
+		    	if (charCode == 8 || charCode == 46 || charCode == 35 || charCode == 36 || charCode == 37 || charCode == 39){ 
+			    	return true;
+		    	}
+		    	if (charCode == 13) {
+			    	$("#form\\:posicionElemento").val(fila);
+			    	$("#form\\:precioCantidad").val(precioCantidad);
+		    		document.getElementById(id).click();
+		    		return true;
+		    	}
+		       return false;
+		    }
+		  }
+		  return true;
+		}
+
+
+		</script>
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data" id="form">
+			<h:inputHidden  id="posicionElemento" value="#{procesoModificacionDistRecFinController.posicionElemento}" />
+			<h:inputHidden  id="precioCantidad" value="#{procesoModificacionDistRecFinController.precioCantidad}" />
+			<p:commandButton id="botonPrecio" value="recalcularTotales" update="tablaResultados" action="#{procesoModificacionDistRecFinController.recalcularTotales}" style="display: none"/>
+			
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Distribución de Recursos Financieros por Programa" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>
+						<span class="strong">Programa Municipal | </span>APOYO A LAS ACCIONES EN EL NIVEL PRIMARIO DE SALUD EN ESTABLECIMIENTOS DEPENDIENTES
+					</h2>
+
+					<p class="parrafo">La Planilla de Trabajo con Montos de Distribución contiene lorem ipsum dolor sit amet, consectetur adipiscing
+						elit. Praesent egestas tempor nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est dignissim, justo nisi
+						porttitor enim, eget ullamcorper felis augue eget lacus.</p>
+					<br />
+
+					<h:panelGrid columns="2">
+						<h:graphicImage value="resources/minsal/images/search.png" styleClass="divapIcons" />
+						<p:lightBox iframe="true" width="950px" id="resumen">
+							<h:outputLink value="divapProcesoModificacionDistRecFinProgProgramas.jsf">Ver Resumen Parcial del Programa</h:outputLink>
+						</p:lightBox>
+					</h:panelGrid>
+					<br />
+
+					<h3>Filtros del Programa:</h3>
+					<h:panelGrid id="busqueda_mis_tareas" columns="5">
+						<h:panelGrid columns="2">
+								<h:outputText value="Componente " styleClass="inputLabel" />
+								<p:selectOneMenu id="componentes"  value="#{procesoModificacionDistRecFinController.componenteSeleccionado}">
+								<p:ajax listener="#{procesoModificacionDistRecFinController.seleccionComponente}" update="" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />  
+								<f:selectItems value="#{procesoModificacionDistRecFinController.listaComponentes}" itemLabel="#{componente.nombre}" var="componente" itemValue="#{componente.id}"/> 
+							</p:selectOneMenu>
+							</h:panelGrid>
+					
+							<h:panelGrid columns="2">
+								<h:outputText value="Servicio: " styleClass="inputLabel" />
+								<p:selectOneMenu id="servicios"  value="#{procesoModificacionDistRecFinController.servicioSeleccionado}">
+								<f:selectItem itemLabel="Seleccione" itemValue="" />  
+								<f:selectItems value="#{procesoModificacionDistRecFinController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
+							</p:selectOneMenu>
+							</h:panelGrid>
+						
+						<h:panelGrid columns="1">
+							<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoModificacionDistRecFinController.cargaComunas}"  update="form:tablaResultados"/>
+					</h:panelGrid>
+					</h:panelGrid>
+					
+					<br />
+					
+					<div id="tablaSubtitulos">
+						<h3>Subtítulos del Programa</h3>
+							<h:panelGrid>
+								<p:dataTable resizableColumns="true" value="#{procesoModificacionDistRecFinController.detalleComunas}" liveResize="true"
+									var="_detalle" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+									styleClass="dataTable" id="tablaResultados" rowIndexVar="rowIndex">
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column rowspan="2" headerText="Comuna" width="170" />
+
+											<p:column colspan="2" headerText="Subtítulo 24" />
+
+											<p:column rowspan="2" headerText="Total ($)" />
+										</p:row>
+										<p:row>
+											<p:column headerText="Tarifa ($)" />
+											<p:column headerText="Cantidad" />
+										</p:row>
+									</p:columnGroup>
+
+									<p:column>
+										<span class="textoAjustado textoPequenio">#{_detalle.nombreComuna}</span>
+									</p:column>
+
+									<p:column>
+										
+										<h:inputText value="#{_detalle.precio}" styleClass="divapProcesoDistRecFinProgInput"  onkeypress="return isNumber(event, 'form:botonPrecio', '#{rowIndex}', '1');">
+											<f:convertNumber  maxFractionDigits="0"/>
+										</h:inputText>
+									</p:column>
+									<p:column>
+										<h:inputText value="#{_detalle.cantidad}" styleClass="divapProcesoDistRecFinProgInput" onkeypress="return isNumber(event, 'form:botonPrecio', '#{rowIndex}', '2');">
+										</h:inputText>
+									</p:column>
+									<p:column>
+										<h:outputText styleClass="textoAjustado" value="#{_detalle.total}" id="totales">
+											<f:convertNumber  maxFractionDigits="0"/>
+										</h:outputText>
+									</p:column>
+
+									<p:columnGroup type="footer">
+										<p:row>
+											<p:column />
+											<p:column colspan="2" />
+
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoModificacionDistRecFinController.totalPxQ}" id="total" styleClass="textoAjustado">
+														<f:convertNumber  maxFractionDigits="0"/>
+													</h:outputText>
+												</f:facet>
+											</p:column>
+										</p:row>>
+									</p:columnGroup>
+								</p:dataTable>
+							</h:panelGrid>
+
+							<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" action="#{procesoModificacionDistRecFinController.guardar}" ajax="true" value="Guardar" update="form:resumen"/>
+							<p:commandButton value="Finalizar" styleClass="x-btn-text" action="#{procesoModificacionDistRecFinController.enviar}" ajax="false" icon="ui-icon-seek-first" >
+								<f:setPropertyActionListener target="#{procesoModificacionDistRecFinController.target}" value="bandejaTareas.jsf" />
+							</p:commandButton>
+					</div>
+				</p:panel>
+
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

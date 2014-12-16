@@ -71,6 +71,8 @@ public class ReferenciaDocumento implements Serializable {
     private Set<Plantilla> plantillaCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "documento")
     private Set<DocumentoRebaja> documentosRebaja;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "documento")
+    private Set<DocumentoRemesas> documentoRemesasSet;
 
     public ReferenciaDocumento() {
     }
@@ -203,6 +205,15 @@ public class ReferenciaDocumento implements Serializable {
 	@Override
     public String toString() {
         return "cl.minsal.divap.model.ReferenciaDocumento[ id=" + id + " ]";
+    }
+	
+	@XmlTransient
+    public Set<DocumentoRemesas> getDocumentoRemesasSet() {
+        return documentoRemesasSet;
+    }
+
+    public void setDocumentoRemesasSet(Set<DocumentoRemesas> documentoRemesasSet) {
+        this.documentoRemesasSet = documentoRemesasSet;
     }
     
 }

@@ -31,6 +31,7 @@ import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.dao.RebajaDAO;
 import minsal.divap.dao.RecursosFinancierosProgramasReforzamientoDAO;
 import minsal.divap.dao.ReliquidacionDAO;
+import minsal.divap.dao.RemesasDAO;
 import minsal.divap.dao.ReportesDAO;
 import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.enums.TipoDocumentosProcesos;
@@ -58,6 +59,7 @@ import cl.minsal.divap.model.DocumentoOt;
 import cl.minsal.divap.model.DocumentoProgramasReforzamiento;
 import cl.minsal.divap.model.DocumentoRebaja;
 import cl.minsal.divap.model.DocumentoReliquidacion;
+import cl.minsal.divap.model.DocumentoRemesas;
 import cl.minsal.divap.model.DocumentoReportes;
 import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.ModificacionDistribucionInicialPercapita;
@@ -82,6 +84,8 @@ public class DocumentService {
 	private DistribucionInicialPercapitaDAO distribucionInicialPercapitaDAO;
 	@EJB
 	private RebajaDAO rebajaDAO;
+	@EJB
+	private RemesasDAO remesasDAO;
 	@EJB
 	private EstimacionFlujoCajaDAO estimacionFlujoCajaDAO;
 	@EJB
@@ -1098,6 +1102,23 @@ public class DocumentService {
 			documentos.add(referencia.getDocumento().getId());
 		}
 		return documentos;
+	}
+	public Integer createDocumentRemesas(
+			TipoDocumentosProcesos tipoDocumentoProceso,
+			String nodeRef, String fileName, String contentType,
+			String idProcesoOT) {
+		
+		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, fileName, contentType);
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		
+		DocumentoRemesas documentoRemesas = new DocumentoRemesas();
+		documentoRemesas.setTipoDocumento(new TipoDocumento(tipoDocumentoProceso.getId()));
+		documentoRemesas.setDocumento(referenciaDocumento);
+		documentoRemesas.setRemesa(remesasDAO.findById(Integer.parseInt(idProcesoOT)));
+		
+		remesasDAO.save(documentoRemesas);
+		System.out.println("luego de aplicar insert del documento OT");
+		return referenciaDocumentoId;
 	}
 	
 	public List<Integer> getDocumentosByDistribucionInicialPercapitaServicioTypes(Integer idDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos... tiposDocumentoProceso) {

@@ -15,7 +15,9 @@ public enum TareasSeguimiento{
 	HACERSEGUIMIENTOPROGRAMASREFORZAMIENTORESOLUCION(12,"Hacer Seguimiento Resolucion Programas de Reforzamiento"),
 	HACERSEGUIMIENTOPROGRAMASREFORZAMIENTOORDINARIO(13,"Hacer Seguimiento Ordinario Programas de Reforzamiento"), 
 	HACERSEGUIMIENTORESOLUCIONRETIRO(14,"Hacer Seguimiento Resolución de Retiro"),
-	HACERSEGUIMIENTOORDINARIOSOLICITUDANTECEDENTES(15,"Hacer Seguimiento Ordinario Solicitud Antecedentes");
+	MODHACERSEGUIMIENTOPROGRAMASREFORZAMIENTORESOLUCION(15,"Hacer Seguimiento Resolucion Modificacion Programas de Reforzamiento"),
+	HACERSEGUIMIENTOORDINARIOSOLICITUDANTECEDENTES(16,"Hacer Seguimiento Ordinario Solicitud Antecedentes");
+	
 
 	
 	private Integer id;

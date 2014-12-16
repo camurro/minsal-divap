@@ -115,6 +115,8 @@ implements Serializable {
 	private String mesActual;
 	private Integer activeTab = 0;
 	
+	private boolean botonBloqueado;
+	
 	
 	@PostConstruct
 	public void init() throws NumberFormatException, ParseException {
@@ -132,6 +134,16 @@ implements Serializable {
 		
 		listaServicios = utilitariosService.getAllServicios();
 		listaProgramas = otService.getProgramas(getLoggedUsername());
+		
+		botonBloqueado=false;
+		for(ProgramaVO prog: listaProgramas){
+			if(prog.getEstadoOT().getId()!=3){
+				//botonBloqueado=true;
+				botonBloqueado=false;
+				break;
+			}
+		}
+		
 		listaProgramasResumen = otService.getProgramas(getLoggedUsername());
 		listaComponentes= new ArrayList<ComponentesVO>();
 		
@@ -350,8 +362,8 @@ implements Serializable {
 
 	@Override
 	public String iniciarProceso() {
-		String success = "divapProcesoDistRecFinProgProgramasServicio";
-		Long procId = iniciarProceso(BusinessProcess.RECURSOSFINANCIEROSAPS);
+		String success = "bandejaTareas";
+		Long procId = iniciarProceso(BusinessProcess.OTCONSOLIDADOR);
 		System.out.println("procId-->" + procId);
 		if (procId == null) {
 			success = null;
@@ -743,6 +755,14 @@ implements Serializable {
 
 	public void setActiveTab(Integer activeTab) {
 		this.activeTab = activeTab;
+	}
+
+	public boolean isBotonBloqueado() {
+		return botonBloqueado;
+	}
+
+	public void setBotonBloqueado(boolean botonBloqueado) {
+		this.botonBloqueado = botonBloqueado;
 	}
 
 	

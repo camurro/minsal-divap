@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jstl/core"
+	template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Distribución de Recursos Financieros por Programa" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>Listado de Programas #{procesoModificacionDistRecFinProgProgramasController.anoCurso} | Perfil Administrador</h2>
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoModificacionDistRecFinProgProgramasController.programas}"
+						liveResize="true" var="programa" rows="10" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información."
+						styleClass="dataTable">
+						<p:columnGroup type="header">
+							<!--  -->
+							<p:row>
+								<p:column headerText="Programa" />
+								<p:column headerText="Descripción" />
+								<!-- <p:column headerText="Estado" width="60" /> -->
+								
+								<p:column headerText="Iniciar" width="60" />
+								<!-- <p:column headerText="Terminar" width="60" /> -->
+							</p:row>
+						</p:columnGroup>
+
+						<p:column style="text-align: left; #{(programa.estadoModificacionAPS.id == '3')?'background-color: #c0c0c0;':''} ">
+							<span class="textoAjustado">#{programa.nombre}</span>
+						</p:column>
+						<p:column style="text-align:left;  #{(programa.estadoModificacionAPS.id == '3')?'background-color: #c0c0c0;':''} ">
+							<span class="textoAjustado">#{programa.descripcion}</span>
+						</p:column>
+						<p:column  style=" #{(programa.estadoModificacionAPS.id == '3')?'background-color: #c0c0c0;':''} ">
+							<h:commandLink action="#{procesoModificacionDistRecFinProgProgramasController.enviar}" rendered="#{programa.estadoModificacionAPS.id == '1'}" >
+								<h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons" />
+								<f:setPropertyActionListener
+								target="#{procesoModificacionDistRecFinProgProgramasController.programaSeleccionado}"
+								value="#{programa.idProgramaAno}" />
+								<f:setPropertyActionListener
+								target="#{procesoModificacionDistRecFinProgProgramasController.target}"
+								value="bandejaTareas.jsf"/>
+							</h:commandLink>
+						</p:column>
+					</p:dataTable>
+
+				</p:panel>
+
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+					
+				
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

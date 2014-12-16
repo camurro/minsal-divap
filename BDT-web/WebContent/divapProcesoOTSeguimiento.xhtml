@@ -133,62 +133,40 @@
 					<!-- <h3>Archivos disponibles para la Tarea:</h3> -->
 					<div class="destacaArchivos ui-corner-all">
 						<h3>Archivos Disponibles para la Tarea:</h3>
+						<span class="strong">Archivo: </span>   Plantilla de Correo para Resolución [
+						<h:graphicImage value="resources/minsal/images/download-alt.png"
+							styleClass="divapIcons" />
 						
+						<h:commandLink id="plantillaCorreo" value="Bajar Última Versión"
+								onclick="downloadDocument(#{procesoOTSeguimientoController.idTemplateCorreo});return false;" />
+						
+						|
+						<h:graphicImage value="resources/minsal/images/upload-alt.png"
+								styleClass="divapIcons" />
+							<p:commandLink value="Subir Nueva Plantilla" oncomplete="dlgUploadResolucionCorreo.show();" />
+						]
+						<BR /><BR />
 						<span class="strong">Archivo: </span>  Planilla Resumen Ordenes de Transferencia formato FONASA [
 						<h:graphicImage value="resources/minsal/images/download-alt.png"
 							styleClass="divapIcons" />
 						<h:commandLink id="lastSeguimientoResumen" value="Bajar Última Versión"
-								onclick="downloadDocument(#{procesoOTSeguimientoController.idDocResumenConsolidadoFonasa});return false;" />
-						
-						|
-						<h:graphicImage value="resources/minsal/images/upload-alt.png"
-								styleClass="divapIcons" />
-							<p:commandLink value="Subir Nueva Versión"
-								oncomplete="dlgUpload.show();" >
-								</p:commandLink> 
-						]<span style="color: red; font-size: 10px;">(Resumen Ordenes de Transferencia formato FONASA)</span>
-						]<br />	
-							
-						<span class="strong">Archivo: </span>  Ordinarios de Orden de Transferencia [
+								onclick="downloadDocument(#{procesoOTSeguimientoController.idPlanillaFonasa});return false;" />
+								]	
+						<BR />
+						<span class="strong">Archivo: </span>  Ordinario de Orden de Transferencia [
 						<h:graphicImage value="resources/minsal/images/download-alt.png"
 							styleClass="divapIcons" />
 						
 						<h:commandLink id="lastSeguimiento" value="Bajar Última Versión"
-								onclick="downloadDocument(#{procesoOTSeguimientoController.idDocOrdinarioOrdenTransferencia});return false;" />
+								onclick="downloadDocument(#{procesoOTSeguimientoController.idOrdinarioOT});return false;" />
 						
 						|
 						<h:graphicImage value="resources/minsal/images/upload-alt.png"
 								styleClass="divapIcons" />
 							<p:commandLink value="Subir Nueva Versión"
 								oncomplete="dlgUpload.show();" >
-							
 								</p:commandLink> 
-						]<span style="color: red; font-size: 10px;">(Ordinarios de Orden de Transferencia)</span>
-						]<br />
-						
-						
-
-							<span class="strong">Archivo: </span> Planilla Detalle Ordenes de Transferencia (consolidada) Julio 2014.xls [
-						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
-							<p:commandLink value="Bajar Última Versión" /> ]<br />
-							<span class="strong">Archivo: </span> Planilla Resumen Ordenes de Transferencia formato FONASA Julio 2014.xls [
-						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
-							<p:commandLink value="Bajar Última Versión" /> ]<br />
-							<span class="strong">Archivo: </span> Ordinarios de Ordenes de Transferencia por Servicio (zip) [
-						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
-							<p:commandLink value="Bajar Última Versión" />
-						|
-						<h:graphicImage value="resources/minsal/images/upload-alt.png" styleClass="divapIcons" />
-							<p:commandLink value="Subir Nueva Versión" />
-						]<br />
-						<span class="strong">Archivo: </span> Ordinarios de Orden de Transferencia formato FONASA (pdf) [
-						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
-							<p:commandLink value="Bajar Última Versión" />
-						|
-						<h:graphicImage value="resources/minsal/images/upload-alt.png" styleClass="divapIcons" />
-							<p:commandLink value="Subir Nueva Versión" />
 						]
-
 					</div>
 					<h3>Bitácora de Seguimiento:</h3>
 					<!-- INICIO MENSAJE MOCK -->
@@ -270,39 +248,35 @@
 							finalizar la actividad y pasar a la siguiente en el flujo del proceso. En caso de que exista algún error en la documentación y sea
 							necesario volver a generar la documentación haga clic en <span class="strong">Reingresar</span>.
 						</p>
-						<p:commandButton styleClass="x-btn-text" type="submit"
-						 ajax="false"
-							value="Finalizar Seguimiento | Actividad" 
-							action="#{procesoOTSeguimientoController.continuarProceso}">
-
 						
-						</p:commandButton>
+						
+						
 
 						<div style="clear: both;"></div>
 					
 
 				</p:panel>
+				</h:form>
+				<h:form id="formBotones">
+				<p:commandButton styleClass="x-btn-text" value="Finalizar Seguimiento" icon="ui-icon-refresh"
+						action="#{procesoOTSeguimientoController.enviar}">
+						<f:setPropertyActionListener target="#{procesoOTSeguimientoController.target}" value="bandejaTareas.jsf" />
+					</p:commandButton>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />
 			</h:form>
-			</p:panel>
 			
-			
-				<h:form id="formDownload">
+			<h:form id="formDownload">
 			<h:inputHidden
-				value="#{procesoOTSeguimientoController.docIdDownload}"
+				value="#{procesoOTSeguimientoController.docIdDownloadResolucion}"
 				id="hiddenId" />
 			<h:commandButton id="linkDownload"
-				action="#{procesoOTSeguimientoController.downloadDocumento}"
+				action="#{procesoOTSeguimientoController.downloadResolucion}"
 				style="display: none"></h:commandButton>
 		</h:form>
-					
-	   <p:dialog header="Subir archivos" widgetVar="dlgUpload" id="idDlgUpload" modal="true" height="150"  appendToBody="true">
+		
+		 <p:dialog header="Subir archivos" widgetVar="dlgUpload" id="idDlgUpload" modal="true" height="150"  appendToBody="true">
 			<h:form id="uploadVersion" enctype="multipart/form-data">
-			
-				<h:inputHidden
-				value="#{procesoOTSeguimientoController.tipoDocumento}"
-				id="hiddenIdTipoDoc" />
 			<p:panelGrid columns="2" >
 				<h:outputText value="Nueva Versión: " />
 				<p:fileUpload id="newVersionFile"
@@ -320,6 +294,25 @@
 			</p:panelGrid>
 			</h:form> 	
 		</p:dialog> 
-			
+		
+		 <p:dialog header="Subir archivos" widgetVar="dlgUploadResolucionCorreo" id="idDlgUploadResolucionCorreo" modal="true" height="150"  appendToBody="true">
+			<h:form id="uploadVersionResolucionCorreo" enctype="multipart/form-data">
+			<p:panelGrid columns="2" >
+				<h:outputText value="Nueva Versión: " />
+				<p:fileUpload id="newVersionFile"
+							fileUploadListener="#{procesoOTSeguimientoController.handleFile}"
+							value="#{procesoOTSeguimientoController.file}"
+							update="uploadVersion" mode="simple"  />
+				<p:commandButton value="Aceptar" ajax="false"
+					actionListener="#{procesoOTSeguimientoController.uploadVersionResolucionCorreo}" update=":lastSeguimiento"
+					oncomplete="if (args &amp;&amp; args.showDialog){dlgUploadResolucionCorreo.hide()}else{ alert('the bean didnt let me open the dialog')}" />
+					
+				<p:commandButton value="Cancelar"
+					onclick="dlgUploadResolucionCorreo.hide()" type="button" />
+			</p:panelGrid>
+			</h:form> 	
+		</p:dialog> 
+		
+			</p:panel>
 	</ui:define>
 </ui:composition>

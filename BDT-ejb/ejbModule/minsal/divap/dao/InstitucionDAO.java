@@ -28,7 +28,6 @@ public class InstitucionDAO {
 			throw new RuntimeException(e);
 		}
 	}
-	
 	public List<Institucion> getAll(){
 		try {
 			TypedQuery<Institucion> query = this.em.createNamedQuery("Institucion.findAll", Institucion.class);
@@ -37,10 +36,8 @@ public class InstitucionDAO {
 			throw new RuntimeException(e);
 		}
 	}
-	
 	public Institucion save(Institucion institucion){
 		em.persist(institucion);
 		return institucion;
 	}
-
 }

@@ -2,16 +2,9 @@ package cl.minsal.divap.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.math.BigInteger;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -26,23 +19,13 @@ import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 import minsal.divap.service.SubtituloService;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ComponentesVO;
-import minsal.divap.vo.ComunaVO;
-import minsal.divap.vo.ProgramaAPSMunicipalVO;
 import minsal.divap.vo.ProgramaMunicipalHistoricoVO;
-import minsal.divap.vo.ProgramaMunicipalVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ResumenProgramaVO;
 import minsal.divap.vo.ServiciosVO;
 
 import org.apache.log4j.Logger;
 
-import cl.minsal.divap.pojo.ComunaPojo;
-import cl.minsal.divap.pojo.EnvioServiciosPojo;
-import cl.minsal.divap.pojo.EstablecimientoPojo;
-import cl.minsal.divap.pojo.ProcesosProgramasPojo;
-import cl.minsal.divap.pojo.ProgramasPojo;
-import cl.minsal.divap.pojo.ValorHistoricoPojo;
-import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
 
@@ -86,11 +69,11 @@ public class ProcesoDistRecFinHistoricoMunicipalController extends AbstractTaskM
 	private List<ResumenProgramaVO> resumenPrograma;
 	
 	private Integer programaSeleccionado;
-	private Integer totalResumen24;
+	private Long totalResumen24;
 	
 	private Double inflactorS24;
-	private Integer totalS24Pasado;
-	private Integer totalS24Futuro;
+	private Long totalS24Pasado;
+	private Long totalS24Futuro;
 	
 	private String anoActual;
 	private String anoProximo;
@@ -122,7 +105,7 @@ public class ProcesoDistRecFinHistoricoMunicipalController extends AbstractTaskM
 	
 	private void armarResumenPrograma() {
 		resumenPrograma = programasService.getResumenMunicipal(programaSeleccionado, 3);
-		totalResumen24 =0;
+		totalResumen24 =0l;
 		for (ResumenProgramaVO resumen : resumenPrograma) {
 			totalResumen24 = totalResumen24+resumen.getTotalS24();
 		}
@@ -131,8 +114,8 @@ public class ProcesoDistRecFinHistoricoMunicipalController extends AbstractTaskM
 	public void refrescar(){}
 	
 	public String recalcularTotales(){
-		totalS24Pasado=0;
-		totalS24Futuro=0;
+		totalS24Pasado=0l;
+		totalS24Futuro=0l;
 		
 		for(int i=0; i < listadoHistoricoMunicipalActual.size();i++){
 			totalS24Pasado += listadoHistoricoMunicipalActual.get(i).getTotalAnoAnterior();
@@ -164,8 +147,8 @@ public class ProcesoDistRecFinHistoricoMunicipalController extends AbstractTaskM
 					totalPxQ=totalPxQ+detalleComunas.get(i).getTotal();	
 		}
 		return totalPxQ;*/
-		totalS24Pasado=0;
-		totalS24Futuro=0;
+		totalS24Pasado=0l;
+		totalS24Futuro=0l;
 		for(ProgramaMunicipalHistoricoVO prog : listadoHistoricoMunicipalActual){
 			totalS24Pasado += prog.getTotalAnoAnterior();
 			totalS24Futuro += prog.getTotalAnoActual();
@@ -280,29 +263,29 @@ public class ProcesoDistRecFinHistoricoMunicipalController extends AbstractTaskM
 		this.programaSeleccionado = programaSeleccionado;
 	}
 
-	public Integer getTotalResumen24() {
+	
+
+	public Long getTotalResumen24() {
 		return totalResumen24;
 	}
 
-	public void setTotalResumen24(Integer totalResumen24) {
+	public void setTotalResumen24(Long totalResumen24) {
 		this.totalResumen24 = totalResumen24;
 	}
 
-	public Integer getTotalS24Pasado() {
+	public Long getTotalS24Pasado() {
 		return totalS24Pasado;
 	}
 
-	public void setTotalS24Pasado(Integer totalS24Pasado) {
+	public void setTotalS24Pasado(Long totalS24Pasado) {
 		this.totalS24Pasado = totalS24Pasado;
 	}
 
-	
-
-	public Integer getTotalS24Futuro() {
+	public Long getTotalS24Futuro() {
 		return totalS24Futuro;
 	}
 
-	public void setTotalS24Futuro(Integer totalS24Futuro) {
+	public void setTotalS24Futuro(Long totalS24Futuro) {
 		this.totalS24Futuro = totalS24Futuro;
 	}
 

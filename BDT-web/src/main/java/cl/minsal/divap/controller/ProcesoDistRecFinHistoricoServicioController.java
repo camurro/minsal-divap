@@ -19,7 +19,6 @@ import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 import minsal.divap.service.SubtituloService;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ComponentesVO;
-import minsal.divap.vo.ProgramaMunicipalHistoricoVO;
 import minsal.divap.vo.ProgramaServicioHistoricoVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ResumenProgramaVO;
@@ -64,32 +63,32 @@ public class ProcesoDistRecFinHistoricoServicioController extends AbstractTaskMB
 	
 	private String posicionElemento;
 	private String precioCantidad;
-	private Integer totalPxQ;
+	private Long totalPxQ;
 	
 	private List<ResumenProgramaVO> resumenPrograma;
 	
 	private Integer programaSeleccionado;
-	private Integer totalResumen24;
+	private Long totalResumen24;
 	
 	private Double inflactorS21;
 	private Double inflactorS22;
 	private Double inflactorS29;
 	
-	private Integer totalS21Pasado;
-	private Integer totalS21Futuro;
-	private Integer totalS22Pasado;
-	private Integer totalS22Futuro;
-	private Integer totalS29Pasado;
-	private Integer totalS29Futuro;
+	private Long totalS21Pasado;
+	private Long totalS21Futuro;
+	private Long totalS22Pasado;
+	private Long totalS22Futuro;
+	private Long totalS29Pasado;
+	private Long totalS29Futuro;
 	
 	private boolean tieneS21;
 	private boolean tieneS22;
 	private boolean tieneS29;
 	
-	private Integer totalPasado;
-	private Integer totalFuturo;
-	private Integer totalPasadoHorizontal;
-	private Integer totalFuturoHorizontal;
+	private Long totalPasado;
+	private Long totalFuturo;
+	private Long totalPasadoHorizontal;
+	private Long totalFuturoHorizontal;
 	
 	private String anoActual;
 	private String anoProximo;
@@ -125,7 +124,7 @@ public class ProcesoDistRecFinHistoricoServicioController extends AbstractTaskMB
 	
 	private void armarResumenPrograma() {
 		resumenPrograma = programasService.getResumenMunicipal(programaSeleccionado, 3);
-		totalResumen24 =0;
+		totalResumen24 =0l;
 		for (ResumenProgramaVO resumen : resumenPrograma) {
 			totalResumen24 = totalResumen24+resumen.getTotalS24();
 		}
@@ -134,16 +133,16 @@ public class ProcesoDistRecFinHistoricoServicioController extends AbstractTaskMB
 	public void refrescar(){}
 	
 	public String recalcularTotales(){
-		setTotalS21Pasado(0);
-		setTotalS21Futuro(0);
-		setTotalS22Pasado(0);
-		setTotalS22Futuro(0);
-		setTotalS29Pasado(0);
-		setTotalS29Futuro(0);
-		setTotalPasado(0);
-		setTotalFuturo(0);
-		setTotalPasadoHorizontal(0);
-		setTotalFuturoHorizontal(0);
+		setTotalS21Pasado(0l);
+		setTotalS21Futuro(0l);
+		setTotalS22Pasado(0l);
+		setTotalS22Futuro(0l);
+		setTotalS29Pasado(0l);
+		setTotalS29Futuro(0l);
+		setTotalPasado(0l);
+		setTotalFuturo(0l);
+		setTotalPasadoHorizontal(0l);
+		setTotalFuturoHorizontal(0l);
 		
 		
 		for(int i=0; i < listadoHistoricoServicioActual.size();i++){
@@ -188,17 +187,17 @@ public class ProcesoDistRecFinHistoricoServicioController extends AbstractTaskMB
 
 	private Integer getTotales(List<ProgramaServicioHistoricoVO> listadoHistoricoServicioActual){
 	
-		totalS21Pasado=0;
-		totalS21Futuro=0;
-		totalS22Pasado=0;
-		totalS22Futuro=0;
-		totalS29Pasado=0;
-		totalS29Futuro=0;
+		totalS21Pasado=0l;
+		totalS21Futuro=0l;
+		totalS22Pasado=0l;
+		totalS22Futuro=0l;
+		totalS29Pasado=0l;
+		totalS29Futuro=0l;
 		tieneS21=false;
 		tieneS22=false;
 		tieneS29=false;
-		totalPasado=0;
-		totalFuturo=0;
+		totalPasado=0l;
+		totalFuturo=0l;
 		for(ProgramaServicioHistoricoVO prog : listadoHistoricoServicioActual){
 			if(prog.getSubtitulo21()!=null){
 				totalS21Pasado += prog.getTotalAnoAnterior();
@@ -307,13 +306,6 @@ public class ProcesoDistRecFinHistoricoServicioController extends AbstractTaskMB
 		this.precioCantidad = precioCantidad;
 	}
 
-	public Integer getTotalPxQ() {
-		return totalPxQ;
-	}
-
-	public void setTotalPxQ(Integer totalPxQ) {
-		this.totalPxQ = totalPxQ;
-	}
 
 	public List<ResumenProgramaVO> getResumenPrograma() {
 		return resumenPrograma;
@@ -331,14 +323,7 @@ public class ProcesoDistRecFinHistoricoServicioController extends AbstractTaskMB
 		this.programaSeleccionado = programaSeleccionado;
 	}
 
-	public Integer getTotalResumen24() {
-		return totalResumen24;
-	}
-
-	public void setTotalResumen24(Integer totalResumen24) {
-		this.totalResumen24 = totalResumen24;
-	}
-
+	
 	public List<ProgramaServicioHistoricoVO> getListadoHistoricoServicioActual() {
 		return listadoHistoricoServicioActual;
 	}
@@ -387,55 +372,6 @@ public class ProcesoDistRecFinHistoricoServicioController extends AbstractTaskMB
 	public void setInflactorS29(Double inflactorS29) {
 		this.inflactorS29 = inflactorS29;
 	}
-
-	public Integer getTotalS21Pasado() {
-		return totalS21Pasado;
-	}
-
-	public void setTotalS21Pasado(Integer totalS21Pasado) {
-		this.totalS21Pasado = totalS21Pasado;
-	}
-
-	public Integer getTotalS21Futuro() {
-		return totalS21Futuro;
-	}
-
-	public void setTotalS21Futuro(Integer totalS21Futuro) {
-		this.totalS21Futuro = totalS21Futuro;
-	}
-
-	public Integer getTotalS22Pasado() {
-		return totalS22Pasado;
-	}
-
-	public void setTotalS22Pasado(Integer totalS22Pasado) {
-		this.totalS22Pasado = totalS22Pasado;
-	}
-
-	public Integer getTotalS22Futuro() {
-		return totalS22Futuro;
-	}
-
-	public void setTotalS22Futuro(Integer totalS22Futuro) {
-		this.totalS22Futuro = totalS22Futuro;
-	}
-
-	public Integer getTotalS29Pasado() {
-		return totalS29Pasado;
-	}
-
-	public void setTotalS29Pasado(Integer totalS29Pasado) {
-		this.totalS29Pasado = totalS29Pasado;
-	}
-
-	public Integer getTotalS29Futuro() {
-		return totalS29Futuro;
-	}
-
-	public void setTotalS29Futuro(Integer totalS29Futuro) {
-		this.totalS29Futuro = totalS29Futuro;
-	}
-
 	public boolean isTieneS21() {
 		return tieneS21;
 	}
@@ -468,37 +404,6 @@ public class ProcesoDistRecFinHistoricoServicioController extends AbstractTaskMB
 		this.subtitulo = subtitulo;
 	}
 
-	public Integer getTotalPasado() {
-		return totalPasado;
-	}
-
-	public void setTotalPasado(Integer totalPasado) {
-		this.totalPasado = totalPasado;
-	}
-
-	public Integer getTotalFuturo() {
-		return totalFuturo;
-	}
-
-	public void setTotalFuturo(Integer totalFuturo) {
-		this.totalFuturo = totalFuturo;
-	}
-
-	public Integer getTotalPasadoHorizontal() {
-		return totalPasadoHorizontal;
-	}
-
-	public void setTotalPasadoHorizontal(Integer totalPasadoHorizontal) {
-		this.totalPasadoHorizontal = totalPasadoHorizontal;
-	}
-
-	public Integer getTotalFuturoHorizontal() {
-		return totalFuturoHorizontal;
-	}
-
-	public void setTotalFuturoHorizontal(Integer totalFuturoHorizontal) {
-		this.totalFuturoHorizontal = totalFuturoHorizontal;
-	}
 
 	public ProgramaVO getPrograma() {
 		return programa;
@@ -506,6 +411,102 @@ public class ProcesoDistRecFinHistoricoServicioController extends AbstractTaskMB
 
 	public void setPrograma(ProgramaVO programa) {
 		this.programa = programa;
+	}
+
+	public Long getTotalS21Pasado() {
+		return totalS21Pasado;
+	}
+
+	public void setTotalS21Pasado(Long totalS21Pasado) {
+		this.totalS21Pasado = totalS21Pasado;
+	}
+
+	public Long getTotalS21Futuro() {
+		return totalS21Futuro;
+	}
+
+	public void setTotalS21Futuro(Long totalS21Futuro) {
+		this.totalS21Futuro = totalS21Futuro;
+	}
+
+	public Long getTotalS22Pasado() {
+		return totalS22Pasado;
+	}
+
+	public void setTotalS22Pasado(Long totalS22Pasado) {
+		this.totalS22Pasado = totalS22Pasado;
+	}
+
+	public Long getTotalS22Futuro() {
+		return totalS22Futuro;
+	}
+
+	public void setTotalS22Futuro(Long totalS22Futuro) {
+		this.totalS22Futuro = totalS22Futuro;
+	}
+
+	public Long getTotalS29Pasado() {
+		return totalS29Pasado;
+	}
+
+	public void setTotalS29Pasado(Long totalS29Pasado) {
+		this.totalS29Pasado = totalS29Pasado;
+	}
+
+	public Long getTotalS29Futuro() {
+		return totalS29Futuro;
+	}
+
+	public void setTotalS29Futuro(Long totalS29Futuro) {
+		this.totalS29Futuro = totalS29Futuro;
+	}
+
+	public Long getTotalPasado() {
+		return totalPasado;
+	}
+
+	public void setTotalPasado(Long totalPasado) {
+		this.totalPasado = totalPasado;
+	}
+
+	public Long getTotalFuturo() {
+		return totalFuturo;
+	}
+
+	public void setTotalFuturo(Long totalFuturo) {
+		this.totalFuturo = totalFuturo;
+	}
+
+	public Long getTotalPasadoHorizontal() {
+		return totalPasadoHorizontal;
+	}
+
+	public void setTotalPasadoHorizontal(Long totalPasadoHorizontal) {
+		this.totalPasadoHorizontal = totalPasadoHorizontal;
+	}
+
+	public Long getTotalFuturoHorizontal() {
+		return totalFuturoHorizontal;
+	}
+
+	public void setTotalFuturoHorizontal(Long totalFuturoHorizontal) {
+		this.totalFuturoHorizontal = totalFuturoHorizontal;
+	}
+
+	public void setTotalPxQ(Long totalPxQ) {
+		this.totalPxQ = totalPxQ;
+	}
+
+	public void setTotalResumen24(Long totalResumen24) {
+		this.totalResumen24 = totalResumen24;
+	}
+
+	public Long getTotalPxQ() {
+		return totalPxQ;
+	}
+
+	public Long getTotalResumen24() {
+		return totalResumen24;
 	}
 
 

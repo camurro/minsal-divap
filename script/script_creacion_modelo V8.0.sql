@@ -25210,6 +25210,8 @@ ALTER TABLE detalle_remesas
 ALTER TABLE detalle_remesas
   ADD CONSTRAINT cuota_fk FOREIGN KEY (cuota) REFERENCES cuota (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
+-- 30 nov
+
 
 ALTER TABLE convenio_comuna_componente
   ADD COLUMN cuota integer;
@@ -25226,6 +25228,16 @@ CREATE TABLE institucion
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT representante_fk FOREIGN KEY (director)
       REFERENCES persona (id_persona) MATCH SIMPLE
+
+CREATE TABLE remesas_seguimiento
+(
+  id serial NOT NULL,
+  instancia_remesa integer,
+  seguimiento integer,
+  CONSTRAINT remesas_seguimiento_pkey PRIMARY KEY (id),
+  CONSTRAINT foreign_key01 FOREIGN KEY (seguimiento)
+      REFERENCES seguimiento (id) MATCH SIMPLE
+
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 WITH (
@@ -25246,12 +25258,27 @@ CREATE TABLE modificacion_distribucion_inicial_percapita
       REFERENCES ano_en_curso (ano) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT usuario_fk FOREIGN KEY (usuario)
+
+--- 01 dic
+
+CREATE TABLE remesas
+(
+  id_remesa serial NOT NULL,
+  usuario text,
+  fecha_creacion time with time zone,
+  mes integer NOT NULL,
+  CONSTRAINT pk_remesa PRIMARY KEY (id_remesa ),
+  CONSTRAINT fk_mes FOREIGN KEY (mes)
+      REFERENCES mes (id_mes) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+   CONSTRAINT usuario_fk FOREIGN KEY (usuario)
       REFERENCES usuario (username) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 WITH (
   OIDS=FALSE
 );
+
 
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (155, 'Planilla Convenio Municipal');
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (156, 'Planilla Convenio Servicio');
@@ -25269,10 +25296,23 @@ CREATE TABLE documento_modificacion_percapita
   CONSTRAINT documento_modificacion_percapita_pk PRIMARY KEY (id_documento_modificacion_percapita),
   CONSTRAINT modificacion_percapita_fk FOREIGN KEY (modificacion_percapita)
       REFERENCES modificacion_distribucion_inicial_percapita (id_modificacion_distribucion_inicial_percapita) MATCH SIMPLE
+
+
+CREATE TABLE documento_remesas
+(
+  id_documento_remesas serial NOT NULL,
+  documento integer NOT NULL,
+  remesa integer NOT NULL,
+  tipo_documento integer NOT NULL,
+  CONSTRAINT documento_remesa_pk PRIMARY KEY (id_documento_remesas),
+  CONSTRAINT remesa_fk FOREIGN KEY (remesa)
+      REFERENCES remesas (id_remesa) MATCH SIMPLE
+
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT documento_fk FOREIGN KEY (documento)
       REFERENCES referencia_documento (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
+
   CONSTRAINT servicio_fk FOREIGN KEY (servicio)
       REFERENCES servicio_salud (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
@@ -25283,6 +25323,7 @@ CREATE TABLE documento_modificacion_percapita
 WITH (
   OIDS=FALSE
 );
+
 
 
 CREATE TABLE reporte_emails_modificacion_percapita
@@ -25296,11 +25337,45 @@ CREATE TABLE reporte_emails_modificacion_percapita
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT reporte_emails_enviados_fk FOREIGN KEY (reporte_emails_enviados)
       REFERENCES reporte_emails_enviados (id) MATCH SIMPLE
+
+
+-- 02 diciembre
+
+ALTER TABLE programa_ano
+  ADD COLUMN estado_modificacion_aps integer;
+ALTER TABLE programa_ano
+  ADD CONSTRAINT estado_mod_aps_fk FOREIGN KEY (estado_modificacion_aps) REFERENCES estado_programa (id_estado_programa) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+UPDATE programa_ano  SET estado_modificacion_aps=1
+
+ALTER TABLE programa_ano
+   ALTER COLUMN estado_modificacion_aps SET NOT NULL;
+
+
+ALTER TABLE programa_servicio_core_componente
+  ADD COLUMN tarifa_anterior integer;
+
+-- 10 diciembre
+
+CREATE TABLE programas_reforzamiento
+(
+  id_programas_reforzamiento serial NOT NULL,
+  usuario text,
+  fecha_creacion time with time zone,
+  mes integer NOT NULL,
+  CONSTRAINT pk_programas_reforzamiento PRIMARY KEY (id_programas_reforzamiento),
+  CONSTRAINT fk_mes FOREIGN KEY (mes)
+      REFERENCES mes (id_mes) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT usuario_fk FOREIGN KEY (usuario)
+      REFERENCES usuario (username) MATCH SIMPLE
+
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 WITH (
   OIDS=FALSE
 );
+
 
 INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (15, 'Hacer Seguimiento Ordinario Solicitud Antecedentes');
 
@@ -25315,11 +25390,25 @@ CREATE TABLE modificacion_distribucion_inicial_percapita_seguimiento
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT modificacion_distribucion_inicial_percapita_seguimiento_fk FOREIGN KEY (seguimiento)
       REFERENCES seguimiento (id) MATCH SIMPLE
+
+
+CREATE TABLE reporte_emails_programas_reforzamiento
+(
+  id_reporte_emails_programas_reforzamiento serial NOT NULL,
+  programas_reforzamiento integer NOT NULL,
+  reporte_emails_enviados integer NOT NULL,
+  CONSTRAINT reporte_emails_programas_reforzamiento_pk PRIMARY KEY (id_reporte_emails_programas_reforzamiento),
+  CONSTRAINT programas_reforzamiento_fk FOREIGN KEY (programas_reforzamiento)
+      REFERENCES programas_reforzamiento (id_programas_reforzamiento) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT reporte_emails_enviados_fk FOREIGN KEY (reporte_emails_enviados)
+      REFERENCES reporte_emails_enviados (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 WITH (
   OIDS=FALSE
 );
+
 
 ALTER TABLE documento_modificacion_percapita
   ADD COLUMN comuna integer;
@@ -25365,5 +25454,4 @@ ALTER TABLE documento_distribucion_inicial_percapita
 -------------------------------------------------- SE AGREGA UN CAMPO A LA TABLA USUARIO PARA SABER SI ES LA 1RA VEZ QUE INICIA SESION
 
 ALTER TABLE usuario ADD COLUMN "primerLogin" boolean NOT NULL DEFAULT true;
-
 

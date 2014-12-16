@@ -2,15 +2,9 @@ package cl.minsal.divap.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.math.BigInteger;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -24,26 +18,13 @@ import minsal.divap.service.ProgramasService;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ComponentesVO;
-import minsal.divap.vo.ComunaVO;
-import minsal.divap.vo.ProgramaAPSMunicipalVO;
-import minsal.divap.vo.ProgramaMunicipalVO;
 import minsal.divap.vo.ProgramaServicioVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ResumenProgramaServiciosVO;
-import minsal.divap.vo.ResumenProgramaVO;
 import minsal.divap.vo.ServiciosVO;
-import minsal.divap.vo.SubtituloProgramasVO;
-import minsal.divap.vo.SubtituloVO;
 
 import org.apache.log4j.Logger;
 
-import cl.minsal.divap.pojo.ComunaPojo;
-import cl.minsal.divap.pojo.EnvioServiciosPojo;
-import cl.minsal.divap.pojo.EstablecimientoPojo;
-import cl.minsal.divap.pojo.ProcesosProgramasPojo;
-import cl.minsal.divap.pojo.ProgramasPojo;
-import cl.minsal.divap.pojo.ValorHistoricoPojo;
-import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
 
@@ -77,23 +58,23 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 	private boolean tiene22;
 	private boolean tiene29;
 	
-	private Integer total21;
-	private Integer total22;
-	private Integer total29;
-	private Integer totalFinal;
+	private Long total21;
+	private Long total22;
+	private Long total29;
+	private Long totalFinal;
 	
 	private String posicionElemento;
 	private String precioCantidad;
 	private String subtitulo;
-	private Integer totalPxQ;
+	private Long totalPxQ;
 	
 	private List<ResumenProgramaServiciosVO> resumenPrograma;
 	
 	private Integer programaSeleccionado;
-	private Integer totalResumen21;
-	private Integer totalResumen22;
-	private Integer totalResumen29;
-	private Integer totalResumen;
+	private Long totalResumen21;
+	private Long totalResumen22;
+	private Long totalResumen29;
+	private Long totalResumen;
 	
 	private ProgramaVO programa;
 	
@@ -128,10 +109,10 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 			
 			
 			resumenPrograma = programasService.getResumenServicio(IdProgramaProxAno, programa.getIdProgramaAno());
-			totalResumen21=0;
-			totalResumen22=0;
-			totalResumen29=0;
-			totalResumen=0;
+			totalResumen21=0l;
+			totalResumen22=0l;
+			totalResumen29=0l;
+			totalResumen=0l;
 			for(ResumenProgramaServiciosVO resumen : resumenPrograma){
 				if(resumen.getTotalS21()!=null){
 					tiene21=true;
@@ -183,10 +164,10 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 			tiene21=false;
 			tiene22=false;
 			tiene29=false;
-			total21=0;
-			total22=0;
-			total29=0;
-			totalFinal=0;
+			total21=0l;
+			total22=0l;
+			total29=0l;
+			totalFinal=0l;
 			for (ProgramaServicioVO detalle : detalleEstablecimientos) {
 				if(detalle.getSubtitulo21()!=null){
 					tiene21 = true;
@@ -299,30 +280,12 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 		this.precioCantidad = precioCantidad;
 	}
 
-	public Integer getTotalPxQ() {
-		return totalPxQ;
-	}
-
-	public void setTotalPxQ(Integer totalPxQ) {
-		this.totalPxQ = totalPxQ;
-	}
-
-
-
 	public List<ResumenProgramaServiciosVO> getResumenPrograma() {
 		return resumenPrograma;
 	}
 
 	public void setResumenPrograma(List<ResumenProgramaServiciosVO> resumenPrograma) {
 		this.resumenPrograma = resumenPrograma;
-	}
-
-	public Integer getProgramaSeleccionado() {
-		return programaSeleccionado;
-	}
-
-	public void setProgramaSeleccionado(Integer programaSeleccionado) {
-		this.programaSeleccionado = programaSeleccionado;
 	}
 
 	public boolean isTiene21() {
@@ -349,38 +312,6 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 		this.tiene29 = tiene29;
 	}
 
-	public Integer getTotal21() {
-		return total21;
-	}
-
-	public void setTotal21(Integer total21) {
-		this.total21 = total21;
-	}
-
-	public Integer getTotal22() {
-		return total22;
-	}
-
-	public void setTotal22(Integer total22) {
-		this.total22 = total22;
-	}
-
-	public Integer getTotal29() {
-		return total29;
-	}
-
-	public void setTotal29(Integer total29) {
-		this.total29 = total29;
-	}
-
-	public Integer getTotalFinal() {
-		return totalFinal;
-	}
-
-	public void setTotalFinal(Integer totalFinal) {
-		this.totalFinal = totalFinal;
-	}
-
 	public String getSubtitulo() {
 		return subtitulo;
 	}
@@ -389,44 +320,92 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 		this.subtitulo = subtitulo;
 	}
 
-	public Integer getTotalResumen21() {
-		return totalResumen21;
-	}
-
-	public void setTotalResumen21(Integer totalResumen21) {
-		this.totalResumen21 = totalResumen21;
-	}
-
-	public Integer getTotalResumen22() {
-		return totalResumen22;
-	}
-
-	public void setTotalResumen22(Integer totalResumen22) {
-		this.totalResumen22 = totalResumen22;
-	}
-
-	public Integer getTotalResumen29() {
-		return totalResumen29;
-	}
-
-	public void setTotalResumen29(Integer totalResumen29) {
-		this.totalResumen29 = totalResumen29;
-	}
-
-	public Integer getTotalResumen() {
-		return totalResumen;
-	}
-
-	public void setTotalResumen(Integer totalResumen) {
-		this.totalResumen = totalResumen;
-	}
-
 	public ProgramaVO getPrograma() {
 		return programa;
 	}
 
 	public void setPrograma(ProgramaVO programa) {
 		this.programa = programa;
+	}
+
+	public Long getTotal21() {
+		return total21;
+	}
+
+	public void setTotal21(Long total21) {
+		this.total21 = total21;
+	}
+
+	public Long getTotal22() {
+		return total22;
+	}
+
+	public void setTotal22(Long total22) {
+		this.total22 = total22;
+	}
+
+	public Long getTotal29() {
+		return total29;
+	}
+
+	public void setTotal29(Long total29) {
+		this.total29 = total29;
+	}
+
+	public Long getTotalFinal() {
+		return totalFinal;
+	}
+
+	public void setTotalFinal(Long totalFinal) {
+		this.totalFinal = totalFinal;
+	}
+
+	public Long getTotalPxQ() {
+		return totalPxQ;
+	}
+
+	public void setTotalPxQ(Long totalPxQ) {
+		this.totalPxQ = totalPxQ;
+	}
+
+	public Long getTotalResumen21() {
+		return totalResumen21;
+	}
+
+	public void setTotalResumen21(Long totalResumen21) {
+		this.totalResumen21 = totalResumen21;
+	}
+
+	public Long getTotalResumen22() {
+		return totalResumen22;
+	}
+
+	public void setTotalResumen22(Long totalResumen22) {
+		this.totalResumen22 = totalResumen22;
+	}
+
+	public Long getTotalResumen29() {
+		return totalResumen29;
+	}
+
+	public void setTotalResumen29(Long totalResumen29) {
+		this.totalResumen29 = totalResumen29;
+	}
+
+	public Long getTotalResumen() {
+		return totalResumen;
+	}
+
+	public void setTotalResumen(Long totalResumen) {
+		this.totalResumen = totalResumen;
+	}
+
+	public Integer getProgramaSeleccionado() {
+		return programaSeleccionado;
+	}
+
+	public void setProgramaSeleccionado(Integer programaSeleccionado) {
+		this.programaSeleccionado = programaSeleccionado;
 	}
 	
 }

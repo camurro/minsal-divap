@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jstl/core" 
+	template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Distribución de Recursos Financieros por Programa" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>Programa #{procesoModificacionDistRecFinProgSubirPlanillasControllerLey.programa.nombre} </h2>
+					<h3>
+						<strong>Actividad: </strong>Descargar Planillas Base y Subir Planillas Llenas
+					</h3>
+					<p class="parrafo">La tarea corresponde a DESCRIPCION.</p>
+					<div class="destacaArchivos ui-corner-all">
+						<h3>Descargar Planilla Base del Programa</h3>
+						<ul class="versionesArchivo">
+								<li><h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> 
+									<h:commandLink
+										action="#{procesoModificacionDistRecFinProgSubirPlanillasControllerLey.downloadTemplate}"
+										value="Planilla Ley #{procesoModificacionDistRecFinProgSubirPlanillasControllerLey.programa.nombre}.xlsx">
+										<f:setPropertyActionListener
+											target="#{procesoModificacionDistRecFinProgSubirPlanillasControllerLey.docIdDownload}"
+											value="#{procesoModificacionDistRecFinProgSubirPlanillasControllerLey.plantillaLey}" />
+									</h:commandLink>
+								</li>							
+						</ul>
+					</div>
+					<h3>Subir planillas con información del programa:</h3>
+					<p:panelGrid columns="2" styleClass="uploadFileTable">
+						<h:outputLabel for="valorBasicoDesempenoFile"
+							value="Archivo: Planilla Ley #{procesoModificacionDistRecFinProgSubirPlanillasControllerLey.programa.nombre}.xlsx"
+							styleClass="textoAjustado fileUploadLabel" />
+						<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoModificacionDistRecFinProgSubirPlanillasControllerLey.planillaLey}" mode="simple" />
+					</p:panelGrid>
+					<br />
+					<br />
+					<p:commandButton value="Finalizar Actividad | Todos los Archivos fueron cargados" ajax="false" action="#{procesoModificacionDistRecFinProgSubirPlanillasControllerLey.enviar}" icon="ui-icon-upload" >
+						 <f:setPropertyActionListener target="#{procesoModificacionDistRecFinProgSubirPlanillasControllerLey.target}" value="bandejaTareas.jsf" />
+					</p:commandButton>
+				</p:panel>
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

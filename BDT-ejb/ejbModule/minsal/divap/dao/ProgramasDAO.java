@@ -368,6 +368,7 @@ public class ProgramasDAO {
 			throw new RuntimeException(e);
 		}
 	}
+
 	
 	public ProgramaServicioCoreComponente getProgramaServicioCoreComponenteEstablecimiento(
 			Integer idComponente, Integer idEstablecimiento, Integer idSubtitulo) {
@@ -687,6 +688,70 @@ public class ProgramasDAO {
 		}
 	}
 
+	public List<ProgramaAno> findByAno(Integer anoCurso) {
+		try {
+			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.findByAno", ProgramaAno.class);
+			query.setParameter("ano", anoCurso);
+			return  query.getResultList(); 
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public ProgramaServicioCore getProgramaservicioCoreByEstablecimientoProgramaAno(
+			Integer idEstablecimiento, Integer idProgramaAno) {
+		try{
+			TypedQuery<ProgramaServicioCore> queryProgramaMunCore = this.em.createNamedQuery("ProgramaServicioCore.getProgramaservicioCoreByEstablecimientoProgramaAno", ProgramaServicioCore.class);
+			queryProgramaMunCore.setParameter("idProgramaAno",idProgramaAno);
+			queryProgramaMunCore.setParameter("idEstablecimiento",idEstablecimiento);
+			List<ProgramaServicioCore>  result=  queryProgramaMunCore.getResultList();
+			if(result!=null && result.size()>0){
+				return result.get(0);
+			}
+			}catch(Exception e){
+				throw new RuntimeException(e);
+			}
+		return null;
+	}
+
+	public ProgramaServicioCoreComponente getServicioCoreComponenteByProgramaAnoIdEstablecimientoComponenteSubtitulo(
+			Integer idProgramaAno, Integer idEstablecimiento, Integer componenteSeleccionado,
+			Integer idTipoSubtitulo) {
+		try {
+			TypedQuery<ProgramaServicioCoreComponente> query = this.em.createNamedQuery("ProgramaServicioCoreComponente.getMPEstablecimientoProgramaAnoComponenteSubtitulo", ProgramaServicioCoreComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idEstablecimiento", idEstablecimiento);
+			query.setParameter("idComponente", componenteSeleccionado);
+			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			List<ProgramaServicioCoreComponente> result = query.getResultList();
+			if(result.size() > 0){
+				return result.get(0);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return null;
+	}
+
+	public ProgramaServicioCoreComponente getProgramaServicioCoreComponenteByEstablecimientoProgramaAnoComponenteSubtitulo(Integer idServicio,
+			Integer idProgramaAno, Integer componenteSeleccionado,
+			Integer idTipoSubtitulo) {
+		try {
+			TypedQuery<ProgramaServicioCoreComponente> query = this.em.createNamedQuery("ProgramaServicioCoreComponente.getServicioProgramaAnoComponenteSubtitulo", ProgramaServicioCoreComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idComponente", componenteSeleccionado);
+			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			List<ProgramaServicioCoreComponente> result = query.getResultList();
+			if(result.size() > 0){
+				return result.get(0);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return null;
+	}
 	
 	public ProgramaServicioCore getProgramaServicioCoreByProgramaAnoEstablecimiento(Integer idProgramaAno, Integer idEstablecimiento){
 		try{

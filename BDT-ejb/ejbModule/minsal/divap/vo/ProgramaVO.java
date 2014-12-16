@@ -26,6 +26,7 @@ public class ProgramaVO implements Serializable{
 	private EstadoProgramaVO estadoConvenio;
 	private EstadoProgramaVO estadoReliquidacion;
 	private EstadoProgramaVO estadoOT;
+	private EstadoProgramaVO estadoModificacionAPS;
 	private List<ServiciosVO> servicios;
 	private Boolean revisaFonasa;
 	
@@ -163,6 +164,14 @@ public class ProgramaVO implements Serializable{
 
 	public void setAno(Integer ano) {
 		this.ano = ano;
+	}
+
+	public EstadoProgramaVO getEstadoModificacionAPS() {
+		return estadoModificacionAPS;
+	}
+
+	public void setEstadoModificacionAPS(EstadoProgramaVO estadoModificacionAPS) {
+		this.estadoModificacionAPS = estadoModificacionAPS;
 	}
 
 	@Override

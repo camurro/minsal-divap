@@ -15,15 +15,19 @@ import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.DistribucionInicialPercapitaSeguimiento;
 import cl.minsal.divap.model.DocumentoProgramasReforzamiento;
 import cl.minsal.divap.model.DocumentoRebaja;
+import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.ProgramaMunicipalCore;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
 import cl.minsal.divap.model.ProgramaServicioCore;
 import cl.minsal.divap.model.ProgramaServicioCoreComponente;
+import cl.minsal.divap.model.ProgramasReforzamiento;
 import cl.minsal.divap.model.ProgramasReforzamientoSeguimiento;
+import cl.minsal.divap.model.Remesas;
 import cl.minsal.divap.model.ReporteEmailsAdjuntos;
 import cl.minsal.divap.model.ReporteEmailsDestinatarios;
 import cl.minsal.divap.model.ReporteEmailsEnviados;
+import cl.minsal.divap.model.ReporteEmailsProgramasReforzamiento;
 import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.Usuario;
 
@@ -38,11 +42,32 @@ public class RecursosFinancierosProgramasReforzamientoDAO {
 	public ProgramaAno findById(Integer idProgramaAno) {
 		return this.em.find(ProgramaAno.class, idProgramaAno);
 	}
+	
+	public ProgramasReforzamiento findByIdInstancia(Integer idProgramasReforzamiento) {
+		try {
+			TypedQuery<ProgramasReforzamiento> query = this.em.createNamedQuery("ProgramasReforzamiento.findByIdProgramasReforzamiento", ProgramasReforzamiento.class);
+			query.setParameter("idProgramasReforzamiento", idProgramasReforzamiento);
+			List<ProgramasReforzamiento> result = query.getResultList();
+			if(result!=null && result.size() > 0){
+				return result.get(0);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return null;
+	}
+	
+	
 
 	public ProgramaAno update(ProgramaAno programaAno) {
 		return em.merge(programaAno);
 	}
 
+	public Integer save(ReporteEmailsProgramasReforzamiento reporteEmailsProgramasReforzamiento) {
+		em.persist(reporteEmailsProgramasReforzamiento);
+		return reporteEmailsProgramasReforzamiento.getIdReporteEmailsProgramasReforzamiento();
+	}
+	
 	public Integer save(ProgramaAno programaAno) {
 		em.persist(programaAno);
 		return programaAno.getIdProgramaAno();
@@ -226,6 +251,19 @@ public class RecursosFinancierosProgramasReforzamientoDAO {
 		}
 		
 	}
+	
+	public List<ReporteEmailsProgramasReforzamiento> getReporteCorreosProgramasReforzamiento(Integer idReporteEmailsProgramasReforzamiento){
+		try {
+			TypedQuery<ReporteEmailsProgramasReforzamiento> query = this.em.createNamedQuery("ReporteEmailsProgramasReforzamiento.findByIdReporteEmailsProgramasReforzamiento", ReporteEmailsProgramasReforzamiento.class);
+			query.setParameter("idReporteEmailsProgramasReforzamiento", idReporteEmailsProgramasReforzamiento);
+			return query.getResultList(); 
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+		
+	}
 
 	public List<DocumentoProgramasReforzamiento> getByIdTipo(
 			Integer idProgramaSiguiente, TipoDocumentosProcesos tipoDocumento,
@@ -246,6 +284,16 @@ public class RecursosFinancierosProgramasReforzamientoDAO {
 		Query queryDeleteDocumento = this.em.createNamedQuery("DocumentoProgramasReforzamiento.deleteById");
 		queryDeleteDocumento.setParameter("id", id);
 		queryDeleteDocumento.executeUpdate();
+	}
+
+	public Integer crearInstanciaModificacion(Usuario usuario, Mes mes,
+			Date date) {
+		ProgramasReforzamiento reforzamiento = new ProgramasReforzamiento();
+		reforzamiento.setFechaCreacion(date);
+		reforzamiento.setMes(mes);
+		reforzamiento.setUsuario(usuario);
+		em.persist(reforzamiento);
+		return reforzamiento.getIdProgramasReforzamiento();
 	}
 
 }

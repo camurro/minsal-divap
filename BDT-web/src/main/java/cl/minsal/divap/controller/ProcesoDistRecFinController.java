@@ -71,12 +71,12 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 	
 	private String posicionElemento;
 	private String precioCantidad;
-	private Integer totalPxQ;
+	private Long totalPxQ;
 	
 	private List<ResumenProgramaVO> resumenPrograma;
 	
 	private Integer programaSeleccionado;
-	private Integer totalResumen24;
+	private Long totalResumen24;
 	private Integer programaProxAno;
 	
 	private ProgramaVO programa;
@@ -108,7 +108,7 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 		Integer anoSiguiente = recursosFinancierosProgramasReforzamientoService.getAnoCurso() + 1;
 		int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programaSeleccionado, anoSiguiente);
 		resumenPrograma = programasService.getResumenMunicipal(IdProgramaProxAno, 3);
-		totalResumen24 =0;
+		totalResumen24 =0l;
 		for (ResumenProgramaVO resumen : resumenPrograma) {
 			totalResumen24 = totalResumen24+resumen.getTotalS24();
 		}
@@ -129,8 +129,8 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 		getTotalesPxQ(detalleComunas);
 	}
 
-	private Integer getTotalesPxQ(List<ProgramaMunicipalVO> detalleComunas){
-		totalPxQ=0;
+	private Long getTotalesPxQ(List<ProgramaMunicipalVO> detalleComunas){
+		totalPxQ=0l;
 		for (int i=0;i<detalleComunas.size();i++) {
 					totalPxQ=totalPxQ+detalleComunas.get(i).getTotal();	
 		}
@@ -227,14 +227,6 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 		this.precioCantidad = precioCantidad;
 	}
 
-	public Integer getTotalPxQ() {
-		return totalPxQ;
-	}
-
-	public void setTotalPxQ(Integer totalPxQ) {
-		this.totalPxQ = totalPxQ;
-	}
-
 	public List<ResumenProgramaVO> getResumenPrograma() {
 		return resumenPrograma;
 	}
@@ -251,11 +243,21 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 		this.programaSeleccionado = programaSeleccionado;
 	}
 
-	public Integer getTotalResumen24() {
+	
+
+	public Long getTotalPxQ() {
+		return totalPxQ;
+	}
+
+	public void setTotalPxQ(Long totalPxQ) {
+		this.totalPxQ = totalPxQ;
+	}
+
+	public Long getTotalResumen24() {
 		return totalResumen24;
 	}
 
-	public void setTotalResumen24(Integer totalResumen24) {
+	public void setTotalResumen24(Long totalResumen24) {
 		this.totalResumen24 = totalResumen24;
 	}
 
