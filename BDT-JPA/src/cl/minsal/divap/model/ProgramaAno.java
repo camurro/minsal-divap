@@ -32,7 +32,8 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name = "ProgramaAno.findByAnoIdPrograma", query = "SELECT p FROM ProgramaAno p WHERE p.programa.id = :idPrograma and p.ano.ano = :ano"),
 	@NamedQuery(name = "ProgramaAno.getIdProgramaAnoAnterior", query = "SELECT p FROM ProgramaAno p WHERE p.programa.id = :idPrograma and p.ano.ano = :ano"),
 	@NamedQuery(name = "ProgramaAno.findByIdProgramaAno", query = "SELECT p FROM ProgramaAno p WHERE p.idProgramaAno = :idProgramaAno"),
-	@NamedQuery(name = "ProgramaAno.findByAnoComponente", query = "SELECT p FROM ProgramaAno p inner join p.programa.componentes pc where pc.id in (:idComponentes) and p.ano.ano = :ano")})
+	@NamedQuery(name = "ProgramaAno.findByAnoComponente", query = "SELECT p FROM ProgramaAno p inner join p.programa.componentes pc where pc.id in (:idComponentes) and p.ano.ano = :ano"),
+	@NamedQuery(name = "ProgramaAno.findByAno", query = "SELECT p FROM ProgramaAno p WHERE p.ano.ano = :ano")})
 public class ProgramaAno implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -57,6 +58,9 @@ public class ProgramaAno implements Serializable {
 	@JoinColumn(name = "estado_ot", referencedColumnName = "id_estado_programa")
 	@ManyToOne
 	private EstadoPrograma estadoOT;
+	@JoinColumn(name = "estado_modificacion_aps", referencedColumnName = "id_estado_programa")
+	@ManyToOne
+	private EstadoPrograma estadoModificacionAPS;
 	@JoinColumn(name = "ano", referencedColumnName = "ano")
 	@ManyToOne(optional = false)
 	private AnoEnCurso ano;
@@ -129,6 +133,16 @@ public class ProgramaAno implements Serializable {
 
 	public void setEstadoOT(EstadoPrograma estadoOT) {
 		this.estadoOT = estadoOT;
+	}
+
+	
+
+	public EstadoPrograma getEstadoModificacionAPS() {
+		return estadoModificacionAPS;
+	}
+
+	public void setEstadoModificacionAPS(EstadoPrograma estadoModificacionAPS) {
+		this.estadoModificacionAPS = estadoModificacionAPS;
 	}
 
 	public AnoEnCurso getAno() {

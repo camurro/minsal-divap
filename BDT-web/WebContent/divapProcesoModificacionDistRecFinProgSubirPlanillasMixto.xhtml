@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data">
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Distribución de Recursos Financieros por Programa" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>Programa Mixto | #{procesoModificacionDistRecFinProgSubirPlanillasControllerMixto.programa.nombre}</h2>
+					<h3>
+						<strong>Actividad: </strong>Descargar Planillas Base y Subir Planillas Llenas
+					</h3>
+					<p class="parrafo">La tarea corresponde a nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est
+						faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.nulla eget ultricies. Morbi pulvinar elit at
+						justo pharetra, vitae ultricies est faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.</p>
+					<div class="destacaArchivos ui-corner-all">
+						<h3>Descargar Planilla Base del Programa</h3>
+						<ul class="versionesArchivo">
+								<li><h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> 
+									<h:commandLink
+										action="#{procesoModificacionDistRecFinProgSubirPlanillasControllerMixto.downloadTemplateMunicipal}"
+										value="Planilla Base #{procesoModificacionDistRecFinProgSubirPlanillasControllerMixto.programa.nombre} - Municipal.xlsx">
+										<f:setPropertyActionListener
+											target="#{procesoModificacionDistRecFinProgSubirPlanillasControllerMixto.docIdDownloadMunicipal}"
+											value="#{procesoModificacionDistRecFinProgSubirPlanillasControllerMixto.plantillaMunicipal}" />
+									</h:commandLink>
+								</li>							
+						</ul>
+						<ul class="versionesArchivo">
+								<li><h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> 
+									<h:commandLink
+										action="#{procesoModificacionDistRecFinProgSubirPlanillasControllerMixto.downloadTemplateServicio}"
+										value="Planilla Base #{procesoModificacionDistRecFinProgSubirPlanillasControllerMixto.programa.nombre} - Servicio.xlsx">
+										<f:setPropertyActionListener
+											target="#{procesoModificacionDistRecFinProgSubirPlanillasControllerMixto.docIdDownloadServicio}"
+											value="#{procesoModificacionDistRecFinProgSubirPlanillasControllerMixto.plantillaServicios}" />
+									</h:commandLink>
+								</li>							
+						</ul>
+					</div>
+					<h3>Subir planillas con información del programa:</h3>
+					<p:panelGrid columns="2" styleClass="uploadFileTable">
+						<h:outputLabel for="valorBasicoDesempenoFile"
+							value="Archivo: Planilla #{procesoModificacionDistRecFinProgSubirPlanillasControllerMixto.programa.nombre} - Municipal.xlsx"
+							styleClass="textoAjustado fileUploadLabel" />
+						<p:fileUpload id="municipal" value="#{procesoModificacionDistRecFinProgSubirPlanillasControllerMixto.planillaMuncipal}" mode="simple" />
+					</p:panelGrid>
+					<p:panelGrid columns="2" styleClass="uploadFileTable">
+						<h:outputLabel for="valorBasicoDesempenoFile"
+							value="Archivo: Planilla #{procesoModificacionDistRecFinProgSubirPlanillasControllerMixto.programa.nombre} - Servicio.xlsx"
+							styleClass="textoAjustado fileUploadLabel" />
+						<p:fileUpload id="servicio" value="#{procesoModificacionDistRecFinProgSubirPlanillasControllerMixto.planillaServicio}" mode="simple" />
+					</p:panelGrid>
+					<h:outputText value="* No se ha subido ningún archivo aún." styleClass="ui-state-error" />
+					<br />
+					<br />
+					<br />
+					<br />
+					<p:commandButton value="Finalizar Actividad | Todos los Archivos fueron cargados" ajax="false" action="#{procesoModificacionDistRecFinProgSubirPlanillasControllerMixto.enviar}" icon="ui-icon-upload" >
+						 <f:setPropertyActionListener target="#{procesoModificacionDistRecFinProgSubirPlanillasControllerMixto.target}" value="bandejaTareas.jsf" />
+					</p:commandButton>
+				</p:panel>
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

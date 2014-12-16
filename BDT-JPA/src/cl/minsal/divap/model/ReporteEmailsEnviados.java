@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -55,6 +56,8 @@ public class ReporteEmailsEnviados implements Serializable {
     private Set<ReporteEmailsDestinatarios> reporteEmailsDestinatariosSet;
     @OneToMany(mappedBy = "reporteEmailsEnviado")
     private Set<ReporteEmailsAdjuntos> reporteEmailsAdjuntosSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reporteEmailsEnviados")
+    private Set<ReporteEmailsRemesas> reporteEmailsRemesasSet;
 
     public ReporteEmailsEnviados() {
     }
@@ -142,6 +145,15 @@ public class ReporteEmailsEnviados implements Serializable {
     @Override
     public String toString() {
         return "cl.minsal.divap.model.ReporteEmailsEnviados[ id=" + id + " ]";
+    }
+    
+    @XmlTransient
+    public Set<ReporteEmailsRemesas> getReporteEmailsRemesasSet() {
+        return reporteEmailsRemesasSet;
+    }
+
+    public void setReporteEmailsRemesasSet(Set<ReporteEmailsRemesas> reporteEmailsRemesasSet) {
+        this.reporteEmailsRemesasSet = reporteEmailsRemesasSet;
     }
     
 }

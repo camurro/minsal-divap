@@ -37,10 +37,16 @@ public enum TipoDocumentosProcesos{
 	ADJUNTOCORREO(72,"Adjunto correo"),
 	PLANTILLARESOLUCIONCORREO(73, "Plantilla Resolución Correo"),
 	PLANTILLAORDINARIOCORREO(74,"Plantilla Ordinario Correo"),
+
+	//Modificacion Reforzamiento APS
+	MODIFICACIONRESOLUCIONPROGRAMASAPS(80,"Resolución Modificación Recursos Programa"),
+	MODIFICACIONORDINARIOPROGRAMASAPS(81,"Ordinario Modificación Recursos Programa"),
 	
 	//Plantilla PARA OT
-	 PLANTILLAORDINARIOOREDENTRANSFERENCIA(43,"Plantilla Ordinario Orden Transferencia"), RESUMENCONSOLIDADOFONASA(44,"Resumen Consolidado Fonasa"),
-    
+	 PLANTILLAORDINARIOOREDENTRANSFERENCIA(43,"Plantilla Ordinario Orden Transferencia"), 
+	 RESUMENCONSOLIDADOFONASA(44,"Resumen Consolidado Fonasa"),
+	 PLANTILLAOTCORREO(79,"Plantilla Correo OT"),
+		
 	BASECUMPLIMIENTO(50, "Base Cumplimiento"), PLANTILLARESOLUCIONREBAJA(51,"Plantilla Resolución Rebaja Aporte Estatal"), RESOLUCIONREBAJA(52,"Resolución Rebaja Aporte Estatal"),
 	PLANTILLACORREORESOLUCIONSERVICIOSALUDREBAJA(53,"Plantilla Correo Resoluciones Servicios de Salud - Rebaja"), PLANTILLACORREOCONSULTAREGIONALPERCAPITA(54,"Plantilla Correo Consulta Regional - percapita"),
 	PLANTILLACORREORESOLUCIONESPERCAPITA(55,"Plantilla Correo Resoluciones - percapita"), PLANTILLAOFICIOPROGRAMACIONCAJA(56,"Plantilla Oficio Programación Caja"),
@@ -50,6 +56,7 @@ public enum TipoDocumentosProcesos{
 	REPORTEPOBLACIONPERCAPITA(100,"Reporte Poblacion Per Capita"), REPORTEREBAJA(101,"Reporte Rebaja"), PLANTILLACORREORESOLUCIONRETIRO(65,"Plantilla Correo Resolucion Retiro"),
 	ADJUNTOSEGUIMIENTORESOLUCIONRETIRO(150, "Documento Adjunto Seguimiento Resolución Retiro"), RESOLUCIONRETIRO(151, "Resolución Retiro"), PLANTILLARESOLUCIONRETIRO(152, "Plantilla Resolución Retiro");
 
+	
 	private Integer id;
 	private String name;
 

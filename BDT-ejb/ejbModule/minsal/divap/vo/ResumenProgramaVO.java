@@ -19,7 +19,7 @@ public class ResumenProgramaVO implements Serializable{
 	private static final long serialVersionUID = -6303090365999744863L;
 	private Integer idServicio;
 	private String nombreServicio;
-	private Integer totalS24;
+	private Long totalS24;
 	
 	
 	public Integer getIdServicio() {
@@ -34,12 +34,13 @@ public class ResumenProgramaVO implements Serializable{
 	public void setNombreServicio(String nombreServicio) {
 		this.nombreServicio = nombreServicio;
 	}
-	public Integer getTotalS24() {
+	public Long getTotalS24() {
 		return totalS24;
 	}
-	public void setTotalS24(Integer totalS24) {
+	public void setTotalS24(Long totalS24) {
 		this.totalS24 = totalS24;
 	}
+	
 	
 	
 	

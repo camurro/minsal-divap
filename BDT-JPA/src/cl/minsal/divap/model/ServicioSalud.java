@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name="servicio_salud")
 @NamedQueries({
-	@NamedQuery(name="ServicioSalud.findAll", query="SELECT s FROM ServicioSalud s"),
+	@NamedQuery(name="ServicioSalud.findAll", query="SELECT s FROM ServicioSalud s order by s.id asc"),
 	@NamedQuery(name="ServicioSalud.findById", query="SELECT s FROM ServicioSalud s  WHERE s.id = :idServicio"),
 	@NamedQuery(name="ServicioSalud.findServiciosByRegion", query="SELECT s FROM ServicioSalud s WHERE s.region.id = :idRegion order by s.id asc"),
 	@NamedQuery(name = "ServicioSalud.findByIdServicioSalud", query = "SELECT s FROM ServicioSalud s WHERE s.id = :idServicioSalud"),

@@ -23,8 +23,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import minsal.divap.enums.EstadosProgramas;
+import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.OTService;
-import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 
 
 /**
@@ -54,5 +54,71 @@ public class OrdenTransferenciaRESTService extends BaseRest{
 		ordenTransferenciaService.cambiarEstadoPrograma(idPrograma, estadoPrograma);
     }
 	
+	
+	
+	@GET
+    @Path("/ordenesDeTransferencia/generarOficioOrdenTransferencia/{idProcesoOT}")
+    @Produces("application/json")
+    public void generarOficioOrdenTransferencia(@PathParam("idProcesoOT") String idProcesoOT){
+		System.out.println("Generar Oficio Orden de Transferencia");
+		OTService ordenTransferenciaService = getService(OTService.class);
 		
+		Long totalFinal = ordenTransferenciaService.generarExcelFonasaOT(TipoDocumentosProcesos.RESUMENCONSOLIDADOFONASA,idProcesoOT);
+		ordenTransferenciaService.generarOficiosTransferencia(TipoDocumentosProcesos.PLANTILLAORDINARIOOREDENTRANSFERENCIA,idProcesoOT, totalFinal);
+    }	
+	
+	@GET
+    @Path("/ordenesDeTransferencia/administrarVersionesAlfresco")
+    @Produces("application/json")
+    public void administrarVersionesAlfresco(){
+		System.out.println("administrarVersionesAlfresco Orden de Transferencia");
+	
+		OTService ordenTransferenciaService = getService(OTService.class);
+		ordenTransferenciaService.administrarVersionesAlfresco();
+    }	
+		
+	
+	@GET
+    @Path("/ordenesDeTransferencia/instanciarProcesoOT/{usuario}")
+    @Produces("application/json")
+    public Integer instanciarProcesoOT(@PathParam("usuario") String usuario){
+		System.out.println("Generar Instancia OT");
+	
+		if(usuario == null){
+			throw new IllegalArgumentException("usuarioId: "+ usuario + " no puede ser nulo");
+		}
+		OTService ordenTransferenciaService = getService(OTService.class);
+		return ordenTransferenciaService.crearInstanciaOT(usuario);
+    }
+	
+	
+
+
+	@GET
+    @Path("/ordenesDeTransferencia/enviarOrdinarioFonasaServicioSalud/{idProcesoOT}")
+    @Produces("application/json")
+    public void enviarOrdinarioFonasaServicioSalud(@PathParam("idProcesoOT") String idProcesoOT){
+		System.out.println("Enviando documentos OT a FONASA");
+	
+		if(idProcesoOT == null){
+			throw new IllegalArgumentException("idProcesoOT: "+ idProcesoOT + " no puede ser nulo");
+		}
+		OTService ordenTransferenciaService = getService(OTService.class);
+		ordenTransferenciaService.enviarDocumentosFonasa(idProcesoOT);
+    }
+	
+	
+
+	@GET
+    @Path("/ordenesDeTransferencia/reestablecerProgramas/{estado}")
+    @Produces("application/json")
+    public void reestablecerProgramas(@PathParam("estado") String estado){
+		System.out.println("Reestableciendo estado de los programas para OT");
+		
+		OTService ordenTransferenciaService = getService(OTService.class);
+		ordenTransferenciaService.reestablecerProgramas(Integer.parseInt(estado));
+    }
+	
+	
+			
 }

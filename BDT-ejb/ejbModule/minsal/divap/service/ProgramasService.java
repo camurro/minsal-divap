@@ -112,7 +112,7 @@ public class ProgramasService {
 		return result;
 	}
 	
-	private Integer getAnoCurso() {
+	public Integer getAnoCurso() {
 		DateFormat formatNowYear = new SimpleDateFormat("yyyy");
 		Date nowDate = new Date();
 		return Integer.valueOf(formatNowYear.format(nowDate)); 
@@ -336,7 +336,7 @@ public class ProgramasService {
 				ResumenProgramaVO r =  new ResumenProgramaVO();
 				Integer idServicio = ((Number)(resumen[0])).intValue();
 				String nombreServicio = (String) (resumen[1]);
-				Integer totalS24 = ((Number)(resumen[2])).intValue();
+				Long totalS24 = ((Number)(resumen[2])).longValue();
 				r.setIdServicio(idServicio);
 				r.setNombreServicio(nombreServicio);
 				r.setTotalS24(totalS24);
@@ -353,7 +353,7 @@ public class ProgramasService {
 		for(ComponentesVO compo : componentes){
 			
 			for(SubtituloVO sub : compo.getSubtitulos()){
-				
+				System.out.println("Subtitulo-->" + sub.getId());
 				List<Object[]> result = programasDAO.getResumenServicio(idProgramaAno, sub.getId());
 				
 				if(result != null && result.size() > 0){
@@ -370,29 +370,29 @@ public class ProgramasService {
 							r = salida.get(posicion);
 							
 							if(sub.getId()==1){
-								Integer totalS21 = ((Number)(resumen[2])).intValue();
+								Long totalS21 = ((Number)(resumen[2])).longValue();
 								r.setTotalS21(totalS21);
 							}
 							if(sub.getId()==2){
-								Integer totalS22 = ((Number)(resumen[2])).intValue();
+								Long totalS22 = ((Number)(resumen[2])).longValue();
 								r.setTotalS22(totalS22);
 							}
 							if(sub.getId()==4){
-								Integer totalS29 = ((Number)(resumen[2])).intValue();
+								Long totalS29 = ((Number)(resumen[2])).longValue();
 								r.setTotalS29(totalS29);
 							}
 							
 						}else{
 							if(sub.getId()==1){
-								Integer totalS21 = ((Number)(resumen[2])).intValue();
+								Long totalS21 = ((Number)(resumen[2])).longValue();
 								r.setTotalS21(totalS21);
 							}
 							if(sub.getId()==2){
-								Integer totalS22 = ((Number)(resumen[2])).intValue();
+								Long totalS22 = ((Number)(resumen[2])).longValue();
 								r.setTotalS22(totalS22);
 							}
 							if(sub.getId()==4){
-								Integer totalS29 = ((Number)(resumen[2])).intValue();
+								Long totalS29 = ((Number)(resumen[2])).longValue();
 								r.setTotalS29(totalS29);
 							}
 							salida.add(r);

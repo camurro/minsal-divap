@@ -44,6 +44,8 @@ public class ProgramaMunicipalCoreComponente implements Serializable {
     private Integer cantidad;
     @Column(name = "monto")
     private Integer monto;
+    @Column(name = "tarifa_anterior")
+    private Integer montoAnterior;
     @JoinColumn(name = "subtitulo", referencedColumnName = "id_tipo_subtitulo")
     @ManyToOne
     private TipoSubtitulo subtitulo;
@@ -119,6 +121,15 @@ public class ProgramaMunicipalCoreComponente implements Serializable {
 
 	public void setMunicipalCoreComponente(Componente municipalCoreComponente) {
 		this.municipalCoreComponente = municipalCoreComponente;
+	}
+	
+
+	public Integer getMontoAnterior() {
+		return montoAnterior;
+	}
+
+	public void setMontoAnterior(Integer montoAnterior) {
+		this.montoAnterior = montoAnterior;
 	}
 
 	@Override

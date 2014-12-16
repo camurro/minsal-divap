@@ -68,10 +68,10 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 	private boolean tiene29;
 	private boolean tiene24;
 	
-	private Integer total21;
-	private Integer total22;
-	private Integer total29;
-	private Integer totalFinal;
+	private Long total21;
+	private Long total22;
+	private Long total29;
+	private Long totalFinal;
 	
 	private String posicionElemento;
 	private String precioCantidad;
@@ -83,10 +83,10 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 	private List<ResumenProgramaMixtoVO> resumenProgramaMixto;
 	
 	private Integer programaSeleccionado;
-	private Integer totalResumen21;
-	private Integer totalResumen22;
-	private Integer totalResumen24;
-	private Integer totalResumen29;
+	private Long totalResumen21;
+	private Long totalResumen22;
+	private Long totalResumen24;
+	private Long totalResumen29;
 	private Long totalResumen;
 	
 	private ProgramaVO programa;
@@ -128,9 +128,6 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 				ResumenProgramaMixtoVO mixto = new ResumenProgramaMixtoVO();
 				mixto.setIdServicio(resumenProgramaServicio.get(i).getIdServicio());
 				mixto.setNombreServicio(resumenProgramaServicio.get(i).getNombreServicio());
-				if(resumenProgramaMunicipal.get(i).getTotalS24()!=null){
-					mixto.setTotalS24(resumenProgramaMunicipal.get(i).getTotalS24().longValue());
-				}
 				if(resumenProgramaServicio.get(i).getTotalS21()!=null){
 					mixto.setTotalS21(resumenProgramaServicio.get(i).getTotalS21().longValue());
 				}
@@ -143,6 +140,23 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 				totalResumen += mixto.getTotalServicio();
 				resumenProgramaMixto.add(mixto);
 			}
+			for(int i = 0; i< resumenProgramaMunicipal.size();i++){
+				int posicion = resumenProgramaMixto.indexOf(resumenProgramaMunicipal.get(i).getIdServicio());
+				if(posicion !=-1){
+					resumenProgramaMixto.get(posicion).setTotalS24(resumenProgramaMunicipal.get(i).getTotalS24().longValue());
+					totalResumen += resumenProgramaMixto.get(posicion).getTotalServicio();
+				}else{
+					ResumenProgramaMixtoVO mixto = new ResumenProgramaMixtoVO();
+					mixto.setIdServicio(resumenProgramaMunicipal.get(i).getIdServicio());
+					mixto.setNombreServicio(resumenProgramaMunicipal.get(i).getNombreServicio());
+					if(resumenProgramaMunicipal.get(i).getTotalS24()!=null){
+						mixto.setTotalS24(resumenProgramaMunicipal.get(i).getTotalS24().longValue());
+					}
+					totalResumen += mixto.getTotalServicio();
+					resumenProgramaMixto.add(mixto);
+				}
+				
+			}
 			
 			
 		}
@@ -154,7 +168,7 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 		Integer anoSiguiente = recursosFinancierosProgramasReforzamientoService.getAnoCurso() + 1;
 		int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programaSeleccionado, anoSiguiente);
 		resumenProgramaMunicipal = programasService.getResumenMunicipal(IdProgramaProxAno, 3);
-		totalResumen24 =0;
+		totalResumen24 =0l;
 		tiene24=false;
 		if(resumenProgramaMunicipal.size()>0){
 			for (ResumenProgramaVO resumen : resumenProgramaMunicipal) {
@@ -169,9 +183,9 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 		Integer anoSiguiente = recursosFinancierosProgramasReforzamientoService.getAnoCurso() + 1;
 		int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programaSeleccionado, anoSiguiente);
 			resumenProgramaServicio = programasService.getResumenServicio(IdProgramaProxAno, programa.getIdProgramaAno());
-			totalResumen21=0;
-			totalResumen22=0;
-			totalResumen29=0;
+			totalResumen21=0l;
+			totalResumen22=0l;
+			totalResumen29=0l;
 			for(ResumenProgramaServiciosVO resumen : resumenProgramaServicio){
 				if(resumen.getTotalS21()!=null){
 					tiene21=true;
@@ -235,10 +249,10 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 		tiene21=false;
 		tiene22=false;
 		tiene29=false;
-		total21=0;
-		total22=0;
-		total29=0;
-		totalFinal=0;
+		total21=0l;
+		total22=0l;
+		total29=0l;
+		totalFinal=0l;
 		if(detalleEstablecimientos != null && detalleEstablecimientos.size()>0){
 			
 			for (ProgramaServicioVO detalle : detalleEstablecimientos) {
@@ -413,37 +427,7 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 		this.tiene29 = tiene29;
 	}
 
-	public Integer getTotal21() {
-		return total21;
-	}
 
-	public void setTotal21(Integer total21) {
-		this.total21 = total21;
-	}
-
-	public Integer getTotal22() {
-		return total22;
-	}
-
-	public void setTotal22(Integer total22) {
-		this.total22 = total22;
-	}
-
-	public Integer getTotal29() {
-		return total29;
-	}
-
-	public void setTotal29(Integer total29) {
-		this.total29 = total29;
-	}
-
-	public Integer getTotalFinal() {
-		return totalFinal;
-	}
-
-	public void setTotalFinal(Integer totalFinal) {
-		this.totalFinal = totalFinal;
-	}
 
 	public String getSubtitulo() {
 		return subtitulo;
@@ -453,29 +437,7 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 		this.subtitulo = subtitulo;
 	}
 
-	public Integer getTotalResumen21() {
-		return totalResumen21;
-	}
-
-	public void setTotalResumen21(Integer totalResumen21) {
-		this.totalResumen21 = totalResumen21;
-	}
-
-	public Integer getTotalResumen22() {
-		return totalResumen22;
-	}
-
-	public void setTotalResumen22(Integer totalResumen22) {
-		this.totalResumen22 = totalResumen22;
-	}
-
-	public Integer getTotalResumen29() {
-		return totalResumen29;
-	}
-
-	public void setTotalResumen29(Integer totalResumen29) {
-		this.totalResumen29 = totalResumen29;
-	}
+	
 
 	public Long getTotalResumen() {
 		return totalResumen;
@@ -493,13 +455,7 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 		this.detalleComunas = detalleComunas;
 	}
 
-	public Integer getTotalResumen24() {
-		return totalResumen24;
-	}
 
-	public void setTotalResumen24(Integer totalResumen24) {
-		this.totalResumen24 = totalResumen24;
-	}
 
 	public List<ResumenProgramaMixtoVO> getResumenProgramaMixto() {
 		return resumenProgramaMixto;
@@ -532,6 +488,70 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 
 	public void setProgramaProxAno(Integer programaProxAno) {
 		this.programaProxAno = programaProxAno;
+	}
+
+	public Long getTotal21() {
+		return total21;
+	}
+
+	public void setTotal21(Long total21) {
+		this.total21 = total21;
+	}
+
+	public Long getTotal22() {
+		return total22;
+	}
+
+	public void setTotal22(Long total22) {
+		this.total22 = total22;
+	}
+
+	public Long getTotal29() {
+		return total29;
+	}
+
+	public void setTotal29(Long total29) {
+		this.total29 = total29;
+	}
+
+	public Long getTotalFinal() {
+		return totalFinal;
+	}
+
+	public void setTotalFinal(Long totalFinal) {
+		this.totalFinal = totalFinal;
+	}
+
+	public Long getTotalResumen21() {
+		return totalResumen21;
+	}
+
+	public void setTotalResumen21(Long totalResumen21) {
+		this.totalResumen21 = totalResumen21;
+	}
+
+	public Long getTotalResumen22() {
+		return totalResumen22;
+	}
+
+	public void setTotalResumen22(Long totalResumen22) {
+		this.totalResumen22 = totalResumen22;
+	}
+
+	public Long getTotalResumen24() {
+		return totalResumen24;
+	}
+
+	public void setTotalResumen24(Long totalResumen24) {
+		this.totalResumen24 = totalResumen24;
+	}
+
+	public Long getTotalResumen29() {
+		return totalResumen29;
+	}
+
+	public void setTotalResumen29(Long totalResumen29) {
+		this.totalResumen29 = totalResumen29;
 	}
 	
 }

@@ -36,6 +36,7 @@ public class ProcesoDistRecFinSeguimientoDocumentacionController extends Abstrac
 
 	private ProgramaVO programa;
 	private Integer programaSeleccionado;
+	private Integer instanciaProceso;
 	private Integer idProxAno;
 	private List<ReporteEmailsEnviadosVO> reporteCorreos;
 	private String docIdDownload;
@@ -58,11 +59,13 @@ public class ProcesoDistRecFinSeguimientoDocumentacionController extends Abstrac
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			programaSeleccionado = (Integer) getTaskDataVO()
 					.getData().get("_programaSeleccionado");
+			instanciaProceso = (Integer) getTaskDataVO()
+					.getData().get("_idProcesoModificacion");
 		}
 		programa = reforzamientoService.getProgramaById(programaSeleccionado);
 		idProxAno = programaService.getIdProgramaAnoAnterior(programaSeleccionado, reforzamientoService.getAnoCurso()+1);
 		
-		reporteCorreos = reforzamientoService.getReporteCorreosByIdPrograma(idProxAno,false);
+		reporteCorreos = reforzamientoService.getReporteCorreosByIdInstanciaReforzamiento(instanciaProceso);
 	}
 	
 	public String downloadArchivo() {
@@ -75,7 +78,7 @@ public class ProcesoDistRecFinSeguimientoDocumentacionController extends Abstrac
 	public Integer actualizar(){return null;}
 	
 	public void buscarReporteCorreos(){
-		reporteCorreos = reforzamientoService.getReporteCorreosByIdPrograma(idProxAno,false);
+		reporteCorreos = reforzamientoService.getReporteCorreosByIdInstanciaReforzamiento(instanciaProceso);
 	}
 	
 	public String getActividadSeguimientoTitle() {
@@ -170,6 +173,14 @@ public class ProcesoDistRecFinSeguimientoDocumentacionController extends Abstrac
 
 	public void setDocIdDownload(String docIdDownload) {
 		this.docIdDownload = docIdDownload;
+	}
+
+	public Integer getInstanciaProceso() {
+		return instanciaProceso;
+	}
+
+	public void setInstanciaProceso(Integer instanciaProceso) {
+		this.instanciaProceso = instanciaProceso;
 	}
 	
 }

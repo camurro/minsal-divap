@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
+import javax.persistence.NamedQuery;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
@@ -111,6 +112,17 @@ public class SeguimientoDAO {
 		try {
 			TypedQuery<Seguimiento> query = this.em.createNamedQuery("Seguimiento.findByIdProgramaReforzamiento", Seguimiento.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idTareaSeguimiento", tareaSeguimiento.getId());
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public List<Seguimiento> getBitacoraOT(Integer idRemesa, TareasSeguimiento tareaSeguimiento) {
+		try {
+			TypedQuery<Seguimiento> query = this.em.createNamedQuery("Seguimiento.findByIdOT", Seguimiento.class);
+			query.setParameter("idRemesa", idRemesa);
 			query.setParameter("idTareaSeguimiento", tareaSeguimiento.getId());
 			return query.getResultList();
 		} catch (Exception e) {

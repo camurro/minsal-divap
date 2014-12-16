@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Seguimiento.findById", query = "SELECT s FROM Seguimiento s WHERE s.id = :id"),
     @NamedQuery(name = "Seguimiento.findByIdInstancia", query = "SELECT s FROM Seguimiento s WHERE s.idInstancia = :idInstancia"),
     @NamedQuery(name = "Seguimiento.findByIdEstimacionFlujoCaja", query = "SELECT s FROM Seguimiento s JOIN s.estimacionFlujoCajaSeguimientoCollection d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.programaAno.idProgramaAno = :idProgramaAno"),
+    @NamedQuery(name = "Seguimiento.findByIdOT", query = "SELECT s FROM Seguimiento s JOIN s.remesasSeguimientoSet d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.instanciaRemesa.idRemesa = :idRemesa"),
     @NamedQuery(name = "Seguimiento.findByIdEstimacionFlujoCajaConsolidador", query = "SELECT s FROM Seguimiento s JOIN s.estimacionFlujoCajaSeguimientoCollection d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento"),
     @NamedQuery(name = "Seguimiento.findByIdDistribucionInicialTarea", query = "SELECT s FROM Seguimiento s JOIN s.distribucionInicialPercapitaSeguimientoCollection d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.distribucionInicialPercapita.idDistribucionInicialPercapita = :idDistribucionInicialPercapita order by s.fechaEnvio desc"),
     @NamedQuery(name = "Seguimiento.findByIdRebaja", query = "SELECT s FROM Seguimiento s JOIN s.rebajaSeguimientos d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.rebaja.idRebaja = :idRebaja"),
@@ -81,6 +82,8 @@ public class Seguimiento implements Serializable {
     private Set<Destinatarios> destinatariosCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguimiento")
     private Set<ConvenioSeguimiento> conveniosSeguimiento;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguimiento")
+    private Set<RemesasSeguimiento> remesasSeguimientoSet;
     @JoinColumn(name = "tarea_seguimiento", referencedColumnName = "id_tarea_seguimiento")
     @ManyToOne(optional = false)
     private TareaSeguimiento tareaSeguimiento;
@@ -245,6 +248,15 @@ public class Seguimiento implements Serializable {
 			Set<ConvenioSeguimiento> conveniosSeguimiento) {
 		this.conveniosSeguimiento = conveniosSeguimiento;
 	}
+	
+   @XmlTransient
+    public Set<RemesasSeguimiento> getRemesasSeguimientoSet() {
+        return remesasSeguimientoSet;
+    }
+
+    public void setRemesasSeguimientoSet(Set<RemesasSeguimiento> remesasSeguimientoSet) {
+        this.remesasSeguimientoSet = remesasSeguimientoSet;
+    }
 
 	@Override
     public int hashCode() {

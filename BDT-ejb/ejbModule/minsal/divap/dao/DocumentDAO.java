@@ -64,7 +64,7 @@ public class DocumentDAO {
 	public Integer getPlantillaByType(TipoDocumentosProcesos template) {
 		Integer docId = null;
 		try {
-			TypedQuery<Plantilla> query = this.em.createQuery("select p from Plantilla p WHERE p.tipoPlantilla.idTipoDocumento = :idTipoPlantilla", Plantilla.class);
+			TypedQuery<Plantilla> query = this.em.createQuery("select p from Plantilla p WHERE p.tipoPlantilla.idTipoDocumento = :idTipoPlantilla order by p.fechaCreacion desc", Plantilla.class);
 			query.setParameter("idTipoPlantilla", template.getId());
 			List<Plantilla> plantillas = query.getResultList(); 
 			if(plantillas != null && plantillas.size() > 0){

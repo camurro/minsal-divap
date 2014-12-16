@@ -1,5 +1,6 @@
 package minsal.divap.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Singleton;
@@ -7,7 +8,18 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import minsal.divap.enums.TipoDocumentosProcesos;
 import cl.minsal.divap.model.DetalleRemesas;
+import cl.minsal.divap.model.DocumentoRemesas;
+import cl.minsal.divap.model.Mes;
+import cl.minsal.divap.model.Remesas;
+import cl.minsal.divap.model.RemesasSeguimiento;
+import cl.minsal.divap.model.ReporteEmailsAdjuntos;
+import cl.minsal.divap.model.ReporteEmailsDestinatarios;
+import cl.minsal.divap.model.ReporteEmailsEnviados;
+import cl.minsal.divap.model.ReporteEmailsRemesas;
+import cl.minsal.divap.model.Seguimiento;
+import cl.minsal.divap.model.Usuario;
 
 
 @Singleton
@@ -218,6 +230,91 @@ public class RemesasDAO {
 			query.setParameter("idServicio", idServicio);
 			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
 			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public Integer crearInstanciaOT(Usuario usuario, Mes mes, Date date) {
+		Remesas remesas = new Remesas();
+		remesas.setFechaCreacion(date);
+		remesas.setMes(mes);
+		remesas.setUsuario(usuario);
+		em.persist(remesas);
+		return remesas.getIdRemesa();
+	}
+
+	public Integer createSeguimiento(Integer idProcesoOT, Seguimiento seguimiento) {
+		Remesas remesa = findById(idProcesoOT);
+		RemesasSeguimiento remesasSeguimiento = new RemesasSeguimiento();
+		remesasSeguimiento.setInstanciaRemesa(remesa);
+		remesasSeguimiento.setSeguimiento(seguimiento);
+		this.em.persist(remesasSeguimiento);
+		return remesasSeguimiento.getId();
+	}
+
+	public Remesas findById(Integer idRemesa) {
+		try {
+			TypedQuery<Remesas> query = this.em.createNamedQuery("Remesas.findByIdRemesa", Remesas.class);
+			query.setParameter("idRemesa", idRemesa);
+			List<Remesas> result = query.getResultList();
+			if(result!=null && result.size() > 0){
+				return result.get(0);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return null;
+	}
+
+	public void save(DocumentoRemesas documentoRemesas) {
+		em.persist(documentoRemesas);
+		
+	}
+
+	public Integer getIdDocumentoRemesa(Integer idProcesoOT,
+			TipoDocumentosProcesos idTipoDocumento) {
+		try {
+			TypedQuery<DocumentoRemesas> query = this.em.createNamedQuery("DocumentoRemesas.findByTipoDocumentoAndRemesa", DocumentoRemesas.class);
+			query.setParameter("idRemesa", idProcesoOT);
+			query.setParameter("idTipoDocumento", idTipoDocumento.getId());
+			List<DocumentoRemesas> result = query.getResultList();
+			if(result!=null && result.size() > 0){
+				return result.get(0).getDocumento().getId();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return null;
+	}
+
+	public void save(ReporteEmailsEnviados reporteEmailsEnviados) {
+		em.persist(reporteEmailsEnviados);
+		
+	}
+
+	public void save(ReporteEmailsDestinatarios destinatarioPara) {
+		em.persist(destinatarioPara);
+		
+	}
+
+	public void save(ReporteEmailsAdjuntos reporteEmailsAdjuntos) {
+		em.persist(reporteEmailsAdjuntos);
+		
+	}
+
+	public void save(ReporteEmailsRemesas reporteEmailsRemesas) {
+		em.persist(reporteEmailsRemesas);
+		
+	}
+
+	public List<ReporteEmailsRemesas> getReporteCorreosByidRemesa(
+			Integer idProcesoOT) {
+		try {
+			TypedQuery<ReporteEmailsRemesas> query = this.em.createNamedQuery("ReporteEmailsRemesas.findByIdRemesa", ReporteEmailsRemesas.class);
+			query.setParameter("idRemesa", idProcesoOT);
+			return query.getResultList();
+			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

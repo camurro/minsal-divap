@@ -61,6 +61,11 @@ public class ProgramaMapper implements Mapper<ProgramaAno>{
 		}else{
 			programaVO.setEstadoOT(new EstadoProgramaVO());
 		}
+		if (programaAno.getEstadoModificacionAPS()!=null)	{
+			programaVO.setEstadoModificacionAPS(new EstadoProgramaVO(programaAno.getEstadoModificacionAPS().getIdEstadoPrograma(), programaAno.getEstadoModificacionAPS().getNombreEstado()));
+		}else{
+			programaVO.setEstadoModificacionAPS(new EstadoProgramaVO());
+		}
 		if(programaAno.getPrograma() != null){
 			programaVO.setNombre(programaAno.getPrograma().getNombre());
 			programaVO.setId(programaAno.getPrograma().getId());
