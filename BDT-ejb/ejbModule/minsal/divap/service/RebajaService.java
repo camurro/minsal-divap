@@ -40,6 +40,7 @@ import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.exception.ExcelFormatException;
 import minsal.divap.model.mappers.CumplimientoRebajasMapper;
 import minsal.divap.model.mappers.TipoCumplimientoMapper;
+import minsal.divap.util.StringUtil;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.CellTypeExcelVO;
 import minsal.divap.vo.CumplimientoRebajaVO;
@@ -189,7 +190,18 @@ public class RebajaService {
 				planilla.setServicio(((antecendenteComuna.getIdComuna().getServicioSalud().getNombre() != null)?antecendenteComuna.getIdComuna().getServicioSalud().getNombre():null));
 				planilla.setId_comuna(antecendenteComuna.getIdComuna().getId());
 				planilla.setComuna(antecendenteComuna.getIdComuna().getNombre());
-				Integer aporteEstatalMensual = ((antecendentesComunaCalculado.getPercapitaMes() == null) ? 0 : antecendentesComunaCalculado.getPercapitaMes().intValue());
+				
+				//TODO revisar
+				Integer aporteEstatalMensual = 0;
+				
+				Integer mesActual =  Integer.parseInt(getMesCurso(true));
+				System.out.println("mesActual ---> "+mesActual);
+				RebajaCorte rebajaCorte = rebajaDAO.getCorteByMes(mesActual);
+				System.out.println("rebajaCorte desde --> "+rebajaCorte.getMesDesde()+"  , rebajaCorte hasta --> "+rebajaCorte.getMesHasta());
+				
+				
+				aporteEstatalMensual +=((antecendentesComunaCalculado.getPercapitaMes() == null) ? 0 : antecendentesComunaCalculado.getPercapitaMes().intValue()*rebajaCorte.getMesHasta().getIdMes());
+				aporteEstatalMensual +=((antecendentesComunaCalculado.getDesempenoDificil() == null) ? 0 : antecendentesComunaCalculado.getDesempenoDificil().intValue()); ;
 				planilla.setAporteEstatal(aporteEstatalMensual);
 				List<CumplimientoRebajaVO> cumplimientoRebajasVO = getCumplimientoByRebajaComuna(idRebaja, antecendenteComuna.getIdComuna().getId());
 				Integer montoRebaja = 0;
@@ -531,17 +543,26 @@ public class RebajaService {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("dd 'de' MMMM 'del' yyyy");
 				String date = dateFormat.format(hoy);
 				parametersResolucionRebaja.put("{fechaFormato}", date);
+				String desdeHasta = null;
+				
+				Integer mesActual =  Integer.parseInt(getMesCurso(true));
+				RebajaCorte rebajaCorte = rebajaDAO.getCorteByMes(mesActual);
+				desdeHasta = StringUtil.caracterUnoMayuscula(rebajaCorte.getMesDesde().getNombre())+" a "+StringUtil.caracterUnoMayuscula(rebajaCorte.getMesHasta().getNombre())+" del "+getAnoCurso();
+				parametersResolucionRebaja.put("{desdeHasta}", desdeHasta);
+				
 				//parametersResolucionRebaja.put("{numeroResolucion}", value);
+				
 				for(PlanillaRebajaCalculadaVO  planillaRebajaCalculada: planillaRebajaCalculadas){
 					String filenameResolucionRebaja = tmpDirDoc + File.separator + new Date().getTime() + "_" + "ResolucionRebaja.docx";
 					System.out.println("filenameResolucionRebaja filename-->"+filenameResolucionRebaja);
 					String contentTypeResolucionRebaja = mimemap.getContentType(filenameResolucionRebaja.toLowerCase());
 					System.out.println("contentTypeResolucionRebaja->"+contentTypeResolucionRebaja);
 					filenameResolucionRebaja = filenameResolucionRebaja.replaceAll(" ", "");
-					parametersResolucionRebaja.put("{aporteMensual}", planillaRebajaCalculada.getAporteEstatal());
+					parametersResolucionRebaja.put("{aporteMensual}", StringUtil.integerWithFormat(planillaRebajaCalculada.getAporteEstatal()));
+					
 					parametersResolucionRebaja.put("{comuna}", planillaRebajaCalculada.getComuna()); 
-					parametersResolucionRebaja.put("{rebaja}", planillaRebajaCalculada.getMontoRebajaMes());
-					parametersResolucionRebaja.put("{nuevoAporte}", planillaRebajaCalculada.getNuevoAporteEstatal());
+					parametersResolucionRebaja.put("{rebaja}", StringUtil.integerWithFormat(planillaRebajaCalculada.getMontoRebajaMes()));
+					parametersResolucionRebaja.put("{nuevoAporte}", StringUtil.integerWithFormat(planillaRebajaCalculada.getNuevoAporteEstatal()));
 					if(planillaRebajaCalculada.getCumplimientoRebajasItem1() != null && planillaRebajaCalculada.getCumplimientoRebajasItem1().getMes() != null){
 						parametersResolucionRebaja.put("{mes}", planillaRebajaCalculada.getCumplimientoRebajasItem1().getMes().getNombre());
 					}else{

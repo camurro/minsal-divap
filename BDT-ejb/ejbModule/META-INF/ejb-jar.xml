@@ -50,19 +50,25 @@
 				<description>Alfresco Server</description>
 				<env-entry-name>alfrescoServer</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>http://localhost:8280/alfresco/service/api</env-entry-value>
+<!-- 				<env-entry-value>http://localhost:8280/alfresco/service/api</env-entry-value> -->
+				<env-entry-value>http://10.8.255.36:8080/alfresco/service/api</env-entry-value>
+				
 			</env-entry>
 			<env-entry>
 				<description>Alfresco User Name</description>
 				<env-entry-name>alfrescoUsername</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
+<!-- 		MI AMBIENTE		<env-entry-value>admin</env-entry-value> -->
+
+
+<!-- 				################ AMIBIENTE QA -->
 				<env-entry-value>admin</env-entry-value>
 			</env-entry>
 			<env-entry>
 				<description>Alfresco Password</description>
 				<env-entry-name>alfrescoPassword</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>alfresco</env-entry-value>
+				<env-entry-value>admin</env-entry-value>
 			</env-entry>
 			<env-entry>
 				<description>Alfresco Site</description>
@@ -99,19 +105,21 @@
 				<description>Base Url</description>
 				<env-entry-name>baseUrl</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>http://localhost:8080/business-central/rest/</env-entry-value>
+<!-- 				<env-entry-value>http://localhost:8080/business-central/rest/</env-entry-value> -->
+				<env-entry-value>http://10.8.255.34:8080/business-central/rest/</env-entry-value>
+				
 			</env-entry>
 				<env-entry>
 				<description>BPM Suite User Name</description>
 				<env-entry-name>bpmUsername</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>admin</env-entry-value>
+				<env-entry-value>bpmsAdmin</env-entry-value>
 			</env-entry>
 			<env-entry>
 				<description>BPM Suite Password</description>
 				<env-entry-name>bpmPassword</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
-				<env-entry-value>Redhat123_</env-entry-value>
+				<env-entry-value>minsal.qa.2014</env-entry-value>
 			</env-entry>
 			<env-entry>
 				<description>BPM Suite Deployment ID</description>
