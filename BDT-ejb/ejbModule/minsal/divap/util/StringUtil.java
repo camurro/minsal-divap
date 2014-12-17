@@ -1,5 +1,6 @@
 package minsal.divap.util;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
@@ -157,4 +158,31 @@ public class StringUtil {
         }
         return links;
     }
+    
+    public static String integerWithFormat(Integer numero){
+    	DecimalFormat formateador = new DecimalFormat("###,###.##");
+    	String resultado = formateador.format(numero);
+    	return resultado;
+    }
+    
+    public static String longWithFormat(Long numero){
+    	DecimalFormat formateador = new DecimalFormat("###,###.##");
+    	String resultado = formateador.format(numero);
+    	return resultado;
+    }
+    
+    public static String doubleWithFormat(Double numero){
+    	DecimalFormat formateador = new DecimalFormat("###,###.##");
+    	String resultado = formateador.format(numero);
+    	return resultado;
+    }
+    
+    public static String caracterUnoMayuscula(String palabra){
+    	String Letra1 = palabra.substring(0, 1).toUpperCase();
+		String Letras = palabra.substring(1, palabra.length()).toLowerCase();
+		String resultado = Letra1+Letras;
+		return resultado;
+    	
+    }
+    
 }

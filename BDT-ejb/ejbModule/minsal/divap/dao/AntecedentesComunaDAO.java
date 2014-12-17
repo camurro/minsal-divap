@@ -181,7 +181,7 @@ public class AntecedentesComunaDAO {
 			Integer servicio, Integer comuna, Integer idDistribucionInicialPercapita) {
 		List<AntecendentesComunaCalculado> results = null;
 		try {
-			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByComunaServicioDistribucionInicialPercapitaVigenteVigente", AntecendentesComunaCalculado.class);
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByComunaServicioDistribucionInicialPercapitaVigente", AntecendentesComunaCalculado.class);
 			query.setParameter("idComuna", comuna);
 			query.setParameter("idServicio", servicio);
 			query.setParameter("distribucionInicialPercapita", idDistribucionInicialPercapita);
