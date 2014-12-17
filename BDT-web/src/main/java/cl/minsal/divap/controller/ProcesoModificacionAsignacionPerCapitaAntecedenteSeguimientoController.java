@@ -218,7 +218,7 @@ public class ProcesoModificacionAsignacionPerCapitaAntecedenteSeguimientoControl
 	public void setBitacoraSeguimiento(List<SeguimientoVO> bitacoraSeguimiento) {
 		this.bitacoraSeguimiento = bitacoraSeguimiento;
 	}
-
+	
 	@Override
 	public String enviar() {
 		int numDocFinales = modificacionDistribucionInicialPercapitaService.countVersionFinalModificacionPercapitaByType(this.idDistribucionInicialPercapita, TipoDocumentosProcesos.ORDINARIOSOLICITUDANTECEDENTES);

@@ -225,6 +225,10 @@
                    document.getElementById('formDownloadResolucion:hiddenId').value=idDoc;
                    document.getElementById('formDownloadResolucion:linkDownload').click();  
                }  
+
+			   function marcarResolucionServicio(idServicio) {  
+                   document.getElementById('formUploadVersion:hiddenIdServicio').value=idServicio;
+               }
                
 			   function subirDocumentos(){  
                    document.getElementById('btnShowModal').click();  
@@ -284,8 +288,7 @@
 								styleClass="divapIcons" />
 							<p:commandLink value="Subir Nueva Versión"
 								oncomplete="dlgUpload.show();" />
-						]<span style="color: red; font-size: 10px;">(Hacer
-								Seguimiento Oficio)</span>
+						]
 						<br />
 						<div class="destacaArchivos ui-corner-all">
 						<h3>Plantilla Envío Correo Consulta Regional :</h3>
@@ -316,8 +319,7 @@
 								styleClass="divapIcons" />
 							<p:commandLink value="Subir Nueva Versión"
 								oncomplete="dlgUpload.show();" />
-						]<span style="color: red; font-size: 10px;">(Hacer
-								Seguimiento Decreto)</span>
+						]
 						</c:if>
 						
 						<c:if
@@ -333,8 +335,7 @@
 								styleClass="divapIcons" />
 							<p:commandLink value="Subir Nueva Versión"
 								oncomplete="dlgUpload.show();" />
-						]<span style="color: red; font-size: 10px;">(Hacer
-								Seguimiento Decreto)</span>
+						]
 						</c:if>
 						
 						<c:if
@@ -383,15 +384,16 @@
 								<c:forEach var="vardoc" items="#{procesoAsignacionPerCapitaSeguimientoController.serviciosResoluciones}">
 								<li>
 								<p:outputLabel
-										value="Resolucion para Servicio #{vardoc.nombre_servicio}"" /> [ <h:graphicImage
+										value="Resolucion para Servicio #{vardoc.nombre_servicio}"/> [ <h:graphicImage
 										value="resources/minsal/images/download-alt.png"
 										styleClass="divapIcons" /> <h:commandLink  value="Bajar Última Versión"
 								onclick="downloadDocumentResolucion(#{vardoc.id_servicio});return false;" /> | <h:graphicImage
 										value="resources/minsal/images/upload-alt.png"
-										styleClass="divapIcons" /> <p:commandLink
-										value="Subir Nueva Versión" /> ] <span
-									style="color: red; font-size: 10px;">(Hacer Seguimiento
-										Resoluciones)</span></li>
+										styleClass="divapIcons" />
+										<p:commandLink value="Subir Nueva Versión" onclick="marcarResolucionServicio(#{vardoc.id_servicio});"  actionListener="#{procesoAsignacionPerCapitaSeguimientoController.resetLastVersion}" update=":formUploadVersion:panelLastVersion"
+											oncomplete="dlgUploadVersion.show();" /> 
+										] 
+								</li>
 								</c:forEach>
 							</ul>
 							</p:panel>
@@ -610,7 +612,27 @@
 			</p:panelGrid>
 			</h:form> 	
 		</p:dialog> 
-	
+		
+		<p:dialog header="Subir archivo" widgetVar="dlgUploadVersion" id="idDlgUploadVersion" modal="true" height="150"  appendToBody="true">
+			<h:form id="formUploadVersion" enctype="multipart/form-data">
+				<h:inputHidden
+				value="#{procesoAsignacionPerCapitaSeguimientoController.hiddenIdServicio}" id="hiddenIdServicio" />
+			<p:panelGrid columns="2" id="panelLastVersion">
+				<h:outputText value="Nueva Versión: " />
+				<p:fileUpload id="newVersionRetiroFile"
+							fileUploadListener="#{procesoAsignacionPerCapitaSeguimientoController.handleFile}"
+							value="#{procesoAsignacionPerCapitaSeguimientoController.file}"
+							update="formUploadVersion" mode="simple"  />
+				<h:outputText value="Versión Final: "  />
+				<h:selectBooleanCheckbox id="checkVersionFinal" value="#{procesoAsignacionPerCapitaSeguimientoController.lastVersion}" />
+				<p:commandButton value="Aceptar" ajax="false"
+					actionListener="#{procesoAsignacionPerCapitaSeguimientoController.uploadVersionFinal}" update="formSeguimiento:panelBusqueda"
+					oncomplete="if (args &amp;&amp; args.showDialog){dlgUploadVersion.hide()}else{ alert('the bean didnt let me open the dialog')}" />
+				<p:commandButton value="Cancelar"
+					onclick="dlgUploadVersion.hide()" type="button" />
+			</p:panelGrid>
+			</h:form> 	
+		</p:dialog> 
 
 	</ui:define>
 </ui:composition>

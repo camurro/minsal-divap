@@ -437,6 +437,24 @@ public class DocumentService {
 		distribucionInicialPercapitaDAO.save(documentoDistribucionInicialPercapita);
 		System.out.println("luego de aplicar insert del documento percapita");
 	}
+	
+	public void createDocumentPercapita(DistribucionInicialPercapita distribucionInicialPercapita,Integer idServicio,
+			TipoDocumentosProcesos tipoDocumento, Integer referenciaDocumentoId, Boolean lastVersion) {
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		if(lastVersion != null){
+			referenciaDocumento.setDocumentoFinal(lastVersion);
+		}
+		DocumentoDistribucionInicialPercapita documentoDistribucionInicialPercapita = new DocumentoDistribucionInicialPercapita();
+		if(idServicio != null){
+			ServicioSalud servicio = servicioSaludDAO.getById(idServicio);
+			documentoDistribucionInicialPercapita.setServicio(servicio);
+		}
+		documentoDistribucionInicialPercapita.setTipoDocumento(new TipoDocumento(tipoDocumento.getId()));
+		documentoDistribucionInicialPercapita.setIdDocumento(referenciaDocumento);
+		documentoDistribucionInicialPercapita.setIdDistribucionInicialPercapita(distribucionInicialPercapita);
+		distribucionInicialPercapitaDAO.save(documentoDistribucionInicialPercapita);
+		System.out.println("luego de aplicar insert del documento percapita");
+	}
 
 	public ReferenciaDocumentoSummaryVO getLastDocumentoSummaryByDistribucionInicialPercapitaType(
 			Integer idDistribucionInicialPercapita,
@@ -951,6 +969,23 @@ public class DocumentService {
 		conveniosDAO.save(documentoModificacionPercapita);
 		System.out.println("luego de aplicar insert del documento convenio");
 	}
+	
+	public void createDocumentModificacionPercapita(ModificacionDistribucionInicialPercapita modificacionDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos tipoDocumento, Integer referenciaDocumentoId, Boolean lastVersion) {
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		if(lastVersion != null){
+			referenciaDocumento.setDocumentoFinal(lastVersion);
+		}
+		DocumentoModificacionPercapita documentoModificacionPercapita = new DocumentoModificacionPercapita();
+		documentoModificacionPercapita.setTipoDocumento(new TipoDocumento(tipoDocumento.getId()));
+		documentoModificacionPercapita.setDocumento(referenciaDocumento);
+		documentoModificacionPercapita.setModificacionPercapita(modificacionDistribucionInicialPercapita);
+		if(idServicio != null){
+			ServicioSalud servicio = servicioSaludDAO.getServicioSaludById(idServicio);
+			documentoModificacionPercapita.setServicio(servicio);
+		}
+		conveniosDAO.save(documentoModificacionPercapita);
+		System.out.println("luego de aplicar insert del documento convenio");
+	}
 
 	public Integer createDocumentModificacionPercapita(Integer idDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos tipoDocumentoProceso, String nodeRef,
 			String filename, String contentType) {
@@ -1044,14 +1079,14 @@ public class DocumentService {
 		return versionesFinales;
 	}
 
-	public List<ReferenciaDocumentoVO> getDocumentByTypesServicioModificacionPercapita(Integer idDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos... tiposDocumentoProceso) {
-		System.out.println("idDistribucionInicialPercapita->"+idDistribucionInicialPercapita);
+	public List<ReferenciaDocumentoVO> getDocumentByTypesServicioModificacionPercapita(Integer idModificacionPercapita, Integer idServicio, TipoDocumentosProcesos... tiposDocumentoProceso) {
+		System.out.println("idDistribucionInicialPercapita->"+idModificacionPercapita);
 		for(TipoDocumentosProcesos tipoDocumentoProceso : tiposDocumentoProceso){
 			System.out.println("tipoDocumentoProceso->"+tipoDocumentoProceso.getId());
 		}
 		System.out.println("idServicio->"+idServicio);
 		List<ReferenciaDocumentoVO> referenciasDocumentoVO = new ArrayList<ReferenciaDocumentoVO>();
-		List<DocumentoModificacionPercapita> referencias = fileDAO.getDocumentosByTypeServicioModificacionPercapita(idDistribucionInicialPercapita, idServicio, tiposDocumentoProceso);
+		List<DocumentoModificacionPercapita> referencias = fileDAO.getDocumentosByTypeServicioModificacionPercapita(idModificacionPercapita, idServicio, tiposDocumentoProceso);
 		if(referencias != null && referencias.size() > 0){
 			for(DocumentoModificacionPercapita referencia : referencias){
 				referenciasDocumentoVO.add(new ModificacionPercapitaReferenciaDocumentoMapper().getBasic(referencia));
@@ -1143,6 +1178,95 @@ public class DocumentService {
 	}
 
 	public List<ServiciosSummaryVO> getDocumentByResolucionTypesServicioDistribucionInicialPercapita(Integer idDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos[] tiposDocumentoProceso) {
+		System.out.println("idDistribucionInicialPercapita->"+idDistribucionInicialPercapita);
+		for(TipoDocumentosProcesos tipoDocumentoProceso : tiposDocumentoProceso){
+			System.out.println("tipoDocumentoProceso->"+tipoDocumentoProceso.getId());
+		}
+		System.out.println("idServicio->"+idServicio);
+		List<ServiciosSummaryVO> serviciosResoluciones = new ArrayList<ServiciosSummaryVO>();
+		List<DocumentoDistribucionInicialPercapita> referencias = fileDAO.getDocumentosByTypeServicioDistribucionInicialPercapita(idDistribucionInicialPercapita, idServicio, tiposDocumentoProceso);
+		if(referencias != null && referencias.size() > 0){
+			for(DocumentoDistribucionInicialPercapita referencia : referencias){
+				if(referencia.getComuna() != null && referencia.getComuna().getServicioSalud() != null){
+					ServiciosSummaryVO serviciosSummaryVO = new ServiciosSummaryVO();
+					serviciosSummaryVO.setId_servicio(referencia.getComuna().getServicioSalud().getId());
+					serviciosSummaryVO.setNombre_servicio(referencia.getComuna().getServicioSalud().getNombre());
+					if(!serviciosResoluciones.contains(serviciosSummaryVO)){
+						serviciosResoluciones.add(serviciosSummaryVO);
+					}
+				}
+			}
+		}
+		return serviciosResoluciones;
+	}
+	
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW) 
+	public List<ReferenciaDocumentoVO> getDocumentByTypesServicioModificacionPercapitaTransaccional(Integer idModificacionPercapita, Integer idServicio, TipoDocumentosProcesos... tipoDocumento) {
+		return getDocumentByTypesServicioModificacionPercapita(idModificacionPercapita, idServicio, tipoDocumento);
+	}
+
+	public List<ReferenciaDocumentoSummaryVO> getVersionFinalByServicioModificacionPercapitaTypes(Integer idModificacionPercapita, Integer idServicio, TipoDocumentosProcesos... tipoDocumento) {
+		List<ReferenciaDocumentoSummaryVO> versionesFinales = new ArrayList<ReferenciaDocumentoSummaryVO>();
+		List<ReferenciaDocumento> referenciaDocumentos =  fileDAO.getVersionFinalByServicioModificacionPercapitaTypes(idModificacionPercapita, idServicio, tipoDocumento);
+		if(referenciaDocumentos != null && referenciaDocumentos.size() > 0){
+			for(ReferenciaDocumento referenciaDocumento : referenciaDocumentos){
+				ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = new ReferenciaDocumentoMapper().getSummary(referenciaDocumento);
+				versionesFinales.add(referenciaDocumentoSummaryVO);
+			}
+		}
+		return versionesFinales;
+	}
+
+	public List<ReferenciaDocumentoSummaryVO> getVersionFinalByServicioDistribucionInicialPercapitaTypes(Integer idDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos... tipoDocumento) {
+		List<ReferenciaDocumentoSummaryVO> versionesFinales = new ArrayList<ReferenciaDocumentoSummaryVO>();
+		List<ReferenciaDocumento> referenciaDocumentos =  fileDAO.getVersionFinalByServicioDistribucionInicialPercapitaTypes(idDistribucionInicialPercapita, idServicio, tipoDocumento);
+		if(referenciaDocumentos != null && referenciaDocumentos.size() > 0){
+			for(ReferenciaDocumento referenciaDocumento : referenciaDocumentos){
+				ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = new ReferenciaDocumentoMapper().getSummary(referenciaDocumento);
+				versionesFinales.add(referenciaDocumentoSummaryVO);
+			}
+		}
+		return versionesFinales;
+	}
+
+	public List<ReferenciaDocumentoSummaryVO> getVersionFinalModificacionPercapitaByType(Integer idModificacionPercapita, Integer idServicio, TipoDocumentosProcesos tipoDocumento) {
+		List<ReferenciaDocumentoSummaryVO> versionesFinales = new ArrayList<ReferenciaDocumentoSummaryVO>();
+		List<ReferenciaDocumento> referenciaDocumentos =  fileDAO.getVersionFinalModificacionPercapitaByType(idModificacionPercapita, idServicio, tipoDocumento);
+		if(referenciaDocumentos != null && referenciaDocumentos.size() > 0){
+			for(ReferenciaDocumento referenciaDocumento : referenciaDocumentos){
+				ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = new ReferenciaDocumentoMapper().getSummary(referenciaDocumento);
+				versionesFinales.add(referenciaDocumentoSummaryVO);
+			}
+		}
+		return versionesFinales;
+	}
+
+	public List<ReferenciaDocumentoSummaryVO> getVersionFinalDistribucionInicialPercapitaByType(Integer idDistribucionInicialPercapita, TipoDocumentosProcesos tipoDocumento) {
+		List<ReferenciaDocumentoSummaryVO> versionesFinales = new ArrayList<ReferenciaDocumentoSummaryVO>();
+		List<ReferenciaDocumento> referenciaDocumentos =  fileDAO.getVersionFinalDistribucionInicialPercapitaByType(idDistribucionInicialPercapita, tipoDocumento);
+		if(referenciaDocumentos != null && referenciaDocumentos.size() > 0){
+			for(ReferenciaDocumento referenciaDocumento : referenciaDocumentos){
+				ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = new ReferenciaDocumentoMapper().getSummary(referenciaDocumento);
+				versionesFinales.add(referenciaDocumentoSummaryVO);
+			}
+		}
+		return versionesFinales;
+	}
+
+	public List<ReferenciaDocumentoSummaryVO> getVersionFinalDistribucionInicialPercapitaByType(Integer idDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos tipoDocumento) {
+		List<ReferenciaDocumentoSummaryVO> versionesFinales = new ArrayList<ReferenciaDocumentoSummaryVO>();
+		List<ReferenciaDocumento> referenciaDocumentos =  fileDAO.getVersionFinalDistribucionInicialPercapitaByType(idDistribucionInicialPercapita, idServicio, tipoDocumento);
+		if(referenciaDocumentos != null && referenciaDocumentos.size() > 0){
+			for(ReferenciaDocumento referenciaDocumento : referenciaDocumentos){
+				ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = new ReferenciaDocumentoMapper().getSummary(referenciaDocumento);
+				versionesFinales.add(referenciaDocumentoSummaryVO);
+			}
+		}
+		return versionesFinales;
+	}
+
+	public List<ServiciosSummaryVO> getDocumentResolucionByTypesServicioDistribucionInicialPercapita(Integer idDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos... tiposDocumentoProceso) {
 		System.out.println("idDistribucionInicialPercapita->"+idDistribucionInicialPercapita);
 		for(TipoDocumentosProcesos tipoDocumentoProceso : tiposDocumentoProceso){
 			System.out.println("tipoDocumentoProceso->"+tipoDocumentoProceso.getId());
