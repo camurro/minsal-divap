@@ -25,6 +25,7 @@ import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
 import minsal.divap.dao.SeguimientoDAO;
 import minsal.divap.dao.UsuarioDAO;
+import minsal.divap.doc.GeneradorDocumento;
 import minsal.divap.doc.GeneradorOficioConsulta;
 import minsal.divap.doc.GeneradorResolucionAporteEstatal;
 import minsal.divap.doc.GeneradorWord;
@@ -51,7 +52,6 @@ import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.DesempenoDificilVO;
 import minsal.divap.vo.DocumentoVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
-import minsal.divap.vo.ReferenciaDocumentoVO;
 import minsal.divap.vo.RegionVO;
 import minsal.divap.vo.SeguimientoVO;
 import minsal.divap.vo.ServiciosVO;
@@ -314,7 +314,7 @@ public class DistribucionInicialPercapitaService {
 		}
 	}
 
-	private Integer getAnoCurso() {
+	public Integer getAnoCurso() {
 		DateFormat formatNowYear = new SimpleDateFormat("yyyy");
 		Date nowDate = new Date();
 		return Integer.valueOf(formatNowYear.format(nowDate)); 
@@ -364,18 +364,22 @@ public class DistribucionInicialPercapitaService {
 					Integer asignacionAdultoMayor = antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso().getAsignacionAdultoMayor();
 					System.out.println("percapitaBasal=" + percapitaBasal + " antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza().getValor()=" + ((antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza() == null) ? 0 : antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza().getValor()));
 					Double pobreza = percapitaBasal * ((antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza() == null) ? 0 : antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza().getValor());
-					BigDecimal bd = new BigDecimal(pobreza);
-					bd = bd.setScale(2, RoundingMode.HALF_UP);
-					pobreza = bd.doubleValue();
+					BigDecimal bigDecimalPobreza = new BigDecimal(pobreza);
+					bigDecimalPobreza = bigDecimalPobreza.setScale(2, RoundingMode.HALF_UP);
+					pobreza = bigDecimalPobreza.doubleValue();
 					antecendenteComunaCalculado.setPobreza(pobreza);
 					System.out.println("antecendenteComunaCalculado.getAntecedentesComuna().getIdAntecedentesComuna()="+antecendenteComunaCalculado.getAntecedentesComuna().getIdAntecedentesComuna());
 					if(antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion() != null){
 						if(TipoComuna.RURAL.getId().equals(antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion().getIdTipoComuna())){
 							Double ruralidad = (percapitaBasal + pobreza) * 0.2;
-							antecendenteComunaCalculado.setRuralidad(ruralidad);
+							BigDecimal bigDecimalRuralidad = new BigDecimal(ruralidad);
+							bigDecimalRuralidad = bigDecimalRuralidad.setScale(2, RoundingMode.HALF_UP);
+							antecendenteComunaCalculado.setRuralidad(bigDecimalRuralidad.doubleValue());
 							//Hacer calculo con todos los decimales, solo para visualizar dejar con 2 luego de la coma
 							Double valorReferencialZona = (percapitaBasal + pobreza + ruralidad) * ((antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona() == null) ? 0 : antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona().getValor());
-							antecendenteComunaCalculado.setValorReferencialZona(valorReferencialZona);
+							BigDecimal bigDecimalValorReferencialZona = new BigDecimal(valorReferencialZona);
+							bigDecimalValorReferencialZona = bigDecimalValorReferencialZona.setScale(2, RoundingMode.HALF_UP);
+							antecendenteComunaCalculado.setValorReferencialZona(bigDecimalValorReferencialZona.doubleValue());
 							Long valorPerCapitaComunalMes = (long)(percapitaBasal + pobreza + ruralidad + valorReferencialZona);
 							antecendenteComunaCalculado.setValorPerCapitaComunalMes(valorPerCapitaComunalMes.doubleValue());
 							System.out.println("valorPerCapitaComunalMes="+valorPerCapitaComunalMes);
@@ -391,7 +395,9 @@ public class DistribucionInicialPercapitaService {
 						} else if(TipoComuna.URBANA.getId().equals(antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion().getIdTipoComuna())){
 							antecendenteComunaCalculado.setRuralidad(0.0);
 							Double valorReferencialZona = (percapitaBasal + pobreza + 0.0) * ((antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona() == null) ? 0 : antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona().getValor());
-							antecendenteComunaCalculado.setValorReferencialZona(valorReferencialZona);
+							BigDecimal bigDecimalValorReferencialZona = new BigDecimal(valorReferencialZona);
+							bigDecimalValorReferencialZona = bigDecimalValorReferencialZona.setScale(2, RoundingMode.HALF_UP);
+							antecendenteComunaCalculado.setValorReferencialZona(bigDecimalValorReferencialZona.doubleValue());
 							Long valorPerCapitaComunalMes = (long)(percapitaBasal + pobreza + 0.0 + valorReferencialZona);
 							antecendenteComunaCalculado.setValorPerCapitaComunalMes(valorPerCapitaComunalMes.doubleValue());
 							System.out.println("valorPerCapitaComunalMes="+valorPerCapitaComunalMes);
@@ -407,7 +413,9 @@ public class DistribucionInicialPercapitaService {
 						} else if(TipoComuna.COSTOFIJO.getId().equals(antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion().getIdTipoComuna())){
 							antecendenteComunaCalculado.setRuralidad(0.0);
 							Double valorReferencialZona = (percapitaBasal + pobreza + 0.0) * ((antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona() == null) ? 0 : antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona().getValor());
-							antecendenteComunaCalculado.setValorReferencialZona(valorReferencialZona);
+							BigDecimal bigDecimalValorReferencialZona = new BigDecimal(valorReferencialZona);
+							bigDecimalValorReferencialZona = bigDecimalValorReferencialZona.setScale(2, RoundingMode.HALF_UP);
+							antecendenteComunaCalculado.setValorReferencialZona(bigDecimalValorReferencialZona.doubleValue());
 							Long valorPerCapitaComunalMes = (long)(percapitaBasal + pobreza + 0.0 + valorReferencialZona);
 							antecendenteComunaCalculado.setValorPerCapitaComunalMes(valorPerCapitaComunalMes.doubleValue());
 							Double perCapitaCostoFijo = antecedentesComunaDAO.findPerCapitaCostoFijoByServicioComunaAnoAnterior(antecendenteComunaCalculado.getAntecedentesComuna().getIdComuna().getId(), antecendenteComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId(), getAnoCurso());
@@ -491,8 +499,6 @@ public class DistribucionInicialPercapitaService {
 		}
 		return antecedentesCalculados;
 	}
-	
-	
 
 	public void procesarCalculoPercapita(HSSFSheet workbook) {
 		throw new NotImplementedException();
@@ -653,7 +659,7 @@ public class DistribucionInicialPercapitaService {
 							parametersAporteEstatalCF.put("{ano_curso}",getAnoCurso());
 
 							generadorWordAporteEstatalCF.saveContent(documentoAporteEstatalCFVO.getContent(), XWPFDocument.class);
-							String filenameAporteEstatalCFTmp = filenameAporteEstatalCF.replace(".docx", "-" + antecendenteComuna.getIdComuna().getId() + ".docx");
+							String filenameAporteEstatalCFTmp = filenameAporteEstatalCF.replace(".docx", "-" +  antecendenteComuna.getIdComuna().getNombre() + ".docx");
 							filenameAporteEstatalCFTmp = StringUtil.removeSpanishAccents(filenameAporteEstatalCFTmp);
 							GeneradorResolucionAporteEstatal generadorResolucionAporteEstatalCF = new GeneradorResolucionAporteEstatal(filenameAporteEstatalCFTmp, templateAporteEstatalCF);
 							generadorResolucionAporteEstatalCF.replaceValues(parametersAporteEstatalCF, XWPFDocument.class);
@@ -669,7 +675,7 @@ public class DistribucionInicialPercapitaService {
 							parametersAporteEstatalUR.put("{monto_seleccionado}",((antecendentesComunaCalculadoVigente.getValorPerCapitaComunalMes() == null)?new Double(0): antecendentesComunaCalculadoVigente.getValorPerCapitaComunalMes()));
 							parametersAporteEstatalUR.put("{aporte_mensual}",((antecendentesComunaCalculadoVigente.getPercapitaMes() == null)? new Integer(0): antecendentesComunaCalculadoVigente.getPercapitaMes()));
 							generadorWordAporteEstatalUR.saveContent(documentoAporteEstatalURVO.getContent(), XWPFDocument.class);
-							String filenameAporteEstatalURTmp = filenameAporteEstatalUR.replace(".docx", "-" + antecendenteComuna.getIdComuna().getId() + ".docx");
+							String filenameAporteEstatalURTmp = filenameAporteEstatalUR.replace(".docx", "-" +  antecendenteComuna.getIdComuna().getNombre() + ".docx");
 							filenameAporteEstatalURTmp = StringUtil.removeSpanishAccents(filenameAporteEstatalURTmp);
 							GeneradorResolucionAporteEstatal generadorResolucionAporteEstatalUR = new GeneradorResolucionAporteEstatal(filenameAporteEstatalURTmp, templateAporteEstatalUR);
 							generadorResolucionAporteEstatalUR.replaceValues(parametersAporteEstatalUR, XWPFDocument.class);
@@ -842,23 +848,44 @@ public class DistribucionInicialPercapitaService {
 							cc.add(servicio.getEncargadoFinanzasAps().getCorreo());
 						}
 					}
-					List<EmailService.Adjunto> adjuntos = new ArrayList<EmailService.Adjunto>();
-					List<ReferenciaDocumentoVO> referenciasDocumentos = documentService.getDocumentByTypesServicioDistribucionInicialPercapitaTransaccional(idDistribucionInicialPercapita, servicio.getId_servicio(), new TipoDocumentosProcesos[] { TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF});
-					for(ReferenciaDocumentoVO referenciaDocumentoVO : referenciasDocumentos){
-						DocumentoVO documentDocumentoResolucionVO = documentService.getDocument(referenciaDocumentoVO.getId());
+					
+					ReferenciaDocumentoSummaryVO referenciaDocumentoFinalSummaryVO = null;
+					List<ReferenciaDocumentoSummaryVO> referenciasDocumentoSummaryVO = documentService.getVersionFinalByServicioDistribucionInicialPercapitaTypes(idDistribucionInicialPercapita, servicio.getId_servicio(), new TipoDocumentosProcesos[] { TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF});
+					if(referenciasDocumentoSummaryVO != null && referenciasDocumentoSummaryVO.size() > 0){
+						for(ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO : referenciasDocumentoSummaryVO){
+							String contentType = new MimetypesFileTypeMap().getContentType(referenciaDocumentoSummaryVO.getPath());
+							System.out.println("contentType="+contentType+" archivo enviado por correo");
+							if (contentType.equals("application/pdf")) {
+								referenciaDocumentoFinalSummaryVO = referenciaDocumentoSummaryVO;
+								break;
+							}
+							if(referenciaDocumentoSummaryVO.getPath().indexOf(".") != -1){
+								String extension = referenciaDocumentoSummaryVO.getPath().substring(referenciaDocumentoSummaryVO.getPath().lastIndexOf(".") + 1, referenciaDocumentoSummaryVO.getPath().length());
+								if("pdf".equalsIgnoreCase(extension)){
+									referenciaDocumentoFinalSummaryVO = referenciaDocumentoSummaryVO;
+									break;
+								}
+							}
+							referenciaDocumentoFinalSummaryVO = referenciaDocumentoSummaryVO;
+						}
+					}
+					
+					if(referenciaDocumentoFinalSummaryVO != null){
+						List<EmailService.Adjunto> adjuntos = new ArrayList<EmailService.Adjunto>();
+						DocumentoVO documentDocumentoResolucionVO = documentService.getDocument(referenciaDocumentoFinalSummaryVO.getId());
 						String fileNameDocumentoResolucion = tmpDirDoc + File.separator + documentDocumentoResolucionVO.getName();
-						GeneradorWord generadorWordResolucion = new GeneradorWord(fileNameDocumentoResolucion);
-						generadorWordResolucion.saveContent(documentDocumentoResolucionVO.getContent(), XWPFDocument.class);
+						GeneradorDocumento generadorDocumento = new GeneradorDocumento(fileNameDocumentoResolucion);
+						generadorDocumento.saveContent(documentDocumentoResolucionVO.getContent());
 						EmailService.Adjunto adjunto = new EmailService.Adjunto();
 						adjunto.setDescripcion("Resolucion");
 						adjunto.setName(documentDocumentoResolucionVO.getName());
 						adjunto.setUrl((new File(fileNameDocumentoResolucion)).toURI().toURL());
 						adjuntos.add(adjunto);
-					}
-					if(emailPLantilla != null && emailPLantilla.getAsunto() != null && emailPLantilla.getCuerpo() != null){
-						emailService.sendMail(to, cc, cco, emailPLantilla.getAsunto(), emailPLantilla.getCuerpo().replaceAll("(\r\n|\n)", "<br />"), adjuntos);
-					}else{
-						emailService.sendMail(to, cc, cco , "Resolucion", "Estimados: <br /> <p> se adjuntan los documentos Resolucion</p>", adjuntos);
+						if(emailPLantilla != null && emailPLantilla.getAsunto() != null && emailPLantilla.getCuerpo() != null){
+							emailService.sendMail(to, cc, cco, emailPLantilla.getAsunto(), emailPLantilla.getCuerpo().replaceAll("(\r\n|\n)", "<br />"), adjuntos);
+						}else{
+							emailService.sendMail(to, cc, cco , "Resolucion", "Estimados: <br /> <p> se adjuntan los documentos Resolucion</p>", adjuntos);
+						}
 					}
 				}
 			}
@@ -1011,6 +1038,17 @@ public class DistribucionInicialPercapitaService {
 
 	public void administrarVersionesFinalesAlfresco(Integer idDistribucionInicialPercapita) {
 		System.out.println("DistribucionInicialPercapitaService administrarVersionesFinalesAlfresco eliminar todas las versiones que no sean finales");
+		TipoDocumentosProcesos[] tiposDocumentos = {TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF};
+		List<DocumentoDistribucionInicialPercapita> documentosResoluciones = distribucionInicialPercapitaDAO.getByIdDistribucionInicialPercapitaTipoNotFinal(idDistribucionInicialPercapita, tiposDocumentos);
+		if(documentosResoluciones != null && documentosResoluciones.size() > 0){
+			for(DocumentoDistribucionInicialPercapita documentoDistribucionInicialPercapita : documentosResoluciones){
+				String key = ((documentoDistribucionInicialPercapita.getIdDocumento().getNodeRef() == null) ? documentoDistribucionInicialPercapita.getIdDocumento().getPath() : documentoDistribucionInicialPercapita.getIdDocumento().getNodeRef().replace("workspace://SpacesStore/", ""));
+				System.out.println("key->"+key);
+				alfrescoService.delete(key);
+				distribucionInicialPercapitaDAO.deleteDocumentoDistribucionInicialPercapita(documentoDistribucionInicialPercapita.getIdDocumentoDistribucionInicialPercapita());
+				distribucionInicialPercapitaDAO.deleteDocumento(documentoDistribucionInicialPercapita.getIdDocumento().getId());
+			}
+		}
 	}
 
 	public void creacionAntecedentesComuna(String usuario, Integer idDistribucionInicialPercapita) {
@@ -1055,6 +1093,39 @@ public class DistribucionInicialPercapitaService {
 				}
 			}
 		}
+	}
+
+	public void moveToAlfrescoDistribucionInicialPercapita(Integer idDistribucionInicialPercapita, Integer idServicio, Integer referenciaDocumentoId, TipoDocumentosProcesos tipoDocumento,	Boolean lastVersion) {
+		System.out.println("Buscando referenciaDocumentoId="+referenciaDocumentoId);
+		System.out.println("Buscando idDistribucionInicialPercapita="+idDistribucionInicialPercapita);
+		System.out.println("Buscando idServicio="+idServicio);
+		ReferenciaDocumentoSummaryVO referenciaDocumentoSummary = documentService.getDocumentSummary(referenciaDocumentoId);
+		System.out.println("Buscando referenciaDocumentoSummary="+referenciaDocumentoSummary);
+		if(referenciaDocumentoSummary != null){
+			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
+			String contenType = mimemap.getContentType(referenciaDocumentoSummary.getPath().toLowerCase());
+			BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummary.getPath()), contenType, folderPercapita.replace("{ANO}", String.valueOf((getAnoCurso() + 1 )) ));
+			System.out.println("response upload template --->"+response);
+			documentService.updateDocumentTemplate(referenciaDocumentoSummary.getId(), response.getNodeRef(), response.getFileName(), contenType);
+			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findById(idDistribucionInicialPercapita);
+			documentService.createDocumentPercapita(distribucionInicialPercapita, idServicio, tipoDocumento, referenciaDocumentoId, lastVersion);
+		}
+	}
+
+	public int countVersionFinalDistribucionInicialPercapitaByType(Integer idDistribucionInicialPercapita, TipoDocumentosProcesos tipoDocumento) {
+		List<ReferenciaDocumentoSummaryVO> versionesFinales = documentService.getVersionFinalDistribucionInicialPercapitaByType(idDistribucionInicialPercapita, tipoDocumento);
+		if(versionesFinales != null && versionesFinales.size() > 0){
+			return versionesFinales.size();
+		}
+		return 0;
+	}
+
+	public int countVersionFinalDistribucionInicialPercapitaResoluciones(Integer idDistribucionInicialPercapita, Integer idServicio) {
+		List<ReferenciaDocumentoSummaryVO> versionesFinales = documentService.getVersionFinalDistribucionInicialPercapitaByType(idDistribucionInicialPercapita, idServicio, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR);
+		if(versionesFinales != null && versionesFinales.size() > 0){
+			return versionesFinales.size();
+		} 
+		return 0;
 	}
 
 }

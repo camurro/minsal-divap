@@ -411,6 +411,10 @@ implements Serializable {
 	public boolean isCheckPerCapitaMes() {
 		return checkPerCapitaMes;
 	}
+	
+	public Integer getAnoCurso() {
+		return distribucionInicialPercapitaService.getAnoCurso() + 1;
+	}
 
 	public void setCheckPerCapitaMes(boolean checkPerCapitaMes) {
 		this.checkPerCapitaMes = checkPerCapitaMes;

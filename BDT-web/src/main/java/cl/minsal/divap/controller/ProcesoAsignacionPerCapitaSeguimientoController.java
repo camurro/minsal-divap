@@ -84,7 +84,8 @@ implements Serializable {
 	private UploadedFile file2;
 	private Part fileUpload;
 	private Integer idDistribucionInicialPercapita;
-
+	private Boolean lastVersion = false;
+	private String hiddenIdServicio;
 
 
 	public void uploadArchivoSeguimiento() {
@@ -101,11 +102,9 @@ implements Serializable {
 			String filename = file.getFileName();
 			byte[] contentAttachedFile = file.getContents();
 			Integer docNewVersion = persistFile(filename,	contentAttachedFile);
-			TipoDocumentosProcesos tipoDocumento = null;
 			switch (tareaSeguimiento) {
 			case HACERSEGUIMIENTOOFICIO:
-				tipoDocumento = TipoDocumentosProcesos.OFICIOCONSULTA;
-				distribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, tipoDocumento, versionFinal);
+				distribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, TipoDocumentosProcesos.OFICIOCONSULTA, versionFinal);
 				this.oficioConsultaId = docNewVersion;
 				break;
 			case HACERSEGUIMIENTORESOLUCIONES:
@@ -113,8 +112,7 @@ implements Serializable {
 			case HACERSEGUIMIENTOTOMARAZON:
 				break;
 			case HACERSEGUIMIENTODECRETO:
-				tipoDocumento = TipoDocumentosProcesos.BORRADORAPORTEESTATAL;
-				distribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, tipoDocumento, versionFinal);
+				distribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, TipoDocumentosProcesos.BORRADORAPORTEESTATAL, versionFinal);
 				this.decretoId = docNewVersion;
 				break;	
 			default:
@@ -142,6 +140,28 @@ implements Serializable {
 		}else{
 			System.out.println("uploadVersion2 file is null");
 			FacesMessage message = new FacesMessage("uploadVersion2 file is null");
+			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
+	}
+	
+	public void uploadVersionFinal() {
+		if (file != null){
+			try {
+				System.out.println("uploadVersionFinal file is not null");
+				String filename = file.getFileName();
+				filename = filename.replaceAll(" ", "");
+				byte[] contentResolucionFile = file.getContents();
+				Integer docResolucion = persistFile(filename, contentResolucionFile);
+				Integer idServicio = Integer.parseInt(getHiddenIdServicio());
+				System.out.println("docResolucion->"+docResolucion);
+				System.out.println("idServicio->"+idServicio);
+				distribucionInicialPercapitaService.moveToAlfrescoDistribucionInicialPercapita(this.idDistribucionInicialPercapita, idServicio, docResolucion, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, this.lastVersion);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			System.out.println("uploadVersion file is null");
+			FacesMessage message = new FacesMessage("uploadVersion file is null");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
 	}
@@ -229,6 +249,11 @@ implements Serializable {
 		servicioSeleccionado = "";
 		documentos = new ArrayList<ReferenciaDocumentoVO>();
 		System.out.println("fin limpiar");
+	}
+	
+	public void resetLastVersion(){
+		System.out.println("resetLastVersion lastVersion = false");
+		lastVersion = false;
 	}
 
 	@Override
@@ -584,6 +609,63 @@ implements Serializable {
 	public void setServiciosResoluciones(
 			List<ServiciosSummaryVO> serviciosResoluciones) {
 		this.serviciosResoluciones = serviciosResoluciones;
+	}
+
+	public Boolean getLastVersion() {
+		return lastVersion;
+	}
+
+	public void setLastVersion(Boolean lastVersion) {
+		this.lastVersion = lastVersion;
+	}
+
+	public String getHiddenIdServicio() {
+		return hiddenIdServicio;
+	}
+
+	public void setHiddenIdServicio(String hiddenIdServicio) {
+		this.hiddenIdServicio = hiddenIdServicio;
+	}
+	
+	@Override
+	public String enviar(){
+		int numDocFinales = 0;
+		String message = null;
+		switch (tareaSeguimiento) {
+		case HACERSEGUIMIENTOOFICIO:
+			numDocFinales = distribucionInicialPercapitaService.countVersionFinalDistribucionInicialPercapitaByType(this.idDistribucionInicialPercapita, TipoDocumentosProcesos.OFICIOCONSULTA);
+			message = "No existe versión final para oficio consulta";
+			break;
+		case HACERSEGUIMIENTORESOLUCIONES:
+			TipoDocumentosProcesos[] tiposDocumentos = {TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF};
+			List<ServiciosSummaryVO> serviciosResoluciones = documentService.getDocumentResolucionByTypesServicioDistribucionInicialPercapita(idDistribucionInicialPercapita, null, tiposDocumentos);
+			if(serviciosResoluciones != null && serviciosResoluciones.size() > 0){
+				for(ServiciosSummaryVO serviciosSummaryVO : serviciosResoluciones){
+					numDocFinales = distribucionInicialPercapitaService.countVersionFinalDistribucionInicialPercapitaResoluciones(this.idDistribucionInicialPercapita, serviciosSummaryVO.getId_servicio());
+					if(numDocFinales == 0){
+						message = "No existe versión final para documento aporte estatal servicio " + serviciosSummaryVO.getNombre_servicio();
+						break;
+					}
+				}
+			}
+			break;	
+		case HACERSEGUIMIENTOTOMARAZON:
+			numDocFinales = 1;
+			break;
+		case HACERSEGUIMIENTODECRETO:
+			numDocFinales = distribucionInicialPercapitaService.countVersionFinalDistribucionInicialPercapitaByType(this.idDistribucionInicialPercapita, TipoDocumentosProcesos.BORRADORAPORTEESTATAL);
+			message = "No existe versión final para documento aporte estatal";
+			break;	
+		default:
+			break;
+		}
+		System.out.println("numDocFinales="+numDocFinales);
+		if(numDocFinales == 0){
+			FacesMessage msg = new FacesMessage(message);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return null;
+		}
+		return super.enviar();
 	}
 
 	@Override
