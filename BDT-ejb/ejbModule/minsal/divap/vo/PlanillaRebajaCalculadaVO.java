@@ -21,6 +21,9 @@ public class PlanillaRebajaCalculadaVO implements Serializable{
 	private Integer aporteEstatal;
 	private Integer montoRebajaMes;
 	private Integer nuevoAporteEstatal;
+	private String mesDesde;
+	private String mesHasta;
+	private String mesCorte;
 	private Boolean actualizar;
 
 	public PlanillaRebajaCalculadaVO(){
@@ -201,13 +204,36 @@ public class PlanillaRebajaCalculadaVO implements Serializable{
 		this.totalRebajaRebajaFinal = totalRebajaRebajaFinal;
 	}
 
-
 	public Boolean getActualizar() {
 		return actualizar;
 	}
 
 	public void setActualizar(Boolean actualizar) {
 		this.actualizar = actualizar;
+	}
+
+	public String getMesDesde() {
+		return mesDesde;
+	}
+
+	public void setMesDesde(String mesDesde) {
+		this.mesDesde = mesDesde;
+	}
+
+	public String getMesHasta() {
+		return mesHasta;
+	}
+
+	public void setMesHasta(String mesHasta) {
+		this.mesHasta = mesHasta;
+	}
+
+	public String getMesCorte() {
+		return mesCorte;
+	}
+
+	public void setMesCorte(String mesCorte) {
+		this.mesCorte = mesCorte;
 	}
 
 	@Override

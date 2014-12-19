@@ -151,6 +151,7 @@ public class ProcesoRebajaController extends AbstractTaskMBean
 		
 	public String downloadTemplate() {
 		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownload()));
+		System.out.println("bajando docDownload=" +docDownload);
 		setDocumento(documentService.getDocument(docDownload));
 		super.downloadDocument();
 		return null;
