@@ -2275,7 +2275,6 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		try {
 			
 			Long totalActual=0l;
-			Integer idProgramaAno = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCurso());
 			List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
 			Map<Integer, List<Integer>> componentesBySubtitulos = new HashMap<Integer, List<Integer>>();
 			for(ComponentesVO componente: programa.getComponentes()){
@@ -2693,21 +2692,38 @@ public Integer elaborarOrdinarioModificacionProgramaReforzamiento(Integer idProg
 			List<CellExcelVO> header = new ArrayList<CellExcelVO>();
 			header.add(new CellExcelVO("COD."));	
 			header.add(new CellExcelVO("SERVICIO DE SALUD"));
-			
+			boolean s21=false;
+			boolean s22=false;
+			boolean s24=false;
+			boolean s29=false;
+			for(int i=0; i<resumen.size();i++){
+				if(resumen.get(i).getTotalS24()>0){
+                    s24=true;
+                }
+                if(resumen.get(i).getTotalS21()>0){
+                    s21=true;
+                }
+                if(resumen.get(i).getTotalS22()>0){
+                    s22=true;
+                }
+                if(resumen.get(i).getTotalS29()>0){
+                    s29=true;
+                }
+			}
 						
-			if(resumen.get(0).getTotalS24()>0){
+			if(s24){
 				header.add(new CellExcelVO("SUBTITULO 24 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS21()>0){
+			if(s21){
 				header.add(new CellExcelVO("SUBTITULO 21 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS22()>0){
+			if(s22){
 				header.add(new CellExcelVO("SUBTITULO 22 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS29()>0){
+			if(s29){
 				header.add(new CellExcelVO("SUBTITULO 29 ($)"));
 			}
 			
@@ -2760,19 +2776,39 @@ public void elaborarExcelResolucionModificado(Integer idPrograma, List<ResumenPr
 			header.add(new CellExcelVO("SERVICIO DE SALUD"));
 			
 						
-			if(resumen.get(0).getTotalS24()>0){
+			boolean s24=false;
+			boolean s21=false;
+			boolean s22=false;
+			boolean s29=false;
+			
+			for(int i=0; i<resumen.size();i++){
+				if(resumen.get(i).getTotalS24()>0){
+                    s24=true;
+                }
+                if(resumen.get(i).getTotalS21()>0){
+                    s21=true;
+                }
+                if(resumen.get(i).getTotalS22()>0){
+                    s22=true;
+                }
+                if(resumen.get(i).getTotalS29()>0){
+                    s29=true;
+                }
+			}
+						
+			if(s24){
 				header.add(new CellExcelVO("SUBTITULO 24 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS21()>0){
+			if(s21){
 				header.add(new CellExcelVO("SUBTITULO 21 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS22()>0){
+			if(s22){
 				header.add(new CellExcelVO("SUBTITULO 22 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS29()>0){
+			if(s29){
 				header.add(new CellExcelVO("SUBTITULO 29 ($)"));
 			}
 			
@@ -2824,22 +2860,43 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 			header.add(new CellExcelVO("COD."));	
 			header.add(new CellExcelVO("SERVICIO DE SALUD"));
 			
-			if(resumen.get(0).getTotalS24()>0){
+			boolean s24=false;
+			boolean s21=false;
+			boolean s22=false;
+			boolean s29=false;
+			
+			for(int i=0; i<resumen.size();i++){
+				if(resumen.get(i).getTotalS24()>0){
+                    s24=true;
+                }
+                if(resumen.get(i).getTotalS21()>0){
+                    s21=true;
+                }
+                if(resumen.get(i).getTotalS22()>0){
+                    s22=true;
+                }
+                if(resumen.get(i).getTotalS29()>0){
+                    s29=true;
+                }
+			}
+						
+			if(s24){
 				header.add(new CellExcelVO("SUBTITULO 24 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS21()>0){
+			if(s21){
 				header.add(new CellExcelVO("SUBTITULO 21 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS22()>0){
+			if(s22){
 				header.add(new CellExcelVO("SUBTITULO 22 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS29()>0){
+			if(s29){
 				header.add(new CellExcelVO("SUBTITULO 29 ($)"));
 			}
 			
+						
 			header.add(new CellExcelVO("TOTAL ($)"));
 		
 			String filename = tmpDir + File.separator;
@@ -2889,19 +2946,39 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 			header.add(new CellExcelVO("COD."));	
 			header.add(new CellExcelVO("SERVICIO DE SALUD"));
 			
-			if(resumen.get(0).getTotalS24()>0){
+			boolean s24=false;
+			boolean s21=false;
+			boolean s22=false;
+			boolean s29=false;
+			
+			for(int i=0; i<resumen.size();i++){
+				if(resumen.get(i).getTotalS24()>0){
+                    s24=true;
+                }
+                if(resumen.get(i).getTotalS21()>0){
+                    s21=true;
+                }
+                if(resumen.get(i).getTotalS22()>0){
+                    s22=true;
+                }
+                if(resumen.get(i).getTotalS29()>0){
+                    s29=true;
+                }
+			}
+						
+			if(s24){
 				header.add(new CellExcelVO("SUBTITULO 24 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS21()>0){
+			if(s21){
 				header.add(new CellExcelVO("SUBTITULO 21 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS22()>0){
+			if(s22){
 				header.add(new CellExcelVO("SUBTITULO 22 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS29()>0){
+			if(s29){
 				header.add(new CellExcelVO("SUBTITULO 29 ($)"));
 			}
 			
