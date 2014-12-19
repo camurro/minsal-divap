@@ -25458,3 +25458,7 @@ ALTER TABLE usuario ADD COLUMN "primerLogin" boolean NOT NULL DEFAULT true;
 
 UPDATE tarea_seguimiento SET descripcion='Hacer Seguimiento Resolucion Modificacion Programas de Reforzamiento' WHERE id_tarea_seguimiento = 15;
 INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (16, 'Hacer Seguimiento Ordinario Solicitud Antecedentes');
+
+UPDATE antecendentes_comuna SET  tramo_pobreza = 1 
+ WHERE clasificacion=2 and  ano_ano_en_curso=2015 and tramo_pobreza is null;
+

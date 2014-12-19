@@ -155,7 +155,7 @@ implements Serializable {
 				Integer idServicio = Integer.parseInt(getHiddenIdServicio());
 				System.out.println("docResolucion->"+docResolucion);
 				System.out.println("idServicio->"+idServicio);
-				modificacionDistribucionInicialPercapitaService.moveToAlfrescoModificacion(this.idDistribucionInicialPercapita, idServicio, docResolucion, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, this.lastVersion);
+				modificacionDistribucionInicialPercapitaService.moveToAlfrescoModificacion(this.idDistribucionInicialPercapita, idServicio, docResolucion, TipoDocumentosProcesos.ORDINARIOMODIFICACIONRESOLUCIONAPORTEESTATAL, this.lastVersion);
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -235,11 +235,10 @@ implements Serializable {
 
 	public void buscar() {
 		System.out.println("buscar--> servicioSeleccionado="+servicioSeleccionado);
-		TipoDocumentosProcesos[] tiposDocumentos = {TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF};
 		if(servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty()){
-			serviciosResoluciones = documentService.getDocumentResolucionByTypesServicioModificacionPercapita(idDistribucionInicialPercapita, null, tiposDocumentos);
+			serviciosResoluciones = documentService.getDocumentResolucionByTypesServicioModificacionPercapita(idDistribucionInicialPercapita, null, TipoDocumentosProcesos.ORDINARIOMODIFICACIONRESOLUCIONAPORTEESTATAL);
 		}else{
-			serviciosResoluciones = documentService.getDocumentResolucionByTypesServicioModificacionPercapita(idDistribucionInicialPercapita, Integer.parseInt(servicioSeleccionado), tiposDocumentos);
+			serviciosResoluciones = documentService.getDocumentResolucionByTypesServicioModificacionPercapita(idDistribucionInicialPercapita, Integer.parseInt(servicioSeleccionado), TipoDocumentosProcesos.ORDINARIOMODIFICACIONRESOLUCIONAPORTEESTATAL);
 		}
 		System.out.println("fin buscar-->");
 	}
@@ -279,7 +278,7 @@ implements Serializable {
 			}else{
 				this.oficioConsultaId = (Integer) getTaskDataVO().getData().get("_oficioConsultaId");
 			}
-			ReferenciaDocumentoSummaryVO referenciaDocumentoBorradorSummaryVO = modificacionDistribucionInicialPercapitaService.getLastDocumentSummaryModificacionPercapitaByType(idDistribucionInicialPercapita, TipoDocumentosProcesos.BORRADORAPORTEESTATAL);
+			ReferenciaDocumentoSummaryVO referenciaDocumentoBorradorSummaryVO = modificacionDistribucionInicialPercapitaService.getLastDocumentSummaryModificacionPercapitaByType(idDistribucionInicialPercapita, TipoDocumentosProcesos.ORDINARIOMODIFICACIONRESOLUCIONAPORTEESTATAL);
 			if(referenciaDocumentoBorradorSummaryVO != null){
 				this.decretoId = referenciaDocumentoBorradorSummaryVO.getId();
 			}else{
@@ -353,8 +352,7 @@ implements Serializable {
 			message = "No existe versión final para oficio consulta";
 			break;
 		case HACERSEGUIMIENTORESOLUCIONES:
-			TipoDocumentosProcesos[] tiposDocumentos = {TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF};
-			List<ServiciosSummaryVO> serviciosResoluciones = documentService.getDocumentResolucionByTypesServicioModificacionPercapita(idDistribucionInicialPercapita, null, tiposDocumentos);
+			List<ServiciosSummaryVO> serviciosResoluciones = documentService.getDocumentResolucionByTypesServicioModificacionPercapita(idDistribucionInicialPercapita, null, TipoDocumentosProcesos.ORDINARIOMODIFICACIONRESOLUCIONAPORTEESTATAL);
 			if(serviciosResoluciones != null && serviciosResoluciones.size() > 0){
 				for(ServiciosSummaryVO serviciosSummaryVO : serviciosResoluciones){
 					numDocFinales = modificacionDistribucionInicialPercapitaService.countVersionFinalModificacionPercapitaResoluciones(this.idDistribucionInicialPercapita, serviciosSummaryVO.getId_servicio());
@@ -535,8 +533,7 @@ implements Serializable {
 	public String downloadResolucion() {
 		Integer idServicio = Integer.valueOf(Integer.parseInt(getDocIdDownload()));
 		ServiciosSummaryVO serviciosSummaryVO = serviciosService.getServicioSaludSummaryById(idServicio);
-		TipoDocumentosProcesos[] tiposDocumentos = {TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF};
-		List<Integer> documentos = documentService.getDocumentosByModificacionPercapitaServicioTypes(idDistribucionInicialPercapita, idServicio, tiposDocumentos);
+		List<Integer> documentos = documentService.getDocumentosByModificacionPercapitaServicioTypes(idDistribucionInicialPercapita, idServicio, TipoDocumentosProcesos.ORDINARIOMODIFICACIONRESOLUCIONAPORTEESTATAL);
 		setDocumento(documentService.getDocument(serviciosSummaryVO.getNombre_servicio(), documentos));
 		super.downloadDocument();
 		return null;

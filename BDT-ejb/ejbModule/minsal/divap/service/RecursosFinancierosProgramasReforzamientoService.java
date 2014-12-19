@@ -58,6 +58,7 @@ import minsal.divap.excel.impl.ProgramaAPSServiciosHistoricosSheetExcel;
 import minsal.divap.exception.ExcelFormatException;
 import minsal.divap.model.mappers.ProgramaMapper;
 import minsal.divap.model.mappers.SeguimientoMapper;
+import minsal.divap.util.StringUtil;
 import minsal.divap.vo.AdjuntosVO;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.CellExcelVO;
@@ -237,6 +238,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			switch (tipoDocumentoProceso) {
 			case PLANTILLAMUNICIPALAPSRESUMENSERVICIO:
 				filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Municipal.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulos=0;
 				int idComponente =0;
@@ -287,6 +289,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				break;
 			case PLANTILLASERVICIOAPSRESUMENSERVICIO:
 				filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Servicio.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO("Establecimientos", 2, 2));
 				int subtitulosServicio=0;
@@ -342,6 +345,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				break;
 			case PLANTILLAMUNICIPALAPSRESUMENHISTORICO:
 				filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Municipal.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulosH=0;
 				int idComponenteH =0;
@@ -383,6 +387,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				break;
 			case PLANTILLASERVICIOAPSRESUMENHISTORICO:
 				filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Servicio.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO("Establecimientos", 2, 2));
 				int subtitulosServicioH=0;
@@ -451,6 +456,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			switch (tipoDocumentoProceso) {
 			case PLANTILLAMUNICIPALAPSRESUMENSERVICIO:
 				filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Municipal.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulos=0;
 				int idComponente =0;
@@ -501,6 +507,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				break;
 			case PLANTILLASERVICIOAPSRESUMENSERVICIO:
 				filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Servicio.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO("Establecimientos", 2, 2));
 				int subtitulosServicio=0;
@@ -556,6 +563,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				break;
 			case PLANTILLAMUNICIPALAPSRESUMENHISTORICO:
 				filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Municipal.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulosH=0;
 				int idComponenteH =0;
@@ -597,6 +605,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				break;
 			case PLANTILLASERVICIOAPSRESUMENHISTORICO:
 				filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Servicio.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO("Establecimientos", 2, 2));
 				int subtitulosServicioH=0;
@@ -662,6 +671,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				header.add(new CellExcelVO("Servicios de Salud", 2, 2));
 				header.add(new CellExcelVO("Comunas", 2, 2));
 				filename += "Plantilla Programa -"+prog.getNombre()+"- Municipal.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulos=0;
 				List<Integer> idComponentes = new ArrayList<Integer>();
@@ -713,6 +723,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			case PLANTILLAPROGRAMAAPSSERVICIO:
 				header.add(new CellExcelVO("Servicios de Salud", 2, 2));
 				filename += "Plantilla Programa -"+prog.getNombre()+"- Servicio.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO("Establecimientos", 2, 2));
 				int subtitulosServicio=0;
@@ -761,6 +772,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				header.add(new CellExcelVO("Servicios de Salud", 2, 1));
 				header.add(new CellExcelVO("Comunas", 2, 1));
 				filename += "Plantilla Ley -"+prog.getNombre()+".xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO(prog.getNombre(), 1, 1));
 				subHeader.add(new CellExcelVO("ID", 1, 1));
@@ -812,6 +824,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				header.add(new CellExcelVO("Servicios de Salud", 2, 2));
 				header.add(new CellExcelVO("Comunas", 2, 2));
 				filename += "Plantilla Programa -"+prog.getNombre()+"- Municipal.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulos=0;
 				List<Integer> idComponentes = new ArrayList<Integer>();
@@ -863,6 +876,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			case PLANTILLAPROGRAMAAPSSERVICIO:
 				header.add(new CellExcelVO("Servicios de Salud", 2, 2));
 				filename += "Plantilla Programa -"+prog.getNombre()+"- Servicio.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO("Establecimientos", 2, 2));
 				int subtitulosServicio=0;
@@ -911,6 +925,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				header.add(new CellExcelVO("Servicios de Salud", 2, 1));
 				header.add(new CellExcelVO("Comunas", 2, 1));
 				filename += "Plantilla Ley -"+prog.getNombre()+".xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO(prog.getNombre(), 1, 1));
 				subHeader.add(new CellExcelVO("ID", 1, 1));
@@ -2731,6 +2746,7 @@ public Integer elaborarOrdinarioModificacionProgramaReforzamiento(Integer idProg
 		
 			String filename = tmpDir + File.separator;
 			filename += "Plantilla Resolucion Programa -"+prog.getNombre().replace(":", "-")+".xlsx";
+			filename = StringUtil.removeSpanishAccents(filename);
 			GeneradorExcel generadorExcel = new GeneradorExcel(filename);
 			String contenType = mimemap.getContentType(filename.toLowerCase());
 			
@@ -2816,6 +2832,7 @@ public void elaborarExcelResolucionModificado(Integer idPrograma, List<ResumenPr
 		
 			String filename = tmpDir + File.separator;
 			filename += "Plantilla Resolucion Programa -"+prog.getNombre().replace(":", "-")+".xlsx";
+			filename = StringUtil.removeSpanishAccents(filename);
 			GeneradorExcel generadorExcel = new GeneradorExcel(filename);
 			String contenType = mimemap.getContentType(filename.toLowerCase());
 			
@@ -2901,6 +2918,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 		
 			String filename = tmpDir + File.separator;
 			filename += "Plantilla Ordinario Programa -"+prog.getNombre().replace(":", "-")+".xlsx";
+			filename = StringUtil.removeSpanishAccents(filename);
 			GeneradorExcel generadorExcel = new GeneradorExcel(filename);
 			String contenType = mimemap.getContentType(filename.toLowerCase());
 			
@@ -2986,6 +3004,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 		
 			String filename = tmpDir + File.separator;
 			filename += "Plantilla Ordinario Modificacion Programa -"+prog.getNombre().replace(":", "-")+".xlsx";
+			filename = StringUtil.removeSpanishAccents(filename);
 			GeneradorExcel generadorExcel = new GeneradorExcel(filename);
 			String contenType = mimemap.getContentType(filename.toLowerCase());
 			
@@ -3835,6 +3854,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 			}
 			
 			String filename="Detalle Excel Servicio "+nombreServicio+" Municipal.xlsx";
+			filename = StringUtil.removeSpanishAccents(filename);
 			GeneradorExcel generador = new GeneradorExcel(workBook, tmpDir + File.separator +filename);
 			
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
@@ -4004,6 +4024,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 		
 		          
             String filename="Detalle Excel Servicio "+nombreServicio+" Servicio.xlsx";
+            filename = StringUtil.removeSpanishAccents(filename);
 			GeneradorExcel generador = new GeneradorExcel(workBook, tmpDir + File.separator +filename);
 			
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
@@ -4090,6 +4111,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 			}
 			
 			 String filename="Detalle Excel Servicio "+nombreServicio+" Municipal.xlsx";
+			 filename = StringUtil.removeSpanishAccents(filename);
 				GeneradorExcel generador = new GeneradorExcel(workBook, tmpDir + File.separator +filename);
 				
 				MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
@@ -4253,6 +4275,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
             }
 			
             String filename="Detalle Excel Servicio "+nombreServicio+" Servicio.xlsx";
+            filename = StringUtil.removeSpanishAccents(filename);
 			GeneradorExcel generador = new GeneradorExcel(workBook, tmpDir + File.separator +filename);
 			
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
@@ -4298,6 +4321,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 			switch (tipoDocumentoProceso) {
 			case PLANTILLAAPSDETALLEMUNICIPAL:
 				filename += "Detalle Programa -"+prog.getNombre().replace(":", "-")+"- Municipal.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulos=0;
 				
@@ -4340,6 +4364,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 				break;
 			case PLANTILLAAPSDETALLESERVICIO:
 				filename += "Detalle Programa -"+prog.getNombre().replace(":", "-")+"- Servicio.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO("Establecimientos", 2, 2));
 				
@@ -4396,6 +4421,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 				break;
 			case PLANTILLAAPSDETALLEMUNICIPALHISTORICO:
 				filename += "Detalle Programa -"+prog.getNombre().replace(":", "-")+"- Municipal.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulosH=0;
 				
@@ -4430,6 +4456,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 				break;
 			case PLANTILLAAPSDETALLESERVICIOHISTORICO:
 				filename += "Detalle Programa -"+prog.getNombre().replace(":", "-")+"- Servicio.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO("Establecimientos", 2, 2));
 				int subtitulosServicioH=0;
