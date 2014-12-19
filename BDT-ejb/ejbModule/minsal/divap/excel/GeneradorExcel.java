@@ -325,18 +325,21 @@ return;
             boolean s22=false;
             boolean s29=false;
             if(items.size()>0){
-                if(items.get(0).getTotalS24()!=null && items.get(0).getTotalS24()>0){
-                    s24=true;
-                }
-                if(items.get(0).getTotalS21()!=null && items.get(0).getTotalS21()>0){
-                    s21=true;
-                }
-                if(items.get(0).getTotalS22()!=null && items.get(0).getTotalS22()>0){
-                    s22=true;
-                }
-                if(items.get(0).getTotalS29()!=null && items.get(0).getTotalS29()>0){
-                    s29=true;
-                }
+            	for(int i=0 ; i < items.size();i++){
+            		if(items.get(i).getTotalS24()!=null && items.get(i).getTotalS24()>0){
+                        s24=true;
+                    }
+                    if(items.get(i).getTotalS21()!=null && items.get(i).getTotalS21()>0){
+                        s21=true;
+                    }
+                    if(items.get(i).getTotalS22()!=null && items.get(i).getTotalS22()>0){
+                        s22=true;
+                    }
+                    if(items.get(i).getTotalS29()!=null && items.get(i).getTotalS29()>0){
+                        s29=true;
+                    }
+            	}
+                
             }
             for(int i=0; i<items.size(); i++){
                 currentRow =i+1;
