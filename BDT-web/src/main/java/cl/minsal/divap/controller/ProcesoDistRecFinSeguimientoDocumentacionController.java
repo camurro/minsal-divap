@@ -60,7 +60,7 @@ public class ProcesoDistRecFinSeguimientoDocumentacionController extends Abstrac
 			programaSeleccionado = (Integer) getTaskDataVO()
 					.getData().get("_programaSeleccionado");
 			instanciaProceso = (Integer) getTaskDataVO()
-					.getData().get("_idProcesoModificacion");
+					.getData().get("_idProceso");
 		}
 		programa = reforzamientoService.getProgramaById(programaSeleccionado);
 		idProxAno = programaService.getIdProgramaAnoAnterior(programaSeleccionado, reforzamientoService.getAnoCurso()+1);
