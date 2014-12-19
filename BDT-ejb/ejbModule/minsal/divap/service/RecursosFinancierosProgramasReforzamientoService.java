@@ -2223,6 +2223,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 					+ File.separator + new Date().getTime() + "_"
 					+ "ResolucionPrograma"+programa.getNombre().replace(":", "-")+".docx";
 			filenameBorradorResolucionProgramasAPS = filenameBorradorResolucionProgramasAPS.replaceAll(" ", "");
+			filenameBorradorResolucionProgramasAPS = StringUtil.removeSpanishAccents(filenameBorradorResolucionProgramasAPS);
 			System.out.println("filenameBorradorResolucionProgramasAPS filename-->"
 					+ filenameBorradorResolucionProgramasAPS);
 			System.out.println("templateResolucionProgramasAPS template-->"

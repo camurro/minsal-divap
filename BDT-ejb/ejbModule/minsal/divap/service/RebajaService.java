@@ -40,6 +40,7 @@ import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.exception.ExcelFormatException;
 import minsal.divap.model.mappers.CumplimientoRebajasMapper;
 import minsal.divap.model.mappers.TipoCumplimientoMapper;
+import minsal.divap.util.StringUtil;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.CellTypeExcelVO;
 import minsal.divap.vo.CumplimientoRebajaVO;
@@ -151,7 +152,7 @@ public class RebajaService {
 	}
 
 	public List<RebajaVO> getAllServiciosyComunasConId() {
-		List<AntecendentesComuna> antecendentesComunas = this.servicioSaludDAO.getAntecentesComunasRebaja(getAnoCurso(), new TipoComuna[] { TipoComuna.RURAL, TipoComuna.URBANA});
+		List<AntecendentesComuna> antecendentesComunas = this.servicioSaludDAO.getAntecentesComunasRebaja((getAnoCurso() + 1), new TipoComuna[] { TipoComuna.RURAL, TipoComuna.URBANA});
 		List<RebajaVO> result = new ArrayList<RebajaVO>();
 		if((antecendentesComunas != null) && (antecendentesComunas.size() > 0)){
 			for (AntecendentesComuna antecendenteComuna : antecendentesComunas){
@@ -172,9 +173,10 @@ public class RebajaService {
 
 	private List<PlanillaRebajaCalculadaVO> getAllRebajasPlanillaTotal(Integer idRebaja) {
 		List<PlanillaRebajaCalculadaVO> datosPlanilla = new ArrayList<PlanillaRebajaCalculadaVO>();
-		List<AntecendentesComuna> antecendentesComunas = this.servicioSaludDAO.getAntecentesComunasRebaja(getAnoCurso(), new TipoComuna[] { TipoComuna.RURAL, TipoComuna.URBANA});
+		List<AntecendentesComuna> antecendentesComunas = this.servicioSaludDAO.getAntecentesComunasRebaja((getAnoCurso() + 1), new TipoComuna[] { TipoComuna.RURAL, TipoComuna.URBANA});
+		Rebaja rebaja = rebajaDAO.findRebajaById(idRebaja);
 		if((antecendentesComunas != null) && (antecendentesComunas.size() > 0)){
-			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
+			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast((getAnoCurso() + 1));
 			for (AntecendentesComuna antecendenteComuna : antecendentesComunas){
 				System.out.println("servicioSalud.getId()->"+antecendenteComuna.getIdComuna().getServicioSalud().getId()+" comuna.getId()->"+antecendenteComuna.getIdComuna().getId()+" distribucionInicialPercapita.getIdDistribucionInicialPercapita()->"+distribucionInicialPercapita.getIdDistribucionInicialPercapita());
 				List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaVigente(antecendenteComuna.getIdComuna().getServicioSalud().getId(), antecendenteComuna.getIdComuna().getId(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
@@ -190,6 +192,7 @@ public class RebajaService {
 				planilla.setId_comuna(antecendenteComuna.getIdComuna().getId());
 				planilla.setComuna(antecendenteComuna.getIdComuna().getNombre());
 				Integer aporteEstatalMensual = ((antecendentesComunaCalculado.getPercapitaMes() == null) ? 0 : antecendentesComunaCalculado.getPercapitaMes().intValue());
+				aporteEstatalMensual += ((antecendentesComunaCalculado.getDesempenoDificil() == null) ? 0 : antecendentesComunaCalculado.getDesempenoDificil());
 				planilla.setAporteEstatal(aporteEstatalMensual);
 				List<CumplimientoRebajaVO> cumplimientoRebajasVO = getCumplimientoByRebajaComuna(idRebaja, antecendenteComuna.getIdComuna().getId());
 				Integer montoRebaja = 0;
@@ -214,6 +217,13 @@ public class RebajaService {
 							break;
 						}
 					}
+					
+					String mesDesde = ((rebaja != null && rebaja.getRebajaCorte() != null && rebaja.getRebajaCorte().getMesDesde() != null)? rebaja.getRebajaCorte().getMesDesde().getNombre() : "");
+					planilla.setMesDesde(mesDesde);
+					String mesHasta = ((rebaja != null && rebaja.getRebajaCorte() != null && rebaja.getRebajaCorte().getMesHasta() != null)? rebaja.getRebajaCorte().getMesHasta().getNombre() : "");
+					planilla.setMesHasta(mesHasta);
+					String mesCorte = ((rebaja != null && rebaja.getRebajaCorte() != null && rebaja.getRebajaCorte().getMesRebaja() != null)? rebaja.getRebajaCorte().getMesRebaja().getNombre() : "");
+					planilla.setMesCorte(mesCorte);
 					planilla.setTotalRebajaCalculada(porcentajeRebajaCalculado);
 					planilla.setTotalRebajaRebajaFinal(porcentajeRebajaFinal);
 					montoRebaja = (int)(aporteEstatalMensual * (porcentajeRebajaFinal/100.0));
@@ -321,7 +331,7 @@ public class RebajaService {
 
 	public List <PlanillaRebajaCalculadaVO>  getRebajasByComuna(Integer idRebaja , List<Integer> comunas){
 		List <PlanillaRebajaCalculadaVO> planillaRebajaCalculadas = new ArrayList<PlanillaRebajaCalculadaVO>();
-		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
+		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast((getAnoCurso() + 1));
 		for(Integer idComuna : comunas){
 			Comuna comuna = antecedentesComunaDAO.findByComunaById(idComuna);
 			System.out.println("comuna.getServicioSalud().getId()->"+comuna.getServicioSalud().getId()+" comuna.getId()->"+comuna.getId()+" distribucionInicialPercapita.getIdDistribucionInicialPercapita()->"+distribucionInicialPercapita.getIdDistribucionInicialPercapita());
@@ -452,7 +462,7 @@ public class RebajaService {
 		ExcelTemplate rebajaCalculadaSheetExcel = new RebajaCalculadaSheetExcel(headers, subHeaders, planillaRebajasCalculadas);
 		generadorExcel.addSheet(rebajaCalculadaSheetExcel, "Hoja 1");
 		try {
-			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderProcesoRebaja.replace("{ANO}", getAnoCurso().toString()));
+			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderProcesoRebaja.replace("{ANO}", String.valueOf((getAnoCurso() + 1))));
 			System.out.println("response rebajaCalculadaSheetExcel --->"+response);
 			Rebaja rebaja = rebajaDAO.findRebajaById(idRebaja);
 			documentId = documentService.crearDocumentoRebajaCalculada(rebaja, TipoDocumentosProcesos.PLANILLARESULTADOSCALCULADOS, response.getNodeRef(), response.getFileName(), contenType);
@@ -488,7 +498,7 @@ public class RebajaService {
 		Usuario usuario = this.usuarioDAO.getUserByUsername(username);
 		String mesCurso = getMesCurso(true);
 		RebajaCorte rebajaCorte = rebajaDAO.getCorteByMes(Integer.parseInt(mesCurso));
-		AnoEnCurso anoCurso = programasDAO.getAnoEnCursoById(getAnoCurso());
+		AnoEnCurso anoCurso = programasDAO.getAnoEnCursoById((getAnoCurso() + 1));
 		return rebajaDAO.crearIntanciaRebaja(usuario, rebajaCorte, anoCurso);
 	}
 
@@ -526,30 +536,36 @@ public class RebajaService {
 			generadorWordPlantillaResolucionRebaja.saveContent(documentoResolucionRebajaVO.getContent(), XWPFDocument.class);
 			if(planillaRebajaCalculadas != null && planillaRebajaCalculadas.size() > 0){
 				Map<String, Object> parametersResolucionRebaja = new HashMap<String, Object>();
-				parametersResolucionRebaja.put("{ano}", getAnoCurso().toString());
+				parametersResolucionRebaja.put("{ano_curso}", String.valueOf((getAnoCurso() + 1)));
 				Date hoy = new Date();
 				SimpleDateFormat dateFormat = new SimpleDateFormat("dd 'de' MMMM 'del' yyyy");
 				String date = dateFormat.format(hoy);
-				parametersResolucionRebaja.put("{fechaFormato}", date);
-				//parametersResolucionRebaja.put("{numeroResolucion}", value);
+				parametersResolucionRebaja.put("{fecha_formato}", date);
 				for(PlanillaRebajaCalculadaVO  planillaRebajaCalculada: planillaRebajaCalculadas){
 					String filenameResolucionRebaja = tmpDirDoc + File.separator + new Date().getTime() + "_" + "ResolucionRebaja.docx";
 					System.out.println("filenameResolucionRebaja filename-->"+filenameResolucionRebaja);
 					String contentTypeResolucionRebaja = mimemap.getContentType(filenameResolucionRebaja.toLowerCase());
 					System.out.println("contentTypeResolucionRebaja->"+contentTypeResolucionRebaja);
 					filenameResolucionRebaja = filenameResolucionRebaja.replaceAll(" ", "");
-					parametersResolucionRebaja.put("{aporteMensual}", planillaRebajaCalculada.getAporteEstatal());
-					parametersResolucionRebaja.put("{comuna}", planillaRebajaCalculada.getComuna()); 
-					parametersResolucionRebaja.put("{rebaja}", planillaRebajaCalculada.getMontoRebajaMes());
-					parametersResolucionRebaja.put("{nuevoAporte}", planillaRebajaCalculada.getNuevoAporteEstatal());
+					Integer aporteEstatal = ((planillaRebajaCalculada.getAporteEstatal() == null)? 0 : planillaRebajaCalculada.getAporteEstatal());
+					parametersResolucionRebaja.put("{aporte_mensual}", StringUtil.formatNumber(aporteEstatal));
+					parametersResolucionRebaja.put("{numero_resolucion}", new Long(300).toString());
+					parametersResolucionRebaja.put("{desde_hasta}", "para los meses de " + planillaRebajaCalculada.getMesDesde() + " a " + planillaRebajaCalculada.getMesHasta() + " del " + (getAnoCurso() + 1));
+					parametersResolucionRebaja.put("{mes_desde_hasta}", planillaRebajaCalculada.getMesDesde() + " a " + planillaRebajaCalculada.getMesHasta());
+					parametersResolucionRebaja.put("{periodo_corte}", "para el mes de " + planillaRebajaCalculada.getMesCorte() + " del año " + (getAnoCurso() + 1));
+					parametersResolucionRebaja.put("{comuna}", planillaRebajaCalculada.getComuna());
+					Integer rebajaMes = ((planillaRebajaCalculada.getMontoRebajaMes() == null) ? 0 : planillaRebajaCalculada.getMontoRebajaMes());
+					parametersResolucionRebaja.put("{monto_rebaja}", StringUtil.formatNumber(rebajaMes));
+					Integer nuevoAporteEstatal = ((planillaRebajaCalculada.getNuevoAporteEstatal() == null) ? 0 : planillaRebajaCalculada.getNuevoAporteEstatal());
+					parametersResolucionRebaja.put("{nuevo_aporte}", StringUtil.formatNumber(nuevoAporteEstatal));
 					if(planillaRebajaCalculada.getCumplimientoRebajasItem1() != null && planillaRebajaCalculada.getCumplimientoRebajasItem1().getMes() != null){
-						parametersResolucionRebaja.put("{mes}", planillaRebajaCalculada.getCumplimientoRebajasItem1().getMes().getNombre());
+						parametersResolucionRebaja.put("{mes_curso}", planillaRebajaCalculada.getCumplimientoRebajasItem1().getMes().getNombre());
 					}else{
-						parametersResolucionRebaja.put("{mes}", getMesCurso(false));
+						parametersResolucionRebaja.put("{mes_curso}", getMesCurso(false));
 					}
 					GeneradorResolucionAporteEstatal generadorWordResolucionRebaja = new GeneradorResolucionAporteEstatal(filenameResolucionRebaja, templateResolucionRebaja);
 					generadorWordResolucionRebaja.replaceValues(parametersResolucionRebaja, XWPFDocument.class);
-					BodyVO responseBorradorResolucionRebaja = alfrescoService.uploadDocument(new File(filenameResolucionRebaja), contentTypeResolucionRebaja, folderProcesoRebaja.replace("{ANO}", getAnoCurso().toString()));
+					BodyVO responseBorradorResolucionRebaja = alfrescoService.uploadDocument(new File(filenameResolucionRebaja), contentTypeResolucionRebaja, folderProcesoRebaja.replace("{ANO}", String.valueOf((getAnoCurso() + 1))));
 					System.out.println("response responseBorradorResolucionRebaja --->"+responseBorradorResolucionRebaja);
 					plantillaIdResolucionRebaja = documentService.createDocumentRebaja(idProcesoRebaja, planillaRebajaCalculada.getId_comuna(), TipoDocumentosProcesos.RESOLUCIONREBAJA, responseBorradorResolucionRebaja.getNodeRef(), responseBorradorResolucionRebaja.getFileName(), contentTypeResolucionRebaja);
 				}
@@ -653,7 +669,7 @@ public class RebajaService {
 				ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = documentService.getDocumentSummary(referenciaDocumentoId);
 				documentosTmp.add(referenciaDocumentoSummaryVO);
 				String contenType= mimemap.getContentType(referenciaDocumentoSummaryVO.getPath().toLowerCase());
-				BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummaryVO.getPath()), contenType, folderProcesoRebaja.replace("{ANO}", getAnoCurso().toString()));
+				BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummaryVO.getPath()), contenType, folderProcesoRebaja.replace("{ANO}", String.valueOf((getAnoCurso() + 1))));
 				System.out.println("response upload template --->"+response);
 				documentService.updateDocumentTemplate(referenciaDocumentoId, response.getNodeRef(), response.getFileName(), contenType);
 			}
