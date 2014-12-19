@@ -39,7 +39,8 @@ public class AsignacionDistribucionPercapitaMapper implements Mapper<Antecendent
 			asignacionDistribucionPerCapitaVO.setPercapitaBasal(0);
 		}
 		if(antecendentesComunaCalculado.getValorPerCapitaComunalMes() != null){
-			asignacionDistribucionPerCapitaVO.setValorPerCapitaComunalMes(antecendentesComunaCalculado.getValorPerCapitaComunalMes().intValue());
+			Long valor = Math.round(antecendentesComunaCalculado.getValorPerCapitaComunalMes());
+			asignacionDistribucionPerCapitaVO.setValorPerCapitaComunalMes(valor.intValue());
 		}else{
 			asignacionDistribucionPerCapitaVO.setValorPerCapitaComunalMes(0);
 		}

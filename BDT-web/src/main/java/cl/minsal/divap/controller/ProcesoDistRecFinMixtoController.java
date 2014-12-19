@@ -138,12 +138,13 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 					mixto.setTotalS29(resumenProgramaServicio.get(i).getTotalS29().longValue());
 				}
 				totalResumen += mixto.getTotalServicio();
-				resumenProgramaMixto.add(mixto);
+				resumenProgramaMixto.add(mixto);  
 			}
 			for(int i = 0; i< resumenProgramaMunicipal.size();i++){
 				ResumenProgramaMixtoVO mixtoServicio = new ResumenProgramaMixtoVO();
 				mixtoServicio.setIdServicio(resumenProgramaMunicipal.get(i).getIdServicio());
 				int posicion = resumenProgramaMixto.indexOf(mixtoServicio);
+                mixtoServicio.setIdServicio(resumenProgramaMunicipal.get(i).getIdServicio());
 				if(posicion !=-1){
 					resumenProgramaMixto.get(posicion).setTotalS24(resumenProgramaMunicipal.get(i).getTotalS24().longValue());
 					totalResumen += resumenProgramaMixto.get(posicion).getTotalServicio();
