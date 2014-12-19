@@ -223,7 +223,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 	    Integer idProxAno = programaService.getIdProgramaAnoAnterior(programaSeleccionado, getAnoCurso()+1);
 		ProgramaVO programa;
 		
-		if(plantillaId == null){
+		//if(plantillaId == null){
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			programa = new ProgramaMapper().getBasic(programasDAO.getProgramaAnoByID(programaSeleccionado));
 				
@@ -425,9 +425,9 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}else{
+	/*	}else{
 			plantillaId = documentService.getDocumentoIdByPlantillaId(plantillaId);
-		}
+		}*/
 		return plantillaId;
 	}
 	
@@ -1123,37 +1123,40 @@ public class RecursosFinancierosProgramasReforzamientoService {
 							xssfRow = sheet.getRow(i);
 							ProgramaMunicipalCore programaMunicipalCore = new ProgramaMunicipalCore();
 							System.out.println("Leyendo registros fila: "+i);
-							if(xssfRow.getCell(2)!=null){
-								Comuna comuna = comunaDAO.getComunaById((Double.valueOf(xssfRow.getCell(2).toString())).intValue());
-								programaMunicipalCore.setComuna(comuna);
-								ProgramaAno programaAno = recursosFinancierosProgramasReforzamientoDAO.findById(idProgramaAno);
-								programaMunicipalCore.setProgramaAnoMunicipal(programaAno);
-								recursosFinancierosProgramasReforzamientoDAO.save(programaMunicipalCore);
-								
-								ProgramaMunicipalCoreComponente programaMunicipalCoreComponente = new ProgramaMunicipalCoreComponente();
-								programaMunicipalCoreComponente.setProgramaMunicipalCore(programaMunicipalCore);
-								
-								programaMunicipalCoreComponente.setMonto((Double.valueOf(xssfRow.getCell(columna).toString()).intValue()));
-								programaMunicipalCoreComponente.setCantidad((Double.valueOf(xssfRow.getCell(columna+1).toString()).intValue()));
-								
-								int tarifa = (Double.valueOf(xssfRow.getCell(columna).toString())).intValue() * (Double.valueOf(xssfRow.getCell(columna+1).toString())).intValue();
-								programaMunicipalCoreComponente.setTarifa(tarifa);
-								
-								TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloById(3);
-								programaMunicipalCoreComponente.setSubtitulo(tipoSubtitulo);
-								
-								Componente componen = componenteDAO.getComponenteByID(componentes.get(j).getId());
-								programaMunicipalCoreComponente.setMunicipalCoreComponente(componen);
+							if(xssfRow!=null){
+								if(xssfRow.getCell(2)!=null){
+									Comuna comuna = comunaDAO.getComunaById((Double.valueOf(xssfRow.getCell(2).toString())).intValue());
+									programaMunicipalCore.setComuna(comuna);
+									ProgramaAno programaAno = recursosFinancierosProgramasReforzamientoDAO.findById(idProgramaAno);
+									programaMunicipalCore.setProgramaAnoMunicipal(programaAno);
+									recursosFinancierosProgramasReforzamientoDAO.save(programaMunicipalCore);
 									
-								System.out.println("comuna: "+comuna.getNombre()+" P:"+programaMunicipalCoreComponente.getTarifa()+" Q:"+programaMunicipalCoreComponente.getMonto());
-								ProgramaMunicipalCoreComponentePK pk = new ProgramaMunicipalCoreComponentePK();
-								pk.setComponente(componen.getId());
-								pk.setProgramaMunicipalCore(programaMunicipalCore.getIdProgramaMunicipalCore());
-								programaMunicipalCoreComponente.setProgramaMunicipalCoreComponentePK(pk);
-								recursosFinancierosProgramasReforzamientoDAO.save(programaMunicipalCoreComponente);
-							}else{
-								System.out.println("Se han encontrado registros Nulos en la fila");
+									ProgramaMunicipalCoreComponente programaMunicipalCoreComponente = new ProgramaMunicipalCoreComponente();
+									programaMunicipalCoreComponente.setProgramaMunicipalCore(programaMunicipalCore);
+									
+									programaMunicipalCoreComponente.setMonto((Double.valueOf(xssfRow.getCell(columna).toString()).intValue()));
+									programaMunicipalCoreComponente.setCantidad((Double.valueOf(xssfRow.getCell(columna+1).toString()).intValue()));
+									
+									int tarifa = (Double.valueOf(xssfRow.getCell(columna).toString())).intValue() * (Double.valueOf(xssfRow.getCell(columna+1).toString())).intValue();
+									programaMunicipalCoreComponente.setTarifa(tarifa);
+									
+									TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloById(3);
+									programaMunicipalCoreComponente.setSubtitulo(tipoSubtitulo);
+									
+									Componente componen = componenteDAO.getComponenteByID(componentes.get(j).getId());
+									programaMunicipalCoreComponente.setMunicipalCoreComponente(componen);
+										
+									System.out.println("comuna: "+comuna.getNombre()+" P:"+programaMunicipalCoreComponente.getTarifa()+" Q:"+programaMunicipalCoreComponente.getMonto());
+									ProgramaMunicipalCoreComponentePK pk = new ProgramaMunicipalCoreComponentePK();
+									pk.setComponente(componen.getId());
+									pk.setProgramaMunicipalCore(programaMunicipalCore.getIdProgramaMunicipalCore());
+									programaMunicipalCoreComponente.setProgramaMunicipalCoreComponentePK(pk);
+									recursosFinancierosProgramasReforzamientoDAO.save(programaMunicipalCoreComponente);
+								}else{
+									System.out.println("Se han encontrado registros Nulos en la fila");
+								}
 							}
+							
 							
 						}
 						columna+=2;
@@ -1484,104 +1487,50 @@ public class RecursosFinancierosProgramasReforzamientoService {
 					for (int i = 4; i < last; i++) {	
 						xssfRow = sheet.getRow(i);
 						
-						ProgramaServicioCore programaServicioCore = new ProgramaServicioCore();
-						System.out.println("Establecimiento codigo: "+xssfRow.getCell(2).toString()+" Fila:"+i);
-						Establecimiento establecimiento = establecimientoDAO.getEstablecimientoByCodigo(xssfRow.getCell(2).toString());
-						programaServicioCore.setEstablecimiento(establecimiento);
-						
-						ProgramaAno programaAno = recursosFinancierosProgramasReforzamientoDAO.findById(idProgramaAno);
-						programaServicioCore.setProgramaAnoServicio(programaAno);
-						
-						ServicioSalud servicioSalud = servicioSaludDAO.getById((Double.valueOf(xssfRow.getCell(0).toString())).intValue());
-						programaServicioCore.setServicio(servicioSalud);
-						recursosFinancierosProgramasReforzamientoDAO.save(programaServicioCore);
-						
-						
-						ProgramaServicioCoreComponente programaServicioCoreComponente = new ProgramaServicioCoreComponente();
-						programaServicioCoreComponente.setProgramaServicioCore1(programaServicioCore);
-						
-						programaServicioCoreComponente.setMonto((Double.valueOf(xssfRow.getCell(columna).toString()).intValue()));
-						programaServicioCoreComponente.setCantidad((Double.valueOf(xssfRow.getCell(columna+1).toString()).intValue()));
-						
-						TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloByName(componentes.get(h).getSubtitulos().get(k).getNombre());
-						System.out.println("ID--->"+tipoSubtitulo.getIdTipoSubtitulo());
-						programaServicioCoreComponente.setSubtitulo(tipoSubtitulo);
-						
-						int tarifa = (Double.valueOf(xssfRow.getCell(columna).toString())).intValue() * (Double.valueOf(xssfRow.getCell(columna+1).toString())).intValue();
-						programaServicioCoreComponente.setTarifa(tarifa);
-						
-						Componente componen = componenteDAO.getComponenteByID(componentes.get(h).getId());
-						programaServicioCoreComponente.setServicioCoreComponente(componen);
-						
-						ProgramaServicioCoreComponentePK pk = new ProgramaServicioCoreComponentePK();
-						pk.setComponente(componen.getId());
-						pk.setProgramaServicioCore(programaServicioCore.getIdProgramaServicioCore());
-						pk.setSubtitulo(tipoSubtitulo.getIdTipoSubtitulo());
-						programaServicioCoreComponente.setProgramaServicioCoreComponentePK(pk);
-						recursosFinancierosProgramasReforzamientoDAO.save(programaServicioCoreComponente);
-						
+						if(xssfRow != null){
+							if(xssfRow.getCell(2)!=null){
+								ProgramaServicioCore programaServicioCore = new ProgramaServicioCore();
+								System.out.println("Establecimiento codigo: "+xssfRow.getCell(2).toString()+" Fila:"+i);
+								Establecimiento establecimiento = establecimientoDAO.getEstablecimientoByCodigo(xssfRow.getCell(2).toString());
+								programaServicioCore.setEstablecimiento(establecimiento);
+								
+								ProgramaAno programaAno = recursosFinancierosProgramasReforzamientoDAO.findById(idProgramaAno);
+								programaServicioCore.setProgramaAnoServicio(programaAno);
+								
+								ServicioSalud servicioSalud = servicioSaludDAO.getById((Double.valueOf(xssfRow.getCell(0).toString())).intValue());
+								programaServicioCore.setServicio(servicioSalud);
+								recursosFinancierosProgramasReforzamientoDAO.save(programaServicioCore);
+								
+								
+								ProgramaServicioCoreComponente programaServicioCoreComponente = new ProgramaServicioCoreComponente();
+								programaServicioCoreComponente.setProgramaServicioCore1(programaServicioCore);
+								
+								programaServicioCoreComponente.setMonto((Double.valueOf(xssfRow.getCell(columna).toString()).intValue()));
+								programaServicioCoreComponente.setCantidad((Double.valueOf(xssfRow.getCell(columna+1).toString()).intValue()));
+								
+								TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloByName(componentes.get(h).getSubtitulos().get(k).getNombre());
+								System.out.println("ID--->"+tipoSubtitulo.getIdTipoSubtitulo());
+								programaServicioCoreComponente.setSubtitulo(tipoSubtitulo);
+								
+								int tarifa = (Double.valueOf(xssfRow.getCell(columna).toString())).intValue() * (Double.valueOf(xssfRow.getCell(columna+1).toString())).intValue();
+								programaServicioCoreComponente.setTarifa(tarifa);
+								
+								Componente componen = componenteDAO.getComponenteByID(componentes.get(h).getId());
+								programaServicioCoreComponente.setServicioCoreComponente(componen);
+								
+								ProgramaServicioCoreComponentePK pk = new ProgramaServicioCoreComponentePK();
+								pk.setComponente(componen.getId());
+								pk.setProgramaServicioCore(programaServicioCore.getIdProgramaServicioCore());
+								pk.setSubtitulo(tipoSubtitulo.getIdTipoSubtitulo());
+								programaServicioCoreComponente.setProgramaServicioCoreComponentePK(pk);
+								recursosFinancierosProgramasReforzamientoDAO.save(programaServicioCoreComponente);
+							}
+						}
 					}
-					
-					
-					
 					columna+=2;
 				}
-				
-				
-				
-				
 			}
 		}
-		
-	/*	for (int j = 0; j <composServ.size(); j++) {
-			//itera subtitulos
-			for(int k=0; k < subtitulosServicios;k++){
-			    //itera filas
-				for (int i = 4; i < last; i++) {	
-					xssfRow = sheet.getRow(i);
-					
-					ProgramaServicioCore programaServicioCore = new ProgramaServicioCore();
-					
-					Establecimiento establecimiento = establecimientoDAO.getEstablecimientoByCodigo(xssfRow.getCell(2).toString());
-					programaServicioCore.setEstablecimiento(establecimiento);
-					
-					ProgramaAno programaAno = recursosFinancierosProgramasReforzamientoDAO.findById(idProgramaAno);
-					programaServicioCore.setProgramaAnoServicio(programaAno);
-					
-					ServicioSalud servicioSalud = servicioSaludDAO.getById((Double.valueOf(xssfRow.getCell(0).toString())).intValue());
-					programaServicioCore.setServicio(servicioSalud);
-					recursosFinancierosProgramasReforzamientoDAO.save(programaServicioCore);
-					
-					
-					ProgramaServicioCoreComponente programaServicioCoreComponente = new ProgramaServicioCoreComponente();
-					programaServicioCoreComponente.setProgramaServicioCore1(programaServicioCore);
-					
-					programaServicioCoreComponente.setMonto((Double.valueOf(xssfRow.getCell(columna).toString()).intValue()));
-					programaServicioCoreComponente.setCantidad((Double.valueOf(xssfRow.getCell(columna+1).toString()).intValue()));
-					
-					TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloByName(composServ.get(j).getSubtitulos().get(k).getNombre());
-					System.out.println("ID--->"+tipoSubtitulo.getIdTipoSubtitulo());
-					programaServicioCoreComponente.setSubtitulo(tipoSubtitulo);
-					
-					int tarifa = (Double.valueOf(xssfRow.getCell(columna).toString())).intValue() * (Double.valueOf(xssfRow.getCell(columna+1).toString())).intValue();
-					programaServicioCoreComponente.setTarifa(tarifa);
-					
-					Componente componen = componenteDAO.getComponenteByID(composServ.get(j).getId());
-					programaServicioCoreComponente.setServicioCoreComponente(componen);
-					
-					ProgramaServicioCoreComponentePK pk = new ProgramaServicioCoreComponentePK();
-					pk.setComponente(componen.getId());
-					pk.setProgramaServicioCore(programaServicioCore.getIdProgramaServicioCore());
-					pk.setSubtitulo(tipoSubtitulo.getIdTipoSubtitulo());
-					programaServicioCoreComponente.setProgramaServicioCoreComponentePK(pk);
-					recursosFinancierosProgramasReforzamientoDAO.save(programaServicioCoreComponente);
-					
-				}
-				columna+=2;
-			}
-		}*/
-		
-		
 	}catch(Exception e){
 		e.printStackTrace();
 	}

@@ -2,15 +2,9 @@ package cl.minsal.divap.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.math.BigInteger;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -24,8 +18,6 @@ import minsal.divap.service.ProgramasService;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ComponentesVO;
-import minsal.divap.vo.ComunaVO;
-import minsal.divap.vo.ProgramaAPSMunicipalVO;
 import minsal.divap.vo.ProgramaMunicipalVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ResumenProgramaVO;
@@ -33,14 +25,6 @@ import minsal.divap.vo.ServiciosVO;
 
 import org.apache.log4j.Logger;
 
-import cl.minsal.divap.model.ProgramaAno;
-import cl.minsal.divap.pojo.ComunaPojo;
-import cl.minsal.divap.pojo.EnvioServiciosPojo;
-import cl.minsal.divap.pojo.EstablecimientoPojo;
-import cl.minsal.divap.pojo.ProcesosProgramasPojo;
-import cl.minsal.divap.pojo.ProgramasPojo;
-import cl.minsal.divap.pojo.ValorHistoricoPojo;
-import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 import cl.redhat.bandejaTareas.util.BandejaProperties;
 
