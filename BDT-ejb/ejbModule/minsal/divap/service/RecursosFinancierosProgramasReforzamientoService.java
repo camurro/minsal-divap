@@ -58,6 +58,7 @@ import minsal.divap.excel.impl.ProgramaAPSServiciosHistoricosSheetExcel;
 import minsal.divap.exception.ExcelFormatException;
 import minsal.divap.model.mappers.ProgramaMapper;
 import minsal.divap.model.mappers.SeguimientoMapper;
+import minsal.divap.util.StringUtil;
 import minsal.divap.vo.AdjuntosVO;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.CellExcelVO;
@@ -223,7 +224,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 	    Integer idProxAno = programaService.getIdProgramaAnoAnterior(programaSeleccionado, getAnoCurso()+1);
 		ProgramaVO programa;
 		
-		if(plantillaId == null){
+		//if(plantillaId == null){
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			programa = new ProgramaMapper().getBasic(programasDAO.getProgramaAnoByID(programaSeleccionado));
 				
@@ -237,6 +238,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			switch (tipoDocumentoProceso) {
 			case PLANTILLAMUNICIPALAPSRESUMENSERVICIO:
 				filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Municipal.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulos=0;
 				int idComponente =0;
@@ -287,6 +289,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				break;
 			case PLANTILLASERVICIOAPSRESUMENSERVICIO:
 				filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Servicio.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO("Establecimientos", 2, 2));
 				int subtitulosServicio=0;
@@ -342,6 +345,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				break;
 			case PLANTILLAMUNICIPALAPSRESUMENHISTORICO:
 				filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Municipal.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulosH=0;
 				int idComponenteH =0;
@@ -383,6 +387,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				break;
 			case PLANTILLASERVICIOAPSRESUMENHISTORICO:
 				filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Servicio.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO("Establecimientos", 2, 2));
 				int subtitulosServicioH=0;
@@ -425,9 +430,9 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}else{
+	/*	}else{
 			plantillaId = documentService.getDocumentoIdByPlantillaId(plantillaId);
-		}
+		}*/
 		return plantillaId;
 	}
 	
@@ -451,6 +456,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			switch (tipoDocumentoProceso) {
 			case PLANTILLAMUNICIPALAPSRESUMENSERVICIO:
 				filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Municipal.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulos=0;
 				int idComponente =0;
@@ -501,6 +507,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				break;
 			case PLANTILLASERVICIOAPSRESUMENSERVICIO:
 				filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Servicio.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO("Establecimientos", 2, 2));
 				int subtitulosServicio=0;
@@ -556,6 +563,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				break;
 			case PLANTILLAMUNICIPALAPSRESUMENHISTORICO:
 				filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Municipal.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulosH=0;
 				int idComponenteH =0;
@@ -597,6 +605,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				break;
 			case PLANTILLASERVICIOAPSRESUMENHISTORICO:
 				filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Servicio.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO("Establecimientos", 2, 2));
 				int subtitulosServicioH=0;
@@ -662,6 +671,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				header.add(new CellExcelVO("Servicios de Salud", 2, 2));
 				header.add(new CellExcelVO("Comunas", 2, 2));
 				filename += "Plantilla Programa -"+prog.getNombre()+"- Municipal.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulos=0;
 				List<Integer> idComponentes = new ArrayList<Integer>();
@@ -713,6 +723,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			case PLANTILLAPROGRAMAAPSSERVICIO:
 				header.add(new CellExcelVO("Servicios de Salud", 2, 2));
 				filename += "Plantilla Programa -"+prog.getNombre()+"- Servicio.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO("Establecimientos", 2, 2));
 				int subtitulosServicio=0;
@@ -761,6 +772,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				header.add(new CellExcelVO("Servicios de Salud", 2, 1));
 				header.add(new CellExcelVO("Comunas", 2, 1));
 				filename += "Plantilla Ley -"+prog.getNombre()+".xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO(prog.getNombre(), 1, 1));
 				subHeader.add(new CellExcelVO("ID", 1, 1));
@@ -812,6 +824,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				header.add(new CellExcelVO("Servicios de Salud", 2, 2));
 				header.add(new CellExcelVO("Comunas", 2, 2));
 				filename += "Plantilla Programa -"+prog.getNombre()+"- Municipal.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulos=0;
 				List<Integer> idComponentes = new ArrayList<Integer>();
@@ -863,6 +876,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			case PLANTILLAPROGRAMAAPSSERVICIO:
 				header.add(new CellExcelVO("Servicios de Salud", 2, 2));
 				filename += "Plantilla Programa -"+prog.getNombre()+"- Servicio.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO("Establecimientos", 2, 2));
 				int subtitulosServicio=0;
@@ -911,6 +925,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				header.add(new CellExcelVO("Servicios de Salud", 2, 1));
 				header.add(new CellExcelVO("Comunas", 2, 1));
 				filename += "Plantilla Ley -"+prog.getNombre()+".xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO(prog.getNombre(), 1, 1));
 				subHeader.add(new CellExcelVO("ID", 1, 1));
@@ -1123,37 +1138,40 @@ public class RecursosFinancierosProgramasReforzamientoService {
 							xssfRow = sheet.getRow(i);
 							ProgramaMunicipalCore programaMunicipalCore = new ProgramaMunicipalCore();
 							System.out.println("Leyendo registros fila: "+i);
-							if(xssfRow.getCell(2)!=null){
-								Comuna comuna = comunaDAO.getComunaById((Double.valueOf(xssfRow.getCell(2).toString())).intValue());
-								programaMunicipalCore.setComuna(comuna);
-								ProgramaAno programaAno = recursosFinancierosProgramasReforzamientoDAO.findById(idProgramaAno);
-								programaMunicipalCore.setProgramaAnoMunicipal(programaAno);
-								recursosFinancierosProgramasReforzamientoDAO.save(programaMunicipalCore);
-								
-								ProgramaMunicipalCoreComponente programaMunicipalCoreComponente = new ProgramaMunicipalCoreComponente();
-								programaMunicipalCoreComponente.setProgramaMunicipalCore(programaMunicipalCore);
-								
-								programaMunicipalCoreComponente.setMonto((Double.valueOf(xssfRow.getCell(columna).toString()).intValue()));
-								programaMunicipalCoreComponente.setCantidad((Double.valueOf(xssfRow.getCell(columna+1).toString()).intValue()));
-								
-								int tarifa = (Double.valueOf(xssfRow.getCell(columna).toString())).intValue() * (Double.valueOf(xssfRow.getCell(columna+1).toString())).intValue();
-								programaMunicipalCoreComponente.setTarifa(tarifa);
-								
-								TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloById(3);
-								programaMunicipalCoreComponente.setSubtitulo(tipoSubtitulo);
-								
-								Componente componen = componenteDAO.getComponenteByID(componentes.get(j).getId());
-								programaMunicipalCoreComponente.setMunicipalCoreComponente(componen);
+							if(xssfRow!=null){
+								if(xssfRow.getCell(2)!=null){
+									Comuna comuna = comunaDAO.getComunaById((Double.valueOf(xssfRow.getCell(2).toString())).intValue());
+									programaMunicipalCore.setComuna(comuna);
+									ProgramaAno programaAno = recursosFinancierosProgramasReforzamientoDAO.findById(idProgramaAno);
+									programaMunicipalCore.setProgramaAnoMunicipal(programaAno);
+									recursosFinancierosProgramasReforzamientoDAO.save(programaMunicipalCore);
 									
-								System.out.println("comuna: "+comuna.getNombre()+" P:"+programaMunicipalCoreComponente.getTarifa()+" Q:"+programaMunicipalCoreComponente.getMonto());
-								ProgramaMunicipalCoreComponentePK pk = new ProgramaMunicipalCoreComponentePK();
-								pk.setComponente(componen.getId());
-								pk.setProgramaMunicipalCore(programaMunicipalCore.getIdProgramaMunicipalCore());
-								programaMunicipalCoreComponente.setProgramaMunicipalCoreComponentePK(pk);
-								recursosFinancierosProgramasReforzamientoDAO.save(programaMunicipalCoreComponente);
-							}else{
-								System.out.println("Se han encontrado registros Nulos en la fila");
+									ProgramaMunicipalCoreComponente programaMunicipalCoreComponente = new ProgramaMunicipalCoreComponente();
+									programaMunicipalCoreComponente.setProgramaMunicipalCore(programaMunicipalCore);
+									
+									programaMunicipalCoreComponente.setMonto((Double.valueOf(xssfRow.getCell(columna).toString()).intValue()));
+									programaMunicipalCoreComponente.setCantidad((Double.valueOf(xssfRow.getCell(columna+1).toString()).intValue()));
+									
+									int tarifa = (Double.valueOf(xssfRow.getCell(columna).toString())).intValue() * (Double.valueOf(xssfRow.getCell(columna+1).toString())).intValue();
+									programaMunicipalCoreComponente.setTarifa(tarifa);
+									
+									TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloById(3);
+									programaMunicipalCoreComponente.setSubtitulo(tipoSubtitulo);
+									
+									Componente componen = componenteDAO.getComponenteByID(componentes.get(j).getId());
+									programaMunicipalCoreComponente.setMunicipalCoreComponente(componen);
+										
+									System.out.println("comuna: "+comuna.getNombre()+" P:"+programaMunicipalCoreComponente.getTarifa()+" Q:"+programaMunicipalCoreComponente.getMonto());
+									ProgramaMunicipalCoreComponentePK pk = new ProgramaMunicipalCoreComponentePK();
+									pk.setComponente(componen.getId());
+									pk.setProgramaMunicipalCore(programaMunicipalCore.getIdProgramaMunicipalCore());
+									programaMunicipalCoreComponente.setProgramaMunicipalCoreComponentePK(pk);
+									recursosFinancierosProgramasReforzamientoDAO.save(programaMunicipalCoreComponente);
+								}else{
+									System.out.println("Se han encontrado registros Nulos en la fila");
+								}
 							}
+							
 							
 						}
 						columna+=2;
@@ -1484,104 +1502,50 @@ public class RecursosFinancierosProgramasReforzamientoService {
 					for (int i = 4; i < last; i++) {	
 						xssfRow = sheet.getRow(i);
 						
-						ProgramaServicioCore programaServicioCore = new ProgramaServicioCore();
-						System.out.println("Establecimiento codigo: "+xssfRow.getCell(2).toString()+" Fila:"+i);
-						Establecimiento establecimiento = establecimientoDAO.getEstablecimientoByCodigo(xssfRow.getCell(2).toString());
-						programaServicioCore.setEstablecimiento(establecimiento);
-						
-						ProgramaAno programaAno = recursosFinancierosProgramasReforzamientoDAO.findById(idProgramaAno);
-						programaServicioCore.setProgramaAnoServicio(programaAno);
-						
-						ServicioSalud servicioSalud = servicioSaludDAO.getById((Double.valueOf(xssfRow.getCell(0).toString())).intValue());
-						programaServicioCore.setServicio(servicioSalud);
-						recursosFinancierosProgramasReforzamientoDAO.save(programaServicioCore);
-						
-						
-						ProgramaServicioCoreComponente programaServicioCoreComponente = new ProgramaServicioCoreComponente();
-						programaServicioCoreComponente.setProgramaServicioCore1(programaServicioCore);
-						
-						programaServicioCoreComponente.setMonto((Double.valueOf(xssfRow.getCell(columna).toString()).intValue()));
-						programaServicioCoreComponente.setCantidad((Double.valueOf(xssfRow.getCell(columna+1).toString()).intValue()));
-						
-						TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloByName(componentes.get(h).getSubtitulos().get(k).getNombre());
-						System.out.println("ID--->"+tipoSubtitulo.getIdTipoSubtitulo());
-						programaServicioCoreComponente.setSubtitulo(tipoSubtitulo);
-						
-						int tarifa = (Double.valueOf(xssfRow.getCell(columna).toString())).intValue() * (Double.valueOf(xssfRow.getCell(columna+1).toString())).intValue();
-						programaServicioCoreComponente.setTarifa(tarifa);
-						
-						Componente componen = componenteDAO.getComponenteByID(componentes.get(h).getId());
-						programaServicioCoreComponente.setServicioCoreComponente(componen);
-						
-						ProgramaServicioCoreComponentePK pk = new ProgramaServicioCoreComponentePK();
-						pk.setComponente(componen.getId());
-						pk.setProgramaServicioCore(programaServicioCore.getIdProgramaServicioCore());
-						pk.setSubtitulo(tipoSubtitulo.getIdTipoSubtitulo());
-						programaServicioCoreComponente.setProgramaServicioCoreComponentePK(pk);
-						recursosFinancierosProgramasReforzamientoDAO.save(programaServicioCoreComponente);
-						
+						if(xssfRow != null){
+							if(xssfRow.getCell(2)!=null){
+								ProgramaServicioCore programaServicioCore = new ProgramaServicioCore();
+								System.out.println("Establecimiento codigo: "+xssfRow.getCell(2).toString()+" Fila:"+i);
+								Establecimiento establecimiento = establecimientoDAO.getEstablecimientoByCodigo(xssfRow.getCell(2).toString());
+								programaServicioCore.setEstablecimiento(establecimiento);
+								
+								ProgramaAno programaAno = recursosFinancierosProgramasReforzamientoDAO.findById(idProgramaAno);
+								programaServicioCore.setProgramaAnoServicio(programaAno);
+								
+								ServicioSalud servicioSalud = servicioSaludDAO.getById((Double.valueOf(xssfRow.getCell(0).toString())).intValue());
+								programaServicioCore.setServicio(servicioSalud);
+								recursosFinancierosProgramasReforzamientoDAO.save(programaServicioCore);
+								
+								
+								ProgramaServicioCoreComponente programaServicioCoreComponente = new ProgramaServicioCoreComponente();
+								programaServicioCoreComponente.setProgramaServicioCore1(programaServicioCore);
+								
+								programaServicioCoreComponente.setMonto((Double.valueOf(xssfRow.getCell(columna).toString()).intValue()));
+								programaServicioCoreComponente.setCantidad((Double.valueOf(xssfRow.getCell(columna+1).toString()).intValue()));
+								
+								TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloByName(componentes.get(h).getSubtitulos().get(k).getNombre());
+								System.out.println("ID--->"+tipoSubtitulo.getIdTipoSubtitulo());
+								programaServicioCoreComponente.setSubtitulo(tipoSubtitulo);
+								
+								int tarifa = (Double.valueOf(xssfRow.getCell(columna).toString())).intValue() * (Double.valueOf(xssfRow.getCell(columna+1).toString())).intValue();
+								programaServicioCoreComponente.setTarifa(tarifa);
+								
+								Componente componen = componenteDAO.getComponenteByID(componentes.get(h).getId());
+								programaServicioCoreComponente.setServicioCoreComponente(componen);
+								
+								ProgramaServicioCoreComponentePK pk = new ProgramaServicioCoreComponentePK();
+								pk.setComponente(componen.getId());
+								pk.setProgramaServicioCore(programaServicioCore.getIdProgramaServicioCore());
+								pk.setSubtitulo(tipoSubtitulo.getIdTipoSubtitulo());
+								programaServicioCoreComponente.setProgramaServicioCoreComponentePK(pk);
+								recursosFinancierosProgramasReforzamientoDAO.save(programaServicioCoreComponente);
+							}
+						}
 					}
-					
-					
-					
 					columna+=2;
 				}
-				
-				
-				
-				
 			}
 		}
-		
-	/*	for (int j = 0; j <composServ.size(); j++) {
-			//itera subtitulos
-			for(int k=0; k < subtitulosServicios;k++){
-			    //itera filas
-				for (int i = 4; i < last; i++) {	
-					xssfRow = sheet.getRow(i);
-					
-					ProgramaServicioCore programaServicioCore = new ProgramaServicioCore();
-					
-					Establecimiento establecimiento = establecimientoDAO.getEstablecimientoByCodigo(xssfRow.getCell(2).toString());
-					programaServicioCore.setEstablecimiento(establecimiento);
-					
-					ProgramaAno programaAno = recursosFinancierosProgramasReforzamientoDAO.findById(idProgramaAno);
-					programaServicioCore.setProgramaAnoServicio(programaAno);
-					
-					ServicioSalud servicioSalud = servicioSaludDAO.getById((Double.valueOf(xssfRow.getCell(0).toString())).intValue());
-					programaServicioCore.setServicio(servicioSalud);
-					recursosFinancierosProgramasReforzamientoDAO.save(programaServicioCore);
-					
-					
-					ProgramaServicioCoreComponente programaServicioCoreComponente = new ProgramaServicioCoreComponente();
-					programaServicioCoreComponente.setProgramaServicioCore1(programaServicioCore);
-					
-					programaServicioCoreComponente.setMonto((Double.valueOf(xssfRow.getCell(columna).toString()).intValue()));
-					programaServicioCoreComponente.setCantidad((Double.valueOf(xssfRow.getCell(columna+1).toString()).intValue()));
-					
-					TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloByName(composServ.get(j).getSubtitulos().get(k).getNombre());
-					System.out.println("ID--->"+tipoSubtitulo.getIdTipoSubtitulo());
-					programaServicioCoreComponente.setSubtitulo(tipoSubtitulo);
-					
-					int tarifa = (Double.valueOf(xssfRow.getCell(columna).toString())).intValue() * (Double.valueOf(xssfRow.getCell(columna+1).toString())).intValue();
-					programaServicioCoreComponente.setTarifa(tarifa);
-					
-					Componente componen = componenteDAO.getComponenteByID(composServ.get(j).getId());
-					programaServicioCoreComponente.setServicioCoreComponente(componen);
-					
-					ProgramaServicioCoreComponentePK pk = new ProgramaServicioCoreComponentePK();
-					pk.setComponente(componen.getId());
-					pk.setProgramaServicioCore(programaServicioCore.getIdProgramaServicioCore());
-					pk.setSubtitulo(tipoSubtitulo.getIdTipoSubtitulo());
-					programaServicioCoreComponente.setProgramaServicioCoreComponentePK(pk);
-					recursosFinancierosProgramasReforzamientoDAO.save(programaServicioCoreComponente);
-					
-				}
-				columna+=2;
-			}
-		}*/
-		
-		
 	}catch(Exception e){
 		e.printStackTrace();
 	}
@@ -2326,7 +2290,6 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		try {
 			
 			Long totalActual=0l;
-			Integer idProgramaAno = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCurso());
 			List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
 			Map<Integer, List<Integer>> componentesBySubtitulos = new HashMap<Integer, List<Integer>>();
 			for(ComponentesVO componente: programa.getComponentes()){
@@ -2744,21 +2707,38 @@ public Integer elaborarOrdinarioModificacionProgramaReforzamiento(Integer idProg
 			List<CellExcelVO> header = new ArrayList<CellExcelVO>();
 			header.add(new CellExcelVO("COD."));	
 			header.add(new CellExcelVO("SERVICIO DE SALUD"));
-			
+			boolean s21=false;
+			boolean s22=false;
+			boolean s24=false;
+			boolean s29=false;
+			for(int i=0; i<resumen.size();i++){
+				if(resumen.get(i).getTotalS24()>0){
+                    s24=true;
+                }
+                if(resumen.get(i).getTotalS21()>0){
+                    s21=true;
+                }
+                if(resumen.get(i).getTotalS22()>0){
+                    s22=true;
+                }
+                if(resumen.get(i).getTotalS29()>0){
+                    s29=true;
+                }
+			}
 						
-			if(resumen.get(0).getTotalS24()>0){
+			if(s24){
 				header.add(new CellExcelVO("SUBTITULO 24 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS21()>0){
+			if(s21){
 				header.add(new CellExcelVO("SUBTITULO 21 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS22()>0){
+			if(s22){
 				header.add(new CellExcelVO("SUBTITULO 22 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS29()>0){
+			if(s29){
 				header.add(new CellExcelVO("SUBTITULO 29 ($)"));
 			}
 			
@@ -2766,6 +2746,7 @@ public Integer elaborarOrdinarioModificacionProgramaReforzamiento(Integer idProg
 		
 			String filename = tmpDir + File.separator;
 			filename += "Plantilla Resolucion Programa -"+prog.getNombre().replace(":", "-")+".xlsx";
+			filename = StringUtil.removeSpanishAccents(filename);
 			GeneradorExcel generadorExcel = new GeneradorExcel(filename);
 			String contenType = mimemap.getContentType(filename.toLowerCase());
 			
@@ -2811,19 +2792,39 @@ public void elaborarExcelResolucionModificado(Integer idPrograma, List<ResumenPr
 			header.add(new CellExcelVO("SERVICIO DE SALUD"));
 			
 						
-			if(resumen.get(0).getTotalS24()>0){
+			boolean s24=false;
+			boolean s21=false;
+			boolean s22=false;
+			boolean s29=false;
+			
+			for(int i=0; i<resumen.size();i++){
+				if(resumen.get(i).getTotalS24()>0){
+                    s24=true;
+                }
+                if(resumen.get(i).getTotalS21()>0){
+                    s21=true;
+                }
+                if(resumen.get(i).getTotalS22()>0){
+                    s22=true;
+                }
+                if(resumen.get(i).getTotalS29()>0){
+                    s29=true;
+                }
+			}
+						
+			if(s24){
 				header.add(new CellExcelVO("SUBTITULO 24 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS21()>0){
+			if(s21){
 				header.add(new CellExcelVO("SUBTITULO 21 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS22()>0){
+			if(s22){
 				header.add(new CellExcelVO("SUBTITULO 22 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS29()>0){
+			if(s29){
 				header.add(new CellExcelVO("SUBTITULO 29 ($)"));
 			}
 			
@@ -2831,6 +2832,7 @@ public void elaborarExcelResolucionModificado(Integer idPrograma, List<ResumenPr
 		
 			String filename = tmpDir + File.separator;
 			filename += "Plantilla Resolucion Programa -"+prog.getNombre().replace(":", "-")+".xlsx";
+			filename = StringUtil.removeSpanishAccents(filename);
 			GeneradorExcel generadorExcel = new GeneradorExcel(filename);
 			String contenType = mimemap.getContentType(filename.toLowerCase());
 			
@@ -2875,26 +2877,48 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 			header.add(new CellExcelVO("COD."));	
 			header.add(new CellExcelVO("SERVICIO DE SALUD"));
 			
-			if(resumen.get(0).getTotalS24()>0){
+			boolean s24=false;
+			boolean s21=false;
+			boolean s22=false;
+			boolean s29=false;
+			
+			for(int i=0; i<resumen.size();i++){
+				if(resumen.get(i).getTotalS24()>0){
+                    s24=true;
+                }
+                if(resumen.get(i).getTotalS21()>0){
+                    s21=true;
+                }
+                if(resumen.get(i).getTotalS22()>0){
+                    s22=true;
+                }
+                if(resumen.get(i).getTotalS29()>0){
+                    s29=true;
+                }
+			}
+						
+			if(s24){
 				header.add(new CellExcelVO("SUBTITULO 24 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS21()>0){
+			if(s21){
 				header.add(new CellExcelVO("SUBTITULO 21 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS22()>0){
+			if(s22){
 				header.add(new CellExcelVO("SUBTITULO 22 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS29()>0){
+			if(s29){
 				header.add(new CellExcelVO("SUBTITULO 29 ($)"));
 			}
 			
+						
 			header.add(new CellExcelVO("TOTAL ($)"));
 		
 			String filename = tmpDir + File.separator;
 			filename += "Plantilla Ordinario Programa -"+prog.getNombre().replace(":", "-")+".xlsx";
+			filename = StringUtil.removeSpanishAccents(filename);
 			GeneradorExcel generadorExcel = new GeneradorExcel(filename);
 			String contenType = mimemap.getContentType(filename.toLowerCase());
 			
@@ -2940,19 +2964,39 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 			header.add(new CellExcelVO("COD."));	
 			header.add(new CellExcelVO("SERVICIO DE SALUD"));
 			
-			if(resumen.get(0).getTotalS24()>0){
+			boolean s24=false;
+			boolean s21=false;
+			boolean s22=false;
+			boolean s29=false;
+			
+			for(int i=0; i<resumen.size();i++){
+				if(resumen.get(i).getTotalS24()>0){
+                    s24=true;
+                }
+                if(resumen.get(i).getTotalS21()>0){
+                    s21=true;
+                }
+                if(resumen.get(i).getTotalS22()>0){
+                    s22=true;
+                }
+                if(resumen.get(i).getTotalS29()>0){
+                    s29=true;
+                }
+			}
+						
+			if(s24){
 				header.add(new CellExcelVO("SUBTITULO 24 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS21()>0){
+			if(s21){
 				header.add(new CellExcelVO("SUBTITULO 21 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS22()>0){
+			if(s22){
 				header.add(new CellExcelVO("SUBTITULO 22 ($)"));
 			}
 
-			if(resumen.get(0).getTotalS29()>0){
+			if(s29){
 				header.add(new CellExcelVO("SUBTITULO 29 ($)"));
 			}
 			
@@ -2960,6 +3004,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 		
 			String filename = tmpDir + File.separator;
 			filename += "Plantilla Ordinario Modificacion Programa -"+prog.getNombre().replace(":", "-")+".xlsx";
+			filename = StringUtil.removeSpanishAccents(filename);
 			GeneradorExcel generadorExcel = new GeneradorExcel(filename);
 			String contenType = mimemap.getContentType(filename.toLowerCase());
 			
@@ -3809,6 +3854,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 			}
 			
 			String filename="Detalle Excel Servicio "+nombreServicio+" Municipal.xlsx";
+			filename = StringUtil.removeSpanishAccents(filename);
 			GeneradorExcel generador = new GeneradorExcel(workBook, tmpDir + File.separator +filename);
 			
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
@@ -3978,6 +4024,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 		
 		          
             String filename="Detalle Excel Servicio "+nombreServicio+" Servicio.xlsx";
+            filename = StringUtil.removeSpanishAccents(filename);
 			GeneradorExcel generador = new GeneradorExcel(workBook, tmpDir + File.separator +filename);
 			
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
@@ -4064,6 +4111,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 			}
 			
 			 String filename="Detalle Excel Servicio "+nombreServicio+" Municipal.xlsx";
+			 filename = StringUtil.removeSpanishAccents(filename);
 				GeneradorExcel generador = new GeneradorExcel(workBook, tmpDir + File.separator +filename);
 				
 				MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
@@ -4227,6 +4275,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
             }
 			
             String filename="Detalle Excel Servicio "+nombreServicio+" Servicio.xlsx";
+            filename = StringUtil.removeSpanishAccents(filename);
 			GeneradorExcel generador = new GeneradorExcel(workBook, tmpDir + File.separator +filename);
 			
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
@@ -4272,6 +4321,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 			switch (tipoDocumentoProceso) {
 			case PLANTILLAAPSDETALLEMUNICIPAL:
 				filename += "Detalle Programa -"+prog.getNombre().replace(":", "-")+"- Municipal.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulos=0;
 				
@@ -4314,6 +4364,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 				break;
 			case PLANTILLAAPSDETALLESERVICIO:
 				filename += "Detalle Programa -"+prog.getNombre().replace(":", "-")+"- Servicio.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO("Establecimientos", 2, 2));
 				
@@ -4370,6 +4421,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 				break;
 			case PLANTILLAAPSDETALLEMUNICIPALHISTORICO:
 				filename += "Detalle Programa -"+prog.getNombre().replace(":", "-")+"- Municipal.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulosH=0;
 				
@@ -4404,6 +4456,7 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 				break;
 			case PLANTILLAAPSDETALLESERVICIOHISTORICO:
 				filename += "Detalle Programa -"+prog.getNombre().replace(":", "-")+"- Servicio.xlsx";
+				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO("Establecimientos", 2, 2));
 				int subtitulosServicioH=0;

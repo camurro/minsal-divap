@@ -116,11 +116,11 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 	}
 	
 	private void armarResumenPrograma() {
-		
+		resumenProgramaMixto =  new ArrayList<ResumenProgramaMixtoVO>();
 		if(programaSeleccionado!=null){
 			resumenServicio();
 			resumenMunicipal();
-			resumenProgramaMixto =  new ArrayList<ResumenProgramaMixtoVO>();
+			
 			//Recorremos para armar un único VO de resumen
 			totalResumen =0L;
 			for(int i = 0; i< resumenProgramaServicio.size();i++){
@@ -138,10 +138,13 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 					mixto.setTotalS29(resumenProgramaServicio.get(i).getTotalS29().longValue());
 				}
 				totalResumen += mixto.getTotalServicio();
-				resumenProgramaMixto.add(mixto);
+				resumenProgramaMixto.add(mixto);  
 			}
 			for(int i = 0; i< resumenProgramaMunicipal.size();i++){
-				int posicion = resumenProgramaMixto.indexOf(resumenProgramaMunicipal.get(i).getIdServicio());
+				ResumenProgramaMixtoVO mixtoServicio = new ResumenProgramaMixtoVO();
+				mixtoServicio.setIdServicio(resumenProgramaMunicipal.get(i).getIdServicio());
+				int posicion = resumenProgramaMixto.indexOf(mixtoServicio);
+                mixtoServicio.setIdServicio(resumenProgramaMunicipal.get(i).getIdServicio());
 				if(posicion !=-1){
 					resumenProgramaMixto.get(posicion).setTotalS24(resumenProgramaMunicipal.get(i).getTotalS24().longValue());
 					totalResumen += resumenProgramaMixto.get(posicion).getTotalServicio();
@@ -158,7 +161,7 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 				
 			}
 			
-			
+			System.out.println(resumenProgramaMixto);
 		}
 		
 		

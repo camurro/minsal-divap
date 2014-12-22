@@ -140,7 +140,7 @@ public class RebajaDAO {
 	}
 
 	public Integer deleteComunaCumplimientoByIdRebaja(Integer idProcesoRebaja) {
-		System.out.println("Inicio deleteComunaCumplimientoByIdRebaja" + idProcesoRebaja);
+		System.out.println("Inicio deleteComunaCumplimientoByIdRebaja " + idProcesoRebaja);
 		Query queryCumplimiento = this.em.createNamedQuery("ComunaCumplimiento.deleteByRebaja");
 		queryCumplimiento.setParameter("rebaja", idProcesoRebaja);
 		System.out.println("deleteByRebaja para rebaja" + idProcesoRebaja);

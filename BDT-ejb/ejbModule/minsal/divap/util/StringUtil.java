@@ -1,9 +1,12 @@
 package minsal.divap.util;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -185,4 +188,32 @@ public class StringUtil {
     	
     }
     
+	public static String formatNumber(Double number){
+		System.out.println("format double");
+		 Locale chileLocale = new Locale("es", "CL");
+		 DecimalFormat formato = (DecimalFormat) DecimalFormat.getInstance(chileLocale);
+		return formato.format(number);
+	}
+	
+	
+	public static String formatNumber(Long number){
+		System.out.println("format long");
+		 Locale chileLocale = new Locale("es", "CL");
+		 DecimalFormat formato = (DecimalFormat) DecimalFormat.getInstance(chileLocale);
+		return formato.format(number);
+	}
+	
+	public static String formatNumber(Integer number){
+		System.out.println("format Integer");
+		 Locale chileLocale = new Locale("es", "CL");
+		 DecimalFormat formato = (DecimalFormat) DecimalFormat.getInstance(chileLocale);
+		return formato.format(number);
+	}
+
+	public static void main(String[] args){
+		 
+		System.out.println("Número double : "+ formatNumber(1500.505));
+		System.out.println("Número long : "+ formatNumber(500000000l));
+		System.out.println("Número integer : "+ formatNumber(455800));
+	}
 }

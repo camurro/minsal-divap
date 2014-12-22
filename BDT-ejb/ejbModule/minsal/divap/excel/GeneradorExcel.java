@@ -10,12 +10,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import minsal.divap.excel.impl.CrearPlanillaCumplimientoMunicialProgramaSheetExcel;
 import minsal.divap.excel.impl.CrearPlanillaConveniosProgramaSheetExcel;
+import minsal.divap.excel.impl.CrearPlanillaCumplimientoMunicialProgramaSheetExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaConsolidadorSheetExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaSubtituloSheetExcel;
-import minsal.divap.excel.impl.CrearPlanillaCumplimientoMunicialProgramaSheetExcel;
-import minsal.divap.excel.impl.PlanillaTrabajoCumplimientoReliquidacionMunicipalSheetExcel;
 import minsal.divap.excel.impl.OrdenesTransferenciaSheetExcel;
 import minsal.divap.excel.impl.PlanillaTrabajoCumplimientoReliquidacionMunicipalSheetExcel;
 import minsal.divap.excel.impl.ProgramaAPSDetallesMunicipalesHistoricosSheetExcel;
@@ -47,11 +45,8 @@ import minsal.divap.vo.CajaMontoSummaryVO;
 import minsal.divap.vo.CellExcelVO;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.CumplimientoApsMunicipalProgramaVO;
-import minsal.divap.vo.CumplimientoApsMunicipalProgramaVO;
 import minsal.divap.vo.PlanillaResumenFonasaVO;
-import minsal.divap.vo.CumplimientoApsMunicipalProgramaVO;
 import minsal.divap.vo.ProgramaAPSServicioResumenVO;
-import minsal.divap.vo.ProgramaAPSVO;
 import minsal.divap.vo.ProgramaAPSServicioVO;
 import minsal.divap.vo.ProgramaAPSVO;
 import minsal.divap.vo.ProgramaFonasaVO;
@@ -362,18 +357,21 @@ public class GeneradorExcel {
             boolean s22=false;
             boolean s29=false;
             if(items.size()>0){
-                if(items.get(0).getTotalS24()!=null && items.get(0).getTotalS24()>0){
-                    s24=true;
-                }
-                if(items.get(0).getTotalS21()!=null && items.get(0).getTotalS21()>0){
-                    s21=true;
-                }
-                if(items.get(0).getTotalS22()!=null && items.get(0).getTotalS22()>0){
-                    s22=true;
-                }
-                if(items.get(0).getTotalS29()!=null && items.get(0).getTotalS29()>0){
-                    s29=true;
-                }
+           	
+            	for(int i=0; i<items.size();i++){
+            		  if(items.get(i).getTotalS24()!=null && items.get(0).getTotalS24()>0){
+                          s24=true;
+                      }
+                      if(items.get(i).getTotalS21()!=null && items.get(0).getTotalS21()>0){
+                          s21=true;
+                      }
+                      if(items.get(i).getTotalS22()!=null && items.get(0).getTotalS22()>0){
+                          s22=true;
+                      }
+                      if(items.get(i).getTotalS29()!=null && items.get(0).getTotalS29()>0){
+                          s29=true;
+                      }
+            	}
             }
             for(int i=0; i<items.size(); i++){
                 currentRow =i+1;
@@ -438,7 +436,32 @@ public class GeneradorExcel {
                         totalServicio += items.get(i).getTotalServicio();
                     }
                 }
-                if((s24 || s21) && s22){
+                if(!s24 && s21 && s22){
+                    XSSFCell tS22 = fila.createCell(3);
+                    tS22 = fila.getCell(3);   
+                    tS22.setCellValue(items.get(i).getTotalS22());
+                    tS22.setCellStyle(cellStyleLong);
+                    totalS22 += items.get(i).getTotalS22();
+                    if(!s29){
+                        XSSFCell totales = fila.createCell(4);
+                        totales = fila.getCell(4);   
+                        totales.setCellValue(items.get(i).getTotalServicio());
+                        totales.setCellStyle(cellStyleLong);
+                        totalServicio += items.get(i).getTotalServicio();
+                    }else{
+                        XSSFCell tS29 = fila.createCell(4);
+                        tS29 = fila.getCell(4);   
+                        tS29.setCellValue(items.get(i).getTotalS29());
+                        tS29.setCellStyle(cellStyleLong);
+                        totalS29 += items.get(i).getTotalS29();
+                        XSSFCell totales = fila.createCell(5);
+                        totales = fila.getCell(5);   
+                        totales.setCellValue(items.get(i).getTotalServicio());
+                        totales.setCellStyle(cellStyleLong);
+                        totalServicio += items.get(i).getTotalServicio();
+                    }
+                }
+                if(s24 && !s21 && s22){
                     XSSFCell tS22 = fila.createCell(3);
                     tS22 = fila.getCell(3);   
                     tS22.setCellValue(items.get(i).getTotalS22());
@@ -542,7 +565,28 @@ public class GeneradorExcel {
                     totales.setCellStyle(cellStyleLong);
                 }
             }
-            if((s24 || s21) && s22){
+            if(!s24 && s21 && s22){
+                XSSFCell tS22 = fila.createCell(3);
+                tS22 = fila.getCell(3);   
+                tS22.setCellValue(totalS22);
+                tS22.setCellStyle(cellStyleLong);
+                if(!s29){
+                    XSSFCell totales = fila.createCell(4);
+                    totales = fila.getCell(4);   
+                    totales.setCellValue(totalServicio);
+                    totales.setCellStyle(cellStyleLong);
+                }else{
+                    XSSFCell tS29 = fila.createCell(4);
+                    tS29 = fila.getCell(4);   
+                    tS29.setCellValue(totalS29);
+                    tS29.setCellStyle(cellStyleLong);
+                    XSSFCell totales = fila.createCell(5);
+                    totales = fila.getCell(5);   
+                    totales.setCellValue(totalServicio);
+                    totales.setCellStyle(cellStyleLong);
+                }
+            }
+            if(s24 && !s21 && s22){
                 XSSFCell tS22 = fila.createCell(3);
                 tS22 = fila.getCell(3);   
                 tS22.setCellValue(totalS22);

@@ -12,9 +12,7 @@ import javax.persistence.TypedQuery;
 
 import minsal.divap.enums.TipoDocumentosProcesos;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
-import cl.minsal.divap.model.DistribucionInicialPercapitaSeguimiento;
 import cl.minsal.divap.model.DocumentoProgramasReforzamiento;
-import cl.minsal.divap.model.DocumentoRebaja;
 import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.ProgramaMunicipalCore;
@@ -23,7 +21,6 @@ import cl.minsal.divap.model.ProgramaServicioCore;
 import cl.minsal.divap.model.ProgramaServicioCoreComponente;
 import cl.minsal.divap.model.ProgramasReforzamiento;
 import cl.minsal.divap.model.ProgramasReforzamientoSeguimiento;
-import cl.minsal.divap.model.Remesas;
 import cl.minsal.divap.model.ReporteEmailsAdjuntos;
 import cl.minsal.divap.model.ReporteEmailsDestinatarios;
 import cl.minsal.divap.model.ReporteEmailsEnviados;
