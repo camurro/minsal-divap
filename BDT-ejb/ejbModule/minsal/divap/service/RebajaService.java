@@ -528,7 +528,9 @@ public class RebajaService {
 		try {
 			List<PlanillaRebajaCalculadaVO> planillaRebajaCalculadas = getAllRebajasPlanillaTotal(idProcesoRebaja);
 			ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryResolucionRebajaVO = documentService.getDocumentByPlantillaId(plantillaIdResolucionRebaja);
+			System.out.println("\n\n\n\n\n\n antes de documentoResolucionRebajaVO ---> referenciaDocumentoSummaryResolucionRebajaVO ---> "+referenciaDocumentoSummaryResolucionRebajaVO);
 			DocumentoVO documentoResolucionRebajaVO = documentService.getDocument(referenciaDocumentoSummaryResolucionRebajaVO.getId());
+			System.out.println("\n\n\n\n\n\n despues de documentoResolucionRebajaVO");
 			String templateResolucionRebaja = tmpDirDoc + File.separator + documentoResolucionRebajaVO.getName();
 			templateResolucionRebaja = templateResolucionRebaja.replace(" ", "");
 

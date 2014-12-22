@@ -75,6 +75,7 @@ public class ProcessService {
 		RestClientSimple client = new RestClientSimple(baseUrl, bpmDeploymentId, bpmUsername, bpmPassword);
 		Content content = client.getContentById(client, bpmTask.getJaxbTaskData().getDocumentContentId());
 		Map<String, Object> data = null;
+		System.out.println("getTaskData recuperando variables del proceso");
 		if ((content != null) && (content.getSerializedContent() != null)) {
 			BASE64Decoder base64Decoder = new BASE64Decoder();
 			byte[] contentBytes = base64Decoder.decodeBuffer(content.getSerializedContent());
@@ -83,11 +84,13 @@ public class ProcessService {
 				data = ((Map<String, Object>)unmarshalledObject);
             }
 		}
+		System.out.println("Antes de imprimir valores recuperados del proceso");
 		if(data != null){
 			for (Map.Entry<String, Object> entry : data.entrySet()){
 				System.out.println(entry.getKey() + "/" + entry.getValue());
 			}
 		}
+		System.out.println("getTaskData data->"+data);
 		return data;
 	}
 	

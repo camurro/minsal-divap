@@ -70,7 +70,9 @@ public class ProcesoRebajaController extends AbstractTaskMBean
 		docBaseCumplimiento = rebajaService.getPlantillaBaseCumplimiento();
 		if(getTaskDataVO() != null && getTaskDataVO().getData() != null && getTaskDataVO().getData().get("_idProcesoRebaja") != null){
 			this.idProcesoRebaja = (Integer)getTaskDataVO().getData().get("_idProcesoRebaja");
+			
 		}
+		System.out.println("this.idProcesoRebaja ----> "+this.idProcesoRebaja);
 	}
 	
 
