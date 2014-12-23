@@ -25462,3 +25462,38 @@ INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (16, 'Ha
 UPDATE antecendentes_comuna SET  tramo_pobreza = 1 
  WHERE clasificacion=2 and  ano_ano_en_curso=2015 and tramo_pobreza is null;
 
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (43, 'Plantilla Ordinario OT');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (62,'Programa APS Servicios');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (64,'Plantilla APS Municipal Resumen Servicio');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (66, 'Plantilla APS Municipal Resumen Historico');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (67, 'Plantilla APS Servicio Resumen Historico');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (68, 'Plantilla APS Detalle Municipal');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (69, 'Plantilla APS Detalle Servicio');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (70,'Plantilla APS Detalle Municipal Historico');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (71,'Plantilla APS Detalle Servicio Historico');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (72,'Adjunto correo');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (73, 'Plantilla Resolución Correo');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (74,'Plantilla Ordinario Correo');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (79,'Plantilla Correo OT');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (80,'Resolución Modificación Recursos Programa');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (81,'Ordinario Modificación Recursos Programa');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (170, 'Plantilla ordinario modificación aporte estatal');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (171, 'Ordinario modificación aporte estatal');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (172, 'Plantilla modificación decreto aporte estatal');
+
+CREATE TABLE public.antecedentes_comuna_calculado_rebaja
+(
+   id_antecedentes_comuna_calculado_rebaja integer, 
+   rebaja integer NOT NULL, 
+   antecedentes_comuna_calculado integer NOT NULL, 
+   monto_rebaja integer NOT NULL, 
+   CONSTRAINT rebaja_fk FOREIGN KEY (rebaja) REFERENCES rebaja (id_rebaja) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT antecedentes_comuna_calculado_rebaja_pk PRIMARY KEY (id_antecedentes_comuna_calculado_rebaja), 
+   CONSTRAINT antecedentes_comuna_calculado_fk FOREIGN KEY (antecedentes_comuna_calculado) REFERENCES antecendentes_comuna_calculado (id_antecendentes_comuna_calculado) ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+

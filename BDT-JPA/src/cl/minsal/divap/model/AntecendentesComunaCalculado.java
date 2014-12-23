@@ -2,7 +2,9 @@ package cl.minsal.divap.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,10 +13,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -49,7 +53,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByAntecedentesDistrinbucionInicialVigente", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idAntecedentesComuna = :idAntecendentesComuna and a.fechaVigencia is null and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByDistribucionInicialPercapitaVigenteModificacionPercapita", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita and a.fechaVigencia is null and a.modificacionPercapita.idModificacionDistribucionInicialPercapita = :idModificacionPercapita order by a.antecedentesComuna.idComuna.servicioSalud.id asc"),
 	@NamedQuery(name = "AntecendentesComunaCalculado.findByAntecedentesDistrinbucionInicialVigenteModificacionPercapita", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.antecedentesComuna.idAntecedentesComuna = :idAntecendentesComuna and a.fechaVigencia is null and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :distribucionInicialPercapita and a.modificacionPercapita.idModificacionDistribucionInicialPercapita = :idModificacionPercapita"),
-	@NamedQuery(name = "AntecendentesComunaCalculado.findByModificacionPercapitaVigente", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.fechaVigencia is null and a.modificacionPercapita.idModificacionDistribucionInicialPercapita = :idModificacionPercapita order by a.antecedentesComuna.idComuna.servicioSalud.id asc")})
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByModificacionPercapitaVigente", query = "SELECT a FROM AntecendentesComunaCalculado a WHERE a.fechaVigencia is null and a.modificacionPercapita.idModificacionDistribucionInicialPercapita = :idModificacionPercapita order by a.antecedentesComuna.idComuna.servicioSalud.id asc"),
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByAntecendentesComunaCalculadoVigenteRebaja", query = "SELECT a FROM AntecendentesComunaCalculado a JOIN a.antecedentesComunaCalculadoRebajas r WHERE a.fechaVigencia is null and r.rebaja.idRebaja = :idRebaja order by a.antecedentesComuna.idComuna.servicioSalud.id asc"),
+	@NamedQuery(name = "AntecendentesComunaCalculado.findByAntecedentesComunaDistrinbucionInicialVigenteRebaja", query = "SELECT a FROM AntecendentesComunaCalculado a JOIN a.antecedentesComunaCalculadoRebajas r WHERE a.fechaVigencia is null and r.rebaja.idRebaja = :idRebaja and a.distribucionInicialPercapita.idDistribucionInicialPercapita = :idDistribucionInicialPercapita and a.antecedentesComuna.idComuna.id = :idComuna order by a.antecedentesComuna.idComuna.servicioSalud.id asc")})
 public class AntecendentesComunaCalculado implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -88,7 +94,9 @@ public class AntecendentesComunaCalculado implements Serializable {
 	@JoinColumn(name = "antecedentes_comuna", referencedColumnName = "id_antecedentes_comuna")
 	@ManyToOne(optional = false)
 	private AntecendentesComuna antecedentesComuna;
-
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "antecedentesComunaCalculado")
+	private Set<AntecedentesComunaCalculadoRebaja> antecedentesComunaCalculadoRebajas;
+	
 	public AntecendentesComunaCalculado() {
 	}
 
@@ -208,6 +216,16 @@ public class AntecendentesComunaCalculado implements Serializable {
 	public void setModificacionPercapita(
 			ModificacionDistribucionInicialPercapita modificacionPercapita) {
 		this.modificacionPercapita = modificacionPercapita;
+	}
+	
+	@XmlTransient
+	public Set<AntecedentesComunaCalculadoRebaja> getAntecedentesComunaCalculadoRebajas() {
+		return antecedentesComunaCalculadoRebajas;
+	}
+
+	public void setAntecedentesComunaCalculadoRebajas(
+			Set<AntecedentesComunaCalculadoRebaja> antecedentesComunaCalculadoRebajas) {
+		this.antecedentesComunaCalculadoRebajas = antecedentesComunaCalculadoRebajas;
 	}
 
 	@Override

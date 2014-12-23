@@ -57,6 +57,8 @@ public class Rebaja implements Serializable {
 	private Collection<ReferenciaDocumento> referenciaDocumentoCollection;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "rebaja")
 	private Set<ComunaCumplimiento> comunaCumplimientos;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "rebaja")
+	private Set<AntecedentesComunaCalculadoRebaja> antecedentesComunaCalculadoRebajas;
 
 	public Rebaja() {
 	}
@@ -131,6 +133,16 @@ public class Rebaja implements Serializable {
 
 	public void setRebajaSeguimientos(Set<RebajaSeguimiento> rebajaSeguimientos) {
 		this.rebajaSeguimientos = rebajaSeguimientos;
+	}
+	
+	@XmlTransient
+	public Set<AntecedentesComunaCalculadoRebaja> getAntecedentesComunaCalculadoRebajas() {
+		return antecedentesComunaCalculadoRebajas;
+	}
+
+	public void setAntecedentesComunaCalculadoRebajas(
+			Set<AntecedentesComunaCalculadoRebaja> antecedentesComunaCalculadoRebajas) {
+		this.antecedentesComunaCalculadoRebajas = antecedentesComunaCalculadoRebajas;
 	}
 
 	@Override

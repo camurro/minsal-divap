@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import cl.minsal.divap.model.AntecedentesComunaCalculadoRebaja;
 import cl.minsal.divap.model.AntecendentesComuna;
 import cl.minsal.divap.model.AntecendentesComunaCalculado;
 import cl.minsal.divap.model.Comuna;
@@ -395,6 +396,37 @@ public class AntecedentesComunaDAO {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public List<AntecendentesComunaCalculado> getAntecendentesComunaCalculadoVigenteByRebaja(Integer idProcesoRebaja) {
+		try {
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByAntecendentesComunaCalculadoVigenteRebaja", AntecendentesComunaCalculado.class);
+			query.setParameter("idRebaja", idProcesoRebaja);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public AntecendentesComunaCalculado findAntecendentesComunaCalculadoByComunaDistribucionInicialPercapitaVigenteRebaja(Integer idComuna, Integer idDistribucionInicialPercapita, Integer idRebaja) {
+		try {
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByAntecedentesComunaDistrinbucionInicialVigenteRebaja", AntecendentesComunaCalculado.class);
+			query.setParameter("idRebaja", idRebaja);
+			query.setParameter("idDistribucionInicialPercapita", idDistribucionInicialPercapita);
+			query.setParameter("idComuna", idComuna);
+			List<AntecendentesComunaCalculado> antecendentesComunaCalculado = query.getResultList(); 
+			if(antecendentesComunaCalculado != null && antecendentesComunaCalculado.size() > 0){
+				return antecendentesComunaCalculado.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public AntecedentesComunaCalculadoRebaja save(AntecedentesComunaCalculadoRebaja antecedentesComunaCalculadoRebaja) {
+		em.persist(antecedentesComunaCalculadoRebaja);
+		return antecedentesComunaCalculadoRebaja;
 	}
 
 }
