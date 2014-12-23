@@ -139,6 +139,17 @@ public class ServicioSaludDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public List<AntecendentesComuna> getAntecentesComunasRebaja(Integer anoCurso, List<Integer> idComunas) {
+		try {
+			TypedQuery<AntecendentesComuna> query = this.em.createNamedQuery("AntecendentesComuna.findByIdComunasAno", AntecendentesComuna.class);
+			query.setParameter("ano", anoCurso);
+			query.setParameter("idComunas", idComunas);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	public List<Region> getAllRegion() {
 		try {

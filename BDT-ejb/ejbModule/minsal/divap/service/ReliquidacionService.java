@@ -243,18 +243,38 @@ public class ReliquidacionService {
 		Programa programa = programasDAO.getProgramaPorID(programaAno.getId());
 
 		GeneradorExcel generadorExcel = new GeneradorExcel(filename);
-		header.add(new CellExcelVO("SERVICIOS DE SALUD", 2, 2));
-		header.add(new CellExcelVO("COMUNAS", 2, 2));
-		header.add(new CellExcelVO(programaAno.getNombre().toUpperCase(), componentes.size(), 1));
-		subHeader.add(new CellExcelVO("ID", 1, 1));
-		subHeader.add(new CellExcelVO("Servicio de Salud", 1, 1));
-		subHeader.add(new CellExcelVO("ID", 1, 1));
-		subHeader.add(new CellExcelVO("Comuna", 1, 1));
-		for(int i=0;i<componentes.size();i++){
-			header.add(new CellExcelVO(componentes.get(i).getNombre().toUpperCase(), 1, 1));
-			subHeader.add(new CellExcelVO("% Cumplimiento", 1, 1));
-			porc_cumplimiento.add(null);
-		}
+        header.add(new CellExcelVO("SERVICIOS DE SALUD", 2, 2));
+        header.add(new CellExcelVO("COMUNAS", 2, 2));
+        
+        
+        int subtitulos=0;
+        
+        HashMap<Integer, Integer> componenteSubtitulos = new HashMap<Integer, Integer>();
+        for(int i=0 ; i < componentes.size(); i++){
+            for(SubtituloVO subtitulo : componentes.get(i).getSubtitulos()){
+                if(subtitulo.getId()== Subtitulo.SUBTITULO24.getId()){
+                    subtitulos++;
+                }
+            }
+            componenteSubtitulos.put(componentes.get(i).getId(), componentes.get(i).getSubtitulos().size());
+        }
+        
+        header.add(new CellExcelVO(programaAno.getNombre().toUpperCase(), subtitulos, 1));
+        subHeader.add(new CellExcelVO("ID", 1, 2));
+        subHeader.add(new CellExcelVO("Servicio de Salud", 1, 2));
+        subHeader.add(new CellExcelVO("ID", 1, 2));
+        subHeader.add(new CellExcelVO("Comuna", 1, 2));
+        
+        for(int i=0 ; i < componentes.size(); i++){
+            header.add(new CellExcelVO(componentes.get(i).getNombre(), componenteSubtitulos.get(componentes.get(i).getId()), 1));
+            for(SubtituloVO subtitulo : componentes.get(i).getSubtitulos()){
+                if(subtitulo.getId()== Subtitulo.SUBTITULO24.getId()){
+                    subHeader.add(new CellExcelVO(subtitulo.getNombre(), 1, 1));
+                    subHeader.add(new CellExcelVO("% Cumplimiento", 1, 1));
+                    porc_cumplimiento.add(null);
+                }
+            }
+        }
 
 		List<ServiciosVO> servicios = servicioSaludService.getServiciosOrderId();
 		List<CumplimientoApsMunicipalProgramaVO> items = new ArrayList<CumplimientoApsMunicipalProgramaVO>();

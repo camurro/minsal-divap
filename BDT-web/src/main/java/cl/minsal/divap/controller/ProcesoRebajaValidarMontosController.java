@@ -176,8 +176,10 @@ implements Serializable {
 		System.out.println("guardaRebaja Inicio");
 		if(rebajaSeleccionada != null && !rebajaSeleccionada.trim().isEmpty()){
 			Integer posicion = Integer.parseInt(posicionElemento);
-			rebajaService.updateMontosRebajaComuna(rebajaComunas.get(posicion));
-			rebajaComunas.get(posicion).setActualizar(false);
+			PlanillaRebajaCalculadaVO planillaRebajaCalculadaVO = rebajaComunas.get(posicion);
+			planillaRebajaCalculadaVO = rebajaService.updateMontosRebajaComuna(this.idProcesoRebaja, planillaRebajaCalculadaVO);
+			planillaRebajaCalculadaVO.setActualizar(false);
+			rebajaComunas.set(posicion, planillaRebajaCalculadaVO);
 			System.out.println("Actualizacion ok");
 		}
 		System.out.println("guardaRebaja Fin");
@@ -194,33 +196,34 @@ implements Serializable {
 			Integer posicion = Integer.parseInt(posicionElemento);
 			Integer columna = Integer.parseInt(columnaElemento);
 			Double valor = Double.parseDouble(valorElemento);
-			rebajaComunas.get(posicion).setActualizar(true);
+			PlanillaRebajaCalculadaVO planillaRebajaCalculadaVO = rebajaComunas.get(posicion);
+			planillaRebajaCalculadaVO.setActualizar(true);
 			switch (columna) {
 			case 1:
-				rebajaComunas.get(posicion).getCumplimientoRebajasItem1().setRebajaFinal(Double.valueOf(valor));
+				planillaRebajaCalculadaVO.getCumplimientoRebajasItem1().setRebajaFinal(valor);
 				break;
 			case 2:
-				rebajaComunas.get(posicion).getCumplimientoRebajasItem2().setRebajaFinal(Double.valueOf(valor));
+				planillaRebajaCalculadaVO.getCumplimientoRebajasItem2().setRebajaFinal(valor);
 				break;
 			case 3:
-				rebajaComunas.get(posicion).getCumplimientoRebajasItem3().setRebajaFinal(Double.valueOf(valor));
+				planillaRebajaCalculadaVO.getCumplimientoRebajasItem3().setRebajaFinal(valor);
 				break;
 			default:
 				break;
 			}
 			Integer porcentajeRebajaCalculado = 0;
 			Integer porcentajeRebajaFinal = 0;
-			porcentajeRebajaFinal += (( rebajaComunas.get(posicion).getCumplimientoRebajasItem1().getRebajaFinal() == null) ? 0 : rebajaComunas.get(posicion).getCumplimientoRebajasItem1().getRebajaFinal().intValue());
-			porcentajeRebajaCalculado += (( rebajaComunas.get(posicion).getCumplimientoRebajasItem1().getRebajaCalculada() == null) ? 0 : rebajaComunas.get(posicion).getCumplimientoRebajasItem1().getRebajaCalculada().intValue()); 
-			porcentajeRebajaFinal += (( rebajaComunas.get(posicion).getCumplimientoRebajasItem2().getRebajaFinal() == null) ? 0 : rebajaComunas.get(posicion).getCumplimientoRebajasItem2().getRebajaFinal().intValue());
-			porcentajeRebajaCalculado += (( rebajaComunas.get(posicion).getCumplimientoRebajasItem2().getRebajaCalculada() == null) ? 0 : rebajaComunas.get(posicion).getCumplimientoRebajasItem2().getRebajaCalculada().intValue());
-			porcentajeRebajaFinal += (( rebajaComunas.get(posicion).getCumplimientoRebajasItem3().getRebajaFinal() == null) ? 0 : rebajaComunas.get(posicion).getCumplimientoRebajasItem3().getRebajaFinal().intValue());
-			porcentajeRebajaCalculado += (( rebajaComunas.get(posicion).getCumplimientoRebajasItem3().getRebajaCalculada() == null) ? 0 : rebajaComunas.get(posicion).getCumplimientoRebajasItem3().getRebajaCalculada().intValue());
-			rebajaComunas.get(posicion).setTotalRebajaCalculada(porcentajeRebajaCalculado);
-			rebajaComunas.get(posicion).setTotalRebajaRebajaFinal(porcentajeRebajaFinal);
-			Integer montoRebaja = (int)(rebajaComunas.get(posicion).getAporteEstatal() * (porcentajeRebajaFinal/100.0));
-			rebajaComunas.get(posicion).setMontoRebajaMes(montoRebaja);
-			rebajaComunas.get(posicion).setNuevoAporteEstatal(rebajaComunas.get(posicion).getAporteEstatal() - montoRebaja);
+			porcentajeRebajaFinal += (( planillaRebajaCalculadaVO.getCumplimientoRebajasItem1().getRebajaFinal() == null) ? 0 : planillaRebajaCalculadaVO.getCumplimientoRebajasItem1().getRebajaFinal().intValue());
+			porcentajeRebajaCalculado += (( planillaRebajaCalculadaVO.getCumplimientoRebajasItem1().getRebajaCalculada() == null) ? 0 : planillaRebajaCalculadaVO.getCumplimientoRebajasItem1().getRebajaCalculada().intValue()); 
+			porcentajeRebajaFinal += (( planillaRebajaCalculadaVO.getCumplimientoRebajasItem2().getRebajaFinal() == null) ? 0 : planillaRebajaCalculadaVO.getCumplimientoRebajasItem2().getRebajaFinal().intValue());
+			porcentajeRebajaCalculado += (( planillaRebajaCalculadaVO.getCumplimientoRebajasItem2().getRebajaCalculada() == null) ? 0 : planillaRebajaCalculadaVO.getCumplimientoRebajasItem2().getRebajaCalculada().intValue());
+			porcentajeRebajaFinal += (( planillaRebajaCalculadaVO.getCumplimientoRebajasItem3().getRebajaFinal() == null) ? 0 : planillaRebajaCalculadaVO.getCumplimientoRebajasItem3().getRebajaFinal().intValue());
+			porcentajeRebajaCalculado += (( planillaRebajaCalculadaVO.getCumplimientoRebajasItem3().getRebajaCalculada() == null) ? 0 : planillaRebajaCalculadaVO.getCumplimientoRebajasItem3().getRebajaCalculada().intValue());
+			planillaRebajaCalculadaVO.setTotalRebajaCalculada(porcentajeRebajaCalculado);
+			planillaRebajaCalculadaVO.setTotalRebajaRebajaFinal(porcentajeRebajaFinal);
+			Integer montoRebaja = (int)(planillaRebajaCalculadaVO.getAporteEstatal() * (porcentajeRebajaFinal/100.0));
+			planillaRebajaCalculadaVO.setMontoRebajaMes(montoRebaja);
+			planillaRebajaCalculadaVO.setNuevoAporteEstatal(planillaRebajaCalculadaVO.getAporteEstatal() - montoRebaja);
 			System.out.println("actualizarModelo:Fin");
 		}
 	}
