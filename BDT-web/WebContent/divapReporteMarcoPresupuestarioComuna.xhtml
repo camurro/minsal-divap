@@ -59,37 +59,38 @@
 					
 					
 						<p:tab id="Sub21" title="Subtítulo 21">
-						
+						<h:panelGrid columns="3" id="busqueda_mis_tareas">
 							<h:panelGrid>
 								<h:outputText value="Programa: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:650px;" id="cbProgramaSub21"
+								<p:selectOneMenu style="width:450px;" id="cbProgramaSub21"
 									value="#{reportesMarcoPresupuestarioComunasController.valorComboPrograma}">
 									<f:selectItem itemLabel="Seleccione" itemValue="0" />
 									<f:selectItems
 										value="#{reportesMarcoPresupuestarioComunasController.programas}"
 										itemLabel="#{programa.nombre}"
 										itemValue="#{programa.idProgramaAno}" var="programa" />
-									<p:ajax
-										listener="#{reportesMarcoPresupuestarioComunasController.cargarTablaMarcoServicios}"
-										update="tabView" />
+									
 								</p:selectOneMenu>
 							</h:panelGrid>
 
 							<h:panelGrid>
 								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:650px;" id="cbEstablecimiento"
+								<p:selectOneMenu style="width:450px;" id="cbEstablecimiento"
 									value="#{reportesMarcoPresupuestarioComunasController.valorComboEstablecimiento}">
 									<f:selectItem itemLabel="Seleccione" itemValue="0" />
 									<f:selectItems
 										value="#{reportesMarcoPresupuestarioComunasController.servicioSeleccionado.estableclimientos}"
 										itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}"
 										var="establecimiento" />
-									<p:ajax
-										listener="#{reportesMarcoPresupuestarioComunasController.cargarTablaServiciosFiltradosProgramaEstablecimiento}"
-										update="tablaSub21">
-									</p:ajax>
+									
 								</p:selectOneMenu>
 							</h:panelGrid>
+							
+							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaServiciosFiltradosProgramaEstablecimiento}" ajax="false"
+					icon="ui-icon-seek-first" update="tabView tablaSub21" />
+							
+							
+						</h:panelGrid>
 							
 							<br />
 							<p:dataTable id="tablaSub21" resizableColumns="true" value="#{reportesMarcoPresupuestarioComunasController.reporteMarcoPresupuestarioEstablecimientoVOSub21}" liveResize="true" var="_data"

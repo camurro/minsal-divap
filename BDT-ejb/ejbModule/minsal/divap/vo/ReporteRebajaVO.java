@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import minsal.divap.util.StringUtil;
+
 public class ReporteRebajaVO implements Serializable{
 
 	
@@ -150,6 +152,7 @@ public class ReporteRebajaVO implements Serializable{
 	}
 
 	public List<Object> getRow() {
+		StringUtil stringUtil = new StringUtil();
 		List<Object> row = new ArrayList<Object>();
 		
 		if(getRegion() != null){
@@ -162,7 +165,7 @@ public class ReporteRebajaVO implements Serializable{
 			row.add(getComuna());
 		}
 		if(getfCorte1Monto() != null){
-			row.add(getfCorte1Monto());
+			row.add(StringUtil.longWithFormat(getfCorte1Monto()));
 		}else{
 			row.add("");
 		}
@@ -172,7 +175,7 @@ public class ReporteRebajaVO implements Serializable{
 			row.add("");
 		}
 		if(getfCorte2Monto() != null){
-			row.add(getfCorte2Monto());
+			row.add(StringUtil.longWithFormat(getfCorte2Monto()));
 		}else{
 			row.add("");
 		}
@@ -182,7 +185,7 @@ public class ReporteRebajaVO implements Serializable{
 			row.add("");
 		}
 		if(getfCorte3Monto() != null){
-			row.add(getfCorte3Monto());
+			row.add(StringUtil.longWithFormat(getfCorte3Monto()));
 		}else{
 			row.add("");
 		}
@@ -192,7 +195,7 @@ public class ReporteRebajaVO implements Serializable{
 			row.add("");
 		}
 		if(getfCorte4Monto() != null){
-			row.add(getfCorte4Monto());
+			row.add(StringUtil.longWithFormat(getfCorte4Monto()));
 		}else{
 			row.add("");
 		}
@@ -202,7 +205,7 @@ public class ReporteRebajaVO implements Serializable{
 			row.add("");
 		}
 		if(getRebajaTotal() != null){
-			row.add(getRebajaTotal());
+			row.add(StringUtil.longWithFormat(getRebajaTotal()));
 		}else{
 			row.add("");
 		}

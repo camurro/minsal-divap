@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import minsal.divap.util.StringUtil;
+
 public class ReportePerCapitaVO implements Serializable{
 
 	
@@ -199,32 +201,31 @@ public class ReportePerCapitaVO implements Serializable{
 			row.add(getClasificacion());
 		}
 		if(getValorPercapita() != null){
-			row.add(getValorPercapita());
+			row.add(StringUtil.longWithFormat(getValorPercapita()));
 		}
 		if(getPoblacion() != null){
-			row.add(getPoblacion());
+			row.add(StringUtil.integerWithFormat(getPoblacion()));
 		}
 		if(getPoblacion65mayor() != null){
-			row.add(getPoblacion65mayor());
+			row.add(StringUtil.integerWithFormat(getPoblacion65mayor()));
 		}
 		if(getPercapita() != null){
-			row.add(getPercapita());
+			row.add(StringUtil.longWithFormat(getPercapita()));
 		}
-		
 		if(getDesempenoDificil() != null){
-			row.add(getDesempenoDificil());
+			row.add(StringUtil.longWithFormat(getDesempenoDificil()));
 		}
 		if(getAporteEstatal() != null){
-			row.add(getAporteEstatal());
+			row.add(StringUtil.longWithFormat(getAporteEstatal()));
 		}
 		if(getRebajaIAAPS() != null){
-			row.add(getRebajaIAAPS());
+			row.add(StringUtil.longWithFormat(getRebajaIAAPS()));
 		}
 		if(getDescuentoIncentivoRetiro() != null){
-			row.add(getDescuentoIncentivoRetiro());
+			row.add(StringUtil.longWithFormat(getDescuentoIncentivoRetiro()));
 		}
 		if(getAporteEstatalFinal() != null){
-			row.add(getAporteEstatalFinal());
+			row.add(StringUtil.longWithFormat(getAporteEstatalFinal()));
 		}
 		
 		return row;

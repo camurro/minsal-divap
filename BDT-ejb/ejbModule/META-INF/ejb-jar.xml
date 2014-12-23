@@ -51,11 +51,17 @@
 				<env-entry-name>alfrescoServer</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
 				<env-entry-value>http://localhost:8280/alfresco/service/api</env-entry-value>
+<!-- 				<env-entry-value>http://10.8.255.36:8080/alfresco/service/api</env-entry-value> -->
+				
 			</env-entry>
 			<env-entry>
 				<description>Alfresco User Name</description>
 				<env-entry-name>alfrescoUsername</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
+<!-- 		MI AMBIENTE		<env-entry-value>admin</env-entry-value> -->
+
+
+<!-- 				################ AMIBIENTE QA -->
 				<env-entry-value>admin</env-entry-value>
 			</env-entry>
 			<env-entry>
@@ -100,6 +106,14 @@
 				<env-entry-name>baseUrl</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>
 				<env-entry-value>http://localhost:8080/business-central/rest/</env-entry-value>
+
+<!-- 			Nodo 1 BPMS	 -->
+<!-- 			<env-entry-value>http://10.8.255.34:8080/business-central/rest/</env-entry-value> -->
+
+<!-- 				IP VIP -->
+<!-- 				<env-entry-value>http://10.8.255.45:8080/business-central/rest/</env-entry-value> -->
+
+				
 			</env-entry>
 				<env-entry>
 				<description>BPM Suite User Name</description>

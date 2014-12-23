@@ -1,7 +1,6 @@
 package cl.minsal.divap.controller;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -9,10 +8,14 @@ import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
+import minsal.divap.dao.MesDAO;
+import minsal.divap.dao.RebajaDAO;
 import minsal.divap.enums.TipoDocumentosProcesos;
-import minsal.divap.service.RebajaService;
 import minsal.divap.service.ReportesServices;
+import minsal.divap.util.StringUtil;
 import minsal.divap.vo.ReporteRebajaVO;
+import cl.minsal.divap.model.Mes;
+import cl.minsal.divap.model.RebajaCorte;
 import cl.redhat.bandejaTareas.controller.BaseController;
 
 
@@ -32,8 +35,17 @@ public class ReportesRebajaController extends BaseController implements Serializ
 	private Integer idPlanillaRebaja;
 	private String docIdDownload;
 	
+	private String mesCorte1;
+	private String mesCorte2;
+	private String mesCorte3;
+	private String mesCorte4;
+	
 	@EJB
 	ReportesServices reportesServices;
+	@EJB
+	RebajaDAO rebajaDAO;
+	@EJB
+	private MesDAO mesDAO;
 	
 	
 	@PostConstruct
@@ -43,6 +55,25 @@ public class ReportesRebajaController extends BaseController implements Serializ
 		if(this.idPlanillaRebaja == null){
 			this.idPlanillaRebaja = reportesServices.generarPlanillaReporteRebaja(getLoggedUsername());
 		}
+		
+		Integer mesCurso = Integer.parseInt(reportesServices.getMesCurso(true));
+		RebajaCorte rebajaCorte = rebajaDAO.getCorteByMes(mesCurso);
+
+		RebajaCorte rebajaCorte1 = rebajaDAO.getCorteById(1);
+		RebajaCorte rebajaCorte2 = rebajaDAO.getCorteById(2);
+		RebajaCorte rebajaCorte3 = rebajaDAO.getCorteById(3);
+		RebajaCorte rebajaCorte4 = rebajaDAO.getCorteById(4);
+		
+		Mes fechaMesCorte1 = mesDAO.getMesPorID(rebajaCorte1.getMesHasta().getIdMes());
+		Mes fechaMesCorte2 = mesDAO.getMesPorID(rebajaCorte2.getMesHasta().getIdMes());
+		Mes fechaMesCorte3 = mesDAO.getMesPorID(rebajaCorte3.getMesHasta().getIdMes());
+		Mes fechaMesCorte4 = mesDAO.getMesPorID(rebajaCorte4.getMesHasta().getIdMes());
+		
+		
+		this.mesCorte1 = StringUtil.caracterUnoMayuscula(fechaMesCorte1.getNombre());
+		this.mesCorte2 = StringUtil.caracterUnoMayuscula(fechaMesCorte2.getNombre());
+		this.mesCorte3 = StringUtil.caracterUnoMayuscula(fechaMesCorte3.getNombre());
+		this.mesCorte4 = StringUtil.caracterUnoMayuscula(fechaMesCorte4.getNombre());
 		
 	}
 	
@@ -136,6 +167,37 @@ public class ReportesRebajaController extends BaseController implements Serializ
 	public void setDocIdDownload(String docIdDownload) {
 		this.docIdDownload = docIdDownload;
 	}
-	
+
+	public String getMesCorte1() {
+		return mesCorte1;
+	}
+
+	public void setMesCorte1(String mesCorte1) {
+		this.mesCorte1 = mesCorte1;
+	}
+
+	public String getMesCorte2() {
+		return mesCorte2;
+	}
+
+	public void setMesCorte2(String mesCorte2) {
+		this.mesCorte2 = mesCorte2;
+	}
+
+	public String getMesCorte3() {
+		return mesCorte3;
+	}
+
+	public void setMesCorte3(String mesCorte3) {
+		this.mesCorte3 = mesCorte3;
+	}
+
+	public String getMesCorte4() {
+		return mesCorte4;
+	}
+
+	public void setMesCorte4(String mesCorte4) {
+		this.mesCorte4 = mesCorte4;
+	}
 
 }

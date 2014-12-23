@@ -31,10 +31,10 @@
 						]
 					</div>
 					<br />
-					
+						<h:panelGrid columns="3" id="busqueda_mis_tareas">
 							<h:panelGrid>
 								<h:outputText value="Servicio: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:650px;" id="cbServicio"
+								<p:selectOneMenu style="width:350px;" id="cbServicio"
 									value="#{reportesPoblacionPercapitaController.valorComboServicio}">
 									<f:selectItem itemLabel="Seleccione" itemValue="0" />
 									<f:selectItems
@@ -49,20 +49,20 @@
 
 							<h:panelGrid>
 								<h:outputText value="Comuna: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:650px;" id="cbComuna"
+								<p:selectOneMenu style="width:350px;" id="cbComuna"
 									value="#{reportesPoblacionPercapitaController.valorComboComuna}">
 									<f:selectItem itemLabel="Seleccione" itemValue="0" />
 									<f:selectItems
 										value="#{reportesPoblacionPercapitaController.servicioSeleccionado.comunas}"
 										itemLabel="#{comuna.nombre}" itemValue="#{comuna.id}"
 										var="comuna" />
-									<p:ajax
-										listener="#{reportesPoblacionPercapitaController.cargarTablaServiciosFiltradosComuna}"
-										update="tabView">
-									</p:ajax>
+									
 								</p:selectOneMenu>
 							</h:panelGrid>
-						
+							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesPoblacionPercapitaController.cargarTablaServiciosFiltradosComuna}" ajax="false"
+					icon="ui-icon-seek-first" update="tabView" />
+							
+						</h:panelGrid>
 							
 					
 

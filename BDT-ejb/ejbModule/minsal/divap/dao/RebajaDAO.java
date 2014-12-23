@@ -269,4 +269,19 @@ public class RebajaDAO {
 		return null;
 	}
 	
+	
+	public RebajaCorte getCorteById(Integer rebajaCorteId) {
+		try{
+			TypedQuery<RebajaCorte> query = this.em.createNamedQuery("RebajaCorte.findByRebajaCorteId", RebajaCorte.class);
+			query.setParameter("rebajaCorteId", rebajaCorteId);
+			List<RebajaCorte> cortes = query.getResultList();
+			if(cortes != null && cortes.size() > 0){
+				return cortes.get(0);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 }

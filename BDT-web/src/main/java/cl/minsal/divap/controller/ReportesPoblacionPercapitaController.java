@@ -88,7 +88,7 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 			if(getValorComboServicio().intValue() != 0){
 				servicioSeleccionado = servicioSaludService.getServicioSaludById(getValorComboServicio());
 				this.comunas = servicioSeleccionado.getComunas();
-				reportesPerCapitaVO = reportesServices.getReportePercapitaServicio(getValorComboServicio(), this.anoSeleccionado);
+//				reportesPerCapitaVO = reportesServices.getReportePercapitaServicio(getValorComboServicio(), this.anoSeleccionado);
 			}
 		}
 		
@@ -142,7 +142,6 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 		}
 		return servicios;
 	}
-	
 	
 	
 	public void setServicios(List<ServiciosVO> servicios) {

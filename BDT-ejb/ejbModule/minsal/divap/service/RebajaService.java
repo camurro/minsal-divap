@@ -526,7 +526,9 @@ public class RebajaService {
 		try {
 			List<PlanillaRebajaCalculadaVO> planillaRebajaCalculadas = getAllRebajasPlanillaTotal(idProcesoRebaja);
 			ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryResolucionRebajaVO = documentService.getDocumentByPlantillaId(plantillaIdResolucionRebaja);
+			System.out.println("\n\n\n\n\n\n antes de documentoResolucionRebajaVO ---> referenciaDocumentoSummaryResolucionRebajaVO ---> "+referenciaDocumentoSummaryResolucionRebajaVO);
 			DocumentoVO documentoResolucionRebajaVO = documentService.getDocument(referenciaDocumentoSummaryResolucionRebajaVO.getId());
+			System.out.println("\n\n\n\n\n\n despues de documentoResolucionRebajaVO");
 			String templateResolucionRebaja = tmpDirDoc + File.separator + documentoResolucionRebajaVO.getName();
 			templateResolucionRebaja = templateResolucionRebaja.replace(" ", "");
 
@@ -541,6 +543,7 @@ public class RebajaService {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("dd 'de' MMMM 'del' yyyy");
 				String date = dateFormat.format(hoy);
 				parametersResolucionRebaja.put("{fecha_formato}", date);
+				Integer mesActual =  Integer.parseInt(getMesCurso(true));
 				for(PlanillaRebajaCalculadaVO  planillaRebajaCalculada: planillaRebajaCalculadas){
 					String filenameResolucionRebaja = tmpDirDoc + File.separator + new Date().getTime() + "_" + "ResolucionRebaja.docx";
 					System.out.println("filenameResolucionRebaja filename-->"+filenameResolucionRebaja);
@@ -558,6 +561,8 @@ public class RebajaService {
 					parametersResolucionRebaja.put("{monto_rebaja}", StringUtil.formatNumber(rebajaMes));
 					Integer nuevoAporteEstatal = ((planillaRebajaCalculada.getNuevoAporteEstatal() == null) ? 0 : planillaRebajaCalculada.getNuevoAporteEstatal());
 					parametersResolucionRebaja.put("{nuevo_aporte}", StringUtil.formatNumber(nuevoAporteEstatal));
+					parametersResolucionRebaja.put("{rebaja}", StringUtil.integerWithFormat(planillaRebajaCalculada.getMontoRebajaMes()));
+					parametersResolucionRebaja.put("{nuevoAporte}", StringUtil.integerWithFormat(planillaRebajaCalculada.getNuevoAporteEstatal()));
 					if(planillaRebajaCalculada.getCumplimientoRebajasItem1() != null && planillaRebajaCalculada.getCumplimientoRebajasItem1().getMes() != null){
 						parametersResolucionRebaja.put("{mes_curso}", planillaRebajaCalculada.getCumplimientoRebajasItem1().getMes().getNombre());
 					}else{

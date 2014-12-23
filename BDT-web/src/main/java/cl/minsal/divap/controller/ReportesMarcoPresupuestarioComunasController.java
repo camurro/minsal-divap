@@ -499,8 +499,7 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 
 	public List<ProgramaVO> getProgramas() {
 		if(programas == null){
-			System.out.println("cargando programas del subtitulo --> "+this.subtituloSeleccionado.getNombre());
-			programas = programasService.getProgramasBySubtitulo(this.subtituloSeleccionado);
+			programas = programasService.getProgramasByUser(getLoggedUsername());
 		}
 		return programas;
 	}
