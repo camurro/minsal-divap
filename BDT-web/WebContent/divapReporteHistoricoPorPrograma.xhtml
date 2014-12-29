@@ -37,31 +37,36 @@
 						]
 					</div>
 					<br />
+						<h:panelGrid columns="3" id="busqueda_mis_tareas">
+						
+										<h:panelGrid>
+												<h:outputText value="Programa: " styleClass="inputLabel" />
+												<p:selectOneMenu style="width:450px;" id="cbProgramaSub21" value="#{reporteHistoricoPorProgramaController.valorComboPrograma}">
+												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
+			           								<f:selectItems value="#{reporteHistoricoPorProgramaController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
+			           	 						</p:selectOneMenu>
+										</h:panelGrid>	
+						
 										<h:panelGrid>
 												<h:outputText value="Servicio: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbServicio" value="#{reporteHistoricoPorProgramaController.valorComboServicio}">
+												<p:selectOneMenu style="width:450px;" id="cbServicio" value="#{reporteHistoricoPorProgramaController.valorComboServicio}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
 			           								<f:selectItems value="#{reporteHistoricoPorProgramaController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
 			           								<p:ajax listener="#{reporteHistoricoPorProgramaController.cargarComunas}" update="tabView" />
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>
+										
+										<p:commandButton value="OK" styleClass="x-btn-text" actionListener="#{reporteHistoricoPorProgramaController.visibilidadSubtitulos}" ajax="false"
+					icon="ui-icon-seek-first" update="tabView" />
+										
+						</h:panelGrid>
 											
 					<br />
 					<p:tabView id="tabView" activeIndex="#{reporteHistoricoPorProgramaController.activeTab}" dynamic="true" cache="false">
 					<p:ajax event="tabChange" listener="#{reporteHistoricoPorProgramaController.onTabChange}" update="Sub21 Sub22 Sub24 Sub29" />
 						
 						
-						<p:tab id="Sub21" title="Subtítulo 21">
-						
-										<h:panelGrid>
-												<h:outputText value="Programa: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbProgramaSub21" value="#{reporteHistoricoPorProgramaController.valorComboPrograma}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
-			           								<f:selectItems value="#{reporteHistoricoPorProgramaController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           								<p:ajax listener="#{reporteHistoricoPorProgramaController.cargarTablaEstablecimientoFiltroServicios}" update="tabView" >
-			           								</p:ajax>
-			           	 						</p:selectOneMenu>
-										</h:panelGrid>	
+						<p:tab id="Sub21" title="Subtítulo 21" rendered="#{reporteHistoricoPorProgramaController.mostrarSub21}">
 										
 										<h:panelGrid>
 												<h:outputText value="Establecimiento: " styleClass="inputLabel" />
@@ -235,17 +240,8 @@
 						</p:tab>
 						
 						
-						<p:tab id="Sub22" title="Subtítulo 22">
+						<p:tab id="Sub22" title="Subtítulo 22" rendered="#{reporteHistoricoPorProgramaController.mostrarSub22}">
 						
-										<h:panelGrid>
-												<h:outputText value="Programa: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbProgramaSub22" value="#{reporteHistoricoPorProgramaController.valorComboPrograma}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
-			           								<f:selectItems value="#{reporteHistoricoPorProgramaController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           								<p:ajax listener="#{reporteHistoricoPorProgramaController.cargarTablaEstablecimientoFiltroServicios}" update="tabView" >
-			           								</p:ajax>
-			           	 						</p:selectOneMenu>
-										</h:panelGrid>	
 										
 										<h:panelGrid>
 												<h:outputText value="Establecimiento: " styleClass="inputLabel" />
@@ -421,18 +417,7 @@
 						
 						
 
-						<p:tab id="Sub24" title="Subtítulo 24">
-						
-										<h:panelGrid>
-												<h:outputText value="Programa: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbProgramaSub24" value="#{reporteHistoricoPorProgramaController.valorComboPrograma}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
-			           								<f:selectItems value="#{reporteHistoricoPorProgramaController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           								<p:ajax listener="#{reporteHistoricoPorProgramaController.cargarTablaComunasAll}" update="tabView" >
-			           								</p:ajax>
-			           	 						</p:selectOneMenu>
-										</h:panelGrid>
-										
+						<p:tab id="Sub24" title="Subtítulo 24" rendered="#{reporteHistoricoPorProgramaController.mostrarSub24}">
 										
 										<h:panelGrid>
 											<h:outputText value="Comuna: " styleClass="inputLabel" />
@@ -603,17 +588,7 @@
 						</p:tab>
 						
 						
-						<p:tab id="Sub29" title="Subtítulo 29">
-						
-										<h:panelGrid>
-												<h:outputText value="Programa: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbProgramaSub29" value="#{reporteHistoricoPorProgramaController.valorComboPrograma}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
-			           								<f:selectItems value="#{reporteHistoricoPorProgramaController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           								<p:ajax listener="#{reporteHistoricoPorProgramaController.cargarTablaEstablecimientoFiltroServicios}" update="tabView" >
-			           								</p:ajax>
-			           	 						</p:selectOneMenu>
-										</h:panelGrid>	
+						<p:tab id="Sub29" title="Subtítulo 29" rendered="#{reporteHistoricoPorProgramaController.mostrarSub29}">
 										
 										<h:panelGrid>
 												<h:outputText value="Establecimiento: " styleClass="inputLabel" />

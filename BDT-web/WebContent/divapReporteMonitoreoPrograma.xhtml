@@ -37,9 +37,10 @@
 						]
 					</div>
 					<br />
+						<h:panelGrid columns="3" id="busqueda_mis_tareas">
 										<h:panelGrid>
 												<h:outputText value="Programa: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbProgramaSub21" value="#{reporteMonitoreoProgramaController.valorComboPrograma}">
+												<p:selectOneMenu style="width:400px;" id="cbProgramaSub21" value="#{reporteMonitoreoProgramaController.valorComboPrograma}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
 			           								<f:selectItems value="#{reporteMonitoreoProgramaController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
 			           								<p:ajax listener="#{reporteMonitoreoProgramaController.cargarDatosFiltroPrograma}" update="tabView" >
@@ -49,18 +50,20 @@
 										
 										<h:panelGrid>
 											<h:outputText value="Servicio: " styleClass="inputLabel" />
-											<p:selectOneMenu style="width:650px;" id="cbServicio"
+											<p:selectOneMenu style="width:400px;" id="cbServicio"
 												value="#{reporteMonitoreoProgramaController.valorComboServicio}">
 												<f:selectItem itemLabel="Seleccione" itemValue="0" />
 												<f:selectItems
 													value="#{reporteMonitoreoProgramaController.servicios}"
 													itemLabel="#{servicio.nombre_servicio}"
 													itemValue="#{servicio.id_servicio}" var="servicio" />
-												<p:ajax
-													listener="#{reporteMonitoreoProgramaController.cargarDatosFiltroServicioPrograma}"
-													update="tabView" />
 											</p:selectOneMenu>
 										</h:panelGrid>
+										
+										<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reporteMonitoreoProgramaController.cargarDatosFiltroServicioPrograma}" ajax="false"
+					icon="ui-icon-seek-first" update="tabView" />
+										
+						</h:panelGrid>
 
 					<p:tabView id="tabView" activeIndex="#{reporteMonitoreoProgramaController.activeTab}" dynamic="true" cache="false">
 					<p:ajax event="tabChange" listener="#{reporteMonitoreoProgramaController.onTabChange}" update="Sub21 Sub22 Sub24 Sub21" />
@@ -75,10 +78,11 @@
 								<p:columnGroup type="header">
 									<p:row>
 										<p:column rowspan="2" headerText="Servicio" />
-										<p:column rowspan="2" headerText="Marco Presupuestario" />
-										<p:column colspan="2" headerText="Remesa Acumulada" />
-										<p:column colspan="2" headerText="Convenio" />
-										<p:column rowspan="2" headerText="Convenio Pendiente" />
+										<p:column rowspan="2" headerText="Componente" />
+										<p:column rowspan="2" headerText="$ Marco Presupuestario" />
+										<p:column colspan="2" headerText="$ Remesa Acumulada" />
+										<p:column colspan="2" headerText="$ Convenio" />
+										<p:column rowspan="2" headerText="$ Convenio Pendiente" />
 									</p:row>
 									<p:row>
 										<p:column headerText="Monto" />
@@ -91,6 +95,9 @@
 
 								<p:column>
 									<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.componente}</span>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.marco}" styleClass="textoPequenio textoAjustado">
@@ -128,6 +135,7 @@
 
 								<p:columnGroup type="footer">
 									<p:row>
+										<p:column />
 										<p:column />
 										<p:column>
 											<f:facet name="footer">
@@ -174,10 +182,11 @@
 								<p:columnGroup type="header">
 									<p:row>
 										<p:column rowspan="2" headerText="Servicio" />
-										<p:column rowspan="2" headerText="Marco Presupuestario" />
-										<p:column colspan="2" headerText="Remesa Acumulada" />
-										<p:column colspan="2" headerText="Convenio" />
-										<p:column rowspan="2" headerText="Convenio Pendiente" />
+										<p:column rowspan="2" headerText="Componente" />
+										<p:column rowspan="2" headerText="$ Marco Presupuestario" />
+										<p:column colspan="2" headerText="$ Remesa Acumulada" />
+										<p:column colspan="2" headerText="$ Convenio" />
+										<p:column rowspan="2" headerText="$ Convenio Pendiente" />
 									</p:row>
 									<p:row>
 										<p:column headerText="Monto" />
@@ -190,6 +199,9 @@
 
 								<p:column>
 									<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.componente}</span>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.marco}" styleClass="textoPequenio textoAjustado">
@@ -227,6 +239,7 @@
 
 								<p:columnGroup type="footer">
 									<p:row>
+										<p:column />
 										<p:column />
 										<p:column>
 											<f:facet name="footer">
@@ -274,6 +287,7 @@
 									<p:row>
 										<p:column rowspan="2" headerText="Servicio" />
 										<p:column rowspan="2" headerText="Comuna" />
+										<p:column rowspan="2" headerText="Componente" />
 										<p:column rowspan="2" headerText="Marco Presupuestario" />
 										<p:column colspan="2" headerText="Remesa Acumulada" />
 										<p:column colspan="2" headerText="Convenio" />
@@ -293,6 +307,9 @@
 								</p:column>
 								<p:column>
 									<span class="textoAjustado textoPequenio centrado">#{_data.comuna}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.componente}</span>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.marco}" styleClass="textoPequenio textoAjustado">
@@ -330,6 +347,7 @@
 
 								<p:columnGroup type="footer">
 									<p:row>
+										<p:column />
 										<p:column />
 										<p:column />
 										<p:column>
@@ -377,10 +395,11 @@
 								<p:columnGroup type="header">
 									<p:row>
 										<p:column rowspan="2" headerText="Servicio" />
-										<p:column rowspan="2" headerText="Marco Presupuestario" />
-										<p:column colspan="2" headerText="Remesa Acumulada" />
-										<p:column colspan="2" headerText="Convenio" />
-										<p:column rowspan="2" headerText="Convenio Pendiente" />
+										<p:column rowspan="2" headerText="Componente" />
+										<p:column rowspan="2" headerText="$ Marco Presupuestario" />
+										<p:column colspan="2" headerText="$ Remesa Acumulada" />
+										<p:column colspan="2" headerText="$ Convenio" />
+										<p:column rowspan="2" headerText="$ Convenio Pendiente" />
 									</p:row>
 									<p:row>
 										<p:column headerText="Monto" />
@@ -393,6 +412,9 @@
 
 								<p:column>
 									<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.componente}</span>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.marco}" styleClass="textoPequenio textoAjustado">
@@ -430,6 +452,7 @@
 
 								<p:columnGroup type="footer">
 									<p:row>
+										<p:column />
 										<p:column />
 										<p:column>
 											<f:facet name="footer">
