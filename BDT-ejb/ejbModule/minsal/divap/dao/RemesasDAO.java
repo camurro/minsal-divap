@@ -5,7 +5,9 @@ import java.util.List;
 
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import minsal.divap.enums.TipoDocumentosProcesos;
@@ -319,24 +321,26 @@ public class RemesasDAO {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
-	
-	
-	public List<DetalleRemesas> getRemesasPagadasComunaPrograma(Integer idProgramaAno, Integer idComuna, Integer idMes){
-		
+
+
+
+
+	public Long getRemesasPagadasComunaPrograma(Integer idProgramaAno, Integer idComuna, Integer idMes){
 		try{
-			TypedQuery<DetalleRemesas> query = this.em.createNamedQuery("DetalleRemesas.getRemesasPagadasComunaProgramaMesActual",DetalleRemesas.class);
+			Query query = this.em.createNamedQuery("DetalleRemesas.groupMontoRemesaProgramaComuna");
 			query.setParameter("idProgramaAno", idProgramaAno);
 			query.setParameter("idComuna", idComuna);
-			query.setParameter("remesaPagada", new Boolean(true));
-			query.setParameter("idMes", idMes);
-			return query.getResultList();
+			query.setParameter("mes", idMes);
+			Object[] results = (Object[]) query.getSingleResult();
+			if(results != null && results.length > 1){
+				return ((Number)results[1]).longValue();
+			}
+			return 0L;
+		}catch (NoResultException noResultException) {
+			return 0L;
 		}catch(Exception e){
 			throw new RuntimeException(e);
 		}
-		
-		
 	}
 
 	public List<DetalleRemesas> getRemesasComunaLaFecha(Integer idProgramaAno, Integer idComuna, Integer idTipoSubtitulo, Integer mes){

@@ -26,7 +26,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CajaMonto.findByMes", query = "SELECT c FROM CajaMonto c WHERE c.cajaMontoPK.mes = :mes"),
     @NamedQuery(name = "CajaMonto.findByCajaMes", query = "SELECT c FROM CajaMonto c WHERE c.cajaMontoPK.mes = :mes and c.cajaMontoPK.caja = :caja"),
     @NamedQuery(name = "CajaMonto.deleteUsingIdProgramaAno", query = "DELETE FROM CajaMonto c WHERE c.caja.programa.idProgramaAno = :idProgramaAno"),
-    @NamedQuery(name = "CajaMonto.countByIdProgramaAno", query = "SELECT COUNT(c) FROM CajaMonto c WHERE c.caja.programa.idProgramaAno = :idProgramaAno")})
+    @NamedQuery(name = "CajaMonto.countByIdProgramaAno", query = "SELECT COUNT(c) FROM CajaMonto c WHERE c.caja.programa.idProgramaAno = :idProgramaAno"),
+    @NamedQuery(name = "CajaMonto.deleteUsingIdCaja", query = "DELETE FROM CajaMonto c WHERE c.caja.id = :idCaja")})
 public class CajaMonto implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId

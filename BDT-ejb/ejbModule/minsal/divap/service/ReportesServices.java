@@ -64,10 +64,8 @@ import cl.minsal.divap.model.Comuna;
 import cl.minsal.divap.model.ComunaCumplimiento;
 import cl.minsal.divap.model.ConvenioServicioComponente;
 import cl.minsal.divap.model.Cuota;
-import cl.minsal.divap.model.DetalleRemesas;
 import cl.minsal.divap.model.Establecimiento;
 import cl.minsal.divap.model.Mes;
-import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
 import cl.minsal.divap.model.RebajaCorte;
 import cl.minsal.divap.model.ServicioSalud;
@@ -1146,8 +1144,7 @@ public class ReportesServices {
 					continue;
 				}
 
-				reporteGlosaVO.setArt49perCapita(antecendentesComunaCalculado
-						.getPercapitaAno());
+				reporteGlosaVO.setArt49perCapita(((antecendentesComunaCalculado.getPercapitaAno() == null) ? 0L : antecendentesComunaCalculado.getPercapitaAno()));
 
 				Long tarifa = 0L;
 				Long totalRemesasAcumuladasMesActual = 0L;
@@ -1163,19 +1160,9 @@ public class ReportesServices {
 				
 				//TODO se cae por timeout
 				
-//				for(ProgramaVO programaVO : programasService.getProgramasByUser(user)){
-//					
-//					for(Integer i=1; i<mesActual+1;i++){
-//						List<DetalleRemesas> detalleRemesas = remesasDAO.getRemesasPagadasComunaPrograma(programaVO.getIdProgramaAno(), comuna.getId(), i);
-//						if(detalleRemesas == null){
-//							continue;
-//						}
-//						for(DetalleRemesas detalleRemesa : detalleRemesas){
-//							totalRemesasAcumuladasMesActual += detalleRemesa.getMontoRemesa();
-//						}
-//					}
-//				}
-
+				for(ProgramaVO programaVO : programasService.getProgramasByUser(user)){
+					totalRemesasAcumuladasMesActual+= remesasDAO.getRemesasPagadasComunaPrograma(programaVO.getIdProgramaAno(), comuna.getId(), mesActual);
+				}
 				reporteGlosaVO.setArt56reforzamientoMunicipal(tarifa);
 				reporteGlosaVO.setTotalRemesasEneroMarzo(totalRemesasAcumuladasMesActual);
 				resultado.add(reporteGlosaVO);
@@ -1203,8 +1190,7 @@ public class ReportesServices {
 				continue;
 			}
 
-			reporteGlosaVO.setArt49perCapita(antecendentesComunaCalculado
-					.getPercapitaAno());
+			reporteGlosaVO.setArt49perCapita(((antecendentesComunaCalculado.getPercapitaAno() == null) ? 0L : antecendentesComunaCalculado.getPercapitaAno()));
 
 			Long tarifa = 0L;
 			Long totalRemesasAcumuladasMesActual = 0L;
@@ -1219,18 +1205,7 @@ public class ReportesServices {
 			Integer mesActual = Integer.parseInt(getMesCurso(true));
 			
 			for(ProgramaVO programaVO : programasService.getProgramasByUser(user)){
-				
-				for(Integer i=1; i<mesActual+1;i++){
-					List<DetalleRemesas> detalleRemesas = remesasDAO.getRemesasPagadasComunaPrograma(programaVO.getIdProgramaAno(), comuna.getId(), i);
-					if(detalleRemesas == null){
-						continue;
-					}
-					for(DetalleRemesas detalleRemesa : detalleRemesas){
-						totalRemesasAcumuladasMesActual += detalleRemesa.getMontoRemesa();
-					}
-				}
-				
-				
+				totalRemesasAcumuladasMesActual += remesasDAO.getRemesasPagadasComunaPrograma(programaVO.getIdProgramaAno(), comuna.getId(), mesActual);
 			}
 			
 			reporteGlosaVO.setArt56reforzamientoMunicipal(tarifa);

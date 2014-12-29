@@ -37,12 +37,11 @@ public class EstimacionFlujoCajaRESTService extends BaseRest {
 	@GET
 	@Path("/estimacionFlujoCaja/generarPlanillaPropuesta/{idProgramaAno}")
 	@Produces("application/json")
-	public Integer generarPlanillaPropuesta(
+	public void generarPlanillaPropuesta(
 			@PathParam("idProgramaAno") Integer idProgramaAno) {
 		System.out.println("[GENERAR PLANILLA PROPUESTA] -->" + idProgramaAno);
 		EstimacionFlujoCajaService estimacionFlujoCajaService = getService(EstimacionFlujoCajaService.class);
-		System.out.println("FIN GENERAR PLANILLA PROPUESTA");
-		return estimacionFlujoCajaService.generarPlanillaPropuesta(idProgramaAno);
+		estimacionFlujoCajaService.generarPlanillaPropuesta(idProgramaAno);
 	}
 
 	@GET

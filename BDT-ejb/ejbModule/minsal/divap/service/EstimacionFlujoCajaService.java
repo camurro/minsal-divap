@@ -258,6 +258,7 @@ public class EstimacionFlujoCajaService {
 	// valores del año pasado.
 	public void calcularPropuesta(Integer idProgramaAno, Boolean iniciarFlujoCaja) {
 		if(iniciarFlujoCaja){
+			long millisecons = System.currentTimeMillis();
 			ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
 			programaAno.setEstadoFlujoCaja(new EstadoPrograma(EstadosProgramas.ENREVISION.getId()));
 			Map<Integer, List<Integer>> componentesBySubtitulos = new HashMap<Integer, List<Integer>>();
@@ -272,7 +273,17 @@ public class EstimacionFlujoCajaService {
 					}
 				}
 			}
-			cajaDAO.eliminarPropuesta(idProgramaAno);
+			List<Caja> cajasPogramaAno = cajaDAO.getCajasByProgramaAno(idProgramaAno);
+			if(cajasPogramaAno != null && cajasPogramaAno.size() > 0){
+				List<Integer> idCajas = new ArrayList<Integer>();
+				for(Caja caja : cajasPogramaAno){
+					idCajas.add(caja.getId());
+					cajaDAO.eliminarCajaMontosById(caja.getId());
+				}
+				if(idCajas.size() > 0){
+					cajaDAO.eliminarCajasById(idCajas);
+				}
+			}
 			ProgramaAno programaAnoActual = programasDAO.getProgramaAnoByIDProgramaAno(programaAno.getPrograma().getId(), getAnoCurso());
 			List<ServicioSalud> servicios = servicioSaludDAO.getServicios();
 			System.out.println("Comenzando con subtitulo 24");
@@ -298,16 +309,14 @@ public class EstimacionFlujoCajaService {
 							caja.setIdSubtitulo(new TipoSubtitulo(Subtitulo.SUBTITULO24.getId()));
 							caja.setPrograma(programaAno);
 							caja.setServicio(servicioSalud);
-							System.out.println("antes de persistir caja 1");
 							cajaDAO.save(caja);
-							System.out.println("persistido caja 1");
 							List<CajaMonto> cajaMontosActual = cajaActual.getCajaMontos();
 							int mesCajaMonto = 1;
 							int montoCalculado = 0;
 							for(CajaMonto cajaMontoActual : cajaMontosActual){
 								boolean mesConMonto = false;
 								CajaMonto cajaMonto = new CajaMonto();
-								CajaMontoPK cajaMontoPK = new CajaMontoPK(cajaMontoActual.getMes().getIdMes(), caja.getId());
+								CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cajaMontoActual.getMes().getIdMes());
 								cajaMonto.setCajaMontoPK(cajaMontoPK);
 								cajaMonto.setMes(cajaMontoActual.getMes());
 								cajaMonto.setCaja(caja);
@@ -320,9 +329,7 @@ public class EstimacionFlujoCajaService {
 									cajaMonto.setMonto(monto);
 									mesConMonto = true;
 								}
-								System.out.println("antes persistir cajamonto 1");
 								cajaDAO.save(cajaMonto);
-								System.out.println("persistido cajamonto 1");
 								if(mesConMonto){
 									mesCajaMonto = cajaMonto.getMes().getIdMes();
 								}
@@ -342,15 +349,13 @@ public class EstimacionFlujoCajaService {
 							caja.setIdSubtitulo(new TipoSubtitulo(Subtitulo.SUBTITULO24.getId()));
 							caja.setPrograma(programaAno);
 							caja.setServicio(servicioSalud);
-							System.out.println("antes persistir caja 2");
 							cajaDAO.save(caja);
-							System.out.println("persistido caja 2");
 							int montoMarco = 0;
 							List<Integer> mesesConCuotas = new ArrayList<Integer>();
 							for(int contCuotas = 0; contCuotas <  cuotasPrograma.size(); contCuotas++){
 								CajaMonto cajaMonto = new CajaMonto();
 								if(contCuotas == 0){
-									CajaMontoPK cajaMontoPK = new CajaMontoPK(3, caja.getId());
+									CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), 3);
 									cajaMonto.setCajaMontoPK(cajaMontoPK);
 									cajaMonto.setMes(new Mes(3));
 									cajaMonto.setCaja(caja);
@@ -360,7 +365,7 @@ public class EstimacionFlujoCajaService {
 									mesesConCuotas.add(3);
 								}else if(contCuotas == (cuotasPrograma.size() - 1)){
 									mesesConCuotas.add(cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
-									CajaMontoPK cajaMontoPK = new CajaMontoPK(cuotasPrograma.get(contCuotas).getIdMes().getIdMes(), caja.getId());
+									CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
 									cajaMonto.setCajaMontoPK(cajaMontoPK);
 									cajaMonto.setMes(cuotasPrograma.get(contCuotas).getIdMes());
 									cajaMonto.setCaja(caja);
@@ -368,7 +373,7 @@ public class EstimacionFlujoCajaService {
 									cajaMonto.setMonto(monto);
 								}else{
 									mesesConCuotas.add(cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
-									CajaMontoPK cajaMontoPK = new CajaMontoPK(cuotasPrograma.get(contCuotas).getIdMes().getIdMes(), caja.getId());
+									CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
 									cajaMonto.setCajaMontoPK(cajaMontoPK);
 									cajaMonto.setMes(cuotasPrograma.get(contCuotas).getIdMes());
 									cajaMonto.setCaja(caja);
@@ -376,23 +381,19 @@ public class EstimacionFlujoCajaService {
 									montoMarco+=monto;
 									cajaMonto.setMonto(monto);
 								}
-								System.out.println("antes persistir cajamonto 2");
 								cajaDAO.save(cajaMonto);
-								System.out.println("persistido cajamonto 2");
 							}
 							for(Integer mes = 1; mes <= 12; mes++){
 								if(mesesConCuotas.contains(mes)){
 									continue;
 								}
 								CajaMonto cajaMonto = new CajaMonto();
-								CajaMontoPK cajaMontoPK = new CajaMontoPK(mes, caja.getId());
+								CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), mes);
 								cajaMonto.setCajaMontoPK(cajaMontoPK);
 								cajaMonto.setMes(new Mes(mes));
 								cajaMonto.setCaja(caja);
 								cajaMonto.setMonto(0);
-								System.out.println("antes persistir cajamonto 3");
 								cajaDAO.save(cajaMonto);
-								System.out.println("persistido cajamonto 3");
 							}
 
 						}
@@ -425,16 +426,14 @@ public class EstimacionFlujoCajaService {
 									caja.setIdSubtitulo(new TipoSubtitulo(entry.getKey()));
 									caja.setPrograma(programaAno);
 									caja.setServicio(servicioSalud);
-									System.out.println("antes persistir caja 4");
 									cajaDAO.save(caja);
-									System.out.println("persistido caja 4");
 									List<CajaMonto> cajaMontosActual = cajaActual.getCajaMontos();
 									int mesCajaMonto = 1;
 									int montoCalculado = 0;
 									for(CajaMonto cajaMontoActual : cajaMontosActual){
 										boolean mesConMonto = false;
 										CajaMonto cajaMonto = new CajaMonto();
-										CajaMontoPK cajaMontoPK = new CajaMontoPK(cajaMontoActual.getMes().getIdMes(), caja.getId());
+										CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cajaMontoActual.getMes().getIdMes());
 										cajaMonto.setCajaMontoPK(cajaMontoPK);
 										cajaMonto.setMes(cajaMontoActual.getMes());
 										cajaMonto.setCaja(caja);
@@ -447,9 +446,7 @@ public class EstimacionFlujoCajaService {
 											cajaMonto.setMonto(monto);
 											mesConMonto = true;
 										}
-										System.out.println("antes persistir cajamonto 4");
 										cajaDAO.save(cajaMonto);
-										System.out.println("persistido cajamonto 4");
 										if(mesConMonto){
 											mesCajaMonto = cajaMonto.getMes().getIdMes();
 										}
@@ -469,15 +466,13 @@ public class EstimacionFlujoCajaService {
 									caja.setIdSubtitulo(new TipoSubtitulo(entry.getKey()));
 									caja.setPrograma(programaAno);
 									caja.setServicio(servicioSalud);
-									System.out.println("antes persistir caja 5");
 									cajaDAO.save(caja);
-									System.out.println("persistido caja 5");
 									int montoMarco = 0;
 									List<Integer> mesesConCuotas = new ArrayList<Integer>();
 									for(int contCuotas = 0; contCuotas <  cuotasPrograma.size(); contCuotas++){
 										CajaMonto cajaMonto = new CajaMonto();
 										if(contCuotas == 0){
-											CajaMontoPK cajaMontoPK = new CajaMontoPK(3, caja.getId());
+											CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), 3);
 											cajaMonto.setCajaMontoPK(cajaMontoPK);
 											cajaMonto.setMes(new Mes(3));
 											cajaMonto.setCaja(caja);
@@ -487,7 +482,7 @@ public class EstimacionFlujoCajaService {
 											mesesConCuotas.add(3);
 										}else if(contCuotas == (cuotasPrograma.size() - 1)){
 											mesesConCuotas.add(cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
-											CajaMontoPK cajaMontoPK = new CajaMontoPK(cuotasPrograma.get(contCuotas).getIdMes().getIdMes(), caja.getId());
+											CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
 											cajaMonto.setCajaMontoPK(cajaMontoPK);
 											cajaMonto.setMes(cuotasPrograma.get(contCuotas).getIdMes());
 											cajaMonto.setCaja(caja);
@@ -495,7 +490,7 @@ public class EstimacionFlujoCajaService {
 											cajaMonto.setMonto(monto);
 										}else{
 											mesesConCuotas.add(cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
-											CajaMontoPK cajaMontoPK = new CajaMontoPK(cuotasPrograma.get(contCuotas).getIdMes().getIdMes(), caja.getId());
+											CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
 											cajaMonto.setCajaMontoPK(cajaMontoPK);
 											cajaMonto.setMes(cuotasPrograma.get(contCuotas).getIdMes());
 											cajaMonto.setCaja(caja);
@@ -503,31 +498,26 @@ public class EstimacionFlujoCajaService {
 											montoMarco+=monto;
 											cajaMonto.setMonto(monto);
 										}
-										System.out.println("antes persistir cajamonto 5");
 										cajaDAO.save(cajaMonto);
-										System.out.println("persistido caja 5");
 									}
 									for(Integer mes = 1; mes <= 12; mes++){
 										if(mesesConCuotas.contains(mes)){
 											continue;
 										}
 										CajaMonto cajaMonto = new CajaMonto();
-										CajaMontoPK cajaMontoPK = new CajaMontoPK(mes, caja.getId());
+										CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), mes);
 										cajaMonto.setCajaMontoPK(cajaMontoPK);
 										cajaMonto.setMes(new Mes(mes));
 										cajaMonto.setCaja(caja);
 										cajaMonto.setMonto(0);
-										System.out.println("antes persistir cajamonto 6");
 										cajaDAO.save(cajaMonto);
-										System.out.println("persistido cajamonto 6");
 									}
-
 								}
 							}
 						}
 					}
 				}
-				System.out.println("Fin subtitulo 21/22/29");
+				System.out.println("Fin subtitulo 21/22/29 tardo " + ((System.currentTimeMillis()-millisecons)/1000) + "segundos");
 			}
 		}else{
 			//Obtenemos los datos del programa ano anterior.
@@ -820,9 +810,10 @@ public class EstimacionFlujoCajaService {
 
 	}
 
-
-	public Integer generarPlanillaPropuesta(Integer idProgramaAno) {
+	@Asynchronous
+	public void generarPlanillaPropuesta(Integer idProgramaAno) {
 		Integer planillaTrabajoId = null;
+		long milliseconds = System.currentTimeMillis();
 		System.out.println("Inicio generarPlanillaPropuesta");
 		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
 		Map<Integer, List<Integer>> componentesBySubtitulos = new HashMap<Integer, List<Integer>>();
@@ -1176,8 +1167,7 @@ public class EstimacionFlujoCajaService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("Inicio generarPlanillaPropuesta");
-		return planillaTrabajoId;
+		System.out.println("Fin generarPlanillaPropuesta demoro " + ((System.currentTimeMillis() - milliseconds) / 1000) +" segundos");
 	}
 
 	private SubtituloFlujoCajaVO getPercapitaFlujoCajaVO(String nombreServicio, Long percapitaMes) {

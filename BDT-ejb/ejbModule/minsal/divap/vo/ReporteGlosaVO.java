@@ -17,8 +17,11 @@ public class ReporteGlosaVO implements Serializable{
 	private Long totalRemesasEneroMarzo;
 	
 	public ReporteGlosaVO(){
-		
+		this.art49perCapita = 0L;
+		this.art56reforzamientoMunicipal = 0L;
+		this.totalRemesasEneroMarzo = 0L;
 	}
+	
 	ReporteGlosaVO(String region, String servicio, String comuna, Long art49perCapita, Long art56reforzamientoMunicipal, Long totalRemesasEneroMarzo){
 		super();
 		this.region = region;
@@ -27,8 +30,11 @@ public class ReporteGlosaVO implements Serializable{
 		this.art49perCapita= art49perCapita;
 		this.art56reforzamientoMunicipal = art56reforzamientoMunicipal;
 		this.totalRemesasEneroMarzo = totalRemesasEneroMarzo;
-		
+		this.art49perCapita = 0L;
+		this.art56reforzamientoMunicipal = 0L;
+		this.totalRemesasEneroMarzo = 0L;
 	}
+	
 	public String getRegion() {
 		return region;
 	}

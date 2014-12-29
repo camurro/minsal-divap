@@ -257,5 +257,36 @@ public class CajaDAO {
 		}
 	}
 
+	public List<Caja> getCajasByProgramaAno(Integer idProgramaAno) {
+		try {
+			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByIdProgramaAno", Caja.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public int eliminarCajaMontosById(Integer idCaja) {
+		try {
+			Query queryCajaMonto = this.em.createNamedQuery("CajaMonto.deleteUsingIdCaja");
+			queryCajaMonto.setParameter("idCaja", idCaja);
+			return queryCajaMonto.executeUpdate();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public int eliminarCajasById(List<Integer> idCajas) {
+		try {
+			Query queryCaja = this.em.createNamedQuery("Caja.deleteUsingIds");
+			queryCaja.setParameter("idCajas", idCajas);
+			return queryCaja.executeUpdate();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+
 }
 

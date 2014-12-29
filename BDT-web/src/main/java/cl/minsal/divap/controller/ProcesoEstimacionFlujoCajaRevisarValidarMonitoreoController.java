@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import minsal.divap.enums.Subtitulo;
+import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.EstimacionFlujoCajaService;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ServicioSaludService;
@@ -216,6 +217,8 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 				setAnoActual(getPrograma().getAno());
 			}
 			this.docProgramacion = (Integer) getTaskDataVO().getData().get("_idPlanillaMonitoreo");
+			
+			TipoDocumentosProcesos.PLANTILLAPROPUESTA
 			System.out.println("docProgramacion --->" + this.docProgramacion);
 			this.iniciarFlujoCaja = (Boolean) getTaskDataVO().getData().get("_iniciarFlujoCaja");
 			System.out.println("iniciarFlujoCaja --->" + this.iniciarFlujoCaja);
