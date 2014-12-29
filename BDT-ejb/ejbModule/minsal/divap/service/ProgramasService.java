@@ -48,7 +48,6 @@ import cl.minsal.divap.model.ProgramaMunicipalCore;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
 import cl.minsal.divap.model.ProgramaServicioCore;
 import cl.minsal.divap.model.ProgramaServicioCoreComponente;
-import cl.minsal.divap.model.TipoComponente;
 import cl.minsal.divap.model.TipoSubtitulo;
 
 @Stateless
@@ -614,11 +613,13 @@ public class ProgramasService {
 		
 	}
 
-	public int getProgramaAnoSiguiente(Integer idPrograma,
+	public Integer getProgramaAnoSiguiente(Integer idPrograma,
 			Integer anoSiguiente) {
 		ProgramaAno prog = programasDAO.getProgramaAnoSiguiente(idPrograma, anoSiguiente);
-		return prog.getIdProgramaAno();
-		
+		if(prog != null){
+			return prog.getIdProgramaAno();
+		}
+		return null;
 	}
 	
 	public List<ProgramaAPSVO> getProgramaMunicipalesResumen(Integer idProgramaAno, List<Integer> idComponentes, Integer idSubtitulo) {

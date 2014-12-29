@@ -22,6 +22,7 @@ import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ReliquidacionService;
 import minsal.divap.service.ReportesServices;
 import minsal.divap.service.ServicioSaludService;
+import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.EstablecimientoSummaryVO;
 import minsal.divap.vo.ProgramaVO;
@@ -30,6 +31,7 @@ import minsal.divap.vo.ReporteHistoricoPorProgramaEstablecimientoVO;
 import minsal.divap.vo.ReporteMarcoPresupuestarioComunaVO;
 import minsal.divap.vo.ReporteMarcoPresupuestarioEstablecimientoVO;
 import minsal.divap.vo.ServiciosVO;
+import minsal.divap.vo.SubtituloVO;
 import cl.redhat.bandejaTareas.controller.BaseController;
 
 @Named ( "reporteHistoricoPorProgramaController" )
@@ -60,6 +62,16 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	private Long totalMarco2013;
 	private Long totalMarco2014;
 	
+	private Boolean ano2006;
+	private Boolean ano2007;
+	private Boolean ano2008;
+	private Boolean ano2009;
+	private Boolean ano2010;
+	private Boolean ano2011;
+	private Boolean ano2012;
+	private Boolean ano2013;
+	private Boolean ano2014;
+	
 	
 	private List<ProgramaVO> programas;
 	private List<ServiciosVO> servicios;
@@ -77,6 +89,12 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	private ServiciosVO servicioSeleccionado;
 	private Integer anoEnCurso;
 	private Subtitulo subtituloSeleccionado;
+	
+	private Boolean mostrarSub21;
+	private Boolean mostrarSub22;
+	private Boolean mostrarSub24;
+	private Boolean mostrarSub29;
+	
 	
 	@EJB
 	private ProgramasService programasService;
@@ -98,6 +116,16 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 		this.reporteHistoricoPorProgramaEstablecimientoVOSub22 = new ArrayList<ReporteHistoricoPorProgramaEstablecimientoVO>();
 		this.reporteHistoricoPorProgramaEstablecimientoVOSub29 = new ArrayList<ReporteHistoricoPorProgramaEstablecimientoVO>();
 		
+		this.ano2006 = false;
+		this.ano2007 = false;
+		this.ano2008 = false;
+		this.ano2009 = false;
+		this.ano2010 = false;
+		this.ano2011 = false;
+		this.ano2012 = false;
+		this.ano2013 = false;
+		this.ano2014 = false;
+		
 		
 		DateFormat formatNowYear = new SimpleDateFormat("yyyy");
 		Date nowDate = new Date();
@@ -114,12 +142,15 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 		tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO24);
 		tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO29);
 		
-		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEHISTORICOPROGRAMACOMUNA);
+		this.idPlanillaDocComuna = 1;
+//		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEHISTORICOPROGRAMACOMUNA);
+		
 		if(this.idPlanillaDocComuna == null){
 			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteMarcoPresupuestarioComuna();
 		}
 		
-		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEHISTORICOPROGRAMAESTABLECIMIENTO);
+//		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEHISTORICOPROGRAMAESTABLECIMIENTO);
+		this.idPlanillaDocEstablecimiento = 2;
 		if(this.idPlanillaDocEstablecimiento == null){
 			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteMarcoPresupuestarioServicios();
 		}
@@ -141,9 +172,6 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 		this.reporteHistoricoPorProgramaComunaVO = new ArrayList<ReporteHistoricoPorProgramaComunaVO>();
 		System.out.println("Tab Changed, Active Tab: " + event.getTab().getTitle());
 		System.out.println("event.getTab().getId(): " + event.getTab().getId());
-		this.valorComboPrograma = 0;
-		this.valorComboServicio = 0;
-		this.valorComboComuna = 0;
 		if(event.getTab().getId().equals("Sub21")){
 			this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
 			cargarEstablecimientos();
@@ -223,26 +251,37 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 		this.reporteHistoricoPorProgramaComunaVO = reportesServices.getReporteHistoricoPorProgramaVOFiltroServicio(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
 	}
 	
-	public void cargarTablaEstablecimientoFiltroServicios(){
-		this.programa = programasService.getProgramaAno(this.valorComboPrograma);
+	public void visibilidadSubtitulos(){
+		this.mostrarSub21 = false;
+		this.mostrarSub22 = false;
+		this.mostrarSub24 = false;
+		this.mostrarSub29 = false;
 		
-		switch (this.subtituloSeleccionado) {
-		case SUBTITULO21:
-			System.out.println("subtitulo 21");
-			this.reporteHistoricoPorProgramaEstablecimientoVOSub21 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicio(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
-			break;
-		case SUBTITULO22:
-			System.out.println("subtitulo 22");
-			this.reporteHistoricoPorProgramaEstablecimientoVOSub22 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicio(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
-			break;
-		case SUBTITULO29:
-			System.out.println("subtitulo 29");
-			this.reporteHistoricoPorProgramaEstablecimientoVOSub29 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicio(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
-			break;
-		default:
-			break;
+		
+		ProgramaVO programaVO = programasService.getProgramaAno(this.valorComboPrograma);
+		
+		for (ComponentesVO componente : programaVO.getComponentes()) {
+			System.out.println("componente.getNombre() --> "+componente.getNombre());
+			for(SubtituloVO subtitulo : componente.getSubtitulos()){
+				if(subtitulo.getId() == 1){
+					this.mostrarSub21 = true;
+					this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
+				}
+				else if(subtitulo.getId() == 2){
+					this.mostrarSub22 = true;
+					this.subtituloSeleccionado = Subtitulo.SUBTITULO22;
+				}
+				else if(subtitulo.getId() == 3){
+					this.mostrarSub24 = true;
+					this.subtituloSeleccionado = Subtitulo.SUBTITULO24;
+				}
+				else if(subtitulo.getId() == 4){
+					this.mostrarSub29 = true;
+					this.subtituloSeleccionado = Subtitulo.SUBTITULO29;
+				}
+			}
 		}
-	
+		
 	
 	}
 	
@@ -313,8 +352,7 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	}
 	public List<ProgramaVO> getProgramas() {
 		if(programas == null){
-			System.out.println("programas con subtitulo ---> "+this.subtituloSeleccionado.getNombre());
-			programas = programasService.getProgramasBySubtitulo(this.subtituloSeleccionado);
+			programas = programasService.getProgramasByUser(getLoggedUsername());
 		}
 		return programas;
 	}
@@ -808,7 +846,136 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	public void setPrograma(ProgramaVO programa) {
 		this.programa = programa;
 	}
-	
+
+
+	public Boolean getMostrarSub21() {
+		return mostrarSub21;
+	}
+
+
+	public void setMostrarSub21(Boolean mostrarSub21) {
+		this.mostrarSub21 = mostrarSub21;
+	}
+
+
+	public Boolean getMostrarSub22() {
+		return mostrarSub22;
+	}
+
+
+	public void setMostrarSub22(Boolean mostrarSub22) {
+		this.mostrarSub22 = mostrarSub22;
+	}
+
+
+	public Boolean getMostrarSub24() {
+		return mostrarSub24;
+	}
+
+
+	public void setMostrarSub24(Boolean mostrarSub24) {
+		this.mostrarSub24 = mostrarSub24;
+	}
+
+
+	public Boolean getMostrarSub29() {
+		return mostrarSub29;
+	}
+
+
+	public void setMostrarSub29(Boolean mostrarSub29) {
+		this.mostrarSub29 = mostrarSub29;
+	}
+
+
+	public Boolean getAno2006() {
+		return ano2006;
+	}
+
+
+	public void setAno2006(Boolean ano2006) {
+		this.ano2006 = ano2006;
+	}
+
+
+	public Boolean getAno2007() {
+		return ano2007;
+	}
+
+
+	public void setAno2007(Boolean ano2007) {
+		this.ano2007 = ano2007;
+	}
+
+
+	public Boolean getAno2008() {
+		return ano2008;
+	}
+
+
+	public void setAno2008(Boolean ano2008) {
+		this.ano2008 = ano2008;
+	}
+
+
+	public Boolean getAno2009() {
+		return ano2009;
+	}
+
+
+	public void setAno2009(Boolean ano2009) {
+		this.ano2009 = ano2009;
+	}
+
+
+	public Boolean getAno2010() {
+		return ano2010;
+	}
+
+
+	public void setAno2010(Boolean ano2010) {
+		this.ano2010 = ano2010;
+	}
+
+
+	public Boolean getAno2011() {
+		return ano2011;
+	}
+
+
+	public void setAno2011(Boolean ano2011) {
+		this.ano2011 = ano2011;
+	}
+
+
+	public Boolean getAno2012() {
+		return ano2012;
+	}
+
+
+	public void setAno2012(Boolean ano2012) {
+		this.ano2012 = ano2012;
+	}
+
+
+	public Boolean getAno2013() {
+		return ano2013;
+	}
+
+
+	public void setAno2013(Boolean ano2013) {
+		this.ano2013 = ano2013;
+	}
+
+
+	public Boolean getAno2014() {
+		return ano2014;
+	}
+
+
+	public void setAno2014(Boolean ano2014) {
+		this.ano2014 = ano2014;
+	}
 	
 
 }

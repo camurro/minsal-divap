@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import minsal.divap.util.StringUtil;
+
 public class ReporteMonitoreoProgramaPorComunaVO implements Serializable{
 
 	private static final long serialVersionUID = -7792066115952412397L;
@@ -97,12 +99,13 @@ public class ReporteMonitoreoProgramaPorComunaVO implements Serializable{
 		this.convenio_pendiente = convenio_pendiente;
 	}
 	
+	
 	@Override
 	public String toString() {
 		return "ReporteMonitoreoProgramaPorComunaVO [servicio=" + servicio
-				+ ", programa=" + programa + ", comuna=" + comuna + ", marco="
-				+ marco + ", remesa_monto=" + remesa_monto
-				+ ", remesa_porcentaje=" + remesa_porcentaje
+				+ ", programa=" + programa + ", componente=" + componente
+				+ ", comuna=" + comuna + ", marco=" + marco + ", remesa_monto="
+				+ remesa_monto + ", remesa_porcentaje=" + remesa_porcentaje
 				+ ", convenio_monto=" + convenio_monto
 				+ ", convenio_porcentaje=" + convenio_porcentaje
 				+ ", convenio_pendiente=" + convenio_pendiente + "]";
@@ -116,26 +119,29 @@ public class ReporteMonitoreoProgramaPorComunaVO implements Serializable{
 		if(getPrograma() != null){
 			row.add(getPrograma());
 		}
+		if(getComponente() != null){
+			row.add(getComponente());
+		}
 		if(getComuna() != null){
 			row.add(getComuna());
 		}
 		if(getMarco() != null){
-			row.add(getMarco());
+			row.add(StringUtil.longWithFormat(getMarco()));
 		}
 		if(getRemesa_monto() != null){
-			row.add(getRemesa_monto());
+			row.add(StringUtil.longWithFormat(getRemesa_monto()));
 		}
 		if(getRemesa_porcentaje() != null){
 			row.add(getRemesa_porcentaje());
 		}
 		if(getConvenio_monto() != null){
-			row.add(getConvenio_monto());
+			row.add(StringUtil.longWithFormat(getConvenio_monto()));
 		}
 		if(getConvenio_porcentaje() != null){
 			row.add(getConvenio_porcentaje());
 		}
 		if(getConvenio_pendiente() != null){
-			row.add(getConvenio_pendiente());
+			row.add(StringUtil.longWithFormat(getConvenio_pendiente()));
 		}
 		
 		return row;

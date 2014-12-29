@@ -140,29 +140,39 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 	
 	public void cargarDatosFiltroPrograma(){
 		ProgramaVO programaVO = programasService.getProgramaAno(this.valorComboPrograma);
+		this.reporteMonitoreoProgramaPorEstablecimientoVOSub21 = new ArrayList<ReporteMonitoreoProgramaPorEstablecimientoVO>();
+		this.reporteMonitoreoProgramaPorEstablecimientoVOSub22 = new ArrayList<ReporteMonitoreoProgramaPorEstablecimientoVO>();
+		this.reporteMonitoreoProgramaPorEstablecimientoVOSub29 = new ArrayList<ReporteMonitoreoProgramaPorEstablecimientoVO>();
+		this.reporteMonitoreoProgramaPorComunaVO = new ArrayList<ReporteMonitoreoProgramaPorComunaVO>();
+		
 		
 			for (ComponentesVO componente : programaVO.getComponentes()) {
 				System.out.println("componente.getNombre() --> "+componente.getNombre());
 				for(SubtituloVO subtitulo : componente.getSubtitulos()){
 					if(subtitulo.getId() == 1){
 						this.mostrarSub21 = true;
+						this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
 					}
 					else if(subtitulo.getId() == 2){
 						this.mostrarSub22 = true;
+						this.subtituloSeleccionado = Subtitulo.SUBTITULO22;
 					}
 					else if(subtitulo.getId() == 3){
 						this.mostrarSub24 = true;
+						this.subtituloSeleccionado = Subtitulo.SUBTITULO24;
 					}
 					else if(subtitulo.getId() == 4){
 						this.mostrarSub29 = true;
+						this.subtituloSeleccionado = Subtitulo.SUBTITULO29;
 					}
 				}
 			}
 	}
+	
 	public void cargarDatosFiltroServicioPrograma(){
 		System.out.println("this.subtituloSeleccionado.getId() --> "+this.subtituloSeleccionado.getId());
 		if(this.subtituloSeleccionado.getId() == 3){
-			cargarTablaMonitoreoServicioPrograma();
+			cargarTablaMonitoreoComunaServicioPrograma();
 		}else{
 			cargarTablaMonitoreoEstablecimientoByServicioPrograma();
 		}
@@ -175,7 +185,7 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 	}
 	
 	
-	public void cargarTablaMonitoreoServicioPrograma(){
+	public void cargarTablaMonitoreoComunaServicioPrograma(){
 		this.reporteMonitoreoProgramaPorComunaVO = reportesServices.getReporteMonitoreoPorComunaFiltroServicioPrograma(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
 	}
 	
@@ -208,11 +218,11 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 			break;
 		case SUBTITULO22:
 			System.out.println("subtitulo 22");
-			this.reporteMonitoreoProgramaPorEstablecimientoVOSub21 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroServicioPrograma(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
+			this.reporteMonitoreoProgramaPorEstablecimientoVOSub22 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroServicioPrograma(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
 			break;
 		case SUBTITULO29:
 			System.out.println("subtitulo 29");
-			this.reporteMonitoreoProgramaPorEstablecimientoVOSub21 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroServicioPrograma(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
+			this.reporteMonitoreoProgramaPorEstablecimientoVOSub29 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroServicioPrograma(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
 			break;
 		default:
 			break;
@@ -223,26 +233,32 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 		this.reporteMonitoreoProgramaPorComunaVO = new ArrayList<ReporteMonitoreoProgramaPorComunaVO>();
 		System.out.println("Tab Changed, Active Tab: " + event.getTab().getTitle());
 		System.out.println("event.getTab().getId(): " + event.getTab().getId());
+		
+		this.mostrarSub21 = false;
+		this.mostrarSub22 = false;
+		this.mostrarSub24 = false;
+		this.mostrarSub29 = false;
+		
 		if(event.getTab().getId().equals("Sub21")){
 			this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
-			cargarProgramas(Subtitulo.SUBTITULO21);
+			this.reporteMonitoreoProgramaPorEstablecimientoVOSub21 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroServicioPrograma(getValorComboPrograma(), getValorComboServicio(), Subtitulo.SUBTITULO21);
 		}
 		if(event.getTab().getId().equals("Sub22")){
 			this.subtituloSeleccionado = Subtitulo.SUBTITULO22;
-			cargarProgramas(Subtitulo.SUBTITULO22);
+			this.reporteMonitoreoProgramaPorEstablecimientoVOSub22 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroServicioPrograma(getValorComboPrograma(), getValorComboServicio(), Subtitulo.SUBTITULO22);
+
 		}
 		if(event.getTab().getId().equals("Sub24")){
 			this.subtituloSeleccionado = Subtitulo.SUBTITULO24;
-			cargarProgramas(Subtitulo.SUBTITULO24);
+			this.reporteMonitoreoProgramaPorComunaVO = reportesServices.getReporteMonitoreoPorComunaFiltroServicioPrograma(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
 		}
 		if(event.getTab().getId().equals("Sub29")){
 			this.subtituloSeleccionado = Subtitulo.SUBTITULO29;
-			cargarProgramas(Subtitulo.SUBTITULO29);
+			this.reporteMonitoreoProgramaPorEstablecimientoVOSub29 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroServicioPrograma(getValorComboPrograma(), getValorComboServicio(), Subtitulo.SUBTITULO29);
+
 		}
 //		this.programas = programasService.getProgramasBySubtitulo(this.subtituloSeleccionado);
 		System.out.println("this.subtituloSeleccionado --> "+this.subtituloSeleccionado.getNombre());
-		this.valorComboPrograma = 0;
-		this.valorComboServicio = 0;
 		
 	}
 	

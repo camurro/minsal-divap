@@ -299,12 +299,13 @@ public class ProgramasDAO {
 			query.setParameter("idPrograma", idPrograma);
 			query.setParameter("ano", anoSiguiente);
 			List<ProgramaAno> results = query.getResultList();
-			if (results.size() >= 1)
+			if (results.size() >= 1) {
 				return results.get(0);
+			} 
+			return null;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		return null;
 	}
 
 	public ProgramaAno save(ProgramaAno programaAno) {
@@ -791,6 +792,19 @@ public class ProgramasDAO {
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
+	}
+	
+	public List<ProgramaMunicipalCoreComponente> getByIdComunaIdProgramaAno(Integer idComuna, Integer idProgramaAno) {
+		try{
+		TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.findByIdComunaIdProgramaAno", ProgramaMunicipalCoreComponente.class);
+		query.setParameter("idComuna", idComuna);
+		query.setParameter("idProgramaAno", idProgramaAno);
+		return query.getResultList();
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
 	
 }

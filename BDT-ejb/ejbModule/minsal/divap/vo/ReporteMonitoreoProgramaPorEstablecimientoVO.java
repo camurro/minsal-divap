@@ -4,11 +4,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import minsal.divap.util.StringUtil;
+
 public class ReporteMonitoreoProgramaPorEstablecimientoVO implements Serializable{
 
 	private static final long serialVersionUID = -7792066115952412397L;
 	private String servicio;
 	private String programa;
+	private String componente;
+	private String establecimiento;
 	private Long marco;
 	private Long remesa_monto;
 	private Double remesa_porcentaje;
@@ -19,11 +23,13 @@ public class ReporteMonitoreoProgramaPorEstablecimientoVO implements Serializabl
 	public ReporteMonitoreoProgramaPorEstablecimientoVO(){
 		
 	}
-	public ReporteMonitoreoProgramaPorEstablecimientoVO(String servicio, String programa, Long marco, Long remesa_monto, Double remesa_porcentaje,
+	public ReporteMonitoreoProgramaPorEstablecimientoVO(String servicio, String programa, String componente, String establecimiento, Long marco, Long remesa_monto, Double remesa_porcentaje,
 			Long convenio_monto, Double convenio_porcentaje, Long convenio_pendiente){
 		super();
 		this.servicio = servicio;
 		this.programa = programa;
+		this.componente = componente;
+		this.establecimiento = establecimiento;
 		this.marco = marco;
 		this.remesa_monto = remesa_monto;
 		this.remesa_porcentaje = remesa_porcentaje;
@@ -43,6 +49,18 @@ public class ReporteMonitoreoProgramaPorEstablecimientoVO implements Serializabl
 	}
 	public void setPrograma(String programa) {
 		this.programa = programa;
+	}
+	public String getComponente() {
+		return componente;
+	}
+	public void setComponente(String componente) {
+		this.componente = componente;
+	}
+	public String getEstablecimiento() {
+		return establecimiento;
+	}
+	public void setEstablecimiento(String establecimiento) {
+		this.establecimiento = establecimiento;
 	}
 	public Long getMarco() {
 		return marco;
@@ -81,12 +99,15 @@ public class ReporteMonitoreoProgramaPorEstablecimientoVO implements Serializabl
 		this.convenio_pendiente = convenio_pendiente;
 	}
 	
+	
 	@Override
 	public String toString() {
 		return "ReporteMonitoreoProgramaPorEstablecimientoVO [servicio="
-				+ servicio + ", programa=" + programa + ", marco=" + marco
-				+ ", remesa_monto=" + remesa_monto + ", remesa_porcentaje="
-				+ remesa_porcentaje + ", convenio_monto=" + convenio_monto
+				+ servicio + ", programa=" + programa + ", componente="
+				+ componente + ", establecimiento=" + establecimiento
+				+ ", marco=" + marco + ", remesa_monto=" + remesa_monto
+				+ ", remesa_porcentaje=" + remesa_porcentaje
+				+ ", convenio_monto=" + convenio_monto
 				+ ", convenio_porcentaje=" + convenio_porcentaje
 				+ ", convenio_pendiente=" + convenio_pendiente + "]";
 	}
@@ -100,23 +121,29 @@ public class ReporteMonitoreoProgramaPorEstablecimientoVO implements Serializabl
 		if(getPrograma() != null){
 			row.add(getPrograma());
 		}
+		if(getComponente() != null){
+			row.add(getComponente());
+		}
+		if(getEstablecimiento() != null){
+			row.add(getEstablecimiento());
+		}
 		if(getMarco() != null){
-			row.add(getMarco());
+			row.add(StringUtil.longWithFormat(getMarco()));
 		}
 		if(getRemesa_monto() != null){
-			row.add(getRemesa_monto());
+			row.add(StringUtil.longWithFormat(getRemesa_monto()));
 		}
 		if(getRemesa_porcentaje() != null){
 			row.add(getRemesa_porcentaje());
 		}
 		if(getConvenio_monto() != null){
-			row.add(getConvenio_monto());
+			row.add(StringUtil.longWithFormat(getConvenio_monto()));
 		}
 		if(getConvenio_porcentaje() != null){
 			row.add(getConvenio_porcentaje());
 		}
 		if(getConvenio_pendiente() != null){
-			row.add(getConvenio_pendiente());
+			row.add(StringUtil.longWithFormat(getConvenio_pendiente()));
 		}
 		
 		return row;
