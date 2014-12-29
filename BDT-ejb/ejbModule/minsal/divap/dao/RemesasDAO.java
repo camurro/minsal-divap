@@ -319,5 +319,24 @@ public class RemesasDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	
+	
+	
+	public List<DetalleRemesas> getRemesasPagadasComunaPrograma(Integer idProgramaAno, Integer idComuna, Integer idMes){
+		
+		try{
+			TypedQuery<DetalleRemesas> query = this.em.createNamedQuery("DetalleRemesas.getRemesasPagadasComunaProgramaMesActual",DetalleRemesas.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComuna", idComuna);
+			query.setParameter("remesaPagada", new Boolean(true));
+			query.setParameter("idMes", idMes);
+			return query.getResultList();
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
+		
+		
+	}
 
 }

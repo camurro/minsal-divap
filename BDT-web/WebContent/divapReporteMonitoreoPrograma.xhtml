@@ -66,7 +66,7 @@
 					<p:ajax event="tabChange" listener="#{reporteMonitoreoProgramaController.onTabChange}" update="Sub21 Sub22 Sub24 Sub21" />
 					
 					
-						<p:tab id="Sub21" title="Subtítulo 21">
+						<p:tab id="Sub21" title="Subtítulo 21" rendered="#{reporteMonitoreoProgramaController.mostrarSub21}" >
 							
 							<br />
 							<p:dataTable resizableColumns="true" value="#{reporteMonitoreoProgramaController.reporteMonitoreoProgramaPorEstablecimientoVOSub21}" liveResize="true" var="_data"
@@ -165,7 +165,7 @@
 							</p:dataTable>
 						</p:tab>
 						
-						<p:tab id="Sub22" title="Subtítulo 22">
+						<p:tab id="Sub22" title="Subtítulo 22" rendered="#{reporteMonitoreoProgramaController.mostrarSub22}">
 							
 							<br />
 							<p:dataTable resizableColumns="true" value="#{reporteMonitoreoProgramaController.reporteMonitoreoProgramaPorEstablecimientoVOSub22}" liveResize="true" var="_data"
@@ -264,7 +264,7 @@
 							</p:dataTable>
 						</p:tab>
 						
-						<p:tab id="Sub24" title="Subtítulo 24">
+						<p:tab id="Sub24" title="Subtítulo 24" rendered="#{reporteMonitoreoProgramaController.mostrarSub24}">
 							
 							<br />
 							<p:dataTable resizableColumns="true" value="#{reporteMonitoreoProgramaController.reporteMonitoreoProgramaPorComunaVO}" liveResize="true" var="_data"
@@ -368,7 +368,7 @@
 							</p:dataTable>
 						</p:tab>
 						
-						<p:tab id="Sub29" title="Subtítulo 29">
+						<p:tab id="Sub29" title="Subtítulo 29" rendered="#{reporteMonitoreoProgramaController.mostrarSub29}">
 							
 							<br />
 							<p:dataTable resizableColumns="true" value="#{reporteMonitoreoProgramaController.reporteMonitoreoProgramaPorEstablecimientoVOSub29}" liveResize="true" var="_data"

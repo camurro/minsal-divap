@@ -84,15 +84,15 @@
 										<p:column headerText="Servicio" width="250" />
 										<p:column headerText="Comuna" width="250" />
 										<p:column headerText="Clasificación" width="250" />
-										<p:column headerText="Valor Per Capita" width="250" />
+										<p:column headerText="$ Valor Per Capita" width="250" />
 										<p:column headerText="Población" width="250" />
 										<p:column headerText="Población Mayor 65 y Mas Años" width="250" />
-										<p:column headerText="Per Capita Año" width="250" />
-										<p:column headerText="Desempeño Difícil" width="250" />
-										<p:column headerText="Aporte Estatal" width="250" />
-										<p:column headerText="Rebaja IAAPS" width="250" />
-										<p:column headerText="Descuento por Incentivo al Retiro" width="250" />
-										<p:column headerText="Aporte Estatal Final" width="250" />
+										<p:column headerText="$ Per Capita Año" width="250" />
+										<p:column headerText="$ Desempeño Difícil" width="250" />
+										<p:column headerText="$ Aporte Estatal" width="250" />
+										<p:column headerText="$ Rebaja IAAPS" width="250" />
+										<p:column headerText="$ Descuento por Incentivo al Retiro" width="250" />
+										<p:column headerText="$ Aporte Estatal Final" width="250" />
 									</p:row>
 								</p:columnGroup>
 
@@ -112,8 +112,7 @@
 								<p:column>
 									<h:outputText value="#{_data.valorPercapita}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />>
 									</h:outputText>
 								</p:column>
 								<p:column>
@@ -131,43 +130,37 @@
 								<p:column>
 									<h:outputText value="#{_data.percapita}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.desempenoDificil}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.aporteEstatal}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.rebajaIAAPS}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.descuentoIncentivoRetiro}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.aporteEstatalFinal}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 
@@ -193,15 +186,15 @@
 										<p:column headerText="Servicio" width="250" />
 										<p:column headerText="Comuna" width="250" />
 										<p:column headerText="Clasificación" width="250" />
-										<p:column headerText="Valor Per Capita" width="250" />
+										<p:column headerText="$ Valor Per Capita" width="250" />
 										<p:column headerText="Población" width="250" />
 										<p:column headerText="Población Mayor 65 y Mas Años" width="250" />
-										<p:column headerText="Per Capita Año" width="250" />
-										<p:column headerText="Desempeño Difícil" width="250" />
-										<p:column headerText="Aporte Estatal" width="250" />
-										<p:column headerText="Rebaja IAAPS" width="250" />
-										<p:column headerText="Descuento por Incentivo al Retiro" width="250" />
-										<p:column headerText="Aporte Estatal Final" width="250" />
+										<p:column headerText="$ Per Capita Año" width="250" />
+										<p:column headerText="$ Desempeño Difícil" width="250" />
+										<p:column headerText="$ Aporte Estatal" width="250" />
+										<p:column headerText="$ Rebaja IAAPS" width="250" />
+										<p:column headerText="$ Descuento por Incentivo al Retiro" width="250" />
+										<p:column headerText="$ Aporte Estatal Final" width="250" />
 									</p:row>
 								</p:columnGroup>
 
@@ -221,8 +214,7 @@
 								<p:column>
 									<h:outputText value="#{_data.valorPercapita}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
@@ -240,43 +232,37 @@
 								<p:column>
 									<h:outputText value="#{_data.percapita}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.desempenoDificil}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.aporteEstatal}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.rebajaIAAPS}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.descuentoIncentivoRetiro}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.aporteEstatalFinal}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 
@@ -299,15 +285,15 @@
 										<p:column headerText="Servicio" width="250" />
 										<p:column headerText="Comuna" width="250" />
 										<p:column headerText="Clasificación" width="250" />
-										<p:column headerText="Valor Per Capita" width="250" />
+										<p:column headerText="$ Valor Per Capita" width="250" />
 										<p:column headerText="Población" width="250" />
 										<p:column headerText="Población Mayor 65 y Mas Años" width="250" />
-										<p:column headerText="Per Capita Año" width="250" />
-										<p:column headerText="Desempeño Difícil" width="250" />
-										<p:column headerText="Aporte Estatal" width="250" />
-										<p:column headerText="Rebaja IAAPS" width="250" />
-										<p:column headerText="Descuento por Incentivo al Retiro" width="250" />
-										<p:column headerText="Aporte Estatal Final" width="250" />
+										<p:column headerText="$ Per Capita Año" width="250" />
+										<p:column headerText="$ Desempeño Difícil" width="250" />
+										<p:column headerText="$ Aporte Estatal" width="250" />
+										<p:column headerText="$ Rebaja IAAPS" width="250" />
+										<p:column headerText="$ Descuento por Incentivo al Retiro" width="250" />
+										<p:column headerText="$ Aporte Estatal Final" width="250" />
 									</p:row>
 								</p:columnGroup>
 
@@ -327,8 +313,7 @@
 								<p:column>
 									<h:outputText value="#{_data.valorPercapita}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
@@ -346,43 +331,37 @@
 								<p:column>
 									<h:outputText value="#{_data.percapita}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.desempenoDificil}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.aporteEstatal}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.rebajaIAAPS}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.descuentoIncentivoRetiro}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.aporteEstatalFinal}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 
@@ -407,15 +386,15 @@
 										<p:column headerText="Servicio" width="250" />
 										<p:column headerText="Comuna" width="250" />
 										<p:column headerText="Clasificación" width="250" />
-										<p:column headerText="Valor Per Capita" width="250" />
+										<p:column headerText="$ Valor Per Capita" width="250" />
 										<p:column headerText="Población" width="250" />
 										<p:column headerText="Población Mayor 65 y Mas Años" width="250" />
-										<p:column headerText="Per Capita Año" width="250" />
-										<p:column headerText="Desempeño Difícil" width="250" />
-										<p:column headerText="Aporte Estatal" width="250" />
-										<p:column headerText="Rebaja IAAPS" width="250" />
-										<p:column headerText="Descuento por Incentivo al Retiro" width="250" />
-										<p:column headerText="Aporte Estatal Final" width="250" />
+										<p:column headerText="$ Per Capita Año" width="250" />
+										<p:column headerText="$ Desempeño Difícil" width="250" />
+										<p:column headerText="$ Aporte Estatal" width="250" />
+										<p:column headerText="$ Rebaja IAAPS" width="250" />
+										<p:column headerText="$ Descuento por Incentivo al Retiro" width="250" />
+										<p:column headerText="$ Aporte Estatal Final" width="250" />
 									</p:row>
 								</p:columnGroup>
 
@@ -435,8 +414,7 @@
 								<p:column>
 									<h:outputText value="#{_data.valorPercapita}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
@@ -454,43 +432,37 @@
 								<p:column>
 									<h:outputText value="#{_data.percapita}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.desempenoDificil}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.aporteEstatal}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.rebajaIAAPS}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.descuentoIncentivoRetiro}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.aporteEstatalFinal}"
 										styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0"
-											locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 

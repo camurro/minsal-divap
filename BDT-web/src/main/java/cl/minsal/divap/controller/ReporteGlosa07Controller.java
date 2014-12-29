@@ -9,11 +9,14 @@ import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
+import minsal.divap.dao.MesDAO;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.ReportesServices;
 import minsal.divap.service.ServicioSaludService;
+import minsal.divap.util.StringUtil;
 import minsal.divap.vo.ReporteGlosaVO;
 import minsal.divap.vo.ServiciosVO;
+import cl.minsal.divap.model.Mes;
 import cl.redhat.bandejaTareas.controller.BaseController;
 
 @Named("reporteGlosa07Controller")
@@ -28,6 +31,8 @@ public class ReporteGlosa07Controller extends BaseController implements Serializ
 	private ServicioSaludService servicioSaludService;
 	@EJB
 	private ReportesServices reportesServices;
+	@EJB
+	private MesDAO mesDAO;
 	
 	private Long sumArt49perCapita;
 	private Long sumArt56reforzamientoMunicipal;
@@ -35,6 +40,7 @@ public class ReporteGlosa07Controller extends BaseController implements Serializ
 	private Integer cantidadFilas;
 	private Integer idPlanilla;
 	private String docIdDownload;
+	private String mesActual;
 	
 	
 	@PostConstruct 
@@ -47,6 +53,10 @@ public class ReporteGlosa07Controller extends BaseController implements Serializ
 		}
 		System.out.println("this.idPlanilla ---> "+this.idPlanilla);
 		
+		Integer mesCurso = Integer.parseInt(reportesServices.getMesCurso(true));
+		
+		Mes mes = mesDAO.getMesPorID(mesCurso);
+		this.mesActual = StringUtil.caracterUnoMayuscula(mes.getNombre());		
 		
 	}
 	
@@ -63,7 +73,7 @@ public class ReporteGlosa07Controller extends BaseController implements Serializ
 		System.out.println("cargarTablaPorServicio --> getValorComboServicio() --> "+getValorComboServicio());
 		if(getValorComboServicio() != null){
 			if(getValorComboServicio().intValue() != 0){
-				this.reporteGlosaVO = reportesServices.getReporteGlosaPorServicio(getValorComboServicio());
+				this.reporteGlosaVO = reportesServices.getReporteGlosaPorServicio(getValorComboServicio(), getLoggedUsername());
 			}
 		}
 		
@@ -162,6 +172,14 @@ public class ReporteGlosa07Controller extends BaseController implements Serializ
 
 	public void setDocIdDownload(String docIdDownload) {
 		this.docIdDownload = docIdDownload;
+	}
+
+	public String getMesActual() {
+		return mesActual;
+	}
+
+	public void setMesActual(String mesActual) {
+		this.mesActual = mesActual;
 	}
 	
 

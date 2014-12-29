@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import minsal.divap.util.StringUtil;
+
 public class ReporteGlosaVO implements Serializable{
 
 	private static final long serialVersionUID = 2836034064882503916L;
@@ -84,13 +86,13 @@ public class ReporteGlosaVO implements Serializable{
 			row.add(getComuna());
 		}
 		if(getArt49perCapita() != null){
-			row.add(getArt49perCapita());
+			row.add(StringUtil.longWithFormat(getArt49perCapita()));
 		}
 		if(getArt56reforzamientoMunicipal() != null){
-			row.add(getArt56reforzamientoMunicipal());
+			row.add(StringUtil.longWithFormat(getArt56reforzamientoMunicipal()));
 		}
 		if(getTotalRemesasEneroMarzo() != null){
-			row.add(getTotalRemesasEneroMarzo());
+			row.add(StringUtil.longWithFormat(getTotalRemesasEneroMarzo()));
 		}
 		
 		return row;

@@ -14,20 +14,20 @@ public class ReporteRebajaVO implements Serializable{
 	private String servicio;
 	private String comuna;
 	private Long fCorte1Monto;
-	private Double fCorte1Porcentaje;
+	private Integer fCorte1Porcentaje;
 	private Long fCorte2Monto;
-	private Double fCorte2Porcentaje;
+	private Integer fCorte2Porcentaje;
 	private Long fCorte3Monto;
-	private Double fCorte3Porcentaje;
+	private Integer fCorte3Porcentaje;
 	private Long fCorte4Monto;
-	private Double fCorte4Porcentaje;
+	private Integer fCorte4Porcentaje;
 	private Long rebajaTotal;
 	
 	public ReporteRebajaVO(){
 		
 	}
 	
-	public ReporteRebajaVO(String region, String servicio, String comuna, Long fCorte1Monto, Double fCorte1Porcentaje, Long fCorte2Monto, Double fCorte2Porcentaje, Long fCorte3Monto, Double fCorte3Porcentaje, Long fCorte4Monto, Double fCorte4Porcentaje, Long rebajaTotal){
+	public ReporteRebajaVO(String region, String servicio, String comuna, Long fCorte1Monto, Integer fCorte1Porcentaje, Long fCorte2Monto, Integer fCorte2Porcentaje, Long fCorte3Monto, Integer fCorte3Porcentaje, Long fCorte4Monto, Integer fCorte4Porcentaje, Long rebajaTotal){
 		super();
 		this.region = region;
 		this.servicio = servicio;
@@ -75,11 +75,11 @@ public class ReporteRebajaVO implements Serializable{
 		this.fCorte1Monto = fCorte1Monto;
 	}
 
-	public Double getfCorte1Porcentaje() {
+	public Integer getfCorte1Porcentaje() {
 		return fCorte1Porcentaje;
 	}
 
-	public void setfCorte1Porcentaje(Double fCorte1Porcentaje) {
+	public void setfCorte1Porcentaje(Integer fCorte1Porcentaje) {
 		this.fCorte1Porcentaje = fCorte1Porcentaje;
 	}
 
@@ -91,11 +91,11 @@ public class ReporteRebajaVO implements Serializable{
 		this.fCorte2Monto = fCorte2Monto;
 	}
 
-	public Double getfCorte2Porcentaje() {
+	public Integer getfCorte2Porcentaje() {
 		return fCorte2Porcentaje;
 	}
 
-	public void setfCorte2Porcentaje(Double fCorte2Porcentaje) {
+	public void setfCorte2Porcentaje(Integer fCorte2Porcentaje) {
 		this.fCorte2Porcentaje = fCorte2Porcentaje;
 	}
 
@@ -107,11 +107,11 @@ public class ReporteRebajaVO implements Serializable{
 		this.fCorte3Monto = fCorte3Monto;
 	}
 
-	public Double getfCorte3Porcentaje() {
+	public Integer getfCorte3Porcentaje() {
 		return fCorte3Porcentaje;
 	}
 
-	public void setfCorte3Porcentaje(Double fCorte3Porcentaje) {
+	public void setfCorte3Porcentaje(Integer fCorte3Porcentaje) {
 		this.fCorte3Porcentaje = fCorte3Porcentaje;
 	}
 
@@ -123,11 +123,11 @@ public class ReporteRebajaVO implements Serializable{
 		this.fCorte4Monto = fCorte4Monto;
 	}
 
-	public Double getfCorte4Porcentaje() {
+	public Integer getfCorte4Porcentaje() {
 		return fCorte4Porcentaje;
 	}
 
-	public void setfCorte4Porcentaje(Double fCorte4Porcentaje) {
+	public void setfCorte4Porcentaje(Integer fCorte4Porcentaje) {
 		this.fCorte4Porcentaje = fCorte4Porcentaje;
 	}
 

@@ -9,6 +9,7 @@ public class ReporteMonitoreoProgramaPorComunaVO implements Serializable{
 	private static final long serialVersionUID = -7792066115952412397L;
 	private String servicio;
 	private String programa;
+	private String componente;
 	private String comuna;
 	private Long marco;
 	private Long remesa_monto;
@@ -20,11 +21,12 @@ public class ReporteMonitoreoProgramaPorComunaVO implements Serializable{
 	public ReporteMonitoreoProgramaPorComunaVO(){
 		
 	}
-	public ReporteMonitoreoProgramaPorComunaVO(String servicio, String programa, String comuna, Long marco, Long remesa_monto, Double remesa_porcentaje,
+	public ReporteMonitoreoProgramaPorComunaVO(String servicio, String programa, String componente, String comuna, Long marco, Long remesa_monto, Double remesa_porcentaje,
 			Long convenio_monto, Double convenio_porcentaje, Long convenio_pendiente){
 		super();
 		this.servicio = servicio;
 		this.programa = programa;
+		this.componente = componente;
 		this.comuna = comuna;
 		this.marco = marco;
 		this.remesa_monto = remesa_monto;
@@ -45,6 +47,12 @@ public class ReporteMonitoreoProgramaPorComunaVO implements Serializable{
 	}
 	public void setPrograma(String programa) {
 		this.programa = programa;
+	}
+	public String getComponente() {
+		return componente;
+	}
+	public void setComponente(String componente) {
+		this.componente = componente;
 	}
 	public String getComuna() {
 		return comuna;

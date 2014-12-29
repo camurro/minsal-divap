@@ -320,7 +320,7 @@ public class RebajaService {
 		}
 	}
 
-	private List<CumplimientoRebajaVO> getCumplimientoByRebajaComuna(
+	public List<CumplimientoRebajaVO> getCumplimientoByRebajaComuna(
 			Integer idRebaja, Integer idComuna) {
 		List<CumplimientoRebajaVO> cumplimientoRebajasVO = new ArrayList<CumplimientoRebajaVO>();
 		List<ComunaCumplimiento> comunaCumplimientos = this.rebajaDAO.getCumplimientoByRebejaComuna(idRebaja, idComuna);

@@ -22,6 +22,7 @@ import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ReliquidacionService;
 import minsal.divap.service.ReportesServices;
 import minsal.divap.service.ServicioSaludService;
+import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.EstablecimientoSummaryVO;
 import minsal.divap.vo.ProgramaVO;
@@ -32,6 +33,7 @@ import minsal.divap.vo.ReporteMarcoPresupuestarioEstablecimientoVO;
 import minsal.divap.vo.ReporteMonitoreoProgramaPorComunaVO;
 import minsal.divap.vo.ReporteMonitoreoProgramaPorEstablecimientoVO;
 import minsal.divap.vo.ServiciosVO;
+import minsal.divap.vo.SubtituloVO;
 import cl.redhat.bandejaTareas.controller.BaseController;
 
 @Named ( "reporteMonitoreoProgramaController" )
@@ -82,6 +84,11 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 	private Integer activeTab = 0;
 	Map<Integer, Subtitulo> tabSubtitulo = new HashMap<Integer, Subtitulo>();
 	
+	private Boolean mostrarSub21;
+	private Boolean mostrarSub22;
+	private Boolean mostrarSub24;
+	private Boolean mostrarSub29;
+	
 	private List<ReporteMonitoreoProgramaPorComunaVO> reporteMonitoreoProgramaPorComunaVO;
 	private List<ReporteMonitoreoProgramaPorEstablecimientoVO> reporteMonitoreoProgramaPorEstablecimientoVOSub21;
 	private List<ReporteMonitoreoProgramaPorEstablecimientoVO> reporteMonitoreoProgramaPorEstablecimientoVOSub22;
@@ -93,6 +100,11 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 		this.reporteMonitoreoProgramaPorEstablecimientoVOSub21 = new ArrayList<ReporteMonitoreoProgramaPorEstablecimientoVO>();
 		this.reporteMonitoreoProgramaPorEstablecimientoVOSub22 = new ArrayList<ReporteMonitoreoProgramaPorEstablecimientoVO>();
 		this.reporteMonitoreoProgramaPorEstablecimientoVOSub29 = new ArrayList<ReporteMonitoreoProgramaPorEstablecimientoVO>();
+		
+		this.mostrarSub21 = false;
+		this.mostrarSub22 = false;
+		this.mostrarSub24 = false;
+		this.mostrarSub29 = false;
 		
 		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMONITOREOPROGRAMACOMUNA);
 		if(this.idPlanillaDocComuna == null){
@@ -112,7 +124,7 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 		
 		
 		this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
-		this.programas = programasService.getProgramasBySubtitulo(this.subtituloSeleccionado);
+		this.programas = programasService.getProgramasByUser(getLoggedUsername());
 		this.servicios = servicioSaludService.getServiciosOrderId();
 		
 	}
@@ -127,13 +139,25 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 	}
 	
 	public void cargarDatosFiltroPrograma(){
-//		System.out.println("this.subtituloSeleccionado.getId() --> "+this.subtituloSeleccionado.getId());
-//		if(this.subtituloSeleccionado.getId() == 3){
-//			System.out.println("subtitulo 24");
-//			cargarTablaMonitoreoPrograma();
-//		}else{
-//			cargarTablaMonitoreoEstablecimientoByPrograma();
-//		}
+		ProgramaVO programaVO = programasService.getProgramaAno(this.valorComboPrograma);
+		
+			for (ComponentesVO componente : programaVO.getComponentes()) {
+				System.out.println("componente.getNombre() --> "+componente.getNombre());
+				for(SubtituloVO subtitulo : componente.getSubtitulos()){
+					if(subtitulo.getId() == 1){
+						this.mostrarSub21 = true;
+					}
+					else if(subtitulo.getId() == 2){
+						this.mostrarSub22 = true;
+					}
+					else if(subtitulo.getId() == 3){
+						this.mostrarSub24 = true;
+					}
+					else if(subtitulo.getId() == 4){
+						this.mostrarSub29 = true;
+					}
+				}
+			}
 	}
 	public void cargarDatosFiltroServicioPrograma(){
 		System.out.println("this.subtituloSeleccionado.getId() --> "+this.subtituloSeleccionado.getId());
@@ -513,7 +537,29 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 			List<ReporteMonitoreoProgramaPorEstablecimientoVO> reporteMonitoreoProgramaPorEstablecimientoVOSub29) {
 		this.reporteMonitoreoProgramaPorEstablecimientoVOSub29 = reporteMonitoreoProgramaPorEstablecimientoVOSub29;
 	}
+	public Boolean getMostrarSub21() {
+		return mostrarSub21;
+	}
+	public void setMostrarSub21(Boolean mostrarSub21) {
+		this.mostrarSub21 = mostrarSub21;
+	}
+	public Boolean getMostrarSub22() {
+		return mostrarSub22;
+	}
+	public void setMostrarSub22(Boolean mostrarSub22) {
+		this.mostrarSub22 = mostrarSub22;
+	}
+	public Boolean getMostrarSub24() {
+		return mostrarSub24;
+	}
+	public void setMostrarSub24(Boolean mostrarSub24) {
+		this.mostrarSub24 = mostrarSub24;
+	}
+	public Boolean getMostrarSub29() {
+		return mostrarSub29;
+	}
+	public void setMostrarSub29(Boolean mostrarSub29) {
+		this.mostrarSub29 = mostrarSub29;
+	}
 	
-	
-
 }

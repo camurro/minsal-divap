@@ -35,7 +35,7 @@
 								<p:column rowspan="3" headerText="Servicio" />
 								<p:column rowspan="3" headerText="Comuna" />
 								<p:column colspan="8" headerText="Rebaja" />
-								<p:column rowspan="3" headerText="Rebaja Total" />
+								<p:column rowspan="3" headerText="$ Rebaja Total" />
 							</p:row>
 							<p:row>
 								<p:column colspan="2" headerText="#{reportesRebajaController.mesCorte1}" />
@@ -44,16 +44,16 @@
 								<p:column colspan="2" headerText="#{reportesRebajaController.mesCorte4}" />
 							</p:row>
 							<p:row>
-								<p:column headerText="Monto" />
+								<p:column headerText="$ Monto" />
 								<p:column headerText="%" />
 
-								<p:column headerText="Monto" />
+								<p:column headerText="$ Monto" />
 								<p:column headerText="%" />
 								
-								<p:column headerText="Monto" />
+								<p:column headerText="$ Monto" />
 								<p:column headerText="%" />
 
-								<p:column headerText="Monto" />
+								<p:column headerText="$ Monto" />
 								<p:column headerText="%" />
 							</p:row>
 						</p:columnGroup>
@@ -69,7 +69,7 @@
 						</p:column>
 						<p:column>
 							<h:outputText value="#{_data.fCorte1Monto}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+								<f:convertNumber type="number" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
 						<p:column>
@@ -80,7 +80,7 @@
 						
 						<p:column>
 							<h:outputText value="#{_data.fCorte2Monto}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+								<f:convertNumber type="number" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
 						<p:column>
@@ -91,7 +91,7 @@
 						
 						<p:column>
 							<h:outputText value="#{_data.fCorte3Monto}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+								<f:convertNumber type="number" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
 						<p:column>
@@ -102,7 +102,7 @@
 						
 						<p:column>
 							<h:outputText value="#{_data.fCorte4Monto}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+								<f:convertNumber type="number" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
 						<p:column>
@@ -113,7 +113,7 @@
 
 						<p:column>
 							<h:outputText value="#{_data.rebajaTotal}" styleClass="textoPequenio textoAjustado">
-								<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+								<f:convertNumber type="number" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
 

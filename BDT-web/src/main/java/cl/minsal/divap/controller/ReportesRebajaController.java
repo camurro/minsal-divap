@@ -64,10 +64,10 @@ public class ReportesRebajaController extends BaseController implements Serializ
 		RebajaCorte rebajaCorte3 = rebajaDAO.getCorteById(3);
 		RebajaCorte rebajaCorte4 = rebajaDAO.getCorteById(4);
 		
-		Mes fechaMesCorte1 = mesDAO.getMesPorID(rebajaCorte1.getMesHasta().getIdMes());
-		Mes fechaMesCorte2 = mesDAO.getMesPorID(rebajaCorte2.getMesHasta().getIdMes());
-		Mes fechaMesCorte3 = mesDAO.getMesPorID(rebajaCorte3.getMesHasta().getIdMes());
-		Mes fechaMesCorte4 = mesDAO.getMesPorID(rebajaCorte4.getMesHasta().getIdMes());
+		Mes fechaMesCorte1 = mesDAO.getMesPorID(rebajaCorte1.getMesRebaja().getIdMes());
+		Mes fechaMesCorte2 = mesDAO.getMesPorID(rebajaCorte2.getMesRebaja().getIdMes());
+		Mes fechaMesCorte3 = mesDAO.getMesPorID(rebajaCorte3.getMesRebaja().getIdMes());
+		Mes fechaMesCorte4 = mesDAO.getMesPorID(rebajaCorte4.getMesRebaja().getIdMes());
 		
 		
 		this.mesCorte1 = StringUtil.caracterUnoMayuscula(fechaMesCorte1.getNombre());

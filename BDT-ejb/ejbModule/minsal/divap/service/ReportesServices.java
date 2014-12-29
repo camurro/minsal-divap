@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.Resource;
@@ -17,9 +18,11 @@ import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.ComunaDAO;
 import minsal.divap.dao.ConveniosDAO;
 import minsal.divap.dao.EstablecimientosDAO;
+import minsal.divap.dao.MesDAO;
 import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.dao.RebajaDAO;
 import minsal.divap.dao.ReliquidacionDAO;
+import minsal.divap.dao.RemesasDAO;
 import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TipoDocumentosProcesos;
@@ -34,10 +37,12 @@ import minsal.divap.excel.impl.ReporteMonitoreoProgramaComunaSheetExcel;
 import minsal.divap.excel.impl.ReporteMonitoreoProgramaEstablecimientoSheetExcel;
 import minsal.divap.excel.impl.ReportePoblacionPercapitaSheetExcel;
 import minsal.divap.excel.impl.ReporteRebajaSheetExcel;
+import minsal.divap.util.StringUtil;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.CellExcelVO;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ComunaSummaryVO;
+import minsal.divap.vo.CumplimientoRebajaVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.ReporteEstadoSituacionByComunaVO;
@@ -52,15 +57,19 @@ import minsal.divap.vo.ReporteMonitoreoProgramaPorEstablecimientoVO;
 import minsal.divap.vo.ReportePerCapitaVO;
 import minsal.divap.vo.ReporteRebajaVO;
 import minsal.divap.vo.ServiciosVO;
+import cl.minsal.divap.model.AntecedentesComunaCalculadoRebaja;
 import cl.minsal.divap.model.AntecendentesComuna;
 import cl.minsal.divap.model.AntecendentesComunaCalculado;
 import cl.minsal.divap.model.Comuna;
 import cl.minsal.divap.model.ComunaCumplimiento;
 import cl.minsal.divap.model.ConvenioServicioComponente;
 import cl.minsal.divap.model.Cuota;
+import cl.minsal.divap.model.DetalleRemesas;
 import cl.minsal.divap.model.Establecimiento;
+import cl.minsal.divap.model.Mes;
+import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
-import cl.minsal.divap.model.Rebaja;
+import cl.minsal.divap.model.RebajaCorte;
 import cl.minsal.divap.model.ServicioSalud;
 import cl.minsal.divap.model.TipoDocumento;
 
@@ -93,7 +102,13 @@ public class ReportesServices {
 	@EJB
 	private ComunaDAO comunaDAO;
 	@EJB
+	private MesDAO mesDAO;
+	@EJB
 	EstablecimientosDAO establecimientosDAO;
+	@EJB
+	private RebajaService rebajaService;
+	@EJB
+	private RemesasDAO remesasDAO;
 
 	@Resource(name = "tmpDir")
 	private String tmpDir;
@@ -114,26 +129,14 @@ public class ReportesServices {
 
 			for (ComunaSummaryVO comuna : servicioVO.getComunas()) {
 				ReportePerCapitaVO reportePerCapitaVO = new ReportePerCapitaVO();
-				reportePerCapitaVO
-						.setRegion(servicioVO.getRegion().getNombre());
+				reportePerCapitaVO.setRegion(servicioVO.getRegion().getNombre());
 				reportePerCapitaVO.setServicio(servicioVO.getNombre_servicio());
 				reportePerCapitaVO.setComuna(comuna.getNombre());
 
-				/*
-				 * AntecendentesComuna antecendentesComuna =
-				 * antecedentesComunaDAO
-				 * .findAntecendentesComunaByComunaServicioAno(
-				 * servicioSalud.getNombre(), comuna.getNombre(), ano);
-				 * 
-				 * if (antecendentesComuna == null) { continue; }
-				 * 
-				 * AntecendentesComunaCalculado antecendentesComunaCalculado =
-				 * antecedentesComunaDAO
-				 * .findByIdAntecedentesComuna(antecendentesComuna
-				 * .getIdAntecedentesComuna());
-				 */
 				AntecendentesComunaCalculado antecendentesComunaCalculado = antecedentesComunaDAO
-						.findByComunaAno(comuna.getId(), ano);
+						.findByComunaAnoVigencia(comuna.getId(), getAnoCurso());
+				
+				
 				if (antecendentesComunaCalculado == null) {
 					continue;
 				}
@@ -141,67 +144,65 @@ public class ReportesServices {
 				List<ComunaCumplimiento> comunasCumplimientos = rebajaDAO
 						.getCumplimientoPorAnoComuna(ano, comuna.getId());
 
-				if (antecendentesComunaCalculado.getAntecedentesComuna()
-						.getClasificacion() != null) {
-					reportePerCapitaVO
-							.setClasificacion(antecendentesComunaCalculado
-									.getAntecedentesComuna().getClasificacion()
-									.getIdTipoComuna().toString());
+				if (antecendentesComunaCalculado.getAntecedentesComuna().getClasificacion() != null) {
+					reportePerCapitaVO.setClasificacion(antecendentesComunaCalculado.getAntecedentesComuna()
+							.getClasificacion().getIdTipoComuna().toString());
 				}
 
 				if (antecendentesComunaCalculado.getValorPerCapitaComunalMes() != null) {
-					reportePerCapitaVO
-							.setValorPercapita(antecendentesComunaCalculado
-									.getValorPerCapitaComunalMes().longValue());
+					reportePerCapitaVO.setValorPercapita(antecendentesComunaCalculado
+							.getValorPerCapitaComunalMes().longValue());
 				} else {
 					reportePerCapitaVO.setValorPercapita(0L);
 				}
 				if (antecendentesComunaCalculado.getPoblacion() != null) {
-					reportePerCapitaVO
-							.setPoblacion(antecendentesComunaCalculado
-									.getPoblacion());
+					reportePerCapitaVO.setPoblacion(antecendentesComunaCalculado
+							.getPoblacion());
 				}
 				if (antecendentesComunaCalculado.getPoblacionMayor() != null) {
-					reportePerCapitaVO
-							.setPoblacion65mayor(antecendentesComunaCalculado
-									.getPoblacionMayor());
+					reportePerCapitaVO.setPoblacion65mayor(antecendentesComunaCalculado
+							.getPoblacionMayor());
 				}
 
 				if (antecendentesComunaCalculado.getPercapitaAno() != null) {
-					reportePerCapitaVO
-							.setPercapita(antecendentesComunaCalculado
-									.getPercapitaAno());
+					reportePerCapitaVO.setPercapita(antecendentesComunaCalculado.getPercapitaAno());
 				}
 				if (antecendentesComunaCalculado.getDesempenoDificil() != null) {
-					reportePerCapitaVO
-							.setDesempenoDificil(antecendentesComunaCalculado
-									.getDesempenoDificil().longValue());
+					reportePerCapitaVO.setDesempenoDificil(antecendentesComunaCalculado
+							.getDesempenoDificil().longValue());
 				}
 
 				if (antecendentesComunaCalculado.getPercapitaAno() != null
 						&& antecendentesComunaCalculado.getDesempenoDificil() != null) {
-					reportePerCapitaVO
-							.setAporteEstatal((antecendentesComunaCalculado
-									.getPercapitaAno() + antecendentesComunaCalculado
-									.getDesempenoDificil().longValue()));
+					reportePerCapitaVO.setAporteEstatal((antecendentesComunaCalculado
+							.getPercapitaAno() + antecendentesComunaCalculado
+							.getDesempenoDificil().longValue()));
 				}
-
+				
+				Set<AntecedentesComunaCalculadoRebaja> setAntecedentesComunaCalculadoRebaja = antecendentesComunaCalculado.getAntecedentesComunaCalculadoRebajas();
+				
+				Long rebajaIAAPS = 0L;
+				List<AntecedentesComunaCalculadoRebaja> antecedentesComunaCalculadoRebajas = new ArrayList<AntecedentesComunaCalculadoRebaja>(setAntecedentesComunaCalculadoRebaja);
+				for(AntecedentesComunaCalculadoRebaja antecedentesComunaCalculadoRebaja : antecedentesComunaCalculadoRebajas){
+					rebajaIAAPS += antecedentesComunaCalculadoRebaja.getMontoRebaja();
+					System.out.println("rebajaIAAPS --> "+rebajaIAAPS);
+				}
+				
 				Long totalRebaja = 0L;
 
 				for (ComunaCumplimiento comunaCumplimiento : comunasCumplimientos) {
-					Double porcentajeRebaja = comunaCumplimiento
-							.getRebajaFinal().getRebaja();
+					Double porcentajeRebaja = comunaCumplimiento.getRebajaFinal()
+							.getRebaja();
 					totalRebaja = (long) (totalRebaja + (porcentajeRebaja * reportePerCapitaVO
 							.getAporteEstatal()));
 				}
-				reportePerCapitaVO.setRebajaIAAPS(totalRebaja);
+				reportePerCapitaVO.setRebajaIAAPS(rebajaIAAPS);
 
-				Long descuentoIncentivoRetiro = (long) 234234;
 				// TODO falta este valor
-				reportePerCapitaVO
-						.setDescuentoIncentivoRetiro(descuentoIncentivoRetiro);
-				reportePerCapitaVO.setAporteEstatalFinal(reportePerCapitaVO
-						.getAporteEstatal()
+				Long descuentoIncentivoRetiro = 234234L;
+				
+				reportePerCapitaVO.setDescuentoIncentivoRetiro(descuentoIncentivoRetiro);
+				reportePerCapitaVO.setAporteEstatalFinal(reportePerCapitaVO.getAporteEstatal()
 						- reportePerCapitaVO.getRebajaIAAPS()
 						- reportePerCapitaVO.getDescuentoIncentivoRetiro());
 
@@ -300,7 +301,7 @@ public class ReportesServices {
 			}
 			reportePerCapitaVO.setRebajaIAAPS(totalRebaja);
 
-			Long descuentoIncentivoRetiro = (long) 234234;
+			Long descuentoIncentivoRetiro = 234234L;
 			// TODO falta este valor
 			reportePerCapitaVO
 					.setDescuentoIncentivoRetiro(descuentoIncentivoRetiro);
@@ -329,13 +330,11 @@ public class ReportesServices {
 		reportePerCapitaVO.setServicio(servicioSalud.getNombre());
 		reportePerCapitaVO.setComuna(comuna.getNombre());
 
-		AntecendentesComuna antecendentesComuna = antecedentesComunaDAO
-				.findAntecendentesComunaByComunaServicioAno(
-						servicioSalud.getNombre(), comuna.getNombre(), ano);
 
 		AntecendentesComunaCalculado antecendentesComunaCalculado = antecedentesComunaDAO
-				.findByIdAntecedentesComuna(antecendentesComuna
-						.getIdAntecedentesComuna());
+				.findByComunaAnoVigencia(comuna.getId(), getAnoCurso());
+		
+		
 		if (antecendentesComunaCalculado == null) {
 			antecendentesComunaCalculado = new AntecendentesComunaCalculado();
 		}
@@ -343,8 +342,8 @@ public class ReportesServices {
 		List<ComunaCumplimiento> comunasCumplimientos = rebajaDAO
 				.getCumplimientoPorAnoComuna(ano, comuna.getId());
 
-		if (antecendentesComuna.getClasificacion() != null) {
-			reportePerCapitaVO.setClasificacion(antecendentesComuna
+		if (antecendentesComunaCalculado.getAntecedentesComuna().getClasificacion() != null) {
+			reportePerCapitaVO.setClasificacion(antecendentesComunaCalculado.getAntecedentesComuna()
 					.getClasificacion().getIdTipoComuna().toString());
 		}
 
@@ -364,8 +363,7 @@ public class ReportesServices {
 		}
 
 		if (antecendentesComunaCalculado.getPercapitaAno() != null) {
-			reportePerCapitaVO.setPercapita(antecendentesComunaCalculado
-					.getPercapitaAno());
+			reportePerCapitaVO.setPercapita(antecendentesComunaCalculado.getPercapitaAno());
 		}
 		if (antecendentesComunaCalculado.getDesempenoDificil() != null) {
 			reportePerCapitaVO.setDesempenoDificil(antecendentesComunaCalculado
@@ -378,7 +376,16 @@ public class ReportesServices {
 					.getPercapitaAno() + antecendentesComunaCalculado
 					.getDesempenoDificil().longValue()));
 		}
-
+		
+		Set<AntecedentesComunaCalculadoRebaja> setAntecedentesComunaCalculadoRebaja = antecendentesComunaCalculado.getAntecedentesComunaCalculadoRebajas();
+		
+		Long rebajaIAAPS = 0L;
+		List<AntecedentesComunaCalculadoRebaja> antecedentesComunaCalculadoRebajas = new ArrayList<AntecedentesComunaCalculadoRebaja>(setAntecedentesComunaCalculadoRebaja);
+		for(AntecedentesComunaCalculadoRebaja antecedentesComunaCalculadoRebaja : antecedentesComunaCalculadoRebajas){
+			rebajaIAAPS += antecedentesComunaCalculadoRebaja.getMontoRebaja();
+			System.out.println("rebajaIAAPS --> "+rebajaIAAPS);
+		}
+		
 		Long totalRebaja = 0L;
 
 		for (ComunaCumplimiento comunaCumplimiento : comunasCumplimientos) {
@@ -387,14 +394,13 @@ public class ReportesServices {
 			totalRebaja = (long) (totalRebaja + (porcentajeRebaja * reportePerCapitaVO
 					.getAporteEstatal()));
 		}
-		reportePerCapitaVO.setRebajaIAAPS(totalRebaja);
+		reportePerCapitaVO.setRebajaIAAPS(rebajaIAAPS);
 
-		Long descuentoIncentivoRetiro = (long) 234234;
 		// TODO falta este valor
-		reportePerCapitaVO
-				.setDescuentoIncentivoRetiro(descuentoIncentivoRetiro);
-		reportePerCapitaVO.setAporteEstatalFinal(reportePerCapitaVO
-				.getAporteEstatal()
+		Long descuentoIncentivoRetiro = 234234L;
+		
+		reportePerCapitaVO.setDescuentoIncentivoRetiro(descuentoIncentivoRetiro);
+		reportePerCapitaVO.setAporteEstatalFinal(reportePerCapitaVO.getAporteEstatal()
 				- reportePerCapitaVO.getRebajaIAAPS()
 				- reportePerCapitaVO.getDescuentoIncentivoRetiro());
 
@@ -1122,7 +1128,7 @@ public class ReportesServices {
 		return mesCurso;
 	}
 
-	public List<ReporteGlosaVO> getReporteGlosa() {
+	public List<ReporteGlosaVO> getReporteGlosa(String user) {
 		List<ReporteGlosaVO> resultado = new ArrayList<ReporteGlosaVO>();
 		List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
 
@@ -1135,7 +1141,7 @@ public class ReportesServices {
 				reporteGlosaVO.setComuna(comuna.getNombre());
 
 				AntecendentesComunaCalculado antecendentesComunaCalculado = antecedentesComunaDAO
-						.findByComunaAno(comuna.getId(), getAnoCurso());
+						.findByComunaAnoVigencia(comuna.getId(), getAnoCurso());
 				if (antecendentesComunaCalculado == null) {
 					continue;
 				}
@@ -1144,6 +1150,7 @@ public class ReportesServices {
 						.getPercapitaAno());
 
 				Long tarifa = 0L;
+				Long totalRemesasAcumuladasMesActual = 0L;
 				List<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes = programasDAO
 						.getByIdComuna(comuna.getId());
 				for (ProgramaMunicipalCoreComponente programaMunicipalCoreComponente : programaMunicipalCoreComponentes) {
@@ -1152,9 +1159,25 @@ public class ReportesServices {
 					}
 					tarifa += programaMunicipalCoreComponente.getTarifa();
 				}
+				Integer mesActual = Integer.parseInt(getMesCurso(true));
+				
+				//TODO se cae por timeout
+				
+//				for(ProgramaVO programaVO : programasService.getProgramasByUser(user)){
+//					
+//					for(Integer i=1; i<mesActual+1;i++){
+//						List<DetalleRemesas> detalleRemesas = remesasDAO.getRemesasPagadasComunaPrograma(programaVO.getIdProgramaAno(), comuna.getId(), i);
+//						if(detalleRemesas == null){
+//							continue;
+//						}
+//						for(DetalleRemesas detalleRemesa : detalleRemesas){
+//							totalRemesasAcumuladasMesActual += detalleRemesa.getMontoRemesa();
+//						}
+//					}
+//				}
 
 				reporteGlosaVO.setArt56reforzamientoMunicipal(tarifa);
-				reporteGlosaVO.setTotalRemesasEneroMarzo(0L);
+				reporteGlosaVO.setTotalRemesasEneroMarzo(totalRemesasAcumuladasMesActual);
 				resultado.add(reporteGlosaVO);
 			}
 		}
@@ -1162,7 +1185,7 @@ public class ReportesServices {
 		return resultado;
 	}
 
-	public List<ReporteGlosaVO> getReporteGlosaPorServicio(Integer idServicio) {
+	public List<ReporteGlosaVO> getReporteGlosaPorServicio(Integer idServicio, String user) {
 		List<ReporteGlosaVO> resultado = new ArrayList<ReporteGlosaVO>();
 		ServicioSalud servicio = servicioSaludDAO
 				.getServicioSaludById(idServicio);
@@ -1184,6 +1207,7 @@ public class ReportesServices {
 					.getPercapitaAno());
 
 			Long tarifa = 0L;
+			Long totalRemesasAcumuladasMesActual = 0L;
 			List<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes = programasDAO
 					.getByIdComuna(comuna.getId());
 			for (ProgramaMunicipalCoreComponente programaMunicipalCoreComponente : programaMunicipalCoreComponentes) {
@@ -1192,8 +1216,25 @@ public class ReportesServices {
 				}
 				tarifa += programaMunicipalCoreComponente.getTarifa();
 			}
+			Integer mesActual = Integer.parseInt(getMesCurso(true));
+			
+			for(ProgramaVO programaVO : programasService.getProgramasByUser(user)){
+				
+				for(Integer i=1; i<mesActual+1;i++){
+					List<DetalleRemesas> detalleRemesas = remesasDAO.getRemesasPagadasComunaPrograma(programaVO.getIdProgramaAno(), comuna.getId(), i);
+					if(detalleRemesas == null){
+						continue;
+					}
+					for(DetalleRemesas detalleRemesa : detalleRemesas){
+						totalRemesasAcumuladasMesActual += detalleRemesa.getMontoRemesa();
+					}
+				}
+				
+				
+			}
+			
 			reporteGlosaVO.setArt56reforzamientoMunicipal(tarifa);
-			reporteGlosaVO.setTotalRemesasEneroMarzo(0L);
+			reporteGlosaVO.setTotalRemesasEneroMarzo(totalRemesasAcumuladasMesActual);
 			resultado.add(reporteGlosaVO);
 		}
 
@@ -3024,95 +3065,130 @@ public class ReportesServices {
 				reporteRebajaVO
 						.setRegion(servicioSalud.getRegion().getNombre());
 				reporteRebajaVO.setServicio(servicioSalud.getNombre());
-
-				Rebaja rebajaCorte1 = rebajaDAO.getRebajaByRebajaCorteAno(1,
-						getAnoCurso());
-				if (rebajaCorte1 == null) {
-					rebajaCorte1 = new Rebaja();
-				}
-
-				Rebaja rebajaCorte2 = rebajaDAO.getRebajaByRebajaCorteAno(2,
-						getAnoCurso());
-				if (rebajaCorte2 == null) {
-					rebajaCorte2 = new Rebaja();
-				}
-
-				Rebaja rebajaCorte3 = rebajaDAO.getRebajaByRebajaCorteAno(3,
-						getAnoCurso());
-				if (rebajaCorte3 == null) {
-					rebajaCorte3 = new Rebaja();
-				}
-
-				Rebaja rebajaCorte4 = rebajaDAO.getRebajaByRebajaCorteAno(4,
-						getAnoCurso());
-				if (rebajaCorte4 == null) {
-					rebajaCorte4 = new Rebaja();
-				}
-
+				
 				reporteRebajaVO.setComuna(comuna.getNombre());
-				AntecendentesComuna antecendentesComuna = antecedentesComunaDAO
-						.findAntecendentesComunaByComunaServicioAno(
-								servicioSalud.getNombre(), comuna.getNombre(),
-								getAnoCurso());
-
-				if (antecendentesComuna == null) {
-					continue;
-				}
 
 				AntecendentesComunaCalculado antecendentesComunaCalculado = antecedentesComunaDAO
-						.findByIdAntecedentesComuna(antecendentesComuna
-								.getIdAntecedentesComuna());
-				if (antecendentesComunaCalculado == null) {
+						.findByComunaAnoVigencia(comuna.getId(), getAnoCurso());
+				
+				if(antecendentesComunaCalculado == null){
 					continue;
 				}
 
-				// List<ComunaCumplimiento> comunasCumplimientosCorte1 =
-				// rebajaDAO.getCumplimientoByRebejaComuna(rebajaCorte1.getIdRebaja(),
-				// comuna.getId());
-				// List<ComunaCumplimiento> comunasCumplimientosCorte2 =
-				// rebajaDAO.getCumplimientoByRebejaComuna(rebajaCorte2.getIdRebaja(),
-				// comuna.getId());
-				// List<ComunaCumplimiento> comunasCumplimientosCorte3 =
-				// rebajaDAO.getCumplimientoByRebejaComuna(rebajaCorte3.getIdRebaja(),
-				// comuna.getId());
-				// List<ComunaCumplimiento> comunasCumplimientosCorte4 =
-				// rebajaDAO.getCumplimientoByRebejaComuna(rebajaCorte4.getIdRebaja(),
-				// comuna.getId());
-
-				// TODO recorrer lista y obtener datos
-
-				// for(ComunaCumplimiento comunaCumplimientoCorte1 :
-				// comunasCumplimientosCorte1){
-				// reporteRebajaVO.setfCorte1Monto(comunaCumplimientoCorte1.ge)
-				// }
-
-				if (antecendentesComunaCalculado.getPercapitaAno() == null) {
-					antecendentesComunaCalculado.setPercapitaAno(0L);
+				Integer porcentajeRebajaCorte1 = 0;
+				Integer porcentajeRebajaCorte2 = 0;
+				Integer porcentajeRebajaCorte3 = 0;
+				Integer porcentajeRebajaCorte4 = 0;
+				
+				Integer montoRebajaCorte1 = 0;
+				Integer montoRebajaCorte2 = 0;
+				Integer montoRebajaCorte3 = 0;
+				Integer montoRebajaCorte4 = 0;
+				
+				
+				
+				
+				Set<AntecedentesComunaCalculadoRebaja> setAntecedentesComunaCalculadoRebaja = antecendentesComunaCalculado.getAntecedentesComunaCalculadoRebajas();
+				if(setAntecedentesComunaCalculadoRebaja == null){
+					continue;
 				}
-				// TODO estos valores no son DEBEN CAMBIARSE CUANDO ESTE LISTO
-				// EL PROCESO DE REABAJ
-				reporteRebajaVO.setfCorte1Monto(antecendentesComunaCalculado
-						.getPercapitaAno());
-				reporteRebajaVO
-						.setfCorte1Porcentaje(antecendentesComunaCalculado
-								.getValorPerCapitaComunalMes());
-				reporteRebajaVO.setfCorte2Monto(antecendentesComunaCalculado
-						.getPercapitaAno());
-				reporteRebajaVO
-						.setfCorte2Porcentaje(antecendentesComunaCalculado
-								.getValorPerCapitaComunalMes());
-				reporteRebajaVO.setfCorte3Monto(antecendentesComunaCalculado
-						.getPercapitaAno());
-				reporteRebajaVO
-						.setfCorte3Porcentaje(antecendentesComunaCalculado
-								.getValorPerCapitaComunalMes());
-				reporteRebajaVO.setfCorte4Monto(antecendentesComunaCalculado
-						.getPercapitaAno());
-				reporteRebajaVO
-						.setfCorte4Porcentaje(antecendentesComunaCalculado
-								.getValorPerCapitaComunalMes());
-				reporteRebajaVO.setRebajaTotal((long) 99999999);
-
+				else{
+					List<AntecedentesComunaCalculadoRebaja> antecedentesComunaCalculadoRebajas = new ArrayList<AntecedentesComunaCalculadoRebaja>(setAntecedentesComunaCalculadoRebaja);
+					for(AntecedentesComunaCalculadoRebaja antecedentesComunaCalculadoRebaja : antecedentesComunaCalculadoRebajas){
+						
+						
+						
+						
+						if(antecedentesComunaCalculadoRebaja.getRebaja().getRebajaCorte().getRebajaCorteId() == 1){
+							System.out.println("corte1");
+							montoRebajaCorte1 = antecedentesComunaCalculadoRebaja.getMontoRebaja();
+							
+							List<CumplimientoRebajaVO> cumplimientoRebajasVO = rebajaService.getCumplimientoByRebajaComuna(antecedentesComunaCalculadoRebaja.getRebaja().getIdRebaja(), antecedentesComunaCalculadoRebaja.getAntecedentesComunaCalculado().getAntecedentesComuna().getIdComuna().getId());
+							if(cumplimientoRebajasVO != null && cumplimientoRebajasVO.size() > 0){
+								Integer porcentajeRebajaFinal1 = 0;
+								for(CumplimientoRebajaVO cumplimientoRebajaVO : cumplimientoRebajasVO){
+									System.out.println("cumplimientoRebajaVO.getRebajaFinal() --> "+cumplimientoRebajaVO.getRebajaFinal());
+									porcentajeRebajaFinal1 += (( cumplimientoRebajaVO.getRebajaFinal() == null) ? 0 : cumplimientoRebajaVO.getRebajaFinal().intValue());
+								}
+								System.out.println("porcentajeRebajaFinal-->"+porcentajeRebajaFinal1);
+								porcentajeRebajaCorte1 = porcentajeRebajaFinal1;
+							}
+							
+						}
+						else if(antecedentesComunaCalculadoRebaja.getRebaja().getRebajaCorte().getRebajaCorteId() == 2){
+							System.out.println("corte2");
+							montoRebajaCorte2 = antecedentesComunaCalculadoRebaja.getMontoRebaja();
+							
+							System.out.println("antecedentesComunaCalculadoRebaja.getRebaja().getIdRebaja() --> "+antecedentesComunaCalculadoRebaja.getRebaja().getIdRebaja());
+							System.out.println("antecedentesComunaCalculadoRebaja.getAntecedentesComunaCalculado().getAntecedentesComuna().getIdComuna().getId() --> "+antecedentesComunaCalculadoRebaja.getAntecedentesComunaCalculado().getAntecedentesComuna().getIdComuna().getId());
+							
+							
+							List<CumplimientoRebajaVO> cumplimientoRebajasVO = rebajaService.getCumplimientoByRebajaComuna(antecedentesComunaCalculadoRebaja.getRebaja().getIdRebaja(), antecedentesComunaCalculadoRebaja.getAntecedentesComunaCalculado().getAntecedentesComuna().getIdComuna().getId());
+							if(cumplimientoRebajasVO != null && cumplimientoRebajasVO.size() > 0){
+								Integer porcentajeRebajaFinal2 = 0;
+								for(CumplimientoRebajaVO cumplimientoRebajaVO : cumplimientoRebajasVO){
+									System.out.println("cumplimientoRebajaVO.getRebajaFinal() --> "+cumplimientoRebajaVO.getRebajaFinal());
+									porcentajeRebajaFinal2 += (( cumplimientoRebajaVO.getRebajaFinal() == null) ? 0 : cumplimientoRebajaVO.getRebajaFinal().intValue());
+									System.out.println("CORTE 2 --> porcentajeRebajaFinal-->"+porcentajeRebajaFinal2);
+								}
+								
+								porcentajeRebajaCorte2 = porcentajeRebajaFinal2;
+							}
+							
+						}
+						else if(antecedentesComunaCalculadoRebaja.getRebaja().getRebajaCorte().getRebajaCorteId() == 3){
+							System.out.println("corte3");
+							montoRebajaCorte3 = antecedentesComunaCalculadoRebaja.getMontoRebaja();
+							
+							List<CumplimientoRebajaVO> cumplimientoRebajasVO = rebajaService.getCumplimientoByRebajaComuna(antecedentesComunaCalculadoRebaja.getRebaja().getIdRebaja(), antecedentesComunaCalculadoRebaja.getAntecedentesComunaCalculado().getAntecedentesComuna().getIdComuna().getId());
+							if(cumplimientoRebajasVO != null && cumplimientoRebajasVO.size() > 0){
+								Integer porcentajeRebajaFinal3 = 0;
+								for(CumplimientoRebajaVO cumplimientoRebajaVO : cumplimientoRebajasVO){
+									System.out.println("cumplimientoRebajaVO.getRebajaFinal() --> "+cumplimientoRebajaVO.getRebajaFinal());
+									porcentajeRebajaFinal3 += (( cumplimientoRebajaVO.getRebajaFinal() == null) ? 0 : cumplimientoRebajaVO.getRebajaFinal().intValue());
+									System.out.println("CORTE 3 --> porcentajeRebajaFinal-->"+porcentajeRebajaFinal3);
+								}
+								porcentajeRebajaCorte3 = porcentajeRebajaFinal3;
+							}
+							
+						}
+						else if(antecedentesComunaCalculadoRebaja.getRebaja().getRebajaCorte().getRebajaCorteId() == 4){
+							System.out.println("corte4");
+							montoRebajaCorte4 = antecedentesComunaCalculadoRebaja.getMontoRebaja();
+							
+							List<CumplimientoRebajaVO> cumplimientoRebajasVO = rebajaService.getCumplimientoByRebajaComuna(antecedentesComunaCalculadoRebaja.getRebaja().getIdRebaja(), antecedentesComunaCalculadoRebaja.getAntecedentesComunaCalculado().getAntecedentesComuna().getIdComuna().getId());
+							if(cumplimientoRebajasVO != null && cumplimientoRebajasVO.size() > 0){
+								Integer porcentajeRebajaFinal4 = 0;
+								for(CumplimientoRebajaVO cumplimientoRebajaVO : cumplimientoRebajasVO){
+									System.out.println("cumplimientoRebajaVO.getRebajaFinal() --> "+cumplimientoRebajaVO.getRebajaFinal());
+									porcentajeRebajaFinal4 += (( cumplimientoRebajaVO.getRebajaFinal() == null) ? 0 : cumplimientoRebajaVO.getRebajaFinal().intValue());
+								}
+								System.out.println("porcentajeRebajaFinal-->"+porcentajeRebajaFinal4);
+								porcentajeRebajaCorte4 = porcentajeRebajaFinal4;
+							}
+							
+						}
+					}
+					
+					
+				}
+				reporteRebajaVO.setfCorte1Monto(montoRebajaCorte1.longValue());
+				reporteRebajaVO.setfCorte1Porcentaje((porcentajeRebajaCorte1));
+				
+				reporteRebajaVO.setfCorte2Monto(montoRebajaCorte2.longValue());
+				reporteRebajaVO.setfCorte2Porcentaje((porcentajeRebajaCorte2));
+				
+				reporteRebajaVO.setfCorte3Monto(montoRebajaCorte3.longValue());
+				reporteRebajaVO.setfCorte3Porcentaje((porcentajeRebajaCorte3));
+				
+				reporteRebajaVO.setfCorte4Monto(montoRebajaCorte4.longValue());
+				reporteRebajaVO.setfCorte4Porcentaje((porcentajeRebajaCorte4));
+				
+				
+				
+				reporteRebajaVO.setRebajaTotal(montoRebajaCorte1.longValue() + montoRebajaCorte2.longValue() + montoRebajaCorte3.longValue() + montoRebajaCorte4.longValue());
+				
+				
 				resultado.add(reporteRebajaVO);
 			}
 		}
@@ -3121,24 +3197,38 @@ public class ReportesServices {
 
 	public Integer generarPlanillaReporteRebaja(String usuario) {
 		Integer planillaTrabajoId = null;
+		
+		
+		RebajaCorte rebajaCorte1 = rebajaDAO.getCorteById(1);
+		RebajaCorte rebajaCorte2 = rebajaDAO.getCorteById(2);
+		RebajaCorte rebajaCorte3 = rebajaDAO.getCorteById(3);
+		RebajaCorte rebajaCorte4 = rebajaDAO.getCorteById(4);
+		
+		Mes fechaMesCorte1 = mesDAO.getMesPorID(rebajaCorte1.getMesRebaja().getIdMes());
+		Mes fechaMesCorte2 = mesDAO.getMesPorID(rebajaCorte2.getMesRebaja().getIdMes());
+		Mes fechaMesCorte3 = mesDAO.getMesPorID(rebajaCorte3.getMesRebaja().getIdMes());
+		Mes fechaMesCorte4 = mesDAO.getMesPorID(rebajaCorte4.getMesRebaja().getIdMes());
+		
+		
+		
 		List<CellExcelVO> header = new ArrayList<CellExcelVO>();
 		List<CellExcelVO> subHeader = new ArrayList<CellExcelVO>();
 		header.add((new CellExcelVO("REGION", 1, 2)));
 		header.add((new CellExcelVO("SERVICIO", 1, 2)));
 		header.add((new CellExcelVO("COMUNA", 1, 2)));
-		header.add((new CellExcelVO("REBAJA FECHA CORTE 1", 2, 1)));
-		header.add((new CellExcelVO("REBAJA FECHA CORTE 2", 2, 1)));
-		header.add((new CellExcelVO("REBAJA FECHA CORTE 3", 2, 1)));
-		header.add((new CellExcelVO("REBAJA FECHA CORTE 4", 2, 1)));
+		header.add((new CellExcelVO(StringUtil.caracterUnoMayuscula(fechaMesCorte1.getNombre()), 2, 1)));
+		header.add((new CellExcelVO(StringUtil.caracterUnoMayuscula(fechaMesCorte2.getNombre()), 2, 1)));
+		header.add((new CellExcelVO(StringUtil.caracterUnoMayuscula(fechaMesCorte3.getNombre()), 2, 1)));
+		header.add((new CellExcelVO(StringUtil.caracterUnoMayuscula(fechaMesCorte1.getNombre()), 2, 1)));
 		header.add((new CellExcelVO("REBAJA APLICADA", 1, 2)));
 
-		subHeader.add((new CellExcelVO("MONTO", 1, 1)));
+		subHeader.add((new CellExcelVO("$ MONTO", 1, 1)));
 		subHeader.add((new CellExcelVO("%", 1, 1)));
-		subHeader.add((new CellExcelVO("MONTO", 1, 1)));
+		subHeader.add((new CellExcelVO("$ MONTO", 1, 1)));
 		subHeader.add((new CellExcelVO("%", 1, 1)));
-		subHeader.add((new CellExcelVO("MONTO", 1, 1)));
+		subHeader.add((new CellExcelVO("$ MONTO", 1, 1)));
 		subHeader.add((new CellExcelVO("%", 1, 1)));
-		subHeader.add((new CellExcelVO("MONTO", 1, 1)));
+		subHeader.add((new CellExcelVO("$ MONTO", 1, 1)));
 		subHeader.add((new CellExcelVO("%", 1, 1)));
 
 		List<ReporteRebajaVO> reporteRebajaVO = this.getReporteRebaja();
@@ -3314,16 +3404,22 @@ public class ReportesServices {
 		Integer planillaTrabajoId = null;
 		List<CellExcelVO> header = new ArrayList<CellExcelVO>();
 		List<CellExcelVO> subHeader = new ArrayList<CellExcelVO>();
+		
+		Integer mesCurso = Integer.parseInt(getMesCurso(true));
+		
+		Mes mes = mesDAO.getMesPorID(mesCurso);
+		
+		
 		header.add((new CellExcelVO("REGION", 1, 2)));
 		header.add((new CellExcelVO("SERVICIO DE SALUD", 1, 2)));
 		header.add((new CellExcelVO("COMUNA", 1, 2)));
 		header.add((new CellExcelVO("ART 49 PER CAPITA", 2, 1)));
 		header.add((new CellExcelVO(
-				"ART. 56 REFORZAMIENTO MARZO 2014 APS MUNICIPAL", 2, 1)));
+				"ART. 56 REFORZAMIENTO "+mes.getNombre().toUpperCase()+" 2014 APS MUNICIPAL", 2, 1)));
 		header.add((new CellExcelVO(
-				"TOTAL REMESAS ENERO A MARZO 2014 APS MUNICIPAL", 2, 1)));
+				"TOTAL REMESAS ENERO A "+mes.getNombre().toUpperCase()+" 2014 APS MUNICIPAL", 2, 1)));
 
-		List<ReporteGlosaVO> reporteGlosaVO = this.getReporteGlosa();
+		List<ReporteGlosaVO> reporteGlosaVO = this.getReporteGlosa(usuario);
 
 		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 		String filename = tmpDir + File.separator

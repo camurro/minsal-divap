@@ -37,7 +37,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "DetalleRemesas.getRemesasMesActualByMesProgramaAnoServicio1", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.establecimiento.servicioSalud.id = :idServicio and d.mes.idMes = :idMes"),
     @NamedQuery(name = "DetalleRemesas.getRemesasMesActualByMesProgramaAnoServicio2", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.servicioSalud.id = :idServicio and d.mes.idMes = :idMes"),
     @NamedQuery(name = "DetalleRemesas.getRemesasMesActualByMesProgramaAnoServicioSubtituloMunicipal", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.servicioSalud.id = :idServicio and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.mes.idMes BETWEEN :idMesDesde and :idMesHasta"),
-    @NamedQuery(name = "DetalleRemesas.getRemesasByProgramaAnoMesEstablecimientoSubtitulo", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.establecimiento.codigo = :codEstablecimiento and d.mes.idMes = :idMes and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo")})
+    @NamedQuery(name = "DetalleRemesas.getRemesasByProgramaAnoMesEstablecimientoSubtitulo", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.establecimiento.codigo = :codEstablecimiento and d.mes.idMes = :idMes and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
+    @NamedQuery(name = "DetalleRemesas.getRemesasPagadasComunaProgramaMesActual", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.id = :idComuna and d.remesaPagada = :remesaPagada and d.mes.idMes = :idMes")})
 public class DetalleRemesas implements Serializable {
     private static final long serialVersionUID = 1L;
    @Id

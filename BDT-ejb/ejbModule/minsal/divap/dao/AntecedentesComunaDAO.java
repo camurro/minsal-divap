@@ -428,5 +428,21 @@ public class AntecedentesComunaDAO {
 		em.persist(antecedentesComunaCalculadoRebaja);
 		return antecedentesComunaCalculadoRebaja;
 	}
+	
+	public AntecendentesComunaCalculado findByComunaAnoVigencia(Integer idComuna, Integer ano) {
+		AntecendentesComunaCalculado entity = null;
+		try {
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByComunaAnoVigencia", AntecendentesComunaCalculado.class);
+			query.setParameter("idComuna", idComuna);
+			query.setParameter("ano", ano);
+			List<AntecendentesComunaCalculado> antecendentesComunaCalculado = query.getResultList(); 
+			if(antecendentesComunaCalculado != null && antecendentesComunaCalculado.size() > 0){
+				entity = antecendentesComunaCalculado.get(0);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return entity;
+	}
 
 }
