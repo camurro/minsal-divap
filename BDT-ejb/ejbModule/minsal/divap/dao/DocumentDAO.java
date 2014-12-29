@@ -177,9 +177,7 @@ public class DocumentDAO {
 		return referenciaDocumento;
 	}
 
-	public ReferenciaDocumento getLastDocumentByTypeEstimacionFlujoCaja(
-			Integer idProgramaAno,
-			TipoDocumentosProcesos tipoDocumento) {
+	public ReferenciaDocumento getLastDocumentByTypeEstimacionFlujoCaja(Integer idProgramaAno, TipoDocumentosProcesos tipoDocumento) {
 		ReferenciaDocumento referenciaDocumento = null;
 		try {
 			TypedQuery<DocumentoEstimacionflujocaja> query = this.em.createNamedQuery("DocumentoEstimacionflujocaja.findByProgramaAnoTipoDocumento", DocumentoEstimacionflujocaja.class);

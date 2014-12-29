@@ -42,6 +42,8 @@ import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaConsolidadorSheetExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaSheetExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaSubtituloSheetExcel;
+import minsal.divap.model.mappers.ModificacionPercapitaReferenciaDocumentoMapper;
+import minsal.divap.model.mappers.ReferenciaDocumentoMapper;
 import minsal.divap.model.mappers.ServicioMapper;
 import minsal.divap.model.mappers.SubtituloFlujoCajaMapper;
 import minsal.divap.util.Util;
@@ -55,6 +57,7 @@ import minsal.divap.vo.DocumentoVO;
 import minsal.divap.vo.EmailVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
+import minsal.divap.vo.ReferenciaDocumentoVO;
 import minsal.divap.vo.ResumenConsolidadorVO;
 import minsal.divap.vo.SeguimientoVO;
 import minsal.divap.vo.ServiciosVO;
@@ -78,11 +81,13 @@ import cl.minsal.divap.model.Cuota;
 import cl.minsal.divap.model.DetalleRemesas;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
+import cl.minsal.divap.model.DocumentoModificacionPercapita;
 import cl.minsal.divap.model.Establecimiento;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.MarcoPresupuestario;
 import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.Remesa;
 import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.ServicioSalud;
@@ -812,7 +817,6 @@ public class EstimacionFlujoCajaService {
 
 	@Asynchronous
 	public void generarPlanillaPropuesta(Integer idProgramaAno) {
-		Integer planillaTrabajoId = null;
 		long milliseconds = System.currentTimeMillis();
 		System.out.println("Inicio generarPlanillaPropuesta");
 		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
@@ -1163,7 +1167,7 @@ public class EstimacionFlujoCajaService {
 			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderDocEstimacionFlujoCaja.replace("{ANO}", String.valueOf(getAnoCurso()+1)));
 			System.out.println("response AsignacionRecursosPercapitaSheetExcel --->" + response);
 			TipoDocumento tipoDocumento = new TipoDocumento(TipoDocumentosProcesos.PLANTILLAPROPUESTA.getId());
-			planillaTrabajoId = documentService.createDocumentPropuestaEstimacionFlujoCaja(programaAno, tipoDocumento, response.getNodeRef(), response.getFileName(), contenType);
+			documentService.createDocumentPropuestaEstimacionFlujoCaja(programaAno, tipoDocumento, response.getNodeRef(), response.getFileName(), contenType);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1921,6 +1925,13 @@ public class EstimacionFlujoCajaService {
 
 	public int countAntecendentesComunaCalculadoVigente() {
 		return antecedentesComunaDAO.countAntecendentesComunaCalculadoVigente(getAnoCurso() + 1);
+	}
+
+	public ReferenciaDocumentoSummaryVO getDocumentEstimacionFlujoCajaByType(Integer idProgramaAno, TipoDocumentosProcesos tipoDocumento) {
+		System.out.println("idProgramaAno->"+idProgramaAno);
+		System.out.println("tipoDocumento->"+tipoDocumento.getId());
+		ReferenciaDocumento referencia = fileDAO.getLastDocumentByTypeEstimacionFlujoCaja(idProgramaAno, tipoDocumento);
+		return new ReferenciaDocumentoMapper().getSummary(referencia);
 	}
 
 }

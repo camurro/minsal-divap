@@ -564,9 +564,6 @@ public class DocumentService {
 	}
 	public Integer createDocumentPropuestaEstimacionFlujoCaja(ProgramaAno programaAno, TipoDocumento tipoDocumentoProceso,
 			String nodeRef, String filename, String contenType) {
-
-
-
 		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
 		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
 		DocumentoEstimacionflujocaja documentoEstimacionFlujoCaja = new DocumentoEstimacionflujocaja();

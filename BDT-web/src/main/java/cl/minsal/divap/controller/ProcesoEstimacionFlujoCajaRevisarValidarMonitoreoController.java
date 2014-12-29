@@ -26,6 +26,7 @@ import minsal.divap.vo.ColumnaVO;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ElementoModificadoVO;
 import minsal.divap.vo.ProgramaVO;
+import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.SubtituloFlujoCajaVO;
 import minsal.divap.vo.SubtituloVO;
 
@@ -216,9 +217,10 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 			if(getPrograma() != null){
 				setAnoActual(getPrograma().getAno());
 			}
-			this.docProgramacion = (Integer) getTaskDataVO().getData().get("_idPlanillaMonitoreo");
-			
-			TipoDocumentosProcesos.PLANTILLAPROPUESTA
+			ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = estimacionFlujoCajaService.getDocumentEstimacionFlujoCajaByType(idProgramaAno, TipoDocumentosProcesos.PLANTILLAPROPUESTA);
+			if(referenciaDocumentoSummaryVO != null){
+				this.docProgramacion = referenciaDocumentoSummaryVO.getId();
+			}
 			System.out.println("docProgramacion --->" + this.docProgramacion);
 			this.iniciarFlujoCaja = (Boolean) getTaskDataVO().getData().get("_iniciarFlujoCaja");
 			System.out.println("iniciarFlujoCaja --->" + this.iniciarFlujoCaja);
@@ -274,51 +276,53 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 			}
 		}
 
-		for (Map.Entry<Integer, List<Integer>> entry : componentesPorSubtitulo.entrySet()) { 
-			System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue()); 
-			if (entry.getKey().equals(Subtitulo.SUBTITULO21.getId())){
-				monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
-				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
-					convenioRemesaSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO21);
-					System.out.println("convenioRemesaSubtitulo21FlujoCajaVO.size()-->" + convenioRemesaSubtitulo21FlujoCajaVO.size());
+		if(this.docPropuesta != null){
+			for (Map.Entry<Integer, List<Integer>> entry : componentesPorSubtitulo.entrySet()) { 
+				System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue()); 
+				if (entry.getKey().equals(Subtitulo.SUBTITULO21.getId())){
+					monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
+						convenioRemesaSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO21);
+						System.out.println("convenioRemesaSubtitulo21FlujoCajaVO.size()-->" + convenioRemesaSubtitulo21FlujoCajaVO.size());
+					}
+					System.out.println("monitoreoSubtitulo21FlujoCajaVO.size()-->"+monitoreoSubtitulo21FlujoCajaVO.size());
+					mostrarSubtitulo21 = true;
+				}else if (entry.getKey().equals(Subtitulo.SUBTITULO22.getId())){
+					monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
+						convenioRemesaSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO22);
+						System.out.println("convenioRemesaSubtitulo22FlujoCajaVO.size()-->" + convenioRemesaSubtitulo22FlujoCajaVO.size());
+					}
+					mostrarSubtitulo22 = true;
+				}else if (entry.getKey().equals(Subtitulo.SUBTITULO24.getId())){
+					monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
+						convenioRemesaSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO24);
+						System.out.println("convenioRemesaSubtitulo24FlujoCajaVO.size()-->" + convenioRemesaSubtitulo24FlujoCajaVO.size());
+					}
+					mostrarSubtitulo24 = true;
+				}else if (entry.getKey().equals(Subtitulo.SUBTITULO29.getId())){
+					monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
+						convenioRemesaSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO29);
+						System.out.println("convenioRemesaSubtitulo29FlujoCajaVO.size()-->" + convenioRemesaSubtitulo29FlujoCajaVO.size());
+					}
+					mostrarSubtitulo29 = true;
 				}
-				System.out.println("monitoreoSubtitulo21FlujoCajaVO.size()-->"+monitoreoSubtitulo21FlujoCajaVO.size());
-				mostrarSubtitulo21 = true;
-			}else if (entry.getKey().equals(Subtitulo.SUBTITULO22.getId())){
-				monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
-				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
-					convenioRemesaSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO22);
-					System.out.println("convenioRemesaSubtitulo22FlujoCajaVO.size()-->" + convenioRemesaSubtitulo22FlujoCajaVO.size());
-				}
-				mostrarSubtitulo22 = true;
-			}else if (entry.getKey().equals(Subtitulo.SUBTITULO24.getId())){
-				monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
-				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
-					convenioRemesaSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO24);
-					System.out.println("convenioRemesaSubtitulo24FlujoCajaVO.size()-->" + convenioRemesaSubtitulo24FlujoCajaVO.size());
-				}
-				mostrarSubtitulo24 = true;
-			}else if (entry.getKey().equals(Subtitulo.SUBTITULO29.getId())){
-				monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
-				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
-					convenioRemesaSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO29);
-					System.out.println("convenioRemesaSubtitulo29FlujoCajaVO.size()-->" + convenioRemesaSubtitulo29FlujoCajaVO.size());
-				}
-				mostrarSubtitulo29 = true;
 			}
-		}
-		Integer currentTab = 0;
-		if(mostrarSubtitulo21){
-			tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO21);
-		}
-		if(mostrarSubtitulo22){
-			tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO22);
-		}
-		if(mostrarSubtitulo24){
-			tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO24);
-		}
-		if(mostrarSubtitulo29){
-			tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO29);
+			Integer currentTab = 0;
+			if(mostrarSubtitulo21){
+				tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO21);
+			}
+			if(mostrarSubtitulo22){
+				tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO22);
+			}
+			if(mostrarSubtitulo24){
+				tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO24);
+			}
+			if(mostrarSubtitulo29){
+				tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO29);
+			}
 		}
 	}
 
