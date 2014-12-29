@@ -32,7 +32,6 @@ import org.apache.log4j.Logger;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.TabCloseEvent;
 
-import cl.minsal.divap.model.MarcoPresupuestario;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 @Named("procesoEstimacionFlujoCajaRevisarValidarMonitoreoController")
@@ -53,7 +52,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	 * SUBTITULO 22
 	 */
 	private Integer valorComboSubtitulo22;
-	
+
 
 	// Convenio Remesa
 	private Integer valorComboSubtitulo22Componente;
@@ -113,7 +112,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 	private Boolean mostrarSubtitulo22;
 	private Boolean mostrarSubtitulo24;
 	private Boolean mostrarSubtitulo29;
-	
+
 	private List<SubtituloFlujoCajaVO> monitoreoSubtitulo21FlujoCajaVO; 
 	private Integer rowIndexMonitoreoSubtitulo21 = 0;
 	private List<SubtituloFlujoCajaVO> monitoreoSubtitulo22FlujoCajaVO;
@@ -220,9 +219,9 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 			System.out.println("docProgramacion --->" + this.docProgramacion);
 			this.iniciarFlujoCaja = (Boolean) getTaskDataVO().getData().get("_iniciarFlujoCaja");
 			System.out.println("iniciarFlujoCaja --->" + this.iniciarFlujoCaja);
-			
+
 		}
-		
+
 		String subtituloSeleccionado = getRequestParameter("subtituloSeleccionado");
 		if(subtituloSeleccionado != null){
 			setSubtituloSeleccionado(Subtitulo.getById(Integer.parseInt(subtituloSeleccionado)));
@@ -233,8 +232,13 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 					this.valorPesoComponente = ((this.programa.getComponentes().get(0).getPeso() == null) ? "0" : this.programa.getComponentes().get(0).getPeso().toString()) +"%";
 					List<Integer> idComponentes = new ArrayList<Integer>();
 					idComponentes.add(this.programa.getComponentes().get(0).getId());
-					estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
-							idComponentes, getSubtituloSeleccionado(), this.iniciarFlujoCaja);
+					if(Subtitulo.SUBTITULO24.getId().equals(getSubtituloSeleccionado().getId())){
+						estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
+								idComponentes, getSubtituloSeleccionado(), this.iniciarFlujoCaja);
+					}else{
+						estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
+								idComponentes, getSubtituloSeleccionado(), this.iniciarFlujoCaja);
+					}
 				}else{
 					this.valorComboSubtituloComponente = 0;
 					this.valorNombreComponente = "";
@@ -270,7 +274,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		for (Map.Entry<Integer, List<Integer>> entry : componentesPorSubtitulo.entrySet()) { 
 			System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue()); 
 			if (entry.getKey().equals(Subtitulo.SUBTITULO21.getId())){
-				monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+				monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
 					convenioRemesaSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO21);
 					System.out.println("convenioRemesaSubtitulo21FlujoCajaVO.size()-->" + convenioRemesaSubtitulo21FlujoCajaVO.size());
@@ -278,21 +282,21 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 				System.out.println("monitoreoSubtitulo21FlujoCajaVO.size()-->"+monitoreoSubtitulo21FlujoCajaVO.size());
 				mostrarSubtitulo21 = true;
 			}else if (entry.getKey().equals(Subtitulo.SUBTITULO22.getId())){
-				monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+				monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
 					convenioRemesaSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO22);
 					System.out.println("convenioRemesaSubtitulo22FlujoCajaVO.size()-->" + convenioRemesaSubtitulo22FlujoCajaVO.size());
 				}
 				mostrarSubtitulo22 = true;
 			}else if (entry.getKey().equals(Subtitulo.SUBTITULO24.getId())){
-				monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+				monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
 					convenioRemesaSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO24);
 					System.out.println("convenioRemesaSubtitulo24FlujoCajaVO.size()-->" + convenioRemesaSubtitulo24FlujoCajaVO.size());
 				}
 				mostrarSubtitulo24 = true;
 			}else if (entry.getKey().equals(Subtitulo.SUBTITULO29.getId())){
-				monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+				monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 				if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
 					convenioRemesaSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO29);
 					System.out.println("convenioRemesaSubtitulo29FlujoCajaVO.size()-->" + convenioRemesaSubtitulo29FlujoCajaVO.size());
@@ -763,8 +767,10 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 
 	public Long getTotalServiciosMarcosPresupuestariosSubtitulo21() {
 		this.totalServiciosMarcosPresupuestariosSubtitulo21 = 0L;
-		for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo21FlujoCajaVO){
-			this.totalServiciosMarcosPresupuestariosSubtitulo21 += subtituloFlujoCajaVO.getMarcoPresupuestario();
+		if(monitoreoSubtitulo21FlujoCajaVO != null && monitoreoSubtitulo21FlujoCajaVO.size() > 0){
+			for(SubtituloFlujoCajaVO subtituloFlujoCajaVO : monitoreoSubtitulo21FlujoCajaVO){
+				this.totalServiciosMarcosPresupuestariosSubtitulo21 += subtituloFlujoCajaVO.getMarcoPresupuestario();
+			}
 		}
 		return totalServiciosMarcosPresupuestariosSubtitulo21;
 	}
@@ -1438,8 +1444,13 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		}else{
 			List<Integer> idComponentes = new ArrayList<Integer>();
 			idComponentes.add(getValorComboSubtituloComponente());
-			estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
-					idComponentes , getSubtituloSeleccionado(), this.iniciarFlujoCaja);
+			if(Subtitulo.SUBTITULO24.getId().equals(getSubtituloSeleccionado().getId())){
+				estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
+						idComponentes, getSubtituloSeleccionado(), this.iniciarFlujoCaja);
+			}else{
+				estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
+						idComponentes, getSubtituloSeleccionado(), this.iniciarFlujoCaja);
+			}
 		}
 	}
 
@@ -1558,22 +1569,22 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 				switch (subtituloSeleccionado) {
 				case SUBTITULO21:
 					System.out.println("SUBTITULO21");
-					monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
+					monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
 							idComponentes, Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					break;
 				case SUBTITULO22:
 					System.out.println("SUBTITULO22");
-					monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
+					monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
 							idComponentes, Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					break;
 				case SUBTITULO24:
 					System.out.println("SUBTITULO24");
-					monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
+					monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
 							idComponentes, Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					break;
 				case SUBTITULO29:
 					System.out.println("SUBTITULO29");
-					monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
+					monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
 							idComponentes, Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					break;
 				default:

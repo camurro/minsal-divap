@@ -30,9 +30,8 @@ public class EstimacionFlujoCajaRESTService extends BaseRest {
 				+ iniciarFlujoCaja);
 
 		EstimacionFlujoCajaService estimacionFlujoCajaService = getService(EstimacionFlujoCajaService.class);
+		estimacionFlujoCajaService.calcularPropuesta(idProgramaAno, iniciarFlujoCaja);
 		System.out.println("[FIN CALCULAR PROPUESTA]");
-		estimacionFlujoCajaService.calcularPropuesta(idProgramaAno,
-				iniciarFlujoCaja);
 	}
 
 	@GET
@@ -43,8 +42,7 @@ public class EstimacionFlujoCajaRESTService extends BaseRest {
 		System.out.println("[GENERAR PLANILLA PROPUESTA] -->" + idProgramaAno);
 		EstimacionFlujoCajaService estimacionFlujoCajaService = getService(EstimacionFlujoCajaService.class);
 		System.out.println("FIN GENERAR PLANILLA PROPUESTA");
-		return estimacionFlujoCajaService
-				.generarPlanillaPropuesta(idProgramaAno);
+		return estimacionFlujoCajaService.generarPlanillaPropuesta(idProgramaAno);
 	}
 
 	@GET

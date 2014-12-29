@@ -444,5 +444,15 @@ public class AntecedentesComunaDAO {
 		}
 		return entity;
 	}
+	
+	public int countAntecendentesComunaCalculadoVigente(Integer ano){
+		try {
+			TypedQuery<Number> query = this.em.createNamedQuery("AntecendentesComunaCalculado.countAntecendentesComunaCalculadoVigente", Number.class);
+			query.setParameter("anoEnCurso", ano);
+			return ((Number)query.getSingleResult()).intValue();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }

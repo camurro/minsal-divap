@@ -12,6 +12,7 @@ import javax.persistence.TypedQuery;
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import cl.minsal.divap.model.Caja;
+import cl.minsal.divap.model.Cuota;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.EstimacionFlujoCajaSeguimiento;
 import cl.minsal.divap.model.ProgramaAno;
@@ -20,17 +21,17 @@ import cl.minsal.divap.model.TipoDocumento;
 
 @Singleton
 public class EstimacionFlujoCajaDAO {
-	
+
 	@PersistenceContext(unitName="BDT-JPA")
 	private EntityManager em;
-	
+
 	@EJB
 	private ProgramasDAO programaDAO;
-	
+
 	public Integer calcularPropuesta() {
 		return 1;
 	}
-	
+
 	public Integer save(DocumentoEstimacionflujocaja documentoEstimacionFlujoCaja) {
 		em.persist(documentoEstimacionFlujoCaja);
 		return documentoEstimacionFlujoCaja.getId();
@@ -46,7 +47,7 @@ public class EstimacionFlujoCajaDAO {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public List<DocumentoEstimacionflujocaja> getDocumentByIDProgramaAnoTipoDocumento(Integer idProgramaAno, TipoDocumentosProcesos tipoDocumento) {
 		try {
 			TypedQuery<DocumentoEstimacionflujocaja> query = this.em.createNamedQuery("DocumentoEstimacionflujocaja.findByProgramaAnoTipoDocumento", DocumentoEstimacionflujocaja.class);
@@ -57,7 +58,7 @@ public class EstimacionFlujoCajaDAO {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public Integer createSeguimiento(Integer idProgramaAno, Seguimiento seguimiento) {
 		ProgramaAno programaAno = programaDAO.getProgramaAnoByID(idProgramaAno);
 		EstimacionFlujoCajaSeguimiento estimacionFlujoCajaSeguimiento = new EstimacionFlujoCajaSeguimiento();
@@ -68,12 +69,12 @@ public class EstimacionFlujoCajaDAO {
 	}
 
 	public List<Caja> getFlujoCajaServicios(Integer idProgramaAno, Subtitulo subtitulo) {
-		
+
 		try {
 			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findBySubtituloAno", Caja.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
 			query.setParameter("idSubtitulo", subtitulo.getId());
-			
+
 			return query.getResultList(); 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -90,6 +91,34 @@ public class EstimacionFlujoCajaDAO {
 		Query query = this.em.createNamedQuery("ReferenciaDocumento.deleteUsingId");
 		query.setParameter("idDocumento", idDocumento);
 		return query.executeUpdate();
+	}
+
+	public Cuota getCuotaByIdProgramaAnoNroCuota(Integer idProgramaAno, Short numeroCuota){
+		try{
+			TypedQuery<Cuota> query = this.em.createNamedQuery("Cuota.findByIdProgramaAnoNroCuota", Cuota.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("numeroCuota", numeroCuota);
+			List<Cuota> results = query.getResultList();
+			if(results != null && results.size()>0) {
+				return results.get(0);
+			}
+			return null;
+		}
+		catch (Exception e){
+			throw new RuntimeException(e);
+		}		
+
+	}
+
+	public List<Cuota> getCuotasByProgramaAno(Integer idProgramaAno) {
+		try{
+			TypedQuery<Cuota> query = this.em.createNamedQuery("Cuota.findByIdProgramaAno", Cuota.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			return query.getResultList();
+		} catch (Exception e){
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}	
 	}
 
 }
