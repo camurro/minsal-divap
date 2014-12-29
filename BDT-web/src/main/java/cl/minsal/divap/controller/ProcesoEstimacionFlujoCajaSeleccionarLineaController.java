@@ -8,7 +8,9 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -50,21 +52,38 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends Abstra
 	 * Se obtiene la lista de programas del usuario por username y año.
 	 */
 	public List<ProgramaVO> programas() {
-		return programaService.getProgramasByUserAno(getLoggedUsername(), getAnoCurso());
+		return programaService.getProgramasByUserAno(getLoggedUsername(), getAnoCurso() + 1);
 	}
 
 	/*
 	 * Avanza a la siguiente actividad con el programa seleccionado
 	 */
-	public String iniciar(Integer id) {
-		this.idProgramaAno = id;
-		this.iniciarFlujoCaja = true;
-		setTarget("bandejaTareas");
-		return super.enviar();
+	public String iniciar(Integer idProgramaAno) {
+		boolean existeDistribucionRecursos = estimacionFlujoCajaService.existeDistribucionRecursos(idProgramaAno);
+		int countDistribucionPercapita = estimacionFlujoCajaService.countAntecendentesComunaCalculadoVigente();
+		System.out.println("existeDistribucionRecursos="+existeDistribucionRecursos);
+		if(existeDistribucionRecursos && (countDistribucionPercapita > 0)){
+			System.out.println("ya se realizo la distribucion de recursos");
+			this.idProgramaAno = idProgramaAno;
+			this.iniciarFlujoCaja = true;
+			setTarget("bandejaTareas");
+			return super.enviar();
+		}else{
+			System.out.println("todavia no se realiza la distribucion de recursos");
+			String mensaje = null;
+			if(!existeDistribucionRecursos){
+				mensaje = "La Distribución de Recursos Financieros para Programas de Reforzamiento de APS no ha Sido Realizada Para el Programa Seleccionado";
+			}else{
+				mensaje = "La Distribución Inicial Percapita no ha Sido Realizada";
+			}
+			FacesMessage msg = new FacesMessage(mensaje);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return null;
+		}
 	}
 	
-	public String modificar(Integer id) {
-		this.idProgramaAno = id;
+	public String modificar(Integer idProgramaAno) {
+		this.idProgramaAno = idProgramaAno;
 		this.iniciarFlujoCaja = false;
 		setTarget("bandejaTareas");
 		return super.enviar();

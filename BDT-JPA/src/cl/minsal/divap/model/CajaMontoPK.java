@@ -49,8 +49,8 @@ public class CajaMontoPK implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += caja;
-        hash += mes;
+        hash += (int) caja;
+        hash += (int) mes;
         return hash;
     }
 

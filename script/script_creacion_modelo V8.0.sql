@@ -25497,3 +25497,61 @@ WITH (
 )
 ;
 
+INSERT INTO programa_ano(
+            id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, 
+            estadoreliquidacion, estado_ot, estado_modificacion_aps)
+    VALUES (-2, -1, 2015, 1, 1, 1, 1, 1, 1);
+
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (80, 1, (100.0/12), -1, 1);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (81, 2, (100.0/12), -1, 2);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (82, 3, (100.0/12), -1, 3);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (83, 4, (100.0/12), -1, 4);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (84, 5, (100.0/12), -1, 5);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (85, 6, (100.0/12), -1, 6);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (86, 7, (100.0/12), -1, 7);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (87, 8, (100.0/12), -1, 8);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (88, 9, (100.0/12), -1, 9);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (89, 10, (100.0/12), -1, 10);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (90, 11, (100.0/12), -1, 11);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (91, 12, (100.0/12), -1, 12);
+
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (92, 1, 70, 354568);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (93, 2, 30, 354568, 10);
+
+ALTER TABLE caja
+  DROP COLUMN marco_presupuestario;
+ALTER TABLE caja
+  DROP COLUMN monto;
+
+
+ALTER TABLE caja
+  ADD COLUMN programa integer;
+ALTER TABLE caja
+  ADD COLUMN servicio integer;
+ALTER TABLE caja
+  ADD COLUMN caja_inicial boolean NOT NULL DEFAULT true;
+ALTER TABLE caja
+  ADD CONSTRAINT programa_fk FOREIGN KEY (programa) REFERENCES programa_ano (id_programa_ano) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE caja
+  ADD CONSTRAINT servicio_fk FOREIGN KEY (servicio) REFERENCES servicio_salud (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+  
+  UPDATE caja SET  programa=1, servicio=1, caja_inicial=true;
+  
+ALTER TABLE caja
+   ALTER COLUMN programa SET NOT NULL;
+ALTER TABLE caja
+   ALTER COLUMN servicio SET NOT NULL;
+
+ALTER TABLE caja_monto
+  DROP CONSTRAINT monto_fk;
+
+ALTER TABLE caja
+   ALTER COLUMN id_componente DROP NOT NULL;
+
+
+
+
+
+

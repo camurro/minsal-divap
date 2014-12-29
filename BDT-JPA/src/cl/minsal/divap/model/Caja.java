@@ -1,7 +1,7 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -28,14 +28,14 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Caja.findAll", query = "SELECT c FROM Caja c"),
-    @NamedQuery(name = "Caja.findByProgramaAnoComponenteSubtituloServicio", query = "SELECT c FROM Caja c WHERE c.idSubtitulo.idTipoSubtitulo = :idTipoSubtitulo and c.idComponente.id IN (:idComponentes) and c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno and c.marcoPresupuestario.servicioSalud.id = :idServicio"),
-    @NamedQuery(name = "Caja.findByProgramaAnoComponenteSubtitulo", query = "SELECT c FROM Caja c WHERE c.idSubtitulo.idTipoSubtitulo = :idTipoSubtitulo and c.idComponente.id IN (:idComponentes) and c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno"),
-    @NamedQuery(name = "Caja.deleteUsingIdProgramaAno", query = "DELETE FROM Caja c WHERE c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno"),
-    @NamedQuery(name = "Caja.findByIdProgramaAnoIdServicio", query = "SELECT c FROM Caja c WHERE c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno and c.marcoPresupuestario.servicioSalud.id = :idServicio"),
-    @NamedQuery(name = "Caja.findByProgramaAnoServicioSubtitulo", query = "SELECT c FROM Caja c WHERE c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno and c.marcoPresupuestario.servicioSalud.id = :idServicio and c.idSubtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
-    @NamedQuery(name = "Caja.findBySubtituloAno", query = "SELECT c FROM Caja c WHERE c.idSubtitulo.idTipoSubtitulo = :idSubtitulo and c.marcoPresupuestario.idProgramaAno is not null and c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno "),
+    @NamedQuery(name = "Caja.findByIdProgramaAnoIdServicio", query = "SELECT c FROM Caja c WHERE c.programa.idProgramaAno = :idProgramaAno and c.servicio.id = :idServicio"),
+    @NamedQuery(name = "Caja.findByProgramaAnoServicioSubtitulo", query = "SELECT c FROM Caja c WHERE c.programa.idProgramaAno = :idProgramaAno and c.servicio.id = :idServicio and c.idSubtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
+    @NamedQuery(name = "Caja.findBySubtituloAno", query = "SELECT c FROM Caja c WHERE c.idSubtitulo.idTipoSubtitulo = :idSubtitulo and c.programa is not null and c.programa.idProgramaAno = :idProgramaAno "),
     @NamedQuery(name = "Caja.findById", query = "SELECT c FROM Caja c WHERE c.id = :id"),
-    @NamedQuery(name = "Caja.findByProgramaAnoSubtitulo", query = "SELECT c FROM Caja c WHERE c.idSubtitulo.idTipoSubtitulo = :idTipoSubtitulo and c.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno")})
+    @NamedQuery(name = "Caja.findByProgramaAnoSubtitulo", query = "SELECT c FROM Caja c WHERE c.idSubtitulo.idTipoSubtitulo = :idTipoSubtitulo and c.programa.idProgramaAno = :idProgramaAno"),
+    @NamedQuery(name = "Caja.findByServicioProgramaAnoComponenteSubtitulo", query = "SELECT c FROM Caja c WHERE c.servicio.id = :idServicio and c.programa.idProgramaAno = :idProgramaAno and c.idComponente.id = :idComponente and c.idSubtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
+    @NamedQuery(name = "Caja.deleteUsingIdProgramaAno", query = "DELETE FROM Caja c WHERE c.programa.idProgramaAno = :idProgramaAno"),
+    @NamedQuery(name = "Caja.countByIdProgramaAno", query = "SELECT COUNT(c) FROM Caja c WHERE c.programa.idProgramaAno = :idProgramaAno")})
 
 
 public class Caja implements Serializable {
@@ -45,17 +45,20 @@ public class Caja implements Serializable {
     @GeneratedValue
     private Integer id;
     @Basic(optional = false)
-    @Column(name = "monto")
-    private int monto;
+    @Column(name = "caja_inicial")
+    private boolean cajaInicial;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "caja")
     @OrderBy("mes.idMes ASC")
-    private Set<CajaMonto> cajaMontos;
+    private List<CajaMonto> cajaMontos;
     @JoinColumn(name = "id_subtitulo", referencedColumnName = "id_tipo_subtitulo")
     @ManyToOne
     private TipoSubtitulo idSubtitulo;
-    @JoinColumn(name = "marco_presupuestario", referencedColumnName = "id_marco_presupuestario")
-    @ManyToOne
-    private MarcoPresupuestario marcoPresupuestario;
+    @JoinColumn(name = "servicio", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private ServicioSalud servicio;
+    @JoinColumn(name = "programa", referencedColumnName = "id_programa_ano")
+    @ManyToOne(optional = false)
+    private ProgramaAno programa;
     @JoinColumn(name = "id_componente", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Componente idComponente;
@@ -75,20 +78,12 @@ public class Caja implements Serializable {
         this.id = id;
     }
     
-    public int getMonto() {
-        return monto;
-    }
-
-    public void setMonto(int monto) {
-        this.monto = monto;
-    }
-
     @XmlTransient
-    public Set<CajaMonto> getCajaMontos() {
+    public List<CajaMonto> getCajaMontos() {
 		return cajaMontos;
 	}
 
-	public void setCajaMontos(Set<CajaMonto> cajaMontos) {
+	public void setCajaMontos(List<CajaMonto> cajaMontos) {
 		this.cajaMontos = cajaMontos;
 	}
 
@@ -100,15 +95,31 @@ public class Caja implements Serializable {
         this.idSubtitulo = idSubtitulo;
     }
 
-    public MarcoPresupuestario getMarcoPresupuestario() {
-        return marcoPresupuestario;
-    }
+    public boolean isCajaInicial() {
+		return cajaInicial;
+	}
 
-    public void setMarcoPresupuestario(MarcoPresupuestario marcoPresupuestario) {
-        this.marcoPresupuestario = marcoPresupuestario;
-    }
+	public void setCajaInicial(boolean cajaInicial) {
+		this.cajaInicial = cajaInicial;
+	}
 
-    public Componente getIdComponente() {
+	public ServicioSalud getServicio() {
+		return servicio;
+	}
+
+	public void setServicio(ServicioSalud servicio) {
+		this.servicio = servicio;
+	}
+
+	public ProgramaAno getPrograma() {
+		return programa;
+	}
+
+	public void setPrograma(ProgramaAno programa) {
+		this.programa = programa;
+	}
+
+	public Componente getIdComponente() {
         return idComponente;
     }
 

@@ -1,11 +1,11 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -37,7 +37,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "DetalleRemesas.getRemesasMesActualByMesProgramaAnoServicio1", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.establecimiento.servicioSalud.id = :idServicio and d.mes.idMes = :idMes"),
     @NamedQuery(name = "DetalleRemesas.getRemesasMesActualByMesProgramaAnoServicio2", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.servicioSalud.id = :idServicio and d.mes.idMes = :idMes"),
     @NamedQuery(name = "DetalleRemesas.getRemesasMesActualByMesProgramaAnoServicioSubtituloMunicipal", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.servicioSalud.id = :idServicio and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.mes.idMes BETWEEN :idMesDesde and :idMesHasta"),
-    @NamedQuery(name = "DetalleRemesas.getRemesasByProgramaAnoMesEstablecimientoSubtitulo", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.establecimiento.codigo = :codEstablecimiento and d.mes.idMes = :idMes and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo")})
+    @NamedQuery(name = "DetalleRemesas.getRemesasByProgramaAnoMesEstablecimientoSubtitulo", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.establecimiento.codigo = :codEstablecimiento and d.mes.idMes = :idMes and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
+    @NamedQuery(name = "DetalleRemesas.getRemesasComunaLaFecha", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.id = :idComuna and d.mes.idMes <= :idMes and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
+    @NamedQuery(name = "DetalleRemesas.getDetalleRemesaEstimadaByProgramaAnoEstablecimientoSubtitulo", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.establecimiento.id = :idEstablecimiento and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.estimada = true order by d.cuota.numeroCuota asc"),
+    @NamedQuery(name = "DetalleRemesas.getDetalleRemesaEstimadaByProgramaAnoComunaSubtitulo", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.id = :idComuna and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.estimada = true order by d.cuota.numeroCuota asc")})
 public class DetalleRemesas implements Serializable {
     private static final long serialVersionUID = 1L;
    @Id
@@ -49,6 +52,9 @@ public class DetalleRemesas implements Serializable {
     @Basic(optional = false)
     @Column(name = "remesa_pagada")
     private boolean remesaPagada;
+    @Basic(optional = false)
+    @Column(name = "estimada")
+    private boolean estimada;
     @JoinColumn(name = "subtitulo", referencedColumnName = "id_tipo_subtitulo")
     @ManyToOne
     private TipoSubtitulo subtitulo;
@@ -161,7 +167,16 @@ public class DetalleRemesas implements Serializable {
     public void setCuota(Cuota cuota) {
         this.cuota = cuota;
     }
-    @Override
+    
+    public boolean isEstimada() {
+		return estimada;
+	}
+
+	public void setEstimada(boolean estimada) {
+		this.estimada = estimada;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (idDetalleRemesa != null ? idDetalleRemesa.hashCode() : 0);

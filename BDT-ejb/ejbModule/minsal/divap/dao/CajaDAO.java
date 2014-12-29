@@ -34,7 +34,7 @@ public class CajaDAO {
 		}
 
 	}
-	
+
 	public List<Caja> getByIDProgramaAno(Integer idProgramaAno){
 		try {
 			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByIdProgramaAno", Caja.class);
@@ -46,7 +46,7 @@ public class CajaDAO {
 		}
 
 	}
-	
+
 	public List<Caja> getByIdProgramaAnoIdServicio(Integer idProgramaAno, Integer idServicio){
 		try {
 			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByIdProgramaAnoIdServicio", Caja.class);
@@ -57,7 +57,7 @@ public class CajaDAO {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	//Verificar que devuelve
 	//TODO: Guardar la lista
 	public List<Caja> save(List<Caja> caja) {
@@ -65,11 +65,11 @@ public class CajaDAO {
 		for (Caja caja2 : caja) {
 			this.em.detach(caja2);
 			this.em.persist(caja2);
-			
+
 		}
 		return caja;
 	}
-	
+
 	public boolean save(Caja caja) {
 
 		this.em.persist(caja);
@@ -89,22 +89,22 @@ public class CajaDAO {
 		}
 	}
 
-	
+
 	public Caja getByID(Integer id) {
 		try {
 			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findById", Caja.class);
 			query.setParameter("id",id);
-			
+
 			if (query.getSingleResult()!=null);
 			return query.getSingleResult();
-			
+
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	public List<Caja> getByIDSubComponenteComunaProgramaAno(int sub, String componenteSeleccionado, String comunaSeleccionada,
-						String establecimientoSeleccionado, int ano, Integer programa) {
+			String establecimientoSeleccionado, int ano, Integer programa) {
 		try {
 			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByByIDSubComponenteComunaProgramaAno", Caja.class);
 			query.setParameter("idComuna",Integer.parseInt(comunaSeleccionada));
@@ -147,37 +147,7 @@ public class CajaDAO {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	public List<Caja> getMonitoreoByProgramaAnoComponenteSubtituloServicio(Integer idProgramaAno, List<Integer> idComponentes, Subtitulo subtitulo,
-			Integer idServicio) {
-		
-		try {
-			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByProgramaAnoComponenteSubtituloServicio", Caja.class);
-			query.setParameter("idTipoSubtitulo", subtitulo.getId());
-			query.setParameter("idComponentes", idComponentes);
-			query.setParameter("idProgramaAno", idProgramaAno);
-			query.setParameter("idServicio", idServicio);
-			return query.getResultList();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
 
-	public List<Caja> getMonitoreoByProgramaAnoComponenteSubtitulo(Integer idProgramaAno, List<Integer> idComponentes, Subtitulo subtitulo) {
-		System.out.println("idProgramaAno --> "+idProgramaAno);
-		System.out.println("subtitulo --> "+subtitulo);
-		System.out.println("idComponente[0] --> "+idComponentes.get(0));
-		try {
-			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByProgramaAnoComponenteSubtitulo", Caja.class);
-			query.setParameter("idTipoSubtitulo", subtitulo.getId());
-			query.setParameter("idComponentes", idComponentes);
-			query.setParameter("idProgramaAno", idProgramaAno);
-			return query.getResultList();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
 	public List<Caja> getConvenioRemesaByProgramaAnoComponenteSubtitulo(Integer idProgramaAno, List<Integer> idComponentes, Subtitulo subtitulo) {
 		try {
 			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByProgramaAnoComponenteSubtitulo", Caja.class);
@@ -228,6 +198,63 @@ public class CajaDAO {
 		Query queryUpdate = this.em.createNamedQuery("MarcoPresupuestario.updateMarcoProgramaAnoReparos");
 		queryUpdate.setParameter("idProgramaAno", idProgramaAno);
 		return queryUpdate.executeUpdate();
+	}
+
+	public Caja getByServicioProgramaAnoComponenteSubtitulo(Integer idServicio, Integer idProgramaAno, Integer idComponente, Subtitulo subtitulo) {
+		try {
+			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findByServicioProgramaAnoComponenteSubtitulo", Caja.class);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idTipoSubtitulo", subtitulo.getId());
+			List<Caja> results = query.getResultList();
+			if(results != null && results.size() > 0){
+				return results.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public CajaMonto getCajaMontoByCajaMes(Integer idCaja, Integer idMes) {
+		try {
+			TypedQuery<CajaMonto> query = this.em.createNamedQuery("CajaMonto.findByCajaMes", CajaMonto.class);
+			query.setParameter("mes", idMes);
+			query.setParameter("caja", idCaja);
+			List<CajaMonto> results = query.getResultList();
+			if(results != null && results.size() > 0){
+				return results.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public Integer eliminarPropuesta(Integer idProgramaAno) {
+		try {
+			Integer countDeleted = 0;
+			TypedQuery<Number> queryCajaMontoCount = this.em.createNamedQuery("CajaMonto.countByIdProgramaAno", Number.class);
+			queryCajaMontoCount.setParameter("idProgramaAno", idProgramaAno);
+			int count =  ((Number)queryCajaMontoCount.getSingleResult()).intValue();
+			if(count > 0){
+				Query queryCajaMonto = this.em.createNamedQuery("CajaMonto.deleteUsingIdProgramaAno");
+				queryCajaMonto.setParameter("idProgramaAno", idProgramaAno);
+				queryCajaMonto.executeUpdate();
+			}
+			TypedQuery<Number> queryCajaCount = this.em.createNamedQuery("Caja.countByIdProgramaAno", Number.class);
+			queryCajaCount.setParameter("idProgramaAno", idProgramaAno);
+			count =  ((Number)queryCajaCount.getSingleResult()).intValue();
+			if(count > 0){
+				Query queryCaja = this.em.createNamedQuery("Caja.deleteUsingIdProgramaAno");
+				queryCaja.setParameter("idProgramaAno", idProgramaAno);
+				countDeleted = queryCaja.executeUpdate();
+			}
+			return countDeleted;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

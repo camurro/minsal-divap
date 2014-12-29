@@ -1,6 +1,9 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -20,15 +23,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "CajaMonto.findAll", query = "SELECT c FROM CajaMonto c"),
     @NamedQuery(name = "CajaMonto.findByCaja", query = "SELECT c FROM CajaMonto c WHERE c.cajaMontoPK.caja = :caja"),
-    @NamedQuery(name = "CajaMonto.deleteUsingIdProgramaAno", query = "DELETE FROM CajaMonto c WHERE c.caja is not null and c.caja.marcoPresupuestario is not null and c.caja.marcoPresupuestario.idProgramaAno is not null and c.caja.marcoPresupuestario.idProgramaAno.idProgramaAno = :idProgramaAno"),
-    @NamedQuery(name = "CajaMonto.findByMes", query = "SELECT c FROM CajaMonto c WHERE c.cajaMontoPK.mes = :mes")})
+    @NamedQuery(name = "CajaMonto.findByMes", query = "SELECT c FROM CajaMonto c WHERE c.cajaMontoPK.mes = :mes"),
+    @NamedQuery(name = "CajaMonto.findByCajaMes", query = "SELECT c FROM CajaMonto c WHERE c.cajaMontoPK.mes = :mes and c.cajaMontoPK.caja = :caja"),
+    @NamedQuery(name = "CajaMonto.deleteUsingIdProgramaAno", query = "DELETE FROM CajaMonto c WHERE c.caja.programa.idProgramaAno = :idProgramaAno"),
+    @NamedQuery(name = "CajaMonto.countByIdProgramaAno", query = "SELECT COUNT(c) FROM CajaMonto c WHERE c.caja.programa.idProgramaAno = :idProgramaAno")})
 public class CajaMonto implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected CajaMontoPK cajaMontoPK;
-    @JoinColumn(name = "monto", referencedColumnName = "id_monto_mes")
-    @ManyToOne(optional = false)
-    private MontoMes monto;
+    @Basic(optional = false)
+    @Column(name = "monto")
+    private int monto;
     @JoinColumn(name = "mes", referencedColumnName = "id_mes", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Mes mes;
@@ -55,14 +60,6 @@ public class CajaMonto implements Serializable {
         this.cajaMontoPK = cajaMontoPK;
     }
 
-    public MontoMes getMonto() {
-        return monto;
-    }
-
-    public void setMonto(MontoMes monto) {
-        this.monto = monto;
-    }
-
     public Mes getMes() {
         return mes;
     }
@@ -79,7 +76,15 @@ public class CajaMonto implements Serializable {
         this.caja = caja;
     }
 
-    @Override
+    public int getMonto() {
+		return monto;
+	}
+
+	public void setMonto(int monto) {
+		this.monto = monto;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (cajaMontoPK != null ? cajaMontoPK.hashCode() : 0);

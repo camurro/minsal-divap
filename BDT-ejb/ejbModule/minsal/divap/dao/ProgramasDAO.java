@@ -279,20 +279,6 @@ public class ProgramasDAO {
 		}
 	}
 	
-	
-
-	public void eliminarPropuesta(Integer idProgramaAno) {
-		Query queryCajaMonto = this.em.createNamedQuery("CajaMonto.deleteUsingIdProgramaAno");
-		queryCajaMonto.setParameter("idProgramaAno", idProgramaAno);
-		queryCajaMonto.executeUpdate();
-		Query queryCaja = this.em.createNamedQuery("Caja.deleteUsingIdProgramaAno");
-		queryCaja.setParameter("idProgramaAno", idProgramaAno);
-		queryCaja.executeUpdate();
-		Query queryMarco = this.em.createNamedQuery("MarcoPresupuestario.deleteUsingIdProgramaAno");
-		queryMarco.setParameter("idProgramaAno", idProgramaAno);
-		queryMarco.executeUpdate();
-	}
-	
 	public ProgramaAno getProgramaAnoSiguiente(Integer idPrograma, Integer anoSiguiente) {
 		try {
 			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.findByAnoIdPrograma", ProgramaAno.class);
