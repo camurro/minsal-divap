@@ -732,8 +732,7 @@ public class ProgramasDAO {
 	}
 
 	public ProgramaServicioCoreComponente getProgramaServicioCoreComponenteByEstablecimientoProgramaAnoComponenteSubtitulo(Integer idServicio,
-			Integer idProgramaAno, Integer componenteSeleccionado,
-			Integer idTipoSubtitulo) {
+			Integer idProgramaAno, Integer componenteSeleccionado, Integer idTipoSubtitulo) {
 		try {
 			TypedQuery<ProgramaServicioCoreComponente> query = this.em.createNamedQuery("ProgramaServicioCoreComponente.getServicioProgramaAnoComponenteSubtitulo", ProgramaServicioCoreComponente.class);
 			query.setParameter("idProgramaAno", idProgramaAno);

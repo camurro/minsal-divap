@@ -69,7 +69,7 @@
 					<p:tabView id="tabView">
 						<p:ajax event="tabChange" listener="#{reportesPoblacionPercapitaController.onTabChange}" update="tabView :formTabView:cbServicio :formTabView:cbComuna" />
 						
-						<p:tab id="tab2014" title="Año 2014">
+						<p:tab id="tab2014" title="Año #{reportesPoblacionPercapitaController.anoActual}">
 							<br />
 							<p:dataTable id="tabladatos2014" resizableColumns="true"
 								value="#{reportesPoblacionPercapitaController.reportesPerCapitaVO}"
@@ -171,7 +171,7 @@
 						
 						
 						
-						<p:tab id="tab2013" title="Año 2013">
+						<p:tab id="tab2013" title="Año #{reportesPoblacionPercapitaController.anoActualMenos1}">
 							<br />
 							<p:dataTable id="tabladatos2013" resizableColumns="true"
 								value="#{reportesPoblacionPercapitaController.reportesPerCapitaVO}"
@@ -270,7 +270,7 @@
 
 						</p:tab>
 						
-						<p:tab id="tab2012" title="Año 2012">
+						<p:tab id="tab2012" title="Año #{reportesPoblacionPercapitaController.anoActualMenos2}">
 							<br />
 							<p:dataTable id="tabladatos2012" resizableColumns="true"
 								value="#{reportesPoblacionPercapitaController.reportesPerCapitaVO}"
@@ -371,7 +371,7 @@
 						
 						
 						
-						<p:tab id="tab2011" title="Año 2011">
+						<p:tab id="tab2011" title="Año #{reportesPoblacionPercapitaController.anoActualMenos3}">
 							<br />
 							<p:dataTable id="tabladatos2011" resizableColumns="true"
 								value="#{reportesPoblacionPercapitaController.reportesPerCapitaVO}"
