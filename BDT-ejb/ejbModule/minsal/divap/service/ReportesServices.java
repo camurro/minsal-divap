@@ -160,7 +160,7 @@ public class ReportesServices {
 					}else{
 						reportePerCapitaVO.setPercapita(0L);
 					}
-					
+
 					if (antecendentesComunaCalculado.getDesempenoDificil() != null) {
 						reportePerCapitaVO.setDesempenoDificil(antecendentesComunaCalculado
 								.getDesempenoDificil().longValue());
@@ -1110,51 +1110,45 @@ public class ReportesServices {
 		List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
 
 		for (ServicioSalud servicio : servicios) {
-			List<Comuna> comunas = servicio.getComunas();
-			for (Comuna comuna : comunas) {
+			for (Comuna comuna : servicio.getComunas()) {
 				ReporteGlosaVO reporteGlosaVO = new ReporteGlosaVO();
 				reporteGlosaVO.setRegion(servicio.getRegion().getNombre());
 				reporteGlosaVO.setServicio(servicio.getNombre());
 				reporteGlosaVO.setComuna(comuna.getNombre());
 
-				AntecendentesComunaCalculado antecendentesComunaCalculado = antecedentesComunaDAO
-						.findByComunaAnoVigencia(comuna.getId(), getAnoCurso());
-				if (antecendentesComunaCalculado == null) {
-					continue;
-				}
-
-				reporteGlosaVO.setArt49perCapita(((antecendentesComunaCalculado.getPercapitaAno() == null) ? 0L : antecendentesComunaCalculado.getPercapitaAno()));
-
+				DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast((getAnoCurso() + 1));
+				List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaVigente(servicio.getId(), comuna.getId(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+				AntecendentesComunaCalculado antecendentesComunaCalculado = ((antecendentesComunaCalculados != null && antecendentesComunaCalculados.size() > 0) ? antecendentesComunaCalculados.get(0): null);
+				System.out.println("antecendentesComunaCalculado->" + antecendentesComunaCalculado);
 				Long tarifa = 0L;
 				Long totalRemesasAcumuladasMesActual = 0L;
-				List<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes = programasDAO
-						.getByIdComuna(comuna.getId());
-				for (ProgramaMunicipalCoreComponente programaMunicipalCoreComponente : programaMunicipalCoreComponentes) {
-					if (programaMunicipalCoreComponente == null) {
-						continue;
-					}
-					tarifa += programaMunicipalCoreComponente.getTarifa();
+				if(antecendentesComunaCalculado != null){
+					reporteGlosaVO.setArt49perCapita(((antecendentesComunaCalculado.getPercapitaAno() == null) ? 0L : antecendentesComunaCalculado.getPercapitaAno()));
 				}
-				Integer mesActual = Integer.parseInt(getMesCurso(true));
-
-
-				for(ProgramaVO programaVO : programasService.getProgramasByUser(user)){
-					totalRemesasAcumuladasMesActual+= remesasDAO.getRemesasPagadasComunaPrograma(programaVO.getIdProgramaAno(), comuna.getId(), mesActual);
+				List<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes = programasDAO.getByIdComuna(comuna.getId(), (getAnoCurso() + 1));
+				if(programaMunicipalCoreComponentes != null && programaMunicipalCoreComponentes.size() > 0){
+					for (ProgramaMunicipalCoreComponente programaMunicipalCoreComponente : programaMunicipalCoreComponentes) {
+						if (programaMunicipalCoreComponente == null) {
+							continue;
+						}
+						tarifa += programaMunicipalCoreComponente.getTarifa();
+					}
 				}
 				reporteGlosaVO.setArt56reforzamientoMunicipal(tarifa);
+				Integer mesActual = Integer.parseInt(getMesCurso(true));
+				for(ProgramaVO programaVO : programasService.getProgramasByUserAno(user, getAnoCurso() + 1)){
+					totalRemesasAcumuladasMesActual+= remesasDAO.getRemesasPagadasComunaPrograma(programaVO.getIdProgramaAno(), comuna.getId(), mesActual);
+				}
 				reporteGlosaVO.setTotalRemesasEneroMarzo(totalRemesasAcumuladasMesActual);
 				resultado.add(reporteGlosaVO);
 			}
 		}
-
 		return resultado;
 	}
 
 	public List<ReporteGlosaVO> getReporteGlosaPorServicio(Integer idServicio, String user) {
 		List<ReporteGlosaVO> resultado = new ArrayList<ReporteGlosaVO>();
-		ServicioSalud servicio = servicioSaludDAO
-				.getServicioSaludById(idServicio);
-
+		ServicioSalud servicio = servicioSaludDAO.getServicioSaludById(idServicio);
 		List<Comuna> comunas = servicio.getComunas();
 		for (Comuna comuna : comunas) {
 			ReporteGlosaVO reporteGlosaVO = new ReporteGlosaVO();
@@ -1162,31 +1156,31 @@ public class ReportesServices {
 			reporteGlosaVO.setServicio(servicio.getNombre());
 			reporteGlosaVO.setComuna(comuna.getNombre());
 
-			AntecendentesComunaCalculado antecendentesComunaCalculado = antecedentesComunaDAO
-					.findByComunaAno(comuna.getId(), getAnoCurso());
-			if (antecendentesComunaCalculado == null) {
-				continue;
-			}
+			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast((getAnoCurso() + 1));
+			List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaVigente(servicio.getId(), comuna.getId(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+			AntecendentesComunaCalculado antecendentesComunaCalculado = ((antecendentesComunaCalculados != null && antecendentesComunaCalculados.size() > 0) ? antecendentesComunaCalculados.get(0): null);
+			System.out.println("antecendentesComunaCalculado->" + antecendentesComunaCalculado);
 
-			reporteGlosaVO.setArt49perCapita(((antecendentesComunaCalculado.getPercapitaAno() == null) ? 0L : antecendentesComunaCalculado.getPercapitaAno()));
+			if(antecendentesComunaCalculado != null){
+				reporteGlosaVO.setArt49perCapita(((antecendentesComunaCalculado.getPercapitaAno() == null) ? 0L : antecendentesComunaCalculado.getPercapitaAno()));
+			}
 
 			Long tarifa = 0L;
 			Long totalRemesasAcumuladasMesActual = 0L;
-			List<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes = programasDAO
-					.getByIdComuna(comuna.getId());
-			for (ProgramaMunicipalCoreComponente programaMunicipalCoreComponente : programaMunicipalCoreComponentes) {
-				if (programaMunicipalCoreComponente == null) {
-					continue;
+			List<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes = programasDAO.getByIdComuna(comuna.getId(), (getAnoCurso() + 1));
+			if(programaMunicipalCoreComponentes != null && programaMunicipalCoreComponentes.size() > 0){
+				for (ProgramaMunicipalCoreComponente programaMunicipalCoreComponente : programaMunicipalCoreComponentes) {
+					if (programaMunicipalCoreComponente == null) {
+						continue;
+					}
+					tarifa += programaMunicipalCoreComponente.getTarifa();
 				}
-				tarifa += programaMunicipalCoreComponente.getTarifa();
 			}
+			reporteGlosaVO.setArt56reforzamientoMunicipal(tarifa);
 			Integer mesActual = Integer.parseInt(getMesCurso(true));
-
-			for(ProgramaVO programaVO : programasService.getProgramasByUser(user)){
+			for(ProgramaVO programaVO :  programasService.getProgramasByUserAno(user, getAnoCurso() + 1)){
 				totalRemesasAcumuladasMesActual += remesasDAO.getRemesasPagadasComunaPrograma(programaVO.getIdProgramaAno(), comuna.getId(), mesActual);
 			}
-
-			reporteGlosaVO.setArt56reforzamientoMunicipal(tarifa);
 			reporteGlosaVO.setTotalRemesasEneroMarzo(totalRemesasAcumuladasMesActual);
 			resultado.add(reporteGlosaVO);
 		}
