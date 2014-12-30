@@ -2215,58 +2215,36 @@ public class ReportesServices {
 	}
 
 	public List<ReporteHistoricoPorProgramaEstablecimientoVO> getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicioEstablecimiento(
-			Integer idProgramaAno, Integer idServicio,
-			Integer idEstablecimiento, Subtitulo subtitulo) {
+			Integer idProgramaAno, Integer idServicio, Integer idEstablecimiento, Subtitulo subtitulo) {
 		System.out.println("idProgramaAno --> " + idProgramaAno
 				+ "  subtitulo --> " + subtitulo.getNombre());
-
-		ProgramaVO programaAnoActual = programasService
-				.getProgramaAno(idProgramaAno); // 2014
-
-		Integer idProgramaAnoActualMenos1 = programasService
-				.getProgramaAnoSiguiente(programaAnoActual.getId(),
-						(getAnoCurso() - 1)); // 2013
-		Integer idProgramaAnoActualMenos2 = programasService
-				.getProgramaAnoSiguiente(programaAnoActual.getId(),
-						(getAnoCurso() - 2)); // 2012
-		Integer idProgramaAnoActualMenos3 = programasService
-				.getProgramaAnoSiguiente(programaAnoActual.getId(),
-						(getAnoCurso() - 3)); // 2011
-		Integer idProgramaAnoActualMenos4 = programasService
-				.getProgramaAnoSiguiente(programaAnoActual.getId(),
-						(getAnoCurso() - 4)); // 2010
-		Integer idProgramaAnoActualMenos5 = programasService
-				.getProgramaAnoSiguiente(programaAnoActual.getId(),
-						(getAnoCurso() - 5)); // 2009
-		Integer idProgramaAnoActualMenos6 = programasService
-				.getProgramaAnoSiguiente(programaAnoActual.getId(),
-						(getAnoCurso() - 6)); // 2008
-		Integer idProgramaAnoActualMenos7 = programasService
-				.getProgramaAnoSiguiente(programaAnoActual.getId(),
-						(getAnoCurso() - 7)); // 2007
-		Integer idProgramaAnoActualMenos8 = programasService
-				.getProgramaAnoSiguiente(programaAnoActual.getId(),
-						(getAnoCurso() - 8)); // 2006
-
-		ProgramaVO programaAnoMenos1 = programasService
-				.getProgramaAno(idProgramaAnoActualMenos1); // 2013
-		ProgramaVO programaAnoMenos2 = programasService
-				.getProgramaAno(idProgramaAnoActualMenos1); // 2012
-		ProgramaVO programaAnoMenos3 = programasService
-				.getProgramaAno(idProgramaAnoActualMenos1); // 2011
-		ProgramaVO programaAnoMenos4 = programasService
-				.getProgramaAno(idProgramaAnoActualMenos1); // 2010
-		ProgramaVO programaAnoMenos5 = programasService
-				.getProgramaAno(idProgramaAnoActualMenos1); // 2009
-		ProgramaVO programaAnoMenos6 = programasService
-				.getProgramaAno(idProgramaAnoActualMenos1); // 2008
-		ProgramaVO programaAnoMenos7 = programasService
-				.getProgramaAno(idProgramaAnoActualMenos1); // 2007
-		ProgramaVO programaAnoMenos8 = programasService
-				.getProgramaAno(idProgramaAnoActualMenos1); // 2006
+		
+		ProgramaVO programaAnoActual = programasService.getProgramaAno(idProgramaAno); //2014
+		
+		
+		Integer idProgramaAnoActualMenos1 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 1) ); //2013
+		Integer idProgramaAnoActualMenos2 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 2) ); //2012
+		Integer idProgramaAnoActualMenos3 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 3) ); //2011
+		Integer idProgramaAnoActualMenos4 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 4) ); //2010
+		Integer idProgramaAnoActualMenos5 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 5) ); //2009
+		Integer idProgramaAnoActualMenos6 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 6) ); //2008
+		Integer idProgramaAnoActualMenos7 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 7) ); //2007
+		Integer idProgramaAnoActualMenos8 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 8) ); //2006
+		
+		ProgramaVO programaAnoMenos1 = programasService.getProgramaAno(idProgramaAnoActualMenos1); //2013
+		ProgramaVO programaAnoMenos2 = programasService.getProgramaAno(idProgramaAnoActualMenos1); //2012
+		ProgramaVO programaAnoMenos3 = programasService.getProgramaAno(idProgramaAnoActualMenos1); //2011
+		ProgramaVO programaAnoMenos4 = programasService.getProgramaAno(idProgramaAnoActualMenos1); //2010
+		ProgramaVO programaAnoMenos5 = programasService.getProgramaAno(idProgramaAnoActualMenos1); //2009
+		ProgramaVO programaAnoMenos6 = programasService.getProgramaAno(idProgramaAnoActualMenos1); //2008
+		ProgramaVO programaAnoMenos7 = programasService.getProgramaAno(idProgramaAnoActualMenos1); //2007
+		ProgramaVO programaAnoMenos8 = programasService.getProgramaAno(idProgramaAnoActualMenos1); //2006
+		
 
 		List<ReporteHistoricoPorProgramaEstablecimientoVO> resultado = new ArrayList<ReporteHistoricoPorProgramaEstablecimientoVO>();
-
+		
+		
+		
 		ServicioSalud servicio = servicioSaludDAO.getById(idServicio);
 
 		System.out.println("servicioVO.getNombre_servicio() --> "
@@ -2275,10 +2253,8 @@ public class ReportesServices {
 
 		Establecimiento establecimiento = establecimientosDAO
 				.getEstablecimientoById(idEstablecimiento);
-		List<ComponentesVO> componentes = programasService
-				.getComponenteByProgramaSubtitulos(programaAnoActual.getId(),
-						subtitulo);
-		for (ComponentesVO componente : componentes) {
+		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programaAnoActual.getId(), subtitulo);
+		for(ComponentesVO componente : componentes){
 			ReporteHistoricoPorProgramaEstablecimientoVO reporteHistoricoPorProgramaEstablecimientoVO = new ReporteHistoricoPorProgramaEstablecimientoVO();
 
 			reporteHistoricoPorProgramaEstablecimientoVO.setRegion(servicio
@@ -2287,156 +2263,47 @@ public class ReportesServices {
 					.getNombre());
 			reporteHistoricoPorProgramaEstablecimientoVO
 					.setEstablecimiento(establecimiento.getNombre());
-			reporteHistoricoPorProgramaEstablecimientoVO
-					.setPrograma(programaAnoActual.getNombre());
-
-			ProgramaServicioCoreComponente programaServicioCoreComponenteActual = programasDAO
-					.getProgramaServicioCoreComponenteByEstablecimientoProgramaAnoComponenteSubtitulo(
-							servicio.getId(), idProgramaAno,
-							componente.getId(), subtitulo.getId());
-
-			if (programaServicioCoreComponenteActual != null) {
-				System.out
-						.println("programaServicioCoreComponenteActual no es null!!!");
-
-				System.out
-						.println("programaServicioCoreComponenteActual.getTarifa() --> "
-								+ programaServicioCoreComponenteActual
-										.getTarifa());
-				// 2014
-				reporteHistoricoPorProgramaEstablecimientoVO
-						.setMarco2014((long) programaServicioCoreComponenteActual
-								.getTarifa());
-
-				// 2013
-				ProgramaServicioCoreComponente programaServicioCoreComponenteMenos1 = programasDAO
-						.getProgramaServicioCoreComponenteByEstablecimientoProgramaAnoComponenteSubtitulo(
-								servicio.getId(), idProgramaAnoActualMenos1,
-								componente.getId(), subtitulo.getId());
-				if (programaServicioCoreComponenteMenos1 == null) {
-					reporteHistoricoPorProgramaEstablecimientoVO
-							.setMarco2013(0L);
-				} else {
-					reporteHistoricoPorProgramaEstablecimientoVO
-							.setMarco2013((long) programaServicioCoreComponenteMenos1
-									.getTarifa());
-				}
-
-				// 2012
-				ProgramaServicioCoreComponente programaServicioCoreComponenteMenos2 = programasDAO
-						.getProgramaServicioCoreComponenteByEstablecimientoProgramaAnoComponenteSubtitulo(
-								servicio.getId(), idProgramaAnoActualMenos2,
-								componente.getId(), subtitulo.getId());
-				if (programaServicioCoreComponenteMenos2 == null) {
-					reporteHistoricoPorProgramaEstablecimientoVO
-							.setMarco2012(0L);
-				} else {
-					reporteHistoricoPorProgramaEstablecimientoVO
-							.setMarco2012((long) programaServicioCoreComponenteMenos2
-									.getTarifa());
-				}
-
-				// 2011
-				ProgramaServicioCoreComponente programaServicioCoreComponenteMenos3 = programasDAO
-						.getProgramaServicioCoreComponenteByEstablecimientoProgramaAnoComponenteSubtitulo(
-								servicio.getId(), idProgramaAnoActualMenos3,
-								componente.getId(), subtitulo.getId());
-				if (programaServicioCoreComponenteMenos3 == null) {
-					reporteHistoricoPorProgramaEstablecimientoVO
-							.setMarco2011(0L);
-				} else {
-					reporteHistoricoPorProgramaEstablecimientoVO
-							.setMarco2011((long) programaServicioCoreComponenteMenos3
-									.getTarifa());
-				}
-
-				// 2010
-				ProgramaServicioCoreComponente programaServicioCoreComponenteMenos4 = programasDAO
-						.getProgramaServicioCoreComponenteByEstablecimientoProgramaAnoComponenteSubtitulo(
-								servicio.getId(), idProgramaAnoActualMenos4,
-								componente.getId(), subtitulo.getId());
-				if (programaServicioCoreComponenteMenos4 == null) {
-					reporteHistoricoPorProgramaEstablecimientoVO
-							.setMarco2010(0L);
-				} else {
-					reporteHistoricoPorProgramaEstablecimientoVO
-							.setMarco2010((long) programaServicioCoreComponenteMenos4
-									.getTarifa());
-				}
-
-				// 2009
-				ProgramaServicioCoreComponente programaServicioCoreComponenteMenos5 = programasDAO
-						.getProgramaServicioCoreComponenteByEstablecimientoProgramaAnoComponenteSubtitulo(
-								servicio.getId(), idProgramaAnoActualMenos5,
-								componente.getId(), subtitulo.getId());
-				if (programaServicioCoreComponenteMenos5 == null) {
-					reporteHistoricoPorProgramaEstablecimientoVO
-							.setMarco2009(0L);
-				} else {
-					reporteHistoricoPorProgramaEstablecimientoVO
-							.setMarco2009((long) programaServicioCoreComponenteMenos5
-									.getTarifa());
-				}
-
-				// 2008
-				ProgramaServicioCoreComponente programaServicioCoreComponenteMenos6 = programasDAO
-						.getProgramaServicioCoreComponenteByEstablecimientoProgramaAnoComponenteSubtitulo(
-								servicio.getId(), idProgramaAnoActualMenos6,
-								componente.getId(), subtitulo.getId());
-				if (programaServicioCoreComponenteMenos6 == null) {
-					reporteHistoricoPorProgramaEstablecimientoVO
-							.setMarco2008(0L);
-				} else {
-					reporteHistoricoPorProgramaEstablecimientoVO
-							.setMarco2008((long) programaServicioCoreComponenteMenos6
-									.getTarifa());
-				}
-
-				// 2007
-				ProgramaServicioCoreComponente programaServicioCoreComponenteMenos7 = programasDAO
-						.getProgramaServicioCoreComponenteByEstablecimientoProgramaAnoComponenteSubtitulo(
-								servicio.getId(), idProgramaAnoActualMenos7,
-								componente.getId(), subtitulo.getId());
-				if (programaServicioCoreComponenteMenos7 == null) {
-					reporteHistoricoPorProgramaEstablecimientoVO
-							.setMarco2007(0L);
-				} else {
-					reporteHistoricoPorProgramaEstablecimientoVO
-							.setMarco2007((long) programaServicioCoreComponenteMenos7
-									.getTarifa());
-				}
-
-				// 2006
-				ProgramaServicioCoreComponente programaServicioCoreComponenteMenos8 = programasDAO
-						.getProgramaServicioCoreComponenteByEstablecimientoProgramaAnoComponenteSubtitulo(
-								servicio.getId(), idProgramaAnoActualMenos8,
-								componente.getId(), subtitulo.getId());
-				if (programaServicioCoreComponenteMenos8 == null) {
-					reporteHistoricoPorProgramaEstablecimientoVO
-							.setMarco2006(0L);
-				} else {
-					reporteHistoricoPorProgramaEstablecimientoVO
-							.setMarco2006((long) programaServicioCoreComponenteMenos8
-									.getTarifa());
-				}
+			reporteHistoricoPorProgramaEstablecimientoVO.setPrograma(programaAnoActual
+					.getNombre());
+			
+			//ProgramaServicioCoreComponente programaServicioCoreComponenteActual = programasDAO.getProgramaServicioCoreComponenteByEstablecimientoProgramaAnoComponenteSubtitulo(servicio.getId(), idProgramaAno, componente.getId(), subtitulo.getId());
+			
+			
+			Long marcoAnoActual = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), programaAnoActual.getIdProgramaAno(), componente.getId(), subtitulo.getId());
+			System.out.println("marcoAnoActual --> "+marcoAnoActual);
+			
+			Long marcoAnoActualMenos1 = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAnoActualMenos1, componente.getId(), subtitulo.getId());
+			Long marcoAnoActualMenos2 = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAnoActualMenos2, componente.getId(), subtitulo.getId());
+			Long marcoAnoActualMenos3 = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAnoActualMenos3, componente.getId(), subtitulo.getId());
+			Long marcoAnoActualMenos4 = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAnoActualMenos4, componente.getId(), subtitulo.getId());
+			Long marcoAnoActualMenos5 = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAnoActualMenos5, componente.getId(), subtitulo.getId());
+			Long marcoAnoActualMenos6 = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAnoActualMenos6, componente.getId(), subtitulo.getId());
+			Long marcoAnoActualMenos7 = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAnoActualMenos7, componente.getId(), subtitulo.getId());
+			Long marcoAnoActualMenos8 = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAnoActualMenos8, componente.getId(), subtitulo.getId());
+			
+			
+				System.out.println("programaServicioCoreComponenteActual no es null!!!");
+				
+				reporteHistoricoPorProgramaEstablecimientoVO.setMarco2014(marcoAnoActual);
+				
+				reporteHistoricoPorProgramaEstablecimientoVO.setMarco2013(marcoAnoActualMenos1);
+				
+				reporteHistoricoPorProgramaEstablecimientoVO.setMarco2012(marcoAnoActualMenos2);
+				
+				reporteHistoricoPorProgramaEstablecimientoVO.setMarco2011(marcoAnoActualMenos3);
+				
+				reporteHistoricoPorProgramaEstablecimientoVO.setMarco2010(marcoAnoActualMenos4);
+				
+				reporteHistoricoPorProgramaEstablecimientoVO.setMarco2009(marcoAnoActualMenos5);
+				
+				reporteHistoricoPorProgramaEstablecimientoVO.setMarco2008(marcoAnoActualMenos6);
+				
+				reporteHistoricoPorProgramaEstablecimientoVO.setMarco2007(marcoAnoActualMenos7);
+				
+				reporteHistoricoPorProgramaEstablecimientoVO.setMarco2006(marcoAnoActualMenos8);
+				
 				resultado.add(reporteHistoricoPorProgramaEstablecimientoVO);
-
-			} else {
-				System.out
-						.println("programaServicioCoreComponenteActual es null");
-				reporteHistoricoPorProgramaEstablecimientoVO.setMarco2014(0L);
-				reporteHistoricoPorProgramaEstablecimientoVO.setMarco2013(0L);
-				reporteHistoricoPorProgramaEstablecimientoVO.setMarco2012(0L);
-				reporteHistoricoPorProgramaEstablecimientoVO.setMarco2011(0L);
-				reporteHistoricoPorProgramaEstablecimientoVO.setMarco2010(0L);
-				reporteHistoricoPorProgramaEstablecimientoVO.setMarco2009(0L);
-				reporteHistoricoPorProgramaEstablecimientoVO.setMarco2008(0L);
-				reporteHistoricoPorProgramaEstablecimientoVO.setMarco2007(0L);
-				reporteHistoricoPorProgramaEstablecimientoVO.setMarco2006(0L);
-
-				resultado.add(reporteHistoricoPorProgramaEstablecimientoVO);
-			}
-
+		
 		}
 
 		return resultado;
