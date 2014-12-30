@@ -26,7 +26,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ReliquidacionComunaComponente.findByIdReliquidacionComunaComponente", query = "SELECT r FROM ReliquidacionComunaComponente r WHERE r.idReliquidacionComunaComponente = :idReliquidacionComunaComponente"),
     @NamedQuery(name = "ReliquidacionComunaComponente.findByMontoRebaja", query = "SELECT r FROM ReliquidacionComunaComponente r WHERE r.montoRebaja = :montoRebaja"),
     @NamedQuery(name = "ReliquidacionComunaComponente.findByPorcentajeCumplimiento", query = "SELECT r FROM ReliquidacionComunaComponente r WHERE r.porcentajeCumplimiento = :porcentajeCumplimiento"),
-    @NamedQuery(name = "ReliquidacionComunaComponente.deleteByIdProgramaAno", query = "DELETE FROM ReliquidacionComunaComponente r WHERE r.reliquidacionComuna.programa.idProgramaAno = :idProgramaAno")})
+    @NamedQuery(name = "ReliquidacionComunaComponente.deleteByIdProgramaAno", query = "DELETE FROM ReliquidacionComunaComponente r WHERE r.reliquidacionComuna.programa.idProgramaAno = :idProgramaAno"),
+    @NamedQuery(name = "ReliquidacionComunaComponente.deleteByIdReliquidacionComuna", query = "DELETE FROM ReliquidacionComunaComponente r WHERE r.reliquidacionComuna.reliquidacionComunaId = :idReliquidacionComuna")})
 public class ReliquidacionComunaComponente implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

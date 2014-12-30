@@ -127,94 +127,15 @@
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasDos}">
-										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasDos.porcentaje}</span>
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.ultimaCuota}">
+										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.ultimaCuota.porcentaje}</span>
 									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasDos}">
-										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasDos.monto}" styleClass="textoPequenio textoAjustado">
+									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.ultimaCuota}">
+										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.ultimaCuota.monto}" styleClass="textoPequenio textoAjustado">
 											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 										</h:outputText>
 									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasTres}">
-										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasTres.porcentaje}</span>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasTres}">
-										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasTres.monto}" styleClass="textoPequenio textoAjustado">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-										</h:outputText>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasCuatro}">
-										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasCuatro.porcentaje}</span>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasCuatro}">
-										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasCuatro.monto}" styleClass="textoPequenio textoAjustado">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-										</h:outputText>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasCinco}">
-										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasCinco.porcentaje}</span>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasCinco}">
-										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasCinco.monto}" styleClass="textoPequenio textoAjustado">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-										</h:outputText>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasSeis}">
-										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasSeis.porcentaje}</span>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasSeis}">
-										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasSeis.monto}" styleClass="textoPequenio textoAjustado">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-										</h:outputText>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasSiete}">
-										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasSiete.porcentaje}</span>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasSiete}">
-										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasSiete.monto}" styleClass="textoPequenio textoAjustado">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-										</h:outputText>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasOcho}">
-										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasOcho.porcentaje}</span>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasOcho}">
-										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasOcho.monto}" styleClass="textoPequenio textoAjustado">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-										</h:outputText>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasNueve}">
-										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasNueve.porcentaje}</span>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasNueve}">
-										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasNueve.monto}" styleClass="textoPequenio textoAjustado">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-										</h:outputText>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasDiez}">
-										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasDiez.porcentaje}</span>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasDiez}">
-										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasDiez.monto}" styleClass="textoPequenio textoAjustado">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-										</h:outputText>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasOnce}">
-										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasOnce.porcentaje}</span>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasOnce}">
-										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasOnce.monto}" styleClass="textoPequenio textoAjustado">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-										</h:outputText>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasDoce}">
-										<span class="textoPequenio">#{_municipal.componenteReliquidacionPageVO.cuotasDoce.porcentaje}</span>
-									</p:column>
-									<p:column rendered="#{not empty _municipal.componenteReliquidacionPageVO.cuotasDoce}">
-										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.cuotasDoce.monto}" styleClass="textoPequenio textoAjustado">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-										</h:outputText>
-									</p:column>
+									
 									<!-- CUMPLIMIENTO -->
 									<p:column styleClass="destacaArchivos">
 										<h:outputText value="#{_municipal.componenteReliquidacionPageVO.porcentajeCumplimiento}" styleClass="textoPequenio textoAjustado">

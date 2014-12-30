@@ -4101,15 +4101,48 @@ System.out.println("sheetName="+sheetName);
 
     XSSFRow row = sheet.createRow(2);
     row = sheet.getRow(2);
-    for(int i=0;i<subHeader.size();i++){            
+
+    int columna =0;
+    int columnatmp=0;
+    int filas =2;
+    boolean primeraVez=true;
+    for(int i=0;i<subHeader.size();i++){           
+    	
         CellExcelVO cellExcelVO = subHeader.get(i);
         XSSFCell cell = row.createCell(i);
-        cell = row.getCell(i);
-        cell.setCellStyle(cellStyleHeader);
-        cell.setCellValue(cellExcelVO.getName());            
+        if(cellExcelVO.getRowSpan() == 2){
+        	 cell = row.getCell(i);
+             cell.setCellStyle(cellStyleHeader);
+             cell.setCellValue(cellExcelVO.getName());
+             sheet.addMergedRegion(new CellRangeAddress(2, 3, columna, (columna + cellExcelVO.getColSpan()-1)));
+             columna += cellExcelVO.getColSpan();
+             columnatmp = columna;
+             primeraVez=true;
+             System.out.println("fila: "+row.getRowNum()+", celda: "+ cell.getColumnIndex()+", valor: "+cell.getStringCellValue());
+        }else{
+        	if(primeraVez){
+        		XSSFRow row2 = sheet.getRow(filas);
+        		cell = row2.createCell(columnatmp);
+                cell.setCellStyle(cellStyleHeader);
+                cell.setCellValue(cellExcelVO.getName());
+                filas++;
+                primeraVez=false;
+                System.out.println("fila: "+row2.getRowNum()+", celda: "+ cell.getColumnIndex()+", valor: "+cell.getStringCellValue());
+         	}else{
+         		XSSFRow row2 = sheet.createRow(filas);
+         		cell = row2.createCell(columnatmp);
+        		cell.setCellStyle(cellStyleHeader);
+                cell.setCellValue(cellExcelVO.getName());
+                filas=2;
+                primeraVez=true;
+                columnatmp++;
+                System.out.println("fila: "+row2.getRowNum()+", celda: "+ cell.getColumnIndex()+", valor: "+cell.getStringCellValue());
+        	}
+        	 
+        }
+                  
     }
-
-
+  
     //########### items ##########
     for(int i=0;i<item.size();i++){
         int fila = i+3;
