@@ -40,6 +40,11 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 	private Integer anoSeleccionado;
 	private Integer idPlanillaPercapita;
 	private String docIdDownload;
+	private Integer anoActual;
+	private Integer anoActualMenos1;
+	private Integer anoActualMenos2;
+	private Integer anoActualMenos3;
+	
 	
 	public Integer getAnoSeleccionado() {
 		return anoSeleccionado;
@@ -61,17 +66,26 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 	
 	@PostConstruct
 	public void init(){
-		this.anoSeleccionado = 2014;
+		
+		this.anoActual = reportesServices.getAnoCurso() + 1;
+		this.anoActualMenos1 = this.anoActual -1;
+		this.anoActualMenos2 = this.anoActual -2;
+		this.anoActualMenos3 = this.anoActual -3;
+		
+		this.anoSeleccionado = anoActual;
 		this.idPlanillaPercapita = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEPOBLACIONPERCAPITA);
 		if(this.idPlanillaPercapita == null){
 			this.idPlanillaPercapita = reportesServices.generarPlanillaPoblacionPercapita(getLoggedUsername());
 		} 
+		
+		
+		
 		comunas = new ArrayList<ComunaSummaryVO>();
 		Integer currentTab = 0;
-		tabAno.put(currentTab++, 2014);
-		tabAno.put(currentTab++, 2013);
-		tabAno.put(currentTab++, 2012);
-		tabAno.put(currentTab++, 2011);
+		tabAno.put(currentTab++, anoActual);
+		tabAno.put(currentTab++, anoActualMenos1);
+		tabAno.put(currentTab++, anoActualMenos2);
+		tabAno.put(currentTab++, anoActualMenos3);
 	}
 	
 	public String downloadTemplate() {
@@ -104,16 +118,16 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 		this.valorComboComuna = 0;
 		
 		if(event.getTab().getId().equals("tab2011")){
-			this.anoSeleccionado = 2011;
+			this.anoSeleccionado = this.anoActualMenos3;
 		}
 		if(event.getTab().getId().equals("tab2012")){
-			this.anoSeleccionado = 2012;
+			this.anoSeleccionado = this.anoActualMenos2;
 		}
 		if(event.getTab().getId().equals("tab2013")){
-			anoSeleccionado = 2013;
+			this.anoSeleccionado = this.anoActualMenos1;
 		}
 		if(event.getTab().getId().equals("tab2014")){
-			anoSeleccionado = 2014;
+			this.anoSeleccionado = this.anoActual;
 		}
 		System.out.println("anoSeleccionado --> "+this.anoSeleccionado);
 		
@@ -212,6 +226,45 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 	public void setDocIdDownload(String docIdDownload) {
 		this.docIdDownload = docIdDownload;
 	}
-	
 
+
+	public Integer getAnoActual() {
+		return anoActual;
+	}
+
+
+	public void setAnoActual(Integer anoActual) {
+		this.anoActual = anoActual;
+	}
+
+
+	public Integer getAnoActualMenos1() {
+		return anoActualMenos1;
+	}
+
+
+	public void setAnoActualMenos1(Integer anoActualMenos1) {
+		this.anoActualMenos1 = anoActualMenos1;
+	}
+
+
+	public Integer getAnoActualMenos2() {
+		return anoActualMenos2;
+	}
+
+
+	public void setAnoActualMenos2(Integer anoActualMenos2) {
+		this.anoActualMenos2 = anoActualMenos2;
+	}
+
+
+	public Integer getAnoActualMenos3() {
+		return anoActualMenos3;
+	}
+
+
+	public void setAnoActualMenos3(Integer anoActualMenos3) {
+		this.anoActualMenos3 = anoActualMenos3;
+	}
+	
 }
