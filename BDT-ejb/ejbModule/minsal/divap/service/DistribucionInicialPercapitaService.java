@@ -765,7 +765,7 @@ public class DistribucionInicialPercapitaService {
 			Long aporteEstatal = 0L;
 			if(antecedentesComunaCalculado != null && antecedentesComunaCalculado.size() > 0){
 				for(AntecendentesComunaCalculado antecendentesComunaCalculado : antecedentesComunaCalculado){
-					aporteEstatal+=((antecendentesComunaCalculado.getPercapitaAno() == null) ? 0L : antecendentesComunaCalculado.getPercapitaAno()) +((antecendentesComunaCalculado.getDesempenoDificil() == null) ? 0 : antecendentesComunaCalculado.getDesempenoDificil());
+					aporteEstatal+=((antecendentesComunaCalculado.getPercapitaAno() == null) ? 0L : antecendentesComunaCalculado.getPercapitaAno()) + ((antecendentesComunaCalculado.getDesempenoDificil() == null) ? 0 : antecendentesComunaCalculado.getDesempenoDificil());
 				}
 			}
 			parametersBorradorAporteEstatal.put("{ano_curso}", (getAnoCurso() + 1));

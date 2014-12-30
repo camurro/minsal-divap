@@ -231,7 +231,6 @@ public class RebajaService {
 							break;
 						}
 					}
-
 					String mesDesde = ((rebaja != null && rebaja.getRebajaCorte() != null && rebaja.getRebajaCorte().getMesDesde() != null)? rebaja.getRebajaCorte().getMesDesde().getNombre() : "");
 					planilla.setMesDesde(mesDesde);
 					String mesHasta = ((rebaja != null && rebaja.getRebajaCorte() != null && rebaja.getRebajaCorte().getMesHasta() != null)? rebaja.getRebajaCorte().getMesHasta().getNombre() : "");
@@ -267,8 +266,8 @@ public class RebajaService {
 		return datosPlanilla;
 	}
 
-	private void calculaMontoRebaja(Integer idRebaja, List<Integer> idComunas) {
-		List<AntecendentesComuna> antecendentesComunas = this.servicioSaludDAO.getAntecentesComunasRebaja((getAnoCurso() + 1), idComunas);
+	private void calculaMontoRebaja(Integer idRebaja) {
+		List<AntecendentesComuna> antecendentesComunas = this.servicioSaludDAO.getAntecentesComunasRebaja((getAnoCurso() + 1), new TipoComuna[] { TipoComuna.RURAL, TipoComuna.URBANA});
 		Rebaja rebaja = rebajaDAO.findRebajaById(idRebaja);
 		if((antecendentesComunas != null) && (antecendentesComunas.size() > 0)){
 			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast((getAnoCurso() + 1));
@@ -481,6 +480,7 @@ public class RebajaService {
 				reglaCalculoRebajaPorComuna(comunaCumplimiento);
 			}
 		}
+		//calculaMontoRebaja(idProceso);
 		return generarExcelRebajaCalculada(idProceso);
 	}
 
