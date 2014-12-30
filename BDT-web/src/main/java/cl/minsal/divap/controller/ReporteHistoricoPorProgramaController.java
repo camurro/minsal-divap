@@ -14,10 +14,7 @@ import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
-import org.primefaces.event.TabChangeEvent;
-
 import minsal.divap.enums.Subtitulo;
-import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ReliquidacionService;
 import minsal.divap.service.ReportesServices;
@@ -28,10 +25,11 @@ import minsal.divap.vo.EstablecimientoSummaryVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ReporteHistoricoPorProgramaComunaVO;
 import minsal.divap.vo.ReporteHistoricoPorProgramaEstablecimientoVO;
-import minsal.divap.vo.ReporteMarcoPresupuestarioComunaVO;
-import minsal.divap.vo.ReporteMarcoPresupuestarioEstablecimientoVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloVO;
+
+import org.primefaces.event.TabChangeEvent;
+
 import cl.redhat.bandejaTareas.controller.BaseController;
 
 @Named ( "reporteHistoricoPorProgramaController" )
@@ -61,6 +59,7 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	private Long totalMarco2012;
 	private Long totalMarco2013;
 	private Long totalMarco2014;
+	private Long totalMarco2015;
 	
 	private Boolean ano2006;
 	private Boolean ano2007;
@@ -71,6 +70,7 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	private Boolean ano2012;
 	private Boolean ano2013;
 	private Boolean ano2014;
+	private Boolean ano2015;
 	
 	
 	private List<ProgramaVO> programas;
@@ -125,6 +125,8 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 		this.ano2012 = false;
 		this.ano2013 = false;
 		this.ano2014 = false;
+		this.ano2015 = false;
+		
 		
 		
 		DateFormat formatNowYear = new SimpleDateFormat("yyyy");
@@ -188,7 +190,7 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 			this.subtituloSeleccionado = Subtitulo.SUBTITULO29;
 			cargarEstablecimientos();
 		}
-		programas = programasService.getProgramasBySubtitulo(this.subtituloSeleccionado);
+		programas = programasService.getProgramasByAnoSubtitulo(this.subtituloSeleccionado);
 		System.out.println("this.subtituloSeleccionado --> "+this.subtituloSeleccionado.getNombre());
 	}
 	
@@ -220,33 +222,6 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 		return null;
 	}
 
-	public void cargarTablaComunasAll(){
-		this.reporteHistoricoPorProgramaComunaVO = reportesServices.getReporteHistoricoPorProgramaVOAll(getValorComboPrograma(), this.subtituloSeleccionado);
-	}
-	
-	public void cargarTablaEstablecimientosAll(){
-		System.out.println("this.subtituloSeleccionado --> "+this.subtituloSeleccionado);
-		
-		switch (this.subtituloSeleccionado) {
-		case SUBTITULO21:
-			System.out.println("subtitulo 21");
-			this.reporteHistoricoPorProgramaEstablecimientoVOSub21 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOAll(getValorComboPrograma(), this.subtituloSeleccionado);
-			break;
-		case SUBTITULO22:
-			System.out.println("subtitulo 22");
-			this.reporteHistoricoPorProgramaEstablecimientoVOSub22 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOAll(getValorComboPrograma(), this.subtituloSeleccionado);
-			break;
-		case SUBTITULO29:
-			System.out.println("subtitulo 29");
-			this.reporteHistoricoPorProgramaEstablecimientoVOSub29 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOAll(getValorComboPrograma(), this.subtituloSeleccionado);
-			break;
-		default:
-			break;
-		}
-	
-	}
-	
-	
 	public void cargarTablaComunasFiltroServicios(){
 		this.reporteHistoricoPorProgramaComunaVO = reportesServices.getReporteHistoricoPorProgramaVOFiltroServicio(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
 	}
@@ -352,7 +327,7 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	}
 	public List<ProgramaVO> getProgramas() {
 		if(programas == null){
-			programas = programasService.getProgramasByUser(getLoggedUsername());
+			programas = programasService.getProgramasByUserAno(getLoggedUsername(), getAnoEnCurso());
 		}
 		return programas;
 	}
@@ -390,7 +365,9 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	}
 
 	public Integer getAnoEnCurso() {
-		
+		if(anoEnCurso == null){
+			reportesServices.getAnoCurso();
+		}
 		return anoEnCurso;
 	}
 
@@ -740,10 +717,46 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 
 
 
+	public void setTotalMarco2015(Long totalMarco2015) {
+		this.totalMarco2015 = totalMarco2015;
+	}
+	
+	
+	public Long getTotalMarco2015() {
+		this.totalMarco2015 = 0L;
+		switch (this.subtituloSeleccionado) {
+		case SUBTITULO21:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
+				this.totalMarco2015 += lista.getMarco2015();
+			}
+			break;
+		case SUBTITULO22:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
+				this.totalMarco2015 += lista.getMarco2015();
+			}
+			break;
+		case SUBTITULO24:
+			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
+				this.totalMarco2015 += lista.getMarco2015();
+			}
+			break;
+		case SUBTITULO29:
+			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
+				this.totalMarco2015 += lista.getMarco2015();
+			}
+			break;
+		default:
+			break;
+		}
+		
+		return totalMarco2015;
+	}
+
+
+
 	public void setTotalMarco2014(Long totalMarco2014) {
 		this.totalMarco2014 = totalMarco2014;
 	}
-
 
 	public Integer getIdPlanillaDocComuna() {
 		return idPlanillaDocComuna;

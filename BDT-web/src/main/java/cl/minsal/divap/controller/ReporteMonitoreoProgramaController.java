@@ -1,10 +1,7 @@
 package cl.minsal.divap.controller;
 
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +11,6 @@ import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
-import org.primefaces.event.TabChangeEvent;
-
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.ProgramasService;
@@ -24,16 +19,14 @@ import minsal.divap.service.ReportesServices;
 import minsal.divap.service.ServicioSaludService;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ComunaSummaryVO;
-import minsal.divap.vo.EstablecimientoSummaryVO;
 import minsal.divap.vo.ProgramaVO;
-import minsal.divap.vo.ReporteHistoricoPorProgramaComunaVO;
-import minsal.divap.vo.ReporteHistoricoPorProgramaEstablecimientoVO;
-import minsal.divap.vo.ReporteMarcoPresupuestarioComunaVO;
-import minsal.divap.vo.ReporteMarcoPresupuestarioEstablecimientoVO;
 import minsal.divap.vo.ReporteMonitoreoProgramaPorComunaVO;
 import minsal.divap.vo.ReporteMonitoreoProgramaPorEstablecimientoVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloVO;
+
+import org.primefaces.event.TabChangeEvent;
+
 import cl.redhat.bandejaTareas.controller.BaseController;
 
 @Named ( "reporteMonitoreoProgramaController" )
@@ -124,7 +117,7 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 		
 		
 		this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
-		this.programas = programasService.getProgramasByUser(getLoggedUsername());
+		this.programas = programasService.getProgramasByUserAno(getLoggedUsername(), (getAnoEnCurso() + 1));
 		this.servicios = servicioSaludService.getServiciosOrderId();
 		
 	}
@@ -325,7 +318,9 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 	}
 
 	public Integer getAnoEnCurso() {
-		
+		if(anoEnCurso == null){
+			anoEnCurso = reportesServices.getAnoCurso();
+		}
 		return anoEnCurso;
 	}
 

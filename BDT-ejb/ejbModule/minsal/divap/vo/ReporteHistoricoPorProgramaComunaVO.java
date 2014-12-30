@@ -20,12 +20,13 @@ public class ReporteHistoricoPorProgramaComunaVO implements Serializable{
 	private Long marco2012;
 	private Long marco2013;
 	private Long marco2014;
+	private Long marco2015;
 	
 	
 	public ReporteHistoricoPorProgramaComunaVO(){
 		
 	}
-	public ReporteHistoricoPorProgramaComunaVO(String region, String servicio, String comuna, String programa, Long marco2006, Long marco2007, Long marco2008, Long marco2009, Long marco2010, Long marco2011, Long marco2012, Long marco2013, Long marco2014){
+	public ReporteHistoricoPorProgramaComunaVO(String region, String servicio, String comuna, String programa, Long marco2006, Long marco2007, Long marco2008, Long marco2009, Long marco2010, Long marco2011, Long marco2012, Long marco2013, Long marco2014, Long marco2015){
 		super();
 		this.region = region;
 		this.servicio = servicio;
@@ -40,6 +41,7 @@ public class ReporteHistoricoPorProgramaComunaVO implements Serializable{
 		this.marco2012 = marco2012;
 		this.marco2013 = marco2013;
 		this.marco2014 = marco2014;
+		this.marco2015 = marco2015;
 	}
 	public String getRegion() {
 		return region;
@@ -120,6 +122,12 @@ public class ReporteHistoricoPorProgramaComunaVO implements Serializable{
 		this.marco2014 = marco2014;
 	}
 	
+	public Long getMarco2015() {
+		return marco2015;
+	}
+	public void setMarco2015(Long marco2015) {
+		this.marco2015 = marco2015;
+	}
 	@Override
 	public String toString() {
 		return "ReporteHistoricoPorProgramaComunaVO [region=" + region
@@ -172,6 +180,9 @@ public class ReporteHistoricoPorProgramaComunaVO implements Serializable{
 		}
 		if (getMarco2014() != null) {
 			row.add(getMarco2014());
+		}
+		if (getMarco2015() != null) {
+			row.add(getMarco2015());
 		}
 		return row;
 	}

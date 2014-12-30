@@ -553,6 +553,22 @@ public class ProgramasService {
 		return programas;
 	}
 	
+	public List<ProgramaVO> getProgramasByAnoSubtitulo(Subtitulo subtitulo) {
+		System.out.println("carga programas del subtitulo --> "+subtitulo.getNombre());
+		Integer anoCurso = getAnoCurso() + 1;
+		List<ProgramaVO> programas = new ArrayList<ProgramaVO>();
+		List<ProgramaAno> programasAno = programasDAO.getProgramasBySubtitulo(anoCurso, subtitulo);
+		if(programasAno != null && programasAno.size() > 0){
+			for(ProgramaAno programaAno : programasAno){
+				ProgramaVO programaVO = new ProgramaMapper().getBasic(programaAno);
+				if(!programas.contains(programaVO)){
+					programas.add(programaVO);
+				}
+			}
+		}
+		return programas;
+	}
+	
 	
 	public Integer evaluarAnoSiguiente(Integer programaSeleccionado, ProgramaVO programa) {
 		ProgramaAno programaAnoActual = programasDAO.getProgramaAnoByID(programaSeleccionado);
