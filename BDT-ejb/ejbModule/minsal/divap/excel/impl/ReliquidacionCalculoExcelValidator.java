@@ -46,7 +46,7 @@ public class ReliquidacionCalculoExcelValidator extends ExcelValidator<CalculoRe
 		}
 		int first = getOffsetRows();
 		if(getOmitHeader()){
-			first +=3;
+			first +=4;
 		}
 		int last = sheet.getPhysicalNumberOfRows();
 		System.out.println("Ultima fila->"+last);
