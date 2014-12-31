@@ -174,6 +174,8 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 		this.reporteHistoricoPorProgramaComunaVO = new ArrayList<ReporteHistoricoPorProgramaComunaVO>();
 		System.out.println("Tab Changed, Active Tab: " + event.getTab().getTitle());
 		System.out.println("event.getTab().getId(): " + event.getTab().getId());
+		this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
+		
 		if(event.getTab().getId().equals("Sub21")){
 			this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
 			cargarEstablecimientos();
@@ -190,7 +192,6 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 			this.subtituloSeleccionado = Subtitulo.SUBTITULO29;
 			cargarEstablecimientos();
 		}
-		programas = programasService.getProgramasByAnoSubtitulo(this.subtituloSeleccionado);
 		System.out.println("this.subtituloSeleccionado --> "+this.subtituloSeleccionado.getNombre());
 	}
 	
@@ -222,16 +223,12 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 		return null;
 	}
 
-	public void cargarTablaComunasFiltroServicios(){
-		this.reporteHistoricoPorProgramaComunaVO = reportesServices.getReporteHistoricoPorProgramaVOFiltroServicio(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
-	}
 	
 	public void visibilidadSubtitulos(){
 		this.mostrarSub21 = false;
 		this.mostrarSub22 = false;
 		this.mostrarSub24 = false;
 		this.mostrarSub29 = false;
-		
 		
 		ProgramaVO programaVO = programasService.getProgramaAno(this.valorComboPrograma);
 		
@@ -261,22 +258,35 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	}
 	
 	public void cargarTablaEstablecimientoFiltroServiciosEstablecimiento(){
-		switch (this.subtituloSeleccionado) {
-		case SUBTITULO21:
-			System.out.println("subtitulo 21");
-			this.reporteHistoricoPorProgramaEstablecimientoVOSub21 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicioEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(),  this.subtituloSeleccionado);
-			break;
-		case SUBTITULO22:
-			System.out.println("subtitulo 22");
-			this.reporteHistoricoPorProgramaEstablecimientoVOSub22 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicioEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(),  this.subtituloSeleccionado);
-			break;
-		case SUBTITULO29:
-			System.out.println("subtitulo 29");
-			this.reporteHistoricoPorProgramaEstablecimientoVOSub29 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicioEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(),  this.subtituloSeleccionado);
-			break;
-		default:
-			break;
-		}
+		System.out.println("entra a este metodo");
+		
+		System.out.println("this.subtituloSeleccionado --> "+this.subtituloSeleccionado);
+		
+		this.reporteHistoricoPorProgramaEstablecimientoVOSub21 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicioEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(),  Subtitulo.SUBTITULO21);
+		this.reporteHistoricoPorProgramaEstablecimientoVOSub22 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicioEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(),  Subtitulo.SUBTITULO22);
+		this.reporteHistoricoPorProgramaEstablecimientoVOSub29 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicioEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(),  Subtitulo.SUBTITULO29);
+
+		
+		
+//		switch (this.subtituloSeleccionado) {
+//		case SUBTITULO21:
+//			System.out.println("subtitulo 21");
+//			System.out.println("deberia cargar el metodo");
+//			this.reporteHistoricoPorProgramaEstablecimientoVOSub21 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicioEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(),  this.subtituloSeleccionado);
+//			break;
+//		case SUBTITULO22:
+//			System.out.println("subtitulo 22");
+//			System.out.println("deberia cargar el metodo");
+//			this.reporteHistoricoPorProgramaEstablecimientoVOSub22 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicioEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(),  this.subtituloSeleccionado);
+//			break;
+//		case SUBTITULO29:
+//			System.out.println("subtitulo 29");
+//			System.out.println("deberia cargar el metodo");
+//			this.reporteHistoricoPorProgramaEstablecimientoVOSub29 = reportesServices.getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicioEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(),  this.subtituloSeleccionado);
+//			break;
+//		default:
+//			break;
+//		}
 	
 	
 	}
@@ -327,7 +337,7 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	}
 	public List<ProgramaVO> getProgramas() {
 		if(programas == null){
-			programas = programasService.getProgramasByUserAno(getLoggedUsername(), getAnoEnCurso());
+			programas = programasService.getProgramasByUserAno(getLoggedUsername(), getAnoEnCurso()+1);
 		}
 		return programas;
 	}

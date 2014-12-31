@@ -47,6 +47,7 @@ import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.ReporteEstadoSituacionByComunaVO;
 import minsal.divap.vo.ReporteEstadoSituacionByServiciosVO;
 import minsal.divap.vo.ReporteGlosaVO;
+import minsal.divap.vo.ReporteHistoricoComunaMarcoPresupuestarioVO;
 import minsal.divap.vo.ReporteHistoricoPorProgramaComunaVO;
 import minsal.divap.vo.ReporteHistoricoPorProgramaEstablecimientoVO;
 import minsal.divap.vo.ReporteMarcoPresupuestarioComunaVO;
@@ -1951,29 +1952,23 @@ public class ReportesServices {
 
 	public List<ReporteHistoricoPorProgramaEstablecimientoVO> getReporteHistoricoEstablecimientoPorProgramaVOFiltroServicioEstablecimiento(
             Integer idProgramaAno, Integer idServicio, Integer idEstablecimiento, Subtitulo subtitulo) {
+		
         System.out.println("idProgramaAno --> " + idProgramaAno
                 + "  subtitulo --> " + subtitulo.getNombre());
        
         ProgramaVO programaAnoActual = programasService.getProgramaAno(idProgramaAno); //2014
        
        
-        Integer idProgramaAnoActualMenos1 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 1) ); //2013
-        Integer idProgramaAnoActualMenos2 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 2) ); //2012
-        Integer idProgramaAnoActualMenos3 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 3) ); //2011
-        Integer idProgramaAnoActualMenos4 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 4) ); //2010
-        Integer idProgramaAnoActualMenos5 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 5) ); //2009
-        Integer idProgramaAnoActualMenos6 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 6) ); //2008
-        Integer idProgramaAnoActualMenos7 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 7) ); //2007
-        Integer idProgramaAnoActualMenos8 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 8) ); //2006
+        Integer idProgramaAnoActualMenos1 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 1) ); //2014
+        Integer idProgramaAnoActualMenos2 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 2) ); //2013
+        Integer idProgramaAnoActualMenos3 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 3) ); //2012
+        Integer idProgramaAnoActualMenos4 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 4) ); //2011
+        Integer idProgramaAnoActualMenos5 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 5) ); //2010
+        Integer idProgramaAnoActualMenos6 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 6) ); //2009
+        Integer idProgramaAnoActualMenos7 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 7) ); //2008
+        Integer idProgramaAnoActualMenos8 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 8) ); //2007
+        Integer idProgramaAnoActualMenos9 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (getAnoCurso() - 9) ); //2006
        
-       /* ProgramaVO programaAnoMenos1 = programasService.getProgramaAno(idProgramaAnoActualMenos1); //2013
-        ProgramaVO programaAnoMenos2 = programasService.getProgramaAno(idProgramaAnoActualMenos1); //2012
-        ProgramaVO programaAnoMenos3 = programasService.getProgramaAno(idProgramaAnoActualMenos1); //2011
-        ProgramaVO programaAnoMenos4 = programasService.getProgramaAno(idProgramaAnoActualMenos1); //2010
-        ProgramaVO programaAnoMenos5 = programasService.getProgramaAno(idProgramaAnoActualMenos1); //2009
-        ProgramaVO programaAnoMenos6 = programasService.getProgramaAno(idProgramaAnoActualMenos1); //2008
-        ProgramaVO programaAnoMenos7 = programasService.getProgramaAno(idProgramaAnoActualMenos1); //2007
-        ProgramaVO programaAnoMenos8 = programasService.getProgramaAno(idProgramaAnoActualMenos1); //2006*/
        
 
         List<ReporteHistoricoPorProgramaEstablecimientoVO> resultado = new ArrayList<ReporteHistoricoPorProgramaEstablecimientoVO>();
@@ -2001,7 +1996,6 @@ public class ReportesServices {
             reporteHistoricoPorProgramaEstablecimientoVO.setPrograma(programaAnoActual
                     .getNombre());
            
-            ProgramaServicioCoreComponente programaServicioCoreComponenteActual = programasDAO.getProgramaServicioCoreComponenteByEstablecimientoProgramaAnoComponenteSubtitulo(servicio.getId(), idProgramaAno, componente.getId(), subtitulo.getId());
            
            
             Long marcoAnoActual = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), programaAnoActual.getIdProgramaAno(), componente.getId(), subtitulo.getId());
@@ -2015,36 +2009,35 @@ public class ReportesServices {
             Long marcoAnoActualMenos6 = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAnoActualMenos6, componente.getId(), subtitulo.getId());
             Long marcoAnoActualMenos7 = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAnoActualMenos7, componente.getId(), subtitulo.getId());
             Long marcoAnoActualMenos8 = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAnoActualMenos8, componente.getId(), subtitulo.getId());
-           
+            Long marcoAnoActualMenos9 = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAnoActualMenos9, componente.getId(), subtitulo.getId());
+
            
                 System.out.println("programaServicioCoreComponenteActual no es null!!!");
                
-                //2014
-                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2014(marcoAnoActual);
+                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2015(marcoAnoActual);
+                
+                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2014(marcoAnoActualMenos1);
                
-                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2013(marcoAnoActualMenos1);
+                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2013(marcoAnoActualMenos2);
                
-                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2012(marcoAnoActualMenos2);
+                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2012(marcoAnoActualMenos3);
                
-                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2011(marcoAnoActualMenos3);
+                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2011(marcoAnoActualMenos4);
                
-                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2010(marcoAnoActualMenos4);
+                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2010(marcoAnoActualMenos5);
                
-                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2009(marcoAnoActualMenos5);
+                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2009(marcoAnoActualMenos6);
                
-                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2008(marcoAnoActualMenos6);
+                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2008(marcoAnoActualMenos7);
                
-                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2007(marcoAnoActualMenos7);
+                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2007(marcoAnoActualMenos8);
                
-                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2006(marcoAnoActualMenos8);
+                reporteHistoricoPorProgramaEstablecimientoVO.setMarco2006(marcoAnoActualMenos9);
                
                 resultado.add(reporteHistoricoPorProgramaEstablecimientoVO);
-               
-       
         }
 
         return resultado;
-
     }
 
 
@@ -2053,6 +2046,7 @@ public class ReportesServices {
 			Subtitulo subtitulo) {
 		System.out.println("idProgramaAno --> " + idProgramaAno
 				+ "  subtitulo --> " + subtitulo.getNombre());
+		
 
 		List<ReporteHistoricoPorProgramaComunaVO> resultado = new ArrayList<ReporteHistoricoPorProgramaComunaVO>();
 
@@ -2087,27 +2081,39 @@ public class ReportesServices {
 				.getProgramaAnoSiguiente(programaAnoActual.getId(),
 						(getAnoCurso() - 9)); // 2006
 
-		ProgramaVO programaAnoMenos1 = programasService
-				.getProgramaAno(idProgramaAnoActualMenos1); // 2014
-		ProgramaVO programaAnoMenos2 = programasService
-				.getProgramaAno(idProgramaAnoActualMenos1); // 2013
-		ProgramaVO programaAnoMenos3 = programasService
-				.getProgramaAno(idProgramaAnoActualMenos1); // 2012
-		ProgramaVO programaAnoMenos4 = programasService
-				.getProgramaAno(idProgramaAnoActualMenos1); // 2011
-		ProgramaVO programaAnoMenos5 = programasService
-				.getProgramaAno(idProgramaAnoActualMenos1); // 2010
-		ProgramaVO programaAnoMenos6 = programasService
-				.getProgramaAno(idProgramaAnoActualMenos1); // 2009
-		ProgramaVO programaAnoMenos7 = programasService
-				.getProgramaAno(idProgramaAnoActualMenos1); // 2008
-		ProgramaVO programaAnoMenos8 = programasService
-				.getProgramaAno(idProgramaAnoActualMenos1); // 2007
-		ProgramaVO programaAnoMenos9 = programasService
-				.getProgramaAno(idProgramaAnoActualMenos1); // 2006
 
-		List<ServicioSalud> serviciosSalud = servicioSaludDAO
-				.getServiciosOrderId();
+		
+		//TODO cambiar despues este valor
+		Integer anoActual = getAnoCurso() + 1;
+		System.out.println("anoActual --> "+anoActual);
+		
+		List<ReporteHistoricoComunaMarcoPresupuestarioVO> listadoReporteHistoricoComunaMarcoPresupuestarioVO = new ArrayList<ReporteHistoricoComunaMarcoPresupuestarioVO>();
+		
+		for(int ano = anoActual; ano > (anoActual - 10); ano--){
+			ReporteHistoricoComunaMarcoPresupuestarioVO reporteHistoricoComunaMarcoPresupuestarioVO = new ReporteHistoricoComunaMarcoPresupuestarioVO();
+			System.out.println("anoActual es ano  --> "+ano);
+			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(ano);
+			if(distribucionInicialPercapita != null){
+				List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaVigente(
+						idServicio, idComuna, distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+				AntecendentesComunaCalculado antecendentesComunaCalculado = ((antecendentesComunaCalculados != null && antecendentesComunaCalculados.size() > 0) ? antecendentesComunaCalculados.get(0)	: null);
+				System.out.println("antecendentesComunaCalculado->"	+ antecendentesComunaCalculado);
+				
+				if(antecendentesComunaCalculado == null){
+					reporteHistoricoComunaMarcoPresupuestarioVO.setPercapita(0L);
+					reporteHistoricoComunaMarcoPresupuestarioVO.setDesempenoDificil(0L);
+				}else{
+					reporteHistoricoComunaMarcoPresupuestarioVO.setPercapita(antecendentesComunaCalculado.getPercapitaAno());
+					reporteHistoricoComunaMarcoPresupuestarioVO.setDesempenoDificil((long)antecendentesComunaCalculado.getDesempenoDificil());
+				}
+			}else{
+				reporteHistoricoComunaMarcoPresupuestarioVO.setPercapita(0L);
+				reporteHistoricoComunaMarcoPresupuestarioVO.setDesempenoDificil(0L);
+			}
+			
+			listadoReporteHistoricoComunaMarcoPresupuestarioVO.add(reporteHistoricoComunaMarcoPresupuestarioVO);
+		}
+		
 		ServicioSalud servicio = servicioSaludDAO.getById(idServicio);
 		Comuna comuna = comunaDAO.getComunaById(idComuna);
 		List<ComponentesVO> componentes = programasService
@@ -2115,7 +2121,6 @@ public class ReportesServices {
 						subtitulo);
 		for (ComponentesVO componente : componentes) {
 			ReporteHistoricoPorProgramaComunaVO reporteHistoricoPorProgramaComunaVO = new ReporteHistoricoPorProgramaComunaVO();
-
 			reporteHistoricoPorProgramaComunaVO.setRegion(servicio.getRegion()
 					.getNombre());
 			reporteHistoricoPorProgramaComunaVO.setServicio(servicio
@@ -2124,265 +2129,65 @@ public class ReportesServices {
 			reporteHistoricoPorProgramaComunaVO.setPrograma(programaAnoActual
 					.getNombre());
 			
-
-			// ********************Año 2006 ****************************
-			Long percapitaMenos9 = 0L;
-			Long desempenoDificilMenos9 = 0L;
-			Long marcoAnoMenos9 = 0L;
-
-			AntecendentesComunaCalculado antecendentesComunaCalculadoMenos9 = antecedentesComunaDAO
-					.findByComunaAnoVigencia(comuna.getId(),
-							(getAnoCurso() - 9));
-			if (antecendentesComunaCalculadoMenos9 == null) {
-				reporteHistoricoPorProgramaComunaVO.setMarco2006(0L);
-			} else {
-				percapitaMenos9 = antecendentesComunaCalculadoMenos9
-						.getPercapitaAno();
-				desempenoDificilMenos9 = (long) antecendentesComunaCalculadoMenos9
-						.getDesempenoDificil();
-			}
-
-			marcoAnoMenos9 = programasDAO
-					.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(),
-							idProgramaAnoActualMenos9, componente.getId(),
-							subtitulo.getId());
-			reporteHistoricoPorProgramaComunaVO.setMarco2006(percapitaMenos9
-					+ desempenoDificilMenos9 + marcoAnoMenos9);
-
-			// ***************** Fin año 2006 *****************************
-
-			// ********************Año 2006 ****************************
-			Long percapitaMenos8 = 0L;
-			Long desempenoDificilMenos8 = 0L;
-			Long marcoAnoMenos8 = 0L;
-
-			AntecendentesComunaCalculado antecendentesComunaCalculadoMenos8 = antecedentesComunaDAO
-					.findByComunaAnoVigencia(comuna.getId(),
-							(getAnoCurso() - 8));
-			if (antecendentesComunaCalculadoMenos8 == null) {
-				reporteHistoricoPorProgramaComunaVO.setMarco2007(0L);
-			} else {
-				percapitaMenos8 = antecendentesComunaCalculadoMenos8
-						.getPercapitaAno();
-				desempenoDificilMenos8 = (long) antecendentesComunaCalculadoMenos8
-						.getDesempenoDificil();
-			}
-
-			marcoAnoMenos8 = programasDAO
-					.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(),
-							idProgramaAnoActualMenos8, componente.getId(),
-							subtitulo.getId());
-			reporteHistoricoPorProgramaComunaVO.setMarco2007(percapitaMenos8
-					+ desempenoDificilMenos8 + marcoAnoMenos8);
-
-			// ***************** Fin año 2006 *****************************
-
-			// ********************Año 2007 ****************************
-			Long percapitaMenos7 = 0L;
-			Long desempenoDificilMenos7 = 0L;
-			Long marcoAnoMenos7 = 0L;
-
-			AntecendentesComunaCalculado antecendentesComunaCalculadoMenos7 = antecedentesComunaDAO
-					.findByComunaAnoVigencia(comuna.getId(),
-							(getAnoCurso() - 7));
-			if (antecendentesComunaCalculadoMenos7 == null) {
-				reporteHistoricoPorProgramaComunaVO.setMarco2008(0L);
-			} else {
-				percapitaMenos7 = antecendentesComunaCalculadoMenos7
-						.getPercapitaAno();
-				desempenoDificilMenos7 = (long) antecendentesComunaCalculadoMenos7
-						.getDesempenoDificil();
-			}
-
-			marcoAnoMenos7 = programasDAO
-					.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(),
-							idProgramaAnoActualMenos7, componente.getId(),
-							subtitulo.getId());
-			reporteHistoricoPorProgramaComunaVO.setMarco2008(percapitaMenos7
-					+ desempenoDificilMenos7 + marcoAnoMenos7);
-
-			// ***************** Fin año 2007 *****************************
-
-			// ********************Año 2008 ****************************
-			Long percapitaMenos6 = 0L;
-			Long desempenoDificilMenos6 = 0L;
-			Long marcoAnoMenos6 = 0L;
-
-			AntecendentesComunaCalculado antecendentesComunaCalculadoMenos6 = antecedentesComunaDAO
-					.findByComunaAnoVigencia(comuna.getId(),
-							(getAnoCurso() - 6));
-			if (antecendentesComunaCalculadoMenos6 == null) {
-				reporteHistoricoPorProgramaComunaVO.setMarco2009(0L);
-			} else {
-				percapitaMenos6 = antecendentesComunaCalculadoMenos6
-						.getPercapitaAno();
-				desempenoDificilMenos6 = (long) antecendentesComunaCalculadoMenos6
-						.getDesempenoDificil();
-			}
-
-			marcoAnoMenos6 = programasDAO
-					.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(),
-							idProgramaAnoActualMenos6, componente.getId(),
-							subtitulo.getId());
-			reporteHistoricoPorProgramaComunaVO.setMarco2009(percapitaMenos6
-					+ desempenoDificilMenos6 + marcoAnoMenos6);
-
-			// ***************** Fin año 2008 *****************************
-
-			// ********************Año 2009 ****************************
-			Long percapitaMenos5 = 0L;
-			Long desempenoDificilMenos5 = 0L;
-			Long marcoAnoMenos5 = 0L;
-
-			AntecendentesComunaCalculado antecendentesComunaCalculadoMenos5 = antecedentesComunaDAO
-					.findByComunaAnoVigencia(comuna.getId(),
-							(getAnoCurso() - 5));
-			if (antecendentesComunaCalculadoMenos5 == null) {
-				reporteHistoricoPorProgramaComunaVO.setMarco2010(0L);
-			} else {
-				percapitaMenos5 = antecendentesComunaCalculadoMenos5
-						.getPercapitaAno();
-				desempenoDificilMenos5 = (long) antecendentesComunaCalculadoMenos5
-						.getDesempenoDificil();
-			}
-
-			marcoAnoMenos5 = programasDAO
-					.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(),
-							idProgramaAnoActualMenos5, componente.getId(),
-							subtitulo.getId());
-			reporteHistoricoPorProgramaComunaVO.setMarco2010(percapitaMenos5
-					+ desempenoDificilMenos5 + marcoAnoMenos5);
-
-			// ***************** Fin año 2009 *****************************
-
-			// ********************Año 2010 ****************************
-			Long percapitaMenos4 = 0L;
-			Long desempenoDificilMenos4 = 0L;
-			Long marcoAnoMenos4 = 0L;
-
-			AntecendentesComunaCalculado antecendentesComunaCalculadoMenos4 = antecedentesComunaDAO
-					.findByComunaAnoVigencia(comuna.getId(),
-							(getAnoCurso() - 4));
-			if (antecendentesComunaCalculadoMenos4 == null) {
-				reporteHistoricoPorProgramaComunaVO.setMarco2011(0L);
-			} else {
-				percapitaMenos4 = antecendentesComunaCalculadoMenos4
-						.getPercapitaAno();
-				desempenoDificilMenos4 = (long) antecendentesComunaCalculadoMenos4
-						.getDesempenoDificil();
-			}
-
-			marcoAnoMenos4 = programasDAO
-					.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(),
-							idProgramaAnoActualMenos4, componente.getId(),
-							subtitulo.getId());
-			reporteHistoricoPorProgramaComunaVO.setMarco2011(percapitaMenos4
-					+ desempenoDificilMenos4 + marcoAnoMenos4);
-
-			// ***************** Fin año 2010 *****************************
-
-			// ********************Año 2011 ****************************
-			Long percapitaMenos3 = 0L;
-			Long desempenoDificilMenos3 = 0L;
-			Long marcoAnoMenos3 = 0L;
-
-			AntecendentesComunaCalculado antecendentesComunaCalculadoMenos3 = antecedentesComunaDAO
-					.findByComunaAnoVigencia(comuna.getId(),
-							(getAnoCurso() - 3));
-			if (antecendentesComunaCalculadoMenos3 == null) {
-				reporteHistoricoPorProgramaComunaVO.setMarco2012(0L);
-			} else {
-				percapitaMenos3 = antecendentesComunaCalculadoMenos3
-						.getPercapitaAno();
-				desempenoDificilMenos3 = (long) antecendentesComunaCalculadoMenos3
-						.getDesempenoDificil();
-			}
-
-			marcoAnoMenos3 = programasDAO
-					.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(),
-							idProgramaAnoActualMenos3, componente.getId(),
-							subtitulo.getId());
-			reporteHistoricoPorProgramaComunaVO.setMarco2012(percapitaMenos3
-					+ desempenoDificilMenos3 + marcoAnoMenos3);
-
-			// ***************** Fin año 2011 *****************************
-
-			// ********************Año 2012 ****************************
-			Long percapitaMenos2 = 0L;
-			Long desempenoDificilMenos2 = 0L;
-			Long marcoAnoMenos2 = 0L;
-
-			AntecendentesComunaCalculado antecendentesComunaCalculadoMenos2 = antecedentesComunaDAO
-					.findByComunaAnoVigencia(comuna.getId(),
-							(getAnoCurso() - 2));
-			if (antecendentesComunaCalculadoMenos2 == null) {
-				reporteHistoricoPorProgramaComunaVO.setMarco2013(0L);
-			} else {
-				percapitaMenos2 = antecendentesComunaCalculadoMenos2
-						.getPercapitaAno();
-				desempenoDificilMenos2 = (long) antecendentesComunaCalculadoMenos2
-						.getDesempenoDificil();
-			}
-
-			marcoAnoMenos2 = programasDAO
-					.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(),
-							idProgramaAnoActualMenos2, componente.getId(),
-							subtitulo.getId());
-			reporteHistoricoPorProgramaComunaVO.setMarco2013(percapitaMenos2
-					+ desempenoDificilMenos2 + marcoAnoMenos2);
-
-			// ***************** Fin año 2012 *****************************
-
-			// ********************Año 2013 ****************************
-			Long percapitaMenos1 = 0L;
-			Long desempenoDificilMenos1 = 0L;
-			Long marcoAnoMenos1 = 0L;
-
-			AntecendentesComunaCalculado antecendentesComunaCalculadoMenos1 = antecedentesComunaDAO
-					.findByComunaAnoVigencia(comuna.getId(),
-							(getAnoCurso() - 1));
-			if (antecendentesComunaCalculadoMenos1 == null) {
-				reporteHistoricoPorProgramaComunaVO.setMarco2014(0L);
-			} else {
-				percapitaMenos1 = antecendentesComunaCalculadoMenos1
-						.getPercapitaAno();
-				desempenoDificilMenos1 = (long) antecendentesComunaCalculadoMenos1
-						.getDesempenoDificil();
-			}
-
-			marcoAnoMenos1 = programasDAO
-					.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(),
-							idProgramaAnoActualMenos1, componente.getId(),
-							subtitulo.getId());
-			reporteHistoricoPorProgramaComunaVO.setMarco2014(percapitaMenos1
-					+ desempenoDificilMenos1 + marcoAnoMenos1);
-
-			// ***************** Fin año 2013 *****************************
-
-			// ********************Año 2014 ****************************
-			Long percapitaActual = 0L;
-			Long desempenoDificilActual = 0L;
-			Long marcoAnoActual = 0L;
-
-			AntecendentesComunaCalculado antecendentesComunaCalculadoActual = antecedentesComunaDAO
-					.findByComunaAnoVigencia(comuna.getId(), getAnoCurso());
-			if (antecendentesComunaCalculadoActual == null) {
-				reporteHistoricoPorProgramaComunaVO.setMarco2015(0L);
-			} else {
-				percapitaActual = antecendentesComunaCalculadoActual
-						.getPercapitaAno();
-				desempenoDificilActual = (long) antecendentesComunaCalculadoActual
-						.getDesempenoDificil();
-			}
-
-			marcoAnoActual = programasDAO
-					.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(),
-							idProgramaAno, componente.getId(),
-							subtitulo.getId());
-			reporteHistoricoPorProgramaComunaVO.setMarco2015(percapitaActual
-					+ desempenoDificilActual + marcoAnoActual);
-
-			// ***************** Fin año 2014 *****************************
+//			for(ReporteHistoricoComunaMarcoPresupuestarioVO reporteHistoricoComunaMarcoPresupuestarioVO : listadoReporteHistoricoComunaMarcoPresupuestarioVO){
+//				System.out.println("reporteHistoricoComunaMarcoPresupuestarioVO --> "+reporteHistoricoComunaMarcoPresupuestarioVO);
+//			}
+			
+			//**********2015**********
+			Long marcoAnoCurso = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(idComuna, idProgramaAno, componente.getId(), subtitulo.getId());
+			System.out.println("tarifa ---> "+marcoAnoCurso);
+			System.out.println("listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(0) --> "+listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(0).toString());
+			reporteHistoricoPorProgramaComunaVO.setMarco2015
+			(marcoAnoCurso + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(0).getDesempenoDificil() + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(0).getPercapita());
+			
+			
+			//**********2014**********
+			Long marcoAnoCursoMenos1 = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(idComuna, idProgramaAnoActualMenos1, componente.getId(), subtitulo.getId());
+			reporteHistoricoPorProgramaComunaVO.setMarco2014
+			(marcoAnoCursoMenos1 + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(1).getDesempenoDificil() + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(1).getPercapita());
+			
+			
+			//**********2013**********
+			Long marcoAnoCursoMenos2 = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(idComuna, idProgramaAnoActualMenos2, componente.getId(), subtitulo.getId());
+			reporteHistoricoPorProgramaComunaVO.setMarco2013
+			(marcoAnoCursoMenos2 + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(2).getDesempenoDificil() + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(2).getPercapita());
+			
+			
+			//**********2012**********
+			Long marcoAnoCursoMenos3 = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(idComuna, idProgramaAnoActualMenos3, componente.getId(), subtitulo.getId());
+			reporteHistoricoPorProgramaComunaVO.setMarco2012
+			(marcoAnoCursoMenos3 + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(3).getDesempenoDificil() + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(3).getPercapita());
+			
+			//**********2011**********
+			Long marcoAnoCursoMenos4 = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(idComuna, idProgramaAnoActualMenos4, componente.getId(), subtitulo.getId());
+			reporteHistoricoPorProgramaComunaVO.setMarco2011
+			(marcoAnoCursoMenos4 + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(4).getDesempenoDificil() + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(4).getPercapita());
+			
+			//**********2010**********
+			Long marcoAnoCursoMenos5 = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(idComuna, idProgramaAnoActualMenos5, componente.getId(), subtitulo.getId());
+			reporteHistoricoPorProgramaComunaVO.setMarco2010
+			(marcoAnoCursoMenos5 + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(5).getDesempenoDificil() + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(5).getPercapita());
+			
+			
+			//**********2009**********
+			Long marcoAnoCursoMenos6 = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(idComuna, idProgramaAnoActualMenos6, componente.getId(), subtitulo.getId());
+			reporteHistoricoPorProgramaComunaVO.setMarco2009
+			(marcoAnoCursoMenos6 + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(6).getDesempenoDificil() + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(6).getPercapita());
+			
+			//**********2008**********
+			Long marcoAnoCursoMenos7 = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(idComuna, idProgramaAnoActualMenos7, componente.getId(), subtitulo.getId());
+			reporteHistoricoPorProgramaComunaVO.setMarco2008
+			(marcoAnoCursoMenos7 + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(7).getDesempenoDificil() + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(7).getPercapita());
+			
+			//**********2007**********
+			Long marcoAnoCursoMenos8 = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(idComuna, idProgramaAnoActualMenos8, componente.getId(), subtitulo.getId());
+			reporteHistoricoPorProgramaComunaVO.setMarco2007
+			(marcoAnoCursoMenos8 + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(8).getDesempenoDificil() + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(8).getPercapita());
+			
+			//**********2006*********
+			Long marcoAnoCursoMenos9 = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(idComuna, idProgramaAnoActualMenos9, componente.getId(), subtitulo.getId());
+			reporteHistoricoPorProgramaComunaVO.setMarco2006
+			(marcoAnoCursoMenos9 + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(9).getDesempenoDificil() + listadoReporteHistoricoComunaMarcoPresupuestarioVO.get(9).getPercapita());
 
 			resultado.add(reporteHistoricoPorProgramaComunaVO);
 		}
