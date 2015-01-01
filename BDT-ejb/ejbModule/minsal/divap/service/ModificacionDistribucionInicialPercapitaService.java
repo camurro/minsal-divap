@@ -387,7 +387,7 @@ public class ModificacionDistribucionInicialPercapitaService {
 	}
 
 	public List<AsignacionDistribucionPerCapitaVO> findAntecedentesComunaCalculadosByDistribucionInicialPercapita(Integer servicio, Integer comuna, Integer idModificacionDistribucionInicialPercapita) {
-		List<AntecendentesComunaCalculado>  antecendentesComunaCalculado = new ArrayList<AntecendentesComunaCalculado>();
+		List<AntecendentesComunaCalculado>  antecendentesComunaCalculado = null;
 		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso() + 1);
 		if(comuna != null){
 			antecendentesComunaCalculado = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaVigente(servicio, comuna, distribucionInicialPercapita.getIdDistribucionInicialPercapita());

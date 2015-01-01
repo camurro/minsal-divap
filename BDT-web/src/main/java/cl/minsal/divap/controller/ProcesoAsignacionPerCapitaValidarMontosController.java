@@ -110,6 +110,7 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 		servicioSeleccionado = "";
 		comunaSeleccionada = "";
 		antecendentesComunaCalculado = new ArrayList<AsignacionDistribucionPerCapitaVO>();
+		comunas = new ArrayList<ComunaVO>();
 		limpiarCheck();
 		System.out.println("fin limpiar");
 	}

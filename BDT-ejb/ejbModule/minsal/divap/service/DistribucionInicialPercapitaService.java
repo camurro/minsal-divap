@@ -260,8 +260,8 @@ public class DistribucionInicialPercapitaService {
 		}
 		return plantillaId;
 	}
-	
-	
+
+
 	public DistribucionInicialPercapita ultimaDistribucionPercapita(){
 		return distribucionInicialPercapitaDAO.findLast(getAnoCurso() + 1);
 	}
@@ -309,7 +309,7 @@ public class DistribucionInicialPercapitaService {
 		CellTypeExcelVO fieldFive = new CellTypeExcelVO(true, FieldType.INTEGERFIELD);
 		cells.add(fieldFive);
 		XSSFSheet worksheet = workbook.getSheetAt(0);
-		
+
 		PercapitaCalculoPercapitaExcelValidator calculoPercapitaExcelValidator = new PercapitaCalculoPercapitaExcelValidator(cells.size(), cells, true, 0, 0);
 		calculoPercapitaExcelValidator.validateFormat(worksheet);		
 		List<CalculoPercapitaVO> items = calculoPercapitaExcelValidator.getItems();
@@ -329,6 +329,23 @@ public class DistribucionInicialPercapitaService {
 					antecendentesComunaCalculado.setPoblacion(calculoPercapitaVO.getPoblacion().intValue());
 					antecendentesComunaCalculado.setPoblacionMayor(calculoPercapitaVO.getPoblacionMayor().intValue());
 				}
+			}else{
+				AntecendentesComuna antecendentesComunaActual = antecedentesComunaDAO.findAntecendentesComunaByComunaServicioAno(calculoPercapitaVO.getServicio(), calculoPercapitaVO.getComuna(), getAnoCurso());
+				antecendentesComuna = new AntecendentesComuna();
+				AnoEnCurso anoAnoEnCurso = anoDAO.getAnoById((getAnoCurso() + 1));
+				antecendentesComuna.setAnoAnoEnCurso(anoAnoEnCurso);
+				antecendentesComuna.setAsignacionZona(antecendentesComunaActual.getAsignacionZona());
+				antecendentesComuna.setClasificacion(antecendentesComunaActual.getClasificacion());
+				antecendentesComuna.setIdComuna(antecendentesComunaActual.getIdComuna());
+				antecendentesComuna.setTramoPobreza(antecendentesComunaActual.getTramoPobreza());
+				antecedentesComunaDAO.save(antecendentesComuna);
+				AntecendentesComunaCalculado antecendentesComunaCalculado = new AntecendentesComunaCalculado();
+				antecendentesComunaCalculado.setAntecedentesComuna(antecendentesComuna);
+				antecendentesComunaCalculado.setPoblacion(calculoPercapitaVO.getPoblacion().intValue());
+				antecendentesComunaCalculado.setPoblacionMayor(calculoPercapitaVO.getPoblacionMayor().intValue());
+				DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findById(idDistribucionInicialPercapita);
+				antecendentesComunaCalculado.setDistribucionInicialPercapita(distribucionInicialPercapita);
+				antecedentesComunaDAO.createAntecendentesComunaCalcuado(antecendentesComunaCalculado);
 			}
 		}
 	}
@@ -505,7 +522,7 @@ public class DistribucionInicialPercapitaService {
 		}
 		return antecedentesCalculados;
 	}
-	
+
 	public List<AsignacionDistribucionPerCapitaVO> findAntecedentesServicioCalculadosByDistribucionInicialPercapita(Integer idServicio, Integer idDistribucionInicialPercapita){
 		List<AntecendentesComunaCalculado>  antecendentesComunaCalculado = antecedentesComunaDAO.findAntecedentesServicioCalculadosByDistribucionInicialPercapitaVigente(idServicio, idDistribucionInicialPercapita);
 		List<AsignacionDistribucionPerCapitaVO> antecedentesCalculados = new ArrayList<AsignacionDistribucionPerCapitaVO>();
@@ -530,7 +547,7 @@ public class DistribucionInicialPercapitaService {
 
 	public List<AsignacionDistribucionPerCapitaVO> findAntecedentesComunaCalculadosByDistribucionInicialPercapita(
 			Integer servicio, Integer comuna, Integer idDistribucionInicialPercapita) {
-		List<AntecendentesComunaCalculado>  antecendentesComunaCalculado = new ArrayList<AntecendentesComunaCalculado>();
+		List<AntecendentesComunaCalculado>  antecendentesComunaCalculado = null;
 		if(comuna != null){
 			antecendentesComunaCalculado = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaVigente(servicio, comuna, idDistribucionInicialPercapita);
 		} else {
@@ -644,7 +661,7 @@ public class DistribucionInicialPercapitaService {
 			DocumentoVO documentoAporteEstatalCFVO = documentService.getDocument(referenciaDocumentoSummaryAporteEstatalCFVO.getId());
 			String templateAporteEstatalCF = tmpDirDoc + File.separator + documentoAporteEstatalCFVO.getName();
 			templateAporteEstatalCF = templateAporteEstatalCF.replace(" ", "");
-			String filenameAporteEstatalCF = tmpDirDoc + File.separator + new Date().getTime() + "_" + "ResolucionAporteEstatalCF.docx";
+			String filenameAporteEstatalCF = tmpDirDoc + File.separator + new Date().getTime() + "_" + "ResAporteEstatal.docx";
 			filenameAporteEstatalCF = filenameAporteEstatalCF.replaceAll(" ", "");
 			System.out.println("resolucionAporteEstatalCF filename-->"+filenameAporteEstatalCF);
 			System.out.println("resolucionAporteEstatalCF template-->"+templateAporteEstatalCF);
@@ -654,7 +671,7 @@ public class DistribucionInicialPercapitaService {
 			DocumentoVO documentoAporteEstatalURVO = documentService.getDocument(referenciaDocumentoSummaryAporteEstatalURVO.getId());
 			String templateAporteEstatalUR = tmpDirDoc + File.separator + documentoAporteEstatalURVO.getName();
 			templateAporteEstatalUR = templateAporteEstatalUR.replace(" ", "");
-			String filenameAporteEstatalUR = tmpDirDoc + File.separator + new Date().getTime() + "_" + "ResolucionAporteEstatalUR.docx";
+			String filenameAporteEstatalUR = tmpDirDoc + File.separator + new Date().getTime() + "_" + "ResAporteEstatal.docx";
 			filenameAporteEstatalUR = filenameAporteEstatalUR.replaceAll(" ", "");
 			System.out.println("resolucionAporteEstatalUR filename-->"+filenameAporteEstatalUR);
 			System.out.println("resolucionAporteEstatalUR template-->"+templateAporteEstatalUR);
@@ -680,7 +697,7 @@ public class DistribucionInicialPercapitaService {
 							parametersAporteEstatalCF.put("{ano_curso}", (getAnoCurso() + 1));
 
 							generadorWordAporteEstatalCF.saveContent(documentoAporteEstatalCFVO.getContent(), XWPFDocument.class);
-							String filenameAporteEstatalCFTmp = filenameAporteEstatalCF.replace(".docx", "-" +  antecendenteComuna.getIdComuna().getNombre() + ".docx");
+							String filenameAporteEstatalCFTmp = filenameAporteEstatalCF.replace(".docx", "-" +  antecendenteComuna.getIdComuna().getServicioSalud().getNombre() + "-" +  antecendenteComuna.getIdComuna().getNombre() + ".docx");
 							filenameAporteEstatalCFTmp = StringUtil.removeSpanishAccents(filenameAporteEstatalCFTmp);
 							GeneradorResolucionAporteEstatal generadorResolucionAporteEstatalCF = new GeneradorResolucionAporteEstatal(filenameAporteEstatalCFTmp, templateAporteEstatalCF);
 							generadorResolucionAporteEstatalCF.replaceValues(parametersAporteEstatalCF, XWPFDocument.class);
@@ -698,7 +715,7 @@ public class DistribucionInicialPercapitaService {
 							Long percapitaMes = ((antecendentesComunaCalculadoVigente.getPercapitaMes() == null)? new Integer(0): antecendentesComunaCalculadoVigente.getPercapitaMes());
 							parametersAporteEstatalUR.put("{aporte_mensual}", StringUtil.formatNumber(percapitaMes));
 							generadorWordAporteEstatalUR.saveContent(documentoAporteEstatalURVO.getContent(), XWPFDocument.class);
-							String filenameAporteEstatalURTmp = filenameAporteEstatalUR.replace(".docx", "-" +  antecendenteComuna.getIdComuna().getNombre() + ".docx");
+							String filenameAporteEstatalURTmp = filenameAporteEstatalUR.replace(".docx", "-" +  antecendenteComuna.getIdComuna().getServicioSalud().getNombre() + "-" +  antecendenteComuna.getIdComuna().getNombre() + ".docx");
 							filenameAporteEstatalURTmp = StringUtil.removeSpanishAccents(filenameAporteEstatalURTmp);
 							GeneradorResolucionAporteEstatal generadorResolucionAporteEstatalUR = new GeneradorResolucionAporteEstatal(filenameAporteEstatalURTmp, templateAporteEstatalUR);
 							generadorResolucionAporteEstatalUR.replaceValues(parametersAporteEstatalUR, XWPFDocument.class);
@@ -884,7 +901,7 @@ public class DistribucionInicialPercapitaService {
 							cc.add(servicio.getEncargadoFinanzasAps().getCorreo());
 						}
 					}
-					
+
 					ReferenciaDocumentoSummaryVO referenciaDocumentoFinalSummaryVO = null;
 					List<ReferenciaDocumentoSummaryVO> referenciasDocumentoSummaryVO = documentService.getVersionFinalByServicioDistribucionInicialPercapitaTypes(idDistribucionInicialPercapita, servicio.getId_servicio(), new TipoDocumentosProcesos[] { TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF});
 					if(referenciasDocumentoSummaryVO != null && referenciasDocumentoSummaryVO.size() > 0){
@@ -905,7 +922,7 @@ public class DistribucionInicialPercapitaService {
 							referenciaDocumentoFinalSummaryVO = referenciaDocumentoSummaryVO;
 						}
 					}
-					
+
 					if(referenciaDocumentoFinalSummaryVO != null){
 						List<EmailService.Adjunto> adjuntos = new ArrayList<EmailService.Adjunto>();
 						DocumentoVO documentDocumentoResolucionVO = documentService.getDocument(referenciaDocumentoFinalSummaryVO.getId());
@@ -959,7 +976,7 @@ public class DistribucionInicialPercapitaService {
 					referenciaDocumentoSummaryOficioConsulta = new ReferenciaDocumentoMapper().getSummary(documentosOficioConsulta.get(0).getIdDocumento());
 				}
 			}*/
-			
+
 			ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryOficioConsulta = null;
 			List<ReferenciaDocumentoSummaryVO> referenciasDocumentoSummaryVO = documentService.getVersionFinalDistribucionInicialPercapitaByType(idDistribucionInicialPercapita, TipoDocumentosProcesos.OFICIOCONSULTA);
 			if(referenciasDocumentoSummaryVO != null && referenciasDocumentoSummaryVO.size() > 0){
@@ -1119,6 +1136,14 @@ public class DistribucionInicialPercapitaService {
 						AntecendentesComuna antecendentesComunaSiguiente = antecedentesComunaDAO.getAntecendentesComunaByComunaAno(comuna.getId(), idAnoSiguiente);
 						if(antecendentesComunaSiguiente == null){
 							AntecendentesComuna antecendentesComunaActual = antecedentesComunaDAO.getAntecendentesComunaByComunaAno(comuna.getId(), getAnoCurso());
+							if(antecendentesComunaActual == null){
+								System.out.println("AntecendentesComuna para la comuna de " + comuna.getNombre() +" del año " + getAnoCurso() + " No esta determinada si es urbana rural o costo fijo");
+								continue;
+							}
+							if(antecendentesComunaActual.getClasificacion() == null){
+								System.out.println("La comuna = " + antecendentesComunaActual.getIdComuna().getNombre() + " antecendentesComunaActual del año " + getAnoCurso() + " No esta determinada si es urbana rural o costo fijo");
+								continue;
+							}
 							antecendentesComunaSiguiente = new AntecendentesComuna();
 							antecendentesComunaSiguiente.setTramoPobreza(antecendentesComunaActual.getTramoPobreza());
 							antecendentesComunaSiguiente.setAsignacionZona(antecendentesComunaActual.getAsignacionZona());
@@ -1145,6 +1170,13 @@ public class DistribucionInicialPercapitaService {
 								DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findById(idDistribucionInicialPercapita);
 								antecendentesComunaCalculadoSiguiente.setDistribucionInicialPercapita(distribucionInicialPercapita);
 								antecedentesComunaDAO.createAntecendentesComunaCalcuado(antecendentesComunaCalculadoSiguiente);
+							}
+						}else{
+							if(antecendentesComunaSiguiente.getAntecendentesComunaCalculadoCollection() != null && antecendentesComunaSiguiente.getAntecendentesComunaCalculadoCollection().size() > 0){
+								DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findById(idDistribucionInicialPercapita);
+								for(AntecendentesComunaCalculado antecendentesComunaCalculadoSiguiente : antecendentesComunaSiguiente.getAntecendentesComunaCalculadoCollection()){
+									antecendentesComunaCalculadoSiguiente.setDistribucionInicialPercapita(distribucionInicialPercapita);
+								}
 							}
 						}
 					}

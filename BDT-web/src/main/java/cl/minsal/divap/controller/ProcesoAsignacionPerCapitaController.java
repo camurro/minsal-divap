@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -30,8 +29,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
-import cl.minsal.divap.pojo.GobiernoRegionalPojo;
-import cl.minsal.divap.pojo.montosDistribucionPojo;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 import cl.redhat.bandejaTareas.util.JSONHelper;
 
