@@ -31,7 +31,7 @@
 							<span class="textoAjustado">#{_programas.descripcion}</span>
 						</p:column>
 						<p:column>
-							<h:commandLink rendered="${_programas.estadoFlujocaja.id eq 1}"
+							<h:commandLink rendered="${_programas.estadoFlujocaja.id eq 1}" onclick="statusDialog.show();" 
 								action="#{procesoEstimacionFlujoCajaSeleccionarLineaController.iniciar(_programas.idProgramaAno)}">
 								<h:graphicImage value="resources/minsal/images/play.png"
 									styleClass="divapIcons" />

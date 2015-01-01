@@ -111,7 +111,7 @@
 					<f:facet name="header">
 						<h:outputText styleClass="textoAjustado" value="Actividad" />
 					</f:facet>
-					<h:commandLink action="#{bandejaTareasController.comenzar}" value="#{_tarea.name}">
+					<h:commandLink action="#{bandejaTareasController.comenzar}" value="#{_tarea.name}" onclick="statusDialog.show();"  >
 					    <f:setPropertyActionListener target="#{bandejaTareasController.tareaSeleccionada.id}"
 							value="#{_tarea.id}" />
 						<f:setPropertyActionListener

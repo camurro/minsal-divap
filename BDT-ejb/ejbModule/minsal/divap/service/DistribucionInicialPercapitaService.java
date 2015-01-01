@@ -271,7 +271,6 @@ public class DistribucionInicialPercapitaService {
 		Integer plantillaId = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAPOBLACIONINSCRITA);
 		if(plantillaId == null){
 			List<BaseVO> servicios = servicioSaludService.getAllServiciosComunasCFUrbanaRural();
-
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			String filename = tmpDir + File.separator + "plantillaPercapita.xlsx";
 			String contenType = mimemap.getContentType(filename.toLowerCase());
@@ -283,7 +282,7 @@ public class DistribucionInicialPercapitaService {
 			headers.add("POBLACION");
 			headers.add("POBLACION MAYOR DE 65 AÑOS");
 			AsignacionRecursosPercapitaSheetExcel asignacionRecursosPercapitaSheetExcel = new AsignacionRecursosPercapitaSheetExcel(headers, servicios);
-			generadorExcel.addSheet( asignacionRecursosPercapitaSheetExcel, "Hoja 1");
+			generadorExcel.addSheet(asignacionRecursosPercapitaSheetExcel, "Hoja 1");
 			try {
 				BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderTemplatePercapita);
 				System.out.println("response AsignacionRecursosPercapitaSheetExcel --->"+response);
@@ -531,7 +530,7 @@ public class DistribucionInicialPercapitaService {
 
 	public List<AsignacionDistribucionPerCapitaVO> findAntecedentesComunaCalculadosByDistribucionInicialPercapita(
 			Integer servicio, Integer comuna, Integer idDistribucionInicialPercapita) {
-		List<AntecendentesComunaCalculado>  antecendentesComunaCalculado = null;
+		List<AntecendentesComunaCalculado>  antecendentesComunaCalculado = new ArrayList<AntecendentesComunaCalculado>();
 		if(comuna != null){
 			antecendentesComunaCalculado = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaVigente(servicio, comuna, idDistribucionInicialPercapita);
 		} else {

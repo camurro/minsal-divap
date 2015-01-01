@@ -18,6 +18,7 @@ public class AsignacionDistribucionPerCapitaVO extends CalculoPercapitaVO{
 	private Double pobreza;
 	private Double ruralidad;
 	private Double valorRefAsignacionZona;
+	private Long valorDesempenoDificil;
 	private Long valorPercapitaMes;
 	private Long valorPercapitaAno;
 	
@@ -104,6 +105,14 @@ public class AsignacionDistribucionPerCapitaVO extends CalculoPercapitaVO{
 
 	public void setValorPerCapitaComunalMes(Integer valorPerCapitaComunalMes) {
 		this.valorPerCapitaComunalMes = valorPerCapitaComunalMes;
+	}
+
+	public Long getValorDesempenoDificil() {
+		return valorDesempenoDificil;
+	}
+
+	public void setValorDesempenoDificil(Long valorDesempenoDificil) {
+		this.valorDesempenoDificil = valorDesempenoDificil;
 	}
 
 	@Override

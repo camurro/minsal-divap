@@ -27,8 +27,7 @@ import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 @Named("procesoAsignacionPerCapitaValidarMontosController")
 @ViewScoped
-public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractTaskMBean
-implements Serializable {
+public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractTaskMBean implements Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject
 	private transient Logger log;
@@ -48,7 +47,6 @@ implements Serializable {
 	private boolean checkPerCapitaAno;
 	private boolean checkAsigDesempenoDificil;
 	private boolean emptyCheckColumn;
-	
 	@EJB
 	private UtilitariosService utilitariosService;
 	@EJB
@@ -96,12 +94,13 @@ implements Serializable {
 	
 	public void buscar() {
 		System.out.println("buscar--> servicioSeleccionado="+servicioSeleccionado+" comunaSeleccionada="+comunaSeleccionada);
-		if((servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty()) && (comunaSeleccionada == null || comunaSeleccionada.trim().isEmpty()) ){
+		if((servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty()) && (comunaSeleccionada == null || comunaSeleccionada.trim().isEmpty())){
 			FacesMessage msg = new FacesMessage("Debe seleccionar al menos un filtro antes de realizar la búsqueda");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}else{
 			this.antecendentesComunaCalculado = distribucionInicialPercapitaService.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(Integer.parseInt(servicioSeleccionado),
 					(((comunaSeleccionada != null) &&  !(comunaSeleccionada.trim().isEmpty()))?Integer.parseInt(comunaSeleccionada):null), idDistribucionInicialPercapita);
+			System.out.println("this.antecendentesComunaCalculado.size()="+ ((this.antecendentesComunaCalculado == null) ? 0 : this.antecendentesComunaCalculado.size()));
 		}
 		System.out.println("fin buscar-->");
 	}
