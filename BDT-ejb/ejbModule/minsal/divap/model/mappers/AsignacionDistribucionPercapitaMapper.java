@@ -44,6 +44,11 @@ public class AsignacionDistribucionPercapitaMapper implements Mapper<Antecendent
 		}else{
 			asignacionDistribucionPerCapitaVO.setValorPerCapitaComunalMes(0);
 		}
+		if(antecendentesComunaCalculado.getDesempenoDificil() != null){
+			asignacionDistribucionPerCapitaVO.setValorDesempenoDificil(antecendentesComunaCalculado.getDesempenoDificil().longValue());
+		}else{
+			asignacionDistribucionPerCapitaVO.setValorPerCapitaComunalMes(0);
+		}
 		asignacionDistribucionPerCapitaVO.setPobreza(antecendentesComunaCalculado.getPobreza());
 		asignacionDistribucionPerCapitaVO.setRuralidad(antecendentesComunaCalculado.getRuralidad());
 		asignacionDistribucionPerCapitaVO.setValorRefAsignacionZona(antecendentesComunaCalculado.getValorReferencialZona());

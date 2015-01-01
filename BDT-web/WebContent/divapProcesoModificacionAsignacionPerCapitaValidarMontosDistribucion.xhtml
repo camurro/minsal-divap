@@ -64,8 +64,8 @@
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
-								<p:commandButton value="Buscar" actionListener="#{procesoModificacionAsignacionPerCapitaValidarMontosController.buscar}"  styleClass=" x-btn-text icon-guardar" update="formMontosDistribucion:colShow formMontosDistribucion:tablaMisTareas formMontosDistribucion:errorfilter" icon="ui-icon-search" />
-								<p:commandButton value="Limpiar" actionListener="#{procesoModificacionAsignacionPerCapitaValidarMontosController.limpiar}" styleClass=" x-btn-text icon-guardar" update="formMontosDistribucion:servicio formMontosDistribucion:comuna formMontosDistribucion:colShow formMontosDistribucion:tablaMisTareas formMontosDistribucion:errorfilter" icon="ui-icon-trash" />
+								<p:commandButton value="Buscar" actionListener="#{procesoModificacionAsignacionPerCapitaValidarMontosController.buscar}"  styleClass="x-btn-text icon-guardar" update=":formMontosDistribucion:colShow :formMontosDistribucion:gridMisTareas :formMontosDistribucion:errorfilter" icon="ui-icon-search" />
+								<p:commandButton value="Limpiar" actionListener="#{procesoModificacionAsignacionPerCapitaValidarMontosController.limpiar}" styleClass="x-btn-text icon-guardar" update=":formMontosDistribucion:servicio :formMontosDistribucion:comuna :formMontosDistribucion:colShow :formMontosDistribucion:gridMisTareas :formMontosDistribucion:errorfilter" icon="ui-icon-trash" />
 							</h:panelGrid>
 							
 							
@@ -151,10 +151,10 @@
 					</h:panelGrid>
 					<br />
 					<br />
+					<h:panelGrid id="gridMisTareas">
 					<p:dataTable id="tablaMisTareas" resizableColumns="true" liveResize="true" var="_montoDistribucion" rows="10" paginator="true"
-						paginatorPosition="bottom" emptyMessage="No se encontraron Tareas Asignadas"
-						value="#{procesoModificacionAsignacionPerCapitaValidarMontosController.antecendentesComunaCalculado}" styleClass="dataTable" 
-						rendered="#{not empty procesoModificacionAsignacionPerCapitaValidarMontosController.antecendentesComunaCalculado}">
+						paginatorPosition="bottom" emptyMessage="No se encontraron resultados"
+						value="#{procesoModificacionAsignacionPerCapitaValidarMontosController.antecendentesComunaCalculado}" styleClass="dataTable">
 						<p:column rendered="#{procesoModificacionAsignacionPerCapitaValidarMontosController.checkRegion}">
 							<f:facet name="header">
 								<h:outputText value="Región" />
@@ -245,6 +245,14 @@
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
+							<p:column rendered="#{procesoModificacionAsignacionPerCapitaValidarMontosController.checkAsigDesempenoDificil}">
+							<f:facet name="header">
+								<h:outputText value="Asig. Desempeño Dificil" />
+							</f:facet>
+							<h:outputText value="#{_montoDistribucion.valorDesempenoDificil}">
+								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
+							</h:outputText>
+						</p:column>
 						<p:column rendered="#{procesoModificacionAsignacionPerCapitaValidarMontosController.checkPerCapitaAno}">
 							<f:facet name="header">
 								<h:outputText value="Per Capita Año ($#{procesoModificacionAsignacionPerCapitaValidarMontosController.anoCurso})" />
@@ -261,8 +269,8 @@
 								<f:convertNumber currencyCode="CLP" type="number" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
-						
 					</p:dataTable>
+					</h:panelGrid>
 					<!-- FIN: MODAL CON INFORMACIóN Y FILTROS VISTA ONLINE -->
 
 					<h3>Tareas de la Actividad:</h3>

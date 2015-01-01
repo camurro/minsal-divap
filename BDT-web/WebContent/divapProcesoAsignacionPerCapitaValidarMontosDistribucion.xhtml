@@ -64,15 +64,10 @@
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
-								<p:commandButton value="Buscar" actionListener="#{procesoAsignacionPerCapitaValidarMontosController.buscar}"  styleClass=" x-btn-text icon-guardar" update="formMontosDistribucion:colShow formMontosDistribucion:tablaMisTareas formMontosDistribucion:errorfilter" icon="ui-icon-search" />
-								<p:commandButton value="Limpiar" actionListener="#{procesoAsignacionPerCapitaValidarMontosController.limpiar}" styleClass=" x-btn-text icon-guardar" update="formMontosDistribucion:servicio formMontosDistribucion:comuna formMontosDistribucion:colShow formMontosDistribucion:tablaMisTareas formMontosDistribucion:errorfilter" icon="ui-icon-trash" />
+								<p:commandButton value="Buscar" actionListener="#{procesoAsignacionPerCapitaValidarMontosController.buscar}" styleClass="x-btn-text icon-guardar" update=":formMontosDistribucion:colShow :formMontosDistribucion:gridMisTareas :formMontosDistribucion:errorfilter" icon="ui-icon-search" />
+								<p:commandButton value="Limpiar" actionListener="#{procesoAsignacionPerCapitaValidarMontosController.limpiar}" styleClass="x-btn-text icon-guardar" update=":formMontosDistribucion:servicio :formMontosDistribucion:comuna :formMontosDistribucion:colShow :formMontosDistribucion:gridMisTareas :formMontosDistribucion:errorfilter" icon="ui-icon-trash" />
 							</h:panelGrid>
-							
-							
-
 						</h:panelGrid>					
-						
-						
 						
 						<h4>Columnas a Mostrar:</h4>
 						<h:panelGrid id="colShow" columns="4" styleClass="tableFullWidth">
@@ -151,10 +146,9 @@
 					</h:panelGrid>
 					<br />
 					<br />
-					<p:dataTable id="tablaMisTareas" resizableColumns="true" liveResize="true" var="_montoDistribucion" rows="10" paginator="true"
-						paginatorPosition="bottom" emptyMessage="No se encontraron Tareas Asignadas"
-						value="#{procesoAsignacionPerCapitaValidarMontosController.antecendentesComunaCalculado}" styleClass="dataTable" 
-						rendered="#{not empty procesoAsignacionPerCapitaValidarMontosController.antecendentesComunaCalculado}">
+					<h:panelGrid id="gridMisTareas">
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" liveResize="true" var="_montoDistribucion" rows="10" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontraron resultados"
+						value="#{procesoAsignacionPerCapitaValidarMontosController.antecendentesComunaCalculado}" styleClass="dataTable">
 						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkRegion}">
 							<f:facet name="header">
 								<h:outputText value="Región" />
@@ -245,9 +239,17 @@
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
+						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkAsigDesempenoDificil}">
+							<f:facet name="header">
+								<h:outputText value="Asig. Desempeño Dificil" />
+							</f:facet>
+							<h:outputText value="#{_montoDistribucion.valorDesempenoDificil}">
+								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
+							</h:outputText>
+						</p:column>
 						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkPerCapitaAno}">
 							<f:facet name="header">
-								<h:outputText value="Per Capita Año ($#{procesoModificacionAsignacionPerCapitaValidarMontosController.anoCurso})" />
+								<h:outputText value="Per Capita Año ($#{procesoAsignacionPerCapitaValidarMontosController.anoCurso})" />
 							</f:facet>
 							<h:outputText value="#{_montoDistribucion.valorPercapitaAno}">
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
@@ -255,14 +257,14 @@
 						</p:column>
 						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkPerCapitaMes}">
 							<f:facet name="header">
-								<h:outputText value="Per Capita Mensual ($#{procesoModificacionAsignacionPerCapitaValidarMontosController.anoCurso})" />
+								<h:outputText value="Per Capita Mensual ($#{procesoAsignacionPerCapitaValidarMontosController.anoCurso})" />
 							</f:facet>
 							<h:outputText value="#{_montoDistribucion.valorPercapitaMes}">
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
-						
 					</p:dataTable>
+					</h:panelGrid>
 					<!-- FIN: MODAL CON INFORMACIóN Y FILTROS VISTA ONLINE -->
 
 					<h3>Tareas de la Actividad:</h3>

@@ -117,17 +117,6 @@ implements Serializable {
 
 
 	boolean validarMontosDistribucion = false;
-	List<montosDistribucionPojo> planillaMontosDistribucion;
-
-	public List<montosDistribucionPojo> getPlanillaMontosDistribucion() {
-		return planillaMontosDistribucion;
-	}
-
-	public void setPlanillaMontosDistribucion(
-			List<montosDistribucionPojo> planillaMontosDistribucion) {
-		this.planillaMontosDistribucion = planillaMontosDistribucion;
-	}
-
 	public boolean isValidarMontosDistribucion() {
 		return validarMontosDistribucion;
 	}
@@ -149,29 +138,10 @@ implements Serializable {
 		this.actividadSeguimientoTitle = actividadSeguimientoTitle;
 	}
 
-	// divapProcesoAsignacionPerCapitaSeguimiento: FIN
-
-	// divapProcesoAsignacionPerCapitaActualizarOficiosTramitadosAlfresco.jsf:
-	// INICIO
-
-	List<GobiernoRegionalPojo> listGobiernoRegional;
-
-	public void setListGobiernoRegional(
-			List<GobiernoRegionalPojo> listGobiernoRegional) {
-		this.listGobiernoRegional = listGobiernoRegional;
-	}
-
 	@Override
 	public String toString() {
 		return "ProcesoAsignacionPerCapitaController [validarMontosDistribucion="
 				+ validarMontosDistribucion + "]";
-	}
-
-	// divapProcesoAsignacionPerCapitaActualizarOficiosTramitadosAlfresco.jsf:
-	// FIN
-
-	public List<GobiernoRegionalPojo> getListGobiernoRegional() {
-		return listGobiernoRegional;
 	}
 
 	@PostConstruct
@@ -213,79 +183,6 @@ implements Serializable {
 			actividadSeguimientoTitle = "";
 		}
 
-		// FUNCIONAMIENTO MOCK VALIDACION MONTOS DE DISTRIBUCION
-		planillaMontosDistribucion = new ArrayList<montosDistribucionPojo>();
-
-		montosDistribucionPojo md = new montosDistribucionPojo();
-		md.setRegion(15);
-		md.setServicio("ARICA");
-		md.setComuna("ARICA");
-		md.setClasificacion("URBANA");
-		md.setRefAsigZon(40);
-		md.setTramoPobreza(4);
-		md.setPerCapitaBasal(3794);
-		md.setRefAsigZon(531);
-		md.setValorPerCapita(4325);
-		md.setPoblacion(197251);
-		md.setPoblacionAdultoMayor(22199);
-		md.setPerCapitaMensual(1345906);
-		md.setPerCapitaAno(16150872);
-
-		planillaMontosDistribucion.add(md);
-
-		// FUNCIONAMIENTO MOCK TRAMITACION CON GOBIERNOS REGIONALES
-
-		listGobiernoRegional = new ArrayList<GobiernoRegionalPojo>();
-		GobiernoRegionalPojo pojo;
-		Random rnd = new Random();
-
-		pojo = new GobiernoRegionalPojo();
-		pojo.setNombre("ARICA");
-		pojo.setArchivo("documentacion_gobierno-regional_arica.pdf");
-		pojo.setCorreo("arica@gobierno.cl");
-		pojo.setEnviado(rnd.nextBoolean());
-		pojo.setSubido(rnd.nextBoolean());
-		listGobiernoRegional.add(pojo);
-
-		pojo = new GobiernoRegionalPojo();
-		pojo.setNombre("TARAPACA");
-		pojo.setArchivo("documentacion_gobierno-regional_tarapaca.pdf");
-		pojo.setCorreo("tarapaca@gobierno.cl");
-		pojo.setEnviado(rnd.nextBoolean());
-		pojo.setSubido(rnd.nextBoolean());
-		listGobiernoRegional.add(pojo);
-
-		pojo = new GobiernoRegionalPojo();
-		pojo.setNombre("ANTOFAGASTA");
-		pojo.setArchivo("documentacion_gobierno-regional_antofagasta.pdf");
-		pojo.setCorreo("antofagasta@gobierno.cl");
-		pojo.setEnviado(rnd.nextBoolean());
-		pojo.setSubido(rnd.nextBoolean());
-		listGobiernoRegional.add(pojo);
-
-		pojo = new GobiernoRegionalPojo();
-		pojo.setNombre("METROPOLITANA DE SANTIAGO");
-		pojo.setArchivo("documentacion_gobierno-regional_metropolitana-de-santiago.pdf");
-		pojo.setCorreo("santiago@gobierno.cl");
-		pojo.setEnviado(rnd.nextBoolean());
-		pojo.setSubido(rnd.nextBoolean());
-		listGobiernoRegional.add(pojo);
-
-		pojo = new GobiernoRegionalPojo();
-		pojo.setNombre("LA ARAUCANÍA");
-		pojo.setArchivo("documentacion_gobierno-regional_la-araucania.pdf");
-		pojo.setCorreo("araucania@gobierno.cl");
-		pojo.setEnviado(rnd.nextBoolean());
-		pojo.setSubido(rnd.nextBoolean());
-		listGobiernoRegional.add(pojo);
-
-		pojo = new GobiernoRegionalPojo();
-		pojo.setNombre("MAGALLANES");
-		pojo.setArchivo("documentacion_gobierno-regional_magallanes.pdf");
-		pojo.setCorreo("magallanes@gobierno.cl");
-		pojo.setEnviado(rnd.nextBoolean());
-		pojo.setSubido(rnd.nextBoolean());
-		listGobiernoRegional.add(pojo);
 	}
 
 	public void handleFileUploadPerCapitaFile(FileUploadEvent event) {
