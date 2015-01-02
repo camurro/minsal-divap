@@ -151,14 +151,14 @@ public class RecursosFinancierosProgramasReforzamientoRESTService extends BaseRe
     @Path("/recursosFinancierosProgramasReforzamiento/generarResolucionesDistribucionRecursos/{idPrograma}")
     @Produces("application/json")
     public void generarResolucionesDistribucionRecursos(@PathParam("idPrograma") Integer idPrograma){
+		if(idPrograma == null){
+			throw new IllegalArgumentException("id del programa no puede ser nulo");
+		}
 		System.out.println("generarResolucionesDistribucionRecursos-->"+idPrograma );
 		RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService = getService(RecursosFinancierosProgramasReforzamientoService.class);
 		List<ResumenProgramaMixtoVO> resumen = recursosFinancierosProgramasReforzamientoService.getConsolidadoPrograma(idPrograma);
 		recursosFinancierosProgramasReforzamientoService.elaborarResolucionProgramaReforzamiento(idPrograma,resumen);
 		recursosFinancierosProgramasReforzamientoService.elaborarExcelResolucion(idPrograma,resumen,TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS);
-		if(idPrograma == null){
-			throw new IllegalArgumentException("id del programa no puede ser nulo");
-		}
     }
 	
 	

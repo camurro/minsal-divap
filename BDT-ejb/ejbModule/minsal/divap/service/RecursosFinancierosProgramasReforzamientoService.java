@@ -2157,7 +2157,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 	
 	public Integer elaborarResolucionProgramaReforzamiento(Integer idPrograma,List<ResumenProgramaMixtoVO> resumen) {
 		
-		 ProgramaVO programa = getProgramaById(idPrograma);
+		ProgramaVO programa = getProgramaById(idPrograma);
 		Integer plantillaBorradorResolucionProgramaReforzamiento = documentService
 				.getPlantillaByType(TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS);
 		
@@ -2259,7 +2259,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 					+ response);
 		
 
-			Integer id = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCurso()+1);
+			Integer id = programasDAO.getIdProgramaAnoAnterior(programa.getId(), getAnoCurso()+1);
 			plantillaBorradorResolucionProgramaReforzamiento = documentService
 					.createDocumentProgramasReforzamiento(TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS, response.getNodeRef(),
 							response.getFileName(), contentType, id);
@@ -2645,13 +2645,11 @@ public Integer elaborarOrdinarioModificacionProgramaReforzamiento(Integer idProg
 
 	public void elaborarExcelResolucion(Integer idPrograma, List<ResumenProgramaMixtoVO> resumen, TipoDocumentosProcesos tipoDocumentoProceso) {
 		
+		ProgramaVO programa = getProgramaById(idPrograma);
+		int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(programa.getId(), getAnoCurso()+1);
 		
-		int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCurso()+1);
-		
-		Integer plantillaId = documentService.getPlantillaByTypeAndProgram(tipoDocumentoProceso, idNuevoPrograma);
-	    Programa prog =  programaService.getProgramaPorID(idPrograma);
+		Integer plantillaId = documentService.getPlantillaByTypeAndProgram(tipoDocumentoProceso, programa.getId());
 	    
-	    ProgramaVO programa;
 	    if(plantillaId == null){
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			programa = new ProgramaMapper().getBasic(programasDAO.getProgramaAnoByID(idNuevoPrograma));
@@ -2697,7 +2695,7 @@ public Integer elaborarOrdinarioModificacionProgramaReforzamiento(Integer idProg
 			header.add(new CellExcelVO("TOTAL ($)"));
 		
 			String filename = tmpDir + File.separator;
-			filename += "Plantilla Resolucion Programa -"+prog.getNombre().replace(":", "-")+".xlsx";
+			filename += "Plantilla Resolucion Programa -"+programa.getNombre().replace(":", "-")+".xlsx";
 			filename = StringUtil.removeSpanishAccents(filename);
 			GeneradorExcel generadorExcel = new GeneradorExcel(filename);
 			String contenType = mimemap.getContentType(filename.toLowerCase());

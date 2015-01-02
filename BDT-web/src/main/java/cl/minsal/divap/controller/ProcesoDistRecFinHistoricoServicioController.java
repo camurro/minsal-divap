@@ -113,7 +113,7 @@ public class ProcesoDistRecFinHistoricoServicioController extends AbstractTaskMB
 		}
 		programa = reforzamientoService.getProgramaById(programaSeleccionado);
 		listaServicios = utilitariosService.getAllServicios();
-		listaComponentes= componenteService.getComponenteByPrograma(programaSeleccionado);
+		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
 		inflactorS21 = subtituloService.getInflactor(1);
 		inflactorS22 = subtituloService.getInflactor(2);
 		inflactorS29 = subtituloService.getInflactor(4);

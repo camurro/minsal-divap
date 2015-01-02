@@ -81,7 +81,7 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 					.getData().get("_programaSeleccionado");
 		}
 		programa = programasService.getProgramaAno(programaSeleccionado);
-		programaProxAno = programasService.getIdProgramaAnoAnterior(programaSeleccionado, recursosFinancierosProgramasReforzamientoService.getAnoCurso()+1);
+		programaProxAno = programasService.getIdProgramaAnoAnterior(programa.getId(), recursosFinancierosProgramasReforzamientoService.getAnoCurso()+1);
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
 		armarResumenPrograma();
@@ -90,7 +90,7 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 	private void armarResumenPrograma() {
 		
 		Integer anoSiguiente = recursosFinancierosProgramasReforzamientoService.getAnoCurso() + 1;
-		int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programaSeleccionado, anoSiguiente);
+		int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programa.getId(), anoSiguiente);
 		resumenPrograma = programasService.getResumenMunicipal(IdProgramaProxAno, 3);
 		totalResumen24 =0l;
 		for (ResumenProgramaVO resumen : resumenPrograma) {
