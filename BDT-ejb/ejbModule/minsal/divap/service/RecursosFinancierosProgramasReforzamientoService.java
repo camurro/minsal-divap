@@ -2427,7 +2427,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 					+ response);
 		
 
-			Integer id = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCurso());
+			Integer id = programasDAO.getIdProgramaAnoAnterior(programa.getId(), getAnoCurso());
 			plantillaBorradorResolucionProgramaReforzamiento = documentService
 					.createDocumentProgramasReforzamiento(TipoDocumentosProcesos.MODIFICACIONRESOLUCIONPROGRAMASAPS, response.getNodeRef(),
 							response.getFileName(), contentType, id);
@@ -2504,7 +2504,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 						+ response);
 			
 
-				Integer id = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCurso()+1);
+				Integer id = programasDAO.getIdProgramaAnoAnterior(programa.getId(), getAnoCurso()+1);
 				plantillaBorradorOrdinarioProgramaReforzamiento = documentService
 						.createDocumentProgramasReforzamiento(TipoDocumentosProcesos.ORDINARIOPROGRAMASAPS, response.getNodeRef(),
 								response.getFileName(), contentType, id);
@@ -2624,7 +2624,7 @@ public Integer elaborarOrdinarioModificacionProgramaReforzamiento(Integer idProg
 						+ response);
 			
 
-				Integer id = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCurso());
+				Integer id = programasDAO.getIdProgramaAnoAnterior(programa.getId(), getAnoCurso());
 				plantillaBorradorOrdinarioProgramaReforzamiento = documentService
 						.createDocumentProgramasReforzamiento(TipoDocumentosProcesos.MODIFICACIONORDINARIOPROGRAMASAPS, response.getNodeRef(),
 								response.getFileName(), contentType, id);
@@ -2726,8 +2726,8 @@ public Integer elaborarOrdinarioModificacionProgramaReforzamiento(Integer idProg
 	
 public void elaborarExcelResolucionModificado(Integer idPrograma, List<ResumenProgramaMixtoVO> resumen, TipoDocumentosProcesos tipoDocumentoProceso) {
 		
-		
-		int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCurso());
+		ProgramaVO progra = getProgramaById(idPrograma);
+		int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(progra.getId(), getAnoCurso());
 		
 		Integer plantillaId = documentService.getPlantillaByTypeAndProgram(tipoDocumentoProceso, idNuevoPrograma);
 	    Programa prog =  programaService.getProgramaPorID(idPrograma);
@@ -2813,7 +2813,9 @@ public void elaborarExcelResolucionModificado(Integer idPrograma, List<ResumenPr
 	public void elaborarExcelOrdinario(Integer idPrograma,
 			List<ResumenProgramaMixtoVO> resumen,
 			TipoDocumentosProcesos tipoDocumentoProceso) {
-int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCurso()+1);
+		
+		ProgramaVO progra = getProgramaById(idPrograma);
+		int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(progra.getId(), getAnoCurso()+1);
 		
 		Integer plantillaId = documentService.getPlantillaByTypeAndProgram(tipoDocumentoProceso, idNuevoPrograma);
 	    Programa prog =  programaService.getProgramaPorID(idPrograma);
@@ -2900,7 +2902,8 @@ int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCu
 	public void elaborarExcelOrdinarioModificado(Integer idPrograma,
 			List<ResumenProgramaMixtoVO> resumen,
 			TipoDocumentosProcesos tipoDocumentoProceso) {
-		int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCurso());
+		ProgramaVO progra = getProgramaById(idPrograma);
+		int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(progra.getId(), getAnoCurso());
 		
 		Integer plantillaId = documentService.getPlantillaByTypeAndProgram(tipoDocumentoProceso, idNuevoPrograma);
 	    Programa prog =  programaService.getProgramaPorID(idPrograma);
