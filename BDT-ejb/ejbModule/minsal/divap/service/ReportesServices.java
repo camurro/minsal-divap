@@ -1506,8 +1506,7 @@ public class ReportesServices {
 				.setRegion(servicioSalud.getRegion().getNombre());
 				reporteRebajaVO.setServicio(servicioSalud.getNombre());
 				reporteRebajaVO.setComuna(comuna.getNombre());
-				DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO
-						.findLast((getAnoCurso() + 1));
+				DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast((getAnoCurso() + 1));
 				System.out.println("distribucionInicialPercapita --> "+distribucionInicialPercapita);
 				
 				List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO
