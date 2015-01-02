@@ -109,6 +109,7 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 					.getData().get("_programaSeleccionado");
 		}
 		programa = programasService.getProgramaAno(programaSeleccionado);
+		System.out.println("programaSeleccionado="+programaSeleccionado+" recursosFinancierosProgramasReforzamientoService.getAnoCurso()+1="+(recursosFinancierosProgramasReforzamientoService.getAnoCurso()+1));
 		programaProxAno = programasService.getIdProgramaAnoAnterior(programaSeleccionado, recursosFinancierosProgramasReforzamientoService.getAnoCurso()+1);
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes= componenteService.getComponenteByPrograma(programa.getIdProgramaAno());
