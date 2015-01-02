@@ -105,7 +105,7 @@ public class ProcesoDistRecFinSeguimientoController extends AbstractTaskMBean im
 					.getData().get("_tipoProgramaPxQ");
 		}
 		programa = reforzamientoService.getProgramaById(programaSeleccionado);
-		idProxAno = programaService.getIdProgramaAnoAnterior(programaSeleccionado, reforzamientoService.getAnoCurso()+1);
+		idProxAno = programaService.getIdProgramaAnoAnterior(programa.getId(), reforzamientoService.getAnoCurso()+1);
 		servicio=false;
 		municipal=false;
 		mixto = false;

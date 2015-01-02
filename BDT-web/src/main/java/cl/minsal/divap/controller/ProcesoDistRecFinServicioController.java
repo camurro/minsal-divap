@@ -97,7 +97,7 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 		}
 		programa = programasService.getProgramaAno(programaSeleccionado);
 		listaServicios = utilitariosService.getAllServicios();
-		listaComponentes= componenteService.getComponenteByPrograma(programa.getIdProgramaAno());
+		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
 		
 		armarResumenPrograma();
 	}
@@ -105,10 +105,10 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 	private void armarResumenPrograma() {
 		if(programaSeleccionado!=null){
 			Integer anoSiguiente = recursosFinancierosProgramasReforzamientoService.getAnoCurso() + 1;
-			int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programaSeleccionado, anoSiguiente);
+			int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programa.getId(), anoSiguiente);
 			
 			
-			resumenPrograma = programasService.getResumenServicio(IdProgramaProxAno, programa.getIdProgramaAno());
+			resumenPrograma = programasService.getResumenServicio(IdProgramaProxAno, programa.getId());
 			totalResumen21=0l;
 			totalResumen22=0l;
 			totalResumen29=0l;

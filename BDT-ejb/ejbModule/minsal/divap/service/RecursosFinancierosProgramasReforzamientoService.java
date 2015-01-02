@@ -650,10 +650,10 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			}
 		return plantillaId;
 	}
-	public Integer getIdPlantillaProgramas(Integer programaSeleccionado, TipoDocumentosProcesos tipoDocumentoProceso, boolean template){
+	public Integer getIdPlantillaProgramas(Integer programaSeleccionado, TipoDocumentosProcesos tipoDocumentoProceso, boolean template, Integer idPrograma){
 		Integer plantillaId = documentService.getPlantillaByTypeAndProgram(tipoDocumentoProceso, programaSeleccionado);
-	    Programa prog =  programaService.getProgramasByID(programaSeleccionado);
-	    Integer idProxAno = programaService.getIdProgramaAnoAnterior(programaSeleccionado, getAnoCurso()+1);
+	    Programa prog =  programaService.getProgramasByID(idPrograma);
+	    Integer idProxAno = programaService.getIdProgramaAnoAnterior(idPrograma, getAnoCurso()+1);
 		ProgramaVO programa;
 		if(plantillaId == null){
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
@@ -2526,7 +2526,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 public Integer elaborarOrdinarioModificacionProgramaReforzamiento(Integer idPrograma, List<ResumenProgramaMixtoVO> resumen, List<Integer> listaServ) {
 		
 		ProgramaVO programa = getProgramaById(idPrograma);
-		Integer plantillaBorradorOrdinarioProgramaReforzamiento = documentService.getPlantillaByType(TipoDocumentosProcesos.MODIFICACIONRESOLUCIONPROGRAMASAPS);
+		Integer plantillaBorradorOrdinarioProgramaReforzamiento = documentService.getPlantillaByType(TipoDocumentosProcesos.MODIFICACIONORDINARIOPROGRAMASAPS);
 			
 			if (plantillaBorradorOrdinarioProgramaReforzamiento == null) {
 				throw new RuntimeException(
@@ -2565,51 +2565,6 @@ public Integer elaborarOrdinarioModificacionProgramaReforzamiento(Integer idProg
 						}
 					}
 				}
-				
-				Long tS21=0L;
-				Long tS22=0L;
-				Long tS24=0L;
-				Long tS29=0L;
-				boolean s21=false;
-				boolean s22=false;
-				boolean s24=false;
-				boolean s29=false; 
-				if(resumen.size()>0){
-					for(ResumenProgramaMixtoVO res : resumen){
-						if(res.getTotalS21()>0){
-							tS21 += res.getTotalS21();
-							s21=true;
-						}
-						if(res.getTotalS22()>0){
-							tS22 += res.getTotalS22();
-							s22=true;
-						}
-						if(res.getTotalS24()>0){
-							tS24 += res.getTotalS24();
-							s24=true;
-						}
-						if(res.getTotalS29()>0){
-							tS29 += res.getTotalS29();
-							s29=true;
-						}
-					}
-				}
-							
-				StringBuilder resumenAsignacion = new StringBuilder();
-				if(s21){
-					resumenAsignacion.append("\\$").append(String.format("%, d",tS21)).append(" al subtitulo 21");
-				}
-				if(s22){
-					resumenAsignacion.append(" \\$").append(String.format("%, d",tS22)).append(" al subtitulo 22");
-				}
-				if(s24){
-					resumenAsignacion.append(" \\$").append(String.format("%, d",tS24)).append(" al subtitulo 24");
-				}
-				if(s29){
-					resumenAsignacion.append(" \\$").append(String.format("%, d",tS29)).append(" al subtitulo 29");
-				}
-				System.out.println(resumenAsignacion.toString());
-				
 				
 				ReferenciaDocumentoSummaryVO referenciaOrdinarioProgramasAPSVO = documentService
 						.getDocumentByPlantillaId(plantillaBorradorOrdinarioProgramaReforzamiento);
@@ -2654,11 +2609,7 @@ public Integer elaborarOrdinarioModificacionProgramaReforzamiento(Integer idProg
 				
 				Map<String, Object> parametersBorradorAporteEstatal = new HashMap<String, Object>();
 				parametersBorradorAporteEstatal.put("{programa}",programa.getNombre().replace(":", "\\:"));
-				parametersBorradorAporteEstatal.put("{totalActual}",totalActual);
 				parametersBorradorAporteEstatal.put("{ano}",getAnoCurso());
-				parametersBorradorAporteEstatal.put("{anoSiguiente}",getAnoCurso()+1);
-				parametersBorradorAporteEstatal.put("{serviciosAfectados}",serviciosAfectados.toString());
-				parametersBorradorAporteEstatal.put("{totalesModificados}",resumenAsignacion.toString());
 				
 				GeneradorResolucionAporteEstatal generadorWordDecretoBorradorAporteEstatal = new GeneradorResolucionAporteEstatal(
 						filenameBorradorOrdinarioProgramasAPS,
@@ -2675,7 +2626,7 @@ public Integer elaborarOrdinarioModificacionProgramaReforzamiento(Integer idProg
 
 				Integer id = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCurso());
 				plantillaBorradorOrdinarioProgramaReforzamiento = documentService
-						.createDocumentProgramasReforzamiento(TipoDocumentosProcesos.MODIFICACIONRESOLUCIONPROGRAMASAPS, response.getNodeRef(),
+						.createDocumentProgramasReforzamiento(TipoDocumentosProcesos.MODIFICACIONORDINARIOPROGRAMASAPS, response.getNodeRef(),
 								response.getFileName(), contentType, id);
 
 			} catch (IOException e) {
