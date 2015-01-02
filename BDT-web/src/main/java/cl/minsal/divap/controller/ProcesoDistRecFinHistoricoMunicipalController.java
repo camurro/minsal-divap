@@ -96,7 +96,7 @@ public class ProcesoDistRecFinHistoricoMunicipalController extends AbstractTaskM
 		}
 		programa = reforzamientoService.getProgramaById(programaSeleccionado);
 		listaServicios = utilitariosService.getAllServicios();
-		listaComponentes= componenteService.getComponenteByPrograma(programaSeleccionado);
+		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
 		inflactorS24 = subtituloService.getInflactor(3);
 		anoActual = reforzamientoService.getAnoCurso()+"";
 		anoProximo = (reforzamientoService.getAnoCurso()+1)+"";

@@ -109,7 +109,7 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 					.getData().get("_programaSeleccionado");
 		}
 		programa = programasService.getProgramaAno(programaSeleccionado);
-		programaProxAno = programasService.getIdProgramaAnoAnterior(programaSeleccionado, recursosFinancierosProgramasReforzamientoService.getAnoCurso()+1);
+		programaProxAno = programasService.getIdProgramaAnoAnterior(programa.getId(), recursosFinancierosProgramasReforzamientoService.getAnoCurso()+1);
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes= componenteService.getComponenteByPrograma(programa.getIdProgramaAno());
 		armarResumenPrograma();
@@ -169,7 +169,7 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 
 	private void resumenMunicipal() {
 		Integer anoSiguiente = recursosFinancierosProgramasReforzamientoService.getAnoCurso() + 1;
-		int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programaSeleccionado, anoSiguiente);
+		int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programa.getId(), anoSiguiente);
 		resumenProgramaMunicipal = programasService.getResumenMunicipal(IdProgramaProxAno, 3);
 		totalResumen24 =0l;
 		tiene24=false;
@@ -184,7 +184,7 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 
 	private void resumenServicio() {
 		Integer anoSiguiente = recursosFinancierosProgramasReforzamientoService.getAnoCurso() + 1;
-		int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programaSeleccionado, anoSiguiente);
+		int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programa.getId(), anoSiguiente);
 			resumenProgramaServicio = programasService.getResumenServicio(IdProgramaProxAno, programa.getIdProgramaAno());
 			totalResumen21=0l;
 			totalResumen22=0l;
