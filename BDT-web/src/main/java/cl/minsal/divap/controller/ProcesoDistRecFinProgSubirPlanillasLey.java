@@ -57,7 +57,7 @@ public class ProcesoDistRecFinProgSubirPlanillasLey extends AbstractTaskMBean im
 			programa = recursosFinancierosProgramasReforzamientoService.getProgramaById(programaSeleccionado);
 			System.out.println("programaSeleccionado --->" + programaSeleccionado);
 			if(programa.getDependenciaMunicipal() != null && programa.getDependenciaMunicipal()){
-				plantillaLey = recursosFinancierosProgramasReforzamientoService.getIdPlantillaProgramas(programa.getId(), TipoDocumentosProcesos.PLANTILLALEYAPS,false);
+				plantillaLey = recursosFinancierosProgramasReforzamientoService.getIdPlantillaProgramas(programa.getId(), TipoDocumentosProcesos.PLANTILLALEYAPS,false, programa.getId());
 			}
 			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado,programa);
 		}

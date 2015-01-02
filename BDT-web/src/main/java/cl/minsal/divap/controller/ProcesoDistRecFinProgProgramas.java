@@ -13,7 +13,9 @@ import javax.inject.Named;
 
 import org.primefaces.context.RequestContext;
 
+import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.enums.TiposPrograma;
+import minsal.divap.service.ProgramasService;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 import minsal.divap.vo.ProgramaVO;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
@@ -27,6 +29,8 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 
 	private List<ProgramaVO> programas;
 	private String programaSeleccionado;
+	@EJB
+	private ProgramasService programasService;
 	
 	private Integer anoCurso;
 	
@@ -48,6 +52,8 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 			Integer paramProgramaSeleccionado = Integer.parseInt(programaSeleccionado);
 			for(ProgramaVO programaVO : programas){
 				if(paramProgramaSeleccionado.equals(programaVO.getIdProgramaAno())){
+					programasService.evaluarAnoSiguiente(Integer.parseInt(programaSeleccionado), programaVO);
+					
 					StringBuilder sufijoTipoPrograma = new StringBuilder();
 					if(programaVO.getComponentes() != null && programaVO.getComponentes().size() > 0){
 						if(programaVO.getComponentes().size() == 1){
@@ -90,9 +96,11 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 					if(historico)
 						parameters.put("tipoHistorico_",tipoHistorico);
 				}
+				
 			}
 			parameters.put("programaSeleccionado_", paramProgramaSeleccionado);
 		}
+		
 		return parameters;
 	}
 

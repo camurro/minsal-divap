@@ -596,6 +596,7 @@ public class ProgramasService {
 			programaAnoSiguiente.setEstadoConvenio(new EstadoPrograma(1));
 			programaAnoSiguiente.setEstadoreliquidacion(new EstadoPrograma(1));
 			programaAnoSiguiente.setEstadoOT(new EstadoPrograma(1));
+			programaAnoSiguiente.setEstadoModificacionAPS(new EstadoPrograma(1));
 			programasDAO.save(programaAnoSiguiente);
 		} 
 		

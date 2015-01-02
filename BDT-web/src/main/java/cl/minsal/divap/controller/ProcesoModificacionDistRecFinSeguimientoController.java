@@ -119,7 +119,7 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 		}
 		if(programa.getDependenciaServicio() && !programa.getDependenciaMunicipal()){
 			excelOrdinario = reforzamientoService.getIdResolucion(idProxAno, TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS);
-			ordinarioPrograma = reforzamientoService.getIdResolucion(idProxAno, TipoDocumentosProcesos.MODIFICACIONRESOLUCIONPROGRAMASAPS);
+			ordinarioPrograma = reforzamientoService.getIdResolucion(idProxAno, TipoDocumentosProcesos.MODIFICACIONORDINARIOPROGRAMASAPS);
 			plantillaOrdinarioCorreo = documentService.getIdDocumentoFromPlantilla(TipoDocumentosProcesos.PLANTILLAORDINARIOCORREO);
 			servicio=true;
 		}
