@@ -11,37 +11,37 @@ public class ReporteHistoricoPorProgramaComunaVO implements Serializable{
 	private String servicio;
 	private String comuna;
 	private String programa;
-	private Long marco2006;
-	private Long marco2007;
-	private Long marco2008;
-	private Long marco2009;
-	private Long marco2010;
-	private Long marco2011;
-	private Long marco2012;
-	private Long marco2013;
-	private Long marco2014;
-	private Long marco2015;
+	private Long marcoAnoActualMenos9;
+	private Long marcoAnoActualMenos8;
+	private Long marcoAnoActualMenos7;
+	private Long marcoAnoActualMenos6;
+	private Long marcoAnoActualMenos5;
+	private Long marcoAnoActualMenos4;
+	private Long marcoAnoActualMenos3;
+	private Long marcoAnoActualMenos2;
+	private Long marcoAnoActualMenos1;
+	private Long marcoAnoActual;
 	
 	
 	public ReporteHistoricoPorProgramaComunaVO(){
 		
 	}
-	public ReporteHistoricoPorProgramaComunaVO(String region, String servicio, String comuna, String programa, Long marco2006, Long marco2007, Long marco2008, Long marco2009, Long marco2010, Long marco2011, Long marco2012, Long marco2013, Long marco2014, Long marco2015){
+	public ReporteHistoricoPorProgramaComunaVO(String region, String servicio, String comuna, String programa, Long marcoAnoActualMenos9, Long marcoAnoActualMenos8, Long marcoAnoActualMenos7, Long marcoAnoActualMenos6, Long marcoAnoActualMenos5, Long marcoAnoActualMenos4, Long marcoAnoActualMenos3, Long marcoAnoActualMenos2, Long marcoAnoActualMenos1, Long marcoAnoActual){
 		super();
 		this.region = region;
 		this.servicio = servicio;
 		this.comuna = comuna;
 		this.programa = programa;
-		this.marco2006 = marco2006;
-		this.marco2007 = marco2007;
-		this.marco2008 = marco2008;
-		this.marco2009 = marco2009;
-		this.marco2010 = marco2010;
-		this.marco2011 = marco2011;
-		this.marco2012 = marco2012;
-		this.marco2013 = marco2013;
-		this.marco2014 = marco2014;
-		this.marco2015 = marco2015;
+		this.marcoAnoActualMenos9 = marcoAnoActualMenos9;
+		this.marcoAnoActualMenos8 = marcoAnoActualMenos8;
+		this.marcoAnoActualMenos7 = marcoAnoActualMenos7;
+		this.marcoAnoActualMenos6 = marcoAnoActualMenos6;
+		this.marcoAnoActualMenos5 = marcoAnoActualMenos5;
+		this.marcoAnoActualMenos4 = marcoAnoActualMenos4;
+		this.marcoAnoActualMenos3 = marcoAnoActualMenos3;
+		this.marcoAnoActualMenos2 = marcoAnoActualMenos2;
+		this.marcoAnoActualMenos1 = marcoAnoActualMenos1;
+		this.marcoAnoActual = marcoAnoActual;
 	}
 	public String getRegion() {
 		return region;
@@ -67,125 +67,83 @@ public class ReporteHistoricoPorProgramaComunaVO implements Serializable{
 	public void setPrograma(String programa) {
 		this.programa = programa;
 	}
-	public Long getMarco2006() {
-		return marco2006;
+	public Long getMarcoAnoActualMenos9() {
+		return marcoAnoActualMenos9;
 	}
-	public void setMarco2006(Long marco2006) {
-		this.marco2006 = marco2006;
+	public void setMarcoAnoActualMenos9(Long marcoAnoActualMenos9) {
+		this.marcoAnoActualMenos9 = marcoAnoActualMenos9;
 	}
-	public Long getMarco2007() {
-		return marco2007;
+	public Long getMarcoAnoActualMenos8() {
+		return marcoAnoActualMenos8;
 	}
-	public void setMarco2007(Long marco2007) {
-		this.marco2007 = marco2007;
+	public void setMarcoAnoActualMenos8(Long marcoAnoActualMenos8) {
+		this.marcoAnoActualMenos8 = marcoAnoActualMenos8;
 	}
-	public Long getMarco2008() {
-		return marco2008;
+	public Long getMarcoAnoActualMenos7() {
+		return marcoAnoActualMenos7;
 	}
-	public void setMarco2008(Long marco2008) {
-		this.marco2008 = marco2008;
+	public void setMarcoAnoActualMenos7(Long marcoAnoActualMenos7) {
+		this.marcoAnoActualMenos7 = marcoAnoActualMenos7;
 	}
-	public Long getMarco2009() {
-		return marco2009;
+	public Long getMarcoAnoActualMenos6() {
+		return marcoAnoActualMenos6;
 	}
-	public void setMarco2009(Long marco2009) {
-		this.marco2009 = marco2009;
+	public void setMarcoAnoActualMenos6(Long marcoAnoActualMenos6) {
+		this.marcoAnoActualMenos6 = marcoAnoActualMenos6;
 	}
-	public Long getMarco2010() {
-		return marco2010;
+	public Long getMarcoAnoActualMenos5() {
+		return marcoAnoActualMenos5;
 	}
-	public void setMarco2010(Long marco2010) {
-		this.marco2010 = marco2010;
+	public void setMarcoAnoActualMenos5(Long marcoAnoActualMenos5) {
+		this.marcoAnoActualMenos5 = marcoAnoActualMenos5;
 	}
-	public Long getMarco2011() {
-		return marco2011;
+	public Long getMarcoAnoActualMenos4() {
+		return marcoAnoActualMenos4;
 	}
-	public void setMarco2011(Long marco2011) {
-		this.marco2011 = marco2011;
+	public void setMarcoAnoActualMenos4(Long marcoAnoActualMenos4) {
+		this.marcoAnoActualMenos4 = marcoAnoActualMenos4;
 	}
-	public Long getMarco2012() {
-		return marco2012;
+	public Long getMarcoAnoActualMenos3() {
+		return marcoAnoActualMenos3;
 	}
-	public void setMarco2012(Long marco2012) {
-		this.marco2012 = marco2012;
+	public void setMarcoAnoActualMenos3(Long marcoAnoActualMenos3) {
+		this.marcoAnoActualMenos3 = marcoAnoActualMenos3;
 	}
-	public Long getMarco2013() {
-		return marco2013;
+	public Long getMarcoAnoActualMenos2() {
+		return marcoAnoActualMenos2;
 	}
-	public void setMarco2013(Long marco2013) {
-		this.marco2013 = marco2013;
+	public void setMarcoAnoActualMenos2(Long marcoAnoActualMenos2) {
+		this.marcoAnoActualMenos2 = marcoAnoActualMenos2;
 	}
-	public Long getMarco2014() {
-		return marco2014;
+	public Long getMarcoAnoActualMenos1() {
+		return marcoAnoActualMenos1;
 	}
-	public void setMarco2014(Long marco2014) {
-		this.marco2014 = marco2014;
+	public void setMarcoAnoActualMenos1(Long marcoAnoActualMenos1) {
+		this.marcoAnoActualMenos1 = marcoAnoActualMenos1;
+	}
+	public Long getMarcoAnoActual() {
+		return marcoAnoActual;
+	}
+	public void setMarcoAnoActual(Long marcoAnoActual) {
+		this.marcoAnoActual = marcoAnoActual;
 	}
 	
-	public Long getMarco2015() {
-		return marco2015;
-	}
-	public void setMarco2015(Long marco2015) {
-		this.marco2015 = marco2015;
-	}
 	@Override
 	public String toString() {
 		return "ReporteHistoricoPorProgramaComunaVO [region=" + region
 				+ ", servicio=" + servicio + ", comuna=" + comuna
-				+ ", programa=" + programa + ", marco2006=" + marco2006
-				+ ", marco2007=" + marco2007 + ", marco2008=" + marco2008
-				+ ", marco2009=" + marco2009 + ", marco2010=" + marco2010
-				+ ", marco2011=" + marco2011 + ", marco2012=" + marco2012
-				+ ", marco2013=" + marco2013 + ", marco2014=" + marco2014 + "]";
+				+ ", programa=" + programa + ", marcoAnoActualMenos9="
+				+ marcoAnoActualMenos9 + ", marcoAnoActualMenos8="
+				+ marcoAnoActualMenos8 + ", marcoAnoActualMenos7="
+				+ marcoAnoActualMenos7 + ", marcoAnoActualMenos6="
+				+ marcoAnoActualMenos6 + ", marcoAnoActualMenos5="
+				+ marcoAnoActualMenos5 + ", marcoAnoActualMenos4="
+				+ marcoAnoActualMenos4 + ", marcoAnoActualMenos3="
+				+ marcoAnoActualMenos3 + ", marcoAnoActualMenos2="
+				+ marcoAnoActualMenos2 + ", marcoAnoActualMenos1="
+				+ marcoAnoActualMenos1 + ", marcoAnoActual=" + marcoAnoActual
+				+ "]";
 	}
-	
-	
-	public List<Object> getRow() {
-		List<Object> row = new ArrayList<Object>();
-		if(getRegion() != null){
-			row.add(getRegion());
-		}
-		if(getServicio() != null){
-			row.add(getServicio());
-		}
-		if(getComuna() != null){
-			row.add(getComuna());
-		}
-		if(getPrograma() != null){
-			row.add(getPrograma());
-		}
-		if (getMarco2006() != null) {
-			row.add(getMarco2006());
-		}
-		if (getMarco2007() != null) {
-			row.add(getMarco2007());
-		}
-		if (getMarco2008() != null) {
-			row.add(getMarco2008());
-		}
-		if (getMarco2009() != null) {
-			row.add(getMarco2009());
-		}
-		if (getMarco2010() != null) {
-			row.add(getMarco2010());
-		}
-		if (getMarco2011() != null) {
-			row.add(getMarco2011());
-		}
-		if (getMarco2012() != null) {
-			row.add(getMarco2012());
-		}
-		if (getMarco2013() != null) {
-			row.add(getMarco2013());
-		}
-		if (getMarco2014() != null) {
-			row.add(getMarco2014());
-		}
-		if (getMarco2015() != null) {
-			row.add(getMarco2015());
-		}
-		return row;
-	}
-	
 
+	
 }

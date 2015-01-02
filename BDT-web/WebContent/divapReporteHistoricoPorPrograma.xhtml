@@ -98,16 +98,16 @@
 										<p:column colspan="9" headerText="#{reporteHistoricoPorProgramaController.programa.nombre}" />
 									</p:row>
 									<p:row>
-										<p:column headerText="$ 2006  (2015)" />
-										<p:column headerText="$ 2007  (2015)" />
-										<p:column headerText="$ 2008  (2015)" />
-										<p:column headerText="$ 2009  (2015)" />
-										<p:column headerText="$ 2010  (2015)" />
-										<p:column headerText="$ 2011  (2015)" />
-										<p:column headerText="$ 2012  (2015)" />
-										<p:column headerText="$ 2013  (2015)" />
-										<p:column headerText="$ 2014  (2015)" />
-										<p:column headerText="$ 2015" />
+										<p:column headerText="$ 2007  (2016)" />
+										<p:column headerText="$ 2008  (2016)" />
+										<p:column headerText="$ 2009  (2016)" />
+										<p:column headerText="$ 2010  (2016)" />
+										<p:column headerText="$ 2011  (2016)" />
+										<p:column headerText="$ 2012  (2016)" />
+										<p:column headerText="$ 2013  (2016)" />
+										<p:column headerText="$ 2014  (2016)" />
+										<p:column headerText="$ 2015  (2016)" />
+										<p:column headerText="$ 2016" />
 									</p:row>
 								</p:columnGroup>
 
@@ -121,53 +121,53 @@
 									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2006}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos9}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2007}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos8}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2008}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos7}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2009}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos6}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2010}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos5}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2011}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos4}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2012}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos3}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2013}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos2}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2014}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos1}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								
 								<p:column>
-									<h:outputText value="#{_data.marco2015}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActual}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
@@ -179,70 +179,70 @@
 										<p:column />
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2006}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos9}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2007}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos8}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2008}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos7}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2009}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos6}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2010}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos5}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2011}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos4}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2012}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos3}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2013}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos2}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2014}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos1}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2015}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActual}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -287,16 +287,16 @@
 										<p:column colspan="9" headerText="#{reporteHistoricoPorProgramaController.programa.nombre}" />
 									</p:row>
 									<p:row>
-										<p:column headerText="$ 2006  (2015)" />
-										<p:column headerText="$ 2007  (2015)" />
-										<p:column headerText="$ 2008  (2015)" />
-										<p:column headerText="$ 2009  (2015)" />
-										<p:column headerText="$ 2010  (2015)" />
-										<p:column headerText="$ 2011  (2015)" />
-										<p:column headerText="$ 2012  (2015)" />
-										<p:column headerText="$ 2013  (2015)" />
-										<p:column headerText="$ 2014  (2015)" />
-										<p:column headerText="$ 2015" />
+										<p:column headerText="$ 2007  (2016)" />
+										<p:column headerText="$ 2008  (2016)" />
+										<p:column headerText="$ 2009  (2016)" />
+										<p:column headerText="$ 2010  (2016)" />
+										<p:column headerText="$ 2011  (2016)" />
+										<p:column headerText="$ 2012  (2016)" />
+										<p:column headerText="$ 2013  (2016)" />
+										<p:column headerText="$ 2014  (2016)" />
+										<p:column headerText="$ 2015  (2016)" />
+										<p:column headerText="$ 2016" />
 									</p:row>
 								</p:columnGroup>
 
@@ -310,52 +310,52 @@
 									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2006}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos9}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2007}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos8}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2008}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos7}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2009}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos6}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2010}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos5}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2011}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos4}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2012}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos3}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2013}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos2}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2014}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos1}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2015}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActual}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
@@ -367,70 +367,70 @@
 										<p:column />
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2006}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos9}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2007}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos8}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2008}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos7}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2009}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos6}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2010}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos5}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2011}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos4}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2012}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos3}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2013}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos2}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2014}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos1}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2015}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActual}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -473,16 +473,16 @@
 										<p:column colspan="9" headerText="#{reporteHistoricoPorProgramaController.programa.nombre}" />
 									</p:row>
 									<p:row>
-										<p:column headerText="$ 2006  (2015)" />
-										<p:column headerText="$ 2007  (2015)" />
-										<p:column headerText="$ 2008  (2015)" />
-										<p:column headerText="$ 2009  (2015)" />
-										<p:column headerText="$ 2010  (2015)" />
-										<p:column headerText="$ 2011  (2015)" />
-										<p:column headerText="$ 2012  (2015)" />
-										<p:column headerText="$ 2013  (2015)" />
-										<p:column headerText="$ 2014  (2015)" />
-										<p:column headerText="$ 2015" />
+										<p:column headerText="$ 2007  (2016)" />
+										<p:column headerText="$ 2008  (2016)" />
+										<p:column headerText="$ 2009  (2016)" />
+										<p:column headerText="$ 2010  (2016)" />
+										<p:column headerText="$ 2011  (2016)" />
+										<p:column headerText="$ 2012  (2016)" />
+										<p:column headerText="$ 2013  (2016)" />
+										<p:column headerText="$ 2014  (2016)" />
+										<p:column headerText="$ 2015  (2016)" />
+										<p:column headerText="$ 2016" />
 									</p:row>
 								</p:columnGroup>
 
@@ -496,52 +496,52 @@
 									<span class="textoAjustado textoPequenio centrado">#{_data.comuna}</span>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2006}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos9}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2007}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos8}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2008}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos7}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2009}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos6}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2010}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos5}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2011}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos4}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2012}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos3}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2013}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos2}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2014}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos1}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2015}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActual}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
@@ -553,70 +553,70 @@
 										<p:column />
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2006}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos9}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2007}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos8}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2008}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos7}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2009}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos6}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2010}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos5}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2011}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos4}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2012}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos3}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2013}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos2}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2014}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos1}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2015}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActual}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -660,16 +660,16 @@
 										<p:column colspan="9" headerText="#{reporteHistoricoPorProgramaController.programa.nombre}" />
 									</p:row>
 									<p:row>
-										<p:column headerText="$ 2006  (2015)" />
-										<p:column headerText="$ 2007  (2015)" />
-										<p:column headerText="$ 2008  (2015)" />
-										<p:column headerText="$ 2009  (2015)" />
-										<p:column headerText="$ 2010  (2015)" />
-										<p:column headerText="$ 2011  (2015)" />
-										<p:column headerText="$ 2012  (2015)" />
-										<p:column headerText="$ 2013  (2015)" />
-										<p:column headerText="$ 2014  (2015)" />
-										<p:column headerText="$ 2015" />
+										<p:column headerText="$ 2007  (2016)" />
+										<p:column headerText="$ 2008  (2016)" />
+										<p:column headerText="$ 2009  (2016)" />
+										<p:column headerText="$ 2010  (2016)" />
+										<p:column headerText="$ 2011  (2016)" />
+										<p:column headerText="$ 2012  (2016)" />
+										<p:column headerText="$ 2013  (2016)" />
+										<p:column headerText="$ 2014  (2016)" />
+										<p:column headerText="$ 2015  (2016)" />
+										<p:column headerText="$ 2016" />
 									</p:row>
 								</p:columnGroup>
 
@@ -683,52 +683,52 @@
 									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2006}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos9}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2007}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos8}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2008}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos7}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2009}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos6}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2010}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos5}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2011}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos4}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2012}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos3}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2013}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos2}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2014}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActualMenos1}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
-									<h:outputText value="#{_data.marco2015}" styleClass="textoPequenio textoAjustado">
+									<h:outputText value="#{_data.marcoAnoActual}" styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
@@ -739,70 +739,70 @@
 										<p:column />
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2006}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos9}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2007}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos8}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2008}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos7}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2009}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos6}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2010}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos5}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2011}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos4}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2012}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos3}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2013}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos2}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2014}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos1}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarco2015}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActual}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>

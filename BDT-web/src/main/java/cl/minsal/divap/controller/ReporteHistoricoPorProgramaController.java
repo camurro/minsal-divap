@@ -50,27 +50,27 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	private Integer idPlanillaDocEstablecimiento;
 	private String docIdEstablecimientoDownload;
 	
-	private Long totalMarco2006;
-	private Long totalMarco2007;
-	private Long totalMarco2008;
-	private Long totalMarco2009;
-	private Long totalMarco2010;
-	private Long totalMarco2011;
-	private Long totalMarco2012;
-	private Long totalMarco2013;
-	private Long totalMarco2014;
-	private Long totalMarco2015;
+	private Long totalMarcoAnoActualMenos9;
+	private Long totalMarcoAnoActualMenos8;
+	private Long totalMarcoAnoActualMenos7;
+	private Long totalMarcoAnoActualMenos6;
+	private Long totalMarcoAnoActualMenos5;
+	private Long totalMarcoAnoActualMenos4;
+	private Long totalMarcoAnoActualMenos3;
+	private Long totalMarcoAnoActualMenos2;
+	private Long totalMarcoAnoActualMenos1;
+	private Long totalMarcoAnoActual;
 	
-	private Boolean ano2006;
-	private Boolean ano2007;
-	private Boolean ano2008;
-	private Boolean ano2009;
-	private Boolean ano2010;
-	private Boolean ano2011;
-	private Boolean ano2012;
-	private Boolean ano2013;
-	private Boolean ano2014;
-	private Boolean ano2015;
+	private Boolean anoAnoActualMenos9;
+	private Boolean anoAnoActualMenos8;
+	private Boolean anoAnoActualMenos7;
+	private Boolean anoAnoActualMenos6;
+	private Boolean anoAnoActualMenos5;
+	private Boolean anoAnoActualMenos4;
+	private Boolean anoAnoActualMenos3;
+	private Boolean anoAnoActualMenos2;
+	private Boolean anoAnoActualMenos1;
+	private Boolean anoAnoActual;
 	
 	
 	private List<ProgramaVO> programas;
@@ -116,16 +116,16 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 		this.reporteHistoricoPorProgramaEstablecimientoVOSub22 = new ArrayList<ReporteHistoricoPorProgramaEstablecimientoVO>();
 		this.reporteHistoricoPorProgramaEstablecimientoVOSub29 = new ArrayList<ReporteHistoricoPorProgramaEstablecimientoVO>();
 		
-		this.ano2006 = false;
-		this.ano2007 = false;
-		this.ano2008 = false;
-		this.ano2009 = false;
-		this.ano2010 = false;
-		this.ano2011 = false;
-		this.ano2012 = false;
-		this.ano2013 = false;
-		this.ano2014 = false;
-		this.ano2015 = false;
+		this.anoAnoActualMenos9 = false;
+		this.anoAnoActualMenos8 = false;
+		this.anoAnoActualMenos7 = false;
+		this.anoAnoActualMenos6 = false;
+		this.anoAnoActualMenos5 = false;
+		this.anoAnoActualMenos4 = false;
+		this.anoAnoActualMenos3 = false;
+		this.anoAnoActualMenos2 = false;
+		this.anoAnoActualMenos1 = false;
+		this.anoAnoActual = false;
 		
 		
 		
@@ -394,378 +394,378 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	}
 	
 
-	public Long getTotalMarco2006() {
-		this.totalMarco2006 = 0L;
+	public Long getTotalMarcoAnoActualMenos9() {
+		this.totalMarcoAnoActualMenos9 = 0L;
 		switch (this.subtituloSeleccionado) {
 		case SUBTITULO21:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
-				this.totalMarco2006 += lista.getMarco2006();
+				this.totalMarcoAnoActualMenos9 += lista.getMarcoAnoActualMenos9();
 			}
 			break;
 		case SUBTITULO22:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
-				this.totalMarco2006 += lista.getMarco2006();
+				this.totalMarcoAnoActualMenos9 += lista.getMarcoAnoActualMenos9();
 			}
 			break;
 		case SUBTITULO24:
 			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
-				this.totalMarco2006 += lista.getMarco2006();
+				this.totalMarcoAnoActualMenos9 += lista.getMarcoAnoActualMenos9();
 			}
 			break;
 		case SUBTITULO29:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
-				this.totalMarco2006 += lista.getMarco2006();
+				this.totalMarcoAnoActualMenos9 += lista.getMarcoAnoActualMenos9();
 			}
 			break;
 		default:
 			break;
 		}
 		
-		return totalMarco2006;
+		return totalMarcoAnoActualMenos9;
 	}
 
-	public void setTotalMarco2006(Long totalMarco2006) {
-		this.totalMarco2006 = totalMarco2006;
+	public void setTotalMarcoAnoActualMenos9(Long totalMarcoAnoActualMenos9) {
+		this.totalMarcoAnoActualMenos9 = totalMarcoAnoActualMenos9;
 	}
 
 	
 
 
-	public Long getTotalMarco2007() {
-		this.totalMarco2007 = 0L;
+	public Long getTotalMarcoAnoActualMenos8() {
+		this.totalMarcoAnoActualMenos8 = 0L;
 		switch (this.subtituloSeleccionado) {
 		case SUBTITULO21:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
-				this.totalMarco2007 += lista.getMarco2007();
+				this.totalMarcoAnoActualMenos8 += lista.getMarcoAnoActualMenos8();
 			}
 			break;
 		case SUBTITULO22:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
-				this.totalMarco2007 += lista.getMarco2007();
+				this.totalMarcoAnoActualMenos8 += lista.getMarcoAnoActualMenos8();
 			}
 			break;
 		case SUBTITULO24:
 			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
-				this.totalMarco2007 += lista.getMarco2007();
+				this.totalMarcoAnoActualMenos8 += lista.getMarcoAnoActualMenos8();
 			}
 			break;
 		case SUBTITULO29:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
-				this.totalMarco2007 += lista.getMarco2007();
+				this.totalMarcoAnoActualMenos8 += lista.getMarcoAnoActualMenos8();
 			}
 			break;
 		default:
 			break;
 		}
 		
-		return totalMarco2007;
+		return totalMarcoAnoActualMenos8;
 	}
 
-	public void setTotalMarco2007(Long totalMarco2007) {
-		this.totalMarco2007 = totalMarco2007;
+	public void setTotalMarcoAnoActualMenos8(Long totalMarcoAnoActualMenos8) {
+		this.totalMarcoAnoActualMenos8 = totalMarcoAnoActualMenos8;
 	}
 
 
 
-	public Long getTotalMarco2008() {
-		this.totalMarco2008 = 0L;
+	public Long getTotalMarcoAnoActualMenos7() {
+		this.totalMarcoAnoActualMenos7 = 0L;
 		switch (this.subtituloSeleccionado) {
 		case SUBTITULO21:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
-				this.totalMarco2008 += lista.getMarco2008();
+				this.totalMarcoAnoActualMenos7 += lista.getMarcoAnoActualMenos7();
 			}
 			break;
 		case SUBTITULO22:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
-				this.totalMarco2008 += lista.getMarco2008();
+				this.totalMarcoAnoActualMenos7 += lista.getMarcoAnoActualMenos7();
 			}
 			break;
 		case SUBTITULO24:
 			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
-				this.totalMarco2008 += lista.getMarco2008();
+				this.totalMarcoAnoActualMenos7 += lista.getMarcoAnoActualMenos7();
 			}
 			break;
 		case SUBTITULO29:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
-				this.totalMarco2008 += lista.getMarco2008();
+				this.totalMarcoAnoActualMenos7 += lista.getMarcoAnoActualMenos7();
 			}
 			break;
 		default:
 			break;
 		}
 		
-		return totalMarco2008;
+		return totalMarcoAnoActualMenos7;
 	}
 
 
 
-	public void setTotalMarco2008(Long totalMarco2008) {
-		this.totalMarco2008 = totalMarco2008;
+	public void setTotalMarcoAnoActualMenos7(Long totalMarcoAnoActualMenos7) {
+		this.totalMarcoAnoActualMenos7 = totalMarcoAnoActualMenos7;
 	}
 
 
 
-	public Long getTotalMarco2009() {
-		this.totalMarco2009 = 0L;
+	public Long getTotalMarcoAnoActualMenos6() {
+		this.totalMarcoAnoActualMenos6 = 0L;
 		switch (this.subtituloSeleccionado) {
 		case SUBTITULO21:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
-				this.totalMarco2009 += lista.getMarco2009();
+				this.totalMarcoAnoActualMenos6 += lista.getMarcoAnoActualMenos6();
 			}
 			break;
 		case SUBTITULO22:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
-				this.totalMarco2009 += lista.getMarco2009();
+				this.totalMarcoAnoActualMenos6 += lista.getMarcoAnoActualMenos6();
 			}
 			break;
 		case SUBTITULO24:
 			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
-				this.totalMarco2009 += lista.getMarco2009();
+				this.totalMarcoAnoActualMenos6 += lista.getMarcoAnoActualMenos6();
 			}
 			break;
 		case SUBTITULO29:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
-				this.totalMarco2009 += lista.getMarco2009();
+				this.totalMarcoAnoActualMenos6 += lista.getMarcoAnoActualMenos6();
 			}
 			break;
 		default:
 			break;
 		}
 		
-		return totalMarco2009;
+		return totalMarcoAnoActualMenos6;
 	}
 
 
 
-	public void setTotalMarco2009(Long totalMarco2009) {
-		this.totalMarco2009 = totalMarco2009;
+	public void setTotalMarcoAnoActualMenos6(Long totalMarcoAnoActualMenos6) {
+		this.totalMarcoAnoActualMenos6 = totalMarcoAnoActualMenos6;
 	}
 
 
 
-	public Long getTotalMarco2010() {
-		this.totalMarco2010 = 0L;
+	public Long getTotalMarcoAnoActualMenos5() {
+		this.totalMarcoAnoActualMenos5 = 0L;
 		switch (this.subtituloSeleccionado) {
 		case SUBTITULO21:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
-				this.totalMarco2010 += lista.getMarco2010();
+				this.totalMarcoAnoActualMenos5 += lista.getMarcoAnoActualMenos5();
 			}
 			break;
 		case SUBTITULO22:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
-				this.totalMarco2010 += lista.getMarco2010();
+				this.totalMarcoAnoActualMenos5 += lista.getMarcoAnoActualMenos5();
 			}
 			break;
 		case SUBTITULO24:
 			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
-				this.totalMarco2010 += lista.getMarco2010();
+				this.totalMarcoAnoActualMenos5 += lista.getMarcoAnoActualMenos5();
 			}
 			break;
 		case SUBTITULO29:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
-				this.totalMarco2010 += lista.getMarco2010();
+				this.totalMarcoAnoActualMenos5 += lista.getMarcoAnoActualMenos5();
 			}
 			break;
 		default:
 			break;
 		}
 		
-		return totalMarco2010;
+		return totalMarcoAnoActualMenos5;
 	}
 
 
 
-	public void setTotalMarco2010(Long totalMarco2010) {
-		this.totalMarco2010 = totalMarco2010;
+	public void setTotalMarcoAnoActualMenos5(Long totalMarcoAnoActualMenos5) {
+		this.totalMarcoAnoActualMenos5 = totalMarcoAnoActualMenos5;
 	}
 
 
 
-	public Long getTotalMarco2011() {
-		this.totalMarco2011 = 0L;
+	public Long getTotalMarcoAnoActualMenos4() {
+		this.totalMarcoAnoActualMenos4 = 0L;
 		switch (this.subtituloSeleccionado) {
 		case SUBTITULO21:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
-				this.totalMarco2011 += lista.getMarco2011();
+				this.totalMarcoAnoActualMenos4 += lista.getMarcoAnoActualMenos4();
 			}
 			break;
 		case SUBTITULO22:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
-				this.totalMarco2011 += lista.getMarco2011();
+				this.totalMarcoAnoActualMenos4 += lista.getMarcoAnoActualMenos4();
 			}
 			break;
 		case SUBTITULO24:
 			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
-				this.totalMarco2011 += lista.getMarco2011();
+				this.totalMarcoAnoActualMenos4 += lista.getMarcoAnoActualMenos4();
 			}
 			break;
 		case SUBTITULO29:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
-				this.totalMarco2011 += lista.getMarco2011();
+				this.totalMarcoAnoActualMenos4 += lista.getMarcoAnoActualMenos4();
 			}
 			break;
 		default:
 			break;
 		}
 		
-		return totalMarco2011;
+		return totalMarcoAnoActualMenos4;
 	}
 
 
 
-	public void setTotalMarco2011(Long totalMarco2011) {
-		this.totalMarco2011 = totalMarco2011;
+	public void setTotalMarcoAnoActualMenos4(Long totalMarcoAnoActualMenos4) {
+		this.totalMarcoAnoActualMenos4 = totalMarcoAnoActualMenos4;
 	}
 
 
 
-	public Long getTotalMarco2012() {
-		this.totalMarco2012 = 0L;
+	public Long getTotalMarcoAnoActualMenos3() {
+		this.totalMarcoAnoActualMenos3 = 0L;
 		switch (this.subtituloSeleccionado) {
 		case SUBTITULO21:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
-				this.totalMarco2012 += lista.getMarco2012();
+				this.totalMarcoAnoActualMenos3 += lista.getMarcoAnoActualMenos3();
 			}
 			break;
 		case SUBTITULO22:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
-				this.totalMarco2012 += lista.getMarco2012();
+				this.totalMarcoAnoActualMenos3 += lista.getMarcoAnoActualMenos3();
 			}
 			break;
 		case SUBTITULO24:
 			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
-				this.totalMarco2012 += lista.getMarco2012();
+				this.totalMarcoAnoActualMenos3 += lista.getMarcoAnoActualMenos3();
 			}
 			break;
 		case SUBTITULO29:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
-				this.totalMarco2012 += lista.getMarco2012();
+				this.totalMarcoAnoActualMenos3 += lista.getMarcoAnoActualMenos3();
 			}
 			break;
 		default:
 			break;
 		}
 		
-		return totalMarco2012;
+		return totalMarcoAnoActualMenos3;
 	}
 
 
 
-	public void setTotalMarco2012(Long totalMarco2012) {
-		this.totalMarco2012 = totalMarco2012;
+	public void setTotalMarcoAnoActualMenos3(Long totalMarcoAnoActualMenos3) {
+		this.totalMarcoAnoActualMenos3 = totalMarcoAnoActualMenos3;
 	}
 
 
 
-	public Long getTotalMarco2013() {
-		this.totalMarco2013 = 0L;
+	public Long getTotalMarcoAnoActualMenos2() {
+		this.totalMarcoAnoActualMenos2 = 0L;
 		switch (this.subtituloSeleccionado) {
 		case SUBTITULO21:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
-				this.totalMarco2013 += lista.getMarco2013();
+				this.totalMarcoAnoActualMenos2 += lista.getMarcoAnoActualMenos2();
 			}
 			break;
 		case SUBTITULO22:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
-				this.totalMarco2013 += lista.getMarco2013();
+				this.totalMarcoAnoActualMenos2 += lista.getMarcoAnoActualMenos2();
 			}
 			break;
 		case SUBTITULO24:
 			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
-				this.totalMarco2013 += lista.getMarco2013();
+				this.totalMarcoAnoActualMenos2 += lista.getMarcoAnoActualMenos2();
 			}
 			break;
 		case SUBTITULO29:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
-				this.totalMarco2013 += lista.getMarco2013();
+				this.totalMarcoAnoActualMenos2 += lista.getMarcoAnoActualMenos2();
 			}
 			break;
 		default:
 			break;
 		}
 		
-		return totalMarco2013;
+		return totalMarcoAnoActualMenos2;
 	}
 
 
 
-	public void setTotalMarco2013(Long totalMarco2013) {
-		this.totalMarco2013 = totalMarco2013;
+	public void setTotalMarcoAnoActualMenos2(Long totalMarcoAnoActualMenos2) {
+		this.totalMarcoAnoActualMenos2 = totalMarcoAnoActualMenos2;
 	}
 
 
 
-	public Long getTotalMarco2014() {
-		this.totalMarco2014 = 0L;
+	public Long getTotalMarcoAnoActualMenos1() {
+		this.totalMarcoAnoActualMenos1 = 0L;
 		switch (this.subtituloSeleccionado) {
 		case SUBTITULO21:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
-				this.totalMarco2014 += lista.getMarco2014();
+				this.totalMarcoAnoActualMenos1 += lista.getMarcoAnoActualMenos1();
 			}
 			break;
 		case SUBTITULO22:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
-				this.totalMarco2014 += lista.getMarco2014();
+				this.totalMarcoAnoActualMenos1 += lista.getMarcoAnoActualMenos1();
 			}
 			break;
 		case SUBTITULO24:
 			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
-				this.totalMarco2014 += lista.getMarco2014();
+				this.totalMarcoAnoActualMenos1 += lista.getMarcoAnoActualMenos1();
 			}
 			break;
 		case SUBTITULO29:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
-				this.totalMarco2014 += lista.getMarco2014();
+				this.totalMarcoAnoActualMenos1 += lista.getMarcoAnoActualMenos1();
 			}
 			break;
 		default:
 			break;
 		}
 		
-		return totalMarco2014;
+		return totalMarcoAnoActualMenos1;
 	}
 
 
 
-	public void setTotalMarco2015(Long totalMarco2015) {
-		this.totalMarco2015 = totalMarco2015;
+	public void setTotalMarcoAnoActual(Long totalMarcoAnoActual) {
+		this.totalMarcoAnoActual = totalMarcoAnoActual;
 	}
 	
 	
-	public Long getTotalMarco2015() {
-		this.totalMarco2015 = 0L;
+	public Long getTotalMarcoAnoActual() {
+		this.totalMarcoAnoActual = 0L;
 		switch (this.subtituloSeleccionado) {
 		case SUBTITULO21:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub21){
-				this.totalMarco2015 += lista.getMarco2015();
+				this.totalMarcoAnoActual += lista.getMarcoAnoActual();
 			}
 			break;
 		case SUBTITULO22:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub22){
-				this.totalMarco2015 += lista.getMarco2015();
+				this.totalMarcoAnoActual += lista.getMarcoAnoActual();
 			}
 			break;
 		case SUBTITULO24:
 			for(ReporteHistoricoPorProgramaComunaVO lista : this.reporteHistoricoPorProgramaComunaVO){
-				this.totalMarco2015 += lista.getMarco2015();
+				this.totalMarcoAnoActual += lista.getMarcoAnoActual();
 			}
 			break;
 		case SUBTITULO29:
 			for(ReporteHistoricoPorProgramaEstablecimientoVO lista : this.reporteHistoricoPorProgramaEstablecimientoVOSub29){
-				this.totalMarco2015 += lista.getMarco2015();
+				this.totalMarcoAnoActual += lista.getMarcoAnoActual();
 			}
 			break;
 		default:
 			break;
 		}
 		
-		return totalMarco2015;
+		return totalMarcoAnoActual;
 	}
 
 
 
-	public void setTotalMarco2014(Long totalMarco2014) {
-		this.totalMarco2014 = totalMarco2014;
+	public void setTotalMarcoAnoActualMenos1(Long totalMarcoAnoActualMenos1) {
+		this.totalMarcoAnoActualMenos1 = totalMarcoAnoActualMenos1;
 	}
 
 	public Integer getIdPlanillaDocComuna() {
@@ -911,93 +911,103 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	}
 
 
-	public Boolean getAno2006() {
-		return ano2006;
+	public Boolean getAnoAnoActualMenos9() {
+		return anoAnoActualMenos9;
 	}
 
 
-	public void setAno2006(Boolean ano2006) {
-		this.ano2006 = ano2006;
+	public void setAnoAnoActualMenos9(Boolean anoAnoActualMenos9) {
+		this.anoAnoActualMenos9 = anoAnoActualMenos9;
 	}
 
 
-	public Boolean getAno2007() {
-		return ano2007;
+	public Boolean getAnoAnoActualMenos8() {
+		return anoAnoActualMenos8;
 	}
 
 
-	public void setAno2007(Boolean ano2007) {
-		this.ano2007 = ano2007;
+	public void setAnoAnoActualMenos8(Boolean anoAnoActualMenos8) {
+		this.anoAnoActualMenos8 = anoAnoActualMenos8;
 	}
 
 
-	public Boolean getAno2008() {
-		return ano2008;
+	public Boolean getAnoAnoActualMenos7() {
+		return anoAnoActualMenos7;
 	}
 
 
-	public void setAno2008(Boolean ano2008) {
-		this.ano2008 = ano2008;
+	public void setAnoAnoActualMenos7(Boolean anoAnoActualMenos7) {
+		this.anoAnoActualMenos7 = anoAnoActualMenos7;
 	}
 
 
-	public Boolean getAno2009() {
-		return ano2009;
+	public Boolean getAnoAnoActualMenos6() {
+		return anoAnoActualMenos6;
 	}
 
 
-	public void setAno2009(Boolean ano2009) {
-		this.ano2009 = ano2009;
+	public void setAnoAnoActualMenos6(Boolean anoAnoActualMenos6) {
+		this.anoAnoActualMenos6 = anoAnoActualMenos6;
 	}
 
 
-	public Boolean getAno2010() {
-		return ano2010;
+	public Boolean getAnoAnoActualMenos5() {
+		return anoAnoActualMenos5;
 	}
 
 
-	public void setAno2010(Boolean ano2010) {
-		this.ano2010 = ano2010;
+	public void setAnoAnoActualMenos5(Boolean anoAnoActualMenos5) {
+		this.anoAnoActualMenos5 = anoAnoActualMenos5;
 	}
 
 
-	public Boolean getAno2011() {
-		return ano2011;
+	public Boolean getAnoAnoActualMenos4() {
+		return anoAnoActualMenos4;
 	}
 
 
-	public void setAno2011(Boolean ano2011) {
-		this.ano2011 = ano2011;
+	public void setAnoAnoActualMenos4(Boolean anoAnoActualMenos4) {
+		this.anoAnoActualMenos4 = anoAnoActualMenos4;
 	}
 
 
-	public Boolean getAno2012() {
-		return ano2012;
+	public Boolean getAnoAnoActualMenos3() {
+		return anoAnoActualMenos3;
 	}
 
 
-	public void setAno2012(Boolean ano2012) {
-		this.ano2012 = ano2012;
+	public void setAnoAnoActualMenos3(Boolean anoAnoActualMenos3) {
+		this.anoAnoActualMenos3 = anoAnoActualMenos3;
 	}
 
 
-	public Boolean getAno2013() {
-		return ano2013;
+	public Boolean getAnoAnoActualMenos2() {
+		return anoAnoActualMenos2;
 	}
 
 
-	public void setAno2013(Boolean ano2013) {
-		this.ano2013 = ano2013;
+	public void setAnoAnoActualMenos2(Boolean anoAnoActualMenos2) {
+		this.anoAnoActualMenos2 = anoAnoActualMenos2;
 	}
 
 
-	public Boolean getAno2014() {
-		return ano2014;
+	public Boolean getAnoAnoActualMenos1() {
+		return anoAnoActualMenos1;
 	}
 
 
-	public void setAno2014(Boolean ano2014) {
-		this.ano2014 = ano2014;
+	public void setAnoAnoActualMenos1(Boolean anoAnoActualMenos1) {
+		this.anoAnoActualMenos1 = anoAnoActualMenos1;
+	}
+
+
+	public Boolean getAnoAnoActual() {
+		return anoAnoActual;
+	}
+
+
+	public void setAnoAnoActual(Boolean anoAnoActual) {
+		this.anoAnoActual = anoAnoActual;
 	}
 	
 
