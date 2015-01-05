@@ -6,7 +6,10 @@ import java.util.List;
 
 public class ReporteHistoricoPorProgramaComunaVO implements Serializable{
 
-	private static final Long serialVersionUID = -5999868683168690323L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -334444881292643329L;
 	private String region;
 	private String servicio;
 	private String comuna;
@@ -143,6 +146,53 @@ public class ReporteHistoricoPorProgramaComunaVO implements Serializable{
 				+ marcoAnoActualMenos2 + ", marcoAnoActualMenos1="
 				+ marcoAnoActualMenos1 + ", marcoAnoActual=" + marcoAnoActual
 				+ "]";
+	}
+	
+	public List<Object> getRow() {
+		List<Object> row = new ArrayList<Object>();
+		if(getRegion() != null){
+			row.add(getRegion());
+		}
+		if(getServicio() != null){
+			row.add(getServicio());
+		}
+		if(getComuna() != null){
+			row.add(getComuna());
+		}
+		if(getPrograma() != null){
+			row.add(getPrograma());
+		}
+		if (getMarcoAnoActualMenos9() != null) {
+			row.add(getMarcoAnoActualMenos9());
+		}
+		if (getMarcoAnoActualMenos8() != null) {
+			row.add(getMarcoAnoActualMenos8());
+		}
+		if (getMarcoAnoActualMenos8() != null) {
+			row.add(getMarcoAnoActualMenos7());
+		}
+		if (getMarcoAnoActualMenos6() != null) {
+			row.add(getMarcoAnoActualMenos6());
+		}
+		if (getMarcoAnoActualMenos5() != null) {
+			row.add(getMarcoAnoActualMenos5());
+		}
+		if (getMarcoAnoActualMenos4() != null) {
+			row.add(getMarcoAnoActualMenos4());
+		}
+		if (getMarcoAnoActualMenos3() != null) {
+			row.add(getMarcoAnoActualMenos3());
+		}
+		if (getMarcoAnoActualMenos2() != null) {
+			row.add(getMarcoAnoActualMenos2());
+		}
+		if (getMarcoAnoActualMenos1() != null) {
+			row.add(getMarcoAnoActualMenos1());
+		}
+		if (getMarcoAnoActual() != null) {
+			row.add(getMarcoAnoActual());
+		}
+		return row;
 	}
 
 	

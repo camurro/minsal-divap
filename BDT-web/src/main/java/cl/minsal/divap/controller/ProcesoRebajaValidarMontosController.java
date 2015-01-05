@@ -55,7 +55,7 @@ implements Serializable {
 	private List<DocumentSummaryVO> resumenDocumentos;
 	private Integer fisrtTime = 1;
 	private Integer totalIncumplimiento = 0;
-	
+
 	private TipoCumplimientoVO cumplimientoItem1;
 	private TipoCumplimientoVO cumplimientoItem2;
 	private TipoCumplimientoVO cumplimientoItem3;
@@ -110,18 +110,28 @@ implements Serializable {
 	}
 
 	public void cargaServicios(){
-		if(regionSeleccionada!=null && !regionSeleccionada.equals("")){
+		if(regionSeleccionada != null && !regionSeleccionada.equals("")){
 			listaServicios=utilitariosService.getServiciosByRegion(Integer.parseInt(regionSeleccionada));
 		}else{
 			listaServicios = new ArrayList<ServiciosVO>();
+			listaComunas = new ArrayList<ComunaVO>();
+			comunasSeleccionadas = new ArrayList<String>();
+			servicioSeleccionado = "";
 		}
 	}
 
 	public void cargaComunas(){
-		if(servicioSeleccionado!=null && !servicioSeleccionado.equals("")){
+		if(servicioSeleccionado != null && !servicioSeleccionado.equals("")){
 			listaComunas = utilitariosService.getComunasByServicio(Integer.parseInt(servicioSeleccionado));
+			comunasSeleccionadas = new ArrayList<String>();
+			if(listaComunas != null && listaComunas.size() > 0){
+				for(ComunaVO comuna : listaComunas){
+					comunasSeleccionadas.add(comuna.getIdComuna().toString());
+				}
+			}
 		}else{
 			listaComunas = new ArrayList<ComunaVO>();
+			comunasSeleccionadas = new ArrayList<String>();
 		}
 		fisrtTime = 1;
 		totalIncumplimiento = 0;
@@ -130,9 +140,11 @@ implements Serializable {
 	public void buscarRebaja(){
 		System.out.println("ProcesoRebajaValidarMontosController:buscarRebaja");
 		List<Integer> idComunas = new ArrayList<Integer>();
-		for(String comunas : comunasSeleccionadas){
-			Integer idComuna = Integer.parseInt(comunas);
-			idComunas.add(idComuna);
+		if(comunasSeleccionadas != null && comunasSeleccionadas.size() > 0){
+			for(String comunas : comunasSeleccionadas){
+				Integer idComuna = Integer.parseInt(comunas);
+				idComunas.add(idComuna);
+			}
 		}
 		rebajaComunas = rebajaService.getRebajasByComuna(this.idProcesoRebaja, idComunas);
 		totalIncumplimiento = rebajaComunas.size();
@@ -224,7 +236,6 @@ implements Serializable {
 			Integer montoRebaja = (int)(planillaRebajaCalculadaVO.getAporteEstatal() * (porcentajeRebajaFinal/100.0));
 			planillaRebajaCalculadaVO.setMontoRebajaMes(montoRebaja);
 			planillaRebajaCalculadaVO.setNuevoAporteEstatal(planillaRebajaCalculadaVO.getAporteEstatal() - montoRebaja);
-			System.out.println("actualizarModelo:Fin");
 		}
 	}
 

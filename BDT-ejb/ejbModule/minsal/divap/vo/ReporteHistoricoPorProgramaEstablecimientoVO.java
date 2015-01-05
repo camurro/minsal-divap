@@ -148,5 +148,51 @@ public class ReporteHistoricoPorProgramaEstablecimientoVO implements Serializabl
 				+ ", marcoAnoActual=" + marcoAnoActual + "]";
 	}
 	
+	public List<Object> getRow() {
+		List<Object> row = new ArrayList<Object>();
+		if(getRegion() != null){
+			row.add(getRegion());
+		}
+		if(getServicio() != null){
+			row.add(getServicio());
+		}
+		if(getEstablecimiento() != null){
+			row.add(getEstablecimiento());
+		}
+		if(getPrograma() != null){
+			row.add(getPrograma());
+		}
+		if (getMarcoAnoActualMenos9() != null) {
+			row.add(getMarcoAnoActualMenos9());
+		}
+		if (getMarcoAnoActualMenos8() != null) {
+			row.add(getMarcoAnoActualMenos8());
+		}
+		if (getMarcoAnoActualMenos7() != null) {
+			row.add(getMarcoAnoActualMenos7());
+		}
+		if (getMarcoAnoActualMenos6() != null) {
+			row.add(getMarcoAnoActualMenos6());
+		}
+		if (getMarcoAnoActualMenos5() != null) {
+			row.add(getMarcoAnoActualMenos5());
+		}
+		if (getMarcoAnoActualMenos4() != null) {
+			row.add(getMarcoAnoActualMenos4());
+		}
+		if (getMarcoAnoActualMenos3() != null) {
+			row.add(getMarcoAnoActualMenos3());
+		}
+		if (getMarcoAnoActualMenos2() != null) {
+			row.add(getMarcoAnoActualMenos2());
+		}
+		if (getMarcoAnoActualMenos1() != null) {
+			row.add(getMarcoAnoActualMenos1());
+		}
+		if (getMarcoAnoActual() != null) {
+			row.add(getMarcoAnoActual());
+		}
+		return row;
+	}
 
 }

@@ -17,7 +17,34 @@
 		document.getElementById("rebajasForm:tablaMisTareas:0:nuevoAporte").innerHTML=nuevoAp;
 		
 	}
+	function focus_on_textBox(element) {
+		var currentId = $(element).attr('id');
+		alert("currentId->"+currentId);
+		  document.getElementById(idText).focus(); 
+	}
 
+	function isNumber(event, idButton, idText, fila, item) {
+		  if (event) {
+		    var charCode = (event.which) ? event.which : event.keyCode;
+		    if (charCode &lt; 48 || charCode &gt; 57) {
+		    	if (charCode == 8 || charCode == 46 || charCode == 35 || charCode == 36 || charCode == 37 || charCode == 39){ 
+			    	return true;
+		    	}
+		    	alert("idText="+idText)
+		    	if (charCode == 13) {
+		    		var inputText = "#rebajasForm [name='" + idText + "']";
+		    		$(inputText).focus();
+			    	$("#actualizaModelo\\:posicionElemento").val(fila);
+					$("#actualizaModelo\\:columnaElemento").val(item);
+					$("#actualizaModelo\\:valorElemento").val(document.getElementsByName(idText).value);
+		    		document.getElementById(idButton).click();
+		    		return true;
+		    	}
+		       return false;
+		    }
+		  }
+		  return true;
+		}
 	function actualizarModelo(id, fila, largo, idText){
 		$("#actualizaModelo\\:posicionElemento").val(fila);
 		$("#actualizaModelo\\:columnaElemento").val(largo);
@@ -195,10 +222,9 @@
 						</p:column>  
 						
 						<p:column>
-							 	<p:inputText value="#{_rebaja.cumplimientoRebajasItem1.rebajaFinal}" 
-							 		styleClass="textoPequenioInput textoAjustado" style="width:30px" 
-							 		onkeypress="if (event.keyCode == 13) { actualizarModelo(this.id, '#{rowIndex}', '1', 'final_#{_rebaja.id_comuna}'); return false; }">
-								</p:inputText>
+								<h:inputText value="#{_rebaja.cumplimientoRebajasItem1.rebajaFinal}" style="width:30px" 
+								onkeypress="return isNumber(event, 'actualizaModelo:actualizarModelo', this.name, '#{rowIndex}', '1');" >
+			           		 	</h:inputText>
 						</p:column>
 						
 						<p:column>
