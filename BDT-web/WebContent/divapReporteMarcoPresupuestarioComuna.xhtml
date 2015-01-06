@@ -53,25 +53,29 @@
 								</p:selectOneMenu>
 							</h:panelGrid>
 							
-
-					<p:tabView id="tabView" activeIndex="#{reportesMarcoPresupuestarioComunasController.activeTab}" dynamic="true" cache="false">
-						<p:ajax event="tabChange" listener="#{reportesMarcoPresupuestarioComunasController.onTabChange}" update="Sub21 Sub22 Sub24 Sub29" />
-					
-					
-						<p:tab id="Sub21" title="Subtítulo 21">
-						<h:panelGrid columns="3" id="busqueda_mis_tareas">
 							<h:panelGrid>
 								<h:outputText value="Programa: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:450px;" id="cbProgramaSub21"
+								<p:selectOneMenu style="width:450px;" id="cbProgramas"
 									value="#{reportesMarcoPresupuestarioComunasController.valorComboPrograma}">
 									<f:selectItem itemLabel="Seleccione" itemValue="0" />
 									<f:selectItems
 										value="#{reportesMarcoPresupuestarioComunasController.programas}"
 										itemLabel="#{programa.nombre}"
 										itemValue="#{programa.idProgramaAno}" var="programa" />
+									<p:ajax
+										listener="#{reportesMarcoPresupuestarioComunasController.visibilidadSubtitulos}"
+										update="tabView" />
 									
 								</p:selectOneMenu>
 							</h:panelGrid>
+							
+
+					<p:tabView id="tabView" activeIndex="#{reportesMarcoPresupuestarioComunasController.activeTab}" dynamic="true" cache="false">
+						<p:ajax event="tabChange" listener="#{reportesMarcoPresupuestarioComunasController.onTabChange}" update="Sub21 Sub22 Sub24 Sub29" />
+					
+					
+						<p:tab id="Sub21" title="Subtítulo 21" rendered="#{reportesMarcoPresupuestarioComunasController.mostrarSub21}">
+						<h:panelGrid columns="2" id="busqueda_sub21">
 
 							<h:panelGrid>
 								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
@@ -102,10 +106,10 @@
 										<p:column headerText="Línea Programática" />
 										<p:column headerText="Componente" />
 										<p:column headerText="Establecimiento" />
-										<p:column headerText="Marco (2014)" />
-										<p:column headerText="Convenios (2014)" />
-										<p:column headerText="Remesas Acumuladas (2014)" />
-										<p:column headerText="% Cuota Transferida al 27/11/2014" />
+										<p:column headerText="Marco (#{reportesMarcoPresupuestarioComunasController.anoEnCurso})" />
+										<p:column headerText="Convenios (#{reportesMarcoPresupuestarioComunasController.anoEnCurso})" />
+										<p:column headerText="Remesas Acumuladas (#{reportesMarcoPresupuestarioComunasController.anoEnCurso})" />
+										<p:column headerText="% Cuota Transferida al #{reportesMarcoPresupuestarioComunasController.fechaActual}" />
 										<p:column headerText="Observación" />
 									</p:row>
 								</p:columnGroup>
@@ -191,22 +195,9 @@
 							</p:dataTable>
 						</p:tab>
 						
-						<p:tab id="Sub22" title="Subtítulo 22">
+						<p:tab id="Sub22" title="Subtítulo 22" rendered="#{reportesMarcoPresupuestarioComunasController.mostrarSub22}">
 						
-							<h:panelGrid>
-								<h:outputText value="Programa: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:650px;" id="cbProgramaSub22"
-									value="#{reportesMarcoPresupuestarioComunasController.valorComboPrograma}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
-									<f:selectItems
-										value="#{reportesMarcoPresupuestarioComunasController.programas}"
-										itemLabel="#{programa.nombre}"
-										itemValue="#{programa.idProgramaAno}" var="programa" />
-									<p:ajax
-										listener="#{reportesMarcoPresupuestarioComunasController.cargarTablaMarcoServicios}"
-										update="tabView" />
-								</p:selectOneMenu>
-							</h:panelGrid>
+						<h:panelGrid columns="2" id="busqueda_sub22">
 
 							<h:panelGrid>
 								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
@@ -217,12 +208,13 @@
 										value="#{reportesMarcoPresupuestarioComunasController.servicioSeleccionado.estableclimientos}"
 										itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}"
 										var="establecimiento" />
-									<p:ajax
-										listener="#{reportesMarcoPresupuestarioComunasController.cargarTablaServiciosFiltradosProgramaEstablecimiento}"
-										update="tablaSub22">
-									</p:ajax>
 								</p:selectOneMenu>
 							</h:panelGrid>
+							
+							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaServiciosFiltradosProgramaEstablecimiento}" ajax="false"
+					icon="ui-icon-seek-first" update="tabView tablaSub22" />
+							
+						</h:panelGrid>
 							
 							<br />
 							<p:dataTable id="tablaSub22" resizableColumns="true" value="#{reportesMarcoPresupuestarioComunasController.reporteMarcoPresupuestarioEstablecimientoVOSub22}" liveResize="true" var="_data"
@@ -234,10 +226,10 @@
 										<p:column headerText="Línea Programática" />
 										<p:column headerText="Componente" />
 										<p:column headerText="Establecimiento" />
-										<p:column headerText="Marco (2014)" />
-										<p:column headerText="Convenios (2014)" />
-										<p:column headerText="Remesas Acumuladas (2014)" />
-										<p:column headerText="% Cuota Transferida al 27/11/2014" />
+										<p:column headerText="Marco (#{reportesMarcoPresupuestarioComunasController.anoEnCurso})" />
+										<p:column headerText="Convenios (#{reportesMarcoPresupuestarioComunasController.anoEnCurso})" />
+										<p:column headerText="Remesas Acumuladas (#{reportesMarcoPresupuestarioComunasController.anoEnCurso})" />
+										<p:column headerText="% Cuota Transferida al #{reportesMarcoPresupuestarioComunasController.fechaActual}" />
 										<p:column headerText="Observación" />
 									</p:row>
 								</p:columnGroup>
@@ -325,8 +317,8 @@
 						
 					
 						
-						<p:tab id="Sub24" title="Subtítulo 24" >
-						
+						<p:tab id="Sub24" title="Subtítulo 24" rendered="#{reportesMarcoPresupuestarioComunasController.mostrarSub24}">
+						<h:panelGrid columns="2" id="busqueda_sub24">
 							<h:panelGrid>
 								<h:outputText value="Comuna: " styleClass="inputLabel" />
 								<p:selectOneMenu style="width:650px;" id="cbComuna"
@@ -342,22 +334,10 @@
 									</p:ajax>
 								</p:selectOneMenu>
 							</h:panelGrid>
-						
-							<h:panelGrid>
-								<h:outputText value="Programa: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:650px;" id="cbProgramaSub24"
-									value="#{reportesMarcoPresupuestarioComunasController.valorComboPrograma}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
-									<f:selectItems
-										value="#{reportesMarcoPresupuestarioComunasController.programas}"
-										itemLabel="#{programa.nombre}"
-										itemValue="#{programa.idProgramaAno}" var="programa" />
-									<p:ajax
-										listener="#{reportesMarcoPresupuestarioComunasController.cargarTablaServiciosFiltradosComunaPrograma}"
-										update="tabView" />
-								</p:selectOneMenu>
-							</h:panelGrid>
-						
+							
+							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaServiciosFiltradosComunaPrograma}" ajax="false"
+					icon="ui-icon-seek-first" update="tabView tablaSub24" />
+						</h:panelGrid>
 							
 							
 							<br />
@@ -370,10 +350,10 @@
 										<p:column headerText="Líneas Programáticas" />
 										<p:column headerText="Componente" />
 										<p:column headerText="Comuna" />
-										<p:column headerText="Marco (2014)" />
-										<p:column headerText="Convenios (2014)" />
-										<p:column headerText="Remesas Acumuladas (2014)" />
-										<p:column headerText="% Cuota Transferida al 27/11/2014" />
+										<p:column headerText="Marco (#{reportesMarcoPresupuestarioComunasController.anoEnCurso})" />
+										<p:column headerText="Convenios (#{reportesMarcoPresupuestarioComunasController.anoEnCurso})" />
+										<p:column headerText="Remesas Acumuladas (#{reportesMarcoPresupuestarioComunasController.anoEnCurso})" />
+										<p:column headerText="% Cuota Transferida al #{reportesMarcoPresupuestarioComunasController.fechaActual}" />
 										<p:column headerText="Observación" />
 									</p:row>
 								</p:columnGroup>
@@ -458,23 +438,8 @@
 							</p:dataTable>
 						</p:tab>
 						
-						<p:tab id="Sub29" title="Subtítulo 29">
-						
-							<h:panelGrid>
-								<h:outputText value="Programa: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:650px;" id="cbProgramaSub29"
-									value="#{reportesMarcoPresupuestarioComunasController.valorComboPrograma}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
-									<f:selectItems
-										value="#{reportesMarcoPresupuestarioComunasController.programas}"
-										itemLabel="#{programa.nombre}"
-										itemValue="#{programa.idProgramaAno}" var="programa" />
-									<p:ajax
-										listener="#{reportesMarcoPresupuestarioComunasController.cargarTablaMarcoServicios}"
-										update="tabView" />
-								</p:selectOneMenu>
-							</h:panelGrid>
-
+						<p:tab id="Sub29" title="Subtítulo 29" rendered="#{reportesMarcoPresupuestarioComunasController.mostrarSub29}">
+						<h:panelGrid columns="2" id="busqueda_sub29">
 							<h:panelGrid>
 								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
 								<p:selectOneMenu style="width:650px;" id="cbEstablecimiento29"
@@ -484,13 +449,11 @@
 										value="#{reportesMarcoPresupuestarioComunasController.servicioSeleccionado.estableclimientos}"
 										itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}"
 										var="establecimiento" />
-									<p:ajax
-										listener="#{reportesMarcoPresupuestarioComunasController.cargarTablaServiciosFiltradosProgramaEstablecimiento}"
-										update="tablaSub29">
-									</p:ajax>
 								</p:selectOneMenu>
 							</h:panelGrid>
-							
+							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaServiciosFiltradosProgramaEstablecimiento}" ajax="false"
+					icon="ui-icon-seek-first" update="tabView tablaSub29" />
+						</h:panelGrid>
 							<br />
 							<p:dataTable id="tablaSub29" resizableColumns="true" value="#{reportesMarcoPresupuestarioComunasController.reporteMarcoPresupuestarioEstablecimientoVOSub29}" liveResize="true" var="_data"
 								rows="10" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" scrollable="true">
@@ -501,10 +464,10 @@
 										<p:column headerText="Línea Programática" />
 										<p:column headerText="Componente" />
 										<p:column headerText="Establecimiento" />
-										<p:column headerText="Marco (2014)" />
-										<p:column headerText="Convenios (2014)" />
-										<p:column headerText="Remesas Acumuladas (2014)" />
-										<p:column headerText="% Cuota Transferida al 27/11/2014" />
+										<p:column headerText="Marco (#{reportesMarcoPresupuestarioComunasController.anoEnCurso})" />
+										<p:column headerText="Convenios (#{reportesMarcoPresupuestarioComunasController.anoEnCurso})" />
+										<p:column headerText="Remesas Acumuladas (#{reportesMarcoPresupuestarioComunasController.anoEnCurso})" />
+										<p:column headerText="% Cuota Transferida al #{reportesMarcoPresupuestarioComunasController.fechaActual}" />
 										<p:column headerText="Observación" />
 									</p:row>
 								</p:columnGroup>

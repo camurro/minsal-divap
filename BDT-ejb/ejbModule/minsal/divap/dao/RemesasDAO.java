@@ -419,5 +419,23 @@ public class RemesasDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public Long getRemesasPagadasEstablcimientoPrograma(Integer idProgramaAno, Integer idEstablecimiento, Integer idMes){
+		try{
+			Query query = this.em.createNamedQuery("DetalleRemesas.groupMontoRemesaProgramaEstablecimiento");
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idEstablecimiento", idEstablecimiento);
+			query.setParameter("mes", idMes);
+			Object[] results = (Object[]) query.getSingleResult();
+			if(results != null && results.length > 1){
+				return ((Number)results[1]).longValue();
+			}
+			return 0L;
+		}catch (NoResultException noResultException) {
+			return 0L;
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
+	}
 
 }
