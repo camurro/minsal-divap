@@ -170,7 +170,7 @@ public class ReporteRebajaVO implements Serializable{
 			row.add("");
 		}
 		if(getfCorte1Porcentaje() != null){
-			row.add(getfCorte1Porcentaje());
+			row.add(getfCorte1Porcentaje()*100);
 		}else{
 			row.add("");
 		}
@@ -180,7 +180,7 @@ public class ReporteRebajaVO implements Serializable{
 			row.add("");
 		}
 		if(getfCorte2Porcentaje() != null){
-			row.add(getfCorte2Porcentaje());
+			row.add(getfCorte2Porcentaje()*100);
 		}else{
 			row.add("");
 		}
@@ -190,7 +190,7 @@ public class ReporteRebajaVO implements Serializable{
 			row.add("");
 		}
 		if(getfCorte3Porcentaje() != null){
-			row.add(getfCorte3Porcentaje());
+			row.add(getfCorte3Porcentaje()*100);
 		}else{
 			row.add("");
 		}
@@ -200,7 +200,7 @@ public class ReporteRebajaVO implements Serializable{
 			row.add("");
 		}
 		if(getfCorte4Porcentaje() != null){
-			row.add(getfCorte4Porcentaje());
+			row.add(getfCorte4Porcentaje()*100);
 		}else{
 			row.add("");
 		}

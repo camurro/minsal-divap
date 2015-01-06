@@ -43,8 +43,6 @@
 												<p:selectOneMenu style="width:400px;" id="cbProgramaSub21" value="#{reporteMonitoreoProgramaController.valorComboPrograma}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
 			           								<f:selectItems value="#{reporteMonitoreoProgramaController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           								<p:ajax listener="#{reporteMonitoreoProgramaController.cargarDatosFiltroPrograma}" update="tabView" >
-			           								</p:ajax>
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>	
 										
@@ -66,7 +64,7 @@
 						</h:panelGrid>
 
 					<p:tabView id="tabView" activeIndex="#{reporteMonitoreoProgramaController.activeTab}" dynamic="true" cache="false">
-					<p:ajax event="tabChange" listener="#{reporteMonitoreoProgramaController.onTabChange}" update="Sub21 Sub22 Sub24 Sub21" />
+					<p:ajax event="tabChange" listener="#{reporteMonitoreoProgramaController.onTabChange}" update="tabView Sub21 Sub22 Sub24 Sub21" />
 					
 					
 						<p:tab id="Sub21" title="Subtítulo 21" rendered="#{reporteMonitoreoProgramaController.mostrarSub21}" >
@@ -78,6 +76,7 @@
 								<p:columnGroup type="header">
 									<p:row>
 										<p:column rowspan="2" headerText="Servicio" />
+										<p:column rowspan="2" headerText="Establecimiento" />
 										<p:column rowspan="2" headerText="Componente" />
 										<p:column rowspan="2" headerText="$ Marco Presupuestario" />
 										<p:column colspan="2" headerText="$ Remesa Acumulada" />
@@ -95,6 +94,9 @@
 
 								<p:column>
 									<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
 								</p:column>
 								<p:column>
 									<span class="textoAjustado textoPequenio centrado">#{_data.componente}</span>
@@ -135,6 +137,7 @@
 
 								<p:columnGroup type="footer">
 									<p:row>
+										<p:column />
 										<p:column />
 										<p:column />
 										<p:column>
@@ -182,6 +185,7 @@
 								<p:columnGroup type="header">
 									<p:row>
 										<p:column rowspan="2" headerText="Servicio" />
+										<p:column rowspan="2" headerText="Establecimiento" />
 										<p:column rowspan="2" headerText="Componente" />
 										<p:column rowspan="2" headerText="$ Marco Presupuestario" />
 										<p:column colspan="2" headerText="$ Remesa Acumulada" />
@@ -199,6 +203,9 @@
 
 								<p:column>
 									<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
 								</p:column>
 								<p:column>
 									<span class="textoAjustado textoPequenio centrado">#{_data.componente}</span>
@@ -239,6 +246,7 @@
 
 								<p:columnGroup type="footer">
 									<p:row>
+										<p:column />
 										<p:column />
 										<p:column />
 										<p:column>
@@ -395,6 +403,7 @@
 								<p:columnGroup type="header">
 									<p:row>
 										<p:column rowspan="2" headerText="Servicio" />
+										<p:column rowspan="2" headerText="Establecimiento" />
 										<p:column rowspan="2" headerText="Componente" />
 										<p:column rowspan="2" headerText="$ Marco Presupuestario" />
 										<p:column colspan="2" headerText="$ Remesa Acumulada" />
@@ -412,6 +421,9 @@
 
 								<p:column>
 									<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
 								</p:column>
 								<p:column>
 									<span class="textoAjustado textoPequenio centrado">#{_data.componente}</span>
@@ -452,6 +464,7 @@
 
 								<p:columnGroup type="footer">
 									<p:row>
+										<p:column />
 										<p:column />
 										<p:column />
 										<p:column>

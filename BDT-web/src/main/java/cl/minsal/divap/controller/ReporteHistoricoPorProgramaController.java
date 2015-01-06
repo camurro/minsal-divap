@@ -73,6 +73,18 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	private Boolean anoAnoActual;
 	
 	
+	private Integer anoCurso;
+	private Integer anoCursoMenos1;
+	private Integer anoCursoMenos2;
+	private Integer anoCursoMenos3;
+	private Integer anoCursoMenos4;
+	private Integer anoCursoMenos5;
+	private Integer anoCursoMenos6;
+	private Integer anoCursoMenos7;
+	private Integer anoCursoMenos8;
+	private Integer anoCursoMenos9;
+	
+	
 	private List<ProgramaVO> programas;
 	private List<ServiciosVO> servicios;
 	private List<ComunaSummaryVO> comunas;
@@ -128,13 +140,25 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 		this.anoAnoActual = false;
 		
 		
+		this.anoCurso = reportesServices.getAnoCurso() + 1;
+		this.anoCursoMenos1 = this.anoCurso -1;
+		this.anoCursoMenos2 = this.anoCurso -2;
+		this.anoCursoMenos3 = this.anoCurso -3;
+		this.anoCursoMenos4 = this.anoCurso -4;
+		this.anoCursoMenos5 = this.anoCurso -5;
+		this.anoCursoMenos6 = this.anoCurso -6;
+		this.anoCursoMenos7 = this.anoCurso -7;
+		this.anoCursoMenos8 = this.anoCurso -8;
+		this.anoCursoMenos9 = this.anoCurso -9;
+		
+		
 		
 		DateFormat formatNowYear = new SimpleDateFormat("yyyy");
 		Date nowDate = new Date();
 		this.anoEnCurso = Integer.valueOf(formatNowYear.format(nowDate)); 
 		this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
 		
-		this.programa = programasService.getProgramaAno(1);
+		this.programa = programasService.getProgramaAno(this.valorComboPrograma);
 		
 		
 		this.servicios = servicioSaludService.getServiciosOrderId();
@@ -230,9 +254,9 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 		this.mostrarSub24 = false;
 		this.mostrarSub29 = false;
 		
-		ProgramaVO programaVO = programasService.getProgramaAno(this.valorComboPrograma);
+		this.programa = programasService.getProgramaAno(this.valorComboPrograma);
 		
-		for (ComponentesVO componente : programaVO.getComponentes()) {
+		for (ComponentesVO componente : this.programa.getComponentes()) {
 			System.out.println("componente.getNombre() --> "+componente.getNombre());
 			for(SubtituloVO subtitulo : componente.getSubtitulos()){
 				if(subtitulo.getId() == 1){
@@ -1008,6 +1032,106 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 
 	public void setAnoAnoActual(Boolean anoAnoActual) {
 		this.anoAnoActual = anoAnoActual;
+	}
+
+
+	public Integer getAnoCurso() {
+		return anoCurso;
+	}
+
+
+	public void setAnoCurso(Integer anoCurso) {
+		this.anoCurso = anoCurso;
+	}
+
+
+	public Integer getAnoCursoMenos1() {
+		return anoCursoMenos1;
+	}
+
+
+	public void setAnoCursoMenos1(Integer anoCursoMenos1) {
+		this.anoCursoMenos1 = anoCursoMenos1;
+	}
+
+
+	public Integer getAnoCursoMenos2() {
+		return anoCursoMenos2;
+	}
+
+
+	public void setAnoCursoMenos2(Integer anoCursoMenos2) {
+		this.anoCursoMenos2 = anoCursoMenos2;
+	}
+
+
+	public Integer getAnoCursoMenos3() {
+		return anoCursoMenos3;
+	}
+
+
+	public void setAnoCursoMenos3(Integer anoCursoMenos3) {
+		this.anoCursoMenos3 = anoCursoMenos3;
+	}
+
+
+	public Integer getAnoCursoMenos4() {
+		return anoCursoMenos4;
+	}
+
+
+	public void setAnoCursoMenos4(Integer anoCursoMenos4) {
+		this.anoCursoMenos4 = anoCursoMenos4;
+	}
+
+
+	public Integer getAnoCursoMenos5() {
+		return anoCursoMenos5;
+	}
+
+
+	public void setAnoCursoMenos5(Integer anoCursoMenos5) {
+		this.anoCursoMenos5 = anoCursoMenos5;
+	}
+
+
+	public Integer getAnoCursoMenos6() {
+		return anoCursoMenos6;
+	}
+
+
+	public void setAnoCursoMenos6(Integer anoCursoMenos6) {
+		this.anoCursoMenos6 = anoCursoMenos6;
+	}
+
+
+	public Integer getAnoCursoMenos7() {
+		return anoCursoMenos7;
+	}
+
+
+	public void setAnoCursoMenos7(Integer anoCursoMenos7) {
+		this.anoCursoMenos7 = anoCursoMenos7;
+	}
+
+
+	public Integer getAnoCursoMenos8() {
+		return anoCursoMenos8;
+	}
+
+
+	public void setAnoCursoMenos8(Integer anoCursoMenos8) {
+		this.anoCursoMenos8 = anoCursoMenos8;
+	}
+
+
+	public Integer getAnoCursoMenos9() {
+		return anoCursoMenos9;
+	}
+
+
+	public void setAnoCursoMenos9(Integer anoCursoMenos9) {
+		this.anoCursoMenos9 = anoCursoMenos9;
 	}
 	
 

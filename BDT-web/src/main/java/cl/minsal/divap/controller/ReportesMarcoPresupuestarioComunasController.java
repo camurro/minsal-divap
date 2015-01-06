@@ -11,20 +11,23 @@ import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
+import minsal.divap.dao.MesDAO;
 import minsal.divap.enums.Subtitulo;
-import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ReportesServices;
 import minsal.divap.service.ServicioSaludService;
+import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.EstablecimientoSummaryVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ReporteMarcoPresupuestarioComunaVO;
 import minsal.divap.vo.ReporteMarcoPresupuestarioEstablecimientoVO;
 import minsal.divap.vo.ServiciosVO;
+import minsal.divap.vo.SubtituloVO;
 
 import org.primefaces.event.TabChangeEvent;
 
+import cl.minsal.divap.model.Mes;
 import cl.redhat.bandejaTareas.controller.BaseController;
 
 @Named ( "reportesMarcoPresupuestarioComunasController" )
@@ -42,23 +45,23 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 	private Integer idPlanillaDocEstablecimiento;
 	private String docIdEstablecimientoDownload;
 	
+	private Integer anoEnCurso;
+	
+	private String fechaActual;
+	
 	
 
 	private List<ProgramaVO> programas;
+	private ProgramaVO programa;
 	private List<ServiciosVO> servicios;
 	private ServiciosVO servicioSeleccionado;
 	private List<ComunaSummaryVO> comunas;
 	private List<EstablecimientoSummaryVO> establecimientos;
 	
-	
-	
-	public List<EstablecimientoSummaryVO> getEstablecimientos() {
-		return establecimientos;
-	}
-
-	public void setEstablecimientos(List<EstablecimientoSummaryVO> establecimientos) {
-		this.establecimientos = establecimientos;
-	}
+	private Boolean mostrarSub21;
+	private Boolean mostrarSub22;
+	private Boolean mostrarSub24;
+	private Boolean mostrarSub29;
 
 	
 	private List<ReporteMarcoPresupuestarioEstablecimientoVO> reporteMarcoPresupuestarioEstablecimientoVOSub21;
@@ -83,9 +86,24 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 	private ServicioSaludService servicioSaludService;
 	@EJB
 	private ReportesServices reportesServices;
+	@EJB
+	private MesDAO mesDAO;
 
 
 	@PostConstruct public void init() {
+		
+		Mes mesActual = mesDAO.getMesPorID(Integer.parseInt(reportesServices.getMesCurso(true)));
+		if(mesActual.getIdMes() < 10){
+			this.fechaActual = "0"+mesActual.getIdMes()+"/"+this.getAnoEnCurso();
+		}
+		else{
+			this.fechaActual = mesActual.getIdMes()+"/"+this.getAnoEnCurso();
+		}
+		
+		this.mostrarSub21 = false;
+		this.mostrarSub22 = false;
+		this.mostrarSub24 = false;
+		this.mostrarSub29 = false;
 		
 		this.reporteMarcoPresupuestarioEstablecimientoVOSub21 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
 		this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
@@ -93,14 +111,14 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 		this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
 		this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
 		
-		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMARCOPRESPUESTARIOCOMUNA);
+		this.idPlanillaDocComuna = 1;//reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMARCOPRESPUESTARIOCOMUNA);
 		if(this.idPlanillaDocComuna == null){
-			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteMarcoPresupuestarioComuna();
+			this.idPlanillaDocComuna = 1;//reportesServices.generarPlanillaReporteMarcoPresupuestarioComuna();
 		}
 		
-		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMARCOPRESPUESTARIOSERVICIO);
+		this.idPlanillaDocEstablecimiento = 1;//reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMARCOPRESPUESTARIOSERVICIO);
 		if(this.idPlanillaDocEstablecimiento == null){
-			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteMarcoPresupuestarioServicios();
+			this.idPlanillaDocEstablecimiento = 1;//reportesServices.generarPlanillaReporteMarcoPresupuestarioServicios();
 		}
 		
 		Integer currentTab = 0;
@@ -137,7 +155,6 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 				cargarEstablecimientos();
 			}
 			System.out.println("this.subtituloSeleccionado --> "+this.subtituloSeleccionado.getNombre());
-			this.programas = programasService.getProgramasBySubtitulo(this.subtituloSeleccionado);
 		}
 		
 	}
@@ -187,28 +204,92 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 	public void cargarTablaServiciosFiltradosComunaPrograma(){
 		System.out.println("getValorComboComuna() --> "+getValorComboComuna());
 		System.out.println("this.subtituloSeleccionado ---> "+this.subtituloSeleccionado);
+		
+		this.programa = programasService.getProgramaAno(this.valorComboPrograma);
+		for (ComponentesVO componente : this.programa.getComponentes()) {
+			System.out.println("componente.getNombre() --> "+componente.getNombre());
+			for(SubtituloVO subtitulo : componente.getSubtitulos()){
+				if(subtitulo.getId() == 1){
+					this.mostrarSub21 = true;
+					this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
+				}
+				else if(subtitulo.getId() == 2){
+					this.mostrarSub22 = true;
+					this.subtituloSeleccionado = Subtitulo.SUBTITULO22;
+				}
+				else if(subtitulo.getId() == 3){
+					this.mostrarSub24 = true;
+					this.subtituloSeleccionado = Subtitulo.SUBTITULO24;
+				}
+				else if(subtitulo.getId() == 4){
+					this.mostrarSub29 = true;
+					this.subtituloSeleccionado = Subtitulo.SUBTITULO29;
+				}
+			}
+		}
+		
 		this.reporteMarcoPresupuestarioVOSub24 = reportesServices.getReporteMarcoPorComunaFiltroServicioComunaPrograma(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado, getValorComboComuna(), getLoggedUsername());
+	}
+	
+	public void visibilidadSubtitulos(){
+		this.programa = programasService.getProgramaAno(this.valorComboPrograma);
+		for (ComponentesVO componente : this.programa.getComponentes()) {
+			System.out.println("componente.getNombre() --> "+componente.getNombre());
+			for(SubtituloVO subtitulo : componente.getSubtitulos()){
+				if(subtitulo.getId() == 1){
+					this.mostrarSub21 = true;
+					this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
+				}
+				else if(subtitulo.getId() == 2){
+					this.mostrarSub22 = true;
+					this.subtituloSeleccionado = Subtitulo.SUBTITULO22;
+				}
+				else if(subtitulo.getId() == 3){
+					this.mostrarSub24 = true;
+					this.subtituloSeleccionado = Subtitulo.SUBTITULO24;
+				}
+				else if(subtitulo.getId() == 4){
+					this.mostrarSub29 = true;
+					this.subtituloSeleccionado = Subtitulo.SUBTITULO29;
+				}
+			}
+		}
 	}
 	
 	public void cargarTablaServiciosFiltradosProgramaEstablecimiento(){
 		System.out.println("getValorComboEstablecimiento() --> "+getValorComboEstablecimiento());
-		System.out.println("this.subtituloSeleccionado ---> "+this.subtituloSeleccionado);
-		switch (this.subtituloSeleccionado) {
-		case SUBTITULO21:
-			System.out.println("subtitulo 21");
-			this.reporteMarcoPresupuestarioEstablecimientoVOSub21 = reportesServices.getReporteMarcoPorServicioFiltroEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), this.subtituloSeleccionado);
-			break;
-		case SUBTITULO22:
-			System.out.println("subtitulo 22");
-			this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = reportesServices.getReporteMarcoPorServicioFiltroEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), this.subtituloSeleccionado);
-			break;
-		case SUBTITULO29:
-			System.out.println("subtitulo 29");
-			this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = reportesServices.getReporteMarcoPorServicioFiltroEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), this.subtituloSeleccionado);
-			break;
-		default:
-			break;
-		}
+		this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
+		
+		this.mostrarSub21 = false;
+		this.mostrarSub22 = false;
+		this.mostrarSub24 = false;
+		this.mostrarSub29 = false;
+		
+		visibilidadSubtitulos();
+		
+		this.reporteMarcoPresupuestarioEstablecimientoVOSub21 = reportesServices.getReporteMarcoPorServicioFiltroEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), Subtitulo.SUBTITULO21);
+		
+		
+		this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = reportesServices.getReporteMarcoPorServicioFiltroEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), Subtitulo.SUBTITULO22);
+		this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = reportesServices.getReporteMarcoPorServicioFiltroEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), Subtitulo.SUBTITULO29);
+
+		
+//		switch (this.subtituloSeleccionado) {
+//		case SUBTITULO21:
+//			System.out.println("subtitulo 21");
+//			this.reporteMarcoPresupuestarioEstablecimientoVOSub21 = reportesServices.getReporteMarcoPorServicioFiltroEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), this.subtituloSeleccionado);
+//			break;
+//		case SUBTITULO22:
+//			System.out.println("subtitulo 22");
+//			this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = reportesServices.getReporteMarcoPorServicioFiltroEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), this.subtituloSeleccionado);
+//			break;
+//		case SUBTITULO29:
+//			System.out.println("subtitulo 29");
+//			this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = reportesServices.getReporteMarcoPorServicioFiltroEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), this.subtituloSeleccionado);
+//			break;
+//		default:
+//			break;
+//		}
 		
 	}
 
@@ -499,7 +580,7 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 
 	public List<ProgramaVO> getProgramas() {
 		if(programas == null){
-			programas = programasService.getProgramasByUser(getLoggedUsername());
+			programas = programasService.getProgramasByUserAno(getLoggedUsername(), getAnoEnCurso()+1);
 		}
 		return programas;
 	}
@@ -540,8 +621,71 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 		this.docIdEstablecimientoDownload = docIdEstablecimientoDownload;
 	}
 
+	public Integer getAnoEnCurso() {
+		if(anoEnCurso == null){
+			anoEnCurso = reportesServices.getAnoCurso();
+		}
+		return anoEnCurso +1;
+	}
 	
-	
-	
+	public ProgramaVO getPrograma() {
+		return programa;
+	}
 
+	public void setPrograma(ProgramaVO programa) {
+		this.programa = programa;
+	}
+
+	public void setAnoEnCurso(Integer anoEnCurso) {
+		this.anoEnCurso = anoEnCurso;
+	}
+
+	public List<EstablecimientoSummaryVO> getEstablecimientos() {
+		return establecimientos;
+	}
+
+	public void setEstablecimientos(List<EstablecimientoSummaryVO> establecimientos) {
+		this.establecimientos = establecimientos;
+	}
+
+	public Boolean getMostrarSub21() {
+		return mostrarSub21;
+	}
+
+	public void setMostrarSub21(Boolean mostrarSub21) {
+		this.mostrarSub21 = mostrarSub21;
+	}
+
+	public Boolean getMostrarSub22() {
+		return mostrarSub22;
+	}
+
+	public void setMostrarSub22(Boolean mostrarSub22) {
+		this.mostrarSub22 = mostrarSub22;
+	}
+
+	public Boolean getMostrarSub24() {
+		return mostrarSub24;
+	}
+
+	public void setMostrarSub24(Boolean mostrarSub24) {
+		this.mostrarSub24 = mostrarSub24;
+	}
+
+	public Boolean getMostrarSub29() {
+		return mostrarSub29;
+	}
+
+	public void setMostrarSub29(Boolean mostrarSub29) {
+		this.mostrarSub29 = mostrarSub29;
+	}
+
+	public String getFechaActual() {
+		return fechaActual;
+	}
+
+	public void setFechaActual(String fechaActual) {
+		this.fechaActual = fechaActual;
+	}
+	
 }
