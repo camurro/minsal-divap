@@ -23,7 +23,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "DocumentoRebaja.findAll", query = "SELECT d FROM DocumentoRebaja d"),
     @NamedQuery(name = "DocumentoRebaja.findByIdRebajaTipo", query = "SELECT d FROM DocumentoRebaja d WHERE d.rebaja.idRebaja = :idRebaja and d.tipoDocumento.idTipoDocumento = :idTipoDocumento"),
-    @NamedQuery(name = "DocumentoRebaja.findByIdDocumentoRebaja", query = "SELECT d FROM DocumentoRebaja d WHERE d.idDocumentoRebaja = :idDocumentoRebaja")})
+    @NamedQuery(name = "DocumentoRebaja.findByIdDocumentoRebaja", query = "SELECT d FROM DocumentoRebaja d WHERE d.idDocumentoRebaja = :idDocumentoRebaja"),
+    @NamedQuery(name = "DocumentoRebaja.findLastByTypesServicioIdRebaja", query = "SELECT d FROM DocumentoRebaja d WHERE d.rebaja.idRebaja = :idRebaja and d.servicio.id = :idServicio and d.tipoDocumento.idTipoDocumento IN (:idTiposDocumento) order by d.documento.fechaCreacion desc"),
+    @NamedQuery(name = "DocumentoRebaja.findByTypesIdRebaja", query = "SELECT d FROM DocumentoRebaja d WHERE d.rebaja.idRebaja = :idRebaja and d.tipoDocumento.idTipoDocumento IN (:idTiposDocumento)"),
+    @NamedQuery(name = "DocumentoRebaja.findByTypesServicioIdRebaja", query = "SELECT d FROM DocumentoRebaja d WHERE d.rebaja.idRebaja = :idRebaja and d.comuna is not null and d.comuna.servicioSalud.id = :idServicio and d.tipoDocumento.idTipoDocumento IN (:idTiposDocumento)"),
+    @NamedQuery(name = "DocumentoRebaja.findVersionFinalByIdRebajaIdServicioTipoDocumento", query = "SELECT d.documento FROM DocumentoRebaja d WHERE d.rebaja.idRebaja = :idRebaja and d.servicio.id = :idServicio and d.tipoDocumento.idTipoDocumento = :idTipoDocumento and d.documento.documentoFinal = true order by d.documento.fechaCreacion desc"),
+    @NamedQuery(name = "DocumentoRebaja.findByIdRebajaTiposNotFinal", query = "SELECT d FROM DocumentoRebaja d WHERE d.rebaja.idRebaja = :idRebaja and d.tipoDocumento.idTipoDocumento IN (:idTiposDocumento) and d.documento.documentoFinal = false"),
+    @NamedQuery(name = "DocumentoRebaja.deleteUsingIds", query = "DELETE FROM DocumentoRebaja d WHERE d.idDocumentoRebaja IN (:idDocumentosRebaja)"),
+    @NamedQuery(name = "DocumentoRebaja.findByServicioRebajaTypes", query = "SELECT d.documento FROM DocumentoRebaja d WHERE d.rebaja.idRebaja = :idRebaja and d.servicio.id = :idServicio and d.tipoDocumento.idTipoDocumento IN (:idTiposDocumento) and d.documento.documentoFinal = true order by d.documento.fechaCreacion desc")})
 public class DocumentoRebaja implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -42,6 +49,9 @@ public class DocumentoRebaja implements Serializable {
     @JoinColumn(name = "comuna", referencedColumnName = "id")
     @ManyToOne
     private Comuna comuna;
+    @JoinColumn(name = "servicio", referencedColumnName = "id")
+    @ManyToOne
+    private ServicioSalud servicio;
 
     public DocumentoRebaja() {
     }
@@ -89,8 +99,16 @@ public class DocumentoRebaja implements Serializable {
     public void setComuna(Comuna comuna) {
         this.comuna = comuna;
     }
+    
+    public ServicioSalud getServicio() {
+		return servicio;
+	}
 
-    @Override
+	public void setServicio(ServicioSalud servicio) {
+		this.servicio = servicio;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (idDocumentoRebaja != null ? idDocumentoRebaja.hashCode() : 0);

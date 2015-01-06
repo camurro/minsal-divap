@@ -1,5 +1,6 @@
 package minsal.divap.dao;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -282,6 +283,41 @@ public class RebajaDAO {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public List<DocumentoRebaja> getByIdRebajaTipoNotFinal(Integer idProceso, TipoDocumentosProcesos ... tiposDocumentos) {
+		try{
+			List<Integer> idDocumentos = new ArrayList<Integer>();
+			for(TipoDocumentosProcesos tipoDocumento : tiposDocumentos){
+				idDocumentos.add(tipoDocumento.getId());
+			}
+			TypedQuery<DocumentoRebaja> query = this.em.createNamedQuery("DocumentoRebaja.findByIdRebajaTiposNotFinal", DocumentoRebaja.class);
+			query.setParameter("idRebaja", idProceso);
+			query.setParameter("idTiposDocumento", idDocumentos);
+			return query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public Integer deleteDocumentoRebaja(Integer idDocumentoRebaja) {
+		List<Integer> idDocumentosRebaja = new ArrayList<Integer>();
+		idDocumentosRebaja.add(idDocumentoRebaja);
+		return deleteDocumentoRebaja(idDocumentosRebaja);
+		
+	}
+	
+	private Integer deleteDocumentoRebaja(List<Integer> idDocumentosRebaja) {
+		Query query = this.em.createNamedQuery("DocumentoRebaja.deleteUsingIds");
+		query.setParameter("idDocumentosRebaja", idDocumentosRebaja);
+		return query.executeUpdate();
+	}
+
+	public Integer deleteDocumento(Integer idDocumento) {
+		Query query = this.em.createNamedQuery("ReferenciaDocumento.deleteUsingId");
+		query.setParameter("idDocumento", idDocumento);
+		return query.executeUpdate();
 	}
 	
 }

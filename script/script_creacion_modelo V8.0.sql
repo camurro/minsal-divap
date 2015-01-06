@@ -25550,6 +25550,12 @@ ALTER TABLE caja_monto
 ALTER TABLE caja
    ALTER COLUMN id_componente DROP NOT NULL;
 
+ALTER TABLE documento_rebaja
+  ADD COLUMN servicio integer;
+ALTER TABLE documento_rebaja
+  ADD CONSTRAINT servicio_fk FOREIGN KEY (servicio) REFERENCES servicio_salud (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
 
 
 

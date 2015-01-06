@@ -30,13 +30,14 @@
 		    	if (charCode == 8 || charCode == 46 || charCode == 35 || charCode == 36 || charCode == 37 || charCode == 39){ 
 			    	return true;
 		    	}
-		    	alert("idText="+idText)
 		    	if (charCode == 13) {
+		    		event.preventDefault();
 		    		var inputText = "#rebajasForm [name='" + idText + "']";
+		    		var value_input = $("input[name*='" + idText +"']").val();
 		    		$(inputText).focus();
 			    	$("#actualizaModelo\\:posicionElemento").val(fila);
 					$("#actualizaModelo\\:columnaElemento").val(item);
-					$("#actualizaModelo\\:valorElemento").val(document.getElementsByName(idText).value);
+					$("#actualizaModelo\\:valorElemento").val(value_input);
 		    		document.getElementById(idButton).click();
 		    		return true;
 		    	}
@@ -137,10 +138,10 @@
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
-							<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoRebajaValidarMontosController.buscarRebaja}" oncomplete="message();" update="tablaMisTareas hiddenFirstTime hiddenTotalIncumplimiento"/>
-							<p:commandButton value="Limpiar" styleClass=" x-btn-text icon-guardar" icon="ui-icon-trash" actionListener="#{procesoRebajaValidarMontosController.limpiar}" update="tablaMisTareas busqueda_mis_tareas hiddenFirstTime" />
+								<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoRebajaValidarMontosController.buscarRebaja}" oncomplete="message();" update="tablaMisTareas hiddenFirstTime hiddenTotalIncumplimiento"/>
+								<p:commandButton value="Limpiar" styleClass=" x-btn-text icon-guardar" icon="ui-icon-trash" actionListener="#{procesoRebajaValidarMontosController.limpiar}" update="tablaMisTareas busqueda_mis_tareas hiddenFirstTime" />
 							</h:panelGrid>
-
+							
 						</h:panelGrid>
 					</p:panel>
 					<br />
@@ -228,19 +229,15 @@
 						</p:column>
 						
 						<p:column>
-							 	<p:inputText value="#{_rebaja.cumplimientoRebajasItem2.rebajaFinal}" 
-							 		styleClass="textoPequenioInput textoAjustado" style="width:30px" 
-							 		onkeypress="if (event.keyCode == 13) { actualizarModelo(this.id, '#{rowIndex}', '2', 'final_#{_rebaja.id_comuna}'); return false; }">
-								</p:inputText>
+								<h:inputText value="#{_rebaja.cumplimientoRebajasItem2.rebajaFinal}" style="width:30px" 
+								onkeypress="return isNumber(event, 'actualizaModelo:actualizarModelo', this.name, '#{rowIndex}', '2');" >
+			           		 	</h:inputText>
 						</p:column>
 						<p:column>
-							 	<p:inputText  value="#{_rebaja.cumplimientoRebajasItem3.rebajaFinal}" 
-							 		styleClass="textoPequenioInput textoAjustado" style="width:30px" 
-							 		onkeypress="if (event.keyCode == 13) { actualizarModelo(this.id, '#{rowIndex}', '3', 'final_#{_rebaja.id_comuna}'); return false; }">
-								</p:inputText>
+								<h:inputText value="#{_rebaja.cumplimientoRebajasItem3.rebajaFinal}" style="width:30px" 
+								onkeypress="return isNumber(event, 'actualizaModelo:actualizarModelo', this.name, '#{rowIndex}', '3');" >
+			           		 	</h:inputText>
 						</p:column>
-						
-						
 						
 						<p:column>
 							<h:outputText id="totalFinal" value="#{_rebaja.totalRebajaRebajaFinal}" styleClass="textoPequenio textoAjustado">
@@ -259,7 +256,7 @@
 							</h:outputText>
 						</p:column>
 						<p:column>
-							<p:commandButton  icon="ui-icon-disk" title="Guardar" actionListener="#{procesoRebajaValidarMontosController.guardaRebaja}" update="tablaMisTareas" rendered="#{_rebaja.actualizar}">
+							<p:commandButton  icon="ui-icon-disk" title="Guardar" actionListener="#{procesoRebajaValidarMontosController.guardaRebaja(rowIndex)}" update="tablaMisTareas" rendered="#{_rebaja.actualizar}">
                 				<f:setPropertyActionListener value="#{rowIndex}" target="#{procesoRebajaValidarMontosController.rebajaSeleccionada}" />
             				</p:commandButton>
 						</p:column>
@@ -297,5 +294,6 @@
 		<h:form id="actualizaDummy">
 			<p:commandButton id="actualizarDummy" icon="ui-icon-disk" title="Guardar" actionListener="#{procesoRebajaValidarMontosController.actualizarDummy}" style="display: none" update=":rebajasForm:tablaMisTareas" />
 		</h:form>
+		
 	</ui:define>
 </ui:composition>

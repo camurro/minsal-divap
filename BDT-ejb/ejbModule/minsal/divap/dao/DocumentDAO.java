@@ -19,6 +19,7 @@ import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.DocumentoModificacionPercapita;
 import cl.minsal.divap.model.DocumentoOt;
 import cl.minsal.divap.model.DocumentoProgramasReforzamiento;
+import cl.minsal.divap.model.DocumentoRebaja;
 import cl.minsal.divap.model.DocumentoReportes;
 import cl.minsal.divap.model.Plantilla;
 import cl.minsal.divap.model.ReferenciaDocumento;
@@ -547,6 +548,75 @@ public class DocumentDAO {
 			query.setParameter("idDistribucionInicialPercapita", idDistribucionInicialPercapita);
 			query.setParameter("idServicio", idServicio);
 			query.setParameter("idTipoDocumento", tipoDocumento.getId());
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public DocumentoRebaja getLastDocumentosByTypeServicioRebaja(Integer idRebaja, Integer idServicio, TipoDocumentosProcesos... tiposDocumentoProceso) {
+		try {
+			List<Integer> tipos = new ArrayList<Integer>();
+			for(TipoDocumentosProcesos tipoDocumentosProcesos: tiposDocumentoProceso){
+				tipos.add(tipoDocumentosProcesos.getId());
+			}
+			TypedQuery<DocumentoRebaja> query = this.em.createNamedQuery("DocumentoRebaja.findLastByTypesServicioIdRebaja", DocumentoRebaja.class);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idRebaja", idRebaja);
+			query.setParameter("idTiposDocumento", tipos);
+			List<DocumentoRebaja> results = query.getResultList();
+			if(results != null && results.size() > 0){
+				return results.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<DocumentoRebaja> getDocumentosByTypeServicioRebaja(Integer idRebaja, Integer idServicio, TipoDocumentosProcesos... tiposDocumentoProceso) {
+		try {
+			TypedQuery<DocumentoRebaja> query = null;
+			List<Integer> tipos = new ArrayList<Integer>();
+			for(TipoDocumentosProcesos tipoDocumentosProcesos: tiposDocumentoProceso){
+				tipos.add(tipoDocumentosProcesos.getId());
+			}
+			if(idServicio == null){
+				query = this.em.createNamedQuery("DocumentoRebaja.findByTypesIdRebaja", DocumentoRebaja.class);
+			}else{
+				query = this.em.createNamedQuery("DocumentoRebaja.findByTypesServicioIdRebaja", DocumentoRebaja.class);
+				query.setParameter("idServicio", idServicio);
+			}
+			query.setParameter("idRebaja", idRebaja);
+			query.setParameter("idTiposDocumento", tipos);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<ReferenciaDocumento> getVersionFinalRebajaByType(Integer idProcesoRebaja, Integer idServicio, TipoDocumentosProcesos tipoDocumento) {
+		try {
+			TypedQuery<ReferenciaDocumento> query = this.em.createNamedQuery("DocumentoRebaja.findVersionFinalByIdRebajaIdServicioTipoDocumento", ReferenciaDocumento.class);
+			query.setParameter("idRebaja", idProcesoRebaja);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idTipoDocumento", tipoDocumento.getId());
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<ReferenciaDocumento> getVersionFinalByServicioRebajaTypes(Integer idProcesoRebaja, Integer idServicio, TipoDocumentosProcesos... tipoDocumento) {
+		try {
+			List<Integer> tipos = new ArrayList<Integer>();
+			for(TipoDocumentosProcesos tipoDocumentosProcesos: tipoDocumento){
+				tipos.add(tipoDocumentosProcesos.getId());
+			}
+			TypedQuery<ReferenciaDocumento> query = this.em.createNamedQuery("DocumentoRebaja.findByServicioRebajaTypes", ReferenciaDocumento.class);
+			query.setParameter("idRebaja", idProcesoRebaja);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idTiposDocumento", tipos);
 			return query.getResultList(); 
 		} catch (Exception e) {
 			throw new RuntimeException(e);

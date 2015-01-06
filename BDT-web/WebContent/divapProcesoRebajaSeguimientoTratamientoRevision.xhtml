@@ -19,15 +19,16 @@
 			document.getElementById('seguimientoForm:buscarListado').click();  
 		}
 	}
+	
 	function downloadDocument(idDoc) {  
         document.getElementById('formDownload:hiddenId').value=idDoc;
         document.getElementById('formDownload:linkDownload').click();  
-    }  
+    } 
+     
 	function checkEmail(email) {
 		var regExp = /(^[a-z]([a-z_\.]*)@([a-z_\.]*)([.][a-z]{3})$)|(^[a-z]([a-z_\.]*)@([a-z_\.]*)(\.[a-z]{3})(\.[a-z]{2})*$)/i;
 		return regExp.test(email);
 	}
-
 
 	function checkInputText(text, required, message){
 		text = $.trim(text);
@@ -69,6 +70,15 @@
 	    }
 		return true;
 	}
+
+	function downloadDocumentResolucion(idDoc) {  
+        document.getElementById('formDownloadResolucion:hiddenId').value=idDoc;
+        document.getElementById('formDownloadResolucion:linkDownload').click();  
+    }
+
+	function marcarResolucionServicio(idServicio) {  
+        document.getElementById('formUploadVersion:hiddenIdServicio').value=idServicio;
+    }  
 	
 	function checkListEmails(){
 		 var emailsPara = document.getElementById("seguimientoForm:to").value;
@@ -128,30 +138,7 @@
 						Maecenas sollicitudin odio imperdiet orci sollicitudin convallis.
 						Etiam hendrerit, tellus a lacinia dignissim, justo nisi porttitor
 						enim, eget ullamcorper felis augue eget lacus.</p>
-					<!-- ARCHIVOS DE TAREA -->
-					<!-- <h3>Archivos disponibles para la Tarea:</h3> -->
-					<div class="destacaArchivos ui-corner-all">
-						<h3>Archivos Disponibles para la Tarea:</h3>
-						<span class="strong">Archivo: </span> Consolidado de Resoluciones
-						por Servicio [
-						<h:graphicImage value="resources/minsal/images/download-alt.png"
-							styleClass="divapIcons" />
-						<p:commandLink value="Bajar Última Versión" />
-						]
-						<ul class="versionesArchivo">
-							<li><h:graphicImage
-									value="resources/minsal/images/download-alt.png"
-									styleClass="divapIcons" /> <p:commandLink
-									value="consolidado_resoluciones_rebaja_v2.zip" /> (Modificado
-								el 10 de Abril de 2014 a las 14:31 por Juan Arriagada)</li>
-							<li><h:graphicImage
-									value="resources/minsal/images/download-alt.png"
-									styleClass="divapIcons" /> <p:commandLink
-									value="consolidado_resoluciones_rebaja_v1.zip" /> (Modificado
-								el 6 de Abril de 2014 a las 14:31 por Robson Watt)</li>
-						</ul>
-					</div>
-					<br />
+					
 					<div class="destacaArchivos ui-corner-all">
 						<h3>Plantilla Envío Correo Resoluciones Servicios de Salud :</h3>
 						<span class="strong">Archivo: </span> Correo de Resoluciones Servicio [
@@ -165,6 +152,29 @@
 							<p:commandLink value="Subir Nueva Versión"
 								oncomplete="dlgUpload.show();" />
 						]
+					</div>
+					<br />
+					<div class="destacaArchivos ui-corner-all">
+						<h3>Archivos Disponibles para la Tarea:</h3>
+					<p:panel id="panelBusqueda">
+						<span class="strong">Archivo: </span> Archivo comprimido con resoluciones rebaja para Servicio de Salud
+						<ul class="versionesArchivo">
+							<c:forEach var="vardoc" items="#{procesoRebajaTramitacionController.serviciosResoluciones}">
+							<li>
+								<p:outputLabel
+										value="Resolución Rebaja para Servicio #{vardoc.nombre_servicio}"/> [ <h:graphicImage
+										value="resources/minsal/images/download-alt.png"
+										styleClass="divapIcons" /> <h:commandLink  value="Bajar Última Versión"
+								onclick="downloadDocumentResolucion(#{vardoc.id_servicio});return false;" /> | <h:graphicImage
+										value="resources/minsal/images/upload-alt.png"
+										styleClass="divapIcons" />
+										<p:commandLink value="Subir Nueva Versión" onclick="marcarResolucionServicio(#{vardoc.id_servicio});"  actionListener="#{procesoRebajaTramitacionController.resetLastVersion}" update=":formUploadVersion:panelLastVersion"
+											oncomplete="dlgUploadVersion.show();" /> 
+										] 
+							</li>
+							</c:forEach>
+						</ul>
+					</p:panel>
 					</div>
 					<br />
 					<!-- INICIO: MODAL CON INFORMACIóN Y FILTROS VISTA ONLINE -->
@@ -216,16 +226,12 @@
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
-								<p:commandButton value="Buscar" id="buscarListado"
-									styleClass="x-btn-text" icon="ui-icon-search"
-									actionListener="#{procesoRebajaTramitacionController.buscarRebaja}"
-									oncomplete="refreshTable();"
-									update="tablaMisTareas hiddenFirstTime" />
-								<p:commandButton value="Limpiar"
-									styleClass="x-btn-text icon-guardar" icon="ui-icon-trash" actionListener="#{procesoRebajaTramitacionController.limpiar}" update="tablaMisTareas busqueda_mis_tareas hiddenFirstTime"
-									 />
+								<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoRebajaTramitacionController.buscarRebaja}"
+									oncomplete="refreshTable();" update="tablaMisTareas hiddenFirstTime panelBusqueda" />
+								<p:commandButton value="Limpiar" styleClass="x-btn-text icon-guardar" icon="ui-icon-trash" actionListener="#{procesoRebajaTramitacionController.limpiar}" 
+									update="tablaMisTareas busqueda_mis_tareas hiddenFirstTime panelBusqueda" />
 							</h:panelGrid>
-
+							
 						</h:panelGrid>
 					</p:panel>
 					<br />
@@ -459,8 +465,7 @@
 
 						<p:commandButton styleClass="x-btn-text" value="Modificar Rebaja"
 							icon="ui-icon-refresh"
-							actionListener="#{procesoRebajaTramitacionController.recalcular}"
-							action="bandejaTareas?faces-redirect=true indexMenu=0">
+							action="#{procesoRebajaTramitacionController.recalcular}">
 							<f:setPropertyActionListener
 								target="#{procesoRebajaTramitacionController.target}"
 								value="bandejaTareas.jsf" />
@@ -468,8 +473,7 @@
 
 						<p:commandButton styleClass="x-btn-text"
 							value="Finalizar Seguimiento" icon="ui-icon-check"
-							actionListener="#{procesoRebajaTramitacionController.enviar}"
-							action="bandejaTareas?faces-redirect=true indexMenu=0">
+							action="#{procesoRebajaTramitacionController.enviar}">
 							<f:setPropertyActionListener
 								target="#{procesoRebajaTramitacionController.target}"
 								value="bandejaTareas.jsf" />
@@ -506,6 +510,36 @@
 					oncomplete="if (args &amp;&amp; args.showDialog){dlgUpload.hide()}else{ alert('the bean didnt let me open the dialog')}" />
 				<p:commandButton value="Cancelar"
 					onclick="dlgUpload.hide()" type="button" />
+			</p:panelGrid>
+			</h:form> 	
+		</p:dialog> 
+		
+		<h:form id="formDownloadResolucion">
+			<h:inputHidden
+				value="#{procesoRebajaTramitacionController.docIdDownload}"
+				id="hiddenId" />
+			<h:commandButton id="linkDownload"
+				action="#{procesoRebajaTramitacionController.downloadResolucion}"
+				style="display: none"></h:commandButton>
+		</h:form>
+		
+		<p:dialog header="Subir archivo" widgetVar="dlgUploadVersion" id="idDlgUploadVersion" modal="true" height="150"  appendToBody="true">
+			<h:form id="formUploadVersion" enctype="multipart/form-data">
+				<h:inputHidden
+				value="#{procesoRebajaTramitacionController.hiddenIdServicio}" id="hiddenIdServicio" />
+			<p:panelGrid columns="2" id="panelLastVersion">
+				<h:outputText value="Nueva Versión: " />
+				<p:fileUpload id="newVersionRetiroFile"
+							fileUploadListener="#{procesoRebajaTramitacionController.handleFile}"
+							value="#{procesoRebajaTramitacionController.file}"
+							update="formUploadVersion" mode="simple"  />
+				<h:outputText value="Versión Final: "  />
+				<h:selectBooleanCheckbox id="checkVersionFinal" value="#{procesoRebajaTramitacionController.lastVersion}" />
+				<p:commandButton value="Aceptar" ajax="false"
+					actionListener="#{procesoRebajaTramitacionController.uploadVersionFinal}" update="seguimientoForm:panelBusqueda"
+					oncomplete="if (args &amp;&amp; args.showDialog){dlgUploadVersion.hide()}else{ alert('the bean didnt let me open the dialog')}" />
+				<p:commandButton value="Cancelar"
+					onclick="dlgUploadVersion.hide()" type="button" />
 			</p:panelGrid>
 			</h:form> 	
 		</p:dialog> 

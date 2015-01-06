@@ -128,13 +128,35 @@ public class GeneradorResolucionAporteEstatal extends GeneradorWord {
 
 		File template = new File(this.templateFilename);
 		XWPFDocument document = new XWPFDocument(new FileInputStream(template));
-		String replacementText = null;
-		for (XWPFParagraph p : document.getParagraphs()) {
-			System.out.println("Inicio parrafo");
 
-			// This will output the paragraph's contents.
-			System.out.println( p.getParagraphText());
+		for (XWPFParagraph p : document.getParagraphs()){
+			List<XWPFRun> runs = p.getRuns();
+			int size = ((runs == null)?0:runs.size());
+			int iteracion = 0;
 			StringBuilder stringBuilder = new StringBuilder();
+			for (XWPFRun run : runs){
+				if(iteracion == (size-1)){
+					stringBuilder.append(run.toString());
+					String text = stringBuilder.toString();
+					for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+					    String key = entry.getKey();
+					    Object value = entry.getValue();
+					    key = key.replace("{", "\\{").replace("}", "\\}");
+					    text = text.replaceAll(key, value.toString());
+					}
+					run.setText(text, 0);
+				}else{
+					stringBuilder.append(run.toString());
+					run.setText("", 0);
+				}
+				iteracion++;
+			}
+		}
+
+
+		//String replacementText = null;
+		//for (XWPFParagraph p : document.getParagraphs()) {
+			/*StringBuilder stringBuilder = new StringBuilder();
 			int numRuns = 0;
 			boolean marcaAbierta= false;
 			for (XWPFRun run : p.getRuns()){
@@ -176,7 +198,7 @@ public class GeneradorResolucionAporteEstatal extends GeneradorWord {
 					numRuns = 0;
 					marcaAbierta= false;
 				}
-			}
+			}*/
 
 			/*for (int j = 0; j <  p.getCTP().getRArray().length; j++) {
 				CTR run =  p.getCTP().getRArray()[j];
@@ -213,8 +235,7 @@ public class GeneradorResolucionAporteEstatal extends GeneradorWord {
 					}
 				}
 			}*/
-			System.out.println("Fin parrafo");
-		}
+		//}
 
 		/*for (XWPFParagraph p : document.getParagraphs()) {
 			System.out.println("Inicio parrafo");

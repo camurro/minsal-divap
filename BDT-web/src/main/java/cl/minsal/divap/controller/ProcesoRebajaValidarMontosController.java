@@ -24,6 +24,7 @@ import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.TipoCumplimientoVO;
 
 import org.primefaces.event.CellEditEvent;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 
@@ -41,7 +42,6 @@ implements Serializable {
 	private UtilitariosService utilitariosService;
 	@EJB
 	private RebajaService rebajaService;
-
 	//Variables página
 	private List<RegionVO> listaRegiones;
 	private String regionSeleccionada;	
@@ -76,7 +76,7 @@ implements Serializable {
 	private boolean aprobar_;
 	private boolean rechazarRevalorizar_;
 	private boolean rechazarSubirArchivo_;
-
+	
 	@PostConstruct
 	public void init() {
 		System.out.println("ProcesosRebajaValidarMontosController tocado.");
@@ -88,7 +88,7 @@ implements Serializable {
 		}
 		buscaDocumentos();
 		cargarListaRegiones();
-		setMesActual(rebajaService.getMesCurso(false));
+		setMesActual(rebajaService.getMesCorte(idProcesoRebaja));
 	}
 
 	private void buscaDocumentos() {
@@ -184,8 +184,8 @@ implements Serializable {
 		return null;
 	}
 
-	public void guardaRebaja(){
-		System.out.println("guardaRebaja Inicio");
+	public void guardaRebaja(String rebajaSeleccionada){
+		System.out.println("guardaRebaja Inicio rebajaSeleccionada->"+rebajaSeleccionada);
 		if(rebajaSeleccionada != null && !rebajaSeleccionada.trim().isEmpty()){
 			Integer posicion = Integer.parseInt(posicionElemento);
 			PlanillaRebajaCalculadaVO planillaRebajaCalculadaVO = rebajaComunas.get(posicion);
@@ -508,4 +508,11 @@ implements Serializable {
 		this.cumplimientoItem3 = cumplimientoItem3;
 	}
 
+	public void handleFile(FileUploadEvent event) {
+		FacesMessage msg = new FacesMessage("Succesful", event.getFile()
+				.getFileName() + " is uploaded.");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		System.out.println("handleFile");
+	}
+	
 }

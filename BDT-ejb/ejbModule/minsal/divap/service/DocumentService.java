@@ -1285,5 +1285,90 @@ public class DocumentService {
 		}
 		return serviciosResoluciones;
 	}
+	
+	public List<Integer> getDocumentosByRebajaServicioTypes(Integer idRebaja, Integer idServicio, TipoDocumentosProcesos... tiposDocumentoProceso) {
+		System.out.println("idRebaja->"+idRebaja);
+		for(TipoDocumentosProcesos tipoDocumentoProceso : tiposDocumentoProceso){
+			System.out.println("tipoDocumentoProceso->"+tipoDocumentoProceso.getId());
+		}
+		System.out.println("idServicio->"+idServicio);
+		List<Integer> documentos = new ArrayList<Integer>();
+		DocumentoRebaja referencia = fileDAO.getLastDocumentosByTypeServicioRebaja(idRebaja, idServicio, tiposDocumentoProceso);
+		if(referencia == null){
+			List<DocumentoRebaja> referencias = fileDAO.getDocumentosByTypeServicioRebaja(idRebaja, idServicio, tiposDocumentoProceso);
+			if(referencias != null && referencias.size() > 0){
+				for(DocumentoRebaja referenciaComuna : referencias){
+					documentos.add(referenciaComuna.getDocumento().getId());
+				}
+			}
+		}else{
+			documentos.add(referencia.getDocumento().getId());
+		}
+		return documentos;
+	}
+
+	public void createDocumentRebaja(Rebaja rebaja, Integer idServicio,	TipoDocumentosProcesos tipoDocumento, Integer referenciaDocumentoId, Boolean lastVersion) {
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		if(lastVersion != null){
+			referenciaDocumento.setDocumentoFinal(lastVersion);
+		}
+		DocumentoRebaja documentoRebaja = new DocumentoRebaja();
+		if(idServicio != null){
+			ServicioSalud servicio = servicioSaludDAO.getById(idServicio);
+			documentoRebaja.setServicio(servicio);
+		}
+		documentoRebaja.setTipoDocumento(new TipoDocumento(tipoDocumento.getId()));
+		documentoRebaja.setDocumento(referenciaDocumento);
+		documentoRebaja.setRebaja(rebaja);
+		rebajaDAO.save(documentoRebaja);
+		System.out.println("luego de aplicar insert del documento rebaja");
+	}
+
+	public List<ServiciosSummaryVO> getDocumentByResolucionTypesServicioRebaja(Integer idProcesoRebaja, Integer idServicio, TipoDocumentosProcesos ... tiposDocumentoProceso) {
+		System.out.println("idProcesoRebaja->"+idProcesoRebaja);
+		for(TipoDocumentosProcesos tipoDocumentoProceso : tiposDocumentoProceso){
+			System.out.println("tipoDocumentoProceso->"+tipoDocumentoProceso.getId());
+		}
+		System.out.println("idServicio->"+idServicio);
+		List<ServiciosSummaryVO> serviciosResoluciones = new ArrayList<ServiciosSummaryVO>();
+		List<DocumentoRebaja> referencias = fileDAO.getDocumentosByTypeServicioRebaja(idProcesoRebaja, idServicio, tiposDocumentoProceso);
+		if(referencias != null && referencias.size() > 0){
+			for(DocumentoRebaja referencia : referencias){
+				if(referencia.getComuna() != null && referencia.getComuna().getServicioSalud() != null){
+					ServiciosSummaryVO serviciosSummaryVO = new ServiciosSummaryVO();
+					serviciosSummaryVO.setId_servicio(referencia.getComuna().getServicioSalud().getId());
+					serviciosSummaryVO.setNombre_servicio(referencia.getComuna().getServicioSalud().getNombre());
+					if(!serviciosResoluciones.contains(serviciosSummaryVO)){
+						serviciosResoluciones.add(serviciosSummaryVO);
+					}
+				}
+			}
+		}
+		return serviciosResoluciones;
+	}
+
+	public List<ReferenciaDocumentoSummaryVO> getVersionFinalRebajaByType(Integer idProcesoRebaja, Integer idServicio, TipoDocumentosProcesos tipoDocumento) {
+		List<ReferenciaDocumentoSummaryVO> versionesFinales = new ArrayList<ReferenciaDocumentoSummaryVO>();
+		List<ReferenciaDocumento> referenciaDocumentos =  fileDAO.getVersionFinalRebajaByType(idProcesoRebaja, idServicio, tipoDocumento);
+		if(referenciaDocumentos != null && referenciaDocumentos.size() > 0){
+			for(ReferenciaDocumento referenciaDocumento : referenciaDocumentos){
+				ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = new ReferenciaDocumentoMapper().getSummary(referenciaDocumento);
+				versionesFinales.add(referenciaDocumentoSummaryVO);
+			}
+		}
+		return versionesFinales;
+	}
+
+	public List<ReferenciaDocumentoSummaryVO> getVersionFinalRebajaByType( Integer idProcesoRebaja, Integer idServicio, TipoDocumentosProcesos ... tipoDocumento) {
+		List<ReferenciaDocumentoSummaryVO> versionesFinales = new ArrayList<ReferenciaDocumentoSummaryVO>();
+		List<ReferenciaDocumento> referenciaDocumentos =  fileDAO.getVersionFinalByServicioRebajaTypes(idProcesoRebaja, idServicio, tipoDocumento);
+		if(referenciaDocumentos != null && referenciaDocumentos.size() > 0){
+			for(ReferenciaDocumento referenciaDocumento : referenciaDocumentos){
+				ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = new ReferenciaDocumentoMapper().getSummary(referenciaDocumento);
+				versionesFinales.add(referenciaDocumentoSummaryVO);
+			}
+		}
+		return versionesFinales;
+	}
 
 }

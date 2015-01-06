@@ -110,7 +110,7 @@ implements Serializable {
 		}
 		
 		listaServicios = utilitariosService.getAllServicios();
-		listaComponentes= componenteService.getComponenteByPrograma(programa.getIdProgramaAno());
+		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
 		
 		remesasPrograma = otService.getRemesasPrograma(programa.getIdProgramaAno(), Integer.parseInt(otService.getMesCurso(true)));
 		remesasPerCapita = otService.getRemesasPerCapita(programa.getIdProgramaAno(), Integer.parseInt(otService.getMesCurso(true)));

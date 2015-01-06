@@ -2,10 +2,8 @@ package cl.minsal.divap.controller;
 
 import java.io.File;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,11 +20,13 @@ import minsal.divap.enums.TareasSeguimiento;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.enums.TiposCumplimientos;
 import minsal.divap.service.RebajaService;
+import minsal.divap.service.ServicioSaludService;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ComunaVO;
 import minsal.divap.vo.PlanillaRebajaCalculadaVO;
 import minsal.divap.vo.RegionVO;
 import minsal.divap.vo.SeguimientoVO;
+import minsal.divap.vo.ServiciosSummaryVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.TipoCumplimientoVO;
 
@@ -47,10 +47,11 @@ implements Serializable {
 	@Inject
 	FacesContext facesContext;
 	@EJB
-	UtilitariosService utilitariosService;
+	private UtilitariosService utilitariosService;
 	@EJB
-	RebajaService rebajaService;
-
+	private RebajaService rebajaService;
+	@EJB
+	private ServicioSaludService serviciosService;
 	private Integer fisrtTime = 1;
 	private List<SeguimientoVO> bitacoraSeguimiento;
 	private String actividadSeguimientoTitle;
@@ -84,6 +85,10 @@ implements Serializable {
 	private boolean aprobar_;
 	private boolean rechazarRevalorizar_;
 	private boolean rechazarSubirArchivo_;
+	
+	private Boolean lastVersion = false;
+	private String hiddenIdServicio;
+	private List<ServiciosSummaryVO> serviciosResoluciones;
 
 	@PostConstruct
 	public void init() {
@@ -95,9 +100,7 @@ implements Serializable {
 			this.idProcesoRebaja = (Integer)getTaskDataVO().getData().get("_idProcesoRebaja");
 		}
 		cargarListaRegiones();
-		String formato="MMMM";
-		SimpleDateFormat dateFormat = new SimpleDateFormat(formato);
-		setMesActual(dateFormat.format(new Date()));
+		setMesActual(rebajaService.getMesCorte(this.idProcesoRebaja));
 		bitacoraSeguimiento = rebajaService.getBitacora(this.idProcesoRebaja, TareasSeguimiento.HACERSEGUIMIENTORESOLUCIONREABAJA);
 		plantillaCorreoId = rebajaService.getPlantillaCorreo(TipoDocumentosProcesos.PLANTILLACORREORESOLUCIONSERVICIOSALUDREBAJA);
 	}
@@ -115,8 +118,15 @@ implements Serializable {
 	public void cargaComunas(){
 		if((servicioSeleccionado != null) && !(servicioSeleccionado.trim().isEmpty())){
 			listaComunas = utilitariosService.getComunasByServicio(Integer.parseInt(servicioSeleccionado));
+			comunasSeleccionadas = new ArrayList<String>();
+			if(listaComunas != null && listaComunas.size() > 0){
+				for(ComunaVO comuna : listaComunas){
+					comunasSeleccionadas.add(comuna.getIdComuna().toString());
+				}
+			}
 		}else{
 			listaComunas = new ArrayList<ComunaVO>();
+			comunasSeleccionadas = new ArrayList<String>();
 		}
 		fisrtTime = 1;
 	}
@@ -126,6 +136,11 @@ implements Serializable {
 		for(String comunas : comunasSeleccionadas){
 			Integer idComuna = Integer.parseInt(comunas);
 			idComunas.add(idComuna);
+		}
+		if(servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty()){
+			serviciosResoluciones = documentService.getDocumentByResolucionTypesServicioRebaja(idProcesoRebaja, null, TipoDocumentosProcesos.RESOLUCIONREBAJA);
+		}else{
+			serviciosResoluciones = documentService.getDocumentByResolucionTypesServicioRebaja(idProcesoRebaja, Integer.parseInt(servicioSeleccionado), TipoDocumentosProcesos.RESOLUCIONREBAJA);
 		}
 		rebajaComunas = rebajaService.getRebajasByComuna(this.idProcesoRebaja, idComunas);
 		fisrtTime++;
@@ -140,8 +155,23 @@ implements Serializable {
 		this.rebajaComunas = new ArrayList<PlanillaRebajaCalculadaVO>();
 		this.listaServicios = new ArrayList<ServiciosVO>();
 		this.listaComunas = new ArrayList<ComunaVO>();
+		serviciosResoluciones = new ArrayList<ServiciosSummaryVO>();
 		fisrtTime = 1;
 		System.out.println("fin limpiar");
+	}
+	
+	public String downloadResolucion() {
+		Integer idServicio = Integer.valueOf(Integer.parseInt(getDocIdDownload()));
+		ServiciosSummaryVO serviciosSummaryVO = serviciosService.getServicioSaludSummaryById(idServicio);
+		List<Integer> documentos = documentService.getDocumentosByRebajaServicioTypes(this.idProcesoRebaja, idServicio, TipoDocumentosProcesos.RESOLUCIONREBAJA);
+		setDocumento(documentService.getDocument(serviciosSummaryVO.getNombre_servicio(), documentos));
+		super.downloadDocument();
+		return null;
+	}
+	
+	public void resetLastVersion(){
+		System.out.println("resetLastVersion lastVersion = false");
+		lastVersion = false;
 	}
 
 	public void handleAttachedFile(FileUploadEvent event) {
@@ -222,6 +252,24 @@ implements Serializable {
 
 	@Override
 	public String enviar(){
+		int numDocFinales = 0;
+		String message = null;
+		List<ServiciosSummaryVO> serviciosResoluciones = documentService.getDocumentByResolucionTypesServicioRebaja(this.idProcesoRebaja , null, TipoDocumentosProcesos.RESOLUCIONREBAJA);
+		if(serviciosResoluciones != null && serviciosResoluciones.size() > 0){
+			for(ServiciosSummaryVO serviciosSummaryVO : serviciosResoluciones){
+				numDocFinales = rebajaService.countVersionFinalRebajaResoluciones(this.idProcesoRebaja, serviciosSummaryVO.getId_servicio());
+				if(numDocFinales == 0){
+					message = "No existe versión final para documento aporte estatal servicio " + serviciosSummaryVO.getNombre_servicio();
+					break;
+				}
+			}
+		}
+		System.out.println("numDocFinales="+numDocFinales);
+		if(numDocFinales == 0){
+			FacesMessage msg = new FacesMessage(message);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return null;
+		}
 		setAprobar_(true);
 		setRechazarRevalorizar_(false);
 		setRechazarSubirArchivo_(false);
@@ -245,6 +293,28 @@ implements Serializable {
 		setDocumento(documentService.getDocument(docDownload));
 		super.downloadDocument();
 		return null;
+	}
+	
+	public void uploadVersionFinal() {
+		if (file != null){
+			try {
+				System.out.println("uploadVersionFinal file is not null");
+				String filename = file.getFileName();
+				filename = filename.replaceAll(" ", "");
+				byte[] contentResolucionFile = file.getContents();
+				Integer docResolucion = persistFile(filename, contentResolucionFile);
+				Integer idServicio = Integer.parseInt(getHiddenIdServicio());
+				System.out.println("docResolucion->"+docResolucion);
+				System.out.println("idServicio->"+idServicio);
+				rebajaService.moveToAlfrescoDistribucionInicialPercapita(this.idProcesoRebaja, idServicio, docResolucion, TipoDocumentosProcesos.RESOLUCIONREBAJA, this.lastVersion);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			System.out.println("uploadVersion file is null");
+			FacesMessage message = new FacesMessage("uploadVersion file is null");
+			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
 	}
 
 	public boolean isAprobar_() {
@@ -457,6 +527,31 @@ implements Serializable {
 
 	public void setCumplimientoItem3(TipoCumplimientoVO cumplimientoItem3) {
 		this.cumplimientoItem3 = cumplimientoItem3;
+	}
+
+	public Boolean getLastVersion() {
+		return lastVersion;
+	}
+
+	public void setLastVersion(Boolean lastVersion) {
+		this.lastVersion = lastVersion;
+	}
+
+	public String getHiddenIdServicio() {
+		return hiddenIdServicio;
+	}
+
+	public void setHiddenIdServicio(String hiddenIdServicio) {
+		this.hiddenIdServicio = hiddenIdServicio;
+	}
+
+	public List<ServiciosSummaryVO> getServiciosResoluciones() {
+		return serviciosResoluciones;
+	}
+
+	public void setServiciosResoluciones(
+			List<ServiciosSummaryVO> serviciosResoluciones) {
+		this.serviciosResoluciones = serviciosResoluciones;
 	}
 
 }
