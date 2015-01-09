@@ -19,6 +19,25 @@
 						]
 					</div>
 					
+					<div class="destacaArchivos ui-corner-all">
+						<h3>Archivos Disponibles:</h3>
+						<span class="strong">Archivo: </span> Planilla Glosa 07 [
+						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+								<h:commandLink
+										action="#{reporteGlosa07Controller.downloadTemplate}"
+										value="Bajar">
+										<f:setPropertyActionListener
+											target="#{reporteGlosa07Controller.docIdDownload}"
+											value="#{reporteGlosa07Controller.idPlanilla}" />
+									</h:commandLink>
+						] <br />
+						<span class="strong">Archivo: </span> Documento Ordinario Glosa 07 [
+						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+						<p:commandLink value="Generar y Descargar" />
+						]
+					</div>
+					
+					
 				</p:panel>
 
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"

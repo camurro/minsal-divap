@@ -12,6 +12,7 @@ public class ReporteEstadoSituacionByComunaVO implements Serializable{
 	private String programa;
 	private String servicio;
 	private String comuna;
+	private String componente;
 	private Long marco_inicial;
 	private Long marco_modificado;
 	private Long convenioRecibido_monto;
@@ -29,11 +30,12 @@ public class ReporteEstadoSituacionByComunaVO implements Serializable{
 	public ReporteEstadoSituacionByComunaVO(){
 		
 	}
-	public ReporteEstadoSituacionByComunaVO(String programa, String servicio, String comuna, Long marco_inicial, Long marco_modificado, Long convenioRecibido_monto, Double convenioRecibido_porcentaje, Long convenioPendiente_monto, Double convenioPendiente_porcentaje, Long remesaAcumulada_monto, Double remesaAcumulada_porcentaje, Long remesaPendiente_monto, Double remesaPendiente_porcentaje, Long reliquidacion_monto, Double reliquidacion_porcentaje, Long incremento){
+	public ReporteEstadoSituacionByComunaVO(String programa, String servicio, String comuna, String componente, Long marco_inicial, Long marco_modificado, Long convenioRecibido_monto, Double convenioRecibido_porcentaje, Long convenioPendiente_monto, Double convenioPendiente_porcentaje, Long remesaAcumulada_monto, Double remesaAcumulada_porcentaje, Long remesaPendiente_monto, Double remesaPendiente_porcentaje, Long reliquidacion_monto, Double reliquidacion_porcentaje, Long incremento){
 		super();
 		this.programa = programa;
 		this.servicio = servicio;
 		this.comuna = comuna;
+		this.componente = componente;
 		this.marco_inicial =
 		this.marco_modificado =
 		this.convenioRecibido_monto = convenioRecibido_monto;
@@ -65,6 +67,12 @@ public class ReporteEstadoSituacionByComunaVO implements Serializable{
 	}
 	public void setComuna(String comuna) {
 		this.comuna = comuna;
+	}
+	public String getComponente() {
+		return componente;
+	}
+	public void setComponente(String componente) {
+		this.componente = componente;
 	}
 	public Long getMarco_inicial() {
 		return marco_inicial;
@@ -145,15 +153,14 @@ public class ReporteEstadoSituacionByComunaVO implements Serializable{
 		this.incremento = incremento;
 	}
 	
-	
-	
 	@Override
 	public String toString() {
 		return "ReporteEstadoSituacionByComunaVO [programa=" + programa
 				+ ", servicio=" + servicio + ", comuna=" + comuna
-				+ ", marco_inicial=" + marco_inicial + ", marco_modificado="
-				+ marco_modificado + ", convenioRecibido_monto="
-				+ convenioRecibido_monto + ", convenioRecibido_porcentaje="
+				+ ", componente=" + componente + ", marco_inicial="
+				+ marco_inicial + ", marco_modificado=" + marco_modificado
+				+ ", convenioRecibido_monto=" + convenioRecibido_monto
+				+ ", convenioRecibido_porcentaje="
 				+ convenioRecibido_porcentaje + ", convenioPendiente_monto="
 				+ convenioPendiente_monto + ", convenioPendiente_porcentaje="
 				+ convenioPendiente_porcentaje + ", remesaAcumulada_monto="
@@ -176,6 +183,9 @@ public class ReporteEstadoSituacionByComunaVO implements Serializable{
 		}
 		if(getComuna() != null){
 			row.add(getComuna());
+		}
+		if(getComponente() != null){
+			row.add(getComponente());
 		}
 		if(getMarco_inicial() != null){
 			row.add(getMarco_inicial());

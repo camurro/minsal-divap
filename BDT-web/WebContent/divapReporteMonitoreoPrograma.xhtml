@@ -103,34 +103,34 @@
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.marco}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.remesa_monto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.remesa_porcentaje}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="percent" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="percent" maxFractionDigits="2" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 
 								<p:column>
 									<h:outputText value="#{_data.convenio_monto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.convenio_porcentaje}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="percent" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="percent" maxFractionDigits="2" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 
 								<p:column>
 									<h:outputText value="#{_data.convenio_pendiente}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 
@@ -212,34 +212,34 @@
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.marco}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.remesa_monto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.remesa_porcentaje}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="percent" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="percent" maxFractionDigits="2" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 
 								<p:column>
 									<h:outputText value="#{_data.convenio_monto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.convenio_porcentaje}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="percent" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="percent" maxFractionDigits="2" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 
 								<p:column>
 									<h:outputText value="#{_data.convenio_pendiente}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 
@@ -296,10 +296,10 @@
 										<p:column rowspan="2" headerText="Servicio" />
 										<p:column rowspan="2" headerText="Comuna" />
 										<p:column rowspan="2" headerText="Componente" />
-										<p:column rowspan="2" headerText="Marco Presupuestario" />
-										<p:column colspan="2" headerText="Remesa Acumulada" />
-										<p:column colspan="2" headerText="Convenio" />
-										<p:column rowspan="2" headerText="Convenio Pendiente" />
+										<p:column rowspan="2" headerText="$ Marco Presupuestario" />
+										<p:column colspan="2" headerText="$ Remesa Acumulada" />
+										<p:column colspan="2" headerText="$ Convenio" />
+										<p:column rowspan="2" headerText="$ Convenio Pendiente" />
 									</p:row>
 									<p:row>
 										<p:column headerText="Monto" />
@@ -321,12 +321,12 @@
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.marco}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.remesa_monto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
@@ -337,18 +337,18 @@
 
 								<p:column>
 									<h:outputText value="#{_data.convenio_monto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.convenio_porcentaje}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="percent" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="percent" maxFractionDigits="2" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 
 								<p:column>
 									<h:outputText value="#{_data.convenio_pendiente}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 
@@ -430,34 +430,34 @@
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.marco}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.remesa_monto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.remesa_porcentaje}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="percent" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="percent" maxFractionDigits="2" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 
 								<p:column>
 									<h:outputText value="#{_data.convenio_monto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.convenio_porcentaje}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="percent" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="percent" maxFractionDigits="2" locale="es_CL" currencySymbol="$" />
 									</h:outputText>
 								</p:column>
 
 								<p:column>
 									<h:outputText value="#{_data.convenio_pendiente}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 

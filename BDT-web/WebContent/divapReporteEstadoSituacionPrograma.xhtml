@@ -37,40 +37,61 @@
 						]
 					</div>
 					<br />
-										<h:panelGrid>
-												<h:outputText value="Programas: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbPrograma" value="#{reporteEstadoSituacionProgramaController.valorComboPrograma}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
-			           								<f:selectItems value="#{reporteEstadoSituacionProgramaController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
- 			           								<p:ajax listener="#{reporteEstadoSituacionProgramaController.cargarProgramas}" update="tabView" />  
-			           	 						</p:selectOneMenu>
-										</h:panelGrid>	
 										
 										<h:panelGrid>
 												<h:outputText value="Servicios: " styleClass="inputLabel" />
 												<p:selectOneMenu style="width:650px;" id="cbServicio" value="#{reporteEstadoSituacionProgramaController.valorComboServicio}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
 			           								<f:selectItems value="#{reporteEstadoSituacionProgramaController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
-				           							<p:ajax listener="#{reporteEstadoSituacionProgramaController.cargarTabla}" update="tabView" /> 
+				           							<p:ajax listener="#{reporteEstadoSituacionProgramaController.cargarComunas}" update="tabView" /> 
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>
 										
-										
-					
+										<h:panelGrid>
+												<h:outputText value="Programas: " styleClass="inputLabel" />
+												<p:selectOneMenu style="width:650px;" id="cbPrograma" value="#{reporteEstadoSituacionProgramaController.valorComboPrograma}">
+												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
+			           								<f:selectItems value="#{reporteEstadoSituacionProgramaController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
+ 			           								<p:ajax listener="#{reporteEstadoSituacionProgramaController.visibilidadSubtitulos}" update="tabView" />  
+			           	 						</p:selectOneMenu>
+										</h:panelGrid>
 
 					<p:tabView id="tabView" activeIndex="#{reporteEstadoSituacionProgramaController.activeTab}" dynamic="true" cache="false">
-					<p:ajax event="tabChange" listener="#{reporteMonitoreoProgramaController.onTabChange}" update="Sub21 Sub24" />
+					<p:ajax event="tabChange" listener="#{reporteEstadoSituacionProgramaController.onTabChange}" update="Sub21 Sub24" />
 					
-						<p:tab id="Sub21" title="Subtítulo 21">
-							<br />
+						<p:tab id="Sub21" title="Subtítulo 21" rendered="#{reporteEstadoSituacionProgramaController.mostrarSub21}">
+							
+							<h:panelGrid columns="2" id="busqueda_sub21">
+
+							<h:panelGrid>
+								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+								<p:selectOneMenu style="width:450px;" id="cbEstablecimiento"
+									value="#{reporteEstadoSituacionProgramaController.valorComboEstablecimiento}">
+									<f:selectItem itemLabel="Seleccione" itemValue="0" />
+									<f:selectItems
+										value="#{reporteEstadoSituacionProgramaController.servicioSeleccionado.estableclimientos}"
+										itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}"
+										var="establecimiento" />
+									
+								</p:selectOneMenu>
+							</h:panelGrid>
+							
+							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reporteEstadoSituacionProgramaController.cargarTablaDependenciaServicioEstablecimiento}" ajax="false"
+					icon="ui-icon-seek-first" update="tabView tablaSub21" />
+							
+							
+						</h:panelGrid>
+
 							<p:dataTable resizableColumns="true" value="#{reporteEstadoSituacionProgramaController.reporteEstadoSituacionByServiciosVOSub21}" liveResize="true" var="_data"
 								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 
 								<p:columnGroup type="header">
 									<p:row>
 										<p:column rowspan="3" headerText="Servicio" />
-										<p:column rowspan="3" headerText="Marco Presup. Inicial" />
-										<p:column rowspan="3" headerText="Marco Presup. Modificado" />
+										<p:column rowspan="3" headerText="Establecimiento" />
+										<p:column rowspan="3" headerText="Componente" />
+										<p:column rowspan="3" headerText="$ Marco Presup. Inicial" />
+										<p:column rowspan="3" headerText="$ Marco Presup. Modificado" />
 									</p:row>
 									<p:row>
 										<p:column colspan="2" headerText="Convenios Recibidos" />
@@ -79,20 +100,20 @@
 										<p:column colspan="2" headerText="Remesa Pendiente" />
 										<p:column colspan="2" headerText="Reliquidación" />
 
-										<p:column rowspan="3" headerText="Incremento" />
+										<p:column rowspan="3" headerText="$ Incremento" />
 
 									</p:row>
 
 									<p:row>
-										<p:column headerText="Monto" />
+										<p:column headerText="$ Monto" />
 										<p:column headerText="%" />
-										<p:column headerText="Monto" />
+										<p:column headerText="$ Monto" />
 										<p:column headerText="%" />
-										<p:column headerText="Monto" />
+										<p:column headerText="$ Monto" />
 										<p:column headerText="%" />
-										<p:column headerText="Monto" />
+										<p:column headerText="$ Monto" />
 										<p:column headerText="%" />
-										<p:column headerText="Monto" />
+										<p:column headerText="$ Monto" />
 										<p:column headerText="%" />
 									</p:row>
 								</p:columnGroup>
@@ -100,21 +121,27 @@
 								<p:column>
 									<span class="textoAjustado textoPequenio">#{_data.servicio}</span>
 								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio">#{_data.establecimiento}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio">#{_data.componente}</span>
+								</p:column>
 
 								<p:column>
 									<h:outputText value="#{_data.marco_inicial}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.marco_modificado}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 
 								<p:column>
 									<h:outputText value="#{_data.convenioRecibido_monto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
@@ -124,7 +151,7 @@
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.convenioPendiente_monto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
@@ -135,7 +162,7 @@
 
 								<p:column>
 									<h:outputText value="#{_data.remesaAcumulada_monto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
@@ -145,7 +172,7 @@
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.remesaPendiente_monto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
@@ -156,7 +183,7 @@
 
 								<p:column>
 									<h:outputText value="#{_data.reliquidacion_monto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
@@ -167,25 +194,28 @@
 
 								<p:column>
 									<h:outputText value="#{_data.incremento}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 
 
 								<p:columnGroup type="footer">
 									<p:row>
+
+										<p:column />
+										<p:column />
 										<p:column />
 
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{466124430*12*5}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalMarco_inicialSub21}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{466124430*12*5}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalMarco_modificadoSub21}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -193,7 +223,7 @@
 
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{466124430*12*5}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalConvenioRecibido_montoSub21}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -202,7 +232,7 @@
 
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{466124430*12*5.1}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalConvenioPendiente_montoSub21}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -211,7 +241,7 @@
 
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{466124430*12*5.2}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalRemesaAcumulada_montoSub21}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -220,7 +250,7 @@
 
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{466124430*12*5.1}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalRemesaPendiente_montoSub21}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -229,7 +259,7 @@
 
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{466124430*12*5.3}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalReliquidacion_montoSub21}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -238,7 +268,7 @@
 
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{466124430*12*4.3}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalIncrementeSub21}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -250,17 +280,39 @@
 							</p:dataTable>
 						</p:tab>
 						
-						<p:tab id="Sub24" title="Subtítulo 24">
-							<br />
-							<p:dataTable resizableColumns="true" value="#{reporteEstadoSituacionProgramaController.reporteEstadoSituacionByComunaVOSub24}" liveResize="true" var="_data"
+						<p:tab id="Sub22" title="Subtítulo 22" rendered="#{reporteEstadoSituacionProgramaController.mostrarSub22}">
+							
+							<h:panelGrid columns="2" id="busqueda_sub22">
+
+							<h:panelGrid>
+								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+								<p:selectOneMenu style="width:450px;" id="cbEstablecimientoSub22"
+									value="#{reporteEstadoSituacionProgramaController.valorComboEstablecimiento}">
+									<f:selectItem itemLabel="Seleccione" itemValue="0" />
+									<f:selectItems
+										value="#{reporteEstadoSituacionProgramaController.servicioSeleccionado.estableclimientos}"
+										itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}"
+										var="establecimiento" />
+									
+								</p:selectOneMenu>
+							</h:panelGrid>
+							
+							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reporteEstadoSituacionProgramaController.cargarTablaDependenciaServicioEstablecimiento}" ajax="false"
+					icon="ui-icon-seek-first" update="tabView tablaSub22" />
+							
+							
+						</h:panelGrid>
+
+							<p:dataTable resizableColumns="true" value="#{reporteEstadoSituacionProgramaController.reporteEstadoSituacionByServiciosVOSub22}" liveResize="true" var="_data"
 								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 
 								<p:columnGroup type="header">
 									<p:row>
 										<p:column rowspan="3" headerText="Servicio" />
-										<p:column rowspan="3" headerText="Comuna" />
-										<p:column rowspan="3" headerText="Marco Presup. Inicial" />
-										<p:column rowspan="3" headerText="Marco Presup. Modificado" />
+										<p:column rowspan="3" headerText="Establecimiento" />
+										<p:column rowspan="3" headerText="Componente" />
+										<p:column rowspan="3" headerText="$ Marco Presup. Inicial" />
+										<p:column rowspan="3" headerText="$ Marco Presup. Modificado" />
 									</p:row>
 									<p:row>
 										<p:column colspan="2" headerText="Convenios Recibidos" />
@@ -269,20 +321,20 @@
 										<p:column colspan="2" headerText="Remesa Pendiente" />
 										<p:column colspan="2" headerText="Reliquidación" />
 
-										<p:column rowspan="3" headerText="Incremento" />
+										<p:column rowspan="3" headerText="$ Incremento" />
 
 									</p:row>
 
 									<p:row>
-										<p:column headerText="Monto" />
+										<p:column headerText="$ Monto" />
 										<p:column headerText="%" />
-										<p:column headerText="Monto" />
+										<p:column headerText="$ Monto" />
 										<p:column headerText="%" />
-										<p:column headerText="Monto" />
+										<p:column headerText="$ Monto" />
 										<p:column headerText="%" />
-										<p:column headerText="Monto" />
+										<p:column headerText="$ Monto" />
 										<p:column headerText="%" />
-										<p:column headerText="Monto" />
+										<p:column headerText="$ Monto" />
 										<p:column headerText="%" />
 									</p:row>
 								</p:columnGroup>
@@ -291,23 +343,26 @@
 									<span class="textoAjustado textoPequenio">#{_data.servicio}</span>
 								</p:column>
 								<p:column>
-									<span class="textoAjustado textoPequenio">#{_data.comuna}</span>
+									<span class="textoAjustado textoPequenio">#{_data.establecimiento}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio">#{_data.componente}</span>
 								</p:column>
 
 								<p:column>
 									<h:outputText value="#{_data.marco_inicial}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.marco_modificado}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 
 								<p:column>
 									<h:outputText value="#{_data.convenioRecibido_monto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
@@ -317,7 +372,7 @@
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.convenioPendiente_monto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
@@ -328,7 +383,7 @@
 
 								<p:column>
 									<h:outputText value="#{_data.remesaAcumulada_monto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
@@ -338,7 +393,7 @@
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.remesaPendiente_monto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
@@ -349,7 +404,7 @@
 
 								<p:column>
 									<h:outputText value="#{_data.reliquidacion_monto}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 								<p:column>
@@ -360,26 +415,28 @@
 
 								<p:column>
 									<h:outputText value="#{_data.incremento}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
 
 
 								<p:columnGroup type="footer">
 									<p:row>
+
 										<p:column />
 										<p:column />
+										<p:column />
 
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{466124430*12*5}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalMarco_inicialSub22}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{466124430*12*5}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalMarco_modificadoSub22}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -387,16 +444,7 @@
 
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{466124430*12*5}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</f:facet>
-										</p:column>
-										<p:column></p:column>
-
-										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{466124430*12*5.1}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalConvenioRecibido_montoSub22}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -405,7 +453,7 @@
 
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{466124430*12*5.2}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalConvenioPendiente_montoSub22}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -414,7 +462,7 @@
 
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{466124430*12*5.1}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalRemesaAcumulada_montoSub22}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -423,7 +471,7 @@
 
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{466124430*12*5.3}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalRemesaPendiente_montoSub22}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -432,7 +480,454 @@
 
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{466124430*12*4.3}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalReliquidacion_montoSub22}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column></p:column>
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalIncrementeSub22}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+
+									</p:row>
+								</p:columnGroup>
+
+							</p:dataTable>
+						</p:tab>
+						
+						<p:tab id="Sub24" title="Subtítulo 24" rendered="#{reporteEstadoSituacionProgramaController.mostrarSub24}">
+
+							<h:panelGrid columns="2" id="busqueda_sub24">
+							<h:panelGrid>
+								<h:outputText value="Comuna: " styleClass="inputLabel" />
+								<p:selectOneMenu style="width:650px;" id="cbComuna"
+									value="#{reporteEstadoSituacionProgramaController.valorComboComuna}">
+									<f:selectItem itemLabel="Seleccione" itemValue="0" />
+									<f:selectItems
+										value="#{reporteEstadoSituacionProgramaController.servicioSeleccionado.comunas}"
+										itemLabel="#{comuna.nombre}" itemValue="#{comuna.id}"
+										var="comuna" />
+								</p:selectOneMenu>
+							</h:panelGrid>
+							
+							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reporteEstadoSituacionProgramaController.cargarTablaDependenciaMunicipalComuna}" ajax="false"
+					icon="ui-icon-seek-first" update="tabView tablaSub24" />
+						</h:panelGrid>							
+							
+							<p:dataTable resizableColumns="true" value="#{reporteEstadoSituacionProgramaController.reporteEstadoSituacionByComunaVOSub24}" liveResize="true" var="_data"
+								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column rowspan="3" headerText="Servicio" />
+										<p:column rowspan="3" headerText="Comuna" />
+										<p:column rowspan="3" headerText="Componente" />
+										<p:column rowspan="3" headerText="$ Marco Presup. Inicial" />
+										<p:column rowspan="3" headerText="$ Marco Presup. Modificado" />
+									</p:row>
+									<p:row>
+										<p:column colspan="2" headerText="Convenios Recibidos" />
+										<p:column colspan="2" headerText="Convenios Pendientes" />
+										<p:column colspan="2" headerText="Remesa Acumulada" />
+										<p:column colspan="2" headerText="Remesa Pendiente" />
+										<p:column colspan="2" headerText="Reliquidación" />
+
+										<p:column rowspan="3" headerText="$ Incremento" />
+
+									</p:row>
+
+									<p:row>
+										<p:column headerText="$ Monto" />
+										<p:column headerText="%" />
+										<p:column headerText="$ Monto" />
+										<p:column headerText="%" />
+										<p:column headerText="$ Monto" />
+										<p:column headerText="%" />
+										<p:column headerText="$ Monto" />
+										<p:column headerText="%" />
+										<p:column headerText="$ Monto" />
+										<p:column headerText="%" />
+									</p:row>
+								</p:columnGroup>
+
+								<p:column>
+									<span class="textoAjustado textoPequenio">#{_data.servicio}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio">#{_data.comuna}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio">#{_data.componente}</span>
+								</p:column>
+
+								<p:column>
+									<h:outputText value="#{_data.marco_inicial}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText value="#{_data.marco_modificado}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+
+								<p:column>
+									<h:outputText value="#{_data.convenioRecibido_monto}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioRecibido_porcentaje}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText value="#{_data.convenioPendiente_monto}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPendiente_porcentaje}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>
+
+								<p:column>
+									<h:outputText value="#{_data.remesaAcumulada_monto}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.remesaAcumulada_porcentaje}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText value="#{_data.remesaPendiente_monto}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.remesaPendiente_porcentaje}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>
+
+								<p:column>
+									<h:outputText value="#{_data.reliquidacion_monto}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.reliquidacion_porcentaje}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>
+
+								<p:column>
+									<h:outputText value="#{_data.incremento}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+
+
+								<p:columnGroup type="footer">
+									<p:row>
+
+										<p:column />
+										<p:column />
+										<p:column />
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalMarco_inicialSub24}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalMarco_modificadoSub24}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalConvenioRecibido_montoSub24}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column></p:column>
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalConvenioPendiente_montoSub24}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column></p:column>
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalRemesaAcumulada_montoSub24}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column></p:column>
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalRemesaPendiente_montoSub24}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column></p:column>
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalReliquidacion_montoSub24}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column></p:column>
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalIncrementeSub24}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+
+									</p:row>
+								</p:columnGroup>
+
+							</p:dataTable>
+						</p:tab>
+						
+						<p:tab id="Sub29" title="Subtítulo 29" rendered="#{reporteEstadoSituacionProgramaController.mostrarSub29}">
+							
+							<h:panelGrid columns="2" id="busqueda_sub29">
+
+							<h:panelGrid>
+								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+								<p:selectOneMenu style="width:450px;" id="cbEstablecimientoSub29"
+									value="#{reporteEstadoSituacionProgramaController.valorComboEstablecimiento}">
+									<f:selectItem itemLabel="Seleccione" itemValue="0" />
+									<f:selectItems
+										value="#{reporteEstadoSituacionProgramaController.servicioSeleccionado.estableclimientos}"
+										itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}"
+										var="establecimiento" />
+									
+								</p:selectOneMenu>
+							</h:panelGrid>
+							
+							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reporteEstadoSituacionProgramaController.cargarTablaDependenciaServicioEstablecimiento}" ajax="false"
+					icon="ui-icon-seek-first" update="tabView tablaSub29" />
+							
+							
+						</h:panelGrid>
+
+							<p:dataTable resizableColumns="true" value="#{reporteEstadoSituacionProgramaController.reporteEstadoSituacionByServiciosVOSub29}" liveResize="true" var="_data"
+								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column rowspan="3" headerText="Servicio" />
+										<p:column rowspan="3" headerText="Establecimiento" />
+										<p:column rowspan="3" headerText="Componente" />
+										<p:column rowspan="3" headerText="$ Marco Presup. Inicial" />
+										<p:column rowspan="3" headerText="$ Marco Presup. Modificado" />
+									</p:row>
+									<p:row>
+										<p:column colspan="2" headerText="Convenios Recibidos" />
+										<p:column colspan="2" headerText="Convenios Pendientes" />
+										<p:column colspan="2" headerText="Remesa Acumulada" />
+										<p:column colspan="2" headerText="Remesa Pendiente" />
+										<p:column colspan="2" headerText="Reliquidación" />
+
+										<p:column rowspan="3" headerText="$ Incremento" />
+
+									</p:row>
+
+									<p:row>
+										<p:column headerText="$ Monto" />
+										<p:column headerText="%" />
+										<p:column headerText="$ Monto" />
+										<p:column headerText="%" />
+										<p:column headerText="$ Monto" />
+										<p:column headerText="%" />
+										<p:column headerText="$ Monto" />
+										<p:column headerText="%" />
+										<p:column headerText="$ Monto" />
+										<p:column headerText="%" />
+									</p:row>
+								</p:columnGroup>
+
+								<p:column>
+									<span class="textoAjustado textoPequenio">#{_data.servicio}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio">#{_data.establecimiento}</span>
+								</p:column>
+								<p:column>
+									<span class="textoAjustado textoPequenio">#{_data.componente}</span>
+								</p:column>
+
+								<p:column>
+									<h:outputText value="#{_data.marco_inicial}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText value="#{_data.marco_modificado}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+
+								<p:column>
+									<h:outputText value="#{_data.convenioRecibido_monto}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioRecibido_porcentaje}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText value="#{_data.convenioPendiente_monto}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.convenioPendiente_porcentaje}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>
+
+								<p:column>
+									<h:outputText value="#{_data.remesaAcumulada_monto}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.remesaAcumulada_porcentaje}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText value="#{_data.remesaPendiente_monto}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.remesaPendiente_porcentaje}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>
+
+								<p:column>
+									<h:outputText value="#{_data.reliquidacion_monto}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column>
+									<h:outputText class="textoAjustado textoPequenio centrado" value="#{_data.reliquidacion_porcentaje}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</p:column>
+
+								<p:column>
+									<h:outputText value="#{_data.incremento}" styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+
+
+								<p:columnGroup type="footer">
+									<p:row>
+
+										<p:column />
+										<p:column />
+										<p:column />
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalMarco_inicialSub29}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalMarco_modificadoSub29}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalConvenioRecibido_montoSub29}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column></p:column>
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalConvenioPendiente_montoSub29}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column></p:column>
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalRemesaAcumulada_montoSub29}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column></p:column>
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalRemesaPendiente_montoSub29}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column></p:column>
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalReliquidacion_montoSub29}" styleClass="textoAjustado textoPequenio centrado">
+													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+												</h:outputText>
+											</f:facet>
+										</p:column>
+										<p:column></p:column>
+
+										<p:column>
+											<f:facet name="footer">
+												<h:outputText value="#{reporteEstadoSituacionProgramaController.totalIncrementeSub29}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>

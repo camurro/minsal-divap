@@ -72,4 +72,20 @@ public class ComunaDAO {
 		}
 	}
 	
+	public Comuna getComunaServicioAuxiliar(Integer idServicio){
+		String comuna = "AUX%";
+		try {
+			TypedQuery<Comuna> query = this.em.createNamedQuery("Comuna.findComunaServicioAuxiliar", Comuna.class);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("comuna", comuna);
+			List<Comuna> results = query.getResultList();
+			if (results.size() >= 1)
+				return results.get(0);
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	
 }

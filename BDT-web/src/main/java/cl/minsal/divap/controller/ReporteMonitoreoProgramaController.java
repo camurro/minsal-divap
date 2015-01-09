@@ -99,12 +99,12 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 		this.mostrarSub24 = false;
 		this.mostrarSub29 = false;
 		
-		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMONITOREOPROGRAMACOMUNA);
+		this.idPlanillaDocComuna = 1; //reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMONITOREOPROGRAMACOMUNA);
 		if(this.idPlanillaDocComuna == null){
 			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteMonitoreoProgramaPorComuna();
 		}
 		
-		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMONITOREOPROGRAMASERVICIO);
+		this.idPlanillaDocEstablecimiento = 1; //reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMONITOREOPROGRAMASERVICIO);
 		if(this.idPlanillaDocEstablecimiento == null){
 			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteMonitoreoProgramaPorServicios();
 		}		
@@ -131,36 +131,6 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 		this.activeTab = activeTab;
 	}
 	
-//	public void cargarDatosFiltroPrograma(){
-//		ProgramaVO programaVO = programasService.getProgramaAno(this.valorComboPrograma);
-//		this.reporteMonitoreoProgramaPorEstablecimientoVOSub21 = new ArrayList<ReporteMonitoreoProgramaPorEstablecimientoVO>();
-//		this.reporteMonitoreoProgramaPorEstablecimientoVOSub22 = new ArrayList<ReporteMonitoreoProgramaPorEstablecimientoVO>();
-//		this.reporteMonitoreoProgramaPorEstablecimientoVOSub29 = new ArrayList<ReporteMonitoreoProgramaPorEstablecimientoVO>();
-//		this.reporteMonitoreoProgramaPorComunaVO = new ArrayList<ReporteMonitoreoProgramaPorComunaVO>();
-//		
-//		
-//			for (ComponentesVO componente : programaVO.getComponentes()) {
-//				System.out.println("componente.getNombre() --> "+componente.getNombre());
-//				for(SubtituloVO subtitulo : componente.getSubtitulos()){
-//					if(subtitulo.getId() == 1){
-//						this.mostrarSub21 = true;
-//						this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
-//					}
-//					else if(subtitulo.getId() == 2){
-//						this.mostrarSub22 = true;
-//						this.subtituloSeleccionado = Subtitulo.SUBTITULO22;
-//					}
-//					else if(subtitulo.getId() == 3){
-//						this.mostrarSub24 = true;
-//						this.subtituloSeleccionado = Subtitulo.SUBTITULO24;
-//					}
-//					else if(subtitulo.getId() == 4){
-//						this.mostrarSub29 = true;
-//						this.subtituloSeleccionado = Subtitulo.SUBTITULO29;
-//					}
-//				}
-//			}
-//	}
 	
 	public void cargarDatosFiltroServicioPrograma(){
 		ProgramaVO programaVO = programasService.getProgramaAno(this.valorComboPrograma);
@@ -184,10 +154,6 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 		
 		this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
 		
-//		this.reporteMonitoreoProgramaPorEstablecimientoVOSub21 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroPrograma(getValorComboPrograma(), Subtitulo.SUBTITULO21);
-//		this.reporteMonitoreoProgramaPorEstablecimientoVOSub22 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroPrograma(getValorComboPrograma(), Subtitulo.SUBTITULO22);
-//		this.reporteMonitoreoProgramaPorEstablecimientoVOSub29 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroPrograma(getValorComboPrograma(), Subtitulo.SUBTITULO29);
-//		this.reporteMonitoreoProgramaPorComunaVO = reportesServices.getReporteMonitoreoPorComunaFiltroServicioPrograma(getValorComboPrograma(), getValorComboServicio(), Subtitulo.SUBTITULO24);
 
 		
 		System.out.println("this.subtituloSeleccionado.getId() --> "+this.subtituloSeleccionado.getId());
@@ -198,11 +164,6 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 		}
 	}
 	
-	
-//	public void cargarTablaMonitoreoPrograma(){
-//		System.out.println("getValorComboPrograma() --> "+getValorComboPrograma()+" this.subtituloSeleccionado --> "+this.subtituloSeleccionado);
-//		this.reporteMonitoreoProgramaPorComunaVO = reportesServices.getReporteMonitoreoPorComunaFiltroPrograma(getValorComboPrograma(), this.subtituloSeleccionado);
-//	}
 	
 	
 	public void cargarTablaMonitoreoComunaServicioPrograma(){

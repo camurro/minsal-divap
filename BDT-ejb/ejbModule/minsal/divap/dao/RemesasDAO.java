@@ -437,5 +437,44 @@ public class RemesasDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public Long getRemesasNoPagadasEstablecimientoProgramaSubtitulo(Integer idProgramaAno, Integer idSubtitulo, Integer idEstablecimiento, Integer idMes){
+		try{
+			Query query = this.em.createNamedQuery("DetalleRemesas.groupMontoRemesaNoPagadasProgramaSubtituloEstablecimiento");
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idSubtitulo", idSubtitulo);
+			query.setParameter("idEstablecimiento", idEstablecimiento);
+			query.setParameter("mes", idMes);
+			Object[] results = (Object[]) query.getSingleResult();
+			if(results != null && results.length > 1){
+				return ((Number)results[1]).longValue();
+			}
+			return 0L;
+		}catch (NoResultException noResultException) {
+			return 0L;
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public Long getRemesasNoPagadasComunaProgramaSubtitulo(Integer idProgramaAno, Integer idSubtitulo, Integer idComuna, Integer idMes){
+		try{
+			Query query = this.em.createNamedQuery("DetalleRemesas.groupMontoRemesaNoPagadasProgramaSubtituloComuna");
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idSubtitulo", idSubtitulo);
+			query.setParameter("idComuna", idComuna);
+			query.setParameter("mes", idMes);
+			query.setParameter("idSubtitulo", idSubtitulo);
+			Object[] results = (Object[]) query.getSingleResult();
+			if(results != null && results.length > 1){
+				return ((Number)results[1]).longValue();
+			}
+			return 0L;
+		}catch (NoResultException noResultException) {
+			return 0L;
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
+	}
 
 }

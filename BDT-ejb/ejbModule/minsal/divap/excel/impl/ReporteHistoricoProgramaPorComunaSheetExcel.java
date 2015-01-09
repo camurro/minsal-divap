@@ -5,22 +5,23 @@ import java.util.List;
 
 import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.vo.CellExcelVO;
+import minsal.divap.vo.ReporteHistoricoPorProgramaComunaForExcelVO;
 import minsal.divap.vo.ReporteHistoricoPorProgramaComunaVO;
 import minsal.divap.vo.ReporteMarcoPresupuestarioComunaVO;
 import minsal.divap.vo.ReporteMarcoPresupuestarioEstablecimientoVO;
 
-public class ReporteHistoricoProgramaPorComunaSheetExcel extends ExcelTemplate<ReporteHistoricoPorProgramaComunaVO>{
+public class ReporteHistoricoProgramaPorComunaSheetExcel extends ExcelTemplate<ReporteHistoricoPorProgramaComunaForExcelVO>{
 	private List<CellExcelVO> headerComplex = null;
 	private List<CellExcelVO> subHeadeComplex = null;
 
-	public ReporteHistoricoProgramaPorComunaSheetExcel(List<CellExcelVO> header,List<CellExcelVO> subHeader, List<ReporteHistoricoPorProgramaComunaVO> items) {
+	public ReporteHistoricoProgramaPorComunaSheetExcel(List<CellExcelVO> header,List<CellExcelVO> subHeader, List<ReporteHistoricoPorProgramaComunaForExcelVO> items) {
 		super(null, items);
 		headerComplex = header;
 		subHeadeComplex = subHeader;
 		
 	}
 	
-	public ReporteHistoricoProgramaPorComunaSheetExcel(List<CellExcelVO> header,List<CellExcelVO> subHeader, List<ReporteHistoricoPorProgramaComunaVO> items, Integer offsetRows, Integer offsetColumns){
+	public ReporteHistoricoProgramaPorComunaSheetExcel(List<CellExcelVO> header,List<CellExcelVO> subHeader, List<ReporteHistoricoPorProgramaComunaForExcelVO> items, Integer offsetRows, Integer offsetColumns){
 		super(null, items);
 		headerComplex = header;
 		subHeadeComplex = subHeader;
@@ -29,8 +30,8 @@ public class ReporteHistoricoProgramaPorComunaSheetExcel extends ExcelTemplate<R
 	@Override
 	public List<List<Object>> getDataList() {
 		List<List<Object>> dataList = new ArrayList<List<Object>>();
-		for(ReporteHistoricoPorProgramaComunaVO reporteHistoricoPorProgramaComunaVO : getItems()){
-			List<Object> row = reporteHistoricoPorProgramaComunaVO.getRow();
+		for(ReporteHistoricoPorProgramaComunaForExcelVO reporteHistoricoPorProgramaComunaForExcelVO : getItems()){
+			List<Object> row = reporteHistoricoPorProgramaComunaForExcelVO.getRow();
 			if(row != null){
 				dataList.add(row);
 			}

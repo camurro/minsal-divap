@@ -53,7 +53,9 @@ import minsal.divap.vo.ProgramaAPSVO;
 import minsal.divap.vo.ProgramaFonasaVO;
 import minsal.divap.vo.ReporteEstadoSituacionByComunaVO;
 import minsal.divap.vo.ReporteGlosaVO;
+import minsal.divap.vo.ReporteHistoricoPorProgramaComunaForExcelVO;
 import minsal.divap.vo.ReporteHistoricoPorProgramaComunaVO;
+import minsal.divap.vo.ReporteHistoricoPorProgramaEstablecimientoForExcelVO;
 import minsal.divap.vo.ReporteHistoricoPorProgramaEstablecimientoVO;
 import minsal.divap.vo.ReporteMarcoPresupuestarioComunaVO;
 import minsal.divap.vo.ReporteMarcoPresupuestarioEstablecimientoVO;
@@ -4780,7 +4782,7 @@ private void addSheet(ReporteHistoricoProgramaPorComunaSheetExcel excelSheet, St
         sheet = workbook.createSheet(sheetName);
         List<CellExcelVO> header = excelSheet.getHeaderComplex();
         List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
-        List<ReporteHistoricoPorProgramaComunaVO> item = excelSheet.getItems();
+        List<ReporteHistoricoPorProgramaComunaForExcelVO> item = excelSheet.getItems();
         
         CellStyle style = workbook.createCellStyle();
         CellStyle styleTotales = workbook.createCellStyle();
@@ -4817,24 +4819,17 @@ private void addSheet(ReporteHistoricoProgramaPorComunaSheetExcel excelSheet, St
         cellStyleHeader.setBorderRight(CellStyle.BORDER_MEDIUM);
         cellStyleHeader.setBorderTop(CellStyle.BORDER_MEDIUM);
         
-        for(int fila = 0; fila < (1 + item.size()); fila++){
+        for(int fila = 0; fila < (1 + header.size()); fila++){
         	XSSFRow row = null;
         	row = sheet.createRow(fila);
-        	for(int columna = 0; columna < 9 ; columna++){
+        	for(int columna = 0; columna < header.size() ; columna++){
           		XSSFCell cell = row.createCell(columna);
                 cell.setCellType(XSSFCell.CELL_TYPE_STRING);
                 cell.setCellStyle(cellStyleHeader);
           	 }
         }
         for(int i=0;i<header.size();i++){
-        	if(i==0 || i==1){
-        		sheet.setDefaultColumnWidth((short) 15);
-        	}
-        	else if(i==2){
-        		sheet.setDefaultColumnWidth((short) 30); 
-        	}else if(i>2){
-        		sheet.setDefaultColumnWidth((short) 40); 
-        	}
+        	sheet.setDefaultColumnWidth((short) 100);
     		XSSFRow row = sheet.getRow(0);
     		CellExcelVO cellExcelVO = header.get(i);
     		XSSFCell cell = row.getCell(i);
@@ -4848,7 +4843,7 @@ private void addSheet(ReporteHistoricoProgramaPorComunaSheetExcel excelSheet, St
         
         
         for(int i=0;i<item.size();i++){
-        	int maxColum = item.get(i).getRow().size();
+        	int maxColum = header.size();
         	XSSFRow rowItems = sheet.getRow(filaItem);
         	XSSFCell cellItems = null;        	
         	
@@ -4873,7 +4868,7 @@ private void addSheet(ReporteHistoricoProgramaPorEstablecimientoSheetExcel excel
         sheet = workbook.createSheet(sheetName);
         List<CellExcelVO> header = excelSheet.getHeaderComplex();
         List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
-        List<ReporteHistoricoPorProgramaEstablecimientoVO> item = excelSheet.getItems();
+        List<ReporteHistoricoPorProgramaEstablecimientoForExcelVO> item = excelSheet.getItems();
         
         CellStyle style = workbook.createCellStyle();
         CellStyle styleTotales = workbook.createCellStyle();
@@ -4910,7 +4905,7 @@ private void addSheet(ReporteHistoricoProgramaPorEstablecimientoSheetExcel excel
         cellStyleHeader.setBorderRight(CellStyle.BORDER_MEDIUM);
         cellStyleHeader.setBorderTop(CellStyle.BORDER_MEDIUM);
         
-        for(int fila = 0; fila < (1 + item.size()); fila++){
+        for(int fila = 0; fila < (1 + header.size()); fila++){
         	XSSFRow row = null;
         	row = sheet.createRow(fila);
         	for(int columna = 0; columna < 9 ; columna++){
@@ -4920,14 +4915,7 @@ private void addSheet(ReporteHistoricoProgramaPorEstablecimientoSheetExcel excel
           	 }
         }
         for(int i=0;i<header.size();i++){
-        	if(i==0 || i==1){
-        		sheet.setDefaultColumnWidth((short) 15);
-        	}
-        	else if(i==2){
-        		sheet.setDefaultColumnWidth((short) 30); 
-        	}else if(i>2){
-        		sheet.setDefaultColumnWidth((short) 40); 
-        	}
+        	sheet.setDefaultColumnWidth((short) 100);
     		XSSFRow row = sheet.getRow(0);
     		CellExcelVO cellExcelVO = header.get(i);
     		XSSFCell cell = row.getCell(i);
@@ -4936,12 +4924,12 @@ private void addSheet(ReporteHistoricoProgramaPorEstablecimientoSheetExcel excel
         }
         
         
-     // ############# items
+        // ############# items
         int filaItem = 1;
         
         
         for(int i=0;i<item.size();i++){
-        	int maxColum = item.get(i).getRow().size();
+        	int maxColum = header.size();
         	XSSFRow rowItems = sheet.getRow(filaItem);
         	XSSFCell cellItems = null;        	
         	

@@ -801,6 +801,23 @@ public class ProgramasDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public Long getMPComunaProgramaAnoSubtitulo(Integer idComuna, Integer idProgramaAno, Integer componenteSeleccionado, Integer idTipoSubtitulo) {
+		try {
+			TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.getMPComunaProgramaAnoComponenteSubtitulo", ProgramaMunicipalCoreComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComuna", idComuna);
+			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			List<ProgramaMunicipalCoreComponente> result = query.getResultList();
+			if(result.size() > 0){
+				return result.get(0).getTarifa().longValue();
+			}else{
+				return 0l;
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }
 

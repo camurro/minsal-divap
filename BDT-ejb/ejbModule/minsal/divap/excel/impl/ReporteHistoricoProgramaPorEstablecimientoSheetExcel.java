@@ -6,22 +6,23 @@ import java.util.List;
 import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.vo.CellExcelVO;
 import minsal.divap.vo.ReporteHistoricoPorProgramaComunaVO;
+import minsal.divap.vo.ReporteHistoricoPorProgramaEstablecimientoForExcelVO;
 import minsal.divap.vo.ReporteHistoricoPorProgramaEstablecimientoVO;
 import minsal.divap.vo.ReporteMarcoPresupuestarioComunaVO;
 import minsal.divap.vo.ReporteMarcoPresupuestarioEstablecimientoVO;
 
-public class ReporteHistoricoProgramaPorEstablecimientoSheetExcel extends ExcelTemplate<ReporteHistoricoPorProgramaEstablecimientoVO>{
+public class ReporteHistoricoProgramaPorEstablecimientoSheetExcel extends ExcelTemplate<ReporteHistoricoPorProgramaEstablecimientoForExcelVO>{
 	private List<CellExcelVO> headerComplex = null;
 	private List<CellExcelVO> subHeadeComplex = null;
 
-	public ReporteHistoricoProgramaPorEstablecimientoSheetExcel(List<CellExcelVO> header,List<CellExcelVO> subHeader, List<ReporteHistoricoPorProgramaEstablecimientoVO> items) {
+	public ReporteHistoricoProgramaPorEstablecimientoSheetExcel(List<CellExcelVO> header,List<CellExcelVO> subHeader, List<ReporteHistoricoPorProgramaEstablecimientoForExcelVO> items) {
 		super(null, items);
 		headerComplex = header;
 		subHeadeComplex = subHeader;
 		
 	}
 	
-	public ReporteHistoricoProgramaPorEstablecimientoSheetExcel(List<CellExcelVO> header,List<CellExcelVO> subHeader, List<ReporteHistoricoPorProgramaEstablecimientoVO> items, Integer offsetRows, Integer offsetColumns){
+	public ReporteHistoricoProgramaPorEstablecimientoSheetExcel(List<CellExcelVO> header,List<CellExcelVO> subHeader, List<ReporteHistoricoPorProgramaEstablecimientoForExcelVO> items, Integer offsetRows, Integer offsetColumns){
 		super(null, items);
 		headerComplex = header;
 		subHeadeComplex = subHeader;
@@ -30,8 +31,8 @@ public class ReporteHistoricoProgramaPorEstablecimientoSheetExcel extends ExcelT
 	@Override
 	public List<List<Object>> getDataList() {
 		List<List<Object>> dataList = new ArrayList<List<Object>>();
-		for(ReporteHistoricoPorProgramaEstablecimientoVO reporteHistoricoPorProgramaEstablecimientoVO : getItems()){
-			List<Object> row = reporteHistoricoPorProgramaEstablecimientoVO.getRow();
+		for(ReporteHistoricoPorProgramaEstablecimientoForExcelVO reporteHistoricoPorProgramaEstablecimientoForExcelVO : getItems()){
+			List<Object> row = reporteHistoricoPorProgramaEstablecimientoForExcelVO.getRow();
 			if(row != null){
 				dataList.add(row);
 			}

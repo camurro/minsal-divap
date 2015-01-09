@@ -71,10 +71,29 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 	private List<ReporteMarcoPresupuestarioComunaVO> reporteMarcoPresupuestarioVOSub24;
 	
 
-	private Long totalMarcos;
-	private Long totalConvenios;
-	private Long totalRemesasAcumuladas;
-	private Double totalPorcentajeCuotaTransferida;
+	private Long totalMarcosSub21;
+	private Long totalMarcosSub22;
+	private Long totalMarcosSub24;
+	private Long totalMarcosSub29;
+	
+	
+	private Long totalConveniosSub21;
+	private Long totalConveniosSub22;
+	private Long totalConveniosSub24;
+	private Long totalConveniosSub29;
+	
+	
+	private Long totalRemesasAcumuladasSub21;
+	private Long totalRemesasAcumuladasSub22;
+	private Long totalRemesasAcumuladasSub24;
+	private Long totalRemesasAcumuladasSub29;
+	
+	private Double totalPorcentajeCuotaTransferidaSub21;
+	private Double totalPorcentajeCuotaTransferidaSub22;
+	private Double totalPorcentajeCuotaTransferidaSub24;
+	private Double totalPorcentajeCuotaTransferidaSub29;
+	
+	
 	private Subtitulo subtituloSeleccionado;
 
 	private Integer activeTab = 0;
@@ -273,24 +292,6 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 		this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = reportesServices.getReporteMarcoPorServicioFiltroEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), Subtitulo.SUBTITULO22);
 		this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = reportesServices.getReporteMarcoPorServicioFiltroEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), Subtitulo.SUBTITULO29);
 
-		
-//		switch (this.subtituloSeleccionado) {
-//		case SUBTITULO21:
-//			System.out.println("subtitulo 21");
-//			this.reporteMarcoPresupuestarioEstablecimientoVOSub21 = reportesServices.getReporteMarcoPorServicioFiltroEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), this.subtituloSeleccionado);
-//			break;
-//		case SUBTITULO22:
-//			System.out.println("subtitulo 22");
-//			this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = reportesServices.getReporteMarcoPorServicioFiltroEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), this.subtituloSeleccionado);
-//			break;
-//		case SUBTITULO29:
-//			System.out.println("subtitulo 29");
-//			this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = reportesServices.getReporteMarcoPorServicioFiltroEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), this.subtituloSeleccionado);
-//			break;
-//		default:
-//			break;
-//		}
-		
 	}
 
 	public void cargarTablaMarcoServicios(){
@@ -375,145 +376,6 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 		this.comunas = comunas;
 	}
 
-	public Long getTotalMarcos() {
-		this.totalMarcos = 0L;
-		switch (this.subtituloSeleccionado) {
-		case SUBTITULO21:
-			for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub21){
-				this.totalMarcos += lista.getMarco();
-			}
-			break;
-		case SUBTITULO22:
-			for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub22){
-				this.totalMarcos += lista.getMarco();
-			}
-			break;
-		case SUBTITULO24:
-			for(ReporteMarcoPresupuestarioComunaVO lista : this.reporteMarcoPresupuestarioVOSub24){
-				this.totalMarcos += lista.getMarco();
-			}
-			break;
-		case SUBTITULO29:
-			for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub29){
-				this.totalMarcos += lista.getMarco();
-			}
-			break;
-		default:
-			break;
-		}
-		return totalMarcos;
-	}
-
-	public void setTotalMarcos(Long totalMarcos) {
-		this.totalMarcos = totalMarcos;
-	}
-
-
-	public Long getTotalConvenios() {
-		this.totalConvenios = 0L;
-		switch (this.subtituloSeleccionado) {
-		case SUBTITULO21:
-			for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub21){
-				this.totalConvenios += lista.getConvenios();
-			}
-			break;
-		case SUBTITULO22:
-			for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub22){
-				this.totalConvenios += lista.getConvenios();
-			}
-			break;
-		case SUBTITULO24:
-			for(ReporteMarcoPresupuestarioComunaVO lista : this.reporteMarcoPresupuestarioVOSub24){
-				this.totalConvenios += lista.getConvenios();
-			}
-			break;
-		case SUBTITULO29:
-			for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub29){
-				this.totalConvenios += lista.getConvenios();
-			}
-			break;
-		default:
-			break;
-		}
-		return totalConvenios;
-	}
-
-	public void setTotalConvenios(Long totalConvenios) {
-		this.totalConvenios = totalConvenios;
-	}
-
-	public Long getTotalRemesasAcumuladas() {
-		this.totalRemesasAcumuladas = 0L;
-		switch (this.subtituloSeleccionado) {
-		case SUBTITULO21:
-			for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub21){
-				this.totalRemesasAcumuladas += lista.getRemesasAcumuladas();
-			}
-			break;
-		case SUBTITULO22:
-			for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub22){
-				this.totalRemesasAcumuladas += lista.getRemesasAcumuladas();
-			}
-			break;
-		case SUBTITULO24:
-			for(ReporteMarcoPresupuestarioComunaVO lista : this.reporteMarcoPresupuestarioVOSub24){
-				this.totalRemesasAcumuladas += lista.getRemesasAcumuladas();
-			}
-			break;
-		case SUBTITULO29:
-			for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub29){
-				this.totalRemesasAcumuladas += lista.getRemesasAcumuladas();
-			}
-			break;
-		default:
-			break;
-		}
-		return totalRemesasAcumuladas;
-	}
-
-
-	public void setTotalRemesasAcumuladas(Long totalRemesasAcumuladas) {
-		this.totalRemesasAcumuladas = totalRemesasAcumuladas;
-	}
-
-
-	public Double getTotalPorcentajeCuotaTransferida() {
-		this.totalPorcentajeCuotaTransferida = 0.0;
-		switch (this.subtituloSeleccionado) {
-		case SUBTITULO21:
-			for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub21){
-				this.totalPorcentajeCuotaTransferida += lista.getPorcentajeCuotaTransferida();
-			}
-			break;
-		case SUBTITULO22:
-			for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub22){
-				this.totalPorcentajeCuotaTransferida += lista.getPorcentajeCuotaTransferida();
-			}
-			break;
-		case SUBTITULO24:
-			for(ReporteMarcoPresupuestarioComunaVO lista : this.reporteMarcoPresupuestarioVOSub24){
-				this.totalPorcentajeCuotaTransferida += lista.getPorcentajeCuotaTransferida();
-			}
-			break;
-		case SUBTITULO29:
-			for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub29){
-				this.totalPorcentajeCuotaTransferida += lista.getPorcentajeCuotaTransferida();
-			}
-			break;
-		default:
-			break;
-		}
-
-		return totalPorcentajeCuotaTransferida;
-	}
-
-
-	public void setTotalPorcentajeCuotaTransferida(
-			Double totalPorcentajeCuotaTransferida) {
-		this.totalPorcentajeCuotaTransferida = totalPorcentajeCuotaTransferida;
-	}
-
-
 	public Integer getActiveTab() {
 		System.out.println("getActiveTab "+activeTab);
 		return activeTab;
@@ -580,7 +442,7 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 
 	public List<ProgramaVO> getProgramas() {
 		if(programas == null){
-			programas = programasService.getProgramasByUserAno(getLoggedUsername(), getAnoEnCurso()+1);
+			programas = programasService.getProgramasByUserAno(getLoggedUsername(), getAnoEnCurso());
 		}
 		return programas;
 	}
@@ -623,9 +485,9 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 
 	public Integer getAnoEnCurso() {
 		if(anoEnCurso == null){
-			anoEnCurso = reportesServices.getAnoCurso();
+			anoEnCurso = reportesServices.getAnoCurso() + 1;
 		}
-		return anoEnCurso +1;
+		return anoEnCurso;
 	}
 	
 	public ProgramaVO getPrograma() {
@@ -686,6 +548,202 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 
 	public void setFechaActual(String fechaActual) {
 		this.fechaActual = fechaActual;
+	}
+
+	public Long getTotalMarcosSub21() {
+		totalMarcosSub21 = 0L;
+		for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub21){
+			totalMarcosSub21 += lista.getMarco();
+		}
+		return totalMarcosSub21;
+	}
+
+	public void setTotalMarcosSub21(Long totalMarcosSub21) {
+		this.totalMarcosSub21 = totalMarcosSub21;
+	}
+
+	public Long getTotalMarcosSub22() {
+		totalMarcosSub22 = 0L;
+		for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub22){
+			totalMarcosSub22 += lista.getMarco();
+		}
+		return totalMarcosSub22;
+	}
+
+	public void setTotalMarcosSub22(Long totalMarcosSub22) {
+		this.totalMarcosSub22 = totalMarcosSub22;
+	}
+
+	public Long getTotalMarcosSub24() {
+		totalMarcosSub24 = 0L;
+		for(ReporteMarcoPresupuestarioComunaVO lista : this.reporteMarcoPresupuestarioVOSub24){
+			totalMarcosSub24 += lista.getMarco();
+		}
+		return totalMarcosSub24;
+	}
+
+	public void setTotalMarcosSub24(Long totalMarcosSub24) {
+		this.totalMarcosSub24 = totalMarcosSub24;
+	}
+
+	public Long getTotalMarcosSub29() {
+		totalMarcosSub29 = 0L;
+		for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub29){
+			totalMarcosSub29 += lista.getMarco();
+		}
+		return totalMarcosSub29;
+	}
+
+	public void setTotalMarcosSub29(Long totalMarcosSub29) {
+		this.totalMarcosSub29 = totalMarcosSub29;
+	}
+
+	public Long getTotalConveniosSub21() {
+		totalConveniosSub21 = 0L;
+		for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub21){
+			totalConveniosSub21 += lista.getConvenios();
+		}
+		return totalConveniosSub21;
+	}
+
+	public void setTotalConveniosSub21(Long totalConveniosSub21) {
+		this.totalConveniosSub21 = totalConveniosSub21;
+	}
+
+	public Long getTotalConveniosSub22() {
+		totalConveniosSub22 = 0L;
+		for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub22){
+			totalConveniosSub22 += lista.getConvenios();
+		}
+		return totalConveniosSub22;
+	}
+
+	public void setTotalConveniosSub22(Long totalConveniosSub22) {
+		this.totalConveniosSub22 = totalConveniosSub22;
+	}
+
+	public Long getTotalConveniosSub24() {
+		totalConveniosSub24 = 0L;
+		for(ReporteMarcoPresupuestarioComunaVO lista : this.reporteMarcoPresupuestarioVOSub24){
+			totalConveniosSub24 += lista.getConvenios();
+		}
+		return totalConveniosSub24;
+	}
+
+	public void setTotalConveniosSub24(Long totalConveniosSub24) {
+		this.totalConveniosSub24 = totalConveniosSub24;
+	}
+
+	public Long getTotalConveniosSub29() {
+		totalConveniosSub29 = 0L;
+		for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub29){
+			totalConveniosSub29 += lista.getConvenios();
+		}
+		return totalConveniosSub29;
+	}
+
+	public void setTotalConveniosSub29(Long totalConveniosSub29) {
+		this.totalConveniosSub29 = totalConveniosSub29;
+	}
+
+	public Long getTotalRemesasAcumuladasSub21() {
+		totalRemesasAcumuladasSub21 = 0L;
+		for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub21){
+			totalRemesasAcumuladasSub21 += lista.getRemesasAcumuladas();
+		}
+		return totalRemesasAcumuladasSub21;
+	}
+
+	public void setTotalRemesasAcumuladasSub21(Long totalRemesasAcumuladasSub21) {
+		this.totalRemesasAcumuladasSub21 = totalRemesasAcumuladasSub21;
+	}
+
+	public Long getTotalRemesasAcumuladasSub22() {
+		totalRemesasAcumuladasSub22 = 0L;
+		for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub22){
+			totalRemesasAcumuladasSub22 += lista.getRemesasAcumuladas();
+		}
+		return totalRemesasAcumuladasSub22;
+	}
+
+	public void setTotalRemesasAcumuladasSub22(Long totalRemesasAcumuladasSub22) {
+		this.totalRemesasAcumuladasSub22 = totalRemesasAcumuladasSub22;
+	}
+
+	public Long getTotalRemesasAcumuladasSub24() {
+		totalRemesasAcumuladasSub24 = 0L;
+		for(ReporteMarcoPresupuestarioComunaVO lista : this.reporteMarcoPresupuestarioVOSub24){
+			totalRemesasAcumuladasSub24 += lista.getRemesasAcumuladas();
+		}
+		return totalRemesasAcumuladasSub24;
+	}
+
+	public void setTotalRemesasAcumuladasSub24(Long totalRemesasAcumuladasSub24) {
+		this.totalRemesasAcumuladasSub24 = totalRemesasAcumuladasSub24;
+	}
+
+	public Long getTotalRemesasAcumuladasSub29() {
+		totalRemesasAcumuladasSub29 = 0L;
+		for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub29){
+			totalRemesasAcumuladasSub29 += lista.getRemesasAcumuladas();
+		}
+		return totalRemesasAcumuladasSub29;
+	}
+
+	public void setTotalRemesasAcumuladasSub29(Long totalRemesasAcumuladasSub29) {
+		this.totalRemesasAcumuladasSub29 = totalRemesasAcumuladasSub29;
+	}
+
+	public Double getTotalPorcentajeCuotaTransferidaSub21() {
+		totalPorcentajeCuotaTransferidaSub21 = 0.0;
+		for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub21){
+			totalPorcentajeCuotaTransferidaSub21 += lista.getPorcentajeCuotaTransferida();
+		}
+		return totalPorcentajeCuotaTransferidaSub21;
+	}
+
+	public void setTotalPorcentajeCuotaTransferidaSub21(
+			Double totalPorcentajeCuotaTransferidaSub21) {
+		this.totalPorcentajeCuotaTransferidaSub21 = totalPorcentajeCuotaTransferidaSub21;
+	}
+
+	public Double getTotalPorcentajeCuotaTransferidaSub22() {
+		totalPorcentajeCuotaTransferidaSub22 = 0.0;
+		for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub22){
+			totalPorcentajeCuotaTransferidaSub22 += lista.getPorcentajeCuotaTransferida();
+		}
+		return totalPorcentajeCuotaTransferidaSub22;
+	}
+
+	public void setTotalPorcentajeCuotaTransferidaSub22(
+			Double totalPorcentajeCuotaTransferidaSub22) {
+		this.totalPorcentajeCuotaTransferidaSub22 = totalPorcentajeCuotaTransferidaSub22;
+	}
+
+	public Double getTotalPorcentajeCuotaTransferidaSub24() {
+		totalPorcentajeCuotaTransferidaSub24 = 0.0;
+		for(ReporteMarcoPresupuestarioComunaVO lista : this.reporteMarcoPresupuestarioVOSub24){
+			totalPorcentajeCuotaTransferidaSub24 += lista.getPorcentajeCuotaTransferida();
+		}
+		return totalPorcentajeCuotaTransferidaSub24;
+	}
+
+	public void setTotalPorcentajeCuotaTransferidaSub24(
+			Double totalPorcentajeCuotaTransferidaSub24) {
+		this.totalPorcentajeCuotaTransferidaSub24 = totalPorcentajeCuotaTransferidaSub24;
+	}
+
+	public Double getTotalPorcentajeCuotaTransferidaSub29() {
+		totalPorcentajeCuotaTransferidaSub29 = 0.0;
+		for(ReporteMarcoPresupuestarioEstablecimientoVO lista : this.reporteMarcoPresupuestarioEstablecimientoVOSub29){
+			totalPorcentajeCuotaTransferidaSub29 += lista.getPorcentajeCuotaTransferida();
+		}
+		return totalPorcentajeCuotaTransferidaSub29;
+	}
+
+	public void setTotalPorcentajeCuotaTransferidaSub29(
+			Double totalPorcentajeCuotaTransferidaSub29) {
+		this.totalPorcentajeCuotaTransferidaSub29 = totalPorcentajeCuotaTransferidaSub29;
 	}
 	
 }
