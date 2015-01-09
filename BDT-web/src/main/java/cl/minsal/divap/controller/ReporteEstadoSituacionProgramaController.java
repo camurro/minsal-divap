@@ -130,15 +130,15 @@ public class ReporteEstadoSituacionProgramaController extends BaseController imp
 		this.reporteEstadoSituacionByServiciosVOSub22 = new ArrayList<ReporteEstadoSituacionByServiciosVO>();
 		this.reporteEstadoSituacionByServiciosVOSub29 = new ArrayList<ReporteEstadoSituacionByServiciosVO>();
 		
-		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEESTADOSITUACIONPROGRAMABYCOMUNA);
+		this.idPlanillaDocComuna = 1; //reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEESTADOSITUACIONPROGRAMABYCOMUNA);
 		if(this.idPlanillaDocComuna == null){
 			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteEstadoSituacionPorComuna();
 		}
 		
-		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEESTADOSITUACIONPROGRAMABYSERVICIO);
-//		if(this.idPlanillaDocEstablecimiento == null){
-//			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteMonitoreoProgramaPorServicios();
-//		}
+		this.idPlanillaDocEstablecimiento = 1; //reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEESTADOSITUACIONPROGRAMABYSERVICIO);
+		if(this.idPlanillaDocEstablecimiento == null){
+			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteMonitoreoProgramaPorServicios();
+		}
 		
 		Integer currentTab = 0;
 		tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO21);

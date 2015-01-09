@@ -5345,10 +5345,10 @@ private void addSheet(ReporteEstadoSituacionPorComunaSheetExcel excelSheet, Stri
                 cell.setCellStyle(cellStyleHeader);
           	 }
         }
-        int posHeader = 5;
+        int posHeader = 6;
         for(int i=0;i<header.size();i++){
         	
-        	if(i<5){
+        	if(i<6){
         		sheet.setDefaultColumnWidth((short) 25); 
         		XSSFRow row = sheet.getRow(0);
         		CellExcelVO cellExcelVO = header.get(i); 
@@ -5357,7 +5357,7 @@ private void addSheet(ReporteEstadoSituacionPorComunaSheetExcel excelSheet, Stri
             	cell.setCellValue(cellExcelVO.getName());
             	sheet.addMergedRegion(new CellRangeAddress(0, 1, i, i));
         	}
-        	else if(i >= 5 && i < 13){
+        	else if(i >= 7 && i < 14){
         		sheet.setDefaultColumnWidth((short) 25); 
         		XSSFRow row = sheet.getRow(0);
         		CellExcelVO cellExcelVO = header.get(i);
