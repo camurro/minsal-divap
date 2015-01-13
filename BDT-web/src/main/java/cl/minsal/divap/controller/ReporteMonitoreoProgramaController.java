@@ -99,12 +99,12 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 		this.mostrarSub24 = false;
 		this.mostrarSub29 = false;
 		
-		this.idPlanillaDocComuna = 1; //reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMONITOREOPROGRAMACOMUNA);
+		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMONITOREOPROGRAMACOMUNA);
 		if(this.idPlanillaDocComuna == null){
 			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteMonitoreoProgramaPorComuna();
 		}
 		
-		this.idPlanillaDocEstablecimiento = 1; //reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMONITOREOPROGRAMASERVICIO);
+		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMONITOREOPROGRAMASERVICIO);
 		if(this.idPlanillaDocEstablecimiento == null){
 			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteMonitoreoProgramaPorServicios();
 		}		
@@ -152,9 +152,6 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 			}
 		}
 		
-		this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
-		
-
 		
 		System.out.println("this.subtituloSeleccionado.getId() --> "+this.subtituloSeleccionado.getId());
 		if(this.subtituloSeleccionado.getId() == 3){
@@ -167,7 +164,12 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 	
 	
 	public void cargarTablaMonitoreoComunaServicioPrograma(){
-		this.reporteMonitoreoProgramaPorComunaVO = reportesServices.getReporteMonitoreoPorComunaFiltroServicioPrograma(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
+		System.out.println("\n\ncargarTablaMonitoreoComunaServicioPrograma");
+		System.out.println("getValorComboPrograma() ---->>> "+getValorComboPrograma());
+		System.out.println("getValorComboServicio() ---->>> "+getValorComboServicio());
+		
+		this.reporteMonitoreoProgramaPorComunaVO = new ArrayList<ReporteMonitoreoProgramaPorComunaVO>();
+		this.reporteMonitoreoProgramaPorComunaVO = reportesServices.getReporteMonitoreoPorComunaFiltroServicioPrograma(getValorComboPrograma(), getValorComboServicio(), Subtitulo.SUBTITULO24);
 	}
 	
 	public void cargarTablaMonitoreoEstablecimientoByPrograma(){
@@ -175,15 +177,15 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 		switch (this.subtituloSeleccionado) {
 		case SUBTITULO21:
 			System.out.println("subtitulo 21");
-			this.reporteMonitoreoProgramaPorEstablecimientoVOSub21 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroPrograma(getValorComboPrograma(), this.subtituloSeleccionado);
+			this.reporteMonitoreoProgramaPorEstablecimientoVOSub21 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroPrograma(getValorComboPrograma(), Subtitulo.SUBTITULO21);
 			break;
 		case SUBTITULO22:
 			System.out.println("subtitulo 22");
-			this.reporteMonitoreoProgramaPorEstablecimientoVOSub22 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroPrograma(getValorComboPrograma(), this.subtituloSeleccionado);
+			this.reporteMonitoreoProgramaPorEstablecimientoVOSub22 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroPrograma(getValorComboPrograma(), Subtitulo.SUBTITULO22);
 			break;
 		case SUBTITULO29:
 			System.out.println("subtitulo 29");
-			this.reporteMonitoreoProgramaPorEstablecimientoVOSub29 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroPrograma(getValorComboPrograma(), this.subtituloSeleccionado);
+			this.reporteMonitoreoProgramaPorEstablecimientoVOSub29 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroPrograma(getValorComboPrograma(), Subtitulo.SUBTITULO29);
 			break;
 		default:
 			break;
@@ -192,22 +194,18 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 	}
 	
 	public void cargarTablaMonitoreoEstablecimientoByServicioPrograma(){
-		switch (this.subtituloSeleccionado) {
-		case SUBTITULO21:
-			System.out.println("subtitulo 21");
-			this.reporteMonitoreoProgramaPorEstablecimientoVOSub21 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroServicioPrograma(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
-			break;
-		case SUBTITULO22:
-			System.out.println("subtitulo 22");
-			this.reporteMonitoreoProgramaPorEstablecimientoVOSub22 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroServicioPrograma(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
-			break;
-		case SUBTITULO29:
-			System.out.println("subtitulo 29");
-			this.reporteMonitoreoProgramaPorEstablecimientoVOSub29 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroServicioPrograma(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
-			break;
-		default:
-			break;
-		}
+		
+		System.out.println("\n\ncargarTablaMonitoreoEstablecimientoByServicioPrograma");
+		System.out.println("getValorComboPrograma() ---->>> "+getValorComboPrograma());
+		System.out.println("getValorComboServicio() ---->>> "+getValorComboServicio());
+		
+		this.reporteMonitoreoProgramaPorEstablecimientoVOSub21 = new ArrayList<ReporteMonitoreoProgramaPorEstablecimientoVO>();
+		this.reporteMonitoreoProgramaPorEstablecimientoVOSub22 = new ArrayList<ReporteMonitoreoProgramaPorEstablecimientoVO>();
+		this.reporteMonitoreoProgramaPorEstablecimientoVOSub29 = new ArrayList<ReporteMonitoreoProgramaPorEstablecimientoVO>();
+		
+		this.reporteMonitoreoProgramaPorEstablecimientoVOSub21 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroServicioPrograma(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
+		this.reporteMonitoreoProgramaPorEstablecimientoVOSub22 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroServicioPrograma(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
+		this.reporteMonitoreoProgramaPorEstablecimientoVOSub29 = reportesServices.getReporteMonitoreoPorEstablecimientoFiltroServicioPrograma(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
 	}
 	
 	public void onTabChange(TabChangeEvent event) {

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import minsal.divap.util.StringUtil;
+
 public class ReporteMarcoPresupuestarioEstablecimientoVO implements Serializable{
 
 	private static final long serialVersionUID = -7792066115952412397L;
@@ -115,16 +117,16 @@ public class ReporteMarcoPresupuestarioEstablecimientoVO implements Serializable
 			row.add(getEstablecimiento());
 		}
 		if(getMarco() != null){
-			row.add(getMarco());
+			row.add(StringUtil.longWithFormat(getMarco()));
 		}
 		if(getConvenios() != null){
-			row.add(getConvenios());
+			row.add(StringUtil.longWithFormat(getConvenios()));
 		}
 		if(getRemesasAcumuladas() != null){
-			row.add(getRemesasAcumuladas());
+			row.add(StringUtil.longWithFormat(getRemesasAcumuladas()));
 		}
 		if(getPorcentajeCuotaTransferida() != null){
-			row.add(getPorcentajeCuotaTransferida());
+			row.add(StringUtil.doubleWithFormat(getPorcentajeCuotaTransferida()*100));
 		}
 		if(getObservacion() != null){
 			row.add(getObservacion());

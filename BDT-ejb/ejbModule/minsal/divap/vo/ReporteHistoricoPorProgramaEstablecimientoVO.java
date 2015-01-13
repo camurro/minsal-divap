@@ -68,8 +68,6 @@ public class ReporteHistoricoPorProgramaEstablecimientoVO implements Serializabl
 	public void setPrograma(String programa) {
 		this.programa = programa;
 	}
-	
-	
 	public Long getMarcoAnoActualMenos9() {
 		return marcoAnoActualMenos9;
 	}
@@ -147,7 +145,6 @@ public class ReporteHistoricoPorProgramaEstablecimientoVO implements Serializabl
 				+ ", marcoAnoActualMenos1=" + marcoAnoActualMenos1
 				+ ", marcoAnoActual=" + marcoAnoActual + "]";
 	}
-	
 	public List<Object> getRow() {
 		List<Object> row = new ArrayList<Object>();
 		if(getRegion() != null){

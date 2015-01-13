@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import minsal.divap.util.StringUtil;
+
 public class ReporteEstadoSituacionByServiciosVO implements Serializable{
 
 	
@@ -188,40 +190,40 @@ public class ReporteEstadoSituacionByServiciosVO implements Serializable{
 			row.add(getComponente());
 		}
 		if(getMarco_inicial() != null){
-			row.add(getMarco_inicial());
+			row.add(StringUtil.longWithFormat(getMarco_inicial()));
 		}
 		if(getMarco_modificado() != null){
-			row.add(getMarco_modificado());
+			row.add(StringUtil.longWithFormat(getMarco_modificado()));
 		}
 		if(getConvenioRecibido_monto() != null){
-			row.add(getConvenioRecibido_monto());
+			row.add(StringUtil.longWithFormat(getConvenioRecibido_monto()));
 		}
 		if(getConvenioRecibido_porcentaje() != null){
-			row.add(getConvenioRecibido_porcentaje());
+			row.add(StringUtil.doubleWithFormat(getConvenioRecibido_porcentaje()));
 		}
 		if(getConvenioPendiente_monto() != null){
-			row.add(getConvenioPendiente_monto());
+			row.add(StringUtil.longWithFormat(getConvenioPendiente_monto()));
 		}
 		if(getConvenioPendiente_porcentaje() != null){
-			row.add(getConvenioPendiente_porcentaje());
+			row.add(StringUtil.doubleWithFormat(getConvenioPendiente_porcentaje()));
 		}
 		if(getRemesaAcumulada_monto() != null){
-			row.add(getRemesaAcumulada_monto());
+			row.add(StringUtil.longWithFormat(getRemesaAcumulada_monto()));
 		}
 		if(getRemesaAcumulada_porcentaje() != null){
-			row.add(getRemesaAcumulada_porcentaje());
+			row.add(StringUtil.doubleWithFormat(getRemesaAcumulada_porcentaje()));
 		}
 		if(getRemesaPendiente_monto() != null){
-			row.add(getRemesaPendiente_monto());
+			row.add(StringUtil.longWithFormat(getRemesaPendiente_monto()));
 		}
 		if(getRemesaPendiente_porcentaje() != null){
-			row.add(getRemesaPendiente_porcentaje());
+			row.add(StringUtil.doubleWithFormat(getRemesaPendiente_porcentaje()));
 		}
 		if(getReliquidacion_monto() != null){
-			row.add(getReliquidacion_monto());
+			row.add(StringUtil.longWithFormat(getReliquidacion_monto()));
 		}
 		if(getReliquidacion_porcentaje() != null){
-			row.add(getReliquidacion_porcentaje());
+			row.add(StringUtil.doubleWithFormat(getReliquidacion_porcentaje()));
 		}
 		if(getIncremento() != null){
 			row.add(getIncremento());

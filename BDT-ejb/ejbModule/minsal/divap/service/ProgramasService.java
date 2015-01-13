@@ -538,7 +538,6 @@ public class ProgramasService {
 
 
 	public List<ProgramaVO> getProgramasBySubtitulo(Subtitulo subtitulo) {
-		System.out.println("carga programas del subtitulo --> "+subtitulo.getNombre());
 		Integer anoCurso = getAnoCurso();
 		List<ProgramaVO> programas = new ArrayList<ProgramaVO>();
 		List<ProgramaAno> programasAno = programasDAO.getProgramasBySubtitulo(anoCurso, subtitulo);
@@ -554,7 +553,6 @@ public class ProgramasService {
 	}
 	
 	public List<ProgramaVO> getProgramasByAnoSubtitulo(Subtitulo subtitulo) {
-		System.out.println("carga programas del subtitulo --> "+subtitulo.getNombre());
 		Integer anoCurso = getAnoCurso() + 1;
 		List<ProgramaVO> programas = new ArrayList<ProgramaVO>();
 		List<ProgramaAno> programasAno = programasDAO.getProgramasBySubtitulo(anoCurso, subtitulo);

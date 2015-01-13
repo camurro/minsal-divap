@@ -13,17 +13,16 @@ import javax.inject.Named;
 
 import minsal.divap.dao.MesDAO;
 import minsal.divap.enums.Subtitulo;
+import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ReportesServices;
 import minsal.divap.service.ServicioSaludService;
-import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.EstablecimientoSummaryVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ReporteMarcoPresupuestarioComunaVO;
 import minsal.divap.vo.ReporteMarcoPresupuestarioEstablecimientoVO;
 import minsal.divap.vo.ServiciosVO;
-import minsal.divap.vo.SubtituloVO;
 
 import org.primefaces.event.TabChangeEvent;
 
@@ -119,10 +118,10 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 			this.fechaActual = mesActual.getIdMes()+"/"+this.getAnoEnCurso();
 		}
 		
-		this.mostrarSub21 = false;
-		this.mostrarSub22 = false;
-		this.mostrarSub24 = false;
-		this.mostrarSub29 = false;
+		this.mostrarSub21 = true;
+		this.mostrarSub22 = true;
+		this.mostrarSub24 = true;
+		this.mostrarSub29 = true;
 		
 		this.reporteMarcoPresupuestarioEstablecimientoVOSub21 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
 		this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
@@ -130,14 +129,14 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 		this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
 		this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
 		
-		this.idPlanillaDocComuna = 1;//reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMARCOPRESPUESTARIOCOMUNA);
+		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMARCOPRESPUESTARIOCOMUNA);
 		if(this.idPlanillaDocComuna == null){
-			this.idPlanillaDocComuna = 1;//reportesServices.generarPlanillaReporteMarcoPresupuestarioComuna();
+			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteMarcoPresupuestarioComuna();
 		}
 		
-		this.idPlanillaDocEstablecimiento = 1;//reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMARCOPRESPUESTARIOSERVICIO);
+		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMARCOPRESPUESTARIOSERVICIO);
 		if(this.idPlanillaDocEstablecimiento == null){
-			this.idPlanillaDocEstablecimiento = 1;//reportesServices.generarPlanillaReporteMarcoPresupuestarioServicios();
+			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteMarcoPresupuestarioServicios();
 		}
 		
 		Integer currentTab = 0;
@@ -156,6 +155,12 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 			this.valorComboPrograma = 0;
 			this.valorComboComuna = 0;
 			this.valorComboEstablecimiento = 0;
+			
+//			this.reporteMarcoPresupuestarioEstablecimientoVOSub21 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
+//			this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
+//			this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
+//			this.reporteMarcoPresupuestarioVOSub24 = new ArrayList<ReporteMarcoPresupuestarioComunaVO>();
+			
 			
 			if(event.getTab().getId().equals("Sub21")){
 				this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
@@ -217,102 +222,26 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 	public void cargarTablaServiciosFiltradosComuna(){
 		System.out.println("getValorComboComuna() --> "+getValorComboComuna());
 		System.out.println("this.subtituloSeleccionado ---> "+this.subtituloSeleccionado);
-		this.reporteMarcoPresupuestarioVOSub24 = reportesServices.getReporteMarcoPorComunaFiltroServicio(getValorComboServicio(), this.subtituloSeleccionado, getValorComboComuna(), getLoggedUsername());
+		this.reporteMarcoPresupuestarioVOSub24 = reportesServices.getReporteMarcoPorComunaFiltroServicioComuna(getValorComboServicio(), this.subtituloSeleccionado, getValorComboComuna(), getLoggedUsername());
 	}
 	
 	public void cargarTablaServiciosFiltradosComunaPrograma(){
 		System.out.println("getValorComboComuna() --> "+getValorComboComuna());
 		System.out.println("this.subtituloSeleccionado ---> "+this.subtituloSeleccionado);
 		
-		this.programa = programasService.getProgramaAno(this.valorComboPrograma);
-		for (ComponentesVO componente : this.programa.getComponentes()) {
-			System.out.println("componente.getNombre() --> "+componente.getNombre());
-			for(SubtituloVO subtitulo : componente.getSubtitulos()){
-				if(subtitulo.getId() == 1){
-					this.mostrarSub21 = true;
-					this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
-				}
-				else if(subtitulo.getId() == 2){
-					this.mostrarSub22 = true;
-					this.subtituloSeleccionado = Subtitulo.SUBTITULO22;
-				}
-				else if(subtitulo.getId() == 3){
-					this.mostrarSub24 = true;
-					this.subtituloSeleccionado = Subtitulo.SUBTITULO24;
-				}
-				else if(subtitulo.getId() == 4){
-					this.mostrarSub29 = true;
-					this.subtituloSeleccionado = Subtitulo.SUBTITULO29;
-				}
-			}
-		}
-		
 		this.reporteMarcoPresupuestarioVOSub24 = reportesServices.getReporteMarcoPorComunaFiltroServicioComunaPrograma(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado, getValorComboComuna(), getLoggedUsername());
 	}
 	
-	public void visibilidadSubtitulos(){
-		this.programa = programasService.getProgramaAno(this.valorComboPrograma);
-		for (ComponentesVO componente : this.programa.getComponentes()) {
-			System.out.println("componente.getNombre() --> "+componente.getNombre());
-			for(SubtituloVO subtitulo : componente.getSubtitulos()){
-				if(subtitulo.getId() == 1){
-					this.mostrarSub21 = true;
-					this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
-				}
-				else if(subtitulo.getId() == 2){
-					this.mostrarSub22 = true;
-					this.subtituloSeleccionado = Subtitulo.SUBTITULO22;
-				}
-				else if(subtitulo.getId() == 3){
-					this.mostrarSub24 = true;
-					this.subtituloSeleccionado = Subtitulo.SUBTITULO24;
-				}
-				else if(subtitulo.getId() == 4){
-					this.mostrarSub29 = true;
-					this.subtituloSeleccionado = Subtitulo.SUBTITULO29;
-				}
-			}
-		}
-	}
-	
-	public void cargarTablaServiciosFiltradosProgramaEstablecimiento(){
-		System.out.println("getValorComboEstablecimiento() --> "+getValorComboEstablecimiento());
-		this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
-		
-		this.mostrarSub21 = false;
-		this.mostrarSub22 = false;
-		this.mostrarSub24 = false;
-		this.mostrarSub29 = false;
-		
-		visibilidadSubtitulos();
-		
-		this.reporteMarcoPresupuestarioEstablecimientoVOSub21 = reportesServices.getReporteMarcoPorServicioFiltroEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), Subtitulo.SUBTITULO21);
-		
-		
-		this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = reportesServices.getReporteMarcoPorServicioFiltroEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), Subtitulo.SUBTITULO22);
-		this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = reportesServices.getReporteMarcoPorServicioFiltroEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), Subtitulo.SUBTITULO29);
-
-	}
+//	}
 
 	public void cargarTablaMarcoServicios(){
 		System.out.println("debiera cargar la tabla");
 		System.out.println("getValorComboEstablecimiento() --> "+getValorComboEstablecimiento());
-		switch (this.subtituloSeleccionado) {
-		case SUBTITULO21:
-			System.out.println("subtitulo 21");
-			this.reporteMarcoPresupuestarioEstablecimientoVOSub21 = reportesServices.getReporteMarcoPorServicio(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
-			break;
-		case SUBTITULO22:
-			System.out.println("subtitulo 22");
-			this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = reportesServices.getReporteMarcoPorServicio(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
-			break;
-		case SUBTITULO29:
-			System.out.println("subtitulo 29");
-			this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = reportesServices.getReporteMarcoPorServicio(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado);
-			break;
-		default:
-			break;
-		}
+		
+		this.reporteMarcoPresupuestarioEstablecimientoVOSub21 = reportesServices.getReporteMarcoPorServicioEstablecimiento(getValorComboServicio(), getValorComboEstablecimiento(), Subtitulo.SUBTITULO21);
+		this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = reportesServices.getReporteMarcoPorServicioEstablecimiento(getValorComboServicio(), getValorComboEstablecimiento(), Subtitulo.SUBTITULO22);
+		this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = reportesServices.getReporteMarcoPorServicioEstablecimiento(getValorComboServicio(), getValorComboEstablecimiento(), Subtitulo.SUBTITULO29);
+		
 	}
 
 

@@ -361,7 +361,6 @@ public class DocumentService {
 		documentoDistribucionInicialPercapita.setIdDocumento(referenciaDocumento);
 		documentoDistribucionInicialPercapita.setIdDistribucionInicialPercapita(distribucionInicialPercapita);
 		distribucionInicialPercapitaDAO.save(documentoDistribucionInicialPercapita);
-		System.out.println("luego de aplicar insert del documento percapita");
 		return referenciaDocumentoId;
 	}
 
@@ -385,7 +384,6 @@ public class DocumentService {
 		documentoDistribucionInicialPercapita.setComuna(comuna);
 		documentoDistribucionInicialPercapita.setIdDistribucionInicialPercapita(distribucionInicialPercapita);
 		distribucionInicialPercapitaDAO.save(documentoDistribucionInicialPercapita);
-		System.out.println("luego de aplicar insert del documento percapita");
 		return referenciaDocumentoId;
 	}
 
@@ -435,7 +433,6 @@ public class DocumentService {
 		documentoDistribucionInicialPercapita.setIdDocumento(referenciaDocumento);
 		documentoDistribucionInicialPercapita.setIdDistribucionInicialPercapita(distribucionInicialPercapita);
 		distribucionInicialPercapitaDAO.save(documentoDistribucionInicialPercapita);
-		System.out.println("luego de aplicar insert del documento percapita");
 	}
 	
 	public void createDocumentPercapita(DistribucionInicialPercapita distribucionInicialPercapita,Integer idServicio,
@@ -818,7 +815,6 @@ public class DocumentService {
 		documentoReportes.setTipoDocumento(tipoDocumentoProceso);
 		documentoReportes.setDocumento(referenciaDocumento);
 		reportesDAO.save(documentoReportes);
-		System.out.println("luego de aplicar insert del documento percapita");
 		System.out.println("referenciaDocumentoId ---> "+referenciaDocumentoId);
 		return referenciaDocumentoId;
 	}
@@ -836,7 +832,6 @@ public class DocumentService {
 		documentoReportes.setTipoDocumento(tipoDocumentoProceso);
 		documentoReportes.setDocumento(referenciaDocumento);
 		reportesDAO.save(documentoReportes);
-		System.out.println("luego de aplicar insert del documento percapita");
 		System.out.println("referenciaDocumentoId ---> "+referenciaDocumentoId);
 		return referenciaDocumentoId;
 	}
@@ -854,7 +849,6 @@ public class DocumentService {
 		documentoReportes.setTipoDocumento(tipoDocumentoProceso);
 		documentoReportes.setDocumento(referenciaDocumento);
 		reportesDAO.save(documentoReportes);
-		System.out.println("luego de aplicar insert del documento percapita");
 		System.out.println("referenciaDocumentoId ---> "+referenciaDocumentoId);
 		return referenciaDocumentoId;
 	}

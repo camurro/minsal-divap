@@ -9,7 +9,7 @@
 					<h:outputText value="DIVAP Reportes" />
 				</h1>
 				<p:panel id="Panel">
-					<h2>Marco Presupuestario</h2>
+					<h2>Marco Presupuestario Programas</h2>
 
 					<div class="destacaArchivos ui-corner-all">
 						<h3>Archivos Disponibles:</h3>
@@ -38,9 +38,18 @@
 						]
 					</div>
 					<br />
+
+					<p:tabView id="tabView" activeIndex="#{reportesMarcoPresupuestarioComunasController.activeTab}" dynamic="true" cache="false">
+						<p:ajax event="tabChange" listener="#{reportesMarcoPresupuestarioComunasController.onTabChange}" update="Sub21 Sub22 Sub24 Sub29" />
+					
+					
+						<p:tab id="Sub21" title="Subtítulo 21">
+						
+						<h:panelGrid columns="3" id="busqueda_sub21">
+						
 							<h:panelGrid>
 								<h:outputText value="Servicio: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:650px;" id="cbServicio"
+								<p:selectOneMenu style="width:450px;" id="cbServicioSub21"
 									value="#{reportesMarcoPresupuestarioComunasController.valorComboServicio}">
 									<f:selectItem itemLabel="Seleccione" itemValue="0" />
 									<f:selectItems
@@ -52,31 +61,6 @@
 										update="tabView" />
 								</p:selectOneMenu>
 							</h:panelGrid>
-							
-							<h:panelGrid>
-								<h:outputText value="Programa: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:450px;" id="cbProgramas"
-									value="#{reportesMarcoPresupuestarioComunasController.valorComboPrograma}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
-									<f:selectItems
-										value="#{reportesMarcoPresupuestarioComunasController.programas}"
-										itemLabel="#{programa.nombre}"
-										itemValue="#{programa.idProgramaAno}" var="programa" />
-									<p:ajax
-										listener="#{reportesMarcoPresupuestarioComunasController.visibilidadSubtitulos}"
-										update="tabView" />
-									
-								</p:selectOneMenu>
-							</h:panelGrid>
-							
-
-					<p:tabView id="tabView" activeIndex="#{reportesMarcoPresupuestarioComunasController.activeTab}" dynamic="true" cache="false">
-						<p:ajax event="tabChange" listener="#{reportesMarcoPresupuestarioComunasController.onTabChange}" update="Sub21 Sub22 Sub24 Sub29" />
-					
-					
-						<p:tab id="Sub21" title="Subtítulo 21" rendered="#{reportesMarcoPresupuestarioComunasController.mostrarSub21}">
-						
-						<h:panelGrid columns="2" id="busqueda_sub21">
 
 							<h:panelGrid>
 								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
@@ -91,7 +75,7 @@
 								</p:selectOneMenu>
 							</h:panelGrid>
 							
-							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaServiciosFiltradosProgramaEstablecimiento}" ajax="false"
+							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaMarcoServicios}" ajax="false"
 					icon="ui-icon-seek-first" update="tabView tablaSub21" />
 							
 							
@@ -190,13 +174,28 @@
 							</p:dataTable>
 						</p:tab>
 						
-						<p:tab id="Sub22" title="Subtítulo 22" rendered="#{reportesMarcoPresupuestarioComunasController.mostrarSub22}">
+						<p:tab id="Sub22" title="Subtítulo 22" >
 						
-						<h:panelGrid columns="2" id="busqueda_sub22">
+						<h:panelGrid columns="3" id="busqueda_sub22">
+						
+							<h:panelGrid>
+								<h:outputText value="Servicio: " styleClass="inputLabel" />
+								<p:selectOneMenu style="width:450px;" id="cbServicioSub22"
+									value="#{reportesMarcoPresupuestarioComunasController.valorComboServicio}">
+									<f:selectItem itemLabel="Seleccione" itemValue="0" />
+									<f:selectItems
+										value="#{reportesMarcoPresupuestarioComunasController.servicios}"
+										itemLabel="#{servicio.nombre_servicio}"
+										itemValue="#{servicio.id_servicio}" var="servicio" />
+									<p:ajax
+										listener="#{reportesMarcoPresupuestarioComunasController.cargarComunas}"
+										update="tabView" />
+								</p:selectOneMenu>
+							</h:panelGrid>
 
 							<h:panelGrid>
 								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:650px;" id="cbEstablecimiento22"
+								<p:selectOneMenu style="width:450px;" id="cbEstablecimiento22"
 									value="#{reportesMarcoPresupuestarioComunasController.valorComboEstablecimiento}">
 									<f:selectItem itemLabel="Seleccione" itemValue="0" />
 									<f:selectItems
@@ -206,7 +205,7 @@
 								</p:selectOneMenu>
 							</h:panelGrid>
 							
-							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaServiciosFiltradosProgramaEstablecimiento}" ajax="false"
+							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaMarcoServicios}" ajax="false"
 					icon="ui-icon-seek-first" update="tabView tablaSub22" />
 							
 						</h:panelGrid>
@@ -276,14 +275,14 @@
 										<p:column />
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalMarcosSub21}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalMarcosSub22}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalConveniosSub21}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalConveniosSub22}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -291,7 +290,7 @@
 
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalRemesasAcumuladasSub21}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalRemesasAcumuladasSub22}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -306,11 +305,27 @@
 						
 					
 						
-						<p:tab id="Sub24" title="Subtítulo 24" rendered="#{reportesMarcoPresupuestarioComunasController.mostrarSub24}">
+						<p:tab id="Sub24" title="Subtítulo 24" >
 						<h:panelGrid columns="2" id="busqueda_sub24">
+						
+							<h:panelGrid>
+								<h:outputText value="Servicio: " styleClass="inputLabel" />
+								<p:selectOneMenu style="width:450px;" id="cbServicioSub24"
+									value="#{reportesMarcoPresupuestarioComunasController.valorComboServicio}">
+									<f:selectItem itemLabel="Seleccione" itemValue="0" />
+									<f:selectItems
+										value="#{reportesMarcoPresupuestarioComunasController.servicios}"
+										itemLabel="#{servicio.nombre_servicio}"
+										itemValue="#{servicio.id_servicio}" var="servicio" />
+									<p:ajax
+										listener="#{reportesMarcoPresupuestarioComunasController.cargarComunas}"
+										update="tabView" />
+								</p:selectOneMenu>
+							</h:panelGrid>
+							
 							<h:panelGrid>
 								<h:outputText value="Comuna: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:650px;" id="cbComuna"
+								<p:selectOneMenu style="width:450px;" id="cbComuna"
 									value="#{reportesMarcoPresupuestarioComunasController.valorComboComuna}">
 									<f:selectItem itemLabel="Seleccione" itemValue="0" />
 									<f:selectItems
@@ -320,7 +335,7 @@
 								</p:selectOneMenu>
 							</h:panelGrid>
 							
-							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaServiciosFiltradosComunaPrograma}" ajax="false"
+							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaServiciosFiltradosComuna}" ajax="false"
 					icon="ui-icon-seek-first" update="tabView tablaSub24" />
 						</h:panelGrid>
 							
@@ -417,11 +432,26 @@
 							</p:dataTable>
 						</p:tab>
 						
-						<p:tab id="Sub29" title="Subtítulo 29" rendered="#{reportesMarcoPresupuestarioComunasController.mostrarSub29}">
+						<p:tab id="Sub29" title="Subtítulo 29" >
 						<h:panelGrid columns="2" id="busqueda_sub29">
+						
+							<h:panelGrid>
+								<h:outputText value="Servicio: " styleClass="inputLabel" />
+								<p:selectOneMenu style="width:450px;" id="cbServicioSub29"
+									value="#{reportesMarcoPresupuestarioComunasController.valorComboServicio}">
+									<f:selectItem itemLabel="Seleccione" itemValue="0" />
+									<f:selectItems
+										value="#{reportesMarcoPresupuestarioComunasController.servicios}"
+										itemLabel="#{servicio.nombre_servicio}"
+										itemValue="#{servicio.id_servicio}" var="servicio" />
+									<p:ajax
+										listener="#{reportesMarcoPresupuestarioComunasController.cargarComunas}"
+										update="tabView" />
+								</p:selectOneMenu>
+							</h:panelGrid>
 							<h:panelGrid>
 								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:650px;" id="cbEstablecimiento29"
+								<p:selectOneMenu style="width:450px;" id="cbEstablecimiento29"
 									value="#{reportesMarcoPresupuestarioComunasController.valorComboEstablecimiento}">
 									<f:selectItem itemLabel="Seleccione" itemValue="0" />
 									<f:selectItems
@@ -430,7 +460,7 @@
 										var="establecimiento" />
 								</p:selectOneMenu>
 							</h:panelGrid>
-							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaServiciosFiltradosProgramaEstablecimiento}" ajax="false"
+							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaMarcoServicios}" ajax="false"
 					icon="ui-icon-seek-first" update="tabView tablaSub29" />
 						</h:panelGrid>
 							<br />
@@ -498,14 +528,14 @@
 										<p:column />
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalMarcosSub21}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalMarcosSub29}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalConveniosSub21}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalConveniosSub29}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>
@@ -513,7 +543,7 @@
 
 										<p:column>
 											<f:facet name="footer">
-												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalRemesasAcumuladasSub21}" styleClass="textoAjustado textoPequenio centrado">
+												<h:outputText value="#{reportesMarcoPresupuestarioComunasController.totalRemesasAcumuladasSub29}" styleClass="textoAjustado textoPequenio centrado">
 													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 												</h:outputText>
 											</f:facet>

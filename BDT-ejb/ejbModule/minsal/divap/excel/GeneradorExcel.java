@@ -32,6 +32,7 @@ import minsal.divap.excel.impl.ProgramaAPSServiciosHistoricosSheetExcel;
 import minsal.divap.excel.impl.RebajaCalculadaSheetExcel;
 import minsal.divap.excel.impl.RebajaSheetExcel;
 import minsal.divap.excel.impl.ReporteEstadoSituacionPorComunaSheetExcel;
+import minsal.divap.excel.impl.ReporteEstadoSituacionPorServicioSheetExcel;
 import minsal.divap.excel.impl.ReporteGlosa07SheetExcel;
 import minsal.divap.excel.impl.ReporteHistoricoProgramaPorComunaSheetExcel;
 import minsal.divap.excel.impl.ReporteHistoricoProgramaPorEstablecimientoSheetExcel;
@@ -52,11 +53,10 @@ import minsal.divap.vo.ProgramaAPSServicioVO;
 import minsal.divap.vo.ProgramaAPSVO;
 import minsal.divap.vo.ProgramaFonasaVO;
 import minsal.divap.vo.ReporteEstadoSituacionByComunaVO;
+import minsal.divap.vo.ReporteEstadoSituacionByServiciosVO;
 import minsal.divap.vo.ReporteGlosaVO;
 import minsal.divap.vo.ReporteHistoricoPorProgramaComunaForExcelVO;
-import minsal.divap.vo.ReporteHistoricoPorProgramaComunaVO;
 import minsal.divap.vo.ReporteHistoricoPorProgramaEstablecimientoForExcelVO;
-import minsal.divap.vo.ReporteHistoricoPorProgramaEstablecimientoVO;
 import minsal.divap.vo.ReporteMarcoPresupuestarioComunaVO;
 import minsal.divap.vo.ReporteMarcoPresupuestarioEstablecimientoVO;
 import minsal.divap.vo.ReporteMonitoreoProgramaPorComunaVO;
@@ -245,6 +245,10 @@ public class GeneradorExcel {
             }
             if(excelSheet instanceof ReporteEstadoSituacionPorComunaSheetExcel){
                 addSheet((ReporteEstadoSituacionPorComunaSheetExcel)excelSheet, sheetName);
+                return;
+            }
+            if(excelSheet instanceof ReporteEstadoSituacionPorServicioSheetExcel){
+                addSheet((ReporteEstadoSituacionPorServicioSheetExcel)excelSheet, sheetName);
                 return;
             }
             if(excelSheet instanceof AsignacionRecursosPercapitaSheetExcel){
@@ -4819,7 +4823,7 @@ private void addSheet(ReporteHistoricoProgramaPorComunaSheetExcel excelSheet, St
         cellStyleHeader.setBorderRight(CellStyle.BORDER_MEDIUM);
         cellStyleHeader.setBorderTop(CellStyle.BORDER_MEDIUM);
         
-        for(int fila = 0; fila < (1 + header.size()); fila++){
+        for(int fila = 0; fila < (1 + item.size()); fila++){
         	XSSFRow row = null;
         	row = sheet.createRow(fila);
         	for(int columna = 0; columna < header.size() ; columna++){
@@ -4905,10 +4909,10 @@ private void addSheet(ReporteHistoricoProgramaPorEstablecimientoSheetExcel excel
         cellStyleHeader.setBorderRight(CellStyle.BORDER_MEDIUM);
         cellStyleHeader.setBorderTop(CellStyle.BORDER_MEDIUM);
         
-        for(int fila = 0; fila < (1 + header.size()); fila++){
+        for(int fila = 0; fila < (1 + item.size()); fila++){
         	XSSFRow row = null;
         	row = sheet.createRow(fila);
-        	for(int columna = 0; columna < 9 ; columna++){
+        	for(int columna = 0; columna < header.size() ; columna++){
           		XSSFCell cell = row.createCell(columna);
                 cell.setCellType(XSSFCell.CELL_TYPE_STRING);
                 cell.setCellStyle(cellStyleHeader);
@@ -5087,16 +5091,16 @@ private void addSheet(ReporteMonitoreoProgramaComunaSheetExcel excelSheet, Strin
         for(int fila = 0; fila < (2 + item.size()); fila++){
         	XSSFRow row = null;
         	row = sheet.createRow(fila);
-        	for(int columna = 0; columna < 9 ; columna++){
+        	for(int columna = 0; columna < 10 ; columna++){
           		XSSFCell cell = row.createCell(columna);
                 cell.setCellType(XSSFCell.CELL_TYPE_STRING);
                 cell.setCellStyle(cellStyleHeader);
           	 }
         }
-        int posHeader = 4;
+        int posHeader = 5;
         for(int i=0;i<header.size();i++){
         	
-        	if(i<4){
+        	if(i<5){
         		sheet.setDefaultColumnWidth((short) 25); 
         		XSSFRow row = sheet.getRow(0);
         		CellExcelVO cellExcelVO = header.get(i); 
@@ -5105,7 +5109,7 @@ private void addSheet(ReporteMonitoreoProgramaComunaSheetExcel excelSheet, Strin
             	cell.setCellValue(cellExcelVO.getName());
             	sheet.addMergedRegion(new CellRangeAddress(0, 1, i, i));
         	}
-        	else if(i >= 4 && i < 6){
+        	else if(i >= 5 && i < 9){
         		sheet.setDefaultColumnWidth((short) 25); 
         		XSSFRow row = sheet.getRow(0);
         		CellExcelVO cellExcelVO = header.get(i);
@@ -5122,12 +5126,12 @@ private void addSheet(ReporteMonitoreoProgramaComunaSheetExcel excelSheet, Strin
         		XSSFCell cell = row.getCell(8);
     			cell.setCellStyle(cellStyleHeader);
             	cell.setCellValue(cellExcelVO.getName());
-            	sheet.addMergedRegion(new CellRangeAddress(0, 1, 8, 8));
+            	sheet.addMergedRegion(new CellRangeAddress(0, 1, 9, 9));
         	}
         	
         	
         }
-        int posSubHeader = 4;
+        int posSubHeader = 5;
         for(int i=0; i<subHeader.size(); i++){
         	sheet.setDefaultColumnWidth((short) 25); 
     		XSSFRow row = sheet.getRow(1);
@@ -5213,16 +5217,16 @@ private void addSheet(ReporteMonitoreoProgramaEstablecimientoSheetExcel excelShe
         for(int fila = 0; fila < (2 + item.size()); fila++){
         	XSSFRow row = null;
         	row = sheet.createRow(fila);
-        	for(int columna = 0; columna < 8 ; columna++){
+        	for(int columna = 0; columna < 10 ; columna++){
           		XSSFCell cell = row.createCell(columna);
                 cell.setCellType(XSSFCell.CELL_TYPE_STRING);
                 cell.setCellStyle(cellStyleHeader);
           	 }
         }
-        int posHeader = 3;
+        int posHeader = 5;
         for(int i=0;i<header.size();i++){
         	
-        	if(i<3){
+        	if(i<5){
         		sheet.setDefaultColumnWidth((short) 25); 
         		XSSFRow row = sheet.getRow(0);
         		CellExcelVO cellExcelVO = header.get(i); 
@@ -5231,7 +5235,7 @@ private void addSheet(ReporteMonitoreoProgramaEstablecimientoSheetExcel excelShe
             	cell.setCellValue(cellExcelVO.getName());
             	sheet.addMergedRegion(new CellRangeAddress(0, 1, i, i));
         	}
-        	else if(i >= 3 && i < 5){
+        	else if(i >= 5 && i < 9){
         		sheet.setDefaultColumnWidth((short) 25); 
         		XSSFRow row = sheet.getRow(0);
         		CellExcelVO cellExcelVO = header.get(i);
@@ -5245,136 +5249,10 @@ private void addSheet(ReporteMonitoreoProgramaEstablecimientoSheetExcel excelShe
         		sheet.setDefaultColumnWidth((short) 25); 
         		XSSFRow row = sheet.getRow(0);
         		CellExcelVO cellExcelVO = header.get(i); 
-        		XSSFCell cell = row.getCell(7);
+        		XSSFCell cell = row.getCell(8);
     			cell.setCellStyle(cellStyleHeader);
             	cell.setCellValue(cellExcelVO.getName());
-            	sheet.addMergedRegion(new CellRangeAddress(0, 1, 7, 7));
-        	}
-        	
-        	
-        }
-        int posSubHeader = 3;
-        for(int i=0; i<subHeader.size(); i++){
-        	sheet.setDefaultColumnWidth((short) 25); 
-    		XSSFRow row = sheet.getRow(1);
-    		CellExcelVO cellExcelVO = subHeader.get(i); 
-    		XSSFCell cell = row.getCell(posSubHeader);
-			cell.setCellStyle(cellStyleHeader); 
-			cell.setCellValue(cellExcelVO.getName());
-			
-        	
-        	posSubHeader++;
-        }
-        
-        
-        
-        
-     // ############# items
-        int filaItem = 2;
-        
-        
-        for(int i=0;i<item.size();i++){
-        	int maxColum = item.get(i).getRow().size();
-        	XSSFRow rowItems = sheet.getRow(filaItem);
-        	XSSFCell cellItems = null;        	
-        	
-        	for(int celda = 0; celda < maxColum; celda++ ){
-        		
-        		cellItems = rowItems.createCell(celda);
-        		cellItems = rowItems.getCell(celda);
-        		cellItems.setCellValue(item.get(i).getRow().get(celda).toString());
-        	}
-        	filaItem++;
-        }
-        
-		
-	}catch(Exception e){
-        e.printStackTrace();
-    }
-}
-
-private void addSheet(ReporteEstadoSituacionPorComunaSheetExcel excelSheet, String sheetName){
-	try{
-		XSSFSheet sheet = null;
-        sheet = workbook.createSheet(sheetName);
-        List<CellExcelVO> header = excelSheet.getHeaderComplex();
-        List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
-        List<ReporteEstadoSituacionByComunaVO> item = excelSheet.getItems();
-        
-        CellStyle style = workbook.createCellStyle();
-        CellStyle styleTotales = workbook.createCellStyle();
-        styleTotales.setFillPattern(CellStyle.ALIGN_FILL);
-        styleTotales.setBorderBottom(CellStyle.BORDER_MEDIUM);
-        styleTotales.setBorderLeft(CellStyle.BORDER_MEDIUM);
-        styleTotales.setBorderRight(CellStyle.BORDER_MEDIUM);
-        styleTotales.setBorderTop(CellStyle.BORDER_MEDIUM);
-        styleTotales.setFillBackgroundColor(IndexedColors.WHITE.getIndex());
-        Font fontTotales = workbook.createFont();
-        fontTotales.setColor(IndexedColors.BLACK.getIndex());
-
-        style.setFillPattern(CellStyle.ALIGN_FILL);
-        style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
-        style.setBorderBottom(CellStyle.BORDER_MEDIUM);
-        style.setBorderLeft(CellStyle.BORDER_MEDIUM);
-        style.setBorderRight(CellStyle.BORDER_MEDIUM);
-        style.setBorderTop(CellStyle.BORDER_MEDIUM);
-        Font font = workbook.createFont();
-        font.setColor(IndexedColors.WHITE.getIndex());
-        style.setFont(font);
-        styleTotales.setFont(fontTotales);
-        
-        XSSFFont fontHeader = workbook.createFont();
-        fontHeader.setColor(IndexedColors.BLACK.getIndex());
-        fontHeader.setBold(true);
-        CellStyle cellStyleHeader = workbook.createCellStyle();
-        cellStyleHeader.setAlignment(XSSFCellStyle.ALIGN_CENTER);
-        cellStyleHeader.setFont(fontHeader);
-        cellStyleHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
-        cellStyleHeader.setBorderBottom(CellStyle.BORDER_MEDIUM);
-        cellStyleHeader.setBorderLeft(CellStyle.BORDER_MEDIUM);
-        cellStyleHeader.setBorderRight(CellStyle.BORDER_MEDIUM);
-        cellStyleHeader.setBorderTop(CellStyle.BORDER_MEDIUM);
-        
-        for(int fila = 0; fila < (2 + item.size()); fila++){
-        	XSSFRow row = null;
-        	row = sheet.createRow(fila);
-        	for(int columna = 0; columna < 14 ; columna++){
-          		XSSFCell cell = row.createCell(columna);
-                cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-                cell.setCellStyle(cellStyleHeader);
-          	 }
-        }
-        int posHeader = 6;
-        for(int i=0;i<header.size();i++){
-        	
-        	if(i<6){
-        		sheet.setDefaultColumnWidth((short) 25); 
-        		XSSFRow row = sheet.getRow(0);
-        		CellExcelVO cellExcelVO = header.get(i); 
-        		XSSFCell cell = row.getCell(i);
-    			cell.setCellStyle(cellStyleHeader);
-            	cell.setCellValue(cellExcelVO.getName());
-            	sheet.addMergedRegion(new CellRangeAddress(0, 1, i, i));
-        	}
-        	else if(i >= 7 && i < 14){
-        		sheet.setDefaultColumnWidth((short) 25); 
-        		XSSFRow row = sheet.getRow(0);
-        		CellExcelVO cellExcelVO = header.get(i);
-        		XSSFCell cell = row.getCell(posHeader);
-    			cell.setCellStyle(cellStyleHeader);
-            	cell.setCellValue(cellExcelVO.getName());
-            	sheet.addMergedRegion(new CellRangeAddress(0, 0, posHeader, (posHeader + 1)));
-            	posHeader = posHeader + 2;
-        	}
-        	if(header.get(i).getName().equals("INCREMENTO")){
-        		sheet.setDefaultColumnWidth((short) 25); 
-        		XSSFRow row = sheet.getRow(0);
-        		CellExcelVO cellExcelVO = header.get(i); 
-        		XSSFCell cell = row.getCell(7);
-    			cell.setCellStyle(cellStyleHeader);
-            	cell.setCellValue(cellExcelVO.getName());
-            	sheet.addMergedRegion(new CellRangeAddress(0, 1, 13, 13));
+            	sheet.addMergedRegion(new CellRangeAddress(0, 1, 9, 9));
         	}
         	
         	
@@ -5396,7 +5274,6 @@ private void addSheet(ReporteEstadoSituacionPorComunaSheetExcel excelSheet, Stri
         
         
      // ############# items
-        //aqui van los items
         int filaItem = 2;
         
         
@@ -5419,6 +5296,258 @@ private void addSheet(ReporteEstadoSituacionPorComunaSheetExcel excelSheet, Stri
         e.printStackTrace();
     }
 }
+
+	private void addSheet(ReporteEstadoSituacionPorComunaSheetExcel excelSheet, String sheetName){
+		try{
+			XSSFSheet sheet = null;
+	        sheet = workbook.createSheet(sheetName);
+	        List<CellExcelVO> header = excelSheet.getHeaderComplex();
+	        List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
+	        List<ReporteEstadoSituacionByComunaVO> item = excelSheet.getItems();
+	        
+	        CellStyle style = workbook.createCellStyle();
+	        CellStyle styleTotales = workbook.createCellStyle();
+	        styleTotales.setFillPattern(CellStyle.ALIGN_FILL);
+	        styleTotales.setBorderBottom(CellStyle.BORDER_MEDIUM);
+	        styleTotales.setBorderLeft(CellStyle.BORDER_MEDIUM);
+	        styleTotales.setBorderRight(CellStyle.BORDER_MEDIUM);
+	        styleTotales.setBorderTop(CellStyle.BORDER_MEDIUM);
+	        styleTotales.setFillBackgroundColor(IndexedColors.WHITE.getIndex());
+	        Font fontTotales = workbook.createFont();
+	        fontTotales.setColor(IndexedColors.BLACK.getIndex());
+	
+	        style.setFillPattern(CellStyle.ALIGN_FILL);
+	        style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+	        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+	        style.setBorderBottom(CellStyle.BORDER_MEDIUM);
+	        style.setBorderLeft(CellStyle.BORDER_MEDIUM);
+	        style.setBorderRight(CellStyle.BORDER_MEDIUM);
+	        style.setBorderTop(CellStyle.BORDER_MEDIUM);
+	        Font font = workbook.createFont();
+	        font.setColor(IndexedColors.WHITE.getIndex());
+	        style.setFont(font);
+	        styleTotales.setFont(fontTotales);
+	        
+	        XSSFFont fontHeader = workbook.createFont();
+	        fontHeader.setColor(IndexedColors.BLACK.getIndex());
+	        fontHeader.setBold(true);
+	        CellStyle cellStyleHeader = workbook.createCellStyle();
+	        cellStyleHeader.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+	        cellStyleHeader.setFont(fontHeader);
+	        cellStyleHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+	        cellStyleHeader.setBorderBottom(CellStyle.BORDER_MEDIUM);
+	        cellStyleHeader.setBorderLeft(CellStyle.BORDER_MEDIUM);
+	        cellStyleHeader.setBorderRight(CellStyle.BORDER_MEDIUM);
+	        cellStyleHeader.setBorderTop(CellStyle.BORDER_MEDIUM);
+	        
+	        for(int fila = 0; fila < (2 + item.size()); fila++){
+	        	XSSFRow row = null;
+	        	row = sheet.createRow(fila);
+	        	for(int columna = 0; columna < 17 ; columna++){
+	          		XSSFCell cell = row.createCell(columna);
+	                cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+	                cell.setCellStyle(cellStyleHeader);
+	          	 }
+	        }
+	        int posHeader = 6;
+	        for(int i=0;i<header.size();i++){
+	        	
+	        	if(i<6){
+	        		sheet.setDefaultColumnWidth((short) 25); 
+	        		XSSFRow row = sheet.getRow(0);
+	        		CellExcelVO cellExcelVO = header.get(i); 
+	        		XSSFCell cell = row.getCell(i);
+	    			cell.setCellStyle(cellStyleHeader);
+	            	cell.setCellValue(cellExcelVO.getName());
+	            	sheet.addMergedRegion(new CellRangeAddress(0, 1, i, i));
+	        	}
+	        	else if(i >= 6 && i < 16){
+	        		sheet.setDefaultColumnWidth((short) 25); 
+	        		XSSFRow row = sheet.getRow(0);
+	        		CellExcelVO cellExcelVO = header.get(i);
+	        		XSSFCell cell = row.getCell(posHeader);
+	    			cell.setCellStyle(cellStyleHeader);
+	            	cell.setCellValue(cellExcelVO.getName());
+	            	sheet.addMergedRegion(new CellRangeAddress(0, 0, posHeader, (posHeader + 1)));
+	            	posHeader = posHeader + 2;
+	        	}
+	        	if(header.get(i).getName().equals("INCREMENTO")){
+	        		sheet.setDefaultColumnWidth((short) 25); 
+	        		XSSFRow row = sheet.getRow(0);
+	        		CellExcelVO cellExcelVO = header.get(i); 
+	        		XSSFCell cell = row.getCell(7);
+	    			cell.setCellStyle(cellStyleHeader);
+	            	cell.setCellValue(cellExcelVO.getName());
+	            	sheet.addMergedRegion(new CellRangeAddress(0, 1, 16, 16));
+	        	}
+	        	
+	        	
+	        }
+	        int posSubHeader = 5;
+	        for(int i=0; i<subHeader.size(); i++){
+	        	sheet.setDefaultColumnWidth((short) 25); 
+	    		XSSFRow row = sheet.getRow(1);
+	    		CellExcelVO cellExcelVO = subHeader.get(i); 
+	    		XSSFCell cell = row.getCell(posSubHeader);
+				cell.setCellStyle(cellStyleHeader); 
+				cell.setCellValue(cellExcelVO.getName());
+				
+	        	
+	        	posSubHeader++;
+	        }
+	        
+	        
+	        
+	        
+	     // ############# items
+	        //aqui van los items
+	        int filaItem = 2;
+	        
+	        for(int i=0;i<item.size();i++){
+	        	int maxColum = item.get(i).getRow().size();
+	        	XSSFRow rowItems = sheet.getRow(filaItem);
+	        	XSSFCell cellItems = null;        	
+	        	
+	        	for(int celda = 0; celda < maxColum; celda++ ){
+	        		
+	        		cellItems = rowItems.createCell(celda);
+	        		cellItems = rowItems.getCell(celda);
+	        		cellItems.setCellValue(item.get(i).getRow().get(celda).toString());
+	        	}
+	        	filaItem++;
+	        }
+	        
+			
+		}catch(Exception e){
+	        e.printStackTrace();
+	    }
+	}
+	
+	private void addSheet(ReporteEstadoSituacionPorServicioSheetExcel excelSheet, String sheetName){
+		try{
+			XSSFSheet sheet = null;
+	        sheet = workbook.createSheet(sheetName);
+	        List<CellExcelVO> header = excelSheet.getHeaderComplex();
+	        List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
+	        List<ReporteEstadoSituacionByServiciosVO> item = excelSheet.getItems();
+	        
+	        CellStyle style = workbook.createCellStyle();
+	        CellStyle styleTotales = workbook.createCellStyle();
+	        styleTotales.setFillPattern(CellStyle.ALIGN_FILL);
+	        styleTotales.setBorderBottom(CellStyle.BORDER_MEDIUM);
+	        styleTotales.setBorderLeft(CellStyle.BORDER_MEDIUM);
+	        styleTotales.setBorderRight(CellStyle.BORDER_MEDIUM);
+	        styleTotales.setBorderTop(CellStyle.BORDER_MEDIUM);
+	        styleTotales.setFillBackgroundColor(IndexedColors.WHITE.getIndex());
+	        Font fontTotales = workbook.createFont();
+	        fontTotales.setColor(IndexedColors.BLACK.getIndex());
+	
+	        style.setFillPattern(CellStyle.ALIGN_FILL);
+	        style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+	        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+	        style.setBorderBottom(CellStyle.BORDER_MEDIUM);
+	        style.setBorderLeft(CellStyle.BORDER_MEDIUM);
+	        style.setBorderRight(CellStyle.BORDER_MEDIUM);
+	        style.setBorderTop(CellStyle.BORDER_MEDIUM);
+	        Font font = workbook.createFont();
+	        font.setColor(IndexedColors.WHITE.getIndex());
+	        style.setFont(font);
+	        styleTotales.setFont(fontTotales);
+	        
+	        XSSFFont fontHeader = workbook.createFont();
+	        fontHeader.setColor(IndexedColors.BLACK.getIndex());
+	        fontHeader.setBold(true);
+	        CellStyle cellStyleHeader = workbook.createCellStyle();
+	        cellStyleHeader.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+	        cellStyleHeader.setFont(fontHeader);
+	        cellStyleHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+	        cellStyleHeader.setBorderBottom(CellStyle.BORDER_MEDIUM);
+	        cellStyleHeader.setBorderLeft(CellStyle.BORDER_MEDIUM);
+	        cellStyleHeader.setBorderRight(CellStyle.BORDER_MEDIUM);
+	        cellStyleHeader.setBorderTop(CellStyle.BORDER_MEDIUM);
+	        
+	        for(int fila = 0; fila < (2 + item.size()); fila++){
+	        	XSSFRow row = null;
+	        	row = sheet.createRow(fila);
+	        	for(int columna = 0; columna < 17 ; columna++){
+	          		XSSFCell cell = row.createCell(columna);
+	                cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+	                cell.setCellStyle(cellStyleHeader);
+	          	 }
+	        }
+	        int posHeader = 6;
+	        for(int i=0;i<header.size();i++){
+	        	
+	        	if(i<6){
+	        		sheet.setDefaultColumnWidth((short) 25); 
+	        		XSSFRow row = sheet.getRow(0);
+	        		CellExcelVO cellExcelVO = header.get(i); 
+	        		XSSFCell cell = row.getCell(i);
+	    			cell.setCellStyle(cellStyleHeader);
+	            	cell.setCellValue(cellExcelVO.getName());
+	            	sheet.addMergedRegion(new CellRangeAddress(0, 1, i, i));
+	        	}
+	        	else if(i >= 6 && i < 16){
+	        		sheet.setDefaultColumnWidth((short) 25); 
+	        		XSSFRow row = sheet.getRow(0);
+	        		CellExcelVO cellExcelVO = header.get(i);
+	        		XSSFCell cell = row.getCell(posHeader);
+	    			cell.setCellStyle(cellStyleHeader);
+	            	cell.setCellValue(cellExcelVO.getName());
+	            	sheet.addMergedRegion(new CellRangeAddress(0, 0, posHeader, (posHeader + 1)));
+	            	posHeader = posHeader + 2;
+	        	}
+	        	if(header.get(i).getName().equals("INCREMENTO")){
+	        		sheet.setDefaultColumnWidth((short) 25); 
+	        		XSSFRow row = sheet.getRow(0);
+	        		CellExcelVO cellExcelVO = header.get(i); 
+	        		XSSFCell cell = row.getCell(7);
+	    			cell.setCellStyle(cellStyleHeader);
+	            	cell.setCellValue(cellExcelVO.getName());
+	            	sheet.addMergedRegion(new CellRangeAddress(0, 1, 16, 16));
+	        	}
+	        	
+	        	
+	        }
+	        int posSubHeader = 5;
+	        for(int i=0; i<subHeader.size(); i++){
+	        	sheet.setDefaultColumnWidth((short) 25); 
+	    		XSSFRow row = sheet.getRow(1);
+	    		CellExcelVO cellExcelVO = subHeader.get(i); 
+	    		XSSFCell cell = row.getCell(posSubHeader);
+				cell.setCellStyle(cellStyleHeader); 
+				cell.setCellValue(cellExcelVO.getName());
+				
+	        	
+	        	posSubHeader++;
+	        }
+	        
+	        
+	        
+	        
+	     // ############# items
+	        //aqui van los items
+	        int filaItem = 2;
+	        
+	        for(int i=0;i<item.size();i++){
+	        	int maxColum = item.get(i).getRow().size();
+	        	XSSFRow rowItems = sheet.getRow(filaItem);
+	        	XSSFCell cellItems = null;        	
+	        	
+	        	for(int celda = 0; celda < maxColum; celda++ ){
+	        		
+	        		cellItems = rowItems.createCell(celda);
+	        		cellItems = rowItems.getCell(celda);
+	        		cellItems.setCellValue(item.get(i).getRow().get(celda).toString());
+	        	}
+	        	filaItem++;
+	        }
+	        
+			
+		}catch(Exception e){
+	        e.printStackTrace();
+	    }
+	}
 
 	private void addSheet(AsignacionRecursosPercapitaSheetExcel excelSheet, String sheetName){
 		XSSFSheet sheet = null;
