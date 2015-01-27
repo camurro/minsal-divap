@@ -107,11 +107,12 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 					.getData().get("_tipoProgramaPxQ");
 		}
 		programa = reforzamientoService.getProgramaById(programaSeleccionado);
-		idProxAno = programaService.getIdProgramaAnoAnterior(programaSeleccionado, reforzamientoService.getAnoCurso());
+		idProxAno = programaService.getIdProgramaAnoAnterior(programa.getId(), reforzamientoService.getAnoCurso() + 1);
 		servicio=false;
 		municipal=false;
 		mixto = false;
 		if(programa.getDependenciaMunicipal() != null && programa.getDependenciaMunicipal()){
+			System.out.println("idProxAno --------->>>> "+idProxAno);
 			resolucionPrograma = reforzamientoService.getIdResolucion(idProxAno, TipoDocumentosProcesos.MODIFICACIONRESOLUCIONPROGRAMASAPS);
 			excelResolucion = reforzamientoService.getIdResolucion(idProxAno, TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS);
 			plantillaResolucionCorreo = documentService.getIdDocumentoFromPlantilla(TipoDocumentosProcesos.PLANTILLARESOLUCIONCORREO);

@@ -109,10 +109,17 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 			programaSeleccionado = (Integer) getTaskDataVO()
 					.getData().get("_programaSeleccionado");
 		}
+		
+		
+		
+		System.out.println("\n\n\n\nprogramaSeleccionado ---> "+programaSeleccionado+"\n\n\n\n");
 		programa = programasService.getProgramaAno(programaSeleccionado);
-		programaProxAno = programasService.getIdProgramaAnoAnterior(programaSeleccionado, recursosFinancierosProgramasReforzamientoService.getAnoCurso());
+		System.out.println("\n\n\n### programa ---> "+programa+"\n\n\n");
+		
+		programaProxAno = programasService.getIdProgramaAnoAnterior(programa.getId(), (recursosFinancierosProgramasReforzamientoService.getAnoCurso()));
+		System.out.println("\n\n\n###programaProxAno --> "+programaProxAno+"\n\n\n");
 		listaServicios = utilitariosService.getAllServicios();
-		listaComponentes= componenteService.getComponenteByPrograma(programa.getIdProgramaAno());
+		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
 		armarResumenPrograma();
 	}
 	
@@ -169,7 +176,7 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 
 	private void resumenMunicipal() {
 		Integer anoSiguiente = recursosFinancierosProgramasReforzamientoService.getAnoCurso();
-		int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programaSeleccionado, anoSiguiente);
+		int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programa.getId(), (anoSiguiente+1));
 		resumenProgramaMunicipal = programasService.getResumenMunicipal(IdProgramaProxAno, 3);
 		totalResumen24 =0l;
 		tiene24=false;
@@ -183,9 +190,13 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 	}
 
 	private void resumenServicio() {
+		
+		
 		Integer anoSiguiente = recursosFinancierosProgramasReforzamientoService.getAnoCurso();
-		int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programaSeleccionado, anoSiguiente);
-			resumenProgramaServicio = programasService.getResumenServicio(IdProgramaProxAno, programa.getIdProgramaAno());
+		
+		int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programa.getId(), (anoSiguiente + 1));
+		
+			resumenProgramaServicio = programasService.getResumenServicio(IdProgramaProxAno, programa.getId());
 			totalResumen21=0l;
 			totalResumen22=0l;
 			totalResumen29=0l;

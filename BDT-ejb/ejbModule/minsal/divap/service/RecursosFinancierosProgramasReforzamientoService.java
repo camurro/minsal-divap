@@ -1006,7 +1006,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 	public List<ProgramaVO> getProgramasSinPerCapitaSinHistoricos(String username) {
 		List<ProgramaVO> programasVO = new ArrayList<ProgramaVO>();
 		List<ProgramaVO> programasSalidaVO = new ArrayList<ProgramaVO>();
-		List<ProgramaAno> programas = programasDAO.getProgramasByUserAno(username, getAnoCurso());
+		List<ProgramaAno> programas = programasDAO.getProgramasByUserAno(username, getAnoCurso() + 1);
 		if(programas != null && programas.size() > 0){
 			for(ProgramaAno programa : programas){
 				if(programa.getIdProgramaAno()>0){
@@ -1259,6 +1259,8 @@ public class RecursosFinancierosProgramasReforzamientoService {
 									}
 
 									ProgramaMunicipalCore municipalCore = programasDAO.getProgramaMunicipalCoreByComunaProgramaAno(comuna.getId(), idProgramaAno);
+									System.out.println("idProgramaAno ----> "+idProgramaAno);
+									System.out.println("municipalCore ---> "+municipalCore);
 
 									ProgramaMunicipalCoreComponente coreComponente = programasDAO.getProgramaMunicipalCoreComponente(municipalCore.getIdProgramaMunicipalCore(), componentes.get(j).getId());
 

@@ -65,7 +65,7 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasMixto extends Abstra
 				plantillaServicios = recursosFinancierosProgramasReforzamientoService.getIdPlantillaProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSSERVICIO,true, programa.getId());
 			}
 			Integer anoActual = programasService.getAnoCurso();
-			IdProgramaAnoActual = programasService.getProgramaAnoSiguiente(programaSeleccionado, anoActual);
+			IdProgramaAnoActual = programasService.getProgramaAnoSiguiente(programa.getId(), anoActual + 1);
 		}
 	}
 	

@@ -67,7 +67,7 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillas extends AbstractTas
 				plantillaServicios = recursosFinancierosProgramasReforzamientoService.getIdPlantillaModificacionProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSSERVICIO, template);
 			}
 			Integer anoActual = programasService.getAnoCurso();
-			IdProgramaAnoActual = programasService.getProgramaAnoSiguiente(programaSeleccionado, anoActual);
+			IdProgramaAnoActual = programasService.getProgramaAnoSiguiente(programaSeleccionado, anoActual + 1);
 		}
 	}
 	

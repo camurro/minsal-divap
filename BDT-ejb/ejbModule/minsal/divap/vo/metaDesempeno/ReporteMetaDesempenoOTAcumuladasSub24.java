@@ -6,8 +6,6 @@ public class ReporteMetaDesempenoOTAcumuladasSub24 implements Serializable{
 
 	private static final long serialVersionUID = 7718945047913065897L;
 	
-	private Integer cod_ss;
-	private String servicio;
 	private Long percapitaBasal;
 	private Long addf;
 	private Long descuentoRetiro;
@@ -25,22 +23,6 @@ public class ReporteMetaDesempenoOTAcumuladasSub24 implements Serializable{
 	
 	public ReporteMetaDesempenoOTAcumuladasSub24(){
 		
-	}
-
-	public Integer getCod_ss() {
-		return cod_ss;
-	}
-
-	public void setCod_ss(Integer cod_ss) {
-		this.cod_ss = cod_ss;
-	}
-
-	public String getServicio() {
-		return servicio;
-	}
-
-	public void setServicio(String servicio) {
-		this.servicio = servicio;
 	}
 
 	public Long getPercapitaBasal() {

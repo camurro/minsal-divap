@@ -38,6 +38,7 @@ import minsal.divap.excel.impl.ReporteHistoricoProgramaPorComunaSheetExcel;
 import minsal.divap.excel.impl.ReporteHistoricoProgramaPorEstablecimientoSheetExcel;
 import minsal.divap.excel.impl.ReporteMarcoPresupuestarioComunaSheetExcel;
 import minsal.divap.excel.impl.ReporteMarcoPresupuestarioEstablecimientoSheetExcel;
+import minsal.divap.excel.impl.ReporteMetaDesempenoCuadro2SheetExcel;
 import minsal.divap.excel.impl.ReporteMonitoreoProgramaComunaSheetExcel;
 import minsal.divap.excel.impl.ReporteMonitoreoProgramaEstablecimientoSheetExcel;
 import minsal.divap.excel.impl.ReportePoblacionPercapitaSheetExcel;
@@ -68,6 +69,7 @@ import minsal.divap.vo.ResumenProgramaMixtoVO;
 import minsal.divap.vo.SubtituloFlujoCajaVO;
 import minsal.divap.vo.SubtituloVO;
 import minsal.divap.vo.ValorizarReliquidacionSummaryVO;
+import minsal.divap.vo.metaDesempeno.ReporteMetaDesempenoOTAcumuladasPrincipal;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -259,6 +261,10 @@ public class GeneradorExcel {
 				addSheet((AsignacionDesempenoDificilSheetExcel)excelSheet, sheetName);
 				return;
 			}
+			if(excelSheet instanceof ReporteMetaDesempenoCuadro2SheetExcel){
+                addSheet((ReporteMetaDesempenoCuadro2SheetExcel)excelSheet, sheetName);
+                return;
+            }
 
 
             XSSFSheet sheet = null;
@@ -5708,5 +5714,82 @@ private void addSheet(ReporteMonitoreoProgramaEstablecimientoSheetExcel excelShe
 			}
 		}
 	}
+	
+	
+	private void addSheet(ReporteMetaDesempenoCuadro2SheetExcel excelSheet, String sheetName){
+		try{
+			XSSFSheet sheet = null;
+	        sheet = workbook.createSheet(sheetName);
+	        List<CellExcelVO> header = excelSheet.getHeaderComplex();
+	        List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
+	        List<ReporteMetaDesempenoOTAcumuladasPrincipal> item = excelSheet.getItems();
+	        
+	        CellStyle style = workbook.createCellStyle();
+	        CellStyle styleTotales = workbook.createCellStyle();
+	        styleTotales.setFillPattern(CellStyle.ALIGN_FILL);
+	        styleTotales.setBorderBottom(CellStyle.BORDER_MEDIUM);
+	        styleTotales.setBorderLeft(CellStyle.BORDER_MEDIUM);
+	        styleTotales.setBorderRight(CellStyle.BORDER_MEDIUM);
+	        styleTotales.setBorderTop(CellStyle.BORDER_MEDIUM);
+	        styleTotales.setFillBackgroundColor(IndexedColors.WHITE.getIndex());
+	        Font fontTotales = workbook.createFont();
+	        fontTotales.setColor(IndexedColors.BLACK.getIndex());
+
+	        style.setFillPattern(CellStyle.ALIGN_FILL);
+	        style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+	        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+	        style.setBorderBottom(CellStyle.BORDER_MEDIUM);
+	        style.setBorderLeft(CellStyle.BORDER_MEDIUM);
+	        style.setBorderRight(CellStyle.BORDER_MEDIUM);
+	        style.setBorderTop(CellStyle.BORDER_MEDIUM);
+	        Font font = workbook.createFont();
+	        font.setColor(IndexedColors.WHITE.getIndex());
+	        style.setFont(font);
+	        styleTotales.setFont(fontTotales);
+	        
+	        XSSFFont fontHeader = workbook.createFont();
+	        fontHeader.setColor(IndexedColors.BLACK.getIndex());
+	        fontHeader.setBold(true);
+	        CellStyle cellStyleHeader = workbook.createCellStyle();
+	        cellStyleHeader.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+	        cellStyleHeader.setFont(fontHeader);
+	        cellStyleHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+	        cellStyleHeader.setBorderBottom(CellStyle.BORDER_MEDIUM);
+	        cellStyleHeader.setBorderLeft(CellStyle.BORDER_MEDIUM);
+	        cellStyleHeader.setBorderRight(CellStyle.BORDER_MEDIUM);
+	        cellStyleHeader.setBorderTop(CellStyle.BORDER_MEDIUM);
+	        
+	        for(int fila = 0; fila < item.size(); fila++){
+	        	XSSFRow row = null;
+	        	row = sheet.createRow(fila);
+	        	for(int columna = 0; columna < item.get(0).getRow().size() ; columna++){
+	          		XSSFCell cell = row.createCell(columna);
+	                cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+	                cell.setCellStyle(cellStyleHeader);
+	          	 }
+	        }
+	        int filaItem = 0;
+	        
+	        
+	        for(int i=0;i<item.size();i++){
+	        	int maxColum = item.get(i).getRow().size();
+	        	XSSFRow rowItems = sheet.getRow(filaItem);
+	        	XSSFCell cellItems = null;        	
+	        	
+	        	for(int celda = 0; celda < maxColum; celda++ ){
+	        		
+	        		cellItems = rowItems.createCell(celda);
+	        		cellItems = rowItems.getCell(celda);
+	        		cellItems.setCellValue(item.get(i).getRow().get(celda).toString());
+	        	}
+	        	filaItem++;
+	        }
+	        
+			
+		}catch(Exception e){
+	        e.printStackTrace();
+	    }
+	}
+	
 
 }

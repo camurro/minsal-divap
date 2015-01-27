@@ -66,6 +66,7 @@ public class ProgramasDAO {
 	}
 
 	public  Programa getProgramaPorID(int programaId){
+		System.out.println("\n###\n###\n###\nprogramaId que llega al metodo getProgramaPorID()--->>>"+programaId+"\n###\n###\n###\n");
 		try {
 			TypedQuery<Programa> query = this.em.createNamedQuery("Programa.findById", Programa.class);
 			query.setParameter("id", programaId);
@@ -281,6 +282,7 @@ public class ProgramasDAO {
 
 	public ProgramaAno getProgramaAnoSiguiente(Integer idPrograma, Integer anoSiguiente) {
 		try {
+			
 			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.findByAnoIdPrograma", ProgramaAno.class);
 			query.setParameter("idPrograma", idPrograma);
 			query.setParameter("ano", anoSiguiente);

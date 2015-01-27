@@ -34,6 +34,7 @@ import minsal.divap.excel.impl.ReporteHistoricoProgramaPorComunaSheetExcel;
 import minsal.divap.excel.impl.ReporteHistoricoProgramaPorEstablecimientoSheetExcel;
 import minsal.divap.excel.impl.ReporteMarcoPresupuestarioComunaSheetExcel;
 import minsal.divap.excel.impl.ReporteMarcoPresupuestarioEstablecimientoSheetExcel;
+import minsal.divap.excel.impl.ReporteMetaDesempenoCuadro2SheetExcel;
 import minsal.divap.excel.impl.ReporteMonitoreoProgramaComunaSheetExcel;
 import minsal.divap.excel.impl.ReporteMonitoreoProgramaEstablecimientoSheetExcel;
 import minsal.divap.excel.impl.ReportePoblacionPercapitaSheetExcel;
@@ -50,7 +51,6 @@ import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.ReporteEstadoSituacionByComunaVO;
 import minsal.divap.vo.ReporteEstadoSituacionByServiciosVO;
 import minsal.divap.vo.ReporteGlosaVO;
-import minsal.divap.vo.ReporteHistoricoComunaMarcoPresupuestarioVO;
 import minsal.divap.vo.ReporteHistoricoPorProgramaComunaForExcelVO;
 import minsal.divap.vo.ReporteHistoricoPorProgramaComunaVO;
 import minsal.divap.vo.ReporteHistoricoPorProgramaEstablecimientoForExcelVO;
@@ -64,12 +64,13 @@ import minsal.divap.vo.ReportePerCapitaVO;
 import minsal.divap.vo.ReporteRebajaVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.metaDesempeno.ReporteMetaDesempenoOTAcumuladasPrincipal;
+import minsal.divap.vo.metaDesempeno.ReporteMetaDesempenoOTAcumuladasSub21;
+import minsal.divap.vo.metaDesempeno.ReporteMetaDesempenoOTAcumuladasSub22;
+import minsal.divap.vo.metaDesempeno.ReporteMetaDesempenoOTAcumuladasSub24;
+import minsal.divap.vo.metaDesempeno.ReporteMetaDesempenoOTAcumuladasSub29;
 import cl.minsal.divap.model.AntecedentesComunaCalculadoRebaja;
-import cl.minsal.divap.model.AntecendentesComuna;
 import cl.minsal.divap.model.AntecendentesComunaCalculado;
 import cl.minsal.divap.model.Comuna;
-import cl.minsal.divap.model.ConvenioServicioComponente;
-import cl.minsal.divap.model.Cuota;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.Establecimiento;
 import cl.minsal.divap.model.Mes;
@@ -2052,7 +2053,6 @@ public class ReportesServices {
 					tipoDocumento, response.getNodeRef(),
 					response.getFileName(), contenType, getAnoCurso(),
 					Integer.parseInt(getMesCurso(true)));
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -3376,19 +3376,156 @@ public class ReportesServices {
 	
 	
 	
+	
+	
+Long marcoProgramasDependenciaMunicipalPorServicio(Integer idProgramaAno, Integer idServicio, Integer idSubtitulo){
+		
+		Long marco = 0L;
+		ProgramaVO programa = programasService.getProgramaAnoPorID(idProgramaAno);
+		List<ComponentesVO> componentes = programa.getComponentes();
+		
+		ServiciosVO servicio = servicioSaludService.getServicioSaludById(idServicio);
+		for(ComunaSummaryVO comuna : servicio.getComunas()){
+			for(ComponentesVO componente : componentes){
+				marco += programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(), idProgramaAno, componente.getId(), idSubtitulo);
+			}
+		}
+		
+		return marco;
+	}
+	
+	
 	List<ReporteMetaDesempenoOTAcumuladasPrincipal> generarMetaDesempenoOT() {
 
 		List<ReporteMetaDesempenoOTAcumuladasPrincipal> resultado = new ArrayList<ReporteMetaDesempenoOTAcumuladasPrincipal>();
 
-		List<ServiciosVO> servicios = servicioSaludService
-				.getServiciosOrderId();
+		List<ServiciosVO> servicios = servicioSaludService.getServiciosOrderId();
+		
+		
 		for (ServiciosVO servicio : servicios) {
 			ReporteMetaDesempenoOTAcumuladasPrincipal fila = new ReporteMetaDesempenoOTAcumuladasPrincipal();
-			// fila.set
+			fila.setCod_ss(servicio.getId_servicio());
+			fila.setServicio(servicio.getNombre_servicio());
 			
+			ReporteMetaDesempenoOTAcumuladasSub24 sub24 = new ReporteMetaDesempenoOTAcumuladasSub24();
+			ReporteMetaDesempenoOTAcumuladasSub21 sub21 = new ReporteMetaDesempenoOTAcumuladasSub21();
+			ReporteMetaDesempenoOTAcumuladasSub22 sub22 = new ReporteMetaDesempenoOTAcumuladasSub22();
+			ReporteMetaDesempenoOTAcumuladasSub29 sub29 = new ReporteMetaDesempenoOTAcumuladasSub29();
+			
+			Long montoTemp = 24234234L;
+			Long percapitaBasal = 0L;
+			Long totalPercapita = 0L;
+			Long totalAddf = 0L;
+			Long totalRebajaIAAPS = 0L;
+			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO
+					.findLast((getAnoCurso() + 1));
+			
+			for(ComunaSummaryVO comuna : servicio.getComunas()){
+				List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO
+						.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaVigente(
+								servicio.getId_servicio(), comuna.getId(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+				AntecendentesComunaCalculado antecendentesComunaCalculado = ((antecendentesComunaCalculados != null && antecendentesComunaCalculados.size() > 0) ? antecendentesComunaCalculados.get(0) : null);
+				
+				Long rebajaIAAPS = 0L;
+				if (antecendentesComunaCalculado.getAntecedentesComunaCalculadoRebajas() != null && antecendentesComunaCalculado.getAntecedentesComunaCalculadoRebajas().size() > 0) {
+					for (AntecedentesComunaCalculadoRebaja antecedentesComunaCalculadoRebaja : antecendentesComunaCalculado.getAntecedentesComunaCalculadoRebajas()) {
+						rebajaIAAPS += antecedentesComunaCalculadoRebaja.getMontoRebaja();
+						System.out.println("rebajaIAAPS --> " + rebajaIAAPS);
+					}
+				}
+				totalRebajaIAAPS += rebajaIAAPS;
+				
+				percapitaBasal += antecendentesComunaCalculado.getPercapitaMes();
+				
+				totalAddf += antecendentesComunaCalculado.getDesempenoDificil();
+				
+			}
+			
+			sub24.setPercapitaBasal(percapitaBasal);
+			sub24.setAddf(totalAddf);
+			sub24.setDescuentoRetiro(montoTemp);
+			sub24.setRebajaIncumplida(totalRebajaIAAPS);
+
+			totalPercapita = (percapitaBasal + totalAddf) - sub24.getDescuentoRetiro() - sub24.getRebajaIncumplida();
+			
+			sub24.setTotalPercapita(totalPercapita);
+			sub24.setLeyes(montoTemp);
+			sub24.setRetiroYbonificacionComplementaria(montoTemp);
+			sub24.setChileCreceContigo(montoTemp);
+			sub24.setOtrasLeyes(montoTemp);
+			sub24.setResolutividad(montoTemp);
+			sub24.setUrgencia(montoTemp);
+			sub24.setOdontologia(montoTemp);
+			sub24.setOtrosRefMunicipal(montoTemp);
+			sub24.setTotalRefMunicipal(montoTemp);
+			
+			
+			sub21.setChileCreceContigo(montoTemp);
+			sub21.setApoyoGestionSalud(montoTemp);
+			sub21.setResolutividad(montoTemp);
+			sub21.setUrgencia(montoTemp);
+			sub21.setOdontologia(montoTemp);
+			sub21.setOtrosRefSub21(montoTemp);
+			sub21.setTotalRefSub21(montoTemp);
+			
+			
+			sub22.setChileCreceContigo(montoTemp);
+			sub22.setApoyoGestionSalud(montoTemp);
+			sub22.setResolutividad(montoTemp);
+			sub22.setUrgencia(montoTemp);
+			sub22.setOdontologia(montoTemp);
+			sub22.setCompraFarmacos(montoTemp);
+			sub22.setMandatosApsProgramas(montoTemp);
+			sub22.setOtrosRefSub22(montoTemp);
+			sub22.setTotalRefSub22(montoTemp);
+			
+			sub29.setOtrosRefSub29(montoTemp);
+			sub29.setTotalRefSub29(montoTemp);
+			
+			fila.setReporteMetaDesempenoOTAcumuladasSub21(sub21);
+			fila.setReporteMetaDesempenoOTAcumuladasSub22(sub22);
+			fila.setReporteMetaDesempenoOTAcumuladasSub24(sub24);
+			fila.setReporteMetaDesempenoOTAcumuladasSub29(sub29);
+			fila.setTotalAPSAcumulado(montoTemp);
+			
+			resultado.add(fila);
 		}
 
 		return resultado;
 	}
+	
+	public Integer generarPlanillaMetaDesempenoCuadro2() {
+		Integer planillaTrabajoId = null;
+		
+		List<ReporteMetaDesempenoOTAcumuladasPrincipal> reporteMetaDesempenoOTAcumuladasPrincipal = generarMetaDesempenoOT();
+		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
+		String filename = tmpDir + File.separator + "Panilla Reporte Meta Desempeno Cuadro2.xlsx";
+		String contenType = mimemap.getContentType(filename.toLowerCase());
+
+		GeneradorExcel generadorExcel = new GeneradorExcel(filename);
+		
+		ReporteMetaDesempenoCuadro2SheetExcel reporteMetaDesempenoCuadro2SheetExcel = new ReporteMetaDesempenoCuadro2SheetExcel(null, null, null);
+		reporteMetaDesempenoCuadro2SheetExcel.setItems(reporteMetaDesempenoOTAcumuladasPrincipal);
+		
+		generadorExcel.addSheet(reporteMetaDesempenoCuadro2SheetExcel, "hoja 1");
+		System.out.println("folderReportes ---> "+folderReportes);
+		try {
+			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderReportes.replace("{ANO}",String.valueOf(getAnoCurso() + 1)));
+
+			TipoDocumento tipoDocumento = new TipoDocumento(
+					TipoDocumentosProcesos.REPORTEMETADESEMPENOCUADRO2.getId());
+			planillaTrabajoId = documentService.createDocumentReportes(
+					tipoDocumento, response.getNodeRef(),
+					response.getFileName(), contenType, getAnoCurso(),
+					Integer.parseInt(getMesCurso(true)));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return planillaTrabajoId;
+	}
+	
+	
 
 }

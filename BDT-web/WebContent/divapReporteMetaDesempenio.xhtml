@@ -10,6 +10,17 @@
 				</h1>
 				<p:panel id="Panel">
 					<h2>Meta Desempeño</h2>
+					
+				
+					<h:panelGrid>
+						<h:outputText value="Programa: " styleClass="inputLabel" />
+							<p:selectOneMenu style="width:450px;" id="cbPrograma" value="#{reporteMetaDesempenoController.valorComboPrograma}">
+							    <f:selectItem itemLabel="Seleccione" itemValue="0" />
+			           			<f:selectItems value="#{reporteMetaDesempenoController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
+			           		</p:selectOneMenu>
+					</h:panelGrid>
+					
+					
 
 					<div class="destacaArchivos ui-corner-all">
 						<h3>Archivos Disponibles:</h3>
@@ -21,14 +32,14 @@
 					
 					<div class="destacaArchivos ui-corner-all">
 						<h3>Archivos Disponibles:</h3>
-						<span class="strong">Archivo: </span> Planilla Glosa 07 [
+						<span class="strong">Archivo: </span> Planilla Cuadro 2 [
 						<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
 								<h:commandLink
-										action="#{reporteGlosa07Controller.downloadTemplate}"
+										action="#{reporteMetaDesempenoController.downloadTemplateCuadro2}"
 										value="Bajar">
 										<f:setPropertyActionListener
-											target="#{reporteGlosa07Controller.docIdDownload}"
-											value="#{reporteGlosa07Controller.idPlanilla}" />
+											target="#{reporteMetaDesempenoController.docIdDownloadCuadro2}"
+											value="#{reporteMetaDesempenoController.idPlanillaCuadro2}" />
 									</h:commandLink>
 						] <br />
 						<span class="strong">Archivo: </span> Documento Ordinario Glosa 07 [

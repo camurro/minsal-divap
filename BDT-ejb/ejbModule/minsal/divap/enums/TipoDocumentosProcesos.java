@@ -60,6 +60,7 @@ public enum TipoDocumentosProcesos{
 	REPORTEHISTORICOPROGRAMACOMUNA(105,"Reporte Historico Por Programa - Comuna"), REPORTEHISTORICOPROGRAMAESTABLECIMIENTO(106,"Reporte Historico Por Programa - Establecimiento"),
 	REPORTEMONITOREOPROGRAMACOMUNA(107,"Reporte Monitoreo Programa - Comuna"), REPORTEMONITOREOPROGRAMASERVICIO(108,"Reporte Monitoreo Programa - Servicios"),
 	REPORTEESTADOSITUACIONPROGRAMABYCOMUNA(109,"Reporte Estado Situacion Programa - Comuna"), REPORTEESTADOSITUACIONPROGRAMABYSERVICIO(110,"Reporte Estado Situacion Programa - Servicio"),
+	REPORTEMETADESEMPENOCUADRO1(111,"Reporte Meta Desempeno - Cuadro1"), REPORTEMETADESEMPENOCUADRO2(112,"Reporte Meta Desempeno - Cuadro2"),
 	CONVENIOSERVICIO(153, "Convenio Servicio"), CONVENIOCOMUNA(154, "Convenio Comuna"), PLANILLACONVENIOMUNICIPAL(155, "Planilla Convenio Municipal"), PLANILLACONVENIOSERVICIO(156, "Planilla Convenio Servicio"),
 	PLANTILLAORDINARIOSOLICITUDANTECEDENTES(159, "Ordinario Solicitud Antecedentes"), ORDINARIOSOLICITUDANTECEDENTES(160, "Ordinario Solicitud Antecedentes"),
 	PLANTILLACORREOORDINARIOSOLICITUDANTECEDENTES(161, "Plantilla Correo Ordinario Solicitud Antecedentes"), PLANTILLAMODIFICACIONRESOLUCIONAPORTEESTATAL(170, "Plantilla ordinario modificación aporte estatal"),

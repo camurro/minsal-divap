@@ -8,7 +8,6 @@ public class ReporteMetaDesempenoOTAcumuladasSub22 implements Serializable{
 	
 	private Long chileCreceContigo;
 	private Long apoyoGestionSalud;
-	private Long ancora;
 	private Long resolutividad;
 	private Long urgencia;
 	private Long odontologia;
@@ -40,16 +39,6 @@ public class ReporteMetaDesempenoOTAcumuladasSub22 implements Serializable{
 
 	public void setApoyoGestionSalud(Long apoyoGestionSalud) {
 		this.apoyoGestionSalud = apoyoGestionSalud;
-	}
-
-
-	public Long getAncora() {
-		return ancora;
-	}
-
-
-	public void setAncora(Long ancora) {
-		this.ancora = ancora;
 	}
 
 
