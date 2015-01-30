@@ -30,50 +30,30 @@
 					<h:panelGrid>
 						<h:form id ="more">
 							<h:outputText value="Componente: " styleClass="inputLabel" />
-											
-											
-											
-											
-							<p:selectOneMenu id="select5"  style="width:650px;" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorComboSubtituloComponente}">
+							<p:selectOneMenu id="select5"  style="width:650px;" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.valorComboSubtituloComponente}">
 	           			 		<f:selectItem itemLabel="Seleccione" itemValue="0" />
-	            				<f:selectItems value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.programa.componentes}" itemLabel="#{componente.nombre}" itemValue="#{componente.id}" var="componente" />
-	            				<p:ajax listener="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.filtrarSubtituloComponente}" update=":formComponente"  />
+	            				<f:selectItems value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.componentesSeleccionados}" itemLabel="#{componente.nombre}" itemValue="#{componente.id}" var="componente" />
+	            				<p:ajax  listener="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.filtrarSubtituloComponente}" update=":formComponente"  />
 	        				</p:selectOneMenu>
-	        				
-	        				
-	        				
-	        				
 	        			 </h:form>
 					</h:panelGrid>
-					
 					<br />
 					<h:form id="formComponente">
-					<ui:param name="numMesActual" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.numMesActual}" />
-					<p:panelGrid columns="2" id="display" columnClasses="label,value">
-						<div class="destacaArchivos ui-corner-all" style="padding: 10px;">
-							<span class="strong">Componente: #{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorNombreComponente} </span> <br /> 
-							<span class="strong">Peso Componente: #{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.valorPesoComponente}</span>
-						</div>
-					</p:panelGrid>
+					<ui:param name="numMesActual" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.numMesActual}" />
 					<br />
 					<h:panelGrid>
-						<p:dataTable resizableColumns="true"
-							value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.estimacionFlujoMonitoreoSubtituloComponente}"
-							liveResize="true" var="_data" rows="10" paginator="false"
-							paginatorPosition="bottom"
-							emptyMessage="No se encontro información."
-							styleClass="dataTable" 
+						<p:dataTable resizableColumns="true" value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.estimacionFlujoMonitoreoSubtituloComponente}"
+							liveResize="true" var="_data" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" 
 							id="tablaSubtitulo21">
-
 						
-							<c:if test="#{not procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.iniciarFlujoCaja}">
+							<c:if test="#{not procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.iniciarFlujoCaja}">
 							<p:columnGroup type="header">
 								<p:row>
 									<p:column rowspan="3" headerText="Servicio" />
 									<p:column
-										colspan="#{fn:length(procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columns) + 3}"
+										colspan="#{fn:length(procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.columns) + 4}"
 										styleClass="textoPequenio"
-										headerText="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.subtituloSeleccionado.nombre} (Cuota #{mes} #{ano})" />
+										headerText="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.subtituloSeleccionado.nombre} (Cuota #{mes} #{ano})" />
 									<p:column rowspan="3" headerText="Total" />
 								</p:row>
 								<p:row>
@@ -81,16 +61,17 @@
 									<p:column rowspan="2"
 										headerText="Transf. Acum. a la Fecha" width="200" />
 									<p:column rowspan="2" headerText="Convenios Rec." />
+									<p:column rowspan="2" headerText="Peso Componente" />
 									<!-- Columna de meses dinámicas  -->
 									<c:forEach
-										items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columns}"
+										items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.columns}"
 										var="dynamicColumn">
 										<p:column headerText="#{dynamicColumn.header}" />
 									</c:forEach>
-								</p:row>>
+								</p:row>
 								<p:row>
 									<c:forEach
-										items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columns}"
+										items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.columns}"
 										var="dynamicColumn">
 										<p:column headerText="#{dynamicColumn.property}" />
 									</c:forEach>
@@ -98,58 +79,109 @@
 
 							</p:columnGroup>
 							
-							<c:if test="#{not empty procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.estimacionFlujoMonitoreoSubtituloComponente}">
+							<c:if test="#{not empty procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.estimacionFlujoMonitoreoSubtituloComponente}">
 
 							<p:column>
 								<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
 							</p:column>
 							<p:column>
-								<h:outputText value="#{_data.marcoPresupuestario}"
-									styleClass="textoPequenio textoAjustado">
-									<f:convertNumber type="currency" maxFractionDigits="0"
-										locale="es_CL" currencySymbol="$" />
+								<h:outputText value="#{_data.marcoPresupuestario}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL"/>
 								</h:outputText>
 							</p:column>
 
 							<p:column>
-								<h:outputText value="#{_data.transferenciaAcumulada.monto}"
-									styleClass="textoPequenio textoAjustado">
-									<f:convertNumber type="currency" maxFractionDigits="0"
-										locale="es_CL" currencySymbol="$" />
+								<h:outputText value="#{_data.transferenciaAcumulada.monto}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL"/>
 								</h:outputText>
 							</p:column>
 							<p:column>
-								<h:outputText value="#{_data.convenioRecibido.monto}"
-									styleClass="textoPequenio textoAjustado">
-									<f:convertNumber type="currency" maxFractionDigits="0"
-										locale="es_CL" currencySymbol="$" />
+								<h:outputText value="#{_data.convenioRecibido.monto}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL"/>
 								</h:outputText>
 							</p:column>
-
-							<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMonitoreoSubtituloComponentLocal}" var="monto">
-								 <c:if test="#{monto.idMes lt numMesActual}">
-								  		<c:if test="#{monto.idMes eq (numMesActual-1)}">
-									   	    <p:column>
-												<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</p:column>
-										</c:if>
-								    </c:if>
-									<c:if test="#{monto.idMes ge numMesActual}">
-										<p:column>
-											<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
-												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-											</h:outputText>
-										</p:column>
-									</c:if>
-							</c:forEach>
-
+							
+							<p:column>
+								<h:outputText value="#{_data.pesoComponentes}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="percent" />
+								</h:outputText>
+							</p:column>
+					   	  
+							<p:column rendered="#{_data.cajaMontoEnero.idMes ge numMesActual}">
+								<h:outputText value="#{_data.cajaMontoEnero.montoMes}" >
+								 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+								 </h:outputText>
+							</p:column>
+							
+					   	    <p:column rendered="#{_data.cajaMontoFebrero.idMes ge numMesActual}">
+								<h:outputText value="#{_data.cajaMontoFebrero.montoMes}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+								</h:outputText>
+							</p:column>
+							
+					   	    <p:column rendered="#{_data.cajaMontoMarzo.idMes ge numMesActual}">
+								<h:outputText value="#{_data.cajaMontoMarzo.montoMes}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+								</h:outputText>
+							</p:column>
+							
+					   	    <p:column rendered="#{_data.cajaMontoAbril.idMes ge numMesActual}">
+								<h:outputText value="#{_data.cajaMontoAbril.montoMes}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+							 	</h:outputText>
+							</p:column>
+							
+					   	    <p:column rendered="#{_data.cajaMontoMayo.idMes ge numMesActual}">
+								<h:outputText value="#{_data.cajaMontoMayo.montoMes}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+								</h:outputText>
+							</p:column>
+							
+					   	    <p:column rendered="#{_data.cajaMontoJunio.idMes ge numMesActual}">
+								<h:outputText value="#{_data.cajaMontoJunio.montoMes}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+								 </h:outputText>
+							</p:column>
+							
+					   	    <p:column rendered="#{_data.cajaMontoJulio.idMes ge numMesActual}">
+								<h:outputText value="#{_data.cajaMontoJulio.montoMes}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+								</h:outputText>
+							</p:column>
+							
+					   	    <p:column rendered="#{_data.cajaMontoAgosto.idMes ge numMesActual}"> 
+								<h:outputText value="#{_data.cajaMontoAgosto.montoMes}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+								 </h:outputText>
+							</p:column>
+							
+					   	    <p:column rendered="#{_data.cajaMontoSeptiembre.idMes ge numMesActual}">
+								<h:outputText value="#{_data.cajaMontoSeptiembre.montoMes}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+					 			</h:outputText>
+							</p:column>
+							
+					   	    <p:column rendered="#{_data.cajaMontoOctubre.idMes ge numMesActual}">
+								<h:outputText value="#{_data.cajaMontoOctubre.montoMes}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+						 		</h:outputText>
+							</p:column>
+							
+					   	    <p:column rendered="#{_data.cajaMontoNoviembre.idMes ge numMesActual}">
+								<h:outputText value="#{_data.cajaMontoNoviembre.montoMes}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+						 		</h:outputText>
+							</p:column>
+							
+					   	    <p:column rendered="#{_data.cajaMontoDiciembre.idMes ge numMesActual}">
+								<h:outputText value="#{_data.cajaMontoDiciembre.montoMes}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+			 					</h:outputText>
+							</p:column>
+							
 							<p:column style="background-color:#{_data.color};">
-								<h:outputText value="#{_data.totalMontos}"
-									styleClass="textoPequenio textoAjustado">
-									<f:convertNumber type="currency" maxFractionDigits="0"
-										locale="es_CL" currencySymbol="$" />
+								<h:outputText value="#{_data.totalMontos}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL"/>
 								</h:outputText>
 							</p:column>
 
@@ -158,34 +190,34 @@
 									<p:column />
 									<p:column>
 										<f:facet name="footer">
-											<h:outputText value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMarcosPresupuestarioMonitoreoSubtituloComponente}" styleClass="textoAjustado textoPequenio centrado">
-												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											<h:outputText value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.totalServiciosMarcosPresupuestarioMonitoreoSubtituloComponente}" styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL"/>
 											</h:outputText>
 										</f:facet>
 									</p:column>
 									<p:column>
 										<f:facet name="footer">
-											<h:outputText value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMontosTransferenciasMonitoreoSubtituloComponente}" styleClass="textoAjustado textoPequenio centrado">
-												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											<h:outputText value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.totalServiciosMontosTransferenciasMonitoreoSubtituloComponente}" styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL"/>
 											</h:outputText>
 										</f:facet>
 									</p:column>
 									<p:column>
 										<f:facet name="footer">
-											<h:outputText value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMontosConveniosMonitoreoSubtituloComponente}"	styleClass="textoAjustado textoPequenio centrado">
-												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											<h:outputText value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.totalServiciosMontosConveniosMonitoreoSubtituloComponente}"	styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL"/>
 											</h:outputText>
 										</f:facet>
 									</p:column>
 									
 									
-									<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMontosMesMonitoreoSubtituloComponente}" var="montosMes" varStatus="status">
+									<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.totalServiciosMontosMesMonitoreoSubtituloComponente}" var="montosMes" varStatus="status">
 										<c:if test="#{status.count lt numMesActual}">
 									  		<c:if test="#{status.count eq (numMesActual-1)}">
 									  		  <p:column>
 													<f:facet name="footer">
 														<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
-															<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL"/>
 														</h:outputText>
 													</f:facet>
 												</p:column>
@@ -195,7 +227,7 @@
 											<p:column>
 												<f:facet name="footer">
 													<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
-														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+														<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL"/>
 													</h:outputText>
 												</f:facet>
 											</p:column>
@@ -204,8 +236,8 @@
 									
 									<p:column>
 										<f:facet name="footer">
-											<h:outputText value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalMontosMensualesServicioMonitoreoSubtituloComponente}" styleClass="textoAjustado textoPequenio centrado">
-												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											<h:outputText value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.totalMontosMensualesServicioMonitoreoSubtituloComponente}" styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL"/>
 											</h:outputText>
 										</f:facet>
 									</p:column>
@@ -213,27 +245,28 @@
 							</p:columnGroup>
 							</c:if>
 							</c:if>
-							<c:if test="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.iniciarFlujoCaja}">
+							<c:if test="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.iniciarFlujoCaja}">
 							<p:columnGroup type="header">
 								<p:row>
 									<p:column rowspan="3" headerText="Servicio" />
 									<p:column
-										colspan="#{fn:length(procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columns) + 1}"
+										colspan="#{fn:length(procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.columns) + 2}"
 										styleClass="textoPequenio"
-										headerText="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.subtituloSeleccionado.nombre} (Cuota #{mes} #{ano})" />
+										headerText="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.subtituloSeleccionado.nombre} (Cuota #{mes} #{ano})" />
 									<p:column rowspan="3" headerText="Total" />
 								</p:row>
 								<p:row>
 									<p:column rowspan="2" headerText="Marco Presup." />
+									<p:column rowspan="2" headerText="Peso Componente" />
 									<c:forEach
-										items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columns}"
+										items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.columns}"
 										var="dynamicColumn">
 										<p:column headerText="#{dynamicColumn.header}" />
 									</c:forEach>
-								</p:row>>
+								</p:row>
 								<p:row>
 									<c:forEach
-										items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.columns}"
+										items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.columns}"
 										var="dynamicColumn">
 										<p:column headerText="#{dynamicColumn.property}" />
 									</c:forEach>
@@ -241,32 +274,87 @@
 
 							</p:columnGroup>
 							
-							<c:if test="#{not empty procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.estimacionFlujoMonitoreoSubtituloComponente}">
+							<c:if test="#{not empty procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.estimacionFlujoMonitoreoSubtituloComponente}">
 
 							<p:column>
 								<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
 							</p:column>
 							<p:column>
-								<h:outputText value="#{_data.marcoPresupuestario}"
-									styleClass="textoPequenio textoAjustado">
-									<f:convertNumber type="currency" maxFractionDigits="0"
-										locale="es_CL" currencySymbol="$" />
+								<h:outputText value="#{_data.marcoPresupuestario}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL"/>
 								</h:outputText>
 							</p:column>
-
-							<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.cajaMonitoreoSubtituloComponentLocal}" var="monto">
-								<p:column>
-										<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
-											<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-										</h:outputText>
-								</p:column>
-							</c:forEach>
+							
+							<p:column>
+								<h:outputText value="#{_data.pesoComponentes}" styleClass="textoPequenio textoAjustado">
+									<f:convertNumber type="percent" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column>
+								<h:outputText value="#{_data.cajaMontoEnero.montoMes}">
+									 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+									 </h:outputText>
+							</p:column>
+							<p:column>
+								<h:outputText value="#{_data.cajaMontoFebrero.montoMes}">
+									 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+									 </h:outputText>
+							</p:column>
+							<p:column>
+								<h:outputText value="#{_data.cajaMontoMarzo.montoMes}">
+									 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+									 </h:outputText>
+							</p:column>
+							<p:column>
+								<h:outputText value="#{_data.cajaMontoAbril.montoMes}">
+									 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+									 </h:outputText>
+							</p:column>
+							<p:column>
+								<h:outputText value="#{_data.cajaMontoMayo.montoMes}">
+									 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+									 </h:outputText>
+							</p:column>
+							<p:column>
+								<h:outputText value="#{_data.cajaMontoJunio.montoMes}">
+									 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+									 </h:outputText>
+							</p:column>
+							<p:column>
+								<h:outputText value="#{_data.cajaMontoJulio.montoMes}" >
+									 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+									 </h:outputText>
+							</p:column>
+							<p:column>
+								<h:outputText value="#{_data.cajaMontoAgosto.montoMes}">
+									 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+									 </h:outputText>
+							</p:column>
+							<p:column>
+								<h:outputText value="#{_data.cajaMontoSeptiembre.montoMes}" >
+									 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+									 </h:outputText>
+							</p:column>
+							<p:column>
+								<h:outputText value="#{_data.cajaMontoOctubre.montoMes}" >
+									 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+									 </h:outputText>
+							</p:column>
+							<p:column>
+								<h:outputText value="#{_data.cajaMontoNoviembre.montoMes}" >
+									 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+									 </h:outputText>
+							</p:column>
+							<p:column>
+								<h:outputText value="#{_data.cajaMontoDiciembre.montoMes}">
+									 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+									 </h:outputText>
+							</p:column>
 
 							<p:column style="background-color:#{_data.color};">
-								<h:outputText value="#{_data.totalMontos}"
-									styleClass="textoPequenio textoAjustado">
-									<f:convertNumber type="currency" maxFractionDigits="0"
-										locale="es_CL" currencySymbol="$" />
+								<h:outputText value="#{_data.totalMontos}" styleClass="textoPequenio textoAjustado"> 
+									<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
 								</h:outputText>
 							</p:column>
 
@@ -275,16 +363,16 @@
 									<p:column />
 									<p:column>
 										<f:facet name="footer">
-											<h:outputText value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMarcosPresupuestarioMonitoreoSubtituloComponente}" styleClass="textoAjustado textoPequenio centrado">
-												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											<h:outputText value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.totalServiciosMarcosPresupuestarioMonitoreoSubtituloComponente}" styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL"/>
 											</h:outputText>
 										</f:facet>
 									</p:column>
-									<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalServiciosMontosMesMonitoreoSubtituloComponente}" var="montosMes" varStatus="status">
+									<c:forEach items="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.totalServiciosMontosMesMonitoreoSubtituloComponente}" var="montosMes" varStatus="status">
 										<p:column>
 											<f:facet name="footer">
 												<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
 												</h:outputText>
 											</f:facet>
 										</p:column>
@@ -292,8 +380,8 @@
 									
 									<p:column>
 										<f:facet name="footer">
-											<h:outputText value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoController.totalMontosMensualesServicioMonitoreoSubtituloComponente}" styleClass="textoAjustado textoPequenio centrado">
-												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											<h:outputText value="#{procesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteController.totalMontosMensualesServicioMonitoreoSubtituloComponente}" styleClass="textoAjustado textoPequenio centrado">
+												<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL"/>
 											</h:outputText>
 										</f:facet>
 									</p:column>

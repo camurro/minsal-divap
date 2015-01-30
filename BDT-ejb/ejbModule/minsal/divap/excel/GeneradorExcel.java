@@ -3480,12 +3480,74 @@ private void addSheet(EstimacionFlujoCajaSubtituloSheetExcel excelSheet, String 
                 }else{
                     row = sheet.getRow(currentRow++);
                 }
-                for(CajaMontoSummaryVO cajaMontoSummaryVO : subtituloFlujoCajaVO.getCajaMontos()){
-                    cell = row.createCell(currentCol++);
-                    cell.setCellStyle(cellStyleLong);
-                    cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
-                    cell.setCellValue(cajaMontoSummaryVO.getMontoMes());
-                }
+                   
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleLong);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoEnero().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleLong);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoFebrero().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleLong);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoMarzo().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleLong);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoAbril().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleLong);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoMayo().getMontoMes());
+                
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleLong);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoJunio().getMontoMes());
+                
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleLong);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoJulio().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleLong);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoAgosto().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleLong);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoSeptiembre().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleLong);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoSeptiembre().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleLong);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoOctubre().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleLong);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoNoviembre().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleLong);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoDiciembre().getMontoMes());
+                
                 cell = row.createCell(currentCol);
                 cell.setCellStyle(cellStyleHeader);
                 cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
@@ -3502,12 +3564,68 @@ private void addSheet(EstimacionFlujoCajaSubtituloSheetExcel excelSheet, String 
                 }else{
                     row = sheet.getRow(currentRow++);
                 }
-                for(CajaMontoSummaryVO cajaMontoSummaryVO : subtituloFlujoCajaVO.getCajaMontos()){
-                    cell = row.createCell(currentCol++);
-                    cell.setCellStyle(cellStyleHeader);
-                    cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
-                    cell.setCellValue(cajaMontoSummaryVO.getMontoMes());
-                }
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleHeader);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoEnero().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleHeader);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoFebrero().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleHeader);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoMarzo().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleHeader);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoAbril().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleHeader);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoMayo().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleHeader);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoJunio().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleHeader);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoJulio().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleHeader);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoAgosto().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleHeader);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoSeptiembre().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleHeader);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoOctubre().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleHeader);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoNoviembre().getMontoMes());
+                
+                cell = row.createCell(currentCol++);
+                cell.setCellStyle(cellStyleHeader);
+                cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoDiciembre().getMontoMes());
+                
+                
                 cell = row.createCell(currentCol);
                 cell.setCellStyle(cellStyleHeader);
                 cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
@@ -3985,7 +4103,7 @@ private void addSheet(CrearPlanillaCumplimientoMunicialProgramaSheetExcel excelS
         hojaNueva = false;
         sheet = workbook.getSheetAt(index);
     }
-System.out.println("sheetName="+sheetName);
+    System.out.println("sheetName="+sheetName);
     List<CellExcelVO> header = excelSheet.getHeaderComplex();
     List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
     List<CumplimientoApsMunicipalProgramaVO> item = excelSheet.getItems();
@@ -4031,14 +4149,14 @@ System.out.println("sheetName="+sheetName);
         }else{
             if(fisrtTime){
                 maxColumnHeader += cellExcelVO.getColSpan();
-                maxColumnTmp += cellExcelVO.getColSpan();
+                maxColumnTmp = cellExcelVO.getColSpan();
                 fisrtTime = false;
+                countCol = 0;
             }else{
                 countCol += cellExcelVO.getColSpan();
                 if(countCol == maxColumnTmp){
                     fisrtTime = true;
                     maxColumnTmp = 0;
-                    countCol = 0;
                 }
             }
         }
@@ -4054,6 +4172,7 @@ System.out.println("sheetName="+sheetName);
             cell.setCellStyle(cellStyleHeader);
         }
     }
+    
     int posComponente = 4;
     for(int i=0; i<header.size(); i++){
         if(i == 0){
@@ -4102,7 +4221,7 @@ System.out.println("sheetName="+sheetName);
                 cell.setCellStyle(cellStyleHeader);
                 cell.setCellValue(cellExcelVO.getName());
                 sheet.addMergedRegion(new CellRangeAddress(1, 1, posComponente, (posComponente + cellExcelVO.getColSpan() -1)));
-                posComponente = posComponente + cellExcelVO.getColSpan();
+                posComponente +=  cellExcelVO.getColSpan();
             }
         }
     }
@@ -4115,9 +4234,10 @@ System.out.println("sheetName="+sheetName);
     int columnatmp=0;
     int filas =2;
     boolean primeraVez=true;
-    for(int i=0;i<subHeader.size();i++){           
-    	
+    int contCumplimientos = 0;
+    for(int i = 0; i < subHeader.size(); i++){           
         CellExcelVO cellExcelVO = subHeader.get(i);
+        System.out.println("cellExcelVO="+cellExcelVO.getName()+ " cellExcelVO.getColSpan())=" + cellExcelVO.getColSpan() + " cellExcelVO.getRowSpan()="+cellExcelVO.getRowSpan());
         XSSFCell cell = row.createCell(i);
         if(cellExcelVO.getRowSpan() == 2){
         	 cell = row.getCell(i);
@@ -4138,7 +4258,11 @@ System.out.println("sheetName="+sheetName);
                 primeraVez=false;
                 System.out.println("fila: "+row2.getRowNum()+", celda: "+ cell.getColumnIndex()+", valor: "+cell.getStringCellValue());
          	}else{
-         		XSSFRow row2 = sheet.createRow(filas);
+         		contCumplimientos++;
+         		XSSFRow row2 = sheet.getRow(filas);
+         		if(row2 == null){
+         			row2 = sheet.createRow(filas);
+         		}
          		cell = row2.createCell(columnatmp);
         		cell.setCellStyle(cellStyleHeader);
                 cell.setCellValue(cellExcelVO.getName());
@@ -4154,36 +4278,44 @@ System.out.println("sheetName="+sheetName);
   
     //########### items ##########
     for(int i=0;i<item.size();i++){
-        int fila = i+3;
+        int fila = i+4;
+        int pos = 0;
         row = sheet.createRow(fila);
         row = sheet.getRow(fila);
         CumplimientoApsMunicipalProgramaVO cumplimiento = item.get(i);
 
-        XSSFCell cellIdServicio = row.createCell(0);
+        XSSFCell cellIdServicio = row.createCell(pos++);
         //XSSFCell.CELL_TYPE_STRING
         cellIdServicio.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
         cellIdServicio = row.getCell(0);
         cellIdServicio.setCellStyle(cellStyleHeader);
         cellIdServicio.setCellValue(cumplimiento.getIdServicio());
 
-        XSSFCell cellServicio = row.createCell(1);
+        XSSFCell cellServicio = row.createCell(pos++);
         cellServicio.setCellType(XSSFCell.CELL_TYPE_STRING);
         cellServicio = row.getCell(1);
         cellServicio.setCellStyle(cellStyleHeader);
         cellServicio.setCellValue(cumplimiento.getServicio());
 
-        XSSFCell cellIdComuna = row.createCell(2);
+        XSSFCell cellIdComuna = row.createCell(pos++);
         cellIdComuna.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
         cellIdComuna = row.getCell(2);
         cellIdComuna.setCellStyle(cellStyleHeader);
         cellIdComuna.setCellValue(cumplimiento.getIdComuna());
 
-        XSSFCell cellComuna = row.createCell(3);
+        XSSFCell cellComuna = row.createCell(pos++);
         cellComuna.setCellType(XSSFCell.CELL_TYPE_STRING);
         cellComuna = row.getCell(3);
         cellComuna.setCellStyle(cellStyleHeader);
         cellComuna.setCellValue(cumplimiento.getComuna());
-
+        
+        for(int cont = 0; cont < contCumplimientos; cont++){
+        	 XSSFCell cellCumplimiento = row.createCell((pos + cont));
+             CellStyle stylePercentage = workbook.createCellStyle();
+             stylePercentage.setDataFormat(workbook.createDataFormat().getFormat("0.00%"));
+             stylePercentage.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+             cellCumplimiento.setCellStyle(stylePercentage);
+        }
 
     }
 
@@ -4296,6 +4428,9 @@ private void addSheet(PlanillaTrabajoCumplimientoReliquidacionMunicipalSheetExce
             CellExcelVO cellExcelVO = header.get(i);
             System.out.println("cellExcelVO.getName()="+cellExcelVO.getName()+" posComponente="+posComponente);
             XSSFCell cell = row.getCell(posComponente);
+            if(cell == null){
+            	cell = row.createCell(posComponente);
+            }
             cell.setCellStyle(cellStyleHeader);
             cell.setCellValue(cellExcelVO.getName());
             sheet.addMergedRegion(new CellRangeAddress(1, 1, posComponente, posComponente+cellExcelVO.getColSpan()-1));

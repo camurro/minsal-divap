@@ -34,7 +34,7 @@ implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		log.info("[PROCESO ESTIMACIÓN FLUJO DE CAJA]");
+		log.info("[PROCESO ESTIMACIï¿½N FLUJO DE CAJA]");
 		if (!getSessionBean().isLogged()) {
 				log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
 			try {
@@ -56,6 +56,26 @@ implements Serializable {
 	public String iniciarProceso() {
 		String success = "bandejaTareas";
 		Long procId = iniciarProceso(BusinessProcess.ESTIMACIONFLUJOCAJA);
+		System.out.println("procId-->" + procId);
+		if (procId == null) {
+			success = null;
+		} else {
+			TaskVO task = getUserTasksByProcessId(procId, getSessionBean()
+					.getUsername());
+			if (task != null) {
+				TaskDataVO taskDataVO = getTaskData(task.getId());
+				if (taskDataVO != null) {
+					System.out.println("taskDataVO recuperada=" + taskDataVO);
+					setOnSession("taskDataSeleccionada", taskDataVO);
+				}
+			}
+		}
+		return success;
+	}
+	
+	public String iniciarProcesoConsolidador() {
+		String success = "bandejaTareas";
+		Long procId = iniciarProceso(BusinessProcess.ESTIMACIONFLUJOCAJACONSOLIDADOR);
 		System.out.println("procId-->" + procId);
 		if (procId == null) {
 			success = null;

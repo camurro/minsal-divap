@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="zonaJavaScript">
+		<style type="text/css">
+			.ui-state-error {
+				margin-left: 0px;
+			}
+		</style>
+		<script type="text/javascript">
+	function refreshTable(){
+		var hiddenFirstTime = document.getElementById("seguimientoForm:hiddenFirstTime").value;
+		if(hiddenFirstTime == "2"){
+			document.getElementById('seguimientoForm:buscarListado').click();  
+		}
+	}
+	
+	function downloadDocument(idDoc) {  
+        document.getElementById('formDownload:hiddenId').value=idDoc;
+        document.getElementById('formDownload:linkDownload').click();  
+    } 
+     
+	function checkEmail(email) {
+		var regExp = /(^[a-z]([a-z_\.]*)@([a-z_\.]*)([.][a-z]{3})$)|(^[a-z]([a-z_\.]*)@([a-z_\.]*)(\.[a-z]{3})(\.[a-z]{2})*$)/i;
+		return regExp.test(email);
+	}
+
+	function checkInputText(text, required, message){
+		text = $.trim(text);
+		if(required){
+			if(text == ""){
+				alert(message);
+				return false;
+			}
+		}else{
+			if(text == ""){
+				return true;
+			}
+		}
+		return true;
+	}
+	
+	function checkEmails(emails, required){
+		emails = $.trim(emails);
+		if(required){
+			if(emails == ""){
+				alert("Debe Especificar al menos un destinatario");
+				return false;
+			}
+		}else{
+			if(emails == ""){
+				return true;
+			}
+		}
+		var emailArray = emails.split(",");
+	    var invEmails = "";
+	    for(i = 0; i &lt;  emailArray.length; i++){
+	        if(!checkEmail(emailArray[i])){
+	        	invEmails += emailArray[i] + "\n";
+	        }
+	    }
+	    if(invEmails != ""){
+	        alert( "Error \nEmails no válidos:\n" + invEmails);
+	        return false;
+	    }
+		return true;
+	}
+
+	function downloadDocumentResolucion(idDoc) {  
+        document.getElementById('formDownloadResolucion:hiddenId').value=idDoc;
+        document.getElementById('formDownloadResolucion:linkDownload').click();  
+    }
+
+	function marcarResolucionServicio(idServicio) {  
+        document.getElementById('formUploadVersion:hiddenIdServicio').value=idServicio;
+    }  
+	
+	function checkListEmails(){
+		 var emailsPara = document.getElementById("seguimientoForm:to").value;
+		 var result = checkEmails(emailsPara, true);
+		 if(!result){
+			 $("#seguimientoForm\\:to").addClass("ui-state-error");
+			 return false;
+		 }
+		 $("#seguimientoForm\\:to").removeClass("ui-state-error");
+		 var emailsCc = document.getElementById("seguimientoForm:cc").value;
+		 result = checkEmails(emailsCc, false);
+		 if(!result){
+			 $("#seguimientoForm\\:cc").addClass("ui-state-error");
+			 return false;
+		 }
+		 $("#seguimientoForm\\:cc").removeClass("ui-state-error");
+		 var emailsCco = document.getElementById("seguimientoForm:cco").value;
+		 result = checkEmails(emailsCco, false);
+		 if(!result){
+			 $("#seguimientoForm\\:cco").addClass("ui-state-error");
+			 return false;
+		 }
+		 $("#seguimientoForm\\:subject").removeClass("ui-state-error");
+		 var subject = document.getElementById("seguimientoForm:subject").value;
+		 result = checkInputText(subject, true, "Debe especificar el asunto del correo");
+		 if(!result){
+			 $("#seguimientoForm\\:subject").addClass("ui-state-error");
+			 return false;
+		 }
+		 $("#seguimientoForm\\:body").removeClass("ui-state-error");
+		 var body = document.getElementById("seguimientoForm:body").value;
+		 result = checkInputText(body, true, "Debe especificar el contenido del correo");
+		 if(!result){
+			 $("#seguimientoForm\\:body").addClass("ui-state-error");
+			 return false;
+		 }
+		 
+		 return true;
+	}	
+</script>
+	</ui:define>
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data" id="seguimientoForm">
+			<p:panel id="seguimientoPanel" styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Rebaja" />
+				</h1>
+				<p:panel id="Panel">
+					<h2>
+						<span class="strong">Actividad:</span> Seguimiento, Tramitación y
+						Revisión de Resoluciones
+					</h2>
+					<p class="parrafo">El
+						#{procesoRebajaTramitacionController.actividadSeguimientoTitle}
+						contiene lorem ipsum dolor sit amet, consectetur adipiscing elit.
+						Praesent egestas tempor nulla eget ultricies. Morbi pulvinar elit
+						Maecenas sollicitudin odio imperdiet orci sollicitudin convallis.
+						Etiam hendrerit, tellus a lacinia dignissim, justo nisi porttitor
+						enim, eget ullamcorper felis augue eget lacus.</p>
+					
+					<div class="destacaArchivos ui-corner-all">
+						<h3>Plantilla Envío Correo Resoluciones Servicios de Salud :</h3>
+						<span class="strong">Archivo: </span> Correo de Resoluciones Servicio [
+						<h:graphicImage value="resources/minsal/images/download-alt.png"
+							styleClass="divapIcons" />
+						<h:commandLink id="lastPlantilla" value="Bajar Última Versión"
+						        onclick="downloadDocument(#{procesoRebajaTramitacionController.plantillaCorreoId});return false;" />
+						|
+						<h:graphicImage value="resources/minsal/images/upload-alt.png"
+								styleClass="divapIcons" />
+							<p:commandLink value="Subir Nueva Versión"
+								oncomplete="dlgUpload.show();" />
+						]
+					</div>
+					<br />
+					<div class="destacaArchivos ui-corner-all">
+						<h3>Archivos Disponibles para la Tarea:</h3>
+					<p:panel id="panelBusqueda">
+						<span class="strong">Archivo: </span> Archivo comprimido con resoluciones rebaja para Servicio de Salud
+						<ul class="versionesArchivo">
+							<c:forEach var="vardoc" items="#{procesoRebajaTramitacionController.serviciosResoluciones}">
+							<li>
+								<p:outputLabel
+										value="Resolución Rebaja para Servicio #{vardoc.nombre_servicio}"/> [ <h:graphicImage
+										value="resources/minsal/images/download-alt.png"
+										styleClass="divapIcons" /> <h:commandLink  value="Bajar Última Versión"
+								onclick="downloadDocumentResolucion(#{vardoc.id_servicio});return false;" /> | <h:graphicImage
+										value="resources/minsal/images/upload-alt.png"
+										styleClass="divapIcons" />
+										<p:commandLink value="Subir Nueva Versión" onclick="marcarResolucionServicio(#{vardoc.id_servicio});"  actionListener="#{procesoRebajaTramitacionController.resetLastVersion}" update=":formUploadVersion:panelLastVersion"
+											oncomplete="dlgUploadVersion.show();" /> 
+										] 
+							</li>
+							</c:forEach>
+						</ul>
+					</p:panel>
+					</div>
+					<br />
+					<!-- INICIO: MODAL CON INFORMACIóN Y FILTROS VISTA ONLINE -->
+					<h3>Visualizador: Montos de Rebaja</h3>
+					<p:panel styleClass="appMenu">
+						<h4>Filtros de Búsqueda:</h4>
+						<h:panelGrid columns="4" id="busqueda_mis_tareas">
+							<h:panelGrid columns="2">
+								<h:outputText value="Región: " styleClass="inputLabel" />
+								<p:selectOneMenu
+									value="#{procesoRebajaTramitacionController.regionSeleccionada}">
+									<p:ajax
+										listener="#{procesoRebajaTramitacionController.cargaServicios}"
+										update="servicios comunas" />
+									<f:selectItem itemLabel="Seleccione" itemValue="" />
+									<f:selectItems
+										value="#{procesoRebajaTramitacionController.listaRegiones}"
+										itemLabel="#{region.descRegion}" var="region"
+										itemValue="#{region.idRegion}" />
+								</p:selectOneMenu>
+							</h:panelGrid>
+
+							<h:panelGrid columns="2">
+								<h:outputText value="Servicio: " styleClass="inputLabel" />
+								<p:selectOneMenu id="servicios"
+									value="#{procesoRebajaTramitacionController.servicioSeleccionado}">
+									<p:ajax
+										listener="#{procesoRebajaTramitacionController.cargaComunas}"
+										update="comunas hiddenFirstTime" />
+									<f:selectItem itemLabel="Seleccione" itemValue="" />
+									<f:selectItems
+										value="#{procesoRebajaTramitacionController.listaServicios}"
+										itemLabel="#{servicio.nombre_servicio}" var="servicio"
+										itemValue="#{servicio.id_servicio}" />
+								</p:selectOneMenu>
+							</h:panelGrid>
+
+							<h:panelGrid columns="2">
+								<h:outputText value="Comuna: " styleClass="inputLabel" />
+								<p:selectCheckboxMenu id="comunas"
+									value="#{procesoRebajaTramitacionController.comunasSeleccionadas}"
+									label="Seleccione" filter="true" filterText="Filter"
+									filterMatchMode="startsWith">
+									<f:selectItems
+										value="#{procesoRebajaTramitacionController.listaComunas}"
+										itemLabel="#{comuna.descComuna}" var="comuna"
+										itemValue="#{comuna.idComuna}" />
+								</p:selectCheckboxMenu>
+							</h:panelGrid>
+
+							<h:panelGrid columns="2">
+								<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoRebajaTramitacionController.buscarRebaja}"
+									oncomplete="refreshTable();" update="tablaMisTareas hiddenFirstTime panelBusqueda" />
+								<p:commandButton value="Limpiar" styleClass="x-btn-text icon-guardar" icon="ui-icon-trash" actionListener="#{procesoRebajaTramitacionController.limpiar}" 
+									update="tablaMisTareas busqueda_mis_tareas hiddenFirstTime panelBusqueda" />
+							</h:panelGrid>
+							
+						</h:panelGrid>
+					</p:panel>
+					<br />
+					<h:inputHidden id="hiddenFirstTime"
+						value="#{procesoRebajaTramitacionController.fisrtTime}" />
+					<p:dataTable id="tablaMisTareas" resizableColumns="true"
+						value="#{procesoRebajaTramitacionController.rebajaComunas}"
+						liveResize="true" var="_rebaja" rows="10" paginator="false"
+						paginatorPosition="bottom"
+						emptyMessage="No se encontro información." styleClass="dataTable">
+						<p:columnGroup type="header">
+							<!--  -->
+							<p:row>
+								<p:column rowspan="2" headerText="Comuna" />
+								<p:column rowspan="2"
+									headerText="Aporte Estatal #{procesoRebajaTramitacionController.mesActual}" />
+								<p:column colspan="3" headerText="Cumplimiento" />
+								<p:column colspan="4" headerText="Rebaja Calculada" />
+								<p:column colspan="4" headerText="Rebaja Final" />
+								<p:column rowspan="2"
+									headerText="Monto Rebaja #{procesoRebajaTramitacionController.mesActual}" />
+								<p:column rowspan="2"
+									headerText="Nuevo Aporte Estatal #{procesoRebajaTramitacionController.mesActual}" />
+							</p:row>
+							<p:row>
+								<p:column headerText="#{procesoRebajaTramitacionController.cumplimientoItem1.nombre}" />
+								<p:column headerText="#{procesoRebajaTramitacionController.cumplimientoItem2.nombre}" />
+								<p:column headerText="#{procesoRebajaTramitacionController.cumplimientoItem3.nombre}" />
+
+								<p:column headerText="reb1" />
+								<p:column headerText="reb2" />
+								<p:column headerText="reb3" />
+								<p:column headerText="total" />
+
+								<p:column headerText="reb ex1" />
+								<p:column headerText="reb ex2" />
+								<p:column headerText="reb ex3" />
+								<p:column headerText="total" />
+
+
+							</p:row>
+						</p:columnGroup>
+						<p:column>
+							<h:outputText value="#{_rebaja.comuna}"
+								styleClass="textoPequenio textoAjustado" />
+						</p:column>
+						<p:column>
+							<h:outputText value="$ " />
+							<h:outputText id="aporteEstatal" value="#{_rebaja.aporteEstatal}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column>			
+							<h:outputText value="#{_rebaja.cumplimientoRebajasItem1.valor}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber minFractionDigits="2" />
+							</h:outputText>
+							<h:outputText value="%"/>
+						</p:column>
+						<p:column>			
+							<h:outputText value="#{_rebaja.cumplimientoRebajasItem2.valor}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber minFractionDigits="2" />
+							</h:outputText>
+							<h:outputText value="%"/>
+						</p:column>
+						<p:column>			
+							<h:outputText value="#{_rebaja.cumplimientoRebajasItem3.valor}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber minFractionDigits="2" />
+							</h:outputText>
+							<h:outputText value="%"/>
+						</p:column>
+						
+						<p:column>
+							<h:outputText value="#{_rebaja.cumplimientoRebajasItem1.rebajaCalculada}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber minFractionDigits="2" />
+							</h:outputText>
+							<h:outputText value="%"/>
+						</p:column>
+						<p:column>
+							<h:outputText value="#{_rebaja.cumplimientoRebajasItem2.rebajaCalculada}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber minFractionDigits="2" />
+							</h:outputText>
+							<h:outputText value="%"/>
+						</p:column>
+						<p:column>
+							<h:outputText value="#{_rebaja.cumplimientoRebajasItem3.rebajaCalculada}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber minFractionDigits="2" />
+							</h:outputText>
+							<h:outputText value="%"/>
+						</p:column>
+						 
+						<p:column>
+							<h:outputText value="#{_rebaja.totalRebajaCalculada}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber minFractionDigits="2" />
+							</h:outputText>
+							<h:outputText value="%"/>
+						</p:column>
+						
+						<p:column>
+							 	<h:outputText  value="#{_rebaja.cumplimientoRebajasItem1.rebajaFinal}" styleClass="textoPequenio textoAjustado">
+							 		<f:convertNumber minFractionDigits="2" />
+							 	</h:outputText>
+							 	<h:outputText value="%"/>
+						</p:column>
+						
+						<p:column>
+							 	<h:outputText value="#{_rebaja.cumplimientoRebajasItem2.rebajaFinal}" styleClass="textoPequenio textoAjustado">
+							 		<f:convertNumber minFractionDigits="2" />
+							 	</h:outputText>
+							 	<h:outputText value="%"/>
+						</p:column>
+						<p:column>
+							 	<h:outputText  value="#{_rebaja.cumplimientoRebajasItem3.rebajaFinal}" styleClass="textoPequenio textoAjustado">
+							 		<f:convertNumber minFractionDigits="2" />
+							 	</h:outputText>
+							 	<h:outputText value="%"/>
+						</p:column>
+					 
+						<p:column>
+							<h:outputText id="totalFinal" value="#{_rebaja.totalRebajaRebajaFinal}" styleClass="textoPequenio textoAjustado">	
+								<f:convertNumber minFractionDigits="2" />
+							</h:outputText>
+							<h:outputText value="%"/>
+						</p:column>
+
+						<p:column>
+							<h:outputText value="$ " />
+							<h:outputText id="montoRebaja" value="#{_rebaja.montoRebajaMes}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
+							</h:outputText>
+						</p:column>
+						<p:column>
+							<h:outputText value="$ " />
+							<h:outputText id="nuevoAporte" value="#{_rebaja.nuevoAporteEstatal}" styleClass="textoPequenio textoAjustado">
+								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
+							</h:outputText>
+						</p:column>
+					</p:dataTable>
+					<!-- FIN: MODAL CON INFORMACIóN Y FILTROS VISTA ONLINE -->
+					<!-- HISTORIAL DE SEGUIMIENTO -->
+					<h3>Bitácora de Seguimiento:</h3>
+					<!-- INICIO MENSAJE MOCK -->
+					<p:panelGrid columns="2"
+						rendered="#{not empty procesoRebajaTramitacionController.bitacoraSeguimiento}">
+						<c:forEach var="var"
+							items="#{procesoRebajaTramitacionController.bitacoraSeguimiento}">
+							<h:outputText value="#{var.date}" styleClass="inputLabel">
+								<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+							</h:outputText>
+
+							<h:panelGrid styleClass="tableFullWidth">
+								<h:panelGrid columns="2" styleClass="tableFullWidth">
+									<h:outputText value="Para: " styleClass="inputLabel" />
+									<h:outputText value="#{var.to}" />
+
+									<h:outputText value="CC: " styleClass="inputLabel"
+										rendered="#{not empty var.cc}" />
+									<h:outputText value="#{var.cc}" rendered="#{not empty var.cc}" />
+
+									<h:outputText value="CCO: " styleClass="inputLabel"
+										rendered="#{not empty var.cco}" />
+									<h:outputText value="#{var.cco}"
+										rendered="#{not empty var.cco}" />
+
+									<h:outputText value="Adjunto: " styleClass="inputLabel"
+										rendered="#{not empty var.attached}" />
+									<h:panelGrid columns="2" rendered="#{not empty var.attached}">
+										<h:graphicImage
+											value="resources/minsal/images/download-alt.png"
+											styleClass="divapIcons" />
+										<h:commandLink value="#{var.attached.path}"
+											onclick="downloadDocument(#{var.attached.id});return false;" />
+									</h:panelGrid>
+
+									<h:outputText value="Asunto: " styleClass="inputLabel" />
+									<h:outputText value="#{var.subject}" />
+
+									<h:outputText value="Mensaje: " styleClass="inputLabel" />
+									<h:outputText value="#{var.body}" />
+								</h:panelGrid>
+							</h:panelGrid>
+						</c:forEach>
+					</p:panelGrid>
+					<!-- FIN MENSAJE MOCK -->
+
+						<h3>Enviar Correo:</h3>
+						<h:panelGrid styleClass="tableFullWidth">
+							<h:panelGrid columns="2" styleClass="tableFullWidth">
+								<h:outputText value="Para: " styleClass="inputLabel" />
+								<p:inputText styleClass="inputText" style="width: 70%;" id="to"
+								value="#{procesoRebajaTramitacionController.to}"/>
+
+								<h:outputText value="CC: " styleClass="inputLabel" />
+								<p:inputText styleClass="inputText" style="width: 70%;" id="cc"
+								value="#{procesoRebajaTramitacionController.cc}" />
+
+								<h:outputText value="CCO: " styleClass="inputLabel" />
+								<p:inputText styleClass="inputText" style="width: 70%;" id="cco"
+								value="#{procesoRebajaTramitacionController.cco}" />
+
+								<h:outputText value="Adjunto: " styleClass="inputLabel" />
+								<h:panelGrid columns="2">
+									<p:fileUpload id="attachedFile"
+										fileUploadListener="#{procesoRebajaTramitacionController.handleAttachedFile}"
+										value="#{procesoRebajaTramitacionController.attachedFile}"
+										mode="simple" styleClass="inputText" />
+								</h:panelGrid>
+
+								<h:outputText value="Asunto: " styleClass="inputLabel" />
+								<p:inputText styleClass="inputText" style="width: 70%;" id="subject"
+								value="#{procesoRebajaTramitacionController.subject}" />
+
+								<h:outputText value="Mensaje: " styleClass="inputLabel" />
+								<p:inputTextarea styleClass="inputTextArea" style="width: 70%;" id="body"
+								value="#{procesoRebajaTramitacionController.body}"/>
+							</h:panelGrid>
+							<p:commandButton styleClass="x-btn-text" onclick="return checkListEmails()" style="float:right;"
+							value="Enviar Correo" icon="ui-icon-comment" ajax="false"
+							action="#{procesoRebajaTramitacionController.sendMail}"
+							id="sendMail" />
+						</h:panelGrid>
+						<h3>Tareas de la Actividad:</h3>
+						<p style="">
+							En caso de que el seguimiento de la actividad sea exitoso haga
+							clic en <span class="strong">Finalizar Seguimiento</span> para
+							finalizar la actividad y pasar a la siguiente en el flujo del
+							proceso. En caso de que exista algún error en la documentación y
+							sea necesario volver a generar la documentación haga clic en <span
+								class="strong">Reingresar</span>.
+						</p>
+
+						<p:commandButton styleClass="x-btn-text" value="Modificar Rebaja"
+							icon="ui-icon-refresh"
+							action="#{procesoRebajaTramitacionController.recalcular}">
+							<f:setPropertyActionListener
+								target="#{procesoRebajaTramitacionController.target}"
+								value="bandejaTareas.jsf" />
+						</p:commandButton>
+
+						<p:commandButton styleClass="x-btn-text"
+							value="Finalizar Seguimiento" icon="ui-icon-check"
+							action="#{procesoRebajaTramitacionController.enviar}">
+							<f:setPropertyActionListener
+								target="#{procesoRebajaTramitacionController.target}"
+								value="bandejaTareas.jsf" />
+						</p:commandButton>
+
+						<div style="clear: both;"></div>
+
+				</p:panel>
+				<p:commandButton value="Volver" styleClass="x-btn-text"
+					action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+
+		<h:form id="formDownload">
+			<h:inputHidden
+				value="#{procesoRebajaTramitacionController.docIdDownload}"
+				id="hiddenId" />
+			<h:commandButton id="linkDownload"
+				action="#{procesoRebajaTramitacionController.downloadPlanilla}"
+				style="display: none"></h:commandButton>
+		</h:form>
+		
+		<p:dialog header="Subir archivo" widgetVar="dlgUpload" id="idDlgUpload" modal="true" height="150"  appendToBody="true">
+			<h:form id="uploadVersion" enctype="multipart/form-data">
+			<p:panelGrid columns="2" >
+				<h:outputText value="Nueva Versión: " />
+				<p:fileUpload id="newVersionFile"
+							fileUploadListener="#{procesoRebajaTramitacionController.handleFile}"
+							value="#{procesoRebajaTramitacionController.file}"
+							update="uploadVersion" mode="simple"  />
+				<p:commandButton value="Aceptar" ajax="false"
+					actionListener="#{procesoRebajaTramitacionController.uploadVersion}" update=":lastPlantilla"
+					oncomplete="if (args &amp;&amp; args.showDialog){dlgUpload.hide()}else{ alert('the bean didnt let me open the dialog')}" />
+				<p:commandButton value="Cancelar"
+					onclick="dlgUpload.hide()" type="button" />
+			</p:panelGrid>
+			</h:form> 	
+		</p:dialog> 
+		
+		<h:form id="formDownloadResolucion">
+			<h:inputHidden
+				value="#{procesoRebajaTramitacionController.docIdDownload}"
+				id="hiddenId" />
+			<h:commandButton id="linkDownload"
+				action="#{procesoRebajaTramitacionController.downloadResolucion}"
+				style="display: none"></h:commandButton>
+		</h:form>
+		
+		<p:dialog header="Subir archivo" widgetVar="dlgUploadVersion" id="idDlgUploadVersion" modal="true" height="150"  appendToBody="true">
+			<h:form id="formUploadVersion" enctype="multipart/form-data">
+				<h:inputHidden
+				value="#{procesoRebajaTramitacionController.hiddenIdServicio}" id="hiddenIdServicio" />
+			<p:panelGrid columns="2" id="panelLastVersion">
+				<h:outputText value="Nueva Versión: " />
+				<p:fileUpload id="newVersionRetiroFile"
+							fileUploadListener="#{procesoRebajaTramitacionController.handleFile}"
+							value="#{procesoRebajaTramitacionController.file}"
+							update="formUploadVersion" mode="simple"  />
+				<h:outputText value="Versión Final: "  />
+				<h:selectBooleanCheckbox id="checkVersionFinal" value="#{procesoRebajaTramitacionController.lastVersion}" />
+				<p:commandButton value="Aceptar" ajax="false"
+					actionListener="#{procesoRebajaTramitacionController.uploadVersionFinal}" update="seguimientoForm:panelBusqueda"
+					oncomplete="if (args &amp;&amp; args.showDialog){dlgUploadVersion.hide()}else{ alert('the bean didnt let me open the dialog')}" />
+				<p:commandButton value="Cancelar"
+					onclick="dlgUploadVersion.hide()" type="button" />
+			</p:panelGrid>
+			</h:form> 	
+		</p:dialog> 
+	</ui:define>
+</ui:composition>

@@ -25556,6 +25556,117 @@ ALTER TABLE documento_rebaja
   ADD CONSTRAINT servicio_fk FOREIGN KEY (servicio) REFERENCES servicio_salud (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 
+ALTER TABLE detalle_remesas ADD COLUMN estimada boolean;
+
+UPDATE detalle_remesas
+   SET estimada=false;
+
+ALTER TABLE detalle_remesas ALTER COLUMN estimada SET NOT NULL;
+ALTER TABLE detalle_remesas ALTER COLUMN estimada SET DEFAULT false;
+
+INSERT INTO estado_programa(id_estado_programa, nombre_estado) VALUES (6, 'Calcular Propuesta');
+INSERT INTO estado_programa(id_estado_programa, nombre_estado) VALUES (7, 'Finalizar Propuesta');
+
+CREATE TABLE public.programa_subtitulo_componente_peso
+(
+   programa integer NOT NULL, 
+   componente integer NOT NULL, 
+   subtitulo integer NOT NULL, 
+   id_programa_subtitulo_componente_peso serial NOT NULL, 
+   peso integer NOT NULL, 
+   CONSTRAINT programa_subtitulo_componente_peso_pk PRIMARY KEY (id_programa_subtitulo_componente_peso), 
+   CONSTRAINT programa_fk FOREIGN KEY (programa) REFERENCES programa_ano (id_programa_ano) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT componente_fk FOREIGN KEY (componente) REFERENCES componente (id) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT subtitulo_fk FOREIGN KEY (subtitulo) REFERENCES tipo_subtitulo (id_tipo_subtitulo) ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+ALTER TABLE programa_subtitulo_componente_peso
+  ADD COLUMN servicio integer NOT NULL;
+ALTER TABLE programa_subtitulo_componente_peso
+  ADD CONSTRAINT servicio_fk FOREIGN KEY (servicio) REFERENCES servicio_salud (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE caja_monto
+  ADD COLUMN reparos boolean NOT NULL DEFAULT false;
+
+
+CREATE TABLE public.flujo_caja_consolidador
+(
+   id_flujo_caja_consolidador serial NOT NULL, 
+   usuario text NOT NULL, 
+   fecha_creacion timestamp with time zone NOT NULL, 
+   mes integer NOT NULL, 
+   ano integer NOT NULL, 
+   CONSTRAINT flujo_caja_consolidador_pk PRIMARY KEY (id_flujo_caja_consolidador), 
+   CONSTRAINT mes_fk FOREIGN KEY (mes) REFERENCES mes (id_mes) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT ano_fk FOREIGN KEY (ano) REFERENCES ano_en_curso (ano) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT usuario_fk FOREIGN KEY (usuario) REFERENCES usuario (username) ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+
+CREATE TABLE public.estimacion_flujo_caja_consolidador_seguimiento
+(
+   id serial NOT NULL, 
+   seguimiento integer NOT NULL, 
+   flujo_caja_consolidador integer NOT NULL, 
+   CONSTRAINT seguimiento_fk FOREIGN KEY (seguimiento) REFERENCES seguimiento (id) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT flujo_caja_fk FOREIGN KEY (flujo_caja_consolidador) REFERENCES flujo_caja_consolidador (id_flujo_caja_consolidador) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT id_seguimiento_consolidador_fk PRIMARY KEY (id)
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+CREATE TABLE documento_estimacion_flujo_caja_consolidador
+(
+  id_documento_estimacion_flujo_caja_consolidador serial NOT NULL,
+  documento integer NOT NULL,
+  tipo_documento integer NOT NULL,
+  servicio integer,
+  flujo_caja_consolidador integer NOT NULL,
+  CONSTRAINT documento_estimacion_flujo_caja_consolidador_pk PRIMARY KEY (id_documento_estimacion_flujo_caja_consolidador),
+  CONSTRAINT documento_fk FOREIGN KEY (documento)
+      REFERENCES referencia_documento (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT servicio_fk FOREIGN KEY (servicio)
+      REFERENCES servicio_salud (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT tipo_documento_fk FOREIGN KEY (tipo_documento)
+      REFERENCES tipo_documento (id_tipo_documento) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+ALTER TABLE documento_estimacion_flujo_caja_consolidador
+  ADD CONSTRAINT flujo_caja_consolidador FOREIGN KEY (flujo_caja_consolidador) REFERENCES flujo_caja_consolidador (id_flujo_caja_consolidador) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+CREATE TABLE public.reporte_emails_flujo_caja_consolidador
+(
+   id_reporte_emails_flujo_caja_consolidador serial NOT NULL, 
+   flujo_caja_consolidador integer NOT NULL, 
+   reporte_emails_enviados integer NOT NULL, 
+   CONSTRAINT reporte_emails_flujo_caja_consolidador_pk PRIMARY KEY (id_reporte_emails_flujo_caja_consolidador), 
+   CONSTRAINT flujo_caja_consolidador_fk FOREIGN KEY (flujo_caja_consolidador) REFERENCES flujo_caja_consolidador (id_flujo_caja_consolidador) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT reporte_emails_enviados_fk FOREIGN KEY (reporte_emails_enviados) REFERENCES reporte_emails_enviados (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+
+
 
 
 

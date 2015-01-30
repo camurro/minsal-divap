@@ -1,8 +1,5 @@
 package minsal.divap.model.mappers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import minsal.divap.vo.CajaMontoSummaryVO;
 import minsal.divap.vo.ConveniosSummaryVO;
 import minsal.divap.vo.SubtituloFlujoCajaVO;
@@ -18,42 +15,82 @@ public class SubtituloFlujoCajaMapper implements Mapper<Caja>{
 	public Object getSummary(Caja caja) {
 		throw new NotImplementedException();
 	}
-	
+
 	@Override
 	public SubtituloFlujoCajaVO getBasic(Caja caja) {
 		if (caja == null){
 			return null;
 		}
 		SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaVO();
-		subtituloFlujoCajaVO.setMarcoPresupuestario(new Long(caja.getMonto()));
-		if(caja.getMarcoPresupuestario() != null){
-			subtituloFlujoCajaVO.setIdMarcoPresupuestario(caja.getMarcoPresupuestario().getIdMarcoPresupuestario());
-			if(caja.getMarcoPresupuestario().getServicioSalud() != null){
-				subtituloFlujoCajaVO.setIdServicio(caja.getMarcoPresupuestario().getServicioSalud().getId());
-				subtituloFlujoCajaVO.setServicio(caja.getMarcoPresupuestario().getServicioSalud().getNombre());
+		if(caja.getServicio() != null){
+			subtituloFlujoCajaVO.setIdMarcoPresupuestario(caja.getId());
+			if(caja.getServicio() != null){
+				subtituloFlujoCajaVO.setIdServicio(caja.getServicio().getId());
+				subtituloFlujoCajaVO.setServicio(caja.getServicio().getNombre());
 			}
 		}
 		if(caja.getIdSubtitulo() != null){
 			subtituloFlujoCajaVO.setIdSubtitulo(caja.getIdSubtitulo().getIdTipoSubtitulo());
 			subtituloFlujoCajaVO.setSubtitulo(caja.getIdSubtitulo().getNombreSubtitulo());
 		}
-		TransferenciaSummaryVO transferenciaAcumulada = new TransferenciaSummaryVO(0, 0L);
+		TransferenciaSummaryVO transferenciaAcumulada = new TransferenciaSummaryVO(0.0, 0L);
 		subtituloFlujoCajaVO.setTransferenciaAcumulada(transferenciaAcumulada);
 		ConveniosSummaryVO convenioRecibido = new ConveniosSummaryVO();
 		convenioRecibido.setMonto(0);
-		convenioRecibido.setPorcentaje(0);
+		convenioRecibido.setPorcentaje(0.0);
 		subtituloFlujoCajaVO.setConvenioRecibido(convenioRecibido);
-		List<CajaMontoSummaryVO> cajasMontosSummaryVO = new ArrayList<CajaMontoSummaryVO>();
+		Long marcoPresupuestario = 0L;
 		if(caja.getCajaMontos() != null && caja.getCajaMontos().size() > 0){
 			for(CajaMonto cajaMonto : caja.getCajaMontos()){
 				CajaMontoSummaryVO cajaMontoSummaryVO = new CajaMontoSummaryVO();
 				cajaMontoSummaryVO.setIdMes(cajaMonto.getMes().getIdMes());
 				cajaMontoSummaryVO.setNombreMes(cajaMonto.getMes().getNombre());
-				cajaMontoSummaryVO.setMontoMes(new Long(cajaMonto.getMonto().getMonto()));
-				cajasMontosSummaryVO.add(cajaMontoSummaryVO);
+				cajaMontoSummaryVO.setMontoMes(new Long(cajaMonto.getMonto()));
+				marcoPresupuestario += cajaMonto.getMonto();
+				switch (cajaMonto.getMes().getIdMes()) {
+				case 1:
+					subtituloFlujoCajaVO.setCajaMontoEnero(cajaMontoSummaryVO);
+					break;
+				case 2:
+					subtituloFlujoCajaVO.setCajaMontoFebrero(cajaMontoSummaryVO);
+					break;
+				case 3:
+					subtituloFlujoCajaVO.setCajaMontoMarzo(cajaMontoSummaryVO);
+					break;
+				case 4:
+					subtituloFlujoCajaVO.setCajaMontoAbril(cajaMontoSummaryVO);
+					break;
+				case 5:
+					subtituloFlujoCajaVO.setCajaMontoMayo(cajaMontoSummaryVO);
+					break;
+				case 6:
+					subtituloFlujoCajaVO.setCajaMontoJunio(cajaMontoSummaryVO);
+					break;
+				case 7:
+					subtituloFlujoCajaVO.setCajaMontoJulio(cajaMontoSummaryVO);
+					break;
+				case 8:
+					subtituloFlujoCajaVO.setCajaMontoAgosto(cajaMontoSummaryVO);
+					break;
+				case 9:
+					subtituloFlujoCajaVO.setCajaMontoSeptiembre(cajaMontoSummaryVO);
+					break;
+				case 10:
+					subtituloFlujoCajaVO.setCajaMontoOctubre(cajaMontoSummaryVO);
+					break;
+				case 11:
+					subtituloFlujoCajaVO.setCajaMontoNoviembre(cajaMontoSummaryVO);
+					break;
+				case 12:
+					subtituloFlujoCajaVO.setCajaMontoDiciembre(cajaMontoSummaryVO);
+					break;
+				default:
+					break;
+				}
+
 			}
 		}
-		subtituloFlujoCajaVO.setCajaMontos(cajasMontosSummaryVO);
+		subtituloFlujoCajaVO.setMarcoPresupuestario(marcoPresupuestario);
 		return subtituloFlujoCajaVO;
 	}
 

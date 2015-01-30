@@ -2,7 +2,6 @@ package minsal.divap.vo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -19,20 +18,44 @@ public class SubtituloFlujoCajaVO implements Serializable {
 	private String subtitulo;
 	private Integer idMarcoPresupuestario;
 	private Long marcoPresupuestario;
+	private Double pesoComponentes;
 	private TransferenciaSummaryVO transferenciaAcumulada;
 	private ConveniosSummaryVO convenioRecibido;
-	private List<CajaMontoSummaryVO> cajaMontos;
+	private CajaMontoSummaryVO cajaMontoEnero;
+	private CajaMontoSummaryVO cajaMontoFebrero;
+	private CajaMontoSummaryVO cajaMontoMarzo;
+	private CajaMontoSummaryVO cajaMontoAbril;
+	private CajaMontoSummaryVO cajaMontoMayo;
+	private CajaMontoSummaryVO cajaMontoJunio;
+	private CajaMontoSummaryVO cajaMontoJulio;
+	private CajaMontoSummaryVO cajaMontoAgosto;
+	private CajaMontoSummaryVO cajaMontoSeptiembre;
+	private CajaMontoSummaryVO cajaMontoOctubre;
+	private CajaMontoSummaryVO cajaMontoNoviembre;
+	private CajaMontoSummaryVO cajaMontoDiciembre;
 	private Long totalMontos;
 	private String color = "#FFB5B5";
 	private boolean ignoreColor;
 
 	public SubtituloFlujoCajaVO() {
 		super();
-		this.cajaMontos = new ArrayList<CajaMontoSummaryVO>(Arrays.asList(new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), 
-				 new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), new CajaMontoSummaryVO(), 
-				 new CajaMontoSummaryVO(), new CajaMontoSummaryVO()));
+		this.cajaMontoEnero = new CajaMontoSummaryVO();
+		this.cajaMontoFebrero = new CajaMontoSummaryVO();
+		this.cajaMontoMarzo = new CajaMontoSummaryVO();
+		this.cajaMontoAbril = new CajaMontoSummaryVO();
+		this.cajaMontoMayo = new CajaMontoSummaryVO();
+		this.cajaMontoJunio = new CajaMontoSummaryVO();
+		this.cajaMontoJulio = new CajaMontoSummaryVO();
+		this.cajaMontoAgosto = new CajaMontoSummaryVO();
+		this.cajaMontoSeptiembre = new CajaMontoSummaryVO();
+		this.cajaMontoOctubre = new CajaMontoSummaryVO();
+		this.cajaMontoNoviembre = new CajaMontoSummaryVO();
+		this.cajaMontoDiciembre = new CajaMontoSummaryVO();
+		this.marcoPresupuestario = 0L;
+		this.transferenciaAcumulada = new TransferenciaSummaryVO(0.0, 0L);
 		this.ignoreColor = true;
 		this.color = "#3ADF00";
+		this.pesoComponentes = 0.0;
 	}
 
 	
@@ -40,10 +63,9 @@ public class SubtituloFlujoCajaVO implements Serializable {
 			Integer idSubtitulo, String subtitulo,
 			Integer idMarcoPresupuestario, Long marcoPresupuestario,
 			TransferenciaSummaryVO transferenciaAcumulada,
-			ConveniosSummaryVO convenioRecibido,
-			List<CajaMontoSummaryVO> cajaMontos, Long totalMontos,
+			ConveniosSummaryVO convenioRecibido, Long totalMontos,
 			String color) {
-		super();
+		this();
 		this.idServicio = idServicio;
 		this.servicio = servicio;
 		this.idSubtitulo = idSubtitulo;
@@ -52,11 +74,11 @@ public class SubtituloFlujoCajaVO implements Serializable {
 		this.marcoPresupuestario = marcoPresupuestario;
 		this.transferenciaAcumulada = transferenciaAcumulada;
 		this.convenioRecibido = convenioRecibido;
-		this.cajaMontos = cajaMontos;
 		this.totalMontos = totalMontos;
 		this.color = color;
 		this.ignoreColor = true;
 		this.color = "#3ADF00";
+		this.pesoComponentes = 0.0;
 	}
 
 
@@ -109,20 +131,163 @@ public class SubtituloFlujoCajaVO implements Serializable {
 		this.convenioRecibido = convenioRecibido;
 	}
 
-	public List<CajaMontoSummaryVO> getCajaMontos() {
-		return cajaMontos;
+	public CajaMontoSummaryVO getCajaMontoEnero() {
+		return cajaMontoEnero;
 	}
 
-	public void setCajaMontos(List<CajaMontoSummaryVO> cajaMontos) {
-		this.cajaMontos = cajaMontos;
+
+	public void setCajaMontoEnero(CajaMontoSummaryVO cajaMontoEnero) {
+		this.cajaMontoEnero = cajaMontoEnero;
 	}
+
+
+	public CajaMontoSummaryVO getCajaMontoFebrero() {
+		return cajaMontoFebrero;
+	}
+
+
+	public void setCajaMontoFebrero(CajaMontoSummaryVO cajaMontoFebrero) {
+		this.cajaMontoFebrero = cajaMontoFebrero;
+	}
+
+
+	public CajaMontoSummaryVO getCajaMontoMarzo() {
+		return cajaMontoMarzo;
+	}
+
+
+	public void setCajaMontoMarzo(CajaMontoSummaryVO cajaMontoMarzo) {
+		this.cajaMontoMarzo = cajaMontoMarzo;
+	}
+
+
+	public CajaMontoSummaryVO getCajaMontoAbril() {
+		return cajaMontoAbril;
+	}
+
+
+	public void setCajaMontoAbril(CajaMontoSummaryVO cajaMontoAbril) {
+		this.cajaMontoAbril = cajaMontoAbril;
+	}
+
+
+	public CajaMontoSummaryVO getCajaMontoMayo() {
+		return cajaMontoMayo;
+	}
+
+
+	public void setCajaMontoMayo(CajaMontoSummaryVO cajaMontoMayo) {
+		this.cajaMontoMayo = cajaMontoMayo;
+	}
+
+
+	public CajaMontoSummaryVO getCajaMontoJunio() {
+		return cajaMontoJunio;
+	}
+
+
+	public void setCajaMontoJunio(CajaMontoSummaryVO cajaMontoJunio) {
+		this.cajaMontoJunio = cajaMontoJunio;
+	}
+
+
+	public CajaMontoSummaryVO getCajaMontoJulio() {
+		return cajaMontoJulio;
+	}
+
+
+	public void setCajaMontoJulio(CajaMontoSummaryVO cajaMontoJulio) {
+		this.cajaMontoJulio = cajaMontoJulio;
+	}
+
+
+	public CajaMontoSummaryVO getCajaMontoAgosto() {
+		return cajaMontoAgosto;
+	}
+
+
+	public void setCajaMontoAgosto(CajaMontoSummaryVO cajaMontoAgosto) {
+		this.cajaMontoAgosto = cajaMontoAgosto;
+	}
+
+
+	public CajaMontoSummaryVO getCajaMontoSeptiembre() {
+		return cajaMontoSeptiembre;
+	}
+
+
+	public void setCajaMontoSeptiembre(CajaMontoSummaryVO cajaMontoSeptiembre) {
+		this.cajaMontoSeptiembre = cajaMontoSeptiembre;
+	}
+
+
+	public CajaMontoSummaryVO getCajaMontoOctubre() {
+		return cajaMontoOctubre;
+	}
+
+
+	public void setCajaMontoOctubre(CajaMontoSummaryVO cajaMontoOctubre) {
+		this.cajaMontoOctubre = cajaMontoOctubre;
+	}
+
+
+	public CajaMontoSummaryVO getCajaMontoNoviembre() {
+		return cajaMontoNoviembre;
+	}
+
+
+	public void setCajaMontoNoviembre(CajaMontoSummaryVO cajaMontoNoviembre) {
+		this.cajaMontoNoviembre = cajaMontoNoviembre;
+	}
+
+
+	public CajaMontoSummaryVO getCajaMontoDiciembre() {
+		return cajaMontoDiciembre;
+	}
+
+
+	public void setCajaMontoDiciembre(CajaMontoSummaryVO cajaMontoDiciembre) {
+		this.cajaMontoDiciembre = cajaMontoDiciembre;
+	}
+
 
 	public Long getTotalMontos() {
 		totalMontos = 0L;
-		if(cajaMontos != null && cajaMontos.size() > 0){
-			for(CajaMontoSummaryVO monto : cajaMontos){
-				totalMontos += monto.getMontoMes();
-			}
+		if(cajaMontoEnero != null){
+			totalMontos += cajaMontoEnero.getMontoMes();
+		}
+		if(cajaMontoFebrero != null){
+			totalMontos += cajaMontoFebrero.getMontoMes();
+		}
+		if(cajaMontoMarzo != null){
+			totalMontos += cajaMontoMarzo.getMontoMes();
+		}
+		if(cajaMontoAbril != null){
+			totalMontos += cajaMontoAbril.getMontoMes();
+		}
+		if(cajaMontoMayo != null){
+			totalMontos += cajaMontoMayo.getMontoMes();
+		}
+		if(cajaMontoJunio != null){
+			totalMontos += cajaMontoJunio.getMontoMes();
+		}
+		if(cajaMontoJulio != null){
+			totalMontos += cajaMontoJulio.getMontoMes();
+		}
+		if(cajaMontoAgosto != null){
+			totalMontos += cajaMontoAgosto.getMontoMes();
+		}
+		if(cajaMontoSeptiembre != null){
+			totalMontos += cajaMontoSeptiembre.getMontoMes();
+		}
+		if(cajaMontoOctubre != null){
+			totalMontos += cajaMontoOctubre.getMontoMes();
+		}
+		if(cajaMontoNoviembre != null){
+			totalMontos += cajaMontoNoviembre.getMontoMes();
+		}
+		if(cajaMontoDiciembre != null){
+			totalMontos += cajaMontoDiciembre.getMontoMes();
 		}
 		return totalMontos;
 	}
@@ -184,6 +349,13 @@ public class SubtituloFlujoCajaVO implements Serializable {
 		this.ignoreColor = ignoreColor;
 	}
 
+	public Double getPesoComponentes() {
+		return pesoComponentes;
+	}
+
+	public void setPesoComponentes(Double pesoComponentes) {
+		this.pesoComponentes = pesoComponentes;
+	}
 
 	@Override
 	public int hashCode() {
@@ -236,8 +408,18 @@ public class SubtituloFlujoCajaVO implements Serializable {
 				+ idMarcoPresupuestario + ", marcoPresupuestario="
 				+ marcoPresupuestario + ", transferenciaAcumulada="
 				+ transferenciaAcumulada + ", convenioRecibido="
-				+ convenioRecibido + ", cajaMontos=" + cajaMontos
-				+ ", totalMontos=" + totalMontos + ", color=" + color + "]";
+				+ convenioRecibido + ", cajaMontoEnero=" + cajaMontoEnero
+				+ ", cajaMontoFebrero=" + cajaMontoFebrero
+				+ ", cajaMontoMarzo=" + cajaMontoMarzo + ", cajaMontoAbril="
+				+ cajaMontoAbril + ", cajaMontoMayo=" + cajaMontoMayo
+				+ ", cajaMontoJunio=" + cajaMontoJunio + ", cajaMontoJulio="
+				+ cajaMontoJulio + ", cajaMontoAgosto=" + cajaMontoAgosto
+				+ ", cajaMontoSeptiembre=" + cajaMontoSeptiembre
+				+ ", cajaMontoOctubre=" + cajaMontoOctubre
+				+ ", cajaMontoNoviembre=" + cajaMontoNoviembre
+				+ ", cajaMontoDiciembre=" + cajaMontoDiciembre
+				+ ", totalMontos=" + totalMontos + ", color=" + color
+				+ ", ignoreColor=" + ignoreColor + "]";
 	}
 
 
@@ -246,8 +428,41 @@ public class SubtituloFlujoCajaVO implements Serializable {
 		if(getServicio() != null){
 			row.add(getServicio());			
 		}
-		for(CajaMontoSummaryVO cajaMontoSummaryVO : getCajaMontos()){
-			row.add(cajaMontoSummaryVO.getMontoMes());	
+		if(cajaMontoEnero != null){
+			row.add(cajaMontoEnero.getMontoMes());
+		}
+		if(cajaMontoFebrero != null){
+			row.add(cajaMontoFebrero.getMontoMes());
+		}
+		if(cajaMontoMarzo != null){
+			row.add(cajaMontoMarzo.getMontoMes());
+		}
+		if(cajaMontoAbril != null){
+			row.add(cajaMontoAbril.getMontoMes());
+		}
+		if(cajaMontoMayo != null){
+			row.add(cajaMontoMayo.getMontoMes());
+		}
+		if(cajaMontoJunio != null){
+			row.add(cajaMontoJunio.getMontoMes());
+		}
+		if(cajaMontoJulio != null){
+			row.add(cajaMontoJulio.getMontoMes());
+		}
+		if(cajaMontoAgosto != null){
+			row.add(cajaMontoAgosto.getMontoMes());
+		}
+		if(cajaMontoSeptiembre != null){
+			row.add(cajaMontoSeptiembre.getMontoMes());
+		}
+		if(cajaMontoOctubre != null){
+			row.add(cajaMontoOctubre.getMontoMes());
+		}
+		if(cajaMontoNoviembre != null){
+			row.add(cajaMontoNoviembre.getMontoMes());
+		}
+		if(cajaMontoDiciembre != null){
+			row.add(cajaMontoDiciembre.getMontoMes());
 		}
 		row.add(getTotalMontos());	
 		return row;

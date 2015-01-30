@@ -34,25 +34,29 @@
 			document.getElementById('subtituloSeleccionado:seleccionarSubtitulo').click();  
 		}
 
-		function isNumber(event, id, fila, mes) {
-		  if (event) {
-		    var charCode = (event.which) ? event.which : event.keyCode;
-		    if (charCode &lt; 48 || charCode &gt; 57) {
-		    	if (charCode == 8 || charCode == 46 || charCode == 35 || charCode == 36 || charCode == 37 || charCode == 39){ 
-			    	return true;
-		    	}
-		    	if (charCode == 13) {
-			    	$("#formTabView\\:posicionCajaMes").val(fila);
-			    	$("#formTabView\\:mesModificado").val(mes);
-		    		document.getElementById(id).click();
-		    		return true;
-		    	}
-		       return false;
-		    }
-		  }
-		  return true;
-		}
+		function isNumber(event, id, idText, fila, mes) {
+			  if (event) {
+			    var charCode = (event.which) ? event.which : event.keyCode;
+			    if (charCode &lt; 48 || charCode &gt; 57) {
+			    	if (charCode == 8 || charCode == 46 || charCode == 35 || charCode == 36 || charCode == 37 || charCode == 39){ 
+				    	return true;
+			    	}
+			    	if (charCode == 13) {
+			    		event.preventDefault();
+			    		var value_input = $("input[name*='" + idText +"']").val();
+				    	$("#formTabView\\:posicionCajaMes").val(fila);
+				    	$("#formTabView\\:mesModificado").val(mes);
+				    	$("#formTabView\\:valorElemento").val(value_input);
+			    		document.getElementById(id).click();
+			    		return true;
+			    	}
+			       return false;
+			    }
+			  }
+			  return true;
+			}
 
+		
 		function checkChanges(){
 			$("#conDialog\\:currentTab").val($("#formTabView\\:currentTab").val());
 			if($("#formTabView\\:flujo").val()=="1"){
@@ -151,8 +155,10 @@
 						<br />
 						
 						<h:form id="formTabView">
+						<p:growl id="growl" showDetail="true" />  
 						<h:inputHidden  id="posicionCajaMes" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.posicionCajaMesModificado}" />
 						<h:inputHidden  id="mesModificado" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.mesModificado}" />
+						<h:inputHidden  id="valorElemento" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorElemento}" />
 						<h:inputHidden  id="currentTab" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.activeTab}" />
 						<h:inputHidden  id="tablaModificada" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.tablaModificada}" /> 
 						<h:inputHidden  id="flujo" value="1" /> 
@@ -169,8 +175,7 @@
 												<p:selectOneMenu style="width:650px;" id="cbProgramaSub21" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma21}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
 			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programasSubtitulo21}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponentePrograma(1)}" update="tabladatos cbServicioSub21" >
-			           								</p:ajax>
+			           								<p:ajax event="change" listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programa21SelectionChanged}" update="cbServicioSub21 tabladatos" />
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>	
 										
@@ -179,7 +184,7 @@
 												<p:selectOneMenu style="width:650px;" id="cbServicioSub21" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio21}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
 			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios21}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
-			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponenteProgramaServicio(1)}" update="tabladatos" />
+			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponenteProgramaServicio(1)}" update="tabladatos :formTabView:growl" />
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>		
 										
@@ -195,7 +200,7 @@
 											
 												<p:commandButton id="recalcularSubtitulo21" value="recalcularSubtitulo21" update="tabladatos :formTabView:tablaModificada" action="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.recalcularSubtitulo21}" style="display: none"/>
 												<p:dataTable resizableColumns="true" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.monitoreoSubtitulo21FlujoCajaVO}" liveResize="true"
-													var="_data" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+													var="_data" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
 													styleClass="dataTable" id="tabladatos" rowIndexVar="rowIndex" >
 													
 													<c:if test="#{not procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.iniciarFlujoCaja}">
@@ -232,49 +237,149 @@
 													</p:column>
 													<p:column>
 														<h:outputText value="#{_data.marcoPresupuestario}" styleClass="textoPequenio textoAjustado">
-															<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
 														</h:outputText>
 													</p:column>
 
 													<p:column>
 														<h:outputText value="#{_data.transferenciaAcumulada.monto}" styleClass="textoPequenio textoAjustado">
-															<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
 														</h:outputText>
 													</p:column>
 
 													<p:column>
 														<h:outputText value="#{_data.convenioRecibido.monto}" styleClass="textoPequenio textoAjustado">
-															<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+															<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
 														</h:outputText>
 													</p:column>
+													
+												<p:column rendered="#{_data.cajaMontoEnero.idMes eq numMesActual}">
+													<h:outputText value="#{_data.cajaMontoEnero.montoMes}" styleClass="textoPequenio textoAjustado"/>
+												</p:column>
+												<p:column rendered="#{_data.cajaMontoEnero.idMes gt numMesActual}">
+													<h:inputText value="#{_data.cajaMontoEnero.montoMes}" style="width:100%" label="#{_data.cajaMontoEnero.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '1');">
+													 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+													 </h:inputText>
+												</p:column>
+												
+										   	    <p:column rendered="#{_data.cajaMontoFebrero.idMes eq numMesActual}">
+													<h:outputText value="#{_data.cajaMontoFebrero.montoMes}" styleClass="textoPequenio textoAjustado"/>
+												</p:column>
 
+												<p:column rendered="#{_data.cajaMontoFebrero.idMes gt numMesActual}">
+													<h:inputText value="#{_data.cajaMontoFebrero.montoMes}" style="width:100%" label="#{_data.cajaMontoFebrero.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '2');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												
+										   	    <p:column rendered="#{_data.cajaMontoMarzo.idMes eq numMesActual}">
+													<h:outputText value="#{_data.cajaMontoMarzo.montoMes}" styleClass="textoPequenio textoAjustado"/>
+												</p:column>
 
-													<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.cajaMontosMonitoreoSubtitulo21Local}" var="monto">
-													    <c:if test="#{monto.idMes lt numMesActual}">
-													  		<c:if test="#{monto.idMes eq (numMesActual-1)}">
-														   	    <p:column>
-																	<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
-																		<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-																	</h:outputText>
-																</p:column>
-															</c:if>
-													    </c:if>
-														<c:if test="#{monto.idMes ge numMesActual}">
-															<p:column>
-																<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', '#{rowIndex}', '#{monto.idMes}');" >
-											                        <f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-											           		 	</h:inputText>
-															</p:column>
-														</c:if>
-													</c:forEach>
+												<p:column rendered="#{_data.cajaMontoMarzo.idMes gt numMesActual}">
+													<h:inputText value="#{_data.cajaMontoMarzo.montoMes}" style="width:100%" label="#{_data.cajaMontoMarzo.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '3');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												
+										   	    <p:column rendered="#{_data.cajaMontoAbril.idMes eq numMesActual}">
+													<h:outputText value="#{_data.cajaMontoAbril.montoMes}" styleClass="textoPequenio textoAjustado"/>
+												</p:column>
 
+												<p:column rendered="#{_data.cajaMontoAbril.idMes gt numMesActual}">
+													<h:inputText value="#{_data.cajaMontoAbril.montoMes}" style="width:100%" label="#{_data.cajaMontoAbril.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '4');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												
+										   	    <p:column rendered="#{_data.cajaMontoMayo.idMes eq numMesActual}">
+													<h:outputText value="#{_data.cajaMontoMayo.montoMes}" styleClass="textoPequenio textoAjustado"/>
+												</p:column>
+
+												<p:column rendered="#{_data.cajaMontoMayo.idMes gt numMesActual}">
+													<h:inputText value="#{_data.cajaMontoMayo.montoMes}" style="width:100%" label="#{_data.cajaMontoMayo.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '5');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												
+										   	    <p:column rendered="#{_data.cajaMontoJunio.idMes eq numMesActual}">
+													<h:outputText value="#{_data.cajaMontoJunio.montoMes}" styleClass="textoPequenio textoAjustado"/>
+												</p:column>
+
+												<p:column rendered="#{_data.cajaMontoJunio.idMes gt numMesActual}">
+													<h:inputText value="#{_data.cajaMontoJunio.montoMes}" style="width:100%" label="#{_data.cajaMontoJunio.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '6');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												
+										   	    <p:column rendered="#{_data.cajaMontoJulio.idMes eq numMesActual}">
+													<h:outputText value="#{_data.cajaMontoJulio.montoMes}" styleClass="textoPequenio textoAjustado"/>
+												</p:column>
+
+												<p:column rendered="#{_data.cajaMontoJulio.idMes gt numMesActual}">
+													<h:inputText value="#{_data.cajaMontoJulio.montoMes}" style="width:100%" label="#{_data.cajaMontoJulio.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '7');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												
+										   	    <p:column rendered="#{_data.cajaMontoAgosto.idMes eq numMesActual}">
+													<h:outputText value="#{_data.cajaMontoAgosto.montoMes}" styleClass="textoPequenio textoAjustado"/>
+												</p:column>
+															
+												<p:column rendered="#{_data.cajaMontoAgosto.idMes gt numMesActual}">
+													<h:inputText value="#{_data.cajaMontoAgosto.montoMes}" style="width:100%" label="#{_data.cajaMontoAgosto.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '8');">
+													 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+-													 </h:inputText>
+												</p:column>
+												
+										   	    <p:column rendered="#{_data.cajaMontoSeptiembre.idMes eq numMesActual}">
+													<h:outputText value="#{_data.cajaMontoSeptiembre.montoMes}" styleClass="textoPequenio textoAjustado"/>
+												</p:column>
+
+												<p:column rendered="#{_data.cajaMontoSeptiembre.idMes gt numMesActual}">
+													<h:inputText value="#{_data.cajaMontoSeptiembre.montoMes}" style="width:100%" label="#{_data.cajaMontoSeptiembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '9');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+													 </h:inputText>
+												</p:column>
+												
+										   	    <p:column rendered="#{_data.cajaMontoOctubre.idMes eq numMesActual}">
+													<h:outputText value="#{_data.cajaMontoOctubre.montoMes}" styleClass="textoPequenio textoAjustado"/>
+												</p:column>
+
+												<p:column rendered="#{_data.cajaMontoOctubre.idMes gt numMesActual}">
+													<h:inputText value="#{_data.cajaMontoOctubre.montoMes}" style="width:100%" label="#{_data.cajaMontoOctubre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '10');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+
+										   	    <p:column rendered="#{_data.cajaMontoNoviembre.idMes eq numMesActual}">
+													<h:outputText value="#{_data.cajaMontoNoviembre.montoMes}" styleClass="textoPequenio textoAjustado"/>
+												</p:column>
+
+												<p:column rendered="#{_data.cajaMontoNoviembre.idMes gt numMesActual}">
+													<h:inputText value="#{_data.cajaMontoNoviembre.montoMes}" style="width:100%" label="#{_data.cajaMontoNoviembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '11');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												
+										   	    <p:column rendered="#{_data.cajaMontoDiciembre.idMes eq numMesActual}">
+													<h:outputText value="#{_data.cajaMontoDiciembre.montoMes}" styleClass="textoPequenio textoAjustado"/>
+												</p:column>
+
+												<p:column rendered="#{_data.cajaMontoDiciembre.idMes gt numMesActual}">
+													<h:inputText value="#{_data.cajaMontoDiciembre.montoMes}" style="width:100%" label="#{_data.cajaMontoDiciembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '12');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+													
+												
 
 													<p:column style="background-color:#{_data.color};">
 														<h:outputText value="#{_data.totalMontos}" styleClass="textoPequenio textoAjustado">
 															<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 														</h:outputText>
 													</p:column>
-
+												</c:if>
 													<p:columnGroup type="footer">
 														<p:row>
 															<p:column />
@@ -304,22 +409,11 @@
 															
 
 															<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.totalServiciosMontosMesSubtitulo21}" var="montosMes" varStatus="status">
-															    <c:if test="#{status.count lt numMesActual}">
-															  		<c:if test="#{status.count eq (numMesActual-1)}">
-															  		  <p:column>
-																			<f:facet name="footer">
-																				<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
-																					<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-																				</h:outputText>
-																			</f:facet>
-																		</p:column>
-															  		</c:if>
-														  		</c:if>
 																<c:if test="#{status.count ge numMesActual}">
 																	<p:column>
 																		<f:facet name="footer">
 																			<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
-																				<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+																				<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
 																			</h:outputText>
 																		</f:facet>
 																	</p:column>
@@ -334,7 +428,6 @@
 															</p:column>
 														</p:row>
 													</p:columnGroup>
-													</c:if>
 													</c:if>
 													<c:if test="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.iniciarFlujoCaja}">
 													<p:columnGroup type="header">
@@ -370,21 +463,74 @@
 															<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 														</h:outputText>
 													</p:column>
-													<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.cajaMontosMonitoreoSubtitulo21Local}" var="monto" varStatus="varStatus">
-														<p:column>
-															 <h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', '#{rowIndex}', '#{monto.idMes}');" >
-												                        <f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												            </h:inputText>
-
-														</p:column>
-													</c:forEach>
+													
+													<p:column>
+														<h:inputText value="#{_data.cajaMontoEnero.montoMes}" style="width:100%" label="#{_data.cajaMontoEnero.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '1');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+													<p:column>
+														<h:inputText value="#{_data.cajaMontoFebrero.montoMes}" style="width:100%" label="#{_data.cajaMontoFebrero.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '2');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+													<p:column>
+														<h:inputText value="#{_data.cajaMontoMarzo.montoMes}" style="width:100%" label="#{_data.cajaMontoMarzo.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '3');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+													<p:column>
+														<h:inputText value="#{_data.cajaMontoAbril.montoMes}" style="width:100%" label="#{_data.cajaMontoAbril.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '4');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+													<p:column>
+														<h:inputText value="#{_data.cajaMontoMayo.montoMes}" style="width:100%" label="#{_data.cajaMontoMayo.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '5');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+													<p:column>
+														<h:inputText value="#{_data.cajaMontoJunio.montoMes}" style="width:100%" label="#{_data.cajaMontoJunio.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '6');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+													<p:column>
+														<h:inputText value="#{_data.cajaMontoJulio.montoMes}" style="width:100%" label="#{_data.cajaMontoJulio.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '7');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+													<p:column>
+														<h:inputText value="#{_data.cajaMontoAgosto.montoMes}" style="width:100%" label="#{_data.cajaMontoAgosto.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '8');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+													<p:column>
+														<h:inputText value="#{_data.cajaMontoSeptiembre.montoMes}" style="width:100%" label="#{_data.cajaMontoSeptiembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '9');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+													<p:column>
+														<h:inputText value="#{_data.cajaMontoOctubre.montoMes}" style="width:100%" label="#{_data.cajaMontoOctubre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '10');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+													<p:column>
+														<h:inputText value="#{_data.cajaMontoNoviembre.montoMes}" style="width:100%" label="#{_data.cajaMontoNoviembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '11');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+													<p:column>
+														<h:inputText value="#{_data.cajaMontoDiciembre.montoMes}" style="width:100%" label="#{_data.cajaMontoDiciembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo21', this.name, '#{rowIndex21}', '12');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
 
 													<p:column style="background-color:#{_data.color};">
 														<h:outputText value="#{_data.totalMontos}" styleClass="textoPequenio textoAjustado">
 															<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 														</h:outputText>
 													</p:column>
-
+													</c:if>
 													<p:columnGroup type="footer">
 														<p:row>
 															<p:column />
@@ -415,14 +561,11 @@
 														</p:row>
 													</p:columnGroup>
 													</c:if>
-													</c:if>
 												</p:dataTable>
 											
 											<br />
 											
-											<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update=":formTabView:tablaModificada"
-												actionListener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.guardarSubtitulo21}"
-												 value="Guardar" />
+											<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update=":formTabView:tablaModificada" actionListener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.guardarSubtitulo21}" value="Guardar" />
 											 
 										</h:panelGrid>
 
@@ -436,8 +579,7 @@
 												<p:selectOneMenu style="width:650px;" id="cbProgramaSub22" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma22}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
 			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programasSubtitulo22}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponentePrograma(2)}" update="tablaSubtitulo22 cbServicioSub22" >
-			           								</p:ajax>
+			           								<p:ajax event="change" listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programa22SelectionChanged}" update="cbServicioSub22 tablaSubtitulo22" />
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>	
 										
@@ -446,7 +588,7 @@
 												<p:selectOneMenu style="width:650px;" id="cbServicioSub22" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio22}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
 			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios22}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
-			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponenteProgramaServicio(2)}" update="tablaSubtitulo22" />
+			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponenteProgramaServicio(2)}" update="tablaSubtitulo22 :formTabView:growl" />
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>	
 
@@ -460,7 +602,7 @@
 											
 												<p:commandButton id="recalcularSubtitulo22" value="recalcularSubtitulo22" update="tablaSubtitulo22 :formTabView:tablaModificada" action="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.recalcularSubtitulo22}" style="display: none"/>
 												<p:dataTable resizableColumns="true" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.monitoreoSubtitulo22FlujoCajaVO}" liveResize="true"
-													var="_data" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+													var="_data" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
 													styleClass="dataTable" id="tablaSubtitulo22" rowIndexVar="rowIndex">
 													<c:if test="#{not procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.iniciarFlujoCaja}">			
 													<p:columnGroup type="header">
@@ -519,26 +661,125 @@
 													</p:column>
 													
 
-													<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.cajaMontosMonitoreoSubtitulo22Local}" var="monto">
-														<c:if test="#{monto.idMes lt numMesActual}">
-															<c:if test="#{monto.idMes eq (numMesActual-1)}">
-																<p:column>
-																	<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
-																		<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-																	</h:outputText>
-																</p:column>
-															</c:if>
-														</c:if>
-														<c:if test="#{monto.idMes ge numMesActual}">
-															<p:column>
-																<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', '#{rowIndex}', '#{monto.idMes}');" >
-											                        <f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-											           			</h:inputText>
-															</p:column>
-														</c:if>
-													</c:forEach>
-
-
+											   	    <p:column rendered="#{_data.cajaMontoEnero.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoEnero.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+}													<p:column rendered="#{_data.cajaMontoEnero.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoEnero.montoMes}" style="width:100%" label="#{_data.cajaMontoEnero.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '1');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+													
+											   	    <p:column rendered="#{_data.cajaMontoFebrero.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoFebrero.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoFebrero.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoFebrero.montoMes}" style="width:100%" label="#{_data.cajaMontoFebrero.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '2');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+													
+											   	    <p:column rendered="#{_data.cajaMontoMarzo.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoMarzo.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoMarzo.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoMarzo.montoMes}" style="width:100%" label="#{_data.cajaMontoMarzo.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '3');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+													
+											   	    <p:column rendered="#{_data.cajaMontoAbril.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoAbril.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoAbril.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoAbril.montoMes}" style="width:100%" label="#{_data.cajaMontoAbril.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '4');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+													
+											   	    <p:column rendered="#{_data.cajaMontoMayo.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoMayo.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoMayo.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoMayo.montoMes}" style="width:100%" label="#{_data.cajaMontoMayo.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '5');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+													
+											   	    <p:column rendered="#{_data.cajaMontoJunio.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoJunio.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoJunio.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoJunio.montoMes}" style="width:100%" label="#{_data.cajaMontoJunio.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '6');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+													
+											   	    <p:column rendered="#{_data.cajaMontoJulio.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoJulio.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+																
+													<p:column rendered="#{_data.cajaMontoJulio.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoJulio.montoMes}" style="width:100%" label="#{_data.cajaMontoJulio.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '7');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+													
+											   	    <p:column rendered="#{_data.cajaMontoAgosto.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoAgosto.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoAgosto.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoAgosto.montoMes}" style="width:100%" label="#{_data.cajaMontoAgosto.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '8');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+													
+											   	    <p:column rendered="#{_data.cajaMontoSeptiembre.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoSeptiembre.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoSeptiembre.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoSeptiembre.montoMes}" style="width:100%" label="#{_data.cajaMontoSeptiembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '9');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+													
+											   	    <p:column rendered="#{_data.cajaMontoOctubre.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoOctubre.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoOctubre.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoOctubre.montoMes}" style="width:100%" label="#{_data.cajaMontoOctubre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '10');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+													
+											   	    <p:column rendered="#{_data.cajaMontoNoviembre.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoNoviembre.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoNoviembre.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoNoviembre.montoMes}" style="width:100%" label="#{_data.cajaMontoNoviembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '11');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+													
+											   	    <p:column rendered="#{_data.cajaMontoDiciembre.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoDiciembre.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoDiciembre.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoDiciembre.montoMes}" style="width:100%" label="#{_data.cajaMontoDiciembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '12');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
 
 													<p:column style="background-color:#{_data.color};">
 														<h:outputText value="#{_data.totalMontos}"
@@ -547,7 +788,7 @@
 																locale="es_CL" currencySymbol="$" />
 														</h:outputText>
 													</p:column>
-
+													</c:if>
 													<p:columnGroup type="footer">
 														<p:row>
 															<p:column />
@@ -582,28 +823,16 @@
 																	</h:outputText>
 																</f:facet>
 															</p:column>
-															
 															<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.totalServiciosMontosMesSubtitulo22}" var="montosMes" varStatus="status">
-															    <c:if test="#{status.count lt numMesActual}">
-															  		<c:if test="#{status.count eq (numMesActual-1)}">
-															  		  <p:column>
-																			<f:facet name="footer">
-																				<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
-																					<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-																				</h:outputText>
-																			</f:facet>
-																		</p:column>
-															  		</c:if>
-														  		</c:if>
-																<c:if test="#{status.count ge numMesActual}">
-																	<p:column>
-																		<f:facet name="footer">
-																			<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
-																				<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-																			</h:outputText>
-																		</f:facet>
-																	</p:column>
-																</c:if>
+															<c:if test="#{status.count ge numMesActual}">
+																<p:column>
+																	<f:facet name="footer">
+																		<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
+																			<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+																		</h:outputText>
+																	</f:facet>
+																</p:column>
+															</c:if>
 															</c:forEach>
 															<p:column>
 																<f:facet name="footer">
@@ -616,7 +845,6 @@
 															</p:column>
 														</p:row>
 													</p:columnGroup>
-													</c:if>
 													</c:if>
 													<c:if test="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.iniciarFlujoCaja}">
 													<p:columnGroup type="header">
@@ -658,13 +886,67 @@
 																locale="es_CL" currencySymbol="$" />
 														</h:outputText>
 													</p:column>
-													<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.cajaMontosMonitoreoSubtitulo22Local}" var="monto" varStatus="varStatus">
-														<p:column>	 
-															<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', '#{rowIndex}', '#{monto.idMes}');" >
-																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-															</h:inputText>
-														</p:column>
-													</c:forEach>
+													
+													<p:column>
+													<h:inputText value="#{_data.cajaMontoEnero.montoMes}" style="width:100%" label="#{_data.cajaMontoEnero.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '1');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoFebrero.montoMes}" style="width:100%" label="#{_data.cajaMontoFebrero.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '2');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoMarzo.montoMes}" style="width:100%" label="#{_data.cajaMontoMarzo.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '3');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoAbril.montoMes}" style="width:100%" label="#{_data.cajaMontoAbril.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '4');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoMayo.montoMes}" style="width:100%" label="#{_data.cajaMontoMayo.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '5');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoJunio.montoMes}" style="width:100%" label="#{_data.cajaMontoJunio.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '6');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoJulio.montoMes}" style="width:100%" label="#{_data.cajaMontoJulio.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '7');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoAgosto.montoMes}" style="width:100%" label="#{_data.cajaMontoAgosto.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '8');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoSeptiembre.montoMes}" style="width:100%" label="#{_data.cajaMontoSeptiembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '9');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoOctubre.montoMes}" style="width:100%" label="#{_data.cajaMontoOctubre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '10');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoNoviembre.montoMes}" style="width:100%" label="#{_data.cajaMontoNoviembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '11');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoDiciembre.montoMes}" style="width:100%" label="#{_data.cajaMontoDiciembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo22', this.name, '#{rowIndex22}', '12');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
 
 
 
@@ -675,6 +957,8 @@
 																locale="es_CL" currencySymbol="$" />
 														</h:outputText>
 													</p:column>
+													
+													</c:if>
 
 													<p:columnGroup type="footer">
 														<p:row>
@@ -713,7 +997,6 @@
 														</p:row>
 													</p:columnGroup>
 													</c:if>
-													</c:if>
 												</p:dataTable>
 											
 											<br />
@@ -734,8 +1017,7 @@
 												<p:selectOneMenu style="width:650px;" id="cbProgramaSub24" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma24}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
 			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programasSubtitulo24}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponentePrograma(3)}" update="tablaSubtitulo24 cbServicioSub24" >
-			           								</p:ajax>
+			           								<p:ajax event="change" listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programa24SelectionChanged}" update="cbServicioSub24 tablaSubtitulo24" />
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>	
 										
@@ -744,7 +1026,7 @@
 												<p:selectOneMenu style="width:650px;" id="cbServicioSub24" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio24}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
 			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios24}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
-			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponenteProgramaServicio(3)}" update="tablaSubtitulo24" />
+			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponenteProgramaServicio(3)}" update="tablaSubtitulo24 :formTabView:growl" />
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>
 										
@@ -759,7 +1041,7 @@
 												<p:commandButton id="recalcularSubtitulo24" value="recalcularSubtitulo24" update="tablaSubtitulo24 :formTabView:tablaModificada" action="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.recalcularSubtitulo24}" style="display: none"/>
 												<p:dataTable resizableColumns="true"
 													value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.monitoreoSubtitulo24FlujoCajaVO}" liveResize="true"
-													var="_data" rows="10" paginator="false"
+													var="_data" paginator="false"
 													paginatorPosition="bottom"
 													emptyMessage="No se encontro información."
 													styleClass="dataTable" id="tablaSubtitulo24" rowIndexVar="rowIndex">
@@ -819,24 +1101,125 @@
 													</p:column>
 													
 
-													<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.cajaMontosMonitoreoSubtitulo24Local}" var="monto">
-														<c:if test="#{monto.idMes lt numMesActual}">
-															<c:if test="#{monto.idMes eq (numMesActual-1)}">
-																<p:column>
-																	<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
-																		<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-																	</h:outputText>
-																</p:column>
-															</c:if>
-														</c:if>
-														<c:if test="#{monto.idMes ge numMesActual}">
-															<p:column>
-																<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', '#{rowIndex}', '#{monto.idMes}');" >
-												                        <f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												           		</h:inputText>
-															</p:column>
-														</c:if>
-													</c:forEach>
+											   	    <p:column rendered="#{_data.cajaMontoEnero.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoEnero.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+												
+													<p:column rendered="#{_data.cajaMontoEnero.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoEnero.montoMes}" style="width:100%" label="#{_data.cajaMontoEnero.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '1');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoFebrero.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoFebrero.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+										    	
+													<p:column rendered="#{_data.cajaMontoFebrero.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoFebrero.montoMes}" style="width:100%" label="#{_data.cajaMontoFebrero.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '2');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoMarzo.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoMarzo.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+										    	
+													<p:column rendered="#{_data.cajaMontoMarzo.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoMarzo.montoMes}" style="width:100%" label="#{_data.cajaMontoMarzo.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '3');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoAbril.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoAbril.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+										    	
+													<p:column rendered="#{_data.cajaMontoAbril.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoAbril.montoMes}" style="width:100%" label="#{_data.cajaMontoAbril.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '4');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoMayo.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoMayo.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoMayo.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoMayo.montoMes}" style="width:100%" label="#{_data.cajaMontoMayo.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '5');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoJunio.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoJunio.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoJunio.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoJunio.montoMes}" style="width:100%" label="#{_data.cajaMontoJunio.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '6');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoJulio.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoJulio.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoJulio.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoJulio.montoMes}" style="width:100%" label="#{_data.cajaMontoJulio.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '7');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoAgosto.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoAgosto.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoAgosto.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoAgosto.montoMes}" style="width:100%" label="#{_data.cajaMontoAgosto.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '8');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoSeptiembre.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoSeptiembre.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoSeptiembre.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoSeptiembre.montoMes}" style="width:100%" label="#{_data.cajaMontoSeptiembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '9');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoOctubre.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoOctubre.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoOctubre.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoOctubre.montoMes}" style="width:100%" label="#{_data.cajaMontoOctubre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '10');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoNoviembre.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoNoviembre.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoNoviembre.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoNoviembre.montoMes}" style="width:100%" label="#{_data.cajaMontoNoviembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '11');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoDiciembre.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoDiciembre.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoDiciembre.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoDiciembre.montoMes}" style="width:100%" label="#{_data.cajaMontoDiciembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '12');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
 
 													<p:column style="background-color:#{_data.color};">
 														<h:outputText value="#{_data.totalMontos}"
@@ -846,6 +1229,7 @@
 														</h:outputText>
 													</p:column>
 
+												</c:if>		
 													<p:columnGroup type="footer">
 														<p:row>
 															<p:column />
@@ -882,26 +1266,15 @@
 															</p:column>
 															
 															<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.totalServiciosMontosMesSubtitulo24}" var="montosMes" varStatus="status">
-															    <c:if test="#{status.count lt numMesActual}">
-															  		<c:if test="#{status.count eq (numMesActual-1)}">
-															  		  <p:column>
-																			<f:facet name="footer">
-																				<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
-																					<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-																				</h:outputText>
-																			</f:facet>
-																		</p:column>
-															  		</c:if>
-														  		</c:if>
-																<c:if test="#{status.count ge numMesActual}">
-																	<p:column>
-																		<f:facet name="footer">
-																			<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
-																				<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-																			</h:outputText>
-																		</f:facet>
-																	</p:column>
-																</c:if>
+															<c:if test="#{status.count ge numMesActual}">
+																<p:column>
+																	<f:facet name="footer">
+																		<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
+																			<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+																		</h:outputText>
+																	</f:facet>
+																</p:column>
+															</c:if>
 															</c:forEach>
 															<p:column>
 																<f:facet name="footer">
@@ -914,7 +1287,6 @@
 															</p:column>
 														</p:row>
 													</p:columnGroup>
-													</c:if>
 													</c:if>
 													<c:if test="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.iniciarFlujoCaja}">
 													<p:columnGroup type="header">
@@ -957,13 +1329,66 @@
 														</h:outputText>
 													</p:column>
 
-													<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.cajaMontosMonitoreoSubtitulo24Local}" var="monto">
-														<p:column>
-															<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', '#{rowIndex}', '#{monto.idMes}');" >
-												                        <f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												            </h:inputText>
-														</p:column>
-													</c:forEach>
+													<p:column>
+													<h:inputText value="#{_data.cajaMontoEnero.montoMes}" style="width:100%" label="#{_data.cajaMontoEnero.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '1');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoFebrero.montoMes}" style="width:100%" label="#{_data.cajaMontoFebrero.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '2');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoMarzo.montoMes}" style="width:100%" label="#{_data.cajaMontoMarzo.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '3');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoAbril.montoMes}" style="width:100%" label="#{_data.cajaMontoAbril.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '4');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoMayo.montoMes}" style="width:100%" label="#{_data.cajaMontoMayo.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '5');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoJunio.montoMes}" style="width:100%" label="#{_data.cajaMontoJunio.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '6');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoJulio.montoMes}" style="width:100%" label="#{_data.cajaMontoJulio.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '7');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoAgosto.montoMes}" style="width:100%" label="#{_data.cajaMontoAgosto.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '8');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoSeptiembre.montoMes}" style="width:100%" label="#{_data.cajaMontoSeptiembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '9');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoOctubre.montoMes}" style="width:100%" label="#{_data.cajaMontoOctubre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '10');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoNoviembre.montoMes}" style="width:100%" label="#{_data.cajaMontoNoviembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '11');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoDiciembre.montoMes}" style="width:100%" label="#{_data.cajaMontoDiciembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo24', this.name, '#{rowIndex24}', '12');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
 
 													<p:column style="background-color:#{_data.color};">
 														<h:outputText value="#{_data.totalMontos}"
@@ -972,7 +1397,7 @@
 																locale="es_CL" currencySymbol="$" />
 														</h:outputText>
 													</p:column>
-
+												</c:if>
 													<p:columnGroup type="footer">
 														<p:row>
 															<p:column />
@@ -986,16 +1411,16 @@
 																	</h:outputText>
 																</f:facet>
 															</p:column>
-															<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.totalServiciosMontosMesSubtitulo24}" var="montosMes" varStatus="status">
-																<p:column>
-																	<f:facet name="footer">
-																		<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
-																			<f:convertNumber type="currency"
-																				maxFractionDigits="0" locale="es_CL"
-																				currencySymbol="$" />
-																		</h:outputText>
-																	</f:facet>
-																</p:column>
+															<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.totalServiciosMontosMesSubtitulo24}" var="montosMes">
+															<p:column>
+																<f:facet name="footer">
+																	<h:outputText
+																		value="#{montosMes}"
+																		styleClass="textoAjustado textoPequenio centrado">
+																		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+																	</h:outputText>
+																</f:facet>
+															</p:column>
 															</c:forEach>
 															<p:column>
 																<f:facet name="footer">
@@ -1008,7 +1433,6 @@
 															</p:column>
 														</p:row>
 													</p:columnGroup>
-													</c:if>
 													</c:if>
 												</p:dataTable>
 											<br/>
@@ -1027,8 +1451,7 @@
 												<p:selectOneMenu style="width:650px;" id="cbProgramaSub29" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma29}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
 			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programasSubtitulo29}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponentePrograma(4)}" update="tablaSubtitulo29 cbServicioSub29" >
-			           								</p:ajax>
+			           								<p:ajax event="change" listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programa29SelectionChanged}" update="cbServicioSub29 tablaSubtitulo29" />
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>	
 										
@@ -1037,7 +1460,7 @@
 												<p:selectOneMenu style="width:650px;" id="cbServicioSub29" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio29}">
 												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
 			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios29}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
-			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponenteProgramaServicio(4)}" update="tablaSubtitulo29" />
+			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponenteProgramaServicio(4)}" update="tablaSubtitulo29 :formTabView:growl" />
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>
 											<c:if test="#{not procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.iniciarFlujoCaja}">
@@ -1050,7 +1473,7 @@
 												<p:commandButton id="recalcularSubtitulo29" value="recalcularSubtitulo29" update="tablaSubtitulo29 :formTabView:tablaModificada" action="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.recalcularSubtitulo29}" style="display: none"/>
 												<p:dataTable resizableColumns="true"
 													value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.monitoreoSubtitulo29FlujoCajaVO}" liveResize="true"
-													var="_data" rows="10" paginator="false"
+													var="_data" paginator="false"
 													paginatorPosition="bottom"
 													emptyMessage="No se encontro información."
 													styleClass="dataTable" 
@@ -1111,24 +1534,125 @@
 													</p:column>
 													
 													
-													<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.cajaMontosMonitoreoSubtitulo29Local}" var="monto">
-														<c:if test="#{monto.idMes lt numMesActual}">
-													  		<c:if test="#{monto.idMes eq (numMesActual-1)}">
-														   	    <p:column>
-																	<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
-																		<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-																	</h:outputText>
-																</p:column>
-															</c:if>
-													    </c:if>
-														<c:if test="#{monto.idMes ge numMesActual}">
-															<p:column>
-																<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', '#{rowIndex}', '#{monto.idMes}');" >
-												                        <f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												           		</h:inputText>
-															</p:column>
-														</c:if>
-													</c:forEach>
+											   	    <p:column rendered="#{_data.cajaMontoEnero.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoEnero.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoEnero.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoEnero.montoMes}" style="width:100%" label="#{_data.cajaMontoEnero.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '1');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoFebrero.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoFebrero.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoFebrero.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoFebrero.montoMes}" style="width:100%" label="#{_data.cajaMontoFebrero.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '2');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoMarzo.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoMarzo.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoMarzo.idMes ge numMesActual}">
+														<h:inputText value="#{_data.cajaMontoMarzo.montoMes}" style="width:100%" label="#{_data.cajaMontoMarzo.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '3');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoAbril.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoAbril.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoAbril.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoAbril.montoMes}" style="width:100%" label="#{_data.cajaMontoAbril.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '4');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoMayo.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoMayo.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoMayo.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoMayo.montoMes}" style="width:100%" label="#{_data.cajaMontoMayo.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '5');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoJunio.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoJunio.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoJunio.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoJunio.montoMes}" style="width:100%" label="#{_data.cajaMontoJunio.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '6');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoJulio.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoJulio.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoJulio.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoJulio.montoMes}" style="width:100%" label="#{_data.cajaMontoJulio.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', '#{rowIndex29}', '7');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoAgosto.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoAgosto.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoAgosto.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoAgosto.montoMes}" style="width:100%" label="#{_data.cajaMontoAgosto.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '8');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoSeptiembre.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoSeptiembre.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoSeptiembre.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoSeptiembre.montoMes}" style="width:100%" label="#{_data.cajaMontoSeptiembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '9');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoOctubre.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoOctubre.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoOctubre.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoOctubre.montoMes}" style="width:100%" label="#{_data.cajaMontoOctubre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '10');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoNoviembre.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoNoviembre.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoNoviembre.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoNoviembre.montoMes}" style="width:100%" label="#{_data.cajaMontoNoviembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '11');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
+												
+											   	    <p:column rendered="#{_data.cajaMontoDiciembre.idMes eq numMesActual}">
+														<h:outputText value="#{_data.cajaMontoDiciembre.montoMes}" styleClass="textoPequenio textoAjustado"/>
+													</p:column>
+													
+													<p:column rendered="#{_data.cajaMontoDiciembre.idMes gt numMesActual}">
+														<h:inputText value="#{_data.cajaMontoDiciembre.montoMes}" style="width:100%" label="#{_data.cajaMontoDiciembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '12');">
+															 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+															 </h:inputText>
+													</p:column>
 
 													<p:column style="background-color:#{_data.color};">
 														<h:outputText value="#{_data.totalMontos}"
@@ -1137,7 +1661,7 @@
 																locale="es_CL" currencySymbol="$" />
 														</h:outputText>
 													</p:column>
-
+												</c:if>
 													<p:columnGroup type="footer">
 														<p:row>
 															<p:column />
@@ -1174,26 +1698,15 @@
 															</p:column>
 															
 															<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.totalServiciosMontosMesSubtitulo29}" var="montosMes" varStatus="status">
-															    <c:if test="#{status.count lt numMesActual}">
-															  		<c:if test="#{status.count eq (numMesActual-1)}">
-															  		  <p:column>
-																			<f:facet name="footer">
-																				<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
-																					<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-																				</h:outputText>
-																			</f:facet>
-																		</p:column>
-															  		</c:if>
-														  		</c:if>
-																<c:if test="#{status.count ge numMesActual}">
-																	<p:column>
-																		<f:facet name="footer">
-																			<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
-																				<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-																			</h:outputText>
-																		</f:facet>
-																	</p:column>
-																</c:if>
+															<c:if test="#{status.count ge numMesActual}">
+																<p:column>
+																	<f:facet name="footer">
+																		<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
+																			<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+																		</h:outputText>
+																	</f:facet>
+																</p:column>
+															</c:if>
 															</c:forEach>
 
 															<p:column>
@@ -1207,7 +1720,6 @@
 															</p:column>
 														</p:row>
 													</p:columnGroup>
-													</c:if>
 													</c:if>
 													<c:if test="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.iniciarFlujoCaja}">
 													<p:columnGroup type="header">
@@ -1251,13 +1763,66 @@
 													</p:column>
 
 													
-													<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.cajaMontosMonitoreoSubtitulo29Local}" var="monto">
-														<p:column>
-															<h:inputText value="#{monto.montoMes}" style="width:100%" label="#{monto.nombreMes}" onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', '#{rowIndex}', '#{monto.idMes}');">
-																<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-															</h:inputText>
-														</p:column>
-													</c:forEach>
+													<p:column>
+													<h:inputText value="#{_data.cajaMontoEnero.montoMes}" style="width:100%" label="#{_data.cajaMontoEnero.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '1');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoFebrero.montoMes}" style="width:100%" label="#{_data.cajaMontoFebrero.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '2');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoMarzo.montoMes}" style="width:100%" label="#{_data.cajaMontoMarzo.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '3');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoAbril.montoMes}" style="width:100%" label="#{_data.cajaMontoAbril.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '4');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoMayo.montoMes}" style="width:100%" label="#{_data.cajaMontoMayo.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '5');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoJunio.montoMes}" style="width:100%" label="#{_data.cajaMontoJunio.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '6');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoJulio.montoMes}" style="width:100%" label="#{_data.cajaMontoJulio.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '7');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoAgosto.montoMes}" style="width:100%" label="#{_data.cajaMontoAgosto.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '8');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoSeptiembre.montoMes}" style="width:100%" label="#{_data.cajaMontoSeptiembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '9');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoOctubre.montoMes}" style="width:100%" label="#{_data.cajaMontoOctubre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '10');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoNoviembre.montoMes}" style="width:100%" label="#{_data.cajaMontoNoviembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '11');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
+												<p:column>
+													<h:inputText value="#{_data.cajaMontoDiciembre.montoMes}" style="width:100%" label="#{_data.cajaMontoDiciembre.nombreMes}"  onkeypress="return isNumber(event, 'formTabView:tabView:tabSubtitulos:recalcularSubtitulo29', this.name, '#{rowIndex29}', '12');">
+														 		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+														 </h:inputText>
+												</p:column>
 
 													<p:column style="background-color:#{_data.color};">
 														<h:outputText value="#{_data.totalMontos}"
@@ -1266,6 +1831,8 @@
 																locale="es_CL" currencySymbol="$" />
 														</h:outputText>
 													</p:column>
+													
+													</c:if>
 
 													<p:columnGroup type="footer">
 														<p:row>
@@ -1280,19 +1847,16 @@
 																	</h:outputText>
 																</f:facet>
 															</p:column>
-															<c:forEach
-																items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.totalServiciosMontosMesSubtitulo29}" var="montosMes" varStatus="status">
-																	<p:column>
-																		<f:facet name="footer">
-																			<h:outputText
-																				value="#{montosMes}"
-																				styleClass="textoAjustado textoPequenio centrado">
-																				<f:convertNumber type="currency"
-																					maxFractionDigits="0" locale="es_CL"
-																					currencySymbol="$" />
-																			</h:outputText>
-																		</f:facet>
-																	</p:column>
+															<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.totalServiciosMontosMesSubtitulo29}" var="montosMes">
+															<p:column>
+																<f:facet name="footer">
+																	<h:outputText
+																		value="#{montosMes}"
+																		styleClass="textoAjustado textoPequenio centrado">
+																		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+																	</h:outputText>
+																</f:facet>
+															</p:column>
 															</c:forEach>
 
 															<p:column>
@@ -1306,7 +1870,6 @@
 															</p:column>
 														</p:row>
 													</p:columnGroup>
-													</c:if>
 													</c:if>
 												</p:dataTable>
 												
@@ -1346,23 +1909,14 @@
 													<p:columnGroup type="header">
 														<p:row>
 															<p:column rowspan="2" headerText="Servicio" />
-															<p:column rowspan="1" colspan="12" styleClass="textoPequenio" headerText="REMESA PER CÁPITA"/>
+															<p:column rowspan="1" colspan="#{fn:length(procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.columns)}" styleClass="textoPequenio" headerText="REMESA PER CÁPITA"/>
 															<p:column rowspan="2" headerText="TOTAL PER CÁPITA" />																																												
 														</p:row>
 														
 														<p:row>
-															<p:column rowspan="1" headerText="Enero" />
-															<p:column rowspan="1" headerText="Febrero" />
-															<p:column rowspan="1" headerText="Marzo" />
-															<p:column rowspan="1" headerText="Abril" />
-															<p:column rowspan="1" headerText="Mayo" />
-															<p:column rowspan="1" headerText="Junio" />
-															<p:column rowspan="1" headerText="Julio" />
-															<p:column rowspan="1" headerText="Agosto" />
-															<p:column rowspan="1" headerText="Septiembre" />
-															<p:column rowspan="1" headerText="Octubre" />
-															<p:column rowspan="1" headerText="Noviembre" />
-															<p:column rowspan="1" headerText="Diciembre" />		
+															<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.columns}" var="dynamicColumn">
+																<p:column headerText="#{dynamicColumn.header}" />
+															</c:forEach>
 														</p:row>
 													</p:columnGroup>
 
@@ -1371,19 +1925,83 @@
 													</p:column>
 
 													<c:if test="#{not empty procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.monitoreoPercapitaFlujoCajaVO}">
-													<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.cajaMontosMonitoreoPercapitaLocal}" var="monto">
-														<p:column>
-																<h:outputText value="#{monto.montoMes}" styleClass="textoPequenio textoAjustado">
-																	<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-																</h:outputText>
-														</p:column>
-													</c:forEach>
-													</c:if>
-													<p:column>
-														<h:outputText value="#{_data.totalMontos}" styleClass="textoPequenio textoAjustado">
-															<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-														</h:outputText>
-													</p:column>
+										
+										<p:column rendered="#{_data.cajaMontoEnero.idMes ge numMesActual}">
+											<h:outputText value="#{_data.cajaMontoEnero.idMes}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+											</h:outputText>
+										</p:column>
+										
+	   	    							<p:column rendered="#{_data.cajaMontoFebrero.idMes ge numMesActual}">
+											<h:outputText value="#{_data.cajaMontoFebrero.montoMes}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+											</h:outputText>
+										</p:column>
+	
+	   	    							<p:column rendered="#{_data.cajaMontoMarzo.idMes ge numMesActual}">
+											<h:outputText value="#{_data.cajaMontoMarzo.montoMes}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+											</h:outputText>
+										</p:column>
+	
+	   	    							<p:column rendered="#{_data.cajaMontoAbril.idMes ge numMesActual}">	
+											<h:outputText value="#{_data.cajaMontoAbril.montoMes}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+											</h:outputText>
+										</p:column>
+	
+	   	    							<p:column rendered="#{_data.cajaMontoMayo.idMes ge numMesActual}">
+											<h:outputText value="#{_data.cajaMontoMayo.montoMes}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+											</h:outputText>
+										</p:column>
+	
+	   	    							<p:column rendered="#{_data.cajaMontoJunio.idMes ge numMesActual}">
+											<h:outputText value="#{_data.cajaMontoJunio.montoMes}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+											</h:outputText>
+										</p:column>
+	
+   	    								<p:column rendered="#{_data.cajaMontoJulio.idMes ge numMesActual}">
+											<h:outputText value="#{_data.cajaMontoJulio.montoMes}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+											</h:outputText>
+										</p:column>
+
+	   	    							<p:column rendered="#{_data.cajaMontoAgosto.idMes ge numMesActual}">
+											<h:outputText value="#{_data.cajaMontoAgosto.montoMes}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+											</h:outputText>
+										</p:column>
+	
+	   	    							<p:column rendered="#{_data.cajaMontoSeptiembre.idMes ge numMesActual}">
+											<h:outputText value="#{_data.cajaMontoSeptiembre.montoMes}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+											</h:outputText>
+										</p:column>
+	
+	   	    							<p:column rendered="#{_data.cajaMontoOctubre.idMes ge numMesActual}">
+											<h:outputText value="#{_data.cajaMontoOctubre.montoMes}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+											</h:outputText>
+										</p:column>
+	
+	   	    							<p:column rendered="#{_data.cajaMontoNoviembre.idMes ge numMesActual}">
+											<h:outputText value="#{_data.cajaMontoNoviembre.montoMes}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+											</h:outputText>
+										</p:column>
+	
+   	    								<p:column rendered="#{_data.cajaMontoDiciembre.idMes ge numMesActual}">
+											<h:outputText value="#{_data.cajaMontoDiciembre.montoMes}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+											</h:outputText>
+										</p:column>
+										<p:column>
+											<h:outputText value="#{_data.totalMontos}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</p:column>
 												
 													<p:columnGroup type="footer">
 														<p:row>
@@ -1393,25 +2011,30 @@
 																	</h:outputText>
 																</f:facet>
 															</p:column>
+																													
 															<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.totalServiciosMontosMesPercapita}" var="montosMes" varStatus="status">
-																<p:column>
-																	<f:facet name="footer">
-																		<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado">
-																			<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-																		</h:outputText>
-																	</f:facet>
-																</p:column>
-															</c:forEach>															
+																<c:if test="#{status.count ge numMesActual}">
+																		<p:column>
+																			<f:facet name="footer">
+																				<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado"> 
+																					<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+																				</h:outputText>
+																			</f:facet>
+																		</p:column>
+																</c:if>
+															</c:forEach>
+															
+																													
 															<p:column>
 																<f:facet name="footer">
 																	<h:outputText value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.totalFinalServiciosPercapita}" styleClass="textoAjustado textoPequenio centrado">
-																		<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+																		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL"/>
 																	</h:outputText>
 																</f:facet>
 															</p:column>
 														</p:row>
 													</p:columnGroup>
-													
+														</c:if>
 													
 												</p:dataTable>
 											

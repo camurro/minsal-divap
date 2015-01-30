@@ -53,6 +53,7 @@ import cl.minsal.divap.model.DocumentoConvenio;
 import cl.minsal.divap.model.DocumentoConvenioComuna;
 import cl.minsal.divap.model.DocumentoConvenioServicio;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
+import cl.minsal.divap.model.DocumentoEstimacionFlujoCajaConsolidador;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.DocumentoModificacionPercapita;
 import cl.minsal.divap.model.DocumentoOt;
@@ -61,6 +62,7 @@ import cl.minsal.divap.model.DocumentoRebaja;
 import cl.minsal.divap.model.DocumentoReliquidacion;
 import cl.minsal.divap.model.DocumentoRemesas;
 import cl.minsal.divap.model.DocumentoReportes;
+import cl.minsal.divap.model.FlujoCajaConsolidador;
 import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.ModificacionDistribucionInicialPercapita;
 import cl.minsal.divap.model.OrdenTransferencia;
@@ -1369,6 +1371,20 @@ public class DocumentService {
 			}
 		}
 		return versionesFinales;
+	}
+
+	public void createDocumentFlujoCaja(FlujoCajaConsolidador flujoCajaConsolidador, TipoDocumentosProcesos tipoDocumento, Integer referenciaDocumentoId, Boolean lastVersion) {
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		if(lastVersion != null){
+			referenciaDocumento.setDocumentoFinal(lastVersion);
+		}
+		DocumentoEstimacionFlujoCajaConsolidador documentoEstimacionFlujoCajaConsolidador = new DocumentoEstimacionFlujoCajaConsolidador();
+		documentoEstimacionFlujoCajaConsolidador.setTipoDocumento(new TipoDocumento(tipoDocumento.getId()));
+		documentoEstimacionFlujoCajaConsolidador.setDocumento(referenciaDocumento);
+		documentoEstimacionFlujoCajaConsolidador.setFlujoCajaConsolidador(flujoCajaConsolidador);
+		estimacionFlujoCajaDAO.save(documentoEstimacionFlujoCajaConsolidador);
+		System.out.println("luego de aplicar insert del documento documento Estimacion Flujo Caja Consolidador");
+		
 	}
 
 }

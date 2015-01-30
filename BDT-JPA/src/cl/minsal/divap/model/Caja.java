@@ -37,7 +37,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Caja.deleteUsingIdProgramaAno", query = "DELETE FROM Caja c WHERE c.programa.idProgramaAno = :idProgramaAno"),
     @NamedQuery(name = "Caja.countByIdProgramaAno", query = "SELECT COUNT(c) FROM Caja c WHERE c.programa.idProgramaAno = :idProgramaAno"),
     @NamedQuery(name = "Caja.findByIdProgramaAno", query = "SELECT c FROM Caja c WHERE c.programa.idProgramaAno = :idProgramaAno"),
-    @NamedQuery(name = "Caja.deleteUsingIds", query = "DELETE FROM Caja c WHERE c.id in (:idCajas)")})
+    @NamedQuery(name = "Caja.deleteUsingIds", query = "DELETE FROM Caja c WHERE c.id in (:idCajas)"),
+    @NamedQuery(name = "Caja.findByProgramaAnoComponentesSubtitulo", query = "SELECT c FROM Caja c WHERE c.programa.idProgramaAno = :idProgramaAno and c.idComponente.id IN (:idComponentes) and c.idSubtitulo.idTipoSubtitulo = :idSubtitulo")})
 
 
 public class Caja implements Serializable {

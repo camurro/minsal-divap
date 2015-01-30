@@ -55,8 +55,9 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdServicioIdEstadoConvenio", query = "SELECT c FROM ConvenioComuna c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.servicioSalud.id = :idServicio and c.estadoConvenio.idEstadoConvenio = :idEstadoConvenio"),
 	@NamedQuery(name = "ConvenioComuna.countConvenioComunaByIdProgramaAnoIdEstadoConvenio", query = "SELECT COUNT(c) FROM ConvenioComuna c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.estadoConvenio.idEstadoConvenio = :idEstadoConvenio"),
 	@NamedQuery(name = "ConvenioComuna.findConvenioComunaByIdProgramaAnoIdEstadoConvenio", query = "SELECT c FROM ConvenioComuna c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.estadoConvenio.idEstadoConvenio = :idEstadoConvenio"),
-	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdComponenteIdSubtituloIdComunaIdEstadoConvenio", query = "SELECT c FROM ConvenioComuna c JOIN c.convenioComunaComponentes cc WHERE c.idPrograma.idProgramaAno = :idProgramaAno and cc.componente.id = :idComponente  and cc.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and c.idComuna.id = :idComuna and c.estadoConvenio.idEstadoConvenio = :idEstadoConvenio order by c.fecha desc")})
-
+	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdComponenteIdSubtituloIdComunaIdEstadoConvenio", query = "SELECT c FROM ConvenioComuna c JOIN c.convenioComunaComponentes cc WHERE c.idPrograma.idProgramaAno = :idProgramaAno and cc.componente.id = :idComponente  and cc.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and c.idComuna.id = :idComuna and c.estadoConvenio.idEstadoConvenio = :idEstadoConvenio order by c.fecha desc"),
+	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdComponenteIdSubtituloIdServicioIdEstadosConvenio", query = "SELECT c FROM ConvenioComuna c JOIN c.convenioComunaComponentes cc WHERE c.idPrograma.idProgramaAno = :idProgramaAno and cc.componente.id = :idComponente  and cc.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and c.idComuna.id = :idServicio and c.estadoConvenio.idEstadoConvenio IN (:idEstadosConvenio) order by c.fecha desc")})
+			
 public class ConvenioComuna implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id

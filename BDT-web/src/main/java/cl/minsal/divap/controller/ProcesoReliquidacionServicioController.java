@@ -117,7 +117,8 @@ Serializable {
 					componentes = programaService.getComponenteByProgramaSubtitulos(getPrograma().getId(),  subtitulosMunicipal);
 					this.componenteSeleccionado =  componentes.get(0).getId().toString();
 					this.programaComponentesCuotas = reliquidacionService.getProgramaComponenteCuotas(getPrograma().getIdProgramaAno(), Integer.parseInt(this.componenteSeleccionado));
-					this.reliquidacionServicio = reliquidacionService.getReliquidacionSummaryVO(getPrograma().getIdProgramaAno(), Integer.parseInt(this.componenteSeleccionado), null, getIdReliquidacion());
+					//Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idServicio, Integer idReliquidacion
+					//this.reliquidacionServicio = reliquidacionService.getReliquidacionSummaryVO(getPrograma().getIdProgramaAno(), Integer.parseInt(this.componenteSeleccionado), null, getIdReliquidacion());
 					this.reliquidacionMunicipal = reliquidacionService.getReliquidacionMunicipalSummaryVO(getPrograma().getIdProgramaAno(), Integer.parseInt(this.componenteSeleccionado), null, getIdReliquidacion());
 				}else{
 					mostrarMunicipal = false;
@@ -126,7 +127,7 @@ Serializable {
 					componentes = programaService.getComponenteByProgramaSubtitulos(getPrograma().getId(),  subtitulosServicios);
 					this.componenteSeleccionado =  componentes.get(0).getId().toString();
 					this.programaComponentesCuotas = reliquidacionService.getProgramaComponenteCuotas(getPrograma().getIdProgramaAno(), Integer.parseInt(this.componenteSeleccionado));
-					this.reliquidacionServicio = reliquidacionService.getReliquidacionSummaryVO(getPrograma().getIdProgramaAno(), Integer.parseInt(this.componenteSeleccionado), null, getIdReliquidacion());
+					//this.reliquidacionServicio = reliquidacionService.getReliquidacionSummaryVO(getPrograma().getIdProgramaAno(), Integer.parseInt(this.componenteSeleccionado), null, getIdReliquidacion());
 				}
 			}
 			System.out.println("this.docBaseMunicipal --> " + this.docBaseMunicipal);
@@ -162,13 +163,13 @@ Serializable {
 				Subtitulo[] subtitulos =  {Subtitulo.SUBTITULO21, Subtitulo.SUBTITULO22, Subtitulo.SUBTITULO29};
 				componentes = programaService.getComponenteByProgramaSubtitulos(getPrograma().getId(),  subtitulos);
 				this.componenteSeleccionado =  componentes.get(0).getId().toString();
-				this.reliquidacionServicio = reliquidacionService.getReliquidacionSummaryVO(getPrograma().getIdProgramaAno(), Integer.parseInt(this.componenteSeleccionado), null, getIdReliquidacion());
+				//this.reliquidacionServicio = reliquidacionService.getReliquidacionSummaryVO(getPrograma().getIdProgramaAno(), Integer.parseInt(this.componenteSeleccionado), null, getIdReliquidacion());
 			}
 		}else{
 			Subtitulo[] subtitulos =  {Subtitulo.SUBTITULO21, Subtitulo.SUBTITULO22, Subtitulo.SUBTITULO29};
 			componentes = programaService.getComponenteByProgramaSubtitulos(getPrograma().getId(),  subtitulos);
 			this.componenteSeleccionado =  componentes.get(0).getId().toString();
-			this.reliquidacionServicio = reliquidacionService.getReliquidacionSummaryVO(getPrograma().getIdProgramaAno(), Integer.parseInt(this.componenteSeleccionado), null, getIdReliquidacion());
+			//this.reliquidacionServicio = reliquidacionService.getReliquidacionSummaryVO(getPrograma().getIdProgramaAno(), Integer.parseInt(this.componenteSeleccionado), null, getIdReliquidacion());
 		}
 	}
 
@@ -197,11 +198,11 @@ Serializable {
 					this.reliquidacionMunicipal = reliquidacionService.getReliquidacionMunicipalSummaryVO(getPrograma().getIdProgramaAno(), idComponente, idServicio, getIdReliquidacion()); 
 				}else{
 					this.reliquidacionMunicipal = new ArrayList<ValorizarReliquidacionPageSummaryVO>(); 
-					this.reliquidacionServicio = reliquidacionService.getReliquidacionSummaryVO(getPrograma().getIdProgramaAno(), idComponente, idServicio, getIdReliquidacion());
+					//this.reliquidacionServicio = reliquidacionService.getReliquidacionSummaryVO(getPrograma().getIdProgramaAno(), idComponente, idServicio, getIdReliquidacion());
 				}
 			}else{
 				this.reliquidacionMunicipal = new ArrayList<ValorizarReliquidacionPageSummaryVO>(); 
-				this.reliquidacionServicio = reliquidacionService.getReliquidacionSummaryVO(getPrograma().getIdProgramaAno(), idComponente, idServicio, getIdReliquidacion()); 
+				//this.reliquidacionServicio = reliquidacionService.getReliquidacionSummaryVO(getPrograma().getIdProgramaAno(), idComponente, idServicio, getIdReliquidacion()); 
 			}
 		}
 		System.out.println("reliquidacionMunicipal.size() --> " +((this.reliquidacionMunicipal==null)?"0":this.reliquidacionMunicipal.size()));
@@ -323,7 +324,7 @@ Serializable {
 
 	public List<ValorizarReliquidacionPageSummaryVO> getReliquidacionServicio() {
 		if(reliquidacionServicio == null){
-			reliquidacionServicio = reliquidacionService.getReliquidacionSummaryVO(getPrograma().getIdProgramaAno(), Integer.parseInt(this.componenteSeleccionado), null, getIdReliquidacion());
+			//reliquidacionServicio = reliquidacionService.getReliquidacionSummaryVO(getPrograma().getIdProgramaAno(), Integer.parseInt(this.componenteSeleccionado), null, getIdReliquidacion());
 		}
 		return reliquidacionServicio;
 	}

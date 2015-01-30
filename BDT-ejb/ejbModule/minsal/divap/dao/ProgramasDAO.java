@@ -21,6 +21,7 @@ import cl.minsal.divap.model.ProgramaMunicipalCore;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
 import cl.minsal.divap.model.ProgramaServicioCore;
 import cl.minsal.divap.model.ProgramaServicioCoreComponente;
+import cl.minsal.divap.model.ProgramaSubtituloComponentePeso;
 
 
 
@@ -654,6 +655,28 @@ public class ProgramasDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public Long getMPEstablecimientosServicioProgramaAnoComponenteSubtitulo(Integer idServcio, Integer idProgramaAno, List<Integer> componentesSeleccionados, Integer idTipoSubtitulo) {
+		try {
+			TypedQuery<ProgramaServicioCoreComponente> query = this.em.createNamedQuery("ProgramaServicioCoreComponente.getMPEstablecimientosServicioProgramaAnoComponentesSubtitulo", ProgramaServicioCoreComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idServicio", idServcio);
+			query.setParameter("idComponentes", componentesSeleccionados);
+			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			List<ProgramaServicioCoreComponente> result = query.getResultList();
+			if(result.size() > 0){
+				Long mpFinal = 0L;
+				for(ProgramaServicioCoreComponente programaServicioCoreComponente : result){
+					mpFinal += programaServicioCoreComponente.getTarifa();
+				}
+				return mpFinal;
+			}else{
+				return 0l;
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	public Long getMPComunaProgramaAnoComponenteSubtitulo(Integer idComuna,
 			Integer idProgramaAno, Integer componenteSeleccionado,
@@ -669,6 +692,30 @@ public class ProgramasDAO {
 				return result.get(0).getTarifa().longValue();
 			}else{
 				return 0l;
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public Long getMPComunasServicioProgramaAnoComponenteSubtitulo(Integer idServicio,
+			Integer idProgramaAno, List<Integer> componentesSeleccionados,
+			Integer idTipoSubtitulo) {
+		try {
+			TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.getMPComunasServicioProgramaAnoComponentesSubtitulo", ProgramaMunicipalCoreComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idComponentes", componentesSeleccionados);
+			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			List<ProgramaMunicipalCoreComponente> result = query.getResultList();
+			if(result.size() > 0){
+				Long mpFinal = 0L;
+				for(ProgramaMunicipalCoreComponente programaMunicipalCoreComponente : result){
+					mpFinal += programaMunicipalCoreComponente.getTarifa();
+				}
+				return mpFinal;
+			}else{
+				return 0L;
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -800,6 +847,29 @@ public class ProgramasDAO {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+	}
+
+	public ProgramaSubtituloComponentePeso save(ProgramaSubtituloComponentePeso programaSubtituloComponentePeso) {
+		em.persist(programaSubtituloComponentePeso);
+		return programaSubtituloComponentePeso;
+	}
+	
+
+	public ProgramaSubtituloComponentePeso getProgramaSubtituloComponentePesoByProgramaServicioComponenteSubtitulo(Integer idProgramaAno, Integer idServicio, Integer idComponente, Integer idSubtitulo) {
+		try {
+			TypedQuery<ProgramaSubtituloComponentePeso> query = this.em.createNamedQuery("ProgramaSubtituloComponentePeso.findProgramaSubtituloComponentePesoByProgramaServicioComponenteSubtitulo", ProgramaSubtituloComponentePeso.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idSubtitulo", idSubtitulo);
+			List<ProgramaSubtituloComponentePeso> result = query.getResultList();
+			if(result.size() > 0){
+				return result.get(0);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return null;
 	}
 
 }

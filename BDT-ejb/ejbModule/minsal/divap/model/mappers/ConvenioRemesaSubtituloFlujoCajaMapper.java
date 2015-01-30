@@ -37,12 +37,12 @@ public class ConvenioRemesaSubtituloFlujoCajaMapper implements Mapper<Caja>{
 			subtituloFlujoCajaVO.setSubtitulo(caja.getIdSubtitulo().getNombreSubtitulo());
 		}
 		TransferenciaSummaryVO transferenciaAcumulada = new TransferenciaSummaryVO();
-		transferenciaAcumulada.setPorcentaje(0);
+		transferenciaAcumulada.setPorcentaje(0.0);
 		transferenciaAcumulada.setMonto(0L);
 		subtituloFlujoCajaVO.setTransferenciaAcumulada(transferenciaAcumulada);
 		ConveniosSummaryVO convenioRecibido = new ConveniosSummaryVO();
 		convenioRecibido.setMonto(0);
-		convenioRecibido.setPorcentaje(0);
+		convenioRecibido.setPorcentaje(0.0);
 		subtituloFlujoCajaVO.setConvenioRecibido(convenioRecibido);
 		List<CajaMontoSummaryVO> cajasMontosSummaryVO = new ArrayList<CajaMontoSummaryVO>();
 		if(caja.getCajaMontos() != null && caja.getCajaMontos().size() > 0){

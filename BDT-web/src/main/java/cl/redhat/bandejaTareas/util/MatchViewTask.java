@@ -77,8 +77,11 @@ public class MatchViewTask {
 		PRUEBA2("minsal_divap.prueba.segundatarea","divapPrueba"),
 		ESTIMACIONFLUJOCAJASELECCIONARLINEAPROGRAMATICA("minsal_divap.EstimacionFlujoCaja.seleccionarlineaprogramatica","divapProcesoProgProgramas"),
 		ESTIMACIONFLUJOCAJAREVISARVALIDARMONITOREO("minsal_divap.EstimacionFlujoCaja.revisaryvalidarmonitoreo","divapProcesoProgMonitoreo"),
-		ESTIMACIONFLUJOCAJAREVISARCONSOLIDACION("minsal_divap.EstimacionFlujoConsolidador.revisarconsolidaciondeestimaciondeflujodecaja","divapProcesoProgConsolidado"),
-		ESTIMACIONFLUJOCAJAHACERSEGUIMIENTO("minsal_divap.EstimacionFlujoConsolidador.hacerseguimientoordinario","divapProcesoProgSeguimiento"),
+		ESTIMACIONFLUJOCAJAREVISARCONSOLIDACION("minsal_divap.EstimacionFlujoConsolidador.revisarconsolidaciondeestimaciondeflujocaja","divapProcesoProgConsolidado"),
+		ESTIMACIONFLUJOCAJACONSOLIDACIONHACERSEGUIMIENTO("minsal_divap.EstimacionFlujoConsolidador.hacerseguimientoordinario","divapProcesoFlujoCajaSeguimiento"),
+		ESTIMACIONFLUJOCAJACONSOLIDACIONREVISARENVIODOCUMENTOS("minsal_divap.EstimacionFlujoConsolidador.verificarenviocorreo","divapProcesoFlujoCajaEnviarDocumentos"),
+		
+		
 		
 		
 		//Mapeo páginas de  Gestión de Información de Programas y Leyes para Transferencis(Convenios)

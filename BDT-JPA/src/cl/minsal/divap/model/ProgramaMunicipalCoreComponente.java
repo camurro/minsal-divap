@@ -36,7 +36,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ProgramaMunicipalCoreComponente.getMPComunaProgramaAnoComponenteSubtitulo", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.programaMunicipalCore.comuna.id = :idComuna and p.programaMunicipalCore.programaAnoMunicipal.idProgramaAno = :idProgramaAno and p.municipalCoreComponente.id = :idComponente and p.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
     @NamedQuery(name = "ProgramaMunicipalCoreComponente.findByIdComuna", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.programaMunicipalCore.comuna.id = :idComuna"),
     @NamedQuery(name = "ProgramaMunicipalCoreComponente.findByIdComunaIdProgramaAno", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.programaMunicipalCore.comuna.id = :idComuna and p.programaMunicipalCore.programaAnoMunicipal.idProgramaAno = :idProgramaAno"),
-    @NamedQuery(name = "ProgramaMunicipalCoreComponente.findByIdComunaAno", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.programaMunicipalCore.comuna.id = :idComuna and p.programaMunicipalCore.programaAnoMunicipal.ano.ano = :ano")})
+    @NamedQuery(name = "ProgramaMunicipalCoreComponente.findByIdComunaAno", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.programaMunicipalCore.comuna.id = :idComuna and p.programaMunicipalCore.programaAnoMunicipal.ano.ano = :ano"),
+    @NamedQuery(name = "ProgramaMunicipalCoreComponente.getMPComunasServicioProgramaAnoComponentesSubtitulo", query = "SELECT p FROM ProgramaMunicipalCoreComponente p WHERE p.programaMunicipalCore.comuna.servicioSalud.id = :idServicio and p.programaMunicipalCore.programaAnoMunicipal.idProgramaAno = :idProgramaAno and p.municipalCoreComponente.id IN (:idComponentes) and p.subtitulo.idTipoSubtitulo = :idTipoSubtitulo")})
 public class ProgramaMunicipalCoreComponente implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId

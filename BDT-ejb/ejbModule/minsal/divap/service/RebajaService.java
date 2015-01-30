@@ -612,6 +612,7 @@ public class RebajaService {
 			throw new RuntimeException("No se puede crear Resolución Rebaja Aporte Estatal, la plantilla no esta cargada");
 		}
 		try {
+			administrarVersionesFinalesAlfresco(idProcesoRebaja);
 			List<AntecendentesComunaCalculado> antecedentesComunaCalculadoRebaja = antecedentesComunaDAO.getAntecendentesComunaCalculadoVigenteByRebaja(idProcesoRebaja);
 			ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryResolucionRebajaVO = documentService.getDocumentByPlantillaId(plantillaIdResolucionRebaja);
 			System.out.println("\n\n\n\n\n\n antes de documentoResolucionRebajaVO ---> referenciaDocumentoSummaryResolucionRebajaVO ---> "+referenciaDocumentoSummaryResolucionRebajaVO);
@@ -690,8 +691,8 @@ public class RebajaService {
 	}
 
 	public void administrarVersionesFinalesAlfresco(Integer idProceso) {
-		System.out.println("Incio RebajaService.administrarVersionesFinalesAlfresco = "+idProceso);
-		System.out.println("DistribucionInicialPercapitaService administrarVersionesFinalesAlfresco eliminar todas las versiones que no sean finales");
+		System.out.println("Inicio RebajaService.administrarVersionesFinalesAlfresco = "+idProceso);
+		System.out.println("RebajaService administrarVersionesFinalesAlfresco eliminar todas las versiones que no sean finales");
 		List<DocumentoRebaja> documentosResoluciones = rebajaDAO.getByIdRebajaTipoNotFinal(idProceso, TipoDocumentosProcesos.RESOLUCIONREBAJA);
 		if(documentosResoluciones != null && documentosResoluciones.size() > 0){
 			for(DocumentoRebaja documentoRebaja : documentosResoluciones){

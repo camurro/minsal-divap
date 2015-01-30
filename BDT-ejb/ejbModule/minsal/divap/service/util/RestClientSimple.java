@@ -90,8 +90,8 @@ public class RestClientSimple {
 	private String getDataFromService(String urlpath, String method,
 			String data, boolean b) throws Exception  {
 		HttpParams params = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(params, 540000);
-		HttpConnectionParams.setSoTimeout(params, 540000);
+		HttpConnectionParams.setConnectionTimeout(params, 980000);
+		HttpConnectionParams.setSoTimeout(params, 980000);
 		HttpClient client = new DefaultHttpClient(params);
 
 		((DefaultHttpClient)client).getCredentialsProvider().setCredentials(
@@ -210,6 +210,31 @@ public class RestClientSimple {
 			if(taskSummary != null && taskSummary.size() > 0){
 				task = taskSummary.get(0);
 			}
+			if(task == null){
+				data = RestJBPM.getTasksByStatusByProcessInstanceId(deploymentId, actorId, processInstanceId, "InProgress");
+				System.out.println("Buscando tareas estadoi InProgress Request data-->"+data);
+				dataFromService = client.getDataFromService(taskUrl, "POST", data, false);
+				System.out.println("--------");
+				System.out.println("Response data-->"+dataFromService);
+				System.out.println("--------");
+				commandResponse = createResponse(minsal.divap.service.task.response.taskpotencialOwner.CommandResponse.class, dataFromService);
+				taskSummary =  commandResponse.getTaskSummaryList().getTaskSummary();
+				if(taskSummary != null && taskSummary.size() > 0){
+					task = taskSummary.get(0);
+				}
+			}
+		}else{
+			data = RestJBPM.getTasksByStatusByProcessInstanceId(deploymentId, actorId, processInstanceId, "InProgress");
+			System.out.println("Buscando tareas estado InProgress Request data-->"+data);
+			dataFromService = client.getDataFromService(taskUrl, "POST", data, false);
+			System.out.println("--------");
+			System.out.println("Response data-->"+dataFromService);
+			System.out.println("--------");
+			commandResponse = createResponse(minsal.divap.service.task.response.taskpotencialOwner.CommandResponse.class, dataFromService);
+			List<minsal.divap.service.task.response.taskpotencialOwner.CommandResponse.TaskSummaryList.TaskSummary> taskSummary =  commandResponse.getTaskSummaryList().getTaskSummary();
+			if(taskSummary != null && taskSummary.size() > 0){
+				task = taskSummary.get(0);
+			}
 		}
 		return task;
 	}
@@ -245,6 +270,28 @@ public class RestClientSimple {
 						 break;
 					 }
 				 }
+			}
+		}
+		
+		if(task == null){
+			System.out.println("BUscanod por InProgress");
+			data = RestJBPM.getTasksByStatusByProcessInstanceId(deploymentId, actorId, processInstanceId, "InProgress");
+			System.out.println("Request data-->"+data);
+			dataFromService = client.getDataFromService(taskUrl, "POST", data, false);
+			System.out.println("--------");
+			System.out.println("Response data-->"+dataFromService);
+			System.out.println("--------");
+			commandResponse = createResponse(minsal.divap.service.task.response.taskpotencialOwner.CommandResponse.class, dataFromService);
+			if(commandResponse.getTaskSummaryList() != null){
+				List<minsal.divap.service.task.response.taskpotencialOwner.CommandResponse.TaskSummaryList.TaskSummary> taskSummary =  commandResponse.getTaskSummaryList().getTaskSummary();
+				if(taskSummary != null && taskSummary.size() > 0){
+					 for(minsal.divap.service.task.response.taskpotencialOwner.CommandResponse.TaskSummaryList.TaskSummary taskSelected : taskSummary){
+						 if(taskId == taskSelected.getId()){
+							 task = taskSelected;
+							 break;
+						 }
+					 }
+				}
 			}
 		}
 		return task;
