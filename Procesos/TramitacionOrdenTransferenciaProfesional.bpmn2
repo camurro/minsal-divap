@@ -105,7 +105,7 @@
       <bpmn2:dataInputAssociation id="_83IBFoYJEeSpxMdz9mkeFA">
         <bpmn2:targetRef>_AEEFC57B-A15B-4236-AFB7-8EAAA7847A12_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_83IBF4YJEeSpxMdz9mkeFA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_83IBGIYJEeSpxMdz9mkeFA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/ordenesDeTransferencia/cambiarEstadoPrograma/#{programaSeleccionado}/2]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_83IBGIYJEeSpxMdz9mkeFA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/ordenesDeTransferencia/cambiarEstadoPrograma/#{programaSeleccionado}/2]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_83IBGYYJEeSpxMdz9mkeFA">_AEEFC57B-A15B-4236-AFB7-8EAAA7847A12_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -167,7 +167,7 @@
       <bpmn2:dataInputAssociation id="_83IoGoYJEeSpxMdz9mkeFA">
         <bpmn2:targetRef>_FEB34C82-EC09-4CF3-BAAB-3741A4C8C621_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_83IoG4YJEeSpxMdz9mkeFA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_83IoHIYJEeSpxMdz9mkeFA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/ordenesDeTransferencia/cambiarEstadoPrograma/#{programaSeleccionado}/3]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_83IoHIYJEeSpxMdz9mkeFA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/ordenesDeTransferencia/cambiarEstadoPrograma/#{programaSeleccionado}/3]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_83IoHYYJEeSpxMdz9mkeFA">_FEB34C82-EC09-4CF3-BAAB-3741A4C8C621_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>

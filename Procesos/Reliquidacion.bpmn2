@@ -253,7 +253,7 @@
       <bpmn2:dataInputAssociation id="_QygBypfOEeS6t5ykcxfe2Q">
         <bpmn2:targetRef>_D1267BFD-FC79-4394-A3E0-5A64AA0D09F8_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_QygBy5fOEeS6t5ykcxfe2Q">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_QygBzJfOEeS6t5ykcxfe2Q"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/reliquidacion/calcularReliquidacion/#{idProgramaAno}/#{idReliquidacion}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_QygBzJfOEeS6t5ykcxfe2Q"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/reliquidacion/calcularReliquidacion/#{idProgramaAno}/#{idReliquidacion}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_QygBzZfOEeS6t5ykcxfe2Q">_D1267BFD-FC79-4394-A3E0-5A64AA0D09F8_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -325,7 +325,7 @@
       <bpmn2:dataInputAssociation id="_QygozJfOEeS6t5ykcxfe2Q">
         <bpmn2:targetRef>_2DFD5634-5666-45AA-9BBC-0ED4B33F999E_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_QygozZfOEeS6t5ykcxfe2Q">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_QygozpfOEeS6t5ykcxfe2Q"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/reliquidacion/elaborarPlantillasBaseReliquidacion/#{idProgramaAno}/#{idReliquidacion}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_QygozpfOEeS6t5ykcxfe2Q"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/reliquidacion/elaborarPlantillasBaseReliquidacion/#{idProgramaAno}/#{idReliquidacion}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_Qygoz5fOEeS6t5ykcxfe2Q">_2DFD5634-5666-45AA-9BBC-0ED4B33F999E_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -413,7 +413,7 @@
       <bpmn2:dataInputAssociation id="_QyjsHpfOEeS6t5ykcxfe2Q">
         <bpmn2:targetRef>_16D76B1A-65B3-4C7C-90A0-DBCD04898D08_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_QyjsH5fOEeS6t5ykcxfe2Q">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_QyjsIJfOEeS6t5ykcxfe2Q"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/reliquidacion/crearInstanciaReliquidacion/#{usuario}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_QyjsIJfOEeS6t5ykcxfe2Q"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/reliquidacion/crearInstanciaReliquidacion/#{usuario}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_QyjsIZfOEeS6t5ykcxfe2Q">_16D76B1A-65B3-4C7C-90A0-DBCD04898D08_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -459,7 +459,7 @@
       <bpmn2:dataInputAssociation id="_QykTJ5fOEeS6t5ykcxfe2Q">
         <bpmn2:targetRef>_794113BB-BDDF-482E-B3E1-8798B336198B_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_QykTKJfOEeS6t5ykcxfe2Q">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_QykTKZfOEeS6t5ykcxfe2Q"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/reliquidacion/cambiarEstadoPrograma/#{idProgramaAno}/2]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_QykTKZfOEeS6t5ykcxfe2Q"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/reliquidacion/cambiarEstadoPrograma/#{idProgramaAno}/2]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_QykTKpfOEeS6t5ykcxfe2Q">_794113BB-BDDF-482E-B3E1-8798B336198B_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -521,7 +521,7 @@
       <bpmn2:dataInputAssociation id="_Qyk6NZfOEeS6t5ykcxfe2Q">
         <bpmn2:targetRef>_A04B3CFD-7BDD-42AB-B0E7-6762307A2396_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_Qyk6NpfOEeS6t5ykcxfe2Q">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_Qyk6N5fOEeS6t5ykcxfe2Q"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/reliquidacion/cambiarEstadoPrograma/#{idProgramaAno}/3]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_Qyk6N5fOEeS6t5ykcxfe2Q"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/reliquidacion/cambiarEstadoPrograma/#{idProgramaAno}/3]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_Qyk6OJfOEeS6t5ykcxfe2Q">_A04B3CFD-7BDD-42AB-B0E7-6762307A2396_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>

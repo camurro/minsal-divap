@@ -351,7 +351,7 @@
       <bpmn2:dataInputAssociation id="_zom35TUIEeSsq5Mr3iN2UA">
         <bpmn2:targetRef>_9C7D167A-0479-47B2-9D6D-83427322B35E_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_zom35jUIEeSsq5Mr3iN2UA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_zom35zUIEeSsq5Mr3iN2UA"><![CDATA[http://localhost:8080/BDT-Rest/rest/notificacion/percapita/error/excel/robson.watt@gmail.com/#{correoSubject}/#{correoBody}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_zom35zUIEeSsq5Mr3iN2UA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/notificacion/percapita/error/excel/robson.watt@gmail.com/#{correoSubject}/#{correoBody}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_zom36DUIEeSsq5Mr3iN2UA">_9C7D167A-0479-47B2-9D6D-83427322B35E_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -431,7 +431,7 @@
       <bpmn2:dataInputAssociation id="_zone8zUIEeSsq5Mr3iN2UA">
         <bpmn2:targetRef>_1F146457-1732-4BC0-9381-D09AD8A0BCB7_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_zone9DUIEeSsq5Mr3iN2UA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_zone9TUIEeSsq5Mr3iN2UA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/rebaja/calcularRebaja/#{mes}/#{idProcesoRebaja}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_zone9TUIEeSsq5Mr3iN2UA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/rebaja/calcularRebaja/#{mes}/#{idProcesoRebaja}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_zone9jUIEeSsq5Mr3iN2UA">_1F146457-1732-4BC0-9381-D09AD8A0BCB7_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -507,7 +507,7 @@
       <bpmn2:dataInputAssociation id="_zonfCzUIEeSsq5Mr3iN2UA">
         <bpmn2:targetRef>_9B086D27-98B0-470E-B5C9-54BEB6CF3B99_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_zooGADUIEeSsq5Mr3iN2UA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_zooGATUIEeSsq5Mr3iN2UA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/rebaja/elaborarResolucionRebaja/#{idProcesoRebaja}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_zooGATUIEeSsq5Mr3iN2UA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/rebaja/elaborarResolucionRebaja/#{idProcesoRebaja}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_zooGAjUIEeSsq5Mr3iN2UA">_9B086D27-98B0-470E-B5C9-54BEB6CF3B99_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -569,7 +569,7 @@
       <bpmn2:dataInputAssociation id="_zooGFjUIEeSsq5Mr3iN2UA">
         <bpmn2:targetRef>_38D9114E-77A9-49D2-BCB0-66A86353B619_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_zooGFzUIEeSsq5Mr3iN2UA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_zooGGDUIEeSsq5Mr3iN2UA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/rebaja/administrarVersionesFinalesAlfresco/#{idProcesoRebaja}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_zooGGDUIEeSsq5Mr3iN2UA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/rebaja/administrarVersionesFinalesAlfresco/#{idProcesoRebaja}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_zooGGTUIEeSsq5Mr3iN2UA">_38D9114E-77A9-49D2-BCB0-66A86353B619_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -630,7 +630,7 @@
       <bpmn2:dataInputAssociation id="_zootGzUIEeSsq5Mr3iN2UA">
         <bpmn2:targetRef>_E888D2B3-34E9-47D6-8504-61E94095779A_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_zootHDUIEeSsq5Mr3iN2UA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_zootHTUIEeSsq5Mr3iN2UA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/rebaja/enviarResolucionesServicioSalud/#{idProcesoRebaja}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_zootHTUIEeSsq5Mr3iN2UA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/rebaja/enviarResolucionesServicioSalud/#{idProcesoRebaja}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_zootHjUIEeSsq5Mr3iN2UA">_E888D2B3-34E9-47D6-8504-61E94095779A_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -717,7 +717,7 @@ kcontext.setVariable("mes",mesActual);]]></bpmn2:script>
       <bpmn2:dataInputAssociation id="_zotloTUIEeSsq5Mr3iN2UA">
         <bpmn2:targetRef>_63C54F2A-8BD4-4DAB-98B1-C4311DF6D1A1_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_zotlojUIEeSsq5Mr3iN2UA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_zotlozUIEeSsq5Mr3iN2UA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/rebaja/instanciarProcesoRebaja/#{usuario}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_zotlozUIEeSsq5Mr3iN2UA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/rebaja/instanciarProcesoRebaja/#{usuario}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_zotlpDUIEeSsq5Mr3iN2UA">_63C54F2A-8BD4-4DAB-98B1-C4311DF6D1A1_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
