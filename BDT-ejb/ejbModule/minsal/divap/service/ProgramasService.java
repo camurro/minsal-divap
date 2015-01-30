@@ -118,8 +118,8 @@ public class ProgramasService {
 		return Integer.valueOf(formatNowYear.format(nowDate)); 
 	}
 	
-	public List<ComponentesVO> getComponenteByPrograma(int programaId) {
-		List<Programa> programa = this.programasDAO.getComponenteByPrograma(programaId);
+	public List<ComponentesVO> getComponenteByPrograma(int idPrograma) {
+		List<Programa> programa = this.programasDAO.getComponenteByPrograma(idPrograma);
 		List<ComponentesVO> componentesPrograma = new ArrayList<ComponentesVO>();
 		for (Programa prog : programa){
 			for (Componente componente : prog.getComponentes()) {
@@ -567,6 +567,20 @@ public class ProgramasService {
 		return programas;
 	}
 	
+	
+	public List<ProgramaVO> getProgramasByAnoSubtitulo(Integer anoCurso, Subtitulo subtitulo) {
+		List<ProgramaVO> programas = new ArrayList<ProgramaVO>();
+		List<ProgramaAno> programasAno = programasDAO.getProgramasBySubtitulo(anoCurso, subtitulo);
+		if(programasAno != null && programasAno.size() > 0){
+			for(ProgramaAno programaAno : programasAno){
+				ProgramaVO programaVO = new ProgramaMapper().getBasic(programaAno);
+				if(!programas.contains(programaVO)){
+					programas.add(programaVO);
+				}
+			}
+		}
+		return programas;
+	}
 	
 	public Integer evaluarAnoSiguiente(Integer programaSeleccionado, ProgramaVO programa) {
 		ProgramaAno programaAnoActual = programasDAO.getProgramaAnoByID(programaSeleccionado);
