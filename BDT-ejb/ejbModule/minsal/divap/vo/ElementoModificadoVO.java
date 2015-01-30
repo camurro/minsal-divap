@@ -11,15 +11,18 @@ public class ElementoModificadoVO implements Serializable{
 	
 	private Integer posicionElemento;
 	private Integer mesModificado;
+	private Boolean modificado;
 	
 	public ElementoModificadoVO() {
 		super();
+		this.modificado = false;
 	}
 	
 	public ElementoModificadoVO(Integer posicionElemento, Integer mesModificado) {
 		super();
 		this.posicionElemento = posicionElemento;
 		this.mesModificado = mesModificado;
+		this.modificado = false;
 	}
 
 	public Integer getPosicionElemento() {
@@ -36,6 +39,14 @@ public class ElementoModificadoVO implements Serializable{
 	
 	public void setMesModificado(Integer mesModificado) {
 		this.mesModificado = mesModificado;
+	}
+
+	public Boolean getModificado() {
+		return modificado;
+	}
+
+	public void setModificado(Boolean modificado) {
+		this.modificado = modificado;
 	}
 
 	@Override

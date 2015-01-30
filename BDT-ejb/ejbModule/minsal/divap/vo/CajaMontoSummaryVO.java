@@ -11,6 +11,7 @@ public class CajaMontoSummaryVO implements Serializable{
 	private Integer idMes;
 	private String nombreMes;
 	private Long montoMes;
+	private Long montoMesOriginal;
 	
 	public CajaMontoSummaryVO() {
 		super();
@@ -51,6 +52,14 @@ public class CajaMontoSummaryVO implements Serializable{
 
 	public void setMontoMes(Long montoMes) {
 		this.montoMes = montoMes;
+	}
+	
+	public Long getMontoMesOriginal() {
+		return montoMesOriginal;
+	}
+
+	public void setMontoMesOriginal(Long montoMesOriginal) {
+		this.montoMesOriginal = montoMesOriginal;
 	}
 
 	@Override

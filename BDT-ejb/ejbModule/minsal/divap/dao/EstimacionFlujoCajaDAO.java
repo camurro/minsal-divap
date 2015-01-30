@@ -1,5 +1,7 @@
 package minsal.divap.dao;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -11,13 +13,20 @@ import javax.persistence.TypedQuery;
 
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TipoDocumentosProcesos;
+import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.Caja;
 import cl.minsal.divap.model.Cuota;
+import cl.minsal.divap.model.DocumentoEstimacionFlujoCajaConsolidador;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
+import cl.minsal.divap.model.EstimacionFlujoCajaConsolidadorSeguimiento;
 import cl.minsal.divap.model.EstimacionFlujoCajaSeguimiento;
+import cl.minsal.divap.model.FlujoCajaConsolidador;
+import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ReporteEmailsFlujoCajaConsolidador;
 import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.TipoDocumento;
+import cl.minsal.divap.model.Usuario;
 
 @Singleton
 public class EstimacionFlujoCajaDAO {
@@ -66,6 +75,20 @@ public class EstimacionFlujoCajaDAO {
 		estimacionFlujoCajaSeguimiento.setSeguimiento(seguimiento);
 		this.em.persist(estimacionFlujoCajaSeguimiento);
 		return estimacionFlujoCajaSeguimiento.getId();
+	}
+
+
+	public Integer createSeguimientoConsolidador(Integer idProceso, Seguimiento seguimiento) {
+		FlujoCajaConsolidador flujoCajaConsolidador = findFlujoCajaConsolidadorById(idProceso);
+		EstimacionFlujoCajaConsolidadorSeguimiento estimacionFlujoCajaSeguimiento = new EstimacionFlujoCajaConsolidadorSeguimiento();
+		estimacionFlujoCajaSeguimiento.setFlujoCajaConsolidador(flujoCajaConsolidador);
+		estimacionFlujoCajaSeguimiento.setSeguimiento(seguimiento);
+		this.em.persist(estimacionFlujoCajaSeguimiento);
+		return estimacionFlujoCajaSeguimiento.getId();
+	}
+
+	public FlujoCajaConsolidador findFlujoCajaConsolidadorById(Integer idProceso) {
+		return em.find(FlujoCajaConsolidador.class, idProceso);
 	}
 
 	public List<Caja> getFlujoCajaServicios(Integer idProgramaAno, Subtitulo subtitulo) {
@@ -119,6 +142,38 @@ public class EstimacionFlujoCajaDAO {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}	
+	}
+
+	public Integer crearIntanciaConsolidador(Usuario usuario, Mes mes, AnoEnCurso anoEnCurso) {
+		try {
+			long current = Calendar.getInstance().getTimeInMillis();
+			FlujoCajaConsolidador dto = new FlujoCajaConsolidador();
+			dto.setUsuario(usuario);
+			dto.setAno(anoEnCurso);
+			dto.setMes(mes);
+			dto.setFechaCreacion(new Date(current));
+			this.em.persist(dto);
+			return dto.getIdFlujoCajaConsolidador();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public DocumentoEstimacionFlujoCajaConsolidador save(DocumentoEstimacionFlujoCajaConsolidador documentoEstimacionFlujoCajaConsolidador) {
+		em.persist(documentoEstimacionFlujoCajaConsolidador);
+		return documentoEstimacionFlujoCajaConsolidador;
+	}
+
+	public List<ReporteEmailsFlujoCajaConsolidador> getReporteCorreosByFlujoCajaConsolidador(Integer idProceso) {
+		try{
+			TypedQuery<ReporteEmailsFlujoCajaConsolidador> query = this.em.createNamedQuery("ReporteEmailsFlujoCajaConsolidador.findByIdFlujoCajaConsolidador", ReporteEmailsFlujoCajaConsolidador.class);
+			query.setParameter("idFlujoCajaConsolidador", idProceso);
+			return query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

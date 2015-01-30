@@ -29,6 +29,7 @@ import cl.minsal.divap.model.ReporteEmailsAdjuntos;
 import cl.minsal.divap.model.ReporteEmailsConvenio;
 import cl.minsal.divap.model.ReporteEmailsDestinatarios;
 import cl.minsal.divap.model.ReporteEmailsEnviados;
+import cl.minsal.divap.model.ReporteEmailsFlujoCajaConsolidador;
 import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.Usuario;
 
@@ -799,6 +800,44 @@ public class ConveniosDAO {
 			query.setParameter("idTipoSubtitulo", idSubtitulo);
 			query.setParameter("idComuna", idComuna);
 			query.setParameter("idEstadoConvenio", idEstadoConvenio);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public List<ConvenioServicio> getConveniosServicioByProgramaAnoComponenteSubtituloServicioEstadosConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, 
+			Integer idServicio, Integer ... idEstadosConvenio) {
+		try {
+			List<Integer> estadosConvenios = new ArrayList<Integer>();
+			for(Integer estado : idEstadosConvenio){
+				estadosConvenios.add(estado);
+			}
+			TypedQuery<ConvenioServicio> query = this.em.createNamedQuery("ConvenioServicio.findByIdProgramaAnoIdComponenteIdSubtituloIdServicioIdEstadosConvenio", ConvenioServicio.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idTipoSubtitulo", idSubtitulo);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idEstadosConvenio", estadosConvenios);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<ConvenioComuna> getConveniosComunaByProgramaAnoComponenteSubtituloServicioEstadosConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo,
+			Integer idServicio, Integer ... idEstadosConvenio) {
+		try {
+			List<Integer> estadosConvenios = new ArrayList<Integer>();
+			for(Integer estado : idEstadosConvenio){
+				estadosConvenios.add(estado);
+			}
+			TypedQuery<ConvenioComuna> query = this.em.createNamedQuery("ConvenioComuna.findByIdProgramaAnoIdComponenteIdSubtituloIdServicioIdEstadosConvenio", ConvenioComuna.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponente", idComponente);
+			query.setParameter("idTipoSubtitulo", idSubtitulo);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idEstadosConvenio", estadosConvenios);
 			return query.getResultList(); 
 		} catch (Exception e) {
 			throw new RuntimeException(e);

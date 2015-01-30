@@ -37,7 +37,7 @@
 				</p:panel>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true" ajax="false"
 					icon="ui-icon-seek-first" />
-				<p:commandButton id="botonContinuar" value="Continuar" ajax="false" action="#{procesoRebajaController.enviar}"
+				<p:commandButton id="botonContinuar" value="Continuar" action="#{procesoRebajaController.enviar}"
 						disabled="#{not procesoRebajaController.archivosValidos}">
 						<f:setPropertyActionListener target="#{procesoRebajaController.target}"
 							value="bandejaTareas.jsf" />

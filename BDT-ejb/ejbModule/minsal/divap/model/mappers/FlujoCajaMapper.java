@@ -1,8 +1,5 @@
 package minsal.divap.model.mappers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import minsal.divap.vo.CajaMesVO;
 import minsal.divap.vo.FlujoCajaVO;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -11,7 +8,7 @@ import cl.minsal.divap.model.CajaMonto;
 
 public class FlujoCajaMapper implements Mapper<Caja>{
 
-	
+
 	@Override
 	public Object getSummary(Caja caja) {
 		throw new NotImplementedException();
@@ -23,28 +20,63 @@ public class FlujoCajaMapper implements Mapper<Caja>{
 			return null;
 		}
 		FlujoCajaVO flujoCajaVO = new FlujoCajaVO();
-		if(caja.getMarcoPresupuestario() != null && caja.getMarcoPresupuestario().getServicioSalud() != null){
-			flujoCajaVO.setServicio(caja.getMarcoPresupuestario().getServicioSalud().getNombre());
+		if(caja.getServicio() != null){
+			flujoCajaVO.setServicio(caja.getServicio().getNombre());
 		}
-		 
-		flujoCajaVO.setMontoSubtitulo(caja.getMonto());
+
+		Integer totalSubittulo = 0;
+		int mes = 1;
 		if(caja.getCajaMontos() != null && caja.getCajaMontos().size() > 0){
-			List<CajaMesVO> cajaMeses = new ArrayList<CajaMesVO>();
 			for(CajaMonto cajaMonto : caja.getCajaMontos()){
 				CajaMesVO cajaMes = new CajaMesVO();
 				if(cajaMonto.getMes() != null){
 					cajaMes.setMes(cajaMonto.getMes().getNombre());
 				}
-				if(cajaMonto.getMonto() != null){
-					cajaMes.setMonto(new Long(cajaMonto.getMonto().getMonto()));
-				}else{
-					cajaMes.setMonto(new Long(0));
+				cajaMes.setMonto(new Long(cajaMonto.getMonto()));
+				switch (mes) {
+				case 1:
+					flujoCajaVO.setCajaMesEneroSubtitulo(cajaMes);
+					break;
+				case 2:
+					flujoCajaVO.setCajaMesFebreroSubtitulo(cajaMes);
+					break;
+				case 3:
+					flujoCajaVO.setCajaMesMarzoSubtitulo(cajaMes);
+					break;
+				case 4:
+					flujoCajaVO.setCajaMesAbrilSubtitulo(cajaMes);
+					break;
+				case 5:
+					flujoCajaVO.setCajaMesMayoSubtitulo(cajaMes);
+					break;
+				case 6:
+					flujoCajaVO.setCajaMesJunioSubtitulo(cajaMes);
+					break;
+				case 7:
+					flujoCajaVO.setCajaMesJulioSubtitulo(cajaMes);
+					break;
+				case 8:
+					flujoCajaVO.setCajaMesAgostoSubtitulo(cajaMes);
+					break;
+				case 9:
+					flujoCajaVO.setCajaMesSeptiembreSubtitulo(cajaMes);
+					break;
+				case 10:
+					flujoCajaVO.setCajaMesOctubreSubtitulo(cajaMes);
+					break;
+				case 11:
+					flujoCajaVO.setCajaMesNoviembreSubtitulo(cajaMes);
+					break;
+				case 12:
+					flujoCajaVO.setCajaMesDiciembreSubtitulo(cajaMes);
+					break;
+				default:
+					break;
 				}
-				cajaMeses.add(cajaMes);
+				mes++;
 			}
-			flujoCajaVO.setSubtitulo(cajaMeses);
 		}
-		
+		flujoCajaVO.setMontoSubtitulo(totalSubittulo);
 		return flujoCajaVO;
 	}
 

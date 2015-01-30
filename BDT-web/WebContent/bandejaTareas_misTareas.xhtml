@@ -12,6 +12,25 @@
 		  
    }
 
+ 	var recupera = true;
+
+
+	    function recuperaListaTareas(){
+	 	    if(recupera){
+	    		document.getElementById('responderOirs:buscarHidden').click();
+	 	    }
+	 	}
+
+	 	function cambiarEstado(){
+	 		recupera = false;
+	 	}
+
+ 	$(document).ready(function () {
+ 		
+ 	    setInterval("recuperaListaTareas();", 15000);
+
+ 	});
+
 </script>
 
 	<h:panelGrid styleClass="ui-widget">
@@ -48,11 +67,12 @@
 					</p:selectOneMenu>
 				</h:panelGrid>
 
-				<h:panelGrid columns="2">
+				<h:panelGrid columns="3">
 					<p:commandButton value="Limpiar" styleClass=" x-btn-text icon-guardar" onclick="BUI.show()" oncomplete="BUI.hide()"
 						action="#{bandejaTareasController.limpiarMisTareas()}" update="busqueda_mis_tareas tabla" />
 					<p:commandButton value="Buscar" styleClass=" x-btn-text icon-guardar" onclick="BUI.show()" oncomplete="BUI.hide()"
 						action="#{bandejaTareasController.buscarMisTareas}" update="tabla" />
+					<p:commandButton value="BuscarHidden" id="buscarHidden" style="display:none" ajax="false"  action="#{bandejaTareasController.buscarMisTareas}" update="tabla" />
 				</h:panelGrid>
 
 			</h:panelGrid>
@@ -111,7 +131,7 @@
 					<f:facet name="header">
 						<h:outputText styleClass="textoAjustado" value="Actividad" />
 					</f:facet>
-					<h:commandLink action="#{bandejaTareasController.comenzar}" value="#{_tarea.name}" onclick="statusDialog.show();"  >
+					<h:commandLink action="#{bandejaTareasController.comenzar}" value="#{_tarea.name}" onclick="cambiarEstado();statusDialog.show();"  >
 					    <f:setPropertyActionListener target="#{bandejaTareasController.tareaSeleccionada.id}"
 							value="#{_tarea.id}" />
 						<f:setPropertyActionListener

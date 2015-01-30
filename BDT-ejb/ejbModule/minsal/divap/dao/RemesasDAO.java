@@ -343,7 +343,7 @@ public class RemesasDAO {
 		}
 	}
 
-	
+
 	public Long getRemesasPagadasComunaProgramaSubtitulo(Integer idProgramaAno, Integer idSubtitulo, Integer idComuna, Integer idMes){
 		try{
 			Query query = this.em.createNamedQuery("DetalleRemesas.groupMontoRemesaProgramaSubtituloComuna");
@@ -363,7 +363,7 @@ public class RemesasDAO {
 		}
 	}
 
-	
+
 	public Long getRemesasPagadasEstablecimientoProgramaSubtitulo(Integer idProgramaAno, Integer idSubtitulo, Integer idEstablecimiento, Integer idMes){
 		try{
 			Query query = this.em.createNamedQuery("DetalleRemesas.groupMontoRemesaProgramaSubtituloEstablecimiento");
@@ -382,7 +382,7 @@ public class RemesasDAO {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public List<DetalleRemesas> getRemesasComunaLaFecha(Integer idProgramaAno, Integer idComuna, Integer idTipoSubtitulo, Integer mes){
 		try{
 			TypedQuery<DetalleRemesas> query = this.em.createNamedQuery("DetalleRemesas.getRemesasComunaLaFecha",DetalleRemesas.class);
@@ -475,6 +475,64 @@ public class RemesasDAO {
 		}catch(Exception e){
 			throw new RuntimeException(e);
 		}
+	}
+
+	public List<DetalleRemesas> getRemesasPagadasComunasProgramaAnoServicioSubtituloMesHasta(Integer idProgramaAno, Integer idServicio, Integer idTipoSubtitulo, Integer mes){
+		try{
+			TypedQuery<DetalleRemesas> query = this.em.createNamedQuery("DetalleRemesas.getRemesasPagadasComunasProgramaAnoServicioSubtituloMesHasta", DetalleRemesas.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idMes", mes);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			query.setParameter("remesaPagada", new Boolean(true));
+			return query.getResultList();
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<DetalleRemesas> getRemesasPagadasEstablecimientosProgramaAnoServicioSubtituloMesHasta(Integer idProgramaAno, Integer idServicio, Integer idTipoSubtitulo, Integer mes){
+		try{
+			TypedQuery<DetalleRemesas> query = this.em.createNamedQuery("DetalleRemesas.getRemesasPagadasEstablecimientosProgramaAnoServicioSubtituloMesHasta",DetalleRemesas.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idMes", mes);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			query.setParameter("remesaPagada", new Boolean(true));
+			return query.getResultList();
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
+
+	}
+	
+	public List<DetalleRemesas> getRemesasPagadasComunasProgramaAnoServicioSubtituloMesActual(Integer idProgramaAno, Integer idServicio, Integer idTipoSubtitulo, Integer mes){
+		try{
+			TypedQuery<DetalleRemesas> query = this.em.createNamedQuery("DetalleRemesas.getRemesasPagadasComunasProgramaAnoServicioSubtituloMesActual", DetalleRemesas.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idMes", mes);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			query.setParameter("remesaPagada", new Boolean(true));
+			return query.getResultList();
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<DetalleRemesas> getRemesasPagadasEstablecimientosProgramaAnoServicioSubtituloMesActual(Integer idProgramaAno, Integer idServicio, Integer idTipoSubtitulo, Integer mes){
+		try{
+			TypedQuery<DetalleRemesas> query = this.em.createNamedQuery("DetalleRemesas.getRemesasPagadasEstablecimientosProgramaAnoServicioSubtituloMesActual", DetalleRemesas.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idMes", mes);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			query.setParameter("remesaPagada", new Boolean(true));
+			return query.getResultList();
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
+
 	}
 
 }

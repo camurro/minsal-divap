@@ -226,11 +226,11 @@
 							
 							<br/><br/>
 							<h:panelGrid columns="3">
-							<p:commandButton id="botonContinuar" value="Volver a Cargar Planilla" ajax="false"	action="#{procesoReliquidacionMuniController.continuar}" icon="ui-icon-reload">
+							<p:commandButton id="botonContinuar" value="Volver a Cargar Planilla" action="#{procesoReliquidacionMuniController.continuar}" icon="ui-icon-reload">
 								<f:setPropertyActionListener target="#{procesoReliquidacionMuniController.target}"	value="bandejaTareas.jsf" />
 							</p:commandButton>
 							<h:outputText value=" " />
-							<p:commandButton id="botonContinuarReparos" value="Finalizar | Montos Correctos" ajax="false"	action="#{procesoReliquidacionMuniController.continuarConReparos}" icon="ui-icon-reload">
+							<p:commandButton id="botonContinuarReparos" value="Finalizar | Montos Correctos" action="#{procesoReliquidacionMuniController.continuarConReparos}" icon="ui-icon-reload">
 								<f:setPropertyActionListener target="#{procesoReliquidacionMuniController.target}"	value="bandejaTareas.jsf" />
 							</p:commandButton>
 							</h:panelGrid>

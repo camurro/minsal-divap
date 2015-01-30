@@ -53,10 +53,10 @@ public class ServicioSaludService {
 	private AlfrescoService alfrescoService;
 	@EJB
 	private DocumentService documentService;
-	
+
 	@Resource(name = "tmpDir")
 	private String tmpDir;
-	
+
 	@Resource(name = "folderTemplateReliquidacion")
 	private String folderTemplateReliquidacion;
 
@@ -108,11 +108,11 @@ public class ServicioSaludService {
 				ServiciosVO servicioVO = new ServiciosVO(servicioSalud.getId(),
 						servicioSalud.getNombre());
 				servicioVO.setDirector(new PersonaMapper()
-						.getBasic(servicioSalud.getDirector()));
+				.getBasic(servicioSalud.getDirector()));
 				servicioVO.setEncargadoAps(new PersonaMapper()
-						.getBasic(servicioSalud.getEncargadoAps()));
+				.getBasic(servicioSalud.getEncargadoAps()));
 				servicioVO.setEncargadoFinanzasAps(new PersonaMapper()
-						.getBasic(servicioSalud.getEncargadoFinanzasAps()));
+				.getBasic(servicioSalud.getEncargadoFinanzasAps()));
 				result.add(servicioVO);
 			}
 		}
@@ -123,19 +123,19 @@ public class ServicioSaludService {
 		List<AntecendentesComuna> antecendentesComunas = this.servicioSaludDAO
 				.getAntecedentesComunaPercapita(getAnoCurso(),
 						new TipoComuna[] { TipoComuna.RURAL, TipoComuna.URBANA,
-								TipoComuna.COSTOFIJO });
+					TipoComuna.COSTOFIJO });
 		List<BaseVO> result = new ArrayList<BaseVO>();
 		if (antecendentesComunas != null && antecendentesComunas.size() > 0) {
 			for (AntecendentesComuna antecendentesComuna : antecendentesComunas) {
 				BaseVO baseVO = new BaseVO();
 				baseVO.setRegion(((antecendentesComuna.getIdComuna()
 						.getServicioSalud().getRegion() != null) ? antecendentesComuna
-						.getIdComuna().getServicioSalud().getRegion().getId()
-						: null));
+								.getIdComuna().getServicioSalud().getRegion().getId()
+								: null));
 				baseVO.setServicio(((antecendentesComuna.getIdComuna()
 						.getServicioSalud().getNombre() != null) ? antecendentesComuna
-						.getIdComuna().getServicioSalud().getNombre()
-						: null));
+								.getIdComuna().getServicioSalud().getNombre()
+								: null));
 				baseVO.setComuna(((antecendentesComuna.getIdComuna() != null) ? antecendentesComuna
 						.getIdComuna().getNombre() : null));
 				result.add(baseVO);
@@ -155,7 +155,7 @@ public class ServicioSaludService {
 				.getServicioSaludById(idServicioSalud);
 		return new ServicioMapper().getBasic(servicioSalud);
 	}
-	
+
 	public ServiciosSummaryVO getServicioSaludSummaryById(Integer idServicioSalud) {
 		ServicioSalud servicioSalud = this.servicioSaludDAO.getServicioSaludById(idServicioSalud);
 		ServiciosSummaryVO serviciosSummaryVO = null;
@@ -187,9 +187,10 @@ public class ServicioSaludService {
 		List<ServiciosVO> serviciosVO = new ArrayList<ServiciosVO>();
 		if (servicios != null && servicios.size() > 0) {
 			for (ServicioSalud servicioSalud : servicios) {
-				ServiciosVO servicioVO = new ServicioMapper()
-						.getBasic(servicioSalud);
-				serviciosVO.add(servicioVO);
+				ServiciosVO servicioVO = new ServicioMapper().getBasic(servicioSalud);
+				if(servicioVO != null){
+					serviciosVO.add(servicioVO);
+				}
 			}
 		}
 		return serviciosVO;

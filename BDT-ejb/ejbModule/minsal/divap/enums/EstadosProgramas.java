@@ -3,7 +3,8 @@ package minsal.divap.enums;
 
 public enum EstadosProgramas{
 	SININICIAR(1, "Sin Iniciar"),  ENCURSO(2,"En Curso"), 
-	FINALIZADO(3, "Finalizado"), REVISADO(4, "Revisado"), ENREVISION(5,"En Revision");
+	FINALIZADO(3, "Finalizado"), REVISADO(4, "Revisado"), ENREVISION(5,"En Revision"),
+	CALCULARPROPUESTA(6,"Calcular Propuesta"),  FINALIZARPROPUESTA(7,"Finalizar Propuesta");
 
 	private Integer id;
 	private String name;

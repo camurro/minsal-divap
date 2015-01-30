@@ -10,14 +10,16 @@ public class ConveniosSummaryVO implements Serializable{
 	 */
 	private static final long serialVersionUID = 1685852727260040073L;
 	private Integer id;
-	private Integer porcentaje;
+	private Double porcentaje;
 	private Integer monto;
 	
 	public ConveniosSummaryVO() {
 		super();
+		this.monto = 0;
+		this.porcentaje = 0.0;
 	}
 	
-	public ConveniosSummaryVO(Integer porcentaje, Integer monto) {
+	public ConveniosSummaryVO(Double porcentaje, Integer monto) {
 		super();
 		this.porcentaje = porcentaje;
 		this.monto = monto;
@@ -31,10 +33,10 @@ public class ConveniosSummaryVO implements Serializable{
 		this.id = id;
 	}
 
-	public Integer getPorcentaje() {
+	public Double getPorcentaje() {
 		return porcentaje;
 	}
-	public void setPorcentaje(Integer porcentaje) {
+	public void setPorcentaje(Double porcentaje) {
 		this.porcentaje = porcentaje;
 	}
 	public Integer getMonto() {

@@ -70,7 +70,7 @@
 				</p:panel>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />
-				<p:commandButton id="botonContinuar" value="Continuar" ajax="false"	action="#{procesoReliquidacionPlanillasController.continuar}" icon="ui-icon-upload"
+				<p:commandButton id="botonContinuar" value="Continuar"	action="#{procesoReliquidacionPlanillasController.continuar}" icon="ui-icon-upload"
 					disabled="#{procesoReliquidacionPlanillasController.archivosNoValidos}">
 					<f:setPropertyActionListener target="#{procesoReliquidacionPlanillasController.target}"	value="bandejaTareas.jsf" />
 				</p:commandButton>

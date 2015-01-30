@@ -103,8 +103,7 @@ public class ProcesoReliquidacionMuniController extends AbstractTaskMBean implem
 			System.out.println("this.idReliquidacion --> "+this.idReliquidacion);
 			
 			if(getPrograma() != null){
-				Subtitulo[] subtitulosMunicipal = { Subtitulo.SUBTITULO24};
-				componentes = programaService.getComponenteByProgramaSubtitulos(getPrograma().getId(),  subtitulosMunicipal);
+				componentes = programaService.getComponenteByProgramaSubtitulos(getPrograma().getId(),  Subtitulo.SUBTITULO24);
 				this.componenteSeleccionado =  componentes.get(0).getId().toString();
 				this.programaComponentesCuotas = reliquidacionService.getProgramaComponenteCuotas(getPrograma().getIdProgramaAno(), Integer.parseInt(this.componenteSeleccionado));
 				this.reliquidacionMunicipal = reliquidacionService.getReliquidacionMunicipalSummaryVO(getPrograma().getIdProgramaAno(), Integer.parseInt(this.componenteSeleccionado), null, getIdReliquidacion());
