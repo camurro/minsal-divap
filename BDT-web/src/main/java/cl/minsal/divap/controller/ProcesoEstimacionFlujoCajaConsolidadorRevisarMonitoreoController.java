@@ -788,7 +788,7 @@ extends AbstractTaskMBean implements Serializable {
 
 	public List<ProgramaVO> getProgramasSubtitulo21() {
 		if(programasSubtitulo21 == null){
-			programasSubtitulo21 = programaService.getProgramasByUserAno(getLoggedUsername(), (estimacionFlujoCajaService.getAnoCurso() + 1));
+			programasSubtitulo21 = programaService.getProgramasByAnoSubtitulo((estimacionFlujoCajaService.getAnoCurso() + 1), Subtitulo.SUBTITULO21);
 		}
 		return programasSubtitulo21;
 	}
@@ -799,7 +799,7 @@ extends AbstractTaskMBean implements Serializable {
 
 	public List<ProgramaVO> getProgramasSubtitulo22() {
 		if(programasSubtitulo22 == null){
-			programasSubtitulo22 = programaService.getProgramasByUserAno(getLoggedUsername(), (estimacionFlujoCajaService.getAnoCurso() + 1));
+			programasSubtitulo22 = programaService.getProgramasByAnoSubtitulo((estimacionFlujoCajaService.getAnoCurso() + 1), Subtitulo.SUBTITULO22);
 		}
 		return programasSubtitulo22;
 	}
@@ -810,7 +810,7 @@ extends AbstractTaskMBean implements Serializable {
 
 	public List<ProgramaVO> getProgramasSubtitulo24() {
 		if(programasSubtitulo24 == null){
-			programasSubtitulo24 = programaService.getProgramasByUserAno(getLoggedUsername(), (estimacionFlujoCajaService.getAnoCurso() + 1));
+			programasSubtitulo24 = programaService.getProgramasByAnoSubtitulo((estimacionFlujoCajaService.getAnoCurso() + 1), Subtitulo.SUBTITULO24);
 		}
 		return programasSubtitulo24;
 	}
@@ -821,7 +821,7 @@ extends AbstractTaskMBean implements Serializable {
 
 	public List<ProgramaVO> getProgramasSubtitulo29() {
 		if(programasSubtitulo29 == null){
-			programasSubtitulo29 = programaService.getProgramasByUserAno(getLoggedUsername(), (estimacionFlujoCajaService.getAnoCurso() + 1));
+			programasSubtitulo29 = programaService.getProgramasByAnoSubtitulo((estimacionFlujoCajaService.getAnoCurso() + 1), Subtitulo.SUBTITULO29);
 		}
 		return programasSubtitulo29;
 	}

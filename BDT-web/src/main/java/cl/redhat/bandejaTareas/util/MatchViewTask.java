@@ -81,9 +81,6 @@ public class MatchViewTask {
 		ESTIMACIONFLUJOCAJACONSOLIDACIONHACERSEGUIMIENTO("minsal_divap.EstimacionFlujoConsolidador.hacerseguimientoordinario","divapProcesoFlujoCajaSeguimiento"),
 		ESTIMACIONFLUJOCAJACONSOLIDACIONREVISARENVIODOCUMENTOS("minsal_divap.EstimacionFlujoConsolidador.verificarenviocorreo","divapProcesoFlujoCajaEnviarDocumentos"),
 		
-		
-		
-		
 		//Mapeo páginas de  Gestión de Información de Programas y Leyes para Transferencis(Convenios)
 		CONVENIOSELECCIONARLINEAPROGRAMATICA("minsal_divap.ProcesoConvenio.seleccionarprograma", "divapProcesoGITSubir"),
 		CONVENIOVERIFICARCONVENIOSINFORMADOS("minsal_divap.ProcesoConvenio.verificarconveniosinformadosporprograma", "divapProcesoGITVerificar"),
