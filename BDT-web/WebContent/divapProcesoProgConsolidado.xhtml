@@ -201,7 +201,7 @@
 												<p:commandButton id="recalcularSubtitulo21" value="recalcularSubtitulo21" update="tabladatos :formTabView:tablaModificada" action="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.recalcularSubtitulo21}" style="display: none"/>
 												<p:dataTable resizableColumns="true" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.monitoreoSubtitulo21FlujoCajaVO}" liveResize="true"
 													var="_data" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
-													styleClass="dataTable" id="tabladatos" rowIndexVar="rowIndex" >
+													styleClass="dataTable" id="tabladatos" rowIndexVar="rowIndex21" >
 													
 													<c:if test="#{not procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.iniciarFlujoCaja}">
 													<p:columnGroup type="header">
@@ -565,7 +565,7 @@
 											
 											<br />
 											
-											<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update=":formTabView:tablaModificada" actionListener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.guardarSubtitulo21}" value="Guardar" />
+											<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update="tabladatos :formTabView:tablaModificada" actionListener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.guardarSubtitulo21}" value="Guardar" />
 											 
 										</h:panelGrid>
 
@@ -603,7 +603,7 @@
 												<p:commandButton id="recalcularSubtitulo22" value="recalcularSubtitulo22" update="tablaSubtitulo22 :formTabView:tablaModificada" action="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.recalcularSubtitulo22}" style="display: none"/>
 												<p:dataTable resizableColumns="true" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.monitoreoSubtitulo22FlujoCajaVO}" liveResize="true"
 													var="_data" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
-													styleClass="dataTable" id="tablaSubtitulo22" rowIndexVar="rowIndex">
+													styleClass="dataTable" id="tablaSubtitulo22" rowIndexVar="rowIndex22">
 													<c:if test="#{not procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.iniciarFlujoCaja}">			
 													<p:columnGroup type="header">
 														<p:row>
@@ -1001,7 +1001,7 @@
 											
 											<br />
 
-											<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update=":formTabView:tablaModificada"
+											<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update="tablaSubtitulo22 :formTabView:tablaModificada"
 												action="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.guardarSubtitulo22}"
 												ajax="true" value="Guardar" />
 											 
@@ -1044,7 +1044,7 @@
 													var="_data" paginator="false"
 													paginatorPosition="bottom"
 													emptyMessage="No se encontro información."
-													styleClass="dataTable" id="tablaSubtitulo24" rowIndexVar="rowIndex">
+													styleClass="dataTable" id="tablaSubtitulo24" rowIndexVar="rowIndex24">
  
 													<c:if test="#{not procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.iniciarFlujoCaja}">
 													<p:columnGroup type="header">
@@ -1437,7 +1437,7 @@
 												</p:dataTable>
 											<br/>
 
-											<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update=":formTabView:tablaModificada"
+											<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update="tablaSubtitulo24 :formTabView:tablaModificada"
 												action="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.guardarSubtitulo24}"
 												ajax="true" value="Guardar" />
 										</h:panelGrid>
@@ -1477,7 +1477,7 @@
 													paginatorPosition="bottom"
 													emptyMessage="No se encontro información."
 													styleClass="dataTable" 
-													id="tablaSubtitulo29" rowIndexVar="rowIndex">
+													id="tablaSubtitulo29" rowIndexVar="rowIndex29">
 													
 													<c:if test="#{not procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.iniciarFlujoCaja}">
 													<p:columnGroup type="header">
@@ -1875,7 +1875,7 @@
 												
 												<br />
 												 
-												<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update=":formTabView:tablaModificada"
+												<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" update="tablaSubtitulo29 :formTabView:tablaModificada"
 													action="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.guardarSubtitulo29}"
 													ajax="true" value="Guardar" />
 												
@@ -2049,7 +2049,7 @@
 						<p:commandButton value="Todos los Programas Ingresados | Iniciar Seguimiento Ordinarios"
 							styleClass="x-btn-text"
 							action="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.finalizar}"
-							ajax="false" icon="ui-icon-seek-first" />
+							icon="ui-icon-seek-first" />
 						</h:form>
 					</div>
 

@@ -14,28 +14,25 @@
 		 function downloadDocument(idDoc) {  
              document.getElementById('formDownload:hiddenId').value=idDoc;
              document.getElementById('formDownload:linkDownload').click();  
-         } 
+         }
 
-		 setInterval(
-				 function () {
-					 document.getElementById("form:buscarReporte").click();
-					 document.getElementById("form:botonActualizar").click();
-					 }, 10000);
-	        
-		$(document).ready(function() {
-			document.getElementById("form:botonActualizar").click();
-		});
+
+		 function recuperaListaCorreos(){
+	    	document.getElementById('form:buscarReporte').click();
+		 }
+		 
+	 	 $(document).ready(function () {
+	 	    setInterval("recuperaListaCorreos();", 15000);
+	 	}); 
 
 		</script>
 	</ui:define>
 	<ui:define name="content">
 		<h:form enctype="multipart/form-data" id="form">
-		<p:commandButton id="botonActualizar" value="actualiza" update="form:tablaResultados" style="display: none" action="#{procesoFlujoCajaEnviarDocumentosController.actualizar}"/>
 		<p:commandButton id="buscarReporte" value="actualiza" update="form:tablaResultados" style="display: none" action="#{procesoFlujoCajaEnviarDocumentosController.buscarReporteCorreos}"/>
-		<h:commandButton id="btnLoadData" value="Hidden" action="#{procesoFlujoCajaEnviarDocumentosController.actualizar}" style="display:none" update="form:tablaResultados"/>
 			<p:panel styleClass="contentPanel">
 				<h1>
-					<h:outputText value="Distribución de Recursos Financieros por Programa"/>
+					<h:outputText value="Estimación de Flujo de Caja Consolidador"/>
 				</h1>
 				<p:panel id="Panel">
 					<h2>
@@ -76,7 +73,7 @@
 					</p:dataTable>
 
 					<p:commandButton value="Finalizar Actividad" styleClass="x-btn-text"
-						action="#{procesoFlujoCajaEnviarDocumentosController.enviar}" ajax="false" icon="ui-icon-disk" >
+						action="#{procesoFlujoCajaEnviarDocumentosController.enviar}" icon="ui-icon-disk" >
 						<f:setPropertyActionListener target="#{procesoFlujoCajaEnviarDocumentosController.target}" value="bandejaTareas.jsf" />
 					</p:commandButton>
 				</p:panel>
@@ -90,7 +87,7 @@
 				value="#{procesoFlujoCajaEnviarDocumentosController.docIdDownload}"
 				id="hiddenId" />
 			<h:commandButton id="linkDownload"
-				action="#{procesoFlujoCajaEnviarDocumentosController.downloadArchivo()}"
+				action="#{procesoFlujoCajaEnviarDocumentosController.downloadArchivo}"
 				style="display: none"></h:commandButton>
 		</h:form>
 	</ui:define>

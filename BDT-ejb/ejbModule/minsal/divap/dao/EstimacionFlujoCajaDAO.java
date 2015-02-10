@@ -77,8 +77,7 @@ public class EstimacionFlujoCajaDAO {
 		return estimacionFlujoCajaSeguimiento.getId();
 	}
 
-
-	public Integer createSeguimientoConsolidador(Integer idProceso, Seguimiento seguimiento) {
+	public Integer createSeguimientoFlujoCajaConsolidador(Integer idProceso, Seguimiento seguimiento) {
 		FlujoCajaConsolidador flujoCajaConsolidador = findFlujoCajaConsolidadorById(idProceso);
 		EstimacionFlujoCajaConsolidadorSeguimiento estimacionFlujoCajaSeguimiento = new EstimacionFlujoCajaConsolidadorSeguimiento();
 		estimacionFlujoCajaSeguimiento.setFlujoCajaConsolidador(flujoCajaConsolidador);

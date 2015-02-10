@@ -204,7 +204,9 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 			if(getValorComboServicio().intValue() != 0){
 				servicioSeleccionado = servicioSaludService.getServicioSaludById(getValorComboServicio());
 				this.comunas = servicioSeleccionado.getComunas();
-
+			}else{
+				this.comunas = new ArrayList<ComunaSummaryVO>();
+				reporteMarcoPresupuestarioVOSub24 = new ArrayList<ReporteMarcoPresupuestarioComunaVO>();
 			}
 		}
 	}
@@ -215,6 +217,11 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 				servicioSeleccionado = servicioSaludService.getServicioSaludById(getValorComboServicio());
 				this.establecimientos = servicioSeleccionado.getEstableclimientos();
 
+			}else{
+				this.establecimientos = new ArrayList<EstablecimientoSummaryVO>();
+				this.reporteMarcoPresupuestarioEstablecimientoVOSub21 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
+				this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
+				this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
 			}
 		}
 	}

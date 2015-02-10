@@ -72,11 +72,9 @@ public class EstablecimientosDAO {
 	}
 	
 	public Establecimiento getEstablecimientoServicioAuxiliar(Integer idServicio){
-		String establecimiento = "OTRO%";
 		try {
 			TypedQuery<Establecimiento> query = this.em.createNamedQuery("Establecimiento.findEstablecimientoServicioAuxiliar", Establecimiento.class);
 			query.setParameter("idServicio", idServicio);
-			query.setParameter("establecimiento", establecimiento);
 			List<Establecimiento> results = query.getResultList();
 			if (results.size() >= 1)
 				return results.get(0);

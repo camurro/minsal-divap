@@ -11,7 +11,9 @@ public class ReferenciaDocumentoMapper implements Mapper<ReferenciaDocumento>{
 		if(referenciaDocumento == null){
 			return null;
 		}
-		return new ReferenciaDocumentoSummaryVO(referenciaDocumento.getId(), referenciaDocumento.getPath(), referenciaDocumento.getNodeRef());
+		ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = new ReferenciaDocumentoSummaryVO(referenciaDocumento.getId(), referenciaDocumento.getPath(), referenciaDocumento.getNodeRef());
+		referenciaDocumentoSummaryVO.setVersionFinal(referenciaDocumento.getDocumentoFinal());
+		return referenciaDocumentoSummaryVO;
 	}
 
 	@Override

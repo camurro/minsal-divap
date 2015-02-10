@@ -16,23 +16,20 @@
              document.getElementById('formDownload:linkDownload').click();  
          } 
 
-		 setInterval(
-				 function () {
-					 document.getElementById("form:buscarReporte").click();
-					 document.getElementById("form:botonActualizar").click();
-					 }, 10000);
-	        
-		$(document).ready(function() {
-			document.getElementById("form:botonActualizar").click();
-		});
+		 function recuperaListaCorreos(){
+	    	document.getElementById('form:buscarReporte').click();
+		 }
+		 
+	 	 $(document).ready(function () {
+	 	    setInterval("recuperaListaCorreos();", 15000);
+	 	}); 
+		
 
 		</script>
 	</ui:define>
 	<ui:define name="content">
 		<h:form enctype="multipart/form-data" id="form">
-		<p:commandButton id="botonActualizar" value="actualiza" update="form:tablaResultados" style="display: none" action="#{procesoOTSeguimientoDocumentacionController.actualizar}"/>
-		<p:commandButton id="buscarReporte" value="actualiza" update="form:tablaResultados" style="display: none" action="#{procesoOTSeguimientoDocumentacionController.buscarReporteCorreos}"/>
-		<h:commandButton id="btnLoadData" value="Hidden" action="#{procesoOTSeguimientoDocumentacionController.actualizar}" style="display:none" update="form:tablaResultados"/>
+		<p:commandButton id="buscarReporte" value="actualiza" update="form:tablaResultados" style="display: none" actionListener="#{procesoOTSeguimientoDocumentacionController.buscarReporteCorreos}"/>
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="Distribución de Recursos Financieros por Programa"/>
@@ -51,11 +48,9 @@
 								<p:column headerText="Destinatario" width="250"/>
 							</p:row>
 						</p:columnGroup>
-
-						<p:column>
+						<p:column rendered="#{not empty procesoOTSeguimientoDocumentacionController.reporteCorreos}">
 							<c:forEach items="#{_reporte.adjuntos}" var="adj">
 								<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> 
-							
 									<h:commandLink
 										action="#{procesoOTSeguimientoDocumentacionController.downloadArchivo}"
 										value="#{adj.nombre}"
@@ -64,14 +59,14 @@
 									<br />
 							</c:forEach>
 						</p:column>
-						<p:column>#{_reporte.fechaFormat}</p:column>
-						<p:column style="align:left">
-						<h:outputText value="Para:" style="align:left"></h:outputText>
-						
-								<c:forEach items="#{_reporte.to}" var="para">
-									<span class="strong">#{para}</span>
-								</c:forEach>
-							
+						<p:column rendered="#{not empty procesoOTSeguimientoDocumentacionController.reporteCorreos}">
+							#{_reporte.fechaFormat}
+						</p:column>
+						<p:column style="align:left" rendered="#{not empty procesoOTSeguimientoDocumentacionController.reporteCorreos}">
+							<h:outputText value="Para:" style="align:left"></h:outputText>
+							<c:forEach items="#{_reporte.to}" var="para">
+								<span class="strong">#{para}</span>
+							</c:forEach>
 						</p:column>
 					</p:dataTable>
 

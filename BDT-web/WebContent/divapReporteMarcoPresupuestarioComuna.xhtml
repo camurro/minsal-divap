@@ -57,7 +57,7 @@
 										itemLabel="#{servicio.nombre_servicio}"
 										itemValue="#{servicio.id_servicio}" var="servicio" />
 									<p:ajax
-										listener="#{reportesMarcoPresupuestarioComunasController.cargarComunas}"
+										listener="#{reportesMarcoPresupuestarioComunasController.cargarEstablecimientos}"
 										update="tabView" />
 								</p:selectOneMenu>
 							</h:panelGrid>
@@ -67,16 +67,15 @@
 								<p:selectOneMenu style="width:450px;" id="cbEstablecimiento"
 									value="#{reportesMarcoPresupuestarioComunasController.valorComboEstablecimiento}">
 									<f:selectItem itemLabel="Seleccione" itemValue="0" />
-									<f:selectItems
-										value="#{reportesMarcoPresupuestarioComunasController.servicioSeleccionado.estableclimientos}"
+									<f:selectItems  
+										value="#{reportesMarcoPresupuestarioComunasController.establecimientos}"
 										itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}"
 										var="establecimiento" />
 									
 								</p:selectOneMenu>
 							</h:panelGrid>
 							
-							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaMarcoServicios}" ajax="false"
-					icon="ui-icon-seek-first" update="tabView tablaSub21" />
+							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaMarcoServicios}" icon="ui-icon-seek-first" update="tabView tablaSub21" />
 							
 							
 						</h:panelGrid>
@@ -188,7 +187,7 @@
 										itemLabel="#{servicio.nombre_servicio}"
 										itemValue="#{servicio.id_servicio}" var="servicio" />
 									<p:ajax
-										listener="#{reportesMarcoPresupuestarioComunasController.cargarComunas}"
+										listener="#{reportesMarcoPresupuestarioComunasController.cargarEstablecimientos}"
 										update="tabView" />
 								</p:selectOneMenu>
 							</h:panelGrid>
@@ -199,14 +198,13 @@
 									value="#{reportesMarcoPresupuestarioComunasController.valorComboEstablecimiento}">
 									<f:selectItem itemLabel="Seleccione" itemValue="0" />
 									<f:selectItems
-										value="#{reportesMarcoPresupuestarioComunasController.servicioSeleccionado.estableclimientos}"
+										value="#{reportesMarcoPresupuestarioComunasController.estableclimientos}"
 										itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}"
 										var="establecimiento" />
 								</p:selectOneMenu>
 							</h:panelGrid>
 							
-							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaMarcoServicios}" ajax="false"
-					icon="ui-icon-seek-first" update="tabView tablaSub22" />
+							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaMarcoServicios}"	icon="ui-icon-seek-first" update="tabView tablaSub22" />
 							
 						</h:panelGrid>
 							
@@ -329,14 +327,13 @@
 									value="#{reportesMarcoPresupuestarioComunasController.valorComboComuna}">
 									<f:selectItem itemLabel="Seleccione" itemValue="0" />
 									<f:selectItems
-										value="#{reportesMarcoPresupuestarioComunasController.servicioSeleccionado.comunas}"
+										value="#{reportesMarcoPresupuestarioComunasController.comunas}"
 										itemLabel="#{comuna.nombre}" itemValue="#{comuna.id}"
 										var="comuna" />
 								</p:selectOneMenu>
 							</h:panelGrid>
 							
-							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaServiciosFiltradosComuna}" ajax="false"
-					icon="ui-icon-seek-first" update="tabView tablaSub24" />
+							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaServiciosFiltradosComuna}" icon="ui-icon-seek-first" update="tabView tablaSub24" />
 						</h:panelGrid>
 							
 							
@@ -445,7 +442,7 @@
 										itemLabel="#{servicio.nombre_servicio}"
 										itemValue="#{servicio.id_servicio}" var="servicio" />
 									<p:ajax
-										listener="#{reportesMarcoPresupuestarioComunasController.cargarComunas}"
+										listener="#{reportesMarcoPresupuestarioComunasController.cargarEstablecimientos}"
 										update="tabView" />
 								</p:selectOneMenu>
 							</h:panelGrid>
@@ -455,13 +452,12 @@
 									value="#{reportesMarcoPresupuestarioComunasController.valorComboEstablecimiento}">
 									<f:selectItem itemLabel="Seleccione" itemValue="0" />
 									<f:selectItems
-										value="#{reportesMarcoPresupuestarioComunasController.servicioSeleccionado.estableclimientos}"
+										value="#{reportesMarcoPresupuestarioComunasController.estableclimientos}"
 										itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}"
 										var="establecimiento" />
 								</p:selectOneMenu>
 							</h:panelGrid>
-							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaMarcoServicios}" ajax="false"
-					icon="ui-icon-seek-first" update="tabView tablaSub29" />
+							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaMarcoServicios}" icon="ui-icon-seek-first" update="tabView tablaSub29" />
 						</h:panelGrid>
 							<br />
 							<p:dataTable id="tablaSub29" resizableColumns="true" value="#{reportesMarcoPresupuestarioComunasController.reporteMarcoPresupuestarioEstablecimientoVOSub29}" liveResize="true" var="_data"

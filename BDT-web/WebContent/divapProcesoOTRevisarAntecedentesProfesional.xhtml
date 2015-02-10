@@ -15,7 +15,7 @@
 			document.getElementById("form:botonActualizar").click();
 		}
 
-		function actualizarHidden(fila,dia,mes,id,subtitulo) {  
+		function actualizarHidden(fila, dia, mes, id, subtitulo) {  
 			$("#form2\\:fila").val(fila);
 			$("#form2\\:dia").val(dia);
 			$("#form2\\:mes").val(mes);
@@ -156,7 +156,7 @@
 										</p:column>
 										<p:column>
 											<p:selectBooleanCheckbox rendered="#{not detalleS24.aprobado}" value="#{detalleS24.aprobado}">
-								            	<p:ajax update=":form:tabs:tablaResultadosS24" listener="#{procesoOTRevisarAntecedentesController.actualizarS24(rowIndexS29, detalleS24.comuna.idComuna)}"/>
+								            	<p:ajax update=":form:tabs:tablaResultadosS24" listener="#{procesoOTRevisarAntecedentesController.actualizarS24(rowIndexS24, detalleS24.comuna.idComuna)}"/>
 								        	</p:selectBooleanCheckbox>
 											<h:graphicImage rendered="#{detalleS24.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />	
 										</p:column>

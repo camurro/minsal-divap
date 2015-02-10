@@ -64,7 +64,11 @@ public enum TipoDocumentosProcesos{
 	CONVENIOSERVICIO(153, "Convenio Servicio"), CONVENIOCOMUNA(154, "Convenio Comuna"), PLANILLACONVENIOMUNICIPAL(155, "Planilla Convenio Municipal"), PLANILLACONVENIOSERVICIO(156, "Planilla Convenio Servicio"),
 	PLANTILLAORDINARIOSOLICITUDANTECEDENTES(159, "Ordinario Solicitud Antecedentes"), ORDINARIOSOLICITUDANTECEDENTES(160, "Ordinario Solicitud Antecedentes"),
 	PLANTILLACORREOORDINARIOSOLICITUDANTECEDENTES(161, "Plantilla Correo Ordinario Solicitud Antecedentes"), PLANTILLAMODIFICACIONRESOLUCIONAPORTEESTATAL(170, "Plantilla ordinario modificación aporte estatal"),
-	ORDINARIOMODIFICACIONRESOLUCIONAPORTEESTATAL(171, "Ordinario modificación aporte estatal"), PLANTILLAMODIFICACIONDECRETOAPORTEESTATAL(172, "Plantilla modificación decreto aporte estatal");
+	ORDINARIOMODIFICACIONRESOLUCIONAPORTEESTATAL(171, "Ordinario modificación aporte estatal"), PLANTILLAMODIFICACIONDECRETOAPORTEESTATAL(172, "Plantilla modificación decreto aporte estatal"),
+	
+	PLANTILLACORREOORDINARIOPLANILLA(175, "Plantilla Correo Ordinario y Planilla"),
+	ORDINARIOPROGRAMACIONCAJA(176, "Ordinario Programación Caja"), PLANILLAPROGRAMACIONCAJA(177, "Planilla Programación Caja"),
+	PLANTILLAORDINARIOPROGRAMACIONCAJA(178, "Plantilla Ordinario Programación Caja");
 
 	
 	private Integer id;

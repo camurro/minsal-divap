@@ -23,7 +23,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "DocumentoEstimacionFlujoCajaConsolidador.findAll", query = "SELECT d FROM DocumentoEstimacionFlujoCajaConsolidador d"),
     @NamedQuery(name = "DocumentoEstimacionFlujoCajaConsolidador.findByIdDocumentoEstimacionFlujoCajaConsolidador", query = "SELECT d FROM DocumentoEstimacionFlujoCajaConsolidador d WHERE d.idDocumentoEstimacionFlujoCajaConsolidador = :idDocumentoEstimacionFlujoCajaConsolidador"),
-    @NamedQuery(name = "DocumentoEstimacionFlujoCajaConsolidador.findByFlujoCajaConsolidador", query = "SELECT d FROM DocumentoEstimacionFlujoCajaConsolidador d WHERE d.flujoCajaConsolidador = :flujoCajaConsolidador")})
+    @NamedQuery(name = "DocumentoEstimacionFlujoCajaConsolidador.findByFlujoCajaConsolidador", query = "SELECT d FROM DocumentoEstimacionFlujoCajaConsolidador d WHERE d.flujoCajaConsolidador = :flujoCajaConsolidador"),
+    @NamedQuery(name = "DocumentoEstimacionFlujoCajaConsolidador.findVersionFinalByIdEstimacionFlujoCajaTipoDocumento", query = "SELECT d.documento FROM DocumentoEstimacionFlujoCajaConsolidador d WHERE d.flujoCajaConsolidador.idFlujoCajaConsolidador = :idFlujoCajaConsolidador and d.tipoDocumento.idTipoDocumento = :idTipoDocumento and d.documento.documentoFinal = true order by d.documento.fechaCreacion desc"),
+    @NamedQuery(name = "DocumentoEstimacionFlujoCajaConsolidador.findLastDocumentByIdEstimacionFlujoCajaIdTipoDocumento", query = "SELECT d.documento FROM DocumentoEstimacionFlujoCajaConsolidador d WHERE d.flujoCajaConsolidador.idFlujoCajaConsolidador = :idFlujoCajaConsolidador and d.tipoDocumento.idTipoDocumento = :idTipoDocumento order by d.documento.fechaCreacion desc")})
+
 public class DocumentoEstimacionFlujoCajaConsolidador implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

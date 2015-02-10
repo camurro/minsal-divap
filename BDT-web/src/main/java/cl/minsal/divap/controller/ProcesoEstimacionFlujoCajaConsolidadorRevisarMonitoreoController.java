@@ -52,6 +52,7 @@ extends AbstractTaskMBean implements Serializable {
 	private transient Logger log;
 	@Inject
 	FacesContext facesContext;
+	
 	private boolean reparos;
 
 	private Integer idDistribucionInicialPercapita;
@@ -237,26 +238,21 @@ extends AbstractTaskMBean implements Serializable {
 	 * ********************************* FIN VARIABLES
 	 */
 
+	
+
 	public String finalizar(){
 		setTarget("bandejaTareas");
-		this.reparos = false;		
-		return iniciarProceso();
-	}
-
-	public String conReparos(){
-		setTarget("bandejaTareas");
-		this.reparos = true;
-		return iniciarProceso();
+		this.reparos = false;
+		return super.enviar();
 	}
 
 	@PostConstruct
 	public void init() {
-
-		if(docPropuesta == null){
-			docPropuesta = estimacionFlujoCajaService.generarPlanillaPropuestaConsolidador(getLoggedUsername());
-		}
 		if(sessionExpired()){
 			return;
+		}
+		if(docPropuesta == null){
+			docPropuesta = estimacionFlujoCajaService.generarPlanillaPropuestaConsolidador(getLoggedUsername());
 		}
 		setIniciarFlujoCaja(false);
 		crearColumnasDinamicas();
@@ -2580,7 +2576,11 @@ extends AbstractTaskMBean implements Serializable {
 						}
 					}
 				}
-				this.monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma21(), idComponentes, subtituloFiltro, this.iniciarFlujoCaja);
+				if(getValorComboSubtituloServicio21() == null || getValorComboSubtituloServicio21().intValue() == 0){
+					this.monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma21(), idComponentes, subtituloFiltro, this.iniciarFlujoCaja);
+				}else{
+					this.monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma21(), getValorComboSubtituloServicio21(), idComponentes, subtituloFiltro, this.iniciarFlujoCaja);
+				}
 			}
 			break;
 		case SUBTITULO22:
@@ -2599,8 +2599,13 @@ extends AbstractTaskMBean implements Serializable {
 						}
 					}
 				}
-				this.monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(
-						getValorComboPrograma22(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
+				if(getValorComboSubtituloServicio22() == null || getValorComboSubtituloServicio22().intValue() == 0){
+					this.monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(
+							getValorComboPrograma22(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
+				}else{
+					this.monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(
+							getValorComboPrograma22(), getValorComboSubtituloServicio22(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
+				}
 			}
 			break;
 		case SUBTITULO24:
@@ -2619,8 +2624,13 @@ extends AbstractTaskMBean implements Serializable {
 						}
 					}
 				}
-				this.monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(
-						getValorComboPrograma24(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
+				if(getValorComboSubtituloServicio24() == null || getValorComboSubtituloServicio24().intValue() == 0){
+					this.monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(
+							getValorComboPrograma24(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
+				}else{
+					this.monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(
+							getValorComboPrograma24(), getValorComboSubtituloServicio24(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
+				}
 			}
 			break;
 		case SUBTITULO29:
@@ -2639,8 +2649,13 @@ extends AbstractTaskMBean implements Serializable {
 						}
 					}
 				}
-				this.monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(
-						getValorComboPrograma29(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
+				if(getValorComboSubtituloServicio29() == null || getValorComboSubtituloServicio29().intValue() == 0){
+					this.monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(
+							getValorComboPrograma29(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
+				}else{
+					this.monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(
+							getValorComboPrograma29(), getValorComboSubtituloServicio29(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
+				}
 			}
 			break;
 		default:
@@ -2677,7 +2692,11 @@ extends AbstractTaskMBean implements Serializable {
 					}
 				}
 			}
-			this.monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma21(), idComponentes, Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+			if(getValorComboSubtituloServicio21() == null || getValorComboSubtituloServicio21().intValue() == 0){
+				this.monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma21(), idComponentes, Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+			}else{
+				this.monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma21(), getValorComboSubtituloServicio21(), idComponentes, Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+			}
 		}
 	}
 	
@@ -2697,7 +2716,11 @@ extends AbstractTaskMBean implements Serializable {
 					}
 				}
 			}
-			this.monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma22(), idComponentes, Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+			if(getValorComboSubtituloServicio22() == null || getValorComboSubtituloServicio22().intValue() == 0){
+				this.monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma22(), idComponentes, Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+			}else{
+				this.monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma22(), getValorComboSubtituloServicio22(), idComponentes, Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+			}
 		}
 	}
 	
@@ -2717,7 +2740,11 @@ extends AbstractTaskMBean implements Serializable {
 					}
 				}
 			}
-			this.monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(getValorComboPrograma24(), idComponentes , Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+			if(getValorComboSubtituloServicio24() == null || getValorComboSubtituloServicio24().intValue() == 0){
+				this.monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(getValorComboPrograma24(), idComponentes , Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+			}else{
+				this.monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(getValorComboPrograma24(), getValorComboSubtituloServicio24(), idComponentes , Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+			}
 		}
 	}
 	
@@ -2737,7 +2764,11 @@ extends AbstractTaskMBean implements Serializable {
 					}
 				}
 			}
-			this.monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma29(), idComponentes, Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+			if(getValorComboSubtituloServicio29() == null || getValorComboSubtituloServicio29().intValue() == 0){
+				this.monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma29(), idComponentes, Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+			}else{
+				this.monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma29(), getValorComboSubtituloServicio29(), idComponentes, Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+			}
 		}
 	}
 

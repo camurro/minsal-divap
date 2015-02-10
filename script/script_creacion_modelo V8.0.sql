@@ -25526,6 +25526,8 @@ ALTER TABLE caja
   DROP COLUMN monto;
 
 
+----------REVISAR DE AQUI EN ADELANTE EN QA------------
+
 ALTER TABLE caja
   ADD COLUMN programa integer;
 ALTER TABLE caja
@@ -25664,6 +25666,32 @@ WITH (
   OIDS = FALSE
 )
 ;
+
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (175, 'Plantilla Correo Ordinario y Planilla');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (176, 'Ordinario Programación Caja');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (177, 'Planilla Programación Caja');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (178, 'Plantilla Ordinario Programación Caja');
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (17, 'Hacer Seguimiento Ordinario Programacion');
+
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa)
+    VALUES (1, 3, 1);
+
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa)
+    VALUES (2, 3, 2);
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (44, 'Resumen Consolidado Fonasa');
+
+UPDATE programa SET revisafonasa = true WHERE id in (16,38,31,32,35,33,43);
+
+ALTER TABLE establecimiento
+  ADD COLUMN auxiliar boolean NOT NULL DEFAULT false;
+
+ALTER TABLE comuna
+  ADD COLUMN auxiliar boolean NOT NULL DEFAULT false;
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (112,'Reporte Meta Desempeno - Cuadro2');
+
 
 
 
