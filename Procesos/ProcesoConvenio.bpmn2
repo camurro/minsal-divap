@@ -265,7 +265,7 @@
       <bpmn2:dataInputAssociation id="_RfDv4XvBEeSfX96SiLwKkQ">
         <bpmn2:targetRef>_7D37E604-EEC7-42F8-A311-5A19CD70E35C_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_RfDv4nvBEeSfX96SiLwKkQ">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_RfDv43vBEeSfX96SiLwKkQ"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/convenio/generarResolucionDisponibilizarAlfresco/#{programaSeleccionado}/#{idConvenio}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_RfDv43vBEeSfX96SiLwKkQ"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/convenio/generarResolucionDisponibilizarAlfresco/#{programaSeleccionado}/#{idConvenio}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_RfDv5HvBEeSfX96SiLwKkQ">_7D37E604-EEC7-42F8-A311-5A19CD70E35C_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -330,7 +330,7 @@
       <bpmn2:dataInputAssociation id="_RfEW3nvBEeSfX96SiLwKkQ">
         <bpmn2:targetRef>_86ACC93D-C43C-41CE-A8B6-6619B0015BBA_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_RfEW33vBEeSfX96SiLwKkQ">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_RfEW4HvBEeSfX96SiLwKkQ"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/convenio/notificarServicioSalud/#{programaSeleccionado}/#{servicioSeleccionado}/#{idConvenio}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_RfEW4HvBEeSfX96SiLwKkQ"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/convenio/notificarServicioSalud/#{programaSeleccionado}/#{servicioSeleccionado}/#{idConvenio}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_RfEW4XvBEeSfX96SiLwKkQ">_86ACC93D-C43C-41CE-A8B6-6619B0015BBA_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -391,7 +391,7 @@
       <bpmn2:dataInputAssociation id="_RfEW9XvBEeSfX96SiLwKkQ">
         <bpmn2:targetRef>_8B5BE87D-F11D-4E90-B696-935EFF89A8B2_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_RfEW9nvBEeSfX96SiLwKkQ">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_RfEW93vBEeSfX96SiLwKkQ"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/convenio/administrarVersionesAlfresco/#{programaSeleccionado}/#{idConvenio}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_RfEW93vBEeSfX96SiLwKkQ"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/convenio/administrarVersionesAlfresco/#{programaSeleccionado}/#{idConvenio}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_RfEW-HvBEeSfX96SiLwKkQ">_8B5BE87D-F11D-4E90-B696-935EFF89A8B2_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -476,7 +476,7 @@
       <bpmn2:dataInputAssociation id="_RfE98nvBEeSfX96SiLwKkQ">
         <bpmn2:targetRef>_6FCA427B-DD16-41E4-AB68-90730F12C425_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_RfE983vBEeSfX96SiLwKkQ">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_RfE99HvBEeSfX96SiLwKkQ"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/convenio/cambiarEstadoPrograma/#{programaSeleccionado}/2]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_RfE99HvBEeSfX96SiLwKkQ"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/convenio/cambiarEstadoPrograma/#{programaSeleccionado}/2]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_RfE99XvBEeSfX96SiLwKkQ">_6FCA427B-DD16-41E4-AB68-90730F12C425_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -537,7 +537,7 @@
       <bpmn2:dataInputAssociation id="_RfE-CXvBEeSfX96SiLwKkQ">
         <bpmn2:targetRef>_3FE33FED-CB4A-43AC-944E-C9C52255C287_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_RfE-CnvBEeSfX96SiLwKkQ">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_RfE-C3vBEeSfX96SiLwKkQ"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/convenio/cambiarEstadoPrograma/#{programaSeleccionado}/1]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_RfE-C3vBEeSfX96SiLwKkQ"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/convenio/cambiarEstadoPrograma/#{programaSeleccionado}/1]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_RfE-DHvBEeSfX96SiLwKkQ">_3FE33FED-CB4A-43AC-944E-C9C52255C287_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -598,7 +598,7 @@
       <bpmn2:dataInputAssociation id="_RfFk_XvBEeSfX96SiLwKkQ">
         <bpmn2:targetRef>_2E75AF64-E6B8-4FEA-A4A4-BCA5F3C52423_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_RfFk_nvBEeSfX96SiLwKkQ">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_RfFk_3vBEeSfX96SiLwKkQ"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/convenio/cambiarEstadoPrograma/#{programaSeleccionado}/1]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_RfFk_3vBEeSfX96SiLwKkQ"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/convenio/cambiarEstadoPrograma/#{programaSeleccionado}/1]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_RfFlAHvBEeSfX96SiLwKkQ">_2E75AF64-E6B8-4FEA-A4A4-BCA5F3C52423_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -655,7 +655,7 @@
       <bpmn2:dataInputAssociation id="_RfFlEHvBEeSfX96SiLwKkQ">
         <bpmn2:targetRef>_CF36BE24-1565-44BB-87BA-CF60A81795FE_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_RfFlEXvBEeSfX96SiLwKkQ">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_RfFlEnvBEeSfX96SiLwKkQ"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/convenio/crearInstanciaConvenio/#{usuario}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_RfFlEnvBEeSfX96SiLwKkQ"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/convenio/crearInstanciaConvenio/#{usuario}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_RfFlE3vBEeSfX96SiLwKkQ">_CF36BE24-1565-44BB-87BA-CF60A81795FE_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -721,7 +721,7 @@
       <bpmn2:dataInputAssociation id="_RfGMBXvBEeSfX96SiLwKkQ">
         <bpmn2:targetRef>_1C6A2DEC-BDF0-4006-8DD8-F8D7E4ACF6F4_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_RfGMBnvBEeSfX96SiLwKkQ">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_RfGMB3vBEeSfX96SiLwKkQ"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/convenio/convenioPorPrograma/#{programaSeleccionado}/#{idConvenio}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_RfGMB3vBEeSfX96SiLwKkQ"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/convenio/convenioPorPrograma/#{programaSeleccionado}/#{idConvenio}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_RfGMCHvBEeSfX96SiLwKkQ">_1C6A2DEC-BDF0-4006-8DD8-F8D7E4ACF6F4_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -793,7 +793,7 @@
       <bpmn2:dataInputAssociation id="_RfGMHHvBEeSfX96SiLwKkQ">
         <bpmn2:targetRef>_90099397-E72A-445D-830F-B204936DB577_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_RfGMHXvBEeSfX96SiLwKkQ">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_RfGMHnvBEeSfX96SiLwKkQ"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/convenio/notificarPorCorreo/#{programaSeleccionado}/#{idConvenio}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_RfGMHnvBEeSfX96SiLwKkQ"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/convenio/notificarPorCorreo/#{programaSeleccionado}/#{idConvenio}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_RfGMH3vBEeSfX96SiLwKkQ">_90099397-E72A-445D-830F-B204936DB577_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>

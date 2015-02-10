@@ -275,7 +275,7 @@
       <bpmn2:dataInputAssociation id="_jnCVbXGbEeSXX52CTsvI9A">
         <bpmn2:targetRef>_FAF4E80E-DB78-43D1-B52B-1A9064A4B69B_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_jnCVbnGbEeSXX52CTsvI9A">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnCVb3GbEeSXX52CTsvI9A"><![CDATA[http://localhost:8080/BDT-Rest/rest/notificacion/percapita/error/excel/camurro@gmail.com/loco/pruebacorreo]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnCVb3GbEeSXX52CTsvI9A"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/notificacion/percapita/error/excel/camurro@gmail.com/loco/pruebacorreo]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_jnCVcHGbEeSXX52CTsvI9A">_FAF4E80E-DB78-43D1-B52B-1A9064A4B69B_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -360,7 +360,7 @@
       <bpmn2:dataInputAssociation id="_jnCVjXGbEeSXX52CTsvI9A">
         <bpmn2:targetRef>_E2FBF47B-6250-44E7-8226-1BA7E89653D9_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_jnCVjnGbEeSXX52CTsvI9A">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnCVj3GbEeSXX52CTsvI9A"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/elaborarOficioConsulta/#{idDistribucionInicialPercapita}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnCVj3GbEeSXX52CTsvI9A"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/elaborarOficioConsulta/#{idDistribucionInicialPercapita}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_jnCVkHGbEeSXX52CTsvI9A">_E2FBF47B-6250-44E7-8226-1BA7E89653D9_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -561,7 +561,7 @@ kcontext.setVariable("processId",kcontext.getProcessInstance().getId());]]></bpm
       <bpmn2:dataInputAssociation id="_jnDjdXGbEeSXX52CTsvI9A">
         <bpmn2:targetRef>_E5080916-AC62-4E3B-9C8F-67B728A49B13_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_jnDjdnGbEeSXX52CTsvI9A">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnDjd3GbEeSXX52CTsvI9A"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/elaborarDocumentoFormal/#{idDistribucionInicialPercapita}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnDjd3GbEeSXX52CTsvI9A"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/elaborarDocumentoFormal/#{idDistribucionInicialPercapita}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_jnDjeHGbEeSXX52CTsvI9A">_E5080916-AC62-4E3B-9C8F-67B728A49B13_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -616,7 +616,7 @@ kcontext.setVariable("processId",kcontext.getProcessInstance().getId());]]></bpm
       <bpmn2:dataInputAssociation id="_jnDjiHGbEeSXX52CTsvI9A">
         <bpmn2:targetRef>_BC4F19FA-0D73-4A31-8BAC-73DFD448BDBD_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_jnDjiXGbEeSXX52CTsvI9A">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnDjinGbEeSXX52CTsvI9A"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/notificarFinElaboracionResolucion/#{idDistribucionInicialPercapita}/#{usuario}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnDjinGbEeSXX52CTsvI9A"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/notificarFinElaboracionResolucion/#{idDistribucionInicialPercapita}/#{usuario}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_jnDji3GbEeSXX52CTsvI9A">_BC4F19FA-0D73-4A31-8BAC-73DFD448BDBD_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -712,7 +712,7 @@ kcontext.setVariable("processId",kcontext.getProcessInstance().getId());]]></bpm
       <bpmn2:dataInputAssociation id="_jnDjqnGbEeSXX52CTsvI9A">
         <bpmn2:targetRef>_FBBD2198-4ACA-4E9A-A90E-12DA1779DFC5_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_jnDjq3GbEeSXX52CTsvI9A">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnDjrHGbEeSXX52CTsvI9A"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/administrarVersionesFinalesAlfresco/#{idDistribucionInicialPercapita}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnDjrHGbEeSXX52CTsvI9A"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/administrarVersionesFinalesAlfresco/#{idDistribucionInicialPercapita}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_jnDjrXGbEeSXX52CTsvI9A">_FBBD2198-4ACA-4E9A-A90E-12DA1779DFC5_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -773,7 +773,7 @@ kcontext.setVariable("processId",kcontext.getProcessInstance().getId());]]></bpm
       <bpmn2:dataInputAssociation id="_jnEKj3GbEeSXX52CTsvI9A">
         <bpmn2:targetRef>_4F19CB5E-0CD1-4BDC-9601-0AC5C1D54D5F_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_jnEKkHGbEeSXX52CTsvI9A">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnEKkXGbEeSXX52CTsvI9A"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/enviarResolucionesServicioSalud/#{idDistribucionInicialPercapita}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnEKkXGbEeSXX52CTsvI9A"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/enviarResolucionesServicioSalud/#{idDistribucionInicialPercapita}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_jnEKknGbEeSXX52CTsvI9A">_4F19CB5E-0CD1-4BDC-9601-0AC5C1D54D5F_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -836,7 +836,7 @@ kcontext.setVariable("processId",kcontext.getProcessInstance().getId());]]></bpm
       <bpmn2:dataInputAssociation id="_jnEKpnGbEeSXX52CTsvI9A">
         <bpmn2:targetRef>_EE774B5E-3204-4137-B860-9A0179EB6040_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_jnEKp3GbEeSXX52CTsvI9A">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnEKqHGbEeSXX52CTsvI9A"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/enviarDecretoAporteEstatal/#{borradorAporteEstatalId}/#{usuario}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnEKqHGbEeSXX52CTsvI9A"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/enviarDecretoAporteEstatal/#{borradorAporteEstatalId}/#{usuario}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_jnEKqXGbEeSXX52CTsvI9A">_EE774B5E-3204-4137-B860-9A0179EB6040_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -1000,7 +1000,7 @@ kcontext.setVariable("processId",kcontext.getProcessInstance().getId());]]></bpm
       <bpmn2:dataInputAssociation id="_jnExqnGbEeSXX52CTsvI9A">
         <bpmn2:targetRef>_AE1E3445-3D27-417F-AD76-1693FBFCFC8D_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_jnExq3GbEeSXX52CTsvI9A">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnExrHGbEeSXX52CTsvI9A"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/valorizarPlanSalud/#{idDistribucionInicialPercapita}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnExrHGbEeSXX52CTsvI9A"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/valorizarPlanSalud/#{idDistribucionInicialPercapita}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_jnExrXGbEeSXX52CTsvI9A">_AE1E3445-3D27-417F-AD76-1693FBFCFC8D_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -1085,7 +1085,7 @@ kcontext.setVariable("processId",kcontext.getProcessInstance().getId());]]></bpm
       <bpmn2:dataInputAssociation id="_jnExv3GbEeSXX52CTsvI9A">
         <bpmn2:targetRef>_84EF1608-82AA-46A4-851F-5D16C36B2EC2_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_jnExwHGbEeSXX52CTsvI9A">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnExwXGbEeSXX52CTsvI9A"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/enviarConsultaRegional/#{idDistribucionInicialPercapita}/#{oficioConsultaId}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnExwXGbEeSXX52CTsvI9A"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/enviarConsultaRegional/#{idDistribucionInicialPercapita}/#{oficioConsultaId}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_jnExwnGbEeSXX52CTsvI9A">_84EF1608-82AA-46A4-851F-5D16C36B2EC2_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -1169,7 +1169,7 @@ kcontext.setVariable("processId",kcontext.getProcessInstance().getId());]]></bpm
       <bpmn2:dataInputAssociation id="_jnFYtnGbEeSXX52CTsvI9A">
         <bpmn2:targetRef>_CF5D81B0-6F8E-467B-AFC3-4C7534361C64_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_jnFYt3GbEeSXX52CTsvI9A">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnFYuHGbEeSXX52CTsvI9A"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/elaborarBorradorDecretoAporteEstatal/#{idDistribucionInicialPercapita}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnFYuHGbEeSXX52CTsvI9A"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/elaborarBorradorDecretoAporteEstatal/#{idDistribucionInicialPercapita}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_jnFYuXGbEeSXX52CTsvI9A">_CF5D81B0-6F8E-467B-AFC3-4C7534361C64_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -1222,7 +1222,7 @@ kcontext.setVariable("processId",kcontext.getProcessInstance().getId());]]></bpm
       <bpmn2:dataInputAssociation id="_jnFYwnGbEeSXX52CTsvI9A">
         <bpmn2:targetRef>_F6BBCD41-8F9E-46A8-90FC-47303D30D9D9_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_jnFYw3GbEeSXX52CTsvI9A">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnFYxHGbEeSXX52CTsvI9A"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/instanciarProcesoInicialPerCapita/#{usuario}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnFYxHGbEeSXX52CTsvI9A"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/instanciarProcesoInicialPerCapita/#{usuario}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_jnFYxXGbEeSXX52CTsvI9A">_F6BBCD41-8F9E-46A8-90FC-47303D30D9D9_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -1312,7 +1312,7 @@ kcontext.setVariable("processId",kcontext.getProcessInstance().getId());]]></bpm
       <bpmn2:dataInputAssociation id="_jnF_v3GbEeSXX52CTsvI9A">
         <bpmn2:targetRef>_DB7B0FA7-D631-43C7-BB27-B5D49B479F3C_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_jnF_wHGbEeSXX52CTsvI9A">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnF_wXGbEeSXX52CTsvI9A"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/creacionAntecedentesComuna/#{usuario}/#{idDistribucionInicialPercapita}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_jnF_wXGbEeSXX52CTsvI9A"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/distribucionInicialPerCapita/creacionAntecedentesComuna/#{usuario}/#{idDistribucionInicialPercapita}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_jnF_wnGbEeSXX52CTsvI9A">_DB7B0FA7-D631-43C7-BB27-B5D49B479F3C_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>

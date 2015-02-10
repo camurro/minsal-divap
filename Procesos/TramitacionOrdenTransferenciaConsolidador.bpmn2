@@ -80,7 +80,7 @@
       <bpmn2:dataInputAssociation id="_3VYPuIYJEeSpxMdz9mkeFA">
         <bpmn2:targetRef>_E0F1EEDD-0ABF-4CE7-86AF-52A113DFC5EF_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_3VYPuYYJEeSpxMdz9mkeFA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_3VYPuoYJEeSpxMdz9mkeFA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/ordenesDeTransferencia/generarOficioOrdenTransferencia/#{idProcesoOT}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_3VYPuoYJEeSpxMdz9mkeFA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/ordenesDeTransferencia/generarOficioOrdenTransferencia/#{idProcesoOT}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_3VYPu4YJEeSpxMdz9mkeFA">_E0F1EEDD-0ABF-4CE7-86AF-52A113DFC5EF_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -162,7 +162,7 @@
       <bpmn2:dataInputAssociation id="_3VYP1oYJEeSpxMdz9mkeFA">
         <bpmn2:targetRef>_74C61E28-1D18-4AE8-94A6-0671CCD29623_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_3VYP14YJEeSpxMdz9mkeFA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_3VYP2IYJEeSpxMdz9mkeFA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/ordenesDeTransferencia/administrarVersionesAlfresco]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_3VYP2IYJEeSpxMdz9mkeFA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/ordenesDeTransferencia/administrarVersionesAlfresco]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_3VYP2YYJEeSpxMdz9mkeFA">_74C61E28-1D18-4AE8-94A6-0671CCD29623_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -223,7 +223,7 @@
       <bpmn2:dataInputAssociation id="_3VY204YJEeSpxMdz9mkeFA">
         <bpmn2:targetRef>_2E20E42D-628B-4E2E-8AF5-7D09FCE14FC6_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_3VY21IYJEeSpxMdz9mkeFA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_3VY21YYJEeSpxMdz9mkeFA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/ordenesDeTransferencia/enviarOrdinarioFonasaServicioSalud/#{idProcesoOT}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_3VY21YYJEeSpxMdz9mkeFA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/ordenesDeTransferencia/enviarOrdinarioFonasaServicioSalud/#{idProcesoOT}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_3VY21oYJEeSpxMdz9mkeFA">_2E20E42D-628B-4E2E-8AF5-7D09FCE14FC6_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -333,7 +333,7 @@
       <bpmn2:dataInputAssociation id="_3VZd2oYJEeSpxMdz9mkeFA">
         <bpmn2:targetRef>_630E289A-3B99-4CBB-8158-888EB0ED8F22_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_3VZd24YJEeSpxMdz9mkeFA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_3VZd3IYJEeSpxMdz9mkeFA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/ordenesDeTransferencia/instanciarProcesoOT/#{usuario}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_3VZd3IYJEeSpxMdz9mkeFA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/ordenesDeTransferencia/instanciarProcesoOT/#{usuario}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_3VZd3YYJEeSpxMdz9mkeFA">_630E289A-3B99-4CBB-8158-888EB0ED8F22_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -393,7 +393,7 @@
       <bpmn2:dataInputAssociation id="_3VZd7oYJEeSpxMdz9mkeFA">
         <bpmn2:targetRef>_1D337385-2794-45FF-83D3-A79BD18748FD_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_3VZd74YJEeSpxMdz9mkeFA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_3VZd8IYJEeSpxMdz9mkeFA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/ordenesDeTransferencia/reestablecerProgramas/1]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_3VZd8IYJEeSpxMdz9mkeFA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/ordenesDeTransferencia/reestablecerProgramas/1]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_3VZd8YYJEeSpxMdz9mkeFA">_1D337385-2794-45FF-83D3-A79BD18748FD_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>

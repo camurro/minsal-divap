@@ -224,7 +224,7 @@
       <bpmn2:dataInputAssociation id="_NLDYBoYJEeSpxMdz9mkeFA">
         <bpmn2:targetRef>_57F7FB26-45FF-48C6-AC17-51827C66E289_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_NLDYB4YJEeSpxMdz9mkeFA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLDYCIYJEeSpxMdz9mkeFA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/generarPlanillaValorizacion/#{programaSeleccionado}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLDYCIYJEeSpxMdz9mkeFA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/generarPlanillaValorizacion/#{programaSeleccionado}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_NLDYCYYJEeSpxMdz9mkeFA">_57F7FB26-45FF-48C6-AC17-51827C66E289_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -442,7 +442,7 @@
       <bpmn2:dataInputAssociation id="_NLD_L4YJEeSpxMdz9mkeFA">
         <bpmn2:targetRef>_439C6BF4-4A30-4500-B115-A31551DE192E_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_NLD_MIYJEeSpxMdz9mkeFA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLKFoIYJEeSpxMdz9mkeFA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/generarResolucionesDistribucionRecursos/#{programaSeleccionado}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLKFoIYJEeSpxMdz9mkeFA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/generarResolucionesDistribucionRecursos/#{programaSeleccionado}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_NLKFoYYJEeSpxMdz9mkeFA">_439C6BF4-4A30-4500-B115-A31551DE192E_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -503,7 +503,7 @@
       <bpmn2:dataInputAssociation id="_NLKswYYJEeSpxMdz9mkeFA">
         <bpmn2:targetRef>_E897C0ED-81B1-41E5-90D8-3B33CCA68C6B_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_NLKswoYJEeSpxMdz9mkeFA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLKsw4YJEeSpxMdz9mkeFA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/generarOrdinariosDistribucionRecursos/#{programaSeleccionado}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLKsw4YJEeSpxMdz9mkeFA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/generarOrdinariosDistribucionRecursos/#{programaSeleccionado}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_NLKsxIYJEeSpxMdz9mkeFA">_E897C0ED-81B1-41E5-90D8-3B33CCA68C6B_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -577,7 +577,7 @@
       <bpmn2:dataInputAssociation id="_NLKs2oYJEeSpxMdz9mkeFA">
         <bpmn2:targetRef>_7EF73983-BB5D-44CD-9BCD-F4902F2BF4B0_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_NLKs24YJEeSpxMdz9mkeFA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLKs3IYJEeSpxMdz9mkeFA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/notificarGeneracionResoluciones/#{programaSeleccionado}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLKs3IYJEeSpxMdz9mkeFA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/notificarGeneracionResoluciones/#{programaSeleccionado}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_NLKs3YYJEeSpxMdz9mkeFA">_7EF73983-BB5D-44CD-9BCD-F4902F2BF4B0_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -675,7 +675,7 @@
       <bpmn2:dataInputAssociation id="_NLLT34YJEeSpxMdz9mkeFA">
         <bpmn2:targetRef>_1713EC40-F387-4130-AC56-506803E5F6D7_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_NLLT4IYJEeSpxMdz9mkeFA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLLT4YYJEeSpxMdz9mkeFA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/administrarVersionesFinales/#{programaSeleccionado}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLLT4YYJEeSpxMdz9mkeFA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/administrarVersionesFinales/#{programaSeleccionado}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_NLLT4oYJEeSpxMdz9mkeFA">_1713EC40-F387-4130-AC56-506803E5F6D7_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -737,7 +737,7 @@
       <bpmn2:dataInputAssociation id="_NLL624YJEeSpxMdz9mkeFA">
         <bpmn2:targetRef>_00698A10-5640-4580-84DA-667FB6651141_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_NLL63IYJEeSpxMdz9mkeFA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLL63YYJEeSpxMdz9mkeFA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/enviarDocumentosServicioSalud/#{programaSeleccionado}/#{tipoProgramaPxQ}/#{idProceso}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLL63YYJEeSpxMdz9mkeFA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/enviarDocumentosServicioSalud/#{programaSeleccionado}/#{tipoProgramaPxQ}/#{idProceso}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_NLL63oYJEeSpxMdz9mkeFA">_00698A10-5640-4580-84DA-667FB6651141_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -824,7 +824,7 @@
       <bpmn2:dataInputAssociation id="_NLL69oYJEeSpxMdz9mkeFA">
         <bpmn2:targetRef>_825E710A-D1AC-4204-9260-1834DCD40BDB_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_NLL694YJEeSpxMdz9mkeFA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLL6-IYJEeSpxMdz9mkeFA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/cambiarEstadoPrograma/#{programaSeleccionado}/2]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLL6-IYJEeSpxMdz9mkeFA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/cambiarEstadoPrograma/#{programaSeleccionado}/2]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_NLL6-YYJEeSpxMdz9mkeFA">_825E710A-D1AC-4204-9260-1834DCD40BDB_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -919,7 +919,7 @@
       <bpmn2:dataInputAssociation id="_NLMh9oYJEeSpxMdz9mkeFA">
         <bpmn2:targetRef>_3967FBEE-BBAB-4B15-B247-76CF1D28C9C1_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_NLMh94YJEeSpxMdz9mkeFA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLMh-IYJEeSpxMdz9mkeFA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/cambiarEstadoPrograma/#{programaSeleccionado}/3]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLMh-IYJEeSpxMdz9mkeFA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/cambiarEstadoPrograma/#{programaSeleccionado}/3]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_NLMh-YYJEeSpxMdz9mkeFA">_3967FBEE-BBAB-4B15-B247-76CF1D28C9C1_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -980,7 +980,7 @@
       <bpmn2:dataInputAssociation id="_NLNI8IYJEeSpxMdz9mkeFA">
         <bpmn2:targetRef>_1210C293-E43A-4045-BD5E-A85BC0AC59BA_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_NLNI8YYJEeSpxMdz9mkeFA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLNI8oYJEeSpxMdz9mkeFA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/calcularActualDesdeHistorico/#{programaSeleccionado}/#{tipoHistorico}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLNI8oYJEeSpxMdz9mkeFA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/calcularActualDesdeHistorico/#{programaSeleccionado}/#{tipoHistorico}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_NLNI84YJEeSpxMdz9mkeFA">_1210C293-E43A-4045-BD5E-A85BC0AC59BA_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
@@ -1105,7 +1105,7 @@
       <bpmn2:dataInputAssociation id="_NLUdvYYJEeSpxMdz9mkeFA">
         <bpmn2:targetRef>_80ADF1EF-462E-4628-9E6B-29B9191565E3_UrlInputX</bpmn2:targetRef>
         <bpmn2:assignment id="_NLUdvoYJEeSpxMdz9mkeFA">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLUdv4YJEeSpxMdz9mkeFA"><![CDATA[http://localhost:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/instanciarProcesoDistribucion/#{usuario}]]></bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_NLUdv4YJEeSpxMdz9mkeFA"><![CDATA[http://eap-rest:8080/BDT-Rest/rest/proceso/recursosFinancierosProgramasReforzamiento/instanciarProcesoDistribucion/#{usuario}]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_NLUdwIYJEeSpxMdz9mkeFA">_80ADF1EF-462E-4628-9E6B-29B9191565E3_UrlInputX</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
