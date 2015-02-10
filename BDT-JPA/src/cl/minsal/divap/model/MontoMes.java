@@ -2,22 +2,18 @@ package cl.minsal.divap.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -48,8 +44,6 @@ public class MontoMes implements Serializable {
   	@Column(name="id_monto_mes", unique=true, nullable=false)
   	@GeneratedValue
     private Integer idMontoMes;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "monto")
-    private Set<CajaMonto> cajaMontos;
 
     public MontoMes() {
     }
@@ -96,15 +90,6 @@ public class MontoMes implements Serializable {
     public void setIdMontoMes(Integer idMontoMes) {
         this.idMontoMes = idMontoMes;
     }
-
-    @XmlTransient
-    public Set<CajaMonto> getCajaMontos() {
-		return cajaMontos;
-	}
-
-	public void setCajaMontos(Set<CajaMonto> cajaMontos) {
-		this.cajaMontos = cajaMontos;
-	}
 
 	@Override
     public int hashCode() {

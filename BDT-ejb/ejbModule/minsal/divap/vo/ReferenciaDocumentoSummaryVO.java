@@ -11,13 +11,21 @@ public class ReferenciaDocumentoSummaryVO implements Serializable{
 	private Integer id;
 	private String path;
 	private String nodeRef;
+	private Boolean versionFinal;
 	
+	public ReferenciaDocumentoSummaryVO(){
+		this.id = null;
+		this.path = null;
+		this.nodeRef = null;
+		this.versionFinal = false;
+	}
 	
 	public ReferenciaDocumentoSummaryVO(Integer id, String path, String nodeRef) {
 		super();
 		this.id = id;
 		this.path = path;
 		this.nodeRef = nodeRef;
+		this.versionFinal = false;
 	}
 	
 	public Integer getId() {
@@ -42,6 +50,14 @@ public class ReferenciaDocumentoSummaryVO implements Serializable{
 	
 	public void setNodeRef(String nodeRef) {
 		this.nodeRef = nodeRef;
+	}
+
+	public Boolean getVersionFinal() {
+		return versionFinal;
+	}
+
+	public void setVersionFinal(Boolean versionFinal) {
+		this.versionFinal = versionFinal;
 	}
 
 	@Override

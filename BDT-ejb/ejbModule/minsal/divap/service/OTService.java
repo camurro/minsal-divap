@@ -86,7 +86,6 @@ import cl.minsal.divap.model.ConvenioComunaComponente;
 import cl.minsal.divap.model.ConvenioServicio;
 import cl.minsal.divap.model.ConvenioServicioComponente;
 import cl.minsal.divap.model.Cuota;
-import cl.minsal.divap.model.Destinatarios;
 import cl.minsal.divap.model.DetalleRemesas;
 import cl.minsal.divap.model.EstadoConvenio;
 import cl.minsal.divap.model.EstadoPrograma;
@@ -605,6 +604,8 @@ public class OTService {
 	public List<OTResumenMunicipalVO> getDetalleOTMunicipal(Integer componenteSeleccionado,
 			Integer servicioSeleccionado, Integer idProgramaAno) {
 		System.out.println("Buscando Detalle de Convenios/Remesas para Subtitulo 24");
+		
+		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
 
 		List<OTResumenMunicipalVO> listaOtResumenMunicipalVO = new ArrayList<OTResumenMunicipalVO>();
 		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(idProgramaAno);
@@ -643,7 +644,7 @@ public class OTService {
 
 			List<RemesasProgramaVO> remesas = new ArrayList<RemesasProgramaVO>();
 			try {
-				remesas = getRemesasPrograma(idProgramaAno, Integer.parseInt(getMesCurso(true)));
+				remesas = getRemesasPrograma(programaVO.getId(), Integer.parseInt(getMesCurso(true)));
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (ParseException e) {
@@ -908,7 +909,8 @@ public class OTService {
 
 			List<RemesasProgramaVO> remesas = new ArrayList<RemesasProgramaVO>();
 			try {
-				remesas = getRemesasPrograma(idProgramaAno, Integer.parseInt(getMesCurso(true)));
+				ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
+				remesas = getRemesasPrograma(programaVO.getId(), Integer.parseInt(getMesCurso(true)));
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (ParseException e) {
@@ -926,7 +928,7 @@ public class OTService {
 			for(RemesasProgramaVO remesaPrograma : remesas){
 				System.out.println(remesaPrograma.getMes());
 				for(DiaVO dia : remesaPrograma.getDias()){
-					if(dia.getDia() ==remesaMes.getDia().getId() && remesaPrograma.getIdMes() == remesaMes.getMes().getIdMes()){
+					if(dia.getDia() == remesaMes.getDia().getId() && remesaPrograma.getIdMes() == remesaMes.getMes().getIdMes()){
 						dia.setMonto(remesaMes.getMontoRemesa().longValue());
 					}else{
 						dia.setMonto(0l);
@@ -1004,9 +1006,9 @@ public class OTService {
 		return listaOtResumenMunicipalVO;
 	}
 
-	public List<RemesasProgramaVO> getRemesasPrograma(Integer idProgramaAno,
+	public List<RemesasProgramaVO> getRemesasPrograma(Integer idPrograma,
 			int idMes) throws ParseException {
-		List<ProgramaFechaRemesa> fechasRemesas = programasDAO.findRemesasByPrograma(idProgramaAno);
+		List<ProgramaFechaRemesa> fechasRemesas = programasDAO.findRemesasByPrograma(idPrograma);
 		List<RemesasProgramaVO> remesasVO = new ArrayList<RemesasProgramaVO>();
 
 		int meses;
@@ -1020,7 +1022,7 @@ public class OTService {
 			RemesasProgramaVO remesa = new RemesasProgramaVO();
 			Mes mes = mesDAO.getMesPorID(idMes+i);
 			for(ProgramaFechaRemesa fechaRemesa : fechasRemesas){
-				int day=fechaRemesa.getFechaRemesa().getDia().getDia();
+				int day = fechaRemesa.getFechaRemesa().getDia().getDia();
 				while(isWeekend(mes.getIdMes(), day, getAnoCurso()) || isFeriado(mes.getIdMes(), day, getAnoCurso())){
 					day-=1;
 				}
@@ -1032,6 +1034,7 @@ public class OTService {
 			remesa.setIdMes(mes.getIdMes());
 			remesa.setMes(mes.getNombre());
 			remesa.setDias(diasVO);
+			System.out.println("diasVO.size()-->" + diasVO.size());
 			remesa.setCantDias(diasVO.size());
 			remesasVO.add(remesa);
 		}
@@ -1039,9 +1042,9 @@ public class OTService {
 		return remesasVO;
 	}
 
-	public List<RemesasProgramaVO> getRemesasPerCapita(Integer idProgramaAno,
+	public List<RemesasProgramaVO> getRemesasPerCapita(Integer idPrograma,
 			int idMes) throws ParseException {
-		List<ProgramaFechaRemesa> fechasRemesas = programasDAO.findRemesasByPrograma(idProgramaAno);
+		List<ProgramaFechaRemesa> fechasRemesas = programasDAO.findRemesasByPrograma(idPrograma);
 		List<RemesasProgramaVO> remesasVO = new ArrayList<RemesasProgramaVO>();
 
 		for (int i = 0; i < 1; i++) {
@@ -1153,7 +1156,8 @@ public class OTService {
 
 			List<RemesasProgramaVO> remesas = new ArrayList<RemesasProgramaVO>();
 			try {
-				remesas = getRemesasPerCapita(programaAno, Integer.parseInt(getMesCurso(true)));
+				ProgramaVO programaVO = programasService.getProgramaAno(programaAno);
+				remesas = getRemesasPerCapita(programaVO.getId(), Integer.parseInt(getMesCurso(true)));
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (ParseException e) {
@@ -1776,7 +1780,7 @@ public class OTService {
 				resumen.setNombreServicio(servicio.getNombre());
 
 				Object resultPerCapitaBasal = antecedentesComunaDAO.getPerCapitaBasalByIdServicio(servicio.getId());
-				Long perCapitaBasal =0l;
+				Long perCapitaBasal = 0l;
 				if(resultPerCapitaBasal != null){
 					perCapitaBasal = ((Number)(resultPerCapitaBasal)).longValue();
 				}
@@ -1792,7 +1796,7 @@ public class OTService {
 				resumen.setRebajaIaaps(0l);
 				resumen.setDesctoLeyes(0l);
 
-				Long totalPerCapita = resumen.getPerCapitaBasal()+resumen.getAddf()-resumen.getRebajaIaaps()-resumen.getDesctoLeyes();
+				Long totalPerCapita = resumen.getPerCapitaBasal() + resumen.getAddf() - resumen.getRebajaIaaps() - resumen.getDesctoLeyes();
 				resumen.setTotalPerCapita(totalPerCapita);
 
 				resumen.setFonasaS24(cargarFonasa(servicio.getId(),Subtitulo.SUBTITULO24.getId()));
@@ -1823,8 +1827,7 @@ public class OTService {
 
 
 			try {
-				int ano = getAnoCurso();
-				BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderOrdenesTransferencia.replace("{ANO}", ano+""));
+				BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderOrdenesTransferencia.replace("{ANO}", getAnoCurso().toString()));
 				plantillaId = documentService.createDocumentRemesas(tipoDocumentoProceso, response.getNodeRef(), response.getFileName(), contenType, idProcesoOT);
 
 			} catch (Exception e) {
@@ -1906,8 +1909,8 @@ public class OTService {
 
 	public void enviarDocumentosFonasa(String idProcesoOT) {
 		try{
-			Integer idPlanillaFonasa= getIdDocumentoRemesa(Integer.parseInt(idProcesoOT),TipoDocumentosProcesos.RESUMENCONSOLIDADOFONASA);
-			Integer idOrdinarioOT= getIdDocumentoRemesa(Integer.parseInt(idProcesoOT),TipoDocumentosProcesos.PLANTILLAORDINARIOOREDENTRANSFERENCIA);
+			Integer idPlanillaFonasa = getIdDocumentoRemesa(Integer.parseInt(idProcesoOT), TipoDocumentosProcesos.RESUMENCONSOLIDADOFONASA);
+			Integer idOrdinarioOT = getIdDocumentoRemesa(Integer.parseInt(idProcesoOT), TipoDocumentosProcesos.PLANTILLAORDINARIOOREDENTRANSFERENCIA);
 			Integer idPlantillaCorreo = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAOTCORREO);
 			
 			
@@ -2032,6 +2035,7 @@ public class OTService {
 						ad.setNombre(adj.getDocumento().getPath());
 						adjs.add(ad);
 					}
+					System.out.println("adjs.size()="+adjs.size());
 					correo.setAdjuntos(adjs);
 				}
 				Set<ReporteEmailsDestinatarios> destinatarios = reporte.getReporteEmailsEnviados().getReporteEmailsDestinatariosSet();
@@ -2047,12 +2051,16 @@ public class OTService {
 							cc.add(copia);
 						}
 					}
+					System.out.println("cc="+cc);
+					System.out.println("to="+to);
 					correo.setCc(cc);
 					correo.setTo(to);
 				}
 				emailsEnviadosVO.add(correo);
 			}
 		}
+		
+		System.out.println("emailsRemesas.size()="+emailsRemesas.size());
 		return emailsEnviadosVO;
 	}
 

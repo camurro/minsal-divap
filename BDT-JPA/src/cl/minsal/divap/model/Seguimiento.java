@@ -43,7 +43,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Seguimiento.findByBody", query = "SELECT s FROM Seguimiento s WHERE s.body = :body"),
     @NamedQuery(name = "Seguimiento.findByFechaEnvio", query = "SELECT s FROM Seguimiento s WHERE s.fechaEnvio = :fechaEnvio"),
     @NamedQuery(name = "Seguimiento.findByIdOrdenTransferenciaTarea", query = "SELECT s FROM Seguimiento s JOIN s.otSeguimientoCollection d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.ordenTransferencia.idOrdenTransferencia = :idOrdenTransferencia"),
-    @NamedQuery(name = "Seguimiento.findByIdConvenio", query = "SELECT s FROM Seguimiento s JOIN s.conveniosSeguimiento d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.convenio.idConvenio = :idConvenio")})
+    @NamedQuery(name = "Seguimiento.findByIdConvenio", query = "SELECT s FROM Seguimiento s JOIN s.conveniosSeguimiento d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.convenio.idConvenio = :idConvenio"),
+    @NamedQuery(name = "Seguimiento.findByIdFlujoCaja", query = "SELECT s FROM Seguimiento s JOIN s.estimacionFlujoCajaConsolidadorSeguimientos d WHERE s.tareaSeguimiento.idTareaSeguimiento = :idTareaSeguimiento and d.flujoCajaConsolidador.idFlujoCajaConsolidador = :idFlujoCajaConsolidador")})
 
 
 
@@ -87,6 +88,8 @@ public class Seguimiento implements Serializable {
     private Set<ConvenioSeguimiento> conveniosSeguimiento;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguimiento")
     private Set<RemesasSeguimiento> remesasSeguimientoSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguimiento")
+    private Set<EstimacionFlujoCajaConsolidadorSeguimiento> estimacionFlujoCajaConsolidadorSeguimientos;
     @JoinColumn(name = "tarea_seguimiento", referencedColumnName = "id_tarea_seguimiento")
     @ManyToOne(optional = false)
     private TareaSeguimiento tareaSeguimiento;
@@ -269,6 +272,16 @@ public class Seguimiento implements Serializable {
     public void setRemesasSeguimientoSet(Set<RemesasSeguimiento> remesasSeguimientoSet) {
         this.remesasSeguimientoSet = remesasSeguimientoSet;
     }
+
+    @XmlTransient
+	public Set<EstimacionFlujoCajaConsolidadorSeguimiento> getEstimacionFlujoCajaConsolidadorSeguimientos() {
+		return estimacionFlujoCajaConsolidadorSeguimientos;
+	}
+
+	public void setEstimacionFlujoCajaConsolidadorSeguimientos(
+			Set<EstimacionFlujoCajaConsolidadorSeguimiento> estimacionFlujoCajaConsolidadorSeguimientos) {
+		this.estimacionFlujoCajaConsolidadorSeguimientos = estimacionFlujoCajaConsolidadorSeguimientos;
+	}
 
 	@Override
     public int hashCode() {

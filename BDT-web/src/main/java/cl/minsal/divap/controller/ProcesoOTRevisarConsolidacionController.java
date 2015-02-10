@@ -168,10 +168,10 @@ implements Serializable {
 
 	public void cargaComponentes() throws NumberFormatException, ParseException{
 		programa = otService.getProgramaById(programaSeleccionado);
-		remesasPrograma = otService.getRemesasPrograma(programa.getIdProgramaAno(), Integer.parseInt(otService.getMesCurso(true)));
-		remesasPerCapita = otService.getRemesasPerCapita(programa.getIdProgramaAno(), Integer.parseInt(otService.getMesCurso(true)));
-		System.out.println(programaSeleccionado);
-		listaComponentes= componenteService.getComponenteByPrograma(programaSeleccionado);
+		remesasPrograma = otService.getRemesasPrograma(programa.getId(), Integer.parseInt(otService.getMesCurso(true)));
+		remesasPerCapita = otService.getRemesasPerCapita(programa.getId(), Integer.parseInt(otService.getMesCurso(true)));
+		System.out.println("programaSeleccionado" + programaSeleccionado);
+		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
 	}
 	
 	public void buscarDetallePrograma(){

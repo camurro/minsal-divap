@@ -1381,4 +1381,51 @@ public class DocumentService {
 		
 	}
 
+	public void createDocumentFlujoCaja(FlujoCajaConsolidador flujoCajaConsolidador, Integer idServicio, TipoDocumentosProcesos tipoDocumento, Integer referenciaDocumentoId, Boolean lastVersion) {
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		if(lastVersion != null){
+			referenciaDocumento.setDocumentoFinal(lastVersion);
+		}
+		DocumentoEstimacionFlujoCajaConsolidador documentoEstimacionFlujoCajaConsolidador = new DocumentoEstimacionFlujoCajaConsolidador();
+		if(idServicio != null){
+			ServicioSalud servicio = servicioSaludDAO.getById(idServicio);
+			documentoEstimacionFlujoCajaConsolidador.setServicio(servicio);
+		}
+		documentoEstimacionFlujoCajaConsolidador.setTipoDocumento(new TipoDocumento(tipoDocumento.getId()));
+		documentoEstimacionFlujoCajaConsolidador.setDocumento(referenciaDocumento);
+		documentoEstimacionFlujoCajaConsolidador.setFlujoCajaConsolidador(flujoCajaConsolidador);
+		estimacionFlujoCajaDAO.save(documentoEstimacionFlujoCajaConsolidador);
+		System.out.println("luego de aplicar insert del documento estimacion flujo caja consolidador");
+	}
+
+	public List<ReferenciaDocumentoSummaryVO> getVersionFinalEstimacionFlujoCajaByType(Integer idProceso, TipoDocumentosProcesos tipoDocumento) {
+		List<ReferenciaDocumentoSummaryVO> versionesFinales = new ArrayList<ReferenciaDocumentoSummaryVO>();
+		List<ReferenciaDocumento> referenciaDocumentos =  fileDAO.getVersionFinalEstimacionFlujoCajaByType(idProceso, tipoDocumento);
+		if(referenciaDocumentos != null && referenciaDocumentos.size() > 0){
+			for(ReferenciaDocumento referenciaDocumento : referenciaDocumentos){
+				ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = new ReferenciaDocumentoMapper().getSummary(referenciaDocumento);
+				versionesFinales.add(referenciaDocumentoSummaryVO);
+			}
+		}
+		return versionesFinales;
+	}
+
+	public ReferenciaDocumentoSummaryVO getLastDocumentoSummaryByEstimacionFlujoCajaTipoDocumento(Integer idProceso, TipoDocumentosProcesos tipoDocumento) {
+		ReferenciaDocumento referenciaDocumento =  fileDAO.getLastDocumentByTipoDocumentoEstimacionFlujoCaja(idProceso, tipoDocumento);
+		ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = new ReferenciaDocumentoMapper().getSummary(referenciaDocumento);
+		return referenciaDocumentoSummaryVO;
+	}
+
+	public Integer createDocumentFlujoCaja(FlujoCajaConsolidador flujoCajaConsolidador, TipoDocumentosProcesos tipoDocumentoProceso, String nodeRef, String filename, String contentType) {
+		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contentType);
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		DocumentoEstimacionFlujoCajaConsolidador documentoEstimacionFlujoCajaConsolidador = new DocumentoEstimacionFlujoCajaConsolidador();
+		documentoEstimacionFlujoCajaConsolidador.setTipoDocumento(new TipoDocumento(tipoDocumentoProceso.getId()));
+		documentoEstimacionFlujoCajaConsolidador.setDocumento(referenciaDocumento);
+		documentoEstimacionFlujoCajaConsolidador.setFlujoCajaConsolidador(flujoCajaConsolidador);
+		estimacionFlujoCajaDAO.save(documentoEstimacionFlujoCajaConsolidador);
+		System.out.println("luego de aplicar insert del documento  estimacion flujo caja consolidador");
+		return referenciaDocumentoId;
+	}
+
 }

@@ -11,10 +11,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -23,7 +23,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlTransient;
- 
+
 
 /**
  *
@@ -31,13 +31,13 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "Comuna.findAll", query = "SELECT c FROM Comuna c order by c.servicioSalud.id asc, c.nombre asc"),
-    @NamedQuery(name = "Comuna.findById", query = "SELECT c FROM Comuna c WHERE c.id = :id"),
-    @NamedQuery(name = "Comuna.findByNombre", query = "SELECT c FROM Comuna c WHERE c.nombre = :nombre"),
-    @NamedQuery(name = "Comuna.findByServicio", query = "SELECT c FROM Comuna c WHERE c.servicioSalud.id = :idServicio order by c.nombre asc"),
-    @NamedQuery(name = "Comuna.findRebajasByComunas", query = "SELECT distinct(c) FROM Comuna c JOIN c.comunaCumplimientoCollection d WHERE c.id IN (:listaId) and d.idMes.idMes= :idMes order by c.id asc"),
-    @NamedQuery(name = "Comuna.findByComunaServicioAno", query = "SELECT c FROM Comuna c JOIN c.antecendentesComunas a WHERE c.nombre = :comuna and c.servicioSalud.nombre = :servicio and a.anoAnoEnCurso.ano = :anoCurso"),
-    @NamedQuery(name = "Comuna.findComunaServicioAuxiliar", query = "SELECT c FROM Comuna c WHERE c.servicioSalud.id = :idServicio and c.nombre LIKE :comuna")})
+	@NamedQuery(name = "Comuna.findAll", query = "SELECT c FROM Comuna c order by c.servicioSalud.id asc, c.nombre asc"),
+	@NamedQuery(name = "Comuna.findById", query = "SELECT c FROM Comuna c WHERE c.id = :id"),
+	@NamedQuery(name = "Comuna.findByNombre", query = "SELECT c FROM Comuna c WHERE c.nombre = :nombre"),
+	@NamedQuery(name = "Comuna.findByServicio", query = "SELECT c FROM Comuna c WHERE c.servicioSalud.id = :idServicio order by c.nombre asc"),
+	@NamedQuery(name = "Comuna.findRebajasByComunas", query = "SELECT distinct(c) FROM Comuna c JOIN c.comunaCumplimientoCollection d WHERE c.id IN (:listaId) and d.idMes.idMes= :idMes order by c.id asc"),
+	@NamedQuery(name = "Comuna.findByComunaServicioAno", query = "SELECT c FROM Comuna c JOIN c.antecendentesComunas a WHERE c.nombre = :comuna and c.servicioSalud.nombre = :servicio and a.anoAnoEnCurso.ano = :anoCurso"),
+	@NamedQuery(name = "Comuna.findComunaServicioAuxiliar", query = "SELECT c FROM Comuna c WHERE c.servicioSalud.id = :idServicio and c.auxiliar = true")})
 public class Comuna implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -47,6 +47,10 @@ public class Comuna implements Serializable {
 	private Integer id;
 
 	private String nombre;
+
+	@Basic(optional = false)
+	@Column(name = "auxiliar")
+	private boolean auxiliar;
 
 	//bi-directional many-to-one association to AntecendentesComuna
 	@OneToMany(mappedBy="idComuna")
@@ -65,31 +69,31 @@ public class Comuna implements Serializable {
 	@OneToMany(mappedBy="comuna")
 	private List<ProgramaMunicipalCore> programaMunicipalCores;
 	@OneToMany(mappedBy = "idComuna")
-   	 private Collection<ComunaCumplimiento> comunaCumplimientoCollection;
-	
+	private Collection<ComunaCumplimiento> comunaCumplimientoCollection;
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idcomuna")
 	private Collection<Remesa> remesaCollection;
 
-	 @OneToMany(mappedBy = "comuna")
-	    private Set<DetalleRemesas> detalleRemesasSet;
+	@OneToMany(mappedBy = "comuna")
+	private Set<DetalleRemesas> detalleRemesasSet;
 
 	@XmlTransient
-	    public Set<DetalleRemesas> getDetalleRemesasSet() {
-	        return detalleRemesasSet;
-	    }
+	public Set<DetalleRemesas> getDetalleRemesasSet() {
+		return detalleRemesasSet;
+	}
 
-	    public void setDetalleRemesasSet(Set<DetalleRemesas> detalleRemesasSet) {
-	        this.detalleRemesasSet = detalleRemesasSet;
-	    }
+	public void setDetalleRemesasSet(Set<DetalleRemesas> detalleRemesasSet) {
+		this.detalleRemesasSet = detalleRemesasSet;
+	}
 
 	@XmlTransient
-	   public Collection<Remesa> getRemesaCollection() {
-	       return remesaCollection;
-	   }
+	public Collection<Remesa> getRemesaCollection() {
+		return remesaCollection;
+	}
 
-	   public void setRemesaCollection(Collection<Remesa> remesaCollection) {
-	       this.remesaCollection = remesaCollection;
-	   }
+	public void setRemesaCollection(Collection<Remesa> remesaCollection) {
+		this.remesaCollection = remesaCollection;
+	}
 
 
 	public Comuna() {
@@ -109,6 +113,14 @@ public class Comuna implements Serializable {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+	
+	public boolean isAuxiliar() {
+		return auxiliar;
+	}
+
+	public void setAuxiliar(boolean auxiliar) {
+		this.auxiliar = auxiliar;
 	}
 
 	public Set<AntecendentesComuna> getAntecendentesComunas() {
@@ -170,38 +182,39 @@ public class Comuna implements Serializable {
 
 		return programaMunicipalCore;
 	}
- @XmlTransient
-    public Collection<ComunaCumplimiento> getComunaCumplimientoCollection() {
-        return comunaCumplimientoCollection;
-    }
+	
+	@XmlTransient
+	public Collection<ComunaCumplimiento> getComunaCumplimientoCollection() {
+		return comunaCumplimientoCollection;
+	}
 
-    public void setComunaCumplimientoCollection(Collection<ComunaCumplimiento> comunaCumplimientoCollection) {
-        this.comunaCumplimientoCollection = comunaCumplimientoCollection;
-    }
+	public void setComunaCumplimientoCollection(Collection<ComunaCumplimiento> comunaCumplimientoCollection) {
+		this.comunaCumplimientoCollection = comunaCumplimientoCollection;
+	}
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (id != null ? id.hashCode() : 0);
+		return hash;
+	}
 
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof Comuna)) {
-            return false;
-        }
-        Comuna other = (Comuna) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof Comuna)) {
+			return false;
+		}
+		Comuna other = (Comuna) object;
+		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+			return false;
+		}
+		return true;
+	}
 
-    @Override
-    public String toString() {
-        return "cl.minsal.divap.model.Comuna[ id=" + id + " ]";
-    }
+	@Override
+	public String toString() {
+		return "cl.minsal.divap.model.Comuna[ id=" + id + " ]";
+	}
 
 }
 

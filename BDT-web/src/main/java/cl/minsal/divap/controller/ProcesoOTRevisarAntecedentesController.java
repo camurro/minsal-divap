@@ -104,16 +104,16 @@ implements Serializable {
 			programa = otService.getProgramaById(programaSeleccionado);
 			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado,programa);
 		}
-		percapita=false;
+		percapita = false;
 		if(programa.getId()< 0){
-			percapita=true;
+			percapita = true;
 		}
 		
 		listaServicios = utilitariosService.getAllServicios();
-		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
+		listaComponentes = componenteService.getComponenteByPrograma(programa.getId());
 		
-		remesasPrograma = otService.getRemesasPrograma(programa.getIdProgramaAno(), Integer.parseInt(otService.getMesCurso(true)));
-		remesasPerCapita = otService.getRemesasPerCapita(programa.getIdProgramaAno(), Integer.parseInt(otService.getMesCurso(true)));
+		remesasPrograma = otService.getRemesasPrograma(programa.getId(), Integer.parseInt(otService.getMesCurso(true)));
+		remesasPerCapita = otService.getRemesasPerCapita(programa.getId(), Integer.parseInt(otService.getMesCurso(true)));
 	}
 
 
@@ -197,10 +197,10 @@ implements Serializable {
 	
 	public void actualizarS24(Integer row, Integer idComuna){
 		OTResumenMunicipalVO registroTabla = resultadoMunicipal.get(row);
-		if(registroTabla.getIdDetalleRemesa()!=null){
+		if(registroTabla.getIdDetalleRemesa() != null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
 		}
-		OTResumenMunicipalVO registroActualizado = otService.actualizarMunicipal(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO24.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
+		OTResumenMunicipalVO registroActualizado = otService.actualizarMunicipal(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO24.getId(), componenteSeleccionado, registroTabla.getIdDetalleRemesa());
 		resultadoMunicipal.remove(registroActualizado);
 	}
 	

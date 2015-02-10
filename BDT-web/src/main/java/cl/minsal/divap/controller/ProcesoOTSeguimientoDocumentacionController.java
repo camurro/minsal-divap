@@ -12,14 +12,14 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Logger;
-
 import minsal.divap.service.OTService;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
-import minsal.divap.vo.OTResumenMunicipalVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ReporteEmailsEnviadosVO;
+
+import org.apache.log4j.Logger;
+
 import cl.minsal.divap.pojo.EnvioServiciosPojo;
 import cl.minsal.divap.pojo.EstablecimientoPojo;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
@@ -64,11 +64,8 @@ public class ProcesoOTSeguimientoDocumentacionController extends AbstractTaskMBe
 			}
 		}
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			idProcesoOT = (Integer) getTaskDataVO()
-					.getData().get("_idProcesoOT");
+			idProcesoOT = (Integer) getTaskDataVO().getData().get("_idProcesoOT");
 		}
-		
-		reporteCorreos = otService.getReporteCorreosByIdRemesa(idProcesoOT);
 	}
 	
 	public String downloadArchivo() {
@@ -77,8 +74,6 @@ public class ProcesoOTSeguimientoDocumentacionController extends AbstractTaskMBe
 		super.downloadDocument();
 		return null;
 	}
-	
-	public Integer actualizar(){return null;}
 	
 	public void buscarReporteCorreos(){
 		reporteCorreos = otService.getReporteCorreosByIdRemesa(idProcesoOT);
@@ -137,8 +132,6 @@ public class ProcesoOTSeguimientoDocumentacionController extends AbstractTaskMBe
 		this.programa = programa;
 	}
 
-	
-
 	public Integer getIdProcesoOT() {
 		return idProcesoOT;
 	}
@@ -165,6 +158,9 @@ public class ProcesoOTSeguimientoDocumentacionController extends AbstractTaskMBe
 	}
 
 	public List<ReporteEmailsEnviadosVO> getReporteCorreos() {
+		if(reporteCorreos == null){
+			reporteCorreos = otService.getReporteCorreosByIdRemesa(idProcesoOT);
+		}
 		return reporteCorreos;
 	}
 

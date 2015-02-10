@@ -12,16 +12,12 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import minsal.divap.service.OTService;
-import minsal.divap.service.ProgramasService;
-import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
+import minsal.divap.service.EstimacionFlujoCajaService;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ReporteEmailsEnviadosVO;
 
 import org.apache.log4j.Logger;
 
-import cl.minsal.divap.pojo.EnvioServiciosPojo;
-import cl.minsal.divap.pojo.EstablecimientoPojo;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 @Named ( "procesoFlujoCajaEnviarDocumentosController" ) 
@@ -33,25 +29,17 @@ public class ProcesoFlujoCajaEnviarDocumentosController extends AbstractTaskMBea
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private List<EnvioServiciosPojo> listadoEnvioServicios;
-	private List<EstablecimientoPojo> listadoEstablecimientos;
-	private String actividadSeguimientoTitle;
 	@Inject 
 	private transient Logger log;
 	
 
 	private ProgramaVO programa;
-	private Integer idProcesoOT;
-	private Integer idProxAno;
+	private Integer idProceso;
+	//private Integer idProxAno;
 	private List<ReporteEmailsEnviadosVO> reporteCorreos;
 	private String docIdDownload;
-	
 	@EJB
-	private RecursosFinancierosProgramasReforzamientoService reforzamientoService;
-	@EJB
-	private ProgramasService programaService;
-	@EJB
-	private OTService otService;
+	private EstimacionFlujoCajaService estimacionFlujoCajaService;
 	
 	@PostConstruct
 	public void init() {
@@ -64,11 +52,11 @@ public class ProcesoFlujoCajaEnviarDocumentosController extends AbstractTaskMBea
 			}
 		}
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			idProcesoOT = (Integer) getTaskDataVO()
-					.getData().get("_idProcesoOT");
+			idProceso = (Integer) getTaskDataVO()
+					.getData().get("_idProceso");
 		}
 		
-		reporteCorreos = otService.getReporteCorreosByIdRemesa(idProcesoOT);
+		reporteCorreos = estimacionFlujoCajaService.getReporteCorreosByFlujoCajaConsolidador(idProceso);
 	}
 	
 	public String downloadArchivo() {
@@ -78,45 +66,11 @@ public class ProcesoFlujoCajaEnviarDocumentosController extends AbstractTaskMBea
 		return null;
 	}
 	
-	public Integer actualizar(){return null;}
 	
 	public void buscarReporteCorreos(){
-		reporteCorreos = otService.getReporteCorreosByIdRemesa(idProcesoOT);
+		reporteCorreos = estimacionFlujoCajaService.getReporteCorreosByFlujoCajaConsolidador(idProceso);
 	}
 	
-	public String getActividadSeguimientoTitle() {
-		return actividadSeguimientoTitle;
-	}
-
-	public void setActividadSeguimientoTitle(String actividadSeguimientoTitle) {
-		this.actividadSeguimientoTitle = actividadSeguimientoTitle;
-	}
-
-	public List<EstablecimientoPojo> getListadoEstablecimientos() {
-		return listadoEstablecimientos;
-	}
-
-	public void setListadoEstablecimientos(
-			List<EstablecimientoPojo> listadoEstablecimientos) {
-		this.listadoEstablecimientos = listadoEstablecimientos;
-	}
-
-	public List<EnvioServiciosPojo> getListadoEnvioServicios() {
-		return listadoEnvioServicios;
-	}
-
-	public void setListadoEnvioServicios(
-			List<EnvioServiciosPojo> listadoEnvioServicios) {
-		this.listadoEnvioServicios = listadoEnvioServicios;
-	}
-	
-	public Long getTotalMunicipal(){
-		Long suma = 0L;
-		for(EstablecimientoPojo e : listadoEstablecimientos){
-			suma+=e.gettS24();
-		}
-		return suma;
-	}
 
 	@Override
 	protected Map<String, Object> createResultData() {
@@ -137,31 +91,12 @@ public class ProcesoFlujoCajaEnviarDocumentosController extends AbstractTaskMBea
 		this.programa = programa;
 	}
 
-	
-
-	public Integer getIdProcesoOT() {
-		return idProcesoOT;
+	public Integer getIdProceso() {
+		return idProceso;
 	}
 
-	public void setIdProcesoOT(Integer idProcesoOT) {
-		this.idProcesoOT = idProcesoOT;
-	}
-
-	public RecursosFinancierosProgramasReforzamientoService getReforzamientoService() {
-		return reforzamientoService;
-	}
-
-	public void setReforzamientoService(
-			RecursosFinancierosProgramasReforzamientoService reforzamientoService) {
-		this.reforzamientoService = reforzamientoService;
-	}
-
-	public Integer getIdProxAno() {
-		return idProxAno;
-	}
-
-	public void setIdProxAno(Integer idProxAno) {
-		this.idProxAno = idProxAno;
+	public void setIdProceso(Integer idProceso) {
+		this.idProceso = idProceso;
 	}
 
 	public List<ReporteEmailsEnviadosVO> getReporteCorreos() {

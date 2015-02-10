@@ -7,10 +7,7 @@ import java.util.List;
 import cl.minsal.divap.model.Cuota;
 
 
-public class OTResumenMunicipalVO implements Serializable
-{
-
-	
+public class OTResumenMunicipalVO implements Serializable{
 	
 	/**
 	 * 

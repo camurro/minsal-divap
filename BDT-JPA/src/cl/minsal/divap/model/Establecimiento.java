@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
 
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name = "Establecimiento.findById", query = "SELECT e FROM Establecimiento e WHERE e.id = :idEstablecimiento"),
 	@NamedQuery(name = "Establecimiento.findEstablecimientosByComuna", query = "SELECT e FROM Establecimiento e WHERE e.comuna.id = :idComuna"),
 	@NamedQuery(name = "Establecimiento.findEstablecimientosByServicio", query = "SELECT e FROM Establecimiento e WHERE e.servicioSalud.id = :idServicio"),
-	@NamedQuery(name = "Establecimiento.findEstablecimientoServicioAuxiliar", query = "SELECT e FROM Establecimiento e WHERE e.servicioSalud.id = :idServicio and e.nombre LIKE :establecimiento")})
+	@NamedQuery(name = "Establecimiento.findEstablecimientoServicioAuxiliar", query = "SELECT e FROM Establecimiento e WHERE e.servicioSalud.id = :idServicio and e.auxiliar = true")})
 public class Establecimiento implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -44,6 +45,10 @@ public class Establecimiento implements Serializable {
 	
 	@Column(name = "tipo")
 	private String tipo;
+	
+	@Basic(optional = false)
+    @Column(name = "auxiliar")
+    private boolean auxiliar;
 
 	//bi-directional many-to-one association to Comuna
 	@ManyToOne
@@ -63,9 +68,9 @@ public class Establecimiento implements Serializable {
 	public Collection<Remesa> getRemesaCollection() {
 		return remesaCollection;
 	}
-	 @OneToMany(mappedBy = "establecimiento")
-	    private Set<DetalleRemesas> detalleRemesasSet;
-	 
+	
+	@OneToMany(mappedBy = "establecimiento")
+	private Set<DetalleRemesas> detalleRemesasSet;
 
 	public void setRemesaCollection(Collection<Remesa> remesaCollection) {
 		this.remesaCollection = remesaCollection;

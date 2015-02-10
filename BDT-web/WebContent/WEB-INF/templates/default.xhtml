@@ -97,17 +97,17 @@
 						<p:menuitem value="Gestión de Información para Transferencia" url="divapProcesoGITInicio.jsf"
 							icon="ui-icon-arrowrefresh-1-s" />
 						<p:submenu label="Estimación de Flujos de Caja">
-							<p:menuitem value="Estimación de Flujos de Caja" url="divapProcesoProgInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
-							<p:menuitem value="Consolidador de Flujos de Caja" url="divapProcesoProgInicioConsolidado.jsf" icon="ui-icon-arrowrefresh-1-s" />
+							<p:menuitem onclick="cambiarEstado();" value="Estimación de Flujos de Caja" url="divapProcesoProgInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
+							<p:menuitem onclick="cambiarEstado();" value="Consolidador de Flujos de Caja" url="divapProcesoProgInicioConsolidado.jsf" icon="ui-icon-arrowrefresh-1-s" />
 						</p:submenu>
-						<p:menuitem value="Ordenes de Transferencia" url="divapProcesoOTInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
-						<p:menuitem value="Consolidador de Ordenes de Transferencia" url="divapProcesoOTConsolidador.jsf" icon="ui-icon-arrowrefresh-1-s" />
+						<p:menuitem onclick="cambiarEstado();" value="Ordenes de Transferencia" url="divapProcesoOTInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
+						<p:menuitem onclick="cambiarEstado();" value="Consolidador de Ordenes de Transferencia" url="divapProcesoOTConsolidador.jsf" icon="ui-icon-arrowrefresh-1-s" />
 					</p:submenu>
 					<p:submenu label="Reportes" icon="ui-icon-document">
 						<p:submenu label="Informes Comuna - Servicio">
-							<p:menuitem value="Marco Presupuestario Programa por Comuna y Servicios de Salud" url="divapReporteMarcoPresupuestarioComuna.jsf" icon="ui-icon-document" />
-							<p:menuitem value="Población per Capita" url="divapReportePoblacionPerCapita.jsf" icon="ui-icon-document" />
-							<p:menuitem value="Histórico por Programa" url="divapReporteHistoricoPorPrograma.jsf" icon="ui-icon-document" />
+							<p:menuitem onclick="cambiarEstado();" value="Marco Presupuestario Programa por Comuna y Servicios de Salud" url="divapReporteMarcoPresupuestarioComuna.jsf" icon="ui-icon-document" />
+							<p:menuitem onclick="cambiarEstado();" value="Población per Capita" url="divapReportePoblacionPerCapita.jsf" icon="ui-icon-document" />
+							<p:menuitem onclick="cambiarEstado();" value="Histórico por Programa" url="divapReporteHistoricoPorPrograma.jsf" icon="ui-icon-document" />
 						</p:submenu>
 						<p:menuitem value="Monitoreo Programa" url="divapReporteMonitoreoPrograma.jsf" icon="ui-icon-document" />
 						<p:menuitem value="Rebajas" url="divapReporteRebajas.jsf" icon="ui-icon-document" />

@@ -265,6 +265,11 @@ public class GeneradorExcel {
                 addSheet((ReporteMetaDesempenoCuadro2SheetExcel)excelSheet, sheetName);
                 return;
             }
+			
+			if(excelSheet instanceof OrdenesTransferenciaSheetExcel){
+				 addSheet((OrdenesTransferenciaSheetExcel)excelSheet, sheetName);
+	             return;
+			}
 
 
             XSSFSheet sheet = null;
