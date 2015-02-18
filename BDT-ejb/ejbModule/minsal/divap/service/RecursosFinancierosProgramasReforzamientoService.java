@@ -2820,7 +2820,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(progra.getId(), getAnoCurso()+1);
 
 		Integer plantillaId = documentService.getPlantillaByTypeAndProgram(tipoDocumentoProceso, idNuevoPrograma);
-		Programa prog =  programaService.getProgramaPorID(idPrograma);
+		Programa prog =  programaService.getProgramaPorID(progra.getId());
 
 		ProgramaVO programa;
 		if(plantillaId == null){
