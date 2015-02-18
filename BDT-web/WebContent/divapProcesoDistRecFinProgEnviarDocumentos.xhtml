@@ -8,6 +8,29 @@
 .ui-state-error {
 	margin-left: 0px;
 }
+ .hide-column-names table thead tr {
+                display: none;
+            }
+           
+            .hide-column-border table tbody td{
+                border-style: none;
+            }
+           
+            .noheader.ui-datatable table thead {
+                display: none;
+            }
+           
+            .ui-datatable .ui-datatable-data .values1 {
+                background: none;
+                   border-style: none !important;
+            }
+           
+            .ui-datatable.borderless thead,
+            .ui-datatable.borderless tbody,
+            .ui-datatable.borderless tbody tr,
+            .ui-datatable.borderless tbody td {
+                border-style: none;
+            }
 </style>
 		<script type="text/javascript">
 
@@ -16,23 +39,18 @@
              document.getElementById('formDownload:linkDownload').click();  
          } 
 
-		 setInterval(
-				 function () {
-					 document.getElementById("form:buscarReporte").click();
-					 document.getElementById("form:botonActualizar").click();
-					 }, 10000);
-	        
-		$(document).ready(function() {
-			document.getElementById("form:botonActualizar").click();
-		});
-
+		    function recuperaListaCorreos(){
+	            document.getElementById('form:buscarReporte').click();
+	         }
+	         
+	          $(document).ready(function () {
+	             setInterval("recuperaListaCorreos();", 15000);
+	          }); 
 		</script>
 	</ui:define>
 	<ui:define name="content">
 		<h:form enctype="multipart/form-data" id="form">
-		<p:commandButton id="botonActualizar" value="actualiza" update="form:tablaResultados" style="display: none" action="#{procesoDistRecFinSeguimientoDocumentacionController.actualizar}"/>
 		<p:commandButton id="buscarReporte" value="actualiza" update="form:tablaResultados" style="display: none" action="#{procesoDistRecFinSeguimientoDocumentacionController.buscarReporteCorreos}"/>
-		<h:commandButton id="btnLoadData" value="Hidden" action="#{procesoDistRecFinSeguimientoDocumentacionController.actualizar}" style="display:none" update="form:tablaResultados"/>
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="Distribución de Recursos Financieros por Programa"/>
@@ -47,7 +65,7 @@
 						<p:columnGroup type="header">
 							<p:row>
 								<p:column headerText="Servicio de Salud" width="245"/>
-								<p:column headerText="Documentos" />
+								<p:column headerText="Documentos" width="345"/>
 								<p:column headerText="Fecha de Envío" width="150"/>
 								<p:column headerText="Destinatario" footerText="#{procesoDistRecFinSeguimientoDocumentacionController.getTotalMunicipal}" width="250"/>
 							</p:row>
@@ -55,29 +73,37 @@
 
 						<p:column>#{_reporte.nombreServicio}</p:column>
 						<p:column>
-							<c:forEach items="#{_reporte.adjuntos}" var="adj">
-								<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> 
+						 <p:dataTable resizableColumns="true" value="#{_reporte.adjuntos}" var="adj" styleClass="noheader borderless" >
+                                <p:column  >
+                                    <h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+                                    <h:commandLink action="#{procesoGITResumenDocumentosController.downloadArchivo}" value="#{adj.nombre}" onclick="downloadDocument(#{adj.id});return false;" />
+                                    <br />
+                                </p:column>
+                            </p:dataTable>
 							
-									<h:commandLink
-										action="#{procesoDistRecFinSeguimientoDocumentacionController.downloadArchivo}"
-										value="#{adj.nombre}"
-										onclick="downloadDocument(#{adj.id});return false;" >
-									</h:commandLink>
-									<br />
-							</c:forEach>
 						</p:column>
 						<p:column>#{_reporte.fechaFormat}</p:column>
 						<p:column style="align:left">
-						<h:outputText value="Para:" style="align:left"></h:outputText>
 						
-								<c:forEach items="#{_reporte.to}" var="para">
-									<span class="strong">#{para}</span>
-								</c:forEach>
-							<br/>
-								CC:
-								<c:forEach items="#{_reporte.cc}" var="copia">
-									<span class="strong">#{copia}</span><br /> 
-								</c:forEach>
+										
+						 <p:dataTable resizableColumns="true" value="#{_reporte.to}" var="para" styleClass="noheader borderless" >
+                                <p:column width="20px" rowspan="#{_reporte.to.size()}" >
+                                    <h:outputText value="Para:" style="align:left"></h:outputText>
+                                </p:column>
+                                <p:column  >
+                                    <span class="strong">#{para}</span>
+                                </p:column>
+                            </p:dataTable>
+                           
+                            <p:dataTable resizableColumns="true" value="#{_reporte.cc}" var="copia" styleClass="noheader borderless" rendered="#{not empty _reporte.cc}" >
+                                <p:column width="20px" rowspan="#{_reporte.cc.size()}" >
+                                    <h:outputText value="CC:" style="align:left"></h:outputText>
+                                </p:column>
+                                <p:column  >
+                                    <span class="strong">#{copia}</span>
+                                </p:column>
+                            </p:dataTable>
+						
 						</p:column>
 					</p:dataTable>
 

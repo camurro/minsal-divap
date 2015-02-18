@@ -1931,7 +1931,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		System.out.println("******************* inicio metodo");
 		List<ResumenProgramaMixtoVO> resumen = new ArrayList<ResumenProgramaMixtoVO>();
 		ProgramaVO programa = getProgramaById(idPrograma);
-		Integer idProgramaAno = programasDAO.getIdProgramaAnoAnterior(idPrograma, getAnoCurso()+1);
+		Integer idProgramaAno = programasDAO.getIdProgramaAnoAnterior(programa.getId(), getAnoCurso()+1);
 		List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
 		Map<Integer, List<Integer>> componentesBySubtitulos = new HashMap<Integer, List<Integer>>();
 		for(ComponentesVO componente: programa.getComponentes()){
