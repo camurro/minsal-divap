@@ -114,6 +114,7 @@ implements Serializable {
 	
 	private String mesActual;
 	private Integer activeTab = 0;
+	private Integer anoCurso;
 	
 	private boolean botonBloqueado;
 	
@@ -129,11 +130,11 @@ implements Serializable {
 				log.error("Error tratando de redireccionar a login por falta de usuario en sesion.", e);
 			}
 		}
-		
+		anoCurso = (Integer) getTaskDataVO().getData().get("_ano");
 		mesActual = otService.getMesCurso(false);
 		
 		listaServicios = utilitariosService.getAllServicios();
-		listaProgramas = otService.getProgramas(getLoggedUsername());
+		listaProgramas = otService.getProgramas(getLoggedUsername(), getAnoCurso()); 
 		
 		botonBloqueado=false;
 		for(ProgramaVO prog: listaProgramas){
@@ -144,7 +145,7 @@ implements Serializable {
 			}
 		}
 		
-		listaProgramasResumen = otService.getProgramas(getLoggedUsername());
+		listaProgramasResumen = otService.getProgramas(getLoggedUsername(), getAnoCurso());
 		listaComponentes= new ArrayList<ComponentesVO>();
 		
 		encabezadoFonasa = programasService.getProgramasFonasa(true);
@@ -765,7 +766,12 @@ implements Serializable {
 		this.botonBloqueado = botonBloqueado;
 	}
 
-	
-	
+	public Integer getAnoCurso() {
+		return anoCurso;
+	}
+
+	public void setAnoCurso(Integer anoCurso) {
+		this.anoCurso = anoCurso;
+	}
 	
 }

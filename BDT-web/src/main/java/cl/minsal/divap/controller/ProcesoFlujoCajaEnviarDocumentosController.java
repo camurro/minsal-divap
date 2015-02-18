@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import minsal.divap.service.EstimacionFlujoCajaService;
+import minsal.divap.vo.AdjuntosVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ReporteEmailsEnviadosVO;
 
@@ -55,7 +56,6 @@ public class ProcesoFlujoCajaEnviarDocumentosController extends AbstractTaskMBea
 			idProceso = (Integer) getTaskDataVO()
 					.getData().get("_idProceso");
 		}
-		
 		reporteCorreos = estimacionFlujoCajaService.getReporteCorreosByFlujoCajaConsolidador(idProceso);
 	}
 	
@@ -101,6 +101,14 @@ public class ProcesoFlujoCajaEnviarDocumentosController extends AbstractTaskMBea
 
 	public List<ReporteEmailsEnviadosVO> getReporteCorreos() {
 		return reporteCorreos;
+	}
+	
+	public List<AdjuntosVO> adjuntoCorreos(Integer rowIndexVarCorreos){
+		System.out.println("adjuntoCorreos rowIndexVarCorreos--> " + rowIndexVarCorreos);
+		if(rowIndexVarCorreos != null && rowIndexVarCorreos < reporteCorreos.size()){
+			return reporteCorreos.get(rowIndexVarCorreos).getAdjuntos();
+		}
+		return null;
 	}
 
 	public void setReporteCorreos(List<ReporteEmailsEnviadosVO> reporteCorreos) {

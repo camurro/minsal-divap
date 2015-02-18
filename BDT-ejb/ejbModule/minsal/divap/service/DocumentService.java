@@ -614,7 +614,7 @@ public class DocumentService {
 	}
 
 
-	public Integer createDocumentPropuestaConsolidador(TipoDocumento tipoDocumentoProceso,
+	public Integer createDocumentMonitoreoConsolidador(FlujoCajaConsolidador flujoCajaConsolidador, TipoDocumento tipoDocumentoProceso,
 			String nodeRef, String filename, String contenType, Integer ano, Integer idMes ) {
 		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
 		AnoEnCurso anoEnCurso = new AnoEnCurso();
@@ -622,14 +622,14 @@ public class DocumentService {
 		Mes mesEnCurso = new Mes();
 		mesEnCurso.setIdMes(idMes);
 		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
-		DocumentoEstimacionflujocaja documentoEstimacionFlujoCaja = new DocumentoEstimacionflujocaja();
-		documentoEstimacionFlujoCaja.setIdTipoDocumento(tipoDocumentoProceso);
-		documentoEstimacionFlujoCaja.setIdDocumento(referenciaDocumento);
-		documentoEstimacionFlujoCaja.setAno(anoEnCurso);
-		documentoEstimacionFlujoCaja.setIdMes(mesEnCurso);
-		//documentoDistribucionInicialPercapita.setIdDocumento(referenciaDocumento);
+		DocumentoEstimacionFlujoCajaConsolidador documentoEstimacionFlujoCajaConsolidador = new DocumentoEstimacionFlujoCajaConsolidador();
+		documentoEstimacionFlujoCajaConsolidador.setFlujoCajaConsolidador(flujoCajaConsolidador);
+		documentoEstimacionFlujoCajaConsolidador.setTipoDocumento(tipoDocumentoProceso);
+		documentoEstimacionFlujoCajaConsolidador.setDocumento(referenciaDocumento);
+		documentoEstimacionFlujoCajaConsolidador.setAno(anoEnCurso);
+		documentoEstimacionFlujoCajaConsolidador.setMes(mesEnCurso);
 
-		estimacionFlujoCajaDAO.save(documentoEstimacionFlujoCaja);
+		estimacionFlujoCajaDAO.save(documentoEstimacionFlujoCajaConsolidador);
 		System.out.println("luego de aplicar insert del documento percapita");
 		System.out.println("referenciaDocumentoId ---> "+referenciaDocumentoId);
 		return referenciaDocumentoId;

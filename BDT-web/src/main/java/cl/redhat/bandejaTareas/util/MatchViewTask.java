@@ -7,7 +7,7 @@ import minsal.divap.vo.TaskVO;
 public class MatchViewTask {
 
 	enum ViewTask{
-		// Mapero pÃ¡ginas Per Capita
+		// Mapero páginas Per Capita
 		SUBIRDOCUMENTOS("minsal_divap.DistribucionInicialPerCapita.subirdocumentos", "divapProcesoAsignacionPerCapitaCargarValorizacion"),
 		VALIDARRESULTADOSVALORIZACION("minsal_divap.DistribucionInicialPerCapita.validarresultadosvalorizacion", "divapProcesoAsignacionPerCapitaValidarMontosDistribucion"),
 		HACERSEGUIMIENTOOFICIO("minsal_divap.DistribucionInicialPerCapita.hacerseguimientooficiosconsultaregional", "divapProcesoAsignacionPerCapitaSeguimiento"),
@@ -16,12 +16,12 @@ public class MatchViewTask {
 		HACERSEGUIMIENTOTOMARAZON("minsal_divap.DistribucionInicialPerCapita.hacerseguimientotomaderazon", "divapProcesoAsignacionPerCapitaSeguimiento"),
 		SUBIRDOCUMENTOSFINALES("minsal_divap.DistribucionInicialPerCapita.subirdocumentostotalmentetramitados(decretosyresoluciones)", "divapProcesoAsignacionPerCapitaSubirDocumentosTotalmenteTramitados"),
 
-		// Mapeo pÃ¡ginas de Rebaja
+		// Mapeo páginas de Rebaja
 		REBAJASUBIRDOCUMENTOS("minsal.divap.procesos.Rebaja.subirinformaciondecumplimientoporcomuna", "divapProcesoRebajaCargarInformacionCumplimiento"),
 		REBAJAREVISIONMONTOS("minsal.divap.procesos.Rebaja.revisionyvalidaciondelosmontosderebaja","divapProcesoRebajaRevisionValidacionRebaja"),
 		REBAJARESOLUCIONES("minsal.divap.procesos.Rebaja.seguimientoderesolucionesderebaja","divapProcesoRebajaSeguimientoTratamientoRevision"),
 														 
-		// Mapeo pÃ¡ginas de ReliquidaciÃ³n
+		// Mapeo páginas de ReliquidaciÃ³n
 		RELIQUIDACIONPROGRAMAS("minsal.divap.procesos.Reliquidacion.seleccionarprograma","divapProcesoReliqProgramas"),
 		RELIQUIDACIONARCHIVOS("minsal.divap.procesos.Reliquidacion.descargarysubirplanillacumplimiento","divapProcesoReliqPlanillas"),		
 		RELIQUIDACIONMUNICIPAL("minsal.divap.procesos.Reliquidacion.validacionmontosreliquidacionmunicipal","divapProcesoReliqMunicipal"),
@@ -30,11 +30,11 @@ public class MatchViewTask {
 		//Validacion Montos Reliquidacion
 
 		
-		// Mapeo paginas de Tramitacion Orden Transferencia Profesional
+		// Mapeo páginas de Tramitacion Orden Transferencia Profesional
 		OTSELECCIONARLINEAFINANCIAMIENTO("minsal_divap.TramitacionOrdenTransferenciaProfesional.seleccionarlineadefinanciamiento","divapProcesoOTLineas"),
 		OTREVISARANTECEDENTESPROGRAMATICA("minsal_divap.TramitacionOrdenTransferenciaProfesional.revisarantecedentesprograma","divapProcesoOTRevisarAntecedentesProfesional"),
 
-		// Mapeo paginas de Tramitacion Orden Transferencia Consolidador
+		// Mapeo páginas de Tramitacion Orden Transferencia Consolidador
 		TRAMITACIONORDENREVISARCONSOLIDACION("minsal_divap.TramitacionOrdenTransferenciaConsolidador.revisarconsolidaciondeordenesdetransferencia","divapProcesoOTConsolidador"),
 		TRAMITACIONORDENHACERSEGUIMIENTO("minsal_divap.TramitacionOrdenTransferenciaConsolidador.hacerseguimientoordinariosdeordenesdetransferencia","divapProcesoOTSeguimiento"),
 		REVISARENVIODOCUMENTOS("minsal_divap.TramitacionOrdenTransferenciaConsolidador.verificarenviodedocumentos","divapProcesoOTEnviarDocumentos"),
@@ -95,8 +95,6 @@ public class MatchViewTask {
 		MODHACERSEGUIMIENTORESOLUCIONES("minsal_divap.ModificacionDistribucionInicialPerCapita.hacerseguimientoresoluciones", "divapProcesoModificacionAsignacionPerCapitaSeguimiento"),
 		MODHACERSEGUIMIENTOTOMARAZON("minsal_divap.ModificacionDistribucionInicialPerCapita.hacerseguimientotomaderazon", "divapProcesoModificacionAsignacionPerCapitaSeguimiento"),
 		MODSUBIRDOCUMENTOSFINALES("minsal_divap.ModificacionDistribucionInicialPerCapita.subirdocumentostotalmentetramitados(decretosyresoluciones)", "divapProcesoModificacionAsignacionPerCapitaSubirDocumentosTotalmenteTramitados");
-
-		
 		
 		private String key;
 		private String view;

@@ -12,13 +12,14 @@
 	</ui:define>
 	<ui:define name="content">
 		<h:form id="convenios" enctype="multipart/form-data">
+		 	<p:growl id="growl" showDetail="false"/>  
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="Gestión  de Información para Transferencia" />
 				</h1>
 				<p:panel id="Panel">
 					<h2>
-						Subir Resoluciones y Convenios por Programa de Reforzamiento Año 2014<br />Servicio de Salud: #{loginController.servicio.nombre_servicio}
+						Subir Resoluciones y Convenios por Programa de Reforzamiento Año #{procesoConveniosController.ano}<br />Servicio de Salud: #{loginController.servicio.nombre_servicio}
 					</h2>
 					<p class="parrafo">La tarea corresponde a nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est
 						faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.nulla eget ultricies. Morbi pulvinar elit at
@@ -47,7 +48,7 @@
 						</h:panelGrid>
 						<h:panelGrid>
 							<h:outputText value="" styleClass="inputLabel" />
-							<p:commandButton value="Buscar" id="botonBuscar" actionListener="#{procesoConveniosController.buscar}" styleClass="x-btn-text icon-guardar" update="datosTabView" />
+							<p:commandButton value="Buscar" id="botonBuscar" actionListener="#{procesoConveniosController.buscar}" styleClass="x-btn-text icon-guardar" update="datosTabView growl" />
 						</h:panelGrid>
 					</h:panelGrid>
 					<br />
@@ -473,7 +474,7 @@
 				</h:panelGrid>
 				<h:panelGrid>
 					<h:outputText value="Número Resolución: " styleClass="inputLabel" />
-					<p:inputText value="#{procesoConveniosController.convenioComuna.numeroResoucion}" />
+					<p:inputText value="#{procesoConveniosController.convenioComuna.numeroResoucion}" required="true" requiredMessage="Debe especificar el número de resolción"/>
 				</h:panelGrid>
 				<h:panelGrid>
 					<h:outputText value="Programa: " styleClass="inputLabel" />
@@ -488,7 +489,7 @@
 					<h:outputText value="#{procesoConveniosController.convenioComuna.subtitulo.nombre}" />
 				</h:panelGrid>
 				<h:panelGrid>
-					<h:outputText value="Monto: " styleClass="inputLabel" />
+					<h:outputText value="Monto: " styleClass="inputLabel" required="true" requiredMessage="Debe especificar el monto" />
 					<p:inputText value="#{procesoConveniosController.convenioComuna.montoIngresado}" />
 				</h:panelGrid>
 				<br />
@@ -496,7 +497,8 @@
 					<br />
 					<h:panelGrid>
 						<h:outputText value="Subir un nuevo Archivo: " styleClass="inputLabel" />
-						<p:fileUpload id="subirArchivoComuna" fileUploadListener="#{procesoConveniosController.handleFileUploadConvenioFile}" value="#{procesoConveniosController.plantillaFile}" mode="simple" />
+						<p:fileUpload id="subirArchivoComuna" fileUploadListener="#{procesoConveniosController.handleFileUploadConvenioFile}" value="#{procesoConveniosController.plantillaFile}" mode="simple"
+						required="true" requiredMessage="Archivo es obligatorio" />
 					</h:panelGrid>
 					<br />
 				</div>

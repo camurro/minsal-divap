@@ -1,5 +1,6 @@
 package minsal.divap.dao;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +24,9 @@ import cl.minsal.divap.model.EstimacionFlujoCajaSeguimiento;
 import cl.minsal.divap.model.FlujoCajaConsolidador;
 import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ReporteEmailsAdjuntos;
+import cl.minsal.divap.model.ReporteEmailsDestinatarios;
+import cl.minsal.divap.model.ReporteEmailsEnviados;
 import cl.minsal.divap.model.ReporteEmailsFlujoCajaConsolidador;
 import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.TipoDocumento;
@@ -173,6 +177,55 @@ public class EstimacionFlujoCajaDAO {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public Integer deleteDocumentoOrdinario(Integer idDocumentoOrdinario) {
+		List<Integer> idDocumentosOrdinario = new ArrayList<Integer>();
+		idDocumentosOrdinario.add(idDocumentoOrdinario);
+		return deleteDocumentoOrdinario(idDocumentosOrdinario);
+		
+	}
+	
+	private Integer deleteDocumentoOrdinario(List<Integer> idDocumentosOrdinario) {
+		Query query = this.em.createNamedQuery("DocumentoEstimacionFlujoCajaConsolidador.deleteUsingIds");
+		query.setParameter("idDocumentoEstimacionFlujoCajaConsolidador", idDocumentosOrdinario);
+		return query.executeUpdate();
+	}
+
+	public List<DocumentoEstimacionFlujoCajaConsolidador> getByIdEstimacionFlujoCajaConsolidadorTipoNotFinal(Integer idProceso, TipoDocumentosProcesos ... tiposDocumentos) {
+		try{
+			List<Integer> idDocumentos = new ArrayList<Integer>();
+			for(TipoDocumentosProcesos tipoDocumento : tiposDocumentos){
+				idDocumentos.add(tipoDocumento.getId());
+			}
+			TypedQuery<DocumentoEstimacionFlujoCajaConsolidador> query = this.em.createNamedQuery("DocumentoEstimacionFlujoCajaConsolidador.findByIdEstimacionFlujoCajaConsolidadorTiposNotFinal", DocumentoEstimacionFlujoCajaConsolidador.class);
+			query.setParameter("idFlujoCajaConsolidador", idProceso);
+			query.setParameter("idTiposDocumento", idDocumentos);
+			return query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public ReporteEmailsEnviados save(ReporteEmailsEnviados reporteEmailsEnviados) {
+		em.persist(reporteEmailsEnviados);
+		return reporteEmailsEnviados;
+	}
+
+	public ReporteEmailsDestinatarios save(ReporteEmailsDestinatarios destinatarioPara) {
+		em.persist(destinatarioPara);
+		return destinatarioPara;
+	}
+
+	public ReporteEmailsAdjuntos save(ReporteEmailsAdjuntos reporteEmailsAdjuntos) {
+		em.persist(reporteEmailsAdjuntos);
+		return reporteEmailsAdjuntos;
+	}
+
+	public ReporteEmailsFlujoCajaConsolidador save(ReporteEmailsFlujoCajaConsolidador reporteEmailsFlujoCajaConsolidador) {
+		em.persist(reporteEmailsFlujoCajaConsolidador);
+		return reporteEmailsFlujoCajaConsolidador;
 	}
 
 }

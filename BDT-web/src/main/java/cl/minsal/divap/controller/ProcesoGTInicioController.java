@@ -18,7 +18,8 @@ import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 public class ProcesoGTInicioController extends AbstractTaskMBean implements Serializable {
 
 	private static final long serialVersionUID = 8979055329731411696L;
-
+	private Integer ano;
+	
 	@PostConstruct 
 	public void init() {
 		/*if (!getSessionBean().isLogged()) {
@@ -35,6 +36,7 @@ public class ProcesoGTInicioController extends AbstractTaskMBean implements Seri
 	@Override
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new  HashMap<String, Object>();
+		parameters.put("ano", getAno());
 		return parameters;
 	}
 
@@ -57,5 +59,18 @@ public class ProcesoGTInicioController extends AbstractTaskMBean implements Seri
 		}
 		return success;
 	}
+
+	public Integer getAno() {
+		if(ano == null){
+			ano = 2016;
+		}
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
+	
+	
 
 }

@@ -19,6 +19,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.xml.bind.JAXBException;
 
 import minsal.divap.dao.AnoDAO;
 import minsal.divap.dao.AntecedentesComunaDAO;
@@ -28,6 +29,7 @@ import minsal.divap.dao.ConveniosDAO;
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
 import minsal.divap.dao.DocumentDAO;
 import minsal.divap.dao.EstimacionFlujoCajaDAO;
+import minsal.divap.dao.InstitucionDAO;
 import minsal.divap.dao.MesDAO;
 import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.dao.RemesasDAO;
@@ -35,23 +37,26 @@ import minsal.divap.dao.SeguimientoDAO;
 import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.dao.TipoSubtituloDAO;
 import minsal.divap.dao.UsuarioDAO;
+import minsal.divap.doc.GeneradorDocumento;
 import minsal.divap.doc.GeneradorResolucionAporteEstatal;
 import minsal.divap.doc.GeneradorWord;
 import minsal.divap.enums.EstadosConvenios;
 import minsal.divap.enums.EstadosProgramas;
+import minsal.divap.enums.Instituciones;
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TareasSeguimiento;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.enums.TiposDestinatarios;
 import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaConsolidadorSheetExcel;
+import minsal.divap.excel.impl.EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaSheetExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaSubtituloSheetExcel;
+import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.model.mappers.ReferenciaDocumentoMapper;
 import minsal.divap.model.mappers.ServicioMapper;
 import minsal.divap.util.Util;
 import minsal.divap.vo.AdjuntosVO;
-import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
 import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.CajaMontoSummaryVO;
@@ -59,14 +64,19 @@ import minsal.divap.vo.CellExcelVO;
 import minsal.divap.vo.ConveniosSummaryVO;
 import minsal.divap.vo.DocumentoVO;
 import minsal.divap.vo.EmailVO;
+import minsal.divap.vo.ProgramaFonasaVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.ReporteEmailsEnviadosVO;
 import minsal.divap.vo.ResumenConsolidadorVO;
+import minsal.divap.vo.ResumenFONASAMunicipalVO;
+import minsal.divap.vo.ResumenFONASAServicioVO;
 import minsal.divap.vo.SeguimientoVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloFlujoCajaVO;
 import minsal.divap.vo.TransferenciaSummaryVO;
+import minsal.divap.xml.GeneradorXML;
+import minsal.divap.xml.email.Email;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -74,6 +84,7 @@ import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.jboss.logging.Logger;
 
 import cl.minsal.divap.model.AnoEnCurso;
+import cl.minsal.divap.model.AntecedentesComunaCalculadoRebaja;
 import cl.minsal.divap.model.AntecendentesComunaCalculado;
 import cl.minsal.divap.model.Caja;
 import cl.minsal.divap.model.CajaMonto;
@@ -88,19 +99,23 @@ import cl.minsal.divap.model.ConvenioServicioComponente;
 import cl.minsal.divap.model.Cuota;
 import cl.minsal.divap.model.DetalleRemesas;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
+import cl.minsal.divap.model.DocumentoEstimacionFlujoCajaConsolidador;
 import cl.minsal.divap.model.DocumentoEstimacionflujocaja;
 import cl.minsal.divap.model.Establecimiento;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.FlujoCajaConsolidador;
+import cl.minsal.divap.model.Institucion;
 import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.ProgramaSubtituloComponentePeso;
 import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.ReporteEmailsAdjuntos;
 import cl.minsal.divap.model.ReporteEmailsDestinatarios;
+import cl.minsal.divap.model.ReporteEmailsEnviados;
 import cl.minsal.divap.model.ReporteEmailsFlujoCajaConsolidador;
 import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.ServicioSalud;
+import cl.minsal.divap.model.TipoDestinatario;
 import cl.minsal.divap.model.TipoDocumento;
 import cl.minsal.divap.model.TipoSubtitulo;
 import cl.minsal.divap.model.Usuario;
@@ -116,6 +131,8 @@ public class EstimacionFlujoCajaService {
 	private ComponenteDAO componenteDAO;
 	@EJB
 	private TipoSubtituloDAO subtituloDAO;
+	@EJB
+	private InstitucionDAO institucionDAO;
 	@EJB
 	private AlfrescoService alfrescoService;
 	@EJB
@@ -138,7 +155,7 @@ public class EstimacionFlujoCajaService {
 
 	@Resource(name = "folderEstimacionFlujoCaja")
 	private String folderEstimacionFlujoCaja;
- 
+
 
 	@EJB
 	private UsuarioDAO usuarioDAO;
@@ -242,28 +259,6 @@ public class EstimacionFlujoCajaService {
 			e.printStackTrace();
 		}
 		return plantillaBorradorOrdinarioProgramacionCaja;
-	}
-
-	public List<AsignacionDistribucionPerCapitaVO> buscarDatosPlanillaPropuestaEstimacion(
-			Integer idPrograma) {
-		// List<AntecendentesComunaCalculado> antecendentesComunaCalculado =
-		// antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(idDistribucionInicialPercapita);
-		// List<AsignacionDistribucionPerCapitaVO> antecedentesCalculados = new
-		// ArrayList<AsignacionDistribucionPerCapitaVO>();
-		// if(antecendentesComunaCalculado != null &&
-		// antecendentesComunaCalculado.size() > 0){
-		// for(AntecendentesComunaCalculado antecendenteComunaCalculado :
-		// antecendentesComunaCalculado){
-		// AsignacionDistribucionPerCapitaVO asignacionDistribucionPerCapitaVO =
-		// new
-		// AsignacionDistribucionPercapitaMapper().getBasic(antecendenteComunaCalculado);
-		// if(asignacionDistribucionPerCapitaVO != null){
-		// antecedentesCalculados.add(asignacionDistribucionPerCapitaVO);
-		// }
-		// }
-		// }
-		// return antecedentesCalculados;
-		return null;
 	}
 
 	// Para hacer el calculo de la propuesta, se debe hacer una copia de los
@@ -511,44 +506,6 @@ public class EstimacionFlujoCajaService {
 		}
 	}
 
-	public Integer getIdPlantillaProgramacion() {
-		Integer plantillaId = null;// documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAPROGRAMACION);
-		if (plantillaId == null) {
-			List<BaseVO> servicios = servicioSaludService.getAllServicios();
-			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
-			String filename = tmpDir + File.separator
-					+ "plantillaPercapita.xlsx";
-			String contenType = mimemap.getContentType(filename.toLowerCase());
-			GeneradorExcel generadorExcel = new GeneradorExcel(filename);
-			List<String> headers = new ArrayList<String>();
-			headers.add("REGION");
-			headers.add("SERVICIO");
-			headers.add("COMUNA");
-			headers.add("POBLACION");
-			headers.add("POBLACION MAYOR DE 65 AÑOS");
-			EstimacionFlujoCajaSheetExcel estimacionFlujoCajaSheetExcel = new EstimacionFlujoCajaSheetExcel(
-					headers, servicios);
-			generadorExcel.addSheet(estimacionFlujoCajaSheetExcel, "Hoja 1");
-			try {
-				BodyVO response = alfrescoService.uploadDocument(
-						generadorExcel.saveExcel(), contenType,
-						folderEstimacionFlujoCaja);
-				System.out
-				.println("response AsignacionRecursosPercapitaSheetExcel --->"
-						+ response);
-				plantillaId = documentService.createTemplate(
-						TipoDocumentosProcesos.PLANTILLAPOBLACIONINSCRITA,
-						response.getNodeRef(), response.getFileName(),
-						contenType);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else { 
-			plantillaId = documentService.getDocumentoIdByPlantillaId(plantillaId);
-		}
-		return plantillaId;
-	}
-
 	public Integer getIdPlantillaPropuesta() {
 		Integer plantillaId = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAPROPUESTA);
 		if (plantillaId == null) {
@@ -605,7 +562,6 @@ public class EstimacionFlujoCajaService {
 			String username, List<String> para, List<String> conCopia,
 			List<String> conCopiaOculta, List<Integer> documentos) {
 
-		Integer referenciaDocId = 0;
 		String from = usuarioDAO.getEmailByUsername(username);
 		if (from == null) {
 			throw new RuntimeException("Usuario no tiene un email valido");
@@ -646,7 +602,7 @@ public class EstimacionFlujoCajaService {
 	}
 
 
-	public Integer generarPlanillaPropuestaConsolidador(String username) {
+	public Integer generarPlanillaPropuestaConsolidador(Integer idProceso) {
 		Integer planillaTrabajoId = null;
 		//obtengo todos los programas del usuario
 
@@ -681,7 +637,7 @@ public class EstimacionFlujoCajaService {
 					ResumenConsolidadorVO resumenConsolidadorVO = new ResumenConsolidadorVO();
 					resumenConsolidadorVO.setCodigoServicio(servicioSalud.getId().toString());
 					resumenConsolidadorVO.setServicio(servicioSalud.getNombre());
-				
+
 					List<Long> montos = new ArrayList<Long>();
 					header.add(new CellExcelVO("SUBTÍTULO 21", programasSubtitulo21.size() + 1, 1));			
 					for(ProgramaAno programaAno : programasSubtitulo21) {
@@ -709,11 +665,12 @@ public class EstimacionFlujoCajaService {
 					resumenConsolidadorVO.setMontos(montos);
 					resumenConsolidadorSubtitulo21.add(resumenConsolidadorVO);
 				}
+				System.out.println("Luego de programas para subtitulo 21 servicio-->"+servicioSalud.getNombre());
 				if(programasSubtitulo22 != null && programasSubtitulo22.size() > 0){
 					ResumenConsolidadorVO resumenConsolidadorVO = new ResumenConsolidadorVO();
 					resumenConsolidadorVO.setCodigoServicio(servicioSalud.getId().toString());
 					resumenConsolidadorVO.setServicio(servicioSalud.getNombre());
-				
+
 					List<Long> montos = new ArrayList<Long>();
 					header.add(new CellExcelVO("SUBTÍTULO 22", programasSubtitulo22.size() + 1, 1));			
 					for(ProgramaAno programaAno : programasSubtitulo22) {
@@ -741,11 +698,12 @@ public class EstimacionFlujoCajaService {
 					resumenConsolidadorVO.setMontos(montos);
 					resumenConsolidadorSubtitulo22.add(resumenConsolidadorVO);
 				}
+				System.out.println("Luego de programas para subtitulo 22 servicio-->"+servicioSalud.getNombre());
 				if(programasSubtitulo24 != null && programasSubtitulo24.size() > 0){
 					ResumenConsolidadorVO resumenConsolidadorVO = new ResumenConsolidadorVO();
 					resumenConsolidadorVO.setCodigoServicio(servicioSalud.getId().toString());
 					resumenConsolidadorVO.setServicio(servicioSalud.getNombre());
-				
+
 					List<Long> montos = new ArrayList<Long>();
 					header.add(new CellExcelVO("SUBTÍTULO 24", programasSubtitulo24.size() + 1, 1));			
 					for(ProgramaAno programaAno : programasSubtitulo24) {
@@ -773,11 +731,12 @@ public class EstimacionFlujoCajaService {
 					resumenConsolidadorVO.setMontos(montos);
 					resumenConsolidadorSubtitulo24.add(resumenConsolidadorVO);
 				}
+				System.out.println("Luego de programas para subtitulo 24 servicio-->"+servicioSalud.getNombre());
 				if(programasSubtitulo29 != null && programasSubtitulo29.size() > 0){
 					ResumenConsolidadorVO resumenConsolidadorVO = new ResumenConsolidadorVO();
 					resumenConsolidadorVO.setCodigoServicio(servicioSalud.getId().toString());
 					resumenConsolidadorVO.setServicio(servicioSalud.getNombre());
-				
+
 					List<Long> montos = new ArrayList<Long>();
 					header.add(new CellExcelVO("SUBTÍTULO 29", programasSubtitulo24.size() + 1, 1));			
 					for(ProgramaAno programaAno : programasSubtitulo29) {
@@ -805,26 +764,31 @@ public class EstimacionFlujoCajaService {
 					resumenConsolidadorVO.setMontos(montos);
 					resumenConsolidadorSubtitulo29.add(resumenConsolidadorVO);
 				}
+				System.out.println("Luego de programas para subtitulo 29 servicio-->"+servicioSalud.getNombre());
 			}
 			if(resumenConsolidadorSubtitulo21 != null && resumenConsolidadorSubtitulo21.size() > 0){
 				EstimacionFlujoCajaConsolidadorSheetExcel estimacionFlujoCajaConsolidadorSheetExcel = new EstimacionFlujoCajaConsolidadorSheetExcel(header, subHeader, null);
 				estimacionFlujoCajaConsolidadorSheetExcel.setItems(resumenConsolidadorSubtitulo21);
-				generadorExcel.addSheet(estimacionFlujoCajaConsolidadorSheetExcel, getMesCurso(false));
+				generadorExcel.addSheet(estimacionFlujoCajaConsolidadorSheetExcel, "Subtítulo 21 " + getMesCurso(false));
+				System.out.println("Hoja subtitulo 21 ok");
 			}
 			if(resumenConsolidadorSubtitulo22 != null && resumenConsolidadorSubtitulo22.size() > 0){
 				EstimacionFlujoCajaConsolidadorSheetExcel estimacionFlujoCajaConsolidadorSheetExcel = new EstimacionFlujoCajaConsolidadorSheetExcel(header, subHeader, null);
 				estimacionFlujoCajaConsolidadorSheetExcel.setItems(resumenConsolidadorSubtitulo22);
-				generadorExcel.addSheet(estimacionFlujoCajaConsolidadorSheetExcel, getMesCurso(false));
+				generadorExcel.addSheet(estimacionFlujoCajaConsolidadorSheetExcel, "Subtítulo 22 " + getMesCurso(false));
+				System.out.println("Hoja subtitulo 22 ok");
 			}
 			if(resumenConsolidadorSubtitulo24 != null && resumenConsolidadorSubtitulo24.size() > 0){
 				EstimacionFlujoCajaConsolidadorSheetExcel estimacionFlujoCajaConsolidadorSheetExcel = new EstimacionFlujoCajaConsolidadorSheetExcel(header, subHeader, null);
 				estimacionFlujoCajaConsolidadorSheetExcel.setItems(resumenConsolidadorSubtitulo24);
-				generadorExcel.addSheet(estimacionFlujoCajaConsolidadorSheetExcel, getMesCurso(false));
+				generadorExcel.addSheet(estimacionFlujoCajaConsolidadorSheetExcel, "Subtítulo 24 " + getMesCurso(false));
+				System.out.println("Hoja subtitulo 24 ok");
 			}
 			if(resumenConsolidadorSubtitulo29 != null && resumenConsolidadorSubtitulo29.size() > 0){
 				EstimacionFlujoCajaConsolidadorSheetExcel estimacionFlujoCajaConsolidadorSheetExcel = new EstimacionFlujoCajaConsolidadorSheetExcel(header, subHeader, null);
 				estimacionFlujoCajaConsolidadorSheetExcel.setItems(resumenConsolidadorSubtitulo29);
-				generadorExcel.addSheet(estimacionFlujoCajaConsolidadorSheetExcel, getMesCurso(false));
+				generadorExcel.addSheet(estimacionFlujoCajaConsolidadorSheetExcel, "Subtítulo 29 " + getMesCurso(false));
+				System.out.println("Hoja subtitulo 29 ok");
 			}
 		}
 
@@ -832,7 +796,8 @@ public class EstimacionFlujoCajaService {
 			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderEstimacionFlujoCaja.replace("{ANO}", getAnoCurso().toString()));
 			System.out.println("response planillaPropuestaEstimacionFlujoCajaConsolidador --->"	+ response);
 			TipoDocumento tipoDocumento = new TipoDocumento(TipoDocumentosProcesos.PLANTILLAPROPUESTA.getId());
-			planillaTrabajoId = documentService.createDocumentPropuestaConsolidador(tipoDocumento, response.getNodeRef(), response.getFileName(), contenType, getAnoCurso(), Integer.parseInt(getMesCurso(true)));
+			FlujoCajaConsolidador flujoCajaConsolidador = estimacionFlujoCajaDAO.findFlujoCajaConsolidadorById(idProceso);
+			planillaTrabajoId = documentService.createDocumentMonitoreoConsolidador(flujoCajaConsolidador, tipoDocumento, response.getNodeRef(), response.getFileName(), contenType, getAnoCurso(), Integer.parseInt(getMesCurso(true)));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1415,14 +1380,8 @@ public class EstimacionFlujoCajaService {
 			documentService.updateDocumentTemplate(
 					referenciaDocumentoSummary.getId(), response.getNodeRef(),
 					response.getFileName(), contenType);
-			//			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO
-			//					.findById(idDistribucionInicialPercapita);
 			ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idLineaProgramatica);
 			documentService.createDocumentOrdinarioProgramacionEstimacionFlujoCaja(programaAno,tipoDocumento,referenciaDocumentoId,versionFinal);
-			//documentService.createDocumentPercapita(
-			//		distribucionInicialPercapita, tipoDocumento,
-			//		referenciaDocumentoId, lastVersion);
-
 		}
 
 	}
@@ -1526,14 +1485,17 @@ public class EstimacionFlujoCajaService {
 					subtituloFlujoCajaVO.setPesoComponentes(subtituloFlujoCajaVO.getPesoComponentes() + programaSubtituloComponentePeso.getPeso());
 				}
 			}
-
+			System.out.println("Luego del peso componente");
 			subtituloFlujoCajaVO.setPesoComponentes(subtituloFlujoCajaVO.getPesoComponentes()/100.0); 
 			Long marcoPresupuestario = 0L;
-			for(Establecimiento establecimiento : servicioSalud.getEstablecimientos()){
-				for(Integer idComponente : idComponentes){
-					marcoPresupuestario += programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAno, idComponente, subtitulo.getId());
+			if(servicioSalud.getEstablecimientos() != null && servicioSalud.getEstablecimientos().size() > 0){
+				for(Establecimiento establecimiento : servicioSalud.getEstablecimientos()){
+					for(Integer idComponente : idComponentes){
+						marcoPresupuestario += programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAno, idComponente, subtitulo.getId());
+					}
 				}
 			}
+			System.out.println("Luego de calculo presupuesto");
 			subtituloFlujoCajaVO.setMarcoPresupuestario(marcoPresupuestario);
 
 			for(int mes = 1; mes <= 12; mes++){
@@ -1587,6 +1549,7 @@ public class EstimacionFlujoCajaService {
 					break;
 				}
 			}
+			System.out.println("Luego de calculo montos por mes");
 			subtitulosFlujosCaja.add(subtituloFlujoCajaVO);
 		}
 		if(!iniciarFlujoCaja){
@@ -1611,6 +1574,7 @@ public class EstimacionFlujoCajaService {
 						}
 					}
 				}
+				System.out.println("Luego de obtencion de los convenios");
 				convenioRecibido.setMonto(totalConveniosPorServicio.intValue());
 				if(marcoPresupuestario != 0){
 					Double porcentaje = ((totalConveniosPorServicio * 100.0) / marcoPresupuestario);
@@ -1630,7 +1594,7 @@ public class EstimacionFlujoCajaService {
 						}
 					}
 				}
-
+				System.out.println("Luego de obtencion de las remesas");
 				transferenciasAcumulada.setMonto(totalRemesasPorServicio);
 				if(marcoPresupuestario != 0){
 					Double porcentajeRemesas = ((totalRemesasPorServicio * 100.0) / marcoPresupuestario);
@@ -1640,6 +1604,7 @@ public class EstimacionFlujoCajaService {
 				subtituloFlujoCaja.setTransferenciaAcumulada(transferenciasAcumulada);
 			}
 		}
+		System.out.println("finalizacion getMonitoreoServicioByProgramaAnoComponenteSubtitulo");
 		LOGGER.info("Fin getMonitoreoServicioByProgramaAnoComponenteSubtitulo");
 		return subtitulosFlujosCaja;
 	}
@@ -2839,6 +2804,11 @@ public class EstimacionFlujoCajaService {
 	}
 
 	public void elaborarOrdinarioProgramacionPlanilla(Integer idProceso) {
+		elaborarOrdinarioProgramacion(idProceso);
+		elaborarPlanillaProgramacion(idProceso);
+	}
+
+	private void elaborarOrdinarioProgramacion(Integer idProceso){
 		Integer plantillaIdOrdinario = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAORDINARIOPROGRAMACIONCAJA);
 		if(plantillaIdOrdinario == null){
 			throw new RuntimeException("No se puede crear Ordinario Programación Caja, la plantilla no esta cargada");
@@ -2877,12 +2847,274 @@ public class EstimacionFlujoCajaService {
 		}
 	}
 
+	private void elaborarPlanillaProgramacion(Integer idProceso) {
+		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
+		String filename = tmpDir + File.separator + "planillaMonitoreoConsolidador" + getMesCurso(false) + ".xlsx";
+		String contenType = mimemap.getContentType(filename.toLowerCase());
+		GeneradorExcel generadorExcel = new GeneradorExcel(filename);
+		List<ResumenFONASAMunicipalVO> resumenFONASAMunicipal24VO = cargarFonasaMunicipal();
+		ExcelTemplate excelSheet = null;
+		Integer posicionColumnaInicial = 0;
+		List<Long> totales = new ArrayList<Long>();
+
+
+		if(resumenFONASAMunicipal24VO != null && resumenFONASAMunicipal24VO.size() > 0){
+			for(ResumenFONASAMunicipalVO resumenFONASAMunicipalVO : resumenFONASAMunicipal24VO){
+				totales.add(resumenFONASAMunicipalVO.getTotal());
+			}
+			Integer countCols = 0;
+			List<CellExcelVO> header24 = new ArrayList<CellExcelVO>();
+			List<CellExcelVO> subHeader24 = new ArrayList<CellExcelVO>();
+			header24.add(new CellExcelVO("COD SS", 1, 2));
+			countCols += 1; 
+			header24.add(new CellExcelVO("SERVICIOS DE SALUD", 1, 2));
+			countCols += 1;
+			ResumenFONASAMunicipalVO resumenFONASAMunicipalVO = resumenFONASAMunicipal24VO.get(0);
+			int numeroProgramas = ((resumenFONASAMunicipalVO.getProgramasFonasa() == null ) ? 0 : resumenFONASAMunicipalVO.getProgramasFonasa().size());
+			header24.add(new CellExcelVO("SUBTÍTULO 24", (numeroProgramas + 8) , 1));
+			countCols += (numeroProgramas + 8);
+			subHeader24.add(new CellExcelVO("PER CAPITA BASAL", 1,1));
+			subHeader24.add(new CellExcelVO("ADDF", 1,1));
+			subHeader24.add(new CellExcelVO("DESCTO. RETIRO LEYES 20.157 Y 20.589", 1,1));
+			subHeader24.add(new CellExcelVO("REBAJA INCUMPL. IAAPS", 1,1));
+			subHeader24.add(new CellExcelVO("TOTAL PER CÁPITA (M$)", 1,1));
+			subHeader24.add(new CellExcelVO("LEYES 19.813, 20.157 y 20.250", 1,1));
+			if(resumenFONASAMunicipalVO.getProgramasFonasa() != null && resumenFONASAMunicipalVO.getProgramasFonasa().size() > 0){
+				for(ProgramaFonasaVO programaFonasaVO : resumenFONASAMunicipalVO.getProgramasFonasa()){
+					subHeader24.add(new CellExcelVO(programaFonasaVO.getNombrePrograma(), 1,1));
+				}
+			}
+			subHeader24.add(new CellExcelVO("OTROS REF. MUN.", 1,1));
+			subHeader24.add(new CellExcelVO("TOTAL REF. MUNICIPAL (M$)", 1,1));
+			excelSheet = new EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel(header24, subHeader24, resumenFONASAMunicipal24VO);
+			((EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel)excelSheet).setPosicionColumnaInicial(posicionColumnaInicial);
+			generadorExcel.addSheet(excelSheet, getMesCurso(false));
+			posicionColumnaInicial += countCols;
+		}
+		List<ResumenFONASAServicioVO> resumenFONASAServicio21VO = cargarFonasaServicio(Subtitulo.SUBTITULO21) ;
+		if(resumenFONASAServicio21VO != null && resumenFONASAServicio21VO.size() > 0){
+			Integer contadorElementos = 0;
+			for(ResumenFONASAServicioVO resumenFONASAServicio : resumenFONASAServicio21VO){
+				totales.set(contadorElementos, (totales.get(contadorElementos) + resumenFONASAServicio.getTotal()));
+			}
+			Integer countCols = 0;
+			List<CellExcelVO> header21 = new ArrayList<CellExcelVO>();
+			List<CellExcelVO> subHeader21 = new ArrayList<CellExcelVO>();
+			ResumenFONASAServicioVO resumenFONASAServicioVO = resumenFONASAServicio21VO.get(0);
+			int numeroProgramas = ((resumenFONASAServicioVO.getProgramasFonasa() == null ) ? 0 : resumenFONASAServicioVO.getProgramasFonasa().size());
+			header21.add(new CellExcelVO("SUBTÍTULO 21", (numeroProgramas + 2), 1));
+			countCols += (numeroProgramas + 2); 
+			if(resumenFONASAServicioVO.getProgramasFonasa() != null && resumenFONASAServicioVO.getProgramasFonasa().size() > 0){
+				for(ProgramaFonasaVO programaFonasaVO : resumenFONASAServicioVO.getProgramasFonasa()){
+					subHeader21.add(new CellExcelVO(programaFonasaVO.getNombrePrograma(), 1,1));
+				}
+			}
+			subHeader21.add(new CellExcelVO("OTROS REF. SS 21", 1,1));
+			subHeader21.add(new CellExcelVO("TOTAL REF. SERVICIOS SUBT. 21", 1,1));
+			excelSheet = new EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel(header21, subHeader21, null);
+			((EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel)excelSheet).setItemSub21(resumenFONASAServicio21VO);
+			((EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel)excelSheet).setPosicionColumnaInicial(posicionColumnaInicial);
+			generadorExcel.addSheet(excelSheet, getMesCurso(false));
+			posicionColumnaInicial += countCols;
+		}
+		List<ResumenFONASAServicioVO> resumenFONASAServicio22VO = cargarFonasaServicio(Subtitulo.SUBTITULO22);
+		if(resumenFONASAServicio22VO != null && resumenFONASAServicio22VO.size() > 0){
+			Integer contadorElementos = 0;
+			for(ResumenFONASAServicioVO resumenFONASAServicio : resumenFONASAServicio22VO){
+				totales.set(contadorElementos, (totales.get(contadorElementos) + resumenFONASAServicio.getTotal()));
+			}
+			Integer countCols = 0;
+			List<CellExcelVO> header22 = new ArrayList<CellExcelVO>();
+			List<CellExcelVO> subHeader22 = new ArrayList<CellExcelVO>();
+			ResumenFONASAServicioVO resumenFONASAServicioVO = resumenFONASAServicio22VO.get(0);
+			int numeroProgramas = ((resumenFONASAServicioVO.getProgramasFonasa() == null ) ? 0 : resumenFONASAServicioVO.getProgramasFonasa().size());
+			header22.add(new CellExcelVO("SUBTÍTULO 22", (numeroProgramas + 2), 1));
+			countCols += (numeroProgramas + 2);
+			if(resumenFONASAServicioVO.getProgramasFonasa() != null && resumenFONASAServicioVO.getProgramasFonasa().size() > 0){
+				for(ProgramaFonasaVO programaFonasaVO : resumenFONASAServicioVO.getProgramasFonasa()){
+					subHeader22.add(new CellExcelVO(programaFonasaVO.getNombrePrograma(), 1,1));
+				}
+			}
+			subHeader22.add(new CellExcelVO("OTROS REF. SS 22", 1,1));
+			subHeader22.add(new CellExcelVO("TOTAL REF. SERVICIOS SUBT. 22", 1,1));
+			excelSheet = new EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel(header22, subHeader22, null);
+			((EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel)excelSheet).setItemSub22(resumenFONASAServicio22VO);
+			((EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel)excelSheet).setPosicionColumnaInicial(posicionColumnaInicial);
+			generadorExcel.addSheet(excelSheet, getMesCurso(false));
+			posicionColumnaInicial += countCols;
+		}
+		List<ResumenFONASAServicioVO> resumenFONASAServicio29VO = cargarFonasaServicio(Subtitulo.SUBTITULO29);
+		if(resumenFONASAServicio29VO != null && resumenFONASAServicio29VO.size() > 0){
+			Integer contadorElementos = 0;
+			for(ResumenFONASAServicioVO resumenFONASAServicio : resumenFONASAServicio29VO){
+				totales.set(contadorElementos, (totales.get(contadorElementos) + resumenFONASAServicio.getTotal()));
+			}
+			Integer countCols = 0;
+			List<CellExcelVO> header29 = new ArrayList<CellExcelVO>();
+			List<CellExcelVO> subHeader29 = new ArrayList<CellExcelVO>();
+			ResumenFONASAServicioVO resumenFONASAServicioVO = resumenFONASAServicio29VO.get(0);
+			int numeroProgramas = ((resumenFONASAServicioVO.getProgramasFonasa() == null ) ? 0 : resumenFONASAServicioVO.getProgramasFonasa().size());
+			header29.add(new CellExcelVO("SUBTÍTULO 29", (numeroProgramas + 2), 1));
+			countCols += (numeroProgramas + 2);
+			if(resumenFONASAServicioVO.getProgramasFonasa() != null && resumenFONASAServicioVO.getProgramasFonasa().size() > 0){
+				for(ProgramaFonasaVO programaFonasaVO : resumenFONASAServicioVO.getProgramasFonasa()){
+					subHeader29.add(new CellExcelVO(programaFonasaVO.getNombrePrograma(), 1,1));
+				}
+			}
+			subHeader29.add(new CellExcelVO("OTROS REF. SS 29", 1,1));
+			subHeader29.add(new CellExcelVO("TOTAL REF. SERVICIOS SUBT. 29", 1,1));
+			excelSheet = new EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel(header29, subHeader29, null);
+			((EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel)excelSheet).setItemSub29(resumenFONASAServicio29VO);
+			((EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel)excelSheet).setPosicionColumnaInicial(posicionColumnaInicial);
+			generadorExcel.addSheet(excelSheet, getMesCurso(false));
+			posicionColumnaInicial += countCols;
+		}
+		
+		if(totales.size() > 0){
+			excelSheet = new EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel(null, null, null);
+			((EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel)excelSheet).setPosicionColumnaInicial(posicionColumnaInicial);
+			((EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel)excelSheet).setAno(getAnoCurso());
+			((EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel)excelSheet).setMes(getMesCurso(false));
+			((EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel)excelSheet).setTotales(totales);
+			generadorExcel.addSheet(excelSheet, getMesCurso(false));
+		}
+
+		try {
+			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderEstimacionFlujoCaja.replace("{ANO}", getAnoCurso().toString()));
+			System.out.println("response planillaProgramacionEstimacionFlujoCajaConsolidador --->"	+ response);
+			TipoDocumento tipoDocumento = new TipoDocumento(TipoDocumentosProcesos.PLANILLAPROGRAMACIONCAJA.getId());
+			FlujoCajaConsolidador flujoCajaConsolidador = estimacionFlujoCajaDAO.findFlujoCajaConsolidadorById(idProceso);
+			documentService.createDocumentMonitoreoConsolidador(flujoCajaConsolidador, tipoDocumento, response.getNodeRef(), response.getFileName(), contenType, getAnoCurso(), Integer.parseInt(getMesCurso(true)));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	public void administrarVersionesFinalesConsolidador(Integer idProceso) {
-		System.out.println("administrarVersionesFinalesConsolidador no implementado");
+		System.out.println("EstimacionFlujoCajaService administrarVersionesFinalesConsolidador eliminar todas las versiones que no sean finales");
+		List<DocumentoEstimacionFlujoCajaConsolidador> documentosOrdinario = estimacionFlujoCajaDAO.getByIdEstimacionFlujoCajaConsolidadorTipoNotFinal(idProceso, TipoDocumentosProcesos.ORDINARIOPROGRAMACIONCAJA);
+		if(documentosOrdinario != null && documentosOrdinario.size() > 0){
+			for(DocumentoEstimacionFlujoCajaConsolidador documentoEstimacionFlujoCajaConsolidador : documentosOrdinario){
+				String key = ((documentoEstimacionFlujoCajaConsolidador.getDocumento().getNodeRef() == null) ? documentoEstimacionFlujoCajaConsolidador.getDocumento().getPath() : documentoEstimacionFlujoCajaConsolidador.getDocumento().getNodeRef().replace("workspace://SpacesStore/", ""));
+				System.out.println("key->"+key);
+				alfrescoService.delete(key);
+				estimacionFlujoCajaDAO.deleteDocumentoOrdinario(documentoEstimacionFlujoCajaConsolidador.getIdDocumentoEstimacionFlujoCajaConsolidador());
+				estimacionFlujoCajaDAO.deleteDocumento(documentoEstimacionFlujoCajaConsolidador.getDocumento().getId());
+			}
+		}
 	}
 
 	public void enviarOrdinarioFonasaConsolidador(Integer idProceso) {
-		System.out.println("enviarOrdinarioFonasaConsolidador no implementado");
+		Integer idPlantillaCorreo = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLACORREOORDINARIOPLANILLA);
+		if(idPlantillaCorreo == null){
+			throw new RuntimeException("No se puede crear plantilla correo ORDINARIO PLANILLA, la plantilla no esta cargada");
+		}
+		ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryPlantillaCorreoVO = documentService.getDocumentByPlantillaId(idPlantillaCorreo);
+		DocumentoVO documentoPlantillaCorreo = documentService.getDocument(referenciaDocumentoSummaryPlantillaCorreoVO.getId());
+		String templatePlantillaCorreo = tmpDirDoc + File.separator + documentoPlantillaCorreo.getName();
+		templatePlantillaCorreo = templatePlantillaCorreo.replace(" ", "");
+		System.out.println("templatePlantillaCorreo template-->"+templatePlantillaCorreo);
+		GeneradorXML generadorXMLPlantillaResolucionRebaja = new GeneradorXML(templatePlantillaCorreo);
+		Email emailPLantilla = null;
+		try {
+			emailPLantilla = generadorXMLPlantillaResolucionRebaja.createObject(Email.class, documentoPlantillaCorreo.getContent());
+		} catch (JAXBException e1) {
+			e1.printStackTrace();
+		}
+		ReferenciaDocumentoSummaryVO referenciaDocumentoFinalSummaryVO = null;
+		List<ReferenciaDocumentoSummaryVO> referenciasDocumentoSummaryVO = documentService.getVersionFinalEstimacionFlujoCajaByType(idProceso, TipoDocumentosProcesos.ORDINARIOPROGRAMACIONCAJA);
+
+		if(referenciasDocumentoSummaryVO != null && referenciasDocumentoSummaryVO.size() > 0){
+			for(ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO : referenciasDocumentoSummaryVO){
+				String contentType = new MimetypesFileTypeMap().getContentType(referenciaDocumentoSummaryVO.getPath());
+				System.out.println("contentType="+contentType+" archivo enviado por correo");
+				if (contentType.equals("application/pdf")) {
+					referenciaDocumentoFinalSummaryVO = referenciaDocumentoSummaryVO;
+					break;
+				}
+				if(referenciaDocumentoSummaryVO.getPath().indexOf(".") != -1){
+					String extension = referenciaDocumentoSummaryVO.getPath().substring(referenciaDocumentoSummaryVO.getPath().lastIndexOf(".") + 1, referenciaDocumentoSummaryVO.getPath().length());
+					if("pdf".equalsIgnoreCase(extension)){
+						referenciaDocumentoFinalSummaryVO = referenciaDocumentoSummaryVO;
+						break;
+					}
+				}
+				referenciaDocumentoFinalSummaryVO = referenciaDocumentoSummaryVO;
+			}
+		}
+		try{
+			if(referenciaDocumentoFinalSummaryVO != null){
+				Institucion fonasa = institucionDAO.findById(Instituciones.FONASA.getId());
+				if(fonasa != null && fonasa.getDirector() != null && fonasa.getDirector().getEmail() != null){
+					List<EmailService.Adjunto> adjuntos = new ArrayList<EmailService.Adjunto>();
+					DocumentoVO documentOrdinario = documentService.getDocument(referenciaDocumentoFinalSummaryVO.getId());
+					String fileNameDocumentoOrdinario = tmpDirDoc + File.separator + documentOrdinario.getName();
+
+					GeneradorDocumento generadorDocumento = new GeneradorDocumento(fileNameDocumentoOrdinario);
+					generadorDocumento.saveContent(documentOrdinario.getContent());
+
+					EmailService.Adjunto adjunto = new EmailService.Adjunto();
+					adjunto.setDescripcion("Ordinario de Programación de Caja");
+					adjunto.setName(documentOrdinario.getName());
+					adjunto.setUrl((new File(fileNameDocumentoOrdinario)).toURI().toURL());
+					adjuntos.add(adjunto);
+
+					ReferenciaDocumentoSummaryVO referenciaPlanilla = getLastDocumentSummaryEstimacionFlujoCajaTipoDocumento(idProceso, TipoDocumentosProcesos.PLANILLAPROGRAMACIONCAJA);
+
+					if(referenciaPlanilla != null){
+						DocumentoVO documentPlanilla = documentService.getDocument(referenciaPlanilla.getId());
+						String fileNameDocumentoPlanilla = tmpDirDoc + File.separator + documentPlanilla.getName();
+						GeneradorDocumento generadorDocumentoPlanilla = new GeneradorDocumento(fileNameDocumentoPlanilla);
+						generadorDocumentoPlanilla.saveContent(documentOrdinario.getContent());
+						EmailService.Adjunto adjuntoPlanilla = new EmailService.Adjunto();
+						adjuntoPlanilla.setDescripcion("Planilla de Programación de Caja");
+						adjuntoPlanilla.setName(documentPlanilla.getName());
+						adjuntoPlanilla.setUrl((new File(fileNameDocumentoPlanilla)).toURI().toURL());
+						adjuntos.add(adjuntoPlanilla);
+					}
+
+					List<String> to = new ArrayList<String>();
+					ReporteEmailsDestinatarios destinatarioPara = new ReporteEmailsDestinatarios();
+					to.add(fonasa.getDirector().getEmail().getValor());
+					destinatarioPara.setDestinatario(fonasa.getDirector());
+					List<String> cc = new ArrayList<String>();
+					if(emailPLantilla != null && emailPLantilla.getAsunto() != null && emailPLantilla.getCuerpo() != null){
+						emailService.sendMail(to, cc, null, emailPLantilla.getAsunto(), emailPLantilla.getCuerpo().replaceAll("(\r\n|\n)", "<br />"), adjuntos);
+					}else{
+						emailService.sendMail(to, cc, null, "Ordinario de Programación de Caja", "Estimado " + fonasa.getDirector().getNombre() + " " + fonasa.getDirector().getApellidoPaterno() + " " + ((fonasa.getDirector().getApellidoMaterno() != null) ? fonasa.getDirector().getApellidoMaterno() : "") + ": <br /> <p> l</p>", adjuntos);
+					}
+					ReporteEmailsEnviados reporteEmailsEnviados = new ReporteEmailsEnviados();
+					ReporteEmailsAdjuntos reporteEmailsAdjuntos = new ReporteEmailsAdjuntos();
+					ReporteEmailsAdjuntos reporteEmailsPlanillaAdjunta = new ReporteEmailsAdjuntos();
+					reporteEmailsEnviados.setFecha(new Date());
+					estimacionFlujoCajaDAO.save(reporteEmailsEnviados);
+					destinatarioPara.setReporteEmailsEnviado(reporteEmailsEnviados);
+					destinatarioPara.setTipoDestinatario(new TipoDestinatario(TiposDestinatarios.PARA.getId()));
+					estimacionFlujoCajaDAO.save(destinatarioPara);
+
+					ReferenciaDocumento referenciaDocumento = documentDAO.findById(referenciaDocumentoFinalSummaryVO.getId());
+					reporteEmailsAdjuntos.setDocumento(referenciaDocumento);
+					reporteEmailsAdjuntos.setReporteEmailsEnviado(reporteEmailsEnviados);
+					estimacionFlujoCajaDAO.save(reporteEmailsAdjuntos);
+					if(referenciaPlanilla != null){
+						ReferenciaDocumento referenciaPlanillaAdjunta = documentDAO.findById(referenciaPlanilla.getId());
+						reporteEmailsPlanillaAdjunta.setDocumento(referenciaPlanillaAdjunta);
+						reporteEmailsPlanillaAdjunta.setReporteEmailsEnviado(reporteEmailsEnviados);
+						estimacionFlujoCajaDAO.save(reporteEmailsPlanillaAdjunta);
+					}
+
+					ReporteEmailsFlujoCajaConsolidador reporteEmailsFlujoCajaConsolidador = new ReporteEmailsFlujoCajaConsolidador();
+					FlujoCajaConsolidador flujoCajaConsolidador = estimacionFlujoCajaDAO.findFlujoCajaConsolidadorById(idProceso);
+					reporteEmailsFlujoCajaConsolidador.setFlujoCajaConsolidador(flujoCajaConsolidador);
+					reporteEmailsFlujoCajaConsolidador.setReporteEmailsEnviados(reporteEmailsEnviados);
+					estimacionFlujoCajaDAO.save(reporteEmailsFlujoCajaConsolidador);
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public List<SeguimientoVO> getBitacora(Integer idProceso, TareasSeguimiento tareaSeguimiento) {
@@ -3021,7 +3253,7 @@ public class EstimacionFlujoCajaService {
 			FlujoCajaConsolidador flujoCajaConsolidador = estimacionFlujoCajaDAO.findFlujoCajaConsolidadorById(idProceso);
 			documentService.createDocumentFlujoCaja(flujoCajaConsolidador, idServicio, tipoDocumento, referenciaDocumentoId, lastVersion);
 		}
-		
+
 	}
 
 	public int countVersionFinalEstimacionFlujoCajaByType(Integer idProceso, TipoDocumentosProcesos tipoDocumento) {
@@ -3034,6 +3266,133 @@ public class EstimacionFlujoCajaService {
 
 	public ReferenciaDocumentoSummaryVO getLastDocumentSummaryEstimacionFlujoCajaTipoDocumento(Integer idProceso, TipoDocumentosProcesos tipoDocumento) {
 		return documentService.getLastDocumentoSummaryByEstimacionFlujoCajaTipoDocumento(idProceso, tipoDocumento);
+	}
+
+	public List<ResumenFONASAServicioVO> cargarFonasaServicio(Subtitulo subtitulo) {
+		List<ResumenFONASAServicioVO> resultado =  new ArrayList<ResumenFONASAServicioVO>();
+		List<ServicioSalud> listaServicios = servicioSaludDAO.getServiciosOrderId();
+		for(ServicioSalud servicioSalud : listaServicios){
+			ResumenFONASAServicioVO resumen = new ResumenFONASAServicioVO();
+			resumen.setIdServicio(servicioSalud.getId());
+			resumen.setNombreServicio(servicioSalud.getNombre());
+			Long totalServicio = 0L;
+			List<ProgramaVO> programasFonasa = programasService.getProgramasFonasa(true, getAnoCurso(), subtitulo);
+			List<ProgramaFonasaVO> resumenProgramaFonasa = new ArrayList<ProgramaFonasaVO>();
+			for(ProgramaVO programaFonasa: programasFonasa){
+				ProgramaFonasaVO programaFonasaVO = new ProgramaFonasaVO();
+				programaFonasaVO.setIdPrograma(programaFonasa.getId());
+				programaFonasaVO.setNombrePrograma(programaFonasa.getNombre());
+				List<CajaMonto> cajaMontos = cajaDAO.getByProgramaAnoServicioSubtituloMes(programaFonasa.getIdProgramaAno(), servicioSalud.getId(), subtitulo, Integer.parseInt(getMesCurso(true)));
+				Long acumulador = 0L;
+				if(cajaMontos != null && cajaMontos.size() > 0){
+					for(CajaMonto cajaMonto : cajaMontos){
+						acumulador += cajaMonto.getMonto();
+					}
+				}
+				programaFonasaVO.setMonto(acumulador);
+				totalServicio += acumulador;
+				resumenProgramaFonasa.add(programaFonasaVO);
+			}
+
+			Long totalOtros = 0L;
+			List<ProgramaVO> otrosProgramas = programasService.getProgramasFonasa(false, getAnoCurso(), subtitulo);
+			for(ProgramaVO otroPrograma : otrosProgramas){
+				List<CajaMonto> cajaMontos = cajaDAO.getByProgramaAnoServicioSubtituloMes(otroPrograma.getIdProgramaAno(), servicioSalud.getId(), subtitulo, Integer.parseInt(getMesCurso(true)));
+				if(cajaMontos != null && cajaMontos.size() > 0){
+					for(CajaMonto cajaMonto : cajaMontos){
+						totalOtros += cajaMonto.getMonto();
+						totalServicio += cajaMonto.getMonto();
+					}
+				}
+			}
+			resumen.setProgramasFonasa(resumenProgramaFonasa);
+			resumen.setTotalOtrosProgramas(totalOtros);
+			resumen.setTotal(totalServicio);
+			resultado.add(resumen);
+		}
+		return resultado;
+	}
+
+	public List<ResumenFONASAMunicipalVO> cargarFonasaMunicipal() {
+		List<ResumenFONASAMunicipalVO> resultado =  new ArrayList<ResumenFONASAMunicipalVO>();
+		List<ServicioSalud> listaServicios = servicioSaludDAO.getServiciosOrderId();
+		
+		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
+		System.out.println("distribucionInicialPercapita.getIdDistribucionInicialPercapita() --> "+distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+		
+		for(ServicioSalud servicioSalud : listaServicios){
+			ResumenFONASAMunicipalVO resumen = new ResumenFONASAMunicipalVO();
+			resumen.setIdServicio(servicioSalud.getId());
+			resumen.setNombreServicio(servicioSalud.getNombre());
+			Long totalServicio = 0L;
+			List<ProgramaVO> programasFonasa = programasService.getProgramasFonasa(true, getAnoCurso(), Subtitulo.SUBTITULO24);
+			List<ProgramaFonasaVO> resumenProgramaFonasa = new ArrayList<ProgramaFonasaVO>();
+			for(ProgramaVO programaFonasa: programasFonasa){
+				ProgramaFonasaVO programaFonasaVO = new ProgramaFonasaVO();
+				programaFonasaVO.setIdPrograma(programaFonasa.getId());
+				programaFonasaVO.setNombrePrograma(programaFonasa.getNombre());
+				List<CajaMonto> cajaMontos = cajaDAO.getByProgramaAnoServicioSubtituloMes(programaFonasa.getIdProgramaAno(), servicioSalud.getId(), Subtitulo.SUBTITULO24, Integer.parseInt(getMesCurso(true)));
+				Long acumulador = 0L;
+				if(cajaMontos != null && cajaMontos.size() > 0){
+					for(CajaMonto cajaMonto : cajaMontos){
+						acumulador += cajaMonto.getMonto();
+					}
+				}
+				programaFonasaVO.setMonto(acumulador);
+				totalServicio += acumulador;
+				resumenProgramaFonasa.add(programaFonasaVO);
+			}
+			resumen.setProgramasFonasa(resumenProgramaFonasa);
+			Long totalOtros = 0L;
+			List<ProgramaVO> otrosProgramas = programasService.getProgramasFonasa(false, getAnoCurso(), Subtitulo.SUBTITULO24);
+			for(ProgramaVO otroPrograma: otrosProgramas){
+				//Descartamos percapita id = -1
+				if(otroPrograma.getId()>0){
+					List<CajaMonto> cajaMontos = cajaDAO.getByProgramaAnoServicioSubtituloMes(otroPrograma.getIdProgramaAno(), servicioSalud.getId(), Subtitulo.SUBTITULO24, Integer.parseInt(getMesCurso(true)));
+					if(cajaMontos != null && cajaMontos.size() > 0){
+						for(CajaMonto cajaMonto : cajaMontos){
+							totalOtros += cajaMonto.getMonto();
+							totalServicio += cajaMonto.getMonto();
+						}
+					}
+				}
+			}
+			
+			resumen.setTotalOtrosProgramas(totalOtros);
+
+			
+			List<AntecendentesComunaCalculado> antecendentesComunasCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaVigenteServicio(distribucionInicialPercapita.getIdDistribucionInicialPercapita(), servicioSalud.getId());
+			Long perCapitaBasal = 0L;
+			Long desempenoDificil = 0L;
+			Long rebaja = 0L;
+			Long descuentoRetiro = 0L;
+			Long leyes = 0L;
+			if(antecendentesComunasCalculado != null && antecendentesComunasCalculado.size() > 0){
+				for(AntecendentesComunaCalculado antecendentesComunaCalculado : antecendentesComunasCalculado){
+					perCapitaBasal += antecendentesComunaCalculado.getPercapitaMes();
+					desempenoDificil += antecendentesComunaCalculado.getDesempenoDificil();
+					if(antecendentesComunaCalculado.getAntecedentesComunaCalculadoRebajas() != null && antecendentesComunaCalculado.getAntecedentesComunaCalculadoRebajas().size() > 0){
+						for(AntecedentesComunaCalculadoRebaja antecedentesComunaCalculadoRebaja : antecendentesComunaCalculado.getAntecedentesComunaCalculadoRebajas()){
+							if(antecedentesComunaCalculadoRebaja.getRebaja() != null && antecedentesComunaCalculadoRebaja.getRebaja().getRebajaCorte() != null && antecedentesComunaCalculadoRebaja.getRebaja().getRebajaCorte().getMesRebaja() != null 
+									&& antecedentesComunaCalculadoRebaja.getRebaja().getRebajaCorte().getMesRebaja().getIdMes().equals( Integer.parseInt(getMesCurso(true)))){
+								rebaja += antecedentesComunaCalculadoRebaja.getMontoRebaja();
+							}
+						}
+					}
+				}
+			}
+			resumen.setPerCapitaBasal(perCapitaBasal);
+			resumen.setDesempenoDificil(desempenoDificil);
+			resumen.setRebaja(rebaja);
+			resumen.setDescuentoRetiro(descuentoRetiro);
+			resumen.setLeyes(leyes);
+
+			Long totalPercapita = resumen.getPerCapitaBasal() + resumen.getDesempenoDificil() - resumen.getRebaja() - resumen.getDescuentoRetiro();
+			resumen.setTotalPercapita(totalPercapita);
+			resumen.setTotal(totalServicio + totalPercapita);
+			resultado.add(resumen);
+		}
+		return resultado;
 	}
 
 }

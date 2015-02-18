@@ -18,6 +18,7 @@ import minsal.divap.service.EstimacionFlujoCajaService;
 @RequestScoped
 public class EstimacionFlujoCajaRESTService extends BaseRest {
 
+	/**Profesional**/
 	@GET
 	@Path("/estimacionFlujoCaja/calcularPropuesta/{idProgramaAno}/{iniciarFlujoCaja}")
 	@Produces("application/json")
@@ -31,6 +32,7 @@ public class EstimacionFlujoCajaRESTService extends BaseRest {
 		System.out.println("[FIN CALCULAR PROPUESTA]");
 	}
 
+	/**Profesional**/
 	@GET
 	@Path("/estimacionFlujoCaja/generarPlanillaPropuesta/{idProgramaAno}")
 	@Produces("application/json")
@@ -41,6 +43,7 @@ public class EstimacionFlujoCajaRESTService extends BaseRest {
 		estimacionFlujoCajaService.generarPlanillaPropuesta(idProgramaAno);
 	}
 
+	/**Profesional**/
 	@GET
     @Path("/estimacionFlujoCaja/eliminarPlanillaPropuesta/{idProgramaAno}")
     @Produces("application/json")
@@ -50,6 +53,7 @@ public class EstimacionFlujoCajaRESTService extends BaseRest {
 		estimacionFlujoCajaService.eliminarPlanillaPropuesta(idProgramaAno);
     }
 
+	/**Profesional**/
 	@GET
 	@Path("/estimacionFlujoCaja/notificarUsuarioConsolidador/{idLineaProgramatica}/{usuario}")
 	@Produces("application/json")
@@ -64,15 +68,6 @@ public class EstimacionFlujoCajaRESTService extends BaseRest {
 		EstimacionFlujoCajaService estimacionFlujoCajaService = getService(EstimacionFlujoCajaService.class);
 		estimacionFlujoCajaService.notificarUsuarioConsolidador(
 				idLineaProgramatica, usuario);
-	}
-
-	@GET
-	@Path("/estimacionFlujoCaja/recalcularEstimacion/{flujo}")
-	@Produces("application/json")
-	public Integer recalcularEstimacion(
-			@PathParam("flujo") Integer idLineaProgramatica) {
-		System.out.println("[Recalcular Estimacion] -->" + idLineaProgramatica);
-		return 1;
 	}
 
 	@GET
@@ -110,7 +105,7 @@ public class EstimacionFlujoCajaRESTService extends BaseRest {
 				.enviarOrdinarioFONASA(idLineaProgramatica);
 	}
 	
-	
+	/**Consolidador**/
 	@GET
     @Path("/estimacionFlujoCaja/instanciarProcesoConsolidador/{usuarioId}")
     @Produces("application/json")
@@ -123,6 +118,7 @@ public class EstimacionFlujoCajaRESTService extends BaseRest {
 		return estimacionFlujoCajaService.crearIntanciaConsolidador(usuarioId);
     }
 	
+	/**Consolidador**/
 	@GET
 	@Path("/estimacionFlujoCaja/elaborarOrdinarioProgramacionPlanilla/{idProceso}")
     public void elaborarOrdinarioProgramacionPlanilla(@PathParam("idProceso") Integer idProceso){
@@ -134,6 +130,7 @@ public class EstimacionFlujoCajaRESTService extends BaseRest {
 		estimacionFlujoCajaService.elaborarOrdinarioProgramacionPlanilla(idProceso);
     }
 	
+	/**Consolidador**/
 	@GET
 	@Path("/estimacionFlujoCaja/administrarVersionesFinalesConsolidador/{idProceso}") 
 	@Produces("application/json")
@@ -146,6 +143,7 @@ public class EstimacionFlujoCajaRESTService extends BaseRest {
 		estimacionFlujoCajaService.administrarVersionesFinalesConsolidador(idProceso);
 	}
 	
+	/**Consolidador**/
 	@GET
 	@Path("/estimacionFlujoCaja/enviarOrdinarioFonasaConsolidador/{idProceso}")
 	@Produces("application/json")

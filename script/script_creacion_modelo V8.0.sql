@@ -25692,6 +25692,18 @@ ALTER TABLE comuna
 
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (112,'Reporte Meta Desempeno - Cuadro2');
 
+create index I_caja_servicio_programa_subtitulo on caja(servicio,programa,id_subtitulo);
+
+ALTER TABLE documento_estimacion_flujo_caja_consolidador
+  ADD COLUMN ano integer;
+ALTER TABLE documento_estimacion_flujo_caja_consolidador
+  ADD COLUMN mes integer;
+ALTER TABLE documento_estimacion_flujo_caja_consolidador
+  ADD CONSTRAINT ano_fk FOREIGN KEY (ano) REFERENCES ano_en_curso (ano) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE documento_estimacion_flujo_caja_consolidador
+  ADD CONSTRAINT mes_fk FOREIGN KEY (mes) REFERENCES mes (id_mes) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
 
 
 

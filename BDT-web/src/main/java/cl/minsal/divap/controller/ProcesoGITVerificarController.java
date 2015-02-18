@@ -1,13 +1,11 @@
 package cl.minsal.divap.controller;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -17,28 +15,20 @@ import javax.inject.Named;
 
 import minsal.divap.enums.EstadosConvenios;
 import minsal.divap.enums.Subtitulo;
-import minsal.divap.enums.TipoDocumentosProcesos;
-import minsal.divap.excel.GeneradorExcel;
-import minsal.divap.excel.impl.CrearPlanillaCumplimientoMunicialProgramaSheetExcel;
 import minsal.divap.service.ComponenteService;
 import minsal.divap.service.ComunaService;
 import minsal.divap.service.ConveniosService;
 import minsal.divap.service.EstablecimientosService;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ServicioSaludService;
-import minsal.divap.vo.BodyVO;
-import minsal.divap.vo.CellExcelVO;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ComunaVO;
 import minsal.divap.vo.ConvenioComunaComponenteVO;
 import minsal.divap.vo.ConvenioServicioComponenteVO;
-import minsal.divap.vo.CumplimientoApsMunicipalProgramaVO;
-import minsal.divap.vo.EstablecimientoSummaryVO;
 import minsal.divap.vo.EstablecimientoVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloVO;
-import cl.minsal.divap.model.Programa;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 
@@ -91,6 +81,7 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 	private boolean conveniosPendientes = false;
 	private boolean busquedaRealizada = false;
 	private boolean mostrarBotonReparos = false;
+	private Integer ano;
 	@EJB
 	private ConveniosService conveniosService;
 	@EJB
@@ -150,6 +141,7 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 			System.out.println("idConvenio --->"+ idConvenio);
 			System.out.println("servicioSeleccionado --->"+ servicioSeleccionado);
 			setPrograma(programaService.getProgramaAnoPorID(programaSeleccionado));
+			ano = (Integer) getTaskDataVO().getData().get("_ano");
 			componenteSeleccionado = getPrograma().getComponentes().get(0).getId().toString();
 			for(SubtituloVO subtituloVO : getPrograma().getComponentes().get(0).getSubtitulos()){
 				if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId()) && !getSub21()){
@@ -802,4 +794,12 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 		this.mostrarBotonReparos = mostrarBotonReparos;
 	}
 
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
+	
 }

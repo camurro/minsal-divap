@@ -168,9 +168,12 @@ public class OTService {
 
 
 
-	public List<ProgramaVO> getProgramas(String username) {
+	public List<ProgramaVO> getProgramas(String username, Integer ano) {
 		List<ProgramaVO> programasVO = new ArrayList<ProgramaVO>();
-		List<ProgramaAno> programas = programasDAO.getProgramasByUserAno(username, getAnoCurso());
+		if(ano == null){
+			ano = getAnoCurso();
+		}
+		List<ProgramaAno> programas = programasDAO.getProgramasByUserAno(username, ano);
 		if(programas != null && programas.size() > 0){
 			for(ProgramaAno programa : programas){
 				programasVO.add(new ProgramaMapper().getBasic(programa));
@@ -1528,7 +1531,7 @@ public class OTService {
 
 			for(ProgramaFonasaVO fonasa: programasFonasa){
 
-				Integer progAno = programasDAO.getIdProgramaAnoAnterior(fonasa.getIdPrograma(),getAnoCurso());
+				Integer progAno = programasDAO.getIdProgramaAnoAnterior(fonasa.getIdPrograma(), getAnoCurso());
 				List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo2(Integer.parseInt(getMesCurso(true)),
 						progAno, servicio.getId(), Subtitulo.SUBTITULO24.getId());
 				Long acumulador=0l;

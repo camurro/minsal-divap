@@ -172,8 +172,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 	//Obtiene la lista de programas del usuario
 	public List<ProcesosProgramasPojo> getListadoProgramasServicio() {
 		List<ProcesosProgramasPojo> listadoProgramasServicio = new ArrayList<ProcesosProgramasPojo>();
-		List<ProgramaVO> programas = programaService
-				.getProgramasByUser(getLoggedUsername());
+		List<ProgramaVO> programas = programaService.getProgramasByUser(getLoggedUsername(), null);
 		for (ProgramaVO programaVO : programas) {
 			ProcesosProgramasPojo p2 = new ProcesosProgramasPojo();
 			p2.setPrograma(programaVO.getNombre());

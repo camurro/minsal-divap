@@ -42,6 +42,7 @@ implements Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject
 	private transient Logger log;
+	private Integer ano;
 	
 	@PostConstruct
 	public void init() {
@@ -60,8 +61,9 @@ implements Serializable {
 
 	@Override
 	protected Map<String, Object> createResultData() {
-
-		return null;
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("ano", getAno());
+		return parameters;
 	}
 
 	@Override
@@ -84,6 +86,16 @@ implements Serializable {
 		}
 		return success;
 	}
-	
+
+	public Integer getAno() {
+		if(ano == null){
+			ano = 2016;
+		}
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
 	
 }

@@ -55,6 +55,7 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 	private String actividadSeguimientoTitle = "Seguimiento Resoluciones";
 	private UploadedFile file;
 	private Boolean lastVersion = false;
+	private Integer ano;
 
 	@PostConstruct
 	public void init() {
@@ -65,6 +66,8 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			this.idConvenio = (Integer) getTaskDataVO().getData().get("_idConvenio");
 			System.out.println("this.idConvenio --->" + this.idConvenio);
+			ano = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("this.ano --->" + this.ano);
 		}
 		ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = conveniosService.getLastDocumentSummaryConvenioByType(this.idConvenio, TipoDocumentosProcesos.RESOLUCIONRETIRO);
 		if(referenciaDocumentoSummaryVO != null){
@@ -290,6 +293,14 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 
 	public void setLastVersion(Boolean lastVersion) {
 		this.lastVersion = lastVersion;
+	}
+
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
 	}
 
 	public void uploadVersion() {

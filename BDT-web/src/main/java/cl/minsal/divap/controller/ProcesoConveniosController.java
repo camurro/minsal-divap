@@ -75,7 +75,8 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	private Integer montoAporteEstatal;
 	private Integer montoAdicionalComplementario;
 	private Integer totalLey;
-
+	private Integer ano;
+	
 	@EJB
 	private ProgramasService programasService;
 	@EJB
@@ -215,7 +216,7 @@ public class ProcesoConveniosController extends BaseController implements Serial
 
 	public List<ProgramaVO> getProgramas() {
 		if(programas == null){
-			programas = programasService.getProgramasByUser(getLoggedUsername());
+			programas = programasService.getProgramasByUser(getLoggedUsername(), getAno());
 		}
 		return programas;
 	}
@@ -258,21 +259,8 @@ public class ProcesoConveniosController extends BaseController implements Serial
 
 	public void buscar(){
 		System.out.println("cargarDatos");
-		/*if(getPrograma() != null){
-			if(getPrograma().getDependenciaMunicipal() != null && getPrograma().getDependenciaMunicipal()){
-				Integer componenteSeleccionado = ((getComponenteSeleccionado() == null || getComponenteSeleccionado().equals("0")) ? null : Integer.parseInt(getComponenteSeleccionado()));
-				Integer comunaSeleccionada = ((getComunaSeleccionada() == null || getComunaSeleccionada().equals("0")) ? null : Integer.parseInt(getComunaSeleccionada()));
-				resolucionConveniosMunicipal = conveniosService.getResolucionConveniosMunicipal(getServicio().getId_servicio(), getPrograma().getIdProgramaAno(), componenteSeleccionado, comunaSeleccionada);
-			}
-			if(getPrograma().getDependenciaServicio() != null && getPrograma().getDependenciaServicio()){
-				Integer componenteSeleccionado = ((getComponenteSeleccionado() == null || getComponenteSeleccionado().equals("0")) ? null : Integer.parseInt(getComponenteSeleccionado()));
-				Integer establecimientoSeleccionado = ((getEstablecimientoSeleccionado() == null || getEstablecimientoSeleccionado().equals("0")) ? null : Integer.parseInt(getEstablecimientoSeleccionado()));
-				resolucionConveniosServicioSub21 = conveniosService.getResolucionConveniosServicio(getServicio().getId_servicio(), getPrograma().getIdProgramaAno(), componenteSeleccionado, establecimientoSeleccionado, Subtitulo.SUBTITULO21);
-			}
-		}*/
-
 		if(componenteSeleccionado == null || componenteSeleccionado.trim().isEmpty() || componenteSeleccionado.trim().equals("0")){
-			FacesMessage msg = new FacesMessage("Debe seleccionar el componente antes de realizar la búsqueda");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el componente antes de realizar la búsqueda", null);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}else{
 			setSub21(false);
@@ -330,6 +318,7 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	public String guardarConvenioServicio(){
 		System.out.println("guardarConvenioServicio()");
 		String mensaje = "El archivo fue cargado correctamente.";
+		FacesMessage msg = null;
 		if (plantillaFile != null) {
 			try {
 				String filename = plantillaFile.getFileName();
@@ -350,14 +339,15 @@ public class ProcesoConveniosController extends BaseController implements Serial
 				default:
 					break;
 				}
+				msg = new FacesMessage(FacesMessage.SEVERITY_INFO, mensaje, null);
 			} catch (Exception e) {
-				mensaje = e.getMessage();
+				msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null);
 				e.printStackTrace();
 			}
 		} else {
 			mensaje = "El archivo no fuero cargado.";
+			msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, null);
 		}
-		FacesMessage msg = new FacesMessage(mensaje);
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		return null;
 	}
@@ -365,6 +355,7 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	public String guardarConvenioComuna(){
 		System.out.println("guardarConvenioServicio()");
 		String mensaje = "El archivo fue cargado correctamente.";
+		FacesMessage msg = null;
 		if (plantillaFile != null) {
 			try {
 				String filename = plantillaFile.getFileName();
@@ -373,14 +364,15 @@ public class ProcesoConveniosController extends BaseController implements Serial
 				conveniosService.moveConvenioToAlfresco(docConvenio);
 				CargaConvenioComunaComponenteVO cargaConvenioComunaComponenteVO = conveniosService.guardarConvenioComunaComponente(getPrograma().getIdProgramaAno(), convenioComuna, docConvenio);
 				getResolucionConveniosMunicipal().set(this.rowIndexMunicipal, cargaConvenioComunaComponenteVO);
+				msg = new FacesMessage(FacesMessage.SEVERITY_INFO, mensaje, null);
 			} catch (Exception e) {
-				mensaje = e.getMessage();
+				msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null);
 				e.printStackTrace();
 			}
 		} else {
 			mensaje = "El archivo no fuero cargado.";
+			msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, null);
 		}
-		FacesMessage msg = new FacesMessage(mensaje);
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		return null;
 	}
@@ -388,6 +380,7 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	public String guardarLeyRetiro(){
 		System.out.println("guardarLeyRetiro()");
 		String mensaje = "El archivo fue cargado correctamente.";
+		FacesMessage msg = null;
 		if (plantillaFile != null) {
 			try {
 				String filename = plantillaFile.getFileName();
@@ -396,14 +389,15 @@ public class ProcesoConveniosController extends BaseController implements Serial
 				conveniosService.moveConvenioToAlfresco(docConvenio);
 				CargaConvenioComunaComponenteVO cargaConvenioComunaComponenteVO = conveniosService.guardarLeyRetiro(getPrograma().getIdProgramaAno(), convenioComuna, docConvenio);
 				getResolucionConveniosMunicipal().set(this.rowIndexMunicipal, cargaConvenioComunaComponenteVO);
+				msg = new FacesMessage(FacesMessage.SEVERITY_INFO, mensaje, null);
 			} catch (Exception e) {
-				mensaje = e.getMessage();
+				msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null);
 				e.printStackTrace();
 			}
 		} else {
 			mensaje = "El archivo no fuero cargado.";
+			msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, null);
 		}
-		FacesMessage msg = new FacesMessage(mensaje);
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		return null;
 	}
@@ -655,6 +649,17 @@ public class ProcesoConveniosController extends BaseController implements Serial
 
 	public void setTotalLey(Integer totalLey) {
 		this.totalLey = totalLey;
+	}
+
+	public Integer getAno() {
+		if(ano == null){
+			ano = 2016;
+		}
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
 	}
 
 }

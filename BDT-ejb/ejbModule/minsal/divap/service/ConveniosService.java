@@ -224,8 +224,11 @@ public class ConveniosService {
 		return documentosConvenio;
 	}
 
-	public List<ProgramaVO> getProgramasByUserAno(String username) {
-		List<ProgramaAno> programas = this.programasDAO.getProgramasByUserAno(username, getAnoCurso());
+	public List<ProgramaVO> getProgramasByUserAno(String username, Integer ano) {
+		if(ano == null){
+			ano = getAnoCurso();
+		}
+		List<ProgramaAno> programas = this.programasDAO.getProgramasByUserAno(username, ano);
 		List<ProgramaVO> result = new ArrayList<ProgramaVO>();
 		if(programas != null && programas.size() > 0){
 			for(ProgramaAno programa : programas){
