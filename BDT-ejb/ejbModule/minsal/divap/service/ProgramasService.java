@@ -186,8 +186,13 @@ public class ProgramasService {
 	}
 	
 	public List<ProgramaServicioVO> findByServicioComponenteServicios(
-			Integer idComponente, Integer idServicio) {
-		List<ProgramaServicioCoreComponente> result = programasDAO.findByServicioComponenteServicios(idComponente, idServicio);
+			Integer idComponente, Integer idServicio, Integer idProgramaAno) {
+		
+		
+		
+		List<ProgramaServicioCoreComponente> result = programasDAO.findByIdProgramaAnoIdComponenteIdServicio(idProgramaAno, idComponente, idServicio);
+		
+		
 		List<ProgramaServicioVO> listaProgramaServicioVO = new ArrayList<ProgramaServicioVO>();
 		
 		for (ProgramaServicioCoreComponente programaServicio : result) {

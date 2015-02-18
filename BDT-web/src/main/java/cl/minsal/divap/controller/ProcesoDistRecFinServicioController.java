@@ -77,7 +77,7 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 	private Long totalResumen;
 	
 	private ProgramaVO programa;
-	
+	private Integer idProxAno;
 	
 	@PostConstruct 
 	public void init() {
@@ -96,6 +96,7 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 					.getData().get("_programaSeleccionado");
 		}
 		programa = programasService.getProgramaAno(programaSeleccionado);
+		idProxAno = programasService.getIdProgramaAnoAnterior(programa.getId(), recursosFinancierosProgramasReforzamientoService.getAnoCurso()+1);
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
 		
@@ -153,7 +154,7 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 		}
 	}
 	public String buscarResultados(){
-		detalleEstablecimientos = programasService.findByServicioComponenteServicios(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado));
+		detalleEstablecimientos = programasService.findByServicioComponenteServicios(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado),idProxAno);
 		calculaTotalesTabla();
 		return null;
 
