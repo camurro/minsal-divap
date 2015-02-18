@@ -88,7 +88,6 @@ public class ProgramasDAO {
 		}
 	}
 
-
 	public ProgramaAno getProgramasByIdProgramaAno(Integer idProgramaAno) {
 		try {
 			return em.find(ProgramaAno.class, idProgramaAno);
@@ -124,27 +123,12 @@ public class ProgramasDAO {
 		return null;
 	}
 
-	//	public void saveProgramaAnoByIDProgramaAno(Programa programa,
-	//			AnoEnCurso anoCurso, EstadoPrograma estadoPrograma) {
-	//		// TODO Auto-generated method stub
-	//		ProgramaAno programaAno = new ProgramaAno();
-	//		programaAno.setAno(anoCurso);
-	//		programaAno.setEstado(estadoPrograma);
-	//		programaAno.setEstadoFlujoCaja(estadoPrograma);
-	//		programaAno.setPrograma(programa);
-	//		//TODO: [ASAAVEDRA] Se debe crear el programa ano para una nueva estimacion de flujo de caja?.
-	//		//programaAno.setProgramasMunicipalesCore(programasMunicipalesCore);
-	//		//programaAno.setProgramasServiciosCore(programasServiciosCore);
-	//		this.em.persist(programaAno);
-	//	}
-
 	public void guardarEstadoFlujoCaja(Integer idEstado, Integer idProgramaAno) {
 		ProgramaAno programaAno = getProgramaAnoByID(idProgramaAno);
 		EstadoPrograma estadoPrograma = new EstadoPrograma(idEstado);
 		programaAno.setEstadoFlujoCaja(estadoPrograma);
 		this.em.persist(programaAno);
 	}
-
 
 	public Integer saveProgramaAno(ProgramaAno programaAno, boolean detach) {
 		if (detach)
@@ -909,6 +893,29 @@ public class ProgramasDAO {
 			throw new RuntimeException(e);
 		}
 		return null;
+	}
+	
+	public List<ProgramaAno> getProgramasBySubtituloFonasa(Integer anoCurso, Subtitulo subtitulo, Boolean fonasa) {
+		try {
+			List<ProgramaAno> programasAno = null;
+			TypedQuery<Componente> queryComponente = this.em.createNamedQuery("Componente.findByIdSubtitulo", Componente.class);
+			queryComponente.setParameter("idTipoSubtitulo", subtitulo.getId());
+			List<Componente> componentes =  queryComponente.getResultList();
+			if(componentes != null && componentes.size() > 0){
+				List<Integer> idComponentes = new ArrayList<Integer>();
+				for(Componente componente : componentes){
+					idComponentes.add(componente.getId());
+				}
+				TypedQuery<ProgramaAno> queryProgramas = this.em.createNamedQuery("ProgramaAno.findByAnoComponenteFonasa", ProgramaAno.class);
+				queryProgramas.setParameter("idComponentes", idComponentes);
+				queryProgramas.setParameter("ano", anoCurso);
+				queryProgramas.setParameter("fonasa", fonasa);
+				programasAno = queryProgramas.getResultList();
+			}
+			return programasAno;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

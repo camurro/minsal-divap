@@ -222,6 +222,7 @@ extends AbstractTaskMBean implements Serializable {
 	private Integer docProgramacion;
 	private Integer docPropuesta;
 	private Boolean iniciarFlujoCaja;
+	private Integer idProceso;
 
 	@EJB
 	private EstimacionFlujoCajaService estimacionFlujoCajaService;
@@ -251,8 +252,9 @@ extends AbstractTaskMBean implements Serializable {
 		if(sessionExpired()){
 			return;
 		}
-		if(docPropuesta == null){
-			docPropuesta = estimacionFlujoCajaService.generarPlanillaPropuestaConsolidador(getLoggedUsername());
+		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
+			idProceso = (Integer) getTaskDataVO().getData().get("_idProceso");
+			docPropuesta = estimacionFlujoCajaService.generarPlanillaPropuestaConsolidador(idProceso);
 		}
 		setIniciarFlujoCaja(false);
 		crearColumnasDinamicas();

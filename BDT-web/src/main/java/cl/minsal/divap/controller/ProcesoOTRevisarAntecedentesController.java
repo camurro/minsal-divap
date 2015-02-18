@@ -85,6 +85,7 @@ implements Serializable {
 	private String mesHidden;
 	private String montoHidden;
 	private String subtituloHidden;
+	private Integer anoCurso;
 	
 	
 	@PostConstruct
@@ -102,8 +103,9 @@ implements Serializable {
 			programaSeleccionado = (Integer) getTaskDataVO()
 					.getData().get("_programaSeleccionado");
 			programa = otService.getProgramaById(programaSeleccionado);
-			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado,programa);
+			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado, programa);
 		}
+		anoCurso = (Integer) getTaskDataVO().getData().get("_ano");
 		percapita = false;
 		if(programa.getId()< 0){
 			percapita = true;
@@ -522,5 +524,20 @@ implements Serializable {
 		this.subtituloHidden = subtituloHidden;
 	}
 
+
+
+
+	public Integer getAnoCurso() {
+		return anoCurso;
+	}
+
+
+
+
+	public void setAnoCurso(Integer anoCurso) {
+		this.anoCurso = anoCurso;
+	}
+
+	
 
 }

@@ -34,15 +34,17 @@ public class ProcesoGITSubirController extends AbstractTaskMBean implements Seri
 	private List<ProgramaVO>  programas;
 	private Integer programaSeleccionado;
 	private Boolean retiro;
+	private Integer ano;
 	
 	@PostConstruct 
 	public void init() {
 		retiro = false;
+		ano = (Integer) getTaskDataVO().getData().get("_ano");
 	}
 	
 	public List<ProgramaVO> getProgramas() {
 		if(programas == null){
-			programas = conveniosService.getProgramasByUserAno(getLoggedUsername());
+			programas = conveniosService.getProgramasByUserAno(getLoggedUsername(), getAno());
 		}
 		return programas;
 	}
@@ -86,6 +88,14 @@ public class ProcesoGITSubirController extends AbstractTaskMBean implements Seri
 
 	public void setProgramaSeleccionado(Integer programaSeleccionado) {
 		this.programaSeleccionado = programaSeleccionado;
+	}
+
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
 	} 
 	
 }

@@ -269,7 +269,6 @@ public class DistribucionInicialPercapitaService {
 		return plantillaId;
 	}
 
-
 	public DistribucionInicialPercapita ultimaDistribucionPercapita(){
 		return distribucionInicialPercapitaDAO.findLast(getAnoCurso() + 1);
 	}

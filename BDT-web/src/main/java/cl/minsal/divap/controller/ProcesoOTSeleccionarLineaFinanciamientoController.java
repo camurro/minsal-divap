@@ -47,6 +47,7 @@ implements Serializable {
 
 	@PostConstruct
 	public void init() {
+		anoCurso = (Integer) getTaskDataVO().getData().get("_ano");
 	}
 
 	@Override
@@ -69,7 +70,8 @@ implements Serializable {
 
 	public List<ProgramaVO> getProgramas() {
 		if(programas == null){
-			programas = otService.getProgramas(getLoggedUsername());
+			System.out.println(" getProgramas getAnoCurso()="+getAnoCurso());
+			programas = otService.getProgramas(getLoggedUsername(), getAnoCurso());
 			ProgramaVO percapita = new ProgramaVO();
 			percapita.setNombre("PER CAPITA");
 			percapita.setId(IDPERCAPITA);
@@ -84,9 +86,6 @@ implements Serializable {
 	}
 
 	public Integer getAnoCurso() {
-		if(anoCurso == null){
-			anoCurso = recursosFinancierosProgramasReforzamientoService.getAnoCurso();
-		}
 		return anoCurso;
 	}
 

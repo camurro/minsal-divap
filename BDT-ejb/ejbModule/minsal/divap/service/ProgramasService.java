@@ -61,12 +61,11 @@ public class ProgramasService {
 	private ServicioSaludDAO servicioSaludDAO;
 	@EJB
 	private AntecedentesComunaDAO antecedentesComunaDAO;
-	@EJB ConveniosDAO conveniosDAO;
-	@EJB ComunaDAO comunaDAO;
-	
-	
-	
-
+	@EJB 
+	private ConveniosDAO conveniosDAO;
+	@EJB 
+	private ComunaDAO comunaDAO;
+	@EJB
 	private ServicioSaludDAO serviciosDAO;
 	@EJB
 	private TipoSubtituloDAO tipoSubtituloDAO;
@@ -90,8 +89,11 @@ public class ProgramasService {
 	}
 	
 	
-	public List<ProgramaVO> getProgramasByUser(String username) {
-		List<ProgramaAno> programas = this.programasDAO.getProgramasByUserAno(username, getAnoCurso());
+	public List<ProgramaVO> getProgramasByUser(String username, Integer ano) {
+		if(ano == null){
+			ano = getAnoCurso();
+		}
+		List<ProgramaAno> programas = this.programasDAO.getProgramasByUserAno(username, ano);
 		List<ProgramaVO> result = new ArrayList<ProgramaVO>();
 		if(programas != null && programas.size() > 0){
 			for(ProgramaAno programa : programas){
@@ -539,8 +541,12 @@ public class ProgramasService {
 
 	public List<ProgramaVO> getProgramasBySubtitulo(Subtitulo subtitulo) {
 		Integer anoCurso = getAnoCurso();
+		return getProgramasBySubtitulo(subtitulo, anoCurso);
+	}
+	
+	public List<ProgramaVO> getProgramasBySubtitulo(Subtitulo subtitulo, Integer ano) {
 		List<ProgramaVO> programas = new ArrayList<ProgramaVO>();
-		List<ProgramaAno> programasAno = programasDAO.getProgramasBySubtitulo(anoCurso, subtitulo);
+		List<ProgramaAno> programasAno = programasDAO.getProgramasBySubtitulo(ano, subtitulo);
 		if(programasAno != null && programasAno.size() > 0){
 			for(ProgramaAno programaAno : programasAno){
 				ProgramaVO programaVO = new ProgramaMapper().getBasic(programaAno);
@@ -998,7 +1004,6 @@ public class ProgramasService {
 	public List<ProgramaFonasaVO> getProgramasFonasa(boolean revisaFonasa) {
 		List<ProgramaFonasaVO> resultado = new ArrayList<ProgramaFonasaVO>();
 		List<Programa> programas = 	programasDAO.getProgramasFonasa(revisaFonasa);
-		
 		for(Programa programa : programas){
 			ProgramaFonasaVO fonasa = new ProgramaFonasaVO();
 			fonasa.setIdPrograma(programa.getId());
@@ -1006,10 +1011,20 @@ public class ProgramasService {
 			resultado.add(fonasa);
 		}
 		return resultado;
-		
-		
 	}
 
-	
+	public List<ProgramaVO> getProgramasFonasa(Boolean fonasa, Integer ano, Subtitulo subtitulo) {
+		List<ProgramaVO> programas = new ArrayList<ProgramaVO>();
+		List<ProgramaAno> programasAno = programasDAO.getProgramasBySubtituloFonasa(ano, subtitulo, fonasa);
+		if(programasAno != null && programasAno.size() > 0){
+			for(ProgramaAno programaAno : programasAno){
+				ProgramaVO programaVO = new ProgramaMapper().getBasic(programaAno);
+				if(!programas.contains(programaVO)){
+					programas.add(programaVO);
+				}
+			}
+		}
+		return programas;
+	}
 	
 }

@@ -31,7 +31,7 @@ public class ProcesoGITResumenDocumentosController extends AbstractTaskMBean imp
 	private ProgramaVO programa;
 	private List<ReporteEmailsEnviadosVO> reporteCorreos;
 	private String docIdDownload;
-	
+	private Integer ano;
 	@EJB
 	private ProgramasService programaService;
 	@EJB
@@ -46,6 +46,8 @@ public class ProcesoGITResumenDocumentosController extends AbstractTaskMBean imp
 			Integer programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
 			idConvenio = (Integer) getTaskDataVO().getData().get("_idConvenio");
 			programa = programaService.getProgramaAno(programaSeleccionado);
+			ano = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("this.ano --->" + this.ano);
 			reporteCorreos = conveniosService.getReporteCorreosByConvenio(idConvenio);
 		}
 	}
@@ -98,6 +100,14 @@ public class ProcesoGITResumenDocumentosController extends AbstractTaskMBean imp
 
 	public void setDocIdDownload(String docIdDownload) {
 		this.docIdDownload = docIdDownload;
+	}
+
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
 	}
 	
 }

@@ -8,6 +8,32 @@
 .ui-state-error {
 	margin-left: 0px;
 }
+
+	.hide-column-names table thead tr {
+	    display: none;
+	}
+	
+	.hide-column-border table tbody td{
+    	border-style: none;
+	}
+	
+	.noheader.ui-datatable table thead {
+	    display: none;
+	}
+	
+	.ui-datatable .ui-datatable-data .values1 {
+	    background: none;
+   		border-style: none !important;
+	}
+	
+	.ui-datatable.borderless thead,
+	.ui-datatable.borderless tbody,
+	.ui-datatable.borderless tbody tr,
+	.ui-datatable.borderless tbody td {
+  	  border-style: none;
+	}
+			
+	
 </style>
 		<script type="text/javascript">
 
@@ -40,35 +66,43 @@
 					</h2>
 					<p:dataTable resizableColumns="true" value="#{procesoFlujoCajaEnviarDocumentosController.reporteCorreos}" liveResize="true"
 					var="_reporte" rows="40" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
-						styleClass="dataTable"  id="tablaResultados">
+						styleClass="dataTable"  id="tablaResultados" rendered="#{not empty procesoFlujoCajaEnviarDocumentosController.reporteCorreos}" >
 						<p:columnGroup type="header">
 							<p:row>
-								<p:column headerText="Documentos" />
+								<p:column headerText="Documentos" width="450"/>
 								<p:column headerText="Fecha de Envío" width="150"/>
-								<p:column headerText="Destinatario" width="250"/>
+								<p:column headerText="Destinatario" width="300"/>
 							</p:row>
 						</p:columnGroup>
-
-						<p:column>
-							<c:forEach items="#{_reporte.adjuntos}" var="adj">
-								<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> 
-							
-									<h:commandLink
-										action="#{procesoFlujoCajaEnviarDocumentosController.downloadArchivo}"
-										value="#{adj.nombre}"
-										onclick="downloadDocument(#{adj.id});return false;" >
-									</h:commandLink>
-									<br />
-							</c:forEach>
+						<p:column >
+								<p:dataTable resizableColumns="true" value="#{_reporte.adjuntos}" var="adj" styleClass="noheader borderless" >
+									<p:column  >
+										<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> 
+										<h:commandLink action="#{procesoFlujoCajaEnviarDocumentosController.downloadArchivo}" value="#{adj.nombre}" onclick="downloadDocument(#{adj.id});return false;" />
+										<br />
+									</p:column>
+								</p:dataTable>
 						</p:column>
-						<p:column>#{_reporte.fechaFormat}</p:column>
-						<p:column style="align:left">
-						<h:outputText value="Para:" style="align:left"></h:outputText>
+						<p:column >#{_reporte.fechaFormat}</p:column>
+						<p:column style="align:left" >
 						
-								<c:forEach items="#{_reporte.to}" var="para">
-									<span class="strong">#{para}</span>
-								</c:forEach>
-							
+								<p:dataTable resizableColumns="true" value="#{_reporte.to}" var="para" styleClass="noheader borderless" >
+									<p:column width="20px" rowspan="#{_reporte.to.size()}" >
+										<h:outputText value="Para:" style="align:left"></h:outputText>
+									</p:column>
+									<p:column  >
+										<span class="strong">#{para}</span>
+									</p:column>
+								</p:dataTable>
+								
+								<p:dataTable resizableColumns="true" value="#{_reporte.cc}" var="copia" styleClass="noheader borderless" rendered="#{not empty _reporte.cc}" >
+									<p:column width="20px" rowspan="#{_reporte.cc.size()}" >
+										<h:outputText value="CC:" style="align:left"></h:outputText>
+									</p:column>
+									<p:column  >
+										<span class="strong">#{copia}</span>
+									</p:column>
+								</p:dataTable>
 						</p:column>
 					</p:dataTable>
 

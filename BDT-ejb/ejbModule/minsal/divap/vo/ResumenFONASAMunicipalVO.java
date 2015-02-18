@@ -1,6 +1,7 @@
 package minsal.divap.vo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -21,6 +22,7 @@ public class ResumenFONASAMunicipalVO implements Serializable{
 	private Long descuentoRetiro;
 	private Long rebaja;
 	private Long totalPercapita;
+	private Long leyes;
 	
 	private List<ProgramaFonasaVO> programasFonasa;
 	private Long totalOtrosProgramas;
@@ -94,10 +96,48 @@ public class ResumenFONASAMunicipalVO implements Serializable{
 	public void setTotal(Long total) {
 		this.total = total;
 	}
-	
-	
-	
-
-	
+	public Long getLeyes() {
+		return leyes;
+	}
+	public void setLeyes(Long leyes) {
+		this.leyes = leyes;
+	}
+	public List<Object> getRow() {
+		List<Object> row = new ArrayList<Object>();
+		if(getIdServicio() != null){
+			row.add(getIdServicio());			
+		}
+		if(getNombreServicio() != null){
+			row.add(getNombreServicio());
+		}
+		if(getPerCapitaBasal() != null){
+			row.add(getPerCapitaBasal());
+		}
+		if(getDesempenoDificil() != null){
+			row.add(getDesempenoDificil());
+		}
+		if(getDescuentoRetiro() != null){
+			row.add(getDescuentoRetiro());
+		}
+		if(getRebaja() != null){
+			row.add(getRebaja());
+		}
+		if(getTotalPercapita() != null){
+			row.add(getTotalPercapita());
+		}
+		row.add(0L);
+		if(getProgramasFonasa() != null && getProgramasFonasa().size() > 0){
+			for(ProgramaFonasaVO programaFonasaVO : getProgramasFonasa()){
+				row.add(programaFonasaVO.getMonto());
+			}
+		}
+		if(getTotalOtrosProgramas() != null){
+			row.add(getTotalOtrosProgramas());
+		}
+		if(getTotal() != null){
+			row.add(getTotal());
+		}
+		return row;
+	}
 
 }
