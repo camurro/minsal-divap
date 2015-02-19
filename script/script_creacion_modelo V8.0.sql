@@ -25704,6 +25704,8 @@ ALTER TABLE documento_estimacion_flujo_caja_consolidador
   ADD CONSTRAINT mes_fk FOREIGN KEY (mes) REFERENCES mes (id_mes) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (100, 1, 70, 490345);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (101, 2, 30, 490345, 10);
 
 
 

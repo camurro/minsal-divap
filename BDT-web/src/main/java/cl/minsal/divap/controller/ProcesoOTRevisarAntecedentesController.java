@@ -124,7 +124,7 @@ implements Serializable {
 	public void buscarResultados(){
 		
 		if(programa.getId()< 0){
-			resultadoPercapita = otService.getDetallePerCapita(servicioSeleccionado, otService.getAnoCurso(), programa.getIdProgramaAno()); 
+			resultadoPercapita = otService.getDetallePerCapita(servicioSeleccionado, otService.getAnoCurso(), IdProgramaProxAno); 
 			System.out.println("Resultados PerCapita: "+resultadoPercapita.size());
 		}else{
 			System.out.println("Buscar Resultados para Componente: "+componenteSeleccionado+" Servicio: "+servicioSeleccionado);
@@ -138,21 +138,21 @@ implements Serializable {
 				if(subs.getId() == Subtitulo.SUBTITULO21.getId()){
 					subtitulo21=true;
 					resultadoServicioSub21 = otService.getDetalleOTServicio(componenteSeleccionado,servicioSeleccionado, 
-							Subtitulo.SUBTITULO21.getId(),programa.getIdProgramaAno());
+							Subtitulo.SUBTITULO21.getId(), IdProgramaProxAno);
 				}
 				if(subs.getId() == Subtitulo.SUBTITULO22.getId()){
 					subtitulo22=true;
 					resultadoServicioSub22 = otService.getDetalleOTServicio(componenteSeleccionado,servicioSeleccionado, 
-							Subtitulo.SUBTITULO22.getId(),programa.getIdProgramaAno());
+							Subtitulo.SUBTITULO22.getId(), IdProgramaProxAno);
 				}
 				if(subs.getId() == Subtitulo.SUBTITULO29.getId()){
 					subtitulo29=true;
 					resultadoServicioSub29 = otService.getDetalleOTServicio(componenteSeleccionado,servicioSeleccionado, 
-							Subtitulo.SUBTITULO29.getId(),programa.getIdProgramaAno());
+							Subtitulo.SUBTITULO29.getId(), IdProgramaProxAno);
 				}
 				if(subs.getId() == Subtitulo.SUBTITULO24.getId()){
 					subtitulo24=true;
-					resultadoMunicipal = otService.getDetalleOTMunicipal(componenteSeleccionado,servicioSeleccionado, programa.getIdProgramaAno());
+					resultadoMunicipal = otService.getDetalleOTMunicipal(componenteSeleccionado, servicioSeleccionado, IdProgramaProxAno);
 				}
 			}
 		}
@@ -162,7 +162,7 @@ implements Serializable {
 	public void actualizarPerCapita(Integer row, Integer idComuna){
 		System.out.println(resultadoPercapita.size());
 		OTPerCapitaVO registroTabla = resultadoPercapita.get(row);
-		OTPerCapitaVO registroActualizado = otService.actualizarComunaPerCapita(idComuna,registroTabla,programa.getIdProgramaAno());
+		OTPerCapitaVO registroActualizado = otService.actualizarComunaPerCapita(idComuna,registroTabla, IdProgramaProxAno);
 		resultadoPercapita.remove(registroActualizado);
 		System.out.println(resultadoPercapita.size());
 	}
@@ -173,7 +173,7 @@ implements Serializable {
 		if(registroTabla.getIdDetalleRemesa()!=null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
 		}
-		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO21.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
+		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO21.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
 		resultadoServicioSub21.remove(registroActualizado);
 	}
 	
@@ -183,7 +183,7 @@ implements Serializable {
 		if(registroTabla.getIdDetalleRemesa()!=null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
 		}
-		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO22.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
+		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO22.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
 		resultadoServicioSub22.remove(registroActualizado);
 	}
 	
@@ -193,7 +193,7 @@ implements Serializable {
 		if(registroTabla.getIdDetalleRemesa()!=null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
 		}
-		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO29.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
+		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO29.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
 		resultadoServicioSub29.remove(registroActualizado);
 	}
 	
@@ -202,7 +202,7 @@ implements Serializable {
 		if(registroTabla.getIdDetalleRemesa() != null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
 		}
-		OTResumenMunicipalVO registroActualizado = otService.actualizarMunicipal(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO24.getId(), componenteSeleccionado, registroTabla.getIdDetalleRemesa());
+		OTResumenMunicipalVO registroActualizado = otService.actualizarMunicipal(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado, registroTabla.getIdDetalleRemesa());
 		resultadoMunicipal.remove(registroActualizado);
 	}
 	

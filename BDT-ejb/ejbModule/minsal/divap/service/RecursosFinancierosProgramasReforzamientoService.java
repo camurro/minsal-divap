@@ -4476,9 +4476,11 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			List<AdjuntosVO> adjs = new ArrayList<AdjuntosVO>();
 			for(ReporteEmailsAdjuntos adj : adjuntos){
 				AdjuntosVO ad = new AdjuntosVO();
-				ad.setId(adj.getDocumento().getId());
-				ad.setNombre(adj.getDocumento().getPath());
-				adjs.add(ad);
+				if(adj.getDocumento() != null){
+					ad.setId(adj.getDocumento().getId());
+					ad.setNombre(adj.getDocumento().getPath());
+					adjs.add(ad);
+				}
 			}
 			resumenEnviados.setAdjuntos(adjs);
 
