@@ -41,7 +41,6 @@ import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TareasSeguimiento;
 import minsal.divap.enums.TipoDocumentosProcesos;
-import minsal.divap.enums.TiposDestinatarios;
 import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.excel.impl.ProgramaAPSDetallesMunicipalesHistoricosSheetExcel;
 import minsal.divap.excel.impl.ProgramaAPSDetallesServiciosHistoricosSheetExcel;
@@ -105,7 +104,6 @@ import cl.minsal.divap.model.ReporteEmailsAdjuntos;
 import cl.minsal.divap.model.ReporteEmailsDestinatarios;
 import cl.minsal.divap.model.ReporteEmailsEnviados;
 import cl.minsal.divap.model.ReporteEmailsProgramasReforzamiento;
-import cl.minsal.divap.model.ReporteEmailsRemesas;
 import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.ServicioSalud;
 import cl.minsal.divap.model.TipoDestinatario;
@@ -650,18 +648,15 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		}
 		return plantillaId;
 	}
-	public Integer getIdPlantillaProgramas(Integer programaSeleccionado, TipoDocumentosProcesos tipoDocumentoProceso, boolean template, Integer idPrograma){
+	public Integer getIdPlantillaProgramas(Integer programaSeleccionado, TipoDocumentosProcesos tipoDocumentoProceso, boolean template, Integer ano){
+		System.out.println("programaSeleccionado-->"+programaSeleccionado);
+		System.out.println("ano-->"+ano);
 		Integer plantillaId = documentService.getPlantillaByTypeAndProgram(tipoDocumentoProceso, programaSeleccionado);
-		Programa prog =  programaService.getProgramasByID(idPrograma);
-		Integer idProxAno = programaService.getIdProgramaAnoAnterior(prog.getId(), getAnoCurso()+1);
-		ProgramaVO programa;
+		ProgramaVO programa = programaService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
+		ProgramaVO programaProxAno = programaService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		if(plantillaId == null){
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
-			programa = new ProgramaMapper().getBasic(programasDAO.getProgramaAnoByID(programaSeleccionado));
-
 			List<CellExcelVO> header = new ArrayList<CellExcelVO>();
-
-
 			List<CellExcelVO> subHeader = new ArrayList<CellExcelVO>();
 			String filename = tmpDir + File.separator;
 			GeneradorExcel generadorExcel = null;
@@ -670,15 +665,15 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			case PLANTILLAPROGRAMAAPSMUNICIPALES:
 				header.add(new CellExcelVO("Servicios de Salud", 2, 2));
 				header.add(new CellExcelVO("Comunas", 2, 2));
-				filename += "Plantilla Programa -"+prog.getNombre()+"- Municipal.xlsx";
+				filename += "Plantilla Programa -"+programa.getNombre()+"- Municipal.xlsx";
 				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulos=0;
 				List<Integer> idComponentes = new ArrayList<Integer>();
-
-				for(ComponentesVO componente : programa.getComponentes()){
+				List<ComponentesVO> componentes = programaService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO24);
+				for(ComponentesVO componente : componentes){
 					for(SubtituloVO subtitulo : componente.getSubtitulos()){
-						if(subtitulo.getId()==3){
+						if(Subtitulo.SUBTITULO24.getId().equals(subtitulo.getId())){
 							subtitulos++;
 							idComponentes.add(componente.getId());
 						}
@@ -691,19 +686,17 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				subHeader.add(new CellExcelVO("Servicio de Salud", 1, 2));
 				subHeader.add(new CellExcelVO("ID", 1, 2));
 				subHeader.add(new CellExcelVO("Comuna", 1, 2));
-				for(ComponentesVO componente : programa.getComponentes()){
+				for(ComponentesVO componente : componentes){
 					if(idComponentes.indexOf(componente.getId()) != -1){
 						header.add(new CellExcelVO(componente.getNombre(), 2, 1));
 						for(SubtituloVO subtitulo : componente.getSubtitulos()){
-							if(subtitulo.getId()==3){
+							if(Subtitulo.SUBTITULO24.getId().equals(subtitulo.getId())){
 								subHeader.add(new CellExcelVO(subtitulo.getNombre(), 2, 1));
 								subHeader.add(new CellExcelVO("Tarifa", 1, 1));
 								subHeader.add(new CellExcelVO("Cantidad", 1, 1));
 							}
-
 						}
 					}
-
 				}
 
 				contenType = mimemap.getContentType(filename.toLowerCase());
@@ -713,16 +706,14 @@ public class RecursosFinancierosProgramasReforzamientoService {
 					ProgramaAPSMunicipalesTemplateSheetExcel programaAPSMunicipalesTemplateSheetExcel = new ProgramaAPSMunicipalesTemplateSheetExcel(header, subHeader, servicioComunas);
 					generadorExcel.addSheet(programaAPSMunicipalesTemplateSheetExcel, "Hoja 1");
 				}else{
-					List<ProgramaAPSVO> servicioComunas = programaService.getProgramaMunicipalesResumen(idProxAno, idComponentes, 3);
+					List<ProgramaAPSVO> servicioComunas = programaService.getProgramaMunicipalesResumen(programaProxAno.getIdProgramaAno(), idComponentes, 3);
 					ProgramaAPSMunicipalesSheetExcel programaAPSMunicipalesSheetExcel = new ProgramaAPSMunicipalesSheetExcel(header, subHeader, servicioComunas);
 					generadorExcel.addSheet(programaAPSMunicipalesSheetExcel, "Hoja 1");
 				}
-
-
 				break;
 			case PLANTILLAPROGRAMAAPSSERVICIO:
 				header.add(new CellExcelVO("Servicios de Salud", 2, 2));
-				filename += "Plantilla Programa -"+prog.getNombre()+"- Servicio.xlsx";
+				filename += "Plantilla Programa -"+programa.getNombre()+"- Servicio.xlsx";
 				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO("Establecimientos", 2, 2));
@@ -730,12 +721,13 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				HashMap<Integer, Integer> compoSubs = new HashMap<Integer, Integer>();
 
 
-
-				for(ComponentesVO componente : programa.getComponentes()){
+				Subtitulo[] subtitulosServicios = {Subtitulo.SUBTITULO21, Subtitulo.SUBTITULO22, Subtitulo.SUBTITULO29};
+				List<ComponentesVO> componentesServicios = programaService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulosServicios);
+				for(ComponentesVO componente : componentesServicios){
 					Integer cantidadSubServ=0;
 					for(SubtituloVO subtitulo : componente.getSubtitulos()){
 						System.out.println("subtitulo: "+ subtitulo.getNombre());
-						if(subtitulo.getId()!=3){
+						if(!Subtitulo.SUBTITULO24.getId().equals(subtitulo.getId())){	
 							subtitulosServicio++;
 							cantidadSubServ++;
 						}
@@ -749,19 +741,18 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				//subHeader.add(new CellExcelVO("Comuna", 1, 2));
 				subHeader.add(new CellExcelVO("ID", 1, 2));
 				subHeader.add(new CellExcelVO("Establecimiento", 1, 2));
-				for(ComponentesVO componente : programa.getComponentes()){
+				for(ComponentesVO componente : componentesServicios){
 					if(compoSubs.get(componente.getId())>0){
 						Integer cantidadSubs = compoSubs.get(componente.getId());
 						header.add(new CellExcelVO(componente.getNombre(),compoSubs.get(componente.getId())*2, 1));
 						for(SubtituloVO subtitulo : componente.getSubtitulos()){
-							if(subtitulo.getId()!=3){
+							if(!Subtitulo.SUBTITULO24.getId().equals(subtitulo.getId())){	
 								subHeader.add(new CellExcelVO(subtitulo.getNombre(), 2, 1));
 								subHeader.add(new CellExcelVO("Tarifa", 1, 1));
 								subHeader.add(new CellExcelVO("Cantidad", 1, 1));
 							}
 						}
 					}
-
 				}
 				contenType = mimemap.getContentType(filename.toLowerCase());
 				List<ProgramaAPSServicioVO> servicioComunaEstablecimientos = establecimientoService.getServiciosComunasEstablecimientos();
@@ -771,10 +762,10 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			case PLANTILLALEYAPS:
 				header.add(new CellExcelVO("Servicios de Salud", 2, 1));
 				header.add(new CellExcelVO("Comunas", 2, 1));
-				filename += "Plantilla Ley -"+prog.getNombre()+".xlsx";
+				filename += "Plantilla Ley -"+programa.getNombre()+".xlsx";
 				filename = StringUtil.removeSpanishAccents(filename);
 				generadorExcel = new GeneradorExcel(filename);
-				header.add(new CellExcelVO(prog.getNombre(), 1, 1));
+				header.add(new CellExcelVO(programa.getNombre(), 1, 1));
 				subHeader.add(new CellExcelVO("ID", 1, 1));
 				subHeader.add(new CellExcelVO("Servicio de Salud", 1, 1));
 				subHeader.add(new CellExcelVO("ID", 1, 1));
@@ -789,7 +780,6 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			default:
 				break;
 			}
-
 
 			try {
 				BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderTemplateRecursosFinancierosAPS);
@@ -964,8 +954,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 
 	public void cambiarEstadoPrograma(Integer idPrograma, EstadosProgramas estadoPrograma) {
 		System.out.println("idPrograma-->" + idPrograma + " estadoPrograma.getId()-->"+estadoPrograma.getId());
-		ProgramaAno programaAno = recursosFinancierosProgramasReforzamientoDAO.findById(idPrograma);
-
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByIdProgramaAndAno(idPrograma, getAnoCurso());
 		programaAno.setEstado(new EstadoPrograma(estadoPrograma.getId()));
 		System.out.println("Cambia estado ok");
 	}
@@ -1047,18 +1036,13 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			}
 			recursosFinancierosProgramasReforzamientoDAO.deleteProgramasMunicipalCore(idProgramasCore);
 		}
-
-
 		XSSFSheet worksheet = workbook.getSheetAt(0);
-
 		if(ley){
-			persisteDataLeyesExcel(worksheet,filasCabecera,componentes,idProgramaAno);
+			persisteDataLeyesExcel(worksheet, filasCabecera, componentes, idProgramaAno);
 		}else{
-			persisteDataExcel(worksheet,filasCabecera,componentes,idProgramaAno);
+			persisteDataExcel(worksheet, filasCabecera, componentes, idProgramaAno);
 		}
-
 		System.out.println("FIN PROCESAR PLANILLA MUNICIPAL");		
-
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW) 
@@ -1076,64 +1060,51 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		return listaServicios;
 	}
 
-	public void persisteDataExcel(XSSFSheet sheet, int filasCabecera, 
-			List<ComponentesVO> componentes, Integer idProgramaAno) throws ExcelFormatException {
+	public void persisteDataExcel(XSSFSheet sheet, int filasCabecera, List<ComponentesVO> componentes, Integer idProgramaAno) throws ExcelFormatException {
 		try{
 
 			if(sheet == null){
 				throw new ExcelFormatException("La hoja de cálculo esta nula");
 			}
 
-			int last = sheet.getPhysicalNumberOfRows();
-			int first = 0;
 
 			System.out.println("Componentes del programa-->"+componentes.size());
-			List<Integer> cantidadSubs = new ArrayList<Integer>();
-			int totalSubtitulos = 0;
-			for (int i = 0; i < componentes.size(); i++) {
-				System.out.println("Componente: "+ componentes.get(i).getNombre()+" tiene: "+ componentes.get(i).getSubtitulos().size());
-				cantidadSubs.add(componentes.get(i).getSubtitulos().size());
-				totalSubtitulos += componentes.get(i).getSubtitulos().size();
+			Map<Integer, Integer> cantidadSubtitulos = new HashMap<Integer, Integer>();
+			for (ComponentesVO componente : componentes) {
+				if(componente.getSubtitulos() != null && componente.getSubtitulos().size() > 0){
+					for(SubtituloVO subtituloVO : componente.getSubtitulos()){
+						if(Subtitulo.SUBTITULO24.getId().equals(subtituloVO.getId())){
+							System.out.println("Componente: " + componente.getNombre( ) + " tiene: " + componente.getSubtitulos().size());
+							//cantidadSubs.add(componente.getSubtitulos().size());
+							if(cantidadSubtitulos.get(componente.getId()) == null){
+								cantidadSubtitulos.put(componente.getId(), new Integer(1));
+							}else{
+								Integer cantidad = cantidadSubtitulos.get(componente.getId());
+								cantidadSubtitulos.put(componente.getId(), (cantidad + 1));
+							}
+						}
+					}
+				}
 			}
-
-			int celdasPxQ = totalSubtitulos * 2;
 
 			List<Integer> mergeComponentes = new ArrayList<Integer>();
 
-			for (int i = 0; i < componentes.size(); i++) {
-				System.out.println(componentes.get(i).getNombre()+" tiene "+cantidadSubs.get(i)+" subtitulos");
-				mergeComponentes.add(cantidadSubs.get(i)*2);
-			}
-			XSSFRow xssfRow;
-			int subtitulosMunicipales=0;
-
-			List<SubtituloVO> subtitulosMunis = new ArrayList<SubtituloVO>();
-			List<ComponentesVO> composMunis = new ArrayList<ComponentesVO>();
-
-
-			HashMap<Integer, Integer> componentesSubMunis = new HashMap<Integer, Integer>();
-
-			for(ComponentesVO componente : componentes){
-				int subs=0;
-				for(SubtituloVO subtitulo : componente.getSubtitulos()){
-
-					if(subtitulo.getId() == 3){
-						System.out.println("Componente: "+ componente.getNombre());
-						subs++;
-
-					}
-
+			for (ComponentesVO componente : componentes) {
+				System.out.println(componente.getNombre() + " tiene " + cantidadSubtitulos.get(componente.getId()) + " subtitulos");
+				if(cantidadSubtitulos.get(componente.getId()) != null && (cantidadSubtitulos.get(componente.getId()) > 0)){
+					mergeComponentes.add(cantidadSubtitulos.get(componente.getId()) * 2);
 				}
-				componentesSubMunis.put(componente.getId(), subs);
 			}
+
+			XSSFRow xssfRow;
+
 			int columna=4;
-
-			for (int j = 0; j <componentes.size(); j++) {
-				//itera subtitulos
-				System.out.println("INGRESANDO DATOS DESDE EXCEL PARA COMPONENTE: "+componentes.get(j).getNombre());
-				if(componentesSubMunis.containsKey(componentes.get(j).getId())){
-					for(int sub=0; sub < componentesSubMunis.get(componentes.get(j).getId());sub++){
-
+			int last = sheet.getPhysicalNumberOfRows();
+			for (ComponentesVO componente : componentes) {
+				//itera por subtitulos
+				System.out.println("INGRESANDO DATOS DESDE EXCEL PARA COMPONENTE: " + componente.getNombre());
+				if(cantidadSubtitulos.containsKey(componente.getId())){
+					for(int sub=0; sub < cantidadSubtitulos.get(componente.getId()); sub++){
 						for (int i = filasCabecera; i < last; i++) {	
 							xssfRow = sheet.getRow(i);
 							ProgramaMunicipalCore programaMunicipalCore = new ProgramaMunicipalCore();
@@ -1158,7 +1129,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 									TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloById(3);
 									programaMunicipalCoreComponente.setSubtitulo(tipoSubtitulo);
 
-									Componente componen = componenteDAO.getComponenteByID(componentes.get(j).getId());
+									Componente componen = componenteDAO.getComponenteByID(componente.getId());
 									programaMunicipalCoreComponente.setMunicipalCoreComponente(componen);
 
 									System.out.println("comuna: "+comuna.getNombre()+" P:"+programaMunicipalCoreComponente.getTarifa()+" Q:"+programaMunicipalCoreComponente.getMonto());
@@ -1418,8 +1389,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 	}
 
 
-	public void persisteDataServicioExcel(XSSFSheet sheet, int filasCabecera, 
-			List<ComponentesVO> componentes, Integer idProgramaAno) throws ExcelFormatException {
+	public void persisteDataServicioExcel(XSSFSheet sheet, int filasCabecera, List<ComponentesVO> componentes, Integer idProgramaAno) throws ExcelFormatException {
 		try{
 
 			if(sheet == null){
@@ -1427,94 +1397,48 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			}
 
 			int last = sheet.getPhysicalNumberOfRows();
-			int first = 0;
 
 			System.out.println("Componentes del programa-->"+componentes.size());
-			List<Integer> cantidadSubs = new ArrayList<Integer>();
-			int totalSubtitulos = 0;
-
-			List<Integer> IdComponentes = new ArrayList<Integer>();
-
-			HashMap<Integer, Integer> componenteSubtitulosServicio =  new HashMap<Integer, Integer>();
-			for (int i = 0; i < componentes.size(); i++) {
-				int subs=0;
-				for(SubtituloVO sub : componentes.get(i).getSubtitulos()){
-					if(sub.getId()!=3){
-						IdComponentes.add(componentes.get(i).getId());
-						subs++;
-					}
-				}
-				componenteSubtitulosServicio.put(componentes.get(i).getId(), subs);
-			}
-
-
-
-			XSSFRow xssfRow;
-
-			int subtitulosServicios=0;
-
-
-			List<ComponentesVO> composServ= new ArrayList<ComponentesVO>();
-			for (int j = 0; j <componentes.size(); j++) {
-				System.out.println("COMPONENTE--> "+componentes.get(j).getId());
-				if(componenteSubtitulosServicio.containsKey(componentes.get(j).getId()) && componenteSubtitulosServicio.get(componentes.get(j).getId()) > 0){
-					for(int k=0; k < componentes.get(j).getSubtitulos().size();k++){
-
-						SubtituloVO subMun = componentes.get(j).getSubtitulos().get(k);
-						System.out.println("SUB ID: "+subMun.getId());
-						if(subMun.getId()!=3){					
-							ComponentesVO comServ= new ComponentesVO();
-
-							comServ.setId(componentes.get(j).getId());
-							comServ.setNombre(componentes.get(j).getNombre());
-							comServ.setPeso(componentes.get(j).getPeso());
-							comServ.setTipoComponente(componentes.get(j).getTipoComponente());
-
-							SubtituloVO subServ = new SubtituloVO();
-							subServ.setDependencia(subMun.getDependencia());
-							subServ.setId(subMun.getId());
-							subServ.setNombre(subMun.getNombre());
-
-							int existe = composServ.indexOf(comServ);
-							if(existe == -1){
-								List<SubtituloVO> subtitulosServ = new ArrayList<SubtituloVO>();
-								subtitulosServ.add(subServ);
-								comServ.setSubtitulos(subtitulosServ);
-								composServ.add(comServ);
+			Map<Integer, Integer> cantidadSubtitulos = new HashMap<Integer, Integer>();
+			for (ComponentesVO componente : componentes) {
+				if(componente.getSubtitulos() != null && componente.getSubtitulos().size() > 0){
+					for(SubtituloVO subtituloVO : componente.getSubtitulos()){
+						if(!Subtitulo.SUBTITULO24.getId().equals(subtituloVO.getId())){
+							System.out.println("Componente: " + componente.getNombre( ) + " tiene: " + componente.getSubtitulos().size());
+							//cantidadSubs.add(componente.getSubtitulos().size());
+							if(cantidadSubtitulos.get(componente.getId()) == null){
+								cantidadSubtitulos.put(componente.getId(), new Integer(1));
 							}else{
-								composServ.get(existe).getSubtitulos().add(subServ);
+								Integer cantidad = cantidadSubtitulos.get(componente.getId());
+								cantidadSubtitulos.put(componente.getId(), (cantidad + 1));
 							}
-
-							subtitulosServicios++;
 						}
 					}
 				}
-
 			}
 
 			//itera componentes
-			int columna=4;
-			for(int h =0 ; h< componentes.size();h++){
 
-				if(componenteSubtitulosServicio.containsKey(componentes.get(h).getId()) && componenteSubtitulosServicio.get(componentes.get(h).getId())>0){
-
-
-					for(int k=0; k<componenteSubtitulosServicio.get(componentes.get(h).getId());k++){
-						System.out.println("COLUMNA:"+columna);
-						for (int i = 4; i < last; i++) {	
-							xssfRow = sheet.getRow(i);
-
-							if(xssfRow != null){
-								if(xssfRow.getCell(2)!=null){
+			for (int row = 4; row < last; row++) {	
+				XSSFRow xssfRow = sheet.getRow(row);
+				if(xssfRow != null){
+					int columnaSub = 4;
+					if(xssfRow.getCell(2) != null){
+						for (ComponentesVO componente : componentes) {	
+							int columnaEstablecimiento = 2;
+							int columnaServicio = 0;
+							for (SubtituloVO subtitulo : componente.getSubtitulos()) {
+								if(!Subtitulo.SUBTITULO24.getId().equals(subtitulo.getId())){			
+									System.out.println("columnaSub:"+columnaSub);
 									ProgramaServicioCore programaServicioCore = new ProgramaServicioCore();
-									System.out.println("Establecimiento codigo: "+xssfRow.getCell(2).toString()+" Fila:"+i);
-									Establecimiento establecimiento = establecimientoDAO.getEstablecimientoByCodigo(xssfRow.getCell(2).toString());
+									System.out.println("Establecimiento codigo: " + xssfRow.getCell(columnaEstablecimiento).toString() + " Fila:" + row);
+									Establecimiento establecimiento = establecimientoDAO.getEstablecimientoByCodigo(xssfRow.getCell(columnaEstablecimiento).toString());
 									programaServicioCore.setEstablecimiento(establecimiento);
 
 									ProgramaAno programaAno = recursosFinancierosProgramasReforzamientoDAO.findById(idProgramaAno);
 									programaServicioCore.setProgramaAnoServicio(programaAno);
 
-									ServicioSalud servicioSalud = servicioSaludDAO.getById((Double.valueOf(xssfRow.getCell(0).toString())).intValue());
+									ServicioSalud servicioSalud = servicioSaludDAO.getById((Double.valueOf(xssfRow.getCell(columnaServicio).toString())).intValue());
 									programaServicioCore.setServicio(servicioSalud);
 									recursosFinancierosProgramasReforzamientoDAO.save(programaServicioCore);
 
@@ -1522,29 +1446,37 @@ public class RecursosFinancierosProgramasReforzamientoService {
 									ProgramaServicioCoreComponente programaServicioCoreComponente = new ProgramaServicioCoreComponente();
 									programaServicioCoreComponente.setProgramaServicioCore1(programaServicioCore);
 
-									programaServicioCoreComponente.setMonto((Double.valueOf(xssfRow.getCell(columna).toString()).intValue()));
-									programaServicioCoreComponente.setCantidad((Double.valueOf(xssfRow.getCell(columna+1).toString()).intValue()));
+									if(xssfRow.getCell(columnaSub) != null && !xssfRow.getCell(columnaSub).toString().trim().isEmpty()){
+										programaServicioCoreComponente.setMonto((Double.valueOf(xssfRow.getCell(columnaSub).toString()).intValue()));
+									}else{
+										programaServicioCoreComponente.setMonto(0);
+									}
+									if(xssfRow.getCell((columnaSub + 1)) != null && !xssfRow.getCell((columnaSub + 1)).toString().trim().isEmpty()){
+										programaServicioCoreComponente.setCantidad((Double.valueOf(xssfRow.getCell((columnaSub + 1)).toString()).intValue()));
+									}else{
+										programaServicioCoreComponente.setCantidad(0);
+									}
 
-									TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloByName(componentes.get(h).getSubtitulos().get(k).getNombre());
+									TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloByName(subtitulo.getNombre());
 									System.out.println("ID--->"+tipoSubtitulo.getIdTipoSubtitulo());
 									programaServicioCoreComponente.setSubtitulo(tipoSubtitulo);
 
-									int tarifa = (Double.valueOf(xssfRow.getCell(columna).toString())).intValue() * (Double.valueOf(xssfRow.getCell(columna+1).toString())).intValue();
+									int tarifa = programaServicioCoreComponente.getMonto() * programaServicioCoreComponente.getCantidad();
 									programaServicioCoreComponente.setTarifa(tarifa);
 
-									Componente componen = componenteDAO.getComponenteByID(componentes.get(h).getId());
-									programaServicioCoreComponente.setServicioCoreComponente(componen);
+									Componente componenteDTO = componenteDAO.getComponenteByID(componente.getId());
+									programaServicioCoreComponente.setServicioCoreComponente(componenteDTO);
 
 									ProgramaServicioCoreComponentePK pk = new ProgramaServicioCoreComponentePK();
-									pk.setComponente(componen.getId());
+									pk.setComponente(componenteDTO.getId());
 									pk.setProgramaServicioCore(programaServicioCore.getIdProgramaServicioCore());
 									pk.setSubtitulo(tipoSubtitulo.getIdTipoSubtitulo());
 									programaServicioCoreComponente.setProgramaServicioCoreComponentePK(pk);
 									recursosFinancierosProgramasReforzamientoDAO.save(programaServicioCoreComponente);
+									columnaSub += 2;
 								}
 							}
 						}
-						columna+=2;
 					}
 				}
 			}
@@ -1723,17 +1655,14 @@ public class RecursosFinancierosProgramasReforzamientoService {
 	}
 
 
-	public void moveToAlfresco(Integer idProgramaAno,
-			Integer referenciaDocumentoId,
-			TipoDocumentosProcesos tipoDocumento, Object object,Boolean lastVersion) {
+	public void moveToAlfresco(Integer idProgramaAno, Integer referenciaDocumentoId, TipoDocumentosProcesos tipoDocumento, Integer ano, Boolean lastVersion) {
 		System.out.println("Buscando referenciaDocumentoId="+referenciaDocumentoId);
 		ReferenciaDocumentoSummaryVO referenciaDocumentoSummary = documentService.getDocumentSummary(referenciaDocumentoId);
 		System.out.println("Buscando referenciaDocumentoSummary="+referenciaDocumentoSummary);
 		if(referenciaDocumentoSummary != null){
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			String contenType= mimemap.getContentType(referenciaDocumentoSummary.getPath().toLowerCase());
-			int ano = getAnoCurso() +1;
-			BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummary.getPath()), contenType, folderRecursosFinancierosAPS.replace("{ANO}", ano+""));
+			BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummary.getPath()), contenType, folderRecursosFinancierosAPS.replace("{ANO}", ano.toString()));
 			System.out.println("response upload template --->"+response);
 			documentService.updateDocumentTemplate(referenciaDocumentoSummary.getId(), response.getNodeRef(), response.getFileName(), contenType);
 			documentService.createDocumentProgramasReforzamiento(tipoDocumento, response.getNodeRef(), response.getFileName(), contenType, idProgramaAno);
@@ -1745,8 +1674,6 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			XSSFWorkbook workbook, List<ComponentesVO> componentes) throws ExcelFormatException {
 
 		List<ProgramaServicioCore> programaServiciosCore = recursosFinancierosProgramasReforzamientoDAO.getProgramaServicioCoreByProgramaAno(idProgramaAno);
-
-
 		if(programaServiciosCore != null && programaServiciosCore.size() > 0){
 			List<Integer> idProgramasCore = new ArrayList<Integer>();
 			for(ProgramaServicioCore servicioCore : programaServiciosCore){
@@ -1754,13 +1681,10 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			}
 			recursosFinancierosProgramasReforzamientoDAO.deleteProgramasServiciosCore(idProgramasCore);
 		}
-
 		XSSFSheet worksheet = workbook.getSheetAt(0);
-
-		int filasCabecera=4;
-		persisteDataServicioExcel(worksheet,filasCabecera,componentes,idProgramaAno);
+		int filasCabecera = 4;
+		persisteDataServicioExcel(worksheet, filasCabecera, componentes, idProgramaAno);
 		System.out.println("FIN PROCESAR PLANILLA SERVICIO");		
-
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW) 
@@ -1776,21 +1700,18 @@ public class RecursosFinancierosProgramasReforzamientoService {
 
 	}
 
-	public void calcularActual(Integer idPrograma, String tipoHistorico) {
-
-
+	public void calcularActual(Integer idPrograma, String tipoHistorico, Integer ano) {
 		ProgramaAno programaAnoActual = programasDAO.getProgramaAnoByID(idPrograma);
-		Integer anoSiguiente = getAnoCurso() + 1;
-		ProgramaAno programaAnoSiguiente = programasDAO.getProgramaAnoSiguiente(programaAnoActual.getPrograma().getId(), anoSiguiente);
+		ProgramaAno programaAnoSiguiente = programasDAO.getProgramaAnoSiguiente(programaAnoActual.getPrograma().getId(), ano);
 
 		if(programaAnoSiguiente == null){
 			//crear 
 			programaAnoSiguiente = new ProgramaAno();
-			AnoEnCurso anoSiguienteDTO = programasDAO.getAnoEnCursoById(anoSiguiente);
+			AnoEnCurso anoSiguienteDTO = programasDAO.getAnoEnCursoById(ano);
 			if(anoSiguienteDTO == null) {
 				AnoEnCurso anoActualDTO = programasDAO.getAnoEnCursoById(getAnoCurso());
 				anoSiguienteDTO = new AnoEnCurso();
-				anoSiguienteDTO.setAno(anoSiguiente);
+				anoSiguienteDTO.setAno(ano);
 				anoSiguienteDTO.setMontoPercapitalBasal(anoActualDTO.getMontoPercapitalBasal());
 				anoSiguienteDTO.setAsignacionAdultoMayor(anoActualDTO.getAsignacionAdultoMayor());
 				anoSiguienteDTO.setInflactor(anoActualDTO.getInflactor());
@@ -1926,12 +1847,14 @@ public class RecursosFinancierosProgramasReforzamientoService {
 
 	}
 
-	public List<ResumenProgramaMixtoVO>  getConsolidadoPrograma(Integer idPrograma){
+	public List<ResumenProgramaMixtoVO>  getConsolidadoPrograma(Integer idPrograma, Integer ano){
 		Long date = Calendar.getInstance().getTimeInMillis();
-		System.out.println("******************* inicio metodo");
+		System.out.println("******************* inicio metodo *******************");
+		System.out.println("idPrograma-->"+idPrograma);
+		System.out.println("ano-->"+ano);
 		List<ResumenProgramaMixtoVO> resumen = new ArrayList<ResumenProgramaMixtoVO>();
-		ProgramaVO programa = getProgramaById(idPrograma);
-		Integer idProgramaAno = programasDAO.getIdProgramaAnoAnterior(programa.getId(), getAnoCurso()+1);
+		ProgramaVO programa = programaService.getProgramaByIdProgramaAndAno(idPrograma, (ano - 1));
+		Integer programaValorizado = programaService.getProgramaAnoSiguiente(programa.getId(), ano);
 		List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
 		Map<Integer, List<Integer>> componentesBySubtitulos = new HashMap<Integer, List<Integer>>();
 		for(ComponentesVO componente: programa.getComponentes()){
@@ -1954,11 +1877,27 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				resumenProgramaMixtoVO.setTotalS21(0L);
 				resumenProgramaMixtoVO.setTotalS22(0L);
 				resumenProgramaMixtoVO.setTotalS29(0L);
+				List<ComponentesVO> componentesPrograma = programaService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO24);
+				if(componentesPrograma != null && componentesPrograma.size() > 0){
+					resumenProgramaMixtoVO.setSub24(true);
+				}
+				componentesPrograma = programaService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO21);
+				if(componentesPrograma != null && componentesPrograma.size() > 0){
+					resumenProgramaMixtoVO.setSub21(true);
+				}
+				componentesPrograma = programaService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO22);
+				if(componentesPrograma != null && componentesPrograma.size() > 0){
+					resumenProgramaMixtoVO.setSub22(true);
+				}
+				componentesPrograma = programaService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO29);
+				if(componentesPrograma != null && componentesPrograma.size() > 0){
+					resumenProgramaMixtoVO.setSub29(true);
+				}
 				for (Map.Entry<Integer, List<Integer>> entry : componentesBySubtitulos.entrySet()) {
 					System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue()); 
 					if(Subtitulo.SUBTITULO24.getId().equals(entry.getKey())){
 						List<ProgramaMunicipalCoreComponente> programaMunicipalesCoreComponente = recursosFinancierosProgramasReforzamientoDAO.getProgramasCoreComponenteByServicioProgramaAnoComponentesSubtitulo(servicioSalud.getId(),
-								idProgramaAno, entry.getValue(), entry.getKey());
+								programaValorizado, entry.getValue(), entry.getKey());
 						if(programaMunicipalesCoreComponente != null && programaMunicipalesCoreComponente.size()>0){
 							for(ProgramaMunicipalCoreComponente programaMunicipalCoreComponente : programaMunicipalesCoreComponente){
 								resumenProgramaMixtoVO.setTotalS24(resumenProgramaMixtoVO.getTotalS24() + programaMunicipalCoreComponente.getTarifa());
@@ -1968,7 +1907,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 					}else{
 						System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue()); 
 						List<ProgramaServicioCoreComponente> programaServiciosCoreComponente = recursosFinancierosProgramasReforzamientoDAO.getProgramasServicioCoreComponenteByServicioProgramaAnoComponentesSubtitulo(servicioSalud.getId(),
-								idProgramaAno, entry.getValue(), entry.getKey());
+								programaValorizado, entry.getValue(), entry.getKey());
 						if(Subtitulo.SUBTITULO21.getId().equals(entry.getKey())){
 							for(ProgramaServicioCoreComponente programaServicioCoreComponente : programaServiciosCoreComponente){
 								resumenProgramaMixtoVO.setTotalS21(resumenProgramaMixtoVO.getTotalS21() + programaServicioCoreComponente.getTarifa());
@@ -1997,8 +1936,9 @@ public class RecursosFinancierosProgramasReforzamientoService {
 					resumenProgramaMixtoVO.setTotalS21(0L);
 					resumenProgramaMixtoVO.setTotalS22(0L);
 					resumenProgramaMixtoVO.setTotalS29(0L);
+					resumenProgramaMixtoVO.setSub24(true);
 					List<ProgramaMunicipalCoreComponente> programaMunicipalesCoreComponente = recursosFinancierosProgramasReforzamientoDAO.getProgramasCoreComponenteByServicioProgramaAnoComponentesSubtitulo(servicioSalud.getId(),
-							idProgramaAno, componentesBySubtitulos.get(Subtitulo.SUBTITULO24.getId()), Subtitulo.SUBTITULO24.getId());
+							programaValorizado, componentesBySubtitulos.get(Subtitulo.SUBTITULO24.getId()), Subtitulo.SUBTITULO24.getId());
 					if(programaMunicipalesCoreComponente != null && programaMunicipalesCoreComponente.size()>0){
 						for(ProgramaMunicipalCoreComponente programaMunicipalCoreComponente : programaMunicipalesCoreComponente){
 							resumenProgramaMixtoVO.setTotalS24(resumenProgramaMixtoVO.getTotalS24() + programaMunicipalCoreComponente.getTarifa());
@@ -2015,10 +1955,24 @@ public class RecursosFinancierosProgramasReforzamientoService {
 					resumenProgramaMixtoVO.setTotalS21(0L);
 					resumenProgramaMixtoVO.setTotalS22(0L);
 					resumenProgramaMixtoVO.setTotalS29(0L);
+
+					List<ComponentesVO> componentesPrograma = programaService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO21);
+					if(componentesPrograma != null && componentesPrograma.size() > 0){
+						resumenProgramaMixtoVO.setSub21(true);
+					}
+					componentesPrograma = programaService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO22);
+					if(componentesPrograma != null && componentesPrograma.size() > 0){
+						resumenProgramaMixtoVO.setSub22(true);
+					}
+					componentesPrograma = programaService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO29);
+					if(componentesPrograma != null && componentesPrograma.size() > 0){
+						resumenProgramaMixtoVO.setSub29(true);
+					}
+
 					for (Map.Entry<Integer, List<Integer>> entry : componentesBySubtitulos.entrySet()) { 
 						System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue()); 
 						List<ProgramaServicioCoreComponente> programaServiciosCoreComponente = recursosFinancierosProgramasReforzamientoDAO.getProgramasServicioCoreComponenteByServicioProgramaAnoComponentesSubtitulo(servicioSalud.getId(),
-								idProgramaAno, entry.getValue(), entry.getKey());
+								programaValorizado, entry.getValue(), entry.getKey());
 						if(Subtitulo.SUBTITULO21.getId().equals(entry.getKey())){
 							for(ProgramaServicioCoreComponente programaServicioCoreComponente : programaServiciosCoreComponente){
 								resumenProgramaMixtoVO.setTotalS21(resumenProgramaMixtoVO.getTotalS21() + programaServicioCoreComponente.getTarifa());
@@ -2157,11 +2111,10 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		return resumen;
 	}
 
-	public Integer elaborarResolucionProgramaReforzamiento(Integer idPrograma,List<ResumenProgramaMixtoVO> resumen) {
+	public Integer elaborarResolucionProgramaReforzamiento(Integer idPrograma, List<ResumenProgramaMixtoVO> resumen, Integer ano) {
 
-		ProgramaVO programa = getProgramaById(idPrograma);
-		Integer plantillaBorradorResolucionProgramaReforzamiento = documentService
-				.getPlantillaByType(TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS);
+		ProgramaVO programa = programaService.getProgramaByIdProgramaAndAno(idPrograma, ano);
+		Integer plantillaBorradorResolucionProgramaReforzamiento = documentService.getPlantillaByType(TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS);
 
 		if (plantillaBorradorResolucionProgramaReforzamiento == null) {
 			throw new RuntimeException(
@@ -2243,8 +2196,8 @@ public class RecursosFinancierosProgramasReforzamientoService {
 					.getContent(), XWPFDocument.class);
 
 			Map<String, Object> parametersBorradorAporteEstatal = new HashMap<String, Object>();
-			parametersBorradorAporteEstatal.put("{nombrePrograma}",programa.getNombre().replace(":", "\\:"));
-			parametersBorradorAporteEstatal.put("{anoPrograma}",getAnoCurso()+1);
+			parametersBorradorAporteEstatal.put("{nombrePrograma}", programa.getNombre().replace(":", "\\:"));
+			parametersBorradorAporteEstatal.put("{anoPrograma}", ano);
 			parametersBorradorAporteEstatal.put("{resumenAsignacion}",resumenAsignacion.toString());
 
 
@@ -2253,18 +2206,16 @@ public class RecursosFinancierosProgramasReforzamientoService {
 					templateResolucionProgramasAPS);
 			generadorWordDecretoBorradorAporteEstatal.replaceValues(parametersBorradorAporteEstatal, XWPFDocument.class);
 
-			int ano = getAnoCurso()+1;
 			BodyVO response = alfrescoService.uploadDocument(new File(
 					filenameBorradorResolucionProgramasAPS), contentType,
-					folderRecursosFinancierosAPS.replace("{ANO}", ano+""));
+					folderRecursosFinancierosAPS.replace("{ANO}", ano.toString()));
 			System.out.println("response responseBorradorAporteEstatal --->"
 					+ response);
 
-
-			Integer id = programasDAO.getIdProgramaAnoAnterior(programa.getId(), getAnoCurso()+1);
+			Integer programaValorizado = programaService.getProgramaAnoSiguiente(programa.getId(), ano);
 			plantillaBorradorResolucionProgramaReforzamiento = documentService
 					.createDocumentProgramasReforzamiento(TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS, response.getNodeRef(),
-							response.getFileName(), contentType, id);
+							response.getFileName(), contentType, programaValorizado);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -2447,9 +2398,9 @@ public class RecursosFinancierosProgramasReforzamientoService {
 
 	}
 
-	public Integer elaborarOrdinarioProgramaReforzamiento(Integer idPrograma, List<ResumenProgramaMixtoVO> resumen) {
+	public Integer elaborarOrdinarioProgramaReforzamiento(Integer idPrograma, List<ResumenProgramaMixtoVO> resumen, Integer ano) {
 
-		ProgramaVO programa = getProgramaById(idPrograma);
+		ProgramaVO programa = programaService.getProgramaByIdProgramaAndAno(idPrograma, (ano-1));
 		Integer plantillaBorradorOrdinarioProgramaReforzamiento = documentService.getPlantillaByType(TipoDocumentosProcesos.ORDINARIOPROGRAMASAPS);
 
 		if (plantillaBorradorOrdinarioProgramaReforzamiento == null) {
@@ -2490,7 +2441,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 
 			Map<String, Object> parametersBorradorAporteEstatal = new HashMap<String, Object>();
 			parametersBorradorAporteEstatal.put("{nombrePrograma}",programa.getNombre().replace(":", "\\:"));
-			parametersBorradorAporteEstatal.put("{anoPrograma}",getAnoCurso()+1);
+			parametersBorradorAporteEstatal.put("{anoPrograma}", ano.toString());
 
 
 			GeneradorResolucionAporteEstatal generadorWordDecretoBorradorAporteEstatal = new GeneradorResolucionAporteEstatal(
@@ -2498,18 +2449,17 @@ public class RecursosFinancierosProgramasReforzamientoService {
 					templateOrdinarioProgramasAPS);
 			generadorWordDecretoBorradorAporteEstatal.replaceValues(parametersBorradorAporteEstatal, XWPFDocument.class);
 
-			int ano = getAnoCurso()+1;
 			BodyVO response = alfrescoService.uploadDocument(new File(
 					filenameBorradorOrdinarioProgramasAPS), contentType,
-					folderRecursosFinancierosAPS.replace("{ANO}", ano+""));
+					folderRecursosFinancierosAPS.replace("{ANO}", ano.toString()));
 			System.out.println("response responseBorradorAporteEstatal --->"
 					+ response);
 
 
-			Integer id = programasDAO.getIdProgramaAnoAnterior(programa.getId(), getAnoCurso()+1);
+			Integer programaValorizado = programaService.getProgramaAnoSiguiente(programa.getId(), ano);
 			plantillaBorradorOrdinarioProgramaReforzamiento = documentService
 					.createDocumentProgramasReforzamiento(TipoDocumentosProcesos.ORDINARIOPROGRAMASAPS, response.getNodeRef(),
-							response.getFileName(), contentType, id);
+							response.getFileName(), contentType, programaValorizado);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -2645,52 +2595,34 @@ public class RecursosFinancierosProgramasReforzamientoService {
 
 	}
 
-	public void elaborarExcelResolucion(Integer idPrograma, List<ResumenProgramaMixtoVO> resumen, TipoDocumentosProcesos tipoDocumentoProceso) {
+	public void elaborarExcelResolucion(Integer idPrograma, List<ResumenProgramaMixtoVO> resumen, TipoDocumentosProcesos tipoDocumentoProceso, Integer ano) {
 
-		ProgramaVO programa = getProgramaById(idPrograma);
-		int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(programa.getId(), getAnoCurso()+1);
+		ProgramaVO programa = programaService.getProgramaAno(idPrograma);
+		Integer programaValorizado = programaService.getProgramaAnoSiguiente(programa.getId(), ano);
 
 		Integer plantillaId = documentService.getPlantillaByTypeAndProgram(tipoDocumentoProceso, programa.getId());
 
 		if(plantillaId == null){
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
-			programa = new ProgramaMapper().getBasic(programasDAO.getProgramaAnoByID(idNuevoPrograma));
+			programa = programaService.getProgramaAno(programaValorizado);
 
 			List<CellExcelVO> header = new ArrayList<CellExcelVO>();
 			header.add(new CellExcelVO("COD."));	
 			header.add(new CellExcelVO("SERVICIO DE SALUD"));
-			boolean s21=false;
-			boolean s22=false;
-			boolean s24=false;
-			boolean s29=false;
-			for(int i=0; i<resumen.size();i++){
-				if(resumen.get(i).getTotalS24()>0){
-					s24=true;
-				}
-				if(resumen.get(i).getTotalS21()>0){
-					s21=true;
-				}
-				if(resumen.get(i).getTotalS22()>0){
-					s22=true;
-				}
-				if(resumen.get(i).getTotalS29()>0){
-					s29=true;
-				}
-			}
 
-			if(s24){
+			if(resumen.get(0).isSub24()){
 				header.add(new CellExcelVO("SUBTITULO 24 ($)"));
 			}
 
-			if(s21){
+			if(resumen.get(0).isSub21()){
 				header.add(new CellExcelVO("SUBTITULO 21 ($)"));
 			}
 
-			if(s22){
+			if(resumen.get(0).isSub22()){
 				header.add(new CellExcelVO("SUBTITULO 22 ($)"));
 			}
 
-			if(s29){
+			if(resumen.get(0).isSub29()){
 				header.add(new CellExcelVO("SUBTITULO 29 ($)"));
 			}
 
@@ -2708,15 +2640,12 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				cabezas.add(h);
 			}
 
-
 			ProgramaAPSResolucionSheetExcel programaAPSResolucionSheetExcel = new ProgramaAPSResolucionSheetExcel(cabezas,header, resumen, resumen.size(), header.size());
 			generadorExcel.addSheet(programaAPSResolucionSheetExcel, "Hoja 1");
 
-
 			try {
-				int ano = getAnoCurso()+1;
-				BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderRecursosFinancierosAPS.replace("{ANO}", ano+""));
-				plantillaId = documentService.createDocumentProgramasReforzamiento(tipoDocumentoProceso, response.getNodeRef(), response.getFileName(), contenType, idNuevoPrograma);
+				BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderRecursosFinancierosAPS.replace("{ANO}", ano.toString()));
+				plantillaId = documentService.createDocumentProgramasReforzamiento(tipoDocumentoProceso, response.getNodeRef(), response.getFileName(), contenType, programaValorizado);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -2814,89 +2743,55 @@ public class RecursosFinancierosProgramasReforzamientoService {
 
 	public void elaborarExcelOrdinario(Integer idPrograma,
 			List<ResumenProgramaMixtoVO> resumen,
-			TipoDocumentosProcesos tipoDocumentoProceso) {
+			TipoDocumentosProcesos tipoDocumentoProceso, Integer ano) {
 
-		ProgramaVO progra = getProgramaById(idPrograma);
-		int idNuevoPrograma = programasDAO.getIdProgramaAnoAnterior(progra.getId(), getAnoCurso()+1);
+		ProgramaVO programa = programaService.getProgramaByIdProgramaAndAno(idPrograma, (ano - 1));
+		Integer programaValorizado = programaService.getProgramaAnoSiguiente(programa.getId(), ano);
 
-		Integer plantillaId = documentService.getPlantillaByTypeAndProgram(tipoDocumentoProceso, idNuevoPrograma);
-		Programa prog =  programaService.getProgramaPorID(progra.getId());
+		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 
-		ProgramaVO programa;
-		if(plantillaId == null){
-			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
-			programa = new ProgramaMapper().getBasic(programasDAO.getProgramaAnoByID(idNuevoPrograma));
+		List<CellExcelVO> header = new ArrayList<CellExcelVO>();
+		header.add(new CellExcelVO("COD."));	
+		header.add(new CellExcelVO("SERVICIO DE SALUD"));
 
-			List<CellExcelVO> header = new ArrayList<CellExcelVO>();
-			header.add(new CellExcelVO("COD."));	
-			header.add(new CellExcelVO("SERVICIO DE SALUD"));
+		if(resumen.get(0).isSub24()){
+			header.add(new CellExcelVO("SUBTITULO 24 ($)"));
+		}
 
-			boolean s24=false;
-			boolean s21=false;
-			boolean s22=false;
-			boolean s29=false;
+		if(resumen.get(0).isSub21()){
+			header.add(new CellExcelVO("SUBTITULO 21 ($)"));
+		}
 
-			for(int i=0; i<resumen.size();i++){
-				if(resumen.get(i).getTotalS24()>0){
-					s24=true;
-				}
-				if(resumen.get(i).getTotalS21()>0){
-					s21=true;
-				}
-				if(resumen.get(i).getTotalS22()>0){
-					s22=true;
-				}
-				if(resumen.get(i).getTotalS29()>0){
-					s29=true;
-				}
-			}
+		if(resumen.get(0).isSub22()){
+			header.add(new CellExcelVO("SUBTITULO 22 ($)"));
+		}
 
-			if(s24){
-				header.add(new CellExcelVO("SUBTITULO 24 ($)"));
-			}
+		if(resumen.get(0).isSub29()){
+			header.add(new CellExcelVO("SUBTITULO 29 ($)"));
+		}
 
-			if(s21){
-				header.add(new CellExcelVO("SUBTITULO 21 ($)"));
-			}
+		header.add(new CellExcelVO("TOTAL ($)"));
 
-			if(s22){
-				header.add(new CellExcelVO("SUBTITULO 22 ($)"));
-			}
+		String filename = tmpDir + File.separator;
+		filename += "Plantilla Ordinario Programa -" + programa.getNombre().replace(":", "-")+".xlsx";
+		filename = StringUtil.removeSpanishAccents(filename);
+		GeneradorExcel generadorExcel = new GeneradorExcel(filename);
+		String contenType = mimemap.getContentType(filename.toLowerCase());
 
-			if(s29){
-				header.add(new CellExcelVO("SUBTITULO 29 ($)"));
-			}
+		List<String> cabezas = new ArrayList<String>();
+		for(CellExcelVO head : header){
+			String h = head.getName();
+			cabezas.add(h);
+		}
 
+		ProgramaAPSResolucionSheetExcel programaAPSResolucionSheetExcel = new ProgramaAPSResolucionSheetExcel(cabezas,header, resumen, resumen.size(), header.size());
+		generadorExcel.addSheet(programaAPSResolucionSheetExcel, "Hoja 1");
 
-			header.add(new CellExcelVO("TOTAL ($)"));
-
-			String filename = tmpDir + File.separator;
-			filename += "Plantilla Ordinario Programa -"+prog.getNombre().replace(":", "-")+".xlsx";
-			filename = StringUtil.removeSpanishAccents(filename);
-			GeneradorExcel generadorExcel = new GeneradorExcel(filename);
-			String contenType = mimemap.getContentType(filename.toLowerCase());
-
-			List<String> cabezas = new ArrayList<String>();
-			for(CellExcelVO head : header){
-				String h = head.getName();
-				cabezas.add(h);
-			}
-
-
-			ProgramaAPSResolucionSheetExcel programaAPSResolucionSheetExcel = new ProgramaAPSResolucionSheetExcel(cabezas,header, resumen, resumen.size(), header.size());
-			generadorExcel.addSheet(programaAPSResolucionSheetExcel, "Hoja 1");
-
-
-			try {
-				int ano = getAnoCurso()+1;
-				BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderRecursosFinancierosAPS.replace("{ANO}", ano+""));
-				plantillaId = documentService.createDocumentProgramasReforzamiento(tipoDocumentoProceso, response.getNodeRef(), response.getFileName(), contenType, idNuevoPrograma);
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}else{
-			plantillaId = documentService.getDocumentoIdByPlantillaId(plantillaId);
+		try {
+			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderRecursosFinancierosAPS.replace("{ANO}", ano.toString()));
+			documentService.createDocumentProgramasReforzamiento(tipoDocumentoProceso, response.getNodeRef(), response.getFileName(), contenType, programaValorizado);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 	}
@@ -3039,11 +2934,10 @@ public class RecursosFinancierosProgramasReforzamientoService {
 	}
 
 	@Asynchronous
-	public void recursosFinancierosProgramasReforzamientoService(Integer idPrograma, Boolean tipoProgramaPxQ, Integer idProceso) {
-		ProgramaVO programa = programaService.getProgramaAno(idPrograma);
-		Integer idProgramaSiguiente = programasDAO.getIdProgramaAnoAnterior(programa.getId(), getAnoCurso()+1);
-		ProgramaAno programaAnoSiguiente = programasDAO.getProgramasByIdProgramaAno(idProgramaSiguiente);
-		List<ServicioSalud> servicios = servicioSaludDAO.getServicios();
+	public void recursosFinancierosProgramasReforzamientoService(Integer idPrograma, Boolean tipoProgramaPxQ, Integer idProceso, Integer ano) {
+		ProgramaVO programa = programaService.getProgramaByIdProgramaAndAno(idPrograma, (ano - 1));
+		ProgramaVO programaValorizado = programaService.getProgramaByIdProgramaAndAno(idPrograma, ano);
+		List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
 		ReferenciaDocumento referenciaDocumento = null;
 		ReferenciaDocumento referenciaDetalleMunicipal = null;
 		ReferenciaDocumento referenciaDetalleServicio = null;
@@ -3065,13 +2959,13 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		if(programa.getDependenciaMunicipal()){
 			idPlantillaCorreo = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLARESOLUCIONCORREO);
 
-			referenciaDocumento= documentoDAO.getLastDocumentoSummaryByResolucionAPSType(idProgramaSiguiente, TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS);
+			referenciaDocumento= documentoDAO.getLastDocumentoSummaryByResolucionAPSType(programaValorizado.getIdProgramaAno(), TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS);
 			subject = "Resolución de Distribución de Recursos para el Programa "+programa.getNombre();
 		}
 		if(programa.getDependenciaServicio() && !programa.getDependenciaMunicipal()){
 			idPlantillaCorreo = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAORDINARIOCORREO);
 
-			referenciaDocumento= documentoDAO.getLastDocumentoSummaryByResolucionAPSType(idProgramaSiguiente, TipoDocumentosProcesos.ORDINARIOPROGRAMASAPS);
+			referenciaDocumento= documentoDAO.getLastDocumentoSummaryByResolucionAPSType(programaValorizado.getIdProgramaAno(), TipoDocumentosProcesos.ORDINARIOPROGRAMASAPS);
 			subject = "Ordinario de Distribución de Recursos para el Programa"+programa.getNombre();
 		}
 
@@ -3088,9 +2982,6 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		} catch (JAXBException e1) {
 			e1.printStackTrace();
 		}
-
-
-
 
 		if(tipoProgramaPxQ){
 			if(programa.getDependenciaMunicipal() && !programa.getDependenciaServicio()){
@@ -3125,7 +3016,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		}
 
 		for(ServicioSalud servicioSalud : servicios) {
-			List<DocumentoProgramasReforzamiento> documentosAdjuntos =	recursosFinancierosProgramasReforzamientoDAO.getByIdTipo(idProgramaSiguiente, TipoDocumentosProcesos.ADJUNTOCORREO, servicioSalud.getId());
+			List<DocumentoProgramasReforzamiento> documentosAdjuntos =	recursosFinancierosProgramasReforzamientoDAO.getByIdTipo(programaValorizado.getIdProgramaAno(), TipoDocumentosProcesos.ADJUNTOCORREO, servicioSalud.getId());
 			if(documentosAdjuntos.size()>0){
 				for(DocumentoProgramasReforzamiento docs : documentosAdjuntos){
 					System.out.println("ELIMINANDO DocumentoProgramasReforzamiento ID  --> "+docs.getId());
@@ -3139,14 +3030,14 @@ public class RecursosFinancierosProgramasReforzamientoService {
 
 
 		try{
-
+			ProgramaAno programaAnoSeleccionado = programasDAO.getProgramaAnoByID(programaValorizado.getIdProgramaAno());
 			for (ServicioSalud servicioSalud : servicios) {
 				if(servicioSalud != null && servicioSalud.getDirector() != null && servicioSalud.getDirector().getEmail() != null){
 					List<EmailService.Adjunto> adjuntos = new ArrayList<EmailService.Adjunto>();
 
 
 					DocumentoProgramasReforzamiento documentoProgramasReforzamiento = new DocumentoProgramasReforzamiento();
-					documentoProgramasReforzamiento.setIdProgramaAno(programaAnoSiguiente);
+					documentoProgramasReforzamiento.setIdProgramaAno(programaAnoSeleccionado);
 					documentoProgramasReforzamiento.setIdTipoDocumento(new TipoDocumento(TipoDocumentosProcesos.ADJUNTOCORREO.getId()));
 					documentoProgramasReforzamiento.setIdDocumento(referenciaDocumento);
 					documentoProgramasReforzamiento.setIdServicio(servicioSalud);
@@ -3154,7 +3045,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 					recursosFinancierosProgramasReforzamientoDAO.save(documentoProgramasReforzamiento);
 
 					if(referenciaDetalleMunicipal!=null && tipoProgramaPxQ){
-						File detalleMunicipal = construirExcelDetalleMunicipal(referenciaDetalleMunicipal, servicioSalud.getId(),idProgramaSiguiente,programa.getComponentes(), servicioSalud.getNombre());
+						File detalleMunicipal = construirExcelDetalleMunicipal(referenciaDetalleMunicipal, servicioSalud.getId(), programaValorizado.getIdProgramaAno(), programa.getComponentes(), servicioSalud.getNombre());
 						EmailService.Adjunto adjunto = new EmailService.Adjunto();
 						adjunto.setDescripcion("Detalle Municipal Programa");
 						adjunto.setName("Detalle Programa "+programa.getNombre().replace(":", "-")+" servicio "+servicioSalud.getNombre()+" - Municipal.xlsx");
@@ -3162,7 +3053,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 						adjuntos.add(adjunto);
 					}
 					if(referenciaDetalleServicio!=null && tipoProgramaPxQ){
-						File detalleServicio = construirExcelDetalleServicio(referenciaDetalleServicio, servicioSalud.getId(), idProgramaSiguiente, servicioSalud.getNombre(), idComponentes);
+						File detalleServicio = construirExcelDetalleServicio(referenciaDetalleServicio, servicioSalud.getId(), programaValorizado.getIdProgramaAno(), servicioSalud.getNombre(), idComponentes);
 
 						EmailService.Adjunto adjunto = new EmailService.Adjunto();
 						adjunto.setDescripcion("Detalle Municipal Programa");
@@ -3171,7 +3062,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 						adjuntos.add(adjunto);
 					}
 					if(referenciaDetalleMunicipal!=null && !tipoProgramaPxQ){
-						File detalleMunicipal = construirExcelDetalleMunicipalHistorico(referenciaDetalleMunicipal, servicioSalud.getId(),idProgramaSiguiente,programa.getComponentes(), servicioSalud.getNombre());
+						File detalleMunicipal = construirExcelDetalleMunicipalHistorico(referenciaDetalleMunicipal, servicioSalud.getId(), programaValorizado.getIdProgramaAno(), programa.getComponentes(), servicioSalud.getNombre());
 						EmailService.Adjunto adjunto = new EmailService.Adjunto();
 						adjunto.setDescripcion("Detalle Municipal Programa");
 						adjunto.setName("Detalle Programa "+programa.getNombre().replace(":", "-")+" servicio "+servicioSalud.getNombre()+" - Municipal.xlsx");
@@ -3179,7 +3070,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 						adjuntos.add(adjunto);
 					}
 					if(referenciaDetalleServicio!=null && !tipoProgramaPxQ){
-						File detalleServicio = construirExcelDetalleServicioHistorico(referenciaDetalleServicio, servicioSalud.getId(), idProgramaSiguiente, servicioSalud.getNombre());
+						File detalleServicio = construirExcelDetalleServicioHistorico(referenciaDetalleServicio, servicioSalud.getId(), programaValorizado.getIdProgramaAno(), servicioSalud.getNombre());
 
 						EmailService.Adjunto adjunto = new EmailService.Adjunto();
 						adjunto.setDescripcion("Detalle Servicio Programa");
@@ -3215,13 +3106,13 @@ public class RecursosFinancierosProgramasReforzamientoService {
 					}
 
 					ReporteEmailsEnviados reporteEnviados = new ReporteEmailsEnviados();
-					reporteEnviados.setIdProgramaAno(programaAnoSiguiente);
+					reporteEnviados.setIdProgramaAno(programaAnoSeleccionado);
 					reporteEnviados.setIdServicio(servicioSalud);
 					reporteEnviados.setFecha(new Date());
 					reporteEnviados.setModifica(false);
 					recursosFinancierosProgramasReforzamientoDAO.save(reporteEnviados);
 
-					List<DocumentoProgramasReforzamiento> documentosAdjuntos =	recursosFinancierosProgramasReforzamientoDAO.getByIdTipo(idProgramaSiguiente, TipoDocumentosProcesos.ADJUNTOCORREO, servicioSalud.getId());
+					List<DocumentoProgramasReforzamiento> documentosAdjuntos =	recursosFinancierosProgramasReforzamientoDAO.getByIdTipo(programaValorizado.getIdProgramaAno(), TipoDocumentosProcesos.ADJUNTOCORREO, servicioSalud.getId());
 
 					for(DocumentoProgramasReforzamiento adjs : documentosAdjuntos){
 						ReporteEmailsAdjuntos adjuntoMail = new ReporteEmailsAdjuntos();

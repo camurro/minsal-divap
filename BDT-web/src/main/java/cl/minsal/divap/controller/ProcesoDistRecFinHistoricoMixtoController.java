@@ -94,12 +94,9 @@ public class ProcesoDistRecFinHistoricoMixtoController extends AbstractTaskMBean
 	private Long totalFuturo;
 	private Long totalPasadoHorizontal;
 	private Long totalFuturoHorizontal;
-	
-	private String anoActual;
-	private String anoProximo;
-	
+	private Integer ano;
 	private String subtitulo;
-	
+	private ProgramaVO programaProxAno;
 	
 	@PostConstruct 
 	public void init() {
@@ -115,16 +112,17 @@ public class ProcesoDistRecFinHistoricoMixtoController extends AbstractTaskMBean
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			programaSeleccionado = (Integer) getTaskDataVO()
 					.getData().get("_programaSeleccionado");
+			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("this.ano --->" + this.ano);
 		}
-		programa = reforzamientoService.getProgramaById(programaSeleccionado);
+		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
+		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
 		inflactorS21 = subtituloService.getInflactor(1);
 		inflactorS22 = subtituloService.getInflactor(2);
 		inflactorS24 = subtituloService.getInflactor(3);
 		inflactorS29 = subtituloService.getInflactor(4);
-		anoActual = reforzamientoService.getAnoCurso()+"";
-		anoProximo = (reforzamientoService.getAnoCurso()+1)+"";
 		//armarResumenPrograma();
 	}
 	
@@ -249,7 +247,6 @@ public class ProcesoDistRecFinHistoricoMixtoController extends AbstractTaskMBean
 		programasService.guardarProgramaHistoricoServicio(listadoHistoricoServicioActual);
 		programasService.guardarProgramaHistoricoMunicipal(listadoHistoricoMunicipalActual);
 	}
-
 	
 	@Override
 	protected Map<String, Object> createResultData() {
@@ -257,8 +254,6 @@ public class ProcesoDistRecFinHistoricoMixtoController extends AbstractTaskMBean
 		System.out.println("createResultData usuario-->"
 				+ getSessionBean().getUsername());
 		parameters.put("recursosAPSMunicipal_", true);
-		
-		
 		return parameters;
 	}
 
@@ -358,22 +353,6 @@ public class ProcesoDistRecFinHistoricoMixtoController extends AbstractTaskMBean
 	public void setListadoHistoricoServicioActual(
 			List<ProgramaServicioHistoricoVO> listadoHistoricoServicioActual) {
 		this.listadoHistoricoServicioActual = listadoHistoricoServicioActual;
-	}
-
-	public String getAnoActual() {
-		return anoActual;
-	}
-
-	public void setAnoActual(String anoActual) {
-		this.anoActual = anoActual;
-	}
-
-	public String getAnoProximo() {
-		return anoProximo;
-	}
-
-	public void setAnoProximo(String anoProximo) {
-		this.anoProximo = anoProximo;
 	}
 
 	public Double getInflactorS21() {
@@ -566,5 +545,20 @@ public class ProcesoDistRecFinHistoricoMixtoController extends AbstractTaskMBean
 		this.totalFuturoHorizontal = totalFuturoHorizontal;
 	}
 
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
+
+	public ProgramaVO getProgramaProxAno() {
+		return programaProxAno;
+	}
+
+	public void setProgramaProxAno(ProgramaVO programaProxAno) {
+		this.programaProxAno = programaProxAno;
+	}
 
 }

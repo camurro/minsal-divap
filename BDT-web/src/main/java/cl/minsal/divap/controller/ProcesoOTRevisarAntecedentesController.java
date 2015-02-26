@@ -39,7 +39,7 @@ public class ProcesoOTRevisarAntecedentesController extends AbstractTaskMBean
 implements Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject private transient Logger log;
-	
+
 	@EJB
 	private OTService otService;
 	@EJB
@@ -53,44 +53,44 @@ implements Serializable {
 	@EJB
 	private ReportesServices reporteService;
 
-	
+
 	private Integer programaSeleccionado;
 	private Integer IdProgramaProxAno;
 	private ProgramaVO programa;
-	
+
 	private Integer servicioSeleccionado;
 	private List<ServiciosVO> listaServicios;
-	
+
 	private Integer componenteSeleccionado;
 	private List<ComponentesVO> listaComponentes;
-	
+
 	private List<OTResumenDependienteServicioVO> resultadoServicioSub21;
 	private List<OTResumenDependienteServicioVO> resultadoServicioSub22;
 	private List<OTResumenDependienteServicioVO> resultadoServicioSub29;
 	private List<OTResumenMunicipalVO> resultadoMunicipal;
 	private List<OTPerCapitaVO> resultadoPercapita;
-	
+
 	private List<RemesasProgramaVO> remesasPrograma;
 	private List<RemesasProgramaVO> remesasPerCapita;
-	
+
 	private boolean subtitulo21;
 	private boolean subtitulo22;
 	private boolean subtitulo29;
 	private boolean subtitulo24;
 	private boolean percapita;
-	
-	
+
+
 	private String filaHidden;
 	private String diaHidden;
 	private String mesHidden;
 	private String montoHidden;
 	private String subtituloHidden;
 	private Integer anoCurso;
-	
-	
+
+
 	@PostConstruct
 	public void init() throws NumberFormatException, ParseException {
-		
+
 		if (!getSessionBean().isLogged()) {
 			log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
 			try {
@@ -102,27 +102,26 @@ implements Serializable {
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			programaSeleccionado = (Integer) getTaskDataVO()
 					.getData().get("_programaSeleccionado");
-			programa = otService.getProgramaById(programaSeleccionado);
-			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado, programa);
+			anoCurso = (Integer) getTaskDataVO().getData().get("_ano");
+			programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (anoCurso - 1));
+			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado, anoCurso);
+			
 		}
-		anoCurso = (Integer) getTaskDataVO().getData().get("_ano");
 		percapita = false;
-		if(programa.getId()< 0){
+		if(programa.getId() < 0){
 			percapita = true;
 		}
-		
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes = componenteService.getComponenteByPrograma(programa.getId());
-		
 		remesasPrograma = otService.getRemesasPrograma(programa.getId(), Integer.parseInt(otService.getMesCurso(true)));
 		remesasPerCapita = otService.getRemesasPerCapita(programa.getId(), Integer.parseInt(otService.getMesCurso(true)));
 	}
 
 
-	
-	
+
+
 	public void buscarResultados(){
-		
+
 		if(programa.getId()< 0){
 			resultadoPercapita = otService.getDetallePerCapita(servicioSeleccionado, otService.getAnoCurso(), IdProgramaProxAno); 
 			System.out.println("Resultados PerCapita: "+resultadoPercapita.size());
@@ -157,8 +156,8 @@ implements Serializable {
 			}
 		}
 	}
-	
-	
+
+
 	public void actualizarPerCapita(Integer row, Integer idComuna){
 		System.out.println(resultadoPercapita.size());
 		OTPerCapitaVO registroTabla = resultadoPercapita.get(row);
@@ -176,7 +175,7 @@ implements Serializable {
 		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO21.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
 		resultadoServicioSub21.remove(registroActualizado);
 	}
-	
+
 	public void actualizarS22(Integer row, String codEstablecimiento){
 		System.out.println("actualizando "+codEstablecimiento);
 		OTResumenDependienteServicioVO registroTabla = resultadoServicioSub22.get(row);
@@ -186,7 +185,7 @@ implements Serializable {
 		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO22.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
 		resultadoServicioSub22.remove(registroActualizado);
 	}
-	
+
 	public void actualizarS29(Integer row, String codEstablecimiento){
 		System.out.println("actualizando "+codEstablecimiento);
 		OTResumenDependienteServicioVO registroTabla = resultadoServicioSub29.get(row);
@@ -196,7 +195,7 @@ implements Serializable {
 		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO29.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
 		resultadoServicioSub29.remove(registroActualizado);
 	}
-	
+
 	public void actualizarS24(Integer row, Integer idComuna){
 		OTResumenMunicipalVO registroTabla = resultadoMunicipal.get(row);
 		if(registroTabla.getIdDetalleRemesa() != null){
@@ -205,13 +204,13 @@ implements Serializable {
 		OTResumenMunicipalVO registroActualizado = otService.actualizarMunicipal(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado, registroTabla.getIdDetalleRemesa());
 		resultadoMunicipal.remove(registroActualizado);
 	}
-	
+
 
 	public Integer actualizar(){return null;}
-	
+
 	public String actualizarCamposHidden(){
 		System.out.println("ACTUALIZANDO SUBTITULO "+subtituloHidden);
-		OTResumenDependienteServicioVO registroTabla=null;
+		OTResumenDependienteServicioVO registroTabla = null;
 		OTResumenMunicipalVO registroTablaMunicipal = null;
 		boolean servicio=false;
 		if(subtituloHidden.equals("21")){
@@ -230,13 +229,16 @@ implements Serializable {
 			registroTablaMunicipal = resultadoMunicipal.get(Integer.parseInt(filaHidden));
 			servicio=false;
 		}
-		
+
 		if(servicio){
 			for(RemesasProgramaVO remesa : registroTabla.getRemesas()){
 				if(remesa.getIdMes() == Integer.parseInt(mesHidden)){
 					for(DiaVO dia : remesa.getDias()){
 						if(dia.getDia() == Integer.parseInt(diaHidden)){
-							dia.setMonto(Long.parseLong(montoHidden));	
+							if(montoHidden != null){
+								montoHidden = montoHidden.replace(".", "");
+								dia.setMonto(Long.parseLong(montoHidden));	
+							}
 						}
 					}
 				}
@@ -246,17 +248,20 @@ implements Serializable {
 				if(remesa.getIdMes() == Integer.parseInt(mesHidden)){
 					for(DiaVO dia : remesa.getDias()){
 						if(dia.getDia() == Integer.parseInt(diaHidden)){
-							dia.setMonto(Long.parseLong(montoHidden));	
+							if(montoHidden != null){
+								montoHidden = montoHidden.replace(".", "");
+								dia.setMonto(Long.parseLong(montoHidden));
+							}
 						}
 					}
 				}
 			}
 		}
-		
+
 
 		return null;
 	}
-	
+
 	@Override
 	protected Map<String, Object> createResultData() {
 		// TODO Auto-generated method stub
@@ -301,7 +306,7 @@ implements Serializable {
 	}
 
 
-	
+
 
 
 	public List<ServiciosVO> getListaServicios() {
@@ -538,6 +543,6 @@ implements Serializable {
 		this.anoCurso = anoCurso;
 	}
 
-	
+
 
 }

@@ -267,7 +267,6 @@ public class ProgramasDAO {
 
 	public ProgramaAno getProgramaAnoSiguiente(Integer idPrograma, Integer anoSiguiente) {
 		try {
-			
 			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.findByAnoIdPrograma", ProgramaAno.class);
 			query.setParameter("idPrograma", idPrograma);
 			query.setParameter("ano", anoSiguiente);
@@ -925,6 +924,21 @@ public class ProgramasDAO {
 				programasAno = queryProgramas.getResultList();
 			}
 			return programasAno;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public ProgramaAno getProgramaAnoByIdProgramaAndAno(Integer idPrograma, Integer ano) {
+		try {
+			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.findByAnoIdPrograma", ProgramaAno.class);
+			query.setParameter("idPrograma", idPrograma);
+			query.setParameter("ano", ano);
+			List <ProgramaAno> programas = query.getResultList(); 
+			if(programas != null && programas.size() > 0){
+				return programas.get(0);
+			}
+			return null;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

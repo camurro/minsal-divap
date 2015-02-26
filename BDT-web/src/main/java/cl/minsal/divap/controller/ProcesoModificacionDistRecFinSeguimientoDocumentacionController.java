@@ -40,14 +40,14 @@ public class ProcesoModificacionDistRecFinSeguimientoDocumentacionController ext
 	private ProgramaVO programa;
 	private Integer programaSeleccionado;
 	private Integer instanciaProceso;
-	private Integer idProxAno;
 	private List<ReporteEmailsEnviadosVO> reporteCorreos;
 	private String docIdDownload;
-	
 	@EJB
 	private RecursosFinancierosProgramasReforzamientoService reforzamientoService;
 	@EJB
-	private ProgramasService programaService;
+	private ProgramasService programasService;
+	private ProgramaVO programaProxAno;
+	private Integer ano;
 	
 	@PostConstruct
 	public void init() {
@@ -60,14 +60,12 @@ public class ProcesoModificacionDistRecFinSeguimientoDocumentacionController ext
 			}
 		}
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			programaSeleccionado = (Integer) getTaskDataVO()
-					.getData().get("_programaSeleccionado");
-			instanciaProceso = (Integer) getTaskDataVO()
-					.getData().get("_idProcesoModificacion");
+			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
+			ano = (Integer) getTaskDataVO().getData().get("_ano");
+			instanciaProceso = (Integer) getTaskDataVO().getData().get("_idProcesoModificacion");
 		}
-		programa = reforzamientoService.getProgramaById(programaSeleccionado);
-		idProxAno = programaService.getIdProgramaAnoAnterior(programaSeleccionado, reforzamientoService.getAnoCurso());
-		
+		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
+		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		reporteCorreos = reforzamientoService.getReporteCorreosByIdInstanciaReforzamiento(instanciaProceso);
 	}
 	
@@ -154,14 +152,6 @@ public class ProcesoModificacionDistRecFinSeguimientoDocumentacionController ext
 		this.reforzamientoService = reforzamientoService;
 	}
 
-	public Integer getIdProxAno() {
-		return idProxAno;
-	}
-
-	public void setIdProxAno(Integer idProxAno) {
-		this.idProxAno = idProxAno;
-	}
-
 	public List<ReporteEmailsEnviadosVO> getReporteCorreos() {
 		return reporteCorreos;
 	}
@@ -184,6 +174,14 @@ public class ProcesoModificacionDistRecFinSeguimientoDocumentacionController ext
 
 	public void setInstanciaProceso(Integer instanciaProceso) {
 		this.instanciaProceso = instanciaProceso;
+	}
+
+	public ProgramaVO getProgramaProxAno() {
+		return programaProxAno;
+	}
+
+	public void setProgramaProxAno(ProgramaVO programaProxAno) {
+		this.programaProxAno = programaProxAno;
 	}
 	
 }

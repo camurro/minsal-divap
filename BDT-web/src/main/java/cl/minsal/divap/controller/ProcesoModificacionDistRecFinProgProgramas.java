@@ -1,7 +1,6 @@
 package cl.minsal.divap.controller;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +92,7 @@ public class ProcesoModificacionDistRecFinProgProgramas extends AbstractTaskMBea
 			}
 			parameters.put("programaSeleccionado_", paramProgramaSeleccionado);
 		}
+		parameters.put("ano_", recursosFinancierosProgramasReforzamientoService.getAnoCurso());
 		return parameters;
 	}
 

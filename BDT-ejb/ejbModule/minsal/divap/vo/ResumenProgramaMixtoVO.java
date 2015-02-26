@@ -14,6 +14,10 @@ public class ResumenProgramaMixtoVO implements Serializable{
 	private static final long serialVersionUID = 8342581230266634287L;
 	private Integer idServicio;
 	private String nombreServicio;
+	private boolean sub21;
+	private boolean sub22;
+	private boolean sub24;
+	private boolean sub29;
 	private Long totalS21;
 	private Long totalS22;
 	private Long totalS24;
@@ -53,7 +57,7 @@ public class ResumenProgramaMixtoVO implements Serializable{
 	}
 	
 	public Long getTotalServicio() {
-		totalServicio=0L;
+		totalServicio = 0L;
 		if(totalS21!=null){
 			totalServicio += totalS21;
 		}
@@ -123,7 +127,36 @@ public class ResumenProgramaMixtoVO implements Serializable{
 		return row;
 	}
 	
+	public boolean isSub21() {
+		return sub21;
+	}
 	
+	public void setSub21(boolean sub21) {
+		this.sub21 = sub21;
+	}
 	
+	public boolean isSub22() {
+		return sub22;
+	}
+	
+	public void setSub22(boolean sub22) {
+		this.sub22 = sub22;
+	}
+	
+	public boolean isSub24() {
+		return sub24;
+	}
+	
+	public void setSub24(boolean sub24) {
+		this.sub24 = sub24;
+	}
+	
+	public boolean isSub29() {
+		return sub29;
+	}
+	
+	public void setSub29(boolean sub29) {
+		this.sub29 = sub29;
+	}
 	
 }

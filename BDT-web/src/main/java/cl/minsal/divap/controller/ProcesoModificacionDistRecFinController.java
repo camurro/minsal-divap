@@ -26,7 +26,6 @@ import minsal.divap.vo.ServiciosVO;
 import org.apache.log4j.Logger;
 
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
-import cl.redhat.bandejaTareas.util.BandejaProperties;
 
 @Named ( "procesoModificacionDistRecFinController" ) 
 @ViewScoped 
@@ -38,7 +37,6 @@ public class ProcesoModificacionDistRecFinController extends AbstractTaskMBean i
 	 */
 	private static final long serialVersionUID = -7159334571377609526L;
 	@Inject private transient Logger log;
-	@Inject private BandejaProperties bandejaProperties;
 	@Inject FacesContext facesContext;
 	
 	@EJB
@@ -49,26 +47,20 @@ public class ProcesoModificacionDistRecFinController extends AbstractTaskMBean i
 	private ProgramasService programasService;
 	@EJB
 	private RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService;
-	
 	private String servicioSeleccionado;
 	private List<ServiciosVO> listaServicios;
-	
 	private String componenteSeleccionado;
 	private List<ComponentesVO> listaComponentes;
-	
 	private List<ProgramaMunicipalVO> detalleComunas;
-	
 	private String posicionElemento;
 	private String precioCantidad;
 	private Long totalPxQ;
-	
 	private List<ResumenProgramaVO> resumenPrograma;
-	
 	private Integer programaSeleccionado;
 	private Long totalResumen24;
-	private Integer programaAnoActual;
-	
 	private ProgramaVO programa;
+	private ProgramaVO programaProxAno;
+	private Integer ano;
 	
 	@PostConstruct 
 	public void init() {
@@ -82,29 +74,26 @@ public class ProcesoModificacionDistRecFinController extends AbstractTaskMBean i
 			}
 		}
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			programaSeleccionado = (Integer) getTaskDataVO()
-					.getData().get("_programaSeleccionado");
+			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
+			ano = (Integer) getTaskDataVO().getData().get("_ano");
 		}
-		programa = programasService.getProgramaAno(programaSeleccionado);
-		programaAnoActual = programasService.getIdProgramaAnoAnterior(programaSeleccionado, recursosFinancierosProgramasReforzamientoService.getAnoCurso());
+		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
+		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
 		armarResumenPrograma();
 	}
 	
 	private void armarResumenPrograma() {
-		
-		Integer anoActual = recursosFinancierosProgramasReforzamientoService.getAnoCurso();
-		int IdProgramaActual = programasService.getProgramaAnoSiguiente(programaSeleccionado, anoActual);
-		resumenPrograma = programasService.getResumenMunicipal(IdProgramaActual, 3);
-		totalResumen24 =0l;
+		resumenPrograma = programasService.getResumenMunicipal(programaProxAno.getIdProgramaAno(), 3);
+		totalResumen24 = 0l;
 		for (ResumenProgramaVO resumen : resumenPrograma) {
 			totalResumen24 = totalResumen24+resumen.getTotalS24();
 		}
 	}
 
 	public String recalcularTotales(){
-		detalleComunas.get(Integer.valueOf(getPosicionElemento())).setTotal( detalleComunas.get(Integer.valueOf(getPosicionElemento())).getCantidad() * detalleComunas.get(Integer.valueOf(getPosicionElemento())).getPrecio() );
+		detalleComunas.get(Integer.valueOf(getPosicionElemento())).setTotal(detalleComunas.get(Integer.parseInt(getPosicionElemento())).getCantidad() * detalleComunas.get(Integer.parseInt(getPosicionElemento())).getPrecio());
 		getTotalesPxQ(detalleComunas);
 		return null;
 	}
@@ -114,14 +103,14 @@ public class ProcesoModificacionDistRecFinController extends AbstractTaskMBean i
 		}
 	}
 	public void cargaComunas(){
-		detalleComunas = programasService.findByServicioComponente(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado), programaAnoActual);
+		detalleComunas = programasService.findByServicioComponente(Integer.parseInt(componenteSeleccionado), Integer.parseInt(servicioSeleccionado), programaProxAno.getIdProgramaAno());
 		getTotalesPxQ(detalleComunas);
 	}
 
 	private Long getTotalesPxQ(List<ProgramaMunicipalVO> detalleComunas){
 		totalPxQ=0l;
-		for (int i=0;i<detalleComunas.size();i++) {
-					totalPxQ=totalPxQ+detalleComunas.get(i).getTotal();	
+		for (int i=0; i<detalleComunas.size(); i++) {
+			totalPxQ = totalPxQ + detalleComunas.get(i).getTotal();	
 		}
 		return totalPxQ;
 	}
@@ -132,7 +121,6 @@ public class ProcesoModificacionDistRecFinController extends AbstractTaskMBean i
 		programasService.guardarProgramaReforzamiento(detalleComunas);
 		armarResumenPrograma();
 	}
-
 	
 	@Override
 	protected Map<String, Object> createResultData() {
@@ -140,17 +128,13 @@ public class ProcesoModificacionDistRecFinController extends AbstractTaskMBean i
 		System.out.println("createResultData usuario-->"
 				+ getSessionBean().getUsername());
 		parameters.put("recursosAPSMunicipal_", true);
-		
-		
 		return parameters;
 	}
 
 	@Override
 	public String iniciarProceso() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-	
 	
 	public ComponenteService getComponenteService() {
 		return componenteService;
@@ -232,8 +216,6 @@ public class ProcesoModificacionDistRecFinController extends AbstractTaskMBean i
 		this.programaSeleccionado = programaSeleccionado;
 	}
 
-	
-
 	public Long getTotalPxQ() {
 		return totalPxQ;
 	}
@@ -258,14 +240,12 @@ public class ProcesoModificacionDistRecFinController extends AbstractTaskMBean i
 		this.programa = programa;
 	}
 
-	public Integer getProgramaAnoActual() {
-		return programaAnoActual;
+	public ProgramaVO getProgramaProxAno() {
+		return programaProxAno;
 	}
 
-	public void setProgramaAnoActual(Integer programaAnoActual) {
-		this.programaAnoActual = programaAnoActual;
+	public void setProgramaProxAno(ProgramaVO programaProxAno) {
+		this.programaProxAno = programaProxAno;
 	}
-
-	
 	
 }

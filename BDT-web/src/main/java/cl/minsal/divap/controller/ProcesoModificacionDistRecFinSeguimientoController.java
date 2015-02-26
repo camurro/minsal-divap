@@ -63,7 +63,7 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 	@EJB
 	private RecursosFinancierosProgramasReforzamientoService reforzamientoService;
 	@EJB
-	private ProgramasService programaService;
+	private ProgramasService programasService;
 	@EJB
 	private AlfrescoService alfrescoService;
 	
@@ -88,8 +88,9 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 	private UploadedFile attachedFile;
 	
 	private ProgramaVO programa;
-	private Integer idProxAno;
-
+	private ProgramaVO programaProxAno;
+	private Integer ano;
+	
 	@PostConstruct public void init() {
 		if (!getSessionBean().isLogged()) {
 			log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
@@ -101,26 +102,25 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 		}
 		Boolean tipoProgramaPxQ=false;
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			programaSeleccionado = (Integer) getTaskDataVO()
-					.getData().get("_programaSeleccionado");
-			tipoProgramaPxQ = (Boolean) getTaskDataVO()
-					.getData().get("_tipoProgramaPxQ");
+			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
+			ano = (Integer) getTaskDataVO().getData().get("_ano");
+			tipoProgramaPxQ = (Boolean) getTaskDataVO().getData().get("_tipoProgramaPxQ");
 		}
-		programa = reforzamientoService.getProgramaById(programaSeleccionado);
-		idProxAno = programaService.getIdProgramaAnoAnterior(programa.getId(), reforzamientoService.getAnoCurso() + 1);
+		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
+		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		servicio=false;
 		municipal=false;
 		mixto = false;
 		if(programa.getDependenciaMunicipal() != null && programa.getDependenciaMunicipal()){
-			System.out.println("idProxAno --------->>>> "+idProxAno);
-			resolucionPrograma = reforzamientoService.getIdResolucion(idProxAno, TipoDocumentosProcesos.MODIFICACIONRESOLUCIONPROGRAMASAPS);
-			excelResolucion = reforzamientoService.getIdResolucion(idProxAno, TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS);
+			System.out.println("idProxAno --------->>>> "+programaProxAno.getIdProgramaAno());
+			resolucionPrograma = reforzamientoService.getIdResolucion(programaProxAno.getIdProgramaAno(), TipoDocumentosProcesos.MODIFICACIONRESOLUCIONPROGRAMASAPS);
+			excelResolucion = reforzamientoService.getIdResolucion(programaProxAno.getIdProgramaAno(), TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS);
 			plantillaResolucionCorreo = documentService.getIdDocumentoFromPlantilla(TipoDocumentosProcesos.PLANTILLARESOLUCIONCORREO);
 			municipal=true;
 		}
 		if(programa.getDependenciaServicio() && !programa.getDependenciaMunicipal()){
-			excelOrdinario = reforzamientoService.getIdResolucion(idProxAno, TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS);
-			ordinarioPrograma = reforzamientoService.getIdResolucion(idProxAno, TipoDocumentosProcesos.MODIFICACIONORDINARIOPROGRAMASAPS);
+			excelOrdinario = reforzamientoService.getIdResolucion(programaProxAno.getIdProgramaAno(), TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS);
+			ordinarioPrograma = reforzamientoService.getIdResolucion(programaProxAno.getIdProgramaAno(), TipoDocumentosProcesos.MODIFICACIONORDINARIOPROGRAMASAPS);
 			plantillaOrdinarioCorreo = documentService.getIdDocumentoFromPlantilla(TipoDocumentosProcesos.PLANTILLAORDINARIOCORREO);
 			servicio=true;
 		}
@@ -156,9 +156,7 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 				mixto=true;
 			}
 		}
-		
-		
-		bitacoraSeguimiento = reforzamientoService.getBitacora(this.idProxAno, TareasSeguimiento.MODHACERSEGUIMIENTOPROGRAMASREFORZAMIENTORESOLUCION);
+		bitacoraSeguimiento = reforzamientoService.getBitacora(programaProxAno.getIdProgramaAno(), TareasSeguimiento.MODHACERSEGUIMIENTOPROGRAMASREFORZAMIENTORESOLUCION);
 		
 	}
 	
@@ -192,14 +190,13 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 			byte[] contentAttachedFile = file.getContents();
 			Integer docNewVersion = persistFile(filename,	contentAttachedFile);
 			if(programa.getDependenciaMunicipal()){
-				reforzamientoService.moveToAlfresco(idProxAno, docNewVersion, TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS, versionFinal,versionFinal);
+				reforzamientoService.moveToAlfresco(programaProxAno.getIdProgramaAno(), docNewVersion, TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS, versionFinal,versionFinal);
 			}
 			if(programa.getDependenciaServicio() && !programa.getDependenciaMunicipal()){
-				reforzamientoService.moveToAlfresco(idProxAno, docNewVersion, TipoDocumentosProcesos.ORDINARIOPROGRAMASAPS, versionFinal,versionFinal);
+				reforzamientoService.moveToAlfresco(programaProxAno.getIdProgramaAno(), docNewVersion, TipoDocumentosProcesos.ORDINARIOPROGRAMASAPS, versionFinal,versionFinal);
 			}
 			
 			this.resolucionId = docNewVersion;
-		
 		}else{
 			System.out.println("uploadVersion file is null");
 			FacesMessage message = new FacesMessage("uploadVersion file is null");
@@ -279,7 +276,7 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 			if((this.cco != null) && !(this.cco.trim().isEmpty())){
 				conCopiaOculta = Arrays.asList(this.cco.split("\\,")); 
 			}
-			reforzamientoService.createSeguimientoProgramaReforzamiento(idProxAno, TareasSeguimiento.MODHACERSEGUIMIENTOPROGRAMASREFORZAMIENTORESOLUCION, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
+			reforzamientoService.createSeguimientoProgramaReforzamiento(programaProxAno.getIdProgramaAno(), TareasSeguimiento.MODHACERSEGUIMIENTOPROGRAMASREFORZAMIENTORESOLUCION, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
 		}catch(Exception e){
 			e.printStackTrace();
 			target = null;
@@ -347,8 +344,6 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 	public void setDocIdDownloadResolucion(String docIdDownloadResolucion) {
 		this.docIdDownloadResolucion = docIdDownloadResolucion;
 	}
-
-	
 
 	public Integer getResolucionPrograma() {
 		return resolucionPrograma;
@@ -420,14 +415,6 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 
 	public void setVersionFinal(boolean versionFinal) {
 		this.versionFinal = versionFinal;
-	}
-
-	public Integer getIdProxAno() {
-		return idProxAno;
-	}
-
-	public void setIdProxAno(Integer idProxAno) {
-		this.idProxAno = idProxAno;
 	}
 
 	public Integer getResolucionId() {
@@ -573,6 +560,5 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 	public void setPlantillaOrdinarioCorreo(Integer plantillaOrdinarioCorreo) {
 		this.plantillaOrdinarioCorreo = plantillaOrdinarioCorreo;
 	}
-	
 	
 }

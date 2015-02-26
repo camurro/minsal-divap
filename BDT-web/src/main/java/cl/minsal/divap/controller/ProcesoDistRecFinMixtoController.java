@@ -9,11 +9,13 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import minsal.divap.enums.Subtitulo;
 import minsal.divap.service.ComponenteService;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
@@ -26,11 +28,11 @@ import minsal.divap.vo.ResumenProgramaMixtoVO;
 import minsal.divap.vo.ResumenProgramaServiciosVO;
 import minsal.divap.vo.ResumenProgramaVO;
 import minsal.divap.vo.ServiciosVO;
+import minsal.divap.vo.SubtituloVO;
 
 import org.apache.log4j.Logger;
 
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
-import cl.redhat.bandejaTareas.util.BandejaProperties;
 
 @Named ( "procesoDistRecFinMixtoController" ) 
 @ViewScoped 
@@ -41,7 +43,6 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 	 */
 	private static final long serialVersionUID = -6442364795293061655L;
 	@Inject private transient Logger log;
-	@Inject private BandejaProperties bandejaProperties;
 	@Inject FacesContext facesContext;
 	
 	@EJB
@@ -90,7 +91,8 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 	private Long totalResumen;
 	
 	private ProgramaVO programa;
-	private Integer programaProxAno;
+	private ProgramaVO programaProxAno;
+	private Integer ano;
 	
 	@PostConstruct 
 	public void init() {
@@ -107,9 +109,11 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			programaSeleccionado = (Integer) getTaskDataVO()
 					.getData().get("_programaSeleccionado");
+			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("this.ano --->" + this.ano);
 		}
-		programa = programasService.getProgramaAno(programaSeleccionado);
-		programaProxAno = programasService.getIdProgramaAnoAnterior(programa.getId(), recursosFinancierosProgramasReforzamientoService.getAnoCurso()+1);
+		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
+		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
 		armarResumenPrograma();
@@ -117,30 +121,29 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 	
 	private void armarResumenPrograma() {
 		resumenProgramaMixto =  new ArrayList<ResumenProgramaMixtoVO>();
-		if(programaSeleccionado!=null){
+		if(programaSeleccionado != null){
 			resumenServicio();
 			resumenMunicipal();
-			
 			//Recorremos para armar un único VO de resumen
-			totalResumen =0L;
-			for(int i = 0; i< resumenProgramaServicio.size();i++){
+			totalResumen = 0L;
+			for(int i = 0; i< resumenProgramaServicio.size(); i++){
 				System.out.println(resumenProgramaServicio.get(i).getIdServicio());
 				ResumenProgramaMixtoVO mixto = new ResumenProgramaMixtoVO();
 				mixto.setIdServicio(resumenProgramaServicio.get(i).getIdServicio());
 				mixto.setNombreServicio(resumenProgramaServicio.get(i).getNombreServicio());
-				if(resumenProgramaServicio.get(i).getTotalS21()!=null){
+				if(resumenProgramaServicio.get(i).getTotalS21() != null){
 					mixto.setTotalS21(resumenProgramaServicio.get(i).getTotalS21().longValue());
 				}
-				if(resumenProgramaServicio.get(i).getTotalS22()!=null){
+				if(resumenProgramaServicio.get(i).getTotalS22() != null){
 					mixto.setTotalS22(resumenProgramaServicio.get(i).getTotalS22().longValue());
 				}
-				if(resumenProgramaServicio.get(i).getTotalS29()!=null){
+				if(resumenProgramaServicio.get(i).getTotalS29() != null){
 					mixto.setTotalS29(resumenProgramaServicio.get(i).getTotalS29().longValue());
 				}
 				totalResumen += mixto.getTotalServicio();
 				resumenProgramaMixto.add(mixto);  
 			}
-			for(int i = 0; i< resumenProgramaMunicipal.size();i++){
+			for(int i = 0; i< resumenProgramaMunicipal.size(); i++){
 				ResumenProgramaMixtoVO mixtoServicio = new ResumenProgramaMixtoVO();
 				mixtoServicio.setIdServicio(resumenProgramaMunicipal.get(i).getIdServicio());
 				int posicion = resumenProgramaMixto.indexOf(mixtoServicio);
@@ -168,27 +171,25 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 	}
 
 	private void resumenMunicipal() {
-		Integer anoSiguiente = recursosFinancierosProgramasReforzamientoService.getAnoCurso() + 1;
-		int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programa.getId(), anoSiguiente);
-		resumenProgramaMunicipal = programasService.getResumenMunicipal(IdProgramaProxAno, 3);
-		totalResumen24 =0l;
-		tiene24=false;
-		if(resumenProgramaMunicipal.size()>0){
-			for (ResumenProgramaVO resumen : resumenProgramaMunicipal) {
-				totalResumen24 = totalResumen24+resumen.getTotalS24();
-			}
-			tiene24=true;
+		resumenProgramaMunicipal = programasService.getResumenMunicipal(programaProxAno.getIdProgramaAno(), 3);
+		totalResumen24 = 0L;
+		tiene24 = false;
+		List<ComponentesVO> componentesPrograma = programasService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO24);
+		if(componentesPrograma != null && componentesPrograma.size() > 0){
+			tiene24 = true;
 		}
-		
+		if(resumenProgramaMunicipal.size() > 0){
+			for (ResumenProgramaVO resumen : resumenProgramaMunicipal) {
+				totalResumen24 += resumen.getTotalS24();
+			}
+		}
 	}
 
 	private void resumenServicio() {
-		Integer anoSiguiente = recursosFinancierosProgramasReforzamientoService.getAnoCurso() + 1;
-		int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programa.getId(), anoSiguiente);
-			resumenProgramaServicio = programasService.getResumenServicio(IdProgramaProxAno, programa.getIdProgramaAno());
-			totalResumen21=0l;
-			totalResumen22=0l;
-			totalResumen29=0l;
+			resumenProgramaServicio = programasService.getResumenServicio(programaProxAno.getIdProgramaAno(), programa.getId());
+			totalResumen21 = 0L;
+			totalResumen22 = 0L;
+			totalResumen29 = 0L;
 			for(ResumenProgramaServiciosVO resumen : resumenProgramaServicio){
 				if(resumen.getTotalS21()!=null){
 					tiene21=true;
@@ -206,76 +207,101 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 	}
 
 	public String recalcularTotales(){
-		
-		if(subtitulo!=null && !subtitulo.equals("")){
-			if(Integer.parseInt(subtitulo)==1){
+		System.out.println("recalcularTotales subtitulo=" + subtitulo);
+		if(subtitulo != null && !subtitulo.trim().isEmpty()){
+			Integer idSubtitulo = Integer.parseInt(subtitulo);
+			if(Subtitulo.SUBTITULO21.getId().equals(idSubtitulo)){
 				detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo21().setTotal(detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo21().getCantidad()*detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo21().getMonto());;
 			}
-			if(Integer.parseInt(subtitulo)==2){
+			if(Subtitulo.SUBTITULO22.getId().equals(idSubtitulo)){
 				detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo22().setTotal(detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo22().getCantidad()*detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo22().getMonto());;
 			}
-			if(Integer.parseInt(subtitulo)==4){
+			if(Subtitulo.SUBTITULO29.getId().equals(idSubtitulo)){
 				detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo29().setTotal(detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo29().getCantidad()*detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo29().getMonto());;
 			}
 		}else{
 			detalleComunas.get(Integer.valueOf(getPosicionElemento())).setTotal( detalleComunas.get(Integer.valueOf(getPosicionElemento())).getCantidad() * detalleComunas.get(Integer.valueOf(getPosicionElemento())).getPrecio() );
 			getTotalesPxQ(detalleComunas);
 		}
-		
 		calculaTotalesTabla();
-
 		return null;
 	}
+	
 	public void seleccionComponente(){
-		if(componenteSeleccionado!=null){
+		if(componenteSeleccionado != null && !componenteSeleccionado.trim().isEmpty()){
 			setComponenteSeleccionado(componenteSeleccionado);
 		}
+		detalleComunas = new ArrayList<ProgramaMunicipalVO>();
+		detalleEstablecimientos = new ArrayList<ProgramaServicioVO>();
 	}
+	
 	public String buscarResultados(){
-		detalleEstablecimientos = programasService.findByServicioComponenteServicios(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado),programaProxAno);
-		detalleComunas = programasService.findByServicioComponente(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado), programaProxAno);
-		getTotalesPxQ(detalleComunas);
-		calculaTotalesTabla();
+		if(componenteSeleccionado != null && !componenteSeleccionado.trim().isEmpty()){
+			if(servicioSeleccionado != null && !servicioSeleccionado.trim().isEmpty()){
+				detalleEstablecimientos = programasService.findByServicioComponenteServicios(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado), programaProxAno.getIdProgramaAno());
+				detalleComunas = programasService.findByServicioComponente(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado), programaProxAno.getIdProgramaAno());
+				getTotalesPxQ(detalleComunas);
+				calculaTotalesTabla();
+			}else{
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el servicio antes de realizar la búsqueda", null);
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				detalleComunas = new ArrayList<ProgramaMunicipalVO>();
+				detalleEstablecimientos = new ArrayList<ProgramaServicioVO>();
+			}
+		}else{
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el componente antes de realizar la búsqueda", null);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			detalleComunas = new ArrayList<ProgramaMunicipalVO>();
+			detalleEstablecimientos = new ArrayList<ProgramaServicioVO>();
+		}
 		return null;
-
 	}
 	
 	private Integer getTotalesPxQ(List<ProgramaMunicipalVO> detalleComunas){
-		totalPxQ=0;
-		for (int i=0;i<detalleComunas.size();i++) {
-					totalPxQ=totalPxQ+detalleComunas.get(i).getTotal();	
+		totalPxQ = 0;
+		for (int i=0; i<detalleComunas.size(); i++) {
+			totalPxQ += detalleComunas.get(i).getTotal();	
 		}
 		return totalPxQ;
 	}
 	
 	private void calculaTotalesTabla(){
-		tiene21=false;
-		tiene22=false;
-		tiene29=false;
-		total21=0l;
-		total22=0l;
-		total29=0l;
-		totalFinal=0l;
-		if(detalleEstablecimientos != null && detalleEstablecimientos.size()>0){
-			
-			for (ProgramaServicioVO detalle : detalleEstablecimientos) {
-				if(detalle.getSubtitulo21()!=null){
-					tiene21 = true;
-					total21+=detalle.getSubtitulo21().getTotal();
+		tiene21 = false;
+		tiene22 = false;
+		tiene29 = false;
+		total21 = 0L;
+		total22 = 0L;
+		total29 = 0L;
+		totalFinal = 0L;
+		if(componenteSeleccionado != null && !componenteSeleccionado.trim().isEmpty()){
+			Integer idComponente = Integer.parseInt(componenteSeleccionado);
+			ComponentesVO componentesVO = componenteService.getComponenteById(idComponente);
+			if(componentesVO != null && componentesVO.getSubtitulos() != null && componentesVO.getSubtitulos().size() > 0){
+				for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){
+					if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId())){
+						tiene21 = true;
+					}else if(Subtitulo.SUBTITULO22.getId().equals(subtituloVO.getId())){
+						tiene22 = true;
+					}else if(Subtitulo.SUBTITULO29.getId().equals(subtituloVO.getId())){
+						tiene29 = true;
+					}
 				}
-				if(detalle.getSubtitulo22()!=null){
-					tiene22 = true;
-					total22+=detalle.getSubtitulo22().getTotal();
-				}
-				if(detalle.getSubtitulo29()!=null){
-					tiene29 = true;
-					total29+=detalle.getSubtitulo29().getTotal();
-				}
-				
 			}
-			totalFinal += totalFinal + total21 + total22 + total29;
 		}
-		
+		if(detalleEstablecimientos != null && detalleEstablecimientos.size()>0){
+			for (ProgramaServicioVO detalle : detalleEstablecimientos) {
+				if(detalle.getSubtitulo21() != null){
+					total21 += detalle.getSubtitulo21().getTotal();
+				}
+				if(detalle.getSubtitulo22() != null){
+					total22 += detalle.getSubtitulo22().getTotal();
+				}
+				if(detalle.getSubtitulo29() != null){
+					total29 += detalle.getSubtitulo29().getTotal();
+				}
+			}
+			totalFinal += total21 + total22 + total29;
+		}
 	}
 
 	public void guardar(){
@@ -300,10 +326,8 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 	
 	@Override
 	public String iniciarProceso() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-	
 	
 	public ComponenteService getComponenteService() {
 		return componenteService;
@@ -485,11 +509,11 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 		this.programa = programa;
 	}
 
-	public Integer getProgramaProxAno() {
+	public ProgramaVO getProgramaProxAno() {
 		return programaProxAno;
 	}
 
-	public void setProgramaProxAno(Integer programaProxAno) {
+	public void setProgramaProxAno(ProgramaVO programaProxAno) {
 		this.programaProxAno = programaProxAno;
 	}
 
@@ -556,5 +580,5 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 	public void setTotalResumen29(Long totalResumen29) {
 		this.totalResumen29 = totalResumen29;
 	}
-	
+
 }

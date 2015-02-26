@@ -2,38 +2,41 @@ package cl.minsal.divap.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import minsal.divap.enums.Subtitulo;
 import minsal.divap.service.ComponenteService;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ComponentesVO;
+import minsal.divap.vo.ProgramaMunicipalVO;
 import minsal.divap.vo.ProgramaServicioVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ResumenProgramaServiciosVO;
 import minsal.divap.vo.ServiciosVO;
+import minsal.divap.vo.SubtituloVO;
 
 import org.apache.log4j.Logger;
 
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
-import cl.redhat.bandejaTareas.util.BandejaProperties;
 
 @Named ( "procesoDistRecFinServicioController" ) 
 @ViewScoped 
 public class ProcesoDistRecFinServicioController extends AbstractTaskMBean implements Serializable  {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject private transient Logger log;
-	@Inject private BandejaProperties bandejaProperties;
 	@Inject FacesContext facesContext;
 	
 	@EJB
@@ -77,7 +80,8 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 	private Long totalResumen;
 	
 	private ProgramaVO programa;
-	private Integer idProxAno;
+	private ProgramaVO programaProxAno;
+	private Integer ano;
 	
 	@PostConstruct 
 	public void init() {
@@ -92,11 +96,12 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 			}
 		}
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			programaSeleccionado = (Integer) getTaskDataVO()
-					.getData().get("_programaSeleccionado");
+			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
+			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("this.ano --->" + this.ano);
 		}
-		programa = programasService.getProgramaAno(programaSeleccionado);
-		idProxAno = programasService.getIdProgramaAnoAnterior(programa.getId(), recursosFinancierosProgramasReforzamientoService.getAnoCurso()+1);
+		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
+		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
 		
@@ -104,89 +109,121 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 	}
 	
 	private void armarResumenPrograma() {
-		if(programaSeleccionado!=null){
-			Integer anoSiguiente = recursosFinancierosProgramasReforzamientoService.getAnoCurso() + 1;
-			int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programa.getId(), anoSiguiente);
-			
-			
+		if(programaSeleccionado != null){
+			int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programa.getId(), this.ano);
 			resumenPrograma = programasService.getResumenServicio(IdProgramaProxAno, programa.getId());
-			totalResumen21=0l;
-			totalResumen22=0l;
-			totalResumen29=0l;
-			totalResumen=0l;
+			tiene21 = false;
+			tiene22 = false;
+			tiene29 = false;
+			totalResumen21 = 0l;
+			totalResumen22 = 0l;
+			totalResumen29 = 0l;
+			totalResumen = 0l;
+			
+			List<ComponentesVO> componentesPrograma = programasService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO21);
+			if(componentesPrograma != null && componentesPrograma.size() > 0){
+				tiene21 = true;
+			}
+			componentesPrograma = programasService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO22);
+			if(componentesPrograma != null && componentesPrograma.size() > 0){
+				tiene22 = true;
+			}
+			componentesPrograma = programasService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO29);
+			if(componentesPrograma != null && componentesPrograma.size() > 0){
+				tiene29 = true;
+			}
+			
 			for(ResumenProgramaServiciosVO resumen : resumenPrograma){
-				if(resumen.getTotalS21()!=null){
-					tiene21=true;
-					totalResumen21+=resumen.getTotalS21();
+				if(tiene21){
+					totalResumen21 += ((resumen.getTotalS21() == null) ? 0 : resumen.getTotalS21());
 				}
-				if(resumen.getTotalS22()!=null){
-							tiene22=true;	
-							totalResumen22+=resumen.getTotalS22();
-							}
-				if(resumen.getTotalS29()!=null){
-					tiene29=true;
-					totalResumen29+=resumen.getTotalS29();
+				if(tiene22){
+					totalResumen22 += ((resumen.getTotalS22() == null) ? 0 : resumen.getTotalS22());
 				}
-				totalResumen+=resumen.getTotalServicio();
+				if(tiene29){
+					totalResumen29 += ((resumen.getTotalS29() == null) ? 0 : resumen.getTotalS29());
+				}
+				totalResumen += resumen.getTotalServicio();
 			}
 		}
 		
 	}
 
 	public String recalcularTotales(){
-		
-		if(Integer.parseInt(subtitulo)==1){
+		Integer idSubtitulo = Integer.parseInt(subtitulo);
+		if(Subtitulo.SUBTITULO21.getId().equals(idSubtitulo)){
 			detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo21().setTotal(detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo21().getCantidad()*detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo21().getMonto());;
 		}
-		if(Integer.parseInt(subtitulo)==2){
+		if(Subtitulo.SUBTITULO22.getId().equals(idSubtitulo)){
 			detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo22().setTotal(detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo22().getCantidad()*detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo22().getMonto());;
 		}
-		if(Integer.parseInt(subtitulo)==4){
+		if(Subtitulo.SUBTITULO29.getId().equals(idSubtitulo)){
 			detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo29().setTotal(detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo29().getCantidad()*detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo29().getMonto());;
 		}
 		calculaTotalesTabla();
-
 		return null;
 	}
 	public void seleccionComponente(){
-		if(componenteSeleccionado!=null){
+		if(componenteSeleccionado != null){
 			setComponenteSeleccionado(componenteSeleccionado);
 		}
 	}
 	public String buscarResultados(){
-		detalleEstablecimientos = programasService.findByServicioComponenteServicios(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado),idProxAno);
+		detalleEstablecimientos = programasService.findByServicioComponenteServicios(Integer.parseInt(componenteSeleccionado), Integer.parseInt(servicioSeleccionado), programaProxAno.getIdProgramaAno());
 		calculaTotalesTabla();
+		if(componenteSeleccionado != null && !componenteSeleccionado.trim().isEmpty()){
+			if(servicioSeleccionado != null && !servicioSeleccionado.trim().isEmpty()){
+				detalleEstablecimientos = programasService.findByServicioComponenteServicios(Integer.parseInt(componenteSeleccionado), Integer.parseInt(servicioSeleccionado), programaProxAno.getIdProgramaAno());
+				calculaTotalesTabla();
+			}else{
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el servicio antes de realizar la búsqueda", null);
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				detalleEstablecimientos = new ArrayList<ProgramaServicioVO>();
+			}
+		}else{
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el componente antes de realizar la búsqueda", null);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			detalleEstablecimientos = new ArrayList<ProgramaServicioVO>();
+		}
 		return null;
 
 	}
 	
 	private void calculaTotalesTabla(){
 		if(detalleEstablecimientos != null && detalleEstablecimientos.size()>0){
-			tiene21=false;
-			tiene22=false;
-			tiene29=false;
-			total21=0l;
-			total22=0l;
-			total29=0l;
-			totalFinal=0l;
-			for (ProgramaServicioVO detalle : detalleEstablecimientos) {
-				if(detalle.getSubtitulo21()!=null){
-					tiene21 = true;
-					total21+=detalle.getSubtitulo21().getTotal();
+			tiene21 = false;
+			tiene22 = false;
+			tiene29 = false;
+			total21 = 0L;
+			total22 = 0L;
+			total29 = 0L;
+			totalFinal = 0L;
+			Integer idComponente = Integer.parseInt(componenteSeleccionado);
+			ComponentesVO componentesVO = componenteService.getComponenteById(idComponente);
+			if(componentesVO != null && componentesVO.getSubtitulos() != null && componentesVO.getSubtitulos().size() > 0){
+				for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){
+					if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId())){
+						tiene21 = true;
+					}else if(Subtitulo.SUBTITULO22.getId().equals(subtituloVO.getId())){
+						tiene22 = true;
+					}else if(Subtitulo.SUBTITULO29.getId().equals(subtituloVO.getId())){
+						tiene29 = true;
+					}
 				}
-				if(detalle.getSubtitulo22()!=null){
-					tiene22 = true;
-					total22+=detalle.getSubtitulo22().getTotal();
-				}
-				if(detalle.getSubtitulo29()!=null){
-					tiene29 = true;
-					total29+=detalle.getSubtitulo29().getTotal();
-				}
-				
 			}
-			totalFinal += totalFinal + total21 + total22 + total29;
+			for (ProgramaServicioVO detalle : detalleEstablecimientos) {
+				if(detalle.getSubtitulo21() != null){
+					total21 += detalle.getSubtitulo21().getTotal();
+				}
+				if(detalle.getSubtitulo22() != null){
+					total22 += detalle.getSubtitulo22().getTotal();
+				}
+				if(detalle.getSubtitulo29() != null){
+					total29 += detalle.getSubtitulo29().getTotal();
+				}
+			}
+			totalFinal += total21 + total22 + total29;
 		}
-		
 	}
 
 	public void guardar(){
@@ -201,8 +238,6 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 		System.out.println("createResultData usuario-->"
 				+ getSessionBean().getUsername());
 		parameters.put("recursosAPSMunicipal_", false);
-		
-		
 		return parameters;
 	}
 
@@ -210,7 +245,6 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 	
 	@Override
 	public String iniciarProceso() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
@@ -407,6 +441,14 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 
 	public void setProgramaSeleccionado(Integer programaSeleccionado) {
 		this.programaSeleccionado = programaSeleccionado;
+	}
+
+	public ProgramaVO getProgramaProxAno() {
+		return programaProxAno;
+	}
+
+	public void setProgramaProxAno(ProgramaVO programaProxAno) {
+		this.programaProxAno = programaProxAno;
 	}
 	
 }

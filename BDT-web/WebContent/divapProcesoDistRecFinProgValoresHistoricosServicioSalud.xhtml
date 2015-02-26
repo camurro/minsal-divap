@@ -109,21 +109,21 @@
 											<c:if test="#{procesoDistRecFinHistoricoServicioController.tieneS29}">
 												<p:column colspan="2" headerText="Subtítulo 29" />
 											</c:if>
-											<p:column rowspan="2" headerText="Total #{procesoDistRecFinHistoricoServicioController.anoActual} ($)" />
-											<p:column rowspan="2" headerText="Total #{procesoDistRecFinHistoricoServicioController.anoProximo} ($)" />
+											<p:column rowspan="2" headerText="Total #{(procesoDistRecFinHistoricoServicioController.ano - 1)} ($)" />
+											<p:column rowspan="2" headerText="Total #{procesoDistRecFinHistoricoServicioController.ano} ($)" />
 										</p:row>
 										<p:row>
 											<c:if test="#{procesoDistRecFinHistoricoServicioController.tieneS21}">
-												<p:column headerText="Valor #{procesoDistRecFinHistoricoServicioController.anoActual} ($)" />
-												<p:column headerText="Valor #{procesoDistRecFinHistoricoServicioController.anoProximo} ($)" />
+												<p:column headerText="Valor #{(procesoDistRecFinHistoricoServicioController.ano - 1)} ($)" />
+												<p:column headerText="Valor #{procesoDistRecFinHistoricoServicioController.ano} ($)" />
 											</c:if>
 											<c:if test="#{procesoDistRecFinHistoricoServicioController.tieneS22}">
-												<p:column headerText="Valor #{procesoDistRecFinHistoricoServicioController.anoActual} ($)" />
-												<p:column headerText="Valor #{procesoDistRecFinHistoricoServicioController.anoProximo} ($)" />
+												<p:column headerText="Valor #{(procesoDistRecFinHistoricoServicioController.ano - 1)} ($)" />
+												<p:column headerText="Valor #{procesoDistRecFinHistoricoServicioController.ano} ($)" />
 											</c:if>
 											<c:if test="#{procesoDistRecFinHistoricoServicioController.tieneS29}">
-												<p:column headerText="Valor #{procesoDistRecFinHistoricoServicioController.anoActual} ($)" />
-												<p:column headerText="Valor #{procesoDistRecFinHistoricoServicioController.anoProximo} ($)" />
+												<p:column headerText="Valor #{(procesoDistRecFinHistoricoServicioController.ano - 1)} ($)" />
+												<p:column headerText="Valor #{procesoDistRecFinHistoricoServicioController.ano} ($)" />
 											</c:if>
 										</p:row>
 									</p:columnGroup>

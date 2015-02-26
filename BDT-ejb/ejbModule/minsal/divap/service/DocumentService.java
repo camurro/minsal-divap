@@ -738,7 +738,7 @@ public class DocumentService {
 
 	public Integer getPlantillaByTypeAndProgram(TipoDocumentosProcesos tipoDocumentoProceso,
 			Integer programaSeleccionado) {
-		return fileDAO.getPlantillaByTypeAndProgram(tipoDocumentoProceso,programaSeleccionado);
+		return fileDAO.getPlantillaByTypeAndProgram(tipoDocumentoProceso, programaSeleccionado);
 	}
 
 	public ReferenciaDocumentoSummaryVO getDocumentByTypeAnoReportes(TipoDocumentosProcesos tipoDocumentoProceso, Integer ano) {

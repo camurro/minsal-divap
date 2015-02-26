@@ -103,8 +103,8 @@
 											<p:column colspan="2" headerText="Subtítulo 24" />
 										</p:row>
 										<p:row>
-											<p:column headerText="Valor Año #{procesoModificacionDistRecFinHistoricoMixtoController.anoActual} ($)" />
-											<p:column headerText="Valor Año #{procesoModificacionDistRecFinHistoricoMixtoController.anoProximo} ($)" />
+											<p:column headerText="Valor Año #{(procesoModificacionDistRecFinHistoricoMixtoController.ano - 1)} ($)" />
+											<p:column headerText="Valor Año #{procesoModificacionDistRecFinHistoricoMixtoController.ano} ($)" />
 											<!-- <p:column headerText="Inflactor" /> -->
 										</p:row>
 									</p:columnGroup>
@@ -160,21 +160,21 @@
 											<c:if test="#{procesoModificacionDistRecFinHistoricoMixtoController.tieneS29}">
 												<p:column colspan="2" headerText="Subtítulo 29" />
 											</c:if>
-											<p:column rowspan="2" headerText="Total #{procesoModificacionDistRecFinHistoricoMixtoController.anoActual} ($)" />
-											<p:column rowspan="2" headerText="Total #{procesoModificacionDistRecFinHistoricoMixtoController.anoProximo} ($)" />
+											<p:column rowspan="2" headerText="Total #{(procesoModificacionDistRecFinHistoricoMixtoController.ano - 1)} ($)" />
+											<p:column rowspan="2" headerText="Total #{procesoModificacionDistRecFinHistoricoMixtoController.ano} ($)" />
 										</p:row>
 										<p:row>
 											<c:if test="#{procesoModificacionDistRecFinHistoricoMixtoController.tieneS21}">
-												<p:column headerText="Valor #{procesoModificacionDistRecFinHistoricoMixtoController.anoActual} ($)" />
-												<p:column headerText="Valor #{procesoModificacionDistRecFinHistoricoMixtoController.anoProximo} ($)" />
+												<p:column headerText="Valor #{(procesoModificacionDistRecFinHistoricoMixtoController.ano - 1)} ($)" />
+												<p:column headerText="Valor #{procesoModificacionDistRecFinHistoricoMixtoController.ano} ($)" />
 											</c:if>
 											<c:if test="#{procesoModificacionDistRecFinHistoricoMixtoController.tieneS22}">
-												<p:column headerText="Valor #{procesoModificacionDistRecFinHistoricoMixtoController.anoActual} ($)" />
-												<p:column headerText="Valor #{procesoModificacionDistRecFinHistoricoMixtoController.anoProximo} ($)" />
+												<p:column headerText="Valor #(procesoModificacionDistRecFinHistoricoMixtoController.ano - 1)} ($)" />
+												<p:column headerText="Valor #{procesoModificacionDistRecFinHistoricoMixtoController.ano} ($)" />
 											</c:if>
 											<c:if test="#{procesoModificacionDistRecFinHistoricoMixtoController.tieneS29}">
-												<p:column headerText="Valor #{procesoModificacionDistRecFinHistoricoMixtoController.anoActual} ($)" />
-												<p:column headerText="Valor #{procesoModificacionDistRecFinHistoricoMixtoController.anoProximo} ($)" />
+												<p:column headerText="Valor #{(procesoModificacionDistRecFinHistoricoMixtoController.ano - 1)} ($)" />
+												<p:column headerText="Valor #{procesoModificacionDistRecFinHistoricoMixtoController.ano} ($)" />
 											</c:if>
 										</p:row>
 									</p:columnGroup>

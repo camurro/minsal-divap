@@ -25707,6 +25707,37 @@ ALTER TABLE documento_estimacion_flujo_caja_consolidador
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (100, 1, 70, 490345);
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (101, 2, 30, 490345, 10);
 
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (3, 38, 1);
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (4, 38, 2);
+
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (5, 20, 1);
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (6, 20, 2);
+
+
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, estadoreliquidacion, estado_ot, estado_modificacion_aps)
+    VALUES (110, 20, 2015, 1, 1, 1, 1, 1, 1);
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (102, 1, 70, 110);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (103, 2, 30, 110, 10);
+
+
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, estadoreliquidacion, estado_ot, estado_modificacion_aps)
+    VALUES (111, 20, 2016, 1, 1, 1, 1, 1, 1);
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (104, 1, 70, 111);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (105, 2, 30, 111, 10);
+
+
+
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (7, 37, 1);
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (8, 37, 2);
+
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (106, 1, 70, 417553);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (107, 2, 30, 417553, 10);
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (108, 1, 70, 527527);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (109, 2, 30, 527527, 10);
 
 
 

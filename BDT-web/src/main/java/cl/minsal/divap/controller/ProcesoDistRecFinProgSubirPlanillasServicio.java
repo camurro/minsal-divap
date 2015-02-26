@@ -11,13 +11,13 @@ import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
+import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ProgramaVO;
-import minsal.divap.vo.SubtituloVO;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.model.UploadedFile;
@@ -37,6 +37,7 @@ public class ProcesoDistRecFinProgSubirPlanillasServicio extends AbstractTaskMBe
 	private String docIdDownload;
 	private Integer programaSeleccionado;
 	private Integer IdProgramaProxAno;
+	private Integer ano;
 
 	@EJB
 	private ProgramasService programasService;
@@ -46,17 +47,18 @@ public class ProcesoDistRecFinProgSubirPlanillasServicio extends AbstractTaskMBe
 	@PostConstruct 
 	public void init() {
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			programaSeleccionado = (Integer) getTaskDataVO()
-					.getData().get("_programaSeleccionado");
-			programa = recursosFinancierosProgramasReforzamientoService.getProgramaById(programaSeleccionado);
+			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
+			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("this.ano --->" + this.ano);
 			System.out.println("programaSeleccionado --->" + programaSeleccionado);
+			programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, this.ano);
 			if(programa.getDependenciaMunicipal() != null && programa.getDependenciaMunicipal()){
-				plantillaMunicipal = recursosFinancierosProgramasReforzamientoService.getIdPlantillaProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSMUNICIPALES, true, programa.getId());
+				plantillaMunicipal = recursosFinancierosProgramasReforzamientoService.getIdPlantillaProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSMUNICIPALES, true, this.ano);
 			}
 			if(programa.getDependenciaServicio() != null && programa.getDependenciaServicio()){
-				plantillaServicios = recursosFinancierosProgramasReforzamientoService.getIdPlantillaProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSSERVICIO, true, programa.getId());
+				plantillaServicios = recursosFinancierosProgramasReforzamientoService.getIdPlantillaProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSSERVICIO, true, this.ano);
 			}
-			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado, programa);
+			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado, this.ano);
 		}
 	}
 	
@@ -71,12 +73,13 @@ public class ProcesoDistRecFinProgSubirPlanillasServicio extends AbstractTaskMBe
 	public String enviar(){
 		try{
 		docIds = new ArrayList<Integer>();
-		List<ComponentesVO> componentes = programa.getComponentes();
+		Subtitulo[] subtitulosServicios = {Subtitulo.SUBTITULO21, Subtitulo.SUBTITULO22, Subtitulo.SUBTITULO29};
+		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulosServicios);
 		if (planillaServicio != null){
 			String filename = planillaServicio.getFileName();
 			byte[] contentPlanillaServicio = planillaServicio.getContents();
 			recursosFinancierosProgramasReforzamientoService.procesarPlanillaServicio(IdProgramaProxAno, GeneradorExcel.fromContent(contentPlanillaServicio,
-							XSSFWorkbook.class),componentes);
+							XSSFWorkbook.class), componentes);
 			Integer docPlanillaServicio = persistFile(filename, contentPlanillaServicio);
 			if (docPlanillaServicio != null) {
 				docIds.add(docPlanillaServicio);
@@ -155,6 +158,14 @@ public class ProcesoDistRecFinProgSubirPlanillasServicio extends AbstractTaskMBe
 
 	public void setIdProgramaProxAno(Integer idProgramaProxAno) {
 		IdProgramaProxAno = idProgramaProxAno;
+	}
+
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
 	}
 
 }

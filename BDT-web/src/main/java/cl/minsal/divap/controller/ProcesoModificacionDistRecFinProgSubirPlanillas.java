@@ -22,7 +22,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.model.UploadedFile;
 
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
-import cl.redhat.bandejaTareas.util.JSONHelper;
 
 @Named ("procesoModificacionDistRecFinProgSubirPlanillasController" ) 
 @ViewScoped 
@@ -34,6 +33,7 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillas extends AbstractTas
 	 */
 	private static final long serialVersionUID = -994494686718834828L;
 	private ProgramaVO programa;
+	private ProgramaVO programaProxAno;
 	private Integer plantillaMunicipal;
 	private Integer plantillaServicios;
 	private UploadedFile planillaMuncipal;
@@ -42,13 +42,11 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillas extends AbstractTas
 	private List<Integer> listaServicios;
 	private String docIdDownload;
 	private Integer programaSeleccionado;
-	private Integer IdProgramaAnoActual;
 	private boolean template;
-	
+	private Integer ano;
+	private Integer IdProgramaProxAno;
 	@EJB
 	private ProgramasService programasService;
-
-
 	@EJB
 	private RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService;
 
@@ -57,7 +55,10 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillas extends AbstractTas
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			programaSeleccionado = (Integer) getTaskDataVO()
 					.getData().get("_programaSeleccionado");
-			programa = recursosFinancierosProgramasReforzamientoService.getProgramaById(programaSeleccionado);
+			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("this.ano --->" + this.ano);
+			programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
+			programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 			System.out.println("programaSeleccionado --->" + programaSeleccionado);
 			template=true;
 			if(programa.getDependenciaMunicipal() != null && programa.getDependenciaMunicipal()){
@@ -66,8 +67,7 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillas extends AbstractTas
 			if(programa.getDependenciaServicio() != null && programa.getDependenciaServicio()){
 				plantillaServicios = recursosFinancierosProgramasReforzamientoService.getIdPlantillaModificacionProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSSERVICIO, template);
 			}
-			Integer anoActual = programasService.getAnoCurso();
-			IdProgramaAnoActual = programasService.getProgramaAnoSiguiente(programaSeleccionado, anoActual + 1);
+			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado , ano);
 		}
 	}
 	
@@ -88,13 +88,13 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillas extends AbstractTas
 			String filename = planillaMuncipal.getFileName();
 					
 			byte[] contentPlanillaMuncipal = planillaMuncipal.getContents();
-			listaServicios = recursosFinancierosProgramasReforzamientoService.procesarModificacionPlanillaMunicipal(false,IdProgramaAnoActual, 
+			listaServicios = recursosFinancierosProgramasReforzamientoService.procesarModificacionPlanillaMunicipal(false, IdProgramaProxAno, 
 									GeneradorExcel.fromContent(contentPlanillaMuncipal, XSSFWorkbook.class),componentes,4);
 			Integer docPlanillaMuncipal = persistFile(filename, contentPlanillaMuncipal);
 			if (docPlanillaMuncipal != null) {
 				docIds.add(docPlanillaMuncipal);
 			}
-			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(IdProgramaAnoActual, docPlanillaMuncipal, TipoDocumentosProcesos.PROGRAMAAPSMUNICIPAL, null,false);
+			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(IdProgramaProxAno, docPlanillaMuncipal, TipoDocumentosProcesos.PROGRAMAAPSMUNICIPAL, null,false);
 		}
 /*		if (planillaServicio != null){
 			String filename = planillaServicio.getFileName();
@@ -105,7 +105,7 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillas extends AbstractTas
 			if (docPlanillaServicio != null) {
 				docIds.add(docPlanillaServicio);
 			}
-			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(IdProgramaAnoActual, docPlanillaServicio, TipoDocumentosProcesos.PROGRAMAAPSSERVICIO, null,false);
+			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(IdProlgramaAnoActual, docPlanillaServicio, TipoDocumentosProcesos.PROGRAMAAPSSERVICIO, null,false);
 		}*/
 		}catch (Exception e) {
 			return null;
@@ -192,12 +192,12 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillas extends AbstractTas
 		this.programaSeleccionado = programaSeleccionado;
 	}
 
-	public Integer getIdProgramaAnoActual() {
-		return IdProgramaAnoActual;
+	public ProgramaVO getProgramaProxAno() {
+		return programaProxAno;
 	}
 
-	public void setIdProgramaAnoActual(Integer idProgramaAnoActual) {
-		IdProgramaAnoActual = idProgramaAnoActual;
+	public void setProgramaProxAno(ProgramaVO programaProxAno) {
+		this.programaProxAno = programaProxAno;
 	}
 
 	public List<Integer> getListaServicios() {
@@ -208,6 +208,12 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillas extends AbstractTas
 		this.listaServicios = listaServicios;
 	}
 
+	public Integer getIdProgramaProxAno() {
+		return IdProgramaProxAno;
+	}
 
+	public void setIdProgramaProxAno(Integer idProgramaProxAno) {
+		IdProgramaProxAno = idProgramaProxAno;
+	}
 
 }

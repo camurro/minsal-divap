@@ -32,19 +32,18 @@ public class ProcesoDistRecFinSeguimientoDocumentacionController extends Abstrac
 	private String actividadSeguimientoTitle;
 	@Inject 
 	private transient Logger log;
-	
-
 	private ProgramaVO programa;
+	private ProgramaVO programaProxAno;
 	private Integer programaSeleccionado;
 	private Integer instanciaProceso;
-	private Integer idProxAno;
+	private Integer ano;
 	private List<ReporteEmailsEnviadosVO> reporteCorreos;
 	private String docIdDownload;
 	
 	@EJB
 	private RecursosFinancierosProgramasReforzamientoService reforzamientoService;
 	@EJB
-	private ProgramasService programaService;
+	private ProgramasService programasService;
 	
 	@PostConstruct
 	public void init() {
@@ -61,9 +60,11 @@ public class ProcesoDistRecFinSeguimientoDocumentacionController extends Abstrac
 					.getData().get("_programaSeleccionado");
 			instanciaProceso = (Integer) getTaskDataVO()
 					.getData().get("_idProceso");
+			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("this.ano --->" + this.ano);
 		}
-		programa = reforzamientoService.getProgramaById(programaSeleccionado);
-		idProxAno = programaService.getIdProgramaAnoAnterior(programa.getId(), reforzamientoService.getAnoCurso()+1);
+		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
+		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		
 		reporteCorreos = reforzamientoService.getReporteCorreosByIdInstanciaReforzamiento(instanciaProceso);
 	}
@@ -153,14 +154,6 @@ public class ProcesoDistRecFinSeguimientoDocumentacionController extends Abstrac
 		this.reforzamientoService = reforzamientoService;
 	}
 
-	public Integer getIdProxAno() {
-		return idProxAno;
-	}
-
-	public void setIdProxAno(Integer idProxAno) {
-		this.idProxAno = idProxAno;
-	}
-
 	public List<ReporteEmailsEnviadosVO> getReporteCorreos() {
 		return reporteCorreos;
 	}
@@ -183,6 +176,22 @@ public class ProcesoDistRecFinSeguimientoDocumentacionController extends Abstrac
 
 	public void setInstanciaProceso(Integer instanciaProceso) {
 		this.instanciaProceso = instanciaProceso;
+	}
+
+	public ProgramaVO getProgramaProxAno() {
+		return programaProxAno;
+	}
+
+	public void setProgramaProxAno(ProgramaVO programaProxAno) {
+		this.programaProxAno = programaProxAno;
+	}
+
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
 	}
 	
 }

@@ -2,15 +2,9 @@ package cl.minsal.divap.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.math.BigInteger;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -24,8 +18,6 @@ import minsal.divap.service.ProgramasService;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ComponentesVO;
-import minsal.divap.vo.ComunaVO;
-import minsal.divap.vo.ProgramaAPSMunicipalVO;
 import minsal.divap.vo.ProgramaMunicipalVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ResumenProgramaVO;
@@ -33,25 +25,14 @@ import minsal.divap.vo.ServiciosVO;
 
 import org.apache.log4j.Logger;
 
-import cl.minsal.divap.model.ProgramaAno;
-import cl.minsal.divap.pojo.ComunaPojo;
-import cl.minsal.divap.pojo.EnvioServiciosPojo;
-import cl.minsal.divap.pojo.EstablecimientoPojo;
-import cl.minsal.divap.pojo.ProcesosProgramasPojo;
-import cl.minsal.divap.pojo.ProgramasPojo;
-import cl.minsal.divap.pojo.ValorHistoricoPojo;
-import cl.redhat.bandejaTareas.controller.BaseController;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
-import cl.redhat.bandejaTareas.util.BandejaProperties;
 
 @Named ( "procesoDistRecFinLeyesController" ) 
 @ViewScoped 
 public class ProcesoDistRecFinLeyesController extends AbstractTaskMBean implements Serializable  {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject private transient Logger log;
-	@Inject private BandejaProperties bandejaProperties;
 	@Inject FacesContext facesContext;
-	
 	@EJB
 	private UtilitariosService utilitariosService;
 	@EJB
@@ -78,7 +59,8 @@ public class ProcesoDistRecFinLeyesController extends AbstractTaskMBean implemen
 	private Integer programaSeleccionado;
 	private Integer totalResumen24;
 	private ProgramaVO programa;
-	private Integer programaProxAno;
+	private ProgramaVO programaProxAno;
+	private Integer ano;
 	
 	@PostConstruct 
 	public void init() {
@@ -94,9 +76,12 @@ public class ProcesoDistRecFinLeyesController extends AbstractTaskMBean implemen
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			programaSeleccionado = (Integer) getTaskDataVO()
 					.getData().get("_programaSeleccionado");
+			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("this.ano --->" + this.ano);
 		}
-		programa = programasService.getProgramaAno(programaSeleccionado);
-		programaProxAno = programasService.getIdProgramaAnoAnterior(programa.getId(), recursosFinancierosProgramasReforzamientoService.getAnoCurso()+1);
+		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
+		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
+		
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
 		componenteSeleccionado =  listaComponentes.get(0).getId().toString();
@@ -104,7 +89,7 @@ public class ProcesoDistRecFinLeyesController extends AbstractTaskMBean implemen
 	}
 	
 	public String recalcularTotales(){
-		detalleComunas.get(Integer.valueOf(getPosicionElemento())).setTotal( detalleComunas.get(Integer.valueOf(getPosicionElemento())).getTotal());
+		detalleComunas.get(Integer.valueOf(getPosicionElemento())).setTotal( detalleComunas.get(Integer.parseInt(getPosicionElemento())).getTotal());
 		getTotalesPxQ(detalleComunas);
 		return null;
 	}
@@ -114,7 +99,7 @@ public class ProcesoDistRecFinLeyesController extends AbstractTaskMBean implemen
 		}
 	}
 	public void cargaComunas(){
-		detalleComunas = programasService.findByServicioComponente(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado), programaProxAno);
+		detalleComunas = programasService.findByServicioComponente(Integer.parseInt(componenteSeleccionado), Integer.parseInt(servicioSeleccionado), programaProxAno.getIdProgramaAno());
 		getTotalesPxQ(detalleComunas);
 	}
 
@@ -256,11 +241,11 @@ public class ProcesoDistRecFinLeyesController extends AbstractTaskMBean implemen
 		this.programa = programa;
 	}
 
-	public Integer getProgramaProxAno() {
+	public ProgramaVO getProgramaProxAno() {
 		return programaProxAno;
 	}
 
-	public void setProgramaProxAno(Integer programaProxAno) {
+	public void setProgramaProxAno(ProgramaVO programaProxAno) {
 		this.programaProxAno = programaProxAno;
 	}
 	

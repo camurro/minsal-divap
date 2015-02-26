@@ -39,7 +39,8 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasLey extends Abstract
 	private String docIdDownload;
 	private Integer programaSeleccionado;
 	private Integer IdProgramaProxAno;
-	
+	private Integer ano;
+	private ProgramaVO programaProxAno;
 	@EJB
 	private ProgramasService programasService;
 
@@ -55,9 +56,9 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasLey extends Abstract
 			programa = recursosFinancierosProgramasReforzamientoService.getProgramaById(programaSeleccionado);
 			System.out.println("programaSeleccionado --->" + programaSeleccionado);
 			if(programa.getDependenciaMunicipal() != null && programa.getDependenciaMunicipal()){
-				plantillaLey = recursosFinancierosProgramasReforzamientoService.getIdPlantillaProgramas(programa.getId(), TipoDocumentosProcesos.PLANTILLALEYAPS,false);
+				plantillaLey = recursosFinancierosProgramasReforzamientoService.getIdPlantillaProgramas(programa.getId(), TipoDocumentosProcesos.PLANTILLALEYAPS, false);
 			}
-			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado,programa);
+			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado , ano);
 		}
 	}
 	
@@ -160,6 +161,14 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasLey extends Abstract
 
 	public void setIdProgramaProxAno(Integer idProgramaProxAno) {
 		IdProgramaProxAno = idProgramaProxAno;
+	}
+
+	public ProgramaVO getProgramaProxAno() {
+		return programaProxAno;
+	}
+
+	public void setProgramaProxAno(ProgramaVO programaProxAno) {
+		this.programaProxAno = programaProxAno;
 	}
 
 }

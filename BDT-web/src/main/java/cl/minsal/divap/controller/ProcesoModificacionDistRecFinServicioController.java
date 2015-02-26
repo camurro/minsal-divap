@@ -26,7 +26,6 @@ import minsal.divap.vo.ServiciosVO;
 import org.apache.log4j.Logger;
 
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
-import cl.redhat.bandejaTareas.util.BandejaProperties;
 
 @Named ( "procesoModificacionDistRecFinServicioController" ) 
 @ViewScoped 
@@ -38,7 +37,6 @@ public class ProcesoModificacionDistRecFinServicioController extends AbstractTas
 	 */
 	private static final long serialVersionUID = 5830080147741474779L;
 	@Inject private transient Logger log;
-	@Inject private BandejaProperties bandejaProperties;
 	@Inject FacesContext facesContext;
 	
 	@EJB
@@ -49,16 +47,11 @@ public class ProcesoModificacionDistRecFinServicioController extends AbstractTas
 	private ProgramasService programasService;
 	@EJB
 	private RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService;
-	
 	private String servicioSeleccionado;
 	private List<ServiciosVO> listaServicios;
-	
 	private String componenteSeleccionado;
 	private List<ComponentesVO> listaComponentes;
-	
 	private List<ProgramaServicioVO> detalleEstablecimientos;
-	
-	
 	private boolean tiene21;
 	private boolean tiene22;
 	private boolean tiene29;
@@ -74,14 +67,14 @@ public class ProcesoModificacionDistRecFinServicioController extends AbstractTas
 	private Long totalPxQ;
 	
 	private List<ResumenProgramaServiciosVO> resumenPrograma;
-	
 	private Integer programaSeleccionado;
 	private Long totalResumen21;
 	private Long totalResumen22;
 	private Long totalResumen29;
 	private Long totalResumen;
-	
 	private ProgramaVO programa;
+	private ProgramaVO programaProxAno;
+	private Integer ano;
 	
 	
 	@PostConstruct 
@@ -97,23 +90,19 @@ public class ProcesoModificacionDistRecFinServicioController extends AbstractTas
 			}
 		}
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			programaSeleccionado = (Integer) getTaskDataVO()
-					.getData().get("_programaSeleccionado");
+			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
+			ano = (Integer) getTaskDataVO().getData().get("_ano");
 		}
-		programa = programasService.getProgramaAno(programaSeleccionado);
+		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
+		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes= componenteService.getComponenteByPrograma(programa.getIdProgramaAno());
-		
 		armarResumenPrograma();
 	}
 	
 	private void armarResumenPrograma() {
 		if(programaSeleccionado!=null){
-			Integer anoActual = recursosFinancierosProgramasReforzamientoService.getAnoCurso();
-			int idProgramaAnoActual = programasService.getProgramaAnoSiguiente(programaSeleccionado, anoActual);
-			
-			
-			resumenPrograma = programasService.getResumenServicio(idProgramaAnoActual, programa.getIdProgramaAno());
+			resumenPrograma = programasService.getResumenServicio(programa.getIdProgramaAno(), programaProxAno.getIdProgramaAno());
 			totalResumen21=0l;
 			totalResumen22=0l;
 			totalResumen29=0l;
@@ -158,7 +147,7 @@ public class ProcesoModificacionDistRecFinServicioController extends AbstractTas
 		}
 	}
 	public String buscarResultados(){
-		detalleEstablecimientos = programasService.findByServicioComponenteServicios(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado));
+		detalleEstablecimientos = programasService.findByServicioComponenteServicios(Integer.parseInt(componenteSeleccionado), Integer.parseInt(servicioSeleccionado),  programaProxAno.getIdProgramaAno());
 		calculaTotalesTabla();
 		return null;
 
@@ -205,8 +194,6 @@ public class ProcesoModificacionDistRecFinServicioController extends AbstractTas
 		System.out.println("createResultData usuario-->"
 				+ getSessionBean().getUsername());
 		parameters.put("recursosAPSMunicipal_", false);
-		
-		
 		return parameters;
 	}
 
@@ -214,7 +201,6 @@ public class ProcesoModificacionDistRecFinServicioController extends AbstractTas
 	
 	@Override
 	public String iniciarProceso() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	

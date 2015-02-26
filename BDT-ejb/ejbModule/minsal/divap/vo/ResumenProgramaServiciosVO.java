@@ -61,14 +61,14 @@ public class ResumenProgramaServiciosVO implements Serializable{
 		this.totalServicio = totalServicio;
 	}
 	public Long getTotalServicio() {
-		totalServicio=0l;
-		if(totalS21!=null){
+		totalServicio = 0l;
+		if(totalS21 != null){
 			totalServicio = totalS21;
 		}
-		if(totalS22!=null){
+		if(totalS22 != null){
 			totalServicio = totalS22;
 		}
-		if(totalS29!=null){
+		if(totalS29 != null){
 			totalServicio = totalS29;
 		}
 		

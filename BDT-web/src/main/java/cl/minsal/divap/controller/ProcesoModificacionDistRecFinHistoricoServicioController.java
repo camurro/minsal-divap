@@ -90,12 +90,9 @@ public class ProcesoModificacionDistRecFinHistoricoServicioController extends Ab
 	private Long totalFuturo;
 	private Long totalPasadoHorizontal;
 	private Long totalFuturoHorizontal;
-	
-	private String anoActual;
-	private String anoProximo;
-	
 	private String subtitulo;
-	
+	private ProgramaVO programaProxAno;
+	private Integer ano;
 	
 	@PostConstruct 
 	public void init() {
@@ -109,22 +106,21 @@ public class ProcesoModificacionDistRecFinHistoricoServicioController extends Ab
 			}
 		}
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			programaSeleccionado = (Integer) getTaskDataVO()
-					.getData().get("_programaSeleccionado");
+			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
+			ano = (Integer) getTaskDataVO().getData().get("_ano");
 		}
-		programa = reforzamientoService.getProgramaById(programaSeleccionado);
+		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
+		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		listaServicios = utilitariosService.getAllServicios();
-		listaComponentes= componenteService.getComponenteByPrograma(programaSeleccionado);
+		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
 		inflactorS21 = subtituloService.getInflactor(1);
 		inflactorS22 = subtituloService.getInflactor(2);
 		inflactorS29 = subtituloService.getInflactor(4);
-		anoActual = reforzamientoService.getAnoCurso()+"";
-		anoProximo = (reforzamientoService.getAnoCurso()+1)+"";
 		//armarResumenPrograma();
 	}
 	
 	private void armarResumenPrograma() {
-		resumenPrograma = programasService.getResumenMunicipal(programaSeleccionado, 3);
+		resumenPrograma = programasService.getResumenMunicipal(programaProxAno.getIdProgramaAno(), 3);
 		totalResumen24 =0l;
 		for (ResumenProgramaVO resumen : resumenPrograma) {
 			totalResumen24 = totalResumen24+resumen.getTotalS24();
@@ -334,22 +330,6 @@ public class ProcesoModificacionDistRecFinHistoricoServicioController extends Ab
 		this.listadoHistoricoServicioActual = listadoHistoricoServicioActual;
 	}
 
-	public String getAnoActual() {
-		return anoActual;
-	}
-
-	public void setAnoActual(String anoActual) {
-		this.anoActual = anoActual;
-	}
-
-	public String getAnoProximo() {
-		return anoProximo;
-	}
-
-	public void setAnoProximo(String anoProximo) {
-		this.anoProximo = anoProximo;
-	}
-
 	public Double getInflactorS21() {
 		return inflactorS21;
 	}
@@ -510,5 +490,12 @@ public class ProcesoModificacionDistRecFinHistoricoServicioController extends Ab
 		return totalResumen24;
 	}
 
+	public ProgramaVO getProgramaProxAno() {
+		return programaProxAno;
+	}
+
+	public void setProgramaProxAno(ProgramaVO programaProxAno) {
+		this.programaProxAno = programaProxAno;
+	}
 
 }

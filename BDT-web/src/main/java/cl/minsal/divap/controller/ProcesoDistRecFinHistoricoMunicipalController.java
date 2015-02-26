@@ -27,7 +27,6 @@ import minsal.divap.vo.ServiciosVO;
 import org.apache.log4j.Logger;
 
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
-import cl.redhat.bandejaTareas.util.BandejaProperties;
 
 @Named ( "procesoDistRecFinHistoricoMunicipalController" ) 
 @ViewScoped 
@@ -38,11 +37,7 @@ public class ProcesoDistRecFinHistoricoMunicipalController extends AbstractTaskM
 	 */
 	private static final long serialVersionUID = -8097601336202053671L;
 	@Inject private transient Logger log;
-	@Inject private BandejaProperties bandejaProperties;
 	@Inject FacesContext facesContext;
-	
-	private ProgramaVO programa;
-	
 	@EJB
 	private UtilitariosService utilitariosService;
 	@EJB
@@ -53,6 +48,8 @@ public class ProcesoDistRecFinHistoricoMunicipalController extends AbstractTaskM
 	private SubtituloService subtituloService;
 	@EJB
 	private RecursosFinancierosProgramasReforzamientoService reforzamientoService;
+	private ProgramaVO programa;
+	private ProgramaVO programaProxAno;
 	
 	private String servicioSeleccionado;
 	private List<ServiciosVO> listaServicios;
@@ -74,9 +71,7 @@ public class ProcesoDistRecFinHistoricoMunicipalController extends AbstractTaskM
 	private Double inflactorS24;
 	private Long totalS24Pasado;
 	private Long totalS24Futuro;
-	
-	private String anoActual;
-	private String anoProximo;
+	private Integer ano;
 	
 	
 	@PostConstruct 
@@ -93,14 +88,14 @@ public class ProcesoDistRecFinHistoricoMunicipalController extends AbstractTaskM
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			programaSeleccionado = (Integer) getTaskDataVO()
 					.getData().get("_programaSeleccionado");
+			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("this.ano --->" + this.ano);
 		}
-		programa = reforzamientoService.getProgramaById(programaSeleccionado);
+		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
+		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
 		inflactorS24 = subtituloService.getInflactor(3);
-		anoActual = reforzamientoService.getAnoCurso()+"";
-		anoProximo = (reforzamientoService.getAnoCurso()+1)+"";
-		//armarResumenPrograma();
 	}
 	
 	private void armarResumenPrograma() {
@@ -129,24 +124,11 @@ public class ProcesoDistRecFinHistoricoMunicipalController extends AbstractTaskM
 		}
 	}
 	public void cargaComunas(){
-
 		listadoHistoricoMunicipalActual = programasService.getHistoricoMunicipal(programaSeleccionado, Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado));
 		getTotales(listadoHistoricoMunicipalActual);
 	}
 
-	private void calcularAnoActual(
-			List<ProgramaMunicipalHistoricoVO> listadoHistoricoMunicipal) {
-		for(ProgramaMunicipalHistoricoVO prog : listadoHistoricoMunicipal){
-			ProgramaMunicipalHistoricoVO obj = new ProgramaMunicipalHistoricoVO();
-		}
-		
-	}
-
 	private Integer getTotales(List<ProgramaMunicipalHistoricoVO> listadoHistoricoMunicipalActual){
-		/*for (int i=0;i<detalleComunas.size();i++) {
-					totalPxQ=totalPxQ+detalleComunas.get(i).getTotal();	
-		}
-		return totalPxQ;*/
 		totalS24Pasado=0l;
 		totalS24Futuro=0l;
 		for(ProgramaMunicipalHistoricoVO prog : listadoHistoricoMunicipalActual){
@@ -162,7 +144,6 @@ public class ProcesoDistRecFinHistoricoMunicipalController extends AbstractTaskM
 		programasService.guardarProgramaHistoricoMunicipal(listadoHistoricoMunicipalActual);
 		armarResumenPrograma();
 	}
-
 	
 	@Override
 	protected Map<String, Object> createResultData() {
@@ -170,17 +151,13 @@ public class ProcesoDistRecFinHistoricoMunicipalController extends AbstractTaskM
 		System.out.println("createResultData usuario-->"
 				+ getSessionBean().getUsername());
 		parameters.put("recursosAPSMunicipal_", true);
-		
-		
 		return parameters;
 	}
 
 	@Override
 	public String iniciarProceso() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-	
 	
 	public ComponenteService getComponenteService() {
 		return componenteService;
@@ -222,7 +199,6 @@ public class ProcesoDistRecFinHistoricoMunicipalController extends AbstractTaskM
 		this.listaComponentes = listaComponentes;
 	}
 
-
 	public String getPosicionElemento() {
 		return posicionElemento;
 	}
@@ -262,8 +238,6 @@ public class ProcesoDistRecFinHistoricoMunicipalController extends AbstractTaskM
 	public void setProgramaSeleccionado(Integer programaSeleccionado) {
 		this.programaSeleccionado = programaSeleccionado;
 	}
-
-	
 
 	public Long getTotalResumen24() {
 		return totalResumen24;
@@ -306,28 +280,28 @@ public class ProcesoDistRecFinHistoricoMunicipalController extends AbstractTaskM
 		this.listadoHistoricoMunicipalActual = listadoHistoricoMunicipalActual;
 	}
 
-	public String getAnoActual() {
-		return anoActual;
-	}
-
-	public void setAnoActual(String anoActual) {
-		this.anoActual = anoActual;
-	}
-
-	public String getAnoProximo() {
-		return anoProximo;
-	}
-
-	public void setAnoProximo(String anoProximo) {
-		this.anoProximo = anoProximo;
-	}
-
 	public ProgramaVO getPrograma() {
 		return programa;
 	}
 
 	public void setPrograma(ProgramaVO programa) {
 		this.programa = programa;
+	}
+
+	public ProgramaVO getProgramaProxAno() {
+		return programaProxAno;
+	}
+
+	public void setProgramaProxAno(ProgramaVO programaProxAno) {
+		this.programaProxAno = programaProxAno;
+	}
+
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
 	}
 	
 }

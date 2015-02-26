@@ -22,6 +22,7 @@
 				    	return true;
 			    	}
 			    	if (charCode == 13) {
+			    		event.preventDefault();
 				    	$("#form\\:posicionElemento").val(fila);
 				    	$("#form\\:precioCantidad").val(precioCantidad);
 				    	$("#form\\:subtitulo").val(subtitulo);
@@ -42,8 +43,10 @@
 				    	return true;
 			    	}
 			    	if (charCode == 13) {
+			    		event.preventDefault();
 				    	$("#form\\:posicionElemento").val(fila);
 				    	$("#form\\:precioCantidad").val(precioCantidad);
+				    	$("#form\\:subtitulo").val("");
 			    		document.getElementById(id).click();
 			    		return true;
 			    	}
@@ -57,6 +60,7 @@
 	</ui:define>
 	<ui:define name="content">
 		<h:form enctype="multipart/form-data" id="form">
+		<p:growl id="growl" showDetail="false"/> 
 		<p:commandButton id="refrescarTabla" value="refrescar" action="#{procesoDistRecFinMixtoController.refrescar}" style="display: none" update="form:tabs:tablaResultados form:tabs:tablaServicios"/>
 		
 		<h:inputHidden  id="posicionElemento" value="#{procesoDistRecFinMixtoController.posicionElemento}" />
@@ -87,7 +91,7 @@
 						<h:panelGrid columns="2">
 								<h:outputText value="Componente " styleClass="inputLabel" />
 								<p:selectOneMenu id="componentes"  value="#{procesoDistRecFinMixtoController.componenteSeleccionado}">
-								<p:ajax listener="#{procesoDistRecFinMixtoController.seleccionComponente}" update="" />
+								<p:ajax listener="#{procesoDistRecFinMixtoController.seleccionComponente}" update="form:tabs:tablaResultados form:tabs:tablaServicios" />
 								<f:selectItem itemLabel="Seleccione" itemValue="" />  
 								<f:selectItems value="#{procesoDistRecFinMixtoController.listaComponentes}" itemLabel="#{componente.nombre}" var="componente" itemValue="#{componente.id}"/> 
 							</p:selectOneMenu>
@@ -102,8 +106,8 @@
 							</h:panelGrid>
 						
 						<h:panelGrid columns="1">
-							<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoDistRecFinMixtoController.buscarResultados()}" update="form:tabs:tablaResultados form:tabs:tablaServicios"/>
-					</h:panelGrid>
+							<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoDistRecFinMixtoController.buscarResultados()}" update="form:tabs:tablaResultados form:tabs:tablaServicios growl"/>
+						</h:panelGrid>
 					</h:panelGrid>
 					<div id="resultados" style="display: block;">
 						<p:tabView id="tabs">
@@ -165,7 +169,7 @@
 							</h:panelGrid>
 							</p:tab>
 							<p:tab title="Servicio">
-				<h:panelGrid>
+							<h:panelGrid>
 								<p:dataTable resizableColumns="true" value="#{procesoDistRecFinMixtoController.detalleEstablecimientos}" liveResize="true"
 									var="_establecimiento" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
 									styleClass="dataTable" id="tablaServicios" rowIndexVar="rowIndex">

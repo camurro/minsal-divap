@@ -378,289 +378,89 @@ public class GeneradorExcel {
 			}
 
 			List<ResumenProgramaMixtoVO> items = excelSheet.getItems();
+			
 			CellStyle cellStyleLong = workbook.createCellStyle();
 			cellStyleLong.setDataFormat(workbook.createDataFormat().getFormat("#,##0"));
 			Long totalS24 = 0l;
 			Long totalS21 = 0l;
 			Long totalS22 = 0l;
 			Long totalS29 = 0l;
-			Long totalServicio = 0l;
-			boolean s24=false;
-			boolean s21=false;
-			boolean s22=false;
-			boolean s29=false;
-			if(items.size()>0){
-
-				for(int i=0; i<items.size();i++){
-					if(items.get(i).getTotalS24()!=null && items.get(0).getTotalS24()>0){
-						s24=true;
-					}
-					if(items.get(i).getTotalS21()!=null && items.get(0).getTotalS21()>0){
-						s21=true;
-					}
-					if(items.get(i).getTotalS22()!=null && items.get(0).getTotalS22()>0){
-						s22=true;
-					}
-					if(items.get(i).getTotalS29()!=null && items.get(0).getTotalS29()>0){
-						s29=true;
-					}
-				}
-			}
-			for(int i=0; i<items.size(); i++){
-				currentRow =i+1;
+			Long totalServicios = 0l;
+			
+			boolean sub24 = items.get(0).isSub24();
+			boolean sub21 = items.get(0).isSub21();
+			boolean sub22 = items.get(0).isSub22();
+			boolean sub29 = items.get(0).isSub29();
+			
+			System.out.println("addSheet sub24="+sub24+" sub21="+sub21+ " sub22="+sub22+" sub29="+sub29);
+			
+			int posicionColumna = 0;
+			for(ResumenProgramaMixtoVO resumenProgramaMixtoVO : items){
+				System.out.println("resumenProgramaMixtoVO.getTotalS21()="+resumenProgramaMixtoVO.getTotalS21()+" resumenProgramaMixtoVO.getTotalS22()="+resumenProgramaMixtoVO.getTotalS22()+" resumenProgramaMixtoVO.getTotalS24()="+resumenProgramaMixtoVO.getTotalS24()+" resumenProgramaMixtoVO.getTotalS29()="+resumenProgramaMixtoVO.getTotalS29());
+				posicionColumna = 0;
 				XSSFRow fila = sheet.createRow(currentRow);
-				fila = sheet.getRow(currentRow);
-				XSSFCell cell_idservicio = fila.createCell(0);
-				cell_idservicio = fila.getCell(0);   
-				cell_idservicio.setCellValue(items.get(i).getIdServicio());
-				XSSFCell cell_servicio = fila.createCell(1);
-				cell_servicio = fila.getCell(1);   
-				cell_servicio.setCellValue(items.get(i).getNombreServicio());
-				if(s24){
-					XSSFCell tS24 = fila.createCell(2);
-					tS24 = fila.getCell(2);   
-					tS24.setCellValue(items.get(i).getTotalS24());
+				XSSFCell cell_idservicio = fila.createCell(posicionColumna++);
+				cell_idservicio.setCellValue(resumenProgramaMixtoVO.getIdServicio());
+				XSSFCell cell_servicio = fila.createCell(posicionColumna++);
+				cell_servicio.setCellValue(resumenProgramaMixtoVO.getNombreServicio());
+				if(sub24){
+					XSSFCell tS24 = fila.createCell(posicionColumna++);
+					tS24.setCellValue(resumenProgramaMixtoVO.getTotalS24());
 					tS24.setCellStyle(cellStyleLong);
-					totalS24 += items.get(i).getTotalS24();
-					if(!s21 && !s22 && !s29){
-						XSSFCell totales = fila.createCell(3);
-						totales = fila.getCell(3);   
-						totales.setCellValue(items.get(i).getTotalServicio());
-						totales.setCellStyle(cellStyleLong);
-						totalServicio += items.get(i).getTotalServicio();
-					}
+					totalS24 += resumenProgramaMixtoVO.getTotalS24();
 				}
-				if(!s24 && s21){
-					XSSFCell tS21 = fila.createCell(2);
-					tS21 = fila.getCell(2);   
-					tS21.setCellValue(items.get(i).getTotalS21());
+				if(sub21){
+					XSSFCell tS21 = fila.createCell(posicionColumna++);
+					tS21.setCellValue(resumenProgramaMixtoVO.getTotalS21());
 					tS21.setCellStyle(cellStyleLong);
-					totalS21 += items.get(i).getTotalS21();
+					totalS21 += resumenProgramaMixtoVO.getTotalS21();
 				}
-				if(s24 && s21){
-					XSSFCell tS21 = fila.createCell(3);
-					tS21 = fila.getCell(3);   
-					tS21.setCellValue(items.get(i).getTotalS21());
-					tS21.setCellStyle(cellStyleLong);
-					totalS21 += items.get(i).getTotalS21();
-				}
-				if(!s24 && !s21 && s22){
-					XSSFCell tS22 = fila.createCell(2);
-					tS22 = fila.getCell(2);   
-					tS22.setCellValue(items.get(i).getTotalS22());
+				if(sub22){
+					XSSFCell tS22 = fila.createCell(posicionColumna++);
+					tS22.setCellValue(resumenProgramaMixtoVO.getTotalS22());
 					tS22.setCellStyle(cellStyleLong);
-					totalS22 += items.get(i).getTotalS22();
-					if(!s29){
-						XSSFCell totales = fila.createCell(3);
-						totales = fila.getCell(3);   
-						totales.setCellValue(items.get(i).getTotalServicio());
-						totales.setCellStyle(cellStyleLong);
-						totalServicio += items.get(i).getTotalServicio();
-					}else{
-						XSSFCell tS29 = fila.createCell(3);
-						tS29 = fila.getCell(3);   
-						tS29.setCellValue(items.get(i).getTotalS29());
-						tS29.setCellStyle(cellStyleLong);
-						totalS29 += items.get(i).getTotalS29();
-						XSSFCell totales = fila.createCell(4);
-						totales = fila.getCell(4);   
-						totales.setCellValue(items.get(i).getTotalServicio());
-						totales.setCellStyle(cellStyleLong);
-						totalServicio += items.get(i).getTotalServicio();
-					}
+					totalS22 += resumenProgramaMixtoVO.getTotalS22();
 				}
-				if(!s24 && s21 && s22){
-					XSSFCell tS22 = fila.createCell(3);
-					tS22 = fila.getCell(3);   
-					tS22.setCellValue(items.get(i).getTotalS22());
-					tS22.setCellStyle(cellStyleLong);
-					totalS22 += items.get(i).getTotalS22();
-					if(!s29){
-						XSSFCell totales = fila.createCell(4);
-						totales = fila.getCell(4);   
-						totales.setCellValue(items.get(i).getTotalServicio());
-						totales.setCellStyle(cellStyleLong);
-						totalServicio += items.get(i).getTotalServicio();
-					}else{
-						XSSFCell tS29 = fila.createCell(4);
-						tS29 = fila.getCell(4);   
-						tS29.setCellValue(items.get(i).getTotalS29());
-						tS29.setCellStyle(cellStyleLong);
-						totalS29 += items.get(i).getTotalS29();
-						XSSFCell totales = fila.createCell(5);
-						totales = fila.getCell(5);   
-						totales.setCellValue(items.get(i).getTotalServicio());
-						totales.setCellStyle(cellStyleLong);
-						totalServicio += items.get(i).getTotalServicio();
-					}
+				if(sub29){
+					XSSFCell tS29 = fila.createCell(posicionColumna++);
+					tS29.setCellValue(resumenProgramaMixtoVO.getTotalS29());
+					tS29.setCellStyle(cellStyleLong);
+					totalS29 += resumenProgramaMixtoVO.getTotalS29();
 				}
-				if(s24 && !s21 && s22){
-					XSSFCell tS22 = fila.createCell(3);
-					tS22 = fila.getCell(3);   
-					tS22.setCellValue(items.get(i).getTotalS22());
-					tS22.setCellStyle(cellStyleLong);
-					totalS22 += items.get(i).getTotalS22();
-					if(!s29){
-						XSSFCell totales = fila.createCell(4);
-						totales = fila.getCell(4);   
-						totales.setCellValue(items.get(i).getTotalServicio());
-						totales.setCellStyle(cellStyleLong);
-						totalServicio += items.get(i).getTotalServicio();
-					}else{
-						XSSFCell tS29 = fila.createCell(4);
-						tS29 = fila.getCell(4);   
-						tS29.setCellValue(items.get(i).getTotalS29());
-						tS29.setCellStyle(cellStyleLong);
-						totalS29 += items.get(i).getTotalS29();
-						XSSFCell totales = fila.createCell(5);
-						totales = fila.getCell(5);   
-						totales.setCellValue(items.get(i).getTotalServicio());
-						totales.setCellStyle(cellStyleLong);
-						totalServicio += items.get(i).getTotalServicio();
-					}
-				}
-				if(s24 && s21 && s22){
-					XSSFCell tS22 = fila.createCell(4);
-					tS22 = fila.getCell(4);   
-					tS22.setCellValue(items.get(i).getTotalS22());
-					tS22.setCellStyle(cellStyleLong);
-					totalS22 += items.get(i).getTotalS22();
-					if(!s29){
-						XSSFCell totales = fila.createCell(5);
-						totales = fila.getCell(5);   
-						totales.setCellValue(items.get(i).getTotalServicio());
-						totales.setCellStyle(cellStyleLong);
-						totalServicio += items.get(i).getTotalServicio();
-					}else{
-						XSSFCell tS29 = fila.createCell(5);
-						tS29 = fila.getCell(5);   
-						tS29.setCellValue(items.get(i).getTotalS29());
-						tS29.setCellStyle(cellStyleLong);
-						totalS29 += items.get(i).getTotalS29();
-						XSSFCell totales = fila.createCell(6);
-						totales = fila.getCell(6);   
-						totales.setCellValue(items.get(i).getTotalServicio());
-						totales.setCellStyle(cellStyleLong);
-						totalServicio += items.get(i).getTotalServicio();
-					}
-				}
+				XSSFCell totales = fila.createCell(posicionColumna++);
+				totales.setCellValue(resumenProgramaMixtoVO.getTotalServicio());
+				totales.setCellStyle(cellStyleLong);
+				totalServicios += resumenProgramaMixtoVO.getTotalServicio();
 				currentRow++;
 			}
-
+			posicionColumna = 1;
 			XSSFRow fila = sheet.createRow(currentRow);
-			fila = sheet.getRow(currentRow);
-			XSSFCell total = fila.createCell(1);
-			total = fila.getCell(1);   
+			XSSFCell total = fila.createCell(posicionColumna++);
 			total.setCellValue("TOTALES ($)");
 
-			if(s24){
-				XSSFCell tS24 = fila.createCell(2);
-				tS24 = fila.getCell(2);   
+			if(sub24){
+				XSSFCell tS24 = fila.createCell(posicionColumna++);
 				tS24.setCellValue(totalS24);
 				tS24.setCellStyle(cellStyleLong);
-				if(!s21 && !s22 && !s29){
-					XSSFCell totales = fila.createCell(3);
-					totales = fila.getCell(3);   
-					totales.setCellValue(totalServicio);
-					totales.setCellStyle(cellStyleLong);
-				}
 			}
-			if(!s24 && s21){
-				XSSFCell tS21 = fila.createCell(2);
-				tS21 = fila.getCell(2);   
+			if(sub21){
+				XSSFCell tS21 = fila.createCell(posicionColumna++);
 				tS21.setCellValue(totalS21);
 				tS21.setCellStyle(cellStyleLong);
 			}
-			if(s24 && s21){
-				XSSFCell tS21 = fila.createCell(3);
-				tS21 = fila.getCell(3);   
-				tS21.setCellValue(totalS21);
-				tS21.setCellStyle(cellStyleLong);
-			}
-			if(!s24 && !s21 && s22){
-				XSSFCell tS22 = fila.createCell(2);
-				tS22 = fila.getCell(2);   
+			if(sub22){
+				XSSFCell tS22 = fila.createCell(posicionColumna++);
 				tS22.setCellValue(totalS22);
 				tS22.setCellStyle(cellStyleLong);
-				if(!s29){
-					XSSFCell totales = fila.createCell(3);
-					totales = fila.getCell(3);   
-					totales.setCellValue(totalServicio);
-					totales.setCellStyle(cellStyleLong);
-				}else{
-					XSSFCell tS29 = fila.createCell(3);
-					tS29 = fila.getCell(3);   
-					tS29.setCellValue(totalS29);
-					tS29.setCellStyle(cellStyleLong);
-					XSSFCell totales = fila.createCell(4);
-					totales = fila.getCell(4);   
-					totales.setCellValue(totalServicio);
-					totales.setCellStyle(cellStyleLong);
-				}
 			}
-			if(!s24 && s21 && s22){
-				XSSFCell tS22 = fila.createCell(3);
-				tS22 = fila.getCell(3);   
-				tS22.setCellValue(totalS22);
-				tS22.setCellStyle(cellStyleLong);
-				if(!s29){
-					XSSFCell totales = fila.createCell(4);
-					totales = fila.getCell(4);   
-					totales.setCellValue(totalServicio);
-					totales.setCellStyle(cellStyleLong);
-				}else{
-					XSSFCell tS29 = fila.createCell(4);
-					tS29 = fila.getCell(4);   
-					tS29.setCellValue(totalS29);
-					tS29.setCellStyle(cellStyleLong);
-					XSSFCell totales = fila.createCell(5);
-					totales = fila.getCell(5);   
-					totales.setCellValue(totalServicio);
-					totales.setCellStyle(cellStyleLong);
-				}
+			if(sub29){
+				XSSFCell tS29 = fila.createCell(posicionColumna++);
+				tS29.setCellValue(totalS29);
+				tS29.setCellStyle(cellStyleLong);
 			}
-			if(s24 && !s21 && s22){
-				XSSFCell tS22 = fila.createCell(3);
-				tS22 = fila.getCell(3);   
-				tS22.setCellValue(totalS22);
-				tS22.setCellStyle(cellStyleLong);
-				if(!s29){
-					XSSFCell totales = fila.createCell(4);
-					totales = fila.getCell(4);   
-					totales.setCellValue(totalServicio);
-					totales.setCellStyle(cellStyleLong);
-				}else{
-					XSSFCell tS29 = fila.createCell(4);
-					tS29 = fila.getCell(4);   
-					tS29.setCellValue(totalS29);
-					tS29.setCellStyle(cellStyleLong);
-					XSSFCell totales = fila.createCell(5);
-					totales = fila.getCell(5);   
-					totales.setCellValue(totalServicio);
-					totales.setCellStyle(cellStyleLong);
-				}
-			}
-			if(s24 && s21 && s22){
-				XSSFCell tS22 = fila.createCell(4);
-				tS22 = fila.getCell(4);   
-				tS22.setCellValue(totalS22);
-				tS22.setCellStyle(cellStyleLong);
-				if(!s29){
-					XSSFCell totales = fila.createCell(5);
-					totales = fila.getCell(5);   
-					totales.setCellValue(totalServicio);
-					totales.setCellStyle(cellStyleLong);
-				}else{
-					XSSFCell tS29 = fila.createCell(5);
-					tS29 = fila.getCell(5);   
-					tS29.setCellValue(totalS29);
-					tS29.setCellStyle(cellStyleLong);
-					XSSFCell totales = fila.createCell(6);
-					totales = fila.getCell(6);   
-					totales.setCellValue(totalServicio);
-					totales.setCellStyle(cellStyleLong);
-				}
-			}
+			XSSFCell totales = fila.createCell(posicionColumna++);
+			totales.setCellValue(totalServicios);
+			totales.setCellStyle(cellStyleLong);
 
 		}catch(Exception e){
 			e.printStackTrace();

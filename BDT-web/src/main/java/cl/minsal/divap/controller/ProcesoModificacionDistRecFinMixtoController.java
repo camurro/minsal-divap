@@ -30,7 +30,6 @@ import minsal.divap.vo.ServiciosVO;
 import org.apache.log4j.Logger;
 
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
-import cl.redhat.bandejaTareas.util.BandejaProperties;
 
 @Named ( "procesoModificacionDistRecFinMixtoController" ) 
 @ViewScoped 
@@ -42,9 +41,8 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 	 */
 	private static final long serialVersionUID = 1535343033568169093L;
 	@Inject private transient Logger log;
-	@Inject private BandejaProperties bandejaProperties;
 	@Inject FacesContext facesContext;
-	
+
 	@EJB
 	private UtilitariosService utilitariosService;
 	@EJB
@@ -53,46 +51,47 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 	private ProgramasService programasService;
 	@EJB
 	private RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService;
-	
+
 	private String servicioSeleccionado;
 	private List<ServiciosVO> listaServicios;
-	
+
 	private String componenteSeleccionado;
 	private List<ComponentesVO> listaComponentes;
-	
+
 	private List<ProgramaServicioVO> detalleEstablecimientos;
 	private List<ProgramaMunicipalVO> detalleComunas;
-	
-	
+
+
 	private boolean tiene21;
 	private boolean tiene22;
 	private boolean tiene29;
 	private boolean tiene24;
-	
+
 	private Long total21;
 	private Long total22;
 	private Long total29;
 	private Long totalFinal;
-	
+
 	private String posicionElemento;
 	private String precioCantidad;
 	private String subtitulo;
 	private Integer totalPxQ;
-	
+
 	private List<ResumenProgramaServiciosVO> resumenProgramaServicio;
 	private List<ResumenProgramaVO> resumenProgramaMunicipal;
 	private List<ResumenProgramaMixtoVO> resumenProgramaMixto;
-	
+
 	private Integer programaSeleccionado;
 	private Long totalResumen21;
 	private Long totalResumen22;
 	private Long totalResumen24;
 	private Long totalResumen29;
 	private Long totalResumen;
-	
+
 	private ProgramaVO programa;
-	private Integer programaProxAno;
-	
+	private ProgramaVO programaProxAno;
+	private Integer ano;
+
 	@PostConstruct 
 	public void init() {
 		// log.info("ProcesosPrincipalController Alcanzado.");
@@ -108,23 +107,24 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			programaSeleccionado = (Integer) getTaskDataVO()
 					.getData().get("_programaSeleccionado");
+			ano = (Integer) getTaskDataVO()
+					.getData().get("_ano");
 		}
-		
-		
-		
+
+
+
 		System.out.println("\n\n\n\nprogramaSeleccionado ---> "+programaSeleccionado+"\n\n\n\n");
-		programa = programasService.getProgramaAno(programaSeleccionado);
+		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
 		System.out.println("\n\n\n### programa ---> "+programa+"\n\n\n");
-		
-		programaProxAno = programasService.getIdProgramaAnoAnterior(programa.getId(), (recursosFinancierosProgramasReforzamientoService.getAnoCurso()));
+		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		System.out.println("\n\n\n###programaProxAno --> "+programaProxAno+"\n\n\n");
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
 		armarResumenPrograma();
 	}
-	
+
 	private void armarResumenPrograma() {
-		
+
 		if(programaSeleccionado!=null){
 			resumenServicio();
 			resumenMunicipal();
@@ -165,13 +165,13 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 					totalResumen += mixto.getTotalServicio();
 					resumenProgramaMixto.add(mixto);
 				}
-				
+
 			}
-			
-			
+
+
 		}
-		
-		
+
+
 	}
 
 	private void resumenMunicipal() {
@@ -186,38 +186,38 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 			}
 			tiene24=true;
 		}
-		
+
 	}
 
 	private void resumenServicio() {
-		
-		
+
+
 		Integer anoSiguiente = recursosFinancierosProgramasReforzamientoService.getAnoCurso();
-		
+
 		int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programa.getId(), (anoSiguiente + 1));
-		
-			resumenProgramaServicio = programasService.getResumenServicio(IdProgramaProxAno, programa.getId());
-			totalResumen21=0l;
-			totalResumen22=0l;
-			totalResumen29=0l;
-			for(ResumenProgramaServiciosVO resumen : resumenProgramaServicio){
-				if(resumen.getTotalS21()!=null){
-					tiene21=true;
-					totalResumen21+=resumen.getTotalS21();
-				}
-				if(resumen.getTotalS22()!=null){
-							tiene22=true;	
-							totalResumen22+=resumen.getTotalS22();
-							}
-				if(resumen.getTotalS29()!=null){
-					tiene29=true;
-					totalResumen29+=resumen.getTotalS29();
-				}
+
+		resumenProgramaServicio = programasService.getResumenServicio(IdProgramaProxAno, programa.getId());
+		totalResumen21=0l;
+		totalResumen22=0l;
+		totalResumen29=0l;
+		for(ResumenProgramaServiciosVO resumen : resumenProgramaServicio){
+			if(resumen.getTotalS21()!=null){
+				tiene21=true;
+				totalResumen21+=resumen.getTotalS21();
 			}
+			if(resumen.getTotalS22()!=null){
+				tiene22=true;	
+				totalResumen22+=resumen.getTotalS22();
+			}
+			if(resumen.getTotalS29()!=null){
+				tiene29=true;
+				totalResumen29+=resumen.getTotalS29();
+			}
+		}
 	}
 
 	public String recalcularTotales(){
-		
+
 		if(subtitulo!=null && !subtitulo.equals("")){
 			if(Integer.parseInt(subtitulo)==1){
 				detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo21().setTotal(detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo21().getCantidad()*detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo21().getMonto());;
@@ -232,9 +232,7 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 			detalleComunas.get(Integer.valueOf(getPosicionElemento())).setTotal( detalleComunas.get(Integer.valueOf(getPosicionElemento())).getCantidad() * detalleComunas.get(Integer.valueOf(getPosicionElemento())).getPrecio() );
 			getTotalesPxQ(detalleComunas);
 		}
-		
 		calculaTotalesTabla();
-
 		return null;
 	}
 	public void seleccionComponente(){
@@ -243,22 +241,22 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 		}
 	}
 	public String buscarResultados(){
-		detalleEstablecimientos = programasService.findByServicioComponenteServicios(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado));
-		detalleComunas = programasService.findByServicioComponente(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado), programaProxAno);
+		detalleEstablecimientos = programasService.findByServicioComponenteServicios(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado), programaProxAno.getIdProgramaAno());
+		detalleComunas = programasService.findByServicioComponente(Integer.parseInt(componenteSeleccionado), Integer.parseInt(servicioSeleccionado), programaProxAno.getIdProgramaAno());
 		getTotalesPxQ(detalleComunas);
 		calculaTotalesTabla();
 		return null;
 
 	}
-	
+
 	private Integer getTotalesPxQ(List<ProgramaMunicipalVO> detalleComunas){
 		totalPxQ=0;
 		for (int i=0;i<detalleComunas.size();i++) {
-					totalPxQ=totalPxQ+detalleComunas.get(i).getTotal();	
+			totalPxQ=totalPxQ+detalleComunas.get(i).getTotal();	
 		}
 		return totalPxQ;
 	}
-	
+
 	private void calculaTotalesTabla(){
 		tiene21=false;
 		tiene22=false;
@@ -268,7 +266,7 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 		total29=0l;
 		totalFinal=0l;
 		if(detalleEstablecimientos != null && detalleEstablecimientos.size()>0){
-			
+
 			for (ProgramaServicioVO detalle : detalleEstablecimientos) {
 				if(detalle.getSubtitulo21()!=null){
 					tiene21 = true;
@@ -282,11 +280,11 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 					tiene29 = true;
 					total29+=detalle.getSubtitulo29().getTotal();
 				}
-				
+
 			}
 			totalFinal += totalFinal + total21 + total22 + total29;
 		}
-		
+
 	}
 
 	public void guardar(){
@@ -294,28 +292,24 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 		programasService.guardarProgramaReforzamientoServicios(detalleEstablecimientos);
 		armarResumenPrograma();
 	}
-	
-	
+
+
 	@Override
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		System.out.println("createResultData usuario-->"
 				+ getSessionBean().getUsername());
 		parameters.put("recursosAPSMunicipal_", true);
-		
-		
 		return parameters;
 	}
 
 	public void refrescar(){}
-	
+
 	@Override
 	public String iniciarProceso() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
+
 	public ComponenteService getComponenteService() {
 		return componenteService;
 	}
@@ -356,7 +350,6 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 		this.listaComponentes = listaComponentes;
 	}
 
-	
 	public List<ProgramaServicioVO> getDetalleEstablecimientos() {
 		return detalleEstablecimientos;
 	}
@@ -390,7 +383,6 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 		this.totalPxQ = totalPxQ;
 	}
 
-	
 	public List<ResumenProgramaServiciosVO> getResumenProgramaServicio() {
 		return resumenProgramaServicio;
 	}
@@ -440,9 +432,7 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 	public void setTiene29(boolean tiene29) {
 		this.tiene29 = tiene29;
 	}
-
-
-
+	
 	public String getSubtitulo() {
 		return subtitulo;
 	}
@@ -450,8 +440,6 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 	public void setSubtitulo(String subtitulo) {
 		this.subtitulo = subtitulo;
 	}
-
-	
 
 	public Long getTotalResumen() {
 		return totalResumen;
@@ -468,8 +456,6 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 	public void setDetalleComunas(List<ProgramaMunicipalVO> detalleComunas) {
 		this.detalleComunas = detalleComunas;
 	}
-
-
 
 	public List<ResumenProgramaMixtoVO> getResumenProgramaMixto() {
 		return resumenProgramaMixto;
@@ -496,11 +482,11 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 		this.programa = programa;
 	}
 
-	public Integer getProgramaProxAno() {
+	public ProgramaVO getProgramaProxAno() {
 		return programaProxAno;
 	}
 
-	public void setProgramaProxAno(Integer programaProxAno) {
+	public void setProgramaProxAno(ProgramaVO programaProxAno) {
 		this.programaProxAno = programaProxAno;
 	}
 
@@ -567,5 +553,5 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 	public void setTotalResumen29(Long totalResumen29) {
 		this.totalResumen29 = totalResumen29;
 	}
-	
+
 }

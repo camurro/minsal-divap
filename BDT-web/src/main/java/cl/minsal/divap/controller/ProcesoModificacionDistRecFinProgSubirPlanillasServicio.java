@@ -33,6 +33,7 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasServicio extends Abs
 	 */
 	private static final long serialVersionUID = -6053448786004787214L;
 	private ProgramaVO programa;
+	private ProgramaVO programaProxAno;
 	private Integer plantillaMunicipal;
 	private Integer plantillaServicios;
 	private UploadedFile planillaServicio;
@@ -40,8 +41,8 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasServicio extends Abs
 	private List<Integer> listaServicios;
 	private String docIdDownload;
 	private Integer programaSeleccionado;
-	private Integer IdProgramaAnoActual;
-
+	private Integer ano;
+	private Integer IdProgramaProxAno;
 	@EJB
 	private ProgramasService programasService;
 	@EJB
@@ -52,16 +53,19 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasServicio extends Abs
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			programaSeleccionado = (Integer) getTaskDataVO()
 					.getData().get("_programaSeleccionado");
-			programa = recursosFinancierosProgramasReforzamientoService.getProgramaById(programaSeleccionado);
 			System.out.println("programaSeleccionado --->" + programaSeleccionado);
+			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("ano --->" + ano);
+			programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
+			programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
+			
 			if(programa.getDependenciaMunicipal() != null && programa.getDependenciaMunicipal()){
 				plantillaMunicipal = recursosFinancierosProgramasReforzamientoService.getIdPlantillaModificacionProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSMUNICIPALES, true);
 			}
 			if(programa.getDependenciaServicio() != null && programa.getDependenciaServicio()){
 				plantillaServicios = recursosFinancierosProgramasReforzamientoService.getIdPlantillaModificacionProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSSERVICIO, true);
 			}
-			Integer anoActual = programasService.getAnoCurso();
-			IdProgramaAnoActual = programasService.getProgramaAnoSiguiente(programaSeleccionado, anoActual);
+			IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programaSeleccionado, ano);
 		}
 	}
 	
@@ -80,13 +84,13 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasServicio extends Abs
 		if (planillaServicio != null){
 			String filename = planillaServicio.getFileName();
 			byte[] contentPlanillaServicio = planillaServicio.getContents();
-			 listaServicios = recursosFinancierosProgramasReforzamientoService.procesarModificacionPlanillaServicio(IdProgramaAnoActual, GeneradorExcel.fromContent(contentPlanillaServicio,
+			 listaServicios = recursosFinancierosProgramasReforzamientoService.procesarModificacionPlanillaServicio(IdProgramaProxAno, GeneradorExcel.fromContent(contentPlanillaServicio,
 							XSSFWorkbook.class),componentes);
 			Integer docPlanillaServicio = persistFile(filename, contentPlanillaServicio);
 			if (docPlanillaServicio != null) {
 				docIds.add(docPlanillaServicio);
 			}
-			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(IdProgramaAnoActual, docPlanillaServicio, TipoDocumentosProcesos.PROGRAMAAPSSERVICIO, null,false);
+			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(IdProgramaProxAno, docPlanillaServicio, TipoDocumentosProcesos.PROGRAMAAPSSERVICIO, null,false);
 		}
 		}catch (Exception e) {
 			return null;
@@ -164,13 +168,13 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasServicio extends Abs
 	public void setProgramaSeleccionado(Integer programaSeleccionado) {
 		this.programaSeleccionado = programaSeleccionado;
 	}
-
-	public Integer getIdProgramaAnoActual() {
-		return IdProgramaAnoActual;
+	
+	public ProgramaVO getProgramaProxAno() {
+		return programaProxAno;
 	}
 
-	public void setIdProgramaAnoActual(Integer idProgramaAnoActual) {
-		IdProgramaAnoActual = idProgramaAnoActual;
+	public void setProgramaProxAno(ProgramaVO programaProxAno) {
+		this.programaProxAno = programaProxAno;
 	}
 
 	public List<Integer> getListaServicios() {
@@ -180,6 +184,5 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasServicio extends Abs
 	public void setListaServicios(List<Integer> listaServicios) {
 		this.listaServicios = listaServicios;
 	}
-
 	
 }

@@ -197,6 +197,13 @@ public class OTService {
 	public List<OTResumenDependienteServicioVO> getDetalleOTServicio(Integer componenteSeleccionado,
 			Integer servicioSeleccionado, Integer idTipoSubtitulo, Integer idProgramaAno) {
 
+		System.out.println("Buscando Detalle de Convenios/Remesas para Subtitulo servicio");
+		System.out.println("Buscando Detalle de Convenios/Remesas para idTipoSubtitulo = "+ idTipoSubtitulo);
+		System.out.println("Buscando Detalle de Convenios/Remesas para componenteSeleccionado = "+ componenteSeleccionado);
+		System.out.println("Buscando Detalle de Convenios/Remesas para servicioSeleccionado = "+servicioSeleccionado);
+		System.out.println("Buscando Detalle de Convenios/Remesas para idProgramaAno = "+idProgramaAno);
+		
+		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
 
 		List<ConvenioServicioComponente> conveniosAprobados = conveniosDAO.getConveniosServicioComponenteByProgramaAnoComponenteSubtituloServicioEstadoConvenio(
 				idProgramaAno, componenteSeleccionado, idTipoSubtitulo, servicioSeleccionado, EstadosConvenios.APROBADO.getId());
@@ -238,7 +245,7 @@ public class OTService {
 
 			List<RemesasProgramaVO> remesas = new ArrayList<RemesasProgramaVO>();
 			try {
-				remesas = getRemesasPrograma(idProgramaAno, Integer.parseInt(getMesCurso(true)));
+				remesas = getRemesasPrograma(programaVO.getId(), Integer.parseInt(getMesCurso(true)));
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -383,7 +390,7 @@ public class OTService {
 
 			List<RemesasProgramaVO> remesas = new ArrayList<RemesasProgramaVO>();
 			try {
-				remesas = getRemesasPrograma(idProgramaAno, Integer.parseInt(getMesCurso(true)));
+				remesas = getRemesasPrograma(programaVO.getId(), Integer.parseInt(getMesCurso(true)));
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (ParseException e) {
@@ -491,6 +498,7 @@ public class OTService {
 			Integer servicioSeleccionado, Integer idTipoSubtitulo, Integer idProgramaAno) {
 
 		List<OTResumenDependienteServicioVO> listaOTResumenDependienteServicioVO = new ArrayList<OTResumenDependienteServicioVO>();
+		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
 		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(idProgramaAno);
 
 		//Preguntamos si existe alguna remesa por pagar para el mes actual
@@ -509,7 +517,7 @@ public class OTService {
 
 			List<RemesasProgramaVO> remesas = new ArrayList<RemesasProgramaVO>();
 			try {
-				remesas = getRemesasPrograma(idProgramaAno, Integer.parseInt(getMesCurso(true)));
+				remesas = getRemesasPrograma(programaVO.getId(), Integer.parseInt(getMesCurso(true)));
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (ParseException e) {
@@ -607,6 +615,9 @@ public class OTService {
 	public List<OTResumenMunicipalVO> getDetalleOTMunicipal(Integer componenteSeleccionado,
 			Integer servicioSeleccionado, Integer idProgramaAno) {
 		System.out.println("Buscando Detalle de Convenios/Remesas para Subtitulo 24");
+		System.out.println("Buscando Detalle de Convenios/Remesas para componenteSeleccionado = "+ componenteSeleccionado);
+		System.out.println("Buscando Detalle de Convenios/Remesas para servicioSeleccionado = "+servicioSeleccionado);
+		System.out.println("Buscando Detalle de Convenios/Remesas para idProgramaAno = "+idProgramaAno);
 		
 		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
 
@@ -614,6 +625,7 @@ public class OTService {
 		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(idProgramaAno);
 		List<ConvenioComunaComponente> conveniosAprobados = conveniosDAO.getConveniosComunaComponenteByProgramaAnoComponenteServicioEstadoConvenio(
 				idProgramaAno, componenteSeleccionado, servicioSeleccionado, EstadosConvenios.APROBADO.getId());
+		
 		boolean registrado = false;
 		List<Integer> idConvenios = new ArrayList<Integer>();
 
@@ -634,7 +646,7 @@ public class OTService {
 
 			List<DetalleRemesas> remesasPagadasComuna = remesasDAO.getRemesasPagadasComuna(idProgramaAno, aprobados.getConvenioComuna().getIdComuna().getId(), Subtitulo.SUBTITULO24.getId());
 
-			Long acumulado=0l;
+			Long acumulado = 0L;
 			for(DetalleRemesas pagadas : remesasPagadasComuna){
 				acumulado += pagadas.getMontoRemesa();
 			}
@@ -655,21 +667,21 @@ public class OTService {
 			}
 
 
-			List<ConvenioComunaComponente> conveniosPagadosComuna= conveniosDAO.getConveniosPagadosByProgramaAnoComponenteSubtituloComunaEstadoConvenio(
+			List<ConvenioComunaComponente> conveniosPagadosComuna = conveniosDAO.getConveniosPagadosByProgramaAnoComponenteSubtituloComunaEstadoConvenio(
 					idProgramaAno, componenteSeleccionado, Subtitulo.SUBTITULO24.getId(), aprobados.getConvenioComuna().getIdComuna().getId(), EstadosConvenios.PAGADO.getId());
 
 
 			Cuota primeraCuotaPrograma = reliquidacionDAO.getCuotaByIdProgramaAnoNroCuota(idProgramaAno, (short)1);
 
 			//ES el primero convenio, por tanto se paga sobre el % de la primera cuota
-			if(conveniosPagadosComuna.size()==0){
+			if(conveniosPagadosComuna.size() == 0){
 				Long totalAprobado=0l;
 				for(ConvenioComunaComponente aprobadoComuna : conveniosAprobadosComuna)	{
 					totalAprobado += aprobadoComuna.getMonto();
 				}
-				Long remesa = Math.round(totalAprobado*(primeraCuotaPrograma.getPorcentaje()/100.0));
+				Long remesa = Math.round(totalAprobado * (primeraCuotaPrograma.getPorcentaje() / 100.0));
 				prog.setCuota(primeraCuotaPrograma);
-				boolean asignado=false;
+				boolean asignado = false;
 				for(RemesasProgramaVO remesaPrograma : remesas){
 					System.out.println(remesaPrograma.getMes());
 					for(DiaVO dia : remesaPrograma.getDias()){
@@ -683,7 +695,6 @@ public class OTService {
 
 					}
 				}
-
 				// Si existen pagos ya realizados para un convenio anterior
 			}else{
 				Long totalConveniosPagados=0l;
@@ -752,21 +763,21 @@ public class OTService {
 
 			prog.setRemesas(remesas);
 
-			Long acumulador=0l;
-			if(!registrado){
+			Long acumulador = 0L;
+			//if(!registrado){
 				for(ConvenioComunaComponente aprobadosComuna : conveniosAprobadosComuna){
 					acumulador += aprobadosComuna.getMonto();
 				}
 				for(ConvenioComunaComponente pagados : conveniosPagadosComuna){
 					acumulador += pagados.getMonto();
 				}
-				registrado=true;
-			}
+			//	registrado=true;
+			//}
 
 
 			if(listaOtResumenMunicipalVO.indexOf(prog) != -1){
 				prog = listaOtResumenMunicipalVO.get(listaOtResumenMunicipalVO.indexOf(prog));
-				prog.setConveniosRecibidos(prog.getConveniosRecibidos()+acumulador);
+				prog.setConveniosRecibidos(prog.getConveniosRecibidos() + acumulador);
 			}else{
 				prog.setMarcoPresupuestario(mp);
 				prog.setConveniosRecibidos(acumulador);
@@ -788,7 +799,7 @@ public class OTService {
 
 			List<RemesasProgramaVO> remesas = new ArrayList<RemesasProgramaVO>();
 			try {
-				remesas = getRemesasPrograma(idProgramaAno, Integer.parseInt(getMesCurso(true)));
+				remesas = getRemesasPrograma(programaVO.getId(), Integer.parseInt(getMesCurso(true)));
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (ParseException e) {
@@ -1212,7 +1223,7 @@ public class OTService {
 	}
 
 	public String getMesCurso(Boolean numero) {
-		/*SimpleDateFormat dateFormat = null;
+		SimpleDateFormat dateFormat = null;
 		String mesCurso = null;
 		if(numero){
 			dateFormat = new SimpleDateFormat("MM");
@@ -1220,13 +1231,13 @@ public class OTService {
 		}else{
 			dateFormat = new SimpleDateFormat("MMMM");
 			mesCurso = dateFormat.format(new Date());
-		}*/
-		String mesCurso;
+		}
+		/*String mesCurso;
 		if(numero){
 			mesCurso="10";
 		}else{
 			mesCurso="OCTUBRE";
-		}
+		}*/
 		return mesCurso;
 	}
 

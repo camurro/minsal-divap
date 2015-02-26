@@ -38,6 +38,7 @@
 	</ui:define>
 	<ui:define name="content">
 		<h:form enctype="multipart/form-data" id="form">
+		<p:growl id="growl" showDetail="false"/> 
 		<p:commandButton id="refrescarTabla" value="refrescar" action="#{procesoDistRecFinServicioController.refrescar}" style="display: none" update="form:tablaResultados"/>
 		
 		<h:inputHidden  id="posicionElemento" value="#{procesoDistRecFinServicioController.posicionElemento}" />

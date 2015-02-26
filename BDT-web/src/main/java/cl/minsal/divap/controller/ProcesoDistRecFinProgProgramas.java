@@ -8,12 +8,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
-import org.primefaces.context.RequestContext;
-
-import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.enums.TiposPrograma;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
@@ -41,6 +37,7 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 
 	@PostConstruct 
 	public void init() {
+		
 	}
 
 	@Override
@@ -51,9 +48,8 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 		if(programaSeleccionado != null){
 			Integer paramProgramaSeleccionado = Integer.parseInt(programaSeleccionado);
 			for(ProgramaVO programaVO : programas){
-				if(paramProgramaSeleccionado.equals(programaVO.getIdProgramaAno())){
-					programasService.evaluarAnoSiguiente(Integer.parseInt(programaSeleccionado), programaVO);
-					
+				if(paramProgramaSeleccionado.equals(programaVO.getId())){
+					programasService.evaluarAnoSiguiente(Integer.parseInt(programaSeleccionado), getAnoCurso());
 					StringBuilder sufijoTipoPrograma = new StringBuilder();
 					if(programaVO.getComponentes() != null && programaVO.getComponentes().size() > 0){
 						if(programaVO.getComponentes().size() == 1){
@@ -100,7 +96,12 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 			}
 			parameters.put("programaSeleccionado_", paramProgramaSeleccionado);
 		}
-		
+		parameters.put("ano_", getAnoCurso());
+		System.out.println("*********************************************************************");
+		for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+		    System.out.println(entry.getKey()+" : "+entry.getValue());
+		}
+		System.out.println("*********************************************************************");
 		return parameters;
 	}
 
@@ -131,7 +132,7 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 
 	public Integer getAnoCurso() {
 		if(anoCurso == null){
-			anoCurso = recursosFinancierosProgramasReforzamientoService.getAnoCurso();
+			anoCurso = recursosFinancierosProgramasReforzamientoService.getAnoCurso() + 1;
 		}
 		return anoCurso;
 	}

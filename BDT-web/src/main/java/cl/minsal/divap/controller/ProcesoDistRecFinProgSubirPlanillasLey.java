@@ -11,21 +11,16 @@ import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
-import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ProgramaVO;
-import minsal.divap.vo.SubtituloVO;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.model.UploadedFile;
 
-import cl.minsal.divap.model.AnoEnCurso;
-import cl.minsal.divap.model.EstadoPrograma;
-import cl.minsal.divap.model.ProgramaAno;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 @Named ("procesoDistRecFinProgSubirPlanillasControllerLey" ) 
@@ -41,6 +36,7 @@ public class ProcesoDistRecFinProgSubirPlanillasLey extends AbstractTaskMBean im
 	private String docIdDownload;
 	private Integer programaSeleccionado;
 	private Integer IdProgramaProxAno;
+	private Integer ano;
 	
 	@EJB
 	private ProgramasService programasService;
@@ -52,14 +48,15 @@ public class ProcesoDistRecFinProgSubirPlanillasLey extends AbstractTaskMBean im
 	@PostConstruct 
 	public void init() {
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			programaSeleccionado = (Integer) getTaskDataVO()
-					.getData().get("_programaSeleccionado");
-			programa = recursosFinancierosProgramasReforzamientoService.getProgramaById(programaSeleccionado);
+			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
+			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("this.ano --->" + this.ano);
 			System.out.println("programaSeleccionado --->" + programaSeleccionado);
+			programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, this.ano);
 			if(programa.getDependenciaMunicipal() != null && programa.getDependenciaMunicipal()){
-				plantillaLey = recursosFinancierosProgramasReforzamientoService.getIdPlantillaProgramas(programa.getId(), TipoDocumentosProcesos.PLANTILLALEYAPS,false, programa.getId());
+				plantillaLey = recursosFinancierosProgramasReforzamientoService.getIdPlantillaProgramas(programa.getId(), TipoDocumentosProcesos.PLANTILLALEYAPS,false, this.ano);
 			}
-			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado,programa);
+			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado , ano);
 		}
 	}
 	

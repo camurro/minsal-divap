@@ -13,6 +13,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import minsal.divap.enums.Subtitulo;
 import minsal.divap.service.ComponenteService;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
@@ -26,14 +27,12 @@ import minsal.divap.vo.ServiciosVO;
 import org.apache.log4j.Logger;
 
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
-import cl.redhat.bandejaTareas.util.BandejaProperties;
 
 @Named ( "procesoDistRecFinController" ) 
 @ViewScoped 
 public class ProcesoDistRecFinController extends AbstractTaskMBean implements Serializable  {
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject private transient Logger log;
-	@Inject private BandejaProperties bandejaProperties;
 	@Inject FacesContext facesContext;
 	
 	@EJB
@@ -61,9 +60,9 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 	
 	private Integer programaSeleccionado;
 	private Long totalResumen24;
-	private Integer programaProxAno;
-	
 	private ProgramaVO programa;
+	private ProgramaVO programaProxAno;
+	private Integer ano;
 	
 	@PostConstruct 
 	public void init() {
@@ -77,22 +76,20 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 			}
 		}
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			programaSeleccionado = (Integer) getTaskDataVO()
-					.getData().get("_programaSeleccionado");
+			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
+			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("this.ano --->" + this.ano);
 		}
-		programa = programasService.getProgramaAno(programaSeleccionado);
-		programaProxAno = programasService.getIdProgramaAnoAnterior(programa.getId(), recursosFinancierosProgramasReforzamientoService.getAnoCurso()+1);
+		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
+		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		listaServicios = utilitariosService.getAllServicios();
-		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
+		listaComponentes = componenteService.getComponenteByPrograma(programa.getId());
 		armarResumenPrograma();
 	}
 	
 	private void armarResumenPrograma() {
-		
-		Integer anoSiguiente = recursosFinancierosProgramasReforzamientoService.getAnoCurso() + 1;
-		int IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programa.getId(), anoSiguiente);
-		resumenPrograma = programasService.getResumenMunicipal(IdProgramaProxAno, 3);
-		totalResumen24 =0l;
+		resumenPrograma = programasService.getResumenMunicipal(programaProxAno.getIdProgramaAno(), Subtitulo.SUBTITULO24.getId());
+		totalResumen24 = 0L;
 		for (ResumenProgramaVO resumen : resumenPrograma) {
 			totalResumen24 = totalResumen24+resumen.getTotalS24();
 		}
@@ -109,14 +106,14 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 		}
 	}
 	public void cargaComunas(){
-		detalleComunas = programasService.findByServicioComponente(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado), programaProxAno);
+		detalleComunas = programasService.findByServicioComponente(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado), programaProxAno.getIdProgramaAno());
 		getTotalesPxQ(detalleComunas);
 	}
 
 	private Long getTotalesPxQ(List<ProgramaMunicipalVO> detalleComunas){
 		totalPxQ=0l;
 		for (int i=0;i<detalleComunas.size();i++) {
-					totalPxQ=totalPxQ+detalleComunas.get(i).getTotal();	
+			totalPxQ=totalPxQ+detalleComunas.get(i).getTotal();	
 		}
 		return totalPxQ;
 	}
@@ -142,10 +139,8 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 
 	@Override
 	public String iniciarProceso() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-	
 	
 	public ComponenteService getComponenteService() {
 		return componenteService;
@@ -227,8 +222,6 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 		this.programaSeleccionado = programaSeleccionado;
 	}
 
-	
-
 	public Long getTotalPxQ() {
 		return totalPxQ;
 	}
@@ -253,11 +246,11 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 		this.programa = programa;
 	}
 
-	public Integer getProgramaProxAno() {
+	public ProgramaVO getProgramaProxAno() {
 		return programaProxAno;
 	}
 
-	public void setProgramaProxAno(Integer programaProxAno) {
+	public void setProgramaProxAno(ProgramaVO programaProxAno) {
 		this.programaProxAno = programaProxAno;
 	}
 	
