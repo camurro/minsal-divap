@@ -591,6 +591,7 @@ public class ProgramasService {
 
 	//public Integer evaluarAnoSiguiente(Integer programaSeleccionado, ProgramaVO programa) {
 	public Integer evaluarAnoSiguiente(Integer programaSeleccionado, Integer ano) {
+		System.out.println("evaluarAnoSiguiente programaSeleccionado="+programaSeleccionado+" ano="+ano);
 		ProgramaAno programaAnoActual =  programasDAO.getProgramaAnoSiguiente(programaSeleccionado, (ano - 1));
 		ProgramaAno programaAnoSiguiente =  programasDAO.getProgramaAnoSiguiente(programaSeleccionado, ano);
 		if(programaAnoSiguiente == null){

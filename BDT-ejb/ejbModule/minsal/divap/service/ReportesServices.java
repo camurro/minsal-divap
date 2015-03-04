@@ -2920,7 +2920,7 @@ public class ReportesServices {
 
 						Integer mesActual = Integer.parseInt(getMesCurso(true));
 						Long totalRemesasAcumuladasMesActual = remesasDAO.getRemesasPagadasComunaProgramaSubtitulo(programa.getIdProgramaAno(), subtitulo.getId(), comuna.getId(), mesActual);
-						Long totalRemesasNoPagadasMesActual = remesasDAO.getRemesasNoPagadasComunaProgramaSubtitulo(programa.getIdProgramaAno(), subtitulo.getId(), comuna.getId(), mesActual);
+						Long totalRemesasNoPagadasMesActual = remesasDAO.getRemesasNoPagadasComunaProgramaSubtituloMesHasta(programa.getIdProgramaAno(), subtitulo.getId(), comuna.getId(), mesActual);
 
 
 						Double porcentajeRemesasPagadas = (totalRemesasAcumuladasMesActual * 100.0) / reporteEstadoSituacionByComunaVO.getMarco_inicial();
@@ -3047,7 +3047,7 @@ public class ReportesServices {
 
 			Integer mesActual = Integer.parseInt(getMesCurso(true));
 			Long totalRemesasAcumuladasMesActual = remesasDAO.getRemesasPagadasComunaProgramaSubtitulo(programa.getIdProgramaAno(), subtitulo.getId(), comuna.getId(), mesActual);
-			Long totalRemesasNoPagadasMesActual = remesasDAO.getRemesasNoPagadasComunaProgramaSubtitulo(programa.getIdProgramaAno(), subtitulo.getId(), comuna.getId(), mesActual);
+			Long totalRemesasNoPagadasMesActual = remesasDAO.getRemesasNoPagadasComunaProgramaSubtituloMesHasta(programa.getIdProgramaAno(), subtitulo.getId(), comuna.getId(), mesActual);
 
 
 			Double porcentajeRemesasPagadas = (totalRemesasAcumuladasMesActual * 100.0) / reporteEstadoSituacionByComunaVO.getMarco_inicial();
