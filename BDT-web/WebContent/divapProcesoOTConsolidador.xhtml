@@ -26,12 +26,19 @@
 			document.getElementById("form2:botonActualizar").click();
 		}
 
+		$(document).ready(function () {
+	 		if(document.getElementById("form:submit").value=="0"){
+				actualizarTabla();
+	 		}
+
+	 	});
 		
 		</script>
 	</ui:define>
 	<ui:define name="content">
 		<h:form enctype="multipart/form-data" id="form">
-		<p:commandButton id="botonActualizar" value="actualiza" update="form:tabViewConsolidado:resumenProgramas form:tabViewConsolidado:tabViewSubtitulos:tablaFonasaS21 form:tabViewConsolidado:tabViewSubtitulos:tablaFonasaS22 form:tabViewConsolidado:tabViewSubtitulos:tablaFonasaS29 form:tabViewConsolidado:tabViewSubtitulos:tablaFonasaS24" style="display: none" action="#{procesoOTRevisarConsolidacionController.actualizar}"/>
+		<h:inputHidden  id="submit" value="#{procesoOTRevisarConsolidacionController.submit}" />
+		<p:commandButton id="botonActualizar" value="actualiza" update="form:tabViewConsolidado:resumenProgramas form:tabViewConsolidado:tabViewSubtitulos:tablaFonasaS21 form:tabViewConsolidado:tabViewSubtitulos:tablaFonasaS22 form:tabViewConsolidado:tabViewSubtitulos:tablaFonasaS29 form:tabViewConsolidado:tabViewSubtitulos:tablaFonasaS24 submit" style="display: none" action="#{procesoOTRevisarConsolidacionController.actualizar}"/>
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="Ordenes de Transferencia" />

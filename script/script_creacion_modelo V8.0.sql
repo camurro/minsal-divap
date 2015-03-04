@@ -25743,5 +25743,7 @@ INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (109
 
 
 
+-- 03 de marzo
 
-
+ALTER TABLE detalle_remesas
+  ADD COLUMN revisar_consolidador boolean DEFAULT false;

@@ -375,7 +375,7 @@ public class OTService {
 		}
 
 		//Preguntamos si existe alguna remesa por pagar para el mes actual y la agregamos al listado
-		List<DetalleRemesas> remesasMesActual = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo(Integer.parseInt(getMesCurso(true)),idProgramaAno,servicioSeleccionado, idTipoSubtitulo);
+		List<DetalleRemesas> remesasMesActual = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo(Integer.parseInt(getMesCurso(true)),idProgramaAno,servicioSeleccionado, idTipoSubtitulo, new Boolean(false));
 		List<Integer> idDetalleRemesa = new ArrayList<Integer>();
 
 		for(DetalleRemesas remesaMes : remesasMesActual){
@@ -499,10 +499,10 @@ public class OTService {
 
 		List<OTResumenDependienteServicioVO> listaOTResumenDependienteServicioVO = new ArrayList<OTResumenDependienteServicioVO>();
 		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
-		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(idProgramaAno);
+		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(programaVO.getId());
 
 		//Preguntamos si existe alguna remesa por pagar para el mes actual
-		List<DetalleRemesas> remesasMesActual = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo(Integer.parseInt(getMesCurso(true)),idProgramaAno,servicioSeleccionado, idTipoSubtitulo);
+		List<DetalleRemesas> remesasMesActual = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo(Integer.parseInt(getMesCurso(true)),idProgramaAno,servicioSeleccionado, idTipoSubtitulo,new Boolean(false));
 		List<Integer> idDetalleRemesa = new ArrayList<Integer>();
 
 		for(DetalleRemesas remesaMes : remesasMesActual){
@@ -786,7 +786,7 @@ public class OTService {
 		}
 
 		//Preguntamos si existe alguna remesa por pagar para el mes actual y la agregamos al listado
-		List<DetalleRemesas> remesasMesActual = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtituloMunicipal(Integer.parseInt(getMesCurso(true)),idProgramaAno,servicioSeleccionado, Subtitulo.SUBTITULO24.getId());
+		List<DetalleRemesas> remesasMesActual = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtituloMunicipal(Integer.parseInt(getMesCurso(true)),idProgramaAno,servicioSeleccionado, Subtitulo.SUBTITULO24.getId(), programaVO.getId());
 		List<Integer> idDetalleRemesa = new ArrayList<Integer>();
 
 		for(DetalleRemesas remesaMes : remesasMesActual){
@@ -905,12 +905,12 @@ public class OTService {
 	public List<OTResumenMunicipalVO> getDetalleOTMunicipalConsolidador(Integer componenteSeleccionado,
 			Integer servicioSeleccionado, Integer idProgramaAno) {
 		System.out.println("Buscando Detalle de Convenios/Remesas para Subtitulo 24");
-
+		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
 		List<OTResumenMunicipalVO> listaOtResumenMunicipalVO = new ArrayList<OTResumenMunicipalVO>();
-		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(idProgramaAno);
+		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(programaVO.getId());
 
 		//Preguntamos si existe alguna remesa por pagar para el mes actual y la agregamos al listado
-		List<DetalleRemesas> remesasMesActual = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtituloMunicipal(Integer.parseInt(getMesCurso(true)),idProgramaAno,servicioSeleccionado, Subtitulo.SUBTITULO24.getId());
+		List<DetalleRemesas> remesasMesActual = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtituloMunicipalConsolidador(Integer.parseInt(getMesCurso(true)),idProgramaAno,servicioSeleccionado, Subtitulo.SUBTITULO24.getId(), programaVO.getId(), new Boolean(false));
 		List<Integer> idDetalleRemesa = new ArrayList<Integer>();
 
 		for(DetalleRemesas remesaMes : remesasMesActual){
@@ -923,7 +923,7 @@ public class OTService {
 
 			List<RemesasProgramaVO> remesas = new ArrayList<RemesasProgramaVO>();
 			try {
-				ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
+				
 				remesas = getRemesasPrograma(programaVO.getId(), Integer.parseInt(getMesCurso(true)));
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
@@ -1140,8 +1140,8 @@ public class OTService {
 			Integer servicioSeleccionado, Integer anoCurso, Integer programaAno) {
 
 		List<OTPerCapitaVO> listaReportePercapita = new ArrayList<OTPerCapitaVO>();
-
-		List<DetalleRemesas> remesasMesActual = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtituloMunicipal(Integer.parseInt(getMesCurso(true)),programaAno,servicioSeleccionado, Subtitulo.SUBTITULO24.getId());
+		ProgramaVO programaVO = programasService.getProgramaAno(programaAno);
+		List<DetalleRemesas> remesasMesActual = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtituloMunicipal(Integer.parseInt(getMesCurso(true)),programaAno,servicioSeleccionado, Subtitulo.SUBTITULO24.getId(), programaVO.getId());
 
 		for(DetalleRemesas remesaMes : remesasMesActual){
 			OTPerCapitaVO percapitaVO = new OTPerCapitaVO();
@@ -1170,7 +1170,6 @@ public class OTService {
 
 			List<RemesasProgramaVO> remesas = new ArrayList<RemesasProgramaVO>();
 			try {
-				ProgramaVO programaVO = programasService.getProgramaAno(programaAno);
 				remesas = getRemesasPerCapita(programaVO.getId(), Integer.parseInt(getMesCurso(true)));
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
@@ -1246,7 +1245,8 @@ public class OTService {
 			Integer idProgramaAno, Integer idSubtitulo, Integer componenteSeleccionado, List<Integer> idDetalleRemesas) {
 
 		//Buscamos las cuotas del programa y su MP
-		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(idProgramaAno);
+		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
+		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(programaVO.getId());
 		Long marcoPresupuestario = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(registroTabla.getEstablecimiento().getId(),
 				idProgramaAno,componenteSeleccionado,idSubtitulo);
 		List<DetalleRemesas> remesasPagadasEstablecimiento = remesasDAO.getRemesasPagadasEstablecimiento(idProgramaAno, registroTabla.getEstablecimiento().getId(), idSubtitulo);
@@ -1324,7 +1324,8 @@ public class OTService {
 			Integer idProgramaAno, Integer idSubtitulo, Integer componenteSeleccionado, List<Integer> idDetalleRemesas) {
 
 		//Buscamos las cuotas del programa y su MP
-		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(idProgramaAno);
+		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
+		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(programaVO.getId());
 
 		Long marcoPresupuestario = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(registroTabla.getComuna().getIdComuna(), idProgramaAno,
 				componenteSeleccionado, idSubtitulo);
@@ -1355,12 +1356,13 @@ public class OTService {
 			DetalleRemesas detalleRemesas = new DetalleRemesas();
 			detalleRemesas.setComuna(comunaDAO.getComunaById(registroTabla.getComuna().getIdComuna()));
 			detalleRemesas.setProgramaAno(programasDAO.getProgramaAnoByID(idProgramaAno));
-			detalleRemesas.setRemesaPagada(false);
+			detalleRemesas.setRemesaPagada(true);
 			detalleRemesas.setSubtitulo(subtituloDAO.getTipoSubtituloById(idSubtitulo));
 			detalleRemesas.setMes(utilitariosDAO.findMesById(pagando.getIdMes()));
 			detalleRemesas.setDia(utilitariosDAO.findDiaById(pagando.getDia()));
 			detalleRemesas.setMontoRemesa(pagando.getMonto().intValue());
 			detalleRemesas.setCuota(pagando.getCuota());
+			detalleRemesas.setRevisar_consolidador(true);
 			remesasDAO.save(detalleRemesas);
 		}
 
@@ -1372,7 +1374,7 @@ public class OTService {
 				DetalleRemesas detalleRemesasCuota = new DetalleRemesas();
 				detalleRemesasCuota.setComuna(comunaDAO.getComunaById(registroTabla.getComuna().getIdComuna()));
 				detalleRemesasCuota.setProgramaAno(programasDAO.getProgramaAnoByID(idProgramaAno));
-				detalleRemesasCuota.setRemesaPagada(false);
+				detalleRemesasCuota.setRemesaPagada(true);
 				detalleRemesasCuota.setSubtitulo(subtituloDAO.getTipoSubtituloById(idSubtitulo));
 
 				if(cuota.getIdMes()!=null || cuota.getNumeroCuota()!=1){
@@ -1477,7 +1479,7 @@ public class OTService {
 		return resumenPrograma;
 	}
 
-	public List<ResumenFONASAServicioVO> cargarFonasaServicio(Integer idSubtitulo) {
+	public List<ResumenFONASAServicioVO> cargarFonasaServicio(Integer idSubtitulo, Integer anoCurso) {
 		List<ResumenFONASAServicioVO> resultado =  new ArrayList<ResumenFONASAServicioVO>();
 		List<ServicioSalud> listaServicios = utilitariosDAO.getServicios();
 
@@ -1492,20 +1494,25 @@ public class OTService {
 			List<ProgramaFonasaVO> otrosProgramas = programasService.getProgramasFonasa(false);
 			for(ProgramaFonasaVO fonasa: programasFonasa){
 
-				Integer progAno = programasDAO.getIdProgramaAnoAnterior(fonasa.getIdPrograma(),getAnoCurso());
+				Integer progAno = programasDAO.getIdProgramaAnoAnterior(fonasa.getIdPrograma(),anoCurso);
+				
+				if(progAno == null){
+					programasService.evaluarAnoSiguiente(fonasa.getIdPrograma(), anoCurso);
+				}
+				
+				
 				List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo1(Integer.parseInt(getMesCurso(true)),
 						progAno, servicio.getId(), idSubtitulo);
 				Long acumulador=0l;
-				for(DetalleRemesas detalle : remesas){
-					acumulador += detalle.getMontoRemesa();
-				}
-				fonasa.setMonto(fonasa.getMonto()+acumulador);
-				totalServicio += acumulador;
+					for(DetalleRemesas detalle : remesas){
+						acumulador += detalle.getMontoRemesa();
+					}
+					fonasa.setMonto(fonasa.getMonto()+acumulador);
+					totalServicio += acumulador;
 			}
-
 			Long totalOtros =0l;
 			for(ProgramaFonasaVO otros: otrosProgramas){
-				Integer progAno = programasDAO.getIdProgramaAnoAnterior(otros.getIdPrograma(),getAnoCurso());
+				Integer progAno = programasDAO.getIdProgramaAnoAnterior(otros.getIdPrograma(),anoCurso);
 				List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo1(Integer.parseInt(getMesCurso(true)),
 						progAno, servicio.getId(), idSubtitulo);
 
@@ -1526,7 +1533,7 @@ public class OTService {
 		return resultado;
 	}
 
-	public List<ResumenFONASAMunicipalVO> cargarFonasaMunicipal() {
+	public List<ResumenFONASAMunicipalVO> cargarFonasaMunicipal(Integer anoCurso) {
 		List<ResumenFONASAMunicipalVO> resultado =  new ArrayList<ResumenFONASAMunicipalVO>();
 		List<ServicioSalud> listaServicios = utilitariosDAO.getServicios();
 
@@ -1542,7 +1549,7 @@ public class OTService {
 
 			for(ProgramaFonasaVO fonasa: programasFonasa){
 
-				Integer progAno = programasDAO.getIdProgramaAnoAnterior(fonasa.getIdPrograma(), getAnoCurso());
+				Integer progAno = programasDAO.getIdProgramaAnoAnterior(fonasa.getIdPrograma(), anoCurso);
 				List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo2(Integer.parseInt(getMesCurso(true)),
 						progAno, servicio.getId(), Subtitulo.SUBTITULO24.getId());
 				Long acumulador=0l;
@@ -1557,7 +1564,7 @@ public class OTService {
 			for(ProgramaFonasaVO otros: otrosProgramas){
 				//Descartamos percapita id = -1
 						if(otros.getIdPrograma()>0){
-							Integer progAno = programasDAO.getIdProgramaAnoAnterior(otros.getIdPrograma(),getAnoCurso());
+							Integer progAno = programasDAO.getIdProgramaAnoAnterior(otros.getIdPrograma(),anoCurso);
 							List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo2(Integer.parseInt(getMesCurso(true)),
 									progAno, servicio.getId(), Subtitulo.SUBTITULO24.getId());
 
@@ -2085,6 +2092,20 @@ public class OTService {
 			
 		}
 		
+	}
+	
+	public List<ProgramaVO> getProgramas(Integer ano) {
+		List<ProgramaVO> programasVO = new ArrayList<ProgramaVO>();
+		if(ano == null){
+			ano = getAnoCurso();
+		}
+		List<ProgramaAno> programas = programasDAO.findByAno(ano);
+		if(programas != null && programas.size() > 0){
+			for(ProgramaAno programa : programas){
+				programasVO.add(new ProgramaMapper().getBasic(programa));
+			}
+		}
+		return programasVO;
 	}
 
 

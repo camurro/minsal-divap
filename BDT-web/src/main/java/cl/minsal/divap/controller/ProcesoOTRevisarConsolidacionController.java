@@ -118,6 +118,8 @@ implements Serializable {
 	
 	private boolean botonBloqueado;
 	
+	private String submit;
+	
 	
 	@PostConstruct
 	public void init() throws NumberFormatException, ParseException {
@@ -130,11 +132,12 @@ implements Serializable {
 				log.error("Error tratando de redireccionar a login por falta de usuario en sesion.", e);
 			}
 		}
-		anoCurso = (Integer) getTaskDataVO().getData().get("_ano");
+		
+		anoCurso = otService.getAnoCurso()+1;
 		mesActual = otService.getMesCurso(false);
 		
 		listaServicios = utilitariosService.getAllServicios();
-		listaProgramas = otService.getProgramas(getLoggedUsername(), getAnoCurso()); 
+		listaProgramas = otService.getProgramas(anoCurso); 
 		
 		botonBloqueado=false;
 		for(ProgramaVO prog: listaProgramas){
@@ -145,12 +148,13 @@ implements Serializable {
 			}
 		}
 		
-		listaProgramasResumen = otService.getProgramas(getLoggedUsername(), getAnoCurso());
+		listaProgramasResumen = otService.getProgramas(getLoggedUsername(), anoCurso);
 		listaComponentes= new ArrayList<ComponentesVO>();
 		
 		encabezadoFonasa = programasService.getProgramasFonasa(true);
 		cargarResumenFonasa();
 		
+		submit = "0";
 		
 	}
 	
@@ -160,11 +164,11 @@ implements Serializable {
 		resumenFonasaServicioS29 = new ArrayList<ResumenFONASAServicioVO>();
 		resumenFonasaMunicipalS24 = new ArrayList<ResumenFONASAMunicipalVO>();
 		
-		resumenFonasaServicioS21 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO21.getId());
-		resumenFonasaServicioS22 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO22.getId());
-		resumenFonasaServicioS29 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO29.getId());
+		resumenFonasaServicioS21 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO21.getId(),anoCurso);
+		resumenFonasaServicioS22 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO22.getId(),anoCurso);
+		resumenFonasaServicioS29 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO29.getId(),anoCurso);
 		
-		resumenFonasaMunicipalS24 = otService.cargarFonasaMunicipal();
+		resumenFonasaMunicipalS24 = otService.cargarFonasaMunicipal(anoCurso);
 	}
 
 	public void cargaComponentes() throws NumberFormatException, ParseException{
@@ -183,7 +187,7 @@ implements Serializable {
 		percapita=false;
 		if(programa.getId()< 0){
 			percapita=true;
-			resultadoPercapita = otService.getDetallePerCapita(servicioSeleccionado, otService.getAnoCurso(), programa.getIdProgramaAno()); 
+			resultadoPercapita = otService.getDetallePerCapita(servicioSeleccionado, anoCurso, programa.getIdProgramaAno()); 
 			System.out.println("Resultados PerCapita: "+resultadoPercapita.size());
 		}else{
 			System.out.println("Buscar Resultados para Componente: "+componenteSeleccionado+" Servicio: "+servicioSeleccionado);
@@ -255,7 +259,7 @@ implements Serializable {
 		totalResumen = totalSub21Resumen+totalSub22Resumen+totalSub29Resumen+totalSub24Resumen;
 	}
 	
-	public Integer actualizar(){return null;}
+	public Integer actualizar(){submit="1";return null;}
 	
 	public String actualizarCamposHidden(){
 		System.out.println("ACTUALIZANDO SUBTITULO "+subtituloHidden);
@@ -284,6 +288,7 @@ implements Serializable {
 				if(remesa.getIdMes() == Integer.parseInt(mesHidden)){
 					for(DiaVO dia : remesa.getDias()){
 						if(dia.getDia() == Integer.parseInt(diaHidden)){
+							montoHidden=montoHidden.replace(".", "");
 							dia.setMonto(Long.parseLong(montoHidden));	
 						}
 					}
@@ -773,5 +778,14 @@ implements Serializable {
 	public void setAnoCurso(Integer anoCurso) {
 		this.anoCurso = anoCurso;
 	}
+
+	public String getSubmit() {
+		return submit;
+	}
+
+	public void setSubmit(String submit) {
+		this.submit = submit;
+	}
+
 	
 }

@@ -51,7 +51,7 @@ implements Serializable {
 		}
 		
 		
-		listaProgramas = otService.getProgramas(getLoggedUsername());
+		listaProgramas = otService.getProgramas(getLoggedUsername(), otService.getAnoCurso());
 		
 	}
 
