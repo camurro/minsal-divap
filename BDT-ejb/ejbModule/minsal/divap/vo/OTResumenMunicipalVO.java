@@ -25,9 +25,13 @@ public class OTResumenMunicipalVO implements Serializable{
 	private Long diferencia;
 	private String porcentajeDiferencia;
 	private boolean aprobado;
-	
 	private List<RemesasProgramaVO> remesas;
-	private List<Integer> idConvenios;
+	
+	private List<Integer> idConveniosAprobados;
+	private List<Integer> idConveniosEnTramite;
+	
+	private Integer cuotaInicial;
+	private Integer cuotaFinal;
 	
 	private List<Integer> idDetalleRemesa;
 	
@@ -58,9 +62,8 @@ public class OTResumenMunicipalVO implements Serializable{
 	}
 
 	public String getPorcentajeTransferencia() {
-		
 		DecimalFormat df = new DecimalFormat("#.00"); 
-		if(marcoPresupuestario!=null && transferenciaAcumulada!=null && marcoPresupuestario>0){
+		if(marcoPresupuestario != null && transferenciaAcumulada != null && marcoPresupuestario > 0){
 			porcentajeTransferencia = df.format(((double)transferenciaAcumulada*100)/(double)marcoPresupuestario);
 		}else{
 			porcentajeTransferencia="";
@@ -83,13 +86,11 @@ public class OTResumenMunicipalVO implements Serializable{
 
 	public String getPorcentajeConveniosRecibidos() {
 		DecimalFormat df = new DecimalFormat("#.00"); 
-		if(marcoPresupuestario!=null && conveniosRecibidos!=null && marcoPresupuestario>0){
+		if(marcoPresupuestario != null && conveniosRecibidos != null && marcoPresupuestario > 0){
 			porcentajeConveniosRecibidos = df.format(((double)conveniosRecibidos*100)/(double)marcoPresupuestario);
 		}else{
 			porcentajeConveniosRecibidos="";
 		}
-		
-		
 		return porcentajeConveniosRecibidos;
 	}
 
@@ -136,14 +137,6 @@ public class OTResumenMunicipalVO implements Serializable{
 		this.remesas = remesas;
 	}
 
-	public List<Integer> getIdConvenios() {
-		return idConvenios;
-	}
-
-	public void setIdConvenios(List<Integer> idConvenios) {
-		this.idConvenios = idConvenios;
-	}
-
 	public List<Integer> getIdDetalleRemesa() {
 		return idDetalleRemesa;
 	}
@@ -158,6 +151,38 @@ public class OTResumenMunicipalVO implements Serializable{
 
 	public void setCuota(Cuota cuota) {
 		this.cuota = cuota;
+	}
+
+	public List<Integer> getIdConveniosAprobados() {
+		return idConveniosAprobados;
+	}
+
+	public void setIdConveniosAprobados(List<Integer> idConveniosAprobados) {
+		this.idConveniosAprobados = idConveniosAprobados;
+	}
+
+	public List<Integer> getIdConveniosEnTramite() {
+		return idConveniosEnTramite;
+	}
+
+	public void setIdConveniosEnTramite(List<Integer> idConveniosEnTramite) {
+		this.idConveniosEnTramite = idConveniosEnTramite;
+	}
+	
+	public Integer getCuotaInicial() {
+		return cuotaInicial;
+	}
+
+	public void setCuotaInicial(Integer cuotaInicial) {
+		this.cuotaInicial = cuotaInicial;
+	}
+
+	public Integer getCuotaFinal() {
+		return cuotaFinal;
+	}
+
+	public void setCuotaFinal(Integer cuotaFinal) {
+		this.cuotaFinal = cuotaFinal;
 	}
 
 	@Override
@@ -184,8 +209,5 @@ public class OTResumenMunicipalVO implements Serializable{
 			return false;
 		return true;
 	}
-	
-	
-	
 	
 }

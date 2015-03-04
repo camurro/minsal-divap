@@ -3,12 +3,15 @@ package cl.minsal.divap.controller;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -105,58 +108,64 @@ implements Serializable {
 			anoCurso = (Integer) getTaskDataVO().getData().get("_ano");
 			programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (anoCurso - 1));
 			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado, anoCurso);
-			
+
 		}
 		percapita = false;
 		if(programa.getId() < 0){
 			percapita = true;
 		}
+
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes = componenteService.getComponenteByPrograma(programa.getId());
-		remesasPrograma = otService.getRemesasPrograma(programa.getId(), Integer.parseInt(otService.getMesCurso(true)));
-		remesasPerCapita = otService.getRemesasPerCapita(programa.getId(), Integer.parseInt(otService.getMesCurso(true)));
+		remesasPrograma = otService.getRemesasPrograma(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
+		remesasPerCapita = otService.getRemesasPerCapita(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
 	}
 
-
-
-
 	public void buscarResultados(){
-
 		if(programa.getId()< 0){
-			resultadoPercapita = otService.getDetallePerCapita(servicioSeleccionado, otService.getAnoCurso(), IdProgramaProxAno); 
+			resultadoPercapita = otService.getDetallePerCapita(servicioSeleccionado, anoCurso, IdProgramaProxAno); 
 			System.out.println("Resultados PerCapita: "+resultadoPercapita.size());
 		}else{
-			System.out.println("Buscar Resultados para Componente: "+componenteSeleccionado+" Servicio: "+servicioSeleccionado);
-			ComponentesVO componenteVO = componenteService.getComponenteVOById(componenteSeleccionado);
-			subtitulo21=false;
-			subtitulo22=false;
-			subtitulo29=false;
-			subtitulo24=false;
-			for(SubtituloVO subs : componenteVO.getSubtitulos()){
-				System.out.println(subs.getId());
-				if(subs.getId() == Subtitulo.SUBTITULO21.getId()){
-					subtitulo21=true;
-					resultadoServicioSub21 = otService.getDetalleOTServicio(componenteSeleccionado,servicioSeleccionado, 
-							Subtitulo.SUBTITULO21.getId(), IdProgramaProxAno);
+			if(componenteSeleccionado != null && (componenteSeleccionado.intValue() != -1)){
+				System.out.println("Buscar Resultados para Componente: "+componenteSeleccionado+" Servicio: "+servicioSeleccionado);
+				Integer idServicio = ((servicioSeleccionado == null || (servicioSeleccionado.intValue() == -1)) ? null : servicioSeleccionado);
+				ComponentesVO componenteVO = componenteService.getComponenteVOById(componenteSeleccionado);
+				subtitulo21 = false;
+				subtitulo22 = false;
+				subtitulo29 = false;
+				subtitulo24 = false;
+				for(SubtituloVO subs : componenteVO.getSubtitulos()){
+					System.out.println(subs.getId());
+					if(Subtitulo.SUBTITULO21.getId().equals(subs.getId())){
+						subtitulo21 = true;
+						resultadoServicioSub21 = otService.getDetalleOTServicio(componenteSeleccionado, idServicio, 
+								Subtitulo.SUBTITULO21.getId(), IdProgramaProxAno);
+					}
+					if(Subtitulo.SUBTITULO22.getId().equals(subs.getId())){
+						subtitulo22 = true;
+						resultadoServicioSub22 = otService.getDetalleOTServicio(componenteSeleccionado, idServicio, 
+								Subtitulo.SUBTITULO22.getId(), IdProgramaProxAno);
+					}
+					if(Subtitulo.SUBTITULO29.getId().equals(subs.getId())){
+						subtitulo29 = true;
+						resultadoServicioSub29 = otService.getDetalleOTServicio(componenteSeleccionado, idServicio, 
+								Subtitulo.SUBTITULO29.getId(), IdProgramaProxAno);
+					}
+					if(Subtitulo.SUBTITULO24.getId().equals(subs.getId())){
+						subtitulo24 = true;
+						resultadoMunicipal = otService.getDetalleOTMunicipal(componenteSeleccionado, idServicio, IdProgramaProxAno);
+					}
 				}
-				if(subs.getId() == Subtitulo.SUBTITULO22.getId()){
-					subtitulo22=true;
-					resultadoServicioSub22 = otService.getDetalleOTServicio(componenteSeleccionado,servicioSeleccionado, 
-							Subtitulo.SUBTITULO22.getId(), IdProgramaProxAno);
-				}
-				if(subs.getId() == Subtitulo.SUBTITULO29.getId()){
-					subtitulo29=true;
-					resultadoServicioSub29 = otService.getDetalleOTServicio(componenteSeleccionado,servicioSeleccionado, 
-							Subtitulo.SUBTITULO29.getId(), IdProgramaProxAno);
-				}
-				if(subs.getId() == Subtitulo.SUBTITULO24.getId()){
-					subtitulo24=true;
-					resultadoMunicipal = otService.getDetalleOTMunicipal(componenteSeleccionado, servicioSeleccionado, IdProgramaProxAno);
-				}
+			}else{
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el componente antes de realizar la búsqueda", null);
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				resultadoMunicipal = new ArrayList<OTResumenMunicipalVO>();
+				resultadoServicioSub21 = new ArrayList<OTResumenDependienteServicioVO>();
+				resultadoServicioSub22 = new ArrayList<OTResumenDependienteServicioVO>();
+				resultadoServicioSub29 = new ArrayList<OTResumenDependienteServicioVO>();
 			}
 		}
 	}
-
 
 	public void actualizarPerCapita(Integer row, Integer idComuna){
 		System.out.println(resultadoPercapita.size());
@@ -204,7 +213,6 @@ implements Serializable {
 		OTResumenMunicipalVO registroActualizado = otService.actualizarMunicipal(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado, registroTabla.getIdDetalleRemesa());
 		resultadoMunicipal.remove(registroActualizado);
 	}
-
 
 	public Integer actualizar(){return null;}
 
@@ -257,57 +265,42 @@ implements Serializable {
 				}
 			}
 		}
-
-
 		return null;
 	}
 
 	@Override
 	protected Map<String, Object> createResultData() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 	@Override
 	public String iniciarProceso() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 	public Integer getProgramaSeleccionado() {
 		return programaSeleccionado;
 	}
 
-
 	public void setProgramaSeleccionado(Integer programaSeleccionado) {
 		this.programaSeleccionado = programaSeleccionado;
 	}
-
 
 	public Integer getIdProgramaProxAno() {
 		return IdProgramaProxAno;
 	}
 
-
 	public void setIdProgramaProxAno(Integer idProgramaProxAno) {
 		IdProgramaProxAno = idProgramaProxAno;
 	}
-
 
 	public ProgramaVO getPrograma() {
 		return programa;
 	}
 
-
 	public void setPrograma(ProgramaVO programa) {
 		this.programa = programa;
 	}
-
-
-
-
 
 	public List<ServiciosVO> getListaServicios() {
 		return listaServicios;
