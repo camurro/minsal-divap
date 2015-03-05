@@ -181,7 +181,7 @@ implements Serializable {
 		if(registroTabla.getIdDetalleRemesa()!=null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
 		}
-		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO21.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
+		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO21.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa(), false, false);
 		resultadoServicioSub21.remove(registroActualizado);
 	}
 
@@ -191,7 +191,7 @@ implements Serializable {
 		if(registroTabla.getIdDetalleRemesa()!=null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
 		}
-		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO22.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
+		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO22.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa(), false, false);
 		resultadoServicioSub22.remove(registroActualizado);
 	}
 
@@ -201,7 +201,7 @@ implements Serializable {
 		if(registroTabla.getIdDetalleRemesa()!=null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
 		}
-		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO29.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
+		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO29.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa(), false, false);
 		resultadoServicioSub29.remove(registroActualizado);
 	}
 
@@ -210,7 +210,7 @@ implements Serializable {
 		if(registroTabla.getIdDetalleRemesa() != null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
 		}
-		OTResumenMunicipalVO registroActualizado = otService.actualizarMunicipal(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado, registroTabla.getIdDetalleRemesa());
+		OTResumenMunicipalVO registroActualizado = otService.actualizarMunicipal(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado, registroTabla.getIdDetalleRemesa(), false, false);
 		resultadoMunicipal.remove(registroActualizado);
 	}
 

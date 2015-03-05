@@ -88,6 +88,7 @@ import cl.minsal.divap.model.ConvenioServicio;
 import cl.minsal.divap.model.ConvenioServicioComponente;
 import cl.minsal.divap.model.Cuota;
 import cl.minsal.divap.model.DetalleRemesas;
+import cl.minsal.divap.model.Establecimiento;
 import cl.minsal.divap.model.EstadoConvenio;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.Festivos;
@@ -202,8 +203,79 @@ public class OTService {
 		System.out.println("Buscando Detalle de Convenios/Remesas para componenteSeleccionado = "+ componenteSeleccionado);
 		System.out.println("Buscando Detalle de Convenios/Remesas para servicioSeleccionado = "+servicioSeleccionado);
 		System.out.println("Buscando Detalle de Convenios/Remesas para idProgramaAno = "+idProgramaAno);
-
+		
 		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
+		List<Cuota> cuotasPorPrograma = reliquidacionDAO.getCuotasByProgramaAno(idProgramaAno);
+
+		Integer mes = Integer.parseInt(getMesCurso(true));
+		Integer cuotaAPagar = 0;
+		for(Cuota cuota : cuotasPorPrograma){
+			if((cuota.getIdMes() == null) || (cuota.getIdMes().getIdMes().intValue() <= mes.intValue())){
+				cuotaAPagar++;
+			}
+		}
+		
+		List<ServicioSalud> servicios = null;
+		if(servicioSeleccionado == null){
+			servicios = servicioSaludDAO.getServiciosOrderId();
+		}else{
+			servicios = new ArrayList<ServicioSalud>();
+			ServicioSalud servicioSalud = servicioSaludDAO.getById(servicioSeleccionado);
+			servicios.add(servicioSalud);
+		}
+		for(ServicioSalud servicio : servicios){
+			if(servicio.getEstablecimientos() != null && servicio.getEstablecimientos().size() > 0){
+				for(Establecimiento establecimiento : servicio.getEstablecimientos()){
+					List<ConvenioServicioComponente> conveniosAprobadosEstablecimiento = conveniosDAO.getConveniosPagadosByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(
+							idProgramaAno, componenteSeleccionado, idTipoSubtitulo, establecimiento.getId(), EstadosConvenios.APROBADO.getId());
+					
+					List<ConvenioServicioComponente> conveniosEntramiteEstablecimiento = conveniosDAO.getConveniosPagadosByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(
+							idProgramaAno, componenteSeleccionado, idTipoSubtitulo, establecimiento.getId(), EstadosConvenios.TRAMITE.getId());
+					
+					List<ConvenioServicioComponente> conveniosPagadosEstablecimiento = conveniosDAO.getConveniosPagadosByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(
+							idProgramaAno, componenteSeleccionado, idTipoSubtitulo, establecimiento.getId(), EstadosConvenios.PAGADO.getId());
+					
+					List<DetalleRemesas> remesasParaEstablecimiento = remesasDAO.getDetalleRemesaByProgramaAnoEstablecimientoSubtitulo(idProgramaAno, establecimiento.getId(), idTipoSubtitulo);
+					
+					boolean primeraCuota = false;
+					
+					if(remesasParaEstablecimiento == null || remesasParaEstablecimiento.size() == 0){
+						primeraCuota = true;
+					}
+					
+					List<Integer> idConveniosAprobados = new ArrayList<Integer>();
+					Long montoConveniosAprobados = 0L;
+					if(conveniosAprobadosEstablecimiento == null || conveniosAprobadosEstablecimiento.size() == 0){
+						continue;
+					}else{
+						for(ConvenioServicioComponente convenioAprobadoEstablecimiento : conveniosAprobadosEstablecimiento){
+							montoConveniosAprobados += convenioAprobadoEstablecimiento.getMonto();
+							idConveniosAprobados.add(convenioAprobadoEstablecimiento.getConvenioServicio().getIdConvenioServicio());
+						}
+					}
+					
+					OTResumenDependienteServicioVO oTResumenDependienteServicioVO = new OTResumenDependienteServicioVO();
+					EstablecimientoVO establecimientoVO = new EstablecimientoVO();
+					establecimientoVO.setId_servicio_salud(servicio.getId());
+					establecimientoVO.setCodigoEstablecimiento(establecimiento.getCodigo());
+					establecimientoVO.setId(establecimiento.getId());
+					establecimientoVO.setNombre(establecimiento.getNombre());
+					oTResumenDependienteServicioVO.setEstablecimiento(establecimientoVO);
+					Long marcoPresupuestario = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(),	idProgramaAno, componenteSeleccionado, idTipoSubtitulo);
+					oTResumenDependienteServicioVO.setMarcoPresupuestario(marcoPresupuestario);
+					
+					if(primeraCuota){
+						
+						fsdfsdf
+				
+						
+					}else{
+						
+					}
+				}
+			}
+		}
+
 
 		List<ConvenioServicioComponente> conveniosAprobados = conveniosDAO.getConveniosServicioComponenteByProgramaAnoComponenteSubtituloServicioEstadoConvenio(
 				idProgramaAno, componenteSeleccionado, idTipoSubtitulo, servicioSeleccionado, EstadosConvenios.APROBADO.getId());
@@ -1162,15 +1234,15 @@ public class OTService {
 		return mesCurso;
 	}
 
-	public OTResumenDependienteServicioVO actualizarServicio(
-			OTResumenDependienteServicioVO registroTabla,
-			Integer idProgramaAno, Integer idSubtitulo, Integer componenteSeleccionado, List<Integer> idDetalleRemesas) {
+	public OTResumenDependienteServicioVO actualizarServicio(OTResumenDependienteServicioVO registroTabla, Integer idProgramaAno, Integer idSubtitulo, Integer componenteSeleccionado, 
+			List<Integer> idDetalleRemesas, Boolean revisarConsolidador, Boolean remesaEstaPagada) {
 
 		//Buscamos las cuotas del programa y su MP
 		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
 		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(idProgramaAno);
 		Long marcoPresupuestario = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(registroTabla.getEstablecimiento().getId(),
 				idProgramaAno,componenteSeleccionado,idSubtitulo);
+		
 		List<DetalleRemesas> remesasPagadasEstablecimiento = remesasDAO.getRemesasPagadasEstablecimiento(idProgramaAno, registroTabla.getEstablecimiento().getId(), idSubtitulo);
 
 		Long acumulador =0l;
@@ -1197,11 +1269,12 @@ public class OTService {
 			DetalleRemesas detalleRemesas = new DetalleRemesas();
 			detalleRemesas.setEstablecimiento(establecimientosDAO.getEstablecimientoByCodigo(registroTabla.getEstablecimiento().getCodigoEstablecimiento()));
 			detalleRemesas.setProgramaAno(programasDAO.getProgramaAnoByID(idProgramaAno));
-			detalleRemesas.setRemesaPagada(false);
+			detalleRemesas.setRemesaPagada(remesaEstaPagada);
 			detalleRemesas.setSubtitulo(subtituloDAO.getTipoSubtituloById(idSubtitulo));
 			detalleRemesas.setMes(utilitariosDAO.findMesById(pagando.getIdMes()));
 			detalleRemesas.setDia(utilitariosDAO.findDiaById(pagando.getDia()));
 			detalleRemesas.setMontoRemesa(pagando.getMonto().intValue());
+			detalleRemesas.setRevisar_consolidador(revisarConsolidador);
 			detalleRemesas.setCuota(pagando.getCuota());
 			remesasDAO.save(detalleRemesas);
 		}
@@ -1214,7 +1287,7 @@ public class OTService {
 				DetalleRemesas detalleRemesasCuota = new DetalleRemesas();
 				detalleRemesasCuota.setEstablecimiento(establecimientosDAO.getEstablecimientoByCodigo(registroTabla.getEstablecimiento().getCodigoEstablecimiento()));
 				detalleRemesasCuota.setProgramaAno(programasDAO.getProgramaAnoByID(idProgramaAno));
-				detalleRemesasCuota.setRemesaPagada(false);
+				detalleRemesasCuota.setRemesaPagada(remesaEstaPagada);
 				detalleRemesasCuota.setSubtitulo(subtituloDAO.getTipoSubtituloById(idSubtitulo));
 
 				if(cuota.getIdMes()!=null || cuota.getNumeroCuota()!=1){
@@ -1227,6 +1300,7 @@ public class OTService {
 					detalleRemesasCuota.setMes(cuota.getIdMes());
 					detalleRemesasCuota.setDia(utilitariosDAO.findDiaById(day));
 					detalleRemesasCuota.setMontoRemesa(remesa.intValue());
+					
 					remesasDAO.save(detalleRemesasCuota);
 				}
 			}
@@ -1241,9 +1315,8 @@ public class OTService {
 		return registroTabla;
 	}
 
-	public OTResumenMunicipalVO actualizarMunicipal(
-			OTResumenMunicipalVO registroTabla,
-			Integer idProgramaAno, Integer idSubtitulo, Integer componenteSeleccionado, List<Integer> idDetalleRemesas) {
+	public OTResumenMunicipalVO actualizarMunicipal(OTResumenMunicipalVO registroTabla, Integer idProgramaAno, Integer idSubtitulo, Integer componenteSeleccionado, List<Integer> idDetalleRemesas,
+			Boolean revisarConsolidador, Boolean remesaEstaPagada) {
 
 		//Buscamos las cuotas del programa y su MP
 		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
@@ -1284,7 +1357,7 @@ public class OTService {
 			detalleRemesas.setDia(utilitariosDAO.findDiaById(pagando.getDia()));
 			detalleRemesas.setMontoRemesa(pagando.getMonto().intValue());
 			detalleRemesas.setCuota(pagando.getCuota());
-			detalleRemesas.setRevisar_consolidador(true);
+			detalleRemesas.setRevisar_consolidador(revisarConsolidador);
 			remesasDAO.save(detalleRemesas);
 		}
 
@@ -1299,7 +1372,7 @@ public class OTService {
 				detalleRemesasCuota.setRemesaPagada(true);
 				detalleRemesasCuota.setSubtitulo(subtituloDAO.getTipoSubtituloById(idSubtitulo));
 
-				if(cuota.getIdMes()!=null || cuota.getNumeroCuota()!=1){
+				if(cuota.getIdMes() != null || cuota.getNumeroCuota() != 1){
 					Long remesa = Math.round(marcoPresupuestario*(cuota.getPorcentaje()/100.0));
 					int day=REMESA_REGULAR;
 					while(isWeekend(cuota.getIdMes().getIdMes(), day, getAnoCurso()) || isFeriado(cuota.getIdMes().getIdMes(), day, getAnoCurso())){
@@ -1309,6 +1382,7 @@ public class OTService {
 					detalleRemesasCuota.setMes(cuota.getIdMes());
 					detalleRemesasCuota.setDia(utilitariosDAO.findDiaById(day));
 					detalleRemesasCuota.setMontoRemesa(remesa.intValue());
+					detalleRemesasCuota.setRemesaPagada(remesaEstaPagada);
 					remesasDAO.save(detalleRemesasCuota);
 				}
 			}
