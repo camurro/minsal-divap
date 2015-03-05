@@ -164,9 +164,9 @@ implements Serializable {
 		resumenFonasaServicioS29 = new ArrayList<ResumenFONASAServicioVO>();
 		resumenFonasaMunicipalS24 = new ArrayList<ResumenFONASAMunicipalVO>();
 		
-		resumenFonasaServicioS21 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO21.getId(),anoCurso);
-		resumenFonasaServicioS22 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO22.getId(),anoCurso);
-		resumenFonasaServicioS29 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO29.getId(),anoCurso);
+		resumenFonasaServicioS21 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO21.getId(), anoCurso);
+		resumenFonasaServicioS22 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO22.getId(), anoCurso);
+		resumenFonasaServicioS29 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO29.getId(), anoCurso);
 		
 		resumenFonasaMunicipalS24 = otService.cargarFonasaMunicipal(anoCurso);
 	}
@@ -306,8 +306,6 @@ implements Serializable {
 				}
 			}
 		}
-		
-
 		return null;
 	}
 	

@@ -25747,3 +25747,63 @@ INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (109
 
 ALTER TABLE detalle_remesas
   ADD COLUMN revisar_consolidador boolean DEFAULT false;
+
+ALTER TABLE detalle_remesas
+  ADD COLUMN componente integer;
+ALTER TABLE detalle_remesas
+  ADD CONSTRAINT componente_fk FOREIGN KEY (componente) REFERENCES componente (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, estadoreliquidacion, estado_ot, estado_modificacion_aps)
+    VALUES (112, 16, 2015, 1, 1, 1, 1, 1, 1);
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (110, 1, 70, 112);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (111, 2, 30, 112, 10);
+
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (9, 16, 1);
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (10, 16, 2);
+
+
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, estadoreliquidacion, estado_ot, estado_modificacion_aps)
+    VALUES (113, 31, 2015, 1, 1, 1, 1, 1, 1);
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (112, 1, 70, 113);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (113, 2, 30, 113, 10);
+
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (11, 31, 1);
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (12, 31, 2);
+
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, estadoreliquidacion, estado_ot, estado_modificacion_aps)
+    VALUES (114, 32, 2015, 1, 1, 1, 1, 1, 1);
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (114, 1, 70, 114);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (115, 2, 30, 114, 10);
+
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (13, 32, 1);
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (14, 32, 2);
+
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, estadoreliquidacion, estado_ot, estado_modificacion_aps)
+    VALUES (115, 33, 2015, 1, 1, 1, 1, 1, 1);
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (116, 1, 70, 115);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (117, 2, 30, 115, 10);
+
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (15, 33, 1);
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (16, 33, 2);
+
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, estadoreliquidacion, estado_ot, estado_modificacion_aps)
+    VALUES (116, 35, 2015, 1, 1, 1, 1, 1, 1);
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (118, 1, 70, 116);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (119, 2, 30, 116, 10);
+
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (17, 35, 1);
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (18, 35, 2);
+
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, estadoreliquidacion, estado_ot, estado_modificacion_aps)
+    VALUES (117, 43, 2015, 1, 1, 1, 1, 1, 1);
+
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (120, 1, 70, 117);
+INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (121, 2, 30, 117, 10);
+
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (19, 43, 1);
+INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (20, 43, 2);

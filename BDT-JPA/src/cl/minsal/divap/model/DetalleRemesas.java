@@ -97,6 +97,9 @@ public class DetalleRemesas implements Serializable {
     @JoinColumn(name = "cuota", referencedColumnName = "id")
     @ManyToOne
     private Cuota cuota;
+    @JoinColumn(name = "componente", referencedColumnName = "id")
+    @ManyToOne
+    private Componente componente;
 
     public DetalleRemesas() {
     }
@@ -204,6 +207,14 @@ public class DetalleRemesas implements Serializable {
 
 	public void setRevisar_consolidador(boolean revisar_consolidador) {
 		this.revisar_consolidador = revisar_consolidador;
+	}
+	
+	public Componente getComponente() {
+		return componente;
+	}
+
+	public void setComponente(Componente componente) {
+		this.componente = componente;
 	}
 
 	@Override

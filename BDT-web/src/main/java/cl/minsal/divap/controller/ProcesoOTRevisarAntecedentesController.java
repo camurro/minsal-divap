@@ -187,6 +187,7 @@ implements Serializable {
 
 	public void actualizarS22(Integer row, String codEstablecimiento){
 		System.out.println("actualizando "+codEstablecimiento);
+		System.out.println("row " + row);
 		OTResumenDependienteServicioVO registroTabla = resultadoServicioSub22.get(row);
 		if(registroTabla.getIdDetalleRemesa()!=null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
@@ -196,12 +197,13 @@ implements Serializable {
 	}
 
 	public void actualizarS29(Integer row, String codEstablecimiento){
-		System.out.println("actualizando "+codEstablecimiento);
+		System.out.println("actualizando " + codEstablecimiento);
+		System.out.println("row " + row);
 		OTResumenDependienteServicioVO registroTabla = resultadoServicioSub29.get(row);
-		if(registroTabla.getIdDetalleRemesa()!=null){
+		if(registroTabla.getIdDetalleRemesa() != null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
 		}
-		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO29.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa(), false, false);
+		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO29.getId(), componenteSeleccionado);
 		resultadoServicioSub29.remove(registroActualizado);
 	}
 
@@ -210,7 +212,7 @@ implements Serializable {
 		if(registroTabla.getIdDetalleRemesa() != null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
 		}
-		OTResumenMunicipalVO registroActualizado = otService.actualizarMunicipal(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado, registroTabla.getIdDetalleRemesa(), false, false);
+		OTResumenMunicipalVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
 		resultadoMunicipal.remove(registroActualizado);
 	}
 
