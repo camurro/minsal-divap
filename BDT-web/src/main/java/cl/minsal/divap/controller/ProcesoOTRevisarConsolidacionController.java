@@ -325,7 +325,9 @@ implements Serializable {
 		if(registroTabla.getIdDetalleRemesa()!=null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
 		}
-		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO21.getId(),componenteSeleccionado, registroTabla.getIdDetalleRemesa());
+		Boolean revisarConsolidador = true;
+		Boolean remesaEstaPagada= true;
+		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO21.getId(),componenteSeleccionado, registroTabla.getIdDetalleRemesa(), revisarConsolidador, remesaEstaPagada);
 		resultadoServicioSub21.remove(registroActualizado);
 	}
 	
@@ -335,7 +337,9 @@ implements Serializable {
 		if(registroTabla.getIdDetalleRemesa()!=null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
 		}
-		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO22.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
+		Boolean revisarConsolidador = true;
+		Boolean remesaEstaPagada= true;
+		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO22.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa(), revisarConsolidador, remesaEstaPagada);
 		resultadoServicioSub22.remove(registroActualizado);
 	}
 	
@@ -345,7 +349,9 @@ implements Serializable {
 		if(registroTabla.getIdDetalleRemesa()!=null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
 		}
-		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO29.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
+		Boolean revisarConsolidador = true;
+		Boolean remesaEstaPagada= true;
+		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO29.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa(), revisarConsolidador, remesaEstaPagada);
 		resultadoServicioSub29.remove(registroActualizado);
 	}
 	
@@ -354,7 +360,9 @@ implements Serializable {
 		if(registroTabla.getIdDetalleRemesa()!=null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
 		}
-		OTResumenMunicipalVO registroActualizado = otService.actualizarMunicipal(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO24.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa());
+		Boolean revisarConsolidador = true;
+		Boolean remesaEstaPagada= true;
+		OTResumenMunicipalVO registroActualizado = otService.actualizarMunicipal(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO24.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa(), revisarConsolidador, remesaEstaPagada);
 		resultadoMunicipal.remove(registroActualizado);
 	}
 	
