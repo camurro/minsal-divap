@@ -482,7 +482,7 @@ public class OTService {
 
 		List<OTResumenDependienteServicioVO> listaOTResumenDependienteServicioVO = new ArrayList<OTResumenDependienteServicioVO>();
 		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
-		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(programaVO.getId());
+		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(idProgramaAno);
 
 		//Preguntamos si existe alguna remesa por pagar para el mes actual
 		List<DetalleRemesas> remesasMesActual = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo(Integer.parseInt(getMesCurso(true)),idProgramaAno,servicioSeleccionado, idTipoSubtitulo,new Boolean(false));
@@ -838,7 +838,7 @@ public class OTService {
 		System.out.println("Buscando Detalle de Convenios/Remesas para Subtitulo 24");
 		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
 		List<OTResumenMunicipalVO> listaOtResumenMunicipalVO = new ArrayList<OTResumenMunicipalVO>();
-		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(programaVO.getId());
+		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(idProgramaAno);
 
 		//Preguntamos si existe alguna remesa por pagar para el mes actual y la agregamos al listado
 		List<DetalleRemesas> remesasMesActual = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtituloMunicipalConsolidador(Integer.parseInt(getMesCurso(true)),idProgramaAno,servicioSeleccionado, Subtitulo.SUBTITULO24.getId(), programaVO.getId(), new Boolean(false));
@@ -1168,7 +1168,7 @@ public class OTService {
 
 		//Buscamos las cuotas del programa y su MP
 		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
-		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(programaVO.getId());
+		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(idProgramaAno);
 		Long marcoPresupuestario = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(registroTabla.getEstablecimiento().getId(),
 				idProgramaAno,componenteSeleccionado,idSubtitulo);
 		List<DetalleRemesas> remesasPagadasEstablecimiento = remesasDAO.getRemesasPagadasEstablecimiento(idProgramaAno, registroTabla.getEstablecimiento().getId(), idSubtitulo);
@@ -1247,7 +1247,7 @@ public class OTService {
 
 		//Buscamos las cuotas del programa y su MP
 		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
-		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(programaVO.getId());
+		List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(idProgramaAno);
 
 		Long marcoPresupuestario = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(registroTabla.getComuna().getIdComuna(), idProgramaAno,
 				componenteSeleccionado, idSubtitulo);

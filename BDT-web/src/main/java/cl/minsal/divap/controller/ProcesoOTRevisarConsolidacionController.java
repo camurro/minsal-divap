@@ -173,8 +173,8 @@ implements Serializable {
 
 	public void cargaComponentes() throws NumberFormatException, ParseException{
 		programa = otService.getProgramaById(programaSeleccionado);
-		remesasPrograma = otService.getRemesasPrograma(programa.getId(), Integer.parseInt(otService.getMesCurso(true)));
-		remesasPerCapita = otService.getRemesasPerCapita(programa.getId(), Integer.parseInt(otService.getMesCurso(true)));
+		remesasPrograma = otService.getRemesasPrograma(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
+		remesasPerCapita = otService.getRemesasPerCapita(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
 		System.out.println("programaSeleccionado" + programaSeleccionado);
 		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
 	}
@@ -299,6 +299,7 @@ implements Serializable {
 				if(remesa.getIdMes() == Integer.parseInt(mesHidden)){
 					for(DiaVO dia : remesa.getDias()){
 						if(dia.getDia() == Integer.parseInt(diaHidden)){
+							montoHidden=montoHidden.replace(".", "");
 							dia.setMonto(Long.parseLong(montoHidden));	
 						}
 					}
