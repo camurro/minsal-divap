@@ -164,17 +164,17 @@ implements Serializable {
 		resumenFonasaServicioS29 = new ArrayList<ResumenFONASAServicioVO>();
 		resumenFonasaMunicipalS24 = new ArrayList<ResumenFONASAMunicipalVO>();
 		
-		resumenFonasaServicioS21 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO21.getId(),anoCurso);
-		resumenFonasaServicioS22 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO22.getId(),anoCurso);
-		resumenFonasaServicioS29 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO29.getId(),anoCurso);
+		resumenFonasaServicioS21 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO21.getId(), anoCurso);
+		resumenFonasaServicioS22 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO22.getId(), anoCurso);
+		resumenFonasaServicioS29 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO29.getId(), anoCurso);
 		
 		resumenFonasaMunicipalS24 = otService.cargarFonasaMunicipal(anoCurso);
 	}
 
 	public void cargaComponentes() throws NumberFormatException, ParseException{
 		programa = otService.getProgramaById(programaSeleccionado);
-		remesasPrograma = otService.getRemesasPrograma(programa.getId(), Integer.parseInt(otService.getMesCurso(true)));
-		remesasPerCapita = otService.getRemesasPerCapita(programa.getId(), Integer.parseInt(otService.getMesCurso(true)));
+		remesasPrograma = otService.getRemesasPrograma(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
+		remesasPerCapita = otService.getRemesasPerCapita(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
 		System.out.println("programaSeleccionado" + programaSeleccionado);
 		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
 	}
@@ -305,8 +305,6 @@ implements Serializable {
 				}
 			}
 		}
-		
-
 		return null;
 	}
 	

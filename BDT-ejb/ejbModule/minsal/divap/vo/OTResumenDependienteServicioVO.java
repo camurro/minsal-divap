@@ -29,7 +29,11 @@ public class OTResumenDependienteServicioVO implements Serializable
 	private boolean aprobado;
 	
 	private List<RemesasProgramaVO> remesas;
-	private List<Integer> idConvenios;
+	private List<Integer> idConveniosAprobados;
+	private List<Integer> idConveniosEnTramite;
+	private List<Integer> idConveniosPagados;
+	private Integer cuotaInicial;
+	private Integer cuotaFinal;
 	
 	private List<Integer> idDetalleRemesa;
 	
@@ -108,8 +112,6 @@ public class OTResumenDependienteServicioVO implements Serializable
 	public void setRemesas(List<RemesasProgramaVO> remesas) {
 		this.remesas = remesas;
 	}
-	
-	
 
 	public Long getDiferencia() {
 		diferencia = marcoPresupuestario - transferenciaAcumulada;
@@ -168,14 +170,24 @@ public class OTResumenDependienteServicioVO implements Serializable
 		return true;
 	}
 
-
-
-	public List<Integer> getIdConvenios() {
-		return idConvenios;
+	public List<Integer> getIdConveniosAprobados() {
+		return idConveniosAprobados;
 	}
 
-	public void setIdConvenios(List<Integer> idConvenios) {
-		this.idConvenios = idConvenios;
+	public void setIdConveniosAprobados(List<Integer> idConveniosAprobados) {
+		this.idConveniosAprobados = idConveniosAprobados;
+	}
+
+	public List<Integer> getIdConveniosEnTramite() {
+		return idConveniosEnTramite;
+	}
+
+	public List<Integer> getIdConveniosPagados() {
+		return idConveniosPagados;
+	}
+
+	public void setIdConveniosPagados(List<Integer> idConveniosPagados) {
+		this.idConveniosPagados = idConveniosPagados;
 	}
 
 	public List<Integer> getIdDetalleRemesa() {
@@ -194,9 +206,24 @@ public class OTResumenDependienteServicioVO implements Serializable
 		this.cuota = cuota;
 	}
 
-	
-	
-	
-	
+	public void setIdConveniosEnTramite(List<Integer> idConveniosEnTramite) {
+		this.idConveniosEnTramite = idConveniosEnTramite;
+	}
+
+	public Integer getCuotaInicial() {
+		return cuotaInicial;
+	}
+
+	public void setCuotaInicial(Integer cuotaInicial) {
+		this.cuotaInicial = cuotaInicial;
+	}
+
+	public Integer getCuotaFinal() {
+		return cuotaFinal;
+	}
+
+	public void setCuotaFinal(Integer cuotaFinal) {
+		this.cuotaFinal = cuotaFinal;
+	}
 	
 }
