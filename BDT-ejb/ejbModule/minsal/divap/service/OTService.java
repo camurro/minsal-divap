@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -266,7 +265,7 @@ public class OTService {
 					
 					if(primeraCuota){
 						
-						fsdfsdf
+						//fsdfsdf
 				
 						
 					}else{
