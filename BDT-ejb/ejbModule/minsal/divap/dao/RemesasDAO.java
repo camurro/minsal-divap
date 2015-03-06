@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
+import javax.persistence.NamedQuery;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -213,12 +214,13 @@ public class RemesasDAO {
 	}
 
 	public List<DetalleRemesas> getRemesasMesActualByMesProgramaAnoServicio1(
-			Integer mesCurso, Integer idProgramaAno, Integer idServicio) {
+			Integer mesCurso, Integer idProgramaAno, Integer idServicio, Boolean remesaPagada) {
 		try {
 			TypedQuery<DetalleRemesas> query = this.em.createNamedQuery("DetalleRemesas.getRemesasMesActualByMesProgramaAnoServicio1", DetalleRemesas.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
 			query.setParameter("idMes", mesCurso);
 			query.setParameter("idServicio", idServicio);
+			query.setParameter("remesaPagada", remesaPagada);
 			return query.getResultList(); 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -240,12 +242,13 @@ public class RemesasDAO {
 	}
 
 	public List<DetalleRemesas> getRemesasMesActualByMesProgramaAnoServicio2(
-			Integer mesCurso, Integer idProgramaAno, Integer idServicio) {
+			Integer mesCurso, Integer idProgramaAno, Integer idServicio, Boolean remesaPagada) {
 		try {
 			TypedQuery<DetalleRemesas> query = this.em.createNamedQuery("DetalleRemesas.getRemesasMesActualByMesProgramaAnoServicio2", DetalleRemesas.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
 			query.setParameter("idMes", mesCurso);
 			query.setParameter("idServicio", idServicio);
+			query.setParameter("remesaPagada", remesaPagada);
 			return query.getResultList(); 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -602,6 +605,19 @@ public class RemesasDAO {
 		}catch(Exception e){
 			throw new RuntimeException(e);
 		}
+	}
+
+	public List<DetalleRemesas> getRemesasPorPagarMesActual(
+			Boolean remesaPagada, Integer idMes) {
+		try{
+			TypedQuery<DetalleRemesas> query = this.em.createNamedQuery("DetalleRemesas.getRemesasPorPagarMesActual", DetalleRemesas.class);
+			query.setParameter("remesaPagada", remesaPagada);
+			query.setParameter("idMes", idMes);
+			return query.getResultList();
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
+		
 	}
 	
 }

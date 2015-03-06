@@ -62,7 +62,7 @@ public class OrdenTransferenciaRESTService extends BaseRest{
     public void generarOficioOrdenTransferencia(@PathParam("idProcesoOT") String idProcesoOT){
 		System.out.println("Generar Oficio Orden de Transferencia");
 		OTService ordenTransferenciaService = getService(OTService.class);
-		
+		ordenTransferenciaService.pagarOrdenesTransferenciayConvenios();
 		Long totalFinal = ordenTransferenciaService.generarExcelFonasaOT(TipoDocumentosProcesos.RESUMENCONSOLIDADOFONASA,idProcesoOT);
 		ordenTransferenciaService.generarOficiosTransferencia(TipoDocumentosProcesos.PLANTILLAORDINARIOOREDENTRANSFERENCIA,idProcesoOT, totalFinal);
     }	

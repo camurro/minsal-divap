@@ -190,10 +190,10 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 			byte[] contentAttachedFile = file.getContents();
 			Integer docNewVersion = persistFile(filename,	contentAttachedFile);
 			if(programa.getDependenciaMunicipal()){
-				reforzamientoService.moveToAlfresco(programaProxAno.getIdProgramaAno(), docNewVersion, TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS, versionFinal,versionFinal);
+				reforzamientoService.moveToAlfresco(programaProxAno.getIdProgramaAno(), docNewVersion, TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS, ano,versionFinal);
 			}
 			if(programa.getDependenciaServicio() && !programa.getDependenciaMunicipal()){
-				reforzamientoService.moveToAlfresco(programaProxAno.getIdProgramaAno(), docNewVersion, TipoDocumentosProcesos.ORDINARIOPROGRAMASAPS, versionFinal,versionFinal);
+				reforzamientoService.moveToAlfresco(programaProxAno.getIdProgramaAno(), docNewVersion, TipoDocumentosProcesos.ORDINARIOPROGRAMASAPS, ano,versionFinal);
 			}
 			
 			this.resolucionId = docNewVersion;
