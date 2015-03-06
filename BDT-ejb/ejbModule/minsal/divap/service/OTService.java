@@ -294,12 +294,12 @@ public class OTService {
 						}
 					}
 
-					List<DetalleRemesas> remesasPagadasComuna = remesasDAO.getRemesasPagadasEstablecimiento(idProgramaAno, establecimiento.getId(), idTipoSubtitulo);
+					List<DetalleRemesas> remesasPagadasEstablecimiento = remesasDAO.getRemesasPagadasEstablecimiento(idProgramaAno, establecimiento.getId(), idTipoSubtitulo);
 
 					Long transferenciaAcumulada = 0L;
 					Integer ultimaCuotaPagada = 1;
-					if(remesasPagadasComuna != null && remesasPagadasComuna.size() > 0){
-						for(DetalleRemesas pagadas : remesasPagadasComuna){
+					if(remesasPagadasEstablecimiento != null && remesasPagadasEstablecimiento.size() > 0){
+						for(DetalleRemesas pagadas : remesasPagadasEstablecimiento){
 							transferenciaAcumulada += pagadas.getMontoRemesa();
 							ultimaCuotaPagada = new Integer(pagadas.getCuota().getNumeroCuota());
 						}
