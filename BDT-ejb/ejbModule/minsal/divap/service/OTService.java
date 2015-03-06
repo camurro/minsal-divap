@@ -1349,15 +1349,21 @@ public class OTService {
 			}
 			Long totalOtros = 0L;
 			for(ProgramaFonasaVO otros: otrosProgramas){
-				Integer progAno = programasDAO.getIdProgramaAnoAnterior(otros.getIdPrograma(),anoCurso);
-				List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo1(Integer.parseInt(getMesCurso(true)),
-						progAno, servicio.getId(), idSubtitulo, false);
+				if(otros.getIdPrograma()>0){
+					ProgramaVO programa = programasService.getProgramaByIdProgramaAndAno(otros.getIdPrograma(), anoCurso);
+					if(programa!=null){
+						List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo1(Integer.parseInt(getMesCurso(true)),
+								programa.getIdProgramaAno(), servicio.getId(), idSubtitulo, false);
 
-				for(DetalleRemesas detalle : remesas){
-					totalOtros += detalle.getMontoRemesa();
-					totalServicio += detalle.getMontoRemesa();
+						for(DetalleRemesas detalle : remesas){
+							totalOtros += detalle.getMontoRemesa();
+							totalServicio += detalle.getMontoRemesa();
+						}
+					}
+					
+
 				}
-
+	
 			}
 
 			resumen.setProgramasFonasa(programasFonasa);
@@ -1385,10 +1391,9 @@ public class OTService {
 			List<ProgramaFonasaVO> otrosProgramas = programasService.getProgramasFonasa(false);
 
 			for(ProgramaFonasaVO fonasa: programasFonasa){
-
-				Integer progAno = programasDAO.getIdProgramaAnoAnterior(fonasa.getIdPrograma(), anoCurso);
+				ProgramaVO programa = programasService.getProgramaByIdProgramaAndAno(fonasa.getIdPrograma(), anoCurso);
 				List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo2(Integer.parseInt(getMesCurso(true)),
-						progAno, servicio.getId(), Subtitulo.SUBTITULO24.getId(), false);
+						programa.getIdProgramaAno(), servicio.getId(), Subtitulo.SUBTITULO24.getId(), false);
 				Long acumulador=0l;
 				for(DetalleRemesas detalle : remesas){
 					acumulador += detalle.getMontoRemesa();
@@ -1401,14 +1406,17 @@ public class OTService {
 			for(ProgramaFonasaVO otros: otrosProgramas){
 				//Descartamos percapita id = -1
 				if(otros.getIdPrograma()>0){
-					Integer progAno = programasDAO.getIdProgramaAnoAnterior(otros.getIdPrograma(),anoCurso);
-					List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo2(Integer.parseInt(getMesCurso(true)),
-							progAno, servicio.getId(), Subtitulo.SUBTITULO24.getId(), false);
+					ProgramaVO programa = programasService.getProgramaByIdProgramaAndAno(otros.getIdPrograma(), anoCurso);
+					if(programa != null){
+						List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo2(Integer.parseInt(getMesCurso(true)),
+								programa.getIdProgramaAno(), servicio.getId(), Subtitulo.SUBTITULO24.getId(), false);
 
-					for(DetalleRemesas detalle : remesas){
-						totalOtros += detalle.getMontoRemesa();
-						totalServicio += detalle.getMontoRemesa();
+						for(DetalleRemesas detalle : remesas){
+							totalOtros += detalle.getMontoRemesa();
+							totalServicio += detalle.getMontoRemesa();
+						}
 					}
+				
 				}
 			}
 
