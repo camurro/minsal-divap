@@ -1,8 +1,10 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,8 +13,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -101,7 +105,9 @@ public class DetalleRemesas implements Serializable {
     @JoinColumn(name = "componente", referencedColumnName = "id")
     @ManyToOne
     private Componente componente;
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "remesa")
+    private Set<RemesaConvenios> remesaConvenios;
+    
     public DetalleRemesas() {
     }
 
@@ -216,6 +222,15 @@ public class DetalleRemesas implements Serializable {
 
 	public void setComponente(Componente componente) {
 		this.componente = componente;
+	}
+	
+	@XmlTransient
+	public Set<RemesaConvenios> getRemesaConvenios() {
+		return remesaConvenios;
+	}
+
+	public void setRemesaConvenios(Set<RemesaConvenios> remesaConvenios) {
+		this.remesaConvenios = remesaConvenios;
 	}
 
 	@Override

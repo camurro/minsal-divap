@@ -89,6 +89,8 @@ public class ConvenioComuna implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "convenioComuna")
 	@OrderBy("fecha ASC")
 	private List<ConvenioComunaComponente> convenioComunaComponentes;
+	@OneToMany(mappedBy = "convenioComuna")
+	private Set<RemesaConvenios> remesaConvenios;
 
 	public ConvenioComuna() {
 	}
@@ -216,6 +218,13 @@ public class ConvenioComuna implements Serializable {
 		this.mes = mes;
 	}
 
+	@XmlTransient
+	public Set<RemesaConvenios> getRemesaConvenios() {
+		return remesaConvenios;
+	}
 
+	public void setRemesaConvenios(Set<RemesaConvenios> remesaConvenios) {
+		this.remesaConvenios = remesaConvenios;
+	}
 
 }
