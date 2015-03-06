@@ -400,8 +400,7 @@ public class ProgramasDAO {
 		return results;
 	}
 
-	public Integer getIdProgramaAnoAnterior(Integer programaSeleccionado,
-			int anoAnterior) {
+	public Integer getIdProgramaAnoAnterior(Integer programaSeleccionado, int anoAnterior) {
 		try{
 			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.getIdProgramaAnoAnterior", ProgramaAno.class);
 			query.setParameter("idPrograma", programaSeleccionado);

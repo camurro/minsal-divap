@@ -1331,25 +1331,27 @@ public class OTService {
 			List<ProgramaFonasaVO> programasFonasa = programasService.getProgramasFonasa(true);
 			List<ProgramaFonasaVO> otrosProgramas = programasService.getProgramasFonasa(false);
 			for(ProgramaFonasaVO fonasa: programasFonasa){
-				Integer progAno = programasDAO.getIdProgramaAnoAnterior(fonasa.getIdPrograma(), anoCurso);
+				//Integer progAno = programasDAO.getIdProgramaAnoAnterior(fonasa.getIdPrograma(), anoCurso);
 				
-				if(progAno == null){
+				ProgramaVO programa = programasService.getProgramaByIdProgramaAndAno(fonasa.getIdPrograma(), anoCurso);
+				
+				/*if(progAno == null){
 					programasService.evaluarAnoSiguiente(fonasa.getIdPrograma(), anoCurso);
-				}
+				}*/
 				List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo1(Integer.parseInt(getMesCurso(true)),
-						progAno, servicio.getId(), idSubtitulo);
+						programa.getIdProgramaAno(), servicio.getId(), idSubtitulo, false);
 				Long acumulador = 0L;
 				for(DetalleRemesas detalle : remesas){
 					acumulador += detalle.getMontoRemesa();
 				}
-				fonasa.setMonto(fonasa.getMonto()+acumulador);
+				fonasa.setMonto(fonasa.getMonto() + acumulador);
 				totalServicio += acumulador;
 			}
 			Long totalOtros = 0L;
 			for(ProgramaFonasaVO otros: otrosProgramas){
 				Integer progAno = programasDAO.getIdProgramaAnoAnterior(otros.getIdPrograma(),anoCurso);
 				List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo1(Integer.parseInt(getMesCurso(true)),
-						progAno, servicio.getId(), idSubtitulo);
+						progAno, servicio.getId(), idSubtitulo, false);
 
 				for(DetalleRemesas detalle : remesas){
 					totalOtros += detalle.getMontoRemesa();
@@ -1386,7 +1388,7 @@ public class OTService {
 
 				Integer progAno = programasDAO.getIdProgramaAnoAnterior(fonasa.getIdPrograma(), anoCurso);
 				List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo2(Integer.parseInt(getMesCurso(true)),
-						progAno, servicio.getId(), Subtitulo.SUBTITULO24.getId());
+						progAno, servicio.getId(), Subtitulo.SUBTITULO24.getId(), false);
 				Long acumulador=0l;
 				for(DetalleRemesas detalle : remesas){
 					acumulador += detalle.getMontoRemesa();
@@ -1401,7 +1403,7 @@ public class OTService {
 				if(otros.getIdPrograma()>0){
 					Integer progAno = programasDAO.getIdProgramaAnoAnterior(otros.getIdPrograma(),anoCurso);
 					List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo2(Integer.parseInt(getMesCurso(true)),
-							progAno, servicio.getId(), Subtitulo.SUBTITULO24.getId());
+							progAno, servicio.getId(), Subtitulo.SUBTITULO24.getId(), false);
 
 					for(DetalleRemesas detalle : remesas){
 						totalOtros += detalle.getMontoRemesa();
@@ -1711,7 +1713,7 @@ public class OTService {
 			if(otros.getIdPrograma()>0){
 				Integer progAno = programasDAO.getIdProgramaAnoAnterior(otros.getIdPrograma(),getAnoCurso());
 				List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo2(Integer.parseInt(getMesCurso(true)),
-						progAno, idServicio, idSubtitulo);
+						progAno, idServicio, idSubtitulo, true);
 
 				for(DetalleRemesas detalle : remesas){
 					totalOtros += detalle.getMontoRemesa();
@@ -1722,14 +1724,13 @@ public class OTService {
 	}
 
 	private List<ProgramaFonasaVO> cargarFonasa(Integer idServicio, Integer idSubtitulo) {
-
 		List<ProgramaFonasaVO> programasFonasa = programasService.getProgramasFonasa(true);
 		for(ProgramaFonasaVO fonasa: programasFonasa){
 
 			Integer progAno = programasDAO.getIdProgramaAnoAnterior(fonasa.getIdPrograma(),getAnoCurso());
 			List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo1(Integer.parseInt(getMesCurso(true)),
-					progAno, idServicio, idSubtitulo);
-			Long acumulador=0l;
+					progAno, idServicio, idSubtitulo , true);
+			Long acumulador = 0L;
 			for(DetalleRemesas detalle : remesas){
 				acumulador += detalle.getMontoRemesa();
 			}

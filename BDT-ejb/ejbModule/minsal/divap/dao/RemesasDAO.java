@@ -227,22 +227,21 @@ public class RemesasDAO {
 		}
 	}
 
-	public List<DetalleRemesas> getRemesasMesActualByMesProgramaAnoServicioSubtitulo1(
-			Integer mesCurso, Integer idProgramaAno, Integer idServicio, Integer idTipoSubtitulo) {
+	public List<DetalleRemesas> getRemesasMesActualByMesProgramaAnoServicioSubtitulo1(Integer mesCurso, Integer idProgramaAno, Integer idServicio, Integer idTipoSubtitulo, Boolean remesaPagada) {
 		try {
 			TypedQuery<DetalleRemesas> query = this.em.createNamedQuery("DetalleRemesas.getRemesasMesActualByMesProgramaAnoServicioSubtitulo1", DetalleRemesas.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
 			query.setParameter("idMes", mesCurso);
 			query.setParameter("idServicio", idServicio);
 			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			query.setParameter("remesaPagada", remesaPagada);
 			return query.getResultList(); 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public List<DetalleRemesas> getRemesasMesActualByMesProgramaAnoServicio2(
-			Integer mesCurso, Integer idProgramaAno, Integer idServicio, Boolean remesaPagada) {
+	public List<DetalleRemesas> getRemesasMesActualByMesProgramaAnoServicio2(Integer mesCurso, Integer idProgramaAno, Integer idServicio, Boolean remesaPagada) {
 		try {
 			TypedQuery<DetalleRemesas> query = this.em.createNamedQuery("DetalleRemesas.getRemesasMesActualByMesProgramaAnoServicio2", DetalleRemesas.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
@@ -255,14 +254,14 @@ public class RemesasDAO {
 		}
 	}
 
-	public List<DetalleRemesas> getRemesasMesActualByMesProgramaAnoServicioSubtitulo2(
-			Integer mesCurso, Integer idProgramaAno, Integer idServicio, Integer idTipoSubtitulo) {
+	public List<DetalleRemesas> getRemesasMesActualByMesProgramaAnoServicioSubtitulo2(Integer mesCurso, Integer idProgramaAno, Integer idServicio, Integer idTipoSubtitulo, Boolean remesaPagada) {
 		try {
 			TypedQuery<DetalleRemesas> query = this.em.createNamedQuery("DetalleRemesas.getRemesasMesActualByMesProgramaAnoServicioSubtitulo2", DetalleRemesas.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
 			query.setParameter("idMes", mesCurso);
 			query.setParameter("idServicio", idServicio);
 			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			query.setParameter("remesaPagada", remesaPagada);
 			return query.getResultList(); 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
