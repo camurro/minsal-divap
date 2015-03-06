@@ -29,7 +29,6 @@ import cl.minsal.divap.model.ReporteEmailsAdjuntos;
 import cl.minsal.divap.model.ReporteEmailsConvenio;
 import cl.minsal.divap.model.ReporteEmailsDestinatarios;
 import cl.minsal.divap.model.ReporteEmailsEnviados;
-import cl.minsal.divap.model.ReporteEmailsFlujoCajaConsolidador;
 import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.Usuario;
 

@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
-import javax.persistence.NamedQuery;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -15,6 +14,7 @@ import minsal.divap.enums.TipoDocumentosProcesos;
 import cl.minsal.divap.model.DetalleRemesas;
 import cl.minsal.divap.model.DocumentoRemesas;
 import cl.minsal.divap.model.Mes;
+import cl.minsal.divap.model.RemesaConvenios;
 import cl.minsal.divap.model.Remesas;
 import cl.minsal.divap.model.RemesasSeguimiento;
 import cl.minsal.divap.model.ReporteEmailsAdjuntos;
@@ -618,6 +618,11 @@ public class RemesasDAO {
 			throw new RuntimeException(e);
 		}
 		
+	}
+
+	public RemesaConvenios save(RemesaConvenios remesaConvenios) {
+		em.persist(remesaConvenios);
+		return remesaConvenios;
 	}
 	
 }

@@ -97,6 +97,7 @@ import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.ProgramaFechaRemesa;
 import cl.minsal.divap.model.ReferenciaDocumento;
+import cl.minsal.divap.model.RemesaConvenios;
 import cl.minsal.divap.model.ReporteEmailsAdjuntos;
 import cl.minsal.divap.model.ReporteEmailsDestinatarios;
 import cl.minsal.divap.model.ReporteEmailsEnviados;
@@ -1976,13 +1977,17 @@ public class OTService {
 			detalleRemesas.setRevisar_consolidador(false);
 			detalleRemesas.setComponente(componenteDAO.getComponenteByID(componenteSeleccionado));
 			remesasDAO.save(detalleRemesas);
-		}
-		 
-		System.out.println("Cambiando el estado de los convenios servicio");
-		for(Integer idConvenio : registroTabla.getIdConveniosAprobados()){
-			System.out.println("Convenio a actualizar-->"+idConvenio);
-			ConvenioComuna convenioComuna = conveniosDAO.getConvenioComunaById(idConvenio);
-			convenioComuna.setEstadoConvenio(new EstadoConvenio(CONVENIO_EN_TRAMITE));
+			 
+			System.out.println("Cambiando el estado de los convenios comuna e insertando relacion con remesa convenio");
+			for(Integer idConvenio : registroTabla.getIdConveniosAprobados()){
+				System.out.println("Convenio a asociar a la remesa-->"+idConvenio);
+				ConvenioComuna convenioComuna = conveniosDAO.getConvenioComunaById(idConvenio);
+				convenioComuna.setEstadoConvenio(new EstadoConvenio(CONVENIO_EN_TRAMITE));
+				RemesaConvenios remesaConvenios = new RemesaConvenios();
+				remesaConvenios.setConvenioComuna(convenioComuna);
+				remesaConvenios.setRemesa(detalleRemesas);
+				remesasDAO.save(remesaConvenios);
+			}
 		}
 		return registroTabla;
 	}
@@ -2025,6 +2030,18 @@ public class OTService {
 			detalleRemesas.setComponente(componenteDAO.getComponenteByID(componenteSeleccionado));
 			detalleRemesas.setCuota(cuotaAsociada);
 			remesasDAO.save(detalleRemesas);
+			
+			 
+			System.out.println("Cambiando el estado de los convenios comuna e insertando relacion con remesa convenio");
+			for(Integer idConvenio : registroTabla.getIdConveniosAprobados()){
+				System.out.println("Convenio a asociar a la remesa-->"+idConvenio);
+				ConvenioServicio convenioServicio = conveniosDAO.getConvenioServicioById(idConvenio);
+				convenioServicio.setEstadoConvenio(new EstadoConvenio(CONVENIO_EN_TRAMITE));
+				RemesaConvenios remesaConvenios = new RemesaConvenios();
+				remesaConvenios.setConvenioServicio(convenioServicio);
+				remesaConvenios.setRemesa(detalleRemesas);
+				remesasDAO.save(remesaConvenios);
+			}
 		}
 		return registroTabla;
 	}
