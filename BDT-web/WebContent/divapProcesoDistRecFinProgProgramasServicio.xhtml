@@ -9,7 +9,13 @@
 					<h:outputText value="Distribución de Recursos Financieros por Programa" />
 				</h1>
 				<p:panel id="Panel">
-					<h2>Listado de Programas #{procesoDistRecFinProgProgramasController.anoCurso} | Perfil Administrador</h2>
+					<h2>Listado de Programas #{procesoDistRecFinProgProgramasController.anoEnCurso} | Perfil Administrador</h2>
+					<h:panelGrid columns="2">
+						<h:outputText value="Año Distribucion" styleClass="inputLabel" />
+						<p:selectOneMenu id="componentes"  value="#{procesoDistRecFinProgProgramasController.anoEvaluacion}">
+							<f:selectItems value="#{procesoDistRecFinProgProgramasController.anos}" itemLabel="#{ano}" var="ano" itemValue="#{ano}"/> 
+						</p:selectOneMenu>
+					</h:panelGrid>
 					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoDistRecFinProgProgramasController.programas}"
 						liveResize="true" var="programa" rows="10" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información."
 						styleClass="dataTable">
