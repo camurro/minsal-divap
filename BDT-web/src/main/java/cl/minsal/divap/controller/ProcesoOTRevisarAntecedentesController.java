@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -272,7 +273,8 @@ implements Serializable {
 
 	@Override
 	protected Map<String, Object> createResultData() {
-		return null;
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		return parameters;
 	}
 
 	@Override

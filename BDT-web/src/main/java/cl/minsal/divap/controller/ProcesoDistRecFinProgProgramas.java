@@ -1,6 +1,7 @@
 package cl.minsal.divap.controller;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +28,9 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 	private String programaSeleccionado;
 	@EJB
 	private ProgramasService programasService;
-	
-	private Integer anoCurso;
+	private List<Integer> anos;
+	private Integer anoEvaluacion;
+	private Integer anoEnCurso;
 	
 	private String tipoHistorico;
 	
@@ -37,19 +39,29 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 
 	@PostConstruct 
 	public void init() {
-		
+		anos = new ArrayList<Integer>();
+		Integer ano = recursosFinancierosProgramasReforzamientoService.getAnoCurso();
+		anoEnCurso = ano;
+		anos.add(ano);
+		ano++;
+		anos.add(ano);
+		anoEvaluacion = ano; 
+		System.out.println("anoEnCurso="+anoEnCurso);
+		System.out.println("anoEvaluacion="+anoEvaluacion);
+		System.out.println("anos="+anos);
 	}
 
 	@Override
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		System.out.println("programaSeleccionado-->"+programaSeleccionado);
+		System.out.println("anoEvaluacion-->"+getAnoEvaluacion());
 		boolean historico=false;
 		if(programaSeleccionado != null){
 			Integer paramProgramaSeleccionado = Integer.parseInt(programaSeleccionado);
 			for(ProgramaVO programaVO : programas){
 				if(paramProgramaSeleccionado.equals(programaVO.getId())){
-					programasService.evaluarAnoSiguiente(Integer.parseInt(programaSeleccionado), getAnoCurso());
+					programasService.evaluarAnoSiguiente(Integer.parseInt(programaSeleccionado), getAnoEvaluacion());
 					StringBuilder sufijoTipoPrograma = new StringBuilder();
 					if(programaVO.getComponentes() != null && programaVO.getComponentes().size() > 0){
 						if(programaVO.getComponentes().size() == 1){
@@ -96,7 +108,7 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 			}
 			parameters.put("programaSeleccionado_", paramProgramaSeleccionado);
 		}
-		parameters.put("ano_", getAnoCurso());
+		parameters.put("ano_", getAnoEvaluacion());
 		System.out.println("*********************************************************************");
 		for (Map.Entry<String, Object> entry : parameters.entrySet()) {
 		    System.out.println(entry.getKey()+" : "+entry.getValue());
@@ -130,17 +142,6 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 		this.programas = programas;
 	}
 
-	public Integer getAnoCurso() {
-		if(anoCurso == null){
-			anoCurso = recursosFinancierosProgramasReforzamientoService.getAnoCurso() + 1;
-		}
-		return anoCurso;
-	}
-
-	public void setAnoCurso(Integer anoCurso) {
-		this.anoCurso = anoCurso;
-	}
-
 	public String getTipoHistorico() {
 		return tipoHistorico;
 	}
@@ -149,4 +150,28 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 		this.tipoHistorico = tipoHistorico;
 	}
 
+	public List<Integer> getAnos() {
+		return anos;
+	}
+
+	public void setAnos(List<Integer> anos) {
+		this.anos = anos;
+	}
+
+	public Integer getAnoEvaluacion() {
+		return anoEvaluacion;
+	}
+
+	public void setAnoEvaluacion(Integer anoEvaluacion) {
+		this.anoEvaluacion = anoEvaluacion;
+	}
+
+	public Integer getAnoEnCurso() {
+		return anoEnCurso;
+	}
+
+	public void setAnoEnCurso(Integer anoEnCurso) {
+		this.anoEnCurso = anoEnCurso;
+	}
+	
 }

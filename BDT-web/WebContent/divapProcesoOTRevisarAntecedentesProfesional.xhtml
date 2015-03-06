@@ -540,7 +540,9 @@
 							</p:tab>
 						</c:if>
 					</p:tabView>
-	
+					<p:commandButton value="Finalizar Actividad" styleClass="x-btn-text" action="#{procesoOTRevisarAntecedentesController.enviar}" ajax="false" icon="ui-icon-disk" >
+						<f:setPropertyActionListener target="#{procesoOTRevisarAntecedentesController.target}" value="bandejaTareas.jsf" />
+					</p:commandButton>
 				</p:panel>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />

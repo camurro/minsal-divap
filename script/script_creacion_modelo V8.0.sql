@@ -25807,3 +25807,27 @@ INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (121
 
 INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (19, 43, 1);
 INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (20, 43, 2);
+
+
+
+CREATE TABLE remesa_convenios
+(
+  id_remesa_convenio serial NOT NULL,
+  convenio_comuna integer,
+  convenio_servicio integer,
+  remesa integer NOT NULL,
+  CONSTRAINT remesa_convenios_pk PRIMARY KEY (id_remesa_convenio),
+  CONSTRAINT convenio_comuna_fk FOREIGN KEY (convenio_comuna)
+      REFERENCES convenio_comuna (id_convenio_comuna) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT convenio_servicio_fk FOREIGN KEY (convenio_servicio)
+      REFERENCES convenio_servicio (id_convenio_servicio) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT remesa_fk FOREIGN KEY (remesa)
+      REFERENCES detalle_remesas (id_detalle_remesa) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
