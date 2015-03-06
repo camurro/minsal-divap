@@ -2141,6 +2141,14 @@ public class OTService {
 			for(DetalleRemesas detalleRemesas : remesasPorPagarMes){
 				System.out.println("pagando: "+detalleRemesas.getMontoRemesa());
 				detalleRemesas.setRemesaPagada(true);
+				for(RemesaConvenios convenio : detalleRemesas.getRemesaConvenios()){
+					if(convenio.getConvenioComuna() != null){
+						convenio.getConvenioComuna().setEstadoConvenio(new EstadoConvenio(EstadosConvenios.PAGADO.getId()));
+					}
+					if(convenio.getConvenioServicio() != null){
+						convenio.getConvenioServicio().setEstadoConvenio(new EstadoConvenio(EstadosConvenios.PAGADO.getId()));
+					}
+				}
 			}
 		}
 		
