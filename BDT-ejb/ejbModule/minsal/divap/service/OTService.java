@@ -1243,7 +1243,9 @@ public class OTService {
 	public void eliminarDetalleRemesa(List<Integer> idDetalleRemesas) {
 		for(Integer idDetalle : idDetalleRemesas){
 			DetalleRemesas remesa = remesasDAO.findDetalleRemesaById(idDetalle);
-			remesasDAO.remove(remesa);
+			if(remesa != null){
+				remesasDAO.remove(remesa);
+			}
 		}
 	}
 
@@ -1338,6 +1340,7 @@ public class OTService {
 				/*if(progAno == null){
 					programasService.evaluarAnoSiguiente(fonasa.getIdPrograma(), anoCurso);
 				}*/
+				
 				List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo1(Integer.parseInt(getMesCurso(true)),
 						programa.getIdProgramaAno(), servicio.getId(), idSubtitulo, false);
 				Long acumulador = 0L;
@@ -1352,6 +1355,10 @@ public class OTService {
 				if(otros.getIdPrograma()>0){
 					ProgramaVO programa = programasService.getProgramaByIdProgramaAndAno(otros.getIdPrograma(), anoCurso);
 					if(programa!=null){
+						System.out.println("Integer.parseInt(getMesCurso(true)="+Integer.parseInt(getMesCurso(true)));
+						System.out.println("programa.getIdProgramaAno()="+programa.getIdProgramaAno());
+						System.out.println("servicio.getId()="+servicio.getId());
+						System.out.println("idSubtitulo="+idSubtitulo);
 						List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo1(Integer.parseInt(getMesCurso(true)),
 								programa.getIdProgramaAno(), servicio.getId(), idSubtitulo, false);
 
@@ -1508,7 +1515,7 @@ public class OTService {
 		return bitacora;
 	}
 
-	public Integer generarOficiosTransferencia(TipoDocumentosProcesos plantillaordinariooredentransferencia, String idProcesoOT, Long totalFinal) {
+	public Integer generarOficiosTransferencia(TipoDocumentosProcesos plantillaordinariooredentransferencia, String idProcesoOT, Long totalFinal, Integer ano) {
 		System.out.println("GENERAR OFICIOS DE OT");
 		Integer plantillaOrdinarioOT = documentService.getPlantillaByType(plantillaordinariooredentransferencia);
 
@@ -1543,7 +1550,7 @@ public class OTService {
 					.getContent(), XWPFDocument.class);
 
 			Map<String, Object> parametersBorradorResolucionOT = new HashMap<String, Object>();
-			parametersBorradorResolucionOT.put("{ano}",getAnoCurso());
+			parametersBorradorResolucionOT.put("{ano}", ano);
 			parametersBorradorResolucionOT.put("{mes}",getMesCurso(false));
 			parametersBorradorResolucionOT.put("{total}",String.format("%, d",totalFinal));
 
@@ -1552,10 +1559,10 @@ public class OTService {
 					templateOrdinarioOT);
 			generadorWordDecretoBorradorAporteEstatal.replaceValues(parametersBorradorResolucionOT, XWPFDocument.class);
 
-			int ano = getAnoCurso();
+			 
 			BodyVO response = alfrescoService.uploadDocument(new File(
 					filenameBorradorOrdinarioOT), contentType,
-					folderOrdenesTransferencia.replace("{ANO}", ano+""));
+					folderOrdenesTransferencia.replace("{ANO}", ano.toString()));
 			System.out.println("response responseBorradorAporteEstatal --->"
 					+ response);
 
@@ -1577,8 +1584,7 @@ public class OTService {
 
 	}
 
-	public Long generarExcelFonasaOT(
-			TipoDocumentosProcesos tipoDocumentoProceso, String idProcesoOT) {
+	public Long generarExcelFonasaOT(TipoDocumentosProcesos tipoDocumentoProceso, String idProcesoOT, Integer ano) {
 
 		Long totalFinal=0l;
 		Integer plantillaId = 0;
@@ -1663,20 +1669,20 @@ public class OTService {
 			Long totalPerCapita = resumen.getPerCapitaBasal() + resumen.getAddf() - resumen.getRebajaIaaps() - resumen.getDesctoLeyes();
 			resumen.setTotalPerCapita(totalPerCapita);
 
-			resumen.setFonasaS24(cargarFonasa(servicio.getId(),Subtitulo.SUBTITULO24.getId()));
+			resumen.setFonasaS24(cargarFonasa(servicio.getId(), Subtitulo.SUBTITULO24.getId(), ano));
 			resumen.setOtrosS24(cargarOtrosProgramas(servicio.getId(),Subtitulo.SUBTITULO24.getId()));
 			resumen.setTotalS24(calculaTotal(totalPerCapita,resumen.getFonasaS24(),resumen.getOtrosS24()));
 
 
-			resumen.setFonasaS21(cargarFonasa(servicio.getId(),Subtitulo.SUBTITULO21.getId()));
+			resumen.setFonasaS21(cargarFonasa(servicio.getId(),Subtitulo.SUBTITULO21.getId(), ano));
 			resumen.setOtrosS21(cargarOtrosProgramas(servicio.getId(),Subtitulo.SUBTITULO21.getId()));
 			resumen.setTotalS21(calculaTotal(0l,resumen.getFonasaS21(),resumen.getOtrosS21()));
 
-			resumen.setFonasaS22(cargarFonasa(servicio.getId(),Subtitulo.SUBTITULO22.getId()));
+			resumen.setFonasaS22(cargarFonasa(servicio.getId(),Subtitulo.SUBTITULO22.getId(), ano));
 			resumen.setOtrosS22(cargarOtrosProgramas(servicio.getId(),Subtitulo.SUBTITULO22.getId()));
 			resumen.setTotalS22(calculaTotal(0l,resumen.getFonasaS22(),resumen.getOtrosS22()));
 
-			resumen.setFonasaS29(cargarFonasa(servicio.getId(),Subtitulo.SUBTITULO29.getId()));
+			resumen.setFonasaS29(cargarFonasa(servicio.getId(),Subtitulo.SUBTITULO29.getId(), ano));
 			resumen.setOtrosS29(cargarOtrosProgramas(servicio.getId(),Subtitulo.SUBTITULO29.getId()));
 			resumen.setTotalS29(calculaTotal(0l,resumen.getFonasaS29(),resumen.getOtrosS29()));
 
@@ -1691,7 +1697,7 @@ public class OTService {
 
 
 		try {
-			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderOrdenesTransferencia.replace("{ANO}", getAnoCurso().toString()));
+			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderOrdenesTransferencia.replace("{ANO}", ano.toString()));
 			plantillaId = documentService.createDocumentRemesas(tipoDocumentoProceso, response.getNodeRef(), response.getFileName(), contenType, idProcesoOT);
 
 		} catch (Exception e) {
@@ -1731,11 +1737,11 @@ public class OTService {
 		return totalOtros;
 	}
 
-	private List<ProgramaFonasaVO> cargarFonasa(Integer idServicio, Integer idSubtitulo) {
+	private List<ProgramaFonasaVO> cargarFonasa(Integer idServicio, Integer idSubtitulo, Integer ano) {
 		List<ProgramaFonasaVO> programasFonasa = programasService.getProgramasFonasa(true);
 		for(ProgramaFonasaVO fonasa: programasFonasa){
 
-			Integer progAno = programasDAO.getIdProgramaAnoAnterior(fonasa.getIdPrograma(),getAnoCurso());
+			Integer progAno = programasDAO.getIdProgramaAnoAnterior(fonasa.getIdPrograma(), ano);
 			List<DetalleRemesas> remesas = remesasDAO.getRemesasMesActualByMesProgramaAnoServicioSubtitulo1(Integer.parseInt(getMesCurso(true)),
 					progAno, idServicio, idSubtitulo , true);
 			Long acumulador = 0L;
@@ -1752,17 +1758,14 @@ public class OTService {
 		return remesasDAO.getIdDocumentoRemesa(idProcesoOT,plantillaordinariooredentransferencia);
 	}
 
-	public void moveToAlfresco(Integer idProcesoOT, Integer docNewVersion,
-			TipoDocumentosProcesos tipoDocumento,
-			boolean versionFinal, boolean versionFinal2) {
+	public void moveToAlfresco(Integer idProcesoOT, Integer docNewVersion, TipoDocumentosProcesos tipoDocumento, Integer ano, boolean versionFinal) {
 		System.out.println("Buscando referenciaDocumentoId="+docNewVersion);
 		ReferenciaDocumentoSummaryVO referenciaDocumentoSummary = documentService.getDocumentSummary(docNewVersion);
 		System.out.println("Buscando referenciaDocumentoSummary="+referenciaDocumentoSummary);
 		if(referenciaDocumentoSummary != null){
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			String contenType= mimemap.getContentType(referenciaDocumentoSummary.getPath().toLowerCase());
-			int ano = getAnoCurso();
-			BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummary.getPath()), contenType, folderOrdenesTransferencia.replace("{ANO}", ano+""));
+			BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummary.getPath()), contenType, folderOrdenesTransferencia.replace("{ANO}", ano.toString() ));
 			System.out.println("response upload template --->"+response);
 			documentService.updateDocumentTemplate(referenciaDocumentoSummary.getId(), response.getNodeRef(), response.getFileName(), contenType);
 			documentService.createDocumentRemesas(tipoDocumento, response.getNodeRef(), response.getFileName(), contenType, idProcesoOT+"");

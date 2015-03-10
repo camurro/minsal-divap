@@ -74,6 +74,7 @@ public class ProcesoOTSeguimientoController extends AbstractTaskMBean implements
 	private Integer idTemplateCorreo;
 	
 	private Integer idProcesoOT;
+	private Integer ano;
 	
 	
 	@PostConstruct public void init() {
@@ -88,7 +89,9 @@ public class ProcesoOTSeguimientoController extends AbstractTaskMBean implements
 		
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			this.idProcesoOT = (Integer) getTaskDataVO().getData().get("_idProcesoOT");
-			System.out.println("this.idResolucion --->" + this.idProcesoOT);
+			System.out.println("this.idProcesoOT --->" + this.idProcesoOT);
+			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("this.ano --->" + this.ano);
 		}
 		idPlanillaFonasa=otService.getIdDocumentoRemesa(idProcesoOT,TipoDocumentosProcesos.RESUMENCONSOLIDADOFONASA);
 		idOrdinarioOT= otService.getIdDocumentoRemesa(idProcesoOT,TipoDocumentosProcesos.PLANTILLAORDINARIOOREDENTRANSFERENCIA);
@@ -127,7 +130,7 @@ public class ProcesoOTSeguimientoController extends AbstractTaskMBean implements
 			String filename = file.getFileName();
 			byte[] contentAttachedFile = file.getContents();
 			Integer docNewVersion = persistFile(filename,	contentAttachedFile);
-			otService.moveToAlfresco(idProcesoOT, docNewVersion, TipoDocumentosProcesos.PLANTILLAORDINARIOOREDENTRANSFERENCIA, versionFinal,versionFinal);
+			otService.moveToAlfresco(idProcesoOT, docNewVersion, TipoDocumentosProcesos.PLANTILLAORDINARIOOREDENTRANSFERENCIA, this.ano, versionFinal);
 			
 			this.idOrdinarioOT = docNewVersion;
 		

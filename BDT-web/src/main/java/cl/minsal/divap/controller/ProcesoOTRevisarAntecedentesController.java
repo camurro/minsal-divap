@@ -182,7 +182,7 @@ implements Serializable {
 		if(registroTabla.getIdDetalleRemesa()!=null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
 		}
-		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO21.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa(), false, false);
+		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO21.getId(), componenteSeleccionado);
 		resultadoServicioSub21.remove(registroActualizado);
 	}
 
@@ -193,7 +193,7 @@ implements Serializable {
 		if(registroTabla.getIdDetalleRemesa()!=null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
 		}
-		OTResumenDependienteServicioVO registroActualizado = otService.actualizarServicio(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO22.getId(),componenteSeleccionado,registroTabla.getIdDetalleRemesa(), false, false);
+		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO22.getId(), componenteSeleccionado);
 		resultadoServicioSub22.remove(registroActualizado);
 	}
 

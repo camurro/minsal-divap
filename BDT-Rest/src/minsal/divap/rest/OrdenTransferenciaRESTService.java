@@ -54,17 +54,15 @@ public class OrdenTransferenciaRESTService extends BaseRest{
 		ordenTransferenciaService.cambiarEstadoPrograma(idPrograma, estadoPrograma);
     }
 	
-	
-	
 	@GET
-    @Path("/ordenesDeTransferencia/generarOficioOrdenTransferencia/{idProcesoOT}")
+    @Path("/ordenesDeTransferencia/generarOficioOrdenTransferencia/{idProcesoOT}/{ano}")
     @Produces("application/json")
-    public void generarOficioOrdenTransferencia(@PathParam("idProcesoOT") String idProcesoOT){
+    public void generarOficioOrdenTransferencia(@PathParam("idProcesoOT") String idProcesoOT, @PathParam("ano") Integer ano){
 		System.out.println("Generar Oficio Orden de Transferencia");
 		OTService ordenTransferenciaService = getService(OTService.class);
 		ordenTransferenciaService.pagarOrdenesTransferenciayConvenios();
-		Long totalFinal = ordenTransferenciaService.generarExcelFonasaOT(TipoDocumentosProcesos.RESUMENCONSOLIDADOFONASA,idProcesoOT);
-		ordenTransferenciaService.generarOficiosTransferencia(TipoDocumentosProcesos.PLANTILLAORDINARIOOREDENTRANSFERENCIA,idProcesoOT, totalFinal);
+		Long totalFinal = ordenTransferenciaService.generarExcelFonasaOT(TipoDocumentosProcesos.RESUMENCONSOLIDADOFONASA, idProcesoOT, ano);
+		ordenTransferenciaService.generarOficiosTransferencia(TipoDocumentosProcesos.PLANTILLAORDINARIOOREDENTRANSFERENCIA,idProcesoOT, totalFinal, ano);
     }	
 	
 	@GET

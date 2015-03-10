@@ -51,12 +51,14 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasLey extends Abstract
 	@PostConstruct 
 	public void init() {
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			programaSeleccionado = (Integer) getTaskDataVO()
-					.getData().get("_programaSeleccionado");
+			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
 			programa = recursosFinancierosProgramasReforzamientoService.getProgramaById(programaSeleccionado);
 			System.out.println("programaSeleccionado --->" + programaSeleccionado);
+			ano = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("ano --->" + ano);
 			if(programa.getDependenciaMunicipal() != null && programa.getDependenciaMunicipal()){
-				plantillaLey = recursosFinancierosProgramasReforzamientoService.getIdPlantillaProgramas(programa.getId(), TipoDocumentosProcesos.PLANTILLALEYAPS, false);
+				
+				plantillaLey = recursosFinancierosProgramasReforzamientoService.getIdPlantillaProgramas(programa.getId(), TipoDocumentosProcesos.PLANTILLALEYAPS, false, ano);
 			}
 			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado , ano);
 		}

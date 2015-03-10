@@ -133,7 +133,7 @@ implements Serializable {
 			}
 		}
 		
-		anoCurso = otService.getAnoCurso()+1;
+		anoCurso = otService.getAnoCurso() + 1;
 		mesActual = otService.getMesCurso(false);
 		
 		listaServicios = utilitariosService.getAllServicios();
@@ -341,7 +341,7 @@ implements Serializable {
 	public void actualizarS29(Integer row, String codEstablecimiento){
 		System.out.println("actualizando "+codEstablecimiento);
 		OTResumenDependienteServicioVO registroTabla = resultadoServicioSub29.get(row);
-		if(registroTabla.getIdDetalleRemesa()!=null){
+		if(registroTabla.getIdDetalleRemesa() != null){
 			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
 		}
 		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaConsolidador(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO29.getId(), componenteSeleccionado);
@@ -363,6 +363,7 @@ implements Serializable {
 		System.out.println("createResultData usuario-->"
 				+ getSessionBean().getUsername());
 		parameters.put("usuario", getSessionBean().getUsername());
+		parameters.put("ano", (otService.getAnoCurso() + 1));
 		return parameters;
 	}
 
