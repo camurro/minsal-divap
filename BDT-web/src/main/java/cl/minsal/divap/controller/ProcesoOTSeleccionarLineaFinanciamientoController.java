@@ -52,7 +52,6 @@ implements Serializable {
 
 	@Override
 	public String iniciarProceso() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	

@@ -93,12 +93,10 @@ public class ProcesoOTSeguimientoController extends AbstractTaskMBean implements
 			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
 			System.out.println("this.ano --->" + this.ano);
 		}
-		idPlanillaFonasa=otService.getIdDocumentoRemesa(idProcesoOT,TipoDocumentosProcesos.RESUMENCONSOLIDADOFONASA);
-		idOrdinarioOT= otService.getIdDocumentoRemesa(idProcesoOT,TipoDocumentosProcesos.PLANTILLAORDINARIOOREDENTRANSFERENCIA);
+		idPlanillaFonasa = otService.getIdDocumentoRemesa(idProcesoOT, TipoDocumentosProcesos.RESUMENCONSOLIDADOFONASA);
+		idOrdinarioOT = otService.getIdDocumentoRemesa(idProcesoOT, TipoDocumentosProcesos.ORDINARIOOREDENTRANSFERENCIA);
 		idTemplateCorreo = documentService.getIdDocumentoFromPlantilla(TipoDocumentosProcesos.PLANTILLAOTCORREO);
-		
 		bitacoraSeguimiento = otService.getBitacora(this.idProcesoOT, TareasSeguimiento.HACERSEGUIMIENTOOT);
-		
 	}
 	
 	public void handleFile(FileUploadEvent event) {
@@ -130,8 +128,7 @@ public class ProcesoOTSeguimientoController extends AbstractTaskMBean implements
 			String filename = file.getFileName();
 			byte[] contentAttachedFile = file.getContents();
 			Integer docNewVersion = persistFile(filename,	contentAttachedFile);
-			otService.moveToAlfresco(idProcesoOT, docNewVersion, TipoDocumentosProcesos.PLANTILLAORDINARIOOREDENTRANSFERENCIA, this.ano, versionFinal);
-			
+			otService.moveToAlfresco(idProcesoOT, docNewVersion, TipoDocumentosProcesos.ORDINARIOOREDENTRANSFERENCIA, this.ano, versionFinal);
 			this.idOrdinarioOT = docNewVersion;
 		
 		}else{
@@ -158,6 +155,17 @@ public class ProcesoOTSeguimientoController extends AbstractTaskMBean implements
 			FacesMessage message = new FacesMessage("uploadVersion file is null");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
+	}
+	
+	@Override
+	public String enviar(){
+		int numDocFinales = otService.countVersionFinalOTByType(idProcesoOT, TipoDocumentosProcesos.ORDINARIOOREDENTRANSFERENCIA);
+		if(numDocFinales == 0){
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "No existe versión final para el ordinario de transferencia", null);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return null;
+		}
+		return super.enviar();
 	}
 	
 	public void uploadVersionOrdinarioCorreo() {
@@ -215,7 +223,8 @@ public class ProcesoOTSeguimientoController extends AbstractTaskMBean implements
 			}
 			System.out.println("ProcesoOT-->sendMail");
 			
-			otService.createSeguimientoOT(idProcesoOT,TareasSeguimiento.HACERSEGUIMIENTOOT,subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
+			otService.createSeguimientoOT(idProcesoOT, TareasSeguimiento.HACERSEGUIMIENTOOT, subject, body, getSessionBean().getUsername(), 
+					para, conCopia, conCopiaOculta, documentos);
 		}catch(Exception e){
 			e.printStackTrace();
 			target = null;

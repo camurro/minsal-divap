@@ -15,6 +15,10 @@ public class OTResumenMunicipalVO implements Serializable{
 	private static final long serialVersionUID = 7265837851085322699L;
 	private ComunaVO comuna;
 	private Long marcoPresupuestario;
+	private boolean creacion;
+	
+	private Integer idConvenioComuna;
+	private Integer idConvenioComunaComponenteSinAprobar;
 	
 	private Long transferenciaAcumulada;
 	private String porcentajeTransferencia;
@@ -33,7 +37,8 @@ public class OTResumenMunicipalVO implements Serializable{
 	private Integer cuotaInicial;
 	private Integer cuotaFinal;
 	
-	private List<Integer> idDetalleRemesa;
+	private List<Integer> IdDetalleRemesaEliminar;
+	private List<Integer> idDetalleRemesaAProbarConsolidador;
 	
 	private Cuota cuota;
 	
@@ -137,12 +142,12 @@ public class OTResumenMunicipalVO implements Serializable{
 		this.remesas = remesas;
 	}
 
-	public List<Integer> getIdDetalleRemesa() {
-		return idDetalleRemesa;
+	public List<Integer> getIdDetalleRemesaEliminar() {
+		return IdDetalleRemesaEliminar;
 	}
 
-	public void setIdDetalleRemesa(List<Integer> idDetalleRemesa) {
-		this.idDetalleRemesa = idDetalleRemesa;
+	public void setIdDetalleRemesaEliminar(List<Integer> idDetalleRemesaEliminar) {
+		IdDetalleRemesaEliminar = idDetalleRemesaEliminar;
 	}
 
 	public Cuota getCuota() {
@@ -185,6 +190,23 @@ public class OTResumenMunicipalVO implements Serializable{
 		this.cuotaFinal = cuotaFinal;
 	}
 
+	public boolean isCreacion() {
+		return creacion;
+	}
+
+	public void setCreacion(boolean creacion) {
+		this.creacion = creacion;
+	}
+
+	public List<Integer> getIdDetalleRemesaAProbarConsolidador() {
+		return idDetalleRemesaAProbarConsolidador;
+	}
+
+	public void setIdDetalleRemesaAProbarConsolidador(
+			List<Integer> idDetalleRemesaAProbarConsolidador) {
+		this.idDetalleRemesaAProbarConsolidador = idDetalleRemesaAProbarConsolidador;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -209,5 +231,24 @@ public class OTResumenMunicipalVO implements Serializable{
 			return false;
 		return true;
 	}
+
+	public Integer getIdConvenioComuna() {
+		return idConvenioComuna;
+	}
+
+	public void setIdConvenioComuna(Integer idConvenioComuna) {
+		this.idConvenioComuna = idConvenioComuna;
+	}
+
+	public Integer getIdConvenioComunaComponenteSinAprobar() {
+		return idConvenioComunaComponenteSinAprobar;
+	}
+
+	public void setIdConvenioComunaComponenteSinAprobar(
+			Integer idConvenioComunaComponenteSinAprobar) {
+		this.idConvenioComunaComponenteSinAprobar = idConvenioComunaComponenteSinAprobar;
+	}
+
+ 
 	
 }

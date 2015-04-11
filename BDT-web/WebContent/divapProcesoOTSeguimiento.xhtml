@@ -258,13 +258,12 @@
 				</p:panel>
 				</h:form>
 				<h:form id="formBotones">
-				<p:commandButton styleClass="x-btn-text" value="Finalizar Seguimiento" icon="ui-icon-refresh"
-						action="#{procesoOTSeguimientoController.enviar}">
-						<f:setPropertyActionListener target="#{procesoOTSeguimientoController.target}" value="bandejaTareas.jsf" />
+				<p:growl id="growl" showDetail="false"/>  
+					<p:commandButton styleClass="x-btn-text" value="Finalizar Seguimiento" icon="ui-icon-refresh" action="#{procesoOTSeguimientoController.enviar}" update="growl">
+							<f:setPropertyActionListener target="#{procesoOTSeguimientoController.target}" value="bandejaTareas.jsf" />
 					</p:commandButton>
-				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
-					icon="ui-icon-seek-first" />
-			</h:form>
+					<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false" icon="ui-icon-seek-first" />
+				</h:form>
 			
 			<h:form id="formDownload">
 			<h:inputHidden

@@ -35,9 +35,9 @@ import minsal.divap.service.RebajaService;
 public class RebajaRESTService extends BaseRest{
 
 	@GET
-	@Path("/rebaja/calcularRebaja/{idMes}/{idProceso}")
+	@Path("/rebaja/calcularRebaja/{idMes}/{idProceso}/{ano}")
 	@Produces("application/json")
-	public Integer calcularRebaja(@PathParam("idMes") Integer idMes,@PathParam("idProceso") Integer idProceso){
+	public Integer calcularRebaja(@PathParam("idMes") Integer idMes,@PathParam("idProceso") Integer idProceso, @PathParam("ano") Integer ano){
 		System.out.println("Mes de rebaja>"+idMes);
 		if(idMes == null){
 			throw new IllegalArgumentException("Id Mes: "+ idMes + " no puede ser nulo");
@@ -45,56 +45,71 @@ public class RebajaRESTService extends BaseRest{
 		if(idProceso == null){
 			throw new IllegalArgumentException("Id Proceso: "+ idProceso + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("Id ano: "+ ano + " no puede ser nulo");
+		}
 		RebajaService rebajaService = getService(RebajaService.class);
-		return rebajaService.calculaRebajaMes(idMes, idProceso);
+		return rebajaService.calculaRebajaMes(idMes, idProceso, ano);
 	}	
 	
 	@GET
-	@Path("/rebaja/instanciarProcesoRebaja/{usuarioId}")
+	@Path("/rebaja/instanciarProcesoRebaja/{usuarioId}/{ano}")
 	@Produces("application/json")
-	public Integer instanciarProcesoRebaja(@PathParam("usuarioId") String usuarioId){
+	public Integer instanciarProcesoRebaja(@PathParam("usuarioId") String usuarioId, @PathParam("ano") Integer ano){
 		System.out.println("instanciar Proceso Rebaja-->"+usuarioId);
 		if(usuarioId == null){
 			throw new IllegalArgumentException("usuarioId: "+ usuarioId + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("Id ano: "+ ano + " no puede ser nulo");
+		}
 		RebajaService rebajaService = getService(RebajaService.class);
-		return rebajaService.crearIntanciaRebaja(usuarioId);
+		return rebajaService.crearIntanciaRebaja(usuarioId, ano);
 	}
 	
 	@GET
-	@Path("/rebaja/elaborarResolucionRebaja/{idProceso}") 
+	@Path("/rebaja/elaborarResolucionRebaja/{idProceso}/{ano}") 
 	@Produces("application/json")
-	public Integer elaborarResolucionRebaja(@PathParam("idProceso") Integer idProceso){
+	public Integer elaborarResolucionRebaja(@PathParam("idProceso") Integer idProceso, @PathParam("ano") Integer ano){
 		System.out.println("Proceso Rebaja elaborarResolucionRebaja-->"+idProceso);
 		if(idProceso == null){
 			throw new IllegalArgumentException("Id Proceso: "+ idProceso + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("Id ano: "+ ano + " no puede ser nulo");
+		}
 		RebajaService rebajaService = getService(RebajaService.class);
-		return rebajaService.elaborarResolucionRebaja(idProceso);
+		return rebajaService.elaborarResolucionRebaja(idProceso, ano);
 	}
 	
 	@GET
-	@Path("/rebaja/administrarVersionesFinalesAlfresco/{idProceso}") 
+	@Path("/rebaja/administrarVersionesFinalesAlfresco/{idProceso}/{ano}") 
 	@Produces("application/json")
-	public void administrarVersionesFinalesAlfresco(@PathParam("idProceso") Integer idProceso){
+	public void administrarVersionesFinalesAlfresco(@PathParam("idProceso") Integer idProceso, @PathParam("ano") Integer ano){
 		System.out.println("Proceso Rebaja administrarVersionesFinalesAlfresco-->"+idProceso);
 		if(idProceso == null){
 			throw new IllegalArgumentException("Id Proceso: "+ idProceso + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("Id ano: "+ ano + " no puede ser nulo");
+		}
 		RebajaService rebajaService = getService(RebajaService.class);
-		rebajaService.administrarVersionesFinalesAlfresco(idProceso);
+		rebajaService.administrarVersionesFinalesAlfresco(idProceso, ano);
 	}
 	
 	@GET
-	@Path("/rebaja/enviarResolucionesServicioSalud/{idProceso}")
+	@Path("/rebaja/enviarResolucionesServicioSalud/{idProceso}/{ano}")
 	@Produces("application/json")
-	public void enviarResolucionesServicioSalud(@PathParam("idProceso") Integer idProceso){
+	public void enviarResolucionesServicioSalud(@PathParam("idProceso") Integer idProceso, @PathParam("ano") Integer ano){
 		System.out.println("Proceso Rebaja enviarResolucionesServicioSalud-->"+idProceso);
 		if(idProceso == null){
 			throw new IllegalArgumentException("Id Proceso: "+ idProceso + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("Id ano: "+ ano + " no puede ser nulo");
+		}
 		RebajaService rebajaService = getService(RebajaService.class);
-		rebajaService.enviarResolucionesServicioSalud(idProceso);
+		rebajaService.enviarResolucionesServicioSalud(idProceso, ano);
 	}
 
 }

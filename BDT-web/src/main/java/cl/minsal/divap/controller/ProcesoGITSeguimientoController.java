@@ -154,10 +154,10 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 			}
 			List<String> conCopiaOculta = null;
 			if((this.cco != null) && !(this.cco.trim().isEmpty())){
-				conCopiaOculta = Arrays.asList(this.cco.split("\\,")); 
+				conCopiaOculta = Arrays.asList(this.cco.split("\\,"));
 			}
 			System.out.println("ProcesoGITSeguimientoController-->sendMail");
-			conveniosService.createSeguimientoConvenio(this.idConvenio, TareasSeguimiento.HACERSEGUIMIENTORESOLUCIONRETIRO, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
+			conveniosService.createSeguimientoConvenio(this.idConvenio, TareasSeguimiento.HACERSEGUIMIENTORESOLUCIONRETIRO, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos, ano);
 		}catch(Exception e){
 			e.printStackTrace();
 			target = null;
@@ -330,7 +330,7 @@ public class ProcesoGITSeguimientoController extends AbstractTaskMBean implement
 				filename = filename.replaceAll(" ", "");
 				byte[] contentResolucionFile = file.getContents();
 				Integer docResolucion = persistFile(filename, contentResolucionFile);
-				conveniosService.moveToAlfresco(this.idConvenio, docResolucion, TipoDocumentosProcesos.RESOLUCIONRETIRO, this.lastVersion);
+				conveniosService.moveToAlfresco(this.idConvenio, docResolucion, TipoDocumentosProcesos.RESOLUCIONRETIRO, this.lastVersion, ano);
 				idResolucion = docResolucion;
 			}catch (Exception e) {
 				e.printStackTrace();

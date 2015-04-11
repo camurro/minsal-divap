@@ -51,6 +51,10 @@ implements Serializable {
 	private Integer docAsignacionDesempenoDificil;
 	private List<Integer> docIds;
 	private Integer idDistribucionInicialPercapita;
+	private List<Integer> anos;
+	private Integer anoEvaluacion;
+	private Integer anoEnCurso;
+	private Integer anoProceso;
 
 	public UploadedFile getCalculoPerCapitaFile() {
 		return calculoPerCapitaFile;
@@ -76,21 +80,21 @@ implements Serializable {
 				docIds = new ArrayList<Integer>();
 				String filename = calculoPerCapitaFile.getFileName();
 				byte[] contentCalculoPerCapitaFile = calculoPerCapitaFile.getContents();
-				distribucionInicialPercapitaService.procesarCalculoPercapita(getIdDistribucionInicialPercapita(), GeneradorExcel.fromContent(contentCalculoPerCapitaFile, XSSFWorkbook.class));
+				distribucionInicialPercapitaService.procesarCalculoPercapita(getIdDistribucionInicialPercapita(), GeneradorExcel.fromContent(contentCalculoPerCapitaFile, XSSFWorkbook.class), this.anoProceso);
 				Integer docPercapita = persistFile(filename, contentCalculoPerCapitaFile);
 				if (docPercapita != null) {
 					docIds.add(docPercapita);
 				}
 				filename = valorBasicoDesempenoFile.getFileName();
 				byte[] contentDesempeno = valorBasicoDesempenoFile.getContents();
-				distribucionInicialPercapitaService.procesarValorBasicoDesempeno(getIdDistribucionInicialPercapita(), GeneradorExcel.fromContent(contentDesempeno, XSSFWorkbook.class));
+				distribucionInicialPercapitaService.procesarValorBasicoDesempeno(getIdDistribucionInicialPercapita(), GeneradorExcel.fromContent(contentDesempeno, XSSFWorkbook.class), this.anoProceso);
 				Integer docDesempeno = persistFile(filename, contentDesempeno);
 				if (docDesempeno != null) {
 					docIds.add(docDesempeno);
 				}
 				setArchivosValidos(true);
-				distribucionInicialPercapitaService.moveToAlfresco(this.idDistribucionInicialPercapita, docPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA, null);
-				distribucionInicialPercapitaService.moveToAlfresco(this.idDistribucionInicialPercapita, docDesempeno, TipoDocumentosProcesos.ASIGNACIONDESEMPENODIFICIL, null);
+				distribucionInicialPercapitaService.moveToAlfresco(this.idDistribucionInicialPercapita, docPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA, null, this.anoProceso);
+				distribucionInicialPercapitaService.moveToAlfresco(this.idDistribucionInicialPercapita, docDesempeno, TipoDocumentosProcesos.ASIGNACIONDESEMPENODIFICIL, null, this.anoProceso);
 			} catch (ExcelFormatException e) {
 				mensaje = "Los archivos no son válidos.";
 				setArchivosValidos(false);
@@ -147,20 +151,28 @@ implements Serializable {
 		if(sessionExpired()){
 			return;
 		}
-		this.docAsignacionRecursosPercapita = distribucionInicialPercapitaService
-				.getIdPlantillaRecursosPerCapita();
-		this.docAsignacionDesempenoDificil = distribucionInicialPercapitaService
-				.getIdPlantillaPoblacionInscrita();
+		this.docAsignacionRecursosPercapita = distribucionInicialPercapitaService.getIdPlantillaRecursosPerCapita();
+		this.docAsignacionDesempenoDificil = distribucionInicialPercapitaService.getIdPlantillaPoblacionInscrita();
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			this.idDistribucionInicialPercapita = (Integer) getTaskDataVO()
-					.getData().get("_idDistribucionInicialPercapita");
-			System.out.println("this.idDistribucionInicialPercapita --->"
-					+ this.idDistribucionInicialPercapita);
+			this.idDistribucionInicialPercapita = (Integer) getTaskDataVO().getData().get("_idDistribucionInicialPercapita");
+			System.out.println("this.idDistribucionInicialPercapita --->"+ this.idDistribucionInicialPercapita);
+			this.anoProceso = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("this.anoProceso --->"+ this.anoProceso);
 		}
-		System.out.println("this.docAsignacionRecursosPercapita-->"
-				+ this.docAsignacionRecursosPercapita);
-		System.out.println("this.docAsignacionDesempenoDificil-->"
-				+ this.docAsignacionDesempenoDificil);
+		System.out.println("this.docAsignacionRecursosPercapita-->" + this.docAsignacionRecursosPercapita);
+		System.out.println("this.docAsignacionDesempenoDificil-->" 	+ this.docAsignacionDesempenoDificil);
+		
+		
+		anos = new ArrayList<Integer>();
+		Integer ano = distribucionInicialPercapitaService.getAnoCurso();
+		anoEnCurso = ano;
+		anos.add(ano);
+		ano++;
+		anos.add(ano);
+		anoEvaluacion = ano; 
+		System.out.println("anoEnCurso = " + anoEnCurso);
+		System.out.println("anoEvaluacion = " + anoEvaluacion);
+		System.out.println("anos = " + anos);
 
 		// FUNCIONAMIENTO MOCK PLANTILLAS SEGUIMIENTO
 		try {
@@ -203,6 +215,9 @@ implements Serializable {
 				+ getSessionBean().getUsername());
 		parameters.put("usuario", getSessionBean().getUsername());
 		parameters.put("error_", new Boolean(isErrorCarga()));
+		if(anoProceso == null){
+			parameters.put("ano", anoEvaluacion);
+		}
 		if (this.docIds != null) {
 			System.out.println("documentos_ -->"
 					+ JSONHelper.toJSON(this.docIds));
@@ -290,6 +305,38 @@ implements Serializable {
 	public void setIdDistribucionInicialPercapita(
 			Integer idDistribucionInicialPercapita) {
 		this.idDistribucionInicialPercapita = idDistribucionInicialPercapita;
+	}
+
+	public List<Integer> getAnos() {
+		return anos;
+	}
+
+	public void setAnos(List<Integer> anos) {
+		this.anos = anos;
+	}
+
+	public Integer getAnoEvaluacion() {
+		return anoEvaluacion;
+	}
+
+	public void setAnoEvaluacion(Integer anoEvaluacion) {
+		this.anoEvaluacion = anoEvaluacion;
+	}
+
+	public Integer getAnoEnCurso() {
+		return anoEnCurso;
+	}
+
+	public void setAnoEnCurso(Integer anoEnCurso) {
+		this.anoEnCurso = anoEnCurso;
+	}
+	
+	public Integer getAnoProceso() {
+		return anoProceso;
+	}
+
+	public void setAnoProceso(Integer anoProceso) {
+		this.anoProceso = anoProceso;
 	}
 
 	@Override

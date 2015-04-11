@@ -10,7 +10,9 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -51,8 +53,8 @@ implements Serializable {
 	private static final long serialVersionUID = -4187695365228453660L;
 	@Inject private transient Logger log;
 	
-	private Integer programaSeleccionado;
-	private Integer programaSeleccionadoResumen;
+	private String programaSeleccionado;
+	private String programaSeleccionadoResumen;
 	private Integer IdProgramaProxAno;
 	private ProgramaVO programa;
 	private ProgramaVO programaResumen;
@@ -66,9 +68,9 @@ implements Serializable {
 	@EJB
 	private ComponenteService componenteService;
 	
-	private Integer servicioSeleccionado;
+	private String servicioSeleccionado;
 	private List<ServiciosVO> listaServicios;
-	private Integer componenteSeleccionado;
+	private String componenteSeleccionado;
 	private List<ComponentesVO> listaComponentes;
 	private List<ComponentesVO> listaComponentesResumen;
 	private List<ProgramaVO> listaProgramas;
@@ -123,7 +125,6 @@ implements Serializable {
 	
 	@PostConstruct
 	public void init() throws NumberFormatException, ParseException {
-		
 		if (!getSessionBean().isLogged()) {
 			log.warn("No hay usuario almacenado en sesion, se redirecciona a pantalla de login");
 			try {
@@ -133,17 +134,16 @@ implements Serializable {
 			}
 		}
 		
-		anoCurso = otService.getAnoCurso() + 1;
+		anoCurso = otService.getAnoCurso();
 		mesActual = otService.getMesCurso(false);
 		
 		listaServicios = utilitariosService.getAllServicios();
 		listaProgramas = otService.getProgramas(anoCurso); 
 		
-		botonBloqueado=false;
+		botonBloqueado = false;
 		for(ProgramaVO prog: listaProgramas){
-			if(prog.getEstadoOT().getId()!=3){
-				//botonBloqueado=true;
-				botonBloqueado=false;
+			if(prog.getEstadoOT().getId() != 3){
+				botonBloqueado = false;
 				break;
 			}
 		}
@@ -171,92 +171,115 @@ implements Serializable {
 		resumenFonasaMunicipalS24 = otService.cargarFonasaMunicipal(anoCurso);
 	}
 
-	public void cargaComponentes() throws NumberFormatException, ParseException{
-		programa = otService.getProgramaById(programaSeleccionado);
-		remesasPrograma = otService.getRemesasPrograma(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
-		remesasPerCapita = otService.getRemesasPerCapita(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
-		System.out.println("programaSeleccionado" + programaSeleccionado);
-		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
+	public void cargaComponentes() {
+		if(programaSeleccionado != null && !programaSeleccionado.trim().isEmpty()){
+			programa = otService.getProgramaById(Integer.parseInt(programaSeleccionado));
+			remesasPrograma = otService.getRemesasPrograma(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
+			remesasPerCapita = otService.getRemesasPerCapita(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
+			System.out.println("programaSeleccionado" + programaSeleccionado);
+			listaComponentes = componenteService.getComponenteByPrograma(programa.getId());
+			if(listaComponentes != null && listaComponentes.size() == 1){
+				componenteSeleccionado = listaComponentes.get(0).getId().toString();
+			}
+		}else{
+			programa = null;
+			componenteSeleccionado = "";
+			listaComponentes = new ArrayList<ComponentesVO>();
+		}
 	}
 	
 	public void buscarDetallePrograma(){
-		subtitulo21=false;
-		subtitulo22=false;
-		subtitulo29=false;
-		subtitulo24=false;	
-		percapita=false;
-		if(programa.getId()< 0){
-			percapita=true;
-			resultadoPercapita = otService.getDetallePerCapita(servicioSeleccionado, anoCurso, programa.getIdProgramaAno()); 
-			System.out.println("Resultados PerCapita: "+resultadoPercapita.size());
-		}else{
-			System.out.println("Buscar Resultados para Componente: "+componenteSeleccionado+" Servicio: "+servicioSeleccionado);
-			ComponentesVO componenteVO = componenteService.getComponenteVOById(componenteSeleccionado);
-
-			for(SubtituloVO subs : componenteVO.getSubtitulos()){
-				System.out.println(subs.getId());
-				if(subs.getId() == Subtitulo.SUBTITULO21.getId()){
-					subtitulo21=true;
-					resultadoServicioSub21 = otService.getDetalleOTServicioConsolidador(componenteSeleccionado,servicioSeleccionado, 
-							Subtitulo.SUBTITULO21.getId(),programa.getIdProgramaAno());
-				}
-				if(subs.getId() == Subtitulo.SUBTITULO22.getId()){
-					subtitulo22=true;
-					resultadoServicioSub22 = otService.getDetalleOTServicioConsolidador(componenteSeleccionado,servicioSeleccionado, 
-							Subtitulo.SUBTITULO22.getId(),programa.getIdProgramaAno());
-				}
-				if(subs.getId() == Subtitulo.SUBTITULO29.getId()){
-					subtitulo29=true;
-					resultadoServicioSub29 = otService.getDetalleOTServicioConsolidador(componenteSeleccionado,servicioSeleccionado, 
-							Subtitulo.SUBTITULO29.getId(),programa.getIdProgramaAno());
-				}
-				if(subs.getId() == Subtitulo.SUBTITULO24.getId()){
-					subtitulo24=true;
-					resultadoMunicipal = otService.getDetalleOTMunicipalConsolidador(componenteSeleccionado,servicioSeleccionado, programa.getIdProgramaAno());
+		subtitulo21 = false;
+		subtitulo22 = false;
+		subtitulo29 = false;
+		subtitulo24 = false;	
+		percapita = false;
+		if(programa != null){
+			Integer servicio = ((servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty()) ? null : Integer.parseInt(servicioSeleccionado.trim()));
+			if(programa.getId() < 0){
+				percapita = true;
+				resultadoPercapita = otService.getDetallePerCapita(servicio, anoCurso, programa.getIdProgramaAno()); 
+				System.out.println("Resultados PerCapita: "+resultadoPercapita.size());
+			}else{
+				System.out.println("Buscar Resultados para Componente: "+componenteSeleccionado+" Servicio: "+servicio);
+				if(componenteSeleccionado != null && !componenteSeleccionado.trim().isEmpty()){
+					ComponentesVO componenteVO = componenteService.getComponenteVOById(Integer.parseInt(componenteSeleccionado));
+		
+					for(SubtituloVO subs : componenteVO.getSubtitulos()){
+						System.out.println(subs.getId());
+						if(subs.getId().equals(Subtitulo.SUBTITULO21.getId())){
+							subtitulo21 = true;
+							resultadoServicioSub21 = otService.getDetalleOTServicioConsolidador(Integer.parseInt(componenteSeleccionado), servicio, 
+									Subtitulo.SUBTITULO21.getId(),programa.getIdProgramaAno());
+						}
+						if(subs.getId().equals(Subtitulo.SUBTITULO22.getId())){
+							subtitulo22 = true;
+							resultadoServicioSub22 = otService.getDetalleOTServicioConsolidador(Integer.parseInt(componenteSeleccionado), servicio, 
+									Subtitulo.SUBTITULO22.getId(),programa.getIdProgramaAno());
+						}
+						if(subs.getId().equals(Subtitulo.SUBTITULO29.getId())){
+							subtitulo29 = true;
+							resultadoServicioSub29 = otService.getDetalleOTServicioConsolidador(Integer.parseInt(componenteSeleccionado), servicio, 
+									Subtitulo.SUBTITULO29.getId(),programa.getIdProgramaAno());
+						}
+						if(subs.getId().equals(Subtitulo.SUBTITULO24.getId())){
+							subtitulo24 = true;
+							resultadoMunicipal = otService.getDetalleOTMunicipalConsolidador(Integer.parseInt(componenteSeleccionado), servicio, programa.getIdProgramaAno());
+						}
+					}
+				}else{
+					FacesMessage msg = new FacesMessage("Debe seleccionar el componente antes de realizar la búsqueda");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
 				}
 			}
+		}else{
+			FacesMessage msg = new FacesMessage("Debe seleccionar el programa antes de realizar la búsqueda");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
 	
 	public void buscarResumenPrograma(){
-		programaResumen = otService.getProgramaById(programaSeleccionadoResumen);
-		System.out.println("Buscando resumen para programa: "+ programaResumen.getNombre());
-		listaComponentesResumen= componenteService.getComponenteByPrograma(programaSeleccionadoResumen);
-		
-		resumenPrograma = otService.getResumenPrograma(programaResumen);
-		
-		subtitulo21Resumen=false;
-		subtitulo22Resumen=false;
-		subtitulo24Resumen=false;
-		subtitulo29Resumen=false;
-		totalSub21Resumen=0l;
-		totalSub22Resumen=0l;
-		totalSub29Resumen=0l;
-		totalSub24Resumen=0l;
-		
-		for(ComponentesVO componente:listaComponentesResumen){
-			for(SubtituloVO subtitulo : componente.getSubtitulos()){
-				if(subtitulo.getId()==Subtitulo.SUBTITULO21.getId()){
-					subtitulo21Resumen=true;
-				}
-				if(subtitulo.getId()==Subtitulo.SUBTITULO22.getId()){
-					subtitulo22Resumen=true;
-				}
-				if(subtitulo.getId()==Subtitulo.SUBTITULO29.getId()){
-					subtitulo29Resumen=true;
-				}
-				if(subtitulo.getId()==Subtitulo.SUBTITULO24.getId()){
-					subtitulo24Resumen=true;
+		if(programaSeleccionadoResumen != null && !programaSeleccionadoResumen.trim().isEmpty()){
+			programaResumen = otService.getProgramaById(Integer.parseInt(programaSeleccionadoResumen));
+			System.out.println("Buscando resumen para programa: " + programaResumen.getNombre());
+			listaComponentesResumen = componenteService.getComponenteByPrograma(Integer.parseInt(programaSeleccionadoResumen));
+			resumenPrograma = otService.getResumenPrograma(programaResumen);
+			subtitulo21Resumen = false;
+			subtitulo22Resumen = false;
+			subtitulo24Resumen = false;
+			subtitulo29Resumen = false;
+			totalSub21Resumen = 0L;
+			totalSub22Resumen = 0L;
+			totalSub29Resumen = 0L;
+			totalSub24Resumen = 0L;
+			
+			for(ComponentesVO componente:listaComponentesResumen){
+				for(SubtituloVO subtitulo : componente.getSubtitulos()){
+					if(subtitulo.getId().equals(Subtitulo.SUBTITULO21.getId())){
+						subtitulo21Resumen = true;
+					}
+					if(subtitulo.getId().equals(Subtitulo.SUBTITULO22.getId())){
+						subtitulo22Resumen = true;
+					}
+					if(subtitulo.getId().equals(Subtitulo.SUBTITULO29.getId())){
+						subtitulo29Resumen = true;
+					}
+					if(subtitulo.getId().equals(Subtitulo.SUBTITULO24.getId())){
+						subtitulo24Resumen = true;
+					}
 				}
 			}
+			for(ResumenProgramaMixtoVO resultado : resumenPrograma){
+				totalSub21Resumen += resultado.getTotalS21();
+				totalSub22Resumen += resultado.getTotalS22();
+				totalSub29Resumen += resultado.getTotalS29();
+				totalSub24Resumen += resultado.getTotalS24();
+			}
+			totalResumen = totalSub21Resumen + totalSub22Resumen + totalSub29Resumen+totalSub24Resumen;
+		}else{
+			FacesMessage msg = new FacesMessage("Debe seleccionar el programa antes de realizar la búsqueda");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
-		for(ResumenProgramaMixtoVO resultado : resumenPrograma){
-			totalSub21Resumen += resultado.getTotalS21();
-			totalSub22Resumen += resultado.getTotalS22();
-			totalSub29Resumen += resultado.getTotalS29();
-			totalSub24Resumen += resultado.getTotalS24();
-		}
-		totalResumen = totalSub21Resumen+totalSub22Resumen+totalSub29Resumen+totalSub24Resumen;
 	}
 	
 	public Integer actualizar(){submit="1";return null;}
@@ -317,43 +340,31 @@ implements Serializable {
 		System.out.println(resultadoPercapita.size());
 	}
 
-	public void actualizarS21(Integer row, String codEstablecimiento){
-		System.out.println("actualizando "+codEstablecimiento);
+	public void actualizarS21(Integer row){
+		System.out.println("row " + row);
 		OTResumenDependienteServicioVO registroTabla = resultadoServicioSub21.get(row);
-		if(registroTabla.getIdDetalleRemesa()!=null){
-			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
-		}
-		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaConsolidador(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO21.getId(), componenteSeleccionado);
-				
+		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaConsolidador(registroTabla);
 		resultadoServicioSub21.remove(registroActualizado);
 	}
 	
-	public void actualizarS22(Integer row, String codEstablecimiento){
-		System.out.println("actualizando "+codEstablecimiento);
+	public void actualizarS22(Integer row){
+		System.out.println("row " + row);
 		OTResumenDependienteServicioVO registroTabla = resultadoServicioSub22.get(row);
-		if(registroTabla.getIdDetalleRemesa()!=null){
-			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
-		}
-		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaConsolidador(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO22.getId(), componenteSeleccionado);
+		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaConsolidador(registroTabla);
 		resultadoServicioSub22.remove(registroActualizado);
 	}
 	
-	public void actualizarS29(Integer row, String codEstablecimiento){
-		System.out.println("actualizando "+codEstablecimiento);
+	public void actualizarS29(Integer row){
+		System.out.println("row " + row);
 		OTResumenDependienteServicioVO registroTabla = resultadoServicioSub29.get(row);
-		if(registroTabla.getIdDetalleRemesa() != null){
-			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
-		}
-		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaConsolidador(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO29.getId(), componenteSeleccionado);
+		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaConsolidador(registroTabla);
 		resultadoServicioSub29.remove(registroActualizado);
 	}
 	
-	public void actualizarS24(Integer row, Integer idComuna){
+	public void actualizarS24(Integer row){
+		System.out.println("row " + row);
 		OTResumenMunicipalVO registroTabla = resultadoMunicipal.get(row);
-		if(registroTabla.getIdDetalleRemesa()!=null){
-			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
-		}
-		OTResumenMunicipalVO registroActualizado = otService.aprobarMontoRemesaConsolidador(registroTabla, programa.getIdProgramaAno(), Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
+		OTResumenMunicipalVO registroActualizado = otService.aprobarMontoRemesaConsolidador(registroTabla);
 		resultadoMunicipal.remove(registroActualizado);
 	}
 	
@@ -363,7 +374,7 @@ implements Serializable {
 		System.out.println("createResultData usuario-->"
 				+ getSessionBean().getUsername());
 		parameters.put("usuario", getSessionBean().getUsername());
-		parameters.put("ano", (otService.getAnoCurso() + 1));
+		parameters.put("ano", anoCurso);
 		return parameters;
 	}
 
@@ -388,11 +399,11 @@ implements Serializable {
 		return success;
 	}
 
-	public Integer getProgramaSeleccionado() {
+	public String getProgramaSeleccionado() {
 		return programaSeleccionado;
 	}
 
-	public void setProgramaSeleccionado(Integer programaSeleccionado) {
+	public void setProgramaSeleccionado(String programaSeleccionado) {
 		this.programaSeleccionado = programaSeleccionado;
 	}
 
@@ -452,19 +463,19 @@ implements Serializable {
 		this.percapita = percapita;
 	}
 
-	public Integer getServicioSeleccionado() {
+	public String getServicioSeleccionado() {
 		return servicioSeleccionado;
 	}
 
-	public void setServicioSeleccionado(Integer servicioSeleccionado) {
+	public void setServicioSeleccionado(String servicioSeleccionado) {
 		this.servicioSeleccionado = servicioSeleccionado;
 	}
 
-	public Integer getComponenteSeleccionado() {
+	public String getComponenteSeleccionado() {
 		return componenteSeleccionado;
 	}
 
-	public void setComponenteSeleccionado(Integer componenteSeleccionado) {
+	public void setComponenteSeleccionado(String componenteSeleccionado) {
 		this.componenteSeleccionado = componenteSeleccionado;
 	}
 
@@ -551,11 +562,11 @@ implements Serializable {
 		this.subtitulo24 = subtitulo24;
 	}
 
-	public Integer getProgramaSeleccionadoResumen() {
+	public String getProgramaSeleccionadoResumen() {
 		return programaSeleccionadoResumen;
 	}
 
-	public void setProgramaSeleccionadoResumen(Integer programaSeleccionadoResumen) {
+	public void setProgramaSeleccionadoResumen(String programaSeleccionadoResumen) {
 		this.programaSeleccionadoResumen = programaSeleccionadoResumen;
 	}
 

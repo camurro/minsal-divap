@@ -118,6 +118,9 @@ implements Serializable {
 
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes = componenteService.getComponenteByPrograma(programa.getId());
+		if(listaComponentes != null && listaComponentes.size() == 1){
+			componenteSeleccionado = listaComponentes.get(0).getId();
+		}
 		remesasPrograma = otService.getRemesasPrograma(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
 		remesasPerCapita = otService.getRemesasPerCapita(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
 	}
@@ -135,22 +138,20 @@ implements Serializable {
 				subtitulo22 = false;
 				subtitulo29 = false;
 				subtitulo24 = false;
+				System.out.println("componenteSeleccionado="+componenteSeleccionado+" IdProgramaProxAno="+IdProgramaProxAno);
 				for(SubtituloVO subs : componenteVO.getSubtitulos()){
 					System.out.println(subs.getId());
 					if(Subtitulo.SUBTITULO21.getId().equals(subs.getId())){
 						subtitulo21 = true;
-						resultadoServicioSub21 = otService.getDetalleOTServicio(componenteSeleccionado, idServicio, 
-								Subtitulo.SUBTITULO21.getId(), IdProgramaProxAno);
+						resultadoServicioSub21 = otService.getDetalleOTServicio(componenteSeleccionado, idServicio, Subtitulo.SUBTITULO21.getId(), IdProgramaProxAno);
 					}
 					if(Subtitulo.SUBTITULO22.getId().equals(subs.getId())){
 						subtitulo22 = true;
-						resultadoServicioSub22 = otService.getDetalleOTServicio(componenteSeleccionado, idServicio, 
-								Subtitulo.SUBTITULO22.getId(), IdProgramaProxAno);
+						resultadoServicioSub22 = otService.getDetalleOTServicio(componenteSeleccionado, idServicio, Subtitulo.SUBTITULO22.getId(), IdProgramaProxAno);
 					}
 					if(Subtitulo.SUBTITULO29.getId().equals(subs.getId())){
 						subtitulo29 = true;
-						resultadoServicioSub29 = otService.getDetalleOTServicio(componenteSeleccionado, idServicio, 
-								Subtitulo.SUBTITULO29.getId(), IdProgramaProxAno);
+						resultadoServicioSub29 = otService.getDetalleOTServicio(componenteSeleccionado, idServicio, Subtitulo.SUBTITULO29.getId(), IdProgramaProxAno);
 					}
 					if(Subtitulo.SUBTITULO24.getId().equals(subs.getId())){
 						subtitulo24 = true;
@@ -179,9 +180,6 @@ implements Serializable {
 	public void actualizarS21(Integer row, String codEstablecimiento){
 		System.out.println("actualizando "+codEstablecimiento);
 		OTResumenDependienteServicioVO registroTabla = resultadoServicioSub21.get(row);
-		if(registroTabla.getIdDetalleRemesa()!=null){
-			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
-		}
 		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO21.getId(), componenteSeleccionado);
 		resultadoServicioSub21.remove(registroActualizado);
 	}
@@ -190,9 +188,6 @@ implements Serializable {
 		System.out.println("actualizando "+codEstablecimiento);
 		System.out.println("row " + row);
 		OTResumenDependienteServicioVO registroTabla = resultadoServicioSub22.get(row);
-		if(registroTabla.getIdDetalleRemesa()!=null){
-			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
-		}
 		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO22.getId(), componenteSeleccionado);
 		resultadoServicioSub22.remove(registroActualizado);
 	}
@@ -201,18 +196,14 @@ implements Serializable {
 		System.out.println("actualizando " + codEstablecimiento);
 		System.out.println("row " + row);
 		OTResumenDependienteServicioVO registroTabla = resultadoServicioSub29.get(row);
-		if(registroTabla.getIdDetalleRemesa() != null){
-			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
-		}
 		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO29.getId(), componenteSeleccionado);
 		resultadoServicioSub29.remove(registroActualizado);
 	}
 
 	public void actualizarS24(Integer row, Integer idComuna){
+		System.out.println("actualizando " + idComuna);
+		System.out.println("row " + row);
 		OTResumenMunicipalVO registroTabla = resultadoMunicipal.get(row);
-		if(registroTabla.getIdDetalleRemesa() != null){
-			otService.eliminarDetalleRemesa(registroTabla.getIdDetalleRemesa());
-		}
 		OTResumenMunicipalVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
 		resultadoMunicipal.remove(registroActualizado);
 	}

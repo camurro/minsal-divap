@@ -37,8 +37,9 @@ public class MatchViewTask {
 		// Mapeo páginas de Tramitacion Orden Transferencia Consolidador
 		TRAMITACIONORDENREVISARCONSOLIDACION("minsal_divap.TramitacionOrdenTransferenciaConsolidador.revisarconsolidaciondeordenesdetransferencia","divapProcesoOTConsolidador"),
 		TRAMITACIONORDENHACERSEGUIMIENTO("minsal_divap.TramitacionOrdenTransferenciaConsolidador.hacerseguimientoordinariosdeordenesdetransferencia","divapProcesoOTSeguimiento"),
-		REVISARENVIODOCUMENTOS("minsal_divap.TramitacionOrdenTransferenciaConsolidador.verificarenviodedocumentos","divapProcesoOTEnviarDocumentos"),
-
+		REVISARENVIODOCUMENTOS("minsal_divap.TramitacionOrdenTransferenciaConsolidador.verificarenviodedocumentosfonasa","divapProcesoOTEnviarDocumentos"),
+		VALIDACIONREMESAFONASA("minsal_divap.TramitacionOrdenTransferenciaConsolidador.validacionremesafonasa","divapProcesoOTValidarRemesaFonasa"),
+		REVISARENVIODOCUMENTOSSERVICIOS("minsal_divap.TramitacionOrdenTransferenciaConsolidador.verificarenviodedocumentosaserviciosdesalud","divapProcesoOTEnviarDocumentosServicios"),
 		
 		//Mapeo páginas de Distribución de Recursos Financieros para Programas de Reforzamiento APS 
 		SELECCIONARPROGRAMA("minsal_divap.DistribucionRecursosProgramasReforzamiento.seleccionarprograma","divapProcesoDistRecFinProgProgramasServicio"),

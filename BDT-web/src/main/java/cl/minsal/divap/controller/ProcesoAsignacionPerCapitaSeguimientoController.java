@@ -84,6 +84,7 @@ implements Serializable {
 	private UploadedFile file2;
 	private Part fileUpload;
 	private Integer idDistribucionInicialPercapita;
+	private Integer ano;
 	private Boolean lastVersion = false;
 	private String hiddenIdServicio;
 
@@ -104,7 +105,7 @@ implements Serializable {
 			Integer docNewVersion = persistFile(filename,	contentAttachedFile);
 			switch (tareaSeguimiento) {
 			case HACERSEGUIMIENTOOFICIO:
-				distribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, TipoDocumentosProcesos.OFICIOCONSULTA, versionFinal);
+				distribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, TipoDocumentosProcesos.OFICIOCONSULTA, versionFinal, this.ano);
 				this.oficioConsultaId = docNewVersion;
 				break;
 			case HACERSEGUIMIENTORESOLUCIONES:
@@ -112,7 +113,7 @@ implements Serializable {
 			case HACERSEGUIMIENTOTOMARAZON:
 				break;
 			case HACERSEGUIMIENTODECRETO:
-				distribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, TipoDocumentosProcesos.BORRADORAPORTEESTATAL, versionFinal);
+				distribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, TipoDocumentosProcesos.BORRADORAPORTEESTATAL, versionFinal, this.ano);
 				this.decretoId = docNewVersion;
 				break;	
 			default:
@@ -155,7 +156,7 @@ implements Serializable {
 				Integer idServicio = Integer.parseInt(getHiddenIdServicio());
 				System.out.println("docResolucion->"+docResolucion);
 				System.out.println("idServicio->"+idServicio);
-				distribucionInicialPercapitaService.moveToAlfrescoDistribucionInicialPercapita(this.idDistribucionInicialPercapita, idServicio, docResolucion, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, this.lastVersion);
+				distribucionInicialPercapitaService.moveToAlfrescoDistribucionInicialPercapita(this.idDistribucionInicialPercapita, idServicio, docResolucion, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, this.lastVersion, this.ano);
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -225,7 +226,8 @@ implements Serializable {
 				conCopiaOculta = Arrays.asList(this.cco.split("\\,")); 
 			}
 			System.out.println("ProcesoAsignacionPerCapitaSeguimientoController-->sendMail");
-			distribucionInicialPercapitaService.createSeguimientoDistribucionInicialPercapita(idDistribucionInicialPercapita, tareaSeguimiento, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
+			distribucionInicialPercapitaService.createSeguimientoDistribucionInicialPercapita(idDistribucionInicialPercapita, tareaSeguimiento, subject, body, getSessionBean().getUsername(), 
+					para, conCopia, conCopiaOculta, documentos, this.ano);
 		}catch(Exception e){
 			e.printStackTrace();
 			target = null;
@@ -277,6 +279,8 @@ implements Serializable {
 					+ this.actividadSeguimientoTitle);
 			String _tareaSeguimiento = (String) getTaskDataVO()
 					.getData().get("_tareaSeguimiento");
+			this.ano = (Integer) getTaskDataVO()
+					.getData().get("_ano");
 			ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.OFICIOCONSULTA);
 			if(referenciaDocumentoSummaryVO != null){
 				this.oficioConsultaId = referenciaDocumentoSummaryVO.getId();

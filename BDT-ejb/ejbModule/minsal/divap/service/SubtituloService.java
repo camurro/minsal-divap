@@ -70,7 +70,6 @@ public class SubtituloService {
 		SubtituloVO subtituloVO = new SubtituloVO();
 		subtituloVO.setId(tipoSubtitulo.getIdTipoSubtitulo());
 		subtituloVO.setNombre(tipoSubtitulo.getNombreSubtitulo());
-		
 		return subtituloVO;
 		
 	}

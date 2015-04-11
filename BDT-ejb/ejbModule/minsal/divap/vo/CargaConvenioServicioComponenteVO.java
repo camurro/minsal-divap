@@ -1,6 +1,7 @@
 package minsal.divap.vo;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class CargaConvenioServicioComponenteVO implements Serializable {
 
@@ -12,13 +13,12 @@ public class CargaConvenioServicioComponenteVO implements Serializable {
 	private Integer idEstablecimiento;
 	private String nombreEstablecimiento;
 	private Boolean nuevo;
-	private Boolean reemplazar;
 	private Integer numeroResoucion;
 	private ComponenteSummaryVO componente;
 	private SubtituloSummaryVO subtitulo;
 	private DocumentSummaryVO documento;
-	private Integer monto;
 	private Integer montoIngresado;
+	private Date fecha;
 
 	public CargaConvenioServicioComponenteVO() {
 		super();
@@ -88,14 +88,6 @@ public class CargaConvenioServicioComponenteVO implements Serializable {
 		this.subtitulo = subtitulo;
 	}
 	
-	public Integer getMonto() {
-		return monto;
-	}
-	
-	public void setMonto(Integer monto) {
-		this.monto = monto;
-	}
-
 	public Integer getMontoIngresado() {
 		return montoIngresado;
 	}
@@ -104,12 +96,12 @@ public class CargaConvenioServicioComponenteVO implements Serializable {
 		this.montoIngresado = montoIngresado;
 	}
 	
-	public Boolean getReemplazar() {
-		return reemplazar;
+	public Date getFecha() {
+		return fecha;
 	}
 
-	public void setReemplazar(Boolean reemplazar) {
-		this.reemplazar = reemplazar;
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
 	}
 
 	@Override
@@ -120,7 +112,7 @@ public class CargaConvenioServicioComponenteVO implements Serializable {
 				+ nombreEstablecimiento + ", nuevo=" + nuevo
 				+ ", numeroResoucion=" + numeroResoucion + ", componente="
 				+ componente + ", subtitulo=" + subtitulo + ", documento="
-				+ documento + ", monto=" + monto + ", montoIngresado="
+				+ documento + ", montoIngresado="
 				+ montoIngresado + "]";
 	}
 		

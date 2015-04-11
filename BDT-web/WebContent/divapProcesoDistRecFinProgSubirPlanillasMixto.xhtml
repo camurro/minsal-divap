@@ -44,13 +44,13 @@
 					</div>
 					<h3>Subir planillas con información del programa:</h3>
 					<p:panelGrid columns="2" styleClass="uploadFileTable">
-						<h:outputLabel for="valorBasicoDesempenoFile"
+						<h:outputLabel for="municipal"
 							value="Archivo: Planilla #{procesoDistRecFinProgSubirPlanillasControllerMixto.programa.nombre} - Municipal.xlsx"
 							styleClass="textoAjustado fileUploadLabel" />
 						<p:fileUpload id="municipal" value="#{procesoDistRecFinProgSubirPlanillasControllerMixto.planillaMuncipal}" mode="simple" />
 					</p:panelGrid>
 					<p:panelGrid columns="2" styleClass="uploadFileTable">
-						<h:outputLabel for="valorBasicoDesempenoFile"
+						<h:outputLabel for="servicio"
 							value="Archivo: Planilla #{procesoDistRecFinProgSubirPlanillasControllerMixto.programa.nombre} - Servicio.xlsx"
 							styleClass="textoAjustado fileUploadLabel" />
 						<p:fileUpload id="servicio" value="#{procesoDistRecFinProgSubirPlanillasControllerMixto.planillaServicio}" mode="simple" />

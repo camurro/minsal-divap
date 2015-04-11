@@ -139,7 +139,7 @@
 														</c:if>
 														<c:if test="#{not dia.bloqueado}">
 															<p:inputText value="#{dia.monto}" styleClass="divapProcesoOTProgramaInput" onblur="actualizarHidden(#{rowIndexS24},#{dia.dia},#{remesa.idMes},this.id, 24);">
-																			<f:convertNumber  maxFractionDigits="0"/>
+																<f:convertNumber  maxFractionDigits="0"/>
 															</p:inputText> 
 														</c:if>
 													</p:column>
@@ -158,7 +158,6 @@
 											<p:selectBooleanCheckbox rendered="#{not detalleS24.aprobado}" value="#{detalleS24.aprobado}">
 								            	<p:ajax update=":form:tabs:tablaResultadosS24" listener="#{procesoOTRevisarAntecedentesController.actualizarS24(rowIndexS24, detalleS24.comuna.idComuna)}"/>
 								        	</p:selectBooleanCheckbox>
-											<h:graphicImage rendered="#{detalleS24.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />	
 										</p:column>
 									</p:dataTable>
 							</p:tab>

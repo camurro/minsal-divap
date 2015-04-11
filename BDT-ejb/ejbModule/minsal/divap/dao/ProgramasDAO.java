@@ -674,9 +674,7 @@ public class ProgramasDAO {
 		}
 	}
 
-	public Long getMPComunaProgramaAnoComponenteSubtitulo(Integer idComuna,
-			Integer idProgramaAno, Integer componenteSeleccionado,
-			Integer idTipoSubtitulo) {
+	public Long getMPComunaProgramaAnoComponenteSubtitulo(Integer idComuna, Integer idProgramaAno, Integer componenteSeleccionado, Integer idTipoSubtitulo) {
 		try {
 			TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.getMPComunaProgramaAnoComponenteSubtitulo", ProgramaMunicipalCoreComponente.class);
 			query.setParameter("idProgramaAno", idProgramaAno);

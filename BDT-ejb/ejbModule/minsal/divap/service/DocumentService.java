@@ -72,6 +72,7 @@ import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.Rebaja;
 import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.Reliquidacion;
+import cl.minsal.divap.model.Remesas;
 import cl.minsal.divap.model.ServicioSalud;
 import cl.minsal.divap.model.TipoDocumento;
 
@@ -1131,22 +1132,30 @@ public class DocumentService {
 		}
 		return documentos;
 	}
-	public Integer createDocumentRemesas(
-			TipoDocumentosProcesos tipoDocumentoProceso,
-			String nodeRef, String fileName, String contentType,
-			String idProcesoOT) {
-		
+	
+	public Integer createDocumentRemesas(TipoDocumentosProcesos tipoDocumentoProceso, String nodeRef, String fileName, String contentType, String idProcesoOT) {
 		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, fileName, contentType);
 		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
-		
 		DocumentoRemesas documentoRemesas = new DocumentoRemesas();
 		documentoRemesas.setTipoDocumento(new TipoDocumento(tipoDocumentoProceso.getId()));
 		documentoRemesas.setDocumento(referenciaDocumento);
 		documentoRemesas.setRemesa(remesasDAO.findById(Integer.parseInt(idProcesoOT)));
-		
 		remesasDAO.save(documentoRemesas);
 		System.out.println("luego de aplicar insert del documento OT");
 		return referenciaDocumentoId;
+	}
+	
+	public void createDocumentRemesas(Remesas remesa, TipoDocumentosProcesos tipoDocumento, Integer referenciaDocumentoId, Boolean lastVersion) {
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		if(lastVersion != null){
+			referenciaDocumento.setDocumentoFinal(lastVersion);
+		}
+		DocumentoRemesas documentoRemesa = new DocumentoRemesas();
+		documentoRemesa.setTipoDocumento(new TipoDocumento(tipoDocumento.getId()));
+		documentoRemesa.setDocumento(referenciaDocumento);
+		documentoRemesa.setRemesa(remesa);
+		remesasDAO.save(documentoRemesa);
+		System.out.println("luego de aplicar insert del documento OT");
 	}
 	
 	public List<Integer> getDocumentosByDistribucionInicialPercapitaServicioTypes(Integer idDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos... tiposDocumentoProceso) {
@@ -1426,6 +1435,18 @@ public class DocumentService {
 		estimacionFlujoCajaDAO.save(documentoEstimacionFlujoCajaConsolidador);
 		System.out.println("luego de aplicar insert del documento  estimacion flujo caja consolidador");
 		return referenciaDocumentoId;
+	}
+
+	public List<ReferenciaDocumentoSummaryVO> getVersionFinalOTByType(Integer idProcesoOT, TipoDocumentosProcesos tipoDocumento) {
+		List<ReferenciaDocumentoSummaryVO> versionesFinales = new ArrayList<ReferenciaDocumentoSummaryVO>();
+		List<ReferenciaDocumento> referenciaDocumentos =  fileDAO.getVersionFinalOTByType(idProcesoOT, tipoDocumento);
+		if(referenciaDocumentos != null && referenciaDocumentos.size() > 0){
+			for(ReferenciaDocumento referenciaDocumento : referenciaDocumentos){
+				ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = new ReferenciaDocumentoMapper().getSummary(referenciaDocumento);
+				versionesFinales.add(referenciaDocumentoSummaryVO);
+			}
+		}
+		return versionesFinales;
 	}
 
 }

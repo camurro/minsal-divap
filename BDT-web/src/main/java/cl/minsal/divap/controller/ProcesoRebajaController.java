@@ -57,6 +57,7 @@ public class ProcesoRebajaController extends AbstractTaskMBean
 	
 	//Variables de entrada proceso
 	private Integer idProcesoRebaja;
+	private Integer ano;
 	
 	@EJB
 	private RebajaService rebajaService;
@@ -67,12 +68,13 @@ public class ProcesoRebajaController extends AbstractTaskMBean
 		if(sessionExpired()){
 			return;
 		}
-		docBaseCumplimiento = rebajaService.getPlantillaBaseCumplimiento();
 		if(getTaskDataVO() != null && getTaskDataVO().getData() != null && getTaskDataVO().getData().get("_idProcesoRebaja") != null){
 			this.idProcesoRebaja = (Integer)getTaskDataVO().getData().get("_idProcesoRebaja");
-			
+			this.ano = (Integer)getTaskDataVO().getData().get("_ano");
 		}
 		System.out.println("this.idProcesoRebaja ----> "+this.idProcesoRebaja);
+		System.out.println("this.ano ----> "+this.ano);
+		docBaseCumplimiento = rebajaService.getPlantillaBaseCumplimiento(this.ano);
 	}
 	
 
@@ -85,6 +87,7 @@ public class ProcesoRebajaController extends AbstractTaskMBean
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		System.out.println("createResultData usuario-->"+getSessionBean().getUsername());
 		parameters.put("usuario", getSessionBean().getUsername());
+		parameters.put("ano", getAno());
 		parameters.put("error_", this.error_);
 		return parameters;
 	}
@@ -148,7 +151,6 @@ public class ProcesoRebajaController extends AbstractTaskMBean
 		}
 		FacesMessage msg = new FacesMessage(mensaje);
 		FacesContext.getCurrentInstance().addMessage(null, msg);
-			
 	}
 		
 	public String downloadTemplate() {
@@ -246,6 +248,16 @@ public class ProcesoRebajaController extends AbstractTaskMBean
 	public void setIdDocumentosExistentes(List<Integer> idDocumentosExistentes) {
 		this.idDocumentosExistentes = idDocumentosExistentes;
 	}
-	
 
+	public Integer getAno() {
+		if(this.ano == null){
+			this.ano = rebajaService.getAnoCurso();
+		}
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
+	
 }

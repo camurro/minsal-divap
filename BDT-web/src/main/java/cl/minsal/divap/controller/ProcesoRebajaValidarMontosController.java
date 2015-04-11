@@ -71,6 +71,7 @@ implements Serializable {
 	private String mesActual;
 	//Variables de entrada tarea
 	private Integer idProcesoRebaja;
+	private Integer ano;
 
 	//Variables de salida tarea
 	private boolean aprobar_;
@@ -85,6 +86,7 @@ implements Serializable {
 		}
 		if(getTaskDataVO().getData().get("_idProcesoRebaja") != null){
 			this.idProcesoRebaja = (Integer)getTaskDataVO().getData().get("_idProcesoRebaja");
+			this.ano = (Integer)getTaskDataVO().getData().get("_ano");
 		}
 		buscaDocumentos();
 		cargarListaRegiones();
@@ -146,7 +148,7 @@ implements Serializable {
 				idComunas.add(idComuna);
 			}
 		}
-		rebajaComunas = rebajaService.getRebajasByComuna(this.idProcesoRebaja, idComunas);
+		rebajaComunas = rebajaService.getRebajasByComuna(this.idProcesoRebaja, idComunas, this.ano);
 		totalIncumplimiento = rebajaComunas.size();
 		fisrtTime++;
 		System.out.println("ProcesoRebajaValidarMontosController:buscarRebaja fin totalIncumplimiento="+totalIncumplimiento);
@@ -189,7 +191,7 @@ implements Serializable {
 		if(rebajaSeleccionada != null && !rebajaSeleccionada.trim().isEmpty()){
 			Integer posicion = Integer.parseInt(posicionElemento);
 			PlanillaRebajaCalculadaVO planillaRebajaCalculadaVO = rebajaComunas.get(posicion);
-			planillaRebajaCalculadaVO = rebajaService.updateMontosRebajaComuna(this.idProcesoRebaja, planillaRebajaCalculadaVO);
+			planillaRebajaCalculadaVO = rebajaService.updateMontosRebajaComuna(this.idProcesoRebaja, planillaRebajaCalculadaVO, this.ano);
 			planillaRebajaCalculadaVO.setActualizar(false);
 			rebajaComunas.set(posicion, planillaRebajaCalculadaVO);
 			System.out.println("Actualizacion ok");

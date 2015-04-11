@@ -49,18 +49,21 @@ public class ConvenioRESTService extends BaseRest{
 	}
 
 	@GET
-	@Path("/convenio/cambiarEstadoPrograma/{programaSeleccionado}/{estado}")
-	public void cambiarEstadoPrograma(@PathParam("programaSeleccionado") Integer programaSeleccionado, @PathParam("estado") String estado){
+	@Path("/convenio/cambiarEstadoPrograma/{programaSeleccionado}/{ano}/{estado}")
+	public void cambiarEstadoPrograma(@PathParam("programaSeleccionado") Integer programaSeleccionado, @PathParam("ano") Integer ano, @PathParam("estado") String estado){
 		System.out.println("Cambiar estado-->"+programaSeleccionado);
 		if(programaSeleccionado == null){
 			throw new IllegalArgumentException("programaSeleccionado: "+ programaSeleccionado + " no puede ser nulo");
+		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
 		}
 		if(estado == null){
 			throw new IllegalArgumentException("estado: "+ estado + " no puede ser nulo");
 		}
 		ConveniosService conveniosService = getService(ConveniosService.class);
 		EstadosProgramas estadoPrograma = EstadosProgramas.getById(Integer.parseInt(estado));
-		conveniosService.cambiarEstadoPrograma(programaSeleccionado, estadoPrograma);
+		conveniosService.cambiarEstadoPrograma(programaSeleccionado, ano, estadoPrograma);
 	}
 
 	@GET
@@ -78,36 +81,39 @@ public class ConvenioRESTService extends BaseRest{
 	}	
 
 	@GET
-	@Path("/convenio/notificarServicioSalud/{programaSeleccionado}/{servicioSeleccionado}/{idConvenio}")
-	public void notificarServicioSalud(@PathParam("programaSeleccionado") Integer programaSeleccionado, @PathParam("servicioSeleccionado") Integer servicioSeleccionado, @PathParam("idConvenio") Integer idConvenio){
+	@Path("/convenio/notificarServicioSalud/{programaSeleccionado}/{ano}/{idConvenio}")
+	public void notificarServicioSalud(@PathParam("programaSeleccionado") Integer programaSeleccionado, @PathParam("ano") Integer ano, @PathParam("idConvenio") Integer idConvenio){
 		System.out.println("notificarServicioSalud programaSeleccionado-->"+programaSeleccionado);
-		System.out.println("notificarServicioSalud servicioSeleccionado-->"+servicioSeleccionado);
+		System.out.println("notificarServicioSalud ano-->"+ano);
 		System.out.println("notificarServicioSalud idConvenio-->"+idConvenio);
 		if(programaSeleccionado == null){
 			throw new IllegalArgumentException("programaSeleccionado: "+ programaSeleccionado + " no puede ser nulo");
 		}
-		if(servicioSeleccionado == null){
-			throw new IllegalArgumentException("servicioSeleccionado: "+ servicioSeleccionado + " no puede ser nulo");
+		if(ano == null){
+			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
 		}
 		if(idConvenio == null){
 			throw new IllegalArgumentException("idConvenio: "+ idConvenio + " no puede ser nulo");
 		}
 		ConveniosService conveniosService = getService(ConveniosService.class);
-		conveniosService.notificarServicioSalud(programaSeleccionado, servicioSeleccionado, idConvenio);
+		conveniosService.notificarServicioSalud(programaSeleccionado, ano, idConvenio);
 	}
 
 	@GET
-	@Path("/convenio/generarResolucionDisponibilizarAlfresco/{programaSeleccionado}/{idConvenio}")
-	public Integer generarResolucionDisponibilizarAlfresco(@PathParam("programaSeleccionado") Integer programaSeleccionado, @PathParam("idConvenio") Integer idConvenio){
+	@Path("/convenio/generarResolucionDisponibilizarAlfresco/{programaSeleccionado}/{ano}/{idConvenio}")
+	public Integer generarResolucionDisponibilizarAlfresco(@PathParam("programaSeleccionado") Integer programaSeleccionado, @PathParam("ano") Integer ano, @PathParam("idConvenio") Integer idConvenio){
 		System.out.println("generarResolucionDisponibilizarAlfresco-->"+programaSeleccionado);
 		if(programaSeleccionado == null){
 			throw new IllegalArgumentException("programaSeleccionado: "+ programaSeleccionado + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
+		}
 		if(idConvenio == null){
 			throw new IllegalArgumentException("idConvenio: "+ idConvenio + " no puede ser nulo");
 		}
 		ConveniosService conveniosService = getService(ConveniosService.class);
-		return conveniosService.generarResolucionDisponibilizarAlfresco(programaSeleccionado, idConvenio);
+		return conveniosService.generarResolucionDisponibilizarAlfresco(programaSeleccionado, ano, idConvenio);
 	}
 
 	@GET

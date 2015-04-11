@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import minsal.divap.enums.EstadosConvenios;
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import cl.minsal.divap.model.Convenio;
@@ -61,6 +62,20 @@ public class ConveniosDAO {
 			query.setParameter("idConvenioServicio", id);
 			List<ConvenioServicio> results = query.getResultList();
 			if (results.size() >= 1)
+				return results.get(0);
+			return null;
+
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public ConvenioServicioComponente getConvenioServicioComponenteById(Integer idConvenioServicioComponente){
+		try {
+			TypedQuery<ConvenioServicioComponente> query = this.em.createNamedQuery("ConvenioServicioComponente.findByIdConvenioServicioComponente", ConvenioServicioComponente.class);
+			query.setParameter("idConvenioServicioComponente", idConvenioServicioComponente);
+			List<ConvenioServicioComponente> results = query.getResultList();
+			if (results != null && results.size() > 0)
 				return results.get(0);
 			return null;
 
@@ -326,60 +341,18 @@ public class ConveniosDAO {
 		}
 	}
 
-	public List<ConvenioComunaComponente> getConveniosComunaComponenteByProgramaAnoComponenteSubtituloServicioConvenioEstadoConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idServicio, Integer idConvenio, Integer idEstadoConvenio) {
+	public List<ConvenioComunaComponente> getConveniosComunaComponenteByProgramaAnoComponenteSubtituloServicioEstadoConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idServicio, Integer idEstadoConvenio) {
 		try {
-			TypedQuery<ConvenioComunaComponente> query = this.em.createNamedQuery("ConvenioComunaComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdServicioIdConvenioIdEstadoConvenio", ConvenioComunaComponente.class);
+			System.out.println("idProgramaAno="+idProgramaAno);
+			System.out.println("idComponente="+idComponente);
+			System.out.println("idSubtitulo="+idSubtitulo);
+			System.out.println("idServicio="+idServicio);
+			System.out.println("idEstadoConvenio="+idEstadoConvenio);
+			TypedQuery<ConvenioComunaComponente> query = this.em.createNamedQuery("ConvenioComunaComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdServicioIdEstadoConvenio", ConvenioComunaComponente.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
 			query.setParameter("idComponente", idComponente);
-			query.setParameter("idSubtitulo", idSubtitulo);
+			query.setParameter("idTipoSubtitulo", idSubtitulo);
 			query.setParameter("idServicio", idServicio);
-			query.setParameter("idConvenio", idConvenio);
-			query.setParameter("idEstadoConvenio", idEstadoConvenio);
-			return query.getResultList(); 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	public List<ConvenioComunaComponente> getConveniosComunaComponenteByProgramaAnoComponenteSubtituloComunaConvenioEstadoConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idComuna, Integer idConvenio, Integer idEstadoConvenio) {
-		try {
-			TypedQuery<ConvenioComunaComponente> query = this.em.createNamedQuery("ConvenioComunaComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdComunaIdConvenioIdEstadoConvenio", ConvenioComunaComponente.class);
-			query.setParameter("idProgramaAno", idProgramaAno);
-			query.setParameter("idComponente", idComponente);
-			query.setParameter("idSubtitulo", idSubtitulo);
-			query.setParameter("idComuna", idComuna);
-			query.setParameter("idConvenio", idConvenio);
-			query.setParameter("idEstadoConvenio", idEstadoConvenio);
-			return query.getResultList(); 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	public List<ConvenioServicioComponente> getConveniosServicioComponenteByProgramaAnoComponenteSubtituloServicioConvenioEstadoConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idServicio, Integer idConvenio, Integer idEstadoConvenio) {
-		try {
-			TypedQuery<ConvenioServicioComponente> query = this.em.createNamedQuery("ConvenioServicioComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdServicioIdConvenioIdEstadoConvenio", ConvenioServicioComponente.class);
-			query.setParameter("idProgramaAno", idProgramaAno);
-			query.setParameter("idComponente", idComponente);
-			query.setParameter("idSubtitulo", idSubtitulo);
-			query.setParameter("idServicio", idServicio);
-			query.setParameter("idConvenio", idConvenio);
-			query.setParameter("idEstadoConvenio", idEstadoConvenio);
-			return query.getResultList(); 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-
-	public List<ConvenioServicioComponente> getConveniosServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoConvenioEstadoConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idEstablecimiento, Integer idConvenio, Integer idEstadoConvenio) {
-		try {
-			TypedQuery<ConvenioServicioComponente> query = this.em.createNamedQuery("ConvenioServicioComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdEstablecimientoIdConvenioIdEstadoConvenio", ConvenioServicioComponente.class);
-			query.setParameter("idProgramaAno", idProgramaAno);
-			query.setParameter("idComponente", idComponente);
-			query.setParameter("idSubtitulo", idSubtitulo);
-			query.setParameter("idEstablecimiento", idEstablecimiento);
-			query.setParameter("idConvenio", idConvenio);
 			query.setParameter("idEstadoConvenio", idEstadoConvenio);
 			return query.getResultList(); 
 		} catch (Exception e) {
@@ -542,7 +515,7 @@ public class ConveniosDAO {
 			TypedQuery<ConvenioServicioComponente> query = this.em.createNamedQuery("ConvenioServicioComponente.findByIdProgramaAnoIdComponenteIdSubtituloIdServicioIdEstadoConvenio", ConvenioServicioComponente.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
 			query.setParameter("idComponente", idComponente);
-			query.setParameter("idSubtitulo", idSubtitulo);
+			query.setParameter("idTipoSubtitulo", idSubtitulo);
 			query.setParameter("idServicio", idServicio);
 			query.setParameter("idEstadoConvenio", idEstadoConvenio);
 			return query.getResultList(); 
@@ -551,14 +524,12 @@ public class ConveniosDAO {
 		}
 	}
 
-	public List<ConvenioServicioComponente> getConveniosPagadosByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(
-			Integer idProgramaAno, Integer idComponente,
-			Integer idSubtitulo, Integer idEstablecimiento, Integer idEstadoConvenio) {
+	public List<ConvenioServicioComponente> getConveniosPagadosByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idEstablecimiento, Integer idEstadoConvenio) {
 		try {
 			TypedQuery<ConvenioServicioComponente> query = this.em.createNamedQuery("ConvenioServicioComponente.getConveniosPagadosByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio", ConvenioServicioComponente.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
 			query.setParameter("idComponente", idComponente);
-			query.setParameter("idSubtitulo", idSubtitulo);
+			query.setParameter("idTipoSubtitulo", idSubtitulo);
 			query.setParameter("idEstablecimiento", idEstablecimiento);
 			query.setParameter("idEstadoConvenio", idEstadoConvenio);
 			return query.getResultList(); 
@@ -838,6 +809,68 @@ public class ConveniosDAO {
 			query.setParameter("idServicio", idServicio);
 			query.setParameter("idEstadosConvenio", estadosConvenios);
 			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<ConvenioServicioComponente> getConvenioServicioComponenteByIdConvenioIdProgramaAnoEstado(Integer idConvenio, Integer idProgramaAno, EstadosConvenios estadoConvenio) {
+		try {
+			TypedQuery<ConvenioServicioComponente> query = this.em.createNamedQuery("ConvenioServicioComponente.findByIdConvenioIdProgramaAnoIdEstadoConvenio", ConvenioServicioComponente.class);
+			query.setParameter("idConvenio", idConvenio);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idEstadoConvenio", estadoConvenio.getId());
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public List<ConvenioComunaComponente> getConvenioComunaComponenteByIdConvenioIdProgramaAnoEstado(Integer idConvenio, Integer idProgramaAno, EstadosConvenios estadoConvenio) {
+		try {
+			TypedQuery<ConvenioComunaComponente> query = this.em.createNamedQuery("ConvenioComunaComponente.findByIdConvenioIdProgramaAnoIdEstadoConvenio", ConvenioComunaComponente.class);
+			query.setParameter("idConvenio", idConvenio);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idEstadoConvenio", estadoConvenio.getId());
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<ConvenioServicio> getConvenioServicioByProgramaAnoEstablecimientoEstado(Integer idProgramaAno, Integer idEstablecimiento, EstadosConvenios estadoConvenio) {
+		try {
+			TypedQuery<ConvenioServicio> query = this.em.createNamedQuery("ConvenioServicio.findByIdProgramaAnoIdEstablecimientoIdEstadoConvenio", ConvenioServicio.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idEstablecimiento", idEstablecimiento);
+			query.setParameter("idEstadoConvenio", estadoConvenio.getId());
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<ConvenioComuna> getConvenioComunaByProgramaAnoComunaEstado(Integer idProgramaAno, Integer idComuna, EstadosConvenios estadoConvenio) {
+		try {
+			TypedQuery<ConvenioComuna> query = this.em.createNamedQuery("ConvenioComuna.findByIdProgramaAnoIdComunaIdEstadoConvenio", ConvenioComuna.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComuna", idComuna);
+			query.setParameter("idEstadoConvenio", estadoConvenio.getId());
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public ConvenioComunaComponente getConvenioComunaComponenteById(Integer idConvenioComunaComponente) {
+		try {
+			TypedQuery<ConvenioComunaComponente> query = this.em.createNamedQuery("ConvenioComunaComponente.findByIdConvenioComunaComponente", ConvenioComunaComponente.class);
+			query.setParameter("idConvenioComunaComponente", idConvenioComunaComponente);
+			List<ConvenioComunaComponente> results = query.getResultList();
+			if (results != null && results.size() > 0)
+				return results.get(0);
+			return null;
+
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

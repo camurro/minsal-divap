@@ -43,7 +43,7 @@
 							<h:commandLink action="#{procesoGITSubirController.comenzar}"  rendered="#{_programa.estadoConvenio.id == '1'}">
 								<h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons" />
 								<f:setPropertyActionListener target="#{procesoGITSubirController.programaSeleccionado}"
-								value="#{_programa.idProgramaAno}" />
+								value="#{_programa.id}" />
 								<f:setPropertyActionListener target="#{procesoGITSubirController.target}"
 								value="bandejaTareas.jsf" />
 							</h:commandLink>

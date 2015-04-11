@@ -5,12 +5,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
 import minsal.divap.enums.BusinessProcess;
+import minsal.divap.service.ConveniosService;
 import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskVO;
+import cl.minsal.divap.model.ConvenioServicio;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 @Named ( "divapProcesoGTInicioController" ) 
@@ -19,6 +22,8 @@ public class ProcesoGTInicioController extends AbstractTaskMBean implements Seri
 
 	private static final long serialVersionUID = 8979055329731411696L;
 	private Integer ano;
+	@EJB 
+	private ConveniosService conveniosService;
 	
 	@PostConstruct 
 	public void init() {
@@ -62,7 +67,7 @@ public class ProcesoGTInicioController extends AbstractTaskMBean implements Seri
 
 	public Integer getAno() {
 		if(ano == null){
-			ano = 2016;
+			ano = conveniosService.getAnoCurso();
 		}
 		return ano;
 	}

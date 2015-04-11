@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jstl/core"
+	template="/WEB-INF/templates/default.xhtml">
+	
+	<ui:define name="zonaJavaScript">
+		<style type="text/css">
+.ui-state-error {
+	margin-left: 0px;
+}
+	</style>
+		<script type="text/javascript">
+			 function downloadDocument(idDoc) {  
+	             document.getElementById('formDownload:hiddenId').value=idDoc;
+	             document.getElementById('formDownload:linkDownload').click();  
+	         } 
+		</script>
+	</ui:define>
+	<ui:define name="content">
+		<h:form enctype="multipart/form-data" id="form">
+			<p:panel styleClass="contentPanel">
+				<h1>
+					<h:outputText value="Tramitación de Órdenes de Transferencia"/>
+				</h1>
+				<p:panel id="Panel">
+					<h2>
+						<strong>Validar Remesa Fonasa:</strong>
+					</h2>
+					
+					<p:commandButton value="Aceptar Remesa" styleClass="x-btn-text"
+						action="#{procesoOTValidarRemesaFonasaController.enviar}" ajax="false" icon="ui-icon-disk" >
+						<f:setPropertyActionListener target="#{procesoOTValidarRemesaFonasaController.target}" value="bandejaTareas.jsf" />
+						<f:setPropertyActionListener target="#{procesoOTValidarRemesaFonasaController.validacionRemesaFonasa}" value="true" />
+					</p:commandButton>
+
+					<p:commandButton value="Rechazar Remesa" styleClass="x-btn-text"
+						action="#{procesoOTValidarRemesaFonasaController.enviar}" ajax="false" icon="ui-icon-disk" >
+						<f:setPropertyActionListener target="#{procesoOTValidarRemesaFonasaController.target}" value="bandejaTareas.jsf" />
+						<f:setPropertyActionListener target="#{procesoOTValidarRemesaFonasaController.validacionRemesaFonasa}" value="false" />
+					</p:commandButton>
+				</p:panel>
+
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
+					icon="ui-icon-seek-first" />
+			</p:panel>
+		</h:form>
+			<h:form id="formDownload">
+				<h:inputHidden value="#{procesoOTValidarRemesaFonasaController.docIdDownload}" id="hiddenId" />
+				<h:commandButton id="linkDownload" action="#{procesoOTValidarRemesaFonasaController.downloadArchivo}" style="display: none"></h:commandButton>
+			</h:form>
+	</ui:define>
+</ui:composition>

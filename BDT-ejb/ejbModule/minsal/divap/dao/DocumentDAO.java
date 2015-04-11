@@ -649,5 +649,16 @@ public class DocumentDAO {
 		}
 		return referenciaDocumento;
 	}
+	
+	public List<ReferenciaDocumento> getVersionFinalOTByType(Integer idProceso, TipoDocumentosProcesos tipoDocumento) {
+		try {
+			TypedQuery<ReferenciaDocumento> query = this.em.createNamedQuery("DocumentoRemesas.findVersionFinalByIdOTTipoDocumento", ReferenciaDocumento.class);
+			query.setParameter("idRemesa", idProceso);
+			query.setParameter("idTipoDocumento", tipoDocumento.getId());
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }

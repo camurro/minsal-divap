@@ -65,7 +65,7 @@ implements Serializable {
 			default:
 				break;
 			}
-			distribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, tipoDocumento, versionFinal);
+			distribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, tipoDocumento, versionFinal, null);
 		}else{
 			System.out.println("uploadVersion file is null");
 			FacesMessage message = new FacesMessage("uploadVersion file is null");

@@ -23,10 +23,10 @@ public class CargaConvenioServicioComponenteMapper implements Mapper<ConvenioSer
 		componente.setId(convenioServicioComponente.getComponente().getId());
 		componente.setNombre(convenioServicioComponente.getComponente().getNombre());
 		cargaConvenioServicioComponenteVO.setComponente(componente);
-		if(convenioServicioComponente.getDocumentoConvenio() != null) {
+		if(convenioServicioComponente.getConvenioServicio().getDocumentoConvenio() != null) {
 			DocumentSummaryVO documento = new DocumentSummaryVO();
-			documento.setIdDocumento(convenioServicioComponente.getDocumentoConvenio().getId());
-			documento.setDescDocumento(convenioServicioComponente.getDocumentoConvenio().getPath());
+			documento.setIdDocumento(convenioServicioComponente.getConvenioServicio().getDocumentoConvenio().getId());
+			documento.setDescDocumento(convenioServicioComponente.getConvenioServicio().getDocumentoConvenio().getPath());
 			cargaConvenioServicioComponenteVO.setDocumento(documento);
 		}
 		cargaConvenioServicioComponenteVO.setIdEstablecimiento(convenioServicioComponente.getConvenioServicio().getIdEstablecimiento().getId());

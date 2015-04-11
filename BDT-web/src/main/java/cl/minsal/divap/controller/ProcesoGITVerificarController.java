@@ -48,7 +48,7 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 	private Boolean sub22;
 	private Boolean sub24;
 	private Boolean sub29;
-	private Boolean rectificar_;
+	private Boolean rectificar;
 	private String componenteSeleccionado;
 	private String servicioSeleccionado;
 	private String comunaSeleccionada24;
@@ -98,8 +98,8 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 	@Override
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new  HashMap<String, Object>();
-		parameters.put("rectificar_", isRectificar_() );
-		System.out.println("rectificar_="+isRectificar_());
+		parameters.put("rectificar_", getRectificar());
+		System.out.println("rectificar_="+getRectificar());
 		Integer idServicio = ((servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty() || servicioSeleccionado.trim().equals("0"))?null:Integer.parseInt(servicioSeleccionado));
 		if(idServicio != null){
 			System.out.println("servicioSeleccionado_="+idServicio);
@@ -114,7 +114,7 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 	}
 
 	public String  informarReparos(){
-		return  enviar();
+		return enviar();
 	}
 
 	@Override
@@ -132,16 +132,19 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 		setSub24(false);
 		setSub29(false);
 		setBusquedaRealizada(false);
+		setRectificar(false);
 		servicios = serviciosService.getServiciosOrderId();
-		servicioSeleccionado = servicios.get(0).getId_servicio() + "";
+		servicioSeleccionado = "0";
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
+			ano = (Integer) getTaskDataVO().getData().get("_ano");
 			idConvenio = (Integer) getTaskDataVO().getData().get("_idConvenio");
 			System.out.println("programaSeleccionado --->"+ programaSeleccionado);
 			System.out.println("idConvenio --->"+ idConvenio);
 			System.out.println("servicioSeleccionado --->"+ servicioSeleccionado);
-			setPrograma(programaService.getProgramaAnoPorID(programaSeleccionado));
-			ano = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("ano --->"+ ano);
+			setPrograma(programaService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano));
+			
 			componenteSeleccionado = getPrograma().getComponentes().get(0).getId().toString();
 			for(SubtituloVO subtituloVO : getPrograma().getComponentes().get(0).getSubtitulos()){
 				if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId()) && !getSub21()){
@@ -157,6 +160,17 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 			}
 			if(getSub21() || getSub22() || getSub29()){
 				establecimientos = establecimientosService.getEstablecimientosByServicio(Integer.parseInt(servicioSeleccionado));
+			}
+		}
+		
+		List<ConvenioServicioComponenteVO> convenioServicioComponenteRechazado = conveniosService.getConvenioServicioComponenteConvenioProgramaAnoEstado(idConvenio, getPrograma().getIdProgramaAno(), EstadosConvenios.RECHAZADO);
+		if(convenioServicioComponenteRechazado != null && convenioServicioComponenteRechazado.size() > 0){
+			setRectificar(true);
+		}
+		if(!getRectificar()){
+			List<ConvenioComunaComponenteVO> convenioComunaComponenteRechazado = conveniosService.getConvenioComunaComponenteConvenioProgramaAnoEstado(idConvenio, getPrograma().getIdProgramaAno(), EstadosConvenios.RECHAZADO);
+			if(convenioComunaComponenteRechazado != null && convenioComunaComponenteRechazado.size() > 0){
+				setRectificar(true);
 			}
 		}
 		System.out.println("comunasSub24.size() --> " +((this.comunasSub24==null)?"0":this.comunasSub24.size()));
@@ -282,12 +296,12 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 		this.comunaSeleccionada24 = comunaSeleccionada24;
 	}
 
-	public boolean isRectificar_() {
-		return rectificar_;
+	public Boolean getRectificar() {
+		return rectificar;
 	}
 
-	public void setRectificar_(boolean rectificar_) {
-		this.rectificar_ = rectificar_;
+	public void setRectificar(Boolean rectificar) {
+		this.rectificar = rectificar;
 	}
 
 	public List<ServiciosVO> getServicios() {
@@ -343,7 +357,7 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 	}
 
 	public void buscar() {
-		System.out.println("buscar--> .componenteSeleccionado=" + componenteSeleccionado + " servicioSeleccionado=" + servicioSeleccionado);
+		System.out.println("buscar--> componenteSeleccionado=" + componenteSeleccionado + " servicioSeleccionado=" + servicioSeleccionado);
 		if(componenteSeleccionado == null || componenteSeleccionado.trim().isEmpty() || componenteSeleccionado.trim().equals("0")){
 			FacesMessage msg = new FacesMessage("Debe seleccionar el componente antes de realizar la búsqueda");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -356,7 +370,7 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 			setBusquedaRealizada(true);
 			Integer idComponente = Integer.parseInt(componenteSeleccionado);
 			ComponentesVO componentesVO = componenteService.getComponenteById(idComponente);
-			Integer idServicio = ((servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty() || servicioSeleccionado.trim().equals("0"))?null:Integer.parseInt(servicioSeleccionado));
+			Integer idServicio = ((servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty() || servicioSeleccionado.trim().equals("0")) ? null : Integer.parseInt(servicioSeleccionado));
 			System.out.println("getPrograma().getIdProgramaAno()="+getPrograma().getIdProgramaAno());
 			System.out.println("idComponente="+idComponente);
 			System.out.println("idServicio="+idServicio);
@@ -364,13 +378,13 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 			for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){
 				if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId()) && !getSub21()){
 					setSub21(true);
-					Integer idEstablecimientoSub21 = ((establecimientoSeleccionado21 == null || establecimientoSeleccionado21.trim().isEmpty() || establecimientoSeleccionado21.trim().equals("0"))?null:Integer.parseInt(establecimientoSeleccionado21));
+					Integer idEstablecimientoSub21 = ((establecimientoSeleccionado21 == null || establecimientoSeleccionado21.trim().isEmpty() || establecimientoSeleccionado21.trim().equals("0")) ? null : Integer.parseInt(establecimientoSeleccionado21));
 					System.out.println("Subtitulo.SUBTITULO21.getId()="+Subtitulo.SUBTITULO21.getId());
 					System.out.println("idEstablecimientoSub21="+idEstablecimientoSub21);
 					if(idEstablecimientoSub21 == null){
-						this.conveniosServicioComponenteSub21 = conveniosService.getConveniosServicioComponenteByProgramaAnoComponenteSubtituloServicioConvenioEstadoConvenio(getPrograma().getIdProgramaAno(), idComponente, Subtitulo.SUBTITULO21.getId(), idServicio, idConvenio,EstadosConvenios.INGRESADO);
+						this.conveniosServicioComponenteSub21 = conveniosService.getConveniosServicioComponenteByProgramaAnoComponenteSubtituloServicioEstadoConvenio(getPrograma().getIdProgramaAno(), idComponente, Subtitulo.SUBTITULO21.getId(), idServicio, EstadosConvenios.INGRESADO);
 					}else{
-						this.conveniosServicioComponenteSub21 = conveniosService.getConveniosServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoConvenioEstadoConvenio(getPrograma().getIdProgramaAno(), idComponente, Subtitulo.SUBTITULO21.getId(), idEstablecimientoSub21, idConvenio, EstadosConvenios.INGRESADO);
+						this.conveniosServicioComponenteSub21 = conveniosService.getConveniosServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(getPrograma().getIdProgramaAno(), idComponente, Subtitulo.SUBTITULO21.getId(), idEstablecimientoSub21, EstadosConvenios.INGRESADO);
 					}
 					calcularTotalesSub21();
 				}else if(Subtitulo.SUBTITULO22.getId().equals(subtituloVO.getId()) && !getSub22()){
@@ -379,9 +393,9 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 					System.out.println("Subtitulo.SUBTITULO22.getId()="+Subtitulo.SUBTITULO22.getId());
 					System.out.println("idEstablecimientoSub22="+idEstablecimientoSub22);
 					if(idEstablecimientoSub22 == null){
-						this.conveniosServicioComponenteSub22 = conveniosService.getConveniosServicioComponenteByProgramaAnoComponenteSubtituloServicioConvenioEstadoConvenio(getPrograma().getIdProgramaAno(), idComponente, Subtitulo.SUBTITULO22.getId(), idServicio, idConvenio, EstadosConvenios.INGRESADO);
+						this.conveniosServicioComponenteSub22 = conveniosService.getConveniosServicioComponenteByProgramaAnoComponenteSubtituloServicioEstadoConvenio(getPrograma().getIdProgramaAno(), idComponente, Subtitulo.SUBTITULO22.getId(), idServicio, EstadosConvenios.INGRESADO);
 					}else{
-						this.conveniosServicioComponenteSub22 = conveniosService.getConveniosServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoConvenioEstadoConvenio(getPrograma().getIdProgramaAno(), idComponente, Subtitulo.SUBTITULO22.getId(), idEstablecimientoSub22, idConvenio, EstadosConvenios.INGRESADO);
+						this.conveniosServicioComponenteSub22 = conveniosService.getConveniosServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(getPrograma().getIdProgramaAno(), idComponente, Subtitulo.SUBTITULO22.getId(), idEstablecimientoSub22, EstadosConvenios.INGRESADO);
 					}
 					calcularTotalesSub22();
 				}else if(Subtitulo.SUBTITULO24.getId().equals(subtituloVO.getId()) && !getSub24()){
@@ -390,9 +404,9 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 					System.out.println("Subtitulo.SUBTITULO24.getId()="+Subtitulo.SUBTITULO24.getId());
 					System.out.println("idComuna="+idComuna);
 					if(idComuna == null){
-						this.conveniosComunaComponenteSub24 = conveniosService.getConveniosComunaComponenteByProgramaAnoComponenteSubtituloServicioConvenioEstadoConvenio(getPrograma().getIdProgramaAno(), idComponente, Subtitulo.SUBTITULO24.getId(), idServicio, idConvenio, EstadosConvenios.INGRESADO);
+						this.conveniosComunaComponenteSub24 = conveniosService.getConveniosComunaComponenteByProgramaAnoComponenteSubtituloServicioEstadoConvenio(getPrograma().getIdProgramaAno(), idComponente, Subtitulo.SUBTITULO24.getId(), idServicio, EstadosConvenios.INGRESADO);
 					}else{
-						this.conveniosComunaComponenteSub24 = conveniosService.getConveniosComunaComponenteByProgramaAnoComponenteSubtituloComunaConvenioEstadoConvenio(getPrograma().getIdProgramaAno(), idComponente, Subtitulo.SUBTITULO24.getId(), idComuna, idConvenio, EstadosConvenios.INGRESADO);
+						this.conveniosComunaComponenteSub24 = conveniosService.getConveniosComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(getPrograma().getIdProgramaAno(), idComponente, Subtitulo.SUBTITULO24.getId(), idComuna, EstadosConvenios.INGRESADO);
 					}
 					calcularTotalesSub24();
 				}else if(Subtitulo.SUBTITULO29.getId().equals(subtituloVO.getId()) && !getSub29()){
@@ -401,9 +415,9 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 					System.out.println("Subtitulo.SUBTITULO29.getId()="+Subtitulo.SUBTITULO29.getId());
 					System.out.println("idEstablecimientoSub22="+idEstablecimientoSub29);
 					if(idEstablecimientoSub29 == null){
-						this.conveniosServicioComponenteSub29 = conveniosService.getConveniosServicioComponenteByProgramaAnoComponenteSubtituloServicioConvenioEstadoConvenio(getPrograma().getIdProgramaAno(), idComponente, Subtitulo.SUBTITULO29.getId(), idServicio, idConvenio, EstadosConvenios.INGRESADO);
+						this.conveniosServicioComponenteSub29 = conveniosService.getConveniosServicioComponenteByProgramaAnoComponenteSubtituloServicioEstadoConvenio(getPrograma().getIdProgramaAno(), idComponente, Subtitulo.SUBTITULO29.getId(), idServicio, EstadosConvenios.INGRESADO);
 					}else{
-						this.conveniosServicioComponenteSub29 = conveniosService.getConveniosServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoConvenioEstadoConvenio(getPrograma().getIdProgramaAno(), idComponente, Subtitulo.SUBTITULO29.getId(), idEstablecimientoSub29, idConvenio, EstadosConvenios.INGRESADO);
+						this.conveniosServicioComponenteSub29 = conveniosService.getConveniosServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(getPrograma().getIdProgramaAno(), idComponente, Subtitulo.SUBTITULO29.getId(), idEstablecimientoSub29, EstadosConvenios.INGRESADO);
 					}
 					calcularTotalesSub29();
 				}
@@ -718,6 +732,16 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 			calcularTotalesSub21();
 		}
 	}
+	
+	public void rechazarSub21(Integer row, Integer idConvenioServicioComponente) {
+		System.out.println("rechazarSub21(" + row + "," + idConvenioServicioComponente + ")");
+		ConvenioServicioComponenteVO conveniosServicioComponente =  conveniosService.rechazarConvenioServicioComponente(idConvenio, idConvenioServicioComponente);
+		if(this.conveniosServicioComponenteSub21 != null && (row < this.conveniosServicioComponenteSub21.size()) && conveniosServicioComponente != null){
+			this.conveniosServicioComponenteSub21.remove(conveniosServicioComponente);
+			calcularTotalesSub21();
+			setRectificar(true);
+		}
+	}
 
 	public void actualizarSub22(Integer row, Integer idConvenioServicioComponente) {
 		System.out.println("actualizarSub22(" + row + "," + idConvenioServicioComponente + ")");
@@ -725,6 +749,16 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 		if(this.conveniosServicioComponenteSub22 != null && (row < this.conveniosServicioComponenteSub22.size()) && conveniosServicioComponente != null){
 			this.conveniosServicioComponenteSub22.remove(conveniosServicioComponente);
 			calcularTotalesSub22();
+		}
+	}
+	
+	public void rechazarSub22(Integer row, Integer idConvenioServicioComponente) {
+		System.out.println("rechazarSub22(" + row + "," + idConvenioServicioComponente + ")");
+		ConvenioServicioComponenteVO conveniosServicioComponente =  conveniosService.rechazarConvenioServicioComponente(idConvenio, idConvenioServicioComponente);
+		if(this.conveniosServicioComponenteSub22 != null && (row < this.conveniosServicioComponenteSub22.size()) && conveniosServicioComponente != null){
+			this.conveniosServicioComponenteSub22.remove(conveniosServicioComponente);
+			calcularTotalesSub22();
+			setRectificar(true);
 		}
 	}
 
@@ -736,14 +770,36 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 			calcularTotalesSub29();
 		}
 	}
+	
+	public void rechazarSub29(Integer row, Integer idConvenioServicioComponente) {
+		System.out.println("rechazarSub29(" + row + "," + idConvenioServicioComponente + ")");
+		ConvenioServicioComponenteVO conveniosServicioComponente =  conveniosService.rechazarConvenioServicioComponente(idConvenio, idConvenioServicioComponente);
+		if(this.conveniosServicioComponenteSub29 != null && (row < this.conveniosServicioComponenteSub29.size()) && conveniosServicioComponente != null){
+			this.conveniosServicioComponenteSub29.remove(conveniosServicioComponente);
+			calcularTotalesSub29();
+			setRectificar(true);
+		}
+	}
 
-	public void actualizarSub24(Integer row, Integer idConvenioServicioComponente) {
-		System.out.println("actualizarSub24(" + row + "," + idConvenioServicioComponente + ")");
-		ConvenioComunaComponenteVO conveniosComunaComponente = conveniosService.aprobarConvenioComunaComponente(idConvenio, idConvenioServicioComponente);
+	public void actualizarSub24(Integer row, Integer idConvenioComunaComponente) {
+		System.out.println("actualizarSub24(" + row + "," + idConvenioComunaComponente + ")");
+		ConvenioComunaComponenteVO conveniosComunaComponente = conveniosService.aprobarConvenioComunaComponente(idConvenio, idConvenioComunaComponente);
 		if(this.conveniosComunaComponenteSub24 != null && (row < this.conveniosComunaComponenteSub24.size()) && conveniosComunaComponente != null){
 			System.out.println("removiendo el elemento de la posicion="+row);
 			this.conveniosComunaComponenteSub24.remove(conveniosComunaComponente);
 			calcularTotalesSub24();
+		}
+		System.out.println("conveniosComunaComponenteSub24.size()=" + ((conveniosComunaComponenteSub24==null) ? "0" : conveniosComunaComponenteSub24.size()) );
+	}
+	
+	public void rechazarSub24(Integer row, Integer idConvenioComunaComponente) {
+		System.out.println("rechazarSub24(" + row + "," + idConvenioComunaComponente + ")");
+		ConvenioComunaComponenteVO conveniosComunaComponente = conveniosService.rechazarConvenioComunaComponente(idConvenio, idConvenioComunaComponente);
+		if(this.conveniosComunaComponenteSub24 != null && (row < this.conveniosComunaComponenteSub24.size()) && conveniosComunaComponente != null){
+			System.out.println("removiendo el elemento de la posicion="+row);
+			this.conveniosComunaComponenteSub24.remove(conveniosComunaComponente);
+			calcularTotalesSub24();
+			setRectificar(true);
 		}
 		System.out.println("conveniosComunaComponenteSub24.size()=" + ((conveniosComunaComponenteSub24==null) ? "0" : conveniosComunaComponenteSub24.size()) );
 	}
@@ -767,13 +823,13 @@ public class ProcesoGITVerificarController extends AbstractTaskMBean implements 
 	}
 	
 	public String downloadPlanillaMunicipal() {
-		Integer docDownload = conveniosService.planillaMunicipalServicio(programaSeleccionado ,idConvenio);
+		Integer docDownload = conveniosService.planillaMunicipalServicio(getPrograma().getIdProgramaAno(), idConvenio);
 		setDocumento(documentService.getDocument(docDownload));
 		super.downloadDocument();
 		return null;
 	}
 	public String downloadPlanillaServicios() {
-		Integer docDownload = conveniosService.planillaEstablecimientoServicio(programaSeleccionado ,idConvenio);
+		Integer docDownload = conveniosService.planillaEstablecimientoServicio(getPrograma().getIdProgramaAno(), idConvenio);
 		setDocumento(documentService.getDocument(docDownload));
 		super.downloadDocument();
 		return null;

@@ -6,9 +6,8 @@
 	<ui:define name="zonaJavaScript">
 		<style type="text/css">
 			.ui-state-error {
-					margin-left: 0px;
+				margin-left: 0px;
 			}
-
 			 .hide-column-names table thead tr {
                 display: none;
             }
@@ -32,7 +31,6 @@
             .ui-datatable.borderless tbody td {
                 border-style: none;
             }
-			
 		</style>
 		<script type="text/javascript">
 
@@ -54,7 +52,7 @@
 	</ui:define>
 	<ui:define name="content">
 		<h:form enctype="multipart/form-data" id="form">
-		<p:commandButton id="buscarReporte" value="actualiza" update="form:tablaResultados" style="display: none" actionListener="#{procesoOTSeguimientoDocumentacionController.buscarReporteCorreos}"/>
+		<p:commandButton id="buscarReporte" value="actualiza" update="form:tablaResultados" style="display: none" actionListener="#{procesoOTSeguimientoDocumentacionServiciosController.buscarReporteCorreos}"/>
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="Tramitación de Órdenes de Transferencia"/>
@@ -63,7 +61,7 @@
 					<h2>
 						<strong>Resumen de Documentos Enviados:</strong>
 					</h2>
-					<p:dataTable resizableColumns="true" value="#{procesoOTSeguimientoDocumentacionController.reporteCorreos}" liveResize="true"
+					<p:dataTable resizableColumns="true" value="#{procesoOTSeguimientoDocumentacionServiciosController.reporteCorreos}" liveResize="true"
 					var="_reporte" rows="40" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
 						styleClass="dataTable"  id="tablaResultados">
 						<p:columnGroup type="header">
@@ -73,20 +71,20 @@
 								<p:column headerText="Destinatario" width="250"/>
 							</p:row>
 						</p:columnGroup>
-						<p:column rendered="#{not empty procesoOTSeguimientoDocumentacionController.reporteCorreos}">
+						<p:column rendered="#{not empty procesoOTSeguimientoDocumentacionServiciosController.reporteCorreos}">
 							 
 							<p:dataTable resizableColumns="true" value="#{_reporte.adjuntos}" var="adj" styleClass="noheader borderless" >
                                 <p:column  >
                                     <h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
-                                    <h:commandLink action="#{procesoOTSeguimientoDocumentacionController.downloadArchivo}" value="#{adj.nombre}" onclick="downloadDocument(#{adj.id});return false;" />
+                                    <h:commandLink action="#{procesoOTSeguimientoDocumentacionServiciosController.downloadArchivo}" value="#{adj.nombre}" onclick="downloadDocument(#{adj.id});return false;" />
                                     <br />
                                 </p:column>
                             </p:dataTable>
 						</p:column>
-						<p:column rendered="#{not empty procesoOTSeguimientoDocumentacionController.reporteCorreos}">
+						<p:column rendered="#{not empty procesoOTSeguimientoDocumentacionServiciosController.reporteCorreos}">
 							#{_reporte.fechaFormat}
 						</p:column>
-						<p:column style="align:left" rendered="#{not empty procesoOTSeguimientoDocumentacionController.reporteCorreos}">
+						<p:column style="align:left" rendered="#{not empty procesoOTSeguimientoDocumentacionServiciosController.reporteCorreos}">
 							<p:dataTable resizableColumns="true" value="#{_reporte.to}" var="para" styleClass="noheader borderless" >
                                 <p:column width="20px" rowspan="#{_reporte.to.size()}" >
                                     <h:outputText value="Para:" style="align:left"></h:outputText>
@@ -99,8 +97,8 @@
 					</p:dataTable>
 
 					<p:commandButton value="Finalizar Actividad" styleClass="x-btn-text"
-						action="#{procesoOTSeguimientoDocumentacionController.enviar}" ajax="false" icon="ui-icon-disk" >
-						<f:setPropertyActionListener target="#{procesoOTSeguimientoDocumentacionController.target}" value="bandejaTareas.jsf" />
+						action="#{procesoOTSeguimientoDocumentacionServiciosController.enviar}" ajax="false" icon="ui-icon-disk" >
+						<f:setPropertyActionListener target="#{procesoOTSeguimientoDocumentacionServiciosController.target}" value="bandejaTareas.jsf" />
 					</p:commandButton>
 				</p:panel>
 
@@ -110,10 +108,10 @@
 		</h:form>
 				<h:form id="formDownload">
 			<h:inputHidden
-				value="#{procesoOTSeguimientoDocumentacionController.docIdDownload}"
+				value="#{procesoOTSeguimientoDocumentacionServiciosController.docIdDownload}"
 				id="hiddenId" />
 			<h:commandButton id="linkDownload"
-				action="#{procesoOTSeguimientoDocumentacionController.downloadArchivo()}"
+				action="#{procesoOTSeguimientoDocumentacionServiciosController.downloadArchivo}"
 				style="display: none"></h:commandButton>
 		</h:form>
 	</ui:define>

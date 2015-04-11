@@ -23,7 +23,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import minsal.divap.enums.EstadosProgramas;
-import minsal.divap.service.DistribucionInicialPercapitaService;
 import minsal.divap.service.ReliquidacionService;
 
 
@@ -36,17 +35,6 @@ import minsal.divap.service.ReliquidacionService;
 @RequestScoped
 public class ReliquidacionRESTService extends BaseRest{
 
-	@GET
-    @Path("/reliquidacion/elaborarDocumentoFormal/{idDistribucionInicialPercapita}")
-    public void elaborarDocumentoFormal(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita){
-		System.out.println("elaborar Documento Formal-->"+idDistribucionInicialPercapita);
-		if(idDistribucionInicialPercapita == null){
-			throw new IllegalArgumentException("proceso: "+ idDistribucionInicialPercapita + " no puede ser nulo");
-		}
-		DistribucionInicialPercapitaService distribucionInicialPercapitaService = getService(DistribucionInicialPercapitaService.class);
-		distribucionInicialPercapitaService.elaborarDocumentoFormal(idDistribucionInicialPercapita);
-    }
-	
 	@GET
     @Path("/reliquidacion/cambiarEstadoPrograma/{idPrograma}/{estado}")
     @Produces("application/json")

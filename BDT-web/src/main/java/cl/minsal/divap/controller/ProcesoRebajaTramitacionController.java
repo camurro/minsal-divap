@@ -80,6 +80,7 @@ implements Serializable {
 
 	//Variables de entrada tarea
 	private Integer idProcesoRebaja;
+	private Integer ano;
 
 	//Variables de salida tarea
 	private boolean aprobar_;
@@ -98,6 +99,7 @@ implements Serializable {
 		}
 		if(getTaskDataVO().getData().get("_idProcesoRebaja") != null){
 			this.idProcesoRebaja = (Integer)getTaskDataVO().getData().get("_idProcesoRebaja");
+			this.ano = (Integer)getTaskDataVO().getData().get("_ano");
 		}
 		cargarListaRegiones();
 		setMesActual(rebajaService.getMesCorte(this.idProcesoRebaja));
@@ -142,7 +144,7 @@ implements Serializable {
 		}else{
 			serviciosResoluciones = documentService.getDocumentByResolucionTypesServicioRebaja(idProcesoRebaja, Integer.parseInt(servicioSeleccionado), TipoDocumentosProcesos.RESOLUCIONREBAJA);
 		}
-		rebajaComunas = rebajaService.getRebajasByComuna(this.idProcesoRebaja, idComunas);
+		rebajaComunas = rebajaService.getRebajasByComuna(this.idProcesoRebaja, idComunas, this.ano);
 		fisrtTime++;
 	}
 
@@ -231,7 +233,8 @@ implements Serializable {
 				conCopiaOculta = Arrays.asList(this.cco.split("\\,")); 
 			}
 			System.out.println("ProcesoRebajaTramitacionController-->sendMail");
-			rebajaService.createSeguimientoRebaja(idProcesoRebaja, TareasSeguimiento.HACERSEGUIMIENTORESOLUCIONREABAJA, subject, body, getLoggedUsername(), para, conCopia, conCopiaOculta, documentos);
+			rebajaService.createSeguimientoRebaja(idProcesoRebaja, TareasSeguimiento.HACERSEGUIMIENTORESOLUCIONREABAJA, subject, body, getLoggedUsername(), para, conCopia, 
+					conCopiaOculta, documentos, this.ano);
 		}catch(Exception e){
 			e.printStackTrace();
 			target = null;
@@ -306,7 +309,8 @@ implements Serializable {
 				Integer idServicio = Integer.parseInt(getHiddenIdServicio());
 				System.out.println("docResolucion->"+docResolucion);
 				System.out.println("idServicio->"+idServicio);
-				rebajaService.moveToAlfrescoDistribucionInicialPercapita(this.idProcesoRebaja, idServicio, docResolucion, TipoDocumentosProcesos.RESOLUCIONREBAJA, this.lastVersion);
+				rebajaService.moveToAlfrescoDistribucionInicialPercapita(this.idProcesoRebaja, idServicio, docResolucion, TipoDocumentosProcesos.RESOLUCIONREBAJA, 
+						this.lastVersion, this.ano);
 			}catch (Exception e) {
 				e.printStackTrace();
 			}

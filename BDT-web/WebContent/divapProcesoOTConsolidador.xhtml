@@ -37,6 +37,7 @@
 	</ui:define>
 	<ui:define name="content">
 		<h:form enctype="multipart/form-data" id="form">
+		<p:growl id="growl" showDetail="false"/>  
 		<h:inputHidden  id="submit" value="#{procesoOTRevisarConsolidacionController.submit}" />
 		<p:commandButton id="botonActualizar" value="actualiza" update="form:tabViewConsolidado:resumenProgramas form:tabViewConsolidado:tabViewSubtitulos:tablaFonasaS21 form:tabViewConsolidado:tabViewSubtitulos:tablaFonasaS22 form:tabViewConsolidado:tabViewSubtitulos:tablaFonasaS29 form:tabViewConsolidado:tabViewSubtitulos:tablaFonasaS24 submit" style="display: none" action="#{procesoOTRevisarConsolidacionController.actualizar}"/>
 			<p:panel styleClass="contentPanel">
@@ -157,10 +158,14 @@
 												</p:column>
 												</c:forEach>
 												<p:column>
-													<span class="textoAjustado textoPequenio">#{fonasaS29.totalOtrosProgramas}</span>
+													<h:outputText value="#{fonasaS29.totalOtrosProgramas}"  styleClass="textoAjustado textoPequenio">
+														<f:convertNumber  maxFractionDigits="0"/>
+													</h:outputText>
 												</p:column>
 												<p:column>
-													<span class="textoAjustado textoPequenio">#{fonasaS29.total}</span>
+													<h:outputText value="#{fonasaS29.total}"  styleClass="textoAjustado textoPequenio">
+														<f:convertNumber  maxFractionDigits="0"/>
+													</h:outputText>
 												</p:column>
 										</p:dataTable>	
 									</p:tab>
@@ -236,30 +241,30 @@
 								</p:tabView>
 							</p:tab>
 							<p:tab id="tab22" title="Detalle Programas">
-								<h:panelGrid columns="2">
-									<h:outputText value="Servicio: " styleClass="inputLabel" />
-									<p:selectOneMenu id="servicios"  value="#{procesoOTRevisarConsolidacionController.servicioSeleccionado}">
-										<f:selectItem itemLabel="Seleccione" itemValue="" />  
-										<f:selectItems value="#{procesoOTRevisarConsolidacionController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
-									</p:selectOneMenu>
-								</h:panelGrid>
+								<p:panelGrid columns="2">
 									<h:outputText value="Programa: " styleClass="inputLabel" />
 									<p:selectOneMenu id="programas"  value="#{procesoOTRevisarConsolidacionController.programaSeleccionado}">
 										<f:selectItem itemLabel="Seleccione" itemValue="" />  
 										<f:selectItems value="#{procesoOTRevisarConsolidacionController.listaProgramas}" itemLabel="#{programa.nombre}" var="programa" itemValue="#{programa.idProgramaAno}"/>
 										<p:ajax listener="#{procesoOTRevisarConsolidacionController.cargaComponentes}" update=":form:tabViewConsolidado:componentes"/> 
 									</p:selectOneMenu>
-								<h:panelGrid columns="2">
+								 
 									<h:outputText value="Componente " styleClass="inputLabel" />
 									<p:selectOneMenu id="componentes"  value="#{procesoOTRevisarConsolidacionController.componenteSeleccionado}">
 										<f:selectItem itemLabel="Seleccione" itemValue="" />  
 										<f:selectItems value="#{procesoOTRevisarConsolidacionController.listaComponentes}" itemLabel="#{componente.nombre}" var="componente" itemValue="#{componente.id}"/> 
 									</p:selectOneMenu>
 									
-									<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoOTRevisarConsolidacionController.buscarDetallePrograma}" update=":form:tabViewConsolidado:resumenProgramas" oncomplete="actualizarTabla();"/>
-								</h:panelGrid>
+									<h:outputText value="Servicio: " styleClass="inputLabel" />
+									<p:selectOneMenu id="servicios"  value="#{procesoOTRevisarConsolidacionController.servicioSeleccionado}">
+										<f:selectItem itemLabel="Seleccione" itemValue="" />  
+										<f:selectItems value="#{procesoOTRevisarConsolidacionController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
+									</p:selectOneMenu>
+									
+									<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoOTRevisarConsolidacionController.buscarDetallePrograma}" update=":form:tabViewConsolidado:resumenProgramas :form:growl" oncomplete="actualizarTabla();"/>
+								</p:panelGrid>
 
-									<br />
+								<br />
 								<p:tabView id="resumenProgramas">
 									<c:if test="#{procesoOTRevisarConsolidacionController.subtitulo21}">
 										<p:tab title="Subtítulo 21">
@@ -349,9 +354,8 @@
 												</p:column>
 												<p:column>
 													<p:selectBooleanCheckbox rendered="#{not detalleS21.aprobado}" value="#{detalleS21.aprobado}">
-										            	<p:ajax update=":form:tabViewConsolidado:resumenProgramas:tablaResultadosS21" listener="#{procesoOTRevisarConsolidacionController.actualizarS21(rowIndexS21, detalleS21.establecimiento.codigoEstablecimiento)}"/>
+										            	<p:ajax update=":form:tabViewConsolidado:resumenProgramas:tablaResultadosS21" listener="#{procesoOTRevisarConsolidacionController.actualizarS21(rowIndexS21)}"/>
 										        	</p:selectBooleanCheckbox>
-													<h:graphicImage rendered="#{detalleS21.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />	
 												</p:column>
 											</p:dataTable>
 										</p:tab>
@@ -444,9 +448,8 @@
 												</p:column>
 												<p:column>
 													<p:selectBooleanCheckbox rendered="#{not detalleS22.aprobado}" value="#{detalleS22.aprobado}">
-										            	<p:ajax update=":form:tabViewConsolidado:resumenProgramas:tablaResultadosS22" listener="#{procesoOTRevisarConsolidacionController.actualizarS22(rowIndexS22, detalleS22.establecimiento.codigoEstablecimiento)}"/>
+										            	<p:ajax update=":form:tabViewConsolidado:resumenProgramas:tablaResultadosS22" listener="#{procesoOTRevisarConsolidacionController.actualizarS22(rowIndexS22)}"/>
 										        	</p:selectBooleanCheckbox>
-													<h:graphicImage rendered="#{detalleS22.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />	
 												</p:column>
 											</p:dataTable>
 										</p:tab>
@@ -539,9 +542,8 @@
 												</p:column>
 												<p:column>
 													<p:selectBooleanCheckbox rendered="#{not detalleS29.aprobado}" value="#{detalleS29.aprobado}">
-										            	<p:ajax update=":form:tabViewConsolidado:resumenProgramas:tablaResultadosS29" listener="#{procesoOTRevisarConsolidacionController.actualizarS29(rowIndexS29, detalleS29.establecimiento.codigoEstablecimiento)}"/>
+										            	<p:ajax update=":form:tabViewConsolidado:resumenProgramas:tablaResultadosS29" listener="#{procesoOTRevisarConsolidacionController.actualizarS29(rowIndexS29)}"/>
 										        	</p:selectBooleanCheckbox>
-													<h:graphicImage rendered="#{detalleS29.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />	
 												</p:column>
 											</p:dataTable>
 										</p:tab>
@@ -637,9 +639,8 @@
 												</p:column>
 												<p:column>
 													<p:selectBooleanCheckbox rendered="#{not detalleS24.aprobado}" value="#{detalleS24.aprobado}">
-										            	<p:ajax update=":form:tabViewConsolidado:resumenProgramas:tablaResultadosS24" listener="#{procesoOTRevisarConsolidacionController.actualizarS24(rowIndexS29, detalleS24.comuna.idComuna)}"/>
+										            	<p:ajax update=":form:tabViewConsolidado:resumenProgramas:tablaResultadosS24" listener="#{procesoOTRevisarConsolidacionController.actualizarS24(rowIndexS24)}"/>
 										        	</p:selectBooleanCheckbox>
-													<h:graphicImage rendered="#{detalleS24.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />	
 												</p:column>
 											</p:dataTable>
 										</p:tab>
@@ -736,14 +737,15 @@
 								</p:tabView>
 							</p:tab>
 							<p:tab id="tab23" title="Resumen Totales">
-										<h:outputText value="Programa: " styleClass="inputLabel" />
+								<p:panelGrid columns="3">
+									<h:outputText value="Programa: " styleClass="inputLabel" />
 									<p:selectOneMenu id="programasResumen"  value="#{procesoOTRevisarConsolidacionController.programaSeleccionadoResumen}">
 										<f:selectItem itemLabel="Seleccione" itemValue="" />  
 										<f:selectItems value="#{procesoOTRevisarConsolidacionController.listaProgramasResumen}" itemLabel="#{programa.nombre}" var="programa" itemValue="#{programa.idProgramaAno}"/>
 									</p:selectOneMenu>
+									<p:commandButton value="Buscar" id="buscarListadoResumen" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoOTRevisarConsolidacionController.buscarResumenPrograma}" update=":form:tabViewConsolidado:tablaResultadosResumen :form:growl" oncomplete="actualizarTabla();"/>
+								</p:panelGrid>
 								<br />
-								<p:commandButton value="Buscar" id="buscarListadoResumen" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoOTRevisarConsolidacionController.buscarResumenPrograma}" update=":form:tabViewConsolidado:tablaResultadosResumen" oncomplete="actualizarTabla();"/>
-								
 								<p:dataTable resizableColumns="true" value="#{procesoOTRevisarConsolidacionController.resumenPrograma}" liveResize="true"
 									var="servicio" rows="40" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información."
 									styleClass="dataTable" id="tablaResultadosResumen" rowIndexVar="rowIndex">

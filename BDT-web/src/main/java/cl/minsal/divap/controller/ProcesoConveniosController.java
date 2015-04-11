@@ -11,7 +11,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
-import minsal.divap.enums.EstadosConvenios;
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TiposPrograma;
 import minsal.divap.service.ComponenteService;
@@ -19,16 +18,19 @@ import minsal.divap.service.ComunaService;
 import minsal.divap.service.ConveniosService;
 import minsal.divap.service.EstablecimientosService;
 import minsal.divap.service.ProgramasService;
-import minsal.divap.vo.CargaConvenioComunaComponenteVO;
-import minsal.divap.vo.CargaConvenioServicioComponenteVO;
+import minsal.divap.service.SubtituloService;
+import minsal.divap.vo.CargaConvenioComponenteSubtituloVO;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ComunaVO;
-import minsal.divap.vo.ConveniosVO;
+import minsal.divap.vo.ConvenioComponenteSubtituloVO;
+import minsal.divap.vo.DependenciaVO;
 import minsal.divap.vo.EstablecimientoVO;
+import minsal.divap.vo.ItemVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.SubtituloVO;
 
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.UploadedFile;
 
 import cl.redhat.bandejaTareas.controller.BaseController;
@@ -37,46 +39,34 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 @ViewScoped 
 public class ProcesoConveniosController extends BaseController implements Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
+	private List<ConvenioComponenteSubtituloVO> orderList = new ArrayList<ConvenioComponenteSubtituloVO>();
+	private Integer monto;
+	private String docIdDownload;
+	private String dependenciaSeleccionado;
+	private List<DependenciaVO> dependencias;
+	private String establecimientoSeleccionado;
+	private List<ItemVO> item;
+	private String itemSeleccionado;
+	private Integer numeroResolucion;
+	private Integer totalElmentos;
+	private Integer docConvenio = null;
+	
 	private List<ProgramaVO> programas;
 	private List<ComunaVO> comunas = new ArrayList<ComunaVO>();
 	private List<EstablecimientoVO> establecimientos = new ArrayList<EstablecimientoVO>();
 	private List<ComponentesVO> componentes;
-	private List<CargaConvenioComunaComponenteVO> resolucionConveniosMunicipal;
-	private List<CargaConvenioServicioComponenteVO> resolucionConveniosServicioSub21;
-	private List<CargaConvenioServicioComponenteVO> resolucionConveniosServicioSub22;
-	private List<CargaConvenioServicioComponenteVO> resolucionConveniosServicioSub29;
-	private List<ConveniosVO> resolucionesServicios;
-	private List<ConveniosVO> resolucionesMunicipal;
-	private CargaConvenioServicioComponenteVO convenioServicio;
-	private CargaConvenioComunaComponenteVO convenioComuna;
-	private Subtitulo subtituloSeleccionado = null;
+	private List<SubtituloVO> subtitulos;
 	private ProgramaVO programa;
-	private Boolean sub21;
-	private Boolean sub22;
-	private Boolean sub24;
-	private Boolean sub29;
-	private String convenioSeleccionado;
 	private String programaSeleccionado;
-	private String comunaSeleccionada;
 	private String componenteSeleccionado;
-	private String establecimientoSeleccionado21;
-	private String establecimientoSeleccionado22;
-	private String establecimientoSeleccionado29;
 	private UploadedFile plantillaFile;
-	private Integer rowIndexMunicipal;
-	private Integer rowIndexServicio21;
-	private Integer rowIndexServicio22;
-	private Integer rowIndexServicio29;
-	private List<ConveniosVO> resolucionesServicios21;
-	private List<ConveniosVO> resolucionesServicios22;
-	private List<ConveniosVO> resolucionesServicios29;
 	private Boolean leyRetiro;
 	private Date currentDate;
 	private Integer montoAporteEstatal;
 	private Integer montoAdicionalComplementario;
 	private Integer totalLey;
 	private Integer ano;
-	
+	private String subtituloSeleccionado;
 	@EJB
 	private ProgramasService programasService;
 	@EJB
@@ -87,60 +77,24 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	private EstablecimientosService establecimientosService;
 	@EJB
 	private ConveniosService conveniosService;
-
+	@EJB
+	private SubtituloService subtituloService;
+	
 	@PostConstruct 
 	public void init() {
 		System.out.println("ProcesoConveniosController Alcanzado.");
 		if(sessionExpired()){
 			return;
 		}
-		setSub21(false);
-		setSub22(false);
-		setSub24(false);
-		setSub29(false);
 		setLeyRetiro(false);
-		setComunaSeleccionada("0");
-		setEstablecimientoSeleccionado21("0");
-		setEstablecimientoSeleccionado22("0");
-		setEstablecimientoSeleccionado29("0");
-		setProgramaSeleccionado("0");
-		setComponenteSeleccionado("0");
+		setProgramaSeleccionado(null);
+		setComponenteSeleccionado(null);
 		setPrograma(null);
+		setTotalElmentos(0);
 		if(getServicio() != null && getServicio().getId_servicio() != null){
 			setComunas(comunaService.getComunasByServicio(getServicio().getId_servicio()));
 			setEstablecimientos(establecimientosService.getEstablecimientosByServicio(getServicio().getId_servicio()));
 		}
-	}
-
-	public String cargaConvenioSub24(Integer rowIndex){
-		System.out.println("cargaConvenioSub24 rowIndex="+rowIndex);
-		rowIndexMunicipal = rowIndex;
-		convenioComuna = getResolucionConveniosMunicipal().get(rowIndex);
-		return null;
-	}
-
-	public String cargaConvenioSub21(Integer rowIndex){
-		System.out.println("cargaConvenioSub21 rowIndex="+rowIndex);
-		rowIndexServicio21 = rowIndex;
-		convenioServicio = getResolucionConveniosServicioSub21().get(rowIndex);
-		subtituloSeleccionado = Subtitulo.SUBTITULO21;
-		return null;
-	}
-
-	public String cargaConvenioSub22(Integer rowIndex){
-		System.out.println("cargaConvenioSub22 rowIndex="+rowIndex);
-		rowIndexServicio22 = rowIndex;
-		convenioServicio = getResolucionConveniosServicioSub22().get(rowIndex);
-		subtituloSeleccionado = Subtitulo.SUBTITULO22;
-		return null;
-	}
-
-	public String cargaConvenioSub29(Integer rowIndex){
-		System.out.println("cargaConvenioSub29 rowIndex="+rowIndex);
-		rowIndexServicio29 = rowIndex;
-		convenioServicio = getResolucionConveniosServicioSub29().get(rowIndex);
-		subtituloSeleccionado = Subtitulo.SUBTITULO29;
-		return null;
 	}
 
 	public void setEstablecimientos(List<EstablecimientoVO> establecimientos) {
@@ -160,58 +114,34 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	}
 
 	public List<ComponentesVO> getComponentes() {
-		if(getProgramaSeleccionado() != null && !"0".equals(getProgramaSeleccionado())){
-			ProgramaVO programaVO = programasService.getProgramaAno(Integer.parseInt(getProgramaSeleccionado()));
-			componentes = componenteService.getComponenteByPrograma(programaVO.getId());
-		}else{
-			componentes = new ArrayList<ComponentesVO>();
-		}
 		return componentes;
 	}
 
-	public void resetSubtitulos(){
-		setComunaSeleccionada("0");
-		setEstablecimientoSeleccionado21("0");
-		setEstablecimientoSeleccionado22("0");
-		setEstablecimientoSeleccionado29("0");
-		resolucionConveniosMunicipal = new ArrayList<CargaConvenioComunaComponenteVO>();
-		resolucionConveniosServicioSub21 = new ArrayList<CargaConvenioServicioComponenteVO>();
-		resolucionConveniosServicioSub22 = new ArrayList<CargaConvenioServicioComponenteVO>();
-		resolucionConveniosServicioSub29 = new ArrayList<CargaConvenioServicioComponenteVO>();
-	}
-
-	public void resetResolucionConveniosServicioSub21(){
-		resolucionConveniosServicioSub21 = new ArrayList<CargaConvenioServicioComponenteVO>();
-	}
-
-	public void resetResolucionConveniosServicioSub22(){
-		resolucionConveniosServicioSub22 = new ArrayList<CargaConvenioServicioComponenteVO>();
-	}
-
-	public void resetResolucionConveniosMunicipal(){
-		resolucionConveniosMunicipal = new ArrayList<CargaConvenioComunaComponenteVO>();
-	}
-
-	public void resetResolucionConveniosServicioSub29(){
-		resolucionConveniosServicioSub29 = new ArrayList<CargaConvenioServicioComponenteVO>();
-	}
-
-	public List<CargaConvenioComunaComponenteVO> getResolucionConveniosMunicipal() {
-		return resolucionConveniosMunicipal;
-	}
-
-	public void setResolucionConveniosMunicipal(
-			List<CargaConvenioComunaComponenteVO> resolucionConveniosMunicipal) {
-		this.resolucionConveniosMunicipal = resolucionConveniosMunicipal;
-	}
-
-	public List<CargaConvenioServicioComponenteVO> getResolucionConveniosServicioSub21() {
-		return resolucionConveniosServicioSub21;
-	}
-
-	public void setResolucionConveniosServicioSub21(
-			List<CargaConvenioServicioComponenteVO> resolucionConveniosServicioSub21) {
-		this.resolucionConveniosServicioSub21 = resolucionConveniosServicioSub21;
+	public void cargaSubtitulo(){
+		System.out.println("cargaSubtitulo componenteSeleccionado="+componenteSeleccionado);
+		if(componenteSeleccionado != null && !componenteSeleccionado.trim().isEmpty()){
+			subtitulos = new ArrayList<SubtituloVO>();
+			ComponentesVO componente = componenteService.getComponenteById(Integer.parseInt(componenteSeleccionado));
+			if(dependenciaSeleccionado.equals("1")){
+				for(SubtituloVO subtituloVO : componente.getSubtitulos()){
+					 if(Subtitulo.SUBTITULO24.getId().equals(subtituloVO.getId())){
+						 subtitulos.add(subtituloVO);
+					 }
+				}
+			}else{
+				for(SubtituloVO subtituloVO : componente.getSubtitulos()){
+					 if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO22.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO29.getId().equals(subtituloVO.getId())){
+						 subtitulos.add(subtituloVO);
+					 }
+				}
+			}
+			if(subtitulos.size() == 1){
+				subtituloSeleccionado = subtitulos.get(0).getId().toString();
+			}
+		}else{
+			subtituloSeleccionado = "";
+			subtitulos = new ArrayList<SubtituloVO>();
+		}
 	}
 
 	public List<ProgramaVO> getProgramas() {
@@ -223,50 +153,141 @@ public class ProcesoConveniosController extends BaseController implements Serial
 
 	public void cargarComponentesPorPrograma(){
 		System.out.println("ProcesoConveniosController::cargarComponentesPorPrograma programaSeleccionado->" + getProgramaSeleccionado());
-		setSub21(false);
-		setSub22(false);
-		setSub24(false);
-		setSub29(false);
 		setLeyRetiro(false);
-		resetSubtitulos();
-		if(getProgramaSeleccionado() != null && !"0".equals(getProgramaSeleccionado())){
+		dependenciaSeleccionado = "";
+		item = new ArrayList<ItemVO>();
+		componentes = new ArrayList<ComponentesVO>();
+		if(getProgramaSeleccionado() != null && !"".equals(getProgramaSeleccionado())){
+			subtituloSeleccionado = "";
+			subtitulos = new ArrayList<SubtituloVO>();
 			programa = programasService.getProgramaAno(Integer.parseInt(getProgramaSeleccionado()));
 			System.out.println("programa.getDependenciaMunicipal()->" + programa.getDependenciaMunicipal() + " programa.getDependenciaServicio()->" + programa.getDependenciaServicio());
-			componentes = componenteService.getComponenteByPrograma(programa.getId());
-			if(componentes != null && componentes.size() > 0){
-				for(ComponentesVO componentesVO : componentes){
-					if(TiposPrograma.ProgramaLey.getId().equals(componentesVO.getTipoComponente().getId())){
-						setLeyRetiro(true);
-					}
-					for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){
-						if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId()) && !getSub21()){
-							setSub21(true);
-						}else if(Subtitulo.SUBTITULO22.getId().equals(subtituloVO.getId()) && !getSub22()){
-							setSub22(true);
-						}else if(Subtitulo.SUBTITULO24.getId().equals(subtituloVO.getId()) && !getSub24()){
-							setSub24(true);
-						}else if(Subtitulo.SUBTITULO29.getId().equals(subtituloVO.getId()) && !getSub29()){
-							setSub29(true);
+			dependencias = new ArrayList<DependenciaVO>();
+			if(programa.getDependenciaMunicipal()){
+				dependencias.add(new DependenciaVO(1, "Municipal"));
+			}
+			if(programa.getDependenciaServicio()){
+				dependencias.add(new DependenciaVO(2, "Servicio"));
+			}
+			if(dependencias != null && dependencias.size() == 1){
+				dependenciaSeleccionado = dependencias.get(0).getId().toString();
+				List<ComponentesVO> componentesTmp = componenteService.getComponenteByPrograma(programa.getId());
+				if(componentesTmp != null && componentesTmp.size() > 0){
+					for(ComponentesVO componentesVO : componentesTmp){
+						if(TiposPrograma.ProgramaLey.getId().equals(componentesVO.getTipoComponente().getId())){
+							setLeyRetiro(true);
 						}
+					}
+				}
+				if(dependenciaSeleccionado.equals("1")){
+					if(componentesTmp != null && componentesTmp.size() > 0){
+						for(ComponentesVO componentesVO : componentesTmp){
+							for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){
+								 if(Subtitulo.SUBTITULO24.getId().equals(subtituloVO.getId())){
+									 componentes.add(componentesVO);
+									 break;
+								 }
+							}
+						}
+					}
+					for(ComunaVO comuna: getComunas()){
+						item.add(new ItemVO(comuna.getIdComuna(), comuna.getDescComuna()));
+					}
+				}else{
+					if(componentesTmp != null && componentesTmp.size() > 0){
+						for(ComponentesVO componentesVO : componentesTmp){
+							for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){
+								 if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO22.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO29.getId().equals(subtituloVO.getId())){
+									 componentes.add(componentesVO);
+									 break;
+								 }
+							}
+						}
+					}
+					for(EstablecimientoVO establecimiento: getEstablecimientos()){
+						item.add(new ItemVO(establecimiento.getId(), establecimiento.getNombre()));
 					}
 				}
 			}
 		}else{
-			componentes = new ArrayList<ComponentesVO>();
 			programa = null;
+			itemSeleccionado = null;
+			item = new ArrayList<ItemVO>();
+			componenteSeleccionado = "";
+			componentes = new ArrayList<ComponentesVO>();
+			subtituloSeleccionado = "";
+			subtitulos = new ArrayList<SubtituloVO>();
+			monto = null;
+			numeroResolucion = null;
+			totalElmentos = 0;
+			plantillaFile = null;
+			orderList = new ArrayList<ConvenioComponenteSubtituloVO>();
 		}
 	}
+	
+	public void cargarComunaEstablecimiento(){
+		System.out.println("cargarComunaEstablecimiento dependenciaSeleccionado="+dependenciaSeleccionado);
+		if(dependenciaSeleccionado != null && !dependenciaSeleccionado.equals("0")){
+			item = new ArrayList<ItemVO>();
+			componentes = new ArrayList<ComponentesVO>();
+			componenteSeleccionado = "";
+			orderList = new ArrayList<ConvenioComponenteSubtituloVO>();
+			itemSeleccionado = null;
+			List<ComponentesVO> componentesTmp = componenteService.getComponenteByPrograma(programa.getId());
+			if(dependenciaSeleccionado.equals("1")){
+				if(componentesTmp != null && componentesTmp.size() > 0){
+					for(ComponentesVO componentesVO : componentesTmp){
+						for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){
+							 if(Subtitulo.SUBTITULO24.getId().equals(subtituloVO.getId())){
+								 componentes.add(componentesVO);
+								 break;
+							 }
+						}
+					}
+				}
+				for(ComunaVO comuna: getComunas()){
+					item.add(new ItemVO(comuna.getIdComuna(), comuna.getDescComuna()));
+				}
+			}else{
+				if(componentesTmp != null && componentesTmp.size() > 0){
+					for(ComponentesVO componentesVO : componentesTmp){
+						for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){
+							 if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO22.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO29.getId().equals(subtituloVO.getId())){
+								 componentes.add(componentesVO);
+								 break;
+							 }
+						}
+					}
+				}
+				for(EstablecimientoVO establecimiento: getEstablecimientos()){
+					item.add(new ItemVO(establecimiento.getId(), establecimiento.getNombre()));
+				}
+			}
+		}else{
+			item = new ArrayList<ItemVO>();
+			componenteSeleccionado = "";
+			componentes = new ArrayList<ComponentesVO>();
+			orderList = new ArrayList<ConvenioComponenteSubtituloVO>();
+			itemSeleccionado = null;
+			subtituloSeleccionado = "";
+			subtitulos = new ArrayList<SubtituloVO>();
+		}
+	}
+	
+	public void setearComunaEstablecimiento(){
+		System.out.println("itemSeleccionado =" + itemSeleccionado);
+		componenteSeleccionado = "";
+		orderList = new ArrayList<ConvenioComponenteSubtituloVO>();
+		subtituloSeleccionado = ""; 
+	}
+	
 
-	public void buscar(){
+	/*public void buscar(){
 		System.out.println("cargarDatos");
-		if(componenteSeleccionado == null || componenteSeleccionado.trim().isEmpty() || componenteSeleccionado.trim().equals("0")){
+		if(componenteSeleccionado == null || componenteSeleccionado.trim().isEmpty()){
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el componente antes de realizar la búsqueda", null);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}else{
-			setSub21(false);
-			setSub22(false);
-			setSub24(false);
-			setSub29(false);
 			setLeyRetiro(false);
 			Integer idComponente = Integer.parseInt(componenteSeleccionado);
 			ComponentesVO componentesVO = componenteService.getComponenteById(idComponente);
@@ -280,42 +301,30 @@ public class ProcesoConveniosController extends BaseController implements Serial
 			System.out.println("idServicio=" + getServicio().getId_servicio());
 			System.out.println("EstadosConvenios="+EstadosConvenios.INGRESADO.getId());
 			for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){
-				if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId()) && !getSub21()){
-					setSub21(true);
+				if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId())){
 					Integer idEstablecimientoSub21 = ((establecimientoSeleccionado21 == null || establecimientoSeleccionado21.trim().isEmpty() || establecimientoSeleccionado21.trim().equals("0")) ? null : Integer.parseInt(establecimientoSeleccionado21));
 					System.out.println("Subtitulo.SUBTITULO21.getId()="+Subtitulo.SUBTITULO21.getId());
 					System.out.println("idEstablecimientoSub21="+idEstablecimientoSub21);
-					resolucionConveniosServicioSub21 = conveniosService.getResolucionConveniosServicio(getServicio().getId_servicio(), getPrograma().getIdProgramaAno(), idComponente, idEstablecimientoSub21, Subtitulo.SUBTITULO21);
-				}else if(Subtitulo.SUBTITULO22.getId().equals(subtituloVO.getId()) && !getSub22()){
-					setSub22(true);
+				}else if(Subtitulo.SUBTITULO22.getId().equals(subtituloVO.getId())){
 					Integer idEstablecimientoSub22 = ((establecimientoSeleccionado22 == null || establecimientoSeleccionado22.trim().isEmpty() || establecimientoSeleccionado22.trim().equals("0"))?null:Integer.parseInt(establecimientoSeleccionado22));
 					System.out.println("Subtitulo.SUBTITULO22.getId()="+Subtitulo.SUBTITULO22.getId());
 					System.out.println("idEstablecimientoSub22="+idEstablecimientoSub22);
-					resolucionConveniosServicioSub22 = conveniosService.getResolucionConveniosServicio(getServicio().getId_servicio(), getPrograma().getIdProgramaAno(), idComponente, idEstablecimientoSub22, Subtitulo.SUBTITULO22);
-				}else if(Subtitulo.SUBTITULO24.getId().equals(subtituloVO.getId()) && !getSub24()){
-					setSub24(true);
+				}else if(Subtitulo.SUBTITULO24.getId().equals(subtituloVO.getId())){
 					Integer idComuna = ((comunaSeleccionada == null || comunaSeleccionada.trim().isEmpty() || comunaSeleccionada.trim().equals("0")) ? null : Integer.parseInt(comunaSeleccionada));
 					System.out.println("Subtitulo.SUBTITULO24.getId()="+Subtitulo.SUBTITULO24.getId());
 					System.out.println("idComuna="+idComuna);
-					resolucionConveniosMunicipal = conveniosService.getResolucionConveniosMunicipal(getServicio().getId_servicio(), getPrograma().getIdProgramaAno(), idComponente, idComuna);
-				}else if(Subtitulo.SUBTITULO29.getId().equals(subtituloVO.getId()) && !getSub29()){
-					setSub29(true);
+				}else if(Subtitulo.SUBTITULO29.getId().equals(subtituloVO.getId())){
 					Integer idEstablecimientoSub29 = ((establecimientoSeleccionado29 == null || establecimientoSeleccionado29.trim().isEmpty() || establecimientoSeleccionado29.trim().equals("0"))?null:Integer.parseInt(establecimientoSeleccionado29));
 					System.out.println("Subtitulo.SUBTITULO29.getId()="+Subtitulo.SUBTITULO29.getId());
 					System.out.println("idEstablecimientoSub22="+idEstablecimientoSub29);
-					resolucionConveniosServicioSub29 = conveniosService.getResolucionConveniosServicio(getServicio().getId_servicio(), getPrograma().getIdProgramaAno(), idComponente, idEstablecimientoSub29, Subtitulo.SUBTITULO29);
 				}
 			} 
 		}
-		System.out.println("resolucionConveniosServicioSub21.size() --> " +((this.resolucionConveniosServicioSub29==null)?"0":this.resolucionConveniosServicioSub29.size()));
-		System.out.println("resolucionConveniosServicioSub22.size() --> " +((this.resolucionConveniosServicioSub22==null)?"0":this.resolucionConveniosServicioSub22.size()));
-		System.out.println("resolucionConveniosMunicipal.size() --> " +((this.resolucionConveniosMunicipal==null)?"0":this.resolucionConveniosMunicipal.size()));
-		System.out.println("resolucionConveniosServicioSub29.size() --> " +((this.resolucionConveniosServicioSub29==null)?"0":this.resolucionConveniosServicioSub29.size()));
 		System.out.println("fin buscar-->");
 
-	}
+	}*/
 
-	public String guardarConvenioServicio(){
+	/*public String guardarConvenioServicio(){
 		System.out.println("guardarConvenioServicio()");
 		String mensaje = "El archivo fue cargado correctamente.";
 		FacesMessage msg = null;
@@ -324,17 +333,17 @@ public class ProcesoConveniosController extends BaseController implements Serial
 				String filename = plantillaFile.getFileName();
 				byte[] contentConvenioFile = plantillaFile.getContents();
 				Integer docConvenio = persistFile(filename, contentConvenioFile);
-				conveniosService.moveConvenioToAlfresco(docConvenio);
-				CargaConvenioServicioComponenteVO cargaConvenioServicioComponenteVO = conveniosService.guardarConvenioServicioComponente(getPrograma().getIdProgramaAno(), convenioServicio, docConvenio);
+				conveniosService.moveConvenioToAlfresco(docConvenio, getAno());
+				//CargaConvenioServicioComponenteVO cargaConvenioServicioComponenteVO = conveniosService.guardarConvenioServicioComponente(getPrograma().getIdProgramaAno(), convenioServicio, docConvenio);
 				switch (subtituloSeleccionado) {
 				case SUBTITULO21:
-					getResolucionConveniosServicioSub21().set(rowIndexServicio21, cargaConvenioServicioComponenteVO);
+					//getResolucionConveniosServicioSub21().set(rowIndexServicio21, cargaConvenioServicioComponenteVO);
 					break;
 				case SUBTITULO22:
-					getResolucionConveniosServicioSub22().set(rowIndexServicio22, cargaConvenioServicioComponenteVO);
+					//getResolucionConveniosServicioSub22().set(rowIndexServicio22, cargaConvenioServicioComponenteVO);
 					break;
 				case SUBTITULO29:
-					getResolucionConveniosServicioSub29().set(rowIndexServicio29, cargaConvenioServicioComponenteVO);
+					//getResolucionConveniosServicioSub29().set(rowIndexServicio29, cargaConvenioServicioComponenteVO);
 					break;
 				default:
 					break;
@@ -350,7 +359,7 @@ public class ProcesoConveniosController extends BaseController implements Serial
 		}
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		return null;
-	}
+	}*/
 
 	public String guardarConvenioComuna(){
 		System.out.println("guardarConvenioServicio()");
@@ -361,22 +370,22 @@ public class ProcesoConveniosController extends BaseController implements Serial
 				String filename = plantillaFile.getFileName();
 				byte[] contentConvenioFile = plantillaFile.getContents();
 				Integer docConvenio = persistFile(filename, contentConvenioFile);
-				conveniosService.moveConvenioToAlfresco(docConvenio);
-				CargaConvenioComunaComponenteVO cargaConvenioComunaComponenteVO = conveniosService.guardarConvenioComunaComponente(getPrograma().getIdProgramaAno(), convenioComuna, docConvenio);
-				getResolucionConveniosMunicipal().set(this.rowIndexMunicipal, cargaConvenioComunaComponenteVO);
+				conveniosService.moveConvenioToAlfresco(docConvenio, getAno());
+				//CargaConvenioComunaComponenteVO cargaConvenioComunaComponenteVO = conveniosService.guardarConvenioComunaComponente(getPrograma().getIdProgramaAno(), convenioComuna, docConvenio);
+				//getResolucionConveniosMunicipal().set(this.rowIndexMunicipal, cargaConvenioComunaComponenteVO);
 				msg = new FacesMessage(FacesMessage.SEVERITY_INFO, mensaje, null);
 			} catch (Exception e) {
 				msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null);
 				e.printStackTrace();
 			}
 		} else {
-			mensaje = "El archivo no fuero cargado.";
+			mensaje = "El archivo no fue cargado.";
 			msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, null);
 		}
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		return null;
 	}
-	
+
 	public String guardarLeyRetiro(){
 		System.out.println("guardarLeyRetiro()");
 		String mensaje = "El archivo fue cargado correctamente.";
@@ -386,9 +395,9 @@ public class ProcesoConveniosController extends BaseController implements Serial
 				String filename = plantillaFile.getFileName();
 				byte[] contentConvenioFile = plantillaFile.getContents();
 				Integer docConvenio = persistFile(filename, contentConvenioFile);
-				conveniosService.moveConvenioToAlfresco(docConvenio);
-				CargaConvenioComunaComponenteVO cargaConvenioComunaComponenteVO = conveniosService.guardarLeyRetiro(getPrograma().getIdProgramaAno(), convenioComuna, docConvenio);
-				getResolucionConveniosMunicipal().set(this.rowIndexMunicipal, cargaConvenioComunaComponenteVO);
+				conveniosService.moveConvenioToAlfresco(docConvenio, getAno());
+				//CargaConvenioComunaComponenteVO cargaConvenioComunaComponenteVO = conveniosService.guardarLeyRetiro(getPrograma().getIdProgramaAno(), convenioComuna, docConvenio);
+				//getResolucionConveniosMunicipal().set(this.rowIndexMunicipal, cargaConvenioComunaComponenteVO);
 				msg = new FacesMessage(FacesMessage.SEVERITY_INFO, mensaje, null);
 			} catch (Exception e) {
 				msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null);
@@ -410,23 +419,6 @@ public class ProcesoConveniosController extends BaseController implements Serial
 		this.componenteSeleccionado = componenteSeleccionado;
 	}
 
-	public String getEstablecimientoSeleccionado21() {
-		return establecimientoSeleccionado21;
-	}
-
-	public void setEstablecimientoSeleccionado21(
-			String establecimientoSeleccionado21) {
-		this.establecimientoSeleccionado21 = establecimientoSeleccionado21;
-	}
-
-	public String getComunaSeleccionada() {
-		return comunaSeleccionada;
-	}
-
-	public void setComunaSeleccionada(String comunaSeleccionada) {
-		this.comunaSeleccionada = comunaSeleccionada;
-	}
-
 	public void setComponentes(List<ComponentesVO> componentes) {
 		this.componentes = componentes;
 	}
@@ -441,31 +433,6 @@ public class ProcesoConveniosController extends BaseController implements Serial
 
 	public void setProgramaSeleccionado(String programaSeleccionado) {
 		this.programaSeleccionado = programaSeleccionado;
-	}
-
-	public String getConvenioSeleccionado() {
-		return convenioSeleccionado;
-	}
-
-	public void setConvenioSeleccionado(String convenioSeleccionado) {
-		this.convenioSeleccionado = convenioSeleccionado;
-	}
-
-	public CargaConvenioServicioComponenteVO getConvenioServicio() {
-		return convenioServicio;
-	}
-
-	public void setConvenioServicio(
-			CargaConvenioServicioComponenteVO convenioServicio) {
-		this.convenioServicio = convenioServicio;
-	}
-
-	public CargaConvenioComunaComponenteVO getConvenioComuna() {
-		return convenioComuna;
-	}
-
-	public void setConvenioComuna(CargaConvenioComunaComponenteVO convenioComuna) {
-		this.convenioComuna = convenioComuna;
 	}
 
 	public UploadedFile getPlantillaFile() {
@@ -489,114 +456,6 @@ public class ProcesoConveniosController extends BaseController implements Serial
 
 	public void setPrograma(ProgramaVO programa) {
 		this.programa = programa;
-	}
-
-	public List<ConveniosVO> getResolucionesServicios() {
-		return resolucionesServicios;
-	}
-
-	public void setResolucionesServicios(List<ConveniosVO> resolucionesServicios) {
-		this.resolucionesServicios = resolucionesServicios;
-	}
-
-	public List<ConveniosVO> getResolucionesMunicipal() {
-		return resolucionesMunicipal;
-	}
-
-	public void setResolucionesMunicipal(List<ConveniosVO> resolucionesMunicipal) {
-		this.resolucionesMunicipal = resolucionesMunicipal;
-	}
-
-	public Boolean getSub21() {
-		return sub21;
-	}
-
-	public void setSub21(Boolean sub21) {
-		this.sub21 = sub21;
-	}
-
-	public Boolean getSub22() {
-		return sub22;
-	}
-
-	public void setSub22(Boolean sub22) {
-		this.sub22 = sub22;
-	}
-
-	public Boolean getSub24() {
-		return sub24;
-	}
-
-	public void setSub24(Boolean sub24) {
-		this.sub24 = sub24;
-	}
-
-	public Boolean getSub29() {
-		return sub29;
-	}
-
-	public void setSub29(Boolean sub29) {
-		this.sub29 = sub29;
-	}
-
-	public String getEstablecimientoSeleccionado22() {
-		return establecimientoSeleccionado22;
-	}
-
-	public void setEstablecimientoSeleccionado22(
-			String establecimientoSeleccionado22) {
-		this.establecimientoSeleccionado22 = establecimientoSeleccionado22;
-	}
-
-	public String getEstablecimientoSeleccionado29() {
-		return establecimientoSeleccionado29;
-	}
-
-	public void setEstablecimientoSeleccionado29(
-			String establecimientoSeleccionado29) {
-		this.establecimientoSeleccionado29 = establecimientoSeleccionado29;
-	}
-
-	public List<CargaConvenioServicioComponenteVO> getResolucionConveniosServicioSub22() {
-		return resolucionConveniosServicioSub22;
-	}
-
-	public void setResolucionConveniosServicioSub22(
-			List<CargaConvenioServicioComponenteVO> resolucionConveniosServicioSub22) {
-		this.resolucionConveniosServicioSub22 = resolucionConveniosServicioSub22;
-	}
-
-	public List<CargaConvenioServicioComponenteVO> getResolucionConveniosServicioSub29() {
-		return resolucionConveniosServicioSub29;
-	}
-
-	public void setResolucionConveniosServicioSub29(
-			List<CargaConvenioServicioComponenteVO> resolucionConveniosServicioSub29) {
-		this.resolucionConveniosServicioSub29 = resolucionConveniosServicioSub29;
-	}
-
-	public List<ConveniosVO> getResolucionesServicios21() {
-		return resolucionesServicios21;
-	}
-
-	public void setResolucionesServicios21(List<ConveniosVO> resolucionesServicios21) {
-		this.resolucionesServicios21 = resolucionesServicios21;
-	}
-
-	public List<ConveniosVO> getResolucionesServicios22() {
-		return resolucionesServicios22;
-	}
-
-	public void setResolucionesServicios22(List<ConveniosVO> resolucionesServicios22) {
-		this.resolucionesServicios22 = resolucionesServicios22;
-	}
-
-	public List<ConveniosVO> getResolucionesServicios29() {
-		return resolucionesServicios29;
-	}
-
-	public void setResolucionesServicios29(List<ConveniosVO> resolucionesServicios29) {
-		this.resolucionesServicios29 = resolucionesServicios29;
 	}
 
 	public Boolean getLeyRetiro() {
@@ -653,7 +512,7 @@ public class ProcesoConveniosController extends BaseController implements Serial
 
 	public Integer getAno() {
 		if(ano == null){
-			ano = 2016;
+			ano = conveniosService.getAnoCurso();
 		}
 		return ano;
 	}
@@ -662,4 +521,224 @@ public class ProcesoConveniosController extends BaseController implements Serial
 		this.ano = ano;
 	}
 
+	/*public String addAction() {
+		ComponentesVO componente = componenteService.getComponenteById(Integer.parseInt(componenteSeleccionado));
+		SubtituloVO subtitulo = subtituloService.getSubtituloVOById(Integer.parseInt(subtituloSeleccionados));
+		OrderBeanVO orderitem = new OrderBeanVO(componente, subtitulo, monto);
+		orderList.add(orderitem);
+		return null;
+	}*/
+	
+	public void addAction() {
+		System.out.println("Inicio addAction");
+		ComponentesVO componente = componenteService.getComponenteById(Integer.parseInt(componenteSeleccionado));
+		SubtituloVO subtitulo = subtituloService.getSubtituloVOById(Integer.parseInt(subtituloSeleccionado));
+		ConvenioComponenteSubtituloVO orderitem = new ConvenioComponenteSubtituloVO(componente, subtitulo, monto);
+		int posicion = orderList.indexOf(orderitem);
+		if(posicion == -1){
+			orderList.add(orderitem);
+		}else{
+			orderList.set(posicion, orderitem);
+		}
+		setTotalElmentos(orderList.size());
+		componenteSeleccionado = "";
+		subtituloSeleccionado = "";
+		monto = null;
+		System.out.println("Fin addAction");
+	}
+	
+	public String limpiar() {
+		System.out.println("Inicio limpiar");
+		programaSeleccionado = null;
+		dependenciaSeleccionado = null;
+		dependencias = new ArrayList<DependenciaVO>();
+		numeroResolucion = null;
+		itemSeleccionado = null;
+		item = new ArrayList<ItemVO>();
+		orderList = new ArrayList<ConvenioComponenteSubtituloVO>();
+		componenteSeleccionado = null;
+		componentes = new ArrayList<ComponentesVO>();
+		subtituloSeleccionado = null;
+		subtitulos = new ArrayList<SubtituloVO>();
+		currentDate = new Date();
+		setTotalElmentos(0);
+		System.out.println("Fin limpiar");
+		return null;
+	}
+	
+	public void cargarArchivo(){
+		FacesMessage msg = null;
+		boolean errorCargandoArchivo = false;
+		if (plantillaFile != null) {
+			try {
+				String filename = plantillaFile.getFileName();
+				byte[] contentConvenioFile = plantillaFile.getContents();
+				docConvenio = persistFile(filename, contentConvenioFile);
+				conveniosService.moveConvenioToAlfresco(docConvenio, getAno());
+				System.out.println("docConvenio="+docConvenio);
+			} catch (Exception e) {
+				errorCargandoArchivo = true;
+				msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null);
+				e.printStackTrace();
+			}
+		} else {
+			errorCargandoArchivo = true;
+			String mensaje = "El archivo no fue cargado.";
+			msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, null);
+		}
+		if(errorCargandoArchivo){
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}else{
+			CargaConvenioComponenteSubtituloVO cargaConvenioComponenteSubtituloVO = formToConvenio();
+			cargaConvenioComponenteSubtituloVO.setDocumento(docConvenio);
+			conveniosService.guardar(cargaConvenioComponenteSubtituloVO);
+			limpiar();
+			String mensaje = "Convenio guardado correctamente.";
+			msg = new FacesMessage(FacesMessage.SEVERITY_INFO, mensaje, null);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+	}
+	
+	public String guardar(){
+		FacesMessage msg = null;
+		CargaConvenioComponenteSubtituloVO cargaConvenioComponenteSubtituloVO = formToConvenio();
+		cargaConvenioComponenteSubtituloVO.setDocumento(docConvenio);
+		conveniosService.guardar(cargaConvenioComponenteSubtituloVO);
+		limpiar();
+		String mensaje = "Convenio guardado correctamente.";
+		msg = new FacesMessage(FacesMessage.SEVERITY_INFO, mensaje, null);
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		return null;
+	}
+	
+	private CargaConvenioComponenteSubtituloVO formToConvenio() {
+		CargaConvenioComponenteSubtituloVO cargaConvenioComponenteSubtituloVO = new CargaConvenioComponenteSubtituloVO();
+		cargaConvenioComponenteSubtituloVO.setItem(Integer.parseInt(itemSeleccionado));
+		if(dependenciaSeleccionado.equals("1")){
+			cargaConvenioComponenteSubtituloVO.setDependenciaMuncipal(true);
+		}else{
+			cargaConvenioComponenteSubtituloVO.setDependenciaMuncipal(false);			
+		}
+		cargaConvenioComponenteSubtituloVO.setNumeroResolucion(numeroResolucion);
+		cargaConvenioComponenteSubtituloVO.setFechaResolucion(currentDate);
+		cargaConvenioComponenteSubtituloVO.setPrograma(getPrograma());
+		cargaConvenioComponenteSubtituloVO.setConvenioComponentesSubtitulosVO(orderList);
+		return cargaConvenioComponenteSubtituloVO;
+	}
+
+	public void onEdit(RowEditEvent event) {  
+		FacesMessage msg = new FacesMessage("Registro Modificado",((ConvenioComponenteSubtituloVO) event.getObject()).getSubtitulo().getNombre());  
+		FacesContext.getCurrentInstance().addMessage(null, msg);  
+	}  
+
+	public void onCancel(RowEditEvent event) {  
+		FacesMessage msg = new FacesMessage("Registro Eliminado");   
+		FacesContext.getCurrentInstance().addMessage(null, msg); 
+		orderList.remove((ConvenioComponenteSubtituloVO) event.getObject());
+		setTotalElmentos(orderList.size());
+	}
+
+	public List<ConvenioComponenteSubtituloVO> getOrderList() {
+		return orderList;
+	}
+
+	public void setOrderList(List<ConvenioComponenteSubtituloVO> orderList) {
+		this.orderList = orderList;
+	}
+
+	public Integer getMonto() {
+		return monto;
+	}
+
+	public void setMonto(Integer monto) {
+		this.monto = monto;
+	}
+
+	public List<SubtituloVO> getSubtitulos() {
+		return subtitulos;
+	}
+
+	public void setSubtitulos(List<SubtituloVO> subtitulos) {
+		this.subtitulos = subtitulos;
+	}
+
+	public String getSubtituloSeleccionado() {
+		return subtituloSeleccionado;
+	}
+
+	public void setSubtituloSeleccionado(String subtituloSeleccionado) {
+		this.subtituloSeleccionado = subtituloSeleccionado;
+	}
+
+	public String getDocIdDownload() {
+		return docIdDownload;
+	}
+
+	public void setDocIdDownload(String docIdDownload) {
+		this.docIdDownload = docIdDownload;
+	}
+	
+	public String downloadTemplate() {
+		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownload()));
+		setDocumento(documentService.getDocument(docDownload));
+		super.downloadDocument();
+		return null;
+	}
+
+	public String getDependenciaSeleccionado() {
+		return dependenciaSeleccionado;
+	}
+
+	public void setDependenciaSeleccionado(String dependenciaSeleccionado) {
+		this.dependenciaSeleccionado = dependenciaSeleccionado;
+	}
+
+	public List<DependenciaVO> getDependencias() {
+		return dependencias;
+	}
+
+	public void setDependencias(List<DependenciaVO> dependencias) {
+		this.dependencias = dependencias;
+	}
+
+	public String getEstablecimientoSeleccionado() {
+		return establecimientoSeleccionado;
+	}
+
+	public void setEstablecimientoSeleccionado(String establecimientoSeleccionado) {
+		this.establecimientoSeleccionado = establecimientoSeleccionado;
+	}
+
+	public List<ItemVO> getItem() {
+		return item;
+	}
+
+	public void setItem(List<ItemVO> item) {
+		this.item = item;
+	}
+
+	public String getItemSeleccionado() {
+		return itemSeleccionado;
+	}
+
+	public void setItemSeleccionado(String itemSeleccionado) {
+		this.itemSeleccionado = itemSeleccionado;
+	}
+
+	public Integer getNumeroResolucion() {
+		return numeroResolucion;
+	}
+
+	public void setNumeroResolucion(Integer numeroResolucion) {
+		this.numeroResolucion = numeroResolucion;
+	}
+
+	public Integer getTotalElmentos() {
+		return totalElmentos;
+	}
+
+	public void setTotalElmentos(Integer totalElmentos) {
+		this.totalElmentos = totalElmentos;
+	}
+		
 }

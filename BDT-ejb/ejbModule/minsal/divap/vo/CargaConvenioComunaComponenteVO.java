@@ -1,6 +1,7 @@
 package minsal.divap.vo;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class CargaConvenioComunaComponenteVO implements Serializable {
 
@@ -12,7 +13,6 @@ public class CargaConvenioComunaComponenteVO implements Serializable {
 	private Integer idComuna;
 	private String nombreComuna;
 	private Boolean nuevo;
-	private Boolean reemplazar;
 	private Integer numeroResoucion;
 	private ComponenteSummaryVO componente;
 	private SubtituloSummaryVO subtitulo;
@@ -20,6 +20,7 @@ public class CargaConvenioComunaComponenteVO implements Serializable {
 	private Integer monto;
 	private Integer montoIngresado;
 	private Integer cuotasDescuento;
+	private Date fecha;
 	
 	public CargaConvenioComunaComponenteVO() {
 		super();
@@ -97,14 +98,6 @@ public class CargaConvenioComunaComponenteVO implements Serializable {
 		this.nuevo = nuevo;
 	}
 
-	public Boolean getReemplazar() {
-		return reemplazar;
-	}
-
-	public void setReemplazar(Boolean reemplazar) {
-		this.reemplazar = reemplazar;
-	}
-
 	public Integer getMontoIngresado() {
 		return montoIngresado;
 	}
@@ -121,12 +114,20 @@ public class CargaConvenioComunaComponenteVO implements Serializable {
 		this.cuotasDescuento = cuotasDescuento;
 	}
 
+	public Date getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+
 	@Override
 	public String toString() {
 		return "CargaConvenioComunaComponenteVO [idConvenioComuna="
 				+ idConvenioComuna + ", idComuna=" + idComuna
 				+ ", nombreComuna=" + nombreComuna + ", nuevo=" + nuevo
-				+ ", reemplazar=" + reemplazar + ", numeroResoucion="
+				+ ", numeroResoucion="
 				+ numeroResoucion + ", componente=" + componente
 				+ ", subtitulo=" + subtitulo + ", documento=" + documento
 				+ ", monto=" + monto + ", montoIngresado=" + montoIngresado

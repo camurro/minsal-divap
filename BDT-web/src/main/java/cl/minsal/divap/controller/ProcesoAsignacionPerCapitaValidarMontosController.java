@@ -47,6 +47,7 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 	private boolean checkPerCapitaAno;
 	private boolean checkAsigDesempenoDificil;
 	private boolean emptyCheckColumn;
+	private Integer ano;
 	@EJB
 	private UtilitariosService utilitariosService;
 	@EJB
@@ -174,8 +175,10 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 			return;
 		}
 		this.docId = (Integer) getTaskDataVO().getData().get("_docId");
-		System.out.println("this.docId->"+this.docId);
+		this.ano = (Integer) getTaskDataVO().getData().get("_ano");
 		this.idDistribucionInicialPercapita = (Integer) getTaskDataVO().getData().get("_idDistribucionInicialPercapita");
+		System.out.println("this.docId->"+this.docId);
+		System.out.println("this.ano->"+this.ano);
 		System.out.println("this.idDistribucionInicialPercapita->"+this.idDistribucionInicialPercapita);
 		this.antecendentesComunaCalculado = distribucionInicialPercapitaService.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(idDistribucionInicialPercapita);
 		if(this.antecendentesComunaCalculado  != null && this.antecendentesComunaCalculado .size() > 0){
@@ -412,10 +415,6 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 		return checkPerCapitaMes;
 	}
 	
-	public Integer getAnoCurso() {
-		return distribucionInicialPercapitaService.getAnoCurso() + 1;
-	}
-
 	public void setCheckPerCapitaMes(boolean checkPerCapitaMes) {
 		this.checkPerCapitaMes = checkPerCapitaMes;
 	}
@@ -454,6 +453,14 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 	public void setEmptyCheckColumn(boolean emptyCheckColumn) {
 		
 		this.emptyCheckColumn = emptyCheckColumn;
+	}
+
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
 	}
 	
 }

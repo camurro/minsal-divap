@@ -25526,7 +25526,6 @@ ALTER TABLE caja
   DROP COLUMN monto;
 
 
-----------REVISAR DE AQUI EN ADELANTE EN QA------------
 
 ALTER TABLE caja
   ADD COLUMN programa integer;
@@ -25540,12 +25539,15 @@ ALTER TABLE caja
   ADD CONSTRAINT servicio_fk FOREIGN KEY (servicio) REFERENCES servicio_salud (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
   
   UPDATE caja SET  programa=1, servicio=1, caja_inicial=true;
+
   
 ALTER TABLE caja
    ALTER COLUMN programa SET NOT NULL;
 ALTER TABLE caja
    ALTER COLUMN servicio SET NOT NULL;
+----------REVISAR DE AQUI EN ADELANTE EN QA------------
 
+----------Este alter dio problemas EN QA------------
 ALTER TABLE caja_monto
   DROP CONSTRAINT monto_fk;
 
@@ -25674,6 +25676,48 @@ INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (177, 'Planilla Pro
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (178, 'Plantilla Ordinario Programación Caja');
 INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (17, 'Hacer Seguimiento Ordinario Programacion');
 
+INSERT INTO ano_en_curso(ano, monto_percapital_basal, asignacion_adulto_mayor, inflactor, inflactor_marco_presupuestario, repo_alfresco)
+    VALUES (2016, 3794, 543, 1.3070, 3, false);
+
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, estadoreliquidacion, estado_ot, estado_modificacion_aps)
+    VALUES (490345, 3, 2016, 1, 1, 1, 1, 1, 1);
+
+INSERT INTO dia(id, dia) VALUES (1, 1);
+INSERT INTO dia(id, dia) VALUES (2, 2);
+INSERT INTO dia(id, dia) VALUES (3, 3);
+INSERT INTO dia(id, dia) VALUES (4, 4);
+INSERT INTO dia(id, dia) VALUES (5, 5);
+INSERT INTO dia(id, dia) VALUES (6, 6);
+INSERT INTO dia(id, dia) VALUES (7, 7);
+INSERT INTO dia(id, dia) VALUES (8, 8);
+INSERT INTO dia(id, dia) VALUES (9, 9);
+INSERT INTO dia(id, dia) VALUES (10, 10);
+INSERT INTO dia(id, dia) VALUES (11, 11);
+INSERT INTO dia(id, dia) VALUES (12, 12);
+INSERT INTO dia(id, dia) VALUES (13, 13);
+INSERT INTO dia(id, dia) VALUES (14, 14);
+INSERT INTO dia(id, dia) VALUES (15, 15);
+INSERT INTO dia(id, dia) VALUES (16, 16);
+INSERT INTO dia(id, dia) VALUES (17, 17);
+INSERT INTO dia(id, dia) VALUES (18, 18);
+INSERT INTO dia(id, dia) VALUES (19, 19);
+INSERT INTO dia(id, dia) VALUES (20, 20);
+INSERT INTO dia(id, dia) VALUES (21, 21);
+INSERT INTO dia(id, dia) VALUES (22, 22);
+INSERT INTO dia(id, dia) VALUES (23, 23);
+INSERT INTO dia(id, dia) VALUES (24, 24);
+INSERT INTO dia(id, dia) VALUES (25, 25);
+INSERT INTO dia(id, dia) VALUES (26, 26);
+INSERT INTO dia(id, dia) VALUES (27, 27);
+INSERT INTO dia(id, dia) VALUES (28, 28);
+INSERT INTO dia(id, dia) VALUES (29, 29);
+INSERT INTO dia(id, dia) VALUES (30, 30);
+INSERT INTO dia(id, dia) VALUES (31, 31);
+
+INSERT INTO fecha_remesa(id, dia) VALUES (1, 9);
+INSERT INTO fecha_remesa(id, dia) VALUES (2, 24);
+INSERT INTO fecha_remesa(id, dia) VALUES (3, 28);
+
 INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa)
     VALUES (1, 3, 1);
 
@@ -25733,8 +25777,14 @@ INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (7, 37, 1);
 INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (8, 37, 2);
 
 
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, estadoreliquidacion, estado_ot, estado_modificacion_aps)
+    VALUES (417553, 37, 2015, 1, 1, 1, 1, 1, 1);
+
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (106, 1, 70, 417553);
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (107, 2, 30, 417553, 10);
+
+INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, estadoreliquidacion, estado_ot, estado_modificacion_aps)
+    VALUES (527527, 37, 2016, 1, 1, 1, 1, 1, 1);
 
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (108, 1, 70, 527527);
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (109, 2, 30, 527527, 10);
@@ -25830,4 +25880,148 @@ CREATE TABLE remesa_convenios
 WITH (
   OIDS=FALSE
 );
+
+
+-- 17 de marzo
+
+ALTER TABLE convenio_comuna
+  DROP COLUMN estado_convenio;
+
+ALTER TABLE convenio_comuna_componente
+  DROP COLUMN aprobado;
+
+ALTER TABLE convenio_comuna_componente
+  ADD COLUMN estado_convenio integer;
+ALTER TABLE convenio_comuna_componente
+  ADD CONSTRAINT estado_convenio_fk FOREIGN KEY (estado_convenio) REFERENCES estado_convenio (id_estado_convenio) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+UPDATE convenio_comuna_componente
+   SET estado_convenio=1;
+
+ALTER TABLE convenio_comuna_componente
+   ALTER COLUMN estado_convenio SET NOT NULL;
+
+
+ALTER TABLE convenio_servicio
+  DROP COLUMN estado_convenio;
+
+ALTER TABLE convenio_servicio_componente
+  DROP COLUMN aprobado;
+
+ALTER TABLE convenio_servicio_componente
+  ADD COLUMN estado_convenio integer;
+ALTER TABLE convenio_servicio_componente
+  ADD CONSTRAINT estado_convenio_fk FOREIGN KEY (estado_convenio) REFERENCES estado_convenio (id_estado_convenio) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+UPDATE convenio_servicio_componente
+   SET  estado_convenio=1;
+
+ALTER TABLE convenio_servicio_componente
+   ALTER COLUMN estado_convenio SET NOT NULL;
+
+
+UPDATE estado_convenio
+   SET nombre_estado='Rechazado'
+ WHERE  id_estado_convenio=3;
+
+INSERT INTO estado_convenio(id_estado_convenio, nombre_estado) VALUES (6, 'Reemplazado');
+
+
+ALTER TABLE convenio_comuna
+  DROP COLUMN numero_resolucion;
+
+ALTER TABLE convenio_comuna_componente
+  ADD COLUMN numero_resolucion integer;
+
+ALTER TABLE convenio_servicio
+  DROP COLUMN numero_resolucion;
+
+ALTER TABLE convenio_servicio_componente
+  ADD COLUMN numero_resolucion integer;
+
+ALTER TABLE convenio_comuna_componente
+  DROP COLUMN estado_convenio;
+
+ALTER TABLE convenio_comuna_componente
+  ADD COLUMN aprobado boolean;
+
+ALTER TABLE convenio_servicio_componente
+  DROP COLUMN estado_convenio;
+
+ALTER TABLE convenio_servicio_componente
+  ADD COLUMN aprobado boolean;
+
+ALTER TABLE convenio_servicio
+  ADD COLUMN estado_convenio integer;
+ALTER TABLE convenio_servicio
+  ADD CONSTRAINT estado_convenio_fk FOREIGN KEY (estado_convenio) REFERENCES estado_convenio (id_estado_convenio) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+UPDATE convenio_servicio SET estado_convenio=1;
+
+ALTER TABLE convenio_servicio
+   ALTER COLUMN estado_convenio SET NOT NULL;
+
+ALTER TABLE convenio_comuna
+  ADD COLUMN estado_convenio integer;
+ALTER TABLE convenio_comuna
+  ADD CONSTRAINT estado_convenio_fk FOREIGN KEY (estado_convenio) REFERENCES estado_convenio (id_estado_convenio) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+UPDATE convenio_comuna SET estado_convenio=1;
+
+ALTER TABLE convenio_comuna
+   ALTER COLUMN estado_convenio SET NOT NULL;
+
+ALTER TABLE convenio_comuna_componente
+  DROP COLUMN numero_resolucion;
+
+ALTER TABLE convenio_comuna
+  ADD COLUMN numero_resolucion integer;
+
+ALTER TABLE convenio_servicio_componente
+  DROP COLUMN numero_resolucion;
+
+ALTER TABLE convenio_servicio
+  ADD COLUMN numero_resolucion integer;
+
+ALTER TABLE convenio_servicio
+  ADD COLUMN fecha_resolucion timestamp with time zone;
+
+ALTER TABLE convenio_comuna
+  ADD COLUMN fecha_resolucion timestamp with time zone;
+
+ALTER TABLE convenio_servicio_componente
+  DROP COLUMN documento_convenio;
+
+ALTER TABLE convenio_servicio
+  ADD COLUMN documento_convenio integer;
+
+ALTER TABLE convenio_servicio
+  ADD CONSTRAINT documento_convenio_fk FOREIGN KEY (documento_convenio) REFERENCES referencia_documento (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE convenio_comuna_componente
+  DROP COLUMN documento_convenio;
+
+ALTER TABLE convenio_comuna
+  ADD COLUMN documento_convenio integer;
+
+ALTER TABLE convenio_comuna
+  ADD CONSTRAINT documento_convenio_fk FOREIGN KEY (documento_convenio) REFERENCES referencia_documento (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+ALTER TABLE convenio_servicio_componente
+  ADD COLUMN aprobado_revision boolean;
+
+ALTER TABLE convenio_comuna_componente
+  ADD COLUMN aprobado_revision boolean;
+
+ALTER TABLE detalle_remesas
+  ADD COLUMN fecha timestamp with time zone;
+
+ALTER TABLE detalle_remesas
+  ADD COLUMN bloqueado boolean NOT NULL DEFAULT false;
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (45, 'Ordinario Orden Transferencia');
+
+
+
 

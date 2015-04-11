@@ -44,7 +44,7 @@ public class ComponenteService {
 		return componentesPrograma;
 	}
 
-	public List<ComponentesVO> getComponenteByProgramaSubtitulo(int programaId,int sub) {
+	public List<ComponentesVO> getComponenteByProgramaSubtitulo(int programaId, int sub) {
 		List<Componente> componentes =	this.componenteDAO.getComponenteByProgramaSubtitulo(programaId, sub);
 		List<ComponentesVO> componentesPrograma = new ArrayList<ComponentesVO>();
 		for (Componente componente : componentes){

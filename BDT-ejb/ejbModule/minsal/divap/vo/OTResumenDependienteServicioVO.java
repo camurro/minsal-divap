@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.List;
 
-import cl.minsal.divap.model.Cuota;
-
 
 public class OTResumenDependienteServicioVO implements Serializable
 {
@@ -17,29 +15,22 @@ public class OTResumenDependienteServicioVO implements Serializable
 	
 	private EstablecimientoVO establecimiento;
 	private Long marcoPresupuestario;
-	
 	private Long transferenciaAcumulada;
 	private String porcentajeTransferencia;
-	
 	private Long conveniosRecibidos;
 	private String porcentajeConveniosRecibidos;
-	
 	private Long diferencia;
 	private String porcentajeDiferencia;
 	private boolean aprobado;
+	private boolean creacion;
 	
 	private List<RemesasProgramaVO> remesas;
-	private List<Integer> idConveniosAprobados;
-	private List<Integer> idConveniosEnTramite;
-	private List<Integer> idConveniosPagados;
+	private Integer idConvenioServicio;
+	private Integer idConvenioServicioComponenteSinAprobar;
 	private Integer cuotaInicial;
 	private Integer cuotaFinal;
-	
-	private List<Integer> idDetalleRemesa;
-	
-	private Cuota cuota;
-	
-	
+	private List<Integer> idDetalleRemesaEliminar;
+	private List<Integer> idDetalleRemesaAProbarConsolidador;
 
 	public EstablecimientoVO getEstablecimiento() {
 		return establecimiento;
@@ -66,14 +57,12 @@ public class OTResumenDependienteServicioVO implements Serializable
 	}
 
 	public String getPorcentajeTransferencia() {
-		
 		DecimalFormat df = new DecimalFormat("#.00"); 
 		if(marcoPresupuestario!=null && transferenciaAcumulada!=null && marcoPresupuestario>0){
 			porcentajeTransferencia = df.format(((double)transferenciaAcumulada*100)/(double)marcoPresupuestario);
 		}else{
 			porcentajeTransferencia="";
 		}
-		
 		return porcentajeTransferencia;
 	}
 
@@ -96,8 +85,6 @@ public class OTResumenDependienteServicioVO implements Serializable
 		}else{
 			porcentajeConveniosRecibidos="";
 		}
-		
-		
 		return porcentajeConveniosRecibidos;
 	}
 
@@ -144,6 +131,23 @@ public class OTResumenDependienteServicioVO implements Serializable
 		this.aprobado = aprobado;
 	}
 
+	public boolean isCreacion() {
+		return creacion;
+	}
+
+	public void setCreacion(boolean creacion) {
+		this.creacion = creacion;
+	}
+
+	public List<Integer> getIdDetalleRemesaAProbarConsolidador() {
+		return idDetalleRemesaAProbarConsolidador;
+	}
+
+	public void setIdDetalleRemesaAProbarConsolidador(
+			List<Integer> idDetalleRemesaAProbarConsolidador) {
+		this.idDetalleRemesaAProbarConsolidador = idDetalleRemesaAProbarConsolidador;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -170,44 +174,29 @@ public class OTResumenDependienteServicioVO implements Serializable
 		return true;
 	}
 
-	public List<Integer> getIdConveniosAprobados() {
-		return idConveniosAprobados;
+	public Integer getIdConvenioServicio() {
+		return idConvenioServicio;
 	}
 
-	public void setIdConveniosAprobados(List<Integer> idConveniosAprobados) {
-		this.idConveniosAprobados = idConveniosAprobados;
+	public void setIdConvenioServicio(Integer idConvenioServicio) {
+		this.idConvenioServicio = idConvenioServicio;
 	}
 
-	public List<Integer> getIdConveniosEnTramite() {
-		return idConveniosEnTramite;
+	public Integer getIdConvenioServicioComponenteSinAprobar() {
+		return idConvenioServicioComponenteSinAprobar;
 	}
 
-	public List<Integer> getIdConveniosPagados() {
-		return idConveniosPagados;
+	public void setIdConvenioServicioComponenteSinAprobar(
+			Integer idConvenioServicioComponenteSinAprobar) {
+		this.idConvenioServicioComponenteSinAprobar = idConvenioServicioComponenteSinAprobar;
 	}
 
-	public void setIdConveniosPagados(List<Integer> idConveniosPagados) {
-		this.idConveniosPagados = idConveniosPagados;
+	public List<Integer> getIdDetalleRemesaEliminar() {
+		return idDetalleRemesaEliminar;
 	}
 
-	public List<Integer> getIdDetalleRemesa() {
-		return idDetalleRemesa;
-	}
-
-	public void setIdDetalleRemesa(List<Integer> idDetalleRemesa) {
-		this.idDetalleRemesa = idDetalleRemesa;
-	}
-
-	public Cuota getCuota() {
-		return cuota;
-	}
-
-	public void setCuota(Cuota cuota) {
-		this.cuota = cuota;
-	}
-
-	public void setIdConveniosEnTramite(List<Integer> idConveniosEnTramite) {
-		this.idConveniosEnTramite = idConveniosEnTramite;
+	public void setIdDetalleRemesaEliminar(List<Integer> idDetalleRemesaEliminar) {
+		this.idDetalleRemesaEliminar = idDetalleRemesaEliminar;
 	}
 
 	public Integer getCuotaInicial() {
@@ -224,6 +213,27 @@ public class OTResumenDependienteServicioVO implements Serializable
 
 	public void setCuotaFinal(Integer cuotaFinal) {
 		this.cuotaFinal = cuotaFinal;
+	}
+
+	@Override
+	public String toString() {
+		return "OTResumenDependienteServicioVO [establecimiento="
+				+ establecimiento + ", marcoPresupuestario="
+				+ marcoPresupuestario + ", transferenciaAcumulada="
+				+ transferenciaAcumulada + ", porcentajeTransferencia="
+				+ porcentajeTransferencia + ", conveniosRecibidos="
+				+ conveniosRecibidos + ", porcentajeConveniosRecibidos="
+				+ porcentajeConveniosRecibidos + ", diferencia=" + diferencia
+				+ ", porcentajeDiferencia=" + porcentajeDiferencia
+				+ ", aprobado=" + aprobado + ", creacion=" + creacion
+				+ ", remesas=" + remesas + ", idConvenioServicio="
+				+ idConvenioServicio
+				+ ", idConvenioServicioComponenteSinAprobar="
+				+ idConvenioServicioComponenteSinAprobar + ", cuotaInicial="
+				+ cuotaInicial + ", cuotaFinal=" + cuotaFinal
+				+ ", idDetalleRemesaEliminar=" + idDetalleRemesaEliminar
+				+ ", idDetalleRemesaAProbarConsolidador="
+				+ idDetalleRemesaAProbarConsolidador + "]";
 	}
 	
 }

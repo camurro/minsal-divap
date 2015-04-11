@@ -36,8 +36,6 @@ import minsal.divap.service.OTService;
 @RequestScoped
 public class OrdenTransferenciaRESTService extends BaseRest{
 
-	
-		
 	@GET
     @Path("/ordenesDeTransferencia/cambiarEstadoPrograma/{idPrograma}/{estado}")
     @Produces("application/json")
@@ -59,45 +57,44 @@ public class OrdenTransferenciaRESTService extends BaseRest{
     @Produces("application/json")
     public void generarOficioOrdenTransferencia(@PathParam("idProcesoOT") String idProcesoOT, @PathParam("ano") Integer ano){
 		System.out.println("Generar Oficio Orden de Transferencia");
+		if(idProcesoOT == null){
+			throw new IllegalArgumentException("idProcesoOT: "+ idProcesoOT + " no puede ser nulo");
+		}		
+		if(ano == null){
+			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
+		}
 		OTService ordenTransferenciaService = getService(OTService.class);
 		ordenTransferenciaService.pagarOrdenesTransferenciayConvenios();
 		Long totalFinal = ordenTransferenciaService.generarExcelFonasaOT(TipoDocumentosProcesos.RESUMENCONSOLIDADOFONASA, idProcesoOT, ano);
-		ordenTransferenciaService.generarOficiosTransferencia(TipoDocumentosProcesos.PLANTILLAORDINARIOOREDENTRANSFERENCIA,idProcesoOT, totalFinal, ano);
+		ordenTransferenciaService.generarOficiosTransferencia(TipoDocumentosProcesos.PLANTILLAORDINARIOOREDENTRANSFERENCIA, idProcesoOT, totalFinal, ano);
     }	
 	
 	@GET
-    @Path("/ordenesDeTransferencia/administrarVersionesAlfresco")
+    @Path("/ordenesDeTransferencia/administrarVersionesAlfresco/{idProcesoOT}")
     @Produces("application/json")
-    public void administrarVersionesAlfresco(){
-		System.out.println("administrarVersionesAlfresco Orden de Transferencia");
-	
+    public void administrarVersionesAlfresco(@PathParam("idProcesoOT") Integer idProcesoOT){
+		System.out.println("administrarVersionesAlfresco Orden de Transferencia idProcesoOT= "+idProcesoOT);
 		OTService ordenTransferenciaService = getService(OTService.class);
-		ordenTransferenciaService.administrarVersionesAlfresco();
+		ordenTransferenciaService.administrarVersionesAlfresco(idProcesoOT);
     }	
-		
 	
 	@GET
     @Path("/ordenesDeTransferencia/instanciarProcesoOT/{usuario}")
     @Produces("application/json")
     public Integer instanciarProcesoOT(@PathParam("usuario") String usuario){
 		System.out.println("Generar Instancia OT");
-	
 		if(usuario == null){
 			throw new IllegalArgumentException("usuarioId: "+ usuario + " no puede ser nulo");
 		}
 		OTService ordenTransferenciaService = getService(OTService.class);
 		return ordenTransferenciaService.crearInstanciaOT(usuario);
     }
-	
-	
-
 
 	@GET
-    @Path("/ordenesDeTransferencia/enviarOrdinarioFonasaServicioSalud/{idProcesoOT}")
+    @Path("/ordenesDeTransferencia/enviarOrdinarioFonasa/{idProcesoOT}")
     @Produces("application/json")
-    public void enviarOrdinarioFonasaServicioSalud(@PathParam("idProcesoOT") String idProcesoOT){
+    public void enviarOrdinarioFonasa(@PathParam("idProcesoOT") String idProcesoOT){
 		System.out.println("Enviando documentos OT a FONASA");
-	
 		if(idProcesoOT == null){
 			throw new IllegalArgumentException("idProcesoOT: "+ idProcesoOT + " no puede ser nulo");
 		}
@@ -105,18 +102,28 @@ public class OrdenTransferenciaRESTService extends BaseRest{
 		ordenTransferenciaService.enviarDocumentosFonasa(idProcesoOT);
     }
 	
-	
+	@GET
+    @Path("/ordenesDeTransferencia/enviarOrdinarioServicioSalud/{idProcesoOT}")
+    @Produces("application/json")
+    public void enviarOrdinarioServicioSalud(@PathParam("idProcesoOT") String idProcesoOT){
+		System.out.println("Enviando documentos OT a ServicioSalud");
+		if(idProcesoOT == null){
+			throw new IllegalArgumentException("idProcesoOT: "+ idProcesoOT + " no puede ser nulo");
+		}
+		OTService ordenTransferenciaService = getService(OTService.class);
+		ordenTransferenciaService.enviarDocumentosServicioSalud(idProcesoOT);
+    }
 
 	@GET
     @Path("/ordenesDeTransferencia/reestablecerProgramas/{estado}")
     @Produces("application/json")
     public void reestablecerProgramas(@PathParam("estado") String estado){
 		System.out.println("Reestableciendo estado de los programas para OT");
-		
+		if(estado == null){
+			throw new IllegalArgumentException("estado: "+ estado + " no puede ser nulo");
+		}
 		OTService ordenTransferenciaService = getService(OTService.class);
 		ordenTransferenciaService.reestablecerProgramas(Integer.parseInt(estado));
     }
-	
-	
 			
 }

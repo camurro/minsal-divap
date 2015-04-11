@@ -156,7 +156,6 @@ public class EstimacionFlujoCajaService {
 	@Resource(name = "folderEstimacionFlujoCaja")
 	private String folderEstimacionFlujoCaja;
 
-
 	@EJB
 	private UsuarioDAO usuarioDAO;
 	@EJB

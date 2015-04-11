@@ -43,9 +43,10 @@ public enum TipoDocumentosProcesos{
 	MODIFICACIONORDINARIOPROGRAMASAPS(81,"Ordinario Modificación Recursos Programa"),
 	
 	//Plantilla PARA OT
-	 PLANTILLAORDINARIOOREDENTRANSFERENCIA(43,"Plantilla Ordinario Orden Transferencia"), 
-	 RESUMENCONSOLIDADOFONASA(44,"Resumen Consolidado Fonasa"),
-	 PLANTILLAOTCORREO(79,"Plantilla Correo OT"),
+	 PLANTILLAORDINARIOOREDENTRANSFERENCIA(43, "Plantilla Ordinario Orden Transferencia"), 
+	 RESUMENCONSOLIDADOFONASA(44, "Resumen Consolidado Fonasa"),
+	 ORDINARIOOREDENTRANSFERENCIA(45, "Ordinario Orden Transferencia"), 
+	 PLANTILLAOTCORREO(79, "Plantilla Correo OT"),
 		
 	BASECUMPLIMIENTO(50, "Base Cumplimiento"), PLANTILLARESOLUCIONREBAJA(51,"Plantilla Resolución Rebaja Aporte Estatal"), RESOLUCIONREBAJA(52,"Resolución Rebaja Aporte Estatal"),
 	PLANTILLACORREORESOLUCIONSERVICIOSALUDREBAJA(53,"Plantilla Correo Resoluciones Servicios de Salud - Rebaja"), PLANTILLACORREOCONSULTAREGIONALPERCAPITA(54,"Plantilla Correo Consulta Regional - percapita"),

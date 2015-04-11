@@ -3,7 +3,8 @@ package minsal.divap.enums;
 
 public enum EstadosConvenios{
 	INGRESADO(1, "Ingresado"),  APROBADO(2,"Aprobado"), 
-	RECHAZADO(3, "Rechazado"), PAGADO(4, "Pagado"),TRAMITE(5,"Tramite");
+	RECHAZADO(3, "Rechazado"), PAGADO(4, "Pagado"), 
+	TRAMITE(5, "Tramite"), REEMPLAZADO(6, "Reemplazado");
 	private Integer id;
 	private String name;
 

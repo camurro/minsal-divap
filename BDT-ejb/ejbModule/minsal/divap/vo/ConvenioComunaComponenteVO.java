@@ -20,6 +20,7 @@ public class ConvenioComunaComponenteVO implements Serializable {
 	private Integer monto;
 	private Integer montoPendiente;
 	private Boolean aprobado;
+	private Boolean rechazado;
 	
 	public ConvenioComunaComponenteVO() {
 		super();
@@ -27,12 +28,13 @@ public class ConvenioComunaComponenteVO implements Serializable {
 		this.montoPendiente = 0;
 		this.marcoPresupuestario = 0L;
 		this.aprobado = false;
+		this.rechazado = false;
 	}
 
 	public ConvenioComunaComponenteVO(Integer idConvenioComuna,
 			Integer idConvenioComunaComponente, Integer idComuna,
 			String nombreComuna, Long marcoPresupuestario, Integer resolucion,
-			Date fecha, Integer monto, Integer montoPendiente, Boolean aprobado) {
+			Date fecha, Integer monto, Integer montoPendiente, Boolean aprobado, Boolean rechazado) {
 		super();
 		this.idConvenioComuna = idConvenioComuna;
 		this.idConvenioComunaComponente = idConvenioComunaComponente;
@@ -44,6 +46,7 @@ public class ConvenioComunaComponenteVO implements Serializable {
 		this.monto = monto;
 		this.montoPendiente = montoPendiente;
 		this.aprobado = aprobado;
+		this.rechazado = rechazado;
 	}
 
 	public Boolean getAprobado() {
@@ -134,6 +137,14 @@ public class ConvenioComunaComponenteVO implements Serializable {
 		this.idDocConvenio = idDocConvenio;
 	}
 
+	public Boolean getRechazado() {
+		return rechazado;
+	}
+
+	public void setRechazado(Boolean rechazado) {
+		this.rechazado = rechazado;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -187,7 +198,8 @@ public class ConvenioComunaComponenteVO implements Serializable {
 				+ nombreComuna + ", marcoPresupuestario=" + marcoPresupuestario
 				+ ", resolucion=" + resolucion + ", fecha=" + fecha
 				+ ", monto=" + monto + ", montoPendiente=" + montoPendiente
-				+ ", aprobado=" + aprobado + "]";
+				+ ", aprobado=" + aprobado
+				+ ", rechazado=" + rechazado + "]";
 	}
 	
 }

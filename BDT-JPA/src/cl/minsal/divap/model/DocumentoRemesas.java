@@ -24,7 +24,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "DocumentoRemesas.findAll", query = "SELECT d FROM DocumentoRemesas d"),
     @NamedQuery(name = "DocumentoRemesas.findByTipoDocumentoAndRemesa", query = "SELECT d FROM DocumentoRemesas d WHERE d.remesa.idRemesa = :idRemesa and d.tipoDocumento.idTipoDocumento = :idTipoDocumento order by d.documento.fechaCreacion desc"),
-    @NamedQuery(name = "DocumentoRemesas.findByIdDocumentoRemesas", query = "SELECT d FROM DocumentoRemesas d WHERE d.idDocumentoRemesas = :idDocumentoRemesas")})
+    @NamedQuery(name = "DocumentoRemesas.findByIdDocumentoRemesas", query = "SELECT d FROM DocumentoRemesas d WHERE d.idDocumentoRemesas = :idDocumentoRemesas"),
+    @NamedQuery(name = "DocumentoRemesas.findVersionFinalByIdOTTipoDocumento", query = "SELECT d.documento FROM DocumentoRemesas d WHERE d.remesa.idRemesa = :idRemesa and d.tipoDocumento.idTipoDocumento = :idTipoDocumento and d.documento.documentoFinal = true order by d.documento.fechaCreacion desc"),
+    @NamedQuery(name = "DocumentoRemesas.findByIdOTTipoNotFinal", query = "SELECT d FROM DocumentoRemesas d WHERE d.remesa.idRemesa = :idRemesa and d.tipoDocumento.idTipoDocumento = :idTipoDocumento and d.documento.documentoFinal = false"),
+    @NamedQuery(name = "DocumentoRemesas.deleteUsingIds", query = "DELETE FROM DocumentoRemesas d WHERE d.idDocumentoRemesas IN (:idDocumentosRemesas)")})
 public class DocumentoRemesas implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

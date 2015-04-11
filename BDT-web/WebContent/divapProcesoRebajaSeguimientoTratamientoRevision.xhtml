@@ -122,6 +122,7 @@
 	</ui:define>
 	<ui:define name="content">
 		<h:form enctype="multipart/form-data" id="seguimientoForm">
+			<p:growl id="growl" showDetail="false" />
 			<p:panel id="seguimientoPanel" styleClass="contentPanel">
 				<h1>
 					<h:outputText value="Rebaja" />
@@ -470,10 +471,10 @@
 								target="#{procesoRebajaTramitacionController.target}"
 								value="bandejaTareas.jsf" />
 						</p:commandButton>
-
+  
 						<p:commandButton styleClass="x-btn-text"
 							value="Finalizar Seguimiento" icon="ui-icon-check"
-							action="#{procesoRebajaTramitacionController.enviar}">
+							action="#{procesoRebajaTramitacionController.enviar}" update="growl">
 							<f:setPropertyActionListener
 								target="#{procesoRebajaTramitacionController.target}"
 								value="bandejaTareas.jsf" />
