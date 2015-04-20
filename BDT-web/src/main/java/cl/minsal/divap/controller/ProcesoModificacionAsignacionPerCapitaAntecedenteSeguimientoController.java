@@ -53,6 +53,7 @@ public class ProcesoModificacionAsignacionPerCapitaAntecedenteSeguimientoControl
 	private String actividadSeguimientoTitle = "Seguimiento Resoluciones";
 	private UploadedFile file;
 	private Boolean lastVersion = false;
+	private Integer anoProceso;
 
 	@PostConstruct
 	public void init() {
@@ -63,6 +64,8 @@ public class ProcesoModificacionAsignacionPerCapitaAntecedenteSeguimientoControl
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			this.idDistribucionInicialPercapita = (Integer) getTaskDataVO().getData().get("_idDistribucionInicialPercapita");
 			System.out.println("this.idDistribucionInicialPercapita --->" + this.idDistribucionInicialPercapita);
+			this.anoProceso = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("this.ano --->" + this.anoProceso);
 		}
 		ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = modificacionDistribucionInicialPercapitaService.getLastDocumentSummaryModificacionPercapitaByType(this.idDistribucionInicialPercapita, TipoDocumentosProcesos.ORDINARIOSOLICITUDANTECEDENTES);
 		if(referenciaDocumentoSummaryVO != null){
@@ -139,7 +142,8 @@ public class ProcesoModificacionAsignacionPerCapitaAntecedenteSeguimientoControl
 				conCopiaOculta = Arrays.asList(this.cco.split("\\,")); 
 			}
 			System.out.println("ProcesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController-->sendMail");
-			modificacionDistribucionInicialPercapitaService.createSeguimientoModificacionPercapita(this.idDistribucionInicialPercapita, TareasSeguimiento.HACERSEGUIMIENTOORDINARIOSOLICITUDANTECEDENTES, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
+			modificacionDistribucionInicialPercapitaService.createSeguimientoModificacionPercapita(this.idDistribucionInicialPercapita, TareasSeguimiento.HACERSEGUIMIENTOORDINARIOSOLICITUDANTECEDENTES, subject,
+					body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos, this.anoProceso);
 		}catch(Exception e){
 			e.printStackTrace();
 			target = null;
@@ -304,7 +308,7 @@ public class ProcesoModificacionAsignacionPerCapitaAntecedenteSeguimientoControl
 				filename = filename.replaceAll(" ", "");
 				byte[] contentResolucionFile = file.getContents();
 				Integer docResolucion = persistFile(filename, contentResolucionFile);
-				modificacionDistribucionInicialPercapitaService.moveToAlfrescoModificacion(this.idDistribucionInicialPercapita, docResolucion, TipoDocumentosProcesos.ORDINARIOSOLICITUDANTECEDENTES, this.lastVersion);
+				modificacionDistribucionInicialPercapitaService.moveToAlfrescoModificacion(this.idDistribucionInicialPercapita, docResolucion, TipoDocumentosProcesos.ORDINARIOSOLICITUDANTECEDENTES, this.lastVersion, this.anoProceso);
 				idResolucion = docResolucion;
 			}catch (Exception e) {
 				e.printStackTrace();

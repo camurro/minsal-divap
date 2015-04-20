@@ -161,14 +161,31 @@ public class AntecedentesComunaDAO {
 
 	public AntecendentesComuna findAntecendentesComunaByComunaServicioAno(String servicio, String comuna, Integer anoCurso) {
 		try {
-			System.out.println("servicio="+servicio);
-			System.out.println("comuna="+comuna);
-			System.out.println("anoCurso="+anoCurso);
+			System.out.println("servicio = " + servicio);
+			System.out.println("comuna= " + comuna);
+			System.out.println("anoCurso= " + anoCurso);
 			TypedQuery<AntecendentesComuna> query = this.em.createNamedQuery("AntecendentesComuna.findAntecendentesComunaByComunaServicioAno", AntecendentesComuna.class);
 			query.setParameter("nombreComuna", comuna.toLowerCase());
 			query.setParameter("nombreServicio", servicio.toLowerCase());
 			query.setParameter("anoEnCurso", anoCurso);
 			List<AntecendentesComuna> results = query.getResultList(); 
+			if(results != null && results.size() > 0){
+				return results.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public AntecendentesComunaCalculado findAntecendentesComunaCalculadoByServicioComunaAno(Integer servicio, Integer comuna, Integer ano) {
+		try {
+			System.out.println("comuna="+comuna+" servicio="+servicio+" ano="+ano);
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByComunaServicioAnoCurso", AntecendentesComunaCalculado.class);
+			query.setParameter("idComuna", comuna);
+			query.setParameter("idServicio", servicio);
+			query.setParameter("anoEnCurso", ano);
+			List<AntecendentesComunaCalculado> results = query.getResultList(); 
 			if(results != null && results.size() > 0){
 				return results.get(0);
 			}

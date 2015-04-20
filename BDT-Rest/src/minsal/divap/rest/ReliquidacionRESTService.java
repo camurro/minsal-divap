@@ -69,7 +69,10 @@ public class ReliquidacionRESTService extends BaseRest{
     public String calcularReliquidacion(@PathParam("idProgramaAno") Integer idProgramaAno, @PathParam("idReliquidacion") Integer idReliquidacion){
 		System.out.println("llega al REST de valorizarMontos -->"+idProgramaAno+"  --> "+idReliquidacion);
 		if(idProgramaAno == null){
-			throw new IllegalArgumentException("proceso: "+ idProgramaAno + " no puede ser nulo");
+			throw new IllegalArgumentException("proceso Reliquidacion idProgramaAno: "+ idProgramaAno + " no puede ser nulo");
+		}
+		if(idReliquidacion == null){
+			throw new IllegalArgumentException("proceso Reliquidacion idReliquidacion: "+ idReliquidacion + " no puede ser nulo");
 		}
 		ReliquidacionService reliquidacionService = getService(ReliquidacionService.class);
 		return reliquidacionService.valorizarMontosReliquidacion(idProgramaAno, idReliquidacion);

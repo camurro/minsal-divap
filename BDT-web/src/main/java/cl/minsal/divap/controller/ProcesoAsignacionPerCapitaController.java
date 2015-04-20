@@ -157,7 +157,7 @@ implements Serializable {
 			this.idDistribucionInicialPercapita = (Integer) getTaskDataVO().getData().get("_idDistribucionInicialPercapita");
 			System.out.println("this.idDistribucionInicialPercapita --->"+ this.idDistribucionInicialPercapita);
 			this.anoProceso = (Integer) getTaskDataVO().getData().get("_ano");
-			System.out.println("this.anoProceso --->"+ this.anoProceso);
+			System.out.println("this._ano --->"+ this.anoProceso);
 		}
 		System.out.println("this.docAsignacionRecursosPercapita-->" + this.docAsignacionRecursosPercapita);
 		System.out.println("this.docAsignacionDesempenoDificil-->" 	+ this.docAsignacionDesempenoDificil);

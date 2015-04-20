@@ -224,7 +224,7 @@ public class ProcesoOTSeguimientoController extends AbstractTaskMBean implements
 			System.out.println("ProcesoOT-->sendMail");
 			
 			otService.createSeguimientoOT(idProcesoOT, TareasSeguimiento.HACERSEGUIMIENTOOT, subject, body, getSessionBean().getUsername(), 
-					para, conCopia, conCopiaOculta, documentos);
+					para, conCopia, conCopiaOculta, documentos, this.ano);
 		}catch(Exception e){
 			e.printStackTrace();
 			target = null;

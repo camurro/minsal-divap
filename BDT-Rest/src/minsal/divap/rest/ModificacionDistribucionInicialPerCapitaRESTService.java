@@ -34,15 +34,19 @@ import minsal.divap.service.ModificacionDistribucionInicialPercapitaService;
 @RequestScoped
 public class ModificacionDistribucionInicialPerCapitaRESTService extends BaseRest{
 	@GET
-	@Path("/modificacionDistribucionInicialPerCapita/valorizarPlanSalud/{idDistribucionInicialPercapita}")
+	@Path("/modificacionDistribucionInicialPerCapita/valorizarPlanSalud/{idDistribucionInicialPercapita}/{ano}")
 	@Produces("application/json")
-	public Integer valorizarPlanSalud(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita){
-		System.out.println("valorizar Plan Salud-->"+idDistribucionInicialPercapita);
+	public Integer valorizarPlanSalud(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita, @PathParam("ano") Integer ano){
+		System.out.println("valorizar Plan Salud idDistribucionInicialPercapita-->" + idDistribucionInicialPercapita);
+		System.out.println("valorizar Plan Salud ano-->" + ano);
 		if(idDistribucionInicialPercapita == null){
 			throw new IllegalArgumentException("proceso: "+ idDistribucionInicialPercapita + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
+		}
 		ModificacionDistribucionInicialPercapitaService modificacionDistribucionInicialPercapitaService = getService(ModificacionDistribucionInicialPercapitaService.class);
-		return modificacionDistribucionInicialPercapitaService.valorizarDisponibilizarPlanillaTrabajo(idDistribucionInicialPercapita);
+		return modificacionDistribucionInicialPercapitaService.valorizarDisponibilizarPlanillaTrabajo(idDistribucionInicialPercapita, ano);
 	}
 
 
@@ -59,139 +63,184 @@ public class ModificacionDistribucionInicialPerCapitaRESTService extends BaseRes
 	}
 
 	@GET
-	@Path("/modificacionDistribucionInicialPerCapita/elaborarOficioConsulta/{idDistribucionInicialPercapita}")
+	@Path("/modificacionDistribucionInicialPerCapita/elaborarOficioConsulta/{idDistribucionInicialPercapita}/{ano}")
 	@Produces("application/json")
-	public Integer elaborarOficioConsulta(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita){
-		System.out.println("elaborar oficio proceso-->"+idDistribucionInicialPercapita);
+	public Integer elaborarOficioConsulta(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita, @PathParam("ano") Integer ano){
+		System.out.println("elaborar oficio proceso idDistribucionInicialPercapita-->"+idDistribucionInicialPercapita);
+		System.out.println("elaborar oficio proceso ano-->"+ano);
 		if(idDistribucionInicialPercapita == null){
 			throw new IllegalArgumentException("proceso: "+ idDistribucionInicialPercapita + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("proceso ano: "+ ano + " no puede ser nulo");
+		}
 		ModificacionDistribucionInicialPercapitaService modificacionDistribucionInicialPercapitaService = getService(ModificacionDistribucionInicialPercapitaService.class);
-		return modificacionDistribucionInicialPercapitaService.crearOficioConsulta(idDistribucionInicialPercapita);
+		return modificacionDistribucionInicialPercapitaService.crearOficioConsulta(idDistribucionInicialPercapita, ano);
 	}
 
 	@GET
-	@Path("/modificacionDistribucionInicialPerCapita/elaborarBorradorDecretoAporteEstatal/{idDistribucionInicialPercapita}")
+	@Path("/modificacionDistribucionInicialPerCapita/elaborarBorradorDecretoAporteEstatal/{idDistribucionInicialPercapita}/{ano}")
 	@Produces("application/json")
-	public Integer elaborarBorradorDecretoAporteEstatal(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita){
-		System.out.println("elaborar Borrador Decreto Aporte Estatal-->"+idDistribucionInicialPercapita);
+	public Integer elaborarBorradorDecretoAporteEstatal(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita, @PathParam("ano") Integer ano){
+		System.out.println("elaborar Borrador Decreto Aporte Estatal idDistribucionInicialPercapita-->"+idDistribucionInicialPercapita);
+		System.out.println("elaborar Borrador Decreto Aporte Estatal ano-->"+ano);
 		if(idDistribucionInicialPercapita == null){
 			throw new IllegalArgumentException("proceso: "+ idDistribucionInicialPercapita + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
+		}
 		ModificacionDistribucionInicialPercapitaService modificacionDistribucionInicialPercapitaService = getService(ModificacionDistribucionInicialPercapitaService.class);
-		return modificacionDistribucionInicialPercapitaService.elaborarBorradorDecretoAporteEstatal(idDistribucionInicialPercapita);
+		return modificacionDistribucionInicialPercapitaService.elaborarBorradorDecretoAporteEstatal(idDistribucionInicialPercapita, ano);
 	}
 
 	@GET
-	@Path("/modificacionDistribucionInicialPerCapita/enviarDecretoAporteEstatal/{borradorAporteEstatalId}/{usuario}")
-	public void enviarDecretoAporteEstatal(@PathParam("borradorAporteEstatalId") Integer borradorAporteEstatalId, @PathParam("usuario") String usuario){
-		System.out.println("enviar Decreto Aporte Estatal-->"+borradorAporteEstatalId);
+	@Path("/modificacionDistribucionInicialPerCapita/enviarDecretoAporteEstatal/{borradorAporteEstatalId}/{usuario}/{ano}")
+	public void enviarDecretoAporteEstatal(@PathParam("borradorAporteEstatalId") Integer borradorAporteEstatalId, @PathParam("usuario") String usuario, @PathParam("ano") Integer ano){
+		System.out.println("enviar Decreto Aporte Estatal borradorAporteEstatalId-->"+borradorAporteEstatalId);
+		System.out.println("enviar Decreto Aporte Estatal usuario-->"+usuario);
+		System.out.println("enviar Decreto Aporte Estatal ano-->"+ano);
 		if(borradorAporteEstatalId == null){
 			throw new IllegalArgumentException("el documento  borradorAporteEstata: "+ borradorAporteEstatalId + " no puede ser nulo");
 		}
 		if(usuario == null){
 			throw new IllegalArgumentException("el usuario : "+ usuario + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("el ano : "+ ano + " no puede ser nulo");
+		}
 		ModificacionDistribucionInicialPercapitaService modificacionDistribucionInicialPercapitaService = getService(ModificacionDistribucionInicialPercapitaService.class);
-		modificacionDistribucionInicialPercapitaService.enviarDecretoAporteEstatal(borradorAporteEstatalId, usuario);
+		modificacionDistribucionInicialPercapitaService.enviarDecretoAporteEstatal(borradorAporteEstatalId, usuario, ano);
 	}
 
 	@GET
-	@Path("/modificacionDistribucionInicialPerCapita/elaborarDocumentoFormal/{idDistribucionInicialPercapita}")
-	public void elaborarDocumentoFormal(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita){
-		System.out.println("elaborar Documento Formal-->"+idDistribucionInicialPercapita);
+	@Path("/modificacionDistribucionInicialPerCapita/elaborarDocumentoFormal/{idDistribucionInicialPercapita}/{ano}")
+	public void elaborarDocumentoFormal(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita, @PathParam("ano") Integer ano){
+		System.out.println("elaborar Documento Formal idDistribucionInicialPercapita-->"+idDistribucionInicialPercapita);
 		if(idDistribucionInicialPercapita == null){
 			throw new IllegalArgumentException("proceso: "+ idDistribucionInicialPercapita + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
+		}
 		ModificacionDistribucionInicialPercapitaService modificacionDistribucionInicialPercapitaService = getService(ModificacionDistribucionInicialPercapitaService.class);
-		modificacionDistribucionInicialPercapitaService.elaborarDocumentoFormal(idDistribucionInicialPercapita);
+		modificacionDistribucionInicialPercapitaService.elaborarDocumentoFormal(idDistribucionInicialPercapita, ano);
 	}
 
 	@GET
-	@Path("/modificacionDistribucionInicialPerCapita/notificarFinElaboracionResolucion/{idDistribucionInicialPercapita}/{usuario}")
-	public void notificarFinElaboracionResolucion(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita, @PathParam("usuario") String usuario){
-		System.out.println("Notificar Fin Elaboracion Resolucion-->"+idDistribucionInicialPercapita);
+	@Path("/modificacionDistribucionInicialPerCapita/notificarFinElaboracionResolucion/{idDistribucionInicialPercapita}/{usuario}/{ano}")
+	public void notificarFinElaboracionResolucion(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita, @PathParam("usuario") String usuario, @PathParam("ano") Integer ano){
+		System.out.println("Notificar Fin Elaboracion idDistribucionInicialPercapita-->"+idDistribucionInicialPercapita);
+		System.out.println("Notificar Fin Elaboracion usuario-->"+usuario);
+		System.out.println("Notificar Fin Elaboracion ano-->"+ano);
 		if(idDistribucionInicialPercapita == null){
 			throw new IllegalArgumentException("proceso: "+ idDistribucionInicialPercapita + " no puede ser nulo");
 		}
 		if(usuario == null){
 			throw new IllegalArgumentException("el usuario : "+ usuario + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("el ano : "+ ano + " no puede ser nulo");
+		}
 		ModificacionDistribucionInicialPercapitaService modificacionDistribucionInicialPercapitaService = getService(ModificacionDistribucionInicialPercapitaService.class);
-		modificacionDistribucionInicialPercapitaService.notificarFinElaboracionResolucion(idDistribucionInicialPercapita, usuario);
+		modificacionDistribucionInicialPercapitaService.notificarFinElaboracionResolucion(idDistribucionInicialPercapita, usuario, ano);
 	}
 
 	@GET
-	@Path("/modificacionDistribucionInicialPerCapita/administrarVersionesFinalesAlfresco/{idDistribucionInicialPercapita}")
+	@Path("/modificacionDistribucionInicialPerCapita/administrarVersionesFinalesAlfresco/{idDistribucionInicialPercapita}/{ano}")
 	@Produces("application/json")
-	public void administrarVersionesFinalesAlfresco(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita){
-		System.out.println("administrar Versiones Finales Alfresco-->"+idDistribucionInicialPercapita);
+	public void administrarVersionesFinalesAlfresco(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita, @PathParam("ano") Integer ano){
+		System.out.println("administrar Versiones Finales Alfresco idDistribucionInicialPercapita-->"+idDistribucionInicialPercapita);
+		System.out.println("administrar Versiones Finales Alfresco ano-->"+ano);
 		if(idDistribucionInicialPercapita == null){
 			throw new IllegalArgumentException("proceso: "+ idDistribucionInicialPercapita + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
+		}
 		ModificacionDistribucionInicialPercapitaService modificacionDistribucionInicialPercapitaService = getService(ModificacionDistribucionInicialPercapitaService.class);
-		modificacionDistribucionInicialPercapitaService.administrarVersionesFinalesAlfresco(idDistribucionInicialPercapita);
+		modificacionDistribucionInicialPercapitaService.administrarVersionesFinalesAlfresco(idDistribucionInicialPercapita, ano);
 	}
 
 	@GET
-	@Path("/modificacionDistribucionInicialPerCapita/enviarResolucionesServicioSalud/{idDistribucionInicialPercapita}")
+	@Path("/modificacionDistribucionInicialPerCapita/enviarResolucionesServicioSalud/{idDistribucionInicialPercapita}/{ano}")
 	@Produces("application/json")
-	public void enviarResolucionesServicioSalud(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita){
-		System.out.println("enviar Resoluciones Servicio Salud-->"+idDistribucionInicialPercapita);
+	public void enviarResolucionesServicioSalud(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita, @PathParam("ano") Integer ano){
+		System.out.println("enviar Resoluciones Servicio Salud idDistribucionInicialPercapita-->"+idDistribucionInicialPercapita);
+		System.out.println("enviar Resoluciones Servicio Salud ano-->"+ano);
 		if(idDistribucionInicialPercapita == null){
 			throw new IllegalArgumentException("proceso: "+ idDistribucionInicialPercapita + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
+		}
 		ModificacionDistribucionInicialPercapitaService modificacionDistribucionInicialPercapitaService = getService(ModificacionDistribucionInicialPercapitaService.class);
-		modificacionDistribucionInicialPercapitaService.enviarResolucionesServicioSalud(idDistribucionInicialPercapita);
+		modificacionDistribucionInicialPercapitaService.enviarResolucionesServicioSalud(idDistribucionInicialPercapita, ano);
 	}
 
 	@GET
-	@Path("/modificacionDistribucionInicialPerCapita/enviarConsultaRegional/{idDistribucionInicialPercapita}/{oficioConsultaId}")
+	@Path("/modificacionDistribucionInicialPerCapita/enviarConsultaRegional/{idDistribucionInicialPercapita}/{oficioConsultaId}/{ano}")
 	@Produces("application/json")
-	public void enviarConsultaRegional(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita, @PathParam("oficioConsultaId") Integer oficioConsultaId){
-		System.out.println("enviar Consulta Regional-->"+idDistribucionInicialPercapita);
+	public void enviarConsultaRegional(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita, @PathParam("oficioConsultaId") Integer oficioConsultaId,
+			@PathParam("ano") Integer ano){
+		System.out.println("enviar Consulta Regional idDistribucionInicialPercapita-->"+idDistribucionInicialPercapita);
+		System.out.println("enviar Consulta Regional oficioConsultaId-->"+oficioConsultaId);
+		System.out.println("enviar Consulta Regional ano-->"+ano);
 		if(idDistribucionInicialPercapita == null){
 			throw new IllegalArgumentException("proceso: "+ idDistribucionInicialPercapita + " no puede ser nulo");
 		}
 		if(oficioConsultaId == null){
 			throw new IllegalArgumentException("oficio consulta proceso percapita: "+ oficioConsultaId + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("oficio consulta proceso ano: "+ ano + " no puede ser nulo");
+		}
 		ModificacionDistribucionInicialPercapitaService modificacionDistribucionInicialPercapitaService = getService(ModificacionDistribucionInicialPercapitaService.class);
-		modificacionDistribucionInicialPercapitaService.enviarConsultaRegional(idDistribucionInicialPercapita, oficioConsultaId);
+		modificacionDistribucionInicialPercapitaService.enviarConsultaRegional(idDistribucionInicialPercapita, oficioConsultaId, ano);
 	}
 
 	@GET
-	@Path("/modificacionDistribucionInicialPerCapita/instanciarProcesoModificacionInicialPerCapita/{usuarioId}")
+	@Path("/modificacionDistribucionInicialPerCapita/instanciarProcesoModificacionInicialPerCapita/{usuarioId}/{ano}")
 	@Produces("application/json")
-	public Integer instanciarProcesoModificacionInicialPerCapita(@PathParam("usuarioId") String usuarioId){
+	public Integer instanciarProcesoModificacionInicialPerCapita(@PathParam("usuarioId") String usuarioId, @PathParam("ano") Integer ano){
 		System.out.println("instanciar Proceso Inicial PerCapita-->"+usuarioId);
 		if(usuarioId == null){
 			throw new IllegalArgumentException("usuarioId: "+ usuarioId + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
+		}
 		ModificacionDistribucionInicialPercapitaService modificacionDistribucionInicialPercapitaService = getService(ModificacionDistribucionInicialPercapitaService.class);
-		return modificacionDistribucionInicialPercapitaService.crearIntanciaModificacionDistribucionInicialPercapita(usuarioId);
+		return modificacionDistribucionInicialPercapitaService.crearIntanciaModificacionDistribucionInicialPercapita(usuarioId, ano);
 	}
 
 	@GET
-	@Path("/modificacionDistribucionInicialPerCapita/generarOrdinarioSolicitudAntecedentes/{idDistribucionInicialPercapita}")
-	public void generarOrdinarioSolicitudAntecedentes(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita){
+	@Path("/modificacionDistribucionInicialPerCapita/generarOrdinarioSolicitudAntecedentes/{idDistribucionInicialPercapita}/{ano}")
+	public void generarOrdinarioSolicitudAntecedentes(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita, @PathParam("ano") Integer ano){
 		System.out.println("generarOrdinarioSolicitudAntecedentes-->"+idDistribucionInicialPercapita);
 		if(idDistribucionInicialPercapita == null){
 			throw new IllegalArgumentException("usuarioId: "+ idDistribucionInicialPercapita + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
+		}
 		ModificacionDistribucionInicialPercapitaService modificacionDistribucionInicialPercapitaService = getService(ModificacionDistribucionInicialPercapitaService.class);
-		modificacionDistribucionInicialPercapitaService.generarOrdinarioSolicitudAntecedentes(idDistribucionInicialPercapita);
+		modificacionDistribucionInicialPercapitaService.generarOrdinarioSolicitudAntecedentes(idDistribucionInicialPercapita, ano);
 	}
 	
 	@GET
-	@Path("/modificacionDistribucionInicialPerCapita/enviarOrdinarioSolicitudAntecedentes/{idDistribucionInicialPercapita}")
-	public void enviarOrdinarioSolicitudAntecedentes(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita){
+	@Path("/modificacionDistribucionInicialPerCapita/enviarOrdinarioSolicitudAntecedentes/{idDistribucionInicialPercapita}/{ano}")
+	public void enviarOrdinarioSolicitudAntecedentes(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita, @PathParam("ano") Integer ano){
 		System.out.println("enviarOrdinarioSolicitudAntecedentes-->"+idDistribucionInicialPercapita);
+		System.out.println("ano-->"+ano);
 		if(idDistribucionInicialPercapita == null){
 			throw new IllegalArgumentException("usuarioId: "+ idDistribucionInicialPercapita + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
+		}
 		ModificacionDistribucionInicialPercapitaService modificacionDistribucionInicialPercapitaService = getService(ModificacionDistribucionInicialPercapitaService.class);
-		modificacionDistribucionInicialPercapitaService.enviarOrdinarioSolicitudAntecedentes(idDistribucionInicialPercapita);
+		modificacionDistribucionInicialPercapitaService.enviarOrdinarioSolicitudAntecedentes(idDistribucionInicialPercapita, ano);
 	}
 
 }

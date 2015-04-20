@@ -89,16 +89,9 @@
 						actionListener="#{procesoAsignacionPerCapitaController.uploadArchivosValorizacion}"
 						icon="ui-icon-upload" id="cargarArchivos" update=":continuar" />
 				</p:panel>
-				<p:commandButton value="Volver" styleClass="x-btn-text"
-					action="bandejaTareas.jsf?faces-redirect=true"
-					ajax="false" icon="ui-icon-seek-first" />
-				<p:commandButton id="continuar" value="Continuar"
-					styleClass="x-btn-text"
-					action="#{procesoAsignacionPerCapitaController.enviar}"
-					disabled="#{not procesoAsignacionPerCapitaController.archivosValidos}">
-					<f:setPropertyActionListener
-						target="#{procesoAsignacionPerCapitaController.target}"
-						value="bandejaTareas.jsf" />
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas.jsf?faces-redirect=true" ajax="false" icon="ui-icon-seek-first" />
+				<p:commandButton id="continuar" value="Continuar" styleClass="x-btn-text" action="#{procesoAsignacionPerCapitaController.enviar}" disabled="#{not procesoAsignacionPerCapitaController.archivosValidos}">
+					<f:setPropertyActionListener target="#{procesoAsignacionPerCapitaController.target}" value="bandejaTareas.jsf" />
 				</p:commandButton>
 			</p:panel>
 		</h:form>

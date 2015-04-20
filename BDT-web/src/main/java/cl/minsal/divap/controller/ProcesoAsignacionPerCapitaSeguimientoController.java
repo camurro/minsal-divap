@@ -73,6 +73,8 @@ implements Serializable {
 	private Integer decretoId;
 	private Integer plantillaCorreoId;
 	private ReferenciaDocumentoSummaryVO documentoPoblacionInscrita;
+	private ReferenciaDocumentoSummaryVO documentoPlanillaOficio;
+	private ReferenciaDocumentoSummaryVO documentoTomaRazon;
 
 	private  boolean rechazarRevalorizar_;
 	private  boolean rechazarSubirArchivos_;
@@ -111,6 +113,8 @@ implements Serializable {
 			case HACERSEGUIMIENTORESOLUCIONES:
 				break;	
 			case HACERSEGUIMIENTOTOMARAZON:
+				distribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, TipoDocumentosProcesos.TOMARAZONAPORTEESTATAL, versionFinal, this.ano);
+				this.documentoTomaRazon.setId(docNewVersion);
 				break;
 			case HACERSEGUIMIENTODECRETO:
 				distribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, TipoDocumentosProcesos.BORRADORAPORTEESTATAL, versionFinal, this.ano);
@@ -296,6 +300,11 @@ implements Serializable {
 			this.tareaSeguimiento = TareasSeguimiento.getById(Integer.valueOf(_tareaSeguimiento));
 		}
 		documentoPoblacionInscrita = distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA);
+		documentoPlanillaOficio  = distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.PLANILLAOFICIOCONSULTA);
+		documentoTomaRazon = distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.TOMARAZONAPORTEESTATAL);
+		if(documentoTomaRazon == null){
+			documentoTomaRazon = distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.BORRADORAPORTEESTATAL);
+		}
 		bitacoraSeguimiento = distribucionInicialPercapitaService.getBitacora(this.idDistribucionInicialPercapita, this.tareaSeguimiento);
 		plantillaCorreoId = distribucionInicialPercapitaService.getPlantillaCorreo(this.tareaSeguimiento);
 	}
@@ -654,8 +663,9 @@ implements Serializable {
 			}
 			break;	
 		case HACERSEGUIMIENTOTOMARAZON:
-			numDocFinales = 1;
-			break;
+			numDocFinales = distribucionInicialPercapitaService.countVersionFinalDistribucionInicialPercapitaByType(this.idDistribucionInicialPercapita, TipoDocumentosProcesos.TOMARAZONAPORTEESTATAL);
+			message = "No existe versión final para documento toma razon de aporte estatal";
+			break;	
 		case HACERSEGUIMIENTODECRETO:
 			numDocFinales = distribucionInicialPercapitaService.countVersionFinalDistribucionInicialPercapitaByType(this.idDistribucionInicialPercapita, TipoDocumentosProcesos.BORRADORAPORTEESTATAL);
 			message = "No existe versión final para documento aporte estatal";
@@ -670,6 +680,24 @@ implements Serializable {
 			return null;
 		}
 		return super.enviar();
+	}
+	
+	public ReferenciaDocumentoSummaryVO getDocumentoPlanillaOficio() {
+		return documentoPlanillaOficio;
+	}
+
+	public void setDocumentoPlanillaOficio(
+			ReferenciaDocumentoSummaryVO documentoPlanillaOficio) {
+		this.documentoPlanillaOficio = documentoPlanillaOficio;
+	}
+
+	public ReferenciaDocumentoSummaryVO getDocumentoTomaRazon() {
+		return documentoTomaRazon;
+	}
+
+	public void setDocumentoTomaRazon(
+			ReferenciaDocumentoSummaryVO documentoTomaRazon) {
+		this.documentoTomaRazon = documentoTomaRazon;
 	}
 
 	@Override

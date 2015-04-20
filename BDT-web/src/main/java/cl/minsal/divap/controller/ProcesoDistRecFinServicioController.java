@@ -151,6 +151,8 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 
 	public String recalcularTotales(){
 		Integer idSubtitulo = Integer.parseInt(subtitulo);
+		System.out.println("idSubtitulo = " + idSubtitulo);
+		System.out.println("getPosicionElemento() = " + idSubtitulo);
 		if(Subtitulo.SUBTITULO21.getId().equals(idSubtitulo)){
 			detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo21().setTotal(detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo21().getCantidad()*detalleEstablecimientos.get(Integer.valueOf(getPosicionElemento())).getSubtitulo21().getMonto());;
 		}
@@ -169,16 +171,13 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 		}
 	}
 	public String buscarResultados(){
-		detalleEstablecimientos = programasService.findByServicioComponenteServicios(Integer.parseInt(componenteSeleccionado), Integer.parseInt(servicioSeleccionado), programaProxAno.getIdProgramaAno());
-		calculaTotalesTabla();
 		if(componenteSeleccionado != null && !componenteSeleccionado.trim().isEmpty()){
 			if(servicioSeleccionado != null && !servicioSeleccionado.trim().isEmpty()){
 				detalleEstablecimientos = programasService.findByServicioComponenteServicios(Integer.parseInt(componenteSeleccionado), Integer.parseInt(servicioSeleccionado), programaProxAno.getIdProgramaAno());
 				calculaTotalesTabla();
 			}else{
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el servicio antes de realizar la búsqueda", null);
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-				detalleEstablecimientos = new ArrayList<ProgramaServicioVO>();
+				detalleEstablecimientos = programasService.findByServicioComponenteServicios(Integer.parseInt(componenteSeleccionado), null, programaProxAno.getIdProgramaAno());
+				calculaTotalesTabla();
 			}
 		}else{
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el componente antes de realizar la búsqueda", null);

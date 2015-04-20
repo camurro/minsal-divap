@@ -2,12 +2,14 @@ package cl.minsal.divap.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -20,6 +22,7 @@ import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ProgramaMunicipalVO;
+import minsal.divap.vo.ProgramaServicioVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ResumenProgramaVO;
 import minsal.divap.vo.ServiciosVO;
@@ -106,8 +109,19 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 		}
 	}
 	public void cargaComunas(){
-		detalleComunas = programasService.findByServicioComponente(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado), programaProxAno.getIdProgramaAno());
-		getTotalesPxQ(detalleComunas);
+		if(componenteSeleccionado != null && !componenteSeleccionado.trim().isEmpty()){
+			if(servicioSeleccionado != null && !servicioSeleccionado.trim().isEmpty()){
+				detalleComunas = programasService.findByServicioComponente(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado), programaProxAno.getIdProgramaAno());
+				getTotalesPxQ(detalleComunas);
+			}else{
+				detalleComunas = programasService.findByServicioComponente(Integer.valueOf(componenteSeleccionado), null, programaProxAno.getIdProgramaAno());
+				getTotalesPxQ(detalleComunas);
+			}
+		}else{
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el componente antes de realizar la búsqueda", null);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			detalleComunas = new ArrayList<ProgramaMunicipalVO>();
+		}	
 	}
 
 	private Long getTotalesPxQ(List<ProgramaMunicipalVO> detalleComunas){

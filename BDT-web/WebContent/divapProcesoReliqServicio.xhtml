@@ -243,17 +243,20 @@
 							</h:panelGrid>
 							</p:tab>
 							<p:tab title="Servicio" rendered="#{procesoReliquidacionServicioController.mostrarServicio}">
+							
+							<p:tabView id="tabSubtitulos">
+							<p:tab  title="Subtítulo 21" id="tab21" rendered="#{procesoReliquidacionServicioController.mostrarSub21}">
 							<h:panelGrid>
-								<p:dataTable id="tableDataServicio" resizableColumns="true" value="#{procesoReliquidacionServicioController.reliquidacionServicio}" liveResize="true"
-									var="_establecimiento" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
-									styleClass="dataTable" rowIndexVar="rowIndexServicio">
+								<p:dataTable id="tableDataServicio" resizableColumns="true" value="#{procesoReliquidacionServicioController.reliquidacionServicio21}" liveResize="true"
+									var="_establecimiento21" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+									styleClass="dataTable" rowIndexVar="rowIndexServicio21">
 									<p:columnGroup type="header">
 											<p:row>
-													<p:column rowspan="3" headerText="Establecimiento" />
-												<p:column rowspan="3" headerText="Convenio" />
+												<p:column rowspan="4" headerText="Establecimiento" />
+												<p:column rowspan="4" headerText="Convenio" />
 												
 												<p:column colspan="8" headerText="#{procesoReliquidacionServicioController.programaComponentesCuotas.componente.nombre}" />
-												<p:column rowspan="3" headerText="Marco Final" />
+												<p:column rowspan="4" headerText="Marco Final" />
 											</p:row>
 											<p:row>
 												<c:forEach var="cuotaVar" items="#{procesoReliquidacionServicioController.programaComponentesCuotas.cuotas}">
@@ -263,149 +266,68 @@
 											</p:row>
 											
 										<p:row>
-										<c:forEach var="cuotaVar2" items="#{procesoReliquidacionServicioController.programaComponentesCuotas.cuotas}">
-											<p:column headerText="%" />
-											<p:column headerText="Monto" />
-										</c:forEach>
-
-
-											<p:column headerText="Cumplimiento" />
-											<p:column headerText="% Reliq." />
-											<p:column headerText="Reb. Última Cuota" />
-											<p:column headerText="Monto Final Última Cuota" />
+												<c:forEach var="cuotaVar2" items="#{procesoReliquidacionServicioController.programaComponentesCuotas.cuotas}">
+													<p:column headerText="%" />
+													<p:column headerText="Monto" />
+												</c:forEach>
+	
+												<p:column headerText="Cumplimiento" />
+												<p:column headerText="% Reliq." />
+												<p:column headerText="Reb. Última Cuota" />
+												<p:column headerText="Monto Final Última Cuota" />
 										</p:row>
 									</p:columnGroup>
 									
-									<c:if test="#{not empty procesoReliquidacionServicioController.reliquidacionServicio and fn:length(procesoReliquidacionServicioController.reliquidacionServicio) gt 0}">
+									<c:if test="#{not empty procesoReliquidacionServicioController.reliquidacionServicio21 and fn:length(procesoReliquidacionServicioController.reliquidacionServicio21) gt 0}">
 
 									<p:column>
-										<span class="textoAjustado textoPequenio centrado">#{_establecimiento.comuna}</span>
+										<span class="textoAjustado textoPequenio centrado">#{_establecimiento21.comuna}</span>
 									</p:column>
 									<p:column>
-											<h:outputText value="#{_establecimiento.componenteReliquidacionPageVO.marcoInicial}" styleClass="textoPequenio textoAjustado">
+											<h:outputText value="#{_establecimiento21.componenteReliquidacionPageVO.marcoInicial}" styleClass="textoPequenio textoAjustado">
 												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 											</h:outputText>
 									</p:column>
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasUno}">
-											<span class="textoPequenio">#{_establecimiento.componenteReliquidacionPageVO.cuotasUno.porcentaje}</span>
+										<p:column rendered="#{not empty _establecimiento21.componenteReliquidacionPageVO.cuotasUno}">
+											<span class="textoPequenio">#{_establecimiento21.componenteReliquidacionPageVO.cuotasUno.porcentaje}</span>
 										</p:column>
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasUno}">
-											<h:outputText value="#{_establecimiento.componenteReliquidacionPageVO.cuotasUno.monto}" styleClass="textoPequenio textoAjustado">
+										<p:column rendered="#{not empty _establecimiento21.componenteReliquidacionPageVO.cuotasUno}">
+											<h:outputText value="#{_establecimiento21.componenteReliquidacionPageVO.cuotasUno.monto}" styleClass="textoPequenio textoAjustado">
 												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 											</h:outputText>
 										</p:column>	
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasDos}">
-											<span class="textoPequenio">#{_establecimiento.componenteReliquidacionPageVO.cuotasDos.porcentaje}</span>
+										<p:column rendered="#{not empty _establecimiento21.componenteReliquidacionPageVO.ultimaCuota}">
+											<span class="textoPequenio">#{_establecimiento21.componenteReliquidacionPageVO.ultimaCuota.porcentaje}</span>
 										</p:column>
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasDos}">
-											<h:outputText value="#{_establecimiento.componenteReliquidacionPageVO.cuotasDos.monto}" styleClass="textoPequenio textoAjustado">
-												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-											</h:outputText>
-										</p:column>	
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasTres}">
-											<span class="textoPequenio">#{_establecimiento.componenteReliquidacionPageVO.cuotasTres.porcentaje}</span>
-										</p:column>
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasTres}">
-											<h:outputText value="#{_establecimiento.componenteReliquidacionPageVO.cuotasTres.monto}" styleClass="textoPequenio textoAjustado">
-												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-											</h:outputText>
-										</p:column>	
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasCuatro}">
-											<span class="textoPequenio">#{_establecimiento.componenteReliquidacionPageVO.cuotasCuatro.porcentaje}</span>
-										</p:column>
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasCuatro}">
-											<h:outputText value="#{_establecimiento.componenteReliquidacionPageVO.cuotasCuatro.monto}" styleClass="textoPequenio textoAjustado">
-												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-											</h:outputText>
-										</p:column>	
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasCinco}">
-											<span class="textoPequenio">#{_establecimiento.componenteReliquidacionPageVO.cuotasCinco.porcentaje}</span>
-										</p:column>
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasCinco}">
-											<h:outputText value="#{_establecimiento.componenteReliquidacionPageVO.cuotasCinco.monto}" styleClass="textoPequenio textoAjustado">
-												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-											</h:outputText>
-										</p:column>	
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasSeis}">
-											<span class="textoPequenio">#{_establecimiento.componenteReliquidacionPageVO.cuotasSeis.porcentaje}</span>
-										</p:column>
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasSeis}">
-											<h:outputText value="#{_establecimiento.componenteReliquidacionPageVO.cuotasSeis.monto}" styleClass="textoPequenio textoAjustado">
-												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-											</h:outputText>
-										</p:column>	
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasSiete}">
-											<span class="textoPequenio">#{_establecimiento.componenteReliquidacionPageVO.cuotasSiete.porcentaje}</span>
-										</p:column>
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasSiete}">
-											<h:outputText value="#{_establecimiento.componenteReliquidacionPageVO.cuotasSiete.monto}" styleClass="textoPequenio textoAjustado">
-												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-											</h:outputText>
-										</p:column>	
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasOcho}">
-											<span class="textoPequenio">#{_establecimiento.componenteReliquidacionPageVO.cuotasOcho.porcentaje}</span>
-										</p:column>
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasOcho}">
-											<h:outputText value="#{_establecimiento.componenteReliquidacionPageVO.cuotasOcho.monto}" styleClass="textoPequenio textoAjustado">
-												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-											</h:outputText>
-										</p:column>	
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasNueve}">
-											<span class="textoPequenio">#{_establecimiento.componenteReliquidacionPageVO.cuotasNueve.porcentaje}</span>
-										</p:column>
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasNueve}">
-											<h:outputText value="#{_establecimiento.componenteReliquidacionPageVO.cuotasNueve.monto}" styleClass="textoPequenio textoAjustado">
-												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-											</h:outputText>
-										</p:column>	
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasDiez}">
-											<span class="textoPequenio">#{_establecimiento.componenteReliquidacionPageVO.cuotasDiez.porcentaje}</span>
-										</p:column>
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasDiez}">
-											<h:outputText value="#{_establecimiento.componenteReliquidacionPageVO.cuotasDiez.monto}" styleClass="textoPequenio textoAjustado">
-												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-											</h:outputText>
-										</p:column>	
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasOnce}">
-											<span class="textoPequenio">#{_establecimiento.componenteReliquidacionPageVO.cuotasOnce.porcentaje}</span>
-										</p:column>
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasOnce}">
-											<h:outputText value="#{_establecimiento.componenteReliquidacionPageVO.cuotasOnce.monto}" styleClass="textoPequenio textoAjustado">
-												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-											</h:outputText>
-										</p:column>	
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasDoce}">
-											<span class="textoPequenio">#{_establecimiento.componenteReliquidacionPageVO.cuotasDoce.porcentaje}</span>
-										</p:column>
-										<p:column rendered="#{not empty _establecimiento.componenteReliquidacionPageVO.cuotasDoce}">
-											<h:outputText value="#{_establecimiento.componenteReliquidacionPageVO.cuotasDoce.monto}" styleClass="textoPequenio textoAjustado">
+										<p:column rendered="#{not empty _establecimiento21.componenteReliquidacionPageVO.ultimaCuota}">
+											<h:outputText value="#{_establecimiento21.componenteReliquidacionPageVO.ultimaCuota.monto}" styleClass="textoPequenio textoAjustado">
 												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 											</h:outputText>
 										</p:column>	
 										<p:column styleClass="destacaArchivos">
-											<h:outputText value="#{_establecimiento.componenteReliquidacionPageVO.porcentajeCumplimiento}" styleClass="textoPequenio textoAjustado">
+											<h:outputText value="#{_establecimiento21.componenteReliquidacionPageVO.porcentajeCumplimiento}" styleClass="textoPequenio textoAjustado">
 												<f:convertNumber type="percent" minFractionDigits="2" />
 											</h:outputText>
 										</p:column>
 										<p:column styleClass="destacaArchivos">
-											<h:outputText value="#{_establecimiento.componenteReliquidacionPageVO.porcentajeReliquidacion}" styleClass="textoPequenio textoAjustado">
+											<h:outputText value="#{_establecimiento21.componenteReliquidacionPageVO.porcentajeReliquidacion}" styleClass="textoPequenio textoAjustado">
 												<f:convertNumber type="percent" minFractionDigits="2" />
 											</h:outputText>
 										</p:column>
 										<p:column styleClass="destacaArchivos">
-											<h:outputText value="#{_establecimiento.componenteReliquidacionPageVO.rebajaUltimaCuota}" styleClass="textoPequenio textoAjustado">
+											<h:outputText value="#{_establecimiento21.componenteReliquidacionPageVO.rebajaUltimaCuota}" styleClass="textoPequenio textoAjustado">
 												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 											</h:outputText>
 										</p:column>
 										<p:column styleClass="destacaArchivos">
 											<h:outputText styleClass="textoAjustado textoPequenio centrado"
-												value="#{_establecimiento.componenteReliquidacionPageVO.montoUltimaCuota}" id="totales">
+												value="#{_establecimiento21.componenteReliquidacionPageVO.montoUltimaCuota}" id="totales">
 												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 											</h:outputText>
 										</p:column>
 									
 										<p:column>
-											<h:outputText value="#{_establecimiento.marcoFinal}" styleClass="textoPequenio textoAjustado">
+											<h:outputText value="#{_establecimiento21.marcoFinal}" styleClass="textoPequenio textoAjustado">
 												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 											</h:outputText>
 										</p:column>	
@@ -418,12 +340,12 @@
 											<p:column />
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoReliquidacionServicioController.totalMontoConvenios}" id="total22" styleClass="textoAjustado textoPequenio centrado">
+													<h:outputText value="#{procesoReliquidacionServicioController.totalMontoConvenios21}" id="total21" styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
 												</f:facet>
 											</p:column>
-											<c:forEach var="montosCuotas" items="#{procesoReliquidacionServicioController.getTotalMontosCuotas}">
+											<c:forEach var="montosCuotas" items="#{procesoReliquidacionServicioController.getTotalMontosCuotas21}">
 											<p:column />
 											<p:column>
 												<f:facet name="footer">
@@ -438,7 +360,7 @@
 											<p:column />
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoReliquidacionServicioController.totalRebajaUltimaCouta}" id="total"
+													<h:outputText value="#{procesoReliquidacionServicioController.totalRebajaUltimaCouta21}" id="total"
 														styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
@@ -446,7 +368,7 @@
 											</p:column>
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoReliquidacionServicioController.totalUltimaCouta}" id="total5"
+													<h:outputText value="#{procesoReliquidacionServicioController.totalUltimaCouta21}" id="total5"
 														styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
@@ -454,7 +376,7 @@
 											</p:column>
 											<p:column>
 												<f:facet name="footer">
-													<h:outputText value="#{procesoReliquidacionServicioController.totalMarcoFinal}"
+													<h:outputText value="#{procesoReliquidacionServicioController.totalMarcoFinal21}"
 														styleClass="textoAjustado textoPequenio centrado">
 														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
 													</h:outputText>
@@ -464,6 +386,294 @@
 									</p:columnGroup>
 								</p:dataTable>
 							</h:panelGrid>
+							</p:tab>
+							
+							<p:tab  title="Subtítulo 22" id="tab22" rendered="#{procesoReliquidacionServicioController.mostrarSub22}">
+							<h:panelGrid>
+								<p:dataTable id="tableDataServicio22" resizableColumns="true" value="#{procesoReliquidacionServicioController.reliquidacionServicio22}" liveResize="true"
+									var="_establecimiento22" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+									styleClass="dataTable" rowIndexVar="rowIndexServicio22">
+									<p:columnGroup type="header">
+											<p:row>
+												<p:column rowspan="4" headerText="Establecimiento" />
+												<p:column rowspan="4" headerText="Convenio" />
+												
+												<p:column colspan="8" headerText="#{procesoReliquidacionServicioController.programaComponentesCuotas.componente.nombre}" />
+												<p:column rowspan="4" headerText="Marco Final" />
+											</p:row>
+											<p:row>
+												<c:forEach var="cuotaVar" items="#{procesoReliquidacionServicioController.programaComponentesCuotas.cuotas}">
+													<p:column colspan="2" headerText="Cuota N° #{cuotaVar.numeroCuota}" />
+												</c:forEach>
+												<p:column colspan="4" headerText="Reliquidación" />
+											</p:row>
+											
+										<p:row>
+												<c:forEach var="cuotaVar2" items="#{procesoReliquidacionServicioController.programaComponentesCuotas.cuotas}">
+													<p:column headerText="%" />
+													<p:column headerText="Monto" />
+												</c:forEach>
+	
+												<p:column headerText="Cumplimiento" />
+												<p:column headerText="% Reliq." />
+												<p:column headerText="Reb. Última Cuota" />
+												<p:column headerText="Monto Final Última Cuota" />
+										</p:row>
+									</p:columnGroup>
+									
+									<c:if test="#{not empty procesoReliquidacionServicioController.reliquidacionServicio22 and fn:length(procesoReliquidacionServicioController.reliquidacionServicio22) gt 0}">
+
+									<p:column>
+										<span class="textoAjustado textoPequenio centrado">#{_establecimiento22.comuna}</span>
+									</p:column>
+									<p:column>
+											<h:outputText value="#{_establecimiento22.componenteReliquidacionPageVO.marcoInicial}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+									</p:column>
+										<p:column rendered="#{not empty _establecimiento22.componenteReliquidacionPageVO.cuotasUno}">
+											<span class="textoPequenio">#{_establecimiento22.componenteReliquidacionPageVO.cuotasUno.porcentaje}</span>
+										</p:column>
+										<p:column rendered="#{not empty _establecimiento22.componenteReliquidacionPageVO.cuotasUno}">
+											<h:outputText value="#{_establecimiento22.componenteReliquidacionPageVO.cuotasUno.monto}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</p:column>	
+										
+										<p:column rendered="#{not empty _establecimiento22.componenteReliquidacionPageVO.ultimaCuota}">
+											<span class="textoPequenio">#{_establecimiento22.componenteReliquidacionPageVO.ultimaCuota.porcentaje}</span>
+										</p:column>
+										<p:column rendered="#{not empty _establecimiento22.componenteReliquidacionPageVO.ultimaCuota}">
+											<h:outputText value="#{_establecimiento22.componenteReliquidacionPageVO.ultimaCuota.monto}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</p:column>	
+										<p:column styleClass="destacaArchivos">
+											<h:outputText value="#{_establecimiento22.componenteReliquidacionPageVO.porcentajeCumplimiento}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="percent" minFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+										<p:column styleClass="destacaArchivos">
+											<h:outputText value="#{_establecimiento22.componenteReliquidacionPageVO.porcentajeReliquidacion}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="percent" minFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+										<p:column styleClass="destacaArchivos">
+											<h:outputText value="#{_establecimiento22.componenteReliquidacionPageVO.rebajaUltimaCuota}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</p:column>
+										<p:column styleClass="destacaArchivos">
+											<h:outputText styleClass="textoAjustado textoPequenio centrado"
+												value="#{_establecimiento22.componenteReliquidacionPageVO.montoUltimaCuota}" id="totales">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</p:column>
+									
+										<p:column>
+											<h:outputText value="#{_establecimiento22.marcoFinal}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</p:column>	
+									
+									</c:if>
+
+									<p:columnGroup type="footer">
+										<p:row>
+											<p:column />
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoReliquidacionServicioController.totalMontoConvenios22}" id="total22" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<c:forEach var="montosCuotas" items="#{procesoReliquidacionServicioController.getTotalMontosCuotas22}">
+											<p:column />
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{montosCuotas}" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											</c:forEach>
+
+											<p:column />
+											<p:column />
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoReliquidacionServicioController.totalRebajaUltimaCouta22}" id="totalRebajaUltimaCouta"
+														styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoReliquidacionServicioController.totalUltimaCouta22}" id="totalUltimaCouta22"
+														styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoReliquidacionServicioController.totalMarcoFinal22}"
+														styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+										</p:row>
+									</p:columnGroup>
+								</p:dataTable>
+							</h:panelGrid>
+							</p:tab>
+							
+							<p:tab  title="Subtítulo 29" id="tab29" rendered="#{procesoReliquidacionServicioController.mostrarSub29}">
+							<h:panelGrid>
+								<p:dataTable id="tableDataServicio29" resizableColumns="true" value="#{procesoReliquidacionServicioController.reliquidacionServicio29}" liveResize="true"
+									var="_establecimiento29" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+									styleClass="dataTable" rowIndexVar="rowIndexServicio29">
+									<p:columnGroup type="header">
+											<p:row>
+												<p:column rowspan="4" headerText="Establecimiento" />
+												<p:column rowspan="4" headerText="Convenio" />
+												
+												<p:column colspan="8" headerText="#{procesoReliquidacionServicioController.programaComponentesCuotas.componente.nombre}" />
+												<p:column rowspan="4" headerText="Marco Final" />
+											</p:row>
+											<p:row>
+												<c:forEach var="cuotaVar" items="#{procesoReliquidacionServicioController.programaComponentesCuotas.cuotas}">
+													<p:column colspan="2" headerText="Cuota N° #{cuotaVar.numeroCuota}" />
+												</c:forEach>
+												<p:column colspan="4" headerText="Reliquidación" />
+											</p:row>
+											
+										<p:row>
+												<c:forEach var="cuotaVar2" items="#{procesoReliquidacionServicioController.programaComponentesCuotas.cuotas}">
+													<p:column headerText="%" />
+													<p:column headerText="Monto" />
+												</c:forEach>
+	
+												<p:column headerText="Cumplimiento" />
+												<p:column headerText="% Reliq." />
+												<p:column headerText="Reb. Última Cuota" />
+												<p:column headerText="Monto Final Última Cuota" />
+										</p:row>
+									</p:columnGroup>
+									
+									<c:if test="#{not empty procesoReliquidacionServicioController.reliquidacionServicio29 and fn:length(procesoReliquidacionServicioController.reliquidacionServicio29) gt 0}">
+
+									<p:column>
+										<span class="textoAjustado textoPequenio centrado">#{_establecimiento29.comuna}</span>
+									</p:column>
+									<p:column>
+											<h:outputText value="#{_establecimiento29.componenteReliquidacionPageVO.marcoInicial}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+									</p:column>
+										<p:column rendered="#{not empty _establecimiento29.componenteReliquidacionPageVO.cuotasUno}">
+											<span class="textoPequenio">#{_establecimiento29.componenteReliquidacionPageVO.cuotasUno.porcentaje}</span>
+										</p:column>
+										<p:column rendered="#{not empty _establecimiento29.componenteReliquidacionPageVO.cuotasUno}">
+											<h:outputText value="#{_establecimiento29.componenteReliquidacionPageVO.cuotasUno.monto}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</p:column>	
+										
+										<p:column rendered="#{not empty _establecimiento29.componenteReliquidacionPageVO.ultimaCuota}">
+											<span class="textoPequenio">#{_establecimiento29.componenteReliquidacionPageVO.ultimaCuota.porcentaje}</span>
+										</p:column>
+										<p:column rendered="#{not empty _establecimiento29.componenteReliquidacionPageVO.ultimaCuota}">
+											<h:outputText value="#{_establecimiento29.componenteReliquidacionPageVO.ultimaCuota.monto}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</p:column>	
+										<p:column styleClass="destacaArchivos">
+											<h:outputText value="#{_establecimiento29.componenteReliquidacionPageVO.porcentajeCumplimiento}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="percent" minFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+										<p:column styleClass="destacaArchivos">
+											<h:outputText value="#{_establecimiento29.componenteReliquidacionPageVO.porcentajeReliquidacion}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="percent" minFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+										<p:column styleClass="destacaArchivos">
+											<h:outputText value="#{_establecimiento29.componenteReliquidacionPageVO.rebajaUltimaCuota}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</p:column>
+										<p:column styleClass="destacaArchivos">
+											<h:outputText styleClass="textoAjustado textoPequenio centrado"
+												value="#{_establecimiento29.componenteReliquidacionPageVO.montoUltimaCuota}" id="totales">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</p:column>
+									
+										<p:column>
+											<h:outputText value="#{_establecimiento29.marcoFinal}" styleClass="textoPequenio textoAjustado">
+												<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+											</h:outputText>
+										</p:column>	
+									
+									</c:if>
+
+									<p:columnGroup type="footer">
+										<p:row>
+											<p:column />
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoReliquidacionServicioController.totalMontoConvenios29}" id="total29" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<c:forEach var="montosCuotas" items="#{procesoReliquidacionServicioController.getTotalMontosCuotas29}">
+											<p:column />
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{montosCuotas}" styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											</c:forEach>
+
+											<p:column />
+											<p:column />
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoReliquidacionServicioController.totalRebajaUltimaCouta29}" id="totalRebajaUltimaCouta"
+														styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoReliquidacionServicioController.totalUltimaCouta29}" id="totalUltimaCouta29"
+														styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+											<p:column>
+												<f:facet name="footer">
+													<h:outputText value="#{procesoReliquidacionServicioController.totalMarcoFinal29}"
+														styleClass="textoAjustado textoPequenio centrado">
+														<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
+													</h:outputText>
+												</f:facet>
+											</p:column>
+										</p:row>
+									</p:columnGroup>
+								</p:dataTable>
+							</h:panelGrid>
+							</p:tab>
+							</p:tabView>
 							</p:tab>
 							</p:tabView>
 							

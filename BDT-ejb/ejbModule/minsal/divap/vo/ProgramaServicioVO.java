@@ -72,6 +72,19 @@ public class ProgramaServicioVO implements Serializable{
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((idComponente == null) ? 0 : idComponente.hashCode());
+		result = prime
+				* result
+				+ ((idEstablecimiento == null) ? 0 : idEstablecimiento
+						.hashCode());
+		return result;
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -80,6 +93,11 @@ public class ProgramaServicioVO implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		ProgramaServicioVO other = (ProgramaServicioVO) obj;
+		if (idComponente == null) {
+			if (other.idComponente != null)
+				return false;
+		} else if (!idComponente.equals(other.idComponente))
+			return false;
 		if (idEstablecimiento == null) {
 			if (other.idEstablecimiento != null)
 				return false;

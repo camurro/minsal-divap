@@ -241,7 +241,7 @@
 		<p:panel styleClass="contentPanel">
 
 			<h:form id="formSeguimiento" enctype="multipart/form-data">
-
+			<p:growl id="growl" showDetail="false"/> 
 
 
 				<h1>
@@ -290,6 +290,16 @@
 								oncomplete="dlgUpload.show();" />
 						]
 						<br />
+						
+						<span class="strong">Archivo: </span> Complemento Oficio Consulta [
+						<h:graphicImage value="resources/minsal/images/download-alt.png"
+								styleClass="divapIcons" />
+							<h:commandLink value="Bajar Última Versión"
+								onclick="downloadDocument(#{procesoAsignacionPerCapitaSeguimientoController.documentoPlanillaOficio.id});return false;" />
+						
+						]
+						<br/>
+						
 						<div class="destacaArchivos ui-corner-all">
 						<h3>Plantilla Envío Correo Consulta Regional :</h3>
 						<span class="strong">Archivo: </span> Correo Consulta Regional [
@@ -325,11 +335,11 @@
 						<c:if
 							test="#{procesoAsignacionPerCapitaSeguimientoController.tareaSeguimiento.id == 3}">
 							<br />
-							<span class="strong">Archivo: </span> Decreto Montos de Distribución [
+							<span class="strong">Archivo: </span> Decreto Montos de Distribución[
 						<h:graphicImage value="resources/minsal/images/download-alt.png"
 								styleClass="divapIcons" />
 							<h:commandLink id="lastSeguimientoDecreto" value="Bajar Última Versión"
-								onclick="downloadDocument(#{procesoAsignacionPerCapitaSeguimientoController.decretoId});return false;" />
+								onclick="downloadDocument(#{procesoAsignacionPerCapitaSeguimientoController.documentoTomaRazon.id});return false;" />
 						|
 						<h:graphicImage value="resources/minsal/images/upload-alt.png"
 								styleClass="divapIcons" />
@@ -489,7 +499,7 @@
 							class="strong">Reingresar</span>.
 					</p>
 
-					<p:commandButton styleClass="x-btn-text" value="Re Cargar Archivos"
+					<p:commandButton styleClass="x-btn-text" value="Re Cargar Archivos" update="growl"
 						icon="ui-icon-refresh"
 						action="#{procesoAsignacionPerCapitaSeguimientoController.enviar}"
 						rendered="#{procesoAsignacionPerCapitaSeguimientoController.verRecargarArchivos}">
@@ -524,7 +534,7 @@
 							target="#{procesoAsignacionPerCapitaSeguimientoController.aprobar_}"
 							value='#{"false"}' />
 					</p:commandButton>
-					<p:commandButton styleClass="x-btn-text"
+					<p:commandButton styleClass="x-btn-text" update="growl"
 						value="Finalizar Seguimiento | Actividad" icon="ui-icon-check"
 						action="#{procesoAsignacionPerCapitaSeguimientoController.enviar}">
 						<f:setPropertyActionListener

@@ -41,14 +41,17 @@ implements Serializable {
 	@Inject
 	private transient Logger log;
 	private UploadedFile calculoPerCapitaFile;
+	private UploadedFile valorBasicoDesempenoFile;
 	@EJB
 	private ModificacionDistribucionInicialPercapitaService modificacionDistribucionInicialPercapitaService;
 	private boolean errorCarga = false;
 	private boolean archivosValidos = false;
 	private String docIdDownload;
 	private Integer docAsignacionRecursosPercapita;
+	private Integer docAsignacionDesempenoDificil;
 	private List<Integer> docIds;
 	private Integer idDistribucionInicialPercapita;
+	private Integer anoProceso;
 
 	public UploadedFile getCalculoPerCapitaFile() {
 		return calculoPerCapitaFile;
@@ -58,20 +61,36 @@ implements Serializable {
 		this.calculoPerCapitaFile = calculoPerCapitaFile;
 	}
 
+	public UploadedFile getValorBasicoDesempenoFile() {
+		return valorBasicoDesempenoFile;
+	}
+
+	public void setValorBasicoDesempenoFile(UploadedFile valorBasicoDesempenoFile) {
+		this.valorBasicoDesempenoFile = valorBasicoDesempenoFile;
+	}
+
 	public void uploadArchivosValorizacion() {
 		String mensaje = "Los archivos fueron cargados correctamente.";
-		if (calculoPerCapitaFile != null) {
+		if (calculoPerCapitaFile != null && valorBasicoDesempenoFile != null) {
 			try {
 				docIds = new ArrayList<Integer>();
 				String filename = calculoPerCapitaFile.getFileName();
 				byte[] contentCalculoPerCapitaFile = calculoPerCapitaFile.getContents();
-				modificacionDistribucionInicialPercapitaService.procesarCalculoPercapita(getIdDistribucionInicialPercapita(), GeneradorExcel.fromContent(contentCalculoPerCapitaFile, XSSFWorkbook.class));
+				modificacionDistribucionInicialPercapitaService.procesarCalculoPercapita(getIdDistribucionInicialPercapita(), GeneradorExcel.fromContent(contentCalculoPerCapitaFile, XSSFWorkbook.class), this.anoProceso);
 				Integer docPercapita = persistFile(filename, contentCalculoPerCapitaFile);
 				if (docPercapita != null) {
 					docIds.add(docPercapita);
 				}
+				filename = valorBasicoDesempenoFile.getFileName();
+				byte[] contentDesempeno = valorBasicoDesempenoFile.getContents();
+				modificacionDistribucionInicialPercapitaService.procesarValorBasicoDesempeno(getIdDistribucionInicialPercapita(), GeneradorExcel.fromContent(contentDesempeno, XSSFWorkbook.class), this.anoProceso);
+				Integer docDesempeno = persistFile(filename, contentDesempeno);
+				if (docDesempeno != null) {
+					docIds.add(docDesempeno);
+				}
 				setArchivosValidos(true);
-				modificacionDistribucionInicialPercapitaService.moveToAlfresco(this.idDistribucionInicialPercapita, docPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA, null);
+				modificacionDistribucionInicialPercapitaService.moveToAlfresco(this.idDistribucionInicialPercapita, docPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA, null, this.anoProceso);
+				modificacionDistribucionInicialPercapitaService.moveToAlfresco(this.idDistribucionInicialPercapita, docDesempeno, TipoDocumentosProcesos.ASIGNACIONDESEMPENODIFICIL, null, this.anoProceso);
 			} catch (ExcelFormatException e) {
 				mensaje = "Los archivos no son válidos.";
 				setArchivosValidos(false);
@@ -127,14 +146,14 @@ implements Serializable {
 			return;
 		}
 		this.docAsignacionRecursosPercapita = modificacionDistribucionInicialPercapitaService.getIdPlantillaRecursosPerCapita();
+		this.docAsignacionDesempenoDificil = modificacionDistribucionInicialPercapitaService.getIdPlantillaPoblacionInscrita();
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			this.idDistribucionInicialPercapita = (Integer) getTaskDataVO()
-					.getData().get("_idDistribucionInicialPercapita");
-			System.out.println("this.idDistribucionInicialPercapita --->"
-					+ this.idDistribucionInicialPercapita);
+			this.idDistribucionInicialPercapita = (Integer) getTaskDataVO().getData().get("_idDistribucionInicialPercapita");
+			System.out.println("this.idDistribucionInicialPercapita --->" + this.idDistribucionInicialPercapita);
+			this.anoProceso = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("this.anoProceso --->" + this.anoProceso);
 		}
-		System.out.println("this.docAsignacionRecursosPercapita-->"
-				+ this.docAsignacionRecursosPercapita);
+		System.out.println("this.docAsignacionRecursosPercapita-->" + this.docAsignacionRecursosPercapita);
 	}
 
 	public void handleFileUploadPerCapitaFile(FileUploadEvent event) {
@@ -236,6 +255,15 @@ implements Serializable {
 	public void setIdDistribucionInicialPercapita(
 			Integer idDistribucionInicialPercapita) {
 		this.idDistribucionInicialPercapita = idDistribucionInicialPercapita;
+	}
+
+	public Integer getDocAsignacionDesempenoDificil() {
+		return docAsignacionDesempenoDificil;
+	}
+
+	public void setDocAsignacionDesempenoDificil(
+			Integer docAsignacionDesempenoDificil) {
+		this.docAsignacionDesempenoDificil = docAsignacionDesempenoDificil;
 	}
 
 	@Override

@@ -48,6 +48,7 @@ import cl.minsal.divap.model.ProgramaMunicipalCore;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
 import cl.minsal.divap.model.ProgramaServicioCore;
 import cl.minsal.divap.model.ProgramaServicioCoreComponente;
+import cl.minsal.divap.model.ServicioSalud;
 import cl.minsal.divap.model.TipoSubtitulo;
 
 @Stateless
@@ -168,72 +169,86 @@ public class ProgramasService {
 	}
 
 	public List<ProgramaMunicipalVO> findByServicioComponente(Integer idComponente, Integer idServicio, Integer idProgramaAno){
-		List<ProgramaMunicipalCoreComponente> result = programasDAO.findByServicioComponente(idComponente, idServicio,idProgramaAno);
-		List<ProgramaMunicipalVO> listaProgramaMunicipalVO = new ArrayList<ProgramaMunicipalVO>();
-		for (ProgramaMunicipalCoreComponente programaMunicipalCore : result) {
-			ProgramaMunicipalVO prog = new ProgramaMunicipalVO();
-			prog.setIdComuna(programaMunicipalCore.getProgramaMunicipalCore().getComuna().getId());
-			prog.setNombreComuna(programaMunicipalCore.getProgramaMunicipalCore().getComuna().getNombre());
-			prog.setPrecio(programaMunicipalCore.getMonto());
-			prog.setCantidad(programaMunicipalCore.getCantidad());
-			prog.setTotal(programaMunicipalCore.getTarifa());
-			prog.setIdComponente(idComponente);
-
-			prog.setIdProgramaMunicipalCore(programaMunicipalCore.getProgramaMunicipalCore().getIdProgramaMunicipalCore());
-			listaProgramaMunicipalVO.add(prog);
+		List<ServicioSalud> servicios = null;
+		if(idServicio == null){
+			servicios = servicioSaludDAO.getServiciosOrderId();
+		}else{
+			servicios = new ArrayList<ServicioSalud>();
+			ServicioSalud servicio = servicioSaludDAO.getById(idServicio);
+			servicios.add(servicio);
 		}
-
+		List<ProgramaMunicipalVO> listaProgramaMunicipalVO = new ArrayList<ProgramaMunicipalVO>();
+		for(ServicioSalud servicio : servicios){
+			List<ProgramaMunicipalCoreComponente> result = programasDAO.findByServicioComponente(idComponente, servicio.getId(), idProgramaAno);
+			for (ProgramaMunicipalCoreComponente programaMunicipalCore : result) {
+				ProgramaMunicipalVO prog = new ProgramaMunicipalVO();
+				prog.setIdComuna(programaMunicipalCore.getProgramaMunicipalCore().getComuna().getId());
+				prog.setNombreComuna(programaMunicipalCore.getProgramaMunicipalCore().getComuna().getNombre());
+				prog.setPrecio(programaMunicipalCore.getMonto());
+				prog.setCantidad(programaMunicipalCore.getCantidad());
+				prog.setTotal(programaMunicipalCore.getTarifa());
+				prog.setIdComponente(idComponente);
+	
+				prog.setIdProgramaMunicipalCore(programaMunicipalCore.getProgramaMunicipalCore().getIdProgramaMunicipalCore());
+				listaProgramaMunicipalVO.add(prog);
+			}
+		}
 		return listaProgramaMunicipalVO;
 
 	}
 
 	public List<ProgramaServicioVO> findByServicioComponenteServicios(Integer idComponente, Integer idServicio, Integer idProgramaAno) {
 
-
-
-		List<ProgramaServicioCoreComponente> result = programasDAO.findByIdProgramaAnoIdComponenteIdServicio(idProgramaAno, idComponente, idServicio);
-
-
+		List<ServicioSalud> servicios = null;
+		if(idServicio == null){
+			servicios = servicioSaludDAO.getServiciosOrderId();
+		}else{
+			servicios = new ArrayList<ServicioSalud>();
+			ServicioSalud servicio = servicioSaludDAO.getById(idServicio);
+			servicios.add(servicio);
+		}
 		List<ProgramaServicioVO> listaProgramaServicioVO = new ArrayList<ProgramaServicioVO>();
-
-		for (ProgramaServicioCoreComponente programaServicio : result) {
-			ProgramaServicioVO prog = new ProgramaServicioVO();
-			prog.setIdEstablecimiento(programaServicio.getProgramaServicioCore1().getEstablecimiento().getId());
-			prog.setNombreEstablecimiento(programaServicio.getProgramaServicioCore1().getEstablecimiento().getNombre());
-			prog.setIdServicioCore(programaServicio.getProgramaServicioCore1().getIdProgramaServicioCore());
-			prog.setIdComponente(programaServicio.getServicioCoreComponente().getId());
-
-			SubtituloProgramasVO subProg = new SubtituloProgramasVO();
-			subProg.setId(programaServicio.getSubtitulo().getIdTipoSubtitulo());
-			subProg.setNombre(programaServicio.getSubtitulo().getNombreSubtitulo());
-			subProg.setCantidad(programaServicio.getCantidad());
-			subProg.setMonto(programaServicio.getMonto());
-			subProg.setTotal(programaServicio.getTarifa());
-
-			int posicion = listaProgramaServicioVO.indexOf(prog);
-			if(posicion != -1){
-				prog = listaProgramaServicioVO.get(posicion);
-
-				if(subProg.getId()==1){
-					prog.setSubtitulo21(subProg);
+		for(ServicioSalud servicio : servicios){
+			List<ProgramaServicioCoreComponente> result = programasDAO.findByIdProgramaAnoIdComponenteIdServicio(idProgramaAno, idComponente, servicio.getId());
+			for (ProgramaServicioCoreComponente programaServicio : result) {
+				ProgramaServicioVO prog = new ProgramaServicioVO();
+				prog.setIdEstablecimiento(programaServicio.getProgramaServicioCore1().getEstablecimiento().getId());
+				prog.setNombreEstablecimiento(programaServicio.getProgramaServicioCore1().getEstablecimiento().getNombre());
+				prog.setIdServicioCore(programaServicio.getProgramaServicioCore1().getIdProgramaServicioCore());
+				prog.setIdComponente(programaServicio.getServicioCoreComponente().getId());
+	
+				SubtituloProgramasVO subProg = new SubtituloProgramasVO();
+				subProg.setId(programaServicio.getSubtitulo().getIdTipoSubtitulo());
+				subProg.setNombre(programaServicio.getSubtitulo().getNombreSubtitulo());
+				subProg.setCantidad(programaServicio.getCantidad());
+				subProg.setMonto(programaServicio.getMonto());
+				subProg.setTotal(programaServicio.getTarifa());
+	
+				int posicion = listaProgramaServicioVO.indexOf(prog);
+				if(posicion != -1){
+					prog = listaProgramaServicioVO.get(posicion);
+	
+					if(subProg.getId().equals(Subtitulo.SUBTITULO21.getId())){
+						prog.setSubtitulo21(subProg);
+					}
+					if(subProg.getId().equals(Subtitulo.SUBTITULO22.getId())){	
+						prog.setSubtitulo22(subProg);	
+					}
+					if(subProg.getId().equals(Subtitulo.SUBTITULO29.getId())){
+						prog.setSubtitulo29(subProg);
+					}				
+				}else{
+					if(subProg.getId().equals(Subtitulo.SUBTITULO21.getId())){
+						prog.setSubtitulo21(subProg);
+					}
+					if(subProg.getId().equals(Subtitulo.SUBTITULO22.getId())){
+						prog.setSubtitulo22(subProg);	
+					}
+					if(subProg.getId().equals(Subtitulo.SUBTITULO29.getId())){
+						prog.setSubtitulo29(subProg);
+					}
+					listaProgramaServicioVO.add(prog);
 				}
-				if(subProg.getId()==2){	
-					prog.setSubtitulo22(subProg);	
-				}
-				if(subProg.getId()==4){
-					prog.setSubtitulo29(subProg);
-				}				
-			}else{
-				if(subProg.getId()==1){
-					prog.setSubtitulo21(subProg);
-				}
-				if(subProg.getId()==2){
-					prog.setSubtitulo22(subProg);	
-				}
-				if(subProg.getId()==4){
-					prog.setSubtitulo29(subProg);
-				}
-				listaProgramaServicioVO.add(prog);
 			}
 		}
 		return listaProgramaServicioVO;
@@ -291,7 +306,7 @@ public class ProgramasService {
 
 		for(ProgramaServicioVO detalle: listadoEstablecimientos){
 
-			if(detalle.getSubtitulo21()!=null){
+			if(detalle.getSubtitulo21() != null){
 				ProgramaServicioCoreComponente programaServicioCoreComponenteS21 = programasDAO.getProgramaServicioCoreComponenteEstablecimiento(detalle.getIdComponente(), detalle.getIdEstablecimiento(), detalle.getSubtitulo21().getId());
 				System.out.println(programaServicioCoreComponenteS21.getProgramaServicioCore1().getEstablecimiento().getNombre());
 				System.out.println("cantidad antes:"+programaServicioCoreComponenteS21.getCantidad());
@@ -303,7 +318,7 @@ public class ProgramasService {
 				System.out.println("monto despues:"+programaServicioCoreComponenteS21.getMonto());
 			}
 
-			if(detalle.getSubtitulo22()!=null){
+			if(detalle.getSubtitulo22() != null){
 				ProgramaServicioCoreComponente programaServicioCoreComponenteS22 = programasDAO.getProgramaServicioCoreComponenteEstablecimiento(detalle.getIdComponente(), detalle.getIdEstablecimiento(), detalle.getSubtitulo22().getId());
 				System.out.println(programaServicioCoreComponenteS22.getProgramaServicioCore1().getEstablecimiento().getNombre());
 				System.out.println("cantidad antes:"+programaServicioCoreComponenteS22.getCantidad());
@@ -315,7 +330,7 @@ public class ProgramasService {
 				System.out.println("monto despues:"+programaServicioCoreComponenteS22.getMonto());
 			}
 
-			if(detalle.getSubtitulo29()!=null){
+			if(detalle.getSubtitulo29() != null){
 				ProgramaServicioCoreComponente programaServicioCoreComponenteS29 = programasDAO.getProgramaServicioCoreComponenteEstablecimiento(detalle.getIdComponente(), detalle.getIdEstablecimiento(), detalle.getSubtitulo29().getId());
 				System.out.println(programaServicioCoreComponenteS29.getProgramaServicioCore1().getEstablecimiento().getNombre());
 				System.out.println("cantidad antes:"+programaServicioCoreComponenteS29.getCantidad());
@@ -326,9 +341,7 @@ public class ProgramasService {
 				System.out.println("cantidad despues:"+programaServicioCoreComponenteS29.getCantidad());
 				System.out.println("monto despues:"+programaServicioCoreComponenteS29.getMonto());
 			}
-
 		}
-
 	}
 
 	public List<ResumenProgramaVO> getResumenMunicipal(Integer idProgramaAno, Integer idSubtitulo){

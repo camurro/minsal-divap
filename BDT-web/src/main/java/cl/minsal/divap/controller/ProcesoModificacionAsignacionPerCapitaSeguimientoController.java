@@ -86,6 +86,7 @@ implements Serializable {
 	private Integer idDistribucionInicialPercapita;
 	private Boolean lastVersion = false;
 	private String hiddenIdServicio;
+	private Integer anoProceso;
 
 
 	public void uploadArchivoSeguimiento() {
@@ -104,7 +105,7 @@ implements Serializable {
 			Integer docNewVersion = persistFile(filename,	contentAttachedFile);
 			switch (tareaSeguimiento) {
 			case HACERSEGUIMIENTOOFICIO:
-				modificacionDistribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, TipoDocumentosProcesos.OFICIOCONSULTA, versionFinal);
+				modificacionDistribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, TipoDocumentosProcesos.OFICIOCONSULTA, versionFinal, this.anoProceso);
 				this.oficioConsultaId = docNewVersion;
 				break;
 			case HACERSEGUIMIENTORESOLUCIONES:
@@ -112,7 +113,7 @@ implements Serializable {
 			case HACERSEGUIMIENTOTOMARAZON:
 				break;
 			case HACERSEGUIMIENTODECRETO:
-				modificacionDistribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, TipoDocumentosProcesos.BORRADORAPORTEESTATAL, versionFinal);
+				modificacionDistribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, TipoDocumentosProcesos.BORRADORAPORTEESTATAL, versionFinal, this.anoProceso);
 				this.decretoId = docNewVersion;
 				break;	
 			default:
@@ -155,7 +156,8 @@ implements Serializable {
 				Integer idServicio = Integer.parseInt(getHiddenIdServicio());
 				System.out.println("docResolucion->"+docResolucion);
 				System.out.println("idServicio->"+idServicio);
-				modificacionDistribucionInicialPercapitaService.moveToAlfrescoModificacion(this.idDistribucionInicialPercapita, idServicio, docResolucion, TipoDocumentosProcesos.ORDINARIOMODIFICACIONRESOLUCIONAPORTEESTATAL, this.lastVersion);
+				modificacionDistribucionInicialPercapitaService.moveToAlfrescoModificacion(this.idDistribucionInicialPercapita, idServicio, docResolucion, TipoDocumentosProcesos.ORDINARIOMODIFICACIONRESOLUCIONAPORTEESTATAL,
+					this.lastVersion, this.anoProceso);
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -225,7 +227,8 @@ implements Serializable {
 				conCopiaOculta = Arrays.asList(this.cco.split("\\,")); 
 			}
 			System.out.println("ProcesoAsignacionPerCapitaSeguimientoController-->sendMail");
-			modificacionDistribucionInicialPercapitaService.createSeguimientoModificacionPercapita(idDistribucionInicialPercapita, tareaSeguimiento, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
+			modificacionDistribucionInicialPercapitaService.createSeguimientoModificacionPercapita(idDistribucionInicialPercapita, tareaSeguimiento, subject, body, getSessionBean().getUsername(), para, conCopia,
+					conCopiaOculta, documentos, this.anoProceso);
 		}catch(Exception e){
 			e.printStackTrace();
 			target = null;
@@ -269,6 +272,8 @@ implements Serializable {
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			this.idDistribucionInicialPercapita = (Integer) getTaskDataVO().getData().get("_idDistribucionInicialPercapita");
 			System.out.println("this.idDistribucionInicialPercapita --->" + this.idDistribucionInicialPercapita);
+			this.anoProceso = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("this.anoProceso --->" + this.anoProceso);
 			this.actividadSeguimientoTitle = getTaskDataVO().getTask().getName();
 			System.out.println("this.actividadSeguimientoTitle --->" + this.actividadSeguimientoTitle);
 			String _tareaSeguimiento = (String) getTaskDataVO().getData().get("_tareaSeguimiento");

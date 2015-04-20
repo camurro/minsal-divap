@@ -9,6 +9,7 @@ public enum TipoDocumentosProcesos{
 	PLANTILLARESOLUCIONAPORTEESTATALUR(9,"Plantilla Resoluciones Comunales de Aporte Estatal UR"), PLANTILLARESOLUCIONAPORTEESTATALCF(10,"Plantilla Resoluciones Comunales de Aporte Estatal CF"),
 	RESOLUCIONAPORTEESTATALUR(11,"Resoluciones Comunales de Aporte Estatal UR"), RESOLUCIONAPORTEESTATALCF(12,"Resoluciones Comunales de Aporte Estatal CF"),
 	PLANTILLABORRADORAPORTEESTATAL(13,"Plantilla Borrador decreto aporte estatal"), ASIGNACIONDESEMPENODIFICIL(14, "Asignación de Desempeño Difícil"),
+	PLANILLAOFICIOCONSULTA(20, "Planilla Oficio Consulta"), TOMARAZONAPORTEESTATAL(21, "Toma Razón Decreto Aporte Estatal"),
 	PLANTILLABASECUMPLIMIENTOMUNICIPAL(57,"Plantilla Base Cumplimiento Municipal"), PLANTILLABASECUMPLIMIENTOSERVICIO(58,"Plantilla Base Cumplimiento Servicio"),
 	
 	//Plantilla PARA Distribución de Recursos Financieros para Programas de Reforzamiento de APS

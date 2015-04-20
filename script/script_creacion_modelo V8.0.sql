@@ -26022,6 +26022,34 @@ ALTER TABLE detalle_remesas
 
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (45, 'Ordinario Orden Transferencia');
 
+INSERT INTO cumplimiento_programa(id_cumplimiento_programa, programa, porcentaje_desde, porcentaje_hasta, rebaja)
+    VALUES (17, 20, 0, 19.99, 100);
+
+INSERT INTO cumplimiento_programa(id_cumplimiento_programa, programa, porcentaje_desde, porcentaje_hasta, rebaja)
+    VALUES (18, 20, 20, 29.99, 75);
+
+INSERT INTO cumplimiento_programa(id_cumplimiento_programa, programa, porcentaje_desde, porcentaje_hasta, rebaja)
+    VALUES (19, 20, 30, 39.99, 50);
+
+INSERT INTO cumplimiento_programa(id_cumplimiento_programa, programa, porcentaje_desde, porcentaje_hasta, rebaja)
+    VALUES (20, 20, 40, 100, 0);
+
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (6, 'Hacer Seguimiento Ordinarios de Ordenes de Transferencia');
+
+INSERT INTO cumplimiento_programa(id_cumplimiento_programa, programa, porcentaje_desde, porcentaje_hasta, rebaja)
+    VALUES (21, 37, 0, 19.99, 100);
+
+INSERT INTO cumplimiento_programa(id_cumplimiento_programa, programa, porcentaje_desde, porcentaje_hasta, rebaja)
+    VALUES (22, 37, 20, 29.99, 75);
+
+INSERT INTO cumplimiento_programa(id_cumplimiento_programa, programa, porcentaje_desde, porcentaje_hasta, rebaja)
+    VALUES (23, 37, 30, 39.99, 50);
+
+INSERT INTO cumplimiento_programa(id_cumplimiento_programa, programa, porcentaje_desde, porcentaje_hasta, rebaja)
+    VALUES (24, 37, 40, 100, 0);
+    
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (20, 'Planilla Oficio Consulta');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (21, 'Toma Razón Decreto Aporte Estatal');
 
 
 

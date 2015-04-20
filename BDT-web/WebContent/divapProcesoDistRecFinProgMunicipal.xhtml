@@ -34,6 +34,7 @@
 
 	<ui:define name="content">
 		<h:form enctype="multipart/form-data" id="form">
+		    <p:growl id="growl" showDetail="false"/> 
 			<h:inputHidden  id="posicionElemento" value="#{procesoDistRecFinController.posicionElemento}" />
 			<h:inputHidden  id="precioCantidad" value="#{procesoDistRecFinController.precioCantidad}" />
 			<p:commandButton id="botonPrecio" value="recalcularTotales" update="tablaResultados" action="#{procesoDistRecFinController.recalcularTotales}" style="display: none"/>
@@ -80,7 +81,7 @@
 							</h:panelGrid>
 						
 						<h:panelGrid columns="1">
-							<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoDistRecFinController.cargaComunas}"  update="form:tablaResultados"/>
+							<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoDistRecFinController.cargaComunas}"  update="form:tablaResultados growl"/>
 					</h:panelGrid>
 					</h:panelGrid>
 					

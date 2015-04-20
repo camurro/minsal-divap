@@ -48,10 +48,6 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 	private boolean checkAsigDesempenoDificil;
 	private boolean emptyCheckColumn;
 	private Integer ano;
-	@EJB
-	private UtilitariosService utilitariosService;
-	@EJB
-	private DistribucionInicialPercapitaService distribucionInicialPercapitaService;
 	private List<AsignacionDistribucionPerCapitaVO> antecendentesComunaCalculado;
 	private String docIdDownload;
 	private Integer docId;
@@ -62,10 +58,14 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 	private List<ServiciosVO> servicios;
 	private String comunaSeleccionada;
 	private List<ComunaVO> comunas;
-
 	private  boolean rechazarRevalorizar_;
 	private  boolean rechazarSubirArchivos_;
 	private  boolean aprobar_;
+	
+	@EJB
+	private UtilitariosService utilitariosService;
+	@EJB
+	private DistribucionInicialPercapitaService distribucionInicialPercapitaService;
 
 
 	public UploadedFile getCalculoPerCapitaFile() {
@@ -96,11 +96,12 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 	public void buscar() {
 		System.out.println("buscar--> servicioSeleccionado="+servicioSeleccionado+" comunaSeleccionada="+comunaSeleccionada);
 		if((servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty()) && (comunaSeleccionada == null || comunaSeleccionada.trim().isEmpty())){
-			FacesMessage msg = new FacesMessage("Debe seleccionar al menos un filtro antes de realizar la búsqueda");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			this.antecendentesComunaCalculado = distribucionInicialPercapitaService.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(idDistribucionInicialPercapita);
 		}else{
-			this.antecendentesComunaCalculado = distribucionInicialPercapitaService.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(Integer.parseInt(servicioSeleccionado),
-					(((comunaSeleccionada != null) &&  !(comunaSeleccionada.trim().isEmpty()))?Integer.parseInt(comunaSeleccionada):null), idDistribucionInicialPercapita);
+			Integer idComuna = ((comunaSeleccionada == null || comunaSeleccionada.trim().isEmpty()) ? null : Integer.parseInt(comunaSeleccionada));
+			Integer idServicio = ((servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty()) ? null : Integer.parseInt(servicioSeleccionado));
+			this.antecendentesComunaCalculado = distribucionInicialPercapitaService.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(idServicio,
+					idComuna, idDistribucionInicialPercapita);
 			System.out.println("this.antecendentesComunaCalculado.size()="+ ((this.antecendentesComunaCalculado == null) ? 0 : this.antecendentesComunaCalculado.size()));
 		}
 		System.out.println("fin buscar-->");

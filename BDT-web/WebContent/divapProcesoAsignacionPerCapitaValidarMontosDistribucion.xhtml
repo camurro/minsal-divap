@@ -8,6 +8,7 @@
 
 	<ui:define name="content">
 		<h:form id="formMontosDistribucion" enctype="multipart/form-data">
+		    <p:growl id="growl" showDetail="false"/> 
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="Asignación de Recursos per Capita" />
@@ -64,7 +65,7 @@
 							</h:panelGrid>
 
 							<h:panelGrid columns="2">
-								<p:commandButton value="Buscar" actionListener="#{procesoAsignacionPerCapitaValidarMontosController.buscar}" styleClass="x-btn-text icon-guardar" update=":formMontosDistribucion:colShow :formMontosDistribucion:gridMisTareas :formMontosDistribucion:errorfilter" icon="ui-icon-search" />
+								<p:commandButton value="Buscar" actionListener="#{procesoAsignacionPerCapitaValidarMontosController.buscar}" styleClass="x-btn-text icon-guardar" update=":formMontosDistribucion:colShow :formMontosDistribucion:gridMisTareas :formMontosDistribucion:errorfilter growl" icon="ui-icon-search" />
 								<p:commandButton value="Limpiar" actionListener="#{procesoAsignacionPerCapitaValidarMontosController.limpiar}" styleClass="x-btn-text icon-guardar" update=":formMontosDistribucion:servicio :formMontosDistribucion:comuna :formMontosDistribucion:colShow :formMontosDistribucion:gridMisTareas :formMontosDistribucion:errorfilter" icon="ui-icon-trash" />
 							</h:panelGrid>
 						</h:panelGrid>					
@@ -241,7 +242,7 @@
 						</p:column>
 						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkPerCapitaAno}">
 							<f:facet name="header">
-								<h:outputText value="Per Capita Año ($#{procesoAsignacionPerCapitaValidarMontosController.anoCurso})" />
+								<h:outputText value="Per Capita Año ($#{procesoAsignacionPerCapitaValidarMontosController.ano})" />
 							</f:facet>
 							<h:outputText value="#{_montoDistribucion.valorPercapitaAno}">
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
@@ -249,7 +250,7 @@
 						</p:column>
 						<p:column rendered="#{procesoAsignacionPerCapitaValidarMontosController.checkPerCapitaMes}">
 							<f:facet name="header">
-								<h:outputText value="Per Capita Mensual ($#{procesoAsignacionPerCapitaValidarMontosController.anoCurso})" />
+								<h:outputText value="Per Capita Mensual ($#{procesoAsignacionPerCapitaValidarMontosController.ano})" />
 							</f:facet>
 							<h:outputText value="#{_montoDistribucion.valorPercapitaMes}">
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />

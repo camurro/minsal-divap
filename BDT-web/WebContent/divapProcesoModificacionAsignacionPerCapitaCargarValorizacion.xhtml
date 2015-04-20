@@ -50,6 +50,17 @@
 								target="#{procesoModificacionAsignacionPerCapitaController.docIdDownload}"
 								value="#{procesoModificacionAsignacionPerCapitaController.docAsignacionRecursosPercapita}" />
 						</h:commandLink>
+						]<br /> <span class="strong">Archivo: </span> Planilla Base
+						Asignación Desempeño Difícil [
+						<h:graphicImage value="resources/minsal/images/download-alt.png"
+							styleClass="divapIcons" />
+						<h:commandLink
+							action="#{procesoModificacionAsignacionPerCapitaController.downloadTemplate}"
+							value="Bajar">
+							<f:setPropertyActionListener
+								target="#{procesoModificacionAsignacionPerCapitaController.docIdDownload}"
+								value="#{procesoModificacionAsignacionPerCapitaController.docAsignacionDesempenoDificil}" />
+						</h:commandLink>
 						] 
 					</div>
 					<h3>Tareas de la Actividad:</h3>
@@ -58,11 +69,17 @@
 							value="Archivo: datos valorización" styleClass="fileUploadLabel" />
 						<p:fileUpload
 							fileUploadListener="#{procesoModificacionAsignacionPerCapitaController.handleFileUploadPerCapitaFile}"
-							
 							id="calculoPerCapitaFile"
 							value="#{procesoModificacionAsignacionPerCapitaController.calculoPerCapitaFile}"
 							mode="simple" auto="true" update="formUpload" />
-
+						<h:outputLabel for="valorBasicoDesempenoFile"
+							value="Archivo: valor básico por desempeño difícil"
+							styleClass="fileUploadLabel" />
+						<p:fileUpload
+							fileUploadListener="#{procesoModificacionAsignacionPerCapitaController.handleFileUploadBasicoDesempenoFile}"
+							id="valorBasicoDesempenoFile"
+							value="#{procesoModificacionAsignacionPerCapitaController.valorBasicoDesempenoFile}"
+							update="formUpload" mode="simple" />
 					</p:panelGrid>
 					<br />
 					<p:commandButton value="Cargar Archivos" ajax="false"

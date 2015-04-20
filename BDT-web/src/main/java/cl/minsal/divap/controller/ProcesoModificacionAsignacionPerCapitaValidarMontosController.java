@@ -66,6 +66,7 @@ implements Serializable {
 	private  boolean rechazarRevalorizar_;
 	private  boolean rechazarSubirArchivos_;
 	private  boolean aprobar_;
+	private Integer anoProceso;
 
 
 	public UploadedFile getCalculoPerCapitaFile() {
@@ -96,11 +97,12 @@ implements Serializable {
 	public void buscar() {
 		System.out.println("buscar--> servicioSeleccionado="+servicioSeleccionado+" comunaSeleccionada="+comunaSeleccionada);
 		if((servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty()) && (comunaSeleccionada == null || comunaSeleccionada.trim().isEmpty()) ){
-			FacesMessage msg = new FacesMessage("Debe seleccionar al menos un filtro antes de realizar la búsqueda");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			this.antecendentesComunaCalculado = modificacionDistribucionInicialPercapitaService.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(idDistribucionInicialPercapita, this.anoProceso);
 		}else{
-			this.antecendentesComunaCalculado = modificacionDistribucionInicialPercapitaService.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(Integer.parseInt(servicioSeleccionado),
-					(((comunaSeleccionada != null) &&  !(comunaSeleccionada.trim().isEmpty()))?Integer.parseInt(comunaSeleccionada):null), idDistribucionInicialPercapita);
+			Integer idComuna = ((comunaSeleccionada == null || comunaSeleccionada.trim().isEmpty()) ? null : Integer.parseInt(comunaSeleccionada));
+			Integer idServicio = ((servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty()) ? null : Integer.parseInt(servicioSeleccionado));
+			this.antecendentesComunaCalculado = modificacionDistribucionInicialPercapitaService.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(idServicio,
+					idComuna, idDistribucionInicialPercapita, this.anoProceso);
 		}
 		System.out.println("fin buscar-->");
 	}
@@ -177,7 +179,9 @@ implements Serializable {
 		System.out.println("this.docId->"+this.docId);
 		this.idDistribucionInicialPercapita = (Integer) getTaskDataVO().getData().get("_idDistribucionInicialPercapita");
 		System.out.println("this.idDistribucionInicialPercapita->"+this.idDistribucionInicialPercapita);
-		this.antecendentesComunaCalculado = modificacionDistribucionInicialPercapitaService.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(idDistribucionInicialPercapita);
+		this.anoProceso = (Integer) getTaskDataVO().getData().get("_ano");
+		System.out.println("this.idDistribucionInicialPercapita->"+this.idDistribucionInicialPercapita);
+		this.antecendentesComunaCalculado = modificacionDistribucionInicialPercapitaService.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(idDistribucionInicialPercapita, this.anoProceso);
 		if(this.antecendentesComunaCalculado  != null && this.antecendentesComunaCalculado .size() > 0){
 			initCheck();
 		}
@@ -418,10 +422,6 @@ implements Serializable {
 
 	public boolean isCheckPerCapitaAno() {
 		return checkPerCapitaAno;
-	}
-	
-	public Integer getAnoCurso() {
-		return modificacionDistribucionInicialPercapitaService.getAnoCurso() + 1;
 	}
 
 	public void setCheckPerCapitaAno(boolean checkPerCapitaAno) {

@@ -185,7 +185,7 @@ public class ProcesoReliquidacionPlanillasController extends AbstractTaskMBean i
 					if(planillaServicio != null){
 						byte[] contentPlanillaServicioFile = planillaServicio.getContents();
 						String filename = planillaServicio.getFileName();
-						reliquidacionService.procesarCalculoReliquidacionServicio(getPrograma().getIdProgramaAno() ,getIdReliquidacion(), GeneradorExcel.fromContent(contentPlanillaServicioFile, XSSFWorkbook.class));
+						reliquidacionService.procesarCalculoReliquidacionServicio(getPrograma().getIdProgramaAno(), getIdReliquidacion(), GeneradorExcel.fromContent(contentPlanillaServicioFile, XSSFWorkbook.class));
 						Integer docReliquidacion = persistFile(filename, contentPlanillaServicioFile);
 						if(docReliquidacion != null){
 							docIds.add(docReliquidacion);

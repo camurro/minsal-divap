@@ -21,13 +21,13 @@ public class MatchViewTask {
 		REBAJAREVISIONMONTOS("minsal.divap.procesos.Rebaja.revisionyvalidaciondelosmontosderebaja","divapProcesoRebajaRevisionValidacionRebaja"),
 		REBAJARESOLUCIONES("minsal.divap.procesos.Rebaja.seguimientoderesolucionesderebaja","divapProcesoRebajaSeguimientoTratamientoRevision"),
 														 
-		// Mapeo páginas de ReliquidaciÃ³n
+		// Mapeo páginas de Reliquidación
 		RELIQUIDACIONPROGRAMAS("minsal.divap.procesos.Reliquidacion.seleccionarprograma","divapProcesoReliqProgramas"),
 		RELIQUIDACIONARCHIVOS("minsal.divap.procesos.Reliquidacion.descargarysubirplanillacumplimiento","divapProcesoReliqPlanillas"),		
 		RELIQUIDACIONMUNICIPAL("minsal.divap.procesos.Reliquidacion.validacionmontosreliquidacionmunicipal","divapProcesoReliqMunicipal"),
 		RELIQUIDACIONSERVICIO("minsal.divap.procesos.Reliquidacion.validacionmontosreliquidacionservicio","divapProcesoReliqServicio"),
 		RELIQUIDACIONMIXTO("minsal.divap.procesos.Reliquidacion.validacionmontosreliquidacionmixto","divapProcesoReliqServicio"),
-		//Validacion Montos Reliquidacion
+		//Validacion Montos Reliquidación
 
 		
 		// Mapeo páginas de Tramitacion Orden Transferencia Profesional
