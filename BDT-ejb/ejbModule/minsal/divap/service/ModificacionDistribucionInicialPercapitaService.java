@@ -31,7 +31,7 @@ import minsal.divap.doc.GeneradorDocumento;
 import minsal.divap.doc.GeneradorOficioConsulta;
 import minsal.divap.doc.GeneradorResolucionAporteEstatal;
 import minsal.divap.doc.GeneradorWord;
-import minsal.divap.doc.GeneradorWordBorradorAporteEstatal;
+import minsal.divap.doc.util.NumberToLetters;
 import minsal.divap.enums.FieldType;
 import minsal.divap.enums.Instituciones;
 import minsal.divap.enums.TareasSeguimiento;
@@ -259,7 +259,6 @@ public class ModificacionDistribucionInicialPercapitaService {
 		PercapitaDesempenoDificilExcelValidator desempenoDificilExcelValidator = new PercapitaDesempenoDificilExcelValidator(cells.size(), cells, true, 0, 0);
 		desempenoDificilExcelValidator.validateFormat(worksheet);		
 		List<DesempenoDificilVO> items = desempenoDificilExcelValidator.getItems();
-		
 		for(DesempenoDificilVO desempenoDificilVO : items){
 			AntecendentesComuna antecendentesComuna = antecedentesComunaDAO.findAntecendentesComunaByComunaServicioAno(desempenoDificilVO.getServicio(), desempenoDificilVO.getComuna(), ano);
 			if(antecendentesComuna != null){
@@ -278,7 +277,7 @@ public class ModificacionDistribucionInicialPercapitaService {
 		}
 	}
 
-	public Integer getAnoCursodd() {
+	public Integer getAnoCurso() {
 		DateFormat formatNowYear = new SimpleDateFormat("yyyy");
 		Date nowDate = new Date();
 		return Integer.valueOf(formatNowYear.format(nowDate)); 
@@ -295,11 +294,13 @@ public class ModificacionDistribucionInicialPercapitaService {
 				Integer asignacionAdultoMayor = antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso().getAsignacionAdultoMayor();
 				System.out.println("percapitaBasal="+percapitaBasal+ " antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza().getValor()=" + ((antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza() == null) ? 0 : antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza().getValor()));
 				Double pobreza = percapitaBasal * ((antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza() == null) ? 0 : antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza().getValor());
+				System.out.println("pobreza = " + pobreza);
 				antecendenteComunaCalculado.setPobreza(pobreza);
-				System.out.println("antecendenteComunaCalculado.getAntecedentesComuna().getIdAntecedentesComuna()="+antecendenteComunaCalculado.getAntecedentesComuna().getIdAntecedentesComuna());
+				System.out.println("antecendenteComunaCalculado.getAntecedentesComuna().getIdAntecedentesComuna() = " + antecendenteComunaCalculado.getAntecedentesComuna().getIdAntecedentesComuna());
 				if(antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion() != null){
 					if(TipoComuna.RURAL.getId().equals(antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion().getIdTipoComuna())){
 						Double ruralidad = (percapitaBasal + pobreza) * 0.2;
+						System.out.println("ruralidad = " + ruralidad);
 						antecendenteComunaCalculado.setRuralidad(ruralidad);
 						Double valorReferencialZona = (percapitaBasal + pobreza + ruralidad) * ((antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona() == null) ? 0 : antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona().getValor());
 						antecendenteComunaCalculado.setValorReferencialZona(valorReferencialZona);
@@ -321,29 +322,32 @@ public class ModificacionDistribucionInicialPercapitaService {
 						antecendenteComunaCalculado.setPercapitaAno(perCapitaAno);
 					} else if(TipoComuna.URBANA.getId().equals(antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion().getIdTipoComuna())){
 						Double ruralidad = 0.0;
+						System.out.println("ruralidad = " + ruralidad);
 						antecendenteComunaCalculado.setRuralidad(ruralidad);
 						Double valorReferencialZona = (percapitaBasal + pobreza + ruralidad) * ((antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona() == null) ? 0 : antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona().getValor());
 						antecendenteComunaCalculado.setValorReferencialZona(valorReferencialZona);
 						Double valorPerCapitaComunalMes = (percapitaBasal + pobreza + 0.0 + valorReferencialZona);
 						antecendenteComunaCalculado.setValorPerCapitaComunalMes(valorPerCapitaComunalMes);
-						System.out.println("valorPerCapitaComunalMes="+valorPerCapitaComunalMes);
-						System.out.println("antecendenteComunaCalculado.getPoblacion()="+antecendenteComunaCalculado.getPoblacion());
-						System.out.println("antecendenteComunaCalculado.getPoblacionMayor()="+antecendenteComunaCalculado.getPoblacionMayor());
-						System.out.println("asignacionAdultoMayor="+asignacionAdultoMayor);
-						int poblacion =(( antecendenteComunaCalculado.getPoblacion() == null) ? 0 : antecendenteComunaCalculado.getPoblacion());
-						int poblacionMayor =(( antecendenteComunaCalculado.getPoblacionMayor() == null) ? 0 : antecendenteComunaCalculado.getPoblacionMayor());
+						System.out.println("valorPerCapitaComunalMes = " + valorPerCapitaComunalMes);
+						System.out.println("antecendenteComunaCalculado.getPoblacion() = " + antecendenteComunaCalculado.getPoblacion());
+						System.out.println("antecendenteComunaCalculado.getPoblacionMayor() = " + antecendenteComunaCalculado.getPoblacionMayor());
+						System.out.println("asignacionAdultoMayor = " + asignacionAdultoMayor);
+						int poblacion =((antecendenteComunaCalculado.getPoblacion() == null) ? 0 : antecendenteComunaCalculado.getPoblacion());
+						int poblacionMayor = ((antecendenteComunaCalculado.getPoblacionMayor() == null) ? 0 : antecendenteComunaCalculado.getPoblacionMayor());
 						Integer redondeado = (int)Math.round(valorPerCapitaComunalMes);
 						Double calculoFinal = (double)(redondeado * poblacion + poblacionMayor * asignacionAdultoMayor);
 						Long perCapitaMes = Math.round(calculoFinal);
-						System.out.println("perCapitaMes="+perCapitaMes);
+						System.out.println("perCapitaMes =" + perCapitaMes);
 						antecendenteComunaCalculado.setPercapitaMes(perCapitaMes);
 						Long perCapitaAno = perCapitaMes * 12;
-						System.out.println("perCapitaAno="+perCapitaAno);
+						System.out.println("perCapitaAno =" + perCapitaAno);
 						antecendenteComunaCalculado.setPercapitaAno(perCapitaAno);
 					} else if(TipoComuna.COSTOFIJO.getId().equals(antecendenteComunaCalculado.getAntecedentesComuna().getClasificacion().getIdTipoComuna())){
 						Double ruralidad = 0.0;
+						System.out.println("ruralidad = " + ruralidad);
 						antecendenteComunaCalculado.setRuralidad(ruralidad);
 						Double valorReferencialZona = (percapitaBasal + pobreza + ruralidad) * ((antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona() == null) ? 0 : antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona().getValor());
+						System.out.println("valorReferencialZona = " + valorReferencialZona);
 						antecendenteComunaCalculado.setValorReferencialZona(valorReferencialZona);
 						Double valorPerCapitaComunalMes = (percapitaBasal + pobreza + 0.0 + valorReferencialZona);
 						antecendenteComunaCalculado.setValorPerCapitaComunalMes(valorPerCapitaComunalMes);
@@ -352,10 +356,10 @@ public class ModificacionDistribucionInicialPercapitaService {
 						perCapitaCostoFijo = ((perCapitaCostoFijo == null) ? 0.0 : perCapitaCostoFijo);
 						Double calculoFinal = (perCapitaCostoFijo * antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso().getInflactor());
 						Long perCapitaMes = Math.round(calculoFinal);
-						System.out.println("perCapitaMes="+perCapitaMes);
+						System.out.println("perCapitaMes = " + perCapitaMes);
 						antecendenteComunaCalculado.setPercapitaMes(perCapitaMes);
 						Long perCapitaAno = perCapitaMes * 12;
-						System.out.println("perCapitaAno="+perCapitaAno);
+						System.out.println("perCapitaAno =" + perCapitaAno);
 						antecendenteComunaCalculado.setPercapitaAno(perCapitaAno);
 					}
 				}
@@ -366,8 +370,7 @@ public class ModificacionDistribucionInicialPercapitaService {
 
 	private Integer publicarPlanillaTrabajo(Integer idModificacionDistribucionInicialPercapita, Integer ano){
 		Integer planillaTrabajoId = null;
-		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(ano);
-		List<AsignacionDistribucionPerCapitaVO> antecedentesCalculados = findAntecedentesComunaCalculadosByDistribucionInicialPercapita(distribucionInicialPercapita.getIdDistribucionInicialPercapita(), idModificacionDistribucionInicialPercapita);
+		List<AsignacionDistribucionPerCapitaVO> antecedentesCalculados = findAntecedentesComunaCalculadosByDistribucionInicialPercapita(idModificacionDistribucionInicialPercapita, ano);
 		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 		String filename = tmpDir + File.separator + "planillaAsignacionDistribucionPercapita.xlsx";
 		String contenType = mimemap.getContentType(filename.toLowerCase());
@@ -392,7 +395,7 @@ public class ModificacionDistribucionInicialPercapitaService {
 		generadorExcel.addSheet( asignacionDistribucionPercapitaSheetExcel, "Hoja 1");
 		try {
 			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderPercapita.replace("{ANO}", ano.toString()));
-			System.out.println("response AsignacionRecursosPercapitaSheetExcel --->"+response);
+			System.out.println("response AsignacionRecursosPercapitaSheetExcel --->" + response);
 			ModificacionDistribucionInicialPercapita modificacionPercapita = distribucionInicialPercapitaDAO.findModificacionDistribucionInicialById(idModificacionDistribucionInicialPercapita);
 			planillaTrabajoId = documentService.createDocumentModificacionPercapita(modificacionPercapita, TipoDocumentosProcesos.PLANILLARESULTADOSCALCULADOS, response.getNodeRef(), response.getFileName(), contenType);
 		} catch (Exception e) {
@@ -402,7 +405,9 @@ public class ModificacionDistribucionInicialPercapitaService {
 	}
 
 	public List<AsignacionDistribucionPerCapitaVO> findAntecedentesComunaCalculadosByDistribucionInicialPercapita(Integer idModificacionDistribucionInicialPercapita, Integer ano){
+		System.out.println("findAntecedentesComunaCalculadosByDistribucionInicialPercapita ano-->"+ano);
 		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(ano);
+		System.out.println("findAntecedentesComunaCalculadosByDistribucionInicialPercapita idModificacionDistribucionInicialPercapita-->"+idModificacionDistribucionInicialPercapita);
 		List<AntecendentesComunaCalculado>  antecendentesComunaCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaVigente(distribucionInicialPercapita.getIdDistribucionInicialPercapita());
 		List<AsignacionDistribucionPerCapitaVO> antecedentesCalculados = new ArrayList<AsignacionDistribucionPerCapitaVO>();
 		if(antecendentesComunaCalculado != null && antecendentesComunaCalculado.size() > 0){
@@ -543,7 +548,6 @@ public class ModificacionDistribucionInicialPercapitaService {
 			throw new RuntimeException("No se puede crear Resolucion Aporte Estatal UR, la plantilla no esta cargada");
 		}
 		try{
-
 			ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryAporteEstatalURVO = documentService.getDocumentByPlantillaId(plantillaIdResolucionAporteEstatalUR);
 			DocumentoVO documentoAporteEstatalURVO = documentService.getDocument(referenciaDocumentoSummaryAporteEstatalURVO.getId());
 			String templateAporteEstatalUR = tmpDirDoc + File.separator + documentoAporteEstatalURVO.getName();
@@ -564,18 +568,39 @@ public class ModificacionDistribucionInicialPercapitaService {
 			if(antecendentesComuna != null && antecendentesComuna.size() > 0){
 				for(AntecendentesComuna antecendenteComuna : antecendentesComuna){
 					AntecendentesComunaCalculado antecendentesComunaCalculadoVigente = antecedentesComunaDAO.findByAntecedentesDistrinbucionInicialVigenteModificacionPercapita(antecendenteComuna.getIdAntecedentesComuna(), distribucionInicialPercapita.getIdDistribucionInicialPercapita(), idModificacionDistribucionInicialPercapita);
+					List<AntecendentesComunaCalculado> antecendentesComunaCalculadoCaducados = antecedentesComunaDAO.findByAntecedentesDistrinbucionInicialCaducado(antecendenteComuna.getIdAntecedentesComuna(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+					AntecendentesComunaCalculado antecendentesComunaCalculadoCaducado = ((antecendentesComunaCalculadoCaducados == null || antecendentesComunaCalculadoCaducados.size() == 0) ? null : antecendentesComunaCalculadoCaducados.get(0));
 					if(antecendenteComuna.getClasificacion() != null){
 						Map<String, Object> parametersAporteEstatalUR = new HashMap<String, Object>();
 						parametersAporteEstatalUR.put("{ano_curso}", ano);
 						parametersAporteEstatalUR.put("{comuna_seleccionada}", antecendenteComuna.getIdComuna().getNombre());
-						Integer poblacion = ((antecendentesComunaCalculadoVigente.getPoblacion() == null) ? 0 : antecendentesComunaCalculadoVigente.getPoblacion()) + ((antecendentesComunaCalculadoVigente.getPoblacionMayor() != null)?new Integer(0): antecendentesComunaCalculadoVigente.getPoblacionMayor());
+						Integer poblacion = ((antecendentesComunaCalculadoVigente.getPoblacion() == null) ? 0 : antecendentesComunaCalculadoVigente.getPoblacion());
 						parametersAporteEstatalUR.put("{poblacion_seleccionada}", StringUtil.formatNumber(poblacion));
 						Double percapitaComunaMes = ((antecendentesComunaCalculadoVigente.getValorPerCapitaComunalMes() == null)? 0.0 : antecendentesComunaCalculadoVigente.getValorPerCapitaComunalMes());
 						parametersAporteEstatalUR.put("{monto_seleccionado}", StringUtil.formatNumber(Math.round(percapitaComunaMes)));
-						Long percapitaMes = ((antecendentesComunaCalculadoVigente.getPercapitaMes() == null) ? 0 : antecendentesComunaCalculadoVigente.getPercapitaMes());
-						parametersAporteEstatalUR.put("{aporte_mensual}", StringUtil.formatNumber(percapitaMes));
-						parametersAporteEstatalUR.put("{diferencia_aporte_mensual}", StringUtil.formatNumber(0));
-
+						Long aporteEstatalMensual = ((antecendentesComunaCalculadoVigente.getPercapitaMes() == null) ? 0 : antecendentesComunaCalculadoVigente.getPercapitaMes());
+						aporteEstatalMensual += ((antecendentesComunaCalculadoVigente.getDesempenoDificil() == null) ? 0 : antecendentesComunaCalculadoVigente.getDesempenoDificil());
+						
+						Long aporteEstatalAnual = ((antecendentesComunaCalculadoVigente.getPercapitaAno() == null) ? 0 : antecendentesComunaCalculadoVigente.getPercapitaAno());
+						aporteEstatalAnual += ((antecendentesComunaCalculadoVigente.getDesempenoDificil() == null) ? 0 : (antecendentesComunaCalculadoVigente.getDesempenoDificil() * 12));
+						
+						parametersAporteEstatalUR.put("{aporte_mensual}", StringUtil.formatNumber(aporteEstatalMensual));
+						Long aporteEstatalMensualCaducado = 0L;
+						Long aporteEstatalAnualCaducado = 0L; 
+						if(antecendentesComunaCalculadoCaducado != null){
+							aporteEstatalMensualCaducado = ((antecendentesComunaCalculadoCaducado.getPercapitaMes() == null) ? 0 : antecendentesComunaCalculadoCaducado.getPercapitaMes());
+							aporteEstatalMensualCaducado += ((antecendentesComunaCalculadoCaducado.getDesempenoDificil() == null) ? 0 : antecendentesComunaCalculadoCaducado.getDesempenoDificil());
+							
+							aporteEstatalAnualCaducado = ((antecendentesComunaCalculadoCaducado.getPercapitaAno() == null) ? 0 : antecendentesComunaCalculadoCaducado.getPercapitaAno());
+							aporteEstatalAnualCaducado += ((antecendentesComunaCalculadoCaducado.getDesempenoDificil() == null) ? 0 : (antecendentesComunaCalculadoCaducado.getDesempenoDificil() * 12));
+						}
+						Long diferenciaAporteEstatalMensual = aporteEstatalMensual - aporteEstatalMensualCaducado;
+						String textoVariacionMonto = ((diferenciaAporteEstatalMensual >= 0) ? "Increméntese" : "Descuéntese");
+						diferenciaAporteEstatalMensual = Math.abs(diferenciaAporteEstatalMensual); 
+						parametersAporteEstatalUR.put("{variacion_monto}", textoVariacionMonto);
+						System.out.println("aporteEstatalAnual->"+aporteEstatalAnual);
+						System.out.println("aporteEstatalAnualCaducado->"+aporteEstatalAnualCaducado);
+						parametersAporteEstatalUR.put("{suma_total}", StringUtil.formatNumber(Math.abs((aporteEstatalAnual - aporteEstatalAnualCaducado))));
 						generadorWordAporteEstatalUR.saveContent(documentoAporteEstatalURVO.getContent(), XWPFDocument.class);
 						String filenameAporteEstatalURTmp = filenameAporteEstatalUR.replace(".docx", "-" + antecendenteComuna.getIdComuna().getNombre() + ".docx");
 						filenameAporteEstatalURTmp = StringUtil.removeSpanishAccents(filenameAporteEstatalURTmp);
@@ -636,8 +661,28 @@ public class ModificacionDistribucionInicialPercapitaService {
 			System.out.println("contenTypeBorradorAporteEstatal->"+contenTypeBorradorAporteEstatal);
 			generadorWordPlantillaBorradorDecretoAporteEstatal.saveContent(documentoBorradorAporteEstatalVO.getContent(), XWPFDocument.class);
 			Map<String, Object> parametersBorradorAporteEstatal = new HashMap<String, Object>();
-			GeneradorWordBorradorAporteEstatal generadorWordDecretoBorradorAporteEstatal = new GeneradorWordBorradorAporteEstatal(filenameBorradorAporteEstatal, templateBorradorAporteEstatal);
-			generadorWordDecretoBorradorAporteEstatal.replaceValues(parametersBorradorAporteEstatal, null, XWPFDocument.class);
+			
+			AnoEnCurso anoEvaluacion = anoDAO.getAnoById(ano);
+			Integer percapitaBasal = ((anoEvaluacion.getMontoPercapitalBasal() == null) ? 0 : anoEvaluacion.getMontoPercapitalBasal());
+			Integer asignacionAdultoMayor = ((anoEvaluacion.getAsignacionAdultoMayor() == null) ? 0 : anoEvaluacion.getAsignacionAdultoMayor());
+			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(ano);
+			List<AntecendentesComunaCalculado> antecedentesComunaCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaVigente(distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+			Long aporteEstatal = 0L;
+			if(antecedentesComunaCalculado != null && antecedentesComunaCalculado.size() > 0){
+				for(AntecendentesComunaCalculado antecendentesComunaCalculado : antecedentesComunaCalculado){
+					aporteEstatal += ((antecendentesComunaCalculado.getPercapitaAno() == null) ? 0L : antecendentesComunaCalculado.getPercapitaAno());
+					aporteEstatal += ((antecendentesComunaCalculado.getDesempenoDificil() == null) ? 0 : antecendentesComunaCalculado.getDesempenoDificil() * 12);
+				}
+			}
+			parametersBorradorAporteEstatal.put("{ano_curso}", ano);
+			parametersBorradorAporteEstatal.put("{aporte_estatal}", StringUtil.formatNumber(aporteEstatal));
+			parametersBorradorAporteEstatal.put("{aporte_estatal_palabra}", NumberToLetters.readNumber(aporteEstatal.toString(), "," ,"pesos"));
+			parametersBorradorAporteEstatal.put("{percapita_basal}", StringUtil.formatNumber(percapitaBasal));
+			parametersBorradorAporteEstatal.put("{percapita_basal_palabra}",  NumberToLetters.readNumber(percapitaBasal.toString(), "," ,"pesos"));
+			parametersBorradorAporteEstatal.put("{asignacion_adulto_mayor}", StringUtil.formatNumber(asignacionAdultoMayor));
+			
+			GeneradorResolucionAporteEstatal generadorWordDecretoBorradorAporteEstatal = new GeneradorResolucionAporteEstatal(filenameBorradorAporteEstatal, templateBorradorAporteEstatal);
+			generadorWordDecretoBorradorAporteEstatal.replaceValues(parametersBorradorAporteEstatal, XWPFDocument.class);
 			BodyVO responseBorradorAporteEstatal = alfrescoService.uploadDocument(new File(filenameBorradorAporteEstatal), contenTypeBorradorAporteEstatal, folderPercapita.replace("{ANO}", ano.toString()));
 			System.out.println("response responseBorradorAporteEstatal --->"+responseBorradorAporteEstatal);
 			ModificacionDistribucionInicialPercapita modificacionPercapita = distribucionInicialPercapitaDAO.findModificacionDistribucionInicialById(idModificacionDistribucionInicialPercapita);
@@ -645,6 +690,8 @@ public class ModificacionDistribucionInicialPercapitaService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidFormatException e) {
+			e.printStackTrace();
+		} catch (Docx4JException e) {
 			e.printStackTrace();
 		}
 		return plantillaIdBorradorDecretoAporteEstatal;
@@ -932,7 +979,8 @@ public class ModificacionDistribucionInicialPercapitaService {
 
 	public void administrarVersionesFinalesAlfresco(Integer idModificacionDistribucionInicialPercapita, Integer ano) {
 		System.out.println("DistribucionInicialPercapitaService administrarVersionesFinalesAlfresco eliminar todas las versiones que no sean finales");
-		TipoDocumentosProcesos[] tiposDocumentos = {TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF};
+		TipoDocumentosProcesos[] tiposDocumentos = {TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF,
+				TipoDocumentosProcesos.OFICIOCONSULTA, TipoDocumentosProcesos.BORRADORAPORTEESTATAL, TipoDocumentosProcesos.TOMARAZONAPORTEESTATAL};
 		List<DocumentoModificacionPercapita> documentosResoluciones = distribucionInicialPercapitaDAO.getByIdModificacionPercapitaTipoNotFinal(idModificacionDistribucionInicialPercapita, tiposDocumentos);
 		if(documentosResoluciones != null && documentosResoluciones.size() > 0){
 			for(DocumentoModificacionPercapita documentoModificacionPercapita : documentosResoluciones){

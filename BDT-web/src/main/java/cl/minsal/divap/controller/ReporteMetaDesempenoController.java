@@ -29,10 +29,6 @@ public class ReporteMetaDesempenoController extends BaseController implements Se
 	private List<ProgramaVO> programas;
 	private Integer anoEnCurso;
 	private Integer valorComboPrograma;
-	
-	
-	
-	
 	private Integer idPlanillaCuadro1;
 	private String docIdDownloadCuadro1;
 	private Integer idPlanillaCuadro2;
@@ -45,9 +41,9 @@ public class ReporteMetaDesempenoController extends BaseController implements Se
 	
 	@PostConstruct public void init() {
 		
-		this.idPlanillaCuadro2 = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMETADESEMPENOCUADRO2);
+		this.idPlanillaCuadro2 = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMETADESEMPENOCUADRO2, getAnoEnCurso());
 		if(this.idPlanillaCuadro2 == null){
-			this.idPlanillaCuadro2 = reportesServices.generarPlanillaMetaDesempenoCuadro2();
+			this.idPlanillaCuadro2 = reportesServices.generarPlanillaMetaDesempenoCuadro2(getAnoEnCurso());
 		}
 		
 	}

@@ -1,7 +1,6 @@
 package cl.minsal.divap.controller;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -23,9 +22,13 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 @ViewScoped
 public class ReporteGlosa07Controller extends BaseController implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4493915962863710980L;
 	private List<ServiciosVO> servicios;
 	private ServiciosVO servicioSeleccionado;
-	private Integer valorComboServicio;
+	private String valorComboServicio;
 	private List<ReporteGlosaVO> reporteGlosaVO;
 	@EJB
 	private ServicioSaludService servicioSaludService;
@@ -37,19 +40,16 @@ public class ReporteGlosa07Controller extends BaseController implements Serializ
 	private Long sumArt49perCapita;
 	private Long sumArt56reforzamientoMunicipal;
 	private Long sumTotalRemesasEneroMarzo;
-	private Integer cantidadFilas;
 	private Integer idPlanilla;
 	private String docIdDownload;
 	private String mesActual;
-	
+	private Integer ano;
 	
 	@PostConstruct 
 	public void init() {
-		this.reporteGlosaVO = new ArrayList<ReporteGlosaVO>();
-		this.cantidadFilas = this.reporteGlosaVO.size();
-		this.idPlanilla = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEGLOSA07);
+		this.idPlanilla = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEGLOSA07, getAno());
 		if(this.idPlanilla == null){
-			this.idPlanilla = reportesServices.generarPlanillaReporteGlosa07(getLoggedUsername());
+			this.idPlanilla = reportesServices.generarPlanillaReporteGlosa07(getLoggedUsername(), getAno());
 		}
 		System.out.println("this.idPlanilla ---> "+this.idPlanilla);
 		
@@ -57,7 +57,7 @@ public class ReporteGlosa07Controller extends BaseController implements Serializ
 		
 		Mes mes = mesDAO.getMesPorID(mesCurso);
 		this.mesActual = StringUtil.caracterUnoMayuscula(mes.getNombre());		
-		
+		this.reporteGlosaVO = reportesServices.getReporteGlosaPorServicio(null, getLoggedUsername(), getAno());
 	}
 	
 	public String downloadTemplate() {
@@ -71,12 +71,8 @@ public class ReporteGlosa07Controller extends BaseController implements Serializ
 	
 	public void cargarTablaPorServicio(){
 		System.out.println("cargarTablaPorServicio --> getValorComboServicio() --> "+getValorComboServicio());
-		if(getValorComboServicio() != null){
-			if(getValorComboServicio().intValue() != 0){
-				this.reporteGlosaVO = reportesServices.getReporteGlosaPorServicio(getValorComboServicio(), getLoggedUsername());
-			}
-		}
-		
+		Integer iServicio = ((getValorComboServicio() != null && !getValorComboServicio().trim().isEmpty()) ? Integer.parseInt(getValorComboServicio().trim()) : null);
+		this.reporteGlosaVO = reportesServices.getReporteGlosaPorServicio(iServicio, getLoggedUsername(), getAno());
 	}
 
 	
@@ -96,10 +92,10 @@ public class ReporteGlosa07Controller extends BaseController implements Serializ
 	public void setServicioSeleccionado(ServiciosVO servicioSeleccionado) {
 		this.servicioSeleccionado = servicioSeleccionado;
 	}
-	public Integer getValorComboServicio() {
+	public String getValorComboServicio() {
 		return valorComboServicio;
 	}
-	public void setValorComboServicio(Integer valorComboServicio) {
+	public void setValorComboServicio(String valorComboServicio) {
 		this.valorComboServicio = valorComboServicio;
 	}
 
@@ -150,14 +146,6 @@ public class ReporteGlosa07Controller extends BaseController implements Serializ
 		this.sumTotalRemesasEneroMarzo = sumTotalRemesasEneroMarzo;
 	}
 
-	public Integer getCantidadFilas() {
-		return cantidadFilas;
-	}
-
-	public void setCantidadFilas(Integer cantidadFilas) {
-		this.cantidadFilas = cantidadFilas;
-	}
-
 	public Integer getIdPlanilla() {
 		return idPlanilla;
 	}
@@ -181,6 +169,16 @@ public class ReporteGlosa07Controller extends BaseController implements Serializ
 	public void setMesActual(String mesActual) {
 		this.mesActual = mesActual;
 	}
-	
+
+	public Integer getAno() {
+		if(ano == null){
+			ano = reportesServices.getAnoCurso();
+		}
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
 
 }

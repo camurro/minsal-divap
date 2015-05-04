@@ -158,12 +158,12 @@
 					<div class="destacaArchivos ui-corner-all">
 						<h3>Archivos Disponibles para la Tarea:</h3>
 					<p:panel id="panelBusqueda">
-						<span class="strong">Archivo: </span> Archivo comprimido con resoluciones rebaja para Servicio de Salud
+						<span class="strong">Archivo: </span> Archivo comprimido con resoluciones modificacan aporte estatal para Servicios de Salud
 						<ul class="versionesArchivo">
 							<c:forEach var="vardoc" items="#{procesoRebajaTramitacionController.serviciosResoluciones}">
 							<li>
 								<p:outputLabel
-										value="Resolución Rebaja para Servicio #{vardoc.nombre_servicio}"/> [ <h:graphicImage
+										value="Resolución modifica aporte estatal para Servicio #{vardoc.nombre_servicio}"/> [ <h:graphicImage
 										value="resources/minsal/images/download-alt.png"
 										styleClass="divapIcons" /> <h:commandLink  value="Bajar Última Versión"
 								onclick="downloadDocumentResolucion(#{vardoc.id_servicio});return false;" /> | <h:graphicImage
@@ -172,6 +172,7 @@
 										<p:commandLink value="Subir Nueva Versión" onclick="marcarResolucionServicio(#{vardoc.id_servicio});"  actionListener="#{procesoRebajaTramitacionController.resetLastVersion}" update=":formUploadVersion:panelLastVersion"
 											oncomplete="dlgUploadVersion.show();" /> 
 										] 
+								<h:graphicImage value="resources/true.png"  styleClass="divapIcons" rendered="#{vardoc.versionFinal}"/> 
 							</li>
 							</c:forEach>
 						</ul>
@@ -182,58 +183,30 @@
 					<h3>Visualizador: Montos de Rebaja</h3>
 					<p:panel styleClass="appMenu">
 						<h4>Filtros de Búsqueda:</h4>
-						<h:panelGrid columns="4" id="busqueda_mis_tareas">
-							<h:panelGrid columns="2">
-								<h:outputText value="Región: " styleClass="inputLabel" />
-								<p:selectOneMenu
-									value="#{procesoRebajaTramitacionController.regionSeleccionada}">
-									<p:ajax
-										listener="#{procesoRebajaTramitacionController.cargaServicios}"
-										update="servicios comunas" />
-									<f:selectItem itemLabel="Seleccione" itemValue="" />
-									<f:selectItems
-										value="#{procesoRebajaTramitacionController.listaRegiones}"
-										itemLabel="#{region.descRegion}" var="region"
-										itemValue="#{region.idRegion}" />
-								</p:selectOneMenu>
-							</h:panelGrid>
+						<p:panelGrid columns="8" id="busqueda_mis_tareas">
+							<h:outputText value="Región: " styleClass="inputLabel" />
+							<p:selectOneMenu value="#{procesoRebajaTramitacionController.regionSeleccionada}">
+								<p:ajax listener="#{procesoRebajaTramitacionController.cargaServicios}" update="servicios comunas" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />
+								<f:selectItems value="#{procesoRebajaTramitacionController.listaRegiones}" itemLabel="#{region.descRegion}" var="region" itemValue="#{region.idRegion}" />
+							</p:selectOneMenu>
 
-							<h:panelGrid columns="2">
-								<h:outputText value="Servicio: " styleClass="inputLabel" />
-								<p:selectOneMenu id="servicios"
-									value="#{procesoRebajaTramitacionController.servicioSeleccionado}">
-									<p:ajax
-										listener="#{procesoRebajaTramitacionController.cargaComunas}"
-										update="comunas hiddenFirstTime" />
-									<f:selectItem itemLabel="Seleccione" itemValue="" />
-									<f:selectItems
-										value="#{procesoRebajaTramitacionController.listaServicios}"
-										itemLabel="#{servicio.nombre_servicio}" var="servicio"
-										itemValue="#{servicio.id_servicio}" />
-								</p:selectOneMenu>
-							</h:panelGrid>
-
-							<h:panelGrid columns="2">
-								<h:outputText value="Comuna: " styleClass="inputLabel" />
-								<p:selectCheckboxMenu id="comunas"
-									value="#{procesoRebajaTramitacionController.comunasSeleccionadas}"
-									label="Seleccione" filter="true" filterText="Filter"
-									filterMatchMode="startsWith">
-									<f:selectItems
-										value="#{procesoRebajaTramitacionController.listaComunas}"
-										itemLabel="#{comuna.descComuna}" var="comuna"
-										itemValue="#{comuna.idComuna}" />
-								</p:selectCheckboxMenu>
-							</h:panelGrid>
-
-							<h:panelGrid columns="2">
-								<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoRebajaTramitacionController.buscarRebaja}"
-									oncomplete="refreshTable();" update="tablaMisTareas hiddenFirstTime panelBusqueda" />
-								<p:commandButton value="Limpiar" styleClass="x-btn-text icon-guardar" icon="ui-icon-trash" actionListener="#{procesoRebajaTramitacionController.limpiar}" 
-									update="tablaMisTareas busqueda_mis_tareas hiddenFirstTime panelBusqueda" />
-							</h:panelGrid>
+							<h:outputText value="Servicio: " styleClass="inputLabel" />
+							<p:selectOneMenu id="servicios" value="#{procesoRebajaTramitacionController.servicioSeleccionado}">
+								<p:ajax listener="#{procesoRebajaTramitacionController.cargaComunas}" update="comunas hiddenFirstTime" />
+								<f:selectItem itemLabel="Seleccione" itemValue="" />
+								<f:selectItems value="#{procesoRebajaTramitacionController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}" />
+							</p:selectOneMenu>
 							
-						</h:panelGrid>
+							<p:selectOneMenu id="comunas"  styleClass="inputLabel" value="#{procesoRebajaTramitacionController.comunaSeleccionada}">
+									<f:selectItem itemLabel="Seleccione" itemValue="" />  
+									<f:selectItems value="#{procesoRebajaTramitacionController.listaComunas}" itemLabel="#{comuna.descComuna}" var="comuna" itemValue="#{comuna.idComuna}"/> 
+							</p:selectOneMenu>
+
+							<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoRebajaTramitacionController.buscarRebaja}" oncomplete="refreshTable();" update="tablaMisTareas hiddenFirstTime panelBusqueda" />
+							<p:commandButton value="Limpiar" styleClass="x-btn-text icon-guardar" icon="ui-icon-trash" actionListener="#{procesoRebajaTramitacionController.limpiar}" update="tablaMisTareas busqueda_mis_tareas hiddenFirstTime panelBusqueda" />
+							
+						</p:panelGrid>
 					</p:panel>
 					<br />
 					<h:inputHidden id="hiddenFirstTime"

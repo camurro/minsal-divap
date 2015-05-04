@@ -70,7 +70,7 @@ implements Serializable {
 	private List<ServiciosVO> listaServicios;
 	private String servicioSeleccionado;
 	private List<ComunaVO> listaComunas;
-	private List<String> comunasSeleccionadas;
+	private String comunaSeleccionada;
 	private List<PlanillaRebajaCalculadaVO> rebajaComunas;
 
 	private String mesActual;
@@ -110,6 +110,7 @@ implements Serializable {
 	public void cargarListaRegiones(){
 		listaRegiones = utilitariosService.getAllRegion();
 	}
+	
 	public void cargaServicios(){
 		if((regionSeleccionada != null) && !(regionSeleccionada.trim().isEmpty())){
 			listaServicios=utilitariosService.getServiciosByRegion(Integer.parseInt(regionSeleccionada));
@@ -117,34 +118,24 @@ implements Serializable {
 			listaServicios = new ArrayList<ServiciosVO>();
 		}
 	}
+	
 	public void cargaComunas(){
 		if((servicioSeleccionado != null) && !(servicioSeleccionado.trim().isEmpty())){
 			listaComunas = utilitariosService.getComunasByServicio(Integer.parseInt(servicioSeleccionado));
-			comunasSeleccionadas = new ArrayList<String>();
-			if(listaComunas != null && listaComunas.size() > 0){
-				for(ComunaVO comuna : listaComunas){
-					comunasSeleccionadas.add(comuna.getIdComuna().toString());
-				}
-			}
+			comunaSeleccionada = null;
 		}else{
 			listaComunas = new ArrayList<ComunaVO>();
-			comunasSeleccionadas = new ArrayList<String>();
+			comunaSeleccionada = null;
 		}
 		fisrtTime = 1;
 	}
-
+	
 	public void buscarRebaja(){
-		List<Integer> idComunas = new ArrayList<Integer>();
-		for(String comunas : comunasSeleccionadas){
-			Integer idComuna = Integer.parseInt(comunas);
-			idComunas.add(idComuna);
-		}
-		if(servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty()){
-			serviciosResoluciones = documentService.getDocumentByResolucionTypesServicioRebaja(idProcesoRebaja, null, TipoDocumentosProcesos.RESOLUCIONREBAJA);
-		}else{
-			serviciosResoluciones = documentService.getDocumentByResolucionTypesServicioRebaja(idProcesoRebaja, Integer.parseInt(servicioSeleccionado), TipoDocumentosProcesos.RESOLUCIONREBAJA);
-		}
-		rebajaComunas = rebajaService.getRebajasByComuna(this.idProcesoRebaja, idComunas, this.ano);
+		System.out.println("ProcesoRebajaValidarMontosController:buscarRebaja");
+		Integer idServicio = ((servicioSeleccionado != null && !servicioSeleccionado.trim().isEmpty()) ? Integer.parseInt(servicioSeleccionado) : null);
+		Integer idComuna = ((comunaSeleccionada != null && !comunaSeleccionada.trim().isEmpty()) ? Integer.parseInt(comunaSeleccionada) : null);
+		serviciosResoluciones = documentService.getDocumentByResolucionTypesServicioRebaja(idProcesoRebaja, idServicio, TipoDocumentosProcesos.RESOLUCIONREBAJA);
+		rebajaComunas = rebajaService.getRebajasByComuna(this.idProcesoRebaja, idServicio, idComuna, this.ano);
 		fisrtTime++;
 	}
 
@@ -153,7 +144,7 @@ implements Serializable {
 		System.out.println("Limpiar-->");
 		this.regionSeleccionada = null;
 		this.servicioSeleccionado = null;
-		this.comunasSeleccionadas = new ArrayList<String>();
+		this.comunaSeleccionada = null;
 		this.rebajaComunas = new ArrayList<PlanillaRebajaCalculadaVO>();
 		this.listaServicios = new ArrayList<ServiciosVO>();
 		this.listaComunas = new ArrayList<ComunaVO>();
@@ -262,7 +253,7 @@ implements Serializable {
 			for(ServiciosSummaryVO serviciosSummaryVO : serviciosResoluciones){
 				numDocFinales = rebajaService.countVersionFinalRebajaResoluciones(this.idProcesoRebaja, serviciosSummaryVO.getId_servicio());
 				if(numDocFinales == 0){
-					message = "No existe versión final para documento aporte estatal servicio " + serviciosSummaryVO.getNombre_servicio();
+					message = "No existe versión final para documento resolucion modifica aporte estatal " + serviciosSummaryVO.getNombre_servicio();
 					break;
 				}
 			}
@@ -311,6 +302,14 @@ implements Serializable {
 				System.out.println("idServicio->"+idServicio);
 				rebajaService.moveToAlfrescoDistribucionInicialPercapita(this.idProcesoRebaja, idServicio, docResolucion, TipoDocumentosProcesos.RESOLUCIONREBAJA, 
 						this.lastVersion, this.ano);
+				Boolean versionFinal = (this.lastVersion != null && this.lastVersion) ? true : false;
+				if(serviciosResoluciones != null && serviciosResoluciones.size() > 0){
+					for(ServiciosSummaryVO  serviciosSummaryVO : serviciosResoluciones){
+						if(serviciosSummaryVO.getId_servicio().equals(idServicio)){
+							serviciosSummaryVO.setVersionFinal(versionFinal);
+						}
+					}
+				}
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -380,12 +379,12 @@ implements Serializable {
 		this.listaComunas = listaComunas;
 	}
 
-	public List<String> getComunasSeleccionadas() {
-		return comunasSeleccionadas;
+	public String getComunaSeleccionada() {
+		return comunaSeleccionada;
 	}
 
-	public void setComunasSeleccionadas(List<String> comunasSeleccionadas) {
-		this.comunasSeleccionadas = comunasSeleccionadas;
+	public void setComunaSeleccionada(String comunaSeleccionada) {
+		this.comunaSeleccionada = comunaSeleccionada;
 	}
 
 	public List<PlanillaRebajaCalculadaVO> getRebajaComunas() {

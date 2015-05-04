@@ -34,7 +34,6 @@ public class ProcesoModificacionAsignacionPerCapitaAntecedenteSeguimientoControl
 	private static final long serialVersionUID = 8979055329731411696L;
 	@Inject
 	private transient Logger log;
-
 	@EJB
 	private ModificacionDistribucionInicialPercapitaService modificacionDistribucionInicialPercapitaService;
 	private boolean archivosValidos = false;
@@ -48,7 +47,6 @@ public class ProcesoModificacionAsignacionPerCapitaAntecedenteSeguimientoControl
 	private Integer idResolucion;
 	private UploadedFile attachedFile;
 	private String docIdDownload;
-//	private List<Integer> docIds;
 	private List<SeguimientoVO> bitacoraSeguimiento;
 	private String actividadSeguimientoTitle = "Seguimiento Resoluciones";
 	private UploadedFile file;
@@ -228,7 +226,7 @@ public class ProcesoModificacionAsignacionPerCapitaAntecedenteSeguimientoControl
 		int numDocFinales = modificacionDistribucionInicialPercapitaService.countVersionFinalModificacionPercapitaByType(this.idDistribucionInicialPercapita, TipoDocumentosProcesos.ORDINARIOSOLICITUDANTECEDENTES);
 		System.out.println("numDocFinales="+numDocFinales);
 		if(numDocFinales == 0){
-			FacesMessage msg = new FacesMessage("No existe versión final para la resolución de retiro");
+			FacesMessage msg = new FacesMessage("No existe versión final del ordinario solicitud de antecedentes");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return null;
 		}

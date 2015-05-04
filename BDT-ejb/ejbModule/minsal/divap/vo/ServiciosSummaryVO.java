@@ -8,21 +8,24 @@ public class ServiciosSummaryVO implements Serializable{
 	private static final long serialVersionUID = -6107779935422525744L;
 	private Integer id_servicio;
 	private String nombre_servicio;
+	private Boolean versionFinal;
 
 	public ServiciosSummaryVO(){
-
+		this.versionFinal = false;
 	}
 
 	public ServiciosSummaryVO(int id_servicio, String nombre_servicio){
 		super();
 		this.id_servicio = id_servicio;
 		this.nombre_servicio = nombre_servicio;
+		this.versionFinal = false;
 	}
 	
 	public ServiciosSummaryVO(ServiciosSummaryVO serviciosSummaryVO){
 		super();
 		this.id_servicio = serviciosSummaryVO.getId_servicio();
 		this.nombre_servicio = serviciosSummaryVO.getNombre_servicio();
+		this.versionFinal = serviciosSummaryVO.getVersionFinal();
 	}
 
 	public Integer getId_servicio() {
@@ -39,6 +42,14 @@ public class ServiciosSummaryVO implements Serializable{
 
 	public void setNombre_servicio(String nombre_servicio) {
 		this.nombre_servicio = nombre_servicio;
+	}
+
+	public Boolean getVersionFinal() {
+		return versionFinal;
+	}
+
+	public void setVersionFinal(Boolean versionFinal) {
+		this.versionFinal = versionFinal;
 	}
 
 	@Override

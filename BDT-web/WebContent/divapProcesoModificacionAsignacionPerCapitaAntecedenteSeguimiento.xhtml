@@ -106,6 +106,7 @@
 	</ui:define>
 	<ui:define name="content">
 		<h:form id="formSeguimiento" enctype="multipart/form-data">
+			<p:growl id="growl" showDetail="false"/>  
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="Hacer Seguimiento Ordinarios Solicitudes de Antecedentes Población" />
@@ -228,7 +229,7 @@
 							necesario volver a generar la documentación haga clic en <span class="strong">Reingresar</span>.
 						</p>
 
-						<p:commandButton styleClass="x-btn-text" value="Finalizar Seguimiento | Actividad" icon="ui-icon-check" action="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.enviar}" >
+						<p:commandButton styleClass="x-btn-text" value="Finalizar Seguimiento | Actividad" icon="ui-icon-check" action="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.enviar}" update="growl">
 							<f:setPropertyActionListener
 								target="#{procesoModificacionAsignacionPerCapitaAntecedenteSeguimientoController.target}"
 								value="bandejaTareas.jsf" />	

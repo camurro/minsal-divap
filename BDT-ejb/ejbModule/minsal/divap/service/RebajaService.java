@@ -78,6 +78,7 @@ import cl.minsal.divap.model.Rebaja;
 import cl.minsal.divap.model.RebajaCorte;
 import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.Seguimiento;
+import cl.minsal.divap.model.ServicioSalud;
 import cl.minsal.divap.model.TipoCumplimiento;
 import cl.minsal.divap.model.Usuario;
 
@@ -158,7 +159,7 @@ public class RebajaService {
 		List<RebajaVO> result = new ArrayList<RebajaVO>();
 		if((antecendentesComunas != null) && (antecendentesComunas.size() > 0)){
 			for (AntecendentesComuna antecendenteComuna : antecendentesComunas){
-				if(antecendenteComuna.getIdComuna() != null){
+				if(antecendenteComuna.getIdComuna() != null && !antecendenteComuna.getIdComuna().isAuxiliar()){
 					RebajaVO rebajaVO = new RebajaVO();
 					if(antecendenteComuna.getIdComuna().getServicioSalud() != null){
 						rebajaVO.setId_servicio(antecendenteComuna.getIdComuna().getServicioSalud().getId());
@@ -407,12 +408,37 @@ public class RebajaService {
 			}
 		}
 	}
+	
+	public List <PlanillaRebajaCalculadaVO>  getRebajasByComuna(Integer idRebaja , Integer idServicio, Integer idComuna, Integer ano){
+		List<Integer> comunas = new ArrayList<Integer>();
+		if(idComuna != null){
+			comunas.add(idComuna);
+		}else{
+			List<ServicioSalud> servicios = null;
+			if(idServicio == null){
+				servicios = servicioSaludDAO.getServiciosOrderId();
+			}else{
+				servicios = new ArrayList<ServicioSalud>();
+				ServicioSalud servicioSalud = servicioSaludDAO.getById(idServicio);
+				servicios.add(servicioSalud);
+			}
+			
+			for(ServicioSalud servicioSalud : servicios){
+				if(servicioSalud.getComunas() != null && servicioSalud.getComunas().size() > 0){
+					for(Comuna comuna : servicioSalud.getComunas()){
+						comunas.add(comuna.getId());
+					}
+				}
+			}
+		}
+		return getRebajasByComuna(idRebaja, comunas, ano);
+	}
 
 
 	public List <PlanillaRebajaCalculadaVO>  getRebajasByComuna(Integer idRebaja , List<Integer> comunas, Integer ano){
 		List <PlanillaRebajaCalculadaVO> planillaRebajaCalculadas = new ArrayList<PlanillaRebajaCalculadaVO>();
 		for(Integer idComuna : comunas){
-			PlanillaRebajaCalculadaVO planillaRebajaCalculadaVO = getRebajaByComuna( idRebaja , idComuna, ano);
+			PlanillaRebajaCalculadaVO planillaRebajaCalculadaVO = getRebajaByComuna(idRebaja, idComuna, ano);
 			if(planillaRebajaCalculadaVO != null){
 				planillaRebajaCalculadas.add(planillaRebajaCalculadaVO);
 			}
@@ -631,6 +657,7 @@ public class RebajaService {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("dd 'de' MMMM 'del' yyyy");
 				String date = dateFormat.format(hoy);
 				parametersResolucionRebaja.put("{fechaFormato}", date);
+				
 				for(AntecendentesComunaCalculado antecedentesComunaCalculado: antecedentesComunaCalculadoRebaja){
 					AntecedentesComunaCalculadoRebaja antecedenteComunaCalculadoRebaja = null;
 					if(antecedentesComunaCalculado.getAntecedentesComunaCalculadoRebajas() != null && antecedentesComunaCalculado.getAntecedentesComunaCalculadoRebajas().size() > 0){
@@ -641,9 +668,15 @@ public class RebajaService {
 							}
 						}
 					}
+					parametersResolucionRebaja.put("{numeroResolucion}", StringUtil.integerWithFormat((( antecedentesComunaCalculado.getAntecedentesComuna() != null && antecedentesComunaCalculado.getAntecedentesComuna().getNumeroResolucion() != null) ? antecedentesComunaCalculado.getAntecedentesComuna().getNumeroResolucion() : 0)));
 					String mesHasta = ((antecedenteComunaCalculadoRebaja.getRebaja() != null && antecedenteComunaCalculadoRebaja.getRebaja().getRebajaCorte() != null && antecedenteComunaCalculadoRebaja.getRebaja().getRebajaCorte().getMesHasta() != null)? antecedenteComunaCalculadoRebaja.getRebaja().getRebajaCorte().getMesHasta().getNombre() : "");
 					String mesCorte = ((antecedenteComunaCalculadoRebaja.getRebaja() != null && antecedenteComunaCalculadoRebaja.getRebaja().getRebajaCorte() != null && antecedenteComunaCalculadoRebaja.getRebaja().getRebajaCorte().getMesRebaja() != null)? antecedenteComunaCalculadoRebaja.getRebaja().getRebajaCorte().getMesRebaja().getNombre() : "");
-					String filenameResolucionRebaja = tmpDirDoc + File.separator + new Date().getTime() + "_" + "ResolucionRebaja" + mesCorte + ".docx";
+					String nombreServicio = ((antecedentesComunaCalculado.getAntecedentesComuna() != null && antecedentesComunaCalculado.getAntecedentesComuna().getIdComuna() != null &&  antecedentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud() != null) ? 
+							antecedentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getNombre() : "");
+					String nombreComuna = ((antecedentesComunaCalculado.getAntecedentesComuna() != null && antecedentesComunaCalculado.getAntecedentesComuna().getIdComuna() != null) ? 
+							antecedentesComunaCalculado.getAntecedentesComuna().getIdComuna().getNombre() : "");
+					String filenameResolucionRebaja = tmpDirDoc + File.separator + new Date().getTime() + "_" + "ResolucionModificaAporteEstatal"  +  nombreServicio + "-" +  nombreComuna + "-" + mesCorte.toLowerCase() + ".docx";
+					filenameResolucionRebaja = StringUtil.removeSpanishAccents(filenameResolucionRebaja);
 					System.out.println("filenameResolucionRebaja filename-->"+filenameResolucionRebaja);
 					String contentTypeResolucionRebaja = mimemap.getContentType(filenameResolucionRebaja.toLowerCase());
 					System.out.println("contentTypeResolucionRebaja->"+contentTypeResolucionRebaja);
@@ -651,9 +684,8 @@ public class RebajaService {
 					Integer aporteEstatalMensual =  ((antecedentesComunaCalculado.getPercapitaMes() == null) ? 0 : antecedentesComunaCalculado.getPercapitaMes().intValue());
 					aporteEstatalMensual +=  ((antecedentesComunaCalculado.getDesempenoDificil() == null) ? 0 : antecedentesComunaCalculado.getDesempenoDificil().intValue());
 					parametersResolucionRebaja.put("{aporteMensual}", StringUtil.formatNumber(aporteEstatalMensual));
-					parametersResolucionRebaja.put("{mesCorte}",mesCorte); 
-					parametersResolucionRebaja.put("{numeroResolucion}", new Long(300).toString());
-					parametersResolucionRebaja.put("{periodoCorte}", "enero a " + mesHasta);
+					parametersResolucionRebaja.put("{mesCorte}", mesCorte.toLowerCase()); 
+					parametersResolucionRebaja.put("{periodoCorte}", "enero a " + mesHasta.toLowerCase());
 					parametersResolucionRebaja.put("{comuna}", antecedentesComunaCalculado.getAntecedentesComuna().getIdComuna().getNombre());
 					Integer rebajaMes = antecedenteComunaCalculadoRebaja.getMontoRebaja();
 					parametersResolucionRebaja.put("{rebaja}", StringUtil.formatNumber(rebajaMes));

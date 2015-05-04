@@ -231,8 +231,8 @@ public class ModificacionDistribucionInicialPerCapitaRESTService extends BaseRes
 	@GET
 	@Path("/modificacionDistribucionInicialPerCapita/enviarOrdinarioSolicitudAntecedentes/{idDistribucionInicialPercapita}/{ano}")
 	public void enviarOrdinarioSolicitudAntecedentes(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita, @PathParam("ano") Integer ano){
-		System.out.println("enviarOrdinarioSolicitudAntecedentes-->"+idDistribucionInicialPercapita);
-		System.out.println("ano-->"+ano);
+		System.out.println("enviarOrdinarioSolicitudAntecedentes idDistribucionInicialPercapita-->"+idDistribucionInicialPercapita);
+		System.out.println("enviarOrdinarioSolicitudAntecedentes ano-->"+ano);
 		if(idDistribucionInicialPercapita == null){
 			throw new IllegalArgumentException("usuarioId: "+ idDistribucionInicialPercapita + " no puede ser nulo");
 		}

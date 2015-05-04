@@ -45,44 +45,25 @@
 					
 						<p:tab id="Sub21" title="Subtítulo 21">
 						
-						<h:panelGrid columns="3" id="busqueda_sub21">
-						
-							<h:panelGrid>
-								<h:outputText value="Servicio: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:450px;" id="cbServicioSub21"
-									value="#{reportesMarcoPresupuestarioComunasController.valorComboServicio}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
-									<f:selectItems
-										value="#{reportesMarcoPresupuestarioComunasController.servicios}"
-										itemLabel="#{servicio.nombre_servicio}"
-										itemValue="#{servicio.id_servicio}" var="servicio" />
-									<p:ajax
-										listener="#{reportesMarcoPresupuestarioComunasController.cargarEstablecimientos}"
-										update="tabView" />
-								</p:selectOneMenu>
-							</h:panelGrid>
-
-							<h:panelGrid>
-								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:450px;" id="cbEstablecimiento"
-									value="#{reportesMarcoPresupuestarioComunasController.valorComboEstablecimiento}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
-									<f:selectItems  
-										value="#{reportesMarcoPresupuestarioComunasController.establecimientos}"
-										itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}"
-										var="establecimiento" />
-									
-								</p:selectOneMenu>
-							</h:panelGrid>
-							
-							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaMarcoServicios}" icon="ui-icon-seek-first" update="tabView tablaSub21" />
-							
-							
-						</h:panelGrid>
+							<p:panelGrid columns="5" id="busqueda_sub21">
+									<h:outputText value="Servicio: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:450px;" id="cbServicioSub21" value="#{reportesMarcoPresupuestarioComunasController.valorComboServicio}">
+										<f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
+										<f:selectItems value="#{reportesMarcoPresupuestarioComunasController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+										<p:ajax listener="#{reportesMarcoPresupuestarioComunasController.cargarEstablecimientos}" update="cbEstablecimiento21" />
+									</p:selectOneMenu>
+	
+									<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:450px;" id="cbEstablecimiento21" value="#{reportesMarcoPresupuestarioComunasController.valorComboEstablecimiento}">
+										<f:selectItem itemLabel="Seleccione Establecimiento" itemValue="" />
+										<f:selectItems value="#{reportesMarcoPresupuestarioComunasController.establecimientos}" itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}" var="establecimiento" />
+									</p:selectOneMenu>
+									<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaMarcoServiciosSub21}" icon="ui-icon-seek-first" update="tablaSub21" />
+							</p:panelGrid>
 							
 							<br />
 							<p:dataTable id="tablaSub21" resizableColumns="true" value="#{reportesMarcoPresupuestarioComunasController.reporteMarcoPresupuestarioEstablecimientoVOSub21}" liveResize="true" var="_data"
-								rows="10" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" scrollable="true">
+								rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" scrollable="true">
 
 								<p:columnGroup type="header">
 									<p:row>
@@ -175,42 +156,28 @@
 						
 						<p:tab id="Sub22" title="Subtítulo 22" >
 						
-						<h:panelGrid columns="3" id="busqueda_sub22">
-						
-							<h:panelGrid>
-								<h:outputText value="Servicio: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:450px;" id="cbServicioSub22"
-									value="#{reportesMarcoPresupuestarioComunasController.valorComboServicio}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
-									<f:selectItems
-										value="#{reportesMarcoPresupuestarioComunasController.servicios}"
-										itemLabel="#{servicio.nombre_servicio}"
-										itemValue="#{servicio.id_servicio}" var="servicio" />
-									<p:ajax
-										listener="#{reportesMarcoPresupuestarioComunasController.cargarEstablecimientos}"
-										update="tabView" />
-								</p:selectOneMenu>
-							</h:panelGrid>
-
-							<h:panelGrid>
-								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:450px;" id="cbEstablecimiento22"
-									value="#{reportesMarcoPresupuestarioComunasController.valorComboEstablecimiento}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
-									<f:selectItems
-										value="#{reportesMarcoPresupuestarioComunasController.estableclimientos}"
-										itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}"
-										var="establecimiento" />
-								</p:selectOneMenu>
-							</h:panelGrid>
+							<p:panelGrid columns="5" id="busqueda_sub22">
 							
-							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaMarcoServicios}"	icon="ui-icon-seek-first" update="tabView tablaSub22" />
-							
-						</h:panelGrid>
+									<h:outputText value="Servicio: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:450px;" id="cbServicioSub22" value="#{reportesMarcoPresupuestarioComunasController.valorComboServicio}">
+										<f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
+										<f:selectItems value="#{reportesMarcoPresupuestarioComunasController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+										<p:ajax listener="#{reportesMarcoPresupuestarioComunasController.cargarEstablecimientos}" update="cbEstablecimiento22" />
+									</p:selectOneMenu>
+	
+									<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:450px;" id="cbEstablecimiento22" value="#{reportesMarcoPresupuestarioComunasController.valorComboEstablecimiento}">
+										<f:selectItem itemLabel="Seleccione Establecimiento" itemValue="" />
+										<f:selectItems value="#{reportesMarcoPresupuestarioComunasController.establecimientos}" itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}" var="establecimiento" />
+									</p:selectOneMenu>
+								
+									<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaMarcoServiciosSub22}"	icon="ui-icon-seek-first" update="tablaSub22" />
+								
+							</p:panelGrid>
 							
 							<br />
 							<p:dataTable id="tablaSub22" resizableColumns="true" value="#{reportesMarcoPresupuestarioComunasController.reporteMarcoPresupuestarioEstablecimientoVOSub22}" liveResize="true" var="_data"
-								rows="10" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" scrollable="true">
+								rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" scrollable="true">
 
 								<p:columnGroup type="header">
 									<p:row>
@@ -304,42 +271,26 @@
 					
 						
 						<p:tab id="Sub24" title="Subtítulo 24" >
-						<h:panelGrid columns="2" id="busqueda_sub24">
-						
-							<h:panelGrid>
-								<h:outputText value="Servicio: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:450px;" id="cbServicioSub24"
-									value="#{reportesMarcoPresupuestarioComunasController.valorComboServicio}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
-									<f:selectItems
-										value="#{reportesMarcoPresupuestarioComunasController.servicios}"
-										itemLabel="#{servicio.nombre_servicio}"
-										itemValue="#{servicio.id_servicio}" var="servicio" />
-									<p:ajax
-										listener="#{reportesMarcoPresupuestarioComunasController.cargarComunas}"
-										update="tabView" />
-								</p:selectOneMenu>
-							</h:panelGrid>
-							
-							<h:panelGrid>
-								<h:outputText value="Comuna: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:450px;" id="cbComuna"
-									value="#{reportesMarcoPresupuestarioComunasController.valorComboComuna}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
-									<f:selectItems
-										value="#{reportesMarcoPresupuestarioComunasController.comunas}"
-										itemLabel="#{comuna.nombre}" itemValue="#{comuna.id}"
-										var="comuna" />
-								</p:selectOneMenu>
-							</h:panelGrid>
-							
-							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaServiciosFiltradosComuna}" icon="ui-icon-seek-first" update="tabView tablaSub24" />
-						</h:panelGrid>
+							<p:panelGrid columns="5" id="busqueda_sub24">
+									<h:outputText value="Servicio: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:450px;" id="cbServicioSub24" value="#{reportesMarcoPresupuestarioComunasController.valorComboServicio}">
+										<f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
+										<f:selectItems value="#{reportesMarcoPresupuestarioComunasController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+										<p:ajax listener="#{reportesMarcoPresupuestarioComunasController.cargarComunas}" update="cbComuna" />
+									</p:selectOneMenu>
+								
+									<h:outputText value="Comuna: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:450px;" id="cbComuna" value="#{reportesMarcoPresupuestarioComunasController.valorComboComuna}">
+										<f:selectItem itemLabel="Seleccione Comuna" itemValue="" />
+										<f:selectItems value="#{reportesMarcoPresupuestarioComunasController.comunas}" itemLabel="#{comuna.nombre}" itemValue="#{comuna.id}" var="comuna" />
+									</p:selectOneMenu>
+									<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaServiciosFiltradosComuna}" icon="ui-icon-seek-first" update="tablaSub24" />
+							</p:panelGrid>
 							
 							
 							<br />
 							<p:dataTable id="tablaSub24" resizableColumns="true" value="#{reportesMarcoPresupuestarioComunasController.reporteMarcoPresupuestarioVOSub24}" liveResize="true" var="_data"
-								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" scrollable="true">
+								rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" scrollable="true">
 
 								<p:columnGroup type="header">
 									<p:row>
@@ -430,35 +381,20 @@
 						</p:tab>
 						
 						<p:tab id="Sub29" title="Subtítulo 29" >
-						<h:panelGrid columns="2" id="busqueda_sub29">
-						
-							<h:panelGrid>
-								<h:outputText value="Servicio: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:450px;" id="cbServicioSub29"
-									value="#{reportesMarcoPresupuestarioComunasController.valorComboServicio}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
-									<f:selectItems
-										value="#{reportesMarcoPresupuestarioComunasController.servicios}"
-										itemLabel="#{servicio.nombre_servicio}"
-										itemValue="#{servicio.id_servicio}" var="servicio" />
-									<p:ajax
-										listener="#{reportesMarcoPresupuestarioComunasController.cargarEstablecimientos}"
-										update="tabView" />
-								</p:selectOneMenu>
-							</h:panelGrid>
-							<h:panelGrid>
-								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:450px;" id="cbEstablecimiento29"
-									value="#{reportesMarcoPresupuestarioComunasController.valorComboEstablecimiento}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
-									<f:selectItems
-										value="#{reportesMarcoPresupuestarioComunasController.estableclimientos}"
-										itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}"
-										var="establecimiento" />
-								</p:selectOneMenu>
-							</h:panelGrid>
-							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaMarcoServicios}" icon="ui-icon-seek-first" update="tabView tablaSub29" />
-						</h:panelGrid>
+							<p:panelGrid columns="5" id="busqueda_sub29">
+									<h:outputText value="Servicio: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:450px;" id="cbServicioSub29" value="#{reportesMarcoPresupuestarioComunasController.valorComboServicio}">
+										<f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
+										<f:selectItems value="#{reportesMarcoPresupuestarioComunasController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+										<p:ajax listener="#{reportesMarcoPresupuestarioComunasController.cargarEstablecimientos}" update="cbEstablecimiento29" />
+									</p:selectOneMenu>
+									<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:450px;" id="cbEstablecimiento29" value="#{reportesMarcoPresupuestarioComunasController.valorComboEstablecimiento}">
+										<f:selectItem itemLabel="Seleccione Establecimiento" itemValue="" />
+										<f:selectItems value="#{reportesMarcoPresupuestarioComunasController.establecimientos}" itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}" var="establecimiento" />
+									</p:selectOneMenu>
+									<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesMarcoPresupuestarioComunasController.cargarTablaMarcoServiciosSub29}" icon="ui-icon-seek-first" update="tablaSub29" />
+							</p:panelGrid>
 							<br />
 							<p:dataTable id="tablaSub29" resizableColumns="true" value="#{reportesMarcoPresupuestarioComunasController.reporteMarcoPresupuestarioEstablecimientoVOSub29}" liveResize="true" var="_data"
 								rows="10" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" scrollable="true">

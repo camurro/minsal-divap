@@ -11,15 +11,15 @@ import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
-import org.primefaces.event.TabChangeEvent;
-
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.ReportesServices;
 import minsal.divap.service.ServicioSaludService;
 import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.ReportePerCapitaVO;
 import minsal.divap.vo.ServiciosVO;
-import cl.minsal.divap.model.AnoEnCurso;
+
+import org.primefaces.event.TabChangeEvent;
+
 import cl.redhat.bandejaTareas.controller.BaseController;
 
 @Named("reportesPoblacionPercapitaController")
@@ -29,14 +29,13 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 	
 	private static final long serialVersionUID = -4258772727860256953L;
 	
-	private Integer valorComboServicio;
-	private Integer valorComboComuna;
+	private String valorComboServicio;
+	private String valorComboComuna;
 	
 	private List<ServiciosVO> servicios;
 	private ServiciosVO servicioSeleccionado;
 	private List<ComunaSummaryVO> comunas;
-	List<ReportePerCapitaVO> reportesPerCapitaVO;
-	ReportePerCapitaVO reportePerCapitaFiltradoComuna;
+	private List<ReportePerCapitaVO> reportesPerCapitaVO;
 	private Integer anoSeleccionado;
 	private Integer idPlanillaPercapita;
 	private String docIdDownload;
@@ -67,18 +66,16 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 	@PostConstruct
 	public void init(){
 		
-		this.anoActual = reportesServices.getAnoCurso() + 1;
+		this.anoActual = reportesServices.getAnoCurso();
 		this.anoActualMenos1 = this.anoActual -1;
 		this.anoActualMenos2 = this.anoActual -2;
 		this.anoActualMenos3 = this.anoActual -3;
 		
 		this.anoSeleccionado = anoActual;
-		this.idPlanillaPercapita = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEPOBLACIONPERCAPITA);
+		this.idPlanillaPercapita = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEPOBLACIONPERCAPITA, anoActual);
 		if(this.idPlanillaPercapita == null){
-			this.idPlanillaPercapita = reportesServices.generarPlanillaPoblacionPercapita(getLoggedUsername());
+			this.idPlanillaPercapita = reportesServices.generarPlanillaPoblacionPercapita(getLoggedUsername(), anoActual);
 		} 
-		
-		
 		
 		comunas = new ArrayList<ComunaSummaryVO>();
 		Integer currentTab = 0;
@@ -98,15 +95,14 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 	
 	public void cargarComunas(){
 		System.out.println("this.anoSeleccionado --> "+this.anoSeleccionado);
-		if(getValorComboServicio() != null){
-			if(getValorComboServicio().intValue() != 0){
-				servicioSeleccionado = servicioSaludService.getServicioSaludById(getValorComboServicio());
+		System.out.println("this.getValorComboServicio --> "+this.getValorComboServicio());
+		if(getValorComboServicio() != null && !getValorComboServicio().trim().isEmpty()){
+				servicioSeleccionado = servicioSaludService.getServicioSaludById(Integer.parseInt(getValorComboServicio()));
 				this.comunas = servicioSeleccionado.getComunas();
-//				reportesPerCapitaVO = reportesServices.getReportePercapitaServicio(getValorComboServicio(), this.anoSeleccionado);
-			}
+		}else{
+			this.comunas = new ArrayList<ComunaSummaryVO>();
+			this.valorComboComuna = null;
 		}
-		
-		
 	}
 	
 	public void onTabChange(TabChangeEvent event) {
@@ -114,8 +110,8 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 		System.out.println("Tab Changed, Active Tab: " + event.getTab().getTitle());
 		System.out.println("event.getTab().getId(): " + event.getTab().getId());
 		
-		this.valorComboServicio = 0;
-		this.valorComboComuna = 0;
+		this.valorComboServicio = null;
+		this.valorComboComuna = null;
 		
 		if(event.getTab().getId().equals("tab2011")){
 			this.anoSeleccionado = this.anoActualMenos3;
@@ -134,21 +130,13 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 	}
 	
 	public void cargarTablaServiciosFiltradosComuna(){
-		 
 		System.out.println("this.anoSeleccionado --> "+this.anoSeleccionado);
-		
-		reportesPerCapitaVO = new ArrayList<ReportePerCapitaVO>();
-		System.out.println("entra al cargarTablaServiciosFiltradosComuna,  getValorComboComuna() --> "+getValorComboComuna());
-		if(getValorComboServicio() == null || getValorComboServicio() == 0){
-			reportePerCapitaFiltradoComuna = new ReportePerCapitaVO();
-		}else{
-			reportePerCapitaFiltradoComuna = reportesServices.getReportePercapitaServicioComuna(getValorComboServicio(), this.anoSeleccionado, getValorComboComuna(), getLoggedUsername());
-			reportesPerCapitaVO.add(reportePerCapitaFiltradoComuna);
-		}
-
+		System.out.println("entra al cargarTablaServiciosFiltradosComuna,  getValorComboComuna() --> "+ getValorComboComuna());
+		System.out.println("entra al cargarTablaServiciosFiltradosComuna,  getValorComboServicio() --> "+ getValorComboServicio());
+		Integer idComuna = ((getValorComboComuna() != null && !getValorComboComuna().trim().isEmpty()) ? Integer.parseInt(getValorComboComuna()) : null);
+		Integer idServicio = ((getValorComboServicio() != null && !getValorComboServicio().trim().isEmpty()) ? Integer.parseInt(getValorComboServicio()) : null);
+		reportesPerCapitaVO = reportesServices.getReportePercapitaServicioComuna(idServicio, this.anoSeleccionado, idComuna, getLoggedUsername());
 	}
-	
-	
 	
 	public List<ServiciosVO> getServicios() {
 		if(servicios == null){
@@ -157,26 +145,31 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 		return servicios;
 	}
 	
-	
 	public void setServicios(List<ServiciosVO> servicios) {
 		this.servicios = servicios;
 	}
+	
 	public List<ComunaSummaryVO> getComunas() {
 		return comunas;
 	}
+	
 	public void setComunas(List<ComunaSummaryVO> comunas) {
 		this.comunas = comunas;
 	}
-	public Integer getValorComboServicio() {
+	
+	public String getValorComboServicio() {
 		return valorComboServicio;
 	}
-	public void setValorComboServicio(Integer valorComboServicio) {
+	
+	public void setValorComboServicio(String valorComboServicio) {
 		this.valorComboServicio = valorComboServicio;
 	}
-	public Integer getValorComboComuna() {
+	
+	public String getValorComboComuna() {
 		return valorComboComuna;
 	}
-	public void setValorComboComuna(Integer valorComboComuna) {
+	
+	public void setValorComboComuna(String valorComboComuna) {
 		this.valorComboComuna = valorComboComuna;
 	}
 
@@ -196,72 +189,49 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 		this.reportesPerCapitaVO = reportesPerCapitaVO;
 	}
 
-
-	public ReportePerCapitaVO getReportePerCapitaFiltradoComuna() {
-		return reportePerCapitaFiltradoComuna;
-	}
-
-
-	public void setReportePerCapitaFiltradoComuna(
-			ReportePerCapitaVO reportePerCapitaFiltradoComuna) {
-		this.reportePerCapitaFiltradoComuna = reportePerCapitaFiltradoComuna;
-	}
-
-
 	public Integer getIdPlanillaPercapita() {
 		return idPlanillaPercapita;
 	}
-
 
 	public void setIdPlanillaPercapita(Integer idPlanillaPercapita) {
 		this.idPlanillaPercapita = idPlanillaPercapita;
 	}
 
-
 	public String getDocIdDownload() {
 		return docIdDownload;
 	}
-
 
 	public void setDocIdDownload(String docIdDownload) {
 		this.docIdDownload = docIdDownload;
 	}
 
-
 	public Integer getAnoActual() {
 		return anoActual;
 	}
-
 
 	public void setAnoActual(Integer anoActual) {
 		this.anoActual = anoActual;
 	}
 
-
 	public Integer getAnoActualMenos1() {
 		return anoActualMenos1;
 	}
-
 
 	public void setAnoActualMenos1(Integer anoActualMenos1) {
 		this.anoActualMenos1 = anoActualMenos1;
 	}
 
-
 	public Integer getAnoActualMenos2() {
 		return anoActualMenos2;
 	}
-
 
 	public void setAnoActualMenos2(Integer anoActualMenos2) {
 		this.anoActualMenos2 = anoActualMenos2;
 	}
 
-
 	public Integer getAnoActualMenos3() {
 		return anoActualMenos3;
 	}
-
 
 	public void setAnoActualMenos3(Integer anoActualMenos3) {
 		this.anoActualMenos3 = anoActualMenos3;

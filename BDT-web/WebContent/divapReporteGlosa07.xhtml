@@ -31,23 +31,17 @@
 					<br />
 							<h:panelGrid>
 								<h:outputText value="Servicio: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:650px;" id="cbServicio"
-									value="#{reporteGlosa07Controller.valorComboServicio}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
-									<f:selectItems
-										value="#{reporteGlosa07Controller.servicios}"
-										itemLabel="#{servicio.nombre_servicio}"
-										itemValue="#{servicio.id_servicio}" var="servicio" />
-									<p:ajax
-										listener="#{reporteGlosa07Controller.cargarTablaPorServicio}"
-										update="tabla" />
+								<p:selectOneMenu style="width:650px;" id="cbServicio" value="#{reporteGlosa07Controller.valorComboServicio}">
+									<f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
+									<f:selectItems value="#{reporteGlosa07Controller.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+									<p:ajax listener="#{reporteGlosa07Controller.cargarTablaPorServicio}" update="tabla" />
 								</p:selectOneMenu>
 							</h:panelGrid>
 
 					<br />
 					<p:dataTable id="tabla" resizableColumns="true" value="#{reporteGlosa07Controller.reporteGlosaVO}" liveResize="true" var="_data" 
-					rows="#{reporteGlosa07Controller.cantidadFilas}"
-						paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" scrollable="true">
+					rows="20"
+						paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" scrollable="true">
 
 						<p:columnGroup type="header">
 							<p:row>

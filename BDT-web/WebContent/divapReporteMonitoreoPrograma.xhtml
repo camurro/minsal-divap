@@ -4,6 +4,7 @@
 
 	<ui:define name="content">
 		<h:form enctype="multipart/form-data">
+			<p:growl id="growl" showDetail="false"/> 
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="DIVAP Reportes" />
@@ -37,31 +38,35 @@
 						]
 					</div>
 					<br />
-						<h:panelGrid columns="3" id="busqueda_mis_tareas">
-										<h:panelGrid>
-												<h:outputText value="Programa: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:400px;" id="cbProgramaSub21" value="#{reporteMonitoreoProgramaController.valorComboPrograma}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
-			           								<f:selectItems value="#{reporteMonitoreoProgramaController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           	 						</p:selectOneMenu>
-										</h:panelGrid>	
+						<p:panelGrid columns="4" id="busqueda_mis_tareas">
+								<h:panelGrid>
+										<h:outputText value="Programa: " styleClass="inputLabel" />
+										<p:selectOneMenu style="width:400px;" id="cbProgramaSub21" value="#{reporteMonitoreoProgramaController.valorComboPrograma}">
+										    <f:selectItem itemLabel="Seleccione Programa" itemValue="" />
+	           								<f:selectItems value="#{reporteMonitoreoProgramaController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
+	           								<p:ajax listener="#{reporteMonitoreoProgramaController.cargarComponentes}"  update="cbComponente"  /> 
+	           	 						</p:selectOneMenu>
+								</h:panelGrid>	
+								
+								<h:panelGrid>
+										<h:outputText value="Componente: " styleClass="inputLabel" />
+										<p:selectOneMenu style="width:400px;" id="cbComponente" value="#{reporteMonitoreoProgramaController.valorComboComponente}">
+										    <f:selectItem itemLabel="Seleccione Componente" itemValue="" />
+	           								<f:selectItems value="#{reporteMonitoreoProgramaController.componentes}" itemLabel="#{componente.nombre}" itemValue="#{componente.id}" var="componente" />
+	           	 						</p:selectOneMenu>
+								</h:panelGrid>
+								
+								<h:panelGrid>
+									<h:outputText value="Servicio: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:400px;" id="cbServicio" value="#{reporteMonitoreoProgramaController.valorComboServicio}">
+										<f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
+										<f:selectItems value="#{reporteMonitoreoProgramaController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+									</p:selectOneMenu>
+								</h:panelGrid>
+								
+								<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reporteMonitoreoProgramaController.cargarDatosFiltroServicioPrograma}" icon="ui-icon-seek-first" update="tabView growl" />
 										
-										<h:panelGrid>
-											<h:outputText value="Servicio: " styleClass="inputLabel" />
-											<p:selectOneMenu style="width:400px;" id="cbServicio"
-												value="#{reporteMonitoreoProgramaController.valorComboServicio}">
-												<f:selectItem itemLabel="Seleccione" itemValue="0" />
-												<f:selectItems
-													value="#{reporteMonitoreoProgramaController.servicios}"
-													itemLabel="#{servicio.nombre_servicio}"
-													itemValue="#{servicio.id_servicio}" var="servicio" />
-											</p:selectOneMenu>
-										</h:panelGrid>
-										
-										<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reporteMonitoreoProgramaController.cargarDatosFiltroServicioPrograma}" ajax="false"
-					icon="ui-icon-seek-first" update="tabView" />
-										
-						</h:panelGrid>
+						</p:panelGrid>
 
 					<p:tabView id="tabView" activeIndex="#{reporteMonitoreoProgramaController.activeTab}" dynamic="true" cache="false">
 					<p:ajax event="tabChange" listener="#{reporteMonitoreoProgramaController.onTabChange}" update="tabView Sub21 Sub22 Sub24 Sub21" />
@@ -71,7 +76,7 @@
 							
 							<br />
 							<p:dataTable resizableColumns="true" value="#{reporteMonitoreoProgramaController.reporteMonitoreoProgramaPorEstablecimientoVOSub21}" liveResize="true" var="_data"
-								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+								rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 
 								<p:columnGroup type="header">
 									<p:row>
@@ -180,7 +185,7 @@
 							
 							<br />
 							<p:dataTable resizableColumns="true" value="#{reporteMonitoreoProgramaController.reporteMonitoreoProgramaPorEstablecimientoVOSub22}" liveResize="true" var="_data"
-								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+								rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 
 								<p:columnGroup type="header">
 									<p:row>
@@ -289,7 +294,7 @@
 							
 							<br />
 							<p:dataTable resizableColumns="true" value="#{reporteMonitoreoProgramaController.reporteMonitoreoProgramaPorComunaVO}" liveResize="true" var="_data"
-								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+								rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 
 								<p:columnGroup type="header">
 									<p:row>
@@ -398,7 +403,7 @@
 							
 							<br />
 							<p:dataTable resizableColumns="true" value="#{reporteMonitoreoProgramaController.reporteMonitoreoProgramaPorEstablecimientoVOSub29}" liveResize="true" var="_data"
-								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+								rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 
 								<p:columnGroup type="header">
 									<p:row>

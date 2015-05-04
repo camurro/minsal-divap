@@ -4,6 +4,7 @@
 
 	<ui:define name="content">
 		<h:form id="formTabView" enctype="multipart/form-data">
+			<p:growl id="growl" showDetail="false"/> 
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="DIVAP Reportes" />
@@ -37,29 +38,22 @@
 						]
 					</div>
 					<br />
-						<h:panelGrid columns="3" id="busqueda_mis_tareas">
+					<p:panelGrid columns="4" id="busqueda_mis_tareas">
+						<h:outputText value="Programa: " styleClass="inputLabel" />
+						<p:selectOneMenu style="width:450px;" id="cbProgramaSub21" value="#{reporteHistoricoPorProgramaController.valorComboPrograma}">
+						    <f:selectItem itemLabel="Seleccione Programa" itemValue="" />
+ 							<f:selectItems value="#{reporteHistoricoPorProgramaController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
+ 							<p:ajax listener="#{reporteHistoricoPorProgramaController.visibilidadSubtitulos}" update="tabView" />
+	       	 			</p:selectOneMenu>
 						
-										<h:panelGrid>
-												<h:outputText value="Programa: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:450px;" id="cbProgramaSub21" value="#{reporteHistoricoPorProgramaController.valorComboPrograma}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
-			           								<f:selectItems value="#{reporteHistoricoPorProgramaController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           	 						</p:selectOneMenu>
-										</h:panelGrid>	
-						
-										<h:panelGrid>
-												<h:outputText value="Servicio: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:450px;" id="cbServicio" value="#{reporteHistoricoPorProgramaController.valorComboServicio}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
-			           								<f:selectItems value="#{reporteHistoricoPorProgramaController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
-			           								<p:ajax listener="#{reporteHistoricoPorProgramaController.cargarComunas}" update="tabView" />
-			           	 						</p:selectOneMenu>
-										</h:panelGrid>
+						<h:outputText value="Servicio: " styleClass="inputLabel" />
+						<p:selectOneMenu style="width:450px;" id="cbServicio" value="#{reporteHistoricoPorProgramaController.valorComboServicio}">
+						    <f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
+    						<f:selectItems value="#{reporteHistoricoPorProgramaController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+    						<p:ajax listener="#{reporteHistoricoPorProgramaController.cargarComunasEstablecimientos}" update="tabView" />
+    	 				</p:selectOneMenu>
 										
-										<p:commandButton value="OK" styleClass="x-btn-text" actionListener="#{reporteHistoricoPorProgramaController.visibilidadSubtitulos}" ajax="false"
-					icon="ui-icon-seek-first" update="tabView" />
-										
-						</h:panelGrid>
+					</p:panelGrid>
 											
 					<br />
 					<p:tabView id="tabView" activeIndex="#{reporteHistoricoPorProgramaController.activeTab}" dynamic="true" cache="false">
@@ -68,27 +62,18 @@
 						
 						<p:tab id="Sub21" title="Subtítulo 21" rendered="#{reporteHistoricoPorProgramaController.mostrarSub21}">
 										
-										<h:panelGrid>
-												<h:outputText value="Establecimiento: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbEstablecimiento"
-													value="#{reporteHistoricoPorProgramaController.valorComboEstablecimiento}">
-													<f:selectItem itemLabel="Seleccione" itemValue="0" />
-													<f:selectItems
-														value="#{reporteHistoricoPorProgramaController.servicioSeleccionado.estableclimientos}"
-														itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}"
-														var="establecimiento" />
-													<p:ajax
-														listener="#{reporteHistoricoPorProgramaController.cargarTablaEstablecimientoFiltroServiciosEstablecimiento}"
-														update="tablaSub21">
-													</p:ajax>
-												</p:selectOneMenu>
-										</h:panelGrid>
+							<p:panelGrid columns="3">
+									<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:650px;" id="cbEstablecimiento" value="#{reporteHistoricoPorProgramaController.valorComboEstablecimiento}">
+										<f:selectItem itemLabel="Seleccione Establecimiento" itemValue="" />
+										<f:selectItems value="#{reporteHistoricoPorProgramaController.establecimientos}" itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}" var="establecimiento" />
+									</p:selectOneMenu>
+									<p:commandButton value="Buscar" styleClass=" x-btn-text icon-guardar" actionListener="#{reporteHistoricoPorProgramaController.cargarTablaEstablecimientoFiltroServiciosEstablecimientoSub21}" update="tablaSub21" />
+							</p:panelGrid>
+							<br/>
 										
-						
-						
-						
 							<p:dataTable id="tablaSub21" resizableColumns="true" value="#{reporteHistoricoPorProgramaController.reporteHistoricoPorProgramaEstablecimientoVOSub21}" liveResize="true" var="_data" 
-							rows="#{reporteHistoricoPorProgramaController.reporteHistoricoPorProgramaVO.size}" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+							rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 
 								<p:columnGroup type="header">
 									<p:row>
@@ -98,16 +83,15 @@
 										<p:column colspan="9" headerText="Prespuesto Histórico #{reporteHistoricoPorProgramaController.programa.nombre}" />
 									</p:row>
 									<p:row>
-										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos9}  ($ #{reporteHistoricoPorProgramaController.anoCurso})" />
-										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos8}  ($ #{reporteHistoricoPorProgramaController.anoCurso})" />
-										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos7}  ($ #{reporteHistoricoPorProgramaController.anoCurso})" />
-										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos6}  ($ #{reporteHistoricoPorProgramaController.anoCurso})" />
-										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos5}  ($ #{reporteHistoricoPorProgramaController.anoCurso})" />
-										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos4}  ($ #{reporteHistoricoPorProgramaController.anoCurso})" />
-										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos3}  ($ #{reporteHistoricoPorProgramaController.anoCurso})" />
-										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos2}  ($ #{reporteHistoricoPorProgramaController.anoCurso})" />
-										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos1}  ($ #{reporteHistoricoPorProgramaController.anoCurso})" />
-										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCurso}" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos8}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos7}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos6}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos5}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos4}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos3}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos2}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos1}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoEnCurso}" />
 									</p:row>
 								</p:columnGroup>
 
@@ -119,11 +103,6 @@
 								</p:column>
 								<p:column>
 									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
-								</p:column>
-								<p:column>
-									<h:outputText value="#{_data.marcoAnoActualMenos9}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="number" maxFractionDigits="0" />
-									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.marcoAnoActualMenos8}" styleClass="textoPequenio textoAjustado">
@@ -177,13 +156,6 @@
 										<p:column />
 										<p:column />
 										<p:column />
-										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos9}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</f:facet>
-										</p:column>
 										<p:column>
 											<f:facet name="footer">
 												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos8}" styleClass="textoAjustado textoPequenio centrado">
@@ -257,27 +229,20 @@
 						<p:tab id="Sub22" title="Subtítulo 22" rendered="#{reporteHistoricoPorProgramaController.mostrarSub22}">
 						
 										
-										<h:panelGrid>
-												<h:outputText value="Establecimiento: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbEstablecimiento22"
-													value="#{reporteHistoricoPorProgramaController.valorComboEstablecimiento}">
-													<f:selectItem itemLabel="Seleccione" itemValue="0" />
-													<f:selectItems
-														value="#{reporteHistoricoPorProgramaController.servicioSeleccionado.estableclimientos}"
-														itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}"
-														var="establecimiento" />
-													<p:ajax
-														listener="#{reporteHistoricoPorProgramaController.cargarTablaEstablecimientoFiltroServiciosEstablecimiento}"
-														update="tablaSub22">
-													</p:ajax>
-												</p:selectOneMenu>
-										</h:panelGrid>
+							<p:panelGrid columns="3" >
+									<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:650px;" id="cbEstablecimiento22" value="#{reporteHistoricoPorProgramaController.valorComboEstablecimiento}">
+										<f:selectItem itemLabel="Seleccione Establecimiento" itemValue="" />
+										<f:selectItems value="#{reporteHistoricoPorProgramaController.establecimientos}" itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}" var="establecimiento" />
+									</p:selectOneMenu>
+									<p:commandButton value="Buscar" styleClass=" x-btn-text icon-guardar" actionListener="#{reporteHistoricoPorProgramaController.cargarTablaEstablecimientoFiltroServiciosEstablecimientoSub22}" update="tablaSub22" />
+							</p:panelGrid>
 										
-						
+							<br/>
 						
 						
 							<p:dataTable id="tablaSub22" resizableColumns="true" value="#{reporteHistoricoPorProgramaController.reporteHistoricoPorProgramaEstablecimientoVOSub22}" liveResize="true" var="_data" 
-							rows="#{reporteHistoricoPorProgramaController.reporteHistoricoPorProgramaVO.size}" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+							rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 
 								<p:columnGroup type="header">
 									<p:row>
@@ -287,16 +252,15 @@
 										<p:column colspan="9" headerText="Prespuesto Histórico #{reporteHistoricoPorProgramaController.programa.nombre}" />
 									</p:row>
 									<p:row>
-										<p:column headerText="$ 2007  (2016)" />
-										<p:column headerText="$ 2008  (2016)" />
-										<p:column headerText="$ 2009  (2016)" />
-										<p:column headerText="$ 2010  (2016)" />
-										<p:column headerText="$ 2011  (2016)" />
-										<p:column headerText="$ 2012  (2016)" />
-										<p:column headerText="$ 2013  (2016)" />
-										<p:column headerText="$ 2014  (2016)" />
-										<p:column headerText="$ 2015  (2016)" />
-										<p:column headerText="$ 2016" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos8}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos7}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos6}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos5}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos4}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos3}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos2}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos1}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoEnCurso}" />
 									</p:row>
 								</p:columnGroup>
 
@@ -308,11 +272,6 @@
 								</p:column>
 								<p:column>
 									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
-								</p:column>
-								<p:column>
-									<h:outputText value="#{_data.marcoAnoActualMenos9}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="number" maxFractionDigits="0" />
-									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.marcoAnoActualMenos8}" styleClass="textoPequenio textoAjustado">
@@ -365,13 +324,6 @@
 										<p:column />
 										<p:column />
 										<p:column />
-										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos9}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</f:facet>
-										</p:column>
 										<p:column>
 											<f:facet name="footer">
 												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos8}" styleClass="textoAjustado textoPequenio centrado">
@@ -446,24 +398,18 @@
 
 						<p:tab id="Sub24" title="Subtítulo 24" rendered="#{reporteHistoricoPorProgramaController.mostrarSub24}">
 										
-										<h:panelGrid>
-											<h:outputText value="Comuna: " styleClass="inputLabel" />
-											<p:selectOneMenu style="width:650px;" id="cbComuna"
-												value="#{reporteHistoricoPorProgramaController.valorComboComuna}">
-												<f:selectItem itemLabel="Seleccione" itemValue="0" />
-												<f:selectItems
-													value="#{reporteHistoricoPorProgramaController.servicioSeleccionado.comunas}"
-													itemLabel="#{comuna.nombre}" itemValue="#{comuna.id}"
-													var="comuna" />
-												<p:ajax
-													listener="#{reporteHistoricoPorProgramaController.cargarTablaComunasFiltroServicioComuna}"
-													update="tablaSub24">
-												</p:ajax>
-											</p:selectOneMenu>
-										</h:panelGrid>
+						<p:panelGrid columns="3">
+							<h:outputText value="Comuna: " styleClass="inputLabel" />
+							<p:selectOneMenu style="width:650px;" id="cbComuna" value="#{reporteHistoricoPorProgramaController.valorComboComuna}">
+								<f:selectItem itemLabel="Seleccione Comuna" itemValue="" />
+								<f:selectItems value="#{reporteHistoricoPorProgramaController.comunas}" itemLabel="#{comuna.nombre}" itemValue="#{comuna.id}" var="comuna" />
+							</p:selectOneMenu>
+							<p:commandButton value="Buscar" styleClass=" x-btn-text icon-guardar" actionListener="#{reporteHistoricoPorProgramaController.cargarTablaComunasFiltroServicioComuna}" update="tablaSub24" />
+						</p:panelGrid>
 						
+						<br/>
 							<p:dataTable id="tablaSub24" resizableColumns="true" value="#{reporteHistoricoPorProgramaController.reporteHistoricoPorProgramaVO}" liveResize="true" var="_data" 
-							rows="#{reporteHistoricoPorProgramaController.reporteHistoricoPorProgramaVO.size}" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+							rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 
 								<p:columnGroup type="header">
 									<p:row>
@@ -472,18 +418,19 @@
 										<p:column rowspan="2" headerText="Comuna" />
 										<p:column colspan="9" headerText="Prespuesto Histórico #{reporteHistoricoPorProgramaController.programa.nombre}" />
 									</p:row>
+									
 									<p:row>
-										<p:column headerText="$ 2007  (2016)" />
-										<p:column headerText="$ 2008  (2016)" />
-										<p:column headerText="$ 2009  (2016)" />
-										<p:column headerText="$ 2010  (2016)" />
-										<p:column headerText="$ 2011  (2016)" />
-										<p:column headerText="$ 2012  (2016)" />
-										<p:column headerText="$ 2013  (2016)" />
-										<p:column headerText="$ 2014  (2016)" />
-										<p:column headerText="$ 2015  (2016)" />
-										<p:column headerText="$ 2016" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos8}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos7}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos6}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos5}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos4}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos3}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos2}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos1}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoEnCurso}" />
 									</p:row>
+									
 								</p:columnGroup>
 
 								<p:column>
@@ -494,11 +441,6 @@
 								</p:column>
 								<p:column>
 									<span class="textoAjustado textoPequenio centrado">#{_data.comuna}</span>
-								</p:column>
-								<p:column>
-									<h:outputText value="#{_data.marcoAnoActualMenos9}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="number" maxFractionDigits="0" />
-									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.marcoAnoActualMenos8}" styleClass="textoPequenio textoAjustado">
@@ -551,13 +493,6 @@
 										<p:column />
 										<p:column />
 										<p:column />
-										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos9}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</f:facet>
-										</p:column>
 										<p:column>
 											<f:facet name="footer">
 												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos8}" styleClass="textoAjustado textoPequenio centrado">
@@ -630,27 +565,17 @@
 						
 						<p:tab id="Sub29" title="Subtítulo 29" rendered="#{reporteHistoricoPorProgramaController.mostrarSub29}">
 										
-										<h:panelGrid>
-												<h:outputText value="Establecimiento: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbEstablecimiento29"
-													value="#{reporteHistoricoPorProgramaController.valorComboEstablecimiento}">
-													<f:selectItem itemLabel="Seleccione" itemValue="0" />
-													<f:selectItems
-														value="#{reporteHistoricoPorProgramaController.servicioSeleccionado.estableclimientos}"
-														itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}"
-														var="establecimiento" />
-													<p:ajax
-														listener="#{reporteHistoricoPorProgramaController.cargarTablaEstablecimientoFiltroServiciosEstablecimiento}"
-														update="tablaSub29">
-													</p:ajax>
-												</p:selectOneMenu>
-										</h:panelGrid>
-										
-						
-						
-						
+							<p:panelGrid columns="3">
+									<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+									<p:selectOneMenu style="width:650px;" id="cbEstablecimiento29" value="#{reporteHistoricoPorProgramaController.valorComboEstablecimiento}">
+										<f:selectItem itemLabel="Seleccione Establecimiento" itemValue="" />
+										<f:selectItems value="#{reporteHistoricoPorProgramaController.establecimientos}" itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}" var="establecimiento" />
+									</p:selectOneMenu>
+									<p:commandButton value="Buscar" styleClass=" x-btn-text icon-guardar" actionListener="#{reporteHistoricoPorProgramaController.cargarTablaEstablecimientoFiltroServiciosEstablecimientoSub29}" update="tablaSub29" />
+							</p:panelGrid>
+							<br/>
 							<p:dataTable id="tablaSub29" resizableColumns="true" value="#{reporteHistoricoPorProgramaController.reporteHistoricoPorProgramaEstablecimientoVOSub29}" liveResize="true" var="_data" 
-							rows="#{reporteHistoricoPorProgramaController.reporteHistoricoPorProgramaVO.size}" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+							rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 
 								<p:columnGroup type="header">
 									<p:row>
@@ -659,17 +584,17 @@
 										<p:column rowspan="2" headerText="Establecimiento" />
 										<p:column colspan="9" headerText="Prespuesto Histórico #{reporteHistoricoPorProgramaController.programa.nombre}" />
 									</p:row>
+									
 									<p:row>
-										<p:column headerText="$ 2007  (2016)" />
-										<p:column headerText="$ 2008  (2016)" />
-										<p:column headerText="$ 2009  (2016)" />
-										<p:column headerText="$ 2010  (2016)" />
-										<p:column headerText="$ 2011  (2016)" />
-										<p:column headerText="$ 2012  (2016)" />
-										<p:column headerText="$ 2013  (2016)" />
-										<p:column headerText="$ 2014  (2016)" />
-										<p:column headerText="$ 2015  (2016)" />
-										<p:column headerText="$ 2016" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos8}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos7}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos6}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos5}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos4}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos3}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos2}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoCursoMenos1}  ($ #{reporteHistoricoPorProgramaController.anoEnCurso})" />
+										<p:column headerText="$ #{reporteHistoricoPorProgramaController.anoEnCurso}" />
 									</p:row>
 								</p:columnGroup>
 
@@ -681,11 +606,6 @@
 								</p:column>
 								<p:column>
 									<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
-								</p:column>
-								<p:column>
-									<h:outputText value="#{_data.marcoAnoActualMenos9}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="number" maxFractionDigits="0" />
-									</h:outputText>
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.marcoAnoActualMenos8}" styleClass="textoPequenio textoAjustado">
@@ -737,13 +657,6 @@
 										<p:column />
 										<p:column />
 										<p:column />
-										<p:column>
-											<f:facet name="footer">
-												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos9}" styleClass="textoAjustado textoPequenio centrado">
-													<f:convertNumber type="currency" maxFractionDigits="0" locale="es_CL" currencySymbol="$" />
-												</h:outputText>
-											</f:facet>
-										</p:column>
 										<p:column>
 											<f:facet name="footer">
 												<h:outputText value="#{reporteHistoricoPorProgramaController.totalMarcoAnoActualMenos8}" styleClass="textoAjustado textoPequenio centrado">

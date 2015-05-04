@@ -130,14 +130,14 @@ public class ReporteEstadoSituacionProgramaController extends BaseController imp
 		this.reporteEstadoSituacionByServiciosVOSub22 = new ArrayList<ReporteEstadoSituacionByServiciosVO>();
 		this.reporteEstadoSituacionByServiciosVOSub29 = new ArrayList<ReporteEstadoSituacionByServiciosVO>();
 		
-		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEESTADOSITUACIONPROGRAMABYCOMUNA);
+		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEESTADOSITUACIONPROGRAMABYCOMUNA, getAnoEnCurso());
 		if(this.idPlanillaDocComuna == null){
-			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteEstadoSituacionPorComuna();
+			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteEstadoSituacionPorComuna(getAnoEnCurso());
 		}
 		
-		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEESTADOSITUACIONPROGRAMABYSERVICIO);
+		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEESTADOSITUACIONPROGRAMABYSERVICIO, getAnoEnCurso());
 		if(this.idPlanillaDocEstablecimiento == null){
-			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteEstadoSituacionPorEstablecimiento();
+			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteEstadoSituacionPorEstablecimiento(getAnoEnCurso());
 		}
 		
 		Integer currentTab = 0;
@@ -298,7 +298,7 @@ public class ReporteEstadoSituacionProgramaController extends BaseController imp
 
 	public Integer getAnoEnCurso() {
 		if(anoEnCurso == null){
-			anoEnCurso = reportesServices.getAnoCurso() + 1;
+			anoEnCurso = reportesServices.getAnoCurso();
 		}
 		return anoEnCurso;
 	}
@@ -887,5 +887,6 @@ public class ReporteEstadoSituacionProgramaController extends BaseController imp
 	public void setTotalIncrementeSub29(Long totalIncrementeSub29) {
 		this.totalIncrementeSub29 = totalIncrementeSub29;
 	}
-
+ 
+	
 }

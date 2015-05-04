@@ -75,6 +75,7 @@ implements Serializable {
 	private ReferenciaDocumentoSummaryVO documentoPoblacionInscrita;
 	private ReferenciaDocumentoSummaryVO documentoPlanillaOficio;
 	private ReferenciaDocumentoSummaryVO documentoTomaRazon;
+	private ReferenciaDocumentoSummaryVO documentoPlanillaDecreto;
 
 	private  boolean rechazarRevalorizar_;
 	private  boolean rechazarSubirArchivos_;
@@ -161,6 +162,14 @@ implements Serializable {
 				System.out.println("docResolucion->"+docResolucion);
 				System.out.println("idServicio->"+idServicio);
 				distribucionInicialPercapitaService.moveToAlfrescoDistribucionInicialPercapita(this.idDistribucionInicialPercapita, idServicio, docResolucion, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, this.lastVersion, this.ano);
+				Boolean versionFinal = (this.lastVersion != null && this.lastVersion) ? true : false;
+				if(serviciosResoluciones != null && serviciosResoluciones.size() > 0){
+					for(ServiciosSummaryVO  serviciosSummaryVO : serviciosResoluciones){
+						if(serviciosSummaryVO.getId_servicio().equals(idServicio)){
+							serviciosSummaryVO.setVersionFinal(versionFinal);
+						}
+					}
+				}
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -254,6 +263,7 @@ implements Serializable {
 		System.out.println("Limpiar-->");
 		servicioSeleccionado = "";
 		documentos = new ArrayList<ReferenciaDocumentoVO>();
+		serviciosResoluciones = new ArrayList<ServiciosSummaryVO>();
 		System.out.println("fin limpiar");
 	}
 	
@@ -300,11 +310,12 @@ implements Serializable {
 			this.tareaSeguimiento = TareasSeguimiento.getById(Integer.valueOf(_tareaSeguimiento));
 		}
 		documentoPoblacionInscrita = distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA);
-		documentoPlanillaOficio  = distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.PLANILLAOFICIOCONSULTA);
+		documentoPlanillaOficio = distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.PLANILLAOFICIOCONSULTA);
 		documentoTomaRazon = distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.TOMARAZONAPORTEESTATAL);
 		if(documentoTomaRazon == null){
 			documentoTomaRazon = distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.BORRADORAPORTEESTATAL);
 		}
+		documentoPlanillaDecreto = distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.PLANILLABORRADORAPORTEESTATAL);
 		bitacoraSeguimiento = distribucionInicialPercapitaService.getBitacora(this.idDistribucionInicialPercapita, this.tareaSeguimiento);
 		plantillaCorreoId = distribucionInicialPercapitaService.getPlantillaCorreo(this.tareaSeguimiento);
 	}
@@ -698,6 +709,15 @@ implements Serializable {
 	public void setDocumentoTomaRazon(
 			ReferenciaDocumentoSummaryVO documentoTomaRazon) {
 		this.documentoTomaRazon = documentoTomaRazon;
+	}
+
+	public ReferenciaDocumentoSummaryVO getDocumentoPlanillaDecreto() {
+		return documentoPlanillaDecreto;
+	}
+
+	public void setDocumentoPlanillaDecreto(
+			ReferenciaDocumentoSummaryVO documentoPlanillaDecreto) {
+		this.documentoPlanillaDecreto = documentoPlanillaDecreto;
 	}
 
 	@Override

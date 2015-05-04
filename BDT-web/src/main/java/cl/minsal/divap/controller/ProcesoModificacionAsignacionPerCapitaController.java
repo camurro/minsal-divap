@@ -177,6 +177,10 @@ implements Serializable {
 				+ getSessionBean().getUsername());
 		parameters.put("usuario", getSessionBean().getUsername());
 		parameters.put("error_", new Boolean(isErrorCarga()));
+		if(getAnoProceso() == null){
+			setAnoProceso(modificacionDistribucionInicialPercapitaService.getAnoCurso());
+			parameters.put("ano", getAnoProceso());
+		}
 		if (this.docIds != null) {
 			System.out.println("documentos_ -->"
 					+ JSONHelper.toJSON(this.docIds));
@@ -264,6 +268,14 @@ implements Serializable {
 	public void setDocAsignacionDesempenoDificil(
 			Integer docAsignacionDesempenoDificil) {
 		this.docAsignacionDesempenoDificil = docAsignacionDesempenoDificil;
+	}
+	
+	public Integer getAnoProceso() {
+		return anoProceso;
+	}
+
+	public void setAnoProceso(Integer anoProceso) {
+		this.anoProceso = anoProceso;
 	}
 
 	@Override

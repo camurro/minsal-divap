@@ -47,14 +47,13 @@ public class ReportesRebajaController extends BaseController implements Serializ
 	@EJB
 	private MesDAO mesDAO;
 	
+	private Integer ano;
 	
 	@PostConstruct
 	public void init(){
-		this.reporteRebajaVO = reportesServices.getReporteRebaja();
-		this.idPlanillaRebaja = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEREBAJA);
-		if(this.idPlanillaRebaja == null){
-			this.idPlanillaRebaja = reportesServices.generarPlanillaReporteRebaja(getLoggedUsername());
-		}
+		this.reporteRebajaVO = reportesServices.getReporteRebaja(getAno());
+		
+		this.idPlanillaRebaja = reportesServices.generarPlanillaReporteRebaja(getLoggedUsername(), getAno());
 		
 		Integer mesCurso = Integer.parseInt(reportesServices.getMesCurso(true));
 		RebajaCorte rebajaCorte = rebajaDAO.getCorteByMes(mesCurso);
@@ -200,4 +199,15 @@ public class ReportesRebajaController extends BaseController implements Serializ
 		this.mesCorte4 = mesCorte4;
 	}
 
+	public Integer getAno() {
+		if(ano == null){
+			ano = reportesServices.getAnoCurso();
+		}
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
+	
 }

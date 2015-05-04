@@ -42,6 +42,8 @@ public class AntecendentesComuna implements Serializable {
 	@Column(name="id_antecedentes_comuna", unique=true, nullable=false)
 	@GeneratedValue
     private Integer idAntecedentesComuna;
+    @Column(name = "numero_resolucion")
+    private Integer numeroResolucion;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "antecedentesComuna")
     private Set<AntecendentesComunaCalculado> antecendentesComunaCalculadoCollection;
     @JoinColumn(name = "id_comuna", referencedColumnName = "id")
@@ -120,7 +122,15 @@ public class AntecendentesComuna implements Serializable {
         this.anoAnoEnCurso = anoAnoEnCurso;
     }
 
-    @Override
+    public Integer getNumeroResolucion() {
+		return numeroResolucion;
+	}
+
+	public void setNumeroResolucion(Integer numeroResolucion) {
+		this.numeroResolucion = numeroResolucion;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (idAntecedentesComuna != null ? idAntecedentesComuna.hashCode() : 0);

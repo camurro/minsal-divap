@@ -72,6 +72,7 @@ implements Serializable {
 	private Integer oficioConsultaId;
 	private Integer decretoId;
 	private Integer plantillaCorreoId;
+	private Integer tomaRazonId;
 	private ReferenciaDocumentoSummaryVO documentoPoblacionInscrita;
 
 	private  boolean rechazarRevalorizar_;
@@ -111,6 +112,8 @@ implements Serializable {
 			case HACERSEGUIMIENTORESOLUCIONES:
 				break;	
 			case HACERSEGUIMIENTOTOMARAZON:
+				modificacionDistribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, TipoDocumentosProcesos.TOMARAZONAPORTEESTATAL, versionFinal, this.anoProceso);
+				this.tomaRazonId = docNewVersion;
 				break;
 			case HACERSEGUIMIENTODECRETO:
 				modificacionDistribucionInicialPercapitaService.moveToAlfresco(idDistribucionInicialPercapita, docNewVersion, TipoDocumentosProcesos.BORRADORAPORTEESTATAL, versionFinal, this.anoProceso);
@@ -158,6 +161,14 @@ implements Serializable {
 				System.out.println("idServicio->"+idServicio);
 				modificacionDistribucionInicialPercapitaService.moveToAlfrescoModificacion(this.idDistribucionInicialPercapita, idServicio, docResolucion, TipoDocumentosProcesos.ORDINARIOMODIFICACIONRESOLUCIONAPORTEESTATAL,
 					this.lastVersion, this.anoProceso);
+				Boolean versionFinal = (this.lastVersion != null && this.lastVersion) ? true : false;
+				if(serviciosResoluciones != null && serviciosResoluciones.size() > 0){
+					for(ServiciosSummaryVO  serviciosSummaryVO : serviciosResoluciones){
+						if(serviciosSummaryVO.getId_servicio().equals(idServicio)){
+							serviciosSummaryVO.setVersionFinal(versionFinal);
+						}
+					}
+				}
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -250,6 +261,7 @@ implements Serializable {
 		System.out.println("Limpiar-->");
 		servicioSeleccionado = "";
 		documentos = new ArrayList<ReferenciaDocumentoVO>();
+		serviciosResoluciones = new ArrayList<ServiciosSummaryVO>();
 		System.out.println("fin limpiar");
 	}
 
@@ -283,12 +295,22 @@ implements Serializable {
 			}else{
 				this.oficioConsultaId = (Integer) getTaskDataVO().getData().get("_oficioConsultaId");
 			}
-			ReferenciaDocumentoSummaryVO referenciaDocumentoBorradorSummaryVO = modificacionDistribucionInicialPercapitaService.getLastDocumentSummaryModificacionPercapitaByType(idDistribucionInicialPercapita, TipoDocumentosProcesos.ORDINARIOMODIFICACIONRESOLUCIONAPORTEESTATAL);
+			ReferenciaDocumentoSummaryVO referenciaDocumentoBorradorSummaryVO = modificacionDistribucionInicialPercapitaService.getLastDocumentSummaryModificacionPercapitaByType(idDistribucionInicialPercapita, TipoDocumentosProcesos.BORRADORAPORTEESTATAL);
 			if(referenciaDocumentoBorradorSummaryVO != null){
 				this.decretoId = referenciaDocumentoBorradorSummaryVO.getId();
 			}else{
 				this.decretoId = (Integer)getTaskDataVO().getData().get("_borradorAporteEstatalId");
 			}
+			
+			ReferenciaDocumentoSummaryVO referenciaDocumentoTomaRazonSummaryVO = modificacionDistribucionInicialPercapitaService.getLastDocumentSummaryModificacionPercapitaByType(idDistribucionInicialPercapita, TipoDocumentosProcesos.TOMARAZONAPORTEESTATAL);
+			if(referenciaDocumentoTomaRazonSummaryVO != null){
+				this.tomaRazonId = referenciaDocumentoTomaRazonSummaryVO.getId();
+			}else{
+				this.tomaRazonId = this.decretoId;
+			}
+			
+			
+			
 			this.tareaSeguimiento = TareasSeguimiento.getById(Integer.valueOf(_tareaSeguimiento));
 		}
 		documentoPoblacionInscrita = modificacionDistribucionInicialPercapitaService.getLastDocumentSummaryModificacionPercapitaByType(idDistribucionInicialPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA);
@@ -362,14 +384,15 @@ implements Serializable {
 				for(ServiciosSummaryVO serviciosSummaryVO : serviciosResoluciones){
 					numDocFinales = modificacionDistribucionInicialPercapitaService.countVersionFinalModificacionPercapitaResoluciones(this.idDistribucionInicialPercapita, serviciosSummaryVO.getId_servicio());
 					if(numDocFinales == 0){
-						message = "No existe versión final para documento aporte estatal servicio " + serviciosSummaryVO.getNombre_servicio();
+						message = "No existe versión final para resoluciones del servicio " + serviciosSummaryVO.getNombre_servicio();
 						break;
 					}
 				}
 			}
 			break;	
 		case HACERSEGUIMIENTOTOMARAZON:
-			numDocFinales = 1;
+			numDocFinales = modificacionDistribucionInicialPercapitaService.countVersionFinalModificacionPercapitaByType(this.idDistribucionInicialPercapita, TipoDocumentosProcesos.TOMARAZONAPORTEESTATAL);
+			message = "No existe versión final para toma razón decreto aporte estatal";
 			break;
 		case HACERSEGUIMIENTODECRETO:
 			numDocFinales = modificacionDistribucionInicialPercapitaService.countVersionFinalModificacionPercapitaByType(this.idDistribucionInicialPercapita, TipoDocumentosProcesos.BORRADORAPORTEESTATAL);
@@ -665,6 +688,15 @@ implements Serializable {
 	public void setHiddenIdServicio(String hiddenIdServicio) {
 		this.hiddenIdServicio = hiddenIdServicio;
 	}
+	
+	public Integer getTomaRazonId() {
+		return tomaRazonId;
+	}
+
+	public void setTomaRazonId(Integer tomaRazonId) {
+		this.tomaRazonId = tomaRazonId;
+	}
+	
 
 	@Override
 	public String iniciarProceso() {

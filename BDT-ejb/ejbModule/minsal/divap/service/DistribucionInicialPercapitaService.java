@@ -22,7 +22,6 @@ import minsal.divap.dao.AnoDAO;
 import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
 import minsal.divap.dao.SeguimientoDAO;
-import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.dao.UsuarioDAO;
 import minsal.divap.doc.GeneradorDocumento;
 import minsal.divap.doc.GeneradorOficioConsulta;
@@ -36,6 +35,7 @@ import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.excel.impl.AsignacionDistribucionPercapitaSheetExcel;
 import minsal.divap.excel.impl.AsignacionRecursosPercapitaSheetExcel;
+import minsal.divap.excel.impl.AsignacionRecursosPercapitaValorDesempenoDificialSheetExcel;
 import minsal.divap.excel.impl.PercapitaCalculoPercapitaExcelValidator;
 import minsal.divap.excel.impl.PercapitaDesempenoDificilExcelValidator;
 import minsal.divap.excel.impl.PlanillaOficioConsultaDistribucionPercapitaSheetExcel;
@@ -74,7 +74,6 @@ import cl.minsal.divap.model.AntecendentesComunaCalculado;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
 import cl.minsal.divap.model.Seguimiento;
-import cl.minsal.divap.model.ServicioSalud;
 import cl.minsal.divap.model.Usuario;
 
 @Stateless
@@ -243,12 +242,39 @@ public class DistribucionInicialPercapitaService {
 		}
 		return plantillaId;
 	}
+	
+	public Integer getIdPlantillaNumeroResoluciones(){
+		Integer plantillaId = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLANUMERORESOLUCION);
+		if(plantillaId == null){
+			List<BaseVO> servicios = servicioSaludService.getAllServiciosComunasCFUrbanaRural();
+			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
+			String filename = tmpDir + File.separator + "plantillaNumeroResolucion.xlsx";
+			String contenType = mimemap.getContentType(filename.toLowerCase());
+			GeneradorExcel generadorExcel = new GeneradorExcel(filename);
+			List<String> headers = new ArrayList<String>();
+			headers.add("REGION");
+			headers.add("SERVICIO");
+			headers.add("COMUNA");
+			headers.add("NÚMERO RESOLUCIÓN");
+			AsignacionRecursosPercapitaSheetExcel asignacionDesempenoDificilSheetExcel = new AsignacionRecursosPercapitaSheetExcel(headers, servicios);
+			generadorExcel.addSheet( asignacionDesempenoDificilSheetExcel, "Hoja 1");
+			try {
+				BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderTemplatePercapita);
+				System.out.println("response asignacionDesempenoDificilSheetExcel --->"+response);
+				plantillaId = documentService.createTemplate(TipoDocumentosProcesos.PLANTILLANUMERORESOLUCION, response.getNodeRef(), response.getFileName(), contenType);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			plantillaId = documentService.getDocumentoIdByPlantillaId(plantillaId);
+		}
+		return plantillaId;
+	}
 
 	public Integer getIdPlantillaPoblacionInscrita(){
 		Integer plantillaId = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAASIGNACIONDESEMPENODIFICIL);
 		if(plantillaId == null){
 			List<BaseVO> servicios = servicioSaludService.getAllServiciosComunasCFUrbanaRural();
-
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			String filename = tmpDir + File.separator + "plantillaDesempenoDificil.xlsx";
 			String contenType = mimemap.getContentType(filename.toLowerCase());
@@ -272,6 +298,7 @@ public class DistribucionInicialPercapitaService {
 		}
 		return plantillaId;
 	}
+	
 
 	public DistribucionInicialPercapita ultimaDistribucionPercapita(Integer ano){
 		return distribucionInicialPercapitaDAO.findLast(ano);
@@ -401,6 +428,30 @@ public class DistribucionInicialPercapitaService {
 				} else {
 					antecendentesComunaCalculado.setDesempenoDificil(desempenoDificilVO.getValorDesempenoDificil().intValue());
 				}
+			}
+		}
+	}
+	
+	public void procesarNumeroResolucion(XSSFWorkbook workbook, Integer ano) throws ExcelFormatException {
+		List<CellTypeExcelVO> cells = new ArrayList<CellTypeExcelVO>();
+		CellTypeExcelVO fieldOne = new CellTypeExcelVO(true, FieldType.INTEGERFIELD);
+		cells.add(fieldOne);
+		CellTypeExcelVO fieldTwo = new CellTypeExcelVO(true);
+		cells.add(fieldTwo);
+		CellTypeExcelVO fieldThree = new CellTypeExcelVO(true);
+		cells.add(fieldThree);
+		CellTypeExcelVO fieldFour = new CellTypeExcelVO(true, FieldType.INTEGERFIELD);
+		cells.add(fieldFour);
+		XSSFSheet worksheet = workbook.getSheetAt(0);
+		PercapitaDesempenoDificilExcelValidator desempenoDificilExcelValidator = new PercapitaDesempenoDificilExcelValidator(cells.size(), cells, true, 0, 0);
+		desempenoDificilExcelValidator.validateFormat(worksheet);		
+		List<DesempenoDificilVO> items = desempenoDificilExcelValidator.getItems();
+
+		System.out.println("procesarValorBasicoDesempeno->ano="+ano);
+		for(DesempenoDificilVO desempenoDificilVO : items){
+			AntecendentesComuna antecendentesComuna = antecedentesComunaDAO.findAntecendentesComunaByComunaServicioAno(desempenoDificilVO.getServicio(), desempenoDificilVO.getComuna(), ano);
+			if(antecendentesComuna != null){
+				antecendentesComuna.setNumeroResolucion(desempenoDificilVO.getValorDesempenoDificil().intValue());
 			}
 		}
 	}
@@ -536,6 +587,20 @@ public class DistribucionInicialPercapitaService {
 		}
 		return antecedentesCalculados;
 	}
+	
+	private List<AsignacionDistribucionPerCapitaVO> castVO(List<AntecendentesComunaCalculado>  antecendentesComunaCalculado){
+		List<AsignacionDistribucionPerCapitaVO> antecedentesCalculados = new ArrayList<AsignacionDistribucionPerCapitaVO>();
+		if(antecendentesComunaCalculado != null && antecendentesComunaCalculado.size() > 0){
+			for(AntecendentesComunaCalculado antecendenteComunaCalculado : antecendentesComunaCalculado){
+				AsignacionDistribucionPerCapitaVO asignacionDistribucionPerCapitaVO = new AsignacionDistribucionPercapitaMapper().getBasic(antecendenteComunaCalculado);
+				if(asignacionDistribucionPerCapitaVO != null){
+					antecedentesCalculados.add(asignacionDistribucionPerCapitaVO);
+				}
+			}
+		}
+		return antecedentesCalculados;
+	}
+	
 
 	public List<AsignacionDistribucionPerCapitaVO> findAntecedentesServicioCalculadosByDistribucionInicialPercapita(Integer idServicio, Integer idDistribucionInicialPercapita){
 		List<AntecendentesComunaCalculado>  antecendentesComunaCalculado = antecedentesComunaDAO.findAntecedentesServicioCalculadosByDistribucionInicialPercapitaVigente(idServicio, idDistribucionInicialPercapita);
@@ -596,7 +661,7 @@ public class DistribucionInicialPercapitaService {
 			headers.add("Región");
 			headers.add("Servicio Salud");
 			headers.add("Comuna");
-			headers.add("Variación " + ano + "/" + (ano - 1));
+			headers.add("Variación " + ano + "/" + (ano - 1) + ", %");
 			List<OficioConsultaDistribucionPerCapitaVO> items = new ArrayList<OficioConsultaDistribucionPerCapitaVO>();
 			List<ServiciosVO> servicios = servicioSaludService.getServiciosOrderId();
 			if(servicios != null && servicios.size() > 0){
@@ -760,6 +825,7 @@ public class DistribucionInicialPercapitaService {
 							Map<String, Object> parametersAporteEstatalCF = new HashMap<String, Object>();
 							parametersAporteEstatalCF.put("{comuna_seleccionada}", antecendenteComuna.getIdComuna().getNombre());
 							Long aporteMensual = ((antecendentesComunaCalculadoVigente.getPercapitaMes() == null) ? 0 : antecendentesComunaCalculadoVigente.getPercapitaMes());
+							aporteMensual += ((antecendentesComunaCalculadoVigente.getDesempenoDificil() == null) ? 0 : antecendentesComunaCalculadoVigente.getDesempenoDificil());
 							parametersAporteEstatalCF.put("{aporte_mensual}", StringUtil.formatNumber(aporteMensual));
 							parametersAporteEstatalCF.put("{ano_curso}", ano);
 
@@ -775,11 +841,12 @@ public class DistribucionInicialPercapitaService {
 							Map<String, Object> parametersAporteEstatalUR = new HashMap<String, Object>();
 							parametersAporteEstatalUR.put("{ano_curso}", ano);
 							parametersAporteEstatalUR.put("{comuna_seleccionada}", antecendenteComuna.getIdComuna().getNombre());
-							Integer poblacion = ((antecendentesComunaCalculadoVigente.getPoblacion() == null) ? 0 : antecendentesComunaCalculadoVigente.getPoblacion()) + ((antecendentesComunaCalculadoVigente.getPoblacionMayor() == null) ? 0: antecendentesComunaCalculadoVigente.getPoblacionMayor());
+							Integer poblacion = ((antecendentesComunaCalculadoVigente.getPoblacion() == null) ? 0 : antecendentesComunaCalculadoVigente.getPoblacion());
 							parametersAporteEstatalUR.put("{poblacion_seleccionada}", StringUtil.formatNumber(poblacion));
 							Double perCapitaComunalMes = ((antecendentesComunaCalculadoVigente.getValorPerCapitaComunalMes() == null) ? 0.0 : antecendentesComunaCalculadoVigente.getValorPerCapitaComunalMes());
 							parametersAporteEstatalUR.put("{monto_seleccionado}", StringUtil.formatNumber(Math.round(perCapitaComunalMes)));
 							Long percapitaMes = ((antecendentesComunaCalculadoVigente.getPercapitaMes() == null) ? 0 : antecendentesComunaCalculadoVigente.getPercapitaMes());
+							percapitaMes += ((antecendentesComunaCalculadoVigente.getDesempenoDificil() == null) ? 0 : antecendentesComunaCalculadoVigente.getDesempenoDificil());
 							parametersAporteEstatalUR.put("{aporte_mensual}", StringUtil.formatNumber(percapitaMes));
 							generadorWordAporteEstatalUR.saveContent(documentoAporteEstatalURVO.getContent(), XWPFDocument.class);
 							String filenameAporteEstatalURTmp = filenameAporteEstatalUR.replace(".docx", "-" +  antecendenteComuna.getIdComuna().getServicioSalud().getNombre() + "-" +  antecendenteComuna.getIdComuna().getNombre() + ".docx");
@@ -844,16 +911,16 @@ public class DistribucionInicialPercapitaService {
 			Integer percapitaBasal = ((anoEvaluacion.getMontoPercapitalBasal() == null) ? 0 : anoEvaluacion.getMontoPercapitalBasal());
 			Integer asignacionAdultoMayor = ((anoEvaluacion.getAsignacionAdultoMayor() == null) ? 0 : anoEvaluacion.getAsignacionAdultoMayor());
 			List<AntecendentesComunaCalculado> antecedentesComunaCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaVigente(idDistribucionInicialPercapita);
-			Long aporteEstatal = 0L;
+			Long aporteEstatalMensual = 0L;
 			if(antecedentesComunaCalculado != null && antecedentesComunaCalculado.size() > 0){
 				for(AntecendentesComunaCalculado antecendentesComunaCalculado : antecedentesComunaCalculado){
-					aporteEstatal += ((antecendentesComunaCalculado.getPercapitaAno() == null) ? 0L : antecendentesComunaCalculado.getPercapitaAno()) 
-							+ ((antecendentesComunaCalculado.getDesempenoDificil() == null) ? 0 : antecendentesComunaCalculado.getDesempenoDificil());
+					aporteEstatalMensual += ((antecendentesComunaCalculado.getPercapitaMes() == null) ? 0L : antecendentesComunaCalculado.getPercapitaMes());
+					aporteEstatalMensual += ((antecendentesComunaCalculado.getDesempenoDificil() == null) ? 0 : antecendentesComunaCalculado.getDesempenoDificil());
 				}
 			}
 			parametersBorradorAporteEstatal.put("{ano_curso}", ano);
-			parametersBorradorAporteEstatal.put("{aporte_estatal}", StringUtil.formatNumber(aporteEstatal));
-			parametersBorradorAporteEstatal.put("{aporte_estatal_palabra}", NumberToLetters.readNumber(aporteEstatal.toString(), "," ,"pesos"));
+			parametersBorradorAporteEstatal.put("{aporte_estatal}", StringUtil.formatNumber(aporteEstatalMensual));
+			parametersBorradorAporteEstatal.put("{aporte_estatal_palabra}", NumberToLetters.readNumber(aporteEstatalMensual.toString(), "," ,"pesos"));
 			parametersBorradorAporteEstatal.put("{percapita_basal}", StringUtil.formatNumber(percapitaBasal));
 			parametersBorradorAporteEstatal.put("{percapita_basal_palabra}",  NumberToLetters.readNumber(percapitaBasal.toString(), "," ,"pesos"));
 			parametersBorradorAporteEstatal.put("{asignacion_adulto_mayor}", StringUtil.formatNumber(asignacionAdultoMayor));
@@ -862,6 +929,26 @@ public class DistribucionInicialPercapitaService {
 			BodyVO responseBorradorAporteEstatal = alfrescoService.uploadDocument(new File(filenameBorradorAporteEstatal), contenTypeBorradorAporteEstatal, folderPercapita.replace("{ANO}", ano.toString()));
 			System.out.println("response responseBorradorAporteEstatal --->"+responseBorradorAporteEstatal);
 			plantillaIdBorradorDecretoAporteEstatal = documentService.createDocumentPercapita(idDistribucionInicialPercapita, TipoDocumentosProcesos.BORRADORAPORTEESTATAL, responseBorradorAporteEstatal.getNodeRef(), responseBorradorAporteEstatal.getFileName(), contenTypeBorradorAporteEstatal);
+			
+			List<AsignacionDistribucionPerCapitaVO> asignacionesPercapita = castVO(antecedentesComunaCalculado);
+			String filename = tmpDir + File.separator + "complementoBorradorAporteEstatal.xlsx";
+			String contenType = mimemap.getContentType(filename.toLowerCase());
+			GeneradorExcel generadorExcel = new GeneradorExcel(filename);
+			List<String> headers = new ArrayList<String>();
+			headers.add("N°");
+			headers.add("REGIÓN");
+			headers.add("SERVICIO DE SALUD");
+			headers.add("COMUNA");
+			headers.add("VALOR BÁSICO POR ASIGNACIÓN DESEMPEÑO DIFICIL, $/MES." + ano.toString());
+			AsignacionRecursosPercapitaValorDesempenoDificialSheetExcel asignacionDesempenoDificilSheetExcel = new AsignacionRecursosPercapitaValorDesempenoDificialSheetExcel(headers, asignacionesPercapita);
+			generadorExcel.addSheet( asignacionDesempenoDificilSheetExcel, "Hoja 1");
+			try {
+				BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderPercapita.replace("{ANO}", ano.toString()));
+				System.out.println("response asignacionDesempenoDificilSheetExcel response--->"+response);
+				documentService.createDocumentPercapita(idDistribucionInicialPercapita, TipoDocumentosProcesos.PLANILLABORRADORAPORTEESTATAL, response.getNodeRef(), response.getFileName(), contenType);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidFormatException e) {
@@ -894,7 +981,10 @@ public class DistribucionInicialPercapitaService {
 			BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummary.getPath()), contenType, folderPercapita.replace("{ANO}", ano.toString()));
 			System.out.println("response upload template --->"+response);
 			documentService.updateDocumentTemplate(referenciaDocumentoSummary.getId(), response.getNodeRef(), response.getFileName(), contenType);
-			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findById(idDistribucionInicialPercapita);
+			DistribucionInicialPercapita distribucionInicialPercapita = null;
+			if(idDistribucionInicialPercapita != null){
+				distribucionInicialPercapita = distribucionInicialPercapitaDAO.findById(idDistribucionInicialPercapita);
+			}
 			documentService.createDocumentPercapita(distribucionInicialPercapita, tipoDocumento, referenciaDocumentoId, versionFinal);
 		}
 	}
@@ -1179,7 +1269,8 @@ public class DistribucionInicialPercapitaService {
 
 	public void administrarVersionesFinalesAlfresco(Integer idDistribucionInicialPercapita, Integer ano) {
 		System.out.println("DistribucionInicialPercapitaService administrarVersionesFinalesAlfresco eliminar todas las versiones que no sean finales");
-		TipoDocumentosProcesos[] tiposDocumentos = {TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF};
+		TipoDocumentosProcesos[] tiposDocumentos = {TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALUR, TipoDocumentosProcesos.RESOLUCIONAPORTEESTATALCF,
+				TipoDocumentosProcesos.OFICIOCONSULTA, TipoDocumentosProcesos.BORRADORAPORTEESTATAL, TipoDocumentosProcesos.TOMARAZONAPORTEESTATAL};
 		List<DocumentoDistribucionInicialPercapita> documentosResoluciones = distribucionInicialPercapitaDAO.getByIdDistribucionInicialPercapitaTipoNotFinal(idDistribucionInicialPercapita, tiposDocumentos);
 		if(documentosResoluciones != null && documentosResoluciones.size() > 0){
 			for(DocumentoDistribucionInicialPercapita documentoDistribucionInicialPercapita : documentosResoluciones){

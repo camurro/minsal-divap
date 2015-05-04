@@ -961,7 +961,7 @@ public class DocumentService {
 		documentoModificacionPercapita.setDocumento(referenciaDocumento);
 		documentoModificacionPercapita.setModificacionPercapita(modificacionDistribucionInicialPercapita);
 		conveniosDAO.save(documentoModificacionPercapita);
-		System.out.println("luego de aplicar insert del documento convenio");
+		System.out.println("luego de aplicar insert del documento modificacion percapita");
 	}
 	
 	public void createDocumentModificacionPercapita(ModificacionDistribucionInicialPercapita modificacionDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos tipoDocumento, Integer referenciaDocumentoId, Boolean lastVersion) {
@@ -978,7 +978,7 @@ public class DocumentService {
 			documentoModificacionPercapita.setServicio(servicio);
 		}
 		conveniosDAO.save(documentoModificacionPercapita);
-		System.out.println("luego de aplicar insert del documento convenio");
+		System.out.println("luego de aplicar insert del documento modificacion percapita");
 	}
 
 	public Integer createDocumentModificacionPercapita(Integer idDistribucionInicialPercapita, Integer idServicio, TipoDocumentosProcesos tipoDocumentoProceso, String nodeRef,
@@ -1096,15 +1096,40 @@ public class DocumentService {
 		}
 		System.out.println("idServicio->"+idServicio);
 		List<ServiciosSummaryVO> serviciosResoluciones = new ArrayList<ServiciosSummaryVO>();
-		List<DocumentoModificacionPercapita> referencias = fileDAO.getDocumentosByTypeServicioModificacionPercapita(idDistribucionInicialPercapita, idServicio, tiposDocumentoProceso);
-		if(referencias != null && referencias.size() > 0){
-			for(DocumentoModificacionPercapita referencia : referencias){
-				if(referencia.getComuna() != null && referencia.getComuna().getServicioSalud() != null){
-					ServiciosSummaryVO serviciosSummaryVO = new ServiciosSummaryVO();
-					serviciosSummaryVO.setId_servicio(referencia.getComuna().getServicioSalud().getId());
-					serviciosSummaryVO.setNombre_servicio(referencia.getComuna().getServicioSalud().getNombre());
-					if(!serviciosResoluciones.contains(serviciosSummaryVO)){
-						serviciosResoluciones.add(serviciosSummaryVO);
+		List<ServicioSalud> servicios = null;
+		if(idServicio == null){
+			servicios = servicioSaludDAO.getServiciosOrderId();
+		}else{
+			servicios = new ArrayList<ServicioSalud>();
+			ServicioSalud servicio = servicioSaludDAO.getById(idServicio);
+			servicios.add(servicio);
+		}
+		
+		for(ServicioSalud servicioSalud : servicios){
+			DocumentoModificacionPercapita referenciaServicio = fileDAO.getLastDocumentosByTypeServicioModificacionPercapita(idDistribucionInicialPercapita, servicioSalud.getId(), tiposDocumentoProceso);
+			if(referenciaServicio != null){
+				ServiciosSummaryVO serviciosSummaryVO = new ServiciosSummaryVO();
+				serviciosSummaryVO.setId_servicio(servicioSalud.getId());
+				serviciosSummaryVO.setNombre_servicio(servicioSalud.getNombre());
+				if(referenciaServicio.getDocumento().getDocumentoFinal() != null && referenciaServicio.getDocumento().getDocumentoFinal()){
+					serviciosSummaryVO.setVersionFinal(true);
+				}else{
+					serviciosSummaryVO.setVersionFinal(false);
+				}
+				serviciosResoluciones.add(serviciosSummaryVO);
+			}else{
+				List<DocumentoModificacionPercapita> referencias = fileDAO.getDocumentosByTypeServicioModificacionPercapita(idDistribucionInicialPercapita, servicioSalud.getId(), tiposDocumentoProceso);
+				if(referencias != null && referencias.size() > 0){
+					for(DocumentoModificacionPercapita referencia : referencias){
+						if(referencia.getComuna() != null && referencia.getComuna().getServicioSalud() != null){
+							ServiciosSummaryVO serviciosSummaryVO = new ServiciosSummaryVO();
+							serviciosSummaryVO.setId_servicio(referencia.getComuna().getServicioSalud().getId());
+							serviciosSummaryVO.setNombre_servicio(referencia.getComuna().getServicioSalud().getNombre());
+							if(!serviciosResoluciones.contains(serviciosSummaryVO)){
+								serviciosSummaryVO.setVersionFinal(false);
+								serviciosResoluciones.add(serviciosSummaryVO);
+							}
+						}
 					}
 				}
 			}
@@ -1184,17 +1209,44 @@ public class DocumentService {
 		for(TipoDocumentosProcesos tipoDocumentoProceso : tiposDocumentoProceso){
 			System.out.println("tipoDocumentoProceso->"+tipoDocumentoProceso.getId());
 		}
+		
 		System.out.println("idServicio->"+idServicio);
 		List<ServiciosSummaryVO> serviciosResoluciones = new ArrayList<ServiciosSummaryVO>();
-		List<DocumentoDistribucionInicialPercapita> referencias = fileDAO.getDocumentosByTypeServicioDistribucionInicialPercapita(idDistribucionInicialPercapita, idServicio, tiposDocumentoProceso);
-		if(referencias != null && referencias.size() > 0){
-			for(DocumentoDistribucionInicialPercapita referencia : referencias){
-				if(referencia.getComuna() != null && referencia.getComuna().getServicioSalud() != null){
-					ServiciosSummaryVO serviciosSummaryVO = new ServiciosSummaryVO();
-					serviciosSummaryVO.setId_servicio(referencia.getComuna().getServicioSalud().getId());
-					serviciosSummaryVO.setNombre_servicio(referencia.getComuna().getServicioSalud().getNombre());
-					if(!serviciosResoluciones.contains(serviciosSummaryVO)){
-						serviciosResoluciones.add(serviciosSummaryVO);
+		List<ServicioSalud> servicios = null;
+		if(idServicio == null){
+			servicios = servicioSaludDAO.getServiciosOrderId();
+		}else{
+			servicios = new ArrayList<ServicioSalud>();
+			ServicioSalud servicio = servicioSaludDAO.getById(idServicio);
+			servicios.add(servicio);
+		}
+		
+		
+		for(ServicioSalud servicioSalud : servicios){
+			DocumentoDistribucionInicialPercapita referenciaServicio = fileDAO.getLastDocumentosByTypeServicioDistribucionInicialPercapita(idDistribucionInicialPercapita, servicioSalud.getId(), tiposDocumentoProceso);
+			if(referenciaServicio != null){
+				ServiciosSummaryVO serviciosSummaryVO = new ServiciosSummaryVO();
+				serviciosSummaryVO.setId_servicio(servicioSalud.getId());
+				serviciosSummaryVO.setNombre_servicio(servicioSalud.getNombre());
+				if(referenciaServicio.getIdDocumento().getDocumentoFinal() != null && referenciaServicio.getIdDocumento().getDocumentoFinal()){
+					serviciosSummaryVO.setVersionFinal(true);
+				}else{
+					serviciosSummaryVO.setVersionFinal(false);
+				}
+				serviciosResoluciones.add(serviciosSummaryVO);
+			}else{
+				List<DocumentoDistribucionInicialPercapita> referencias = fileDAO.getDocumentosByTypeServicioDistribucionInicialPercapita(idDistribucionInicialPercapita, servicioSalud.getId(), tiposDocumentoProceso);
+				if(referencias != null && referencias.size() > 0){
+					for(DocumentoDistribucionInicialPercapita referencia : referencias){
+						if(referencia.getComuna() != null && referencia.getComuna().getServicioSalud() != null){
+							ServiciosSummaryVO serviciosSummaryVO = new ServiciosSummaryVO();
+							serviciosSummaryVO.setId_servicio(referencia.getComuna().getServicioSalud().getId());
+							serviciosSummaryVO.setNombre_servicio(referencia.getComuna().getServicioSalud().getNombre());
+							if(!serviciosResoluciones.contains(serviciosSummaryVO)){
+								serviciosSummaryVO.setVersionFinal(false);
+								serviciosResoluciones.add(serviciosSummaryVO);
+							}
+						}
 					}
 				}
 			}
@@ -1335,16 +1387,42 @@ public class DocumentService {
 			System.out.println("tipoDocumentoProceso->"+tipoDocumentoProceso.getId());
 		}
 		System.out.println("idServicio->"+idServicio);
+		
 		List<ServiciosSummaryVO> serviciosResoluciones = new ArrayList<ServiciosSummaryVO>();
-		List<DocumentoRebaja> referencias = fileDAO.getDocumentosByTypeServicioRebaja(idProcesoRebaja, idServicio, tiposDocumentoProceso);
-		if(referencias != null && referencias.size() > 0){
-			for(DocumentoRebaja referencia : referencias){
-				if(referencia.getComuna() != null && referencia.getComuna().getServicioSalud() != null){
-					ServiciosSummaryVO serviciosSummaryVO = new ServiciosSummaryVO();
-					serviciosSummaryVO.setId_servicio(referencia.getComuna().getServicioSalud().getId());
-					serviciosSummaryVO.setNombre_servicio(referencia.getComuna().getServicioSalud().getNombre());
-					if(!serviciosResoluciones.contains(serviciosSummaryVO)){
-						serviciosResoluciones.add(serviciosSummaryVO);
+		List<ServicioSalud> servicios = null;
+		if(idServicio == null){
+			servicios = servicioSaludDAO.getServiciosOrderId();
+		}else{
+			servicios = new ArrayList<ServicioSalud>();
+			ServicioSalud servicio = servicioSaludDAO.getById(idServicio);
+			servicios.add(servicio);
+		}
+		
+		for(ServicioSalud servicioSalud : servicios){
+			DocumentoRebaja referenciaServicio = fileDAO.getLastDocumentosByTypeServicioRebaja(idProcesoRebaja, servicioSalud.getId(), tiposDocumentoProceso);
+			if(referenciaServicio != null){
+				ServiciosSummaryVO serviciosSummaryVO = new ServiciosSummaryVO();
+				serviciosSummaryVO.setId_servicio(servicioSalud.getId());
+				serviciosSummaryVO.setNombre_servicio(servicioSalud.getNombre());
+				if(referenciaServicio.getDocumento().getDocumentoFinal() != null && referenciaServicio.getDocumento().getDocumentoFinal()){
+					serviciosSummaryVO.setVersionFinal(true);
+				}else{
+					serviciosSummaryVO.setVersionFinal(false);
+				}
+				serviciosResoluciones.add(serviciosSummaryVO);
+			}else{
+				List<DocumentoRebaja> referencias = fileDAO.getDocumentosByTypeServicioRebaja(idProcesoRebaja, servicioSalud.getId(), tiposDocumentoProceso);
+				if(referencias != null && referencias.size() > 0){
+					for(DocumentoRebaja referencia : referencias){
+						if(referencia.getComuna() != null && referencia.getComuna().getServicioSalud() != null){
+							ServiciosSummaryVO serviciosSummaryVO = new ServiciosSummaryVO();
+							serviciosSummaryVO.setId_servicio(referencia.getComuna().getServicioSalud().getId());
+							serviciosSummaryVO.setNombre_servicio(referencia.getComuna().getServicioSalud().getNombre());
+							if(!serviciosResoluciones.contains(serviciosSummaryVO)){
+								serviciosSummaryVO.setVersionFinal(false);
+								serviciosResoluciones.add(serviciosSummaryVO);
+							}
+						}
 					}
 				}
 			}

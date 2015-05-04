@@ -34,33 +34,21 @@
 						<h:panelGrid columns="3" id="busqueda_mis_tareas">
 							<h:panelGrid>
 								<h:outputText value="Servicio: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:350px;" id="cbServicio"
-									value="#{reportesPoblacionPercapitaController.valorComboServicio}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
-									<f:selectItems
-										value="#{reportesPoblacionPercapitaController.servicios}"
-										itemLabel="#{servicio.nombre_servicio}"
-										itemValue="#{servicio.id_servicio}" var="servicio" />
-									<p:ajax
-										listener="#{reportesPoblacionPercapitaController.cargarComunas}"
-										update="cbComuna tabView" />
+								<p:selectOneMenu style="width:350px;" id="cbServicio" value="#{reportesPoblacionPercapitaController.valorComboServicio}">
+									<f:selectItem itemLabel="Seleccione" itemValue="" />
+									<f:selectItems value="#{reportesPoblacionPercapitaController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+									<p:ajax listener="#{reportesPoblacionPercapitaController.cargarComunas}" update="cbComuna tabView" />
 								</p:selectOneMenu>
 							</h:panelGrid>
 
 							<h:panelGrid>
 								<h:outputText value="Comuna: " styleClass="inputLabel" />
-								<p:selectOneMenu style="width:350px;" id="cbComuna"
-									value="#{reportesPoblacionPercapitaController.valorComboComuna}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
-									<f:selectItems
-										value="#{reportesPoblacionPercapitaController.servicioSeleccionado.comunas}"
-										itemLabel="#{comuna.nombre}" itemValue="#{comuna.id}"
-										var="comuna" />
-									
+								<p:selectOneMenu style="width:350px;" id="cbComuna" value="#{reportesPoblacionPercapitaController.valorComboComuna}">
+									<f:selectItem itemLabel="Seleccione" itemValue="" />
+									<f:selectItems value="#{reportesPoblacionPercapitaController.servicioSeleccionado.comunas}" itemLabel="#{comuna.nombre}" itemValue="#{comuna.id}" var="comuna" />
 								</p:selectOneMenu>
 							</h:panelGrid>
-							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesPoblacionPercapitaController.cargarTablaServiciosFiltradosComuna}" ajax="false"
-					icon="ui-icon-seek-first" update="tabView" />
+							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesPoblacionPercapitaController.cargarTablaServiciosFiltradosComuna}" icon="ui-icon-seek-first" update="tabView" />
 							
 						</h:panelGrid>
 							
@@ -88,8 +76,8 @@
 										<p:column headerText="Población" width="250" />
 										<p:column headerText="Población Mayor 65 y Mas Años" width="250" />
 										<p:column headerText="$ Per Capita Año" width="250" />
-										<p:column headerText="$ Desempeño Difícil" width="250" />
-										<p:column headerText="$ Aporte Estatal" width="250" />
+										<p:column headerText="$ Desempeño Difícil Año" width="250" />
+										<p:column headerText="$ Aporte Estatal Año" width="250" />
 										<p:column headerText="$ Rebaja IAAPS" width="250" />
 										<p:column headerText="$ Descuento por Incentivo al Retiro" width="250" />
 										<p:column headerText="$ Aporte Estatal Final" width="250" />

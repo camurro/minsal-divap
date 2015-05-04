@@ -113,7 +113,7 @@ implements Serializable {
 		comunaSeleccionada = "";
 		antecendentesComunaCalculado = new ArrayList<AsignacionDistribucionPerCapitaVO>();
 		comunas = new ArrayList<ComunaVO>();
-		limpiarCheck();
+		//limpiarCheck();
 		System.out.println("fin limpiar");
 	}
 	
@@ -180,7 +180,7 @@ implements Serializable {
 		this.idDistribucionInicialPercapita = (Integer) getTaskDataVO().getData().get("_idDistribucionInicialPercapita");
 		System.out.println("this.idDistribucionInicialPercapita->"+this.idDistribucionInicialPercapita);
 		this.anoProceso = (Integer) getTaskDataVO().getData().get("_ano");
-		System.out.println("this.idDistribucionInicialPercapita->"+this.idDistribucionInicialPercapita);
+		System.out.println("this.anoProceso->"+this.anoProceso);
 		this.antecendentesComunaCalculado = modificacionDistribucionInicialPercapitaService.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(idDistribucionInicialPercapita, this.anoProceso);
 		if(this.antecendentesComunaCalculado  != null && this.antecendentesComunaCalculado .size() > 0){
 			initCheck();
@@ -452,8 +452,15 @@ implements Serializable {
 	}
 
 	public void setEmptyCheckColumn(boolean emptyCheckColumn) {
-		
 		this.emptyCheckColumn = emptyCheckColumn;
+	}
+
+	public Integer getAnoProceso() {
+		return anoProceso;
+	}
+
+	public void setAnoProceso(Integer anoProceso) {
+		this.anoProceso = anoProceso;
 	}
 	
 }

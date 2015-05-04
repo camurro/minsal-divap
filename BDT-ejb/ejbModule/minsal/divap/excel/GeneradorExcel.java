@@ -12,6 +12,7 @@ import java.util.List;
 
 import minsal.divap.excel.impl.AsignacionDesempenoDificilSheetExcel;
 import minsal.divap.excel.impl.AsignacionRecursosPercapitaSheetExcel;
+import minsal.divap.excel.impl.AsignacionRecursosPercapitaValorDesempenoDificialSheetExcel;
 import minsal.divap.excel.impl.CrearPlanillaCumplimientoMunicialProgramaSheetExcel;
 import minsal.divap.excel.impl.CrearPlanillaCumplimientoServicioProgramaSheetExcel;
 import minsal.divap.excel.impl.EstimacionFlujoCajaConsolidadorSheetExcel;
@@ -48,6 +49,7 @@ import minsal.divap.excel.impl.ReporteMonitoreoProgramaEstablecimientoSheetExcel
 import minsal.divap.excel.impl.ReportePoblacionPercapitaSheetExcel;
 import minsal.divap.excel.impl.ReporteRebajaSheetExcel;
 import minsal.divap.excel.interfaces.ExcelTemplate;
+import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
 import minsal.divap.vo.CajaMontoSummaryVO;
 import minsal.divap.vo.CellExcelVO;
 import minsal.divap.vo.ComponentesVO;
@@ -214,7 +216,7 @@ public class GeneradorExcel {
 				addSheet((PlanillaTrabajoCumplimientoReliquidacionMunicipalSheetExcel)excelSheet, sheetName);
 				return;
 			}
-			
+
 			if(excelSheet instanceof ReportePoblacionPercapitaSheetExcel){
 				addSheet((ReportePoblacionPercapitaSheetExcel)excelSheet, sheetName);
 				return;
@@ -283,21 +285,27 @@ public class GeneradorExcel {
 				addSheet((EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel)excelSheet, sheetName);
 				return;
 			}
-			
+
 			if(excelSheet instanceof CrearPlanillaCumplimientoServicioProgramaSheetExcel){
 				addSheet((CrearPlanillaCumplimientoServicioProgramaSheetExcel)excelSheet, sheetName);
 				return;
 			}
-			
+
 			if(excelSheet instanceof PlanillaTrabajoCumplimientoReliquidacionServicioSheetExcel){
 				addSheet((PlanillaTrabajoCumplimientoReliquidacionServicioSheetExcel)excelSheet, sheetName);
 				return;
 			}
-			
+
 			if(excelSheet instanceof PlanillaOficioConsultaDistribucionPercapitaSheetExcel){
 				addSheet((PlanillaOficioConsultaDistribucionPercapitaSheetExcel)excelSheet, sheetName);
 				return;
 			}
+
+			if(excelSheet instanceof AsignacionRecursosPercapitaValorDesempenoDificialSheetExcel){
+				addSheet((AsignacionRecursosPercapitaValorDesempenoDificialSheetExcel)excelSheet, sheetName);
+				return;
+			}
+
 
 			XSSFSheet sheet = null;
 			sheet = workbook.createSheet(sheetName);
@@ -398,7 +406,7 @@ public class GeneradorExcel {
 			}
 
 			List<ResumenProgramaMixtoVO> items = excelSheet.getItems();
-			
+
 			CellStyle cellStyleLong = workbook.createCellStyle();
 			cellStyleLong.setDataFormat(workbook.createDataFormat().getFormat("#,##0"));
 			Long totalS24 = 0l;
@@ -406,14 +414,14 @@ public class GeneradorExcel {
 			Long totalS22 = 0l;
 			Long totalS29 = 0l;
 			Long totalServicios = 0l;
-			
+
 			boolean sub24 = items.get(0).isSub24();
 			boolean sub21 = items.get(0).isSub21();
 			boolean sub22 = items.get(0).isSub22();
 			boolean sub29 = items.get(0).isSub29();
-			
+
 			System.out.println("addSheet sub24="+sub24+" sub21="+sub21+ " sub22="+sub22+" sub29="+sub29);
-			
+
 			int posicionColumna = 0;
 			for(ResumenProgramaMixtoVO resumenProgramaMixtoVO : items){
 				System.out.println("resumenProgramaMixtoVO.getTotalS21()="+resumenProgramaMixtoVO.getTotalS21()+" resumenProgramaMixtoVO.getTotalS22()="+resumenProgramaMixtoVO.getTotalS22()+" resumenProgramaMixtoVO.getTotalS24()="+resumenProgramaMixtoVO.getTotalS24()+" resumenProgramaMixtoVO.getTotalS29()="+resumenProgramaMixtoVO.getTotalS29());
@@ -5552,7 +5560,6 @@ public class GeneradorExcel {
 
 		List<List<Object>>  datalist = excelSheet.getDataList();
 		for(List<Object> rowData : datalist){
-			System.out.println("rowData.size()--->"+rowData.size());
 			int skipPosition = 0;
 			XSSFRow newRow = sheet.createRow(currentRow++);
 			for (; skipPosition < excelSheet.getOffsetColumns(); skipPosition++) {
@@ -6316,7 +6323,7 @@ public class GeneradorExcel {
 				contElementos++;
 			}
 		}
-		
+
 		if(excelSheet.getTotales() != null && excelSheet.getTotales().size() > 0){
 			currentCol = excelSheet.getPosicionColumnaInicial();
 			Integer currentRowTotales = 0;
@@ -6358,7 +6365,7 @@ public class GeneradorExcel {
 		}
 
 	}
-	
+
 	private void addSheet(CrearPlanillaCumplimientoServicioProgramaSheetExcel excelSheet, String sheetName){
 		XSSFSheet sheet = null;
 		Boolean hojaNueva = null;
@@ -6593,7 +6600,7 @@ public class GeneradorExcel {
 		}
 
 	}
-	
+
 	private void addSheet(PlanillaTrabajoCumplimientoReliquidacionServicioSheetExcel excelSheet, String sheetName){
 		XSSFSheet sheet = null;
 		Boolean hojaNueva = null;
@@ -6820,7 +6827,7 @@ public class GeneradorExcel {
 			hojaNueva = false;
 			sheet = workbook.getSheetAt(index);
 		}
-		 
+
 		Integer currentRow = 0;
 		XSSFRow row = sheet.createRow(currentRow++);
 		List<String> headers = excelSheet.getHeaders();
@@ -6841,7 +6848,7 @@ public class GeneradorExcel {
 			cell.setCellValue(headers.get(element));
 			cell.setCellStyle(style);
 		}
-		 
+
 		List<OficioConsultaDistribucionPerCapitaVO> item = excelSheet.getItems();
 		for(int i=0; i < item.size(); i++){
 			XSSFRow rowItems = sheet.getRow(currentRow);
@@ -6857,6 +6864,72 @@ public class GeneradorExcel {
 			}
 			currentRow++;
 		}
+	}
+
+	private void addSheet(AsignacionRecursosPercapitaValorDesempenoDificialSheetExcel excelSheet, String sheetName){
+		XSSFSheet sheet = null;
+		sheet = workbook.createSheet(sheetName);
+		int currentRow = 0;
+		for(; currentRow < excelSheet.getOffsetRows(); ){
+			sheet.createRow(currentRow++);
+		}
+
+		XSSFRow row = sheet.createRow(currentRow++);
+		List<String> headers = excelSheet.getHeaders();
+		CellStyle style = workbook.createCellStyle();
+		style.setFillBackgroundColor(IndexedColors.BLUE.getIndex());
+		style.setFillPattern(CellStyle.ALIGN_FILL);
+		Font font = workbook.createFont();
+		font.setColor(IndexedColors.WHITE.getIndex());
+		style.setFont(font);
+		for (int element = 0, skipPosition = 0; element < headers.size(); element++) {
+			if(element == 0){
+				for (; skipPosition < excelSheet.getOffsetColumns(); skipPosition++) {
+					row.createCell(skipPosition);
+				}
+			}
+			XSSFCell cell = row.createCell(skipPosition++);
+			cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+			cell.setCellValue(headers.get(element));
+			cell.setCellStyle(style);
+		}
+
+		List<AsignacionDistribucionPerCapitaVO> asignaciones = excelSheet.getItems();
+
+		if(asignaciones != null && asignaciones.size() > 0){
+			for(int i=0; i < asignaciones.size(); i++){
+				XSSFRow rowItems = sheet.getRow(currentRow);
+				if(rowItems == null){
+					rowItems = sheet.createRow(currentRow);
+				}
+				for(int celda = 0; celda < 5; celda++){
+					XSSFCell cellItem = rowItems.getCell(celda);
+					if(cellItem == null){
+						cellItem = rowItems.createCell(celda);
+					}
+					switch (celda) {
+					case 0:
+						cellItem.setCellValue(String.valueOf((i+1)));
+						break;
+					case 1:
+						cellItem.setCellValue(asignaciones.get(i).getRegion());
+						break;
+					case 2:
+						cellItem.setCellValue(asignaciones.get(i).getServicio());
+						break;
+					case 3:
+						cellItem.setCellValue(asignaciones.get(i).getComuna());
+						break;
+					default:
+						cellItem.setCellValue(String.valueOf(asignaciones.get(i).getValorDesempenoDificil()));
+						break;
+					}
+					
+				}
+				currentRow++;
+			}
+		}
+
 	}
 
 }

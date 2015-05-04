@@ -26050,6 +26050,48 @@ INSERT INTO cumplimiento_programa(id_cumplimiento_programa, programa, porcentaje
     
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (20, 'Planilla Oficio Consulta');
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (21, 'Toma Razón Decreto Aporte Estatal');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (22, 'Planilla Oficio Consulta');
+
+ALTER TABLE antecendentes_comuna
+  ADD COLUMN numero_resolucion integer;
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (179, 'Plantilla Número Resolución');
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (180, 'Planilla Número Resolución');
+
+ALTER TABLE documento_distribucion_inicial_percapita
+   ALTER COLUMN id_distribucion_inicial_percapita DROP NOT NULL;
+
+
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15203, 'OTRO01',1, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15204, 'OTRO02',2, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15205, 'OTRO03',3, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15206, 'OTRO04',4, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15207, 'OTRO05',5, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15208, 'OTRO06',6, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15209, 'OTRO07',7, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15210, 'OTRO08',8, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15211, 'OTRO09',9, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15212, 'OTRO10',10, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15213, 'OTRO11',11, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15214, 'OTRO12',12, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15215, 'OTRO13',13, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15216, 'OTRO14',14, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15217, 'OTRO15',15, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15218, 'OTRO16',16, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15219, 'OTRO17',17, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15220, 'OTRO18',18, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15221, 'OTRO19',19, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15222, 'OTRO20',20, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15223, 'OTRO21',21, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15224, 'OTRO22',22, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15225, 'OTRO23',23, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15226, 'OTRO24',24, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15227, 'OTRO25',25, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15228, 'OTRO26',26, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15229, 'OTRO27',27, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15230, 'OTRO28',28, true);
+INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15231, 'OTRO42',42, true);
+
 
 
 

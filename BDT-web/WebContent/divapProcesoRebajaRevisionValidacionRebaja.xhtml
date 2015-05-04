@@ -110,39 +110,31 @@
 
 					<p:panel styleClass="appMenu">
 						<h4>Filtros de Búsqueda:</h4>
-						<h:panelGrid columns="4" id="busqueda_mis_tareas">
-							<h:panelGrid columns="2">
+						<p:panelGrid columns="8" id="busqueda_mis_tareas">
 								<h:outputText value="Región: " styleClass="inputLabel" />
 								<p:selectOneMenu value="#{procesoRebajaValidarMontosController.regionSeleccionada}">
-								<p:ajax listener="#{procesoRebajaValidarMontosController.cargaServicios}" update="servicios comunas" />
-								<f:selectItem itemLabel="Seleccione" itemValue="" />  
-								<f:selectItems value="#{procesoRebajaValidarMontosController.listaRegiones}" itemLabel="#{region.descRegion}" var="region" itemValue="#{region.idRegion}"/> 
-							</p:selectOneMenu>
-							</h:panelGrid>
+									<p:ajax listener="#{procesoRebajaValidarMontosController.cargaServicios}" update="servicios comunas" />
+									<f:selectItem itemLabel="Seleccione" itemValue="" />  
+									<f:selectItems value="#{procesoRebajaValidarMontosController.listaRegiones}" itemLabel="#{region.descRegion}" var="region" itemValue="#{region.idRegion}"/> 
+								</p:selectOneMenu>
 
-							<h:panelGrid columns="2">
 								<h:outputText value="Servicio: " styleClass="inputLabel" />
 								<p:selectOneMenu id="servicios"  value="#{procesoRebajaValidarMontosController.servicioSeleccionado}">
-								<p:ajax listener="#{procesoRebajaValidarMontosController.cargaComunas}" update="comunas hiddenFirstTime" />
-								<f:selectItem itemLabel="Seleccione" itemValue="" />  
-								<f:selectItems value="#{procesoRebajaValidarMontosController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
-							</p:selectOneMenu>
-							</h:panelGrid>
+									<p:ajax listener="#{procesoRebajaValidarMontosController.cargaComunas}" update="comunas hiddenFirstTime" />
+									<f:selectItem itemLabel="Seleccione" itemValue="" />  
+									<f:selectItems value="#{procesoRebajaValidarMontosController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
+								</p:selectOneMenu>
 
-							<h:panelGrid columns="2">
 								<h:outputText value="Comuna: " styleClass="inputLabel" />
-								<p:selectCheckboxMenu id="comunas" value="#{procesoRebajaValidarMontosController.comunasSeleccionadas}" label="Seleccione" filter="true" filterText="Filter"
-									filterMatchMode="startsWith">
-									<f:selectItems value="#{procesoRebajaValidarMontosController.listaComunas}" itemLabel="#{comuna.descComuna}" var="comuna" itemValue="#{comuna.idComuna}"/>
-								</p:selectCheckboxMenu>
-							</h:panelGrid>
+								<p:selectOneMenu id="comunas"  value="#{procesoRebajaValidarMontosController.comunaSeleccionada}">
+									<f:selectItem itemLabel="Seleccione" itemValue="" />  
+									<f:selectItems value="#{procesoRebajaValidarMontosController.listaComunas}" itemLabel="#{comuna.descComuna}" var="comuna" itemValue="#{comuna.idComuna}"/> 
+								</p:selectOneMenu>
 
-							<h:panelGrid columns="2">
 								<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoRebajaValidarMontosController.buscarRebaja}" oncomplete="message();" update="tablaMisTareas hiddenFirstTime hiddenTotalIncumplimiento"/>
 								<p:commandButton value="Limpiar" styleClass=" x-btn-text icon-guardar" icon="ui-icon-trash" actionListener="#{procesoRebajaValidarMontosController.limpiar}" update="tablaMisTareas busqueda_mis_tareas hiddenFirstTime" />
-							</h:panelGrid>
 							
-						</h:panelGrid>
+						</p:panelGrid>
 					</p:panel>
 					<br />
 					

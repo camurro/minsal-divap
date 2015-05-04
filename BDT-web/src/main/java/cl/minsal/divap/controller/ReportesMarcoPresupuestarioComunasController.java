@@ -33,10 +33,10 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 @ViewScoped public class ReportesMarcoPresupuestarioComunasController extends BaseController implements Serializable {
 
 	private static final long serialVersionUID = 4093661401216674878L;
-	private Integer valorComboServicio;
+	private String valorComboServicio;
 	private Integer valorComboPrograma;
-	private Integer valorComboComuna;
-	private Integer valorComboEstablecimiento;
+	private String valorComboComuna;
+	private String valorComboEstablecimiento;
 	
 	private Integer idPlanillaDocComuna;
 	private String docIdComunaDownload;
@@ -129,14 +129,14 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 		this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
 		this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
 		
-		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMARCOPRESPUESTARIOCOMUNA);
+		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMARCOPRESPUESTARIOCOMUNA, getAnoEnCurso());
 		if(this.idPlanillaDocComuna == null){
-			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteMarcoPresupuestarioComuna();
+			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteMarcoPresupuestarioComuna(getAnoEnCurso());
 		}
 		
-		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMARCOPRESPUESTARIOSERVICIO);
+		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMARCOPRESPUESTARIOSERVICIO, getAnoEnCurso());
 		if(this.idPlanillaDocEstablecimiento == null){
-			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteMarcoPresupuestarioServicios();
+			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteMarcoPresupuestarioServicios(getAnoEnCurso());
 		}
 		
 		Integer currentTab = 0;
@@ -144,7 +144,6 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 		tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO22);
 		tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO24);
 		tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO29);
-//		cargarProgramas();
 
 	}
 
@@ -152,14 +151,9 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 		if(event.getTab() != null){
 			System.out.println("Tab Changed, Active Tab: " + event.getTab().getTitle());
 			System.out.println("event.getTab().getId(): " + event.getTab().getId());
-			this.valorComboPrograma = 0;
-			this.valorComboComuna = 0;
-			this.valorComboEstablecimiento = 0;
-			
-//			this.reporteMarcoPresupuestarioEstablecimientoVOSub21 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
-//			this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
-//			this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
-//			this.reporteMarcoPresupuestarioVOSub24 = new ArrayList<ReporteMarcoPresupuestarioComunaVO>();
+			this.valorComboPrograma = null;
+			this.valorComboComuna =  null;
+			this.valorComboEstablecimiento =  null;
 			
 			
 			if(event.getTab().getId().equals("Sub21")){
@@ -200,65 +194,89 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 	}
 	
 	public void cargarComunas(){
-		if(getValorComboServicio() != null){
-			if(getValorComboServicio().intValue() != 0){
-				servicioSeleccionado = servicioSaludService.getServicioSaludById(getValorComboServicio());
-				this.comunas = servicioSeleccionado.getComunas();
-			}else{
-				this.comunas = new ArrayList<ComunaSummaryVO>();
-				reporteMarcoPresupuestarioVOSub24 = new ArrayList<ReporteMarcoPresupuestarioComunaVO>();
-			}
+		Integer idServicio = ((getValorComboServicio() == null || getValorComboServicio().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicio()));
+		if(idServicio != null){
+			servicioSeleccionado = servicioSaludService.getServicioSaludById(idServicio);
+			this.comunas = servicioSeleccionado.getComunas();
+		}else{
+			this.comunas = new ArrayList<ComunaSummaryVO>();
+			reporteMarcoPresupuestarioVOSub24 = new ArrayList<ReporteMarcoPresupuestarioComunaVO>();
 		}
 	}
 	
 	public void cargarEstablecimientos(){
-		if(getValorComboServicio() != null){
-			if(getValorComboServicio().intValue() != 0){
-				servicioSeleccionado = servicioSaludService.getServicioSaludById(getValorComboServicio());
-				this.establecimientos = servicioSeleccionado.getEstableclimientos();
-
-			}else{
-				this.establecimientos = new ArrayList<EstablecimientoSummaryVO>();
-				this.reporteMarcoPresupuestarioEstablecimientoVOSub21 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
-				this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
-				this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
-			}
+		Integer idServicio = ((getValorComboServicio() == null || getValorComboServicio().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicio()));
+		if(idServicio != null){
+			servicioSeleccionado = servicioSaludService.getServicioSaludById(idServicio);
+			this.establecimientos = servicioSeleccionado.getEstableclimientos();
+		}else{
+			this.establecimientos = new ArrayList<EstablecimientoSummaryVO>();
+			this.reporteMarcoPresupuestarioEstablecimientoVOSub21 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
+			this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
+			this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
 		}
 	}
 
 	public void cargarTablaServiciosFiltradosComuna(){
-		System.out.println("getValorComboComuna() --> "+getValorComboComuna());
-		System.out.println("this.subtituloSeleccionado ---> "+this.subtituloSeleccionado);
-		this.reporteMarcoPresupuestarioVOSub24 = reportesServices.getReporteMarcoPorComunaFiltroServicioComuna(getValorComboServicio(), this.subtituloSeleccionado, getValorComboComuna(), getLoggedUsername());
+		System.out.println("this.subtituloSeleccionado ---> " + this.subtituloSeleccionado);
+		System.out.println("getValorComboServicio() --> "+getValorComboServicio());
+		System.out.println("getValorComboComuna() --> " + getValorComboComuna());
+		Integer idServicio = ((getValorComboServicio() == null || getValorComboServicio().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicio()));
+		Integer idComuna = ((getValorComboComuna() == null || getValorComboComuna().trim().isEmpty()) ? null : Integer.parseInt(getValorComboComuna()));
+		this.reporteMarcoPresupuestarioVOSub24 = reportesServices.getReporteMarcoPorComunaFiltroServicioComuna(idServicio, idComuna, this.subtituloSeleccionado, getLoggedUsername(), getAnoEnCurso());
 	}
 	
 	public void cargarTablaServiciosFiltradosComunaPrograma(){
 		System.out.println("getValorComboComuna() --> "+getValorComboComuna());
 		System.out.println("this.subtituloSeleccionado ---> "+this.subtituloSeleccionado);
-		
-		this.reporteMarcoPresupuestarioVOSub24 = reportesServices.getReporteMarcoPorComunaFiltroServicioComunaPrograma(getValorComboPrograma(), getValorComboServicio(), this.subtituloSeleccionado, getValorComboComuna(), getLoggedUsername());
+		Integer idServicio = ((getValorComboServicio() == null || getValorComboServicio().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicio()));
+		Integer idComuna = ((getValorComboComuna() == null || getValorComboComuna().trim().isEmpty()) ? null : Integer.parseInt(getValorComboComuna()));
+		this.reporteMarcoPresupuestarioVOSub24 = reportesServices.getReporteMarcoPorComunaFiltroServicioComunaPrograma(getValorComboPrograma(), idServicio, this.subtituloSeleccionado, idComuna, getLoggedUsername());
+	}
+
+	public void cargarTablaMarcoServiciosSub21(){
+		System.out.println("debiera cargar la tabla");
+		System.out.println("getValorComboServicio() --> "+getValorComboServicio());
+		System.out.println("getValorComboEstablecimiento() --> "+getValorComboEstablecimiento());
+		Integer idServicio = ((getValorComboServicio() == null || getValorComboServicio().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicio()));
+		Integer idEstablecimiento = ((getValorComboEstablecimiento() == null || getValorComboEstablecimiento().trim().isEmpty()) ? null : Integer.parseInt(getValorComboEstablecimiento()));
+		this.reporteMarcoPresupuestarioEstablecimientoVOSub21 = reportesServices.getReporteMarcoPorServicioEstablecimiento(idServicio, idEstablecimiento, Subtitulo.SUBTITULO21, getAnoEnCurso());
+		this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
+		this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
+		System.out.println("fin cargarTablaMarcoServiciosSub21");
+	}
+
+	public void cargarTablaMarcoServiciosSub22(){
+		System.out.println("debiera cargar la tabla");
+		System.out.println("getValorComboServicio() --> "+getValorComboServicio());
+		System.out.println("getValorComboEstablecimiento() --> "+getValorComboEstablecimiento());
+		Integer idServicio = ((getValorComboServicio() == null || getValorComboServicio().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicio()));
+		Integer idEstablecimiento = ((getValorComboEstablecimiento() == null || getValorComboEstablecimiento().trim().isEmpty()) ? null : Integer.parseInt(getValorComboEstablecimiento()));
+		this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = reportesServices.getReporteMarcoPorServicioEstablecimiento(idServicio, idEstablecimiento, Subtitulo.SUBTITULO22, getAnoEnCurso());
+		this.reporteMarcoPresupuestarioEstablecimientoVOSub21 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
+		this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
+		System.out.println("fin cargarTablaMarcoServiciosSub22");
 	}
 	
-//	}
-
-	public void cargarTablaMarcoServicios(){
+	public void cargarTablaMarcoServiciosSub29(){
 		System.out.println("debiera cargar la tabla");
+		System.out.println("getValorComboServicio() --> "+getValorComboServicio());
 		System.out.println("getValorComboEstablecimiento() --> "+getValorComboEstablecimiento());
-		
-		this.reporteMarcoPresupuestarioEstablecimientoVOSub21 = reportesServices.getReporteMarcoPorServicioEstablecimiento(getValorComboServicio(), getValorComboEstablecimiento(), Subtitulo.SUBTITULO21);
-		this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = reportesServices.getReporteMarcoPorServicioEstablecimiento(getValorComboServicio(), getValorComboEstablecimiento(), Subtitulo.SUBTITULO22);
-		this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = reportesServices.getReporteMarcoPorServicioEstablecimiento(getValorComboServicio(), getValorComboEstablecimiento(), Subtitulo.SUBTITULO29);
-		
+		Integer idServicio = ((getValorComboServicio() == null || getValorComboServicio().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicio()));
+		Integer idEstablecimiento = ((getValorComboEstablecimiento() == null || getValorComboEstablecimiento().trim().isEmpty()) ? null : Integer.parseInt(getValorComboEstablecimiento()));
+		this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = reportesServices.getReporteMarcoPorServicioEstablecimiento(idServicio, idEstablecimiento, Subtitulo.SUBTITULO29, getAnoEnCurso());
+		this.reporteMarcoPresupuestarioEstablecimientoVOSub21 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
+		this.reporteMarcoPresupuestarioEstablecimientoVOSub22 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
+		System.out.println("fin cargarTablaMarcoServiciosSub29");
 	}
 
 
-
-	public Integer getValorComboServicio() {
+	public String getValorComboServicio() {
 		return valorComboServicio;
 	}
 
 
-	public void setValorComboServicio(Integer valorComboServicio) {
+	public void setValorComboServicio(String valorComboServicio) {
 		this.valorComboServicio = valorComboServicio;
 	}
 
@@ -270,12 +288,12 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 		this.valorComboPrograma = valorComboPrograma;
 	}
 
-	public Integer getValorComboComuna() {
+	public String getValorComboComuna() {
 		return valorComboComuna;
 	}
 
 
-	public void setValorComboComuna(Integer valorComboComuna) {
+	public void setValorComboComuna(String valorComboComuna) {
 		this.valorComboComuna = valorComboComuna;
 	}
 
@@ -368,11 +386,11 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 		this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = reporteMarcoPresupuestarioEstablecimientoVOSub29;
 	}
 
-	public Integer getValorComboEstablecimiento() {
+	public String getValorComboEstablecimiento() {
 		return valorComboEstablecimiento;
 	}
 
-	public void setValorComboEstablecimiento(Integer valorComboEstablecimiento) {
+	public void setValorComboEstablecimiento(String valorComboEstablecimiento) {
 		this.valorComboEstablecimiento = valorComboEstablecimiento;
 	}
 
@@ -421,7 +439,7 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 
 	public Integer getAnoEnCurso() {
 		if(anoEnCurso == null){
-			anoEnCurso = reportesServices.getAnoCurso() + 1;
+			anoEnCurso = reportesServices.getAnoCurso();
 		}
 		return anoEnCurso;
 	}

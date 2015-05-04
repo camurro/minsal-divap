@@ -245,17 +245,9 @@
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
-							<p:column rendered="#{procesoModificacionAsignacionPerCapitaValidarMontosController.checkAsigDesempenoDificil}">
-							<f:facet name="header">
-								<h:outputText value="Asig. Desempeño Dificil" />
-							</f:facet>
-							<h:outputText value="#{_montoDistribucion.valorDesempenoDificil}">
-								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
-							</h:outputText>
-						</p:column>
 						<p:column rendered="#{procesoModificacionAsignacionPerCapitaValidarMontosController.checkPerCapitaAno}">
 							<f:facet name="header">
-								<h:outputText value="Per Capita Año ($#{procesoModificacionAsignacionPerCapitaValidarMontosController.anoCurso})" />
+								<h:outputText value="Per Capita Año ($#{procesoModificacionAsignacionPerCapitaValidarMontosController.anoProceso})" />
 							</f:facet>
 							<h:outputText value="#{_montoDistribucion.valorPercapitaAno}">
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
@@ -263,10 +255,18 @@
 						</p:column>
 						<p:column rendered="#{procesoModificacionAsignacionPerCapitaValidarMontosController.checkPerCapitaMes}">
 							<f:facet name="header">
-								<h:outputText value="Per Capita Mensual ($#{procesoModificacionAsignacionPerCapitaValidarMontosController.anoCurso})" />
+								<h:outputText value="Per Capita Mensual ($#{procesoModificacionAsignacionPerCapitaValidarMontosController.anoProceso})" />
 							</f:facet>
 							<h:outputText value="#{_montoDistribucion.valorPercapitaMes}">
 								<f:convertNumber currencyCode="CLP" type="number" maxFractionDigits="0" />
+							</h:outputText>
+						</p:column>
+						<p:column rendered="#{procesoModificacionAsignacionPerCapitaValidarMontosController.checkAsigDesempenoDificil}">
+							<f:facet name="header">
+								<h:outputText value="Asig. Desempeño Dificil Mensual" />
+							</f:facet>
+							<h:outputText value="#{_montoDistribucion.valorDesempenoDificil}">
+								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>
 					</p:dataTable>

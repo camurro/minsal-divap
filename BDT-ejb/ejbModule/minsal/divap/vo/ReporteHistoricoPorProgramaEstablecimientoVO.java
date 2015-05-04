@@ -12,7 +12,6 @@ public class ReporteHistoricoPorProgramaEstablecimientoVO implements Serializabl
 	private String servicio;
 	private String establecimiento;
 	private String programa;
-	private Long marcoAnoActualMenos9;
 	private Long marcoAnoActualMenos8;
 	private Long marcoAnoActualMenos7;
 	private Long marcoAnoActualMenos6;
@@ -33,7 +32,6 @@ public class ReporteHistoricoPorProgramaEstablecimientoVO implements Serializabl
 		this.servicio = servicio;
 		this.establecimiento = establecimiento;
 		this.programa = programa;
-		this.marcoAnoActualMenos9 = marcoAnoActualMenos9;
 		this.marcoAnoActualMenos8 = marcoAnoActualMenos8;
 		this.marcoAnoActualMenos7 = marcoAnoActualMenos7;
 		this.marcoAnoActualMenos6 = marcoAnoActualMenos6;
@@ -67,12 +65,6 @@ public class ReporteHistoricoPorProgramaEstablecimientoVO implements Serializabl
 	}
 	public void setPrograma(String programa) {
 		this.programa = programa;
-	}
-	public Long getMarcoAnoActualMenos9() {
-		return marcoAnoActualMenos9;
-	}
-	public void setMarcoAnoActualMenos9(Long marcoAnoActualMenos9) {
-		this.marcoAnoActualMenos9 = marcoAnoActualMenos9;
 	}
 	public Long getMarcoAnoActualMenos8() {
 		return marcoAnoActualMenos8;
@@ -134,7 +126,6 @@ public class ReporteHistoricoPorProgramaEstablecimientoVO implements Serializabl
 		return "ReporteHistoricoPorProgramaEstablecimientoVO [region=" + region
 				+ ", servicio=" + servicio + ", establecimiento="
 				+ establecimiento + ", programa=" + programa
-				+ ", marcoAnoActualMenos9=" + marcoAnoActualMenos9
 				+ ", marcoAnoActualMenos8=" + marcoAnoActualMenos8
 				+ ", marcoAnoActualMenos7=" + marcoAnoActualMenos7
 				+ ", marcoAnoActualMenos6=" + marcoAnoActualMenos6
@@ -158,9 +149,6 @@ public class ReporteHistoricoPorProgramaEstablecimientoVO implements Serializabl
 		}
 		if(getPrograma() != null){
 			row.add(getPrograma());
-		}
-		if (getMarcoAnoActualMenos9() != null) {
-			row.add(getMarcoAnoActualMenos9());
 		}
 		if (getMarcoAnoActualMenos8() != null) {
 			row.add(getMarcoAnoActualMenos8());

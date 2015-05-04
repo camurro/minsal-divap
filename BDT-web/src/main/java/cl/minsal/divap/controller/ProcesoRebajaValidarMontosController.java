@@ -48,7 +48,7 @@ implements Serializable {
 	private List<ServiciosVO> listaServicios;
 	private String servicioSeleccionado;
 	private List<ComunaVO> listaComunas;
-	private List<String> comunasSeleccionadas;
+	private String comunaSeleccionada;
 	private List<PlanillaRebajaCalculadaVO> rebajaComunas;
 	private PlanillaRebajaCalculadaVO selectedPlanilla;  
 	private List<Integer> allDocuments;
@@ -112,28 +112,23 @@ implements Serializable {
 	}
 
 	public void cargaServicios(){
-		if(regionSeleccionada != null && !regionSeleccionada.equals("")){
-			listaServicios=utilitariosService.getServiciosByRegion(Integer.parseInt(regionSeleccionada));
+		if(regionSeleccionada != null && !regionSeleccionada.trim().isEmpty()){
+			listaServicios = utilitariosService.getServiciosByRegion(Integer.parseInt(regionSeleccionada));
 		}else{
 			listaServicios = new ArrayList<ServiciosVO>();
 			listaComunas = new ArrayList<ComunaVO>();
-			comunasSeleccionadas = new ArrayList<String>();
-			servicioSeleccionado = "";
+			comunaSeleccionada = null;
+			servicioSeleccionado = null;
 		}
 	}
 
 	public void cargaComunas(){
-		if(servicioSeleccionado != null && !servicioSeleccionado.equals("")){
+		if(servicioSeleccionado != null && !servicioSeleccionado.trim().isEmpty()){
 			listaComunas = utilitariosService.getComunasByServicio(Integer.parseInt(servicioSeleccionado));
-			comunasSeleccionadas = new ArrayList<String>();
-			if(listaComunas != null && listaComunas.size() > 0){
-				for(ComunaVO comuna : listaComunas){
-					comunasSeleccionadas.add(comuna.getIdComuna().toString());
-				}
-			}
+			comunaSeleccionada = null;
 		}else{
 			listaComunas = new ArrayList<ComunaVO>();
-			comunasSeleccionadas = new ArrayList<String>();
+			comunaSeleccionada = null;
 		}
 		fisrtTime = 1;
 		totalIncumplimiento = 0;
@@ -141,14 +136,9 @@ implements Serializable {
 
 	public void buscarRebaja(){
 		System.out.println("ProcesoRebajaValidarMontosController:buscarRebaja");
-		List<Integer> idComunas = new ArrayList<Integer>();
-		if(comunasSeleccionadas != null && comunasSeleccionadas.size() > 0){
-			for(String comunas : comunasSeleccionadas){
-				Integer idComuna = Integer.parseInt(comunas);
-				idComunas.add(idComuna);
-			}
-		}
-		rebajaComunas = rebajaService.getRebajasByComuna(this.idProcesoRebaja, idComunas, this.ano);
+		Integer idServicio = ((servicioSeleccionado != null && !servicioSeleccionado.trim().isEmpty()) ? Integer.parseInt(servicioSeleccionado) : null);
+		Integer idComuna = ((comunaSeleccionada != null && !comunaSeleccionada.trim().isEmpty()) ? Integer.parseInt(comunaSeleccionada) : null);
+		rebajaComunas = rebajaService.getRebajasByComuna(this.idProcesoRebaja, idServicio, idComuna, this.ano);
 		totalIncumplimiento = rebajaComunas.size();
 		fisrtTime++;
 		System.out.println("ProcesoRebajaValidarMontosController:buscarRebaja fin totalIncumplimiento="+totalIncumplimiento);
@@ -158,7 +148,7 @@ implements Serializable {
 		System.out.println("Limpiar-->");
 		this.regionSeleccionada = null;
 		this.servicioSeleccionado = null;
-		this.comunasSeleccionadas = new ArrayList<String>();
+		this.comunaSeleccionada =  null;
 		this.rebajaComunas = new ArrayList<PlanillaRebajaCalculadaVO>();
 		this.listaServicios = new ArrayList<ServiciosVO>();
 		this.listaComunas = new ArrayList<ComunaVO>();
@@ -300,12 +290,12 @@ implements Serializable {
 		return null;
 	}
 
-	public List<String> getComunasSeleccionadas() {
-		return comunasSeleccionadas;
+	public String getComunaSeleccionada() {
+		return comunaSeleccionada;
 	}
 
-	public void setComunasSeleccionadas(List<String> comunasSeleccionadas) {
-		this.comunasSeleccionadas = comunasSeleccionadas;
+	public void setComunaSeleccionada(String comunaSeleccionada) {
+		this.comunaSeleccionada = comunaSeleccionada;
 	}
 
 	public boolean isAprobar_() {

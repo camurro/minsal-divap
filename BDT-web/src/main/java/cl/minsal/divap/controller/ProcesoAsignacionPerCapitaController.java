@@ -126,9 +126,6 @@ implements Serializable {
 		this.validarMontosDistribucion = validarMontosDistribucion;
 	}
 
-	// divapProcesoAsignacionPerCapitaValidarMontosDistribucion: FIN
-
-	// divapProcesoAsignacionPerCapitaSeguimiento: INICIO
 	String actividadSeguimientoTitle = "";
 
 	public String getActividadSeguimientoTitle() {

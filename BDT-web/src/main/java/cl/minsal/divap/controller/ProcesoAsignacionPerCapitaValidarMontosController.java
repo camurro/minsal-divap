@@ -102,8 +102,8 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 			Integer idServicio = ((servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty()) ? null : Integer.parseInt(servicioSeleccionado));
 			this.antecendentesComunaCalculado = distribucionInicialPercapitaService.findAntecedentesComunaCalculadosByDistribucionInicialPercapita(idServicio,
 					idComuna, idDistribucionInicialPercapita);
-			System.out.println("this.antecendentesComunaCalculado.size()="+ ((this.antecendentesComunaCalculado == null) ? 0 : this.antecendentesComunaCalculado.size()));
 		}
+		System.out.println("this.antecendentesComunaCalculado.size()="+ ((this.antecendentesComunaCalculado == null) ? 0 : this.antecendentesComunaCalculado.size()));
 		System.out.println("fin buscar-->");
 	}
 
@@ -113,7 +113,7 @@ public class ProcesoAsignacionPerCapitaValidarMontosController extends AbstractT
 		comunaSeleccionada = "";
 		antecendentesComunaCalculado = new ArrayList<AsignacionDistribucionPerCapitaVO>();
 		comunas = new ArrayList<ComunaVO>();
-		limpiarCheck();
+		//limpiarCheck();
 		System.out.println("fin limpiar");
 	}
 	
