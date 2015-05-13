@@ -368,5 +368,20 @@ public class ReliquidacionDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public Reliquidacion getReliquidacionByProgramaAno(Integer idProgramaAno){
+		try{
+			TypedQuery<Reliquidacion> query = this.em.createNamedQuery("Reliquidacion.findByIdProgramaAno", Reliquidacion.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			List<Reliquidacion> results = query.getResultList();
+			if(results != null && results.size() > 0){
+				return results.get(0);
+			}
+			return null;
+		}catch (Exception e){
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
 
 }

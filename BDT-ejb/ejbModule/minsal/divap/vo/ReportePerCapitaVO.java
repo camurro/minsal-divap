@@ -22,7 +22,10 @@ public class ReportePerCapitaVO implements Serializable{
 	
 	private Long desempenoDificil;
 	private Long aporteEstatal;
-	private Long rebajaIAAPS;
+	private Long rebajaIAAPSCorte1;
+	private Long rebajaIAAPSCorte2;
+	private Long rebajaIAAPSCorte3;
+	private Long rebajaIAAPSCorte4;
 	private Long descuentoIncentivoRetiro;
 	private Long aporteEstatalFinal;
 	
@@ -39,14 +42,18 @@ public class ReportePerCapitaVO implements Serializable{
 			
 		this.desempenoDificil = 0L;
 		this.aporteEstatal = 0L;
-		this.rebajaIAAPS = 0L;
+		this.rebajaIAAPSCorte1 = null;
+		this.rebajaIAAPSCorte2 = null;
+		this.rebajaIAAPSCorte3 = null;
+		this.rebajaIAAPSCorte4 = null;
 		this.descuentoIncentivoRetiro = 0L;
 		this.aporteEstatalFinal = 0L;
 		
 	}
 	
 	public ReportePerCapitaVO(String region, String servicio, String comuna, String clasificacion, Long valorPercapita, Integer poblacion, Integer poblacion65mayor,
-			Long percapita, Long desempenoDificil, Long aporteEstatal, Long rebajaIAAPS, Long descuentoIncentivoRetiro, Long aporteEstatalFinal){
+			Long percapita, Long desempenoDificil, Long aporteEstatal, Long rebajaIAAPSCorte1, Long rebajaIAAPSCorte2, Long rebajaIAAPSCorte3, Long rebajaIAAPSCorte4, 
+			Long descuentoIncentivoRetiro, Long aporteEstatalFinal){
 		super();
 		this.region = region;
 		this.servicio = servicio;
@@ -60,7 +67,10 @@ public class ReportePerCapitaVO implements Serializable{
 			
 		this.desempenoDificil = desempenoDificil;
 		this.aporteEstatal = aporteEstatal;
-		this.rebajaIAAPS = rebajaIAAPS;
+		this.rebajaIAAPSCorte1 = rebajaIAAPSCorte1;
+		this.rebajaIAAPSCorte2 = rebajaIAAPSCorte2;
+		this.rebajaIAAPSCorte3 = rebajaIAAPSCorte3;
+		this.rebajaIAAPSCorte4 = rebajaIAAPSCorte4;
 		this.descuentoIncentivoRetiro = descuentoIncentivoRetiro;
 		this.aporteEstatalFinal = aporteEstatalFinal;		
 	}
@@ -145,14 +155,6 @@ public class ReportePerCapitaVO implements Serializable{
 		this.aporteEstatal = aporteEstatal;
 	}
 
-	public Long getRebajaIAAPS() {
-		return rebajaIAAPS;
-	}
-
-	public void setRebajaIAAPS(Long rebajaIAAPS) {
-		this.rebajaIAAPS = rebajaIAAPS;
-	}
-
 	public Long getDescuentoIncentivoRetiro() {
 		return descuentoIncentivoRetiro;
 	}
@@ -170,7 +172,38 @@ public class ReportePerCapitaVO implements Serializable{
 	}
 
 	
-	
+	public Long getRebajaIAAPSCorte1() {
+		return rebajaIAAPSCorte1;
+	}
+
+	public void setRebajaIAAPSCorte1(Long rebajaIAAPSCorte1) {
+		this.rebajaIAAPSCorte1 = rebajaIAAPSCorte1;
+	}
+
+	public Long getRebajaIAAPSCorte2() {
+		return rebajaIAAPSCorte2;
+	}
+
+	public void setRebajaIAAPSCorte2(Long rebajaIAAPSCorte2) {
+		this.rebajaIAAPSCorte2 = rebajaIAAPSCorte2;
+	}
+
+	public Long getRebajaIAAPSCorte3() {
+		return rebajaIAAPSCorte3;
+	}
+
+	public void setRebajaIAAPSCorte3(Long rebajaIAAPSCorte3) {
+		this.rebajaIAAPSCorte3 = rebajaIAAPSCorte3;
+	}
+
+	public Long getRebajaIAAPSCorte4() {
+		return rebajaIAAPSCorte4;
+	}
+
+	public void setRebajaIAAPSCorte4(Long rebajaIAAPSCorte4) {
+		this.rebajaIAAPSCorte4 = rebajaIAAPSCorte4;
+	}
+
 	@Override
 	public String toString() {
 		return "ReportePerCapitaVO [region=" + region + ", servicio="
@@ -179,7 +212,7 @@ public class ReportePerCapitaVO implements Serializable{
 				+ ", poblacion=" + poblacion + ", poblacion65mayor="
 				+ poblacion65mayor + ", percapita=" + percapita
 				+ ", desempenoDificil=" + desempenoDificil + ", aporteEstatal="
-				+ aporteEstatal + ", rebajaIAAPS=" + rebajaIAAPS
+				+ aporteEstatal + ", rebajaIAAPSCorte1=" + rebajaIAAPSCorte1
 				+ ", descuentoIncentivoRetiro=" + descuentoIncentivoRetiro
 				+ ", aporteEstatalFinal=" + aporteEstatalFinal + "]";
 	}
@@ -218,8 +251,8 @@ public class ReportePerCapitaVO implements Serializable{
 		if(getAporteEstatal() != null){
 			row.add(StringUtil.longWithFormat(getAporteEstatal()));
 		}
-		if(getRebajaIAAPS() != null){
-			row.add(StringUtil.longWithFormat(getRebajaIAAPS()));
+		if(getRebajaIAAPSCorte1() != null){
+			row.add(StringUtil.longWithFormat(getRebajaIAAPSCorte1()));
 		}
 		if(getDescuentoIncentivoRetiro() != null){
 			row.add(StringUtil.longWithFormat(getDescuentoIncentivoRetiro()));
@@ -227,9 +260,7 @@ public class ReportePerCapitaVO implements Serializable{
 		if(getAporteEstatalFinal() != null){
 			row.add(StringUtil.longWithFormat(getAporteEstatalFinal()));
 		}
-		
 		return row;
 	}
-	
 
 }

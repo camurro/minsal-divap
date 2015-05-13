@@ -23,7 +23,6 @@ import minsal.divap.service.ServicioSaludService;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.SeguimientoVO;
-import minsal.divap.vo.ServiciosSummaryVO;
 
 import org.apache.log4j.Logger;
 import org.primefaces.event.FileUploadEvent;
@@ -62,6 +61,7 @@ implements Serializable {
 	private String mesActual;
 	//Variables de entrada tarea
 	private Integer idProceso;
+	private Integer ano;
 	
 	private ReferenciaDocumentoSummaryVO referenciaOrdinario;
 	private ReferenciaDocumentoSummaryVO referenciaPlanilla;
@@ -82,6 +82,7 @@ implements Serializable {
 		}
 		if(getTaskDataVO().getData().get("_idProceso") != null){
 			this.idProceso = (Integer)getTaskDataVO().getData().get("_idProceso");
+			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
 		}
 		bitacoraSeguimiento = estimacionFlujoCajaService.getBitacora(this.idProceso, TareasSeguimiento.HACERSEGUIMIENTOESTIMACIONFLUJOCAJACONSOLIDADOR);
 		plantillaCorreoId = estimacionFlujoCajaService.getPlantillaCorreo(TipoDocumentosProcesos.PLANTILLACORREOORDINARIOPLANILLA);
@@ -169,7 +170,8 @@ implements Serializable {
 				conCopiaOculta = Arrays.asList(this.cco.split("\\,")); 
 			}
 			System.out.println("ProcesoRebajaTramitacionController-->sendMail");
-			estimacionFlujoCajaService.createSeguimientoFlujoCajaConsolidador(idProceso, TareasSeguimiento.HACERSEGUIMIENTOESTIMACIONFLUJOCAJACONSOLIDADOR, subject, body, getLoggedUsername(), para, conCopia, conCopiaOculta, documentos);
+			estimacionFlujoCajaService.createSeguimientoFlujoCajaConsolidador(idProceso, TareasSeguimiento.HACERSEGUIMIENTOESTIMACIONFLUJOCAJACONSOLIDADOR, subject, body, getLoggedUsername(),
+					para, conCopia, conCopiaOculta, documentos, getAno());
 		}catch(Exception e){
 			e.printStackTrace();
 			target = null;
@@ -233,7 +235,7 @@ implements Serializable {
 				Integer idServicio = null;
 				System.out.println("docOrdinario -> " + docOrdinario);
 				System.out.println("idServicio -> " + idServicio);
-				estimacionFlujoCajaService.moveToAlfrescoFlujoCaja(this.idProceso, idServicio, docOrdinario, TipoDocumentosProcesos.ORDINARIOPROGRAMACIONCAJA, this.lastVersion);
+				estimacionFlujoCajaService.moveToAlfrescoFlujoCaja(this.idProceso, idServicio, docOrdinario, TipoDocumentosProcesos.ORDINARIOPROGRAMACIONCAJA, this.lastVersion, getAno());
 				referenciaOrdinario = estimacionFlujoCajaService.getLastDocumentSummaryEstimacionFlujoCajaTipoDocumento(idProceso, TipoDocumentosProcesos.ORDINARIOPROGRAMACIONCAJA);
 			}catch (Exception e) {
 				e.printStackTrace();
@@ -394,4 +396,12 @@ implements Serializable {
 		this.referenciaPlanilla = referenciaPlanilla;
 	}
 
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
+	
 }

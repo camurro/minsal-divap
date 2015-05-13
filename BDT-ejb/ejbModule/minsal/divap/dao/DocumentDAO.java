@@ -181,7 +181,7 @@ public class DocumentDAO {
 	public ReferenciaDocumento getLastDocumentByTypeEstimacionFlujoCaja(Integer idProgramaAno, TipoDocumentosProcesos tipoDocumento) {
 		ReferenciaDocumento referenciaDocumento = null;
 		try {
-			TypedQuery<DocumentoEstimacionflujocaja> query = this.em.createNamedQuery("DocumentoEstimacionflujocaja.findByProgramaAnoTipoDocumento", DocumentoEstimacionflujocaja.class);
+			TypedQuery<DocumentoEstimacionflujocaja> query = this.em.createNamedQuery("DocumentoEstimacionflujocaja.findByTypesIdProgramaAno", DocumentoEstimacionflujocaja.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
 			query.setParameter("idTipoDocumento", tipoDocumento.getId());
 			List<DocumentoEstimacionflujocaja> referenciasDocumentos = query.getResultList(); 

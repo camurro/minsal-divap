@@ -56,6 +56,19 @@ public class ConveniosDAO {
 		}
 	}
 	
+	public ConvenioComuna getConvenioComunaByNumeroResolucion(Integer numeroResolucion){
+		try {
+			TypedQuery<ConvenioComuna> query = this.em.createNamedQuery("ConvenioComuna.findByNumeroResolucion", ConvenioComuna.class);
+			query.setParameter("numeroResolucion", numeroResolucion);
+			List<ConvenioComuna> results = query.getResultList();
+			if (results.size() > 0)
+				return results.get(0);
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	public ConvenioServicio getConvenioServicioById(Integer id){
 		try {
 			TypedQuery<ConvenioServicio> query = this.em.createNamedQuery("ConvenioServicio.findByIdConvenioServicio", ConvenioServicio.class);
@@ -65,6 +78,19 @@ public class ConveniosDAO {
 				return results.get(0);
 			return null;
 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public ConvenioServicio getConvenioServicioByNumeroResolucion(Integer numeroResolucion){
+		try {
+			TypedQuery<ConvenioServicio> query = this.em.createNamedQuery("ConvenioServicio.findByNumeroResolucion", ConvenioServicio.class);
+			query.setParameter("numeroResolucion", numeroResolucion);
+			List<ConvenioServicio> results = query.getResultList();
+			if (results.size() > 0)
+				return results.get(0);
+			return null;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

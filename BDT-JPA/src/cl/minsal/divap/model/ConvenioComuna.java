@@ -40,6 +40,7 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name = "ConvenioComuna.getConvenioComunaByIdConvenio", query = "SELECT c FROM ConvenioComuna c WHERE c.convenio.idConvenio = :idConvenio"),
 	@NamedQuery(name = "ConvenioComuna.findByIdConvenioComuna", query = "SELECT c FROM ConvenioComuna c WHERE c.idConvenioComuna = :idConvenioComuna"),
 	@NamedQuery(name = "ConvenioComuna.findByFecha", query = "SELECT c FROM ConvenioComuna c WHERE c.fecha = :fecha"),
+	@NamedQuery(name = "ConvenioComuna.findByNumeroResolucion", query = "SELECT c FROM ConvenioComuna c WHERE c.numeroResolucion = :numeroResolucion"),
 	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdServicioIdComponenteIdSubtitulo", query = "SELECT c FROM ConvenioComuna c JOIN c.convenioComunaComponentes cc WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idComuna.servicioSalud.id =:idServicio and cc.componente.id IN (:idComponentes) and cc.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
 	@NamedQuery(name = "ConvenioComuna.findByConveniosById", query = "SELECT c FROM ConvenioComuna c WHERE c.idConvenioComuna = :id"),
 	@NamedQuery(name = "ConvenioComuna.findByIdProgramaAnoIdComponentesIdComunas", query = "SELECT c FROM ConvenioComuna c JOIN c.convenioComunaComponentes cc WHERE c.idPrograma.idProgramaAno = :idProgramaAno and cc.componente.id IN (:idComponentes) and c.idComuna.id IN (:idComunas)"),
@@ -87,6 +88,11 @@ public class ConvenioComuna implements Serializable {
 	@JoinColumn(name = "id_comuna", referencedColumnName = "id")
 	@ManyToOne
 	private Comuna idComuna;
+	@OneToMany(mappedBy = "numeroResolucionInicial")
+    private Set<ConvenioComuna> conveniosComuna;
+    @JoinColumn(name = "numero_resolucion_inicial", referencedColumnName = "id_convenio_comuna")
+    @ManyToOne
+    private ConvenioComuna numeroResolucionInicial;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "convenio")
 	private Set<DocumentoConvenioComuna> documentosConvenio;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "convenioComuna")
@@ -244,6 +250,22 @@ public class ConvenioComuna implements Serializable {
 
 	public void setFechaResolucion(Date fechaResolucion) {
 		this.fechaResolucion = fechaResolucion;
+	}
+
+	public Set<ConvenioComuna> getConveniosComuna() {
+		return conveniosComuna;
+	}
+
+	public void setConveniosComuna(Set<ConvenioComuna> conveniosComuna) {
+		this.conveniosComuna = conveniosComuna;
+	}
+
+	public ConvenioComuna getNumeroResolucionInicial() {
+		return numeroResolucionInicial;
+	}
+
+	public void setNumeroResolucionInicial(ConvenioComuna numeroResolucionInicial) {
+		this.numeroResolucionInicial = numeroResolucionInicial;
 	}
 
 }

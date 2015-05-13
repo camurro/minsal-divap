@@ -40,19 +40,19 @@
 										
 										<h:panelGrid>
 												<h:outputText value="Servicios: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbServicio" value="#{reporteEstadoSituacionProgramaController.valorComboServicio}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
+												<p:selectOneMenu id="cbServicio" value="#{reporteEstadoSituacionProgramaController.valorComboServicio}">
+												    <f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
 			           								<f:selectItems value="#{reporteEstadoSituacionProgramaController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
-				           							<p:ajax listener="#{reporteEstadoSituacionProgramaController.cargarComunas}" update="tabView" /> 
+				           							<p:ajax listener="#{reporteEstadoSituacionProgramaController.cargarComunasEstablecimientos}" update="tabView" /> 
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>
 										
 										<h:panelGrid>
 												<h:outputText value="Programas: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbPrograma" value="#{reporteEstadoSituacionProgramaController.valorComboPrograma}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
+												<p:selectOneMenu  id="cbPrograma" value="#{reporteEstadoSituacionProgramaController.valorComboPrograma}">
+												    <f:selectItem itemLabel="Seleccione Programa" itemValue="" />
 			           								<f:selectItems value="#{reporteEstadoSituacionProgramaController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
- 			           								<p:ajax listener="#{reporteEstadoSituacionProgramaController.visibilidadSubtitulos}" update="tabView" />  
+ 			           								<p:ajax listener="#{reporteEstadoSituacionProgramaController.recargarProgramas}" update="tabView" />  
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>
 
@@ -67,9 +67,9 @@
 								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
 								<p:selectOneMenu style="width:450px;" id="cbEstablecimiento"
 									value="#{reporteEstadoSituacionProgramaController.valorComboEstablecimiento}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
+									<f:selectItem itemLabel="Seleccione Establecimiento" itemValue="" />
 									<f:selectItems
-										value="#{reporteEstadoSituacionProgramaController.servicioSeleccionado.estableclimientos}"
+										value="#{reporteEstadoSituacionProgramaController.establecimientos}"
 										itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}"
 										var="establecimiento" />
 									
@@ -83,25 +83,21 @@
 						</h:panelGrid>
 
 							<p:dataTable resizableColumns="true" value="#{reporteEstadoSituacionProgramaController.reporteEstadoSituacionByServiciosVOSub21}" liveResize="true" var="_data"
-								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+								rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 
 								<p:columnGroup type="header">
 									<p:row>
-										<p:column rowspan="3" headerText="Servicio" />
-										<p:column rowspan="3" headerText="Establecimiento" />
-										<p:column rowspan="3" headerText="Componente" />
-										<p:column rowspan="3" headerText="$ Marco Presup. Inicial" />
-										<p:column rowspan="3" headerText="$ Marco Presup. Modificado" />
-									</p:row>
-									<p:row>
+										<p:column rowspan="2" headerText="Servicio" />
+										<p:column rowspan="2" headerText="Establecimiento" />
+										<p:column rowspan="2" headerText="Componente" />
+										<p:column rowspan="2" headerText="$ Marco Presup. Inicial" />
+										<p:column rowspan="2" headerText="$ Marco Presup. Modificado" />
 										<p:column colspan="2" headerText="Convenios Recibidos" />
 										<p:column colspan="2" headerText="Convenios Pendientes" />
 										<p:column colspan="2" headerText="Remesa Acumulada" />
 										<p:column colspan="2" headerText="Remesa Pendiente" />
 										<p:column colspan="2" headerText="Reliquidación" />
-
-										<p:column rowspan="3" headerText="$ Incremento" />
-
+										<p:column rowspan="2" headerText="$ Incremento" />
 									</p:row>
 
 									<p:row>
@@ -288,9 +284,9 @@
 								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
 								<p:selectOneMenu style="width:450px;" id="cbEstablecimientoSub22"
 									value="#{reporteEstadoSituacionProgramaController.valorComboEstablecimiento}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
+									<f:selectItem itemLabel="Seleccione Establecimiento" itemValue="" />
 									<f:selectItems
-										value="#{reporteEstadoSituacionProgramaController.servicioSeleccionado.estableclimientos}"
+										value="#{reporteEstadoSituacionProgramaController.establecimientos}"
 										itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}"
 										var="establecimiento" />
 									
@@ -304,25 +300,21 @@
 						</h:panelGrid>
 
 							<p:dataTable resizableColumns="true" value="#{reporteEstadoSituacionProgramaController.reporteEstadoSituacionByServiciosVOSub22}" liveResize="true" var="_data"
-								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+								rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 
 								<p:columnGroup type="header">
 									<p:row>
-										<p:column rowspan="3" headerText="Servicio" />
-										<p:column rowspan="3" headerText="Establecimiento" />
-										<p:column rowspan="3" headerText="Componente" />
-										<p:column rowspan="3" headerText="$ Marco Presup. Inicial" />
-										<p:column rowspan="3" headerText="$ Marco Presup. Modificado" />
-									</p:row>
-									<p:row>
+										<p:column rowspan="2" headerText="Servicio" />
+										<p:column rowspan="2" headerText="Establecimiento" />
+										<p:column rowspan="2" headerText="Componente" />
+										<p:column rowspan="2" headerText="$ Marco Presup. Inicial" />
+										<p:column rowspan="2" headerText="$ Marco Presup. Modificado" />
 										<p:column colspan="2" headerText="Convenios Recibidos" />
 										<p:column colspan="2" headerText="Convenios Pendientes" />
 										<p:column colspan="2" headerText="Remesa Acumulada" />
 										<p:column colspan="2" headerText="Remesa Pendiente" />
 										<p:column colspan="2" headerText="Reliquidación" />
-
-										<p:column rowspan="3" headerText="$ Incremento" />
-
+										<p:column rowspan="2" headerText="$ Incremento" />
 									</p:row>
 
 									<p:row>
@@ -337,6 +329,7 @@
 										<p:column headerText="$ Monto" />
 										<p:column headerText="%" />
 									</p:row>
+									
 								</p:columnGroup>
 
 								<p:column>
@@ -508,9 +501,9 @@
 								<h:outputText value="Comuna: " styleClass="inputLabel" />
 								<p:selectOneMenu style="width:650px;" id="cbComuna"
 									value="#{reporteEstadoSituacionProgramaController.valorComboComuna}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
+									<f:selectItem itemLabel="Seleccione Comuna" itemValue="" />
 									<f:selectItems
-										value="#{reporteEstadoSituacionProgramaController.servicioSeleccionado.comunas}"
+										value="#{reporteEstadoSituacionProgramaController.comunas}"
 										itemLabel="#{comuna.nombre}" itemValue="#{comuna.id}"
 										var="comuna" />
 								</p:selectOneMenu>
@@ -521,25 +514,22 @@
 						</h:panelGrid>							
 							
 							<p:dataTable resizableColumns="true" value="#{reporteEstadoSituacionProgramaController.reporteEstadoSituacionByComunaVOSub24}" liveResize="true" var="_data"
-								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+								rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 
 								<p:columnGroup type="header">
+								
 									<p:row>
-										<p:column rowspan="3" headerText="Servicio" />
-										<p:column rowspan="3" headerText="Comuna" />
-										<p:column rowspan="3" headerText="Componente" />
-										<p:column rowspan="3" headerText="$ Marco Presup. Inicial" />
-										<p:column rowspan="3" headerText="$ Marco Presup. Modificado" />
-									</p:row>
-									<p:row>
+										<p:column rowspan="2" headerText="Servicio" />
+										<p:column rowspan="2" headerText="Comuna" />
+										<p:column rowspan="2" headerText="Componente" />
+										<p:column rowspan="2" headerText="$ Marco Presup. Inicial" />
+										<p:column rowspan="2" headerText="$ Marco Presup. Modificado" />
 										<p:column colspan="2" headerText="Convenios Recibidos" />
 										<p:column colspan="2" headerText="Convenios Pendientes" />
 										<p:column colspan="2" headerText="Remesa Acumulada" />
 										<p:column colspan="2" headerText="Remesa Pendiente" />
 										<p:column colspan="2" headerText="Reliquidación" />
-
-										<p:column rowspan="3" headerText="$ Incremento" />
-
+										<p:column rowspan="2" headerText="$ Incremento" />
 									</p:row>
 
 									<p:row>
@@ -554,6 +544,7 @@
 										<p:column headerText="$ Monto" />
 										<p:column headerText="%" />
 									</p:row>
+									
 								</p:columnGroup>
 
 								<p:column>
@@ -726,9 +717,9 @@
 								<h:outputText value="Establecimiento: " styleClass="inputLabel" />
 								<p:selectOneMenu style="width:450px;" id="cbEstablecimientoSub29"
 									value="#{reporteEstadoSituacionProgramaController.valorComboEstablecimiento}">
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
+									<f:selectItem itemLabel="Seleccione Establecimiento" itemValue="" />
 									<f:selectItems
-										value="#{reporteEstadoSituacionProgramaController.servicioSeleccionado.estableclimientos}"
+										value="#{reporteEstadoSituacionProgramaController.establecimientos}"
 										itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}"
 										var="establecimiento" />
 									
@@ -742,25 +733,21 @@
 						</h:panelGrid>
 
 							<p:dataTable resizableColumns="true" value="#{reporteEstadoSituacionProgramaController.reporteEstadoSituacionByServiciosVOSub29}" liveResize="true" var="_data"
-								rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
+								rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 
 								<p:columnGroup type="header">
 									<p:row>
-										<p:column rowspan="3" headerText="Servicio" />
-										<p:column rowspan="3" headerText="Establecimiento" />
-										<p:column rowspan="3" headerText="Componente" />
-										<p:column rowspan="3" headerText="$ Marco Presup. Inicial" />
-										<p:column rowspan="3" headerText="$ Marco Presup. Modificado" />
-									</p:row>
-									<p:row>
+										<p:column rowspan="2" headerText="Servicio" />
+										<p:column rowspan="2" headerText="Establecimiento" />
+										<p:column rowspan="2" headerText="Componente" />
+										<p:column rowspan="2" headerText="$ Marco Presup. Inicial" />
+										<p:column rowspan="2" headerText="$ Marco Presup. Modificado" />
 										<p:column colspan="2" headerText="Convenios Recibidos" />
 										<p:column colspan="2" headerText="Convenios Pendientes" />
 										<p:column colspan="2" headerText="Remesa Acumulada" />
 										<p:column colspan="2" headerText="Remesa Pendiente" />
 										<p:column colspan="2" headerText="Reliquidación" />
-
-										<p:column rowspan="3" headerText="$ Incremento" />
-
+										<p:column rowspan="2" headerText="$ Incremento" />
 									</p:row>
 
 									<p:row>
@@ -775,6 +762,7 @@
 										<p:column headerText="$ Monto" />
 										<p:column headerText="%" />
 									</p:row>
+									
 								</p:columnGroup>
 
 								<p:column>

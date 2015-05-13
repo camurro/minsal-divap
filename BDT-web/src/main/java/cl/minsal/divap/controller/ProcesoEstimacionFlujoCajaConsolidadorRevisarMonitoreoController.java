@@ -25,7 +25,9 @@ import minsal.divap.service.ServicioSaludService;
 import minsal.divap.util.Util;
 import minsal.divap.vo.ColumnaVO;
 import minsal.divap.vo.ComponentesVO;
+import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.ElementoModificadoVO;
+import minsal.divap.vo.EstablecimientoSummaryVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloFlujoCajaVO;
@@ -60,7 +62,7 @@ extends AbstractTaskMBean implements Serializable {
 	private Integer idProgramaAno;
 	private Integer idServicio;
 
-	private Integer valorComboPercapita;
+	private String valorComboPercapita;
 
 	private List<ServiciosVO> servicios21;
 	private List<ServiciosVO> servicios22;
@@ -71,20 +73,29 @@ extends AbstractTaskMBean implements Serializable {
 	private List<ProgramaVO> programasSubtitulo22;
 	private List<ProgramaVO> programasSubtitulo24;
 	private List<ProgramaVO> programasSubtitulo29;
+	private List<EstablecimientoSummaryVO> establecimientos21;
+	private List<EstablecimientoSummaryVO> establecimientos22;
+	private List<ComunaSummaryVO> comunas24;
+	private List<EstablecimientoSummaryVO> establecimientos29;
 
 
-	private Integer valorComboPrograma21;
-	private Integer valorComboPrograma22;
-	private Integer valorComboPrograma24;
-	private Integer valorComboPrograma29;
+	private String valorComboPrograma21;
+	private String valorComboPrograma22;
+	private String valorComboPrograma24;
+	private String valorComboPrograma29;
 
 	/*
 	 * SUBTITULO 22
 	 */
-	private Integer valorComboSubtituloServicio21;
-	private Integer valorComboSubtituloServicio22;
-	private Integer valorComboSubtituloServicio24;
-	private Integer valorComboSubtituloServicio29;
+	private String valorComboSubtituloServicio21;
+	private String valorComboSubtituloServicio22;
+	private String valorComboSubtituloServicio24;
+	private String valorComboSubtituloServicio29;
+	
+	private String valorComboServicioEstablecimiento21;
+	private String valorComboServicioEstablecimiento22;
+	private String valorComboServicioComuna24;
+	private String valorComboServicioEstablecimiento29;
 
 	// Convenio Remesa
 	private Integer valorComboSubtitulo21Componente;
@@ -223,6 +234,7 @@ extends AbstractTaskMBean implements Serializable {
 	private Integer docPropuesta;
 	private Boolean iniciarFlujoCaja;
 	private Integer idProceso;
+	private Integer ano;
 
 	@EJB
 	private EstimacionFlujoCajaService estimacionFlujoCajaService;
@@ -254,8 +266,12 @@ extends AbstractTaskMBean implements Serializable {
 		}
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			idProceso = (Integer) getTaskDataVO().getData().get("_idProceso");
-			docPropuesta = estimacionFlujoCajaService.generarPlanillaPropuestaConsolidador(idProceso);
+			ano = (Integer) getTaskDataVO().getData().get("_ano");
+			//docPropuesta = estimacionFlujoCajaService.generarPlanillaPropuestaConsolidador(idProceso, ano);
 		}
+		System.out.println("idProceso->"+idProceso);
+		System.out.println("ano->"+ano);
+		//System.out.println("docPropuesta->"+docPropuesta);
 		setIniciarFlujoCaja(false);
 		crearColumnasDinamicas();
 	}
@@ -263,6 +279,7 @@ extends AbstractTaskMBean implements Serializable {
 	public void guardarSubtitulo21() {
 		System.out.println("Iniciar guardarSubtitulo21");
 		System.out.println("elementosModificadosSubtitulo21.size()="+elementosModificadosSubtitulo21.size());
+		Integer idPrograma21 = ((getValorComboPrograma21() == null || getValorComboPrograma21().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma21()));
 		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo21){
 			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo21FlujoCajaVO.get(elemento.getPosicionElemento());
 			subtituloFlujoCajaVO.setIgnoreColor(false);
@@ -270,62 +287,62 @@ extends AbstractTaskMBean implements Serializable {
 				switch (elemento.getMesModificado()) {
 				case 1:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoEnero().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma21(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoEnero(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma21, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoEnero(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 2:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoFebrero().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma21(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoFebrero(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma21, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoFebrero(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 3:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoMarzo().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma21(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoMarzo(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma21, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoMarzo(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 4:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoAbril().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma21(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoAbril(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma21, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoAbril(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 5:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoMayo().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma21(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoMayo(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma21, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoMayo(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 6:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoJunio().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma21(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoJunio(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma21, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoJunio(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 7:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoJulio().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma21(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoJulio(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma21, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoJulio(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 8:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoAgosto().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma21(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoAgosto(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma21, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoAgosto(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 9:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoSeptiembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma21(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoSeptiembre(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma21, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoSeptiembre(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 10:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoOctubre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma21(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoOctubre(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma21, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoOctubre(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 11:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoNoviembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma21(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoNoviembre(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma21, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoNoviembre(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 12:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoDiciembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma21(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoDiciembre(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma21, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoDiciembre(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				default:
@@ -337,7 +354,7 @@ extends AbstractTaskMBean implements Serializable {
 		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo21){
 			if(elemento.getModificado()){
 				SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo21FlujoCajaVO.get(elemento.getPosicionElemento());
-				SubtituloFlujoCajaVO subtituloFlujoCajaVOTmp = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoServicioSubtituloMes(getValorComboPrograma21(), subtituloFlujoCajaVO.getIdServicio(), Subtitulo.SUBTITULO21, elemento.getMesModificado(), iniciarFlujoCaja);
+				SubtituloFlujoCajaVO subtituloFlujoCajaVOTmp = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoServicioSubtituloMes(idPrograma21, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), Subtitulo.SUBTITULO21, elemento.getMesModificado(), iniciarFlujoCaja);
 				monitoreoSubtitulo21FlujoCajaVO.set(elemento.getPosicionElemento(), subtituloFlujoCajaVOTmp);
 			}else{
 				actualizaOK = false;
@@ -355,6 +372,7 @@ extends AbstractTaskMBean implements Serializable {
 	public void guardarSubtitulo22() {
 		System.out.println("Iniciar guardarSubtitulo22");
 		System.out.println("elementosModificadosSubtitulo22.size()="+elementosModificadosSubtitulo22.size());
+		Integer idPrograma22 = ((getValorComboPrograma22() == null || getValorComboPrograma22().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma22()));
 		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo22){
 			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo22FlujoCajaVO.get(elemento.getPosicionElemento());
 			subtituloFlujoCajaVO.setIgnoreColor(false);
@@ -362,62 +380,62 @@ extends AbstractTaskMBean implements Serializable {
 				switch (elemento.getMesModificado()) {
 				case 1:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoEnero().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma22(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoEnero(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma22, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoEnero(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 2:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoFebrero().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma22(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoFebrero(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma22, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoFebrero(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 3:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoMarzo().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma22(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoMarzo(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma22, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoMarzo(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 4:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoAbril().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma22(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoAbril(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma22, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoAbril(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 5:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoMayo().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma22(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoMayo(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma22, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(),  subtituloFlujoCajaVO.getCajaMontoMayo(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 6:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoJunio().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma22(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoJunio(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma22, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(),  subtituloFlujoCajaVO.getCajaMontoJunio(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 7:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoJulio().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma22(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoJulio(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma22, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(),  subtituloFlujoCajaVO.getCajaMontoJulio(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 8:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoAgosto().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma22(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoAgosto(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma22, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(),  subtituloFlujoCajaVO.getCajaMontoAgosto(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 9:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoSeptiembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma22(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoSeptiembre(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma22, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(),  subtituloFlujoCajaVO.getCajaMontoSeptiembre(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 10:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoOctubre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma22(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoOctubre(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma22, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(),  subtituloFlujoCajaVO.getCajaMontoOctubre(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 11:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoNoviembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma22(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoNoviembre(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma22, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(),  subtituloFlujoCajaVO.getCajaMontoNoviembre(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 12:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoDiciembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma22(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoDiciembre(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma22, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(),  subtituloFlujoCajaVO.getCajaMontoDiciembre(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				default:
@@ -429,7 +447,7 @@ extends AbstractTaskMBean implements Serializable {
 		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo22){
 			if(elemento.getModificado()){
 				SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo22FlujoCajaVO.get(elemento.getPosicionElemento());
-				SubtituloFlujoCajaVO subtituloFlujoCajaVOTmp = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoServicioSubtituloMes(getValorComboPrograma22(), subtituloFlujoCajaVO.getIdServicio(), Subtitulo.SUBTITULO22, elemento.getMesModificado(), iniciarFlujoCaja);
+				SubtituloFlujoCajaVO subtituloFlujoCajaVOTmp = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoServicioSubtituloMes(idPrograma22, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), Subtitulo.SUBTITULO22, elemento.getMesModificado(), iniciarFlujoCaja);
 				monitoreoSubtitulo22FlujoCajaVO.set(elemento.getPosicionElemento(), subtituloFlujoCajaVOTmp);
 			}else{
 				actualizaOK = false;
@@ -448,6 +466,7 @@ extends AbstractTaskMBean implements Serializable {
 	public void guardarSubtitulo24() {
 		System.out.println("Iniciar guardarSubtitulo24");
 		System.out.println("elementosModificadosSubtitulo24.size()="+elementosModificadosSubtitulo24.size());
+		Integer idPrograma24 = ((getValorComboPrograma24() == null || getValorComboPrograma24().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma24()));
 		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo24){
 			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo24FlujoCajaVO.get(elemento.getPosicionElemento());
 			subtituloFlujoCajaVO.setIgnoreColor(false);
@@ -455,65 +474,64 @@ extends AbstractTaskMBean implements Serializable {
 				switch (elemento.getMesModificado()) {
 				case 1:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoEnero().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma24(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoEnero(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(idPrograma24, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoEnero(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 2:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoFebrero().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma24(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoFebrero(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(idPrograma24, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoFebrero(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 3:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoMarzo().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma24(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoMarzo(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(idPrograma24, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoMarzo(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 4:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoAbril().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma24(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoAbril(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(idPrograma24, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoAbril(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 5:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoMayo().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma24(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoMayo(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(idPrograma24, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoMayo(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 6:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoJunio().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma24(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoJunio(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(idPrograma24, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoJunio(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 7:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoJulio().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma24(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoJulio(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(idPrograma24, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoJulio(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 8:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoAgosto().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma24(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoAgosto(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(idPrograma24, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoAgosto(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 9:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoSeptiembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma24(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoSeptiembre(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(idPrograma24, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoSeptiembre(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 10:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoOctubre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma24(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoOctubre(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(idPrograma24, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoOctubre(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 11:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoNoviembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma24(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoNoviembre(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(idPrograma24, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoNoviembre(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 12:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoDiciembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma24(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoDiciembre(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(idPrograma24, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoDiciembre(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
-
 				default:
 					break;
 				}
@@ -523,7 +541,7 @@ extends AbstractTaskMBean implements Serializable {
 		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo24){
 			if(elemento.getModificado()){
 				SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo24FlujoCajaVO.get(elemento.getPosicionElemento());
-				SubtituloFlujoCajaVO subtituloFlujoCajaVOTmp = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoServicioSubtituloMes(getValorComboPrograma24(), subtituloFlujoCajaVO.getIdServicio(), Subtitulo.SUBTITULO24, elemento.getMesModificado(), iniciarFlujoCaja);
+				SubtituloFlujoCajaVO subtituloFlujoCajaVOTmp = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoServicioSubtituloMes(idPrograma24, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), Subtitulo.SUBTITULO24, elemento.getMesModificado(), iniciarFlujoCaja);
 				monitoreoSubtitulo24FlujoCajaVO.set(elemento.getPosicionElemento(), subtituloFlujoCajaVOTmp);
 			}else{
 				actualizaOK = false;
@@ -542,6 +560,7 @@ extends AbstractTaskMBean implements Serializable {
 	public void guardarSubtitulo29() {
 		System.out.println("Iniciar guardarSubtitulo29");
 		System.out.println("elementosModificadosSubtitulo29.size()="+elementosModificadosSubtitulo29.size());
+		Integer idPrograma29 = ((getValorComboPrograma29() == null || getValorComboPrograma29().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma29()));
 		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo29){
 			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo29FlujoCajaVO.get(elemento.getPosicionElemento());
 			subtituloFlujoCajaVO.setIgnoreColor(false);
@@ -549,62 +568,62 @@ extends AbstractTaskMBean implements Serializable {
 				switch (elemento.getMesModificado()) {
 				case 1:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoEnero().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma29(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoEnero(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma29, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoEnero(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 2:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoFebrero().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma29(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoFebrero(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma29, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoFebrero(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 3:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoMarzo().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma29(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoMarzo(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma29, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoMarzo(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 4:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoAbril().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma29(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoAbril(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma29, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoAbril(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 5:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoMayo().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma29(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoMayo(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma29, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoMayo(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 6:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoJunio().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma29(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoJunio(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma29, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoJunio(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 7:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoJulio().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma29(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoJulio(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma29, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoJulio(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 8:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoAgosto().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma29(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoAgosto(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma29, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoAgosto(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 9:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoSeptiembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma29(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoSeptiembre(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma29, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoSeptiembre(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 10:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoOctubre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma29(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoOctubre(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma29, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoOctubre(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 11:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoNoviembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma29(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoNoviembre(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma29, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoNoviembre(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 12:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoDiciembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getValorComboPrograma29(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoDiciembre(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(idPrograma29, subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoDiciembre(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				default:
@@ -616,7 +635,7 @@ extends AbstractTaskMBean implements Serializable {
 		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo29){
 			if(elemento.getModificado()){
 				SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo29FlujoCajaVO.get(elemento.getPosicionElemento());
-				SubtituloFlujoCajaVO subtituloFlujoCajaVOTmp = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoServicioSubtituloMes(getValorComboPrograma29(), subtituloFlujoCajaVO.getIdServicio(), Subtitulo.SUBTITULO29, elemento.getMesModificado(), iniciarFlujoCaja);
+				SubtituloFlujoCajaVO subtituloFlujoCajaVOTmp = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoServicioSubtituloMes(idPrograma29, subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getIdServicio(), Subtitulo.SUBTITULO29, elemento.getMesModificado(), iniciarFlujoCaja);
 				monitoreoSubtitulo29FlujoCajaVO.set(elemento.getPosicionElemento(), subtituloFlujoCajaVOTmp);
 			}else{
 				actualizaOK = false;
@@ -632,11 +651,11 @@ extends AbstractTaskMBean implements Serializable {
 		System.out.println("Fin guardarSubtitulo29");
 	}
 
-	public Integer getValorComboPercapita() {
+	public String getValorComboPercapita() {
 		return valorComboPercapita;
 	}
 
-	public void setValorComboPercapita(Integer valorComboPercapita) {
+	public void setValorComboPercapita(String valorComboPercapita) {
 		this.valorComboPercapita = valorComboPercapita;
 	}
 
@@ -648,39 +667,39 @@ extends AbstractTaskMBean implements Serializable {
 		this.valorComboSubtitulo22 = valorComboSubtitulo22;
 	}
 
-	public Integer getValorComboSubtituloServicio21() {
+	public String getValorComboSubtituloServicio21() {
 		return valorComboSubtituloServicio21;
 	}
 
 	public void setValorComboSubtituloServicio21(
-			Integer valorComboSubtituloServicio21) {
+			String valorComboSubtituloServicio21) {
 		this.valorComboSubtituloServicio21 = valorComboSubtituloServicio21;
 	}
 
-	public Integer getValorComboSubtituloServicio22() {
+	public String getValorComboSubtituloServicio22() {
 		return valorComboSubtituloServicio22;
 	}
 
 	public void setValorComboSubtituloServicio22(
-			Integer valorComboSubtituloServicio22) {
+			String valorComboSubtituloServicio22) {
 		this.valorComboSubtituloServicio22 = valorComboSubtituloServicio22;
 	}
 
-	public Integer getValorComboSubtituloServicio24() {
+	public String getValorComboSubtituloServicio24() {
 		return valorComboSubtituloServicio24;
 	}
 
 	public void setValorComboSubtituloServicio24(
-			Integer valorComboSubtituloServicio24) {
+			String valorComboSubtituloServicio24) {
 		this.valorComboSubtituloServicio24 = valorComboSubtituloServicio24;
 	}
 
-	public Integer getValorComboSubtituloServicio29() {
+	public String getValorComboSubtituloServicio29() {
 		return valorComboSubtituloServicio29;
 	}
 
 	public void setValorComboSubtituloServicio29(
-			Integer valorComboSubtituloServicio29) {
+			String valorComboSubtituloServicio29) {
 		this.valorComboSubtituloServicio29 = valorComboSubtituloServicio29;
 	}
 
@@ -693,35 +712,35 @@ extends AbstractTaskMBean implements Serializable {
 		this.valorComboSubtitulo21Componente = valorComboSubtitulo21Componente;
 	}
 
-	public Integer getValorComboPrograma21() {
+	public String getValorComboPrograma21() {
 		return valorComboPrograma21;
 	}
 
-	public void setValorComboPrograma21(Integer valorComboPrograma21) {
+	public void setValorComboPrograma21(String valorComboPrograma21) {
 		this.valorComboPrograma21 = valorComboPrograma21;
 	}
 
-	public Integer getValorComboPrograma22() {
+	public String getValorComboPrograma22() {
 		return valorComboPrograma22;
 	}
 
-	public void setValorComboPrograma22(Integer valorComboPrograma22) {
+	public void setValorComboPrograma22(String valorComboPrograma22) {
 		this.valorComboPrograma22 = valorComboPrograma22;
 	}
 
-	public Integer getValorComboPrograma24() {
+	public String getValorComboPrograma24() {
 		return valorComboPrograma24;
 	}
 
-	public void setValorComboPrograma24(Integer valorComboPrograma24) {
+	public void setValorComboPrograma24(String valorComboPrograma24) {
 		this.valorComboPrograma24 = valorComboPrograma24;
 	}
 
-	public Integer getValorComboPrograma29() {
+	public String getValorComboPrograma29() {
 		return valorComboPrograma29;
 	}
 
-	public void setValorComboPrograma29(Integer valorComboPrograma29) {
+	public void setValorComboPrograma29(String valorComboPrograma29) {
 		this.valorComboPrograma29 = valorComboPrograma29;
 	}
 
@@ -786,7 +805,7 @@ extends AbstractTaskMBean implements Serializable {
 
 	public List<ProgramaVO> getProgramasSubtitulo21() {
 		if(programasSubtitulo21 == null){
-			programasSubtitulo21 = programaService.getProgramasByAnoSubtitulo((estimacionFlujoCajaService.getAnoCurso() + 1), Subtitulo.SUBTITULO21);
+			programasSubtitulo21 = programaService.getProgramasByAnoSubtitulo(getAno(), Subtitulo.SUBTITULO21);
 		}
 		return programasSubtitulo21;
 	}
@@ -797,7 +816,7 @@ extends AbstractTaskMBean implements Serializable {
 
 	public List<ProgramaVO> getProgramasSubtitulo22() {
 		if(programasSubtitulo22 == null){
-			programasSubtitulo22 = programaService.getProgramasByAnoSubtitulo((estimacionFlujoCajaService.getAnoCurso() + 1), Subtitulo.SUBTITULO22);
+			programasSubtitulo22 = programaService.getProgramasByAnoSubtitulo(getAno(), Subtitulo.SUBTITULO22);
 		}
 		return programasSubtitulo22;
 	}
@@ -808,7 +827,7 @@ extends AbstractTaskMBean implements Serializable {
 
 	public List<ProgramaVO> getProgramasSubtitulo24() {
 		if(programasSubtitulo24 == null){
-			programasSubtitulo24 = programaService.getProgramasByAnoSubtitulo((estimacionFlujoCajaService.getAnoCurso() + 1), Subtitulo.SUBTITULO24);
+			programasSubtitulo24 = programaService.getProgramasByAnoSubtitulo(getAno(), Subtitulo.SUBTITULO24);
 		}
 		return programasSubtitulo24;
 	}
@@ -819,7 +838,7 @@ extends AbstractTaskMBean implements Serializable {
 
 	public List<ProgramaVO> getProgramasSubtitulo29() {
 		if(programasSubtitulo29 == null){
-			programasSubtitulo29 = programaService.getProgramasByAnoSubtitulo((estimacionFlujoCajaService.getAnoCurso() + 1), Subtitulo.SUBTITULO29);
+			programasSubtitulo29 = programaService.getProgramasByAnoSubtitulo(getAno(), Subtitulo.SUBTITULO29);
 		}
 		return programasSubtitulo29;
 	}
@@ -1100,7 +1119,7 @@ extends AbstractTaskMBean implements Serializable {
 
 	public List<SubtituloFlujoCajaVO> getMonitoreoPercapitaFlujoCajaVO() {
 		if(monitoreoPercapitaFlujoCajaVO == null){
-			monitoreoPercapitaFlujoCajaVO = estimacionFlujoCajaService.getPercapitaByAno();
+			monitoreoPercapitaFlujoCajaVO = estimacionFlujoCajaService.getPercapitaByAno(getAno());
 		}
 		return monitoreoPercapitaFlujoCajaVO;
 	}
@@ -1818,10 +1837,6 @@ extends AbstractTaskMBean implements Serializable {
 			}
 		}
 		return totalConvenioRemesaServiciosMontosMesSubtitulo22;
-
-
-
-
 	}
 
 	public void setTotalConvenioRemesaServiciosMontosMesSubtitulo22(
@@ -2509,51 +2524,53 @@ extends AbstractTaskMBean implements Serializable {
 	public void setValorPesoComponente(String valorPesoComponente) {
 		this.valorPesoComponente = valorPesoComponente;
 	}
-
-	public void filtrarSubtituloComponentePrograma(String subtituloFiltroSeleccionado){
+	
+	public void cargarComunaEstablecimiento(String subtituloFiltroSeleccionado){
+	
+	}
+	
+	public void filtrarEstablecimientoPorServicio(String subtituloFiltroSeleccionado){
 		Subtitulo subtituloFiltro = Subtitulo.getById(Integer.parseInt(subtituloFiltroSeleccionado));
 		switch (subtituloFiltro) {
 		case SUBTITULO21:
-			System.out.println("case SUBTITULO21");
-			monitoreoSubtitulo21FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
-			setValorComboSubtituloServicio21(0);
-			if(getValorComboPrograma21() == null || getValorComboPrograma21().intValue() == 0){
-				this.servicios21 = new ArrayList<ServiciosVO>();
+			System.out.println("case SUBTITULO21 getValorComboSubtituloServicio21()--> " + getValorComboSubtituloServicio21());
+			Integer idServicio21 = ((getValorComboSubtituloServicio21() == null || getValorComboSubtituloServicio21().trim().isEmpty()) ? null : Integer.parseInt(getValorComboSubtituloServicio21()));
+			if(idServicio21 == null){
+				setValorComboServicioEstablecimiento21(null);
+				establecimientos21 = new ArrayList<EstablecimientoSummaryVO>();
 			}else{
-				this.servicios21 = estimacionFlujoCajaService.getServicioByProgramaAnoSubtitulo(getValorComboPrograma21(), subtituloFiltro);
+				establecimientos21 = servicioSaludService.getServicioSaludById(idServicio21).getEstableclimientos();
 			}
 			break;
 		case SUBTITULO22:
-			System.out.println("case SUBTITULO22");
-			monitoreoSubtitulo22FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
-			setValorComboSubtituloServicio22(0);
-			if(getValorComboPrograma22() == null || getValorComboPrograma22().intValue() == 0){
-				this.servicios22 = new ArrayList<ServiciosVO>();
+			System.out.println("case SUBTITULO22 getValorComboSubtituloServicio22()--> " + getValorComboSubtituloServicio22());
+			Integer idServicio22 = ((getValorComboSubtituloServicio22() == null || getValorComboSubtituloServicio22().trim().isEmpty()) ? null : Integer.parseInt(getValorComboSubtituloServicio22()));
+			if(idServicio22 == null){
+				setValorComboServicioEstablecimiento22(null);
+				establecimientos22 = new ArrayList<EstablecimientoSummaryVO>();
 			}else{
-				this.servicios22 = estimacionFlujoCajaService.getServicioByProgramaAnoSubtitulo(getValorComboPrograma22(), subtituloFiltro);
+				establecimientos22 = servicioSaludService.getServicioSaludById(idServicio22).getEstableclimientos();
 			}
 			break;
 		case SUBTITULO24:
-			System.out.println("case SUBTITULO24");
-			monitoreoSubtitulo24FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
-			setValorComboSubtituloServicio24(0);
-			if(getValorComboPrograma24() == null || getValorComboPrograma24().intValue() == 0){
-				this.servicios24 = new ArrayList<ServiciosVO>();
+			System.out.println("case SUBTITULO24 getValorComboSubtituloServicio24()--> " + getValorComboSubtituloServicio24());
+			Integer idServicio24 = ((getValorComboSubtituloServicio24() == null || getValorComboSubtituloServicio24().trim().isEmpty()) ? null : Integer.parseInt(getValorComboSubtituloServicio24()));
+			if(idServicio24 == null){
+				setValorComboServicioComuna24(null);
+				comunas24 = new ArrayList<ComunaSummaryVO>();
 			}else{
-				this.servicios24 = estimacionFlujoCajaService.getServicioByProgramaAnoSubtitulo(getValorComboPrograma24(), subtituloFiltro);
+				comunas24 = servicioSaludService.getServicioSaludById(idServicio24).getComunas();
 			}
 			break;
 		case SUBTITULO29:
-			System.out.println("case SUBTITULO29");
-			monitoreoSubtitulo29FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
-			setValorComboSubtituloServicio29(0);
-			if(getValorComboPrograma29() == null || getValorComboPrograma29().intValue() == 0){
-				this.servicios29 = new ArrayList<ServiciosVO>();
+			System.out.println("case SUBTITULO29 getValorComboSubtituloServicio29()--> " + getValorComboSubtituloServicio29());
+			Integer idServicio29 = ((getValorComboSubtituloServicio29() == null || getValorComboSubtituloServicio29().trim().isEmpty()) ? null : Integer.parseInt(getValorComboSubtituloServicio29()));
+			if(idServicio29 == null){
+				setValorComboServicioEstablecimiento29(null);
+				establecimientos29 = new ArrayList<EstablecimientoSummaryVO>();
 			}else{
-				this.servicios29 = estimacionFlujoCajaService.getServicioByProgramaAnoSubtitulo(getValorComboPrograma29(), subtituloFiltro);
+				establecimientos29 = servicioSaludService.getServicioSaludById(idServicio29).getEstableclimientos();
 			}
-			break;
-		default:
 			break;
 		}
 	}
@@ -2564,12 +2581,13 @@ extends AbstractTaskMBean implements Serializable {
 		switch (subtituloFiltro) {
 		case SUBTITULO21:
 			System.out.println("case SUBTITULO21 getValorComboPrograma21()--> " + getValorComboPrograma21() + " getValorComboSubtituloServicio21()-->" + getValorComboSubtituloServicio21());
-			if(getValorComboPrograma21() == null || getValorComboPrograma21().intValue() == 0){
+			Integer idPrograma21 = ((getValorComboPrograma21() == null || getValorComboPrograma21().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma21()));
+			if(idPrograma21 == null){
 				monitoreoSubtitulo21FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
 				message = "Debes Seleccionar un Programa";
 			}else{
 				List<Integer> idComponentes = new ArrayList<Integer>();
-				List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(getValorComboPrograma21()).getComponentes();
+				List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(idPrograma21).getComponentes();
 				for(ComponentesVO comp : componentes){
 					for(SubtituloVO subtitulo : comp.getSubtitulos()){
 						if(subtitulo.getId().equals(subtituloFiltro.getId())){
@@ -2578,21 +2596,20 @@ extends AbstractTaskMBean implements Serializable {
 						}
 					}
 				}
-				if(getValorComboSubtituloServicio21() == null || getValorComboSubtituloServicio21().intValue() == 0){
-					this.monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma21(), idComponentes, subtituloFiltro, this.iniciarFlujoCaja);
-				}else{
-					this.monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma21(), getValorComboSubtituloServicio21(), idComponentes, subtituloFiltro, this.iniciarFlujoCaja);
-				}
+				Integer idServicio21 = ((getValorComboSubtituloServicio21() == null || getValorComboSubtituloServicio21().trim().isEmpty()) ? null : Integer.parseInt(getValorComboSubtituloServicio21()));
+				Integer idEstablecimiento21 = ((getValorComboServicioEstablecimiento21() == null || getValorComboServicioEstablecimiento21().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicioEstablecimiento21()));
+				this.monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(idPrograma21, idServicio21, idEstablecimiento21, idComponentes, Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 			}
 			break;
 		case SUBTITULO22:
 			System.out.println("case SUBTITULO22 getValorComboPrograma22()--> " + getValorComboPrograma22() + " getValorComboSubtituloServicio22()-->" + getValorComboSubtituloServicio22());
-			if(getValorComboPrograma22() == null || getValorComboPrograma22().intValue() == 0){
+			Integer idPrograma22 = ((getValorComboPrograma22() == null || getValorComboPrograma22().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma22()));
+			if(idPrograma22 == null){
 				monitoreoSubtitulo22FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
 				message = "Debes Seleccionar un Programa";
 			}else{
 				List<Integer> idComponentes = new ArrayList<Integer>();
-				List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(getValorComboPrograma22()).getComponentes();
+				List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(idPrograma22).getComponentes();
 				for(ComponentesVO comp : componentes){
 					for(SubtituloVO subtitulo : comp.getSubtitulos()){
 						if(subtitulo.getId().equals(subtituloFiltro.getId())){
@@ -2601,23 +2618,20 @@ extends AbstractTaskMBean implements Serializable {
 						}
 					}
 				}
-				if(getValorComboSubtituloServicio22() == null || getValorComboSubtituloServicio22().intValue() == 0){
-					this.monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(
-							getValorComboPrograma22(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
-				}else{
-					this.monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(
-							getValorComboPrograma22(), getValorComboSubtituloServicio22(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
-				}
+				Integer idServicio22 = ((getValorComboSubtituloServicio22() == null || getValorComboSubtituloServicio22().trim().isEmpty()) ? null : Integer.parseInt(getValorComboSubtituloServicio22()));
+				Integer idEstablecimiento22 = ((getValorComboServicioEstablecimiento22() == null || getValorComboServicioEstablecimiento22().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicioEstablecimiento22()));
+				this.monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(idPrograma22, idServicio22, idEstablecimiento22, idComponentes, Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 			}
 			break;
 		case SUBTITULO24:
 			System.out.println("case SUBTITULO24 getValorComboPrograma24()--> " + getValorComboPrograma24() + " getValorComboSubtituloServicio24()-->" + getValorComboSubtituloServicio24());
-			if(getValorComboPrograma24() == null || getValorComboPrograma24().intValue() == 0){
+			Integer idPrograma24 = ((getValorComboPrograma24() == null || getValorComboPrograma24().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma24()));
+			if(idPrograma24 == null){
 				monitoreoSubtitulo24FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
 				message = "Debes Seleccionar un Programa";
 			}else{
 				List<Integer> idComponentes = new ArrayList<Integer>();
-				List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(getValorComboPrograma24()).getComponentes();
+				List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(idPrograma24).getComponentes();
 				for(ComponentesVO comp : componentes){
 					for(SubtituloVO subtitulo : comp.getSubtitulos()){
 						if(subtitulo.getId().equals(subtituloFiltro.getId())){
@@ -2626,23 +2640,20 @@ extends AbstractTaskMBean implements Serializable {
 						}
 					}
 				}
-				if(getValorComboSubtituloServicio24() == null || getValorComboSubtituloServicio24().intValue() == 0){
-					this.monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(
-							getValorComboPrograma24(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
-				}else{
-					this.monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(
-							getValorComboPrograma24(), getValorComboSubtituloServicio24(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
-				}
+				Integer idServicio24 = ((getValorComboSubtituloServicio24() == null || getValorComboSubtituloServicio24().trim().isEmpty()) ? null : Integer.parseInt(getValorComboSubtituloServicio24()));
+				Integer idComuna24 = ((getValorComboServicioComuna24() == null || getValorComboServicioComuna24().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicioComuna24()));
+				this.monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(idPrograma24, idServicio24, idComuna24, idComponentes , Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 			}
 			break;
 		case SUBTITULO29:
 			System.out.println("case SUBTITULO24 SUBTITULO29()--> " + getValorComboPrograma29() + " getValorComboSubtituloServicio29()-->" + getValorComboSubtituloServicio29());
-			if(getValorComboPrograma29() == null || getValorComboPrograma29().intValue() == 0){
+			Integer idPrograma29 = ((getValorComboPrograma29() == null || getValorComboPrograma29().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma29()));
+			if(idPrograma29 == null){
 				monitoreoSubtitulo29FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
 				message = "Debes Seleccionar un Programa";
 			}else{
 				List<Integer> idComponentes = new ArrayList<Integer>();
-				List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(getValorComboPrograma29()).getComponentes();
+				List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(idPrograma29).getComponentes();
 				for(ComponentesVO comp : componentes){
 					for(SubtituloVO subtitulo : comp.getSubtitulos()){
 						if(subtitulo.getId().equals(subtituloFiltro.getId())){
@@ -2651,13 +2662,9 @@ extends AbstractTaskMBean implements Serializable {
 						}
 					}
 				}
-				if(getValorComboSubtituloServicio29() == null || getValorComboSubtituloServicio29().intValue() == 0){
-					this.monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(
-							getValorComboPrograma29(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
-				}else{
-					this.monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(
-							getValorComboPrograma29(), getValorComboSubtituloServicio29(), idComponentes , subtituloFiltro, this.iniciarFlujoCaja);
-				}
+				Integer idServicio29 = ((getValorComboSubtituloServicio29() == null || getValorComboSubtituloServicio29().trim().isEmpty()) ? null : Integer.parseInt(getValorComboSubtituloServicio29()));
+				Integer idEstablecimiento29 = ((getValorComboServicioEstablecimiento29() == null || getValorComboServicioEstablecimiento29().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicioEstablecimiento29()));
+				this.monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(idPrograma29, idServicio29, idEstablecimiento29, idComponentes, Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 			}
 			break;
 		default:
@@ -2670,22 +2677,27 @@ extends AbstractTaskMBean implements Serializable {
 	}
 
 	public void filtrarPercapitaServicio(){	
-		if(getValorComboPercapita() == null || getValorComboPercapita().intValue() == 0){
-			monitoreoPercapitaFlujoCajaVO = estimacionFlujoCajaService.getPercapitaByAno();
+		Integer idServicio = ((getValorComboPercapita() == null || getValorComboPercapita().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPercapita()));
+		if(idServicio == null){
+			monitoreoPercapitaFlujoCajaVO = estimacionFlujoCajaService.getPercapitaByAno(getAno());
 		}
 		else{
-			monitoreoPercapitaFlujoCajaVO = estimacionFlujoCajaService.getPercapitaByAnoServicio(getValorComboPercapita());
+			monitoreoPercapitaFlujoCajaVO = estimacionFlujoCajaService.getPercapitaByAnoServicio(idServicio, getAno());
 		}
 	}
 
-	public void programa21SelectionChanged(final AjaxBehaviorEvent event)  {
+	public void programa21SelectionChanged()  {
 		System.out.println("programa21SelectionChanged--> " + getValorComboPrograma21() + " getValorComboSubtituloServicio21()-->" + getValorComboSubtituloServicio21());
-		if(getValorComboPrograma21() == null || getValorComboPrograma21().intValue() == 0){
+		Integer idPrograma21 = ((getValorComboPrograma21() == null || getValorComboPrograma21().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma21()));
+		if(idPrograma21 == null ){
+			System.out.println("idPrograma21-->"+idPrograma21);
 			monitoreoSubtitulo21FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
-			setValorComboSubtituloServicio21(0);
+			setValorComboSubtituloServicio21(null);
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el programa antes de realizar la búsqueda", null);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}else{
 			List<Integer> idComponentes = new ArrayList<Integer>();
-			List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(getValorComboPrograma21()).getComponentes();
+			List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(idPrograma21).getComponentes();
 			for(ComponentesVO comp : componentes){
 				for(SubtituloVO subtitulo : comp.getSubtitulos()){
 					if(subtitulo.getId().equals(Subtitulo.SUBTITULO21.getId())){
@@ -2694,22 +2706,24 @@ extends AbstractTaskMBean implements Serializable {
 					}
 				}
 			}
-			if(getValorComboSubtituloServicio21() == null || getValorComboSubtituloServicio21().intValue() == 0){
-				this.monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma21(), idComponentes, Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
-			}else{
-				this.monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma21(), getValorComboSubtituloServicio21(), idComponentes, Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
-			}
+			Integer idServicio21 = ((getValorComboSubtituloServicio21() == null || getValorComboSubtituloServicio21().trim().isEmpty()) ? null : Integer.parseInt(getValorComboSubtituloServicio21()));
+			Integer idEstablecimiento21 = ((getValorComboServicioEstablecimiento21() == null || getValorComboServicioEstablecimiento21().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicioEstablecimiento21()));
+			System.out.println("idServicio21->"+idServicio21+" idEstablecimiento21->"+idEstablecimiento21);
+			this.monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(idPrograma21, idServicio21, idEstablecimiento21, idComponentes, Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 		}
 	}
 	
-	public void programa22SelectionChanged(final AjaxBehaviorEvent event)  {
+	public void programa22SelectionChanged()  {
 		System.out.println("programa22SelectionChanged--> " + getValorComboPrograma22() + " getValorComboSubtituloServicio22()-->" + getValorComboSubtituloServicio22());
-		if(getValorComboPrograma22() == null || getValorComboPrograma22().intValue() == 0){
+		Integer idPrograma22 = ((getValorComboPrograma22() == null || getValorComboPrograma22().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma22()));
+		if(idPrograma22 == null){
 			monitoreoSubtitulo22FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
-			setValorComboSubtituloServicio22(0);
+			setValorComboSubtituloServicio22(null);
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el programa antes de realizar la búsqueda", null);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}else{
 			List<Integer> idComponentes = new ArrayList<Integer>();
-			List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(getValorComboPrograma22()).getComponentes();
+			List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(idPrograma22).getComponentes();
 			for(ComponentesVO comp : componentes){
 				for(SubtituloVO subtitulo : comp.getSubtitulos()){
 					if(subtitulo.getId().equals(Subtitulo.SUBTITULO22.getId())){
@@ -2718,22 +2732,23 @@ extends AbstractTaskMBean implements Serializable {
 					}
 				}
 			}
-			if(getValorComboSubtituloServicio22() == null || getValorComboSubtituloServicio22().intValue() == 0){
-				this.monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma22(), idComponentes, Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
-			}else{
-				this.monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma22(), getValorComboSubtituloServicio22(), idComponentes, Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
-			}
+			Integer idServicio22 = ((getValorComboSubtituloServicio22() == null || getValorComboSubtituloServicio22().trim().isEmpty()) ? null : Integer.parseInt(getValorComboSubtituloServicio22()));
+			Integer idEstablecimiento22 = ((getValorComboServicioEstablecimiento22() == null || getValorComboServicioEstablecimiento22().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicioEstablecimiento22()));
+			this.monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(idPrograma22, idServicio22, idEstablecimiento22, idComponentes, Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 		}
 	}
 	
-	public void programa24SelectionChanged(final AjaxBehaviorEvent event)  {
+	public void programa24SelectionChanged()  {
 		System.out.println("programa24SelectionChanged--> " + getValorComboPrograma24() + " getValorComboSubtituloServicio24()-->" + getValorComboSubtituloServicio24());
-		if(getValorComboPrograma24() == null || getValorComboPrograma24().intValue() == 0){
+		Integer idPrograma24 = ((getValorComboPrograma24() == null || getValorComboPrograma24().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma24()));
+		if(idPrograma24 == null){
 			monitoreoSubtitulo24FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
-			setValorComboSubtituloServicio24(0);
+			setValorComboSubtituloServicio24(null);
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el programa antes de realizar la búsqueda", null);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}else{
 			List<Integer> idComponentes = new ArrayList<Integer>();
-			List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(getValorComboPrograma24()).getComponentes();
+			List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(idPrograma24).getComponentes();
 			for(ComponentesVO comp : componentes){
 				for(SubtituloVO subtitulo : comp.getSubtitulos()){
 					if(subtitulo.getId().equals(Subtitulo.SUBTITULO24.getId())){
@@ -2742,22 +2757,24 @@ extends AbstractTaskMBean implements Serializable {
 					}
 				}
 			}
-			if(getValorComboSubtituloServicio24() == null || getValorComboSubtituloServicio24().intValue() == 0){
-				this.monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(getValorComboPrograma24(), idComponentes , Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
-			}else{
-				this.monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(getValorComboPrograma24(), getValorComboSubtituloServicio24(), idComponentes , Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
-			}
+			Integer idServicio24 = ((getValorComboSubtituloServicio24() == null || getValorComboSubtituloServicio24().trim().isEmpty()) ? null : Integer.parseInt(getValorComboSubtituloServicio24()));
+			Integer idComuna24 = ((getValorComboServicioComuna24() == null || getValorComboServicioComuna24().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicioComuna24()));
+			System.out.println("idPrograma24->" + idPrograma24 + " idServicio24->" + idServicio24 + " idComuna24->" + idComuna24);
+			this.monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(idPrograma24, idServicio24, idComuna24, idComponentes , Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 		}
 	}
 	
-	public void programa29SelectionChanged(final AjaxBehaviorEvent event)  {
+	public void programa29SelectionChanged()  {
 		System.out.println("programa29SelectionChanged--> " + getValorComboPrograma29() + " getValorComboSubtituloServicio29()-->" + getValorComboSubtituloServicio29());
-		if(getValorComboPrograma29() == null || getValorComboPrograma29().intValue() == 0){
+		Integer idPrograma29 = ((getValorComboPrograma29() == null || getValorComboPrograma29().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma29()));
+		if(idPrograma29 == null){
 			monitoreoSubtitulo29FlujoCajaVO = new ArrayList<SubtituloFlujoCajaVO>();
-			setValorComboSubtituloServicio29(0);
+			setValorComboSubtituloServicio29(null);
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el programa antes de realizar la búsqueda", null);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}else{
 			List<Integer> idComponentes = new ArrayList<Integer>();
-			List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(getValorComboPrograma29()).getComponentes();
+			List<ComponentesVO> componentes = programaService.getProgramaAnoPorID(idPrograma29).getComponentes();
 			for(ComponentesVO comp : componentes){
 				for(SubtituloVO subtitulo : comp.getSubtitulos()){
 					if(subtitulo.getId().equals(Subtitulo.SUBTITULO29.getId())){
@@ -2766,11 +2783,9 @@ extends AbstractTaskMBean implements Serializable {
 					}
 				}
 			}
-			if(getValorComboSubtituloServicio29() == null || getValorComboSubtituloServicio29().intValue() == 0){
-				this.monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma29(), idComponentes, Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
-			}else{
-				this.monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma29(), getValorComboSubtituloServicio29(), idComponentes, Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
-			}
+			Integer idServicio29 = ((getValorComboSubtituloServicio29() == null || getValorComboSubtituloServicio29().trim().isEmpty()) ? null : Integer.parseInt(getValorComboSubtituloServicio29()));
+			Integer idEstablecimiento29 = ((getValorComboServicioEstablecimiento29() == null || getValorComboServicioEstablecimiento29().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicioEstablecimiento29()));
+			this.monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(idPrograma29, idServicio29, idEstablecimiento29, idComponentes, Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 		}
 	}
 
@@ -2990,25 +3005,37 @@ extends AbstractTaskMBean implements Serializable {
 		String currentTab = getRequestParameter("conDialog:currentTab");
 		System.out.println("currentTab-->"+currentTab);
 		if(currentTab != null){
+			Integer idPrograma21 = ((getValorComboPrograma21() == null || getValorComboPrograma21().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma21()));
+			Integer idServicio21 = ((getValorComboSubtituloServicio21() == null || getValorComboSubtituloServicio21().trim().isEmpty()) ? null : Integer.parseInt(getValorComboSubtituloServicio21()));
+			Integer idEstablecimiento21 = ((getValorComboServicioEstablecimiento21() == null || getValorComboServicioEstablecimiento21().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicioEstablecimiento21()));
+			Integer idPrograma22 = ((getValorComboPrograma22() == null || getValorComboPrograma22().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma22()));
+			Integer idServicio22 = ((getValorComboSubtituloServicio22() == null || getValorComboSubtituloServicio22().trim().isEmpty()) ? null : Integer.parseInt(getValorComboSubtituloServicio22()));
+			Integer idEstablecimiento22 = ((getValorComboServicioEstablecimiento22() == null || getValorComboServicioEstablecimiento22().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicioEstablecimiento22()));
+			Integer idPrograma24 = ((getValorComboPrograma24() == null || getValorComboPrograma24().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma24()));
+			Integer idServicio24 = ((getValorComboSubtituloServicio24() == null || getValorComboSubtituloServicio24().trim().isEmpty()) ? null : Integer.parseInt(getValorComboSubtituloServicio24()));
+			Integer idComuna24 = ((getValorComboServicioComuna24() == null || getValorComboServicioComuna24().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicioComuna24()));
+			Integer idPrograma29 = ((getValorComboPrograma29() == null || getValorComboPrograma29().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma29()));
+			Integer idServicio29 = ((getValorComboSubtituloServicio29() == null || getValorComboSubtituloServicio29().trim().isEmpty()) ? null : Integer.parseInt(getValorComboSubtituloServicio29()));
+			Integer idEstablecimiento29 = ((getValorComboServicioEstablecimiento29() == null || getValorComboServicioEstablecimiento29().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicioEstablecimiento29()));
 			Subtitulo subtituloSeleccionado = tabSubtitulo.get(Integer.parseInt(currentTab));
 			if(subtituloSeleccionado != null){
 				List<Integer> idComponentes = componentesPorSubtitulo.get(subtituloSeleccionado.getId());
 				switch (subtituloSeleccionado) {
 				case SUBTITULO21:
 					System.out.println("SUBTITULO21");
-					monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma21(), idComponentes, Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(idPrograma21, idServicio21, idEstablecimiento21, idComponentes, Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					break;
 				case SUBTITULO22:
 					System.out.println("SUBTITULO22");
-					monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma22(), idComponentes, Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(idPrograma22, idServicio22, idEstablecimiento22, idComponentes, Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					break;
 				case SUBTITULO24:
 					System.out.println("SUBTITULO24");
-					monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(getValorComboPrograma24(), idComponentes, Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(idPrograma24, idServicio24, idComuna24, idComponentes, Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					break;
 				case SUBTITULO29:
 					System.out.println("SUBTITULO29");
-					monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getValorComboPrograma29(), idComponentes, Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(idPrograma29, idServicio29, idEstablecimiento29, idComponentes, Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					break;
 				default:
 					break;
@@ -3019,8 +3046,10 @@ extends AbstractTaskMBean implements Serializable {
 		return null;
 	}
 	public void onTabChange(TabChangeEvent event) {
-		System.out.println("Tab Changed, Active Tab: " + event.getTab().getTitle());
-		System.out.println("event.getTab().getId(): " + event.getTab().getId());
+		if(event != null && event.getTab() != null){
+			System.out.println("Tab Changed, Active Tab: " + event.getTab().getTitle());
+			System.out.println("event.getTab().getId(): " + event.getTab().getId());
+		}
 	}
 
 	public void onTabClose(TabCloseEvent event) {
@@ -3069,4 +3098,79 @@ extends AbstractTaskMBean implements Serializable {
 		this.valorElemento = valorElemento;
 	}
 
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
+
+	public String getValorComboServicioEstablecimiento21() {
+		return valorComboServicioEstablecimiento21;
+	}
+
+	public void setValorComboServicioEstablecimiento21(
+			String valorComboServicioEstablecimiento21) {
+		this.valorComboServicioEstablecimiento21 = valorComboServicioEstablecimiento21;
+	}
+
+	public String getValorComboServicioEstablecimiento22() {
+		return valorComboServicioEstablecimiento22;
+	}
+
+	public void setValorComboServicioEstablecimiento22(
+			String valorComboServicioEstablecimiento22) {
+		this.valorComboServicioEstablecimiento22 = valorComboServicioEstablecimiento22;
+	}
+
+	public String getValorComboServicioComuna24() {
+		return valorComboServicioComuna24;
+	}
+
+	public void setValorComboServicioComuna24(String valorComboServicioComuna24) {
+		this.valorComboServicioComuna24 = valorComboServicioComuna24;
+	}
+
+	public String getValorComboServicioEstablecimiento29() {
+		return valorComboServicioEstablecimiento29;
+	}
+
+	public void setValorComboServicioEstablecimiento29(
+			String valorComboServicioEstablecimiento29) {
+		this.valorComboServicioEstablecimiento29 = valorComboServicioEstablecimiento29;
+	}
+
+	public List<EstablecimientoSummaryVO> getEstablecimientos21() {
+		return establecimientos21;
+	}
+
+	public void setEstablecimientos21(List<EstablecimientoSummaryVO> establecimientos21) {
+		this.establecimientos21 = establecimientos21;
+	}
+
+	public List<EstablecimientoSummaryVO> getEstablecimientos22() {
+		return establecimientos22;
+	}
+
+	public void setEstablecimientos22(List<EstablecimientoSummaryVO> establecimientos22) {
+		this.establecimientos22 = establecimientos22;
+	}
+
+	public List<ComunaSummaryVO> getComunas24() {
+		return comunas24;
+	}
+
+	public void setComunas24(List<ComunaSummaryVO> comunas24) {
+		this.comunas24 = comunas24;
+	}
+
+	public List<EstablecimientoSummaryVO> getEstablecimientos29() {
+		return establecimientos29;
+	}
+
+	public void setEstablecimientos29(List<EstablecimientoSummaryVO> establecimientos29) {
+		this.establecimientos29 = establecimientos29;
+	}
+	
 }

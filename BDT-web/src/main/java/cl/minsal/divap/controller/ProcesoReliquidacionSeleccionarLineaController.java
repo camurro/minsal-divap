@@ -12,8 +12,8 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import minsal.divap.service.EstimacionFlujoCajaService;
 import minsal.divap.service.ProgramasService;
+import minsal.divap.service.ReliquidacionService;
 import minsal.divap.vo.ProgramaVO;
 
 import org.apache.log4j.Logger;
@@ -38,7 +38,7 @@ public class ProcesoReliquidacionSeleccionarLineaController extends AbstractTask
 	@EJB
 	private ProgramasService programaService;
 	@EJB
-	private EstimacionFlujoCajaService estimacionFlujoCajaService;
+	private ReliquidacionService reliquidacionService;
 	
 	private String usuario;
 	
@@ -141,7 +141,7 @@ public class ProcesoReliquidacionSeleccionarLineaController extends AbstractTask
 
 	public Integer getAnoCurso() {
 		if(anoCurso == null){
-			anoCurso = estimacionFlujoCajaService.getAnoCurso();
+			anoCurso = reliquidacionService.getAnoCurso();
 		}
 		return anoCurso;
 	}

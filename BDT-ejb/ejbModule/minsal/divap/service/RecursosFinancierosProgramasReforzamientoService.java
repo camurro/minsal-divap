@@ -1241,8 +1241,8 @@ public class RecursosFinancierosProgramasReforzamientoService {
 									Integer tarifa = monto * cantidad;
 
 									if(coreComponente!=null){
-										Integer montoAnterior = coreComponente.getMonto();
-										coreComponente.setMontoAnterior(montoAnterior);
+										Integer tarifaAnterior = coreComponente.getTarifa();
+										coreComponente.setTarifaAnterior(tarifaAnterior);
 										coreComponente.setMonto(monto);
 										coreComponente.setCantidad(cantidad);
 										coreComponente.setTarifa(tarifa);
@@ -2165,8 +2165,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				resumenAsignacion.append(" \\$").append(String.format("%, d",tS29)).append(" al subtitulo 29");
 			}
 			System.out.println(resumenAsignacion.toString());
-			ReferenciaDocumentoSummaryVO referenciaResolucionProgramasAPSVO = documentService
-					.getDocumentByPlantillaId(plantillaBorradorResolucionProgramaReforzamiento);
+			ReferenciaDocumentoSummaryVO referenciaResolucionProgramasAPSVO = documentService.getDocumentByPlantillaId(plantillaBorradorResolucionProgramaReforzamiento);
 			DocumentoVO documentoBorradorResolucionProgramasAPSVO = documentService
 					.getDocument(referenciaResolucionProgramasAPSVO.getId());
 			String templateResolucionProgramasAPS = tmpDirDoc
@@ -2192,8 +2191,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			System.out.println("contenTypeBorradorAporteEstatal->"
 					+ contentType);
 
-			generadorWordPlantillaBorradorOrdinarioProgramacionCaja.saveContent(documentoBorradorResolucionProgramasAPSVO
-					.getContent(), XWPFDocument.class);
+			generadorWordPlantillaBorradorOrdinarioProgramacionCaja.saveContent(documentoBorradorResolucionProgramasAPSVO.getContent(), XWPFDocument.class);
 
 			Map<String, Object> parametersBorradorAporteEstatal = new HashMap<String, Object>();
 			parametersBorradorAporteEstatal.put("{nombrePrograma}", programa.getNombre().replace(":", "\\:"));
@@ -2264,10 +2262,10 @@ public class RecursosFinancierosProgramasReforzamientoService {
 								servicio.getId(),idPrograma, componentesBySubtitulos.get(Subtitulo.SUBTITULO24.getId()), Subtitulo.SUBTITULO24.getId());
 
 				for(ProgramaMunicipalCoreComponente componente : programaMunicipalesCoreComponente){
-					if(componente.getMontoAnterior()!=null){
-						totalActual+=componente.getMontoAnterior();
+					if(componente.getTarifaAnterior()!=null){
+						totalActual+=componente.getTarifaAnterior();
 					}else{
-						totalActual+=componente.getMonto();
+						totalActual+=componente.getTarifa();
 					}
 				}
 			}
@@ -2436,8 +2434,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			System.out.println("contenTypeBorradorAporteEstatal->"
 					+ contentType);
 
-			generadorWordPlantillaBorradorOrdinarioProgramacionCaja.saveContent(documentoBorradorOrdinarioProgramasAPSVO
-					.getContent(), XWPFDocument.class);
+			generadorWordPlantillaBorradorOrdinarioProgramacionCaja.saveContent(documentoBorradorOrdinarioProgramasAPSVO.getContent(), XWPFDocument.class);
 
 			Map<String, Object> parametersBorradorAporteEstatal = new HashMap<String, Object>();
 			parametersBorradorAporteEstatal.put("{nombrePrograma}",programa.getNombre().replace(":", "\\:"));
@@ -2887,7 +2884,10 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			TipoDocumentosProcesos tipoDocumentoProceso) {
 		System.out.println("BUSCANDO ID PARA: "+ tipoDocumentoProceso.getName());
 		ReferenciaDocumentoSummaryVO referencia = documentService.getLastDocumentoSummaryByResolucionAPSType(programaSeleccionado, tipoDocumentoProceso);
-		return referencia.getId();
+		if(referencia != null){
+			return referencia.getId();
+		}
+		return null;
 	}
 
 	public Integer createSeguimientoProgramaReforzamiento(Integer idProxAno,

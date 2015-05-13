@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "RebajaCorte.findAll", query = "SELECT r FROM RebajaCorte r"),
     @NamedQuery(name = "RebajaCorte.findByMes", query = "SELECT r FROM RebajaCorte r WHERE  :mesCorte >= r.mesDesde.idMes and :mesCorte <= r.mesHasta.idMes"),
+    @NamedQuery(name = "RebajaCorte.findByMesRebaja", query = "SELECT r FROM RebajaCorte r WHERE r.mesRebaja.idMes <= :mesCorte order by r.mesRebaja.idMes asc"),
     @NamedQuery(name = "RebajaCorte.findByRebajaCorteId", query = "SELECT r FROM RebajaCorte r WHERE r.rebajaCorteId = :rebajaCorteId")})
 public class RebajaCorte implements Serializable {
     private static final long serialVersionUID = 1L;

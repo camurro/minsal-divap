@@ -11,6 +11,7 @@ import javax.persistence.TypedQuery;
 import minsal.divap.enums.TipoComuna;
 import cl.minsal.divap.model.AntecendentesComuna;
 import cl.minsal.divap.model.Comuna;
+import cl.minsal.divap.model.Establecimiento;
 import cl.minsal.divap.model.Persona;
 import cl.minsal.divap.model.Region;
 import cl.minsal.divap.model.ServicioSalud;
@@ -101,6 +102,20 @@ public class ServicioSaludDAO {
 		try {
 			TypedQuery<Comuna> query = this.em.createNamedQuery("Comuna.findById", Comuna.class);
 			query.setParameter("id", idComuna);
+			if(query.getResultList() != null && query.getResultList().size() > 0){
+				return query.getResultList().get(0); 
+			}else{
+				return null;
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public Establecimiento getEstablecimientoById(Integer idEstablecimiento) {
+		try {
+			TypedQuery<Establecimiento> query = this.em.createNamedQuery("Establecimiento.findById", Establecimiento.class);
+			query.setParameter("idEstablecimiento", idEstablecimiento);
 			if(query.getResultList() != null && query.getResultList().size() > 0){
 				return query.getResultList().get(0); 
 			}else{

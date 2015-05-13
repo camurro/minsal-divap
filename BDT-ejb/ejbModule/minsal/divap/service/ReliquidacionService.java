@@ -163,7 +163,7 @@ public class ReliquidacionService {
 		}
 	}
 
-	private Integer getAnoCurso() {
+	public Integer getAnoCurso() {
 		DateFormat formatNowYear = new SimpleDateFormat("yyyy");
 		Date nowDate = new Date();
 		return Integer.valueOf(formatNowYear.format(nowDate)); 

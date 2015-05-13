@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ProgramaSubtituloComponentePeso.findAll", query = "SELECT p FROM ProgramaSubtituloComponentePeso p"),
     @NamedQuery(name = "ProgramaSubtituloComponentePeso.findByIdProgramaSubtituloComponentePeso", query = "SELECT p FROM ProgramaSubtituloComponentePeso p WHERE p.idProgramaSubtituloComponentePeso = :idProgramaSubtituloComponentePeso"),
     @NamedQuery(name = "ProgramaSubtituloComponentePeso.findByPeso", query = "SELECT p FROM ProgramaSubtituloComponentePeso p WHERE p.peso = :peso"),
-    @NamedQuery(name = "ProgramaSubtituloComponentePeso.findProgramaSubtituloComponentePesoByProgramaServicioComponenteSubtitulo", query = "SELECT p FROM ProgramaSubtituloComponentePeso p WHERE p.programa.idProgramaAno = :idProgramaAno and p.servicio.id = :idServicio and p.componente.id = :idComponente and p.subtitulo.idTipoSubtitulo = :idSubtitulo")})
+    @NamedQuery(name = "ProgramaSubtituloComponentePeso.findProgramaSubtituloComponentePesoByProgramaComponenteSubtitulo", query = "SELECT p FROM ProgramaSubtituloComponentePeso p WHERE p.programa.idProgramaAno = :idProgramaAno and p.componente.id = :idComponente and p.subtitulo.idTipoSubtitulo = :idSubtitulo")})
 public class ProgramaSubtituloComponentePeso implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -38,9 +38,6 @@ public class ProgramaSubtituloComponentePeso implements Serializable {
     @JoinColumn(name = "subtitulo", referencedColumnName = "id_tipo_subtitulo")
     @ManyToOne(optional = false)
     private TipoSubtitulo subtitulo;
-    @JoinColumn(name = "servicio", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private ServicioSalud servicio;
     @JoinColumn(name = "programa", referencedColumnName = "id_programa_ano")
     @ManyToOne(optional = false)
     private ProgramaAno programa;
@@ -83,14 +80,6 @@ public class ProgramaSubtituloComponentePeso implements Serializable {
     public void setSubtitulo(TipoSubtitulo subtitulo) {
         this.subtitulo = subtitulo;
     }
-    
-    public ServicioSalud getServicio() {
-        return servicio;
-    }
-
-    public void setServicio(ServicioSalud servicio) {
-        this.servicio = servicio;
-    }
 
     public ProgramaAno getPrograma() {
         return programa;
@@ -108,7 +97,7 @@ public class ProgramaSubtituloComponentePeso implements Serializable {
         this.componente = componente;
     }
 
-    @Override
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (idProgramaSubtituloComponentePeso != null ? idProgramaSubtituloComponentePeso.hashCode() : 0);
@@ -117,7 +106,6 @@ public class ProgramaSubtituloComponentePeso implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof ProgramaSubtituloComponentePeso)) {
             return false;
         }

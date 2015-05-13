@@ -397,6 +397,7 @@
 							</h:panelGrid>
 
                             <p:panel id="panelBusqueda">
+                            <h:panelGrid columns="6" >
 							<span class="strong">Archivo: </span> Archivo comprimido con Resoluciones para Servicio de Salud
 							<ul class="versionesArchivo">
 								<c:forEach var="vardoc" items="#{procesoAsignacionPerCapitaSeguimientoController.serviciosResoluciones}">
@@ -415,6 +416,7 @@
 								</li>
 								</c:forEach>
 							</ul>
+							</h:panelGrid>
 							</p:panel>
 						</c:if>
 					</div>

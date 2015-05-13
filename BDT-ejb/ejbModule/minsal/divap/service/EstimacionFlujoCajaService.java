@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -25,9 +26,11 @@ import minsal.divap.dao.AnoDAO;
 import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.CajaDAO;
 import minsal.divap.dao.ComponenteDAO;
+import minsal.divap.dao.ComunaDAO;
 import minsal.divap.dao.ConveniosDAO;
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
 import minsal.divap.dao.DocumentDAO;
+import minsal.divap.dao.EstablecimientosDAO;
 import minsal.divap.dao.EstimacionFlujoCajaDAO;
 import minsal.divap.dao.InstitucionDAO;
 import minsal.divap.dao.MesDAO;
@@ -61,6 +64,8 @@ import minsal.divap.vo.BaseVO;
 import minsal.divap.vo.BodyVO;
 import minsal.divap.vo.CajaMontoSummaryVO;
 import minsal.divap.vo.CellExcelVO;
+import minsal.divap.vo.ConvenioComunaComponenteVO;
+import minsal.divap.vo.ConvenioServicioComponenteVO;
 import minsal.divap.vo.ConveniosSummaryVO;
 import minsal.divap.vo.DocumentoVO;
 import minsal.divap.vo.EmailVO;
@@ -92,10 +97,6 @@ import cl.minsal.divap.model.CajaMontoPK;
 import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.ComponenteSubtitulo;
 import cl.minsal.divap.model.Comuna;
-import cl.minsal.divap.model.ConvenioComuna;
-import cl.minsal.divap.model.ConvenioComunaComponente;
-import cl.minsal.divap.model.ConvenioServicio;
-import cl.minsal.divap.model.ConvenioServicioComponente;
 import cl.minsal.divap.model.Cuota;
 import cl.minsal.divap.model.DetalleRemesas;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
@@ -132,6 +133,10 @@ public class EstimacionFlujoCajaService {
 	@EJB
 	private TipoSubtituloDAO subtituloDAO;
 	@EJB
+	private EstablecimientosDAO establecimientosDAO;
+	@EJB
+	private ComunaDAO comunaDAO;
+	@EJB
 	private InstitucionDAO institucionDAO;
 	@EJB
 	private AlfrescoService alfrescoService;
@@ -161,6 +166,8 @@ public class EstimacionFlujoCajaService {
 	@EJB
 	private SeguimientoService seguimientoService;
 	@EJB
+	private ConveniosService conveniosService;
+	@EJB
 	private SeguimientoDAO seguimientoDAO;
 	@EJB
 	private DocumentDAO documentDAO;
@@ -187,69 +194,36 @@ public class EstimacionFlujoCajaService {
 	private static final Logger LOGGER = Logger.getLogger(EstimacionFlujoCajaService.class);
 
 	// Generar documento
-	public Integer elaborarOrdinarioProgramacionCaja() {
-
-
-
-		Integer plantillaBorradorOrdinarioProgramacionCaja = documentService
-				.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAOFICIOPROGRAMACIONCAJA);
+	public Integer elaborarOrdinarioProgramacionCaja(Integer ano) {
+		Integer plantillaBorradorOrdinarioProgramacionCaja = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAOFICIOPROGRAMACIONCAJA);
 		if (plantillaBorradorOrdinarioProgramacionCaja == null) {
-			throw new RuntimeException(
-					"No se puede crear Borrador Decreto Aporte Estatal, la plantilla no esta cargada");
+			throw new RuntimeException("No se puede crear Borrador Decreto Aporte Estatal, la plantilla no esta cargada");
 		}
 		try {
-			ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryBorradorAporteEstatalVO = documentService
-					.getDocumentByPlantillaId(plantillaBorradorOrdinarioProgramacionCaja);
-			DocumentoVO documentoBorradorOrdinarioProgramacionCajaVO = documentService
-					.getDocument(referenciaDocumentoSummaryBorradorAporteEstatalVO
-							.getId());
-			String templateOrdinarioProgramacionCaja = tmpDirDoc
-					+ File.separator
-					+ documentoBorradorOrdinarioProgramacionCajaVO.getName();
-			templateOrdinarioProgramacionCaja = templateOrdinarioProgramacionCaja
-					.replace(" ", "");
-			String filenameBorradorOrdinarioProgramacionCaja = tmpDirDoc
-					+ File.separator + new Date().getTime() + "_"
-					+ "OrdinarioProgramacionCaja.docx";
-			filenameBorradorOrdinarioProgramacionCaja = filenameBorradorOrdinarioProgramacionCaja
-					.replaceAll(" ", "");
-			System.out.println("filenameBorradorAporteEstatal filename-->"
-					+ filenameBorradorOrdinarioProgramacionCaja);
-			System.out.println("templateBorradorAporteEstatal template-->"
-					+ templateOrdinarioProgramacionCaja);
-			GeneradorWord generadorWordPlantillaBorradorOrdinarioProgramacionCaja = new GeneradorWord(
-					templateOrdinarioProgramacionCaja);
+			ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryBorradorAporteEstatalVO = documentService.getDocumentByPlantillaId(plantillaBorradorOrdinarioProgramacionCaja);
+			DocumentoVO documentoBorradorOrdinarioProgramacionCajaVO = documentService.getDocument(referenciaDocumentoSummaryBorradorAporteEstatalVO.getId());
+			String templateOrdinarioProgramacionCaja = tmpDirDoc + File.separator + documentoBorradorOrdinarioProgramacionCajaVO.getName();
+			templateOrdinarioProgramacionCaja = templateOrdinarioProgramacionCaja.replace(" ", "");
+			String filenameBorradorOrdinarioProgramacionCaja = tmpDirDoc + File.separator + new Date().getTime() + "_" + "OrdinarioProgramacionCaja.docx";
+			filenameBorradorOrdinarioProgramacionCaja = filenameBorradorOrdinarioProgramacionCaja.replaceAll(" ", "");
+			System.out.println("filenameBorradorAporteEstatal filename-->"	+ filenameBorradorOrdinarioProgramacionCaja);
+			System.out.println("templateBorradorAporteEstatal template-->"  + templateOrdinarioProgramacionCaja);
+			GeneradorWord generadorWordPlantillaBorradorOrdinarioProgramacionCaja = new GeneradorWord(templateOrdinarioProgramacionCaja);
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
-			String contentType = mimemap
-					.getContentType(templateOrdinarioProgramacionCaja
-							.toLowerCase());
-			System.out.println("contenTypeBorradorAporteEstatal->"
-					+ contentType);
+			String contentType = mimemap.getContentType(templateOrdinarioProgramacionCaja.toLowerCase());
+			System.out.println("contenTypeBorradorAporteEstatal->" + contentType);
 
-			generadorWordPlantillaBorradorOrdinarioProgramacionCaja.saveContent(documentoBorradorOrdinarioProgramacionCajaVO
-					.getContent(), XWPFDocument.class);
+			generadorWordPlantillaBorradorOrdinarioProgramacionCaja.saveContent(documentoBorradorOrdinarioProgramacionCajaVO.getContent(), XWPFDocument.class);
 
 			Map<String, Object> parametersBorradorAporteEstatal = new HashMap<String, Object>();
 			parametersBorradorAporteEstatal.put("{ano}",Util.obtenerAno(new Date()));
 			parametersBorradorAporteEstatal.put("{mes}",Util.obtenerNombreMes(Util.obtenerMes(new Date())));
-			GeneradorResolucionAporteEstatal generadorWordDecretoBorradorAporteEstatal = new GeneradorResolucionAporteEstatal(
-					filenameBorradorOrdinarioProgramacionCaja,
-					templateOrdinarioProgramacionCaja);
+			GeneradorResolucionAporteEstatal generadorWordDecretoBorradorAporteEstatal = new GeneradorResolucionAporteEstatal(filenameBorradorOrdinarioProgramacionCaja, templateOrdinarioProgramacionCaja);
 			generadorWordDecretoBorradorAporteEstatal.replaceValues(parametersBorradorAporteEstatal, XWPFDocument.class);
-			BodyVO response = alfrescoService.uploadDocument(new File(
-					filenameBorradorOrdinarioProgramacionCaja), contentType,
-					folderEstimacionFlujoCaja.replace("{ANO}", String.valueOf(getAnoCurso() + 1)));
-			System.out.println("response responseBorradorAporteEstatal --->"
-					+ response);
-
-
-			TipoDocumento tipoDocumento = new TipoDocumento(
-					TipoDocumentosProcesos.PLANTILLAOFICIOPROGRAMACIONCAJA
-					.getId());
-			plantillaBorradorOrdinarioProgramacionCaja = documentService
-					.createDocumentOrdinarioProgramacióndeCaja(tipoDocumento, response.getNodeRef(),
-							response.getFileName(), contentType);
-
+			BodyVO response = alfrescoService.uploadDocument(new File(filenameBorradorOrdinarioProgramacionCaja), contentType, folderEstimacionFlujoCaja.replace("{ANO}", ano.toString()));
+			System.out.println("response responseBorradorAporteEstatal --->" + response);
+			TipoDocumento tipoDocumento = new TipoDocumento(TipoDocumentosProcesos.PLANTILLAOFICIOPROGRAMACIONCAJA.getId());
+			plantillaBorradorOrdinarioProgramacionCaja = documentService.createDocumentOrdinarioProgramacióndeCaja(tipoDocumento, response.getNodeRef(), response.getFileName(), contentType);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidFormatException e) {
@@ -262,10 +236,10 @@ public class EstimacionFlujoCajaService {
 
 	// Para hacer el calculo de la propuesta, se debe hacer una copia de los
 	// valores del año pasado.
-	public void calcularPropuesta(Integer idProgramaAno, Boolean iniciarFlujoCaja) {
+	public void calcularPropuesta(Integer idPrograma, Integer ano, Boolean iniciarFlujoCaja) {
 		if(iniciarFlujoCaja){
 			long millisecons = System.currentTimeMillis();
-			ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
+			ProgramaAno programaAno = programasDAO.getProgramaAnoByIdProgramaAndAno(idPrograma, ano);
 			programaAno.setEstadoFlujoCaja(new EstadoPrograma(EstadosProgramas.CALCULARPROPUESTA.getId()));
 			Map<Integer, List<Integer>> componentesPorSubtitulo = new HashMap<Integer, List<Integer>>();
 			for(Componente componente : programaAno.getPrograma().getComponentes()){
@@ -279,7 +253,7 @@ public class EstimacionFlujoCajaService {
 					}
 				}
 			}
-			List<Caja> cajasPogramaAno = cajaDAO.getCajasByProgramaAno(idProgramaAno);
+			List<Caja> cajasPogramaAno = cajaDAO.getCajasByProgramaAno(programaAno.getIdProgramaAno());
 			if(cajasPogramaAno != null && cajasPogramaAno.size() > 0){
 				List<Integer> idCajas = new ArrayList<Integer>();
 				for(Caja caja : cajasPogramaAno){
@@ -290,210 +264,420 @@ public class EstimacionFlujoCajaService {
 					cajaDAO.eliminarCajasById(idCajas);
 				}
 			}
-			ProgramaAno programaAnoActual = programasDAO.getProgramaAnoByIDProgramaAno(programaAno.getPrograma().getId(), getAnoCurso());
-			List<ServicioSalud> servicios = servicioSaludDAO.getServicios();
-			List<Cuota> cuotasPrograma = estimacionFlujoCajaDAO.getCuotasByProgramaAno(idProgramaAno);
-			for (Map.Entry<Integer, List<Integer>> entry : componentesPorSubtitulo.entrySet()) { 
-				List<Integer> componentes = entry.getValue();
-				for(ServicioSalud servicioSalud : servicios){
-					int componentesSize = componentes.size();
-					Long marcoPresupuestarioTotalAno = null;
-					int cantidadIteraciones = 0;
-					int porcentajeAcumulado = 0;
-					for(Integer componente : componentes){
-						Long marcoPresupuestatarioServicio = 0L;
-						Long marcoPresupuestatarioServicioAnoActual = 0L;
-						System.out.println("Procesando Servicio=" + servicioSalud.getId() + " componente=" + componente + " Subtitulo=" + entry.getKey());
-						if(Subtitulo.SUBTITULO24.getId().equals(entry.getKey())){
-							if(marcoPresupuestarioTotalAno == null){
-								marcoPresupuestarioTotalAno =  programasDAO.getMPComunasServicioProgramaAnoComponenteSubtitulo(servicioSalud.getId(), idProgramaAno, componentes, Subtitulo.SUBTITULO24.getId());
-							}
-							for(Comuna comuna : servicioSalud.getComunas()){
-								Long marcoPresupuestario = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(), idProgramaAno, componente, Subtitulo.SUBTITULO24.getId());
-								marcoPresupuestatarioServicio += marcoPresupuestario;
-								Long marcoPresupuestarioAnoActual = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(), programaAnoActual.getIdProgramaAno(), componente, Subtitulo.SUBTITULO24.getId());
-								marcoPresupuestatarioServicioAnoActual += marcoPresupuestarioAnoActual;
-							}
-							ProgramaSubtituloComponentePeso programaSubtituloComponentePeso = programasDAO.getProgramaSubtituloComponentePesoByProgramaServicioComponenteSubtitulo(idProgramaAno, servicioSalud.getId(), componente, Subtitulo.SUBTITULO24.getId());
-							if(programaSubtituloComponentePeso == null){
-								programaSubtituloComponentePeso = new ProgramaSubtituloComponentePeso();
-								Componente componenteDTO = componenteDAO.getComponenteByID(componente);
-								TipoSubtitulo tipoSubtitulo = new TipoSubtitulo(Subtitulo.SUBTITULO24.getId());
-								programaSubtituloComponentePeso.setComponente(componenteDTO);
-								programaSubtituloComponentePeso.setPrograma(programaAno);
-								programaSubtituloComponentePeso.setServicio(servicioSalud);
-								programaSubtituloComponentePeso.setSubtitulo(tipoSubtitulo);
-								programasDAO.save(programaSubtituloComponentePeso);
-							}
-							if(marcoPresupuestatarioServicio != 0){
-								if(cantidadIteraciones != (componentesSize - 1)){
-									int peso = (int)((marcoPresupuestatarioServicio * 100.0) / marcoPresupuestarioTotalAno);
-									porcentajeAcumulado += peso;
-									programaSubtituloComponentePeso.setPeso(peso);
-								}else{
-									int peso = 100 - porcentajeAcumulado;
-									porcentajeAcumulado = 100;
-									programaSubtituloComponentePeso.setPeso(peso);
+			ProgramaAno programaAnoBase = programasDAO.getProgramaAnoByIDProgramaAno(idPrograma, (ano-1));
+			List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
+			List<Cuota> cuotasPrograma = estimacionFlujoCajaDAO.getCuotasByProgramaAno(programaAno.getIdProgramaAno());
+			List<Cuota> cuotasProgramaBase = estimacionFlujoCajaDAO.getCuotasByProgramaAno(programaAnoBase.getIdProgramaAno());
+			for(ServicioSalud servicioSalud : servicios){
+				for (Map.Entry<Integer, List<Integer>> entry : componentesPorSubtitulo.entrySet()) { 
+					if(Subtitulo.SUBTITULO24.getId().equals(entry.getKey())){
+						if(servicioSalud.getComunas() != null && servicioSalud.getComunas().size() > 0){
+							List<Integer> componentes = entry.getValue();
+							Long totalPorServicio = 0L;
+							Map<Integer, Long> totalesPorComponente = new HashMap<Integer, Long>();
+							for(Integer componente : componentes){
+								Long totalServicioPorComponente = 0L;
+								for(Comuna comuna : servicioSalud.getComunas()){
+									Long marcoPresupuestarioComunaBase = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(), programaAnoBase.getIdProgramaAno(), componente, entry.getKey());
+									Long marcoPresupuestarioComunaEvaluacion = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(), programaAno.getIdProgramaAno(), componente, entry.getKey());
+									totalPorServicio += marcoPresupuestarioComunaEvaluacion;
+									totalServicioPorComponente += marcoPresupuestarioComunaEvaluacion;
+									if(marcoPresupuestarioComunaBase != 0L){
+										Caja cajaBase = cajaDAO.getByServicioComunaProgramaAnoComponenteSubtitulo(servicioSalud.getId(), comuna.getId(), programaAnoBase.getIdProgramaAno(), componente, Subtitulo.getById(entry.getKey()));
+										if(cajaBase != null){
+											System.out.println("Se distribuye de la misma forma que el año Base");
+											Caja caja = new Caja();
+											caja.setCajaInicial(true);
+											Componente componenteDTO = componenteDAO.getComponenteByID(componente);
+											caja.setIdComponente(componenteDTO);
+											caja.setIdSubtitulo(new TipoSubtitulo(entry.getKey()));
+											caja.setPrograma(programaAno);
+											caja.setServicio(servicioSalud);
+											caja.setComuna(comuna);
+											cajaDAO.save(caja);
+											List<CajaMonto> cajaMontosBase = cajaBase.getCajaMontos();
+											int mesCajaMonto = 1;
+											int montoCalculado = 0;
+											for(CajaMonto cajaMontoBase : cajaMontosBase){
+												boolean mesConMonto = false;
+												CajaMonto cajaMonto = new CajaMonto();
+												CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cajaMontoBase.getMes().getIdMes());
+												cajaMonto.setCajaMontoPK(cajaMontoPK);
+												cajaMonto.setMes(cajaMontoBase.getMes());
+												cajaMonto.setCaja(caja);
+												if(cajaMontoBase.getMonto() == 0){
+													cajaMonto.setMonto(0);
+												}else{
+													int porcentaje = (int)((cajaMontoBase.getMonto() * 100.0) / marcoPresupuestarioComunaBase);
+													int monto = (int)(marcoPresupuestarioComunaEvaluacion * (porcentaje/100.0));
+													montoCalculado += monto;
+													cajaMonto.setMonto(monto);
+													mesConMonto = true;
+												}
+												cajaDAO.save(cajaMonto);
+												if(mesConMonto){
+													mesCajaMonto = cajaMonto.getMes().getIdMes();
+												}
+											}
+											if(marcoPresupuestarioComunaEvaluacion != montoCalculado){
+												Long diferenciaMonto = (marcoPresupuestarioComunaEvaluacion - montoCalculado);
+												CajaMonto cajaMonto = cajaDAO.getCajaMontoByCajaMes(caja.getId(), mesCajaMonto);
+												if(cajaMonto != null){
+													cajaMonto.setMonto(cajaMonto.getMonto() + diferenciaMonto.intValue());
+												}
+											}
+										}
+									}else{
+										if(cuotasPrograma != null && cuotasPrograma.size() > 0){
+											Long marcoAcumulado = 0L; 
+											Caja caja = new Caja();
+											caja.setCajaInicial(true);
+											Componente componenteDTO = componenteDAO.getComponenteByID(componente);
+											caja.setIdComponente(componenteDTO);
+											caja.setIdSubtitulo(new TipoSubtitulo(entry.getKey()));
+											caja.setPrograma(programaAno);
+											caja.setServicio(servicioSalud);
+											caja.setComuna(comuna);
+											cajaDAO.save(caja);
+											List<Integer> mesesConCuotas = new ArrayList<Integer>();
+											for(int contCuotas = 0; contCuotas <  cuotasPrograma.size(); contCuotas++){
+												CajaMonto cajaMonto = new CajaMonto();
+												if(contCuotas == 0){
+													CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), 3);
+													cajaMonto.setCajaMontoPK(cajaMontoPK);
+													cajaMonto.setMes(new Mes(3));
+													cajaMonto.setCaja(caja);
+													int monto = (int)(marcoPresupuestarioComunaEvaluacion * (cuotasPrograma.get(contCuotas).getPorcentaje()/100.0));
+													marcoAcumulado += monto;
+													cajaMonto.setMonto(monto);
+													mesesConCuotas.add(3);
+												}else if(contCuotas == (cuotasPrograma.size() - 1)){
+													mesesConCuotas.add(cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
+													CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
+													cajaMonto.setCajaMontoPK(cajaMontoPK);
+													cajaMonto.setMes(cuotasPrograma.get(contCuotas).getIdMes());
+													cajaMonto.setCaja(caja);
+													int monto = (int)(marcoPresupuestarioComunaEvaluacion - marcoAcumulado);
+													cajaMonto.setMonto(monto);
+												}else{
+													mesesConCuotas.add(cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
+													CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
+													cajaMonto.setCajaMontoPK(cajaMontoPK);
+													cajaMonto.setMes(cuotasPrograma.get(contCuotas).getIdMes());
+													cajaMonto.setCaja(caja);
+													int monto = (int)(marcoPresupuestarioComunaEvaluacion * (cuotasPrograma.get(contCuotas).getPorcentaje()/100.0));
+													marcoAcumulado += monto;
+													cajaMonto.setMonto(monto);
+												}
+												cajaDAO.save(cajaMonto);
+											}
+											for(Integer mes = 1; mes <= 12; mes++){
+												if(mesesConCuotas.contains(mes)){
+													continue;
+												}
+												CajaMonto cajaMonto = new CajaMonto();
+												CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), mes);
+												cajaMonto.setCajaMontoPK(cajaMontoPK);
+												cajaMonto.setMes(new Mes(mes));
+												cajaMonto.setCaja(caja);
+												cajaMonto.setMonto(0);
+												cajaDAO.save(cajaMonto);
+											}
+										}else{
+											System.out.println("Advertencia no hay cuotas para el programa y se calculara la propuesta con las cuotas del año anterior");
+											if(cuotasProgramaBase != null && cuotasProgramaBase.size() > 0){
+												Long marcoAcumulado = 0L; 
+												Caja caja = new Caja();
+												caja.setCajaInicial(true);
+												Componente componenteDTO = componenteDAO.getComponenteByID(componente);
+												caja.setIdComponente(componenteDTO);
+												caja.setIdSubtitulo(new TipoSubtitulo(entry.getKey()));
+												caja.setPrograma(programaAno);
+												caja.setServicio(servicioSalud);
+												caja.setComuna(comuna);
+												cajaDAO.save(caja);
+												List<Integer> mesesConCuotas = new ArrayList<Integer>();
+												for(int contCuotas = 0; contCuotas <  cuotasProgramaBase.size(); contCuotas++){
+													CajaMonto cajaMonto = new CajaMonto();
+													if(contCuotas == 0){
+														CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), 3);
+														cajaMonto.setCajaMontoPK(cajaMontoPK);
+														cajaMonto.setMes(new Mes(3));
+														cajaMonto.setCaja(caja);
+														int monto = (int)(marcoPresupuestarioComunaEvaluacion * (cuotasProgramaBase.get(contCuotas).getPorcentaje()/100.0));
+														marcoAcumulado += monto;
+														cajaMonto.setMonto(monto);
+														mesesConCuotas.add(3);
+													}else if(contCuotas == (cuotasProgramaBase.size() - 1)){
+														mesesConCuotas.add(cuotasProgramaBase.get(contCuotas).getIdMes().getIdMes());
+														CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cuotasProgramaBase.get(contCuotas).getIdMes().getIdMes());
+														cajaMonto.setCajaMontoPK(cajaMontoPK);
+														cajaMonto.setMes(cuotasProgramaBase.get(contCuotas).getIdMes());
+														cajaMonto.setCaja(caja);
+														int monto = (int)(marcoPresupuestarioComunaEvaluacion - marcoAcumulado);
+														cajaMonto.setMonto(monto);
+													}else{
+														mesesConCuotas.add(cuotasProgramaBase.get(contCuotas).getIdMes().getIdMes());
+														CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cuotasProgramaBase.get(contCuotas).getIdMes().getIdMes());
+														cajaMonto.setCajaMontoPK(cajaMontoPK);
+														cajaMonto.setMes(cuotasProgramaBase.get(contCuotas).getIdMes());
+														cajaMonto.setCaja(caja);
+														int monto = (int)(marcoPresupuestarioComunaEvaluacion * (cuotasProgramaBase.get(contCuotas).getPorcentaje()/100.0));
+														marcoAcumulado += monto;
+														cajaMonto.setMonto(monto);
+													}
+													cajaDAO.save(cajaMonto);
+												}
+												for(Integer mes = 1; mes <= 12; mes++){
+													if(mesesConCuotas.contains(mes)){
+														continue;
+													}
+													CajaMonto cajaMonto = new CajaMonto();
+													CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), mes);
+													cajaMonto.setCajaMontoPK(cajaMontoPK);
+													cajaMonto.setMes(new Mes(mes));
+													cajaMonto.setCaja(caja);
+													cajaMonto.setMonto(0);
+													cajaDAO.save(cajaMonto);
+												}
+											}
+										}
+									}
 								}
+								totalesPorComponente.put(componente, totalServicioPorComponente);
 							}
-							else{
-								programaSubtituloComponentePeso.setPeso(0);
-							}
-						}else{
-							if(marcoPresupuestarioTotalAno == null){
-								marcoPresupuestarioTotalAno =  programasDAO.getMPEstablecimientosServicioProgramaAnoComponenteSubtitulo(servicioSalud.getId(), idProgramaAno, componentes, entry.getKey());
-							}
-							for(Establecimiento establecimiento : servicioSalud.getEstablecimientos()){
-								Long marcoPresupuestario = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAno, componente, entry.getKey());
-								marcoPresupuestatarioServicio += marcoPresupuestario;
-								Long marcoPresupuestarioAnoActual = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), programaAnoActual.getIdProgramaAno(), componente, entry.getKey());
-								marcoPresupuestatarioServicioAnoActual += marcoPresupuestarioAnoActual;
-							}
-							ProgramaSubtituloComponentePeso programaSubtituloComponentePeso = programasDAO.getProgramaSubtituloComponentePesoByProgramaServicioComponenteSubtitulo(idProgramaAno, servicioSalud.getId(), componente, Subtitulo.SUBTITULO24.getId());
-							if(programaSubtituloComponentePeso == null){
-								programaSubtituloComponentePeso = new ProgramaSubtituloComponentePeso();
-								Componente componenteDTO = componenteDAO.getComponenteByID(componente);
-								TipoSubtitulo tipoSubtitulo = new TipoSubtitulo(entry.getKey());
-								programaSubtituloComponentePeso.setComponente(componenteDTO);
-								programaSubtituloComponentePeso.setPrograma(programaAno);
-								programaSubtituloComponentePeso.setServicio(servicioSalud);
-								programaSubtituloComponentePeso.setSubtitulo(tipoSubtitulo);
-								programasDAO.save(programaSubtituloComponentePeso);
-							}
-							if(marcoPresupuestatarioServicio != 0){
-								if(cantidadIteraciones != (componentesSize - 1)){
-									int peso = (int)((marcoPresupuestatarioServicio * 100.0) / marcoPresupuestarioTotalAno);
-									porcentajeAcumulado += peso;
-									programaSubtituloComponentePeso.setPeso(peso);
-								}else{
-									int peso = 100 - porcentajeAcumulado;
-									porcentajeAcumulado = 100;
-									programaSubtituloComponentePeso.setPeso(peso);
+							int sizeComponentes = componentes.size();
+							int pesoAcumulado = 0;
+							for(int contadorComponentes = 0; contadorComponentes < sizeComponentes; contadorComponentes++){
+								Long totalServicioPorComponente = totalesPorComponente.get(componentes.get(contadorComponentes));
+								int pesoCalculado = 0;
+								if(totalServicioPorComponente != 0L){
+									if(contadorComponentes == (sizeComponentes - 1)){
+										pesoCalculado = (new Double(100.0 - pesoAcumulado)).intValue();
+									}else{
+										pesoCalculado = (new Double((totalServicioPorComponente * 100.0) / totalServicioPorComponente)).intValue();
+										pesoAcumulado += pesoCalculado;
+									}
 								}
-							}else{
-								programaSubtituloComponentePeso.setPeso(0);
+								ProgramaSubtituloComponentePeso programaSubtituloComponentePeso = programasDAO.getProgramaSubtituloComponentePesoByProgramaComponenteSubtitulo(programaAno.getIdProgramaAno(), componentes.get(contadorComponentes), Subtitulo.SUBTITULO24.getId());
+								if(programaSubtituloComponentePeso == null){
+									programaSubtituloComponentePeso = new ProgramaSubtituloComponentePeso();
+									Componente componenteDTO = componenteDAO.getComponenteByID(componentes.get(contadorComponentes));
+									TipoSubtitulo tipoSubtitulo = new TipoSubtitulo(Subtitulo.SUBTITULO24.getId());
+									programaSubtituloComponentePeso.setComponente(componenteDTO);
+									programaSubtituloComponentePeso.setPrograma(programaAno);
+									programaSubtituloComponentePeso.setSubtitulo(tipoSubtitulo);
+									programaSubtituloComponentePeso.setPeso(pesoCalculado);
+									programasDAO.save(programaSubtituloComponentePeso);
+								}else{
+									programaSubtituloComponentePeso.setPeso(pesoCalculado);
+								}
 							}
 						}
-						if(marcoPresupuestatarioServicio != 0){
-							Caja cajaActual = cajaDAO.getByServicioProgramaAnoComponenteSubtitulo(servicioSalud.getId(), programaAnoActual.getIdProgramaAno(), componente, Subtitulo.getById(entry.getKey()));
-							if(cajaActual != null){
-								System.out.println("Se distribuye de la misma forma que el año en curso");
-								Caja caja = new Caja();
-								caja.setCajaInicial(true);
-								Componente componenteDTO = componenteDAO.getComponenteByID(componente);
-								caja.setIdComponente(componenteDTO);
-								caja.setIdSubtitulo(new TipoSubtitulo(entry.getKey()));
-								caja.setPrograma(programaAno);
-								caja.setServicio(servicioSalud);
-								cajaDAO.save(caja);
-								List<CajaMonto> cajaMontosActual = cajaActual.getCajaMontos();
-								int mesCajaMonto = 1;
-								int montoCalculado = 0;
-								for(CajaMonto cajaMontoActual : cajaMontosActual){
-									boolean mesConMonto = false;
-									CajaMonto cajaMonto = new CajaMonto();
-									CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cajaMontoActual.getMes().getIdMes());
-									cajaMonto.setCajaMontoPK(cajaMontoPK);
-									cajaMonto.setMes(cajaMontoActual.getMes());
-									cajaMonto.setCaja(caja);
-									if(cajaMontoActual.getMonto() == 0){
-										cajaMonto.setMonto(0);
+					}else{
+						if(servicioSalud.getEstablecimientos() != null && servicioSalud.getEstablecimientos().size() > 0){
+							List<Integer> componentes = entry.getValue();
+							Long totalPorServicio = 0L;
+							Map<Integer, Long> totalesPorComponente = new HashMap<Integer, Long>();
+							for(Integer componente : componentes){
+								Long totalServicioPorComponente = 0L;
+								for(Establecimiento establecimiento : servicioSalud.getEstablecimientos()){
+									Long marcoPresupuestarioEstablecimientoBase = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), programaAnoBase.getIdProgramaAno(), componente, entry.getKey());
+									Long marcoPresupuestarioEstablecimientoEvaluacion = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), programaAno.getIdProgramaAno(), componente, entry.getKey());
+									totalPorServicio += marcoPresupuestarioEstablecimientoEvaluacion;
+									totalServicioPorComponente += marcoPresupuestarioEstablecimientoEvaluacion;
+									if(marcoPresupuestarioEstablecimientoBase != 0L){
+										Caja cajaBase = cajaDAO.getByServicioEstablecimientoProgramaAnoComponenteSubtitulo(servicioSalud.getId(), establecimiento.getId(), programaAnoBase.getIdProgramaAno(), componente, Subtitulo.getById(entry.getKey()));
+										if(cajaBase != null){
+											System.out.println("Se distribuye de la misma forma que el año Base");
+											Caja caja = new Caja();
+											caja.setCajaInicial(true);
+											Componente componenteDTO = componenteDAO.getComponenteByID(componente);
+											caja.setIdComponente(componenteDTO);
+											caja.setIdSubtitulo(new TipoSubtitulo(entry.getKey()));
+											caja.setPrograma(programaAno);
+											caja.setServicio(servicioSalud);
+											caja.setEstablecimiento(establecimiento);
+											cajaDAO.save(caja);
+											List<CajaMonto> cajaMontosBase = cajaBase.getCajaMontos();
+											int mesCajaMonto = 1;
+											int montoCalculado = 0;
+											for(CajaMonto cajaMontoBase : cajaMontosBase){
+												boolean mesConMonto = false;
+												CajaMonto cajaMonto = new CajaMonto();
+												CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cajaMontoBase.getMes().getIdMes());
+												cajaMonto.setCajaMontoPK(cajaMontoPK);
+												cajaMonto.setMes(cajaMontoBase.getMes());
+												cajaMonto.setCaja(caja);
+												if(cajaMontoBase.getMonto() == 0){
+													cajaMonto.setMonto(0);
+												}else{
+													int porcentaje = (int)((cajaMontoBase.getMonto() * 100.0) / marcoPresupuestarioEstablecimientoBase);
+													int monto = (int)(marcoPresupuestarioEstablecimientoEvaluacion * (porcentaje/100.0));
+													montoCalculado += monto;
+													cajaMonto.setMonto(monto);
+													mesConMonto = true;
+												}
+												cajaDAO.save(cajaMonto);
+												if(mesConMonto){
+													mesCajaMonto = cajaMonto.getMes().getIdMes();
+												}
+											}
+											if(marcoPresupuestarioEstablecimientoEvaluacion != montoCalculado){
+												Long diferenciaMonto = (marcoPresupuestarioEstablecimientoEvaluacion - montoCalculado);
+												CajaMonto cajaMonto = cajaDAO.getCajaMontoByCajaMes(caja.getId(), mesCajaMonto);
+												if(cajaMonto != null){
+													cajaMonto.setMonto(cajaMonto.getMonto() + diferenciaMonto.intValue());
+												}
+											}
+										}
 									}else{
-										int porcentaje = (int)((cajaMontoActual.getMonto() * 100.0) / marcoPresupuestatarioServicioAnoActual);
-										int monto = (int)(marcoPresupuestatarioServicio * (porcentaje/100.0));
-										montoCalculado+=monto;
-										cajaMonto.setMonto(monto);
-										mesConMonto = true;
-									}
-									cajaDAO.save(cajaMonto);
-									if(mesConMonto){
-										mesCajaMonto = cajaMonto.getMes().getIdMes();
+										if(cuotasPrograma != null && cuotasPrograma.size() > 0){
+											Long marcoAcumulado = 0L; 
+											Caja caja = new Caja();
+											caja.setCajaInicial(true);
+											Componente componenteDTO = componenteDAO.getComponenteByID(componente);
+											caja.setIdComponente(componenteDTO);
+											caja.setIdSubtitulo(new TipoSubtitulo(entry.getKey()));
+											caja.setPrograma(programaAno);
+											caja.setServicio(servicioSalud);
+											caja.setEstablecimiento(establecimiento);
+											cajaDAO.save(caja);
+											List<Integer> mesesConCuotas = new ArrayList<Integer>();
+											for(int contCuotas = 0; contCuotas <  cuotasPrograma.size(); contCuotas++){
+												CajaMonto cajaMonto = new CajaMonto();
+												if(contCuotas == 0){
+													CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), 3);
+													cajaMonto.setCajaMontoPK(cajaMontoPK);
+													cajaMonto.setMes(new Mes(3));
+													cajaMonto.setCaja(caja);
+													int monto = (int)(marcoPresupuestarioEstablecimientoEvaluacion * (cuotasPrograma.get(contCuotas).getPorcentaje()/100.0));
+													marcoAcumulado += monto;
+													cajaMonto.setMonto(monto);
+													mesesConCuotas.add(3);
+												}else if(contCuotas == (cuotasPrograma.size() - 1)){
+													mesesConCuotas.add(cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
+													CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
+													cajaMonto.setCajaMontoPK(cajaMontoPK);
+													cajaMonto.setMes(cuotasPrograma.get(contCuotas).getIdMes());
+													cajaMonto.setCaja(caja);
+													int monto = (int)(marcoPresupuestarioEstablecimientoEvaluacion - marcoAcumulado);
+													cajaMonto.setMonto(monto);
+												}else{
+													mesesConCuotas.add(cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
+													CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
+													cajaMonto.setCajaMontoPK(cajaMontoPK);
+													cajaMonto.setMes(cuotasPrograma.get(contCuotas).getIdMes());
+													cajaMonto.setCaja(caja);
+													int monto = (int)(marcoPresupuestarioEstablecimientoEvaluacion * (cuotasPrograma.get(contCuotas).getPorcentaje()/100.0));
+													marcoAcumulado += monto;
+													cajaMonto.setMonto(monto);
+												}
+												cajaDAO.save(cajaMonto);
+											}
+											for(Integer mes = 1; mes <= 12; mes++){
+												if(mesesConCuotas.contains(mes)){
+													continue;
+												}
+												CajaMonto cajaMonto = new CajaMonto();
+												CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), mes);
+												cajaMonto.setCajaMontoPK(cajaMontoPK);
+												cajaMonto.setMes(new Mes(mes));
+												cajaMonto.setCaja(caja);
+												cajaMonto.setMonto(0);
+												cajaDAO.save(cajaMonto);
+											}
+										}else{
+											System.out.println("Advertencia no hay cuotas para el programa y se calculara la propuesta con las cuotas del año anterior");
+											if(cuotasProgramaBase != null && cuotasProgramaBase.size() > 0){
+												Long marcoAcumulado = 0L; 
+												Caja caja = new Caja();
+												caja.setCajaInicial(true);
+												Componente componenteDTO = componenteDAO.getComponenteByID(componente);
+												caja.setIdComponente(componenteDTO);
+												caja.setIdSubtitulo(new TipoSubtitulo(entry.getKey()));
+												caja.setPrograma(programaAno);
+												caja.setServicio(servicioSalud);
+												caja.setEstablecimiento(establecimiento);
+												cajaDAO.save(caja);
+												List<Integer> mesesConCuotas = new ArrayList<Integer>();
+												for(int contCuotas = 0; contCuotas <  cuotasProgramaBase.size(); contCuotas++){
+													CajaMonto cajaMonto = new CajaMonto();
+													if(contCuotas == 0){
+														CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), 3);
+														cajaMonto.setCajaMontoPK(cajaMontoPK);
+														cajaMonto.setMes(new Mes(3));
+														cajaMonto.setCaja(caja);
+														int monto = (int)(marcoPresupuestarioEstablecimientoEvaluacion * (cuotasProgramaBase.get(contCuotas).getPorcentaje()/100.0));
+														marcoAcumulado += monto;
+														cajaMonto.setMonto(monto);
+														mesesConCuotas.add(3);
+													}else if(contCuotas == (cuotasProgramaBase.size() - 1)){
+														mesesConCuotas.add(cuotasProgramaBase.get(contCuotas).getIdMes().getIdMes());
+														CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cuotasProgramaBase.get(contCuotas).getIdMes().getIdMes());
+														cajaMonto.setCajaMontoPK(cajaMontoPK);
+														cajaMonto.setMes(cuotasProgramaBase.get(contCuotas).getIdMes());
+														cajaMonto.setCaja(caja);
+														int monto = (int)(marcoPresupuestarioEstablecimientoEvaluacion - marcoAcumulado);
+														cajaMonto.setMonto(monto);
+													}else{
+														mesesConCuotas.add(cuotasProgramaBase.get(contCuotas).getIdMes().getIdMes());
+														CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cuotasProgramaBase.get(contCuotas).getIdMes().getIdMes());
+														cajaMonto.setCajaMontoPK(cajaMontoPK);
+														cajaMonto.setMes(cuotasProgramaBase.get(contCuotas).getIdMes());
+														cajaMonto.setCaja(caja);
+														int monto = (int)(marcoPresupuestarioEstablecimientoEvaluacion * (cuotasProgramaBase.get(contCuotas).getPorcentaje()/100.0));
+														marcoAcumulado += monto;
+														cajaMonto.setMonto(monto);
+													}
+													cajaDAO.save(cajaMonto);
+												}
+												for(Integer mes = 1; mes <= 12; mes++){
+													if(mesesConCuotas.contains(mes)){
+														continue;
+													}
+													CajaMonto cajaMonto = new CajaMonto();
+													CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), mes);
+													cajaMonto.setCajaMontoPK(cajaMontoPK);
+													cajaMonto.setMes(new Mes(mes));
+													cajaMonto.setCaja(caja);
+													cajaMonto.setMonto(0);
+													cajaDAO.save(cajaMonto);
+												}
+											}
+										}
 									}
 								}
-								if(marcoPresupuestatarioServicio != montoCalculado){
-									int diferenciaMonto = (int)(marcoPresupuestatarioServicio - montoCalculado);
-									CajaMonto cajaMonto = cajaDAO.getCajaMontoByCajaMes(caja.getId(), mesCajaMonto);
-									if(cajaMonto != null){
-										cajaMonto.setMonto(cajaMonto.getMonto() + diferenciaMonto);
-									}
-								}
-							}else{
-								System.out.println("no hay referencia de la caja para el año en curso, se distribuye por cuotas");
-								Caja caja = new Caja();
-								caja.setCajaInicial(true);
-								Componente componenteDTO = componenteDAO.getComponenteByID(componente);
-								caja.setIdComponente(componenteDTO);
-								caja.setIdSubtitulo(new TipoSubtitulo(entry.getKey()));
-								caja.setPrograma(programaAno);
-								caja.setServicio(servicioSalud);
-								cajaDAO.save(caja);
-								int montoMarco = 0;
-								List<Integer> mesesConCuotas = new ArrayList<Integer>();
-								for(int contCuotas = 0; contCuotas <  cuotasPrograma.size(); contCuotas++){
-									CajaMonto cajaMonto = new CajaMonto();
-									if(contCuotas == 0){
-										CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), 3);
-										cajaMonto.setCajaMontoPK(cajaMontoPK);
-										cajaMonto.setMes(new Mes(3));
-										cajaMonto.setCaja(caja);
-										int monto = (int)(marcoPresupuestatarioServicio * (cuotasPrograma.get(contCuotas).getPorcentaje()/100.0));
-										montoMarco+=monto;
-										cajaMonto.setMonto(monto);
-										mesesConCuotas.add(3);
-									}else if(contCuotas == (cuotasPrograma.size() - 1)){
-										mesesConCuotas.add(cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
-										CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
-										cajaMonto.setCajaMontoPK(cajaMontoPK);
-										cajaMonto.setMes(cuotasPrograma.get(contCuotas).getIdMes());
-										cajaMonto.setCaja(caja);
-										int monto = (int)(marcoPresupuestatarioServicio - montoMarco);
-										cajaMonto.setMonto(monto);
-									}else{
-										mesesConCuotas.add(cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
-										CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), cuotasPrograma.get(contCuotas).getIdMes().getIdMes());
-										cajaMonto.setCajaMontoPK(cajaMontoPK);
-										cajaMonto.setMes(cuotasPrograma.get(contCuotas).getIdMes());
-										cajaMonto.setCaja(caja);
-										int monto = (int)(marcoPresupuestatarioServicio * (cuotasPrograma.get(contCuotas).getPorcentaje()/100.0));
-										montoMarco+=monto;
-										cajaMonto.setMonto(monto);
-									}
-									cajaDAO.save(cajaMonto);
-								}
-								for(Integer mes = 1; mes <= 12; mes++){
-									if(mesesConCuotas.contains(mes)){
-										continue;
-									}
-									CajaMonto cajaMonto = new CajaMonto();
-									CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), mes);
-									cajaMonto.setCajaMontoPK(cajaMontoPK);
-									cajaMonto.setMes(new Mes(mes));
-									cajaMonto.setCaja(caja);
-									cajaMonto.setMonto(0);
-									cajaDAO.save(cajaMonto);
-								}
+								totalesPorComponente.put(componente, totalServicioPorComponente);
 							}
-						}else{
-							System.out.println("El marco presupuestario es cera para servicioSalud="+servicioSalud.getId()+ " programa=" + idProgramaAno+" componente="+componente+" subtitulo="+entry.getKey());
-							Caja caja = new Caja();
-							caja.setCajaInicial(true);
-							Componente componenteDTO = componenteDAO.getComponenteByID(componente);
-							caja.setIdComponente(componenteDTO);
-							caja.setIdSubtitulo(new TipoSubtitulo(entry.getKey()));
-							caja.setPrograma(programaAno);
-							caja.setServicio(servicioSalud);
-							cajaDAO.save(caja);
-							for(Integer mes = 1; mes <= 12; mes++){
-								CajaMonto cajaMonto = new CajaMonto();
-								CajaMontoPK cajaMontoPK = new CajaMontoPK(caja.getId(), mes);
-								cajaMonto.setCajaMontoPK(cajaMontoPK);
-								cajaMonto.setMes(new Mes(mes));
-								cajaMonto.setCaja(caja);
-								cajaMonto.setMonto(0);
-								cajaDAO.save(cajaMonto);
+							int sizeComponentes = componentes.size();
+							int pesoAcumulado = 0;
+							for(int contadorComponentes = 0; contadorComponentes < sizeComponentes; contadorComponentes++){
+								Long totalServicioPorComponente = totalesPorComponente.get(componentes.get(contadorComponentes));
+								int pesoCalculado = 0;
+								if(totalServicioPorComponente != 0L){
+									if(contadorComponentes == (sizeComponentes - 1)){
+										pesoCalculado = (new Double(100.0 - pesoAcumulado)).intValue();
+									}else{
+										pesoCalculado = (new Double((totalServicioPorComponente * 100.0) / totalServicioPorComponente)).intValue();
+										pesoAcumulado += pesoCalculado;
+									}
+								}
+								ProgramaSubtituloComponentePeso programaSubtituloComponentePeso = programasDAO.getProgramaSubtituloComponentePesoByProgramaComponenteSubtitulo(programaAno.getIdProgramaAno(), componentes.get(contadorComponentes), Subtitulo.SUBTITULO24.getId());
+								if(programaSubtituloComponentePeso == null){
+									programaSubtituloComponentePeso = new ProgramaSubtituloComponentePeso();
+									Componente componenteDTO = componenteDAO.getComponenteByID(componentes.get(contadorComponentes));
+									TipoSubtitulo tipoSubtitulo = new TipoSubtitulo(Subtitulo.SUBTITULO24.getId());
+									programaSubtituloComponentePeso.setComponente(componenteDTO);
+									programaSubtituloComponentePeso.setPrograma(programaAno);
+									programaSubtituloComponentePeso.setSubtitulo(tipoSubtitulo);
+									programaSubtituloComponentePeso.setPeso(pesoCalculado);
+									programasDAO.save(programaSubtituloComponentePeso);
+								}else{
+									programaSubtituloComponentePeso.setPeso(pesoCalculado);
+								}
 							}
 						}
-						cantidadIteraciones++;
 					}
 				}
 			}
@@ -535,7 +719,6 @@ public class EstimacionFlujoCajaService {
 		return plantillaId;
 	}
 
-	// CORREO
 	public Integer getAnoCurso() {
 		DateFormat formatNowYear = new SimpleDateFormat("yyyy");
 		Date nowDate = new Date();
@@ -556,11 +739,8 @@ public class EstimacionFlujoCajaService {
 		return mesCurso;
 	}
 
-	public Integer createSeguimiento(Integer idLineaProgramatica,
-			TareasSeguimiento tareaSeguimiento, String subject, String body,
-			String username, List<String> para, List<String> conCopia,
-			List<String> conCopiaOculta, List<Integer> documentos) {
-
+	public Integer createSeguimiento(Integer idLineaProgramatica, TareasSeguimiento tareaSeguimiento, String subject, String body,
+			String username, List<String> para, List<String> conCopia, List<String> conCopiaOculta, List<Integer> documentos, Integer ano) {
 		String from = usuarioDAO.getEmailByUsername(username);
 		if (from == null) {
 			throw new RuntimeException("Usuario no tiene un email valido");
@@ -569,29 +749,17 @@ public class EstimacionFlujoCajaService {
 		if (documentos != null && documentos.size() > 0) {
 			for (Integer referenciaDocumentoId : documentos) {
 				MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
-				ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = documentService
-						.getDocumentSummary(referenciaDocumentoId);
+				ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = documentService.getDocumentSummary(referenciaDocumentoId);
 				documentosTmp.add(referenciaDocumentoSummaryVO);
-				String contenType = mimemap
-						.getContentType(referenciaDocumentoSummaryVO.getPath()
-								.toLowerCase());
-				BodyVO response = alfrescoService.uploadDocument(new File(
-						referenciaDocumentoSummaryVO.getPath()), contenType,
-						folderEstimacionFlujoCaja.replace("{ANO}",
-								getAnoCurso().toString()));
+				String contenType = mimemap.getContentType(referenciaDocumentoSummaryVO.getPath().toLowerCase());
+				BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummaryVO.getPath()), contenType, folderEstimacionFlujoCaja.replace("{ANO}", ano.toString()));
 				System.out.println("response upload template --->" + response);
-				documentService.updateDocumentTemplate(referenciaDocumentoId,
-						response.getNodeRef(), response.getFileName(),
-						contenType);
+				documentService.updateDocumentTemplate(referenciaDocumentoId, response.getNodeRef(), response.getFileName(), contenType);
 			}
 		}
 
-		Integer idSeguimiento = seguimientoService.createSeguimiento(
-				tareaSeguimiento, subject, body, from, para, conCopia,
-				conCopiaOculta, documentosTmp);
-		Seguimiento seguimiento = seguimientoDAO
-				.getSeguimientoById(idSeguimiento);
-
+		Integer idSeguimiento = seguimientoService.createSeguimiento(tareaSeguimiento, subject, body, from, para, conCopia, conCopiaOculta, documentosTmp);
+		Seguimiento seguimiento = seguimientoDAO.getSeguimientoById(idSeguimiento);
 		estimacionFlujoCajaDAO.createSeguimiento(idLineaProgramatica,seguimiento);
 		return 1;
 	}
@@ -601,7 +769,8 @@ public class EstimacionFlujoCajaService {
 	}
 
 
-	public Integer generarPlanillaPropuestaConsolidador(Integer idProceso) {
+	public Integer generarPlanillaPropuestaConsolidador(Integer idProceso, Integer ano) {
+		System.out.println("generarPlanillaPropuestaConsolidador idProceso=" + idProceso + " ano="+ano);
 		Integer planillaTrabajoId = null;
 		//obtengo todos los programas del usuario
 
@@ -614,10 +783,10 @@ public class EstimacionFlujoCajaService {
 		List<ResumenConsolidadorVO> resumenConsolidadorSubtitulo24 = new ArrayList<ResumenConsolidadorVO>();
 		List<ResumenConsolidadorVO> resumenConsolidadorSubtitulo29 = new ArrayList<ResumenConsolidadorVO>();
 
-		List<ProgramaAno> programasSubtitulo21 = programasDAO.getProgramasBySubtitulo(getAnoCurso(), Subtitulo.SUBTITULO21);
-		List<ProgramaAno> programasSubtitulo22 = programasDAO.getProgramasBySubtitulo(getAnoCurso(), Subtitulo.SUBTITULO22);
-		List<ProgramaAno> programasSubtitulo24 = programasDAO.getProgramasBySubtitulo(getAnoCurso(), Subtitulo.SUBTITULO24);
-		List<ProgramaAno> programasSubtitulo29 = programasDAO.getProgramasBySubtitulo(getAnoCurso(), Subtitulo.SUBTITULO29);
+		List<ProgramaAno> programasSubtitulo21 = programasDAO.getProgramasBySubtitulo(ano, Subtitulo.SUBTITULO21);
+		List<ProgramaAno> programasSubtitulo22 = programasDAO.getProgramasBySubtitulo(ano, Subtitulo.SUBTITULO22);
+		List<ProgramaAno> programasSubtitulo24 = programasDAO.getProgramasBySubtitulo(ano, Subtitulo.SUBTITULO24);
+		List<ProgramaAno> programasSubtitulo29 = programasDAO.getProgramasBySubtitulo(ano, Subtitulo.SUBTITULO29);
 
 		List<CellExcelVO> header = new ArrayList<CellExcelVO>();
 		List<CellExcelVO> subHeader = new ArrayList<CellExcelVO>();
@@ -792,28 +961,25 @@ public class EstimacionFlujoCajaService {
 		}
 
 		try {
-			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderEstimacionFlujoCaja.replace("{ANO}", getAnoCurso().toString()));
+			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderEstimacionFlujoCaja.replace("{ANO}", ano.toString()));
 			System.out.println("response planillaPropuestaEstimacionFlujoCajaConsolidador --->"	+ response);
 			TipoDocumento tipoDocumento = new TipoDocumento(TipoDocumentosProcesos.PLANTILLAPROPUESTA.getId());
 			FlujoCajaConsolidador flujoCajaConsolidador = estimacionFlujoCajaDAO.findFlujoCajaConsolidadorById(idProceso);
-			planillaTrabajoId = documentService.createDocumentMonitoreoConsolidador(flujoCajaConsolidador, tipoDocumento, response.getNodeRef(), response.getFileName(), contenType, getAnoCurso(), Integer.parseInt(getMesCurso(true)));
+			planillaTrabajoId = documentService.createDocumentMonitoreoConsolidador(flujoCajaConsolidador, tipoDocumento, response.getNodeRef(), response.getFileName(), contenType, ano, Integer.parseInt(getMesCurso(true)));
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		System.out.println("planillaTrabajoId --> "+planillaTrabajoId);
-
 		return planillaTrabajoId;
-
 	}
 
-	@Asynchronous
-	public void generarPlanillaPropuesta(Integer idProgramaAno) {
+	public void generarPlanillaPropuesta(Integer idPrograma, Integer ano) {
 		long milliseconds = System.currentTimeMillis();
-		System.out.println("Inicio generarPlanillaPropuesta idProgramaAno="+idProgramaAno);
-		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
-		List<CajaMonto> cajaMontosReparos = cajaDAO.getCajaMontoReparosByProgramaAno(idProgramaAno);
+		System.out.println("Inicio generarPlanillaPropuesta idPrograma="+idPrograma);
+		System.out.println("Inicio generarPlanillaPropuesta ano="+ano);
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByIdProgramaAndAno(idPrograma, ano);
+		List<CajaMonto> cajaMontosReparos = cajaDAO.getCajaMontoReparosByProgramaAno(programaAno.getIdProgramaAno());
 		if(cajaMontosReparos != null && cajaMontosReparos.size() > 0){
 			for(CajaMonto cajaMonto : cajaMontosReparos){
 				System.out.println("Quitando el reparo a cajaMonto");
@@ -836,25 +1002,25 @@ public class EstimacionFlujoCajaService {
 		List<SubtituloFlujoCajaVO> flujoCajaSub21 = null;
 		if(componentesPorSubtitulo.get(Subtitulo.SUBTITULO21.getId()) != null){
 			System.out.println("buscando sub21");
-			flujoCajaSub21 = getMonitoreoServicioByProgramaAnoComponenteSubtitulo(programaAno.getIdProgramaAno(), componentesPorSubtitulo.get(Subtitulo.SUBTITULO21.getId()), Subtitulo.SUBTITULO21, true);
+			flujoCajaSub21 = getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(programaAno.getIdProgramaAno(), null, null, componentesPorSubtitulo.get(Subtitulo.SUBTITULO21.getId()), Subtitulo.SUBTITULO21, true);
 		}
 		List<SubtituloFlujoCajaVO> flujoCajaSub22 = null;
 		if(componentesPorSubtitulo.get(Subtitulo.SUBTITULO22.getId()) != null){
 			System.out.println("buscando sub22");
-			flujoCajaSub22 = getMonitoreoServicioByProgramaAnoComponenteSubtitulo(programaAno.getIdProgramaAno(), componentesPorSubtitulo.get(Subtitulo.SUBTITULO22.getId()), Subtitulo.SUBTITULO22, true);
+			flujoCajaSub22 = getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(programaAno.getIdProgramaAno(), null, null, componentesPorSubtitulo.get(Subtitulo.SUBTITULO22.getId()), Subtitulo.SUBTITULO22, true);
 		}
 		List<SubtituloFlujoCajaVO> flujoCajaSub24 = null;
 		if(componentesPorSubtitulo.get(Subtitulo.SUBTITULO24.getId()) != null){
 			System.out.println("buscando sub24");
-			flujoCajaSub24 = getMonitoreoComunaByProgramaAnoComponenteSubtitulo(programaAno.getIdProgramaAno(), componentesPorSubtitulo.get(Subtitulo.SUBTITULO24.getId()), Subtitulo.SUBTITULO24, true);
+			flujoCajaSub24 = getMonitoreoComunaByProgramaAnoComponenteSubtitulo(programaAno.getIdProgramaAno(), null, null, componentesPorSubtitulo.get(Subtitulo.SUBTITULO24.getId()), Subtitulo.SUBTITULO24, true);
 		}
 		List<SubtituloFlujoCajaVO> flujoCajaSub29 = null;
 		if(componentesPorSubtitulo.get(Subtitulo.SUBTITULO29.getId()) != null){
 			System.out.println("buscando sub29");
-			flujoCajaSub29 = getMonitoreoServicioByProgramaAnoComponenteSubtitulo(programaAno.getIdProgramaAno(), componentesPorSubtitulo.get(Subtitulo.SUBTITULO29.getId()), Subtitulo.SUBTITULO29, true);
+			flujoCajaSub29 = getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(programaAno.getIdProgramaAno(), null, null, componentesPorSubtitulo.get(Subtitulo.SUBTITULO29.getId()), Subtitulo.SUBTITULO29, true);
 		}
 
-		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso() + 1);
+		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(ano);
 		List<AntecendentesComunaCalculado> antecedentesComunasCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaVigente(distribucionInicialPercapita.getIdDistribucionInicialPercapita());
 		System.out.println("Comenzando con percapita");
 		List<SubtituloFlujoCajaVO> flujoCajaPercapita = new ArrayList<SubtituloFlujoCajaVO>();
@@ -866,7 +1032,7 @@ public class EstimacionFlujoCajaService {
 			}
 		}
 		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
-		String filename = tmpDir + File.separator + "planillaPropuestaEstimacionFlujoCaja.xlsx";
+		String filename = tmpDir + File.separator + "planillaPropuestaEstimacionFlujoCaja" + getMesCurso(false) + ".xlsx";
 		String contenType = mimemap.getContentType(filename.toLowerCase());
 		GeneradorExcel generadorExcel = new GeneradorExcel(filename);
 		List<CellExcelVO> header = new ArrayList<CellExcelVO>();
@@ -1165,7 +1331,7 @@ public class EstimacionFlujoCajaService {
 		}
 		System.out.println("fin pestaña sub29");
 		try {
-			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderEstimacionFlujoCaja.replace("{ANO}", String.valueOf(getAnoCurso()+1)));
+			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderEstimacionFlujoCaja.replace("{ANO}", ano.toString()));
 			System.out.println("response AsignacionRecursosPercapitaSheetExcel --->" + response);
 			TipoDocumento tipoDocumento = new TipoDocumento(TipoDocumentosProcesos.PLANTILLAPROPUESTA.getId());
 			documentService.createDocumentPropuestaEstimacionFlujoCaja(programaAno, tipoDocumento, response.getNodeRef(), response.getFileName(), contenType);
@@ -1286,9 +1452,11 @@ public class EstimacionFlujoCajaService {
 	}
 
 
-	public void eliminarPlanillaPropuesta(Integer idProgramaAno) {
-		System.out.println("eliminarPlanillaPropuesta-->"+idProgramaAno);
-		List<DocumentoEstimacionflujocaja> documentosEstimacionFlujoCaja = estimacionFlujoCajaDAO.getDocumentByIDProgramaAnoTipoDocumento(idProgramaAno, TipoDocumentosProcesos.PLANTILLAPROPUESTA);
+	public void eliminarPlanillaPropuesta(Integer idPrograma, Integer ano) {
+		System.out.println("eliminarPlanillaPropuesta idPrograma-->"+idPrograma);
+		System.out.println("eliminarPlanillaPropuesta ano-->"+ano);
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByIdProgramaAndAno(idPrograma, ano);
+		List<DocumentoEstimacionflujocaja> documentosEstimacionFlujoCaja = estimacionFlujoCajaDAO.getDocumentByIDProgramaAnoTipoDocumento(programaAno.getIdProgramaAno(), TipoDocumentosProcesos.PLANTILLAPROPUESTA);
 		if(documentosEstimacionFlujoCaja != null && documentosEstimacionFlujoCaja.size() > 0){
 			int ultimoDoc = 0;
 			for(DocumentoEstimacionflujocaja documentoEstimacionflujocaja : documentosEstimacionFlujoCaja){
@@ -1307,14 +1475,13 @@ public class EstimacionFlujoCajaService {
 	}
 
 	@Asynchronous
-	public void notificarUsuarioConsolidador(Integer idProgramaAno, String usuario) {
+	public void notificarUsuarioConsolidador(Integer idPrograma, Integer ano, String usuario) {
 		// Iniciar el segundo proceso.
-		ProgramaAno programaAno = programasDAO
-				.getProgramaAnoByID(idProgramaAno);
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByIdProgramaAndAno(idPrograma, ano);
 		programaAno.setEstadoFlujoCaja(new EstadoPrograma(EstadosProgramas.REVISADO.getId()));
 		String mailTo = usuarioDAO.getEmailByUsername(usuario);
 		EmailVO emailVO = new EmailVO();
-		emailVO.setContent("Revisar Consolidación de Estimación de Flujos de Caja <p> para el programaAno "
+		emailVO.setContent("Revisar Consolidación de Estimación de Flujos de Caja <p> para el programa "
 				+ programaAno.getPrograma().getNombre()
 				+ " que se encuentra disponible en su Bandeja de Tareas.</p>");
 		emailVO.setSubject("Revisar Consolidación de Estimación de Flujos de Caja");
@@ -1326,68 +1493,41 @@ public class EstimacionFlujoCajaService {
 	}
 
 
-	public Integer eliminarOrdinarioFonasa(Integer idLineaProgramatica) {
+	public Integer eliminarOrdinarioFonasa(Integer idPrograma, Integer ano) {
 		//Eliminar todos menos el ultimo.
-		ReferenciaDocumentoSummaryVO referenciaDocumentoSummary =  getLastDocumentSummaryEstimacionFlujoCajaType(idLineaProgramatica, TipoDocumentosProcesos.PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA);
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByIdProgramaAndAno(idPrograma, ano);
+		ReferenciaDocumentoSummaryVO referenciaDocumentoSummary =  getLastDocumentSummaryEstimacionFlujoCajaType(programaAno.getIdProgramaAno(), TipoDocumentosProcesos.PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA);
 
-		ProgramaAno programaAno = programasDAO
-				.getProgramaAnoByID(idLineaProgramatica);
-
-		TipoDocumento tipoDocumento = new TipoDocumento(
-				TipoDocumentosProcesos.PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA
-				.getId());
-		List<DocumentoEstimacionflujocaja> lstDocEstimacionFlujoCaja = documentService
-				.getDocumentEstimacionFlujoCajaByIDProgramaAnoTipoDocumento(
-						programaAno, tipoDocumento);
-
+		TipoDocumento tipoDocumento = new TipoDocumento(TipoDocumentosProcesos.PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA.getId());
+		List<DocumentoEstimacionflujocaja> lstDocEstimacionFlujoCaja = documentService.getDocumentEstimacionFlujoCajaByIDProgramaAnoTipoDocumento(programaAno, tipoDocumento);
 		String keyUltimo = ((referenciaDocumentoSummary.getNodeRef() == null) ? referenciaDocumentoSummary.getPath() : referenciaDocumentoSummary.getNodeRef().replace("workspace://SpacesStore/", ""));
-
 		for (DocumentoEstimacionflujocaja documentoEstimacionflujocaja : lstDocEstimacionFlujoCaja) {
-
-
 			String key = ((documentoEstimacionflujocaja.getIdDocumento().getNodeRef() == null) ? documentoEstimacionflujocaja.getIdDocumento().getPath() : documentoEstimacionflujocaja.getIdDocumento().getNodeRef()
 					.replace("workspace://SpacesStore/", ""));
 			if (key.equals(keyUltimo)){
 				alfrescoService.delete(key);
 			}
 		}
-
 		return 0;
 	}
 
-
-
-	public void moveToAlfresco(Integer idLineaProgramatica,
-			Integer referenciaDocumentoId, TipoDocumentosProcesos tipoDocumento,
-			boolean versionFinal) {
-		System.out.println("Buscando referenciaDocumentoId="
-				+ referenciaDocumentoId);
-		ReferenciaDocumentoSummaryVO referenciaDocumentoSummary = documentService
-				.getDocumentSummary(referenciaDocumentoId);
-
-		System.out.println("Buscando referenciaDocumentoSummary="
-				+ referenciaDocumentoSummary);
+	public void moveToAlfresco(Integer idPrograma,	Integer referenciaDocumentoId, TipoDocumentosProcesos tipoDocumento, boolean versionFinal, Integer ano) {
+		System.out.println("Buscando referenciaDocumentoId=" + referenciaDocumentoId);
+		ReferenciaDocumentoSummaryVO referenciaDocumentoSummary = documentService.getDocumentSummary(referenciaDocumentoId);
+		System.out.println("Buscando referenciaDocumentoSummary=" + referenciaDocumentoSummary);
 		if (referenciaDocumentoSummary != null) {
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
-			String contenType = mimemap
-					.getContentType(referenciaDocumentoSummary.getPath()
-							.toLowerCase());
-			BodyVO response = alfrescoService.uploadDocument(new File(
-					referenciaDocumentoSummary.getPath()), contenType,
-					folderEstimacionFlujoCaja.replace("{ANO}", getAnoCurso().toString()));
+			String contenType = mimemap.getContentType(referenciaDocumentoSummary.getPath().toLowerCase());
+			BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummary.getPath()), contenType, folderEstimacionFlujoCaja.replace("{ANO}", ano.toString()));
 			System.out.println("response upload template --->" + response);
-			documentService.updateDocumentTemplate(
-					referenciaDocumentoSummary.getId(), response.getNodeRef(),
-					response.getFileName(), contenType);
-			ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idLineaProgramatica);
+			documentService.updateDocumentTemplate(referenciaDocumentoSummary.getId(), response.getNodeRef(), response.getFileName(), contenType);
+			ProgramaAno programaAno = programasDAO.getProgramaAnoByIdProgramaAndAno(idPrograma, ano);
 			documentService.createDocumentOrdinarioProgramacionEstimacionFlujoCaja(programaAno,tipoDocumento,referenciaDocumentoId,versionFinal);
 		}
 
 	}
 
-	public ReferenciaDocumentoSummaryVO getLastDocumentSummaryEstimacionFlujoCajaType(
-			Integer idProgramaAno,
-			TipoDocumentosProcesos tipoDocumento) {
+	public ReferenciaDocumentoSummaryVO getLastDocumentSummaryEstimacionFlujoCajaType(Integer idProgramaAno, TipoDocumentosProcesos tipoDocumento) {
 		return documentService.getLastDocumentoSummaryByEstimacionFlujoCajaType(idProgramaAno, tipoDocumento);
 
 	}
@@ -1397,53 +1537,41 @@ public class EstimacionFlujoCajaService {
 	}
 
 	//Obtiene el id del programa para el a�o siguiente para hacer la estimacion del flujo de caja.
-	public Integer obtenerIdProgramaAno(Integer id) {
-		// TODO Auto-generated method stub
-		ProgramaAno programaAnoActual = programasDAO.getProgramaAnoByID(id);
-
+	public Integer obtenerIdProgramaAno(Integer idPrograma, Integer ano) {
 		// Obtener el siguiente programa ano.
-		ProgramaAno programaAnoSiguiente = programasDAO
-				.getProgramaAnoByIDProgramaAno(programaAnoActual.getPrograma()
-						.getId(), programaAnoActual.getAno().getAno()+1);
-
-		Integer idProgramaAnoNuevo = 0;
+		ProgramaAno programaAnoEvaluacion = programasDAO.getProgramaAnoByIDProgramaAno(idPrograma, ano);
 		// CREAMOS EL PROGRAMA PARA EL A�O SIGUIENTE SI NO EXISTE.
-		if (programaAnoSiguiente == null) {
-
-
-			AnoEnCurso anoCurso = programasDAO.getAnoEnCursoById(programaAnoActual.getAno().getAno() + 1);
-			if (anoCurso==null){
-				AnoEnCurso anoC = new AnoEnCurso();
-				anoC.setAno(programaAnoActual.getAno().getAno() + 1);
-				anoC.setAsignacionAdultoMayor(0);
-				anoC.setInflactor(0.0);
-				anoC.setMontoPercapitalBasal(0);
-
-				anoCurso = programasDAO.saveAnoCurso(anoC);
+		if (programaAnoEvaluacion == null) {
+			AnoEnCurso anoEvaluacion = programasDAO.getAnoEnCursoById(ano);
+			if (anoEvaluacion == null){
+				AnoEnCurso anoBase = programasDAO.getAnoEnCursoById((ano-1));
+				anoEvaluacion = new AnoEnCurso();
+				anoEvaluacion.setAno(ano);
+				anoEvaluacion.setAsignacionAdultoMayor(anoBase.getAsignacionAdultoMayor());
+				anoEvaluacion.setInflactor(anoBase.getInflactor());
+				anoEvaluacion.setMontoPercapitalBasal(anoBase.getMontoPercapitalBasal());
+				anoEvaluacion.setInflactorMarcoPresupuestario(anoBase.getInflactorMarcoPresupuestario());
+				programasDAO.saveAnoCurso(anoEvaluacion);
 			}
 
-			EstadoPrograma estadoProgramaCurso = new EstadoPrograma(EstadosProgramas.ENCURSO.getId());
-			EstadoPrograma estadoProgramaIniciar = new EstadoPrograma(EstadosProgramas.SININICIAR.getId());
-			programaAnoActual.setAno(anoCurso);
-			programaAnoActual.setEstado(estadoProgramaIniciar);
-			programaAnoActual.setEstadoFlujoCaja(estadoProgramaCurso);
-			programaAnoActual.setIdProgramaAno(null);
-
-			idProgramaAnoNuevo = programasDAO.saveProgramaAno(programaAnoActual,true);
-			// estadoPrograma );
+			programaAnoEvaluacion = new ProgramaAno();
+			programaAnoEvaluacion.setAno(anoEvaluacion);
+			programaAnoEvaluacion.setEstado(new EstadoPrograma(EstadosProgramas.SININICIAR.getId()));
+			programaAnoEvaluacion.setEstadoFlujoCaja(new EstadoPrograma(EstadosProgramas.SININICIAR.getId()));
+			programaAnoEvaluacion.setEstadoConvenio(new EstadoPrograma(EstadosProgramas.SININICIAR.getId()));
+			programaAnoEvaluacion.setEstadoModificacionAPS(new EstadoPrograma(EstadosProgramas.SININICIAR.getId()));
+			programaAnoEvaluacion.setEstadoOT(new EstadoPrograma(EstadosProgramas.SININICIAR.getId()));
+			programaAnoEvaluacion.setEstadoreliquidacion(new EstadoPrograma(EstadosProgramas.SININICIAR.getId()));
+			programasDAO.saveProgramaAno(programaAnoEvaluacion);
 		}
-		else
-		{
-			idProgramaAnoNuevo = programaAnoSiguiente.getIdProgramaAno();
-		}
-
-		return idProgramaAnoNuevo;
+		return programaAnoEvaluacion.getIdProgramaAno();
 	}
 
-	public Integer enviarOrdinarioFONASA(Integer idLineaProgramatica) {
-		//System.out.println("enviarDecretoAporteEstatal--> "+borradorAporteEstatalId+" username="+username);
-
-		ReferenciaDocumentoSummaryVO referenciaDocumentoSummary = getLastDocumentSummaryEstimacionFlujoCajaType(idLineaProgramatica, TipoDocumentosProcesos.PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA);
+	public Integer enviarOrdinarioFONASA(Integer idPrograma, Integer ano) {
+		System.out.println("enviarOrdinarioFONASA idPrograma--> "+idPrograma);
+		System.out.println("enviarOrdinarioFONASA ano--> "+ano);
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByIdProgramaAndAno(idPrograma, ano);
+		ReferenciaDocumentoSummaryVO referenciaDocumentoSummary = getLastDocumentSummaryEstimacionFlujoCajaType(programaAno.getIdProgramaAno(), TipoDocumentosProcesos.PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA);
 		DocumentoVO documentDecretoAporteEstatalVO = documentService.getDocument(referenciaDocumentoSummary.getId());
 
 		String fileNameDecretoAporteEstatal = tmpDirDoc + File.separator + documentDecretoAporteEstatalVO.getName();
@@ -1451,7 +1579,6 @@ public class EstimacionFlujoCajaService {
 		GeneradorWord generadorWordDecretoAporteEstatal = new GeneradorWord(fileNameDecretoAporteEstatal);
 		try {
 			generadorWordDecretoAporteEstatal.saveContent(documentDecretoAporteEstatalVO.getContent(), XWPFDocument.class);
-
 			List<EmailService.Adjunto> adjuntos = new ArrayList<EmailService.Adjunto>();
 			EmailService.Adjunto adjunto = new EmailService.Adjunto();
 			adjunto.setDescripcion("Borrador Decreto Aporte Estatal");
@@ -1464,273 +1591,160 @@ public class EstimacionFlujoCajaService {
 			e.printStackTrace();
 		}
 		return 1;
-		//adjunto.set
-
 	}
 
-	public List<SubtituloFlujoCajaVO> getMonitoreoServicioByProgramaAnoComponenteSubtitulo(Integer idProgramaAno, List<Integer> idComponentes, Subtitulo subtitulo, Boolean iniciarFlujoCaja) {
+	public List<SubtituloFlujoCajaVO> getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(Integer idProgramaAno, Integer idServicio, Integer idEstablecimiento, List<Integer> idComponentes, Subtitulo subtitulo, Boolean iniciarFlujoCaja) {
 		LOGGER.info("Inicio getMonitoreoServicioByProgramaAnoComponenteSubtitulo");
 		List<SubtituloFlujoCajaVO> subtitulosFlujosCaja = new ArrayList<SubtituloFlujoCajaVO>();
-		List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
-		for(ServicioSalud servicioSalud : servicios){
-			SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaVO();
-			subtituloFlujoCajaVO.setMarcoPresupuestario(0L);
-			subtituloFlujoCajaVO.setIdServicio(servicioSalud.getId());
-			subtituloFlujoCajaVO.setServicio(servicioSalud.getNombre());
 
-			for(Integer idComponente : idComponentes){
-				ProgramaSubtituloComponentePeso programaSubtituloComponentePeso = programasDAO.getProgramaSubtituloComponentePesoByProgramaServicioComponenteSubtitulo(idProgramaAno, servicioSalud.getId(), idComponente, subtitulo.getId());
-				if(programaSubtituloComponentePeso != null){
-					subtituloFlujoCajaVO.setPesoComponentes(subtituloFlujoCajaVO.getPesoComponentes() + programaSubtituloComponentePeso.getPeso());
+		List<Establecimiento> establecimientos = new ArrayList<Establecimiento>();
+		if(idEstablecimiento != null){
+			Establecimiento establecimiento = servicioSaludDAO.getEstablecimientoById(idEstablecimiento);
+			establecimientos.add(establecimiento);
+		}else{
+			if(idServicio != null){
+				ServicioSalud servicioSalud = servicioSaludDAO.getById(idServicio);
+				if(servicioSalud.getEstablecimientos() != null && servicioSalud.getEstablecimientos().size() > 0){
+					for(Establecimiento establecimiento :servicioSalud.getEstablecimientos()){
+						establecimientos.add(establecimiento);
+					}
+				}
+			}else{
+				List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
+				for(ServicioSalud servicioSalud : servicios){
+					if(servicioSalud.getEstablecimientos() != null && servicioSalud.getEstablecimientos().size() > 0){
+						for(Establecimiento establecimiento :servicioSalud.getEstablecimientos()){
+							establecimientos.add(establecimiento);
+						}
+					}
 				}
 			}
-			System.out.println("Luego del peso componente");
-			subtituloFlujoCajaVO.setPesoComponentes(subtituloFlujoCajaVO.getPesoComponentes()/100.0); 
-			Long marcoPresupuestario = 0L;
-			if(servicioSalud.getEstablecimientos() != null && servicioSalud.getEstablecimientos().size() > 0){
-				for(Establecimiento establecimiento : servicioSalud.getEstablecimientos()){
+		}
+
+		if(establecimientos.size() > 0){
+			for(Establecimiento establecimiento : establecimientos){
+				SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaVO();
+				subtituloFlujoCajaVO.setMarcoPresupuestario(0L);
+				subtituloFlujoCajaVO.setIdServicio(establecimiento.getServicioSalud().getId());
+				subtituloFlujoCajaVO.setServicio(establecimiento.getServicioSalud().getNombre());
+				subtituloFlujoCajaVO.setIdEstablecimiento(establecimiento.getId());
+				subtituloFlujoCajaVO.setEstablecimiento(establecimiento.getNombre());
+				for(Integer idComponente : idComponentes){
+					ProgramaSubtituloComponentePeso programaSubtituloComponentePeso = programasDAO.getProgramaSubtituloComponentePesoByProgramaComponenteSubtitulo(idProgramaAno, idComponente, subtitulo.getId());
+					if(programaSubtituloComponentePeso != null){
+						subtituloFlujoCajaVO.setPesoComponentes(subtituloFlujoCajaVO.getPesoComponentes() + programaSubtituloComponentePeso.getPeso());
+					}
+				}
+
+				subtituloFlujoCajaVO.setPesoComponentes(subtituloFlujoCajaVO.getPesoComponentes()/100.0); 
+				Long marcoPresupuestarioServicio = 0L;
+				for(Integer idComponente : idComponentes){
+					marcoPresupuestarioServicio += programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAno, idComponente, subtitulo.getId());
+				}
+				subtituloFlujoCajaVO.setMarcoPresupuestario(marcoPresupuestarioServicio);
+
+				for(int mes = 1; mes <= 12; mes++){
+					Mes mesDTO = mesDAO.getMesPorID(mes);
+					CajaMontoSummaryVO cajaMontoMes = new CajaMontoSummaryVO(null, mes, mesDTO.getNombre());
+					Long montoComponentes = 0L;
 					for(Integer idComponente : idComponentes){
-						marcoPresupuestario += programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAno, idComponente, subtitulo.getId());
+						CajaMonto cajaMonto = cajaDAO.getCajaMontoByServicioEstablecimientoProgramaComponenteSubtituloMes(establecimiento.getServicioSalud().getId(), establecimiento.getId(),  idProgramaAno, idComponente, subtitulo.getId(), mes);
+						montoComponentes += ((cajaMonto != null) ? cajaMonto.getMonto() : 0L);
+					}
+					cajaMontoMes.setMontoMes(montoComponentes);
+					cajaMontoMes.setMontoMesOriginal(montoComponentes);
+					switch (mes) {
+					case 1:
+						subtituloFlujoCajaVO.setCajaMontoEnero(cajaMontoMes);
+						break;
+					case 2:
+						subtituloFlujoCajaVO.setCajaMontoFebrero(cajaMontoMes);
+						break;
+					case 3:
+						subtituloFlujoCajaVO.setCajaMontoMarzo(cajaMontoMes);
+						break;
+					case 4:
+						subtituloFlujoCajaVO.setCajaMontoAbril(cajaMontoMes);
+						break;
+					case 5:
+						subtituloFlujoCajaVO.setCajaMontoMayo(cajaMontoMes);
+						break;
+					case 6:
+						subtituloFlujoCajaVO.setCajaMontoJunio(cajaMontoMes);
+						break;
+					case 7:
+						subtituloFlujoCajaVO.setCajaMontoJulio(cajaMontoMes);
+						break;
+					case 8:
+						subtituloFlujoCajaVO.setCajaMontoAgosto(cajaMontoMes);
+						break;
+					case 9:
+						subtituloFlujoCajaVO.setCajaMontoSeptiembre(cajaMontoMes);
+						break;
+					case 10:
+						subtituloFlujoCajaVO.setCajaMontoOctubre(cajaMontoMes);
+						break;
+					case 11:
+						subtituloFlujoCajaVO.setCajaMontoNoviembre(cajaMontoMes);
+						break;
+					case 12:
+						subtituloFlujoCajaVO.setCajaMontoDiciembre(cajaMontoMes);
+						break;
+					default:
+						break;
 					}
 				}
+				subtitulosFlujosCaja.add(subtituloFlujoCajaVO);
 			}
-			System.out.println("Luego de calculo presupuesto");
-			subtituloFlujoCajaVO.setMarcoPresupuestario(marcoPresupuestario);
-
-			for(int mes = 1; mes <= 12; mes++){
-				Mes mesDTO = mesDAO.getMesPorID(mes);
-				CajaMontoSummaryVO cajaMontoMes = new CajaMontoSummaryVO(null, mes, mesDTO.getNombre());
-				Long montoComponentes = 0L;
-				for(Integer idComponente : idComponentes){
-					CajaMonto cajaMonto = cajaDAO.getCajaMontoByServicioProgramaComponenteSubtituloMes(servicioSalud.getId(), idProgramaAno, idComponente, subtitulo.getId(), mes);
-					montoComponentes += ((cajaMonto != null) ? cajaMonto.getMonto() : 0L);
-				}
-				cajaMontoMes.setMontoMes(montoComponentes);
-				cajaMontoMes.setMontoMesOriginal(montoComponentes);
-				switch (mes) {
-				case 1:
-					subtituloFlujoCajaVO.setCajaMontoEnero(cajaMontoMes);
-					break;
-				case 2:
-					subtituloFlujoCajaVO.setCajaMontoFebrero(cajaMontoMes);
-					break;
-				case 3:
-					subtituloFlujoCajaVO.setCajaMontoMarzo(cajaMontoMes);
-					break;
-				case 4:
-					subtituloFlujoCajaVO.setCajaMontoAbril(cajaMontoMes);
-					break;
-				case 5:
-					subtituloFlujoCajaVO.setCajaMontoMayo(cajaMontoMes);
-					break;
-				case 6:
-					subtituloFlujoCajaVO.setCajaMontoJunio(cajaMontoMes);
-					break;
-				case 7:
-					subtituloFlujoCajaVO.setCajaMontoJulio(cajaMontoMes);
-					break;
-				case 8:
-					subtituloFlujoCajaVO.setCajaMontoAgosto(cajaMontoMes);
-					break;
-				case 9:
-					subtituloFlujoCajaVO.setCajaMontoSeptiembre(cajaMontoMes);
-					break;
-				case 10:
-					subtituloFlujoCajaVO.setCajaMontoOctubre(cajaMontoMes);
-					break;
-				case 11:
-					subtituloFlujoCajaVO.setCajaMontoNoviembre(cajaMontoMes);
-					break;
-				case 12:
-					subtituloFlujoCajaVO.setCajaMontoDiciembre(cajaMontoMes);
-					break;
-				default:
-					break;
-				}
-			}
-			System.out.println("Luego de calculo montos por mes");
-			subtitulosFlujosCaja.add(subtituloFlujoCajaVO);
 		}
+
 		if(!iniciarFlujoCaja){
 			Integer mesActual = Integer.parseInt(getMesCurso(true));
 			for(SubtituloFlujoCajaVO subtituloFlujoCaja : subtitulosFlujosCaja){
 				ConveniosSummaryVO convenioRecibido = new ConveniosSummaryVO(0.0, 0);
 				TransferenciaSummaryVO transferenciasAcumulada = new TransferenciaSummaryVO(0.0, 0L);
-				Long marcoPresupuestario = subtituloFlujoCaja.getMarcoPresupuestario();
-				Integer [] estados = {EstadosConvenios.APROBADO.getId(), EstadosConvenios.PAGADO.getId()};
 				Long totalConveniosPorServicio = 0L;
 				for(Integer idComponente : idComponentes){
-					List<ConvenioServicio> conveniosServicio = conveniosDAO.getConveniosServicioByProgramaAnoComponenteSubtituloServicioEstadosConvenio(idProgramaAno, idComponente, subtitulo.getId(), subtituloFlujoCaja.getIdServicio(), estados);
-					if(conveniosServicio != null && conveniosServicio.size() > 0){
-						for(ConvenioServicio convenioServicio : conveniosServicio){
-							if(convenioServicio.getMes() != null && convenioServicio.getMes().getIdMes() <= mesActual){
-								if(convenioServicio.getConvenioServicioComponentes() != null && convenioServicio.getConvenioServicioComponentes().size() > 0){
-									int size = convenioServicio.getConvenioServicioComponentes().size();
-									ConvenioServicioComponente convenioServicioComponente = convenioServicio.getConvenioServicioComponentes().get((size-1));
-									totalConveniosPorServicio += convenioServicioComponente.getMontoIngresado();
-								}
-							}
-						}
+					ConvenioServicioComponenteVO convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(idProgramaAno, idComponente, subtitulo.getId(), subtituloFlujoCaja.getIdEstablecimiento(), EstadosConvenios.INGRESADO);
+					if(convenioServicioComponente == null){
+						convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(idProgramaAno, idComponente, subtitulo.getId(), subtituloFlujoCaja.getIdEstablecimiento(), EstadosConvenios.APROBADO);
+					}
+					if(convenioServicioComponente == null){
+						convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(idProgramaAno, idComponente, subtitulo.getId(), subtituloFlujoCaja.getIdEstablecimiento(), EstadosConvenios.TRAMITE);
+					}
+					if(convenioServicioComponente == null){
+						convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(idProgramaAno, idComponente, subtitulo.getId(), subtituloFlujoCaja.getIdEstablecimiento(), EstadosConvenios.PAGADO);
+					}
+					if(convenioServicioComponente != null){
+						totalConveniosPorServicio += ((convenioServicioComponente.getMonto() != null) ? convenioServicioComponente.getMonto() : 0L);
 					}
 				}
-				System.out.println("Luego de obtencion de los convenios");
 				convenioRecibido.setMonto(totalConveniosPorServicio.intValue());
-				if(marcoPresupuestario != 0){
-					Double porcentaje = ((totalConveniosPorServicio * 100.0) / marcoPresupuestario);
+
+				if(subtituloFlujoCaja .getMarcoPresupuestario() != 0){
+					Double porcentaje = ((totalConveniosPorServicio * 100.0) / subtituloFlujoCaja .getMarcoPresupuestario());
 					porcentaje = porcentaje / 100.0;
 					convenioRecibido.setPorcentaje(porcentaje);
 				}
 				subtituloFlujoCaja.setConvenioRecibido(convenioRecibido);
 
 				Long totalRemesasPorServicio = 0L;
-				System.out.println("marcoPresupuestario-->"+marcoPresupuestario);
-				if(marcoPresupuestario != 0){
-					System.out.println("buscando las remesas para este servicio-");
-					List<DetalleRemesas> detalleRemesas = remesasDAO.getRemesasPagadasEstablecimientosProgramaAnoServicioSubtituloMesHasta(idProgramaAno, subtituloFlujoCaja.getIdServicio(), subtitulo.getId(), mesActual);
-					if(detalleRemesas != null && detalleRemesas.size() > 0){
-						for(DetalleRemesas detalleRemesa : detalleRemesas){
-							totalRemesasPorServicio += detalleRemesa.getMontoRemesa();
-						}
-					}
-				}
-				System.out.println("Luego de obtencion de las remesas");
-				transferenciasAcumulada.setMonto(totalRemesasPorServicio);
-				if(marcoPresupuestario != 0){
-					Double porcentajeRemesas = ((totalRemesasPorServicio * 100.0) / marcoPresupuestario);
-					porcentajeRemesas = porcentajeRemesas / 100.0;
-					transferenciasAcumulada.setPorcentaje(porcentajeRemesas);
-				}
-				subtituloFlujoCaja.setTransferenciaAcumulada(transferenciasAcumulada);
-			}
-		}
-		System.out.println("finalizacion getMonitoreoServicioByProgramaAnoComponenteSubtitulo");
-		LOGGER.info("Fin getMonitoreoServicioByProgramaAnoComponenteSubtitulo");
-		return subtitulosFlujosCaja;
-	}
-
-
-	public List<SubtituloFlujoCajaVO> getMonitoreoServicioByProgramaAnoComponenteSubtitulo(Integer idProgramaAno, Integer idServicio, List<Integer> idComponentes, Subtitulo subtitulo, Boolean iniciarFlujoCaja) {
-		LOGGER.info("Inicio getMonitoreoServicioByProgramaAnoComponenteSubtitulo");
-		List<SubtituloFlujoCajaVO> subtitulosFlujosCaja = new ArrayList<SubtituloFlujoCajaVO>();
-		ServicioSalud servicioSalud = servicioSaludDAO.getServicioSaludById(idServicio);
-		SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaVO();
-		subtituloFlujoCajaVO.setMarcoPresupuestario(0L);
-		subtituloFlujoCajaVO.setIdServicio(servicioSalud.getId());
-		subtituloFlujoCajaVO.setServicio(servicioSalud.getNombre());
-
-		for(Integer idComponente : idComponentes){
-			ProgramaSubtituloComponentePeso programaSubtituloComponentePeso = programasDAO.getProgramaSubtituloComponentePesoByProgramaServicioComponenteSubtitulo(idProgramaAno, servicioSalud.getId(), idComponente, subtitulo.getId());
-			if(programaSubtituloComponentePeso != null){
-				subtituloFlujoCajaVO.setPesoComponentes(subtituloFlujoCajaVO.getPesoComponentes() + programaSubtituloComponentePeso.getPeso());
-			}
-		}
-
-		subtituloFlujoCajaVO.setPesoComponentes(subtituloFlujoCajaVO.getPesoComponentes()/100.0); 
-		Long marcoPresupuestarioServicio = 0L;
-		for(Establecimiento establecimiento : servicioSalud.getEstablecimientos()){
-			for(Integer idComponente : idComponentes){
-				marcoPresupuestarioServicio += programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAno, idComponente, subtitulo.getId());
-			}
-		}
-		subtituloFlujoCajaVO.setMarcoPresupuestario(marcoPresupuestarioServicio);
-
-		for(int mes = 1; mes <= 12; mes++){
-			Mes mesDTO = mesDAO.getMesPorID(mes);
-			CajaMontoSummaryVO cajaMontoMes = new CajaMontoSummaryVO(null, mes, mesDTO.getNombre());
-			Long montoComponentes = 0L;
-			for(Integer idComponente : idComponentes){
-				CajaMonto cajaMonto = cajaDAO.getCajaMontoByServicioProgramaComponenteSubtituloMes(servicioSalud.getId(), idProgramaAno, idComponente, subtitulo.getId(), mes);
-				montoComponentes += ((cajaMonto != null) ? cajaMonto.getMonto() : 0L);
-			}
-			cajaMontoMes.setMontoMes(montoComponentes);
-			cajaMontoMes.setMontoMesOriginal(montoComponentes);
-			switch (mes) {
-			case 1:
-				subtituloFlujoCajaVO.setCajaMontoEnero(cajaMontoMes);
-				break;
-			case 2:
-				subtituloFlujoCajaVO.setCajaMontoFebrero(cajaMontoMes);
-				break;
-			case 3:
-				subtituloFlujoCajaVO.setCajaMontoMarzo(cajaMontoMes);
-				break;
-			case 4:
-				subtituloFlujoCajaVO.setCajaMontoAbril(cajaMontoMes);
-				break;
-			case 5:
-				subtituloFlujoCajaVO.setCajaMontoMayo(cajaMontoMes);
-				break;
-			case 6:
-				subtituloFlujoCajaVO.setCajaMontoJunio(cajaMontoMes);
-				break;
-			case 7:
-				subtituloFlujoCajaVO.setCajaMontoJulio(cajaMontoMes);
-				break;
-			case 8:
-				subtituloFlujoCajaVO.setCajaMontoAgosto(cajaMontoMes);
-				break;
-			case 9:
-				subtituloFlujoCajaVO.setCajaMontoSeptiembre(cajaMontoMes);
-				break;
-			case 10:
-				subtituloFlujoCajaVO.setCajaMontoOctubre(cajaMontoMes);
-				break;
-			case 11:
-				subtituloFlujoCajaVO.setCajaMontoNoviembre(cajaMontoMes);
-				break;
-			case 12:
-				subtituloFlujoCajaVO.setCajaMontoDiciembre(cajaMontoMes);
-				break;
-			default:
-				break;
-			}
-		}
-		subtitulosFlujosCaja.add(subtituloFlujoCajaVO);
-		if(!iniciarFlujoCaja){
-			Integer mesActual = Integer.parseInt(getMesCurso(true));
-			for(SubtituloFlujoCajaVO subtituloFlujoCaja : subtitulosFlujosCaja){
-				ConveniosSummaryVO convenioRecibido = new ConveniosSummaryVO(0.0, 0);
-				TransferenciaSummaryVO transferenciasAcumulada = new TransferenciaSummaryVO(0.0, 0L);
-				Long marcoPresupuestario = subtituloFlujoCaja.getMarcoPresupuestario();
-				Integer [] estados = {EstadosConvenios.APROBADO.getId(), EstadosConvenios.PAGADO.getId()};
-				Long totalConveniosPorServicio = 0L;
-				for(Integer idComponente : idComponentes){
-					List<ConvenioServicio> conveniosServicio = conveniosDAO.getConveniosServicioByProgramaAnoComponenteSubtituloServicioEstadosConvenio(idProgramaAno, idComponente, subtitulo.getId(), subtituloFlujoCaja.getIdServicio(), estados);
-					if(conveniosServicio != null && conveniosServicio.size() > 0){
-						for(ConvenioServicio convenioServicio : conveniosServicio){
-							if(convenioServicio.getMes() != null && convenioServicio.getMes().getIdMes() <= mesActual){
-								if(convenioServicio.getConvenioServicioComponentes() != null && convenioServicio.getConvenioServicioComponentes().size() > 0){
-									int size = convenioServicio.getConvenioServicioComponentes().size();
-									ConvenioServicioComponente convenioServicioComponente = convenioServicio.getConvenioServicioComponentes().get((size-1));
-									totalConveniosPorServicio += convenioServicioComponente.getMontoIngresado();
-								}
+				System.out.println("marcoPresupuestario-->"+subtituloFlujoCaja .getMarcoPresupuestario());
+				if(subtituloFlujoCaja .getMarcoPresupuestario() != 0){
+					for(Integer idComponente : idComponentes){
+						System.out.println("buscando las remesas para este servicio-");
+						List<DetalleRemesas> detalleRemesas = remesasDAO.getRemesasPagadasEstablecimientosProgramaAnoEstablecimientoComponenteSubtituloMesHasta(idProgramaAno, subtituloFlujoCaja.getIdEstablecimiento(), idComponente, subtitulo.getId(), mesActual);
+						if(detalleRemesas != null && detalleRemesas.size() > 0){
+							for(DetalleRemesas detalleRemesa : detalleRemesas){
+								totalRemesasPorServicio += detalleRemesa.getMontoRemesa();
 							}
 						}
 					}
 				}
-				convenioRecibido.setMonto(totalConveniosPorServicio.intValue());
-				if(marcoPresupuestario != 0){
-					Double porcentaje = ((totalConveniosPorServicio * 100.0) / marcoPresupuestario);
-					porcentaje = porcentaje / 100.0;
-					convenioRecibido.setPorcentaje(porcentaje);
-				}
-				subtituloFlujoCaja.setConvenioRecibido(convenioRecibido);
-
-				Long totalRemesasPorServicio = 0L;
-				System.out.println("marcoPresupuestario-->"+marcoPresupuestario);
-				if(marcoPresupuestario != 0){
-					System.out.println("buscando las remesas para este servicio-");
-					List<DetalleRemesas> detalleRemesas = remesasDAO.getRemesasPagadasEstablecimientosProgramaAnoServicioSubtituloMesHasta(idProgramaAno, subtituloFlujoCaja.getIdServicio(), subtitulo.getId(), mesActual);
-					if(detalleRemesas != null && detalleRemesas.size() > 0){
-						for(DetalleRemesas detalleRemesa : detalleRemesas){
-							totalRemesasPorServicio += detalleRemesa.getMontoRemesa();
-						}
-					}
-				}
 
 				transferenciasAcumulada.setMonto(totalRemesasPorServicio);
-				if(marcoPresupuestario != 0){
-					Double porcentajeRemesas = ((totalRemesasPorServicio * 100.0) / marcoPresupuestario);
+				if(subtituloFlujoCaja .getMarcoPresupuestario() != 0){
+					Double porcentajeRemesas = ((totalRemesasPorServicio * 100.0) / subtituloFlujoCaja .getMarcoPresupuestario());
 					porcentajeRemesas = porcentajeRemesas / 100.0;
 					transferenciasAcumulada.setPorcentaje(porcentajeRemesas);
 				}
@@ -1741,264 +1755,157 @@ public class EstimacionFlujoCajaService {
 		return subtitulosFlujosCaja;
 	}
 
-	public List<SubtituloFlujoCajaVO> getMonitoreoComunaByProgramaAnoComponenteSubtitulo(Integer idProgramaAno, List<Integer> idComponentes, Subtitulo subtitulo, Boolean iniciarFlujoCaja) {
+	public List<SubtituloFlujoCajaVO> getMonitoreoComunaByProgramaAnoComponenteSubtitulo(Integer idProgramaAno, Integer idServicio, Integer idComuna, List<Integer> idComponentes, Subtitulo subtitulo, Boolean iniciarFlujoCaja) {
 		LOGGER.info("Inicio getMonitoreoComunaByProgramaAnoComponenteSubtitulo");
 		List<SubtituloFlujoCajaVO> subtitulosFlujosCaja = new ArrayList<SubtituloFlujoCajaVO>();
-		List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
-		for(ServicioSalud servicioSalud : servicios){
-			SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaVO();
-			subtituloFlujoCajaVO.setIdServicio(servicioSalud.getId());
-			subtituloFlujoCajaVO.setServicio(servicioSalud.getNombre());
-			subtituloFlujoCajaVO.setMarcoPresupuestario(0L);
 
-			for(Integer idComponente : idComponentes){
-				ProgramaSubtituloComponentePeso programaSubtituloComponentePeso = programasDAO.getProgramaSubtituloComponentePesoByProgramaServicioComponenteSubtitulo(idProgramaAno, servicioSalud.getId(), idComponente, subtitulo.getId());
-				if(programaSubtituloComponentePeso != null){
-					subtituloFlujoCajaVO.setPesoComponentes(subtituloFlujoCajaVO.getPesoComponentes() + programaSubtituloComponentePeso.getPeso());
+		List<Comuna> comunas = new ArrayList<Comuna>();
+		if(idComuna != null){
+			Comuna comuna = servicioSaludDAO.getComunaById(idComuna);
+			comunas.add(comuna);
+		}else{
+			if(idServicio != null){
+				ServicioSalud servicioSalud = servicioSaludDAO.getById(idServicio);
+				if(servicioSalud.getComunas() != null && servicioSalud.getComunas().size() > 0){
+					for(Comuna comuna :servicioSalud.getComunas()){
+						comunas.add(comuna);
+					}
+				}
+			}else{
+				List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
+				for(ServicioSalud servicioSalud : servicios){
+					if(servicioSalud.getComunas() != null && servicioSalud.getComunas().size() > 0){
+						for(Comuna comuna  :servicioSalud.getComunas()){
+							comunas.add(comuna);
+						}
+					}
 				}
 			}
+		}
 
-			subtituloFlujoCajaVO.setPesoComponentes(subtituloFlujoCajaVO.getPesoComponentes()/100.0);
-
-			for(int mes = 1; mes <= 12; mes++){
-				Mes mesDTO = mesDAO.getMesPorID(mes);
-				CajaMontoSummaryVO cajaMontoMes = new CajaMontoSummaryVO(null, mes, mesDTO.getNombre());
-				Long montoComponentes = 0L;
+		if(comunas.size() > 0){
+			for(Comuna comuna : comunas){
+				SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaVO();
+				subtituloFlujoCajaVO.setIdServicio(comuna.getServicioSalud().getId());
+				subtituloFlujoCajaVO.setServicio(comuna.getServicioSalud().getNombre());
+				subtituloFlujoCajaVO.setIdComuna(comuna.getId());
+				subtituloFlujoCajaVO.setComuna(comuna.getNombre());
+				subtituloFlujoCajaVO.setMarcoPresupuestario(0L);
 
 				for(Integer idComponente : idComponentes){
-					CajaMonto cajaMonto = cajaDAO.getCajaMontoByServicioProgramaComponenteSubtituloMes(servicioSalud.getId(), idProgramaAno, idComponente, subtitulo.getId(), mes);
-					montoComponentes += ((cajaMonto != null) ? cajaMonto.getMonto() : 0L);
+					ProgramaSubtituloComponentePeso programaSubtituloComponentePeso = programasDAO.getProgramaSubtituloComponentePesoByProgramaComponenteSubtitulo(idProgramaAno, idComponente, subtitulo.getId());
+					if(programaSubtituloComponentePeso != null){
+						subtituloFlujoCajaVO.setPesoComponentes(subtituloFlujoCajaVO.getPesoComponentes() + programaSubtituloComponentePeso.getPeso());
+					}
 				}
-				cajaMontoMes.setMontoMes(montoComponentes);
-				cajaMontoMes.setMontoMesOriginal(montoComponentes);
-				switch (mes) {
-				case 1:
-					subtituloFlujoCajaVO.setCajaMontoEnero(cajaMontoMes);
-					break;
-				case 2:
-					subtituloFlujoCajaVO.setCajaMontoFebrero(cajaMontoMes);
-					break;
-				case 3:
-					subtituloFlujoCajaVO.setCajaMontoMarzo(cajaMontoMes);
-					break;
-				case 4:
-					subtituloFlujoCajaVO.setCajaMontoAbril(cajaMontoMes);
-					break;
-				case 5:
-					subtituloFlujoCajaVO.setCajaMontoMayo(cajaMontoMes);
-					break;
-				case 6:
-					subtituloFlujoCajaVO.setCajaMontoJunio(cajaMontoMes);
-					break;
-				case 7:
-					subtituloFlujoCajaVO.setCajaMontoJulio(cajaMontoMes);
-					break;
-				case 8:
-					subtituloFlujoCajaVO.setCajaMontoAgosto(cajaMontoMes);
-					break;
-				case 9:
-					subtituloFlujoCajaVO.setCajaMontoSeptiembre(cajaMontoMes);
-					break;
-				case 10:
-					subtituloFlujoCajaVO.setCajaMontoOctubre(cajaMontoMes);
-					break;
-				case 11:
-					subtituloFlujoCajaVO.setCajaMontoNoviembre(cajaMontoMes);
-					break;
-				case 12:
-					subtituloFlujoCajaVO.setCajaMontoDiciembre(cajaMontoMes);
-					break;
-				default:
-					break;
-				}
-			}
-			Long marcoPresupuestario = 0L;
-			for(Comuna comuna : servicioSalud.getComunas()){
+
+				subtituloFlujoCajaVO.setPesoComponentes(subtituloFlujoCajaVO.getPesoComponentes()/100.0);
+				Long marcoPresupuestarioServicio = 0L;
 				for(Integer idComponente : idComponentes){
-					marcoPresupuestario += programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(), idProgramaAno, idComponente, subtitulo.getId());
+					marcoPresupuestarioServicio += programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(), idProgramaAno, idComponente, subtitulo.getId());
 				}
+				subtituloFlujoCajaVO.setMarcoPresupuestario(marcoPresupuestarioServicio);
+
+				for(int mes = 1; mes <= 12; mes++){
+					Mes mesDTO = mesDAO.getMesPorID(mes);
+					CajaMontoSummaryVO cajaMontoMes = new CajaMontoSummaryVO(null, mes, mesDTO.getNombre());
+					Long montoComponentes = 0L;
+
+					for(Integer idComponente : idComponentes){
+						CajaMonto cajaMonto = cajaDAO.getCajaMontoByServicioComunaProgramaComponenteSubtituloMes(comuna.getServicioSalud().getId(), comuna.getId(), idProgramaAno, idComponente, subtitulo.getId(), mes);
+						montoComponentes += ((cajaMonto != null) ? cajaMonto.getMonto() : 0L);
+					}
+					cajaMontoMes.setMontoMes(montoComponentes);
+					cajaMontoMes.setMontoMesOriginal(montoComponentes);
+					switch (mes) {
+					case 1:
+						subtituloFlujoCajaVO.setCajaMontoEnero(cajaMontoMes);
+						break;
+					case 2:
+						subtituloFlujoCajaVO.setCajaMontoFebrero(cajaMontoMes);
+						break;
+					case 3:
+						subtituloFlujoCajaVO.setCajaMontoMarzo(cajaMontoMes);
+						break;
+					case 4:
+						subtituloFlujoCajaVO.setCajaMontoAbril(cajaMontoMes);
+						break;
+					case 5:
+						subtituloFlujoCajaVO.setCajaMontoMayo(cajaMontoMes);
+						break;
+					case 6:
+						subtituloFlujoCajaVO.setCajaMontoJunio(cajaMontoMes);
+						break;
+					case 7:
+						subtituloFlujoCajaVO.setCajaMontoJulio(cajaMontoMes);
+						break;
+					case 8:
+						subtituloFlujoCajaVO.setCajaMontoAgosto(cajaMontoMes);
+						break;
+					case 9:
+						subtituloFlujoCajaVO.setCajaMontoSeptiembre(cajaMontoMes);
+						break;
+					case 10:
+						subtituloFlujoCajaVO.setCajaMontoOctubre(cajaMontoMes);
+						break;
+					case 11:
+						subtituloFlujoCajaVO.setCajaMontoNoviembre(cajaMontoMes);
+						break;
+					case 12:
+						subtituloFlujoCajaVO.setCajaMontoDiciembre(cajaMontoMes);
+						break;
+					default:
+						break;
+					}
+				}
+				subtitulosFlujosCaja.add(subtituloFlujoCajaVO);
 			}
-			subtituloFlujoCajaVO.setMarcoPresupuestario(marcoPresupuestario);
-			subtitulosFlujosCaja.add(subtituloFlujoCajaVO);
 		}
 		if(!iniciarFlujoCaja){
 			Integer mesActual = Integer.parseInt(getMesCurso(true));
 			for(SubtituloFlujoCajaVO subtituloFlujoCaja : subtitulosFlujosCaja){
 				ConveniosSummaryVO convenioRecibido = new ConveniosSummaryVO(0.0, 0);
 				TransferenciaSummaryVO transferenciasAcumulada = new TransferenciaSummaryVO(0.0, 0L);
-				Long marcoPresupuestario = subtituloFlujoCaja.getMarcoPresupuestario();
-				Integer [] estados = {EstadosConvenios.APROBADO.getId(), EstadosConvenios.PAGADO.getId()};
 				Long totalConveniosPorServicio = 0L;
 				for(Integer idComponente : idComponentes){
-					List<ConvenioComuna> conveniosComuna = conveniosDAO.getConveniosComunaByProgramaAnoComponenteSubtituloServicioEstadosConvenio(idProgramaAno, idComponente, subtitulo.getId(), subtituloFlujoCaja.getIdServicio(), estados);
-					if(conveniosComuna != null && conveniosComuna.size() > 0){
-						for(ConvenioComuna convenioComuna : conveniosComuna){
-							if(convenioComuna.getMes() != null && convenioComuna.getMes().getIdMes() <= mesActual){
-								if(convenioComuna.getConvenioComunaComponentes() != null && convenioComuna.getConvenioComunaComponentes().size() > 0){
-									int size = convenioComuna.getConvenioComunaComponentes().size();
-									ConvenioComunaComponente convenioComunaComponente = convenioComuna.getConvenioComunaComponentes().get((size-1));
-									totalConveniosPorServicio += convenioComunaComponente.getMontoIngresado();
-								}
-							}
-						}
+					ConvenioComunaComponenteVO convenioComunaComponente = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(idProgramaAno, idComponente, subtitulo.getId(), subtituloFlujoCaja.getIdComuna(), EstadosConvenios.INGRESADO);
+					if(convenioComunaComponente == null){
+						convenioComunaComponente = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(idProgramaAno, idComponente, subtitulo.getId(), subtituloFlujoCaja.getIdComuna(), EstadosConvenios.APROBADO);
+					}
+					if(convenioComunaComponente == null){
+						convenioComunaComponente = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(idProgramaAno, idComponente, subtitulo.getId(), subtituloFlujoCaja.getIdComuna(), EstadosConvenios.TRAMITE);
+					}
+					if(convenioComunaComponente == null){
+						convenioComunaComponente = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(idProgramaAno, idComponente, subtitulo.getId(), subtituloFlujoCaja.getIdComuna(), EstadosConvenios.PAGADO);
+					}
+					if(convenioComunaComponente != null){
+						totalConveniosPorServicio += ((convenioComunaComponente.getMonto() != null) ? convenioComunaComponente.getMonto() : 0L);
 					}
 				}
 				convenioRecibido.setMonto(totalConveniosPorServicio.intValue());
-				if(marcoPresupuestario != 0){
-					Double porcentaje = ((totalConveniosPorServicio * 100.0) / marcoPresupuestario);
+				if(subtituloFlujoCaja .getMarcoPresupuestario() != 0){
+					Double porcentaje = ((totalConveniosPorServicio * 100.0) / subtituloFlujoCaja .getMarcoPresupuestario());
 					porcentaje = porcentaje / 100.0;
 					convenioRecibido.setPorcentaje(porcentaje);
 				}
 				subtituloFlujoCaja.setConvenioRecibido(convenioRecibido);
 
 				Long totalRemesasPorServicio = 0L;
-				System.out.println("marcoPresupuestario-->"+marcoPresupuestario);
-				if(marcoPresupuestario != 0){
-					System.out.println("buscando las remesas para este servicio-");
-					List<DetalleRemesas> detalleRemesas = remesasDAO.getRemesasPagadasComunasProgramaAnoServicioSubtituloMesHasta(idProgramaAno, subtituloFlujoCaja.getIdServicio(), subtitulo.getId(), mesActual);
-					if(detalleRemesas != null && detalleRemesas.size() > 0){
-						for(DetalleRemesas detalleRemesa : detalleRemesas){
-							totalRemesasPorServicio += detalleRemesa.getMontoRemesa();
-						}
-					}
-				}
-				transferenciasAcumulada.setMonto(totalRemesasPorServicio);
-				if(marcoPresupuestario != 0){
-					Double porcentajeRemesas = ((totalRemesasPorServicio * 100.0) / marcoPresupuestario);
-					porcentajeRemesas = porcentajeRemesas / 100.0;
-					transferenciasAcumulada.setPorcentaje(porcentajeRemesas);
-				}
-				subtituloFlujoCaja.setTransferenciaAcumulada(transferenciasAcumulada);
-			}
-		}
-		System.out.println("getMonitoreoComunaByProgramaAnoComponenteSubtitulo-->subtitulosFlujosCaja.size()=" +subtitulosFlujosCaja.size());
-		LOGGER.info("getMonitoreoComunaByProgramaAnoComponenteSubtitulo-->subtitulosFlujosCaja.size()=" +subtitulosFlujosCaja.size());
-		LOGGER.info("Fin getMonitoreoComunaByProgramaAnoComponenteSubtitulo");
-		return subtitulosFlujosCaja;
-	}
-
-	public List<SubtituloFlujoCajaVO> getMonitoreoComunaByProgramaAnoComponenteSubtitulo(Integer idProgramaAno, Integer idServicio, List<Integer> idComponentes, Subtitulo subtitulo, Boolean iniciarFlujoCaja) {
-		LOGGER.info("Inicio getMonitoreoComunaByProgramaAnoComponenteSubtitulo");
-		List<SubtituloFlujoCajaVO> subtitulosFlujosCaja = new ArrayList<SubtituloFlujoCajaVO>();
-		ServicioSalud servicioSalud = servicioSaludDAO.getServicioSaludById(idServicio);
-		SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaVO();
-		subtituloFlujoCajaVO.setIdServicio(servicioSalud.getId());
-		subtituloFlujoCajaVO.setServicio(servicioSalud.getNombre());
-		subtituloFlujoCajaVO.setMarcoPresupuestario(0L);
-
-		for(Integer idComponente : idComponentes){
-			ProgramaSubtituloComponentePeso programaSubtituloComponentePeso = programasDAO.getProgramaSubtituloComponentePesoByProgramaServicioComponenteSubtitulo(idProgramaAno, servicioSalud.getId(), idComponente, subtitulo.getId());
-			if(programaSubtituloComponentePeso != null){
-				subtituloFlujoCajaVO.setPesoComponentes(subtituloFlujoCajaVO.getPesoComponentes() + programaSubtituloComponentePeso.getPeso());
-			}
-		}
-
-		subtituloFlujoCajaVO.setPesoComponentes(subtituloFlujoCajaVO.getPesoComponentes()/100.0);
-
-		for(int mes = 1; mes <= 12; mes++){
-			Mes mesDTO = mesDAO.getMesPorID(mes);
-			CajaMontoSummaryVO cajaMontoMes = new CajaMontoSummaryVO(null, mes, mesDTO.getNombre());
-			Long montoComponentes = 0L;
-
-			for(Integer idComponente : idComponentes){
-				CajaMonto cajaMonto = cajaDAO.getCajaMontoByServicioProgramaComponenteSubtituloMes(servicioSalud.getId(), idProgramaAno, idComponente, subtitulo.getId(), mes);
-				montoComponentes += ((cajaMonto != null) ? cajaMonto.getMonto() : 0L);
-			}
-			cajaMontoMes.setMontoMes(montoComponentes);
-			cajaMontoMes.setMontoMesOriginal(montoComponentes);
-			switch (mes) {
-			case 1:
-				subtituloFlujoCajaVO.setCajaMontoEnero(cajaMontoMes);
-				break;
-			case 2:
-				subtituloFlujoCajaVO.setCajaMontoFebrero(cajaMontoMes);
-				break;
-			case 3:
-				subtituloFlujoCajaVO.setCajaMontoMarzo(cajaMontoMes);
-				break;
-			case 4:
-				subtituloFlujoCajaVO.setCajaMontoAbril(cajaMontoMes);
-				break;
-			case 5:
-				subtituloFlujoCajaVO.setCajaMontoMayo(cajaMontoMes);
-				break;
-			case 6:
-				subtituloFlujoCajaVO.setCajaMontoJunio(cajaMontoMes);
-				break;
-			case 7:
-				subtituloFlujoCajaVO.setCajaMontoJulio(cajaMontoMes);
-				break;
-			case 8:
-				subtituloFlujoCajaVO.setCajaMontoAgosto(cajaMontoMes);
-				break;
-			case 9:
-				subtituloFlujoCajaVO.setCajaMontoSeptiembre(cajaMontoMes);
-				break;
-			case 10:
-				subtituloFlujoCajaVO.setCajaMontoOctubre(cajaMontoMes);
-				break;
-			case 11:
-				subtituloFlujoCajaVO.setCajaMontoNoviembre(cajaMontoMes);
-				break;
-			case 12:
-				subtituloFlujoCajaVO.setCajaMontoDiciembre(cajaMontoMes);
-				break;
-			default:
-				break;
-			}
-		}
-		Long marcoPresupuestarioServicio = 0L;
-		for(Comuna comuna : servicioSalud.getComunas()){
-			for(Integer idComponente : idComponentes){
-				marcoPresupuestarioServicio += programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(), idProgramaAno, idComponente, subtitulo.getId());
-			}
-		}
-		subtituloFlujoCajaVO.setMarcoPresupuestario(marcoPresupuestarioServicio);
-		subtitulosFlujosCaja.add(subtituloFlujoCajaVO);
-		if(!iniciarFlujoCaja){
-			Integer mesActual = Integer.parseInt(getMesCurso(true));
-			for(SubtituloFlujoCajaVO subtituloFlujoCaja : subtitulosFlujosCaja){
-				ConveniosSummaryVO convenioRecibido = new ConveniosSummaryVO(0.0, 0);
-				TransferenciaSummaryVO transferenciasAcumulada = new TransferenciaSummaryVO(0.0, 0L);
-				Long marcoPresupuestario = subtituloFlujoCaja.getMarcoPresupuestario();
-				Integer [] estados = {EstadosConvenios.APROBADO.getId(), EstadosConvenios.PAGADO.getId()};
-				Long totalConveniosPorServicio = 0L;
-				for(Integer idComponente : idComponentes){
-					List<ConvenioComuna> conveniosComuna = conveniosDAO.getConveniosComunaByProgramaAnoComponenteSubtituloServicioEstadosConvenio(idProgramaAno, idComponente, subtitulo.getId(), subtituloFlujoCaja.getIdServicio(), estados);
-					if(conveniosComuna != null && conveniosComuna.size() > 0){
-						for(ConvenioComuna convenioComuna : conveniosComuna){
-							if(convenioComuna.getMes() != null && convenioComuna.getMes().getIdMes() <= mesActual){
-								if(convenioComuna.getConvenioComunaComponentes() != null && convenioComuna.getConvenioComunaComponentes().size() > 0){
-									int size = convenioComuna.getConvenioComunaComponentes().size();
-									ConvenioComunaComponente convenioComunaComponente = convenioComuna.getConvenioComunaComponentes().get((size-1));
-									totalConveniosPorServicio += convenioComunaComponente.getMontoIngresado();
-								}
+				System.out.println("marcoPresupuestario-->"+subtituloFlujoCaja .getMarcoPresupuestario());
+				if(subtituloFlujoCaja .getMarcoPresupuestario() != 0){
+					for(Integer idComponente : idComponentes){
+						System.out.println("buscando las remesas para este servicio-");
+						List<DetalleRemesas> detalleRemesas = remesasDAO.getRemesasPagadasComunasProgramaAnoServicioComponenteSubtituloMesHasta(idProgramaAno, subtituloFlujoCaja.getIdServicio(), idComponente, subtitulo.getId(), mesActual);
+						if(detalleRemesas != null && detalleRemesas.size() > 0){
+							for(DetalleRemesas detalleRemesa : detalleRemesas){
+								totalRemesasPorServicio += detalleRemesa.getMontoRemesa();
 							}
 						}
 					}
 				}
-				convenioRecibido.setMonto(totalConveniosPorServicio.intValue());
-				if(marcoPresupuestario != 0){
-					Double porcentaje = ((totalConveniosPorServicio * 100.0) / marcoPresupuestario);
-					porcentaje = porcentaje / 100.0;
-					convenioRecibido.setPorcentaje(porcentaje);
-				}
-				subtituloFlujoCaja.setConvenioRecibido(convenioRecibido);
-
-				Long totalRemesasPorServicio = 0L;
-				System.out.println("marcoPresupuestario-->"+marcoPresupuestario);
-				if(marcoPresupuestario != 0){
-					System.out.println("buscando las remesas para este servicio-");
-					List<DetalleRemesas> detalleRemesas = remesasDAO.getRemesasPagadasComunasProgramaAnoServicioSubtituloMesHasta(idProgramaAno, subtituloFlujoCaja.getIdServicio(), subtitulo.getId(), mesActual);
-					if(detalleRemesas != null && detalleRemesas.size() > 0){
-						for(DetalleRemesas detalleRemesa : detalleRemesas){
-							totalRemesasPorServicio += detalleRemesa.getMontoRemesa();
-						}
-					}
-				}
 				transferenciasAcumulada.setMonto(totalRemesasPorServicio);
-				if(marcoPresupuestario != 0){
-					Double porcentajeRemesas = ((totalRemesasPorServicio * 100.0) / marcoPresupuestario);
+				if(subtituloFlujoCaja .getMarcoPresupuestario() != 0){
+					Double porcentajeRemesas = ((totalRemesasPorServicio * 100.0) / subtituloFlujoCaja .getMarcoPresupuestario());
 					porcentajeRemesas = porcentajeRemesas / 100.0;
 					transferenciasAcumulada.setPorcentaje(porcentajeRemesas);
 				}
@@ -2144,47 +2051,74 @@ public class EstimacionFlujoCajaService {
 		return programaAnoSiguiente.getIdProgramaAno();
 	}
 
-	public void actualizarMonitoreoServicioSubtituloFlujoCaja(Integer idProgramaAno, Integer idServicio, CajaMontoSummaryVO cajaMontoSummary, Subtitulo subtitulo, Boolean iniciarFlujoCaja) {
-		List<CajaMonto> cajaMontos = cajaDAO.getByProgramaAnoServicioSubtituloMes(idProgramaAno, idServicio, subtitulo, cajaMontoSummary.getIdMes());
-		System.out.println("idProgramaAno ="+idProgramaAno+" IdServicio="+ idServicio +" subtitulo="+subtitulo.getNombre());
-		if(cajaMontos != null && cajaMontos.size() > 0){
-			int cajaMontoSize = cajaMontos.size();
-			int iteracionPorCaja = 1;
-			Long montoAcumulado = 0L;
-			for(CajaMonto cajaMonto : cajaMontos){
-				System.out.println("cajaMonto.getCajaMontoPK().getCaja()=" + cajaMonto.getCajaMontoPK().getCaja() + " cajaMonto.getCaja().getIdComponente().getId()=" + cajaMonto.getCaja().getIdComponente().getId() + " cajaMonto.getCaja().getIdComponente().getNombre()=" + cajaMonto.getCaja().getIdComponente().getNombre());
-				if(iteracionPorCaja !=  cajaMontoSize){
-					ProgramaSubtituloComponentePeso programaSubtituloComponentePeso = programasDAO.getProgramaSubtituloComponentePesoByProgramaServicioComponenteSubtitulo(idProgramaAno, idServicio, cajaMonto.getCaja().getIdComponente().getId(), subtitulo.getId());
-					if(programaSubtituloComponentePeso != null){
-						System.out.println("actualizando el caja monto");
-						float pesoComponente =  programaSubtituloComponentePeso.getPeso();
-						System.out.println("actualizando el caja monto="+pesoComponente);
-						if(((int)pesoComponente) == 100){
-							cajaMonto.setMonto(cajaMontoSummary.getMontoMes().intValue());
-							montoAcumulado += cajaMontoSummary.getMontoMes(); 
-							cajaMonto.setReparos(true);
-						}else{
-							System.out.println("actualizando el caja monto");
-							int montoActualizado = (int)((pesoComponente * cajaMontoSummary.getMontoMes())/100.0);
-							cajaMonto.setMonto(montoActualizado);
-							montoAcumulado += montoActualizado;
-							cajaMonto.setReparos(true);
-						}
+	public void actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(Integer idProgramaAno, Integer idServicio, Integer idEstablecimiento, CajaMontoSummaryVO cajaMontoSummary, Subtitulo subtitulo, Boolean iniciarFlujoCaja) {
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
+		List<Componente> componentes = componenteDAO.getComponentesByIdProgramaIdSubtitulos(programaAno.getPrograma().getId(), subtitulo);
+		int componentesSize = componentes.size();
+		int iteracionPorComponentes = 1;
+		int montoAcumulado = 0;
+		for(Componente componente : programaAno.getPrograma().getComponentes()){
+			CajaMonto cajaMonto = cajaDAO.getCajaMontoByServicioEstablecimientoProgramaComponenteSubtituloMes(idServicio, idEstablecimiento, idProgramaAno, componente.getId(), subtitulo.getId(), cajaMontoSummary.getIdMes());
+			ProgramaSubtituloComponentePeso programaSubtituloComponentePeso = programasDAO.getProgramaSubtituloComponentePesoByProgramaComponenteSubtitulo(idProgramaAno, componente.getId(), subtitulo.getId());
+			if(programaSubtituloComponentePeso != null){
+				if(iteracionPorComponentes !=  componentesSize){
+					int pesoComponente =  (int)programaSubtituloComponentePeso.getPeso();
+					System.out.println("actualizando el caja monto="+pesoComponente);
+					if((pesoComponente) == 100){
+						cajaMonto.setMonto(cajaMontoSummary.getMontoMes().intValue());
+						montoAcumulado += cajaMontoSummary.getMontoMes(); 
+						cajaMonto.setReparos(true);
 					}else{
-						System.out.println("EL PESO DEL COMPONENTE ES NULO");
+						System.out.println("actualizando el caja monto");
+						int montoActualizado = (int)((pesoComponente * cajaMontoSummary.getMontoMes())/100.0);
+						cajaMonto.setMonto(montoActualizado);
+						montoAcumulado += montoActualizado;
+						cajaMonto.setReparos(true);
 					}
 				}else{
 					cajaMonto.setMonto((int)(cajaMontoSummary.getMontoMes() - montoAcumulado));
 					cajaMonto.setReparos(true);
 				}
-				iteracionPorCaja++;
 			}
+			iteracionPorComponentes++;
 		}
 	}
 
+	public void actualizarMonitoreoServicioComunaSubtituloFlujoCaja(Integer idProgramaAno, Integer idServicio, Integer idComuna, CajaMontoSummaryVO cajaMontoSummary, Subtitulo subtitulo, Boolean iniciarFlujoCaja) {
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
+		List<Componente> componentes = componenteDAO.getComponentesByIdProgramaIdSubtitulos(programaAno.getPrograma().getId(), subtitulo);
+		int componentesSize = componentes.size();
+		int iteracionPorComponentes = 1;
+		int montoAcumulado = 0;
+		for(Componente componente : programaAno.getPrograma().getComponentes()){
+			CajaMonto cajaMonto = cajaDAO.getCajaMontoByServicioComunaProgramaComponenteSubtituloMes(idServicio, idComuna, idProgramaAno, componente.getId(), subtitulo.getId(), cajaMontoSummary.getIdMes());
+			ProgramaSubtituloComponentePeso programaSubtituloComponentePeso = programasDAO.getProgramaSubtituloComponentePesoByProgramaComponenteSubtitulo(idProgramaAno, componente.getId(), subtitulo.getId());
+			if(programaSubtituloComponentePeso != null){
+				if(iteracionPorComponentes !=  componentesSize){
+					int pesoComponente =  (int)programaSubtituloComponentePeso.getPeso();
+					System.out.println("actualizando el caja monto="+pesoComponente);
+					if((pesoComponente) == 100){
+						cajaMonto.setMonto(cajaMontoSummary.getMontoMes().intValue());
+						montoAcumulado += cajaMontoSummary.getMontoMes(); 
+						cajaMonto.setReparos(true);
+					}else{
+						System.out.println("actualizando el caja monto");
+						int montoActualizado = (int)((pesoComponente * cajaMontoSummary.getMontoMes())/100.0);
+						cajaMonto.setMonto(montoActualizado);
+						montoAcumulado += montoActualizado;
+						cajaMonto.setReparos(true);
+					}
+				}else{
+					cajaMonto.setMonto((int)(cajaMontoSummary.getMontoMes() - montoAcumulado));
+					cajaMonto.setReparos(true);
+				}
+			}
+			iteracionPorComponentes++;
+		}
+	}
 
-	public List<SubtituloFlujoCajaVO> getPercapitaByProgramaAno(Integer idProgramaAno, Integer idServicio) {
-		DistribucionInicialPercapita  distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
+	public List<SubtituloFlujoCajaVO> getPercapitaByProgramaAno(Integer idPrograma, Integer ano, Integer idServicio) {
+		DistribucionInicialPercapita  distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(ano);
 		List<AntecendentesComunaCalculado> antecendentesComunasCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaServicio(distribucionInicialPercapita.getIdDistribucionInicialPercapita(), idServicio);
 		List<SubtituloFlujoCajaVO> resultado = new ArrayList<SubtituloFlujoCajaVO>();
 		Map<Integer, Long> percapitaServicio = new HashMap<Integer, Long>();
@@ -2257,21 +2191,15 @@ public class EstimacionFlujoCajaService {
 					break;
 				}
 			}		
-
 			subtituloFlujoCajaVO.setMarcoPresupuestario(valor);
 			resultado.add(subtituloFlujoCajaVO);
-
 		} 
 		return resultado;
 
 	}
-	public List<SubtituloFlujoCajaVO> getPercapitaByProgramaAno(Integer idProgramaAno) {
-
-		DistribucionInicialPercapita  distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
-		Integer id_disperc = distribucionInicialPercapita.getIdDistribucionInicialPercapita();
-		System.out.println("id_disperc --> "+id_disperc);
-
-
+	public List<SubtituloFlujoCajaVO> getPercapitaByProgramaAno(Integer idPrograma, Integer ano) {
+		DistribucionInicialPercapita  distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(ano);
+		System.out.println("distribucionInicialPercapita.getIdDistribucionInicialPercapita() --> "+distribucionInicialPercapita.getIdDistribucionInicialPercapita());
 		List<AntecendentesComunaCalculado> antecendentesComunasCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaVigente(distribucionInicialPercapita.getIdDistribucionInicialPercapita());
 		List<SubtituloFlujoCajaVO> resultado = new ArrayList<SubtituloFlujoCajaVO>();
 		Map<Integer, Long> percapitaServicio = new HashMap<Integer, Long>();
@@ -2373,9 +2301,9 @@ public class EstimacionFlujoCajaService {
 		return servicios;
 	}
 
-	public List<SubtituloFlujoCajaVO> getPercapitaByAno() {
-		DistribucionInicialPercapita  distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
-		System.out.println("distribucionInicialPercapita.getIdDistribucionInicialPercapita() --> "+distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+	public List<SubtituloFlujoCajaVO> getPercapitaByAno(Integer ano) {
+		DistribucionInicialPercapita  distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(ano);
+		System.out.println("distribucionInicialPercapita.getIdDistribucionInicialPercapita() --> " + distribucionInicialPercapita.getIdDistribucionInicialPercapita());
 		List<AntecendentesComunaCalculado> antecendentesComunasCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaVigente(distribucionInicialPercapita.getIdDistribucionInicialPercapita());
 
 		List<SubtituloFlujoCajaVO> resultado = new ArrayList<SubtituloFlujoCajaVO>();
@@ -2452,10 +2380,10 @@ public class EstimacionFlujoCajaService {
 		return resultado;
 	}
 
-	public List<SubtituloFlujoCajaVO> getPercapitaByAnoServicio(Integer idServicio) {
-		DistribucionInicialPercapita  distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
+	public List<SubtituloFlujoCajaVO> getPercapitaByAnoServicio(Integer idServicio, Integer ano) {
+		DistribucionInicialPercapita  distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(ano);
 		System.out.println("distribucionInicialPercapita.getIdDistribucionInicialPercapita() --> "+distribucionInicialPercapita.getIdDistribucionInicialPercapita());
-		List<AntecendentesComunaCalculado> antecendentesComunasCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaServicio(distribucionInicialPercapita.getIdDistribucionInicialPercapita(),  idServicio);
+		List<AntecendentesComunaCalculado> antecendentesComunasCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaVigenteServicio(distribucionInicialPercapita.getIdDistribucionInicialPercapita(),  idServicio);
 
 		List<SubtituloFlujoCajaVO> resultado = new ArrayList<SubtituloFlujoCajaVO>();
 		Map<Integer, Long> percapitaServicio = new HashMap<Integer, Long>();
@@ -2470,6 +2398,8 @@ public class EstimacionFlujoCajaService {
 					percapitaServicio.put(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId(), antecendentesComunaCalculado.getPercapitaMes());
 				}
 			}
+		}else{
+			percapitaServicio.put(idServicio, 0L);
 		}
 		for (Integer key : percapitaServicio.keySet()) {
 			Long montoMensual = percapitaServicio.get(key);
@@ -2531,56 +2461,61 @@ public class EstimacionFlujoCajaService {
 		return resultado;
 	}
 
-	public boolean tieneMarcosConReparos(Integer idProgramaAno) {
-		List<CajaMonto> cajaMontoReparos = cajaDAO.getCajaMontoReparosByProgramaAno(idProgramaAno);
+	public boolean tieneMarcosConReparos(Integer idPrograma, Integer ano) {
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByIdProgramaAndAno(idPrograma, ano);
+		List<CajaMonto> cajaMontoReparos = cajaDAO.getCajaMontoReparosByProgramaAno(programaAno.getIdProgramaAno());
 		boolean tieneMarcosConReparos = false;
 		if(cajaMontoReparos != null && cajaMontoReparos.size() > 0){
 			tieneMarcosConReparos = true;
 		}
+		System.out.println("tieneMarcosConReparos->"+tieneMarcosConReparos);
 		return tieneMarcosConReparos;
 	}
 
-	public boolean existeDistribucionRecursos(Integer idProgramaAno) {
-		System.out.println("existeDistribucionRecursos Inicio idProgramaAno-->"+idProgramaAno);
-		ProgramaVO programa = programasService.getProgramaAno(idProgramaAno);
+	public boolean existeDistribucionRecursos(Integer idPrograma, Integer ano) {
+		System.out.println("existeDistribucionRecursos Inicio idPrograma-->"+idPrograma);
+		System.out.println("existeDistribucionRecursos Inicio ano-->"+ano);
+		ProgramaVO programa = programasService.getProgramaByIdProgramaAndAno(idPrograma, ano);
 		if(!programa.getEstado().getId().equals(EstadosProgramas.FINALIZADO.getId())){
 			return false;
 		}
 		return true;
 	}
 
-	public int countAntecendentesComunaCalculadoVigente() {
-		return antecedentesComunaDAO.countAntecendentesComunaCalculadoVigente(getAnoCurso() + 1);
+	public int countAntecendentesComunaCalculadoVigente(Integer ano) {
+		return antecedentesComunaDAO.countAntecendentesComunaCalculadoVigente(ano);
 	}
 
-	public ReferenciaDocumentoSummaryVO getDocumentEstimacionFlujoCajaByType(Integer idProgramaAno, TipoDocumentosProcesos tipoDocumento) {
-		System.out.println("idProgramaAno->"+idProgramaAno);
+	public ReferenciaDocumentoSummaryVO getDocumentEstimacionFlujoCajaByType(Integer idPrograma, Integer ano, TipoDocumentosProcesos tipoDocumento) {
+		System.out.println("idPrograma->"+idPrograma);
+		System.out.println("ano->"+ano);
 		System.out.println("tipoDocumento->"+tipoDocumento.getId());
-		ReferenciaDocumento referencia = fileDAO.getLastDocumentByTypeEstimacionFlujoCaja(idProgramaAno, tipoDocumento);
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByIdProgramaAndAno(idPrograma, ano);
+		ReferenciaDocumento referencia = fileDAO.getLastDocumentByTypeEstimacionFlujoCaja(programaAno.getIdProgramaAno(), tipoDocumento);
 		return new ReferenciaDocumentoMapper().getSummary(referencia);
 	}
 
 
-	public SubtituloFlujoCajaVO getMonitoreoComunaByProgramaAnoServicioSubtituloMes(Integer idProgramaAno, Integer idServicio, Subtitulo subtitulo, Integer idMes, Boolean iniciarFlujoCaja) {
+	public SubtituloFlujoCajaVO getMonitoreoComunaByProgramaAnoServicioSubtituloMes(Integer idProgramaAno, Integer idServicio, Integer idComuna, Subtitulo subtitulo, Integer idMes, Boolean iniciarFlujoCaja) {
 		LOGGER.info("Inicio getMonitoreoComunaByProgramaAnoServicioSubtituloMes");
 		SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaVO();
 		ServicioSalud servicioSalud = servicioSaludDAO.getById(idServicio);
+		Comuna comuna = comunaDAO.getComunaById(idComuna);
 		subtituloFlujoCajaVO.setIdServicio(servicioSalud.getId());
 		subtituloFlujoCajaVO.setServicio(servicioSalud.getNombre());
+		subtituloFlujoCajaVO.setIdComuna(comuna.getId());
+		subtituloFlujoCajaVO.setComuna(comuna.getNombre());
 		subtituloFlujoCajaVO.setMarcoPresupuestario(0L);
-		List<Integer> idComponentes = new ArrayList<Integer>();
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
+		List<Componente> componentes = componenteDAO.getComponentesByIdProgramaIdSubtitulos(programaAno.getPrograma().getId(), subtitulo);
+		Long marcoPorComuna = 0L;
 		for(int mes = 1; mes <= 12; mes++){
 			Mes mesDTO = mesDAO.getMesPorID(mes);
 			CajaMontoSummaryVO cajaMontoMes = new CajaMontoSummaryVO(null, mes, mesDTO.getNombre());
 			Long montoComponentes = 0L;
-			List<CajaMonto> cajaMontos = cajaDAO.getByProgramaAnoServicioSubtituloMes(idProgramaAno, servicioSalud.getId(), subtitulo, mes);
-			if(cajaMontos != null && cajaMontos.size() > 0){
-				for(CajaMonto cajaMonto : cajaMontos){
-					if(!idComponentes.contains(cajaMonto.getCaja().getIdComponente().getId())){
-						idComponentes.add(cajaMonto.getCaja().getIdComponente().getId());
-					}
-					montoComponentes += ((cajaMonto != null) ? cajaMonto.getMonto() : 0L);
-				}
+			for(Componente componente : componentes){
+				CajaMonto cajaMonto = cajaDAO.getCajaMontoByServicioComunaProgramaComponenteSubtituloMes(idServicio, idComuna, idProgramaAno, componente.getId(), subtitulo.getId(), mes);
+				montoComponentes += ((cajaMonto != null) ? cajaMonto.getMonto() : 0L);
 			}
 			cajaMontoMes.setMontoMes(montoComponentes);
 			cajaMontoMes.setMontoMesOriginal(montoComponentes);
@@ -2625,165 +2560,46 @@ public class EstimacionFlujoCajaService {
 				break;
 			}
 		}
-		Long marcoPresupuestario = programasDAO.getMPComunasServicioProgramaAnoComponenteSubtitulo(servicioSalud.getId(), idProgramaAno, idComponentes, subtitulo.getId());
-		subtituloFlujoCajaVO.setMarcoPresupuestario(marcoPresupuestario);
-
+		for(Componente componente : componentes){
+			marcoPorComuna += programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(), idProgramaAno, componente.getId(), subtitulo.getId());
+		}
+		subtituloFlujoCajaVO.setMarcoPresupuestario(marcoPorComuna);
 		if(!iniciarFlujoCaja){
 			Integer mesActual = Integer.parseInt(getMesCurso(true));
+			Calendar calendar = Calendar.getInstance();
+			Integer diaDelMes = calendar.get(Calendar.DAY_OF_MONTH);
 			ConveniosSummaryVO convenioRecibido = new ConveniosSummaryVO(0.0, 0);
 			TransferenciaSummaryVO transferenciasAcumulada = new TransferenciaSummaryVO(0.0, 0L);
-			Integer [] estados = {EstadosConvenios.APROBADO.getId(), EstadosConvenios.PAGADO.getId()};
-			Long totalConveniosPorServicio = 0L;
-			for(Integer idComponente : idComponentes){
-				List<ConvenioComuna> conveniosComuna = conveniosDAO.getConveniosComunaByProgramaAnoComponenteSubtituloServicioEstadosConvenio(idProgramaAno, idComponente, subtitulo.getId(), subtituloFlujoCajaVO.getIdServicio(), estados);
-				if(conveniosComuna != null && conveniosComuna.size() > 0){
-					for(ConvenioComuna convenioComuna : conveniosComuna){
-						if(convenioComuna.getMes() != null && convenioComuna.getMes().getIdMes() <= mesActual){
-							if(convenioComuna.getConvenioComunaComponentes() != null && convenioComuna.getConvenioComunaComponentes().size() > 0){
-								int size = convenioComuna.getConvenioComunaComponentes().size();
-								ConvenioComunaComponente convenioComunaComponente = convenioComuna.getConvenioComunaComponentes().get((size-1));
-								totalConveniosPorServicio += convenioComunaComponente.getMontoIngresado();
-							}
-						}
-					}
+			Long totalConveniosPorComuna = 0L;
+			Long totalRemesasPorComuna = 0L;
+			for(Componente componente : componentes){
+				ConvenioComunaComponenteVO convenioComunaComponenteVO = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(idProgramaAno, componente.getId(), subtitulo.getId(), comuna.getId(), EstadosConvenios.INGRESADO);
+				if(convenioComunaComponenteVO == null){
+					convenioComunaComponenteVO = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(idProgramaAno, componente.getId(), subtitulo.getId(), comuna.getId(), EstadosConvenios.APROBADO);
 				}
+				if(convenioComunaComponenteVO == null){
+					convenioComunaComponenteVO = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(idProgramaAno, componente.getId(), subtitulo.getId(), comuna.getId(), EstadosConvenios.TRAMITE);
+				}
+				if(convenioComunaComponenteVO == null){
+					convenioComunaComponenteVO = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(idProgramaAno, componente.getId(), subtitulo.getId(), comuna.getId(), EstadosConvenios.PAGADO);
+				}
+				if(convenioComunaComponenteVO != null){
+					totalConveniosPorComuna += ((convenioComunaComponenteVO.getMonto() != null) ? convenioComunaComponenteVO.getMonto() : 0L);
+				}
+				totalRemesasPorComuna += remesasDAO.getRemesasPagadasComunaProgramaComponenteSubtituloDiaMes(idProgramaAno, componente.getId(), subtitulo.getId(), comuna.getId(), diaDelMes, mesActual);
+				System.out.println("totalRemesasPorComuna --> "+ totalRemesasPorComuna);
 			}
-			convenioRecibido.setMonto(totalConveniosPorServicio.intValue());
-			if(marcoPresupuestario != 0){
-				Double porcentaje = ((totalConveniosPorServicio * 100.0) / marcoPresupuestario);
+			convenioRecibido.setMonto(totalConveniosPorComuna.intValue());
+			if(marcoPorComuna != 0){
+				Double porcentaje = ((totalConveniosPorComuna * 100.0) / marcoPorComuna);
 				porcentaje = porcentaje / 100.0;
 				convenioRecibido.setPorcentaje(porcentaje);
 			}
 			subtituloFlujoCajaVO.setConvenioRecibido(convenioRecibido);
-
-			Long totalRemesasPorServicio = 0L;
-			List<DetalleRemesas> detalleRemesas = remesasDAO.getRemesasPagadasComunasProgramaAnoServicioSubtituloMesHasta(idProgramaAno, subtituloFlujoCajaVO.getIdServicio(), subtitulo.getId(), mesActual);
-			if(detalleRemesas != null && detalleRemesas.size() > 0){
-				for(DetalleRemesas detalleRemesa : detalleRemesas){
-					totalRemesasPorServicio += detalleRemesa.getMontoRemesa();
-				}
-			}
-
-			transferenciasAcumulada.setMonto(totalRemesasPorServicio);
-			if(marcoPresupuestario != 0){
-				Double porcentajeRemesas = ((totalRemesasPorServicio * 100.0) / marcoPresupuestario);
-				porcentajeRemesas = porcentajeRemesas / 100.0;
-				transferenciasAcumulada.setPorcentaje(porcentajeRemesas);
-			}
-			subtituloFlujoCajaVO.setTransferenciaAcumulada(transferenciasAcumulada);
-		}
-
-		System.out.println("getMonitoreoComunaByProgramaAnoServicioSubtituloMes-->subtituloFlujoCajaVO=" + subtituloFlujoCajaVO);
-		LOGGER.info("Fin getMonitoreoComunaByProgramaAnoServicioSubtituloMes");
-		return subtituloFlujoCajaVO;
-	}
-
-
-	public SubtituloFlujoCajaVO getMonitoreoServicioByProgramaAnoServicioSubtituloMes(Integer idProgramaAno, Integer idServicio, Subtitulo subtitulo, Integer idMes, Boolean iniciarFlujoCaja) {
-		LOGGER.info("Inicio getMonitoreoServicioByProgramaAnoServicioSubtituloMes");
-		SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaVO();
-		ServicioSalud servicioSalud = servicioSaludDAO.getById(idServicio);
-		subtituloFlujoCajaVO.setIdServicio(servicioSalud.getId());
-		subtituloFlujoCajaVO.setServicio(servicioSalud.getNombre());
-		subtituloFlujoCajaVO.setMarcoPresupuestario(0L);
-		List<Integer> idComponentes = new ArrayList<Integer>();
-		for(int mes = 1; mes <= 12; mes++){
-			Mes mesDTO = mesDAO.getMesPorID(mes);
-			CajaMontoSummaryVO cajaMontoMes = new CajaMontoSummaryVO(null, mes, mesDTO.getNombre());
-			Long montoComponentes = 0L;
-			List<CajaMonto> cajaMontos = cajaDAO.getByProgramaAnoServicioSubtituloMes(idProgramaAno, servicioSalud.getId(), subtitulo, mes);
-			if(cajaMontos != null && cajaMontos.size() > 0){
-				for(CajaMonto cajaMonto : cajaMontos){
-					if(!idComponentes.contains(cajaMonto.getCaja().getIdComponente().getId())){
-						idComponentes.add(cajaMonto.getCaja().getIdComponente().getId());
-					}
-					montoComponentes += ((cajaMonto != null) ? cajaMonto.getMonto() : 0L);
-				}
-			}
-			cajaMontoMes.setMontoMes(montoComponentes);
-			cajaMontoMes.setMontoMesOriginal(montoComponentes);
-			switch (mes) {
-			case 1:
-				subtituloFlujoCajaVO.setCajaMontoEnero(cajaMontoMes);
-				break;
-			case 2:
-				subtituloFlujoCajaVO.setCajaMontoFebrero(cajaMontoMes);
-				break;
-			case 3:
-				subtituloFlujoCajaVO.setCajaMontoMarzo(cajaMontoMes);
-				break;
-			case 4:
-				subtituloFlujoCajaVO.setCajaMontoAbril(cajaMontoMes);
-				break;
-			case 5:
-				subtituloFlujoCajaVO.setCajaMontoMayo(cajaMontoMes);
-				break;
-			case 6:
-				subtituloFlujoCajaVO.setCajaMontoJunio(cajaMontoMes);
-				break;
-			case 7:
-				subtituloFlujoCajaVO.setCajaMontoJulio(cajaMontoMes);
-				break;
-			case 8:
-				subtituloFlujoCajaVO.setCajaMontoAgosto(cajaMontoMes);
-				break;
-			case 9:
-				subtituloFlujoCajaVO.setCajaMontoSeptiembre(cajaMontoMes);
-				break;
-			case 10:
-				subtituloFlujoCajaVO.setCajaMontoOctubre(cajaMontoMes);
-				break;
-			case 11:
-				subtituloFlujoCajaVO.setCajaMontoNoviembre(cajaMontoMes);
-				break;
-			case 12:
-				subtituloFlujoCajaVO.setCajaMontoDiciembre(cajaMontoMes);
-				break;
-			default:
-				break;
-			}
-		}
-		Long marcoPresupuestario = programasDAO.getMPEstablecimientosServicioProgramaAnoComponenteSubtitulo(servicioSalud.getId(), idProgramaAno, idComponentes, subtitulo.getId());
-		subtituloFlujoCajaVO.setMarcoPresupuestario(marcoPresupuestario);
-
-		if(!iniciarFlujoCaja){
-			Integer mesActual = Integer.parseInt(getMesCurso(true));
-			ConveniosSummaryVO convenioRecibido = new ConveniosSummaryVO(0.0, 0);
-			TransferenciaSummaryVO transferenciasAcumulada = new TransferenciaSummaryVO(0.0, 0L);
-			Integer [] estados = {EstadosConvenios.APROBADO.getId(), EstadosConvenios.PAGADO.getId()};
-			Long totalConveniosPorServicio = 0L;
-			for(Integer idComponente : idComponentes){
-				List<ConvenioServicio> conveniosServicio = conveniosDAO.getConveniosServicioByProgramaAnoComponenteSubtituloServicioEstadosConvenio(idProgramaAno, idComponente, subtitulo.getId(), subtituloFlujoCajaVO.getIdServicio(), estados);
-				if(conveniosServicio != null && conveniosServicio.size() > 0){
-					for(ConvenioServicio convenioServicio : conveniosServicio){
-						if(convenioServicio.getMes() != null && convenioServicio.getMes().getIdMes() <= mesActual){
-							if(convenioServicio.getConvenioServicioComponentes() != null && convenioServicio.getConvenioServicioComponentes().size() > 0){
-								int size = convenioServicio.getConvenioServicioComponentes().size();
-								ConvenioServicioComponente convenioServicioComponente = convenioServicio.getConvenioServicioComponentes().get((size-1));
-								totalConveniosPorServicio += convenioServicioComponente.getMontoIngresado();
-							}
-						}
-					}
-				}
-			}
-			convenioRecibido.setMonto(totalConveniosPorServicio.intValue());
-			if(marcoPresupuestario != 0){
-				Double porcentaje = ((totalConveniosPorServicio * 100.0) / marcoPresupuestario);
-				porcentaje = porcentaje / 100.0;
-				convenioRecibido.setPorcentaje(porcentaje);
-			}
-			subtituloFlujoCajaVO.setConvenioRecibido(convenioRecibido);
-
-			Long totalRemesasPorServicio = 0L;
-			List<DetalleRemesas> detalleRemesas = remesasDAO.getRemesasPagadasEstablecimientosProgramaAnoServicioSubtituloMesHasta(idProgramaAno, subtituloFlujoCajaVO.getIdServicio(), subtitulo.getId(), mesActual);
-			if(detalleRemesas != null && detalleRemesas.size() > 0){
-				for(DetalleRemesas detalleRemesa : detalleRemesas){
-					totalRemesasPorServicio += detalleRemesa.getMontoRemesa();
-				}
-			}
-			transferenciasAcumulada.setMonto(totalRemesasPorServicio);
-			if(marcoPresupuestario != 0){
-				Double porcentajeRemesas = ((totalRemesasPorServicio * 100.0) / marcoPresupuestario);
+			
+			transferenciasAcumulada.setMonto(totalRemesasPorComuna);
+			if(marcoPorComuna != 0){
+				Double porcentajeRemesas = ((totalRemesasPorComuna * 100.0) / marcoPorComuna);
 				porcentajeRemesas = porcentajeRemesas / 100.0;
 				transferenciasAcumulada.setPorcentaje(porcentajeRemesas);
 			}
@@ -2794,20 +2610,136 @@ public class EstimacionFlujoCajaService {
 		return subtituloFlujoCajaVO;
 	}
 
-	public Integer crearIntanciaConsolidador(String username) {
+
+	public SubtituloFlujoCajaVO getMonitoreoServicioByProgramaAnoServicioSubtituloMes(Integer idProgramaAno, Integer idServicio, Integer idEstablecimiento, Subtitulo subtitulo, Integer idMes, Boolean iniciarFlujoCaja) {
+		LOGGER.info("Inicio getMonitoreoServicioByProgramaAnoServicioSubtituloMes");
+		SubtituloFlujoCajaVO subtituloFlujoCajaVO = new SubtituloFlujoCajaVO();
+		ServicioSalud servicioSalud = servicioSaludDAO.getById(idServicio);
+		Establecimiento establecimiento = establecimientosDAO.getEstablecimientoById(idEstablecimiento);
+		subtituloFlujoCajaVO.setIdServicio(servicioSalud.getId());
+		subtituloFlujoCajaVO.setServicio(servicioSalud.getNombre());
+		subtituloFlujoCajaVO.setIdEstablecimiento(establecimiento.getId());
+		subtituloFlujoCajaVO.setEstablecimiento(establecimiento.getNombre());
+		subtituloFlujoCajaVO.setMarcoPresupuestario(0L);
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
+		List<Componente> componentes = componenteDAO.getComponentesByIdProgramaIdSubtitulos(programaAno.getPrograma().getId(), subtitulo);
+		Long marcoPorEstablecimiento = 0L;
+		for(int mes = 1; mes <= 12; mes++){
+			Mes mesDTO = mesDAO.getMesPorID(mes);
+			CajaMontoSummaryVO cajaMontoMes = new CajaMontoSummaryVO(null, mes, mesDTO.getNombre());
+			Long montoComponentes = 0L;
+			for(Componente componente : componentes){
+				CajaMonto cajaMonto = cajaDAO.getCajaMontoByServicioEstablecimientoProgramaComponenteSubtituloMes(idServicio, idEstablecimiento, idProgramaAno, componente.getId(), subtitulo.getId(), mes);
+				montoComponentes += ((cajaMonto != null) ? cajaMonto.getMonto() : 0L);
+			}
+			cajaMontoMes.setMontoMes(montoComponentes);
+			cajaMontoMes.setMontoMesOriginal(montoComponentes);
+			switch (mes) {
+			case 1:
+				subtituloFlujoCajaVO.setCajaMontoEnero(cajaMontoMes);
+				break;
+			case 2:
+				subtituloFlujoCajaVO.setCajaMontoFebrero(cajaMontoMes);
+				break;
+			case 3:
+				subtituloFlujoCajaVO.setCajaMontoMarzo(cajaMontoMes);
+				break;
+			case 4:
+				subtituloFlujoCajaVO.setCajaMontoAbril(cajaMontoMes);
+				break;
+			case 5:
+				subtituloFlujoCajaVO.setCajaMontoMayo(cajaMontoMes);
+				break;
+			case 6:
+				subtituloFlujoCajaVO.setCajaMontoJunio(cajaMontoMes);
+				break;
+			case 7:
+				subtituloFlujoCajaVO.setCajaMontoJulio(cajaMontoMes);
+				break;
+			case 8:
+				subtituloFlujoCajaVO.setCajaMontoAgosto(cajaMontoMes);
+				break;
+			case 9:
+				subtituloFlujoCajaVO.setCajaMontoSeptiembre(cajaMontoMes);
+				break;
+			case 10:
+				subtituloFlujoCajaVO.setCajaMontoOctubre(cajaMontoMes);
+				break;
+			case 11:
+				subtituloFlujoCajaVO.setCajaMontoNoviembre(cajaMontoMes);
+				break;
+			case 12:
+				subtituloFlujoCajaVO.setCajaMontoDiciembre(cajaMontoMes);
+				break;
+			default:
+				break;
+			}
+		}
+		for(Componente componente : componentes){
+			marcoPorEstablecimiento += programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAno, componente.getId(), subtitulo.getId());
+		}
+		subtituloFlujoCajaVO.setMarcoPresupuestario(marcoPorEstablecimiento);
+
+		if(!iniciarFlujoCaja){
+			Integer mesActual = Integer.parseInt(getMesCurso(true));
+			Calendar calendar = Calendar.getInstance();
+			Integer diaDelMes = calendar.get(Calendar.DAY_OF_MONTH);
+			ConveniosSummaryVO convenioRecibido = new ConveniosSummaryVO(0.0, 0);
+			TransferenciaSummaryVO transferenciasAcumulada = new TransferenciaSummaryVO(0.0, 0L);
+			Long totalConveniosPorEstablecimiento = 0L;
+			Long totalRemesasPorEstablecimiento = 0L;
+			for(Componente componente : componentes){
+				ConvenioServicioComponenteVO convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(idProgramaAno, componente.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.INGRESADO);
+				if(convenioServicioComponente == null){
+					convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(idProgramaAno, componente.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.APROBADO);
+				}
+				if(convenioServicioComponente == null){
+					convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(idProgramaAno, componente.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.TRAMITE);
+				}
+				if(convenioServicioComponente == null){
+					convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(idProgramaAno, componente.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.PAGADO);
+				}
+				if(convenioServicioComponente != null){
+					totalConveniosPorEstablecimiento += ((convenioServicioComponente.getMonto() != null) ? convenioServicioComponente.getMonto() : 0L);
+				}
+				totalRemesasPorEstablecimiento += remesasDAO.getRemesasPagadasEstablecimientoProgramaComponenteSubtituloDiaMes(idProgramaAno, componente.getId(), subtitulo.getId(), establecimiento.getId(), diaDelMes, mesActual);
+				System.out.println("totalRemesasPorEstablecimiento --> "+ totalRemesasPorEstablecimiento);
+			}
+			convenioRecibido.setMonto(totalConveniosPorEstablecimiento.intValue());
+			if(marcoPorEstablecimiento != 0){
+				Double porcentaje = ((totalConveniosPorEstablecimiento * 100.0) / marcoPorEstablecimiento);
+				porcentaje = porcentaje / 100.0;
+				convenioRecibido.setPorcentaje(porcentaje);
+			}
+			subtituloFlujoCajaVO.setConvenioRecibido(convenioRecibido);
+			
+			transferenciasAcumulada.setMonto(totalRemesasPorEstablecimiento);
+			if(marcoPorEstablecimiento != 0){
+				Double porcentajeRemesas = ((totalRemesasPorEstablecimiento * 100.0) / marcoPorEstablecimiento);
+				porcentajeRemesas = porcentajeRemesas / 100.0;
+				transferenciasAcumulada.setPorcentaje(porcentajeRemesas);
+			}
+			subtituloFlujoCajaVO.setTransferenciaAcumulada(transferenciasAcumulada);
+		}
+		System.out.println("getMonitoreoServicioByProgramaAnoServicioSubtituloMes-->subtituloFlujoCajaVO=" + subtituloFlujoCajaVO);
+		LOGGER.info("Fin getMonitoreoServicioByProgramaAnoServicioSubtituloMes");
+		return subtituloFlujoCajaVO;
+	}
+
+	public Integer crearIntanciaConsolidador(String username, Integer ano) {
 		System.out.println("username-->"+username);
 		Usuario usuario = this.usuarioDAO.getUserByUsername(username);
-		AnoEnCurso anoEnCurso = anoDAO.getAnoById(getAnoCurso() + 1);
+		AnoEnCurso anoEnCurso = anoDAO.getAnoById(ano);
 		Mes mes = mesDAO.getMesPorID(Integer.parseInt(getMesCurso(true)));
 		return estimacionFlujoCajaDAO.crearIntanciaConsolidador(usuario, mes, anoEnCurso);
 	}
 
-	public void elaborarOrdinarioProgramacionPlanilla(Integer idProceso) {
-		elaborarOrdinarioProgramacion(idProceso);
-		elaborarPlanillaProgramacion(idProceso);
+	public void elaborarOrdinarioProgramacionPlanilla(Integer idProceso, Integer ano) {
+		elaborarOrdinarioProgramacion(idProceso, ano);
+		elaborarPlanillaProgramacion(idProceso, ano);
 	}
 
-	private void elaborarOrdinarioProgramacion(Integer idProceso){
+	private void elaborarOrdinarioProgramacion(Integer idProceso, Integer ano){
 		Integer plantillaIdOrdinario = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLAORDINARIOPROGRAMACIONCAJA);
 		if(plantillaIdOrdinario == null){
 			throw new RuntimeException("No se puede crear Ordinario Programación Caja, la plantilla no esta cargada");
@@ -2824,7 +2756,7 @@ public class EstimacionFlujoCajaService {
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			generadorWordPlantillaOrdinario.saveContent(documentoOrdinarioVO.getContent(), XWPFDocument.class);
 			Map<String, Object> parametersOrdinario = new HashMap<String, Object>();
-			parametersOrdinario.put("{ano}", String.valueOf((getAnoCurso() + 1)));
+			parametersOrdinario.put("{ano}", ano);
 			parametersOrdinario.put("{mes}", getMesCurso(false));
 			String filenameOrdinario = tmpDirDoc + File.separator + new Date().getTime() + "_" + "OrdinarioFlujaCaja" + getMesCurso(false) + ".docx";
 			System.out.println("filenameOrdinario filename-->"+filenameOrdinario);
@@ -2833,7 +2765,7 @@ public class EstimacionFlujoCajaService {
 			filenameOrdinario = filenameOrdinario.replaceAll(" ", "");
 			GeneradorResolucionAporteEstatal generadorWordOrdinario = new GeneradorResolucionAporteEstatal(filenameOrdinario, templateOrdinario);
 			generadorWordOrdinario.replaceValues(parametersOrdinario, XWPFDocument.class);
-			BodyVO responseOrdinario = alfrescoService.uploadDocument(new File(filenameOrdinario), contentTypeOrdinario, folderEstimacionFlujoCaja.replace("{ANO}", String.valueOf((getAnoCurso() + 1))));
+			BodyVO responseOrdinario = alfrescoService.uploadDocument(new File(filenameOrdinario), contentTypeOrdinario, folderEstimacionFlujoCaja.replace("{ANO}", ano.toString()));
 			System.out.println("response responseOrdinario --->"+responseOrdinario);
 			FlujoCajaConsolidador flujoCajaConsolidador = estimacionFlujoCajaDAO.findFlujoCajaConsolidadorById(idProceso);
 			plantillaIdOrdinario = documentService.createDocumentFlujoCaja(flujoCajaConsolidador, TipoDocumentosProcesos.ORDINARIOPROGRAMACIONCAJA, responseOrdinario.getNodeRef(), responseOrdinario.getFileName(), contentTypeOrdinario);
@@ -2842,16 +2774,17 @@ public class EstimacionFlujoCajaService {
 		} catch (InvalidFormatException e) {
 			e.printStackTrace();
 		} catch (Docx4JException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	private void elaborarPlanillaProgramacion(Integer idProceso) {
+	private void elaborarPlanillaProgramacion(Integer idProceso, Integer ano) {
 		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 		String filename = tmpDir + File.separator + "planillaMonitoreoConsolidador" + getMesCurso(false) + ".xlsx";
 		String contenType = mimemap.getContentType(filename.toLowerCase());
 		GeneradorExcel generadorExcel = new GeneradorExcel(filename);
-		List<ResumenFONASAMunicipalVO> resumenFONASAMunicipal24VO = cargarFonasaMunicipal();
+		List<ResumenFONASAMunicipalVO> resumenFONASAMunicipal24VO = cargarFonasaMunicipal(ano);
 		ExcelTemplate excelSheet = null;
 		Integer posicionColumnaInicial = 0;
 		List<Long> totales = new ArrayList<Long>();
@@ -2890,7 +2823,7 @@ public class EstimacionFlujoCajaService {
 			generadorExcel.addSheet(excelSheet, getMesCurso(false));
 			posicionColumnaInicial += countCols;
 		}
-		List<ResumenFONASAServicioVO> resumenFONASAServicio21VO = cargarFonasaServicio(Subtitulo.SUBTITULO21) ;
+		List<ResumenFONASAServicioVO> resumenFONASAServicio21VO = cargarFonasaServicio(Subtitulo.SUBTITULO21, ano) ;
 		if(resumenFONASAServicio21VO != null && resumenFONASAServicio21VO.size() > 0){
 			Integer contadorElementos = 0;
 			for(ResumenFONASAServicioVO resumenFONASAServicio : resumenFONASAServicio21VO){
@@ -2916,7 +2849,7 @@ public class EstimacionFlujoCajaService {
 			generadorExcel.addSheet(excelSheet, getMesCurso(false));
 			posicionColumnaInicial += countCols;
 		}
-		List<ResumenFONASAServicioVO> resumenFONASAServicio22VO = cargarFonasaServicio(Subtitulo.SUBTITULO22);
+		List<ResumenFONASAServicioVO> resumenFONASAServicio22VO = cargarFonasaServicio(Subtitulo.SUBTITULO22, ano);
 		if(resumenFONASAServicio22VO != null && resumenFONASAServicio22VO.size() > 0){
 			Integer contadorElementos = 0;
 			for(ResumenFONASAServicioVO resumenFONASAServicio : resumenFONASAServicio22VO){
@@ -2942,7 +2875,7 @@ public class EstimacionFlujoCajaService {
 			generadorExcel.addSheet(excelSheet, getMesCurso(false));
 			posicionColumnaInicial += countCols;
 		}
-		List<ResumenFONASAServicioVO> resumenFONASAServicio29VO = cargarFonasaServicio(Subtitulo.SUBTITULO29);
+		List<ResumenFONASAServicioVO> resumenFONASAServicio29VO = cargarFonasaServicio(Subtitulo.SUBTITULO29, ano);
 		if(resumenFONASAServicio29VO != null && resumenFONASAServicio29VO.size() > 0){
 			Integer contadorElementos = 0;
 			for(ResumenFONASAServicioVO resumenFONASAServicio : resumenFONASAServicio29VO){
@@ -2968,22 +2901,22 @@ public class EstimacionFlujoCajaService {
 			generadorExcel.addSheet(excelSheet, getMesCurso(false));
 			posicionColumnaInicial += countCols;
 		}
-		
+
 		if(totales.size() > 0){
 			excelSheet = new EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel(null, null, null);
 			((EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel)excelSheet).setPosicionColumnaInicial(posicionColumnaInicial);
-			((EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel)excelSheet).setAno(getAnoCurso());
+			((EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel)excelSheet).setAno(ano);
 			((EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel)excelSheet).setMes(getMesCurso(false));
 			((EstimacionFlujoCajaMonitoreoConsolidadorSheetExcel)excelSheet).setTotales(totales);
 			generadorExcel.addSheet(excelSheet, getMesCurso(false));
 		}
 
 		try {
-			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderEstimacionFlujoCaja.replace("{ANO}", getAnoCurso().toString()));
+			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderEstimacionFlujoCaja.replace("{ANO}", ano.toString()));
 			System.out.println("response planillaProgramacionEstimacionFlujoCajaConsolidador --->"	+ response);
 			TipoDocumento tipoDocumento = new TipoDocumento(TipoDocumentosProcesos.PLANILLAPROGRAMACIONCAJA.getId());
 			FlujoCajaConsolidador flujoCajaConsolidador = estimacionFlujoCajaDAO.findFlujoCajaConsolidadorById(idProceso);
-			documentService.createDocumentMonitoreoConsolidador(flujoCajaConsolidador, tipoDocumento, response.getNodeRef(), response.getFileName(), contenType, getAnoCurso(), Integer.parseInt(getMesCurso(true)));
+			documentService.createDocumentMonitoreoConsolidador(flujoCajaConsolidador, tipoDocumento, response.getNodeRef(), response.getFileName(), contenType, ano, Integer.parseInt(getMesCurso(true)));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -2991,7 +2924,7 @@ public class EstimacionFlujoCajaService {
 
 	}
 
-	public void administrarVersionesFinalesConsolidador(Integer idProceso) {
+	public void administrarVersionesFinalesConsolidador(Integer idProceso, Integer ano) {
 		System.out.println("EstimacionFlujoCajaService administrarVersionesFinalesConsolidador eliminar todas las versiones que no sean finales");
 		List<DocumentoEstimacionFlujoCajaConsolidador> documentosOrdinario = estimacionFlujoCajaDAO.getByIdEstimacionFlujoCajaConsolidadorTipoNotFinal(idProceso, TipoDocumentosProcesos.ORDINARIOPROGRAMACIONCAJA);
 		if(documentosOrdinario != null && documentosOrdinario.size() > 0){
@@ -3005,7 +2938,7 @@ public class EstimacionFlujoCajaService {
 		}
 	}
 
-	public void enviarOrdinarioFonasaConsolidador(Integer idProceso) {
+	public void enviarOrdinarioFonasaConsolidador(Integer idProceso, Integer ano) {
 		Integer idPlantillaCorreo = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLACORREOORDINARIOPLANILLA);
 		if(idPlantillaCorreo == null){
 			throw new RuntimeException("No se puede crear plantilla correo ORDINARIO PLANILLA, la plantilla no esta cargada");
@@ -3153,7 +3086,7 @@ public class EstimacionFlujoCajaService {
 	}
 
 	public Integer createSeguimientoFlujoCajaConsolidador(Integer idProceso, TareasSeguimiento tareaSeguimiento, String subject, String body, String username, List<String> para,
-			List<String> conCopia, List<String> conCopiaOculta, List<Integer> documentos) {
+			List<String> conCopia, List<String> conCopiaOculta, List<Integer> documentos, Integer ano) {
 		String from = usuarioDAO.getEmailByUsername(username);
 		if(from == null){
 			throw new RuntimeException("Usuario no tiene un email válido");
@@ -3165,7 +3098,7 @@ public class EstimacionFlujoCajaService {
 				ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = documentService.getDocumentSummary(referenciaDocumentoId);
 				documentosTmp.add(referenciaDocumentoSummaryVO);
 				String contenType= mimemap.getContentType(referenciaDocumentoSummaryVO.getPath().toLowerCase());
-				BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummaryVO.getPath()), contenType, folderEstimacionFlujoCaja.replace("{ANO}", getAnoCurso().toString()));
+				BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummaryVO.getPath()), contenType, folderEstimacionFlujoCaja.replace("{ANO}", ano.toString()));
 				System.out.println("response upload template --->"+response);
 				documentService.updateDocumentTemplate(referenciaDocumentoId, response.getNodeRef(), response.getFileName(), contenType);
 			}
@@ -3175,7 +3108,7 @@ public class EstimacionFlujoCajaService {
 		return estimacionFlujoCajaDAO.createSeguimientoFlujoCajaConsolidador(idProceso, seguimiento);
 	}
 
-	public void moveToAlfresco(Integer idProceso, Integer referenciaDocumentoId, TipoDocumentosProcesos tipoDocumento, Boolean lastVersion) {
+	public void moveToAlfresco(Integer idProceso, Integer referenciaDocumentoId, TipoDocumentosProcesos tipoDocumento, Boolean lastVersion, Integer ano) {
 		System.out.println("Buscando referenciaDocumentoId="+referenciaDocumentoId);
 		System.out.println("Buscando idProceso="+idProceso);
 		ReferenciaDocumentoSummaryVO referenciaDocumentoSummary = documentService.getDocumentSummary(referenciaDocumentoId);
@@ -3183,7 +3116,7 @@ public class EstimacionFlujoCajaService {
 		if(referenciaDocumentoSummary != null){
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			String contenType = mimemap.getContentType(referenciaDocumentoSummary.getPath().toLowerCase());
-			BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummary.getPath()), contenType, folderEstimacionFlujoCaja.replace("{ANO}", getAnoCurso().toString()));
+			BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummary.getPath()), contenType, folderEstimacionFlujoCaja.replace("{ANO}", ano.toString()));
 			System.out.println("response upload template --->"+response);
 			documentService.updateDocumentTemplate(referenciaDocumentoSummary.getId(), response.getNodeRef(), response.getFileName(), contenType);
 			FlujoCajaConsolidador flujoCajaConsolidador = estimacionFlujoCajaDAO.findFlujoCajaConsolidadorById(idProceso);
@@ -3237,7 +3170,7 @@ public class EstimacionFlujoCajaService {
 		return reporteCorreos;
 	}
 
-	public void moveToAlfrescoFlujoCaja(Integer idProceso, Integer idServicio, Integer referenciaDocumentoId, TipoDocumentosProcesos tipoDocumento, Boolean lastVersion) {
+	public void moveToAlfrescoFlujoCaja(Integer idProceso, Integer idServicio, Integer referenciaDocumentoId, TipoDocumentosProcesos tipoDocumento, Boolean lastVersion, Integer ano) {
 		System.out.println("Buscando referenciaDocumentoId="+referenciaDocumentoId);
 		System.out.println("Buscando idProceso="+idProceso);
 		System.out.println("Buscando idServicio="+idServicio);
@@ -3246,7 +3179,7 @@ public class EstimacionFlujoCajaService {
 		if(referenciaDocumentoSummary != null){
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
 			String contenType = mimemap.getContentType(referenciaDocumentoSummary.getPath().toLowerCase());
-			BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummary.getPath()), contenType, folderEstimacionFlujoCaja.replace("{ANO}", String.valueOf((getAnoCurso() + 1 )) ));
+			BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummary.getPath()), contenType, folderEstimacionFlujoCaja.replace("{ANO}", ano.toString()));
 			System.out.println("response upload template --->"+response);
 			documentService.updateDocumentTemplate(referenciaDocumentoSummary.getId(), response.getNodeRef(), response.getFileName(), contenType);
 			FlujoCajaConsolidador flujoCajaConsolidador = estimacionFlujoCajaDAO.findFlujoCajaConsolidadorById(idProceso);
@@ -3267,7 +3200,7 @@ public class EstimacionFlujoCajaService {
 		return documentService.getLastDocumentoSummaryByEstimacionFlujoCajaTipoDocumento(idProceso, tipoDocumento);
 	}
 
-	public List<ResumenFONASAServicioVO> cargarFonasaServicio(Subtitulo subtitulo) {
+	public List<ResumenFONASAServicioVO> cargarFonasaServicio(Subtitulo subtitulo, Integer ano) {
 		List<ResumenFONASAServicioVO> resultado =  new ArrayList<ResumenFONASAServicioVO>();
 		List<ServicioSalud> listaServicios = servicioSaludDAO.getServiciosOrderId();
 		for(ServicioSalud servicioSalud : listaServicios){
@@ -3275,7 +3208,7 @@ public class EstimacionFlujoCajaService {
 			resumen.setIdServicio(servicioSalud.getId());
 			resumen.setNombreServicio(servicioSalud.getNombre());
 			Long totalServicio = 0L;
-			List<ProgramaVO> programasFonasa = programasService.getProgramasFonasa(true, getAnoCurso(), subtitulo);
+			List<ProgramaVO> programasFonasa = programasService.getProgramasFonasa(true, ano, subtitulo);
 			List<ProgramaFonasaVO> resumenProgramaFonasa = new ArrayList<ProgramaFonasaVO>();
 			for(ProgramaVO programaFonasa: programasFonasa){
 				ProgramaFonasaVO programaFonasaVO = new ProgramaFonasaVO();
@@ -3294,7 +3227,7 @@ public class EstimacionFlujoCajaService {
 			}
 
 			Long totalOtros = 0L;
-			List<ProgramaVO> otrosProgramas = programasService.getProgramasFonasa(false, getAnoCurso(), subtitulo);
+			List<ProgramaVO> otrosProgramas = programasService.getProgramasFonasa(false, ano, subtitulo);
 			for(ProgramaVO otroPrograma : otrosProgramas){
 				List<CajaMonto> cajaMontos = cajaDAO.getByProgramaAnoServicioSubtituloMes(otroPrograma.getIdProgramaAno(), servicioSalud.getId(), subtitulo, Integer.parseInt(getMesCurso(true)));
 				if(cajaMontos != null && cajaMontos.size() > 0){
@@ -3312,19 +3245,19 @@ public class EstimacionFlujoCajaService {
 		return resultado;
 	}
 
-	public List<ResumenFONASAMunicipalVO> cargarFonasaMunicipal() {
+	public List<ResumenFONASAMunicipalVO> cargarFonasaMunicipal(Integer ano) {
 		List<ResumenFONASAMunicipalVO> resultado =  new ArrayList<ResumenFONASAMunicipalVO>();
 		List<ServicioSalud> listaServicios = servicioSaludDAO.getServiciosOrderId();
-		
-		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(getAnoCurso());
+
+		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(ano);
 		System.out.println("distribucionInicialPercapita.getIdDistribucionInicialPercapita() --> "+distribucionInicialPercapita.getIdDistribucionInicialPercapita());
-		
+
 		for(ServicioSalud servicioSalud : listaServicios){
 			ResumenFONASAMunicipalVO resumen = new ResumenFONASAMunicipalVO();
 			resumen.setIdServicio(servicioSalud.getId());
 			resumen.setNombreServicio(servicioSalud.getNombre());
 			Long totalServicio = 0L;
-			List<ProgramaVO> programasFonasa = programasService.getProgramasFonasa(true, getAnoCurso(), Subtitulo.SUBTITULO24);
+			List<ProgramaVO> programasFonasa = programasService.getProgramasFonasa(true, ano, Subtitulo.SUBTITULO24);
 			List<ProgramaFonasaVO> resumenProgramaFonasa = new ArrayList<ProgramaFonasaVO>();
 			for(ProgramaVO programaFonasa: programasFonasa){
 				ProgramaFonasaVO programaFonasaVO = new ProgramaFonasaVO();
@@ -3343,7 +3276,7 @@ public class EstimacionFlujoCajaService {
 			}
 			resumen.setProgramasFonasa(resumenProgramaFonasa);
 			Long totalOtros = 0L;
-			List<ProgramaVO> otrosProgramas = programasService.getProgramasFonasa(false, getAnoCurso(), Subtitulo.SUBTITULO24);
+			List<ProgramaVO> otrosProgramas = programasService.getProgramasFonasa(false, ano, Subtitulo.SUBTITULO24);
 			for(ProgramaVO otroPrograma: otrosProgramas){
 				//Descartamos percapita id = -1
 				if(otroPrograma.getId()>0){
@@ -3356,10 +3289,10 @@ public class EstimacionFlujoCajaService {
 					}
 				}
 			}
-			
+
 			resumen.setTotalOtrosProgramas(totalOtros);
 
-			
+
 			List<AntecendentesComunaCalculado> antecendentesComunasCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaVigenteServicio(distribucionInicialPercapita.getIdDistribucionInicialPercapita(), servicioSalud.getId());
 			Long perCapitaBasal = 0L;
 			Long desempenoDificil = 0L;

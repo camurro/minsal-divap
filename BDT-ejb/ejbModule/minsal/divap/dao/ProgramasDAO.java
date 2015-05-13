@@ -130,15 +130,9 @@ public class ProgramasDAO {
 		this.em.persist(programaAno);
 	}
 
-	public Integer saveProgramaAno(ProgramaAno programaAno, boolean detach) {
-		if (detach)
-			this.em.detach(programaAno);
-
+	public ProgramaAno saveProgramaAno(ProgramaAno programaAno) {
 		this.em.persist(programaAno);
-
-
-		return programaAno.getIdProgramaAno();
-
+		return programaAno;
 	}
 
 	public AnoEnCurso saveAnoCurso(AnoEnCurso anoCurso) {
@@ -860,9 +854,7 @@ public class ProgramasDAO {
 		}
 	}
 	
-	public Long getTarifaAnteriorComunaProgramaAnoComponenteSubtitulo(Integer idComuna,
-			Integer idProgramaAno, Integer componenteSeleccionado,
-			Integer idTipoSubtitulo) {
+	public Long getTarifaAnteriorComunaProgramaAnoComponenteSubtitulo(Integer idComuna,	Integer idProgramaAno, Integer componenteSeleccionado, Integer idTipoSubtitulo) {
 		try {
 			TypedQuery<ProgramaMunicipalCoreComponente> query = this.em.createNamedQuery("ProgramaMunicipalCoreComponente.getMPComunaProgramaAnoComponenteSubtitulo", ProgramaMunicipalCoreComponente.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
@@ -870,8 +862,8 @@ public class ProgramasDAO {
 			query.setParameter("idComponente", componenteSeleccionado);
 			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
 			List<ProgramaMunicipalCoreComponente> result = query.getResultList();
-			if(result.size() > 0 && result.get(0).getMontoAnterior() != null){
-				return result.get(0).getMontoAnterior().longValue();
+			if(result.size() > 0 && result.get(0).getTarifaAnterior() != null){
+				return result.get(0).getTarifaAnterior().longValue();
 			}else{
 				return 0l;
 			}
@@ -885,12 +877,10 @@ public class ProgramasDAO {
 		return programaSubtituloComponentePeso;
 	}
 	
-
-	public ProgramaSubtituloComponentePeso getProgramaSubtituloComponentePesoByProgramaServicioComponenteSubtitulo(Integer idProgramaAno, Integer idServicio, Integer idComponente, Integer idSubtitulo) {
+	public ProgramaSubtituloComponentePeso getProgramaSubtituloComponentePesoByProgramaComponenteSubtitulo(Integer idProgramaAno,  Integer idComponente, Integer idSubtitulo) {
 		try {
-			TypedQuery<ProgramaSubtituloComponentePeso> query = this.em.createNamedQuery("ProgramaSubtituloComponentePeso.findProgramaSubtituloComponentePesoByProgramaServicioComponenteSubtitulo", ProgramaSubtituloComponentePeso.class);
+			TypedQuery<ProgramaSubtituloComponentePeso> query = this.em.createNamedQuery("ProgramaSubtituloComponentePeso.findProgramaSubtituloComponentePesoByProgramaComponenteSubtitulo", ProgramaSubtituloComponentePeso.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
-			query.setParameter("idServicio", idServicio);
 			query.setParameter("idComponente", idComponente);
 			query.setParameter("idSubtitulo", idSubtitulo);
 			List<ProgramaSubtituloComponentePeso> result = query.getResultList();
@@ -936,6 +926,24 @@ public class ProgramasDAO {
 				return programas.get(0);
 			}
 			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public Long getTarifaAnteriorEstablecimientoProgramaAnoComponenteSubtitulo(Integer idEstablecimiento, Integer idProgramaAno, Integer componenteSeleccionado, Integer idTipoSubtitulo) {
+		try {
+			TypedQuery<ProgramaServicioCoreComponente> query = this.em.createNamedQuery("ProgramaServicioCoreComponente.getMPEstablecimientoProgramaAnoComponenteSubtitulo", ProgramaServicioCoreComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idEstablecimiento", idEstablecimiento);
+			query.setParameter("idComponente", componenteSeleccionado);
+			query.setParameter("idTipoSubtitulo", idTipoSubtitulo);
+			List<ProgramaServicioCoreComponente> result = query.getResultList();
+			if(result.size() > 0 && result.get(0).getTarifaAnterior() != null){
+				return result.get(0).getTarifaAnterior().longValue();
+			}else{
+				return 0l;
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

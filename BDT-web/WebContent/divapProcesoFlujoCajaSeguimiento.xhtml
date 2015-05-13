@@ -334,7 +334,7 @@
 					<p:fileUpload id="newVersionRetiroFile"
 								fileUploadListener="#{procesoFlujoCajaSeguimientoController.handleFile}"
 								value="#{procesoFlujoCajaSeguimientoController.file}"
-								update="formUploadVersion" mode="simple"  />
+								update="formUploadVersion" mode="simple"/>
 					<h:outputText value="Versión Final: "  />
 					<h:selectBooleanCheckbox id="checkVersionFinal" value="#{procesoFlujoCajaSeguimientoController.lastVersion}" />
 					<p:commandButton value="Aceptar" ajax="false" actionListener="#{procesoFlujoCajaSeguimientoController.uploadVersionFinal}" update="seguimientoForm:panelBusqueda" oncomplete="if (args &amp;&amp; args.showDialog){dlgUploadVersion.hide()}else{ alert('the bean didnt let me open the dialog')}" />

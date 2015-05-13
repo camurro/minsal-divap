@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml">
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml" xmlns:c="http://java.sun.com/jstl/core">
 	
 	<ui:define name="zonaJavaScript">
 		<script type="text/javascript">
@@ -29,18 +29,6 @@
 
 		     	function guardar(){
 			     	var error = false;
-		     		if($("#convenios\\:dependencia_input").val() =='0'){
-		     			$('#convenios\\:dependencia').addClass('ui-state-error');
-		     			error = true;
-			     	}
-		     		if($("#convenios\\:programa_input").val() ==''){
-		     			$('#convenios\\:programa').addClass('ui-state-error');
-		     			error = true;
-			     	}
-		     		if($("#convenios\\:item_input").val() =='0'){
-		     			$('#convenios\\:item').addClass('ui-state-error');
-		     			error = true;
-			     	}
 		     		if($("#convenios\\:resolucion").val() ==''){
 		     			$('#convenios\\:resolucion').addClass('ui-state-error');
 		     			error = true;
@@ -59,6 +47,20 @@
 			     	}
 			     	document.getElementById('convenios:uploadFile').click();  
 			    }
+
+			    function redirect(){
+				    alert("ok el guardado");
+			    	document.getElementById('formVolver:buttonVolver').click();  
+				}
+
+			    function handleComplete(xhr, status, args) {  
+			        if(args.validationFailed) {  
+			            alert("Fallo al guardar");  
+			        } else {  
+			        	alert("ok el guardado");
+				    	document.getElementById('formVolver:buttonVolver').click();   
+			        }  
+			    }  
 		</script>
 	</ui:define>
 	<ui:define name="content">
@@ -67,6 +69,7 @@
 				<h:form id="convenios" enctype="multipart/form-data">
 				<h:inputHidden  id="hiddenResolucion" />
 				<h:inputHidden  id="hiddenFecha" />
+				<h:inputHidden id="hiddenError" value="#{procesoConveniosModificatoriosController.error}"/>
 		 		<p:growl id="growl" showDetail="false"/>  
 		 		
 				<h1>
@@ -74,7 +77,7 @@
 				</h1>
 				<p:panel id="Panel">
 					<h2>
-						Subir Resoluciones y Convenios por Programa de Reforzamiento Año #{procesoConveniosController.ano}<br />
+						Subir Resoluciones y Convenios por Programa de Reforzamiento Año #{procesoConveniosModificatoriosController.ano}<br />
 					</h2>
 					<p class="parrafo">La tarea corresponde a nulla eget ultricies. Morbi pulvinar elit at justo pharetra, vitae ultricies est
 						faucibus. Integer id est euismod libero rutrum ultricies. Integer aliquet, sem id commodo.nulla eget ultricies. Morbi pulvinar elit at
@@ -88,76 +91,83 @@
 						<h:panelGrid columns="2">
 							<h:outputLabel for="servicioSalud" value="Servicio de Salud: " />
 							<h:outputLabel id="servicioSalud" value="#{loginController.servicio.nombre_servicio}" />
-							<h:outputText value="Dependencia: " styleClass="inputLabel" />
-							<p:selectOneMenu id="dependencia" value="#{procesoConveniosController.dependenciaSeleccionado}" style="width:250px;" required="true">
-								<f:selectItem itemLabel="Seleccione dependencia" itemValue="0" />
-				           		<f:selectItems itemLabel="#{dependencia.nombre}" itemValue="#{dependencia.id}" var="dependencia" value="#{procesoConveniosController.dependencias}" />
-								<p:ajax listener="#{procesoConveniosController.cargarComunaEstablecimiento}" update="item resolucion subirArchivo :componenteSubtitulo:tablaComponenteSubtitulo :componenteSubtitulo:datosTabView" />
-							</p:selectOneMenu>
+							<h:outputLabel value="Dependencia: " styleClass="inputLabel" />
+							<h:outputLabel value="#{(procesoConveniosModificatoriosController.dependenciaSeleccionado == '1')? 'Municipal' : 'Servicio'}" styleClass="inputLabel" />
 						</h:panelGrid>
 						<h:panelGrid  columns="2">
-								<h:outputText value="Programa: " styleClass="inputLabel" />
-								<p:selectOneMenu id="programa" value="#{procesoConveniosController.programaSeleccionado}" >
-									<f:selectItem itemLabel="Seleccione un programa" itemValue="" />
-					           		<f:selectItems itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" value="#{procesoConveniosController.programas}" />
-									<p:ajax listener="#{procesoConveniosController.cargarComponentesPorPrograma}" update="dependencia resolucion subirArchivo item :componenteSubtitulo:tablaComponenteSubtitulo :componenteSubtitulo:datosTabView" />
-								</p:selectOneMenu>
-								<h:outputText value="Comuna/Establecimiento: "  styleClass="inputLabel"  />
-								<p:selectOneMenu id="item" value="#{procesoConveniosController.itemSeleccionado}" style="width:250px;" >
-									<f:selectItem itemLabel="Seleccione" itemValue="0" />
-							   		<f:selectItems itemLabel="#{varItem.nombre}" itemValue="#{varItem.id}" var="varItem" value="#{procesoConveniosController.item}" />
-							   		<p:ajax listener="#{procesoConveniosController.setearComunaEstablecimiento}" update="resolucion subirArchivo :componenteSubtitulo:tablaComponenteSubtitulo :componenteSubtitulo:datosTabView" />
-								</p:selectOneMenu>
+								<h:outputLabel value="Programa: " styleClass="inputLabel" />
+								<h:outputLabel value="#{procesoConveniosModificatoriosController.programa.nombre}" styleClass="inputLabel" />
+								<h:outputLabel value="Comuna/Establecimiento: "  styleClass="inputLabel"  />
+								<h:outputLabel value="#{procesoConveniosModificatoriosController.itemSeleccionadoResolucion.nombre}"  styleClass="inputLabel"  />
 						</h:panelGrid>
 					</p:panelGrid>
 					<br />
 					<p:panelGrid columns="2">
 						<h:panelGrid columns="2">
-							<h:outputLabel for="resolucion" value="Resolución N°: " />
-							<p:inputText id="resolucion" value="#{procesoConveniosController.numeroResolucion}" onkeypress="return isNumber(event);" required="true"/>
+							<h:outputLabel for="resolucion" value="Resolución Modificatoria N°: " />
+							<p:inputText id="resolucion" value="#{procesoConveniosModificatoriosController.numeroResolucion}" onkeypress="return isNumber(event);" required="true"/>
 							<h:outputText value="Archivo Resolución y Convenio:" styleClass="inputLabel" />
-							<p:fileUpload id="subirArchivo" fileUploadListener="#{procesoConveniosController.handleFileUploadConvenioFile}" value="#{procesoConveniosController.plantillaFile}" mode="simple"
+							<p:fileUpload id="subirArchivo" fileUploadListener="#{procesoConveniosModificatoriosController.handleFileUploadConvenioFile}" value="#{procesoConveniosModificatoriosController.plantillaFile}" mode="simple"
 								required="true" requiredMessage="Archivo es obligatorio"  allowTypes="*.pdf"/>
 						</h:panelGrid>
 						<h:panelGrid  columns="2">
+								<h:outputLabel value="Resolución N°: " />
+								<h:outputLabel value="#{procesoConveniosModificatoriosController.numeroResolucionInicial}" />
 								<p:outputLabel for="button" value="Fecha:" />
-        						<p:calendar id="button" value="#{procesoConveniosController.currentDate}" showOn="button" />
-        						<p:commandButton id="uploadFile" value="Cargar Archivo" ajax="false" actionListener="#{procesoConveniosController.cargarArchivo}" style="display: none" oncomplete="completeUpload();"/>
+        						<p:calendar id="button" value="#{procesoConveniosModificatoriosController.currentDate}" showOn="button" />
+        						<p:commandButton id="uploadFile" value="Cargar Archivo" ajax="false" actionListener="#{procesoConveniosModificatoriosController.cargarArchivo}" style="display: none" update="convenios:hiddenError" />
+        				</h:panelGrid>
+        				<c:if test="#{not empty procesoConveniosModificatoriosController.documentosResoluciones}">
+						<h:panelGrid  columns="7">
+							<span class="strong">Archivo: </span> Archivo con Resoluciones
+							<ul class="versionesArchivo">
+								<c:forEach var="vardoc" items="#{procesoConveniosModificatoriosController.documentosResoluciones}">
+								<li>
+								<p:outputLabel
+										value="Resolucion N° #{vardoc.nombre_servicio}"/> [ <h:graphicImage
+										value="resources/minsal/images/download-alt.png"
+										styleClass="divapIcons" /> <h:commandLink  value="Bajar"
+								onclick="downloadDocument(#{vardoc.id_servicio});return false;" /> 
+										] 
+								</li>
+								</c:forEach>
+							</ul>
 						</h:panelGrid>
+						</c:if>
 					</p:panelGrid>
 					</p:panel>
 					<br />
 				</p:panel>
 				</h:form>
 				<h:form id="componenteSubtitulo">
-				<h:inputHidden id="hiddenTotalElementos" value="#{procesoConveniosController.totalElmentos}"/>
+				<h:inputHidden id="hiddenTotalElementos" value="#{procesoConveniosModificatoriosController.totalElmentos}"/>
 				<p:growl id="messages" showDetail="false"/>
 				<p:panel header="Agregar Componente/Subtitulo"> 
 	                <p:panelGrid columns="2" id="datosTabView">
 	                	<h:outputLabel for="componente" value="Componente: " />
-	                    <p:selectOneMenu id="componente" value="#{procesoConveniosController.componenteSeleccionado}" style="width:450px;" required="true" requiredMessage="El campo componente es requerido">
+	                    <p:selectOneMenu id="componente" value="#{procesoConveniosModificatoriosController.componenteSeleccionado}" style="width:450px;" required="true" requiredMessage="El campo componente es requerido">
 							<f:selectItem itemLabel="Seleccione un componente" itemValue="" />
-					   		<f:selectItems itemLabel="#{componente.nombre}" itemValue="#{componente.id}" var="componente" value="#{procesoConveniosController.componentes}" />
-					   		<p:ajax listener="#{procesoConveniosController.cargaSubtitulo}" update="subtitulo" />
+					   		<f:selectItems itemLabel="#{componente.nombre}" itemValue="#{componente.id}" var="componente" value="#{procesoConveniosModificatoriosController.componentes}" />
+					   		<p:ajax listener="#{procesoConveniosModificatoriosController.cargaSubtitulo}" update="subtitulo" />
 						</p:selectOneMenu>
 						
 	                    <h:outputLabel for="subtitulo" value="Subtitulo: " />
-	                    <p:selectOneMenu id="subtitulo" value="#{procesoConveniosController.subtituloSeleccionado}" style="width:450px;" required="true" requiredMessage="El campo subtitulo es requerido">
+	                    <p:selectOneMenu id="subtitulo" value="#{procesoConveniosModificatoriosController.subtituloSeleccionado}" style="width:450px;" required="true" requiredMessage="El campo subtitulo es requerido">
 							<f:selectItem itemLabel="Seleccione un subtitulo" itemValue="" />
-					   		<f:selectItems itemLabel="#{subtitulo.nombre}" itemValue="#{subtitulo.id}" var="subtitulo" value="#{procesoConveniosController.subtitulos}" />
+					   		<f:selectItems itemLabel="#{subtitulo.nombre}" itemValue="#{subtitulo.id}" var="subtitulo" value="#{procesoConveniosModificatoriosController.subtitulos}" />
 						</p:selectOneMenu>
 	                    
 	                    <h:outputLabel for="monto" value="Monto: " />
-	                    <p:inputText id="monto" value="#{procesoConveniosController.monto}" onkeypress="return isNumber(event);" required="true" requiredMessage="El campo monto es requerido"/>
+	                    <p:inputText id="monto" value="#{procesoConveniosModificatoriosController.monto}" onkeypress="return isNumber(event);" required="true" requiredMessage="El campo monto es requerido"/>
 	                    <f:facet name="footer">
-	                        <p:commandButton value="Agregar Elemento"  actionListener="#{procesoConveniosController.addAction}" update="tablaComponenteSubtitulo datosTabView :componenteSubtitulo:hiddenTotalElementos" />
+	                        <p:commandButton value="Agregar Elemento"  actionListener="#{procesoConveniosModificatoriosController.addAction}" update="tablaComponenteSubtitulo datosTabView :componenteSubtitulo:hiddenTotalElementos" />
 	                    </f:facet>
 	                </p:panelGrid>
 	                <p:spacer height="30px;"/>
-	                <p:dataTable id="tablaComponenteSubtitulo" value="#{procesoConveniosController.orderList}" var="o"  widgetVar="50" style="width: 300px;" editable="true" emptyMessage="No hay registros disponibles" >
+	                <p:dataTable id="tablaComponenteSubtitulo" value="#{procesoConveniosModificatoriosController.orderList}" var="o"  widgetVar="50" style="width: 300px;" editable="true" emptyMessage="No hay registros disponibles" >
 	                    
-	                    <p:ajax event="rowEdit" listener="#{procesoConveniosController.onEdit}" update=":componenteSubtitulo:messages" />  
-	                    <p:ajax event="rowEditCancel" listener="#{procesoConveniosController.onCancel}" update=":componenteSubtitulo:messages :componenteSubtitulo:hiddenTotalElementos" /> 
+	                    <p:ajax event="rowEdit" listener="#{procesoConveniosModificatoriosController.onEdit}" update=":componenteSubtitulo:messages :componenteSubtitulo:hiddenTotalElementos" />  
+	                    <p:ajax event="rowEditCancel" listener="#{procesoConveniosModificatoriosController.onCancel}" update=":componenteSubtitulo:messages :componenteSubtitulo:hiddenTotalElementos" /> 
 	                    <p:column>
 	                        <f:facet name="header">  
 	                            <h:outputText value="Componente" />  
@@ -192,22 +202,23 @@
 	                    </p:column> 
 	                </p:dataTable>
 	                 <f:facet name="footer">
-	                 	<p:commandButton id="limpiar" value="Limpiar" onclick="limpiar();return false;"/>
-                        <p:commandButton id="guardar" value="Guardar" onclick="guardar();return false;" ajax="false"/>
+                        <p:commandButton id="guardar" value="Guardar" onclick="guardar();return false;"  ajax="false"/>
                     </f:facet>
 	            </p:panel>
-				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"	icon="ui-icon-seek-first" />
+				
 			</h:form>
 			</p:panel>
+		<h:form id="formVolver">
+			<p:commandButton value="Volver" id="buttonVolver" styleClass="x-btn-text" action="divapServicioConveniosModificatorios?faces-redirect=true indexMenu=0" ajax="false"	icon="ui-icon-seek-first" />
+		</h:form>
 		
 		<h:form id="formLimpiarGuardar">
-			<p:commandButton id="linkLimpiar" action="#{procesoConveniosController.limpiar}" style="display: none" update=":componenteSubtitulo :convenios :componenteSubtitulo:hiddenTotalElementos" />
-			<p:commandButton id="linkGuardar" action="#{procesoConveniosController.guardar}" ajax="false" style="display: none" update=":componenteSubtitulo:messages"/>
+			<p:commandButton id="linkGuardar" action="#{procesoConveniosModificatoriosController.guardar}" ajax="false" style="display: none" update=":componenteSubtitulo:messages"/>
 		</h:form>
 		
 		<h:form id="formDownload">
-			<h:inputHidden value="#{procesoConveniosController.docIdDownload}" id="hiddenId" />
-			<h:commandButton id="linkDownload" action="#{procesoConveniosController.downloadTemplate}" style="display: none"/>
+			<h:inputHidden value="#{procesoConveniosModificatoriosController.docIdDownload}" id="hiddenId" />
+			<h:commandButton id="linkDownload" action="#{procesoConveniosModificatoriosController.downloadTemplate}" style="display: none"/>
 		</h:form>
 		
 		 <script type="text/javascript">

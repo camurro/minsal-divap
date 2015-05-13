@@ -51,7 +51,9 @@ import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.model.mappers.CargaConvenioComunaComponenteMapper;
 import minsal.divap.model.mappers.CargaConvenioServicioComponenteMapper;
 import minsal.divap.model.mappers.ConvenioComunaComponenteMapper;
+import minsal.divap.model.mappers.ConvenioComunaComponenteSubtituloMapper;
 import minsal.divap.model.mappers.ConvenioServicioComponenteMapper;
+import minsal.divap.model.mappers.ConvenioServicioComponenteSubtituloMapper;
 import minsal.divap.model.mappers.ConvenioServicioMapper;
 import minsal.divap.model.mappers.ProgramaMapper;
 import minsal.divap.vo.AdjuntosVO;
@@ -982,7 +984,43 @@ public class ConveniosService {
 		}
 		return conveniosServicioComponenteVO;
 	}
+	
+	public ConvenioServicioComponenteVO getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idEstablecimiento, EstadosConvenios estadoConvenio){
+		ConvenioServicioComponenteVO convenioServicioComponenteVO = null;
+		System.out.println("idProgramaAno="+ idProgramaAno +" idComponente="+ idComponente +" idSubtitulo="+ idSubtitulo +" idEstablecimiento=" + idEstablecimiento + "  estadoConvenio.getId()=" + estadoConvenio.getId());
+		List<ConvenioServicioComponente> results = conveniosDAO.getConveniosPagadosByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(idProgramaAno, idComponente, idSubtitulo, idEstablecimiento, estadoConvenio.getId());
+		if(results != null && results.size() > 0){
+			int size = results.size();
+			ConvenioServicioComponente convenioServicioComponente = results.get((size -1));
+			convenioServicioComponenteVO = new ConvenioServicioComponenteMapper().getBasic(convenioServicioComponente);
+			System.out.println("idEstablecimiento="+ idEstablecimiento +" idProgramaAno="+ idProgramaAno +" idComponente="+ idComponente +" idSubtitulo=" + idSubtitulo);
+			Long marcoPresupuestario = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(idEstablecimiento, idProgramaAno, idComponente, idSubtitulo);
+			System.out.println("marcoPresupuestario="+marcoPresupuestario);
+			convenioServicioComponenteVO.setMarcoPresupuestario(marcoPresupuestario);
+			Long montoPendiente = marcoPresupuestario - ((convenioServicioComponenteVO.getMonto() == null) ? 0 : convenioServicioComponenteVO.getMonto());
+			convenioServicioComponenteVO.setMontoPendiente(montoPendiente.intValue());
+		}
+		return convenioServicioComponenteVO;
+	}
 
+	public ConvenioComunaComponenteVO getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(Integer idProgramaAno, Integer idComponente, Integer idSubtitulo, Integer idComuna, EstadosConvenios estadoConvenio){
+		ConvenioComunaComponenteVO convenioComunaComponenteVO = null;
+		System.out.println("idProgramaAno="+ idProgramaAno +" idComponente="+ idComponente +" idSubtitulo="+ idSubtitulo +" idComuna=" + idComuna + "  estadoConvenio.getId()=" + estadoConvenio.getId());
+		List<ConvenioComunaComponente> results = conveniosDAO.getConveniosPagadosByProgramaAnoComponenteSubtituloComunaEstadoConvenio(idProgramaAno, idComponente, idSubtitulo, idComuna, estadoConvenio.getId());
+		if(results != null && results.size() > 0){
+			int size = results.size();
+			ConvenioComunaComponente convenioComunaComponente = results.get((size -1));
+			convenioComunaComponenteVO = new ConvenioComunaComponenteMapper().getBasic(convenioComunaComponente);
+			System.out.println("idComuna="+ idComuna +" idProgramaAno="+ idProgramaAno +" idComponente="+ idComponente +" idSubtitulo=" + idSubtitulo);
+			Long marcoPresupuestario = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(idComuna, idProgramaAno, idComponente, idSubtitulo);
+			System.out.println("marcoPresupuestario="+marcoPresupuestario);
+			convenioComunaComponenteVO.setMarcoPresupuestario(marcoPresupuestario);
+			Long montoPendiente = marcoPresupuestario - ((convenioComunaComponenteVO.getMonto() == null) ? 0 : convenioComunaComponenteVO.getMonto());
+			convenioComunaComponenteVO.setMontoPendiente(montoPendiente.intValue());
+		}
+		return convenioComunaComponenteVO;
+	}
+	
 	public boolean getConveniosPendientes(Integer idProgramaAno) {
 		int count = conveniosDAO.getCountConveniosServicioPendientes(idProgramaAno, EstadosConvenios.INGRESADO.getId());
 		if(count != 0){
@@ -2009,6 +2047,135 @@ public class ConveniosService {
 				conveniosDAO.save(convenioServicioComponente);
 			}
 		}
+	}
+	
+	public void guardarConvenioModificatorio(CargaConvenioComponenteSubtituloVO cargaConvenioComponenteSubtituloVO) {
+		long currentDateMilliseconds = Calendar.getInstance().getTimeInMillis();
+		if(cargaConvenioComponenteSubtituloVO.getDependenciaMuncipal()){
+			List<ConvenioComuna> conveniosComunaIngresada = conveniosDAO.getConvenioComunaByProgramaAnoComunaEstado(cargaConvenioComponenteSubtituloVO.getPrograma().getIdProgramaAno() , cargaConvenioComponenteSubtituloVO.getItem(), EstadosConvenios.INGRESADO);
+			List<ConvenioComuna> conveniosComunaAprobado = conveniosDAO.getConvenioComunaByProgramaAnoComunaEstado(cargaConvenioComponenteSubtituloVO.getPrograma().getIdProgramaAno(), cargaConvenioComponenteSubtituloVO.getItem(), EstadosConvenios.APROBADO);
+			List<ConvenioComuna> conveniosComunaEnTramite = conveniosDAO.getConvenioComunaByProgramaAnoComunaEstado(cargaConvenioComponenteSubtituloVO.getPrograma().getIdProgramaAno(), cargaConvenioComponenteSubtituloVO.getItem(), EstadosConvenios.TRAMITE);
+			List<ConvenioComuna> conveniosComunaPagada = conveniosDAO.getConvenioComunaByProgramaAnoComunaEstado(cargaConvenioComponenteSubtituloVO.getPrograma().getIdProgramaAno(), cargaConvenioComponenteSubtituloVO.getItem(), EstadosConvenios.PAGADO);
+			
+			if(conveniosComunaPagada != null && conveniosComunaPagada.size() > 0){
+				int size = conveniosComunaPagada.size();
+				ConvenioComuna convenioComuna = conveniosComunaPagada.get(size -1);
+			}
+			
+			if(conveniosComunaEnTramite != null && conveniosComunaEnTramite.size() > 0){
+				int size = conveniosComunaEnTramite.size();
+				ConvenioComuna convenioComuna = conveniosComunaEnTramite.get(size -1);
+				convenioComuna.setEstadoConvenio(new EstadoConvenio(EstadosConvenios.REEMPLAZADO.getId()));
+			}
+			
+			if(conveniosComunaAprobado != null && conveniosComunaAprobado.size() > 0){
+				int size = conveniosComunaAprobado.size();
+				ConvenioComuna convenioComuna = conveniosComunaAprobado.get(size -1);
+				convenioComuna.setEstadoConvenio(new EstadoConvenio(EstadosConvenios.REEMPLAZADO.getId()));
+			}
+			
+			if(conveniosComunaIngresada != null && conveniosComunaIngresada.size() > 0){
+				int size = conveniosComunaIngresada.size();
+				ConvenioComuna convenioComuna = conveniosComunaIngresada.get(size -1);
+				convenioComuna.setEstadoConvenio(new EstadoConvenio(EstadosConvenios.REEMPLAZADO.getId()));
+			}
+			ConvenioComuna convenioComuna = new ConvenioComuna();
+			convenioComuna.setFechaResolucion(cargaConvenioComponenteSubtituloVO.getFechaResolucion());
+			ProgramaAno programaAno = programasDAO.getProgramaAnoByID(cargaConvenioComponenteSubtituloVO.getPrograma().getIdProgramaAno());
+			Comuna comuna = comunaDAO.getComunaById(cargaConvenioComponenteSubtituloVO.getItem());
+			convenioComuna.setIdPrograma(programaAno);
+			convenioComuna.setEstadoConvenio(new EstadoConvenio(EstadosConvenios.INGRESADO.getId()));
+			convenioComuna.setFecha(new Date(currentDateMilliseconds));
+			ReferenciaDocumento documento = documentDAO.findById(cargaConvenioComponenteSubtituloVO.getDocumento());
+			convenioComuna.setDocumentoConvenio(documento);
+			convenioComuna.setIdComuna(comuna);
+			convenioComuna.setNumeroResolucion(cargaConvenioComponenteSubtituloVO.getNumeroResolucion());
+			ConvenioComuna convenioComunaInicial = conveniosDAO.getConvenioComunaById(cargaConvenioComponenteSubtituloVO.getConvenioInicial());
+			convenioComuna.setNumeroResolucionInicial(convenioComunaInicial);
+			conveniosDAO.save(convenioComuna);
+			for(ConvenioComponenteSubtituloVO convenioComponenteSubtituloVO : cargaConvenioComponenteSubtituloVO.getConvenioComponentesSubtitulosVO()){
+				ConvenioComunaComponente convenioComunaComponente = new ConvenioComunaComponente();
+				convenioComunaComponente.setConvenioComuna(convenioComuna);
+				Componente componente = componenteDAO.getComponenteByID(convenioComponenteSubtituloVO.getComponente().getId());
+				convenioComunaComponente.setComponente(componente);
+				TipoSubtitulo subtitulo = tipoSubtituloDAO.getTipoSubtituloById(convenioComponenteSubtituloVO.getSubtitulo().getId());
+				convenioComunaComponente.setSubtitulo(subtitulo);
+				convenioComunaComponente.setMonto(convenioComponenteSubtituloVO.getMonto());
+				convenioComunaComponente.setMontoIngresado(convenioComponenteSubtituloVO.getMonto());
+				convenioComunaComponente.setFecha(new Date(currentDateMilliseconds));
+				conveniosDAO.save(convenioComunaComponente);
+			}
+		}else{
+			List<ConvenioServicio> conveniosServicioIngresada = conveniosDAO.getConvenioServicioByProgramaAnoEstablecimientoEstado(cargaConvenioComponenteSubtituloVO.getPrograma().getIdProgramaAno() , cargaConvenioComponenteSubtituloVO.getItem(), EstadosConvenios.INGRESADO);
+			List<ConvenioServicio> conveniosServicioAprobado = conveniosDAO.getConvenioServicioByProgramaAnoEstablecimientoEstado(cargaConvenioComponenteSubtituloVO.getPrograma().getIdProgramaAno(), cargaConvenioComponenteSubtituloVO.getItem(), EstadosConvenios.APROBADO);
+			List<ConvenioServicio> conveniosServicioEnTramite = conveniosDAO.getConvenioServicioByProgramaAnoEstablecimientoEstado(cargaConvenioComponenteSubtituloVO.getPrograma().getIdProgramaAno(), cargaConvenioComponenteSubtituloVO.getItem(), EstadosConvenios.TRAMITE);
+			List<ConvenioServicio> conveniosServicioPagada = conveniosDAO.getConvenioServicioByProgramaAnoEstablecimientoEstado(cargaConvenioComponenteSubtituloVO.getPrograma().getIdProgramaAno(), cargaConvenioComponenteSubtituloVO.getItem(), EstadosConvenios.PAGADO);
+			
+			if(conveniosServicioPagada != null && conveniosServicioPagada.size() > 0){
+				int size = conveniosServicioPagada.size();
+				ConvenioServicio convenioServicio = conveniosServicioPagada.get(size -1);
+			}
+			
+			if(conveniosServicioEnTramite != null && conveniosServicioEnTramite.size() > 0){
+				int size = conveniosServicioEnTramite.size();
+				ConvenioServicio convenioServicio = conveniosServicioEnTramite.get(size -1);
+				convenioServicio.setEstadoConvenio(new EstadoConvenio(EstadosConvenios.REEMPLAZADO.getId()));
+			}
+			
+			if(conveniosServicioAprobado != null && conveniosServicioAprobado.size() > 0){
+				int size = conveniosServicioAprobado.size();
+				ConvenioServicio convenioServicio = conveniosServicioAprobado.get(size -1);
+				convenioServicio.setEstadoConvenio(new EstadoConvenio(EstadosConvenios.REEMPLAZADO.getId()));
+			}
+			
+			if(conveniosServicioIngresada != null && conveniosServicioIngresada.size() > 0){
+				int size = conveniosServicioIngresada.size();
+				ConvenioServicio convenioServicio = conveniosServicioIngresada.get(size -1);
+				convenioServicio.setEstadoConvenio(new EstadoConvenio(EstadosConvenios.REEMPLAZADO.getId()));
+			}
+			
+			ConvenioServicio convenioServicio = new ConvenioServicio();
+			convenioServicio.setFechaResolucion(cargaConvenioComponenteSubtituloVO.getFechaResolucion());
+			ProgramaAno programaAno = programasDAO.getProgramaAnoByID(cargaConvenioComponenteSubtituloVO.getPrograma().getIdProgramaAno());
+			Establecimiento establecimiento = establecimientosDAO.getEstablecimientoById(cargaConvenioComponenteSubtituloVO.getItem());
+			convenioServicio.setIdPrograma(programaAno);
+			convenioServicio.setEstadoConvenio(new EstadoConvenio(EstadosConvenios.INGRESADO.getId()));
+			convenioServicio.setFecha(new Date(currentDateMilliseconds));
+			ReferenciaDocumento documento = documentDAO.findById(cargaConvenioComponenteSubtituloVO.getDocumento());
+			convenioServicio.setDocumentoConvenio(documento);
+			convenioServicio.setIdEstablecimiento(establecimiento);
+			convenioServicio.setNumeroResolucion(cargaConvenioComponenteSubtituloVO.getNumeroResolucion());
+			ConvenioServicio convenioServicioInicial = conveniosDAO.getConvenioServicioById(cargaConvenioComponenteSubtituloVO.getConvenioInicial());
+			convenioServicio.setNumeroResolucionInicial(convenioServicioInicial);
+			conveniosDAO.save(convenioServicio);
+			for(ConvenioComponenteSubtituloVO convenioComponenteSubtituloVO : cargaConvenioComponenteSubtituloVO.getConvenioComponentesSubtitulosVO()){
+				ConvenioServicioComponente convenioServicioComponente = new ConvenioServicioComponente();
+				convenioServicioComponente.setConvenioServicio(convenioServicio);
+				Componente componente = componenteDAO.getComponenteByID(convenioComponenteSubtituloVO.getComponente().getId());
+				convenioServicioComponente.setComponente(componente);
+				TipoSubtitulo subtitulo = tipoSubtituloDAO.getTipoSubtituloById(convenioComponenteSubtituloVO.getSubtitulo().getId());
+				convenioServicioComponente.setSubtitulo(subtitulo);
+				convenioServicioComponente.setMonto(convenioComponenteSubtituloVO.getMonto());
+				convenioServicioComponente.setMontoIngresado(convenioComponenteSubtituloVO.getMonto());
+				convenioServicioComponente.setFecha(new Date(currentDateMilliseconds));
+				conveniosDAO.save(convenioServicioComponente);
+			}
+		}
+	}
+	
+	public CargaConvenioComponenteSubtituloVO cargaConvenioComponenteSubtitulo(Integer numeroResolucion){
+		ConvenioComuna convenioComuna = conveniosDAO.getConvenioComunaByNumeroResolucion(numeroResolucion);
+		CargaConvenioComponenteSubtituloVO cargaConvenioComponenteSubtituloVO = null;
+		if(convenioComuna != null){
+			cargaConvenioComponenteSubtituloVO = new ConvenioComunaComponenteSubtituloMapper().getBasic(convenioComuna);
+		}
+		if(cargaConvenioComponenteSubtituloVO == null){
+			ConvenioServicio convenioServicio = conveniosDAO.getConvenioServicioByNumeroResolucion(numeroResolucion);
+			if(convenioServicio != null){
+				cargaConvenioComponenteSubtituloVO = new ConvenioServicioComponenteSubtituloMapper().getBasic(convenioServicio);
+			}
+		}
+		return cargaConvenioComponenteSubtituloVO;
 	}
 
 }

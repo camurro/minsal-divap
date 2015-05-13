@@ -40,6 +40,7 @@ import minsal.divap.excel.impl.RebajaSheetExcel;
 import minsal.divap.excel.interfaces.ExcelTemplate;
 import minsal.divap.exception.ExcelFormatException;
 import minsal.divap.model.mappers.CumplimientoRebajasMapper;
+import minsal.divap.model.mappers.RebajaCorteMapper;
 import minsal.divap.model.mappers.TipoCumplimientoMapper;
 import minsal.divap.util.StringUtil;
 import minsal.divap.vo.BodyVO;
@@ -49,6 +50,7 @@ import minsal.divap.vo.CumplimientoVO;
 import minsal.divap.vo.DocumentSummaryVO;
 import minsal.divap.vo.DocumentoVO;
 import minsal.divap.vo.PlanillaRebajaCalculadaVO;
+import minsal.divap.vo.RebajaCorteVO;
 import minsal.divap.vo.RebajaVO;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.SeguimientoVO;
@@ -709,18 +711,6 @@ public class RebajaService {
 		return plantillaIdResolucionRebaja;
 	}
 
-	private String replaceMatch(String word){
-		if(word == null){
-			return "";
-		}
-		String[] arr = word.split(" ");    
-
-		for ( String ss : arr) {
-
-			System.out.println(ss);
-		}
-		return null;
-	}
 
 	public void administrarVersionesFinalesAlfresco(Integer idProceso, Integer ano) {
 		System.out.println("Inicio RebajaService.administrarVersionesFinalesAlfresco = "+idProceso);
@@ -1004,6 +994,20 @@ public class RebajaService {
 	public String getMesCorte(Integer idProcesoRebaja) {
 		Rebaja rebaja = rebajaDAO.findRebajaById(idProcesoRebaja);
 		return ((rebaja != null && rebaja.getRebajaCorte() != null && rebaja.getRebajaCorte().getMesRebaja() != null)? rebaja.getRebajaCorte().getMesRebaja().getNombre() : "");
+	}
+	
+	public List<RebajaCorteVO> getCortes(Integer mesActual){
+		List<RebajaCorteVO> rebajaCortesVO = new ArrayList<RebajaCorteVO>();
+		if(mesActual == null){
+			mesActual = Integer.parseInt(getMesCurso(true));
+		}
+		List<RebajaCorte> rebajaCortes = rebajaDAO.getCortes(mesActual);
+		if(rebajaCortes != null && rebajaCortes.size() > 0){
+			for(RebajaCorte rebajaCorte : rebajaCortes){
+				rebajaCortesVO.add(new RebajaCorteMapper().getBasic(rebajaCorte));
+			}
+		}
+		return rebajaCortesVO;
 	}
 
 	public int countVersionFinalRebajaResoluciones(Integer idProcesoRebaja, Integer idServicio) {

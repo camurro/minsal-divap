@@ -54,8 +54,7 @@
 			    }
 			  }
 			  return true;
-			}
-
+		}
 		
 		function checkChanges(){
 			$("#conDialog\\:currentTab").val($("#formTabView\\:currentTab").val());
@@ -104,7 +103,6 @@
 
 					<div id="tablaSubtitulos" style="display: block;">
 						<!-- ARCHIVOS DE TAREA -->
-						<h3>Archivos disponibles para la Tarea:</h3>
 						<ui:param name="mes" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.mesActual}" />
 						<ui:param name="ano" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.anoActual}" />
 						<ui:param name="numMesActual" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.numMesActual}" />
@@ -112,41 +110,11 @@
 						<div class="destacaArchivos ui-corner-all">
 							<ul class="versionesArchivo">
 								<li>
-									<!-- 	<h:graphicImage
-										value="resources/minsal/images/download-alt.png"
-										styleClass="divapIcons" /> <p:commandLink
-										value="Planilla completa actualizada de Programacion de Caja.xls" /> -->
-									Planilla completa actualizada de Programacion de Caja.xls [ <h:graphicImage
-										value="resources/minsal/images/download-alt.png"
-										styleClass="divapIcons" /> 
-										<h:commandLink
-										action="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.downloadTemplate}"
-										value="Bajar">
-										<f:setPropertyActionListener
-											target="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.docIdDownload}"
-											value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.docProgramacion}" />
-									</h:commandLink> ]
-
-
-
+									
 								</li>
 								<c:if test="#{not procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.iniciarFlujoCaja}">
 								<li>
-									<!-- <h:graphicImage
-										value="resources/minsal/images/download-alt.png"
-										styleClass="divapIcons" /> <p:commandLink
-										value="Planilla Programacion de Caja - propuesta mes Julio.xls" /> -->
-
-									Planilla Programacion de Caja - propuesta mes Julio.xls [ <h:graphicImage
-										value="resources/minsal/images/download-alt.png"
-										styleClass="divapIcons" /> <h:commandLink
-										action="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.downloadTemplate}"
-										value="Bajar">
-										<f:setPropertyActionListener
-											target="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.docIdDownload}"
-											value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.docPropuesta}" />
-									</h:commandLink> ]
-
+									 
 								</li>
 								</c:if>
 							</ul>
@@ -155,7 +123,7 @@
 						<br />
 						
 						<h:form id="formTabView">
-						<p:growl id="growl" showDetail="true" />  
+						<p:growl id="growl" showDetail="false" />  
 						<h:inputHidden  id="posicionCajaMes" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.posicionCajaMesModificado}" />
 						<h:inputHidden  id="mesModificado" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.mesModificado}" />
 						<h:inputHidden  id="valorElemento" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorElemento}" />
@@ -170,24 +138,25 @@
 										<p:tab title="Subtítulo 21" id="tabform">
 										<h4>Filtros para el Monitoreo:</h4>
 										
-										<h:panelGrid>
+										<p:panelGrid columns="7">
 												<h:outputText value="Programa: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbProgramaSub21" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma21}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
+												<p:selectOneMenu id="cbProgramaSub21" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma21}">
+												    <f:selectItem itemLabel="Seleccione Programa" itemValue="" />
 			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programasSubtitulo21}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           								<p:ajax event="change" listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programa21SelectionChanged}" update="cbServicioSub21 tabladatos" />
 			           	 						</p:selectOneMenu>
-										</h:panelGrid>	
-										
-										<h:panelGrid>
 												<h:outputText value="Servicio: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbServicioSub21" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio21}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
+												<p:selectOneMenu id="cbServicioSub21" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio21}">
+												    <f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
 			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios21}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
-			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponenteProgramaServicio(1)}" update="tabladatos :formTabView:growl" />
+			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarEstablecimientoPorServicio(1)}" update="cbEstablecimientoSub21" />
 			           	 						</p:selectOneMenu>
-										</h:panelGrid>		
-										
+			           	 						<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+												<p:selectOneMenu id="cbEstablecimientoSub21" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboServicioEstablecimiento21}">
+												    <f:selectItem itemLabel="Seleccione Establecimiento" itemValue="" />
+			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.establecimientos21}" itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}" var="establecimiento" />
+			           	 						</p:selectOneMenu>
+			           	 						<p:commandButton value="Buscar" styleClass="x-btn-text icon-guardar" actionListener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programa21SelectionChanged}" update="tabladatos :formTabView:growl" />
+										</p:panelGrid>		
 										
 										
 										<c:if test="#{not procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.iniciarFlujoCaja}">
@@ -207,6 +176,7 @@
 													<p:columnGroup type="header">
 														<p:row>
 															<p:column rowspan="3" headerText="Servicio" />
+															<p:column rowspan="3" headerText="Establecimiento" />
 															<p:column
 																colspan="#{fn:length(procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.columns) + 3}"
 																styleClass="textoPequenio"
@@ -234,6 +204,9 @@
 
 													<p:column>
 														<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+													</p:column>
+													<p:column>
+														<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
 													</p:column>
 													<p:column>
 														<h:outputText value="#{_data.marcoPresupuestario}" styleClass="textoPequenio textoAjustado">
@@ -383,6 +356,7 @@
 													<p:columnGroup type="footer">
 														<p:row>
 															<p:column />
+															<p:column />
 															<p:column>
 																<f:facet name="footer">
 																	<h:outputText value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.totalServiciosMarcosPresupuestariosSubtitulo21}" styleClass="textoAjustado textoPequenio centrado">
@@ -433,6 +407,7 @@
 													<p:columnGroup type="header">
 														<p:row>
 															<p:column rowspan="3" headerText="Servicio" />
+															<p:column rowspan="3" headerText="Establecimiento" />
 															<p:column
 																colspan="#{fn:length(procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.columns) + 1}"
 																styleClass="textoPequenio"
@@ -534,6 +509,7 @@
 													<p:columnGroup type="footer">
 														<p:row>
 															<p:column />
+															<p:column />
 															<p:column>
 																<f:facet name="footer">
 																	<h:outputText value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.totalServiciosMarcosPresupuestariosSubtitulo21}" styleClass="textoAjustado textoPequenio centrado">
@@ -574,23 +550,26 @@
 									<p:tab title="Subtítulo 22" id="tabform22">
 									<h4>Filtros para el Monitoreo:</h4>
 										
-										<h:panelGrid>
+										<p:panelGrid columns="7">
 												<h:outputText value="Programa: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbProgramaSub22" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma22}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
+												<p:selectOneMenu id="cbProgramaSub22" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma22}">
+												    <f:selectItem itemLabel="Seleccione Programa" itemValue="" />
 			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programasSubtitulo22}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           								<p:ajax event="change" listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programa22SelectionChanged}" update="cbServicioSub22 tablaSubtitulo22" />
 			           	 						</p:selectOneMenu>
-										</h:panelGrid>	
 										
-										<h:panelGrid>
 												<h:outputText value="Servicio: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbServicioSub22" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio22}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
+												<p:selectOneMenu id="cbServicioSub22" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio22}">
+												    <f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
 			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios22}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
-			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponenteProgramaServicio(2)}" update="tablaSubtitulo22 :formTabView:growl" />
+			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarEstablecimientoPorServicio(2)}" update="cbEstablecimientoSub22" />
 			           	 						</p:selectOneMenu>
-										</h:panelGrid>	
+			           	 						<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+												<p:selectOneMenu id="cbEstablecimientoSub22" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboServicioEstablecimiento22}">
+												    <f:selectItem itemLabel="Seleccione Establecimiento" itemValue="" />
+													<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.establecimientos22}" itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}" var="establecimiento" />
+												</p:selectOneMenu>
+												<p:commandButton value="Buscar" styleClass="x-btn-text icon-guardar" actionListener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programa22SelectionChanged}" update="tablaSubtitulo22 :formTabView:growl" />
+										</p:panelGrid>	
 
 										<c:if test="#{not procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.iniciarFlujoCaja}">
 											<h4>Monitoreo Mes de #{mes}</h4>
@@ -608,6 +587,7 @@
 													<p:columnGroup type="header">
 														<p:row>
 															<p:column rowspan="3" headerText="Servicio" />
+															<p:column rowspan="3" headerText="Establecimiento" />
 															<p:column
 																colspan="#{fn:length(procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.columns) + 3}"
 																styleClass="textoPequenio"
@@ -635,6 +615,9 @@
 
 													<p:column>
 														<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+													</p:column>
+													<p:column>
+														<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
 													</p:column>
 													<p:column>
 														<h:outputText value="#{_data.marcoPresupuestario}"
@@ -792,6 +775,7 @@
 													<p:columnGroup type="footer">
 														<p:row>
 															<p:column />
+															<p:column />
 															<p:column>
 																<f:facet name="footer">
 																	<h:outputText
@@ -850,6 +834,7 @@
 													<p:columnGroup type="header">
 														<p:row>
 															<p:column rowspan="3" headerText="Servicio" />
+															<p:column rowspan="3" headerText="Establecimiento" />
 															<p:column
 																colspan="#{fn:length(procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.columns) + 1}"
 																styleClass="textoPequenio"
@@ -963,6 +948,7 @@
 													<p:columnGroup type="footer">
 														<p:row>
 															<p:column />
+															<p:column />
 															<p:column>
 																<f:facet name="footer">
 																	<h:outputText
@@ -1012,23 +998,26 @@
 									<p:tab title="Subtítulo 24" id="tabform24">
 									<h4>Filtros para el Monitoreo:</h4>
 										
-										<h:panelGrid>
+										<p:panelGrid columns="7">
 												<h:outputText value="Programa: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbProgramaSub24" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma24}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
+												<p:selectOneMenu id="cbProgramaSub24" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma24}">
+												    <f:selectItem itemLabel="Seleccione Programa" itemValue="" />
 			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programasSubtitulo24}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           								<p:ajax event="change" listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programa24SelectionChanged}" update="cbServicioSub24 tablaSubtitulo24" />
 			           	 						</p:selectOneMenu>
-										</h:panelGrid>	
 										
-										<h:panelGrid>
 												<h:outputText value="Servicio: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbServicioSub24" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio24}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
+												<p:selectOneMenu id="cbServicioSub24" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio24}">
+												    <f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
 			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios24}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
-			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponenteProgramaServicio(3)}" update="tablaSubtitulo24 :formTabView:growl" />
+			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarEstablecimientoPorServicio(3)}" update="cbComunaSub24" />
 			           	 						</p:selectOneMenu>
-										</h:panelGrid>
+			           	 						<h:outputText value="Comuna: " styleClass="inputLabel" />
+												<p:selectOneMenu id="cbComunaSub24" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboServicioComuna24}">
+												    <f:selectItem itemLabel="Seleccione Comuna" itemValue="" />
+													<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.comunas24}" itemLabel="#{comuna.nombre}" itemValue="#{comuna.id}" var="comuna" />
+												</p:selectOneMenu>
+												<p:commandButton value="Buscar" styleClass="x-btn-text icon-guardar" actionListener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programa24SelectionChanged}" update="tablaSubtitulo24 :formTabView:growl" />
+										</p:panelGrid>
 										
 										<c:if test="#{not procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.iniciarFlujoCaja}">
 											<h4>Monitoreo Mes de #{mes}</h4>
@@ -1050,6 +1039,7 @@
 													<p:columnGroup type="header">
 														<p:row>
 															<p:column rowspan="3" headerText="Servicio" />
+															<p:column rowspan="3" headerText="Comuna" />
 															<p:column
 																colspan="#{fn:length(procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.columns) + 3}"
 																styleClass="textoPequenio"
@@ -1077,6 +1067,9 @@
 
 													<p:column>
 														<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+													</p:column>
+													<p:column>
+														<span class="textoAjustado textoPequenio centrado">#{_data.comuna}</span>
 													</p:column>
 													<p:column>
 														<h:outputText value="#{_data.marcoPresupuestario}"
@@ -1233,6 +1226,7 @@
 													<p:columnGroup type="footer">
 														<p:row>
 															<p:column />
+															<p:column />
 															<p:column>
 																<f:facet name="footer">
 																	<h:outputText
@@ -1292,6 +1286,7 @@
 													<p:columnGroup type="header">
 														<p:row>
 															<p:column rowspan="3" headerText="Servicio" />
+															<p:column rowspan="3" headerText="Comuna" />
 															<p:column
 																colspan="#{fn:length(procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.columns) + 1}"
 																styleClass="textoPequenio"
@@ -1320,6 +1315,9 @@
 
 													<p:column>
 														<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+													</p:column>
+													<p:column>
+														<span class="textoAjustado textoPequenio centrado">#{_data.comuna}</span>
 													</p:column>
 													<p:column>
 														<h:outputText value="#{_data.marcoPresupuestario}"
@@ -1401,6 +1399,7 @@
 													<p:columnGroup type="footer">
 														<p:row>
 															<p:column />
+															<p:column />
 															<p:column>
 																<f:facet name="footer">
 																	<h:outputText
@@ -1446,23 +1445,25 @@
 									
 									<p:tab title="Subtítulo 29"	id="tabform29">
 									<h4>Filtros para el Monitoreo:</h4>
-										<h:panelGrid>
+										<p:panelGrid columns="7">
 												<h:outputText value="Programa: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbProgramaSub29" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma29}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
+												<p:selectOneMenu id="cbProgramaSub29" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPrograma29}">
+												    <f:selectItem itemLabel="Seleccione Programa" itemValue="" />
 			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programasSubtitulo29}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
-			           								<p:ajax event="change" listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programa29SelectionChanged}" update="cbServicioSub29 tablaSubtitulo29" />
 			           	 						</p:selectOneMenu>
-										</h:panelGrid>	
-										
-										<h:panelGrid>
 												<h:outputText value="Servicio: " styleClass="inputLabel" />
-												<p:selectOneMenu style="width:650px;" id="cbServicioSub29" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio29}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
+												<p:selectOneMenu id="cbServicioSub29" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio29}">
+												    <f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
 			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios29}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
-			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarSubtituloComponenteProgramaServicio(4)}" update="tablaSubtitulo29 :formTabView:growl" />
+			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarEstablecimientoPorServicio(4)}" update="cbEstablecimientoSub29" />
 			           	 						</p:selectOneMenu>
-										</h:panelGrid>
+			           	 						<h:outputText value="Establecimiento: " styleClass="inputLabel" />
+												<p:selectOneMenu id="cbEstablecimientoSub29" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboServicioEstablecimiento29}">
+												    <f:selectItem itemLabel="Seleccione Establecimiento" itemValue="" />
+												<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.establecimientos29}" itemLabel="#{establecimiento.nombre}" itemValue="#{establecimiento.id}" var="establecimiento" />
+												</p:selectOneMenu>
+												<p:commandButton value="Buscar" styleClass="x-btn-text icon-guardar" actionListener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.programa29SelectionChanged}" update="tablaSubtitulo29 :formTabView:growl" />
+										</p:panelGrid>
 											<c:if test="#{not procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.iniciarFlujoCaja}">
 												<h4>Monitoreo Mes de #{mes}</h4>
 											</c:if>
@@ -1483,6 +1484,7 @@
 													<p:columnGroup type="header">
 														<p:row>
 															<p:column rowspan="3" headerText="Servicio" />
+															<p:column rowspan="3" headerText="Establecimiento" />
 															<p:column
 																colspan="#{fn:length(procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.columns) + 3}"
 																styleClass="textoPequenio"
@@ -1509,6 +1511,9 @@
 													<c:if test="#{not empty procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.monitoreoSubtitulo29FlujoCajaVO}">
 													<p:column>
 														<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+													</p:column>
+													<p:column>
+														<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
 													</p:column>
 													<p:column>
 														<h:outputText value="#{_data.marcoPresupuestario}"
@@ -1665,6 +1670,7 @@
 													<p:columnGroup type="footer">
 														<p:row>
 															<p:column />
+															<p:column />
 															<p:column>
 																<f:facet name="footer">
 																	<h:outputText
@@ -1725,6 +1731,7 @@
 													<p:columnGroup type="header">
 														<p:row>
 															<p:column rowspan="3" headerText="Servicio" />
+															<p:column rowspan="3" headerText="Establecimiento" />
 															<p:column
 																colspan="#{fn:length(procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.columns) + 1}"
 																styleClass="textoPequenio"
@@ -1753,6 +1760,9 @@
 													
 													<p:column>
 														<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+													</p:column>
+													<p:column>
+														<span class="textoAjustado textoPequenio centrado">#{_data.establecimiento}</span>
 													</p:column>
 													<p:column>
 														<h:outputText value="#{_data.marcoPresupuestario}"
@@ -1837,6 +1847,7 @@
 													<p:columnGroup type="footer">
 														<p:row>
 															<p:column />
+															<p:column />
 															<p:column>
 																<f:facet name="footer">
 																	<h:outputText
@@ -1888,43 +1899,45 @@
 							<p:tab title="Per Cápita" id="tabform">
 										<h4>Filtros para el Monitoreo:</h4>
 										
-										<h:panelGrid>
+										<p:panelGrid columns="3">
 												<h:outputText value="Servicio: " styleClass="inputLabel" />
 												<p:selectOneMenu style="width:650px;" id="cbPercapita" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPercapita}">
-												    <f:selectItem itemLabel="Seleccione" itemValue="0" />
+												    <f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
 			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
-			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarPercapitaServicio}" update="tablaPercapita" />
 			           	 						</p:selectOneMenu>
-										</h:panelGrid>									
+			           	 						<p:commandButton value="Buscar" styleClass="x-btn-text icon-guardar" actionListener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarPercapitaServicio}" update="tablaPercapita" />
+										</p:panelGrid>									
 											
 										
 										<h4>Monitoreo Mes de #{mes}</h4>
 										<h:panelGrid>
 											
 											
-												<p:dataTable resizableColumns="true" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.monitoreoPercapitaFlujoCajaVO}" liveResize="true"
-													var="_data" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
-													styleClass="dataTable" id="tablaPercapita">
+									<p:dataTable resizableColumns="true" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.monitoreoPercapitaFlujoCajaVO}" liveResize="true"
+										var="_data" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable" id="tablaPercapita">
 
-													<p:columnGroup type="header">
-														<p:row>
-															<p:column rowspan="2" headerText="Servicio" />
-															<p:column rowspan="1" colspan="#{fn:length(procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.columns)}" styleClass="textoPequenio" headerText="REMESA PER CÁPITA"/>
-															<p:column rowspan="2" headerText="TOTAL PER CÁPITA" />																																												
-														</p:row>
-														
-														<p:row>
-															<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.columns}" var="dynamicColumn">
-																<p:column headerText="#{dynamicColumn.header}" />
-															</c:forEach>
-														</p:row>
-													</p:columnGroup>
+										<p:columnGroup type="header">
+											<p:row>
+												<p:column rowspan="2" headerText="Servicio" />
+												<p:column rowspan="2" headerText="Comuna" />
+												<p:column rowspan="1" colspan="#{fn:length(procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.columns)}" styleClass="textoPequenio" headerText="REMESA PER CÁPITA"/>
+												<p:column rowspan="2" headerText="TOTAL PER CÁPITA" />																																												
+											</p:row>
+											
+											<p:row>
+												<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.columns}" var="dynamicColumn">
+													<p:column headerText="#{dynamicColumn.header}" />
+												</c:forEach>
+											</p:row>
+										</p:columnGroup>
 
-													<p:column>
-														<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
-													</p:column>
-
-													<c:if test="#{not empty procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.monitoreoPercapitaFlujoCajaVO}">
+										<p:column>
+											<span class="textoAjustado textoPequenio centrado">#{_data.servicio}</span>
+										</p:column>
+										
+										<p:column>
+											<span class="textoAjustado textoPequenio centrado">#{_data.comuna}</span>
+										</p:column>
 										
 										<p:column rendered="#{_data.cajaMontoEnero.idMes ge numMesActual}">
 											<h:outputText value="#{_data.cajaMontoEnero.idMes}" styleClass="textoPequenio textoAjustado">
@@ -2003,40 +2016,40 @@
 											</h:outputText>
 										</p:column>
 												
-													<p:columnGroup type="footer">
-														<p:row>
-															<p:column>
-																<f:facet name="footer">
-																	<h:outputText value="Total" styleClass="textoAjustado textoPequenio centrado">
-																	</h:outputText>
-																</f:facet>
-															</p:column>
-																													
-															<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.totalServiciosMontosMesPercapita}" var="montosMes" varStatus="status">
-																<c:if test="#{status.count ge numMesActual}">
-																		<p:column>
-																			<f:facet name="footer">
-																				<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado"> 
-																					<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
-																				</h:outputText>
-																			</f:facet>
-																		</p:column>
-																</c:if>
-															</c:forEach>
-															
-																													
-															<p:column>
-																<f:facet name="footer">
-																	<h:outputText value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.totalFinalServiciosPercapita}" styleClass="textoAjustado textoPequenio centrado">
-																		<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL"/>
-																	</h:outputText>
-																</f:facet>
-															</p:column>
-														</p:row>
-													</p:columnGroup>
+											<p:columnGroup type="footer">
+												<p:row>
+													<p:column/>
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="Total" styleClass="textoAjustado textoPequenio centrado">
+															</h:outputText>
+														</f:facet>
+													</p:column>
+																											
+													<c:forEach items="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.totalServiciosMontosMesPercapita}" var="montosMes" varStatus="status">
+														<c:if test="#{status.count ge numMesActual}">
+																<p:column>
+																	<f:facet name="footer">
+																		<h:outputText value="#{montosMes}" styleClass="textoAjustado textoPequenio centrado"> 
+																			<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL" />
+																		</h:outputText>
+																	</f:facet>
+																</p:column>
 														</c:if>
+													</c:forEach>
 													
-												</p:dataTable>
+																											
+													<p:column>
+														<f:facet name="footer">
+															<h:outputText value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.totalFinalServiciosPercapita}" styleClass="textoAjustado textoPequenio centrado">
+																<f:convertNumber type="number" maxFractionDigits="0" locale="es_CL"/>
+															</h:outputText>
+														</f:facet>
+													</p:column>
+												</p:row>
+											</p:columnGroup>
+											
+										</p:dataTable>
 											
 										</h:panelGrid>
 

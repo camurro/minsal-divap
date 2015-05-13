@@ -2,16 +2,20 @@ package cl.minsal.divap.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import minsal.divap.enums.BusinessProcess;
-import minsal.divap.service.DistribucionInicialPercapitaService;
+import minsal.divap.service.EstimacionFlujoCajaService;
 import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskVO;
+
 import org.apache.log4j.Logger;
 
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
@@ -25,7 +29,8 @@ implements Serializable {
 	private transient Logger log;
 
 	@EJB
-	private DistribucionInicialPercapitaService distribucionInicialPercapitaService;
+	private EstimacionFlujoCajaService estimacionFlujoCajaService;
+	private Integer ano;
 
 	@Override
 	public String toString() {
@@ -49,7 +54,9 @@ implements Serializable {
 
 	@Override
 	protected Map<String, Object> createResultData() {
-		return null;
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("ano", getAno());
+		return parameters;
 	}
 
 	@Override
@@ -93,5 +100,15 @@ implements Serializable {
 		return success;
 	}
 
+	public Integer getAno() {
+		if(ano == null){
+			ano = estimacionFlujoCajaService.getAnoCurso();
+		}
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
 	
 }

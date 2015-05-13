@@ -2,7 +2,7 @@ package cl.minsal.divap.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -99,7 +100,8 @@ public class AntecendentesComunaCalculado implements Serializable {
 	@ManyToOne(optional = false)
 	private AntecendentesComuna antecedentesComuna;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "antecedentesComunaCalculado")
-	private Set<AntecedentesComunaCalculadoRebaja> antecedentesComunaCalculadoRebajas;
+	@OrderBy("idAntecedentesComunaCalculadoRebaja DESC")
+	private List<AntecedentesComunaCalculadoRebaja> antecedentesComunaCalculadoRebajas;
 	
 	public AntecendentesComunaCalculado() {
 	}
@@ -223,12 +225,12 @@ public class AntecendentesComunaCalculado implements Serializable {
 	}
 	
 	@XmlTransient
-	public Set<AntecedentesComunaCalculadoRebaja> getAntecedentesComunaCalculadoRebajas() {
+	public List<AntecedentesComunaCalculadoRebaja> getAntecedentesComunaCalculadoRebajas() {
 		return antecedentesComunaCalculadoRebajas;
 	}
 
 	public void setAntecedentesComunaCalculadoRebajas(
-			Set<AntecedentesComunaCalculadoRebaja> antecedentesComunaCalculadoRebajas) {
+			List<AntecedentesComunaCalculadoRebaja> antecedentesComunaCalculadoRebajas) {
 		this.antecedentesComunaCalculadoRebajas = antecedentesComunaCalculadoRebajas;
 	}
 

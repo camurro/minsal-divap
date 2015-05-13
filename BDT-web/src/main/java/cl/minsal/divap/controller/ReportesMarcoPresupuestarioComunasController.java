@@ -26,7 +26,6 @@ import minsal.divap.vo.ServiciosVO;
 
 import org.primefaces.event.TabChangeEvent;
 
-import cl.minsal.divap.model.Mes;
 import cl.redhat.bandejaTareas.controller.BaseController;
 
 @Named ( "reportesMarcoPresupuestarioComunasController" )
@@ -110,14 +109,7 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 
 	@PostConstruct public void init() {
 		
-		Mes mesActual = mesDAO.getMesPorID(Integer.parseInt(reportesServices.getMesCurso(true)));
-		if(mesActual.getIdMes() < 10){
-			this.fechaActual = "0"+mesActual.getIdMes()+"/"+this.getAnoEnCurso();
-		}
-		else{
-			this.fechaActual = mesActual.getIdMes()+"/"+this.getAnoEnCurso();
-		}
-		
+		this.fechaActual = reportesServices.currentDate();
 		this.mostrarSub21 = true;
 		this.mostrarSub22 = true;
 		this.mostrarSub24 = true;

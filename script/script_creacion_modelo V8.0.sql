@@ -26092,6 +26092,29 @@ INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15229, 'OTRO
 INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15230, 'OTRO28',28, true);
 INSERT INTO comuna(id, nombre, id_servicio_salud, auxiliar) VALUES (15231, 'OTRO42',42, true);
 
+ALTER TABLE caja
+  ADD COLUMN comuna integer;
+ALTER TABLE caja
+  ADD COLUMN establecimiento integer;
+ALTER TABLE caja
+  ADD CONSTRAINT establecimiento_fk FOREIGN KEY (establecimiento) REFERENCES establecimiento (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE caja
+  ADD CONSTRAINT comuna_fk FOREIGN KEY (comuna) REFERENCES comuna (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+ALTER TABLE programa_subtitulo_componente_peso
+  DROP COLUMN servicio;
+
+
+ALTER TABLE convenio_comuna
+  ADD COLUMN numero_resolucion_inicial integer;
+ALTER TABLE convenio_comuna
+  ADD CONSTRAINT numero_resolucion_inicial_fk FOREIGN KEY (numero_resolucion_inicial) REFERENCES convenio_comuna (id_convenio_comuna) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE convenio_servicio
+  ADD COLUMN numero_resolucion_inicial integer;
+ALTER TABLE convenio_servicio
+  ADD CONSTRAINT numero_resolucion_inicial_fk FOREIGN KEY (numero_resolucion_inicial) REFERENCES convenio_servicio (id_convenio_servicio) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 
 

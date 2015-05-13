@@ -40,6 +40,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "ConvenioServicio.findByIdConvenioServicio", query = "SELECT c FROM ConvenioServicio c WHERE c.idConvenioServicio = :idConvenioServicio"),
     @NamedQuery(name = "ConvenioServicio.findByIdConvenio", query = "SELECT c FROM ConvenioServicio c WHERE c.convenio.idConvenio = :idConvenio"),
     @NamedQuery(name = "ConvenioServicio.findByFecha", query = "SELECT c FROM ConvenioServicio c WHERE c.fecha = :fecha"),
+    @NamedQuery(name = "ConvenioServicio.findByNumeroResolucion", query = "SELECT c FROM ConvenioServicio c WHERE c.numeroResolucion = :numeroResolucion"),
     @NamedQuery(name = "ConvenioServicio.findByIdProgramaAnoIdComponentesIdEstablecimientos", query = "SELECT c FROM ConvenioServicio c JOIN c.convenioServicioComponentes cc WHERE c.idPrograma.idProgramaAno = :idProgramaAno and cc.componente.id IN (:idComponentes) and c.idEstablecimiento.id IN (:idEstablecimientos)"),
     @NamedQuery(name = "ConvenioServicio.findByIdProgramaAnoIdComponenteIdSubtituloIdEstablecimiento", query = "SELECT c FROM ConvenioServicio c JOIN c.convenioServicioComponentes cc WHERE c.idPrograma.idProgramaAno = :idProgramaAno and cc.componente.id = :idComponente  and cc.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and c.idEstablecimiento.id = :idEstablecimiento"),
     @NamedQuery(name = "ConvenioServicio.findByIdProgramaAnoIdEstablecimientos", query = "SELECT c FROM ConvenioServicio c WHERE c.idPrograma.idProgramaAno = :idProgramaAno and c.idEstablecimiento.id IN (:idEstablecimientos)"),
@@ -78,6 +79,11 @@ public class ConvenioServicio implements Serializable {
     @JoinColumn(name = "id_establecimiento", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Establecimiento idEstablecimiento;
+    @OneToMany(mappedBy = "numeroResolucionInicial")
+    private Set<ConvenioServicio> conveniosServicio;
+    @JoinColumn(name = "numero_resolucion_inicial", referencedColumnName = "id_convenio_servicio")
+    @ManyToOne
+    private ConvenioServicio numeroResolucionInicial;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "convenio")
     private Set<DocumentoConvenioServicio> documentosConvenio;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "convenioServicio")
@@ -203,6 +209,22 @@ public class ConvenioServicio implements Serializable {
 
 	public void setDocumentoConvenio(ReferenciaDocumento documentoConvenio) {
 		this.documentoConvenio = documentoConvenio;
+	}
+
+	public Set<ConvenioServicio> getConveniosServicio() {
+		return conveniosServicio;
+	}
+
+	public void setConveniosServicio(Set<ConvenioServicio> conveniosServicio) {
+		this.conveniosServicio = conveniosServicio;
+	}
+
+	public ConvenioServicio getNumeroResolucionInicial() {
+		return numeroResolucionInicial;
+	}
+
+	public void setNumeroResolucionInicial(ConvenioServicio numeroResolucionInicial) {
+		this.numeroResolucionInicial = numeroResolucionInicial;
 	}
 
 	@Override

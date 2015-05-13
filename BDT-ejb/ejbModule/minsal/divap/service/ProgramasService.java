@@ -165,7 +165,6 @@ public class ProgramasService {
 		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
 		EstadoPrograma estadoPrograma = new EstadoPrograma(encurso.getId());
 		programaAno.setEstadoFlujoCaja(estadoPrograma);
-		this.programasDAO.saveProgramaAno(programaAno, false);
 	}
 
 	public List<ProgramaMunicipalVO> findByServicioComponente(Integer idComponente, Integer idServicio, Integer idProgramaAno){

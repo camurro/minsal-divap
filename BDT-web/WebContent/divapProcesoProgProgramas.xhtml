@@ -9,7 +9,13 @@
 					<h:outputText value="Estimación de Flujos de Caja" />
 				</h1>
 				<p:panel id="Panel">
-					<h2>Listado de Programas #{procesoEstimacionFlujoCajaSeleccionarLineaController.anoCurso} para el usuario #{procesoEstimacionFlujoCajaSeleccionarLineaController.usuario}</h2>
+					<h2>Listado de Programas #{procesoEstimacionFlujoCajaSeleccionarLineaController.anoEnCurso} para el usuario #{procesoEstimacionFlujoCajaSeleccionarLineaController.usuario}</h2>
+					<h:panelGrid columns="2">
+						<h:outputText value="Año Estimacion" styleClass="inputLabel" />
+						<p:selectOneMenu id="componentes"  value="#{procesoEstimacionFlujoCajaSeleccionarLineaController.anoEvaluacion}">
+							<f:selectItems value="#{procesoEstimacionFlujoCajaSeleccionarLineaController.anos}" itemLabel="#{ano}" var="ano" itemValue="#{ano}"/> 
+						</p:selectOneMenu>
+					</h:panelGrid>
 					<p:dataTable id="tablaMisTareas" resizableColumns="true"
 						value="#{procesoEstimacionFlujoCajaSeleccionarLineaController.programas}"
 						liveResize="true" var="_programas" rows="10" paginator="true"
@@ -32,7 +38,7 @@
 						</p:column>
 						<p:column>
 							<h:commandLink rendered="${_programas.estadoFlujocaja.id eq 1}" onclick="statusDialog.show();" 
-								action="#{procesoEstimacionFlujoCajaSeleccionarLineaController.iniciar(_programas.idProgramaAno)}">
+								action="#{procesoEstimacionFlujoCajaSeleccionarLineaController.iniciar(_programas.id)}">
 								<h:graphicImage value="resources/minsal/images/play.png"
 									styleClass="divapIcons" />
 							</h:commandLink>
@@ -45,7 +51,7 @@
 						<p:column>
 							<!-- Modificación del programa año vigente -->
 							<h:commandLink rendered="${_programas.estadoFlujocaja.id eq 4}"
-							    action="#{procesoEstimacionFlujoCajaSeleccionarLineaController.modificar(_programas.idProgramaAno)}">
+							    action="#{procesoEstimacionFlujoCajaSeleccionarLineaController.modificar(_programas.id)}">
 								<h:graphicImage value="resources/minsal/images/play.png"
 									styleClass="divapIcons" />
 							</h:commandLink>

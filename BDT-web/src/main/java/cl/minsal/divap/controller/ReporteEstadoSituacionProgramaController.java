@@ -11,15 +11,12 @@ import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
-import org.primefaces.event.TabChangeEvent;
-
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.EstimacionFlujoCajaService;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ReportesServices;
 import minsal.divap.service.ServicioSaludService;
-import minsal.divap.vo.ComponenteSummaryVO;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.EstablecimientoSummaryVO;
@@ -28,6 +25,9 @@ import minsal.divap.vo.ReporteEstadoSituacionByComunaVO;
 import minsal.divap.vo.ReporteEstadoSituacionByServiciosVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.SubtituloVO;
+
+import org.primefaces.event.TabChangeEvent;
+
 import cl.redhat.bandejaTareas.controller.BaseController;
 
 
@@ -38,10 +38,10 @@ public class ReporteEstadoSituacionProgramaController extends BaseController imp
 
 	private static final long serialVersionUID = -611536140782856412L;
 
-	private Integer valorComboPrograma;
-	private Integer valorComboServicio;
-	private Integer valorComboComuna;
-	private Integer valorComboEstablecimiento;
+	private String valorComboPrograma;
+	private String valorComboServicio;
+	private String valorComboComuna;
+	private String valorComboEstablecimiento;
 	private List<ProgramaVO> programas;
 	private List<ServiciosVO> servicios;
 	private Integer anoEnCurso;
@@ -149,21 +149,31 @@ public class ReporteEstadoSituacionProgramaController extends BaseController imp
 		this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
 		
 	}
-
+	
+	public void recargarProgramas(){
+		this.reporteEstadoSituacionByComunaVOSub24 = new ArrayList<ReporteEstadoSituacionByComunaVO>();
+		this.reporteEstadoSituacionByServiciosVOSub21 = new ArrayList<ReporteEstadoSituacionByServiciosVO>();
+		this.reporteEstadoSituacionByServiciosVOSub22 = new ArrayList<ReporteEstadoSituacionByServiciosVO>();
+		this.reporteEstadoSituacionByServiciosVOSub29 = new ArrayList<ReporteEstadoSituacionByServiciosVO>();
+		this.valorComboComuna = null;
+		this.valorComboEstablecimiento = null;
+		System.out.println("recargarProgramas-->");
+		visibilidadSubtitulos();
+	}
 	public void visibilidadSubtitulos(){
 		this.mostrarSub21 = false;
 		this.mostrarSub22 = false;
 		this.mostrarSub24 = false;
 		this.mostrarSub29 = false;
 		
-		if(this.valorComboPrograma == 0){
+		Integer idPrograma = ((getValorComboPrograma() == null || getValorComboPrograma().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma()));
+		if(idPrograma == null){
 			this.mostrarSub21 = false;
 			this.mostrarSub22 = false;
 			this.mostrarSub24 = false;
 			this.mostrarSub29 = false;
-		}
-		else{
-			this.programa = programasService.getProgramaAno(this.valorComboPrograma);
+		}else{
+			this.programa = programasService.getProgramaAno(idPrograma);
 			for (ComponentesVO componente : this.programa.getComponentes()) {
 				System.out.println("componente.getNombre() --> "+componente.getNombre());
 				for(SubtituloVO subtitulo : componente.getSubtitulos()){
@@ -186,23 +196,30 @@ public class ReporteEstadoSituacionProgramaController extends BaseController imp
 				}
 			}
 		}
-		
 	}
-	
 	
 	public void cargarTablaDependenciaServicioEstablecimiento(){
 		visibilidadSubtitulos();
-		this.reporteEstadoSituacionByServiciosVOSub21 = reportesServices.getReporteEstadoSituacionByServicioFiltroProgramaServicioEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), Subtitulo.SUBTITULO21);
-		this.reporteEstadoSituacionByServiciosVOSub22 = reportesServices.getReporteEstadoSituacionByServicioFiltroProgramaServicioEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), Subtitulo.SUBTITULO22);
-		this.reporteEstadoSituacionByServiciosVOSub29 = reportesServices.getReporteEstadoSituacionByServicioFiltroProgramaServicioEstablecimiento(getValorComboPrograma(), getValorComboServicio(), getValorComboEstablecimiento(), Subtitulo.SUBTITULO29);
+		Integer idPrograma = ((getValorComboPrograma() == null || getValorComboPrograma().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma()));
+		Integer idServicio = ((getValorComboServicio() == null || getValorComboServicio().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicio()));
+		Integer idEstablecimiento = ((getValorComboEstablecimiento() == null || getValorComboEstablecimiento().trim().isEmpty()) ? null : Integer.parseInt(getValorComboEstablecimiento()));
+		this.reporteEstadoSituacionByServiciosVOSub21 = reportesServices.getReporteEstadoSituacionByServicioFiltroProgramaServicioEstablecimiento(idPrograma, idServicio, idEstablecimiento, Subtitulo.SUBTITULO21);
+		this.reporteEstadoSituacionByServiciosVOSub22 = reportesServices.getReporteEstadoSituacionByServicioFiltroProgramaServicioEstablecimiento(idPrograma, idServicio, idEstablecimiento, Subtitulo.SUBTITULO22);
+		this.reporteEstadoSituacionByServiciosVOSub29 = reportesServices.getReporteEstadoSituacionByServicioFiltroProgramaServicioEstablecimiento(idPrograma, idServicio, idEstablecimiento, Subtitulo.SUBTITULO29);
+		System.out.println("this.reporteEstadoSituacionByServiciosVOSub21.size()" + this.reporteEstadoSituacionByServiciosVOSub21.size());
+		System.out.println("this.reporteEstadoSituacionByServiciosVOSub22.size()" + this.reporteEstadoSituacionByServiciosVOSub22.size());
+		System.out.println("this.reporteEstadoSituacionByServiciosVOSub29.size()" + this.reporteEstadoSituacionByServiciosVOSub29.size());
 	}
 	
 	
 	public void cargarTablaDependenciaMunicipalComuna(){
 		visibilidadSubtitulos();
-		
+		Integer idPrograma = ((getValorComboPrograma() == null || getValorComboPrograma().trim().isEmpty()) ? null : Integer.parseInt(getValorComboPrograma()));
+		Integer idServicio = ((getValorComboServicio() == null || getValorComboServicio().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicio()));
+		Integer idComuna = ((getValorComboComuna() == null || getValorComboComuna().trim().isEmpty()) ? null : Integer.parseInt(getValorComboComuna()));
 		System.out.println("entra al medoto cargarTablaDependenciaMunicipalComuna");
-		this.reporteEstadoSituacionByComunaVOSub24 = reportesServices.getReporteEstadoSituacionByComunaFiltroProgramaServicioComuna(getValorComboPrograma(), getValorComboServicio(), getValorComboComuna(), this.subtituloSeleccionado);
+		this.reporteEstadoSituacionByComunaVOSub24 = reportesServices.getReporteEstadoSituacionByComunaFiltroProgramaServicioComuna(idPrograma, idServicio, idComuna, this.subtituloSeleccionado);
+		System.out.println("this.reporteEstadoSituacionByComunaVOSub24.size()" + this.reporteEstadoSituacionByComunaVOSub24.size());
 	}
 	
 	
@@ -228,8 +245,6 @@ public class ReporteEstadoSituacionProgramaController extends BaseController imp
 		if(event.getTab() != null){
 			System.out.println("Tab Changed, Active Tab: " + event.getTab().getTitle());
 			System.out.println("event.getTab().getId(): " + event.getTab().getId());
-			this.valorComboPrograma = 0;
-			this.valorComboServicio = 0;
 			
 			if(event.getTab().getId().equals("Sub21")){
 				this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
@@ -244,17 +259,24 @@ public class ReporteEstadoSituacionProgramaController extends BaseController imp
 				this.subtituloSeleccionado = Subtitulo.SUBTITULO29;
 			}
 			System.out.println("this.subtituloSeleccionado --> "+this.subtituloSeleccionado.getNombre());
-			
 		}
 	}
 	
-	public void cargarComunas(){
-		if(getValorComboServicio() != null){
-			if(getValorComboServicio().intValue() != 0){
-				servicioSeleccionado = servicioSaludService.getServicioSaludById(getValorComboServicio());
-				this.comunas = servicioSeleccionado.getComunas();
-
-			}
+	public void cargarComunasEstablecimientos(){
+		Integer idServicio = ((getValorComboServicio() == null || getValorComboServicio().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicio()));
+		this.reporteEstadoSituacionByServiciosVOSub21 = new ArrayList<ReporteEstadoSituacionByServiciosVO>();
+		this.reporteEstadoSituacionByServiciosVOSub22 = new ArrayList<ReporteEstadoSituacionByServiciosVO>();
+		this.reporteEstadoSituacionByServiciosVOSub29 = new ArrayList<ReporteEstadoSituacionByServiciosVO>();
+		this.reporteEstadoSituacionByComunaVOSub24 = new ArrayList<ReporteEstadoSituacionByComunaVO>();
+		if(idServicio != null){
+			servicioSeleccionado = servicioSaludService.getServicioSaludById(idServicio);
+			this.comunas = servicioSeleccionado.getComunas();
+			this.establecimientos = servicioSeleccionado.getEstableclimientos();
+		}else{
+			this.valorComboComuna = null;
+			this.valorComboEstablecimiento = null;
+			this.comunas = new ArrayList<ComunaSummaryVO>();
+			this.establecimientos = new ArrayList<EstablecimientoSummaryVO>();
 		}
 	}
 	
@@ -273,26 +295,30 @@ public class ReporteEstadoSituacionProgramaController extends BaseController imp
 	public void setProgramas(List<ProgramaVO> programas) {
 		this.programas = programas;
 	}
+	
 	public List<ServiciosVO> getServicios() {
 		if(servicios == null){
 			servicios = servicioSaludService.getServiciosOrderId();
 		}
 		return servicios;
 	}
+	
 	public void setServicios(List<ServiciosVO> servicios) {
 		this.servicios = servicios;
 	}
-	public Integer getValorComboPrograma() {
+	
+	public String getValorComboPrograma() {
 		return valorComboPrograma;
 	}
-	public void setValorComboPrograma(Integer valorComboPrograma) {
+	
+	public void setValorComboPrograma(String valorComboPrograma) {
 		this.valorComboPrograma = valorComboPrograma;
 	}
 
-	public Integer getValorComboServicio() {
+	public String getValorComboServicio() {
 		return valorComboServicio;
 	}
-	public void setValorComboServicio(Integer valorComboServicio) {
+	public void setValorComboServicio(String valorComboServicio) {
 		this.valorComboServicio = valorComboServicio;
 	}
 
@@ -468,19 +494,19 @@ public class ReporteEstadoSituacionProgramaController extends BaseController imp
 		this.establecimientos = establecimientos;
 	}
 
-	public Integer getValorComboComuna() {
+	public String getValorComboComuna() {
 		return valorComboComuna;
 	}
 
-	public void setValorComboComuna(Integer valorComboComuna) {
+	public void setValorComboComuna(String valorComboComuna) {
 		this.valorComboComuna = valorComboComuna;
 	}
 
-	public Integer getValorComboEstablecimiento() {
+	public String getValorComboEstablecimiento() {
 		return valorComboEstablecimiento;
 	}
 
-	public void setValorComboEstablecimiento(Integer valorComboEstablecimiento) {
+	public void setValorComboEstablecimiento(String valorComboEstablecimiento) {
 		this.valorComboEstablecimiento = valorComboEstablecimiento;
 	}
 

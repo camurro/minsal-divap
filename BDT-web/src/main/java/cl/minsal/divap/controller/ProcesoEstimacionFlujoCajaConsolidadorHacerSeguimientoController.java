@@ -42,15 +42,38 @@ public class ProcesoEstimacionFlujoCajaConsolidadorHacerSeguimientoController ex
 	//ID Programa
 	private Integer idLineaProgramatica;
 	
-	public Integer getIdLineaProgramatica() {
-		return idLineaProgramatica;
-	}
-
-	public void setIdLineaProgramatica(Integer idLineaProgramatica) {
-		this.idLineaProgramatica = idLineaProgramatica;
-	}
 	@EJB
 	private ProgramasService programaService;
+	@EJB
+	private EstimacionFlujoCajaService estimacionFlujoCajaService;
+	
+	private List<SeguimientoVO> bitacoraSeguimiento;
+	private TareasSeguimiento tareaSeguimiento;
+	private String actividadSeguimientoTitle;
+	private String to;
+	private String cc;
+	private String cco;
+	private String subject;
+	private String body;
+	private boolean verRecargarArchivos;
+	private boolean verRevalorizar;
+	private boolean verBusqueda;
+	
+	private boolean versionFinal;
+	private String docIdDownload;
+	
+	private Integer ordinarioProgramacionCajaId;
+	private ReferenciaDocumentoSummaryVO planillaProgramacionFlujoCaja;
+	
+	private  boolean rechazarRevalorizar_;
+	private  boolean rechazarSubirArchivos_;
+	private  boolean aprobar_;
+	
+	
+	private UploadedFile attachedFile;
+	private UploadedFile file;
+	private Integer idOT;
+	private Integer ano;
 
 	//TODO: [ASAAVEDRA] Verificar cuando los programas estan iniciados.
 	
@@ -96,6 +119,10 @@ public class ProcesoEstimacionFlujoCajaConsolidadorHacerSeguimientoController ex
 		} else {
 
 		}
+		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
+			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
+		}
+		
 		idLineaProgramatica = 1;
 		//CORREO
 		planillaProgramacionFlujoCaja = estimacionFlujoCajaService.getLastDocumentSummaryEstimacionFlujoCajaTipoDocumento(TipoDocumentosProcesos.PLANTILLAPROPUESTA);// distribucionInicialPercapitaService.getLastDocumentoSummaryByDistribucionInicialPercapitaType(idDistribucionInicialPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA);
@@ -109,7 +136,6 @@ public class ProcesoEstimacionFlujoCajaConsolidadorHacerSeguimientoController ex
 		if(referenciaDocumentoSummaryVO != null){
 			this.ordinarioProgramacionCajaId = referenciaDocumentoSummaryVO.getId();
 		}else{
-			//TODO: [ASAAVEDRA] Implementar.
 			this.ordinarioProgramacionCajaId = (Integer) getTaskDataVO().getData().get("_oficioConsultaId");
 		}
 		
@@ -119,7 +145,6 @@ public class ProcesoEstimacionFlujoCajaConsolidadorHacerSeguimientoController ex
 	@Override
 	protected Map<String, Object> createResultData() {
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		
 		return parameters;
 	}
 
@@ -127,39 +152,14 @@ public class ProcesoEstimacionFlujoCajaConsolidadorHacerSeguimientoController ex
 	public String iniciarProceso() {
 		return null;
 	}
-//CODIGO DE LA NASA DEL LEANDRO
 	
-	
-	
-	@EJB
-	private EstimacionFlujoCajaService estimacionFlujoCajaService;
-	
-	private List<SeguimientoVO> bitacoraSeguimiento;
-	private TareasSeguimiento tareaSeguimiento;
-	private String actividadSeguimientoTitle;
-	private String to;
-	private String cc;
-	private String cco;
-	private String subject;
-	private String body;
-	private boolean verRecargarArchivos;
-	private boolean verRevalorizar;
-	private boolean verBusqueda;
-	
-	private boolean versionFinal;
-	private String docIdDownload;
-	
-	private Integer ordinarioProgramacionCajaId;
-	private ReferenciaDocumentoSummaryVO planillaProgramacionFlujoCaja;
-	
-	private  boolean rechazarRevalorizar_;
-	private  boolean rechazarSubirArchivos_;
-	private  boolean aprobar_;
-	
-	
-	private UploadedFile attachedFile;
-	private UploadedFile file;
-	private Integer idOT;
+	public Integer getIdLineaProgramatica() {
+		return idLineaProgramatica;
+	}
+
+	public void setIdLineaProgramatica(Integer idLineaProgramatica) {
+		this.idLineaProgramatica = idLineaProgramatica;
+	}
 
 	public Integer getIdOT() {
 		return idOT;
@@ -215,16 +215,13 @@ public class ProcesoEstimacionFlujoCajaConsolidadorHacerSeguimientoController ex
 			}
 
 			System.out.println("[Estimacion Flujo Caja]-->sendMail");
-			estimacionFlujoCajaService.createSeguimiento(idLineaProgramatica, tareaSeguimiento, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
+			estimacionFlujoCajaService.createSeguimiento(idLineaProgramatica, tareaSeguimiento, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos, getAno());
 		}catch(Exception e){
 			e.printStackTrace();
 			target = null;
 		}
 		return target;
 	}
-
-	
-
 
 
 	public void handleFileUpload(FileUploadEvent event) {
@@ -412,8 +409,6 @@ public class ProcesoEstimacionFlujoCajaConsolidadorHacerSeguimientoController ex
 		this.verRevalorizar = verRevalorizar;
 	}
 
-
-
 	public TareasSeguimiento getTareaSeguimiento() {
 		return tareaSeguimiento;
 	}
@@ -450,14 +445,9 @@ public class ProcesoEstimacionFlujoCajaConsolidadorHacerSeguimientoController ex
 			String filename = file.getFileName();
 			byte[] contentAttachedFile = file.getContents();
 			Integer docNewVersion = persistFile(filename,	contentAttachedFile);
-			TipoDocumentosProcesos tipoDocumento = null;
-			//switch (tareaSeguimiento) {
-			//case HACERSEGUIMIENTOOFICIO:
-				tipoDocumento = TipoDocumentosProcesos.PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA;
-				estimacionFlujoCajaService.moveToAlfresco(null, docNewVersion,tipoDocumento,versionFinal);
-				this.setOrdinarioProgramacionCajaId(docNewVersion);
-			
-				
+			TipoDocumentosProcesos tipoDocumento = TipoDocumentosProcesos.PLANTILLABORRADORORDINARIOPROGRAMACIONCAJA;
+			estimacionFlujoCajaService.moveToAlfresco(null, docNewVersion,tipoDocumento,versionFinal, getAno());
+			this.setOrdinarioProgramacionCajaId(docNewVersion);
 		}else{
 			System.out.println("uploadVersion file is null");
 			FacesMessage message = new FacesMessage("uploadVersion file is null");
@@ -483,9 +473,13 @@ public class ProcesoEstimacionFlujoCajaConsolidadorHacerSeguimientoController ex
 		this.planillaProgramacionFlujoCaja = planillaProgramacionFlujoCaja;
 	}
 
-	
-	/*Bitacora Seguimiento*/
+	public Integer getAno() {
+		return ano;
+	}
 
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
 	
 
 }

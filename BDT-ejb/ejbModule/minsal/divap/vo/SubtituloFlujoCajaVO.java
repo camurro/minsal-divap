@@ -14,8 +14,14 @@ public class SubtituloFlujoCajaVO implements Serializable {
 
 	private Integer idServicio;
 	private String servicio;
+	private Integer idEstablecimiento;
+	private String establecimiento;
+	private Integer idComuna;
+	private String comuna;
 	private Integer idSubtitulo;
 	private String subtitulo;
+	private Integer idComponente;
+	private String componente;
 	private Integer idMarcoPresupuestario;
 	private Long marcoPresupuestario;
 	private Double pesoComponentes;
@@ -135,121 +141,97 @@ public class SubtituloFlujoCajaVO implements Serializable {
 		return cajaMontoEnero;
 	}
 
-
 	public void setCajaMontoEnero(CajaMontoSummaryVO cajaMontoEnero) {
 		this.cajaMontoEnero = cajaMontoEnero;
 	}
-
 
 	public CajaMontoSummaryVO getCajaMontoFebrero() {
 		return cajaMontoFebrero;
 	}
 
-
 	public void setCajaMontoFebrero(CajaMontoSummaryVO cajaMontoFebrero) {
 		this.cajaMontoFebrero = cajaMontoFebrero;
 	}
-
 
 	public CajaMontoSummaryVO getCajaMontoMarzo() {
 		return cajaMontoMarzo;
 	}
 
-
 	public void setCajaMontoMarzo(CajaMontoSummaryVO cajaMontoMarzo) {
 		this.cajaMontoMarzo = cajaMontoMarzo;
 	}
-
 
 	public CajaMontoSummaryVO getCajaMontoAbril() {
 		return cajaMontoAbril;
 	}
 
-
 	public void setCajaMontoAbril(CajaMontoSummaryVO cajaMontoAbril) {
 		this.cajaMontoAbril = cajaMontoAbril;
 	}
-
 
 	public CajaMontoSummaryVO getCajaMontoMayo() {
 		return cajaMontoMayo;
 	}
 
-
 	public void setCajaMontoMayo(CajaMontoSummaryVO cajaMontoMayo) {
 		this.cajaMontoMayo = cajaMontoMayo;
 	}
-
 
 	public CajaMontoSummaryVO getCajaMontoJunio() {
 		return cajaMontoJunio;
 	}
 
-
 	public void setCajaMontoJunio(CajaMontoSummaryVO cajaMontoJunio) {
 		this.cajaMontoJunio = cajaMontoJunio;
 	}
-
 
 	public CajaMontoSummaryVO getCajaMontoJulio() {
 		return cajaMontoJulio;
 	}
 
-
 	public void setCajaMontoJulio(CajaMontoSummaryVO cajaMontoJulio) {
 		this.cajaMontoJulio = cajaMontoJulio;
 	}
-
 
 	public CajaMontoSummaryVO getCajaMontoAgosto() {
 		return cajaMontoAgosto;
 	}
 
-
 	public void setCajaMontoAgosto(CajaMontoSummaryVO cajaMontoAgosto) {
 		this.cajaMontoAgosto = cajaMontoAgosto;
 	}
-
 
 	public CajaMontoSummaryVO getCajaMontoSeptiembre() {
 		return cajaMontoSeptiembre;
 	}
 
-
 	public void setCajaMontoSeptiembre(CajaMontoSummaryVO cajaMontoSeptiembre) {
 		this.cajaMontoSeptiembre = cajaMontoSeptiembre;
 	}
-
 
 	public CajaMontoSummaryVO getCajaMontoOctubre() {
 		return cajaMontoOctubre;
 	}
 
-
 	public void setCajaMontoOctubre(CajaMontoSummaryVO cajaMontoOctubre) {
 		this.cajaMontoOctubre = cajaMontoOctubre;
 	}
-
 
 	public CajaMontoSummaryVO getCajaMontoNoviembre() {
 		return cajaMontoNoviembre;
 	}
 
-
 	public void setCajaMontoNoviembre(CajaMontoSummaryVO cajaMontoNoviembre) {
 		this.cajaMontoNoviembre = cajaMontoNoviembre;
 	}
-
 
 	public CajaMontoSummaryVO getCajaMontoDiciembre() {
 		return cajaMontoDiciembre;
 	}
 
-
 	public void setCajaMontoDiciembre(CajaMontoSummaryVO cajaMontoDiciembre) {
 		this.cajaMontoDiciembre = cajaMontoDiciembre;
 	}
-
 
 	public Long getTotalMontos() {
 		totalMontos = 0L;
@@ -304,7 +286,6 @@ public class SubtituloFlujoCajaVO implements Serializable {
 	}
 	
 	public String getColor() {
-		System.out.println("getColor-- marcoPresupuestario->"+marcoPresupuestario+" getTotalMontos()="+getTotalMontos());
 		if(!isIgnoreColor()){
 			if (!marcoCuadrado()){
 				System.out.println("no son iguales");
@@ -314,6 +295,7 @@ public class SubtituloFlujoCajaVO implements Serializable {
 				this.color = "#3ADF00";
 			}
 		}
+		//System.out.println("getColor-->" + color + " marcoPresupuestario->"+marcoPresupuestario+" getTotalMontos()="+getTotalMontos());
 		return color;
 	}
 
@@ -325,16 +307,13 @@ public class SubtituloFlujoCajaVO implements Serializable {
 		return idServicio;
 	}
 
-
 	public void setIdServicio(Integer idServicio) {
 		this.idServicio = idServicio;
 	}
 
-
 	public Integer getIdMarcoPresupuestario() {
 		return idMarcoPresupuestario;
 	}
-
 
 	public void setIdMarcoPresupuestario(Integer idMarcoPresupuestario) {
 		this.idMarcoPresupuestario = idMarcoPresupuestario;
@@ -343,7 +322,6 @@ public class SubtituloFlujoCajaVO implements Serializable {
 	public boolean isIgnoreColor() {
 		return ignoreColor;
 	}
-
 
 	public void setIgnoreColor(boolean ignoreColor) {
 		this.ignoreColor = ignoreColor;
@@ -356,6 +334,58 @@ public class SubtituloFlujoCajaVO implements Serializable {
 	public void setPesoComponentes(Double pesoComponentes) {
 		this.pesoComponentes = pesoComponentes;
 	}
+
+	public Integer getIdEstablecimiento() {
+		return idEstablecimiento;
+	}
+
+	public void setIdEstablecimiento(Integer idEstablecimiento) {
+		this.idEstablecimiento = idEstablecimiento;
+	}
+
+	public String getEstablecimiento() {
+		return establecimiento;
+	}
+
+	public void setEstablecimiento(String establecimiento) {
+		this.establecimiento = establecimiento;
+	}
+
+	public Integer getIdComuna() {
+		return idComuna;
+	}
+
+	public void setIdComuna(Integer idComuna) {
+		this.idComuna = idComuna;
+	}
+
+	public String getComuna() {
+		return comuna;
+	}
+
+	public void setComuna(String comuna) {
+		this.comuna = comuna;
+	}
+
+	public Integer getIdComponente() {
+		return idComponente;
+	}
+
+
+	public void setIdComponente(Integer idComponente) {
+		this.idComponente = idComponente;
+	}
+
+
+	public String getComponente() {
+		return componente;
+	}
+
+
+	public void setComponente(String componente) {
+		this.componente = componente;
+	}
+
 
 	@Override
 	public int hashCode() {

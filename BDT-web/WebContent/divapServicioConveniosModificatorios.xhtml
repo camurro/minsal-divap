@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/default.xhtml" xmlns:c="http://java.sun.com/jstl/core">
+	
+	<ui:define name="zonaJavaScript">
+		<script type="text/javascript">
+
+				function isNumber(event) {
+				  if (event) {
+				    var charCode = (event.which) ? event.which : event.keyCode;
+				    if (charCode &lt; 48 || charCode &gt; 57) {
+				    	if (charCode == 8 || charCode == 46 || charCode == 35 || charCode == 36 || charCode == 37 || charCode == 39){ 
+					    	return true;
+				    	}
+				       return false;
+				    }
+				  }
+				  return true;
+				}
+			
+				function downloadDocument(idDoc) {  
+		           document.getElementById('formDownload:hiddenId').value=idDoc;
+		           document.getElementById('formDownload:linkDownload').click();  
+		     	}  
+		     	
+		     	function limpiar(){
+		     		document.getElementById('formLimpiarGuardar:linkLimpiar').click(); 
+			    }
+
+		     	function guardar(){
+			     	var error = false;
+		     		if($("#convenios\\:dependencia_input").val() =='0'){
+		     			$('#convenios\\:dependencia').addClass('ui-state-error');
+		     			error = true;
+			     	}
+		     		if($("#convenios\\:programa_input").val() ==''){
+		     			$('#convenios\\:programa').addClass('ui-state-error');
+		     			error = true;
+			     	}
+		     		if($("#convenios\\:item_input").val() =='0'){
+		     			$('#convenios\\:item').addClass('ui-state-error');
+		     			error = true;
+			     	}
+		     		if($("#convenios\\:resolucion").val() ==''){
+		     			$('#convenios\\:resolucion').addClass('ui-state-error');
+		     			error = true;
+			     	}
+			     	if(error){
+			     		alert("Debe completar los campos requeridos");
+				     	return;
+				    }
+			     	var hv = $('#componenteSubtitulo\\:hiddenTotalElementos').val();
+		     		if(hv == "0"){
+			     		alert("Debe completar los campos requeridos");
+	     			 	$('#componenteSubtitulo\\:componente').addClass('ui-state-error');
+	     			 	$('#componenteSubtitulo\\:subtitulo').addClass('ui-state-error');
+	     			 	$('#componenteSubtitulo\\:monto').addClass('ui-state-error');
+	     			 	return;
+			     	}
+			     	document.getElementById('convenios:uploadFile').click();  
+			    }
+		</script>
+	</ui:define>
+	<ui:define name="content">
+			<p:panel styleClass="contentPanel" rendered="#{procesoConveniosModificatoriosController.pasoInicial}">
+				<h:form id="conveniosBusqueda" enctype="multipart/form-data">
+				<h:messages />
+		 		<p:growl id="growlBusqueda" showDetail="false"/>  
+		 		<h:inputHidden id="hiddenMensajeConvenio" value="#{procesoConveniosModificatoriosController.mensajeConvenio}"/>
+		 		
+				<h1>
+					<h:outputText value="Buscar Numero Resolución" />
+				</h1>
+				<p:panel id="PanelBusqueda">
+					<p:panelGrid columns="3">
+							<h:outputLabel for="resolucion" value="Resolución N°: " />
+							<p:inputText id="resolucion" value="#{procesoConveniosModificatoriosController.numeroResolucion}" onkeypress="return isNumber(event);" required="true"/>
+							<p:commandButton id="buscarResolucion" value="Buscar" action="#{procesoConveniosModificatoriosController.buscarResolucion}" update="growlBusqueda"/>
+					</p:panelGrid>
+				</p:panel>
+				</h:form>
+			</p:panel>
+			<script type="text/javascript">
+				var hv = $('#conveniosBusqueda\\:hiddenMensajeConvenio').val();
+     			if(hv != ""){
+         			alert(hv);
+     			}
+			</script>
+		
+	</ui:define>
+</ui:composition>

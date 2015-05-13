@@ -2,6 +2,7 @@ package cl.minsal.divap.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,36 +36,36 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends Abstra
 	@Inject
 	private transient Logger log;
 
-	private Integer idProgramaAno;
+	private Integer idPrograma;
 	
 	@EJB
 	private ProgramasService programaService;
 	@EJB
 	private EstimacionFlujoCajaService estimacionFlujoCajaService;
-	
 	private String usuario;
-	
 	private Boolean iniciarFlujoCaja;
+	private List<Integer> anos;
+	private Integer anoEvaluacion;
 	
-	private Integer anoCurso;
+	private Integer anoEnCurso;
 
 	/*
 	 * Se obtiene la lista de programas del usuario por username y año.
 	 */
 	public List<ProgramaVO> programas() {
-		return programaService.getProgramasByUserAno(getLoggedUsername(), getAnoCurso() + 1);
+		return programaService.getProgramasByUserAno(getLoggedUsername(), estimacionFlujoCajaService.getAnoCurso());
 	}
 
 	/*
 	 * Avanza a la siguiente actividad con el programa seleccionado
 	 */
-	public String iniciar(Integer idProgramaAno) {
-		boolean existeDistribucionRecursos = estimacionFlujoCajaService.existeDistribucionRecursos(idProgramaAno);
-		int countDistribucionPercapita = estimacionFlujoCajaService.countAntecendentesComunaCalculadoVigente();
+	public String iniciar(Integer idPrograma) {
+		boolean existeDistribucionRecursos = estimacionFlujoCajaService.existeDistribucionRecursos(idPrograma, getAnoEvaluacion());
+		int countDistribucionPercapita = estimacionFlujoCajaService.countAntecendentesComunaCalculadoVigente(getAnoEvaluacion());
 		System.out.println("existeDistribucionRecursos="+existeDistribucionRecursos);
 		if(existeDistribucionRecursos && (countDistribucionPercapita > 0)){
 			System.out.println("ya se realizo la distribucion de recursos");
-			this.idProgramaAno = idProgramaAno;
+			this.idPrograma = idPrograma;
 			this.iniciarFlujoCaja = true;
 			setTarget("bandejaTareas");
 			return super.enviar();
@@ -82,8 +83,8 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends Abstra
 		}
 	}
 	
-	public String modificar(Integer idProgramaAno) {
-		this.idProgramaAno = idProgramaAno;
+	public String modificar(Integer idPrograma) {
+		this.idPrograma = idPrograma;
 		this.iniciarFlujoCaja = false;
 		setTarget("bandejaTareas");
 		return super.enviar();
@@ -109,6 +110,16 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends Abstra
 		} else {
 
 		}
+		anos = new ArrayList<Integer>();
+		Integer ano = estimacionFlujoCajaService.getAnoCurso();
+		anoEnCurso = ano;
+		anos.add(ano);
+		ano++;
+		anos.add(ano);
+		anoEvaluacion = ano; 
+		System.out.println("anoEnCurso="+anoEnCurso);
+		System.out.println("anoEvaluacion="+anoEvaluacion);
+		System.out.println("anos="+anos);
 
 	}
 
@@ -120,7 +131,8 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends Abstra
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		System.out.println("createResultData usuario-->"
 				+ getSessionBean().getUsername());
-		parameters.put("idProgramaAno_", idProgramaAno);
+		parameters.put("idPrograma_", idPrograma);
+		parameters.put("ano_", getAnoEvaluacion());
 		parameters.put("iniciarFlujoCaja_", iniciarFlujoCaja);
 		return parameters;
 	}
@@ -129,23 +141,6 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends Abstra
 	public String iniciarProceso() {
 		return null;
 	}
-	/*
-	 * Fin Comunicacion BPM
-	 */
-
-	/*
-	 * Getter y Setter
-	 */
-	public Integer getIdProgramaAno() {
-		return idProgramaAno;
-	}
-
-	public void setIdProgramaAno(Integer idProgramaAno) {
-		this.idProgramaAno = idProgramaAno;
-	}
-	/*
-	 * Fin Getter y Setter
-	 */
 
 	public String getUsuario() {
 		if(usuario == null){
@@ -154,19 +149,24 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends Abstra
 		return getLoggedUsername();
 	}
 
+	public Integer getIdPrograma() {
+		return idPrograma;
+	}
+
+	public void setIdPrograma(Integer idPrograma) {
+		this.idPrograma = idPrograma;
+	}
+
 	public void setUsuario(String usuario) {
 		this.usuario = usuario;
 	}
 
-	public Integer getAnoCurso() {
-		if(anoCurso == null){
-			anoCurso = estimacionFlujoCajaService.getAnoCurso();
-		}
-		return anoCurso;
+	public Integer getAnoEnCurso() {
+		return anoEnCurso;
 	}
 
-	public void setAnoCurso(Integer anoCurso) {
-		this.anoCurso = anoCurso;
+	public void setAnoEnCurso(Integer anoEnCurso) {
+		this.anoEnCurso = anoEnCurso;
 	}
 
 	public Boolean getIniciarFlujoCaja() {
@@ -177,4 +177,20 @@ public class ProcesoEstimacionFlujoCajaSeleccionarLineaController extends Abstra
 		this.iniciarFlujoCaja = iniciarFlujoCaja;
 	}
 
+	public List<Integer> getAnos() {
+		return anos;
+	}
+
+	public void setAnos(List<Integer> anos) {
+		this.anos = anos;
+	}
+
+	public Integer getAnoEvaluacion() {
+		return anoEvaluacion;
+	}
+
+	public void setAnoEvaluacion(Integer anoEvaluacion) {
+		this.anoEvaluacion = anoEvaluacion;
+	}
+	
 }

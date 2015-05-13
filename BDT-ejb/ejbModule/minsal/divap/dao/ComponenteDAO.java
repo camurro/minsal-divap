@@ -50,7 +50,7 @@ public class ComponenteDAO {
 			//busca cada  componente seleccionado anterior mente si es o no del subtitulo entregado y retorna los id de los componentes que corresponden por subtitulo
 			 for (int i = 0; i < componentesPrograma.toArray().length ; i++){
 				 TypedQuery<ComponenteSubtitulo> query = this.em.createNamedQuery("ComponenteSubtitulo.findByProgramaSub", ComponenteSubtitulo.class);
-				   Integer aux= componentesPrograma.get(i).getId();
+				    Integer aux = componentesPrograma.get(i).getId();
 				 	query.setParameter("componente", aux );
 					query.setParameter("subtitulo", sub);
 					List<ComponenteSubtitulo> conpo2 = query.getResultList();

@@ -77,6 +77,7 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 	private ReliquidacionService reliquidacionService;
 	@EJB
 	private ReportesServices reportesServices;
+	private ProgramaVO programaVO;
 	
 	private Integer activeTab = 0;
 	Map<Integer, Subtitulo> tabSubtitulo = new HashMap<Integer, Subtitulo>();
@@ -189,10 +190,11 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 	
 	public void cargarComponentes(){
 		if(getValorComboPrograma() != null && !getValorComboPrograma().trim().isEmpty()){
-			ProgramaVO programaVO = programasService.getProgramaAno(Integer.parseInt(getValorComboPrograma()));
+			programaVO = programasService.getProgramaAno(Integer.parseInt(getValorComboPrograma()));
 			componentes = programasService.getComponenteByPrograma(programaVO.getId());
 		}else{
 			valorComboComponente = null;
+			programaVO = null;
 			componentes = new ArrayList<ComponentesVO>();
 		}
 	}
@@ -628,6 +630,14 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 	
 	public void setComponentes(List<ComponentesVO> componentes) {
 		this.componentes = componentes;
+	}
+	
+	public ProgramaVO getProgramaVO() {
+		return programaVO;
+	}
+	
+	public void setProgramaVO(ProgramaVO programaVO) {
+		this.programaVO = programaVO;
 	}
 	
 }

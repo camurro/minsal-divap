@@ -12,9 +12,11 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
 import minsal.divap.enums.TipoDocumentosProcesos;
+import minsal.divap.service.RebajaService;
 import minsal.divap.service.ReportesServices;
 import minsal.divap.service.ServicioSaludService;
 import minsal.divap.vo.ComunaSummaryVO;
+import minsal.divap.vo.RebajaCorteVO;
 import minsal.divap.vo.ReportePerCapitaVO;
 import minsal.divap.vo.ServiciosVO;
 
@@ -43,6 +45,14 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 	private Integer anoActualMenos1;
 	private Integer anoActualMenos2;
 	private Integer anoActualMenos3;
+	private Map<Integer, Integer> tabAno = new HashMap<Integer, Integer>();
+	private List<RebajaCorteVO> cortes;
+	@EJB
+	private ReportesServices reportesServices;
+	@EJB
+	private RebajaService rebajaService;
+	@EJB
+	private ServicioSaludService servicioSaludService;
 	
 	
 	public Integer getAnoSeleccionado() {
@@ -55,13 +65,7 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 	}
 
 
-	Map<Integer, Integer> tabAno = new HashMap<Integer, Integer>();
 	
-	
-	@EJB
-	private ReportesServices reportesServices;
-	@EJB
-	private ServicioSaludService servicioSaludService;
 	
 	@PostConstruct
 	public void init(){
@@ -70,6 +74,8 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 		this.anoActualMenos1 = this.anoActual -1;
 		this.anoActualMenos2 = this.anoActual -2;
 		this.anoActualMenos3 = this.anoActual -3;
+	
+		cortes = rebajaService.getCortes(null);
 		
 		this.anoSeleccionado = anoActual;
 		this.idPlanillaPercapita = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEPOBLACIONPERCAPITA, anoActual);
@@ -96,7 +102,9 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 	public void cargarComunas(){
 		System.out.println("this.anoSeleccionado --> "+this.anoSeleccionado);
 		System.out.println("this.getValorComboServicio --> "+this.getValorComboServicio());
-		if(getValorComboServicio() != null && !getValorComboServicio().trim().isEmpty()){
+		Integer idServicio = ((getValorComboServicio() == null || getValorComboServicio().trim().isEmpty()) ? null : Integer.parseInt(getValorComboServicio()));
+		this.reportesPerCapitaVO = new ArrayList<ReportePerCapitaVO>();
+		if(idServicio != null){
 				servicioSeleccionado = servicioSaludService.getServicioSaludById(Integer.parseInt(getValorComboServicio()));
 				this.comunas = servicioSeleccionado.getComunas();
 		}else{
@@ -112,17 +120,18 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 		
 		this.valorComboServicio = null;
 		this.valorComboComuna = null;
+		this.comunas = new ArrayList<ComunaSummaryVO>();
 		
-		if(event.getTab().getId().equals("tab2011")){
+		if(event.getTab().getId().equals("tabAnoActualMenos3")){
 			this.anoSeleccionado = this.anoActualMenos3;
 		}
-		if(event.getTab().getId().equals("tab2012")){
+		if(event.getTab().getId().equals("tabAnoActualMenos2")){
 			this.anoSeleccionado = this.anoActualMenos2;
 		}
-		if(event.getTab().getId().equals("tab2013")){
+		if(event.getTab().getId().equals("tabAnoActualMenos1")){
 			this.anoSeleccionado = this.anoActualMenos1;
 		}
-		if(event.getTab().getId().equals("tab2014")){
+		if(event.getTab().getId().equals("tabAnoActual")){
 			this.anoSeleccionado = this.anoActual;
 		}
 		System.out.println("anoSeleccionado --> "+this.anoSeleccionado);
@@ -235,6 +244,14 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 
 	public void setAnoActualMenos3(Integer anoActualMenos3) {
 		this.anoActualMenos3 = anoActualMenos3;
+	}
+
+	public List<RebajaCorteVO> getCortes() {
+		return cortes;
+	}
+
+	public void setCortes(List<RebajaCorteVO> cortes) {
+		this.cortes = cortes;
 	}
 	
 }

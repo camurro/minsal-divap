@@ -3383,11 +3383,6 @@ public class GeneradorExcel {
 					cell = row.createCell(currentCol++);
 					cell.setCellStyle(cellStyleLong);
 					cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
-					cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoSeptiembre().getMontoMes());
-
-					cell = row.createCell(currentCol++);
-					cell.setCellStyle(cellStyleLong);
-					cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
 					cell.setCellValue(subtituloFlujoCajaVO.getCajaMontoOctubre().getMontoMes());
 
 					cell = row.createCell(currentCol++);
@@ -3504,7 +3499,7 @@ public class GeneradorExcel {
 			hojaNueva = false;
 			sheet = workbook.getSheetAt(index);
 		}
-
+		System.out.println("sheetName-->"+sheetName);
 		List<CellExcelVO> header = excelSheet.getHeaderComplex();
 		List<CellExcelVO> subHeader = excelSheet.getSubHeadeComplex();
 		CellStyle style = workbook.createCellStyle();
@@ -3543,6 +3538,7 @@ public class GeneradorExcel {
 		cellStyleHeader.setFont(fontHeader);
 
 		if(header != null && header.size() > 0){
+			System.out.println("header.size()-->"+header.size());
 			for(CellExcelVO cellExcelVO : header){
 				if(cellExcelVO.getRowSpan() > maxRowSpan){
 					maxRowSpan = cellExcelVO.getRowSpan();
@@ -3551,6 +3547,7 @@ public class GeneradorExcel {
 			}
 			System.out.println("maxColSpan->"+maxColSpan);
 			System.out.println("maxRowSpan->"+maxRowSpan);
+			
 			for(int fila = 0; fila < maxRowSpan; fila++){
 				XSSFRow row = null;
 				if(hojaNueva){
@@ -3562,6 +3559,7 @@ public class GeneradorExcel {
 					XSSFCell cell = row.createCell(columna);
 					cell.setCellType(XSSFCell.CELL_TYPE_STRING);
 					cell.setCellStyle(cellStyleHeader);
+					System.out.println("Creado columna " + columna + " de " + (maxColSpan+currentCol));
 				}
 			}
 			boolean first = true;
@@ -3581,20 +3579,22 @@ public class GeneradorExcel {
 				}else{
 					currentCol += cellExcelVO.getColSpan();
 				}
+				System.out.println("cellExcelVO="+cellExcelVO.getName());
 			}
 			currentRow++;   
 		}   
-		currentCol = ((hojaNueva)?1:14);
+		currentCol = ((hojaNueva) ? 1 : 14);
 		for(CellExcelVO cellExcelVO : subHeader){
 			XSSFRow row = sheet.getRow(currentRow);
 			XSSFCell cell = row.getCell(currentCol++);
 			cell.setCellValue(cellExcelVO.getName());
+			System.out.println(" subHeader cellExcelVO="+cellExcelVO.getName());
 		}
-		for(int columnPosition = 0; columnPosition <= maxColSpan; columnPosition++) {
+		/*for(int columnPosition = 0; columnPosition <= maxColSpan; columnPosition++) {
 			sheet.autoSizeColumn((short) (columnPosition));
-		}
+		}*/
 		currentRow=3;
-		currentCol = ((hojaNueva)?0:14);
+		currentCol = ((hojaNueva) ? 0 : 14);
 		int inicialCol = currentCol;
 		List<ResumenConsolidadorVO> items = excelSheet.getItems();
 		System.out.println("items.size()=" + ((items == null)? 0 : items.size()));
@@ -5837,7 +5837,7 @@ public class GeneradorExcel {
 					cell.setCellStyle(cellStyleHeader);
 				}
 			}
-
+			System.out.println("fin for filas");
 			for(CellExcelVO cellExcelVO : header){  
 				XSSFRow row = sheet.getRow(currentRow) ;
 				XSSFCell cell = row.getCell(currentCol);
@@ -5854,7 +5854,7 @@ public class GeneradorExcel {
 			}
 			currentRow++;  
 		}  
-
+		System.out.println("fin header");
 		if(hojaNueva){
 			currentCol = excelSheet.getPosicionColumnaInicial() + 2;
 		}else{
@@ -5875,6 +5875,7 @@ public class GeneradorExcel {
 				currentCol++;
 			}
 		}
+		System.out.println("fin subHeader");
 		currentRow++;
 		Integer currentRow24 = currentRow;
 		currentCol = excelSheet.getPosicionColumnaInicial();
@@ -6046,7 +6047,7 @@ public class GeneradorExcel {
 				contElementos++;
 			}
 		}
-
+		System.out.println("fin items 24");
 		Integer currentRow21 = currentRow;
 		currentCol = excelSheet.getPosicionColumnaInicial();
 		List<ResumenFONASAServicioVO> items21 = excelSheet.getItemSub21();
@@ -6136,7 +6137,7 @@ public class GeneradorExcel {
 				contElementos++;
 			}
 		}
-
+		System.out.println("fin items 21");
 		Integer currentRow22 = currentRow;
 		currentCol = excelSheet.getPosicionColumnaInicial();
 		List<ResumenFONASAServicioVO> items22 = excelSheet.getItemSub22();
@@ -6232,7 +6233,7 @@ public class GeneradorExcel {
 				contElementos++;
 			}
 		}
-
+		System.out.println("fin items 22");
 		Integer currentRow29 = currentRow;
 		currentCol = excelSheet.getPosicionColumnaInicial();
 		List<ResumenFONASAServicioVO> items29 = excelSheet.getItemSub29();
@@ -6323,7 +6324,7 @@ public class GeneradorExcel {
 				contElementos++;
 			}
 		}
-
+		System.out.println("fin items 29");
 		if(excelSheet.getTotales() != null && excelSheet.getTotales().size() > 0){
 			currentCol = excelSheet.getPosicionColumnaInicial();
 			Integer currentRowTotales = 0;
@@ -6363,7 +6364,7 @@ public class GeneradorExcel {
 			cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
 			cell.setCellValue(montoTotal);
 		}
-
+		System.out.println("fin totales");
 	}
 
 	private void addSheet(CrearPlanillaCumplimientoServicioProgramaSheetExcel excelSheet, String sheetName){

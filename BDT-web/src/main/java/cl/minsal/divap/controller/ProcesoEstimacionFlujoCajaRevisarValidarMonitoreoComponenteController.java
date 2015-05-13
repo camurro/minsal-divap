@@ -107,10 +107,10 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteControll
 					idComponentes.add(this.programa.getComponentes().get(0).getId());
 					if(Subtitulo.SUBTITULO24.getId().equals(getSubtituloSeleccionado().getId())){
 						estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
-								idComponentes, getSubtituloSeleccionado(), this.iniciarFlujoCaja);
+								null, null, idComponentes, getSubtituloSeleccionado(), this.iniciarFlujoCaja);
 					}else{
-						estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
-								idComponentes, getSubtituloSeleccionado(), this.iniciarFlujoCaja);
+						estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
+								null, null, idComponentes, getSubtituloSeleccionado(), this.iniciarFlujoCaja);
 					}
 				}else{
 					this.valorComboSubtituloComponente = 0;
@@ -253,10 +253,10 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteControll
 			idComponentes.add(getValorComboSubtituloComponente());
 			if(Subtitulo.SUBTITULO24.getId().equals(getSubtituloSeleccionado().getId())){
 				estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
-						idComponentes, getSubtituloSeleccionado(), this.iniciarFlujoCaja);
+						null, null, idComponentes, getSubtituloSeleccionado(), this.iniciarFlujoCaja);
 			}else{
-				estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
-						idComponentes, getSubtituloSeleccionado(), this.iniciarFlujoCaja);
+				estimacionFlujoMonitoreoSubtituloComponente = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(getPrograma().getIdProgramaAno(),  
+						null, null, idComponentes, getSubtituloSeleccionado(), this.iniciarFlujoCaja);
 			}
 		}
 	}

@@ -191,14 +191,16 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		}
 		setReparos(false);
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			Integer idProgramaAno = (Integer) getTaskDataVO().getData().get("_idProgramaAno");
-			System.out.println("idProgramaAno --->" + idProgramaAno);
-			setReparos(estimacionFlujoCajaService.tieneMarcosConReparos(idProgramaAno));
-			setPrograma(programaService.getProgramaAno(idProgramaAno));
+			Integer idPrograma = (Integer) getTaskDataVO().getData().get("_idPrograma");
+			Integer ano = (Integer) getTaskDataVO().getData().get("_ano");
+			System.out.println("idPrograma --->" + idPrograma);
+			System.out.println("ano --->" + ano);
+			setReparos(estimacionFlujoCajaService.tieneMarcosConReparos(idPrograma, ano));
+			setPrograma(programaService.getProgramaByIdProgramaAndAno(idPrograma, ano));
 			if(getPrograma() != null){
 				setAnoActual(getPrograma().getAno());
 			}
-			ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = estimacionFlujoCajaService.getDocumentEstimacionFlujoCajaByType(idProgramaAno, TipoDocumentosProcesos.PLANTILLAPROPUESTA);
+			ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = estimacionFlujoCajaService.getDocumentEstimacionFlujoCajaByType(idPrograma, ano, TipoDocumentosProcesos.PLANTILLAPROPUESTA);
 			if(referenciaDocumentoSummaryVO != null){
 				this.docProgramacion = referenciaDocumentoSummaryVO.getId();
 			}
@@ -236,7 +238,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 			for (Map.Entry<Integer, List<Integer>> entry : componentesPorSubtitulo.entrySet()) { 
 				System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue()); 
 				if (entry.getKey().equals(Subtitulo.SUBTITULO21.getId())){
-					monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(getPrograma().getIdProgramaAno(), null, null,entry.getValue(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
 						convenioRemesaSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO21);
 						System.out.println("convenioRemesaSubtitulo21FlujoCajaVO.size()-->" + convenioRemesaSubtitulo21FlujoCajaVO.size());
@@ -244,7 +246,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 					System.out.println("monitoreoSubtitulo21FlujoCajaVO.size()-->"+monitoreoSubtitulo21FlujoCajaVO.size());
 					mostrarSubtitulo21 = true;
 				}else if (entry.getKey().equals(Subtitulo.SUBTITULO22.getId())){
-					monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(getPrograma().getIdProgramaAno(), null, null, entry.getValue(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
 						convenioRemesaSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO22);
 						System.out.println("convenioRemesaSubtitulo22FlujoCajaVO.size()-->" + convenioRemesaSubtitulo22FlujoCajaVO.size());
@@ -252,7 +254,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 					System.out.println("monitoreoSubtitulo22FlujoCajaVO.size()-->"+monitoreoSubtitulo22FlujoCajaVO.size());
 					mostrarSubtitulo22 = true;
 				}else if (entry.getKey().equals(Subtitulo.SUBTITULO24.getId())){
-					monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), null, null, entry.getValue(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
 						convenioRemesaSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO24);
 						System.out.println("convenioRemesaSubtitulo24FlujoCajaVO.size()-->" + convenioRemesaSubtitulo24FlujoCajaVO.size());
@@ -260,7 +262,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 					System.out.println("monitoreoSubtitulo24FlujoCajaVO.size()-->"+monitoreoSubtitulo24FlujoCajaVO.size());
 					mostrarSubtitulo24 = true;
 				}else if (entry.getKey().equals(Subtitulo.SUBTITULO29.getId())){
-					monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(getPrograma().getIdProgramaAno(), null, null, entry.getValue(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					if(getIniciarFlujoCaja() != null && !getIniciarFlujoCaja()){
 						convenioRemesaSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getConvenioRemesaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), entry.getValue(), Subtitulo.SUBTITULO29);
 						System.out.println("convenioRemesaSubtitulo29FlujoCajaVO.size()-->" + convenioRemesaSubtitulo29FlujoCajaVO.size());
@@ -295,62 +297,62 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 				switch (elemento.getMesModificado()) {
 				case 1:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoEnero().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoEnero(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoEnero(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 2:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoFebrero().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoFebrero(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoFebrero(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 3:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoMarzo().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoMarzo(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoMarzo(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 4:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoAbril().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoAbril(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoAbril(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 5:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoMayo().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoMayo(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoMayo(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 6:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoJunio().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoJunio(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoJunio(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 7:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoJulio().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoJulio(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoJulio(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 8:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoAgosto().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoAgosto(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoAgosto(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 9:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoSeptiembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoSeptiembre(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoSeptiembre(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 10:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoOctubre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoOctubre(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoOctubre(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 11:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoNoviembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoNoviembre(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoNoviembre(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 12:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoDiciembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoDiciembre(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoDiciembre(), Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				default:
@@ -362,7 +364,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo21){
 			if(elemento.getModificado()){
 				SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo21FlujoCajaVO.get(elemento.getPosicionElemento());
-				SubtituloFlujoCajaVO subtituloFlujoCajaVOTmp = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoServicioSubtituloMes(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), Subtitulo.SUBTITULO21, elemento.getMesModificado(), iniciarFlujoCaja);
+				SubtituloFlujoCajaVO subtituloFlujoCajaVOTmp = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoServicioSubtituloMes(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), Subtitulo.SUBTITULO21, elemento.getMesModificado(), iniciarFlujoCaja);
 				monitoreoSubtitulo21FlujoCajaVO.set(elemento.getPosicionElemento(), subtituloFlujoCajaVOTmp);
 			}else{
 				actualizaOK = false;
@@ -387,62 +389,62 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 				switch (elemento.getMesModificado()) {
 				case 1:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoEnero().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoEnero(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoEnero(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 2:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoFebrero().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoFebrero(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoFebrero(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 3:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoMarzo().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoMarzo(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoMarzo(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 4:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoAbril().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoAbril(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoAbril(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 5:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoMayo().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoMayo(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoMayo(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 6:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoJunio().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoJunio(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoJunio(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 7:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoJulio().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoJulio(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoJulio(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 8:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoAgosto().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoAgosto(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoAgosto(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 9:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoSeptiembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoSeptiembre(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoSeptiembre(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 10:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoOctubre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoOctubre(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoOctubre(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 11:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoNoviembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoNoviembre(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoNoviembre(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 12:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoDiciembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoDiciembre(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoDiciembre(), Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 
@@ -455,7 +457,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo22){
 			if(elemento.getModificado()){
 				SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo22FlujoCajaVO.get(elemento.getPosicionElemento());
-				SubtituloFlujoCajaVO subtituloFlujoCajaVOTmp = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoServicioSubtituloMes(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), Subtitulo.SUBTITULO22, elemento.getMesModificado(), iniciarFlujoCaja);
+				SubtituloFlujoCajaVO subtituloFlujoCajaVOTmp = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoServicioSubtituloMes(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), Subtitulo.SUBTITULO22, elemento.getMesModificado(), iniciarFlujoCaja);
 				monitoreoSubtitulo22FlujoCajaVO.set(elemento.getPosicionElemento(), subtituloFlujoCajaVOTmp);
 			}else{
 				actualizaOK = false;
@@ -481,62 +483,62 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 				switch (elemento.getMesModificado()) {
 				case 1:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoEnero().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoEnero(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoEnero(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 2:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoFebrero().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoFebrero(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoFebrero(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 3:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoMarzo().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoMarzo(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoMarzo(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 4:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoAbril().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoAbril(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoAbril(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 5:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoMayo().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoMayo(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoMayo(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 6:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoJunio().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoJunio(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoJunio(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 7:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoJulio().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoJulio(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoJulio(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 8:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoAgosto().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoAgosto(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoAgosto(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 9:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoSeptiembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoSeptiembre(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoSeptiembre(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 10:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoOctubre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoOctubre(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoOctubre(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 11:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoNoviembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoNoviembre(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoNoviembre(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 12:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoDiciembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoDiciembre(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioComunaSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), subtituloFlujoCajaVO.getCajaMontoDiciembre(), Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 
@@ -549,7 +551,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo24){
 			if(elemento.getModificado()){
 				SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo24FlujoCajaVO.get(elemento.getPosicionElemento());
-				SubtituloFlujoCajaVO subtituloFlujoCajaVOTmp = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoServicioSubtituloMes(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), Subtitulo.SUBTITULO24, elemento.getMesModificado(), iniciarFlujoCaja);
+				SubtituloFlujoCajaVO subtituloFlujoCajaVOTmp = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoServicioSubtituloMes(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdComuna(), Subtitulo.SUBTITULO24, elemento.getMesModificado(), iniciarFlujoCaja);
 				monitoreoSubtitulo24FlujoCajaVO.set(elemento.getPosicionElemento(), subtituloFlujoCajaVOTmp);
 			}else{
 				actualizaOK = false;
@@ -574,62 +576,62 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 				switch (elemento.getMesModificado()) {
 				case 1:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoEnero().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoEnero(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(),subtituloFlujoCajaVO.getCajaMontoEnero(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 2:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoFebrero().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoFebrero(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(),subtituloFlujoCajaVO.getCajaMontoFebrero(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 3:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoMarzo().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoMarzo(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(),subtituloFlujoCajaVO.getCajaMontoMarzo(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 4:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoAbril().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoAbril(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(),subtituloFlujoCajaVO.getCajaMontoAbril(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 5:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoMayo().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoMayo(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(),subtituloFlujoCajaVO.getCajaMontoMayo(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 6:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoJunio().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoJunio(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(),subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoJunio(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 7:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoJulio().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoJulio(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoJulio(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 8:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoAgosto().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoAgosto(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoAgosto(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 9:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoSeptiembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoSeptiembre(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoSeptiembre(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 10:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoOctubre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoOctubre(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoOctubre(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 11:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoNoviembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoNoviembre(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoNoviembre(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				case 12:
 					System.out.println("Actualizar con Nuevo Monto->"+subtituloFlujoCajaVO.getCajaMontoDiciembre().getMontoMes());
-					estimacionFlujoCajaService.actualizarMonitoreoServicioSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getCajaMontoDiciembre(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					estimacionFlujoCajaService.actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), subtituloFlujoCajaVO.getCajaMontoDiciembre(), Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					elemento.setModificado(true);
 					break;
 				default:
@@ -641,7 +643,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		for(ElementoModificadoVO elemento : elementosModificadosSubtitulo29){
 			if(elemento.getModificado()){
 				SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo29FlujoCajaVO.get(elemento.getPosicionElemento());
-				SubtituloFlujoCajaVO subtituloFlujoCajaVOTmp = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoServicioSubtituloMes(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), Subtitulo.SUBTITULO29, elemento.getMesModificado(), iniciarFlujoCaja);
+				SubtituloFlujoCajaVO subtituloFlujoCajaVOTmp = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoServicioSubtituloMes(getPrograma().getIdProgramaAno(), subtituloFlujoCajaVO.getIdServicio(), subtituloFlujoCajaVO.getIdEstablecimiento(), Subtitulo.SUBTITULO29, elemento.getMesModificado(), iniciarFlujoCaja);
 				monitoreoSubtitulo29FlujoCajaVO.set(elemento.getPosicionElemento(), subtituloFlujoCajaVOTmp);
 			}else{
 				actualizaOK = false;
@@ -2030,7 +2032,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		if(getPosicionCajaMesModificado() != null && getMesModificado() != null){
 			SubtituloFlujoCajaVO subtituloFlujoCajaVO = monitoreoSubtitulo24FlujoCajaVO.get(Integer.parseInt(getPosicionCajaMesModificado()));
 			if(subtituloFlujoCajaVO.getMarcoPresupuestario() != 0){
-				subtituloFlujoCajaVO.setIgnoreColor(true);
+				subtituloFlujoCajaVO.setIgnoreColor(false);
 				ElementoModificadoVO elementoModificadoVO = new ElementoModificadoVO(Integer.parseInt(getPosicionCajaMesModificado()), Integer.parseInt(getMesModificado()));
 				if(!elementosModificadosSubtitulo24.contains(elementoModificadoVO)){
 					elementosModificadosSubtitulo24.add(elementoModificadoVO);
@@ -2285,23 +2287,23 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 				switch (subtituloSeleccionado) {
 				case SUBTITULO21:
 					System.out.println("SUBTITULO21");
-					monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
-							idComponentes, Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
+					monitoreoSubtitulo21FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
+							null, null, idComponentes, Subtitulo.SUBTITULO21, this.iniciarFlujoCaja);
 					break;
 				case SUBTITULO22:
 					System.out.println("SUBTITULO22");
-					monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
-							idComponentes, Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
+					monitoreoSubtitulo22FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
+							null, null, idComponentes, Subtitulo.SUBTITULO22, this.iniciarFlujoCaja);
 					break;
 				case SUBTITULO24:
 					System.out.println("SUBTITULO24");
 					monitoreoSubtitulo24FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoComunaByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
-							idComponentes, Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
+							null, null, idComponentes, Subtitulo.SUBTITULO24, this.iniciarFlujoCaja);
 					break;
 				case SUBTITULO29:
 					System.out.println("SUBTITULO29");
-					monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
-							idComponentes, Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
+					monitoreoSubtitulo29FlujoCajaVO = estimacionFlujoCajaService.getMonitoreoServicioByProgramaAnoEstablecimientoComponenteSubtitulo(getPrograma().getIdProgramaAno(), 
+							null, null, idComponentes, Subtitulo.SUBTITULO29, this.iniciarFlujoCaja);
 					break;
 				default:
 					break;
@@ -2312,8 +2314,8 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoController extends
 		return null;
 	}
 	public void onTabChange(TabChangeEvent event) {
-		System.out.println("Tab Changed, Active Tab: " + event.getTab().getTitle());
-		System.out.println("event.getTab().getId(): " + event.getTab().getId());
+		System.out.println("Tab Changed, Active Tab: " + ((event == null || event.getTab() == null) ? "" : event.getTab().getTitle()));
+		System.out.println("event.getTab().getId(): " + ((event == null || event.getTab() == null) ? "" : event.getTab().getId()));
 	}
 
 	public void onTabClose(TabCloseEvent event) {

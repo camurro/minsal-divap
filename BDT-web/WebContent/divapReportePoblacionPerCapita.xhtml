@@ -4,7 +4,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
-	template="/WEB-INF/templates/default.xhtml">
+	template="/WEB-INF/templates/default.xhtml"
+	xmlns:c="http://java.sun.com/jstl/core">
 
 	<ui:define name="content">
 		<h:form id="formTabView" enctype="multipart/form-data">
@@ -31,7 +32,7 @@
 						]
 					</div>
 					<br />
-						<h:panelGrid columns="3" id="busqueda_mis_tareas">
+						<p:panelGrid columns="3" id="busqueda_mis_tareas">
 							<h:panelGrid>
 								<h:outputText value="Servicio: " styleClass="inputLabel" />
 								<p:selectOneMenu style="width:350px;" id="cbServicio" value="#{reportesPoblacionPercapitaController.valorComboServicio}">
@@ -45,19 +46,19 @@
 								<h:outputText value="Comuna: " styleClass="inputLabel" />
 								<p:selectOneMenu style="width:350px;" id="cbComuna" value="#{reportesPoblacionPercapitaController.valorComboComuna}">
 									<f:selectItem itemLabel="Seleccione" itemValue="" />
-									<f:selectItems value="#{reportesPoblacionPercapitaController.servicioSeleccionado.comunas}" itemLabel="#{comuna.nombre}" itemValue="#{comuna.id}" var="comuna" />
+									<f:selectItems value="#{reportesPoblacionPercapitaController.comunas}" itemLabel="#{comuna.nombre}" itemValue="#{comuna.id}" var="comuna" />
 								</p:selectOneMenu>
 							</h:panelGrid>
 							<p:commandButton value="Buscar" styleClass="x-btn-text" actionListener="#{reportesPoblacionPercapitaController.cargarTablaServiciosFiltradosComuna}" icon="ui-icon-seek-first" update="tabView" />
 							
-						</h:panelGrid>
+						</p:panelGrid>
 							
 					
 
 					<p:tabView id="tabView">
 						<p:ajax event="tabChange" listener="#{reportesPoblacionPercapitaController.onTabChange}" update="tabView :formTabView:cbServicio :formTabView:cbComuna" />
 						
-						<p:tab id="tab2014" title="Año #{reportesPoblacionPercapitaController.anoActual}">
+						<p:tab id="tabAnoActual" title="Año #{reportesPoblacionPercapitaController.anoActual}">
 							<br />
 							<p:dataTable id="tabladatos2014" resizableColumns="true"
 								value="#{reportesPoblacionPercapitaController.reportesPerCapitaVO}"
@@ -68,19 +69,21 @@
 
 								<p:columnGroup type="header">
 									<p:row>
-										<p:column headerText="Región" width="250" />
-										<p:column headerText="Servicio" width="250" />
-										<p:column headerText="Comuna" width="250" />
-										<p:column headerText="Clasificación" width="250" />
-										<p:column headerText="$ Valor Per Capita" width="250" />
-										<p:column headerText="Población" width="250" />
-										<p:column headerText="Población Mayor 65 y Mas Años" width="250" />
-										<p:column headerText="$ Per Capita Año" width="250" />
-										<p:column headerText="$ Desempeño Difícil Año" width="250" />
-										<p:column headerText="$ Aporte Estatal Año" width="250" />
-										<p:column headerText="$ Rebaja IAAPS" width="250" />
-										<p:column headerText="$ Descuento por Incentivo al Retiro" width="250" />
-										<p:column headerText="$ Aporte Estatal Final" width="250" />
+										<p:column headerText="Región" />
+										<p:column headerText="Servicio" />
+										<p:column headerText="Comuna"  />
+										<p:column headerText="Clasificación" />
+										<p:column headerText="$ Valor Per Capita"  />
+										<p:column headerText="Población" />
+										<p:column headerText="Población Mayor 65 y Mas Años"  />
+										<p:column headerText="$ Per Capita Año" />
+										<p:column headerText="$ Desempeño Difícil Año"  />
+										<p:column headerText="$ Aporte Estatal Año" />
+										<c:forEach var="varCorte" items="#{reportesPoblacionPercapitaController.cortes}">
+											<p:column headerText="$ Rebaja IAAPS #{varCorte.mesRebaja.nombre}"  />
+										</c:forEach>
+										<p:column headerText="$ Descuento por Incentivo al Retiro"  />
+										<p:column headerText="$ Aporte Estatal Final" />
 									</p:row>
 								</p:columnGroup>
 
@@ -133,8 +136,26 @@
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
-								<p:column>
-									<h:outputText value="#{_data.rebajaIAAPS}"
+								<p:column rendered="#{not empty _data.rebajaIAAPSCorte1}">
+									<h:outputText value="#{_data.rebajaIAAPSCorte1}"
+										styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{not empty _data.rebajaIAAPSCorte2}">
+									<h:outputText value="#{_data.rebajaIAAPSCorte2}"
+										styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{not empty _data.rebajaIAAPSCorte3}">
+									<h:outputText value="#{_data.rebajaIAAPSCorte3}"
+										styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{not empty _data.rebajaIAAPSCorte4}">
+									<h:outputText value="#{_data.rebajaIAAPSCorte4}"
 										styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
@@ -159,7 +180,7 @@
 						
 						
 						
-						<p:tab id="tab2013" title="Año #{reportesPoblacionPercapitaController.anoActualMenos1}">
+						<p:tab id="tabAnoActualMenos1" title="Año #{reportesPoblacionPercapitaController.anoActualMenos1}">
 							<br />
 							<p:dataTable id="tabladatos2013" resizableColumns="true"
 								value="#{reportesPoblacionPercapitaController.reportesPerCapitaVO}"
@@ -170,19 +191,21 @@
 
 								<p:columnGroup type="header">
 									<p:row>
-										<p:column headerText="Región" width="250" />
-										<p:column headerText="Servicio" width="250" />
-										<p:column headerText="Comuna" width="250" />
-										<p:column headerText="Clasificación" width="250" />
-										<p:column headerText="$ Valor Per Capita" width="250" />
-										<p:column headerText="Población" width="250" />
-										<p:column headerText="Población Mayor 65 y Mas Años" width="250" />
-										<p:column headerText="$ Per Capita Año" width="250" />
-										<p:column headerText="$ Desempeño Difícil" width="250" />
-										<p:column headerText="$ Aporte Estatal" width="250" />
-										<p:column headerText="$ Rebaja IAAPS" width="250" />
-										<p:column headerText="$ Descuento por Incentivo al Retiro" width="250" />
-										<p:column headerText="$ Aporte Estatal Final" width="250" />
+										<p:column headerText="Región"/>
+										<p:column headerText="Servicio" />
+										<p:column headerText="Comuna"  />
+										<p:column headerText="Clasificación"/>
+										<p:column headerText="$ Valor Per Capita" />
+										<p:column headerText="Población"  />
+										<p:column headerText="Población Mayor 65 y Mas Años"  />
+										<p:column headerText="$ Per Capita Año" />
+										<p:column headerText="$ Desempeño Difícil"  />
+										<p:column headerText="$ Aporte Estatal" />
+										<c:forEach var="varCorte" items="#{reportesPoblacionPercapitaController.cortes}">
+											<p:column headerText="$ Rebaja IAAPS #{varCorte.mesRebaja.nombre}" />
+										</c:forEach>
+										<p:column headerText="$ Descuento por Incentivo al Retiro"  />
+										<p:column headerText="$ Aporte Estatal Final" />
 									</p:row>
 								</p:columnGroup>
 
@@ -235,8 +258,26 @@
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
-								<p:column>
-									<h:outputText value="#{_data.rebajaIAAPS}"
+								<p:column rendered="#{not empty _data.rebajaIAAPSCorte1}">
+									<h:outputText value="#{_data.rebajaIAAPSCorte1}"
+										styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{not empty _data.rebajaIAAPSCorte2}">
+									<h:outputText value="#{_data.rebajaIAAPSCorte2}"
+										styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{not empty _data.rebajaIAAPSCorte3}">
+									<h:outputText value="#{_data.rebajaIAAPSCorte3}"
+										styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{not empty _data.rebajaIAAPSCorte4}">
+									<h:outputText value="#{_data.rebajaIAAPSCorte4}"
 										styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
@@ -258,7 +299,7 @@
 
 						</p:tab>
 						
-						<p:tab id="tab2012" title="Año #{reportesPoblacionPercapitaController.anoActualMenos2}">
+						<p:tab id="tabAnoActualMenos2" title="Año #{reportesPoblacionPercapitaController.anoActualMenos2}">
 							<br />
 							<p:dataTable id="tabladatos2012" resizableColumns="true"
 								value="#{reportesPoblacionPercapitaController.reportesPerCapitaVO}"
@@ -269,18 +310,20 @@
 
 								<p:columnGroup type="header">
 									<p:row>
-										<p:column headerText="Región" width="250" />
-										<p:column headerText="Servicio" width="250" />
-										<p:column headerText="Comuna" width="250" />
-										<p:column headerText="Clasificación" width="250" />
-										<p:column headerText="$ Valor Per Capita" width="250" />
-										<p:column headerText="Población" width="250" />
-										<p:column headerText="Población Mayor 65 y Mas Años" width="250" />
-										<p:column headerText="$ Per Capita Año" width="250" />
-										<p:column headerText="$ Desempeño Difícil" width="250" />
-										<p:column headerText="$ Aporte Estatal" width="250" />
-										<p:column headerText="$ Rebaja IAAPS" width="250" />
-										<p:column headerText="$ Descuento por Incentivo al Retiro" width="250" />
+										<p:column headerText="Región"/>
+										<p:column headerText="Servicio"/>
+										<p:column headerText="Comuna" />
+										<p:column headerText="Clasificación"  />
+										<p:column headerText="$ Valor Per Capita" />
+										<p:column headerText="Población" />
+										<p:column headerText="Población Mayor 65 y Mas Años" />
+										<p:column headerText="$ Per Capita Año" />
+										<p:column headerText="$ Desempeño Difícil"  />
+										<p:column headerText="$ Aporte Estatal"  />
+										<c:forEach var="varCorte" items="#{reportesPoblacionPercapitaController.cortes}">
+											<p:column headerText="$ Rebaja IAAPS #{varCorte.mesRebaja.nombre}" />
+										</c:forEach>
+										<p:column headerText="$ Descuento por Incentivo al Retiro" />
 										<p:column headerText="$ Aporte Estatal Final" width="250" />
 									</p:row>
 								</p:columnGroup>
@@ -334,8 +377,26 @@
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
-								<p:column>
-									<h:outputText value="#{_data.rebajaIAAPS}"
+								<p:column rendered="#{not empty _data.rebajaIAAPSCorte1}">
+									<h:outputText value="#{_data.rebajaIAAPSCorte1}"
+										styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{not empty _data.rebajaIAAPSCorte2}">
+									<h:outputText value="#{_data.rebajaIAAPSCorte2}"
+										styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{not empty _data.rebajaIAAPSCorte3}">
+									<h:outputText value="#{_data.rebajaIAAPSCorte3}"
+										styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{not empty _data.rebajaIAAPSCorte4}">
+									<h:outputText value="#{_data.rebajaIAAPSCorte4}"
 										styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
@@ -359,7 +420,7 @@
 						
 						
 						
-						<p:tab id="tab2011" title="Año #{reportesPoblacionPercapitaController.anoActualMenos3}">
+						<p:tab id="tabAnoActualMenos3" title="Año #{reportesPoblacionPercapitaController.anoActualMenos3}">
 							<br />
 							<p:dataTable id="tabladatos2011" resizableColumns="true"
 								value="#{reportesPoblacionPercapitaController.reportesPerCapitaVO}"
@@ -380,7 +441,9 @@
 										<p:column headerText="$ Per Capita Año" width="250" />
 										<p:column headerText="$ Desempeño Difícil" width="250" />
 										<p:column headerText="$ Aporte Estatal" width="250" />
-										<p:column headerText="$ Rebaja IAAPS" width="250" />
+										<c:forEach var="varCorte" items="#{reportesPoblacionPercapitaController.cortes}">
+											<p:column headerText="$ Rebaja IAAPS #{varCorte.mesRebaja.nombre}" width="250" />
+										</c:forEach>
 										<p:column headerText="$ Descuento por Incentivo al Retiro" width="250" />
 										<p:column headerText="$ Aporte Estatal Final" width="250" />
 									</p:row>
@@ -435,8 +498,26 @@
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>
 								</p:column>
-								<p:column>
-									<h:outputText value="#{_data.rebajaIAAPS}"
+								<p:column rendered="#{not empty _data.rebajaIAAPSCorte1}">
+									<h:outputText value="#{_data.rebajaIAAPSCorte1}"
+										styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{not empty _data.rebajaIAAPSCorte2}">
+									<h:outputText value="#{_data.rebajaIAAPSCorte2}"
+										styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{not empty _data.rebajaIAAPSCorte3}">
+									<h:outputText value="#{_data.rebajaIAAPSCorte3}"
+										styleClass="textoPequenio textoAjustado">
+										<f:convertNumber type="number" maxFractionDigits="0" />
+									</h:outputText>
+								</p:column>
+								<p:column rendered="#{not empty _data.rebajaIAAPSCorte4}">
+									<h:outputText value="#{_data.rebajaIAAPSCorte4}"
 										styleClass="textoPequenio textoAjustado">
 										<f:convertNumber type="number" maxFractionDigits="0" />
 									</h:outputText>

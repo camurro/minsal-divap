@@ -319,5 +319,17 @@ public class RebajaDAO {
 		query.setParameter("idDocumento", idDocumento);
 		return query.executeUpdate();
 	}
+
+	public List<RebajaCorte> getCortes(Integer mesRebaja) {
+		try{
+			TypedQuery<RebajaCorte> query = this.em.createNamedQuery("RebajaCorte.findByMesRebaja", RebajaCorte.class);
+			query.setParameter("mesCorte", mesRebaja);
+			return query.getResultList();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
 	
 }

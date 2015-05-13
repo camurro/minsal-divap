@@ -1,4 +1,5 @@
 package cl.minsal.divap.controller;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +29,7 @@ import minsal.divap.vo.DependenciaVO;
 import minsal.divap.vo.EstablecimientoVO;
 import minsal.divap.vo.ItemVO;
 import minsal.divap.vo.ProgramaVO;
+import minsal.divap.vo.ServiciosSummaryVO;
 import minsal.divap.vo.SubtituloVO;
 
 import org.primefaces.event.FileUploadEvent;
@@ -36,9 +38,9 @@ import org.primefaces.model.UploadedFile;
 
 import cl.redhat.bandejaTareas.controller.BaseController;
 
-@Named ( "procesoConveniosController" ) 
+@Named ( "procesoConveniosModificatoriosController" ) 
 @ViewScoped 
-public class ProcesoConveniosController extends BaseController implements Serializable {
+public class ProcesoConveniosModificatoriosController extends BaseController implements Serializable {
 	private static final long serialVersionUID = 8979055329731411696L;
 	private List<ConvenioComponenteSubtituloVO> orderList = new ArrayList<ConvenioComponenteSubtituloVO>();
 	private Integer monto;
@@ -47,11 +49,14 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	private List<DependenciaVO> dependencias;
 	private String establecimientoSeleccionado;
 	private List<ItemVO> item;
+	private ItemVO itemSeleccionadoResolucion;
 	private String itemSeleccionado;
 	private Integer numeroResolucion;
+	private Integer numeroResolucionInicial;
 	private Integer totalElmentos;
 	private Integer docConvenio = null;
-	
+	private String error = "NOK";
+
 	private List<ProgramaVO> programas;
 	private List<ComunaVO> comunas = new ArrayList<ComunaVO>();
 	private List<EstablecimientoVO> establecimientos = new ArrayList<EstablecimientoVO>();
@@ -80,21 +85,143 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	private ConveniosService conveniosService;
 	@EJB
 	private SubtituloService subtituloService;
-	
+	private List<ServiciosSummaryVO> documentosResoluciones;
+	private CargaConvenioComponenteSubtituloVO cargaConvenioComponenteSubtituloVO;
+	private Boolean pasoInicial;
+	private String mensajeConvenio;
+
 	@PostConstruct 
 	public void init() {
-		System.out.println("ProcesoConveniosController Alcanzado.");
+		System.out.println("ProcesoConveniosModificatoriosController Alcanzado.");
 		if(sessionExpired()){
 			return;
 		}
+		String pasoIncial = getFromSession("pasoIncial", String.class);
+		mensajeConvenio = getFromSession("mensajeConvenio", String.class);
+		if(mensajeConvenio != null){
+			setOnSession("mensajeConvenio", null);
+		}else{
+			mensajeConvenio = "";
+		}
+		System.out.println("init pasoIncial->"+pasoIncial);
+		if(pasoIncial == null){
+			setPasoInicial(true);
+		}else{
+			setOnSession("pasoIncial", null);
+			Integer numeroResolucion = getFromSession("numeroResolucion", Integer.class);
+			setOnSession("numeroResolucion", null);
+			cargaConvenioComponenteSubtituloVO = conveniosService.cargaConvenioComponenteSubtitulo(numeroResolucion);
+			cargarDatosResolucion();
+			setPasoInicial(false);
+			setComponenteSeleccionado(null);
+			System.out.println("en el else cargaConvenioComponenteSubtituloVO-->"+cargaConvenioComponenteSubtituloVO);
+			if(getServicio() != null && getServicio().getId_servicio() != null){
+				setComunas(comunaService.getComunasByServicio(getServicio().getId_servicio()));
+				setEstablecimientos(establecimientosService.getEstablecimientosByServicio(getServicio().getId_servicio()));
+			}
+		}
+	}
+
+	public String buscarResolucion(){
+		FacesMessage msg = null;
+		String target = null;
+		System.out.println("numeroResolucion="+numeroResolucion);
+		if(numeroResolucion != null && numeroResolucion != 0){
+			cargaConvenioComponenteSubtituloVO = conveniosService.cargaConvenioComponenteSubtitulo(numeroResolucion);
+			if(cargaConvenioComponenteSubtituloVO == null){
+				System.out.println("cargaConvenioComponenteSubtituloVO == null");
+				msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "No existe este número resolución", null);
+			}else{
+				target = "divapServicioConveniosModificatoriosRecargar?faces-redirect=true";
+				setOnSession("pasoIncial", "false");
+				setOnSession("numeroResolucion", numeroResolucion);
+			}
+			System.out.println("cargaConvenioComponenteSubtituloVO ==>"+cargaConvenioComponenteSubtituloVO);
+		}else{
+			msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe ingresar el número resolución antes de realizar la búsqueda", null);
+		}
+		if(msg != null){
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+		return target;
+	}
+
+	private void cargarDatosResolucion() {
+		System.out.println("Cargar los datos del convenio");
+		orderList = new ArrayList<ConvenioComponenteSubtituloVO>();
+		
+		if(cargaConvenioComponenteSubtituloVO != null && cargaConvenioComponenteSubtituloVO.getConvenioComponentesSubtitulosVO() != null && cargaConvenioComponenteSubtituloVO.getConvenioComponentesSubtitulosVO().size() > 0){
+			System.out.println("cargaConvenioComponenteSubtituloVO.getConvenioComponentesSubtitulosVO().size()="+cargaConvenioComponenteSubtituloVO.getConvenioComponentesSubtitulosVO().size());
+			for(ConvenioComponenteSubtituloVO convenioComponenteSubtituloVO : cargaConvenioComponenteSubtituloVO.getConvenioComponentesSubtitulosVO()){
+				orderList.add(convenioComponenteSubtituloVO);
+			}
+			this.documentosResoluciones = new ArrayList<ServiciosSummaryVO>();
+			if(cargaConvenioComponenteSubtituloVO.getDocumentosResoluciones() != null && cargaConvenioComponenteSubtituloVO.getDocumentosResoluciones().size() > 0){
+				for(ServiciosSummaryVO serviciosSummaryVO : cargaConvenioComponenteSubtituloVO.getDocumentosResoluciones()){
+					this.documentosResoluciones.add(new ServiciosSummaryVO(serviciosSummaryVO));
+				}
+			}
+		}else{
+			System.out.println("cargaConvenioComponenteSubtituloVO.getConvenioComponentesSubtitulosVO().size()="+0);
+		}
+		setTotalElmentos(orderList.size());
 		setLeyRetiro(false);
-		setProgramaSeleccionado(null);
-		setComponenteSeleccionado(null);
-		setPrograma(null);
-		setTotalElmentos(0);
-		if(getServicio() != null && getServicio().getId_servicio() != null){
-			setComunas(comunaService.getComunasByServicio(getServicio().getId_servicio()));
-			setEstablecimientos(establecimientosService.getEstablecimientosByServicio(getServicio().getId_servicio()));
+		dependenciaSeleccionado = "";
+		componentes = new ArrayList<ComponentesVO>();
+		itemSeleccionadoResolucion = new ItemVO();
+		itemSeleccionadoResolucion.setId(cargaConvenioComponenteSubtituloVO.getItem());
+		itemSeleccionadoResolucion.setNombre(cargaConvenioComponenteSubtituloVO.getNombre());
+		numeroResolucionInicial = cargaConvenioComponenteSubtituloVO.getNumeroResolucionInicial();
+		this.documentosResoluciones = cargaConvenioComponenteSubtituloVO.getDocumentosResoluciones();
+		this.programa = cargaConvenioComponenteSubtituloVO.getPrograma();
+		if( this.programa != null){
+			System.out.println("this.programa.getNombre()="+this.programa.getNombre());
+			subtituloSeleccionado = "";
+			programaSeleccionado = this.programa.getIdProgramaAno().toString();
+			subtitulos = new ArrayList<SubtituloVO>();
+			System.out.println("programa.getDependenciaMunicipal()->" + cargaConvenioComponenteSubtituloVO.getPrograma().getDependenciaMunicipal() + " programa.getDependenciaServicio()->" + cargaConvenioComponenteSubtituloVO.getPrograma().getDependenciaServicio());
+			if(cargaConvenioComponenteSubtituloVO.getDependenciaMuncipal()){
+				dependenciaSeleccionado = "1";
+			}else{
+				dependenciaSeleccionado = "2";
+			}
+			List<ComponentesVO> componentesTmp = componenteService.getComponenteByPrograma(this.programa.getId());
+			if(componentesTmp != null && componentesTmp.size() > 0){
+				for(ComponentesVO componentesVO : componentesTmp){
+					if(TiposPrograma.ProgramaLey.getId().equals(componentesVO.getTipoComponente().getId())){
+						setLeyRetiro(true);
+					}
+				}
+			}
+			if(dependenciaSeleccionado.equals("1")){
+				if(componentesTmp != null && componentesTmp.size() > 0){
+					for(ComponentesVO componentesVO : componentesTmp){
+						for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){
+							if(Subtitulo.SUBTITULO24.getId().equals(subtituloVO.getId())){
+								componentes.add(componentesVO);
+								break;
+							}
+						}
+					}
+				}
+				for(ComunaVO comuna: getComunas()){
+					item.add(new ItemVO(comuna.getIdComuna(), comuna.getDescComuna()));
+				}
+			}else{
+				if(componentesTmp != null && componentesTmp.size() > 0){
+					for(ComponentesVO componentesVO : componentesTmp){
+						for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){
+							if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO22.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO29.getId().equals(subtituloVO.getId())){
+								componentes.add(componentesVO);
+								break;
+							}
+						}
+					}
+				}
+				for(EstablecimientoVO establecimiento: getEstablecimientos()){
+					item.add(new ItemVO(establecimiento.getId(), establecimiento.getNombre()));
+				}
+			}
 		}
 	}
 
@@ -120,29 +247,34 @@ public class ProcesoConveniosController extends BaseController implements Serial
 
 	public void cargaSubtitulo(){
 		System.out.println("cargaSubtitulo componenteSeleccionado="+componenteSeleccionado);
+		this.monto = 0;
 		if(componenteSeleccionado != null && !componenteSeleccionado.trim().isEmpty()){
 			subtitulos = new ArrayList<SubtituloVO>();
+			subtituloSeleccionado = "";
 			ComponentesVO componente = componenteService.getComponenteById(Integer.parseInt(componenteSeleccionado));
+			System.out.println("cargaSubtitulo dependenciaSeleccionado->"+dependenciaSeleccionado);
 			if(dependenciaSeleccionado.equals("1")){
 				for(SubtituloVO subtituloVO : componente.getSubtitulos()){
-					 if(Subtitulo.SUBTITULO24.getId().equals(subtituloVO.getId())){
-						 subtitulos.add(subtituloVO);
-					 }
+					if(Subtitulo.SUBTITULO24.getId().equals(subtituloVO.getId())){
+						subtitulos.add(subtituloVO);
+					}
 				}
 			}else{
 				for(SubtituloVO subtituloVO : componente.getSubtitulos()){
-					 if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO22.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO29.getId().equals(subtituloVO.getId())){
-						 subtitulos.add(subtituloVO);
-					 }
+					if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO22.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO29.getId().equals(subtituloVO.getId())){
+						subtitulos.add(subtituloVO);
+					}
 				}
 			}
 			if(subtitulos.size() == 1){
+				System.out.println("cargaSubtitulo subtitulos.get(0).getId().toString()->"+subtitulos.get(0).getId().toString());
 				subtituloSeleccionado = subtitulos.get(0).getId().toString();
 			}
 		}else{
 			subtituloSeleccionado = "";
 			subtitulos = new ArrayList<SubtituloVO>();
 		}
+		System.out.println("Fin cargaSubtitulo componenteSeleccionado="+componenteSeleccionado);
 	}
 
 	public List<ProgramaVO> getProgramas() {
@@ -184,10 +316,10 @@ public class ProcesoConveniosController extends BaseController implements Serial
 					if(componentesTmp != null && componentesTmp.size() > 0){
 						for(ComponentesVO componentesVO : componentesTmp){
 							for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){
-								 if(Subtitulo.SUBTITULO24.getId().equals(subtituloVO.getId())){
-									 componentes.add(componentesVO);
-									 break;
-								 }
+								if(Subtitulo.SUBTITULO24.getId().equals(subtituloVO.getId())){
+									componentes.add(componentesVO);
+									break;
+								}
 							}
 						}
 					}
@@ -198,10 +330,10 @@ public class ProcesoConveniosController extends BaseController implements Serial
 					if(componentesTmp != null && componentesTmp.size() > 0){
 						for(ComponentesVO componentesVO : componentesTmp){
 							for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){
-								 if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO22.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO29.getId().equals(subtituloVO.getId())){
-									 componentes.add(componentesVO);
-									 break;
-								 }
+								if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO22.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO29.getId().equals(subtituloVO.getId())){
+									componentes.add(componentesVO);
+									break;
+								}
 							}
 						}
 					}
@@ -225,7 +357,7 @@ public class ProcesoConveniosController extends BaseController implements Serial
 			orderList = new ArrayList<ConvenioComponenteSubtituloVO>();
 		}
 	}
-	
+
 	public void cargarComunaEstablecimiento(){
 		System.out.println("cargarComunaEstablecimiento dependenciaSeleccionado="+dependenciaSeleccionado);
 		if(dependenciaSeleccionado != null && !dependenciaSeleccionado.equals("0")){
@@ -239,10 +371,10 @@ public class ProcesoConveniosController extends BaseController implements Serial
 				if(componentesTmp != null && componentesTmp.size() > 0){
 					for(ComponentesVO componentesVO : componentesTmp){
 						for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){
-							 if(Subtitulo.SUBTITULO24.getId().equals(subtituloVO.getId())){
-								 componentes.add(componentesVO);
-								 break;
-							 }
+							if(Subtitulo.SUBTITULO24.getId().equals(subtituloVO.getId())){
+								componentes.add(componentesVO);
+								break;
+							}
 						}
 					}
 				}
@@ -253,10 +385,10 @@ public class ProcesoConveniosController extends BaseController implements Serial
 				if(componentesTmp != null && componentesTmp.size() > 0){
 					for(ComponentesVO componentesVO : componentesTmp){
 						for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){
-							 if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO22.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO29.getId().equals(subtituloVO.getId())){
-								 componentes.add(componentesVO);
-								 break;
-							 }
+							if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO22.getId().equals(subtituloVO.getId()) || Subtitulo.SUBTITULO29.getId().equals(subtituloVO.getId())){
+								componentes.add(componentesVO);
+								break;
+							}
 						}
 					}
 				}
@@ -274,93 +406,14 @@ public class ProcesoConveniosController extends BaseController implements Serial
 			subtitulos = new ArrayList<SubtituloVO>();
 		}
 	}
-	
+
 	public void setearComunaEstablecimiento(){
 		System.out.println("itemSeleccionado =" + itemSeleccionado);
 		componenteSeleccionado = "";
 		orderList = new ArrayList<ConvenioComponenteSubtituloVO>();
 		subtituloSeleccionado = ""; 
 	}
-	
 
-	/*public void buscar(){
-		System.out.println("cargarDatos");
-		if(componenteSeleccionado == null || componenteSeleccionado.trim().isEmpty()){
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el componente antes de realizar la búsqueda", null);
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}else{
-			setLeyRetiro(false);
-			Integer idComponente = Integer.parseInt(componenteSeleccionado);
-			ComponentesVO componentesVO = componenteService.getComponenteById(idComponente);
-			if(componentesVO != null){
-				if(TiposPrograma.ProgramaLey.getId().equals(componentesVO.getTipoComponente().getId())){
-					setLeyRetiro(true);
-				}
-			}
-			System.out.println("getPrograma().getIdProgramaAno()="+getPrograma().getIdProgramaAno());
-			System.out.println("idComponente="+idComponente);
-			System.out.println("idServicio=" + getServicio().getId_servicio());
-			System.out.println("EstadosConvenios="+EstadosConvenios.INGRESADO.getId());
-			for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){
-				if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId())){
-					Integer idEstablecimientoSub21 = ((establecimientoSeleccionado21 == null || establecimientoSeleccionado21.trim().isEmpty() || establecimientoSeleccionado21.trim().equals("0")) ? null : Integer.parseInt(establecimientoSeleccionado21));
-					System.out.println("Subtitulo.SUBTITULO21.getId()="+Subtitulo.SUBTITULO21.getId());
-					System.out.println("idEstablecimientoSub21="+idEstablecimientoSub21);
-				}else if(Subtitulo.SUBTITULO22.getId().equals(subtituloVO.getId())){
-					Integer idEstablecimientoSub22 = ((establecimientoSeleccionado22 == null || establecimientoSeleccionado22.trim().isEmpty() || establecimientoSeleccionado22.trim().equals("0"))?null:Integer.parseInt(establecimientoSeleccionado22));
-					System.out.println("Subtitulo.SUBTITULO22.getId()="+Subtitulo.SUBTITULO22.getId());
-					System.out.println("idEstablecimientoSub22="+idEstablecimientoSub22);
-				}else if(Subtitulo.SUBTITULO24.getId().equals(subtituloVO.getId())){
-					Integer idComuna = ((comunaSeleccionada == null || comunaSeleccionada.trim().isEmpty() || comunaSeleccionada.trim().equals("0")) ? null : Integer.parseInt(comunaSeleccionada));
-					System.out.println("Subtitulo.SUBTITULO24.getId()="+Subtitulo.SUBTITULO24.getId());
-					System.out.println("idComuna="+idComuna);
-				}else if(Subtitulo.SUBTITULO29.getId().equals(subtituloVO.getId())){
-					Integer idEstablecimientoSub29 = ((establecimientoSeleccionado29 == null || establecimientoSeleccionado29.trim().isEmpty() || establecimientoSeleccionado29.trim().equals("0"))?null:Integer.parseInt(establecimientoSeleccionado29));
-					System.out.println("Subtitulo.SUBTITULO29.getId()="+Subtitulo.SUBTITULO29.getId());
-					System.out.println("idEstablecimientoSub22="+idEstablecimientoSub29);
-				}
-			} 
-		}
-		System.out.println("fin buscar-->");
-
-	}*/
-
-	/*public String guardarConvenioServicio(){
-		System.out.println("guardarConvenioServicio()");
-		String mensaje = "El archivo fue cargado correctamente.";
-		FacesMessage msg = null;
-		if (plantillaFile != null) {
-			try {
-				String filename = plantillaFile.getFileName();
-				byte[] contentConvenioFile = plantillaFile.getContents();
-				Integer docConvenio = persistFile(filename, contentConvenioFile);
-				conveniosService.moveConvenioToAlfresco(docConvenio, getAno());
-				//CargaConvenioServicioComponenteVO cargaConvenioServicioComponenteVO = conveniosService.guardarConvenioServicioComponente(getPrograma().getIdProgramaAno(), convenioServicio, docConvenio);
-				switch (subtituloSeleccionado) {
-				case SUBTITULO21:
-					//getResolucionConveniosServicioSub21().set(rowIndexServicio21, cargaConvenioServicioComponenteVO);
-					break;
-				case SUBTITULO22:
-					//getResolucionConveniosServicioSub22().set(rowIndexServicio22, cargaConvenioServicioComponenteVO);
-					break;
-				case SUBTITULO29:
-					//getResolucionConveniosServicioSub29().set(rowIndexServicio29, cargaConvenioServicioComponenteVO);
-					break;
-				default:
-					break;
-				}
-				msg = new FacesMessage(FacesMessage.SEVERITY_INFO, mensaje, null);
-			} catch (Exception e) {
-				msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null);
-				e.printStackTrace();
-			}
-		} else {
-			mensaje = "El archivo no fuero cargado.";
-			msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, null);
-		}
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-		return null;
-	}*/
 
 	public String guardarConvenioComuna(){
 		System.out.println("guardarConvenioServicio()");
@@ -522,14 +575,6 @@ public class ProcesoConveniosController extends BaseController implements Serial
 		this.ano = ano;
 	}
 
-	/*public String addAction() {
-		ComponentesVO componente = componenteService.getComponenteById(Integer.parseInt(componenteSeleccionado));
-		SubtituloVO subtitulo = subtituloService.getSubtituloVOById(Integer.parseInt(subtituloSeleccionados));
-		OrderBeanVO orderitem = new OrderBeanVO(componente, subtitulo, monto);
-		orderList.add(orderitem);
-		return null;
-	}*/
-	
 	public void addAction() {
 		System.out.println("Inicio addAction");
 		ComponentesVO componente = componenteService.getComponenteById(Integer.parseInt(componenteSeleccionado));
@@ -547,7 +592,7 @@ public class ProcesoConveniosController extends BaseController implements Serial
 		monto = null;
 		System.out.println("Fin addAction");
 	}
-	
+
 	public String limpiar() {
 		System.out.println("Inicio limpiar");
 		programaSeleccionado = null;
@@ -566,10 +611,11 @@ public class ProcesoConveniosController extends BaseController implements Serial
 		System.out.println("Fin limpiar");
 		return null;
 	}
-	
+
 	public void cargarArchivo(){
 		FacesMessage msg = null;
 		boolean errorCargandoArchivo = false;
+		error = "NOK";
 		if (plantillaFile != null) {
 			try {
 				String filename = plantillaFile.getFileName();
@@ -595,44 +641,46 @@ public class ProcesoConveniosController extends BaseController implements Serial
 		}else{
 			CargaConvenioComponenteSubtituloVO cargaConvenioComponenteSubtituloVO = formToConvenio();
 			cargaConvenioComponenteSubtituloVO.setDocumento(docConvenio);
-			conveniosService.guardar(cargaConvenioComponenteSubtituloVO);
-			limpiar();
-			String mensaje = "Convenio guardado correctamente.";
-			msg = new FacesMessage(FacesMessage.SEVERITY_INFO, mensaje, null);
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			conveniosService.guardarConvenioModificatorio(cargaConvenioComponenteSubtituloVO);
+			error = "OK";
+			try {
+				String mensaje = "Convenio modificatorio guardado correctamente.";
+				msg = new FacesMessage(FacesMessage.SEVERITY_INFO, mensaje, null);
+				setOnSession("mensajeConvenio", mensaje);
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				FacesContext.getCurrentInstance().getExternalContext().redirect("divapServicioConveniosModificatorios.jsf");
+			} catch (IOException e) {
+				String mensaje = "Error al redirigir";
+				msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, null);
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				e.printStackTrace();
+			}
 		}
 	}
-	
+
 	public String guardar(){
 		FacesMessage msg = null;
 		CargaConvenioComponenteSubtituloVO cargaConvenioComponenteSubtituloVO = formToConvenio();
 		cargaConvenioComponenteSubtituloVO.setDocumento(docConvenio);
-		conveniosService.guardar(cargaConvenioComponenteSubtituloVO);
+		conveniosService.guardarConvenioModificatorio(cargaConvenioComponenteSubtituloVO);
 		limpiar();
 		String mensaje = "Convenio guardado correctamente.";
 		msg = new FacesMessage(FacesMessage.SEVERITY_INFO, mensaje, null);
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		return null;
 	}
-	
+
 	private CargaConvenioComponenteSubtituloVO formToConvenio() {
-		CargaConvenioComponenteSubtituloVO cargaConvenioComponenteSubtituloVO = new CargaConvenioComponenteSubtituloVO();
-		cargaConvenioComponenteSubtituloVO.setItem(Integer.parseInt(itemSeleccionado));
-		if(dependenciaSeleccionado.equals("1")){
-			cargaConvenioComponenteSubtituloVO.setDependenciaMuncipal(true);
-		}else{
-			cargaConvenioComponenteSubtituloVO.setDependenciaMuncipal(false);			
-		}
 		cargaConvenioComponenteSubtituloVO.setNumeroResolucion(numeroResolucion);
 		cargaConvenioComponenteSubtituloVO.setFechaResolucion(currentDate);
-		cargaConvenioComponenteSubtituloVO.setPrograma(getPrograma());
 		cargaConvenioComponenteSubtituloVO.setConvenioComponentesSubtitulosVO(orderList);
 		return cargaConvenioComponenteSubtituloVO;
 	}
 
 	public void onEdit(RowEditEvent event) {  
 		FacesMessage msg = new FacesMessage("Registro Modificado",((ConvenioComponenteSubtituloVO) event.getObject()).getSubtitulo().getNombre());  
-		FacesContext.getCurrentInstance().addMessage(null, msg);  
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		setTotalElmentos(orderList.size());
 	}  
 
 	public void onCancel(RowEditEvent event) {  
@@ -681,7 +729,7 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	public void setDocIdDownload(String docIdDownload) {
 		this.docIdDownload = docIdDownload;
 	}
-	
+
 	public String downloadTemplate() {
 		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownload()));
 		setDocumento(documentService.getDocument(docDownload));
@@ -744,5 +792,77 @@ public class ProcesoConveniosController extends BaseController implements Serial
 	public void setTotalElmentos(Integer totalElmentos) {
 		this.totalElmentos = totalElmentos;
 	}
-		
+
+	public Boolean getPasoInicial() {
+		return pasoInicial;
+	}
+
+	public void setPasoInicial(Boolean pasoInicial) {
+		this.pasoInicial = pasoInicial;
+	}
+
+	public Boolean renderButton(){
+		if(cargaConvenioComponenteSubtituloVO == null){
+			System.out.println("renderButton---> false");
+			return false;
+		} 
+		System.out.println("renderButton---> true");
+		return true;
+	}
+
+	public CargaConvenioComponenteSubtituloVO getCargaConvenioComponenteSubtituloVO() {
+		if(cargaConvenioComponenteSubtituloVO == null){
+			System.out.println("cargaConvenioComponenteSubtituloVO esta nulo");
+		}else{
+			System.out.println("cargaConvenioComponenteSubtituloVO no esta nulo");
+		}
+		return cargaConvenioComponenteSubtituloVO;
+	}
+
+	public void setCargaConvenioComponenteSubtituloVO(
+			CargaConvenioComponenteSubtituloVO cargaConvenioComponenteSubtituloVO) {
+		this.cargaConvenioComponenteSubtituloVO = cargaConvenioComponenteSubtituloVO;
+	}
+
+	public ItemVO getItemSeleccionadoResolucion() {
+		return itemSeleccionadoResolucion;
+	}
+
+	public void setItemSeleccionadoResolucion(ItemVO itemSeleccionadoResolucion) {
+		this.itemSeleccionadoResolucion = itemSeleccionadoResolucion;
+	}
+
+	public Integer getNumeroResolucionInicial() {
+		return numeroResolucionInicial;
+	}
+
+	public void setNumeroResolucionInicial(Integer numeroResolucionInicial) {
+		this.numeroResolucionInicial = numeroResolucionInicial;
+	}
+
+	public List<ServiciosSummaryVO> getDocumentosResoluciones() {
+		return documentosResoluciones;
+	}
+
+	public void setDocumentosResoluciones(
+			List<ServiciosSummaryVO> documentosResoluciones) {
+		this.documentosResoluciones = documentosResoluciones;
+	}
+
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
+	}
+
+	public String getMensajeConvenio() {
+		return mensajeConvenio;
+	}
+
+	public void setMensajeConvenio(String mensajeConvenio) {
+		this.mensajeConvenio = mensajeConvenio;
+	}
+	
 }
