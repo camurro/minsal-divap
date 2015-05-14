@@ -25545,14 +25545,13 @@ ALTER TABLE caja
    ALTER COLUMN programa SET NOT NULL;
 ALTER TABLE caja
    ALTER COLUMN servicio SET NOT NULL;
-----------REVISAR DE AQUI EN ADELANTE EN QA------------
+
 
 ----------Este alter dio problemas EN QA------------
 ALTER TABLE caja_monto
   DROP CONSTRAINT monto_fk;
 
-ALTER TABLE caja
-   ALTER COLUMN id_componente DROP NOT NULL;
+
 
 ALTER TABLE documento_rebaja
   ADD COLUMN servicio integer;
@@ -25561,12 +25560,6 @@ ALTER TABLE documento_rebaja
 
 
 ALTER TABLE detalle_remesas ADD COLUMN estimada boolean;
-
-UPDATE detalle_remesas
-   SET estimada=false;
-
-ALTER TABLE detalle_remesas ALTER COLUMN estimada SET NOT NULL;
-ALTER TABLE detalle_remesas ALTER COLUMN estimada SET DEFAULT false;
 
 INSERT INTO estado_programa(id_estado_programa, nombre_estado) VALUES (6, 'Calcular Propuesta');
 INSERT INTO estado_programa(id_estado_programa, nombre_estado) VALUES (7, 'Finalizar Propuesta');
@@ -25597,6 +25590,7 @@ ALTER TABLE caja_monto
   ADD COLUMN reparos boolean NOT NULL DEFAULT false;
 
 
+
 CREATE TABLE public.flujo_caja_consolidador
 (
    id_flujo_caja_consolidador serial NOT NULL, 
@@ -25613,7 +25607,6 @@ WITH (
   OIDS = FALSE
 )
 ;
-
 
 CREATE TABLE public.estimacion_flujo_caja_consolidador_seguimiento
 (
@@ -25654,7 +25647,6 @@ WITH (
 ALTER TABLE documento_estimacion_flujo_caja_consolidador
   ADD CONSTRAINT flujo_caja_consolidador FOREIGN KEY (flujo_caja_consolidador) REFERENCES flujo_caja_consolidador (id_flujo_caja_consolidador) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
-
 CREATE TABLE public.reporte_emails_flujo_caja_consolidador
 (
    id_reporte_emails_flujo_caja_consolidador serial NOT NULL, 
@@ -25679,8 +25671,10 @@ INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (17, 'Ha
 INSERT INTO ano_en_curso(ano, monto_percapital_basal, asignacion_adulto_mayor, inflactor, inflactor_marco_presupuestario, repo_alfresco)
     VALUES (2016, 3794, 543, 1.3070, 3, false);
 
+
 INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, estadoreliquidacion, estado_ot, estado_modificacion_aps)
     VALUES (490345, 3, 2016, 1, 1, 1, 1, 1, 1);
+
 
 INSERT INTO dia(id, dia) VALUES (1, 1);
 INSERT INTO dia(id, dia) VALUES (2, 2);
@@ -25747,7 +25741,6 @@ ALTER TABLE documento_estimacion_flujo_caja_consolidador
 ALTER TABLE documento_estimacion_flujo_caja_consolidador
   ADD CONSTRAINT mes_fk FOREIGN KEY (mes) REFERENCES mes (id_mes) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
-
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (100, 1, 70, 490345);
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (101, 2, 30, 490345, 10);
 
@@ -25757,13 +25750,11 @@ INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (4, 38, 2);
 INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (5, 20, 1);
 INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (6, 20, 2);
 
-
 INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, estadoreliquidacion, estado_ot, estado_modificacion_aps)
     VALUES (110, 20, 2015, 1, 1, 1, 1, 1, 1);
 
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (102, 1, 70, 110);
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (103, 2, 30, 110, 10);
-
 
 INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, estadoreliquidacion, estado_ot, estado_modificacion_aps)
     VALUES (111, 20, 2016, 1, 1, 1, 1, 1, 1);
@@ -25771,11 +25762,8 @@ INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (104, 1, 70, 111);
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (105, 2, 30, 111, 10);
 
-
-
 INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (7, 37, 1);
 INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (8, 37, 2);
-
 
 INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, estadoreliquidacion, estado_ot, estado_modificacion_aps)
     VALUES (417553, 37, 2015, 1, 1, 1, 1, 1, 1);
@@ -25783,15 +25771,13 @@ INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (106, 1, 70, 417553);
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (107, 2, 30, 417553, 10);
 
+
 INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, estadoreliquidacion, estado_ot, estado_modificacion_aps)
     VALUES (527527, 37, 2016, 1, 1, 1, 1, 1, 1);
 
+
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa) VALUES (108, 1, 70, 527527);
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (109, 2, 30, 527527, 10);
-
-
-
-
 
 -- 03 de marzo
 
@@ -25800,8 +25786,10 @@ ALTER TABLE detalle_remesas
 
 ALTER TABLE detalle_remesas
   ADD COLUMN componente integer;
+
 ALTER TABLE detalle_remesas
   ADD CONSTRAINT componente_fk FOREIGN KEY (componente) REFERENCES componente (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
 
 INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, estadoreliquidacion, estado_ot, estado_modificacion_aps)
     VALUES (112, 16, 2015, 1, 1, 1, 1, 1, 1);
@@ -25811,7 +25799,6 @@ INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (111
 
 INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (9, 16, 1);
 INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (10, 16, 2);
-
 
 INSERT INTO programa_ano(id_programa_ano, programa, ano, estado, estadoflujocaja, estado_convenio, estadoreliquidacion, estado_ot, estado_modificacion_aps)
     VALUES (113, 31, 2015, 1, 1, 1, 1, 1, 1);
@@ -25857,8 +25844,6 @@ INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (121
 
 INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (19, 43, 1);
 INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (20, 43, 2);
-
-
 
 CREATE TABLE remesa_convenios
 (
@@ -25920,6 +25905,24 @@ ALTER TABLE convenio_servicio_componente
    ALTER COLUMN estado_convenio SET NOT NULL;
 
 
+----------REVISAR DE AQUI EN ADELANTE EN QA------------
+ALTER TABLE caja
+   ALTER COLUMN id_componente DROP NOT NULL;
+
+
+ALTER TABLE detalle_remesas ALTER COLUMN estimada SET NOT NULL;
+ALTER TABLE detalle_remesas ALTER COLUMN estimada SET DEFAULT false;
+
+UPDATE detalle_remesas
+   SET estimada=false;
+
+
+
+********************************************
+INSERT INTO estado_convenio(id_estado_convenio, nombre_estado) VALUES (4, 'Pagado');
+INSERT INTO estado_convenio(id_estado_convenio, nombre_estado) VALUES (5, 'En Tramite');
+
+
 UPDATE estado_convenio
    SET nombre_estado='Rechazado'
  WHERE  id_estado_convenio=3;
@@ -25953,6 +25956,7 @@ ALTER TABLE convenio_servicio_componente
 
 ALTER TABLE convenio_servicio
   ADD COLUMN estado_convenio integer;
+
 ALTER TABLE convenio_servicio
   ADD CONSTRAINT estado_convenio_fk FOREIGN KEY (estado_convenio) REFERENCES estado_convenio (id_estado_convenio) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
@@ -25963,6 +25967,7 @@ ALTER TABLE convenio_servicio
 
 ALTER TABLE convenio_comuna
   ADD COLUMN estado_convenio integer;
+
 ALTER TABLE convenio_comuna
   ADD CONSTRAINT estado_convenio_fk FOREIGN KEY (estado_convenio) REFERENCES estado_convenio (id_estado_convenio) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
@@ -26022,6 +26027,8 @@ ALTER TABLE detalle_remesas
 
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (45, 'Ordinario Orden Transferencia');
 
+*****************************************************************************************************************
+
 INSERT INTO cumplimiento_programa(id_cumplimiento_programa, programa, porcentaje_desde, porcentaje_hasta, rebaja)
     VALUES (17, 20, 0, 19.99, 100);
 
@@ -26047,6 +26054,35 @@ INSERT INTO cumplimiento_programa(id_cumplimiento_programa, programa, porcentaje
 
 INSERT INTO cumplimiento_programa(id_cumplimiento_programa, programa, porcentaje_desde, porcentaje_hasta, rebaja)
     VALUES (24, 37, 40, 100, 0);
+*****************************************************************************************************************
+
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (1,'Hacer seguimiento oficio');
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (2,'Hacer seguimiento decreto');
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (3,'Hacer seguimiento toma de razon');
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (4,'Hacer seguimiento resoluciones');
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (10,'Hacer Seguimiento de Resoluciones de Rebaja');
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (14,'Hacer Seguimiento Resolución de Retiro');
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (15,'Hacer Seguimiento Resolucion Modificacion Programas de Reforzamiento');
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (16,'Hacer Seguimiento Ordinario Solicitud Antecedentes');
+
+
+INSERT INTO cumplimiento_programa VALUES (1, 12, 0, 19.99, 100);
+INSERT INTO cumplimiento_programa VALUES (2, 12, 20, 29.99, 75);
+INSERT INTO cumplimiento_programa VALUES (3, 12, 30, 39.99, 50);
+INSERT INTO cumplimiento_programa VALUES (4, 12, 40, 100, 0);
+INSERT INTO cumplimiento_programa VALUES (5, 3, 0, 19.99, 100);
+INSERT INTO cumplimiento_programa VALUES (6, 3, 20, 29.99, 75);
+INSERT INTO cumplimiento_programa VALUES (7, 3, 30, 39.99, 50);
+INSERT INTO cumplimiento_programa VALUES (8, 3, 40, 100, 0);
+INSERT INTO cumplimiento_programa VALUES (9, 9, 0, 19.99, 100);
+INSERT INTO cumplimiento_programa VALUES (10, 9, 20, 29.99, 75);
+INSERT INTO cumplimiento_programa VALUES (11, 9, 30, 39.99, 50);
+INSERT INTO cumplimiento_programa VALUES (12, 9, 40, 100, 0);
+INSERT INTO cumplimiento_programa VALUES (13, 38, 0, 19.99, 100);
+INSERT INTO cumplimiento_programa VALUES (14, 38, 20, 29.99, 75);
+INSERT INTO cumplimiento_programa VALUES (15, 38, 30, 39.99, 50);
+INSERT INTO cumplimiento_programa VALUES (16, 38, 40, 100, 0);
+
     
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (20, 'Planilla Oficio Consulta');
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (21, 'Toma Razón Decreto Aporte Estatal');

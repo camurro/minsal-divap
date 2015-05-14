@@ -75,7 +75,7 @@ public class DistribucionInicialPerCapitaRESTService extends BaseRest{
 		if(docId == null){
 			throw new IllegalArgumentException("documento: "+ docId + " no puede ser nulo");
 		}
-		System.out.println("valorizarPlanSalud");
+		System.out.println("subirAlfresco");
         return 1;
     }
 	

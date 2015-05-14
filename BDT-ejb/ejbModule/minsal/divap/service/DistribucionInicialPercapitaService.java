@@ -1293,7 +1293,7 @@ public class DistribucionInicialPercapitaService {
 						if(antecendentesComunaEvaluacion == null){
 							AntecendentesComuna antecendentesComunaInicial = antecedentesComunaDAO.getAntecendentesComunaByComunaAno(comuna.getId(), (ano-1));
 							if(antecendentesComunaInicial == null){
-								System.out.println("AntecendentesComuna para la comuna de " + comuna.getNombre() +" del año " + (ano-1) + " No existe");
+								System.out.println("AntecendentesComuna para la comuna de " + comuna.getNombre() +" del año " + (ano-1) + " No existe para configurar la del año evaluacion " + ano);
 								continue;
 							}
 							if(antecendentesComunaInicial.getClasificacion() == null){
@@ -1307,13 +1307,13 @@ public class DistribucionInicialPercapitaService {
 							antecendentesComunaEvaluacion.setIdComuna(antecendentesComunaInicial.getIdComuna());
 							AnoEnCurso anoEvaluacion = anoDAO.getAnoById(ano);
 							if(anoEvaluacion == null){
-								AnoEnCurso anoInicial = anoDAO.getAnoById((ano-1));
+								AnoEnCurso anoBase = anoDAO.getAnoById((ano-1));
 								anoEvaluacion = new AnoEnCurso();
 								anoEvaluacion.setAno(ano);
-								anoEvaluacion.setMontoPercapitalBasal(anoInicial.getMontoPercapitalBasal());
-								anoEvaluacion.setAsignacionAdultoMayor(anoInicial.getAsignacionAdultoMayor());
-								anoEvaluacion.setInflactor(anoInicial.getInflactor());
-								anoEvaluacion.setInflactorMarcoPresupuestario(anoInicial.getInflactorMarcoPresupuestario());
+								anoEvaluacion.setMontoPercapitalBasal(anoBase.getMontoPercapitalBasal());
+								anoEvaluacion.setAsignacionAdultoMayor(anoBase.getAsignacionAdultoMayor());
+								anoEvaluacion.setInflactor(anoBase.getInflactor());
+								anoEvaluacion.setInflactorMarcoPresupuestario(anoBase.getInflactorMarcoPresupuestario());
 								alfrescoService.createRepoAlfresco(ano);
 								anoEvaluacion.setRepoAlfresco(true);
 								anoDAO.save(anoEvaluacion);
