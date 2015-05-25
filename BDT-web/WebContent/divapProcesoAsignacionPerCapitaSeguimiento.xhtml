@@ -397,8 +397,8 @@
 							</h:panelGrid>
 
                             <p:panel id="panelBusqueda">
-                            <h:panelGrid columns="6" >
-							<span class="strong">Archivo: </span> Archivo comprimido con Resoluciones para Servicio de Salud
+                            <span class="strong">Archivo: </span> Archivo comprimido con Resoluciones para Servicio de Salud
+                            <h:panelGrid columns="11" >
 							<ul class="versionesArchivo">
 								<c:forEach var="vardoc" items="#{procesoAsignacionPerCapitaSeguimientoController.serviciosResoluciones}">
 								<li>
@@ -413,6 +413,7 @@
 											oncomplete="dlgUploadVersion.show();" /> 
 										] 
 								<h:graphicImage value="resources/true.png"  styleClass="divapIcons" rendered="#{vardoc.versionFinal}"/> 
+								<h:graphicImage value="resources/false.png"  styleClass="divapIcons" rendered="#{not vardoc.versionFinal}"/> 
 								</li>
 								</c:forEach>
 							</ul>

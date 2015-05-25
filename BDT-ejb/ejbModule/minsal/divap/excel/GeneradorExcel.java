@@ -6922,7 +6922,7 @@ public class GeneradorExcel {
 						cellItem.setCellValue(asignaciones.get(i).getComuna());
 						break;
 					default:
-						cellItem.setCellValue(String.valueOf(asignaciones.get(i).getValorDesempenoDificil()));
+						cellItem.setCellValue(String.valueOf(((asignaciones.get(i).getValorDesempenoDificil() == null) ? 0 : asignaciones.get(i).getValorDesempenoDificil())));
 						break;
 					}
 					

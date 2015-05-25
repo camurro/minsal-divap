@@ -21,6 +21,7 @@ import javax.xml.bind.JAXBException;
 import minsal.divap.dao.AnoDAO;
 import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.DistribucionInicialPercapitaDAO;
+import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.dao.SeguimientoDAO;
 import minsal.divap.dao.UsuarioDAO;
 import minsal.divap.doc.GeneradorDocumento;
@@ -28,6 +29,7 @@ import minsal.divap.doc.GeneradorOficioConsulta;
 import minsal.divap.doc.GeneradorResolucionAporteEstatal;
 import minsal.divap.doc.GeneradorWord;
 import minsal.divap.doc.util.NumberToLetters;
+import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.enums.FieldType;
 import minsal.divap.enums.TareasSeguimiento;
 import minsal.divap.enums.TipoComuna;
@@ -73,6 +75,8 @@ import cl.minsal.divap.model.AntecendentesComuna;
 import cl.minsal.divap.model.AntecendentesComunaCalculado;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
 import cl.minsal.divap.model.DocumentoDistribucionInicialPercapita;
+import cl.minsal.divap.model.EstadoPrograma;
+import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.Seguimiento;
 import cl.minsal.divap.model.Usuario;
 
@@ -88,6 +92,8 @@ public class DistribucionInicialPercapitaService {
 	@EJB
 	private SeguimientoDAO seguimientoDAO;
 	@EJB
+	private ProgramasDAO programasDAO;
+	@EJB
 	private AnoDAO anoDAO;
 	@EJB
 	private DocumentService documentService;
@@ -99,6 +105,7 @@ public class DistribucionInicialPercapitaService {
 	private SeguimientoService seguimientoService;
 	@EJB
 	private EmailService emailService;
+	private final Integer programaPercapita = -1;
 	@Resource(name="tmpDir")
 	private String tmpDir;
 	@Resource(name="tmpDirDoc")
@@ -115,7 +122,14 @@ public class DistribucionInicialPercapitaService {
 		AnoEnCurso anoEnCurso = anoDAO.getAnoById(ano);
 		return distribucionInicialPercapitaDAO.crearIntanciaDistribucionInicialPercapita(usuario, anoEnCurso);
 	}
-
+	
+	public void cambiarEstadoProgramaPercapita(Integer ano, EstadosProgramas estadoPrograma) {
+		System.out.println("programaSeleccionado-->" + programaPercapita + " estadoPrograma.getId()-->"+estadoPrograma.getId());
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByIdProgramaAndAno(programaPercapita, ano);
+		programaAno.setEstadoConvenio(new EstadoPrograma(estadoPrograma.getId()));
+		System.out.println("Cambia estado ok");
+	}
+	
 	public Integer cargarPlantilla(TipoDocumentosProcesos plantilla, File file){
 		Integer plantillaId = documentService.getPlantillaByType(plantilla);
 		String filename = null;
@@ -371,6 +385,7 @@ public class DistribucionInicialPercapitaService {
 					antecendentesComunaCalculadoEvaluacion.setPoblacionMayor(calculoPercapitaVO.getPoblacionMayor().intValue());
 				}
 			}else{
+				System.out.println("calculoPercapitaVO.getServicio()="+calculoPercapitaVO.getServicio()+" calculoPercapitaVO.getComuna()="+calculoPercapitaVO.getComuna()+" (ano-1)="+(ano-1));
 				AntecendentesComuna antecendentesComunaInicial = antecedentesComunaDAO.findAntecendentesComunaByComunaServicioAno(calculoPercapitaVO.getServicio(), calculoPercapitaVO.getComuna(), (ano-1));
 				antecendentesComunaEvaluacion = new AntecendentesComuna();
 				AnoEnCurso anoAnoEvaluacion = anoDAO.getAnoById((ano));

@@ -63,7 +63,7 @@
 								<p:tabView id="tabViewSubtitulos">
 									<p:tab id="s21" title="Subtítulo 21">
 										<p:dataTable resizableColumns="true" value="#{procesoOTRevisarConsolidacionController.resumenFonasaServicioS21}" liveResize="true" var="fonasaS21"
-												rows="10" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+												rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." 
 												styleClass="dataTable" id="tablaFonasaS21" rowIndexVar="rowIndexFonasaS21">
 												<p:columnGroup type="header">
 													<p:row>
@@ -99,7 +99,7 @@
 									</p:tab>
 									<p:tab id="s22" title="Subtítulo 22">
 										<p:dataTable resizableColumns="true" value="#{procesoOTRevisarConsolidacionController.resumenFonasaServicioS22}" liveResize="true" var="fonasaS22"
-												rows="10" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+												rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." 
 												styleClass="dataTable" id="tablaFonasaS22" rowIndexVar="rowIndexFonasaS22">
 												<p:columnGroup type="header">
 													<p:row>
@@ -135,7 +135,7 @@
 									</p:tab>
 									<p:tab id="s29" title="Subtítulo 29">
 										<p:dataTable resizableColumns="true" value="#{procesoOTRevisarConsolidacionController.resumenFonasaServicioS29}" liveResize="true" var="fonasaS29"
-												rows="10" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+												rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." 
 												styleClass="dataTable" id="tablaFonasaS29" rowIndexVar="rowIndexFonasaS29">
 												<p:columnGroup type="header">
 													<p:row>
@@ -171,7 +171,7 @@
 									</p:tab>
 									<p:tab id="s24" title="Subtítulo 24">
 										<p:dataTable resizableColumns="true" value="#{procesoOTRevisarConsolidacionController.resumenFonasaMunicipalS24}" liveResize="true" var="fonasaS24"
-												rows="10" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+												rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." 
 												styleClass="dataTable" id="tablaFonasaS24" rowIndexVar="rowIndexFonasaS24">
 												<p:columnGroup type="header">
 													<p:row>
@@ -269,7 +269,7 @@
 									<c:if test="#{procesoOTRevisarConsolidacionController.subtitulo21}">
 										<p:tab title="Subtítulo 21">
 											<p:dataTable resizableColumns="true" value="#{procesoOTRevisarConsolidacionController.resultadoServicioSub21}" liveResize="true" var="detalleS21"
-												rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+												rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." 
 												styleClass="dataTable" id="tablaResultadosS21" rowIndexVar="rowIndexS21">
 												<p:columnGroup type="header">
 													<p:row>
@@ -363,7 +363,7 @@
 									<c:if test="#{procesoOTRevisarConsolidacionController.subtitulo22}">
 										<p:tab title="Subtítulo 22">
 											<p:dataTable resizableColumns="true" value="#{procesoOTRevisarConsolidacionController.resultadoServicioSub22}" liveResize="true" var="detalleS22"
-												rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+												rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." 
 												styleClass="dataTable" id="tablaResultadosS22" rowIndexVar="rowIndexS22">
 												<p:columnGroup type="header">
 													<p:row>
@@ -457,7 +457,7 @@
 									<c:if test="#{procesoOTRevisarConsolidacionController.subtitulo29}">
 										<p:tab title="Subtítulo 29">
 											<p:dataTable resizableColumns="true" value="#{procesoOTRevisarConsolidacionController.resultadoServicioSub29}" liveResize="true" var="detalleS29"
-												rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+												rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." 
 												styleClass="dataTable" id="tablaResultadosS29" rowIndexVar="rowIndexS29">
 												<p:columnGroup type="header">
 													<p:row>
@@ -551,7 +551,7 @@
 									<c:if test="#{procesoOTRevisarConsolidacionController.subtitulo24}">
 										<p:tab title="Subtítulo 24">
 											<p:dataTable resizableColumns="true" value="#{procesoOTRevisarConsolidacionController.resultadoMunicipal}" liveResize="true" var="detalleS24"
-												rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+												rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." 
 												styleClass="dataTable" id="tablaResultadosS24" rowIndexVar="rowIndexS24">
 												<p:columnGroup type="header">
 													<p:row>
@@ -733,7 +733,94 @@
 											</p:dataTable>
 										</p:tab>
 									</c:if>
-									
+									<c:if test="#{procesoOTRevisarConsolidacionController.desempenoDificil}">
+										<p:tab title="Desempeño Dificil">
+											<p:dataTable resizableColumns="true" value="#{procesoOTRevisarConsolidacionController.resultadoPercapita}" liveResize="true" var="detalleDesempeno"
+												rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+												styleClass="dataTable" id="tablaResultadosDesempeno" rowIndexVar="rowIndexDesempeno">
+												<p:columnGroup type="header">
+													<p:row>
+														<p:column rowspan="3" headerText="Comuna" />
+														<p:column rowspan="3" headerText="Clasificación" />
+														<p:column rowspan="3" headerText="Marco Presupuestario ($)"/>
+														<p:column colspan="2" rowspan="2" headerText="Remesa Acumulada a la Fecha"/>
+														<c:forEach items="#{procesoOTRevisarConsolidacionController.remesasPerCapita}" var="remesa">
+															<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="#{remesa.mes}"/>
+														</c:forEach>
+														<p:column colspan="2" rowspan="2" headerText="Marco - Remesa Acumulada"/>
+														<p:column rowspan="3" headerText="Revisado"/>
+													</p:row>
+													<p:row>
+														<c:forEach items="#{procesoOTRevisarConsolidacionController.remesasPerCapita}" var="remesa">
+															<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="Días de Remesa"/>
+														</c:forEach>
+														
+													</p:row>
+													<p:row>
+														<p:column headerText="Monto ($)" />
+														<p:column headerText="%" />
+														<c:forEach items="#{procesoOTRevisarConsolidacionController.remesasPerCapita}" var="remesa">
+															<c:forEach items="#{remesa.dias}" var="dia">
+																<p:column headerText="#{dia.dia}"/>
+															</c:forEach>
+														</c:forEach>
+														<p:column headerText="Monto ($)" />
+														<p:column headerText="%" />
+													</p:row>
+												</p:columnGroup>
+													<p:column>
+													<span class="textoAjustado textoPequenio">#{detalleDesempeno.comuna}</span>
+												</p:column>
+												<p:column>
+													<span class="textoAjustado textoPequenio">#{detalleDesempeno.tipoComuna}</span>
+												</p:column>
+												<p:column>
+													<h:outputText styleClass="textoAjustado textoPequenio" value="#{detalleDesempeno.marcoPresupuestario}">
+														<f:convertNumber  maxFractionDigits="0"/>
+													</h:outputText>
+												</p:column>
+												
+												<p:column>
+													<h:outputText styleClass="textoAjustado textoPequenio" value="#{detalleDesempeno.transferenciaAcumulada}">
+														<f:convertNumber  maxFractionDigits="0"/>
+													</h:outputText>
+												</p:column>
+												<p:column>
+													<span class="textoAjustado textoPequenio">#{detalleDesempeno.porcentajeTransferenciaAcumulada}</span>
+												</p:column>
+												<c:forEach items="#{detalleDesempeno.remesas}" var="remesa">
+													<c:forEach items="#{remesa.dias}" var="dia">
+															<p:column>
+																<c:if test="#{dia.bloqueado}">
+																	<h:outputText value="#{dia.monto}" styleClass="textoAjustado textoPequenio">
+																		<f:convertNumber  maxFractionDigits="0"/>
+																	</h:outputText> 
+																</c:if>
+																<c:if test="#{not dia.bloqueado}">
+																	<h:inputText value="#{dia.monto}" styleClass="divapProcesoOTInput">
+																		<f:convertNumber  maxFractionDigits="0"/>
+																	</h:inputText> 
+																</c:if>
+															</p:column>
+													</c:forEach>
+												</c:forEach>
+												<p:column>
+													<h:outputText styleClass="textoAjustado textoPequenio" value="#{detalleDesempeno.diferencia}">
+														<f:convertNumber  maxFractionDigits="0"/>
+													</h:outputText>
+												</p:column>
+												<p:column>
+													<span class="textoAjustado textoPequenio">#{detalleDesempeno.porcentajeDiferencia}</span>
+												</p:column>
+												<p:column>
+													<p:selectBooleanCheckbox rendered="#{not detalleDesempeno.aprobado}" value="#{detalleDesempeno.aprobado}">
+										            	<p:ajax update=":form:tabViewConsolidado:resumenProgramas:tablaResultadosDesempeno" listener="#{procesoOTRevisarConsolidacionController.actualizarDesempenoDificil(rowIndexDesempeno, detalleDesempeno.idComuna)}"/>
+										        	</p:selectBooleanCheckbox>
+													<h:graphicImage rendered="#{detalleDesempeno.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />	
+												</p:column>
+											</p:dataTable>
+										</p:tab>
+									</c:if>
 								</p:tabView>
 							</p:tab>
 							<p:tab id="tab23" title="Resumen Totales">

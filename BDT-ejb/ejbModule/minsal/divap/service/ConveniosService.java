@@ -2091,7 +2091,11 @@ public class ConveniosService {
 			convenioComuna.setIdComuna(comuna);
 			convenioComuna.setNumeroResolucion(cargaConvenioComponenteSubtituloVO.getNumeroResolucion());
 			ConvenioComuna convenioComunaInicial = conveniosDAO.getConvenioComunaById(cargaConvenioComponenteSubtituloVO.getConvenioInicial());
-			convenioComuna.setNumeroResolucionInicial(convenioComunaInicial);
+			if(convenioComunaInicial.getNumeroResolucionInicial() == null){
+				convenioComuna.setNumeroResolucionInicial(convenioComunaInicial);
+			}else{
+				convenioComuna.setNumeroResolucionInicial(convenioComunaInicial.getNumeroResolucionInicial());
+			}
 			conveniosDAO.save(convenioComuna);
 			for(ConvenioComponenteSubtituloVO convenioComponenteSubtituloVO : cargaConvenioComponenteSubtituloVO.getConvenioComponentesSubtitulosVO()){
 				ConvenioComunaComponente convenioComunaComponente = new ConvenioComunaComponente();
@@ -2146,7 +2150,11 @@ public class ConveniosService {
 			convenioServicio.setIdEstablecimiento(establecimiento);
 			convenioServicio.setNumeroResolucion(cargaConvenioComponenteSubtituloVO.getNumeroResolucion());
 			ConvenioServicio convenioServicioInicial = conveniosDAO.getConvenioServicioById(cargaConvenioComponenteSubtituloVO.getConvenioInicial());
-			convenioServicio.setNumeroResolucionInicial(convenioServicioInicial);
+			if(convenioServicioInicial.getNumeroResolucionInicial() == null){
+				convenioServicio.setNumeroResolucionInicial(convenioServicioInicial);
+			}else{
+				convenioServicio.setNumeroResolucionInicial(convenioServicioInicial.getNumeroResolucionInicial());
+			}
 			conveniosDAO.save(convenioServicio);
 			for(ConvenioComponenteSubtituloVO convenioComponenteSubtituloVO : cargaConvenioComponenteSubtituloVO.getConvenioComponentesSubtitulosVO()){
 				ConvenioServicioComponente convenioServicioComponente = new ConvenioServicioComponente();

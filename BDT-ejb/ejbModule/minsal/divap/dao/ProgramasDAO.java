@@ -725,7 +725,6 @@ public class ProgramasDAO {
 			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.findByAno", ProgramaAno.class);
 			query.setParameter("ano", anoCurso);
 			return  query.getResultList(); 
-
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

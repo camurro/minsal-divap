@@ -686,7 +686,7 @@ implements Serializable {
 		}
 		System.out.println("numDocFinales="+numDocFinales);
 		if(numDocFinales == 0){
-			FacesMessage msg = new FacesMessage(message);
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, message, null);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return null;
 		}

@@ -2476,6 +2476,9 @@ public class EstimacionFlujoCajaService {
 		System.out.println("existeDistribucionRecursos Inicio idPrograma-->"+idPrograma);
 		System.out.println("existeDistribucionRecursos Inicio ano-->"+ano);
 		ProgramaVO programa = programasService.getProgramaByIdProgramaAndAno(idPrograma, ano);
+		if(programa == null){
+			return false;
+		}
 		if(!programa.getEstado().getId().equals(EstadosProgramas.FINALIZADO.getId())){
 			return false;
 		}

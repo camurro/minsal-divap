@@ -7,7 +7,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -26,7 +25,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "FactorRefAsigZona.findAll", query = "SELECT f FROM FactorRefAsigZona f"),
     @NamedQuery(name = "FactorRefAsigZona.findByIdFactorRefAsigZona", query = "SELECT f FROM FactorRefAsigZona f WHERE f.idFactorRefAsigZona = :idFactorRefAsigZona"),
-    @NamedQuery(name = "FactorRefAsigZona.findByZona", query = "SELECT f FROM FactorRefAsigZona f WHERE f.zona = :zona"),
     @NamedQuery(name = "FactorRefAsigZona.findByValor", query = "SELECT f FROM FactorRefAsigZona f WHERE f.valor = :valor")})
 public class FactorRefAsigZona implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -34,12 +32,13 @@ public class FactorRefAsigZona implements Serializable {
 	@Column(name="id_factor_ref_asig_zona", unique=true, nullable=false)
 	@GeneratedValue
     private Integer idFactorRefAsigZona;
-    @Basic(optional = false)
-    @Column(name = "zona")
-    private short zona;
+    @Column(name = "zona_desde")
+    private Double zonaDesde;
     @Basic(optional = false)
     @Column(name = "valor")
     private Double valor;
+    @Column(name = "zona_hasta")
+    private Double zonaHasta;
     @OneToMany(mappedBy = "asignacionZona")
     private Collection<AntecendentesComuna> antecendentesComunaCollection;
 
@@ -50,9 +49,8 @@ public class FactorRefAsigZona implements Serializable {
         this.idFactorRefAsigZona = idFactorRefAsigZona;
     }
 
-    public FactorRefAsigZona(Integer idFactorRefAsigZona, short zona, Double valor) {
+    public FactorRefAsigZona(Integer idFactorRefAsigZona, Double valor) {
         this.idFactorRefAsigZona = idFactorRefAsigZona;
-        this.zona = zona;
         this.valor = valor;
     }
 
@@ -64,14 +62,6 @@ public class FactorRefAsigZona implements Serializable {
         this.idFactorRefAsigZona = idFactorRefAsigZona;
     }
 
-    public short getZona() {
-        return zona;
-    }
-
-    public void setZona(short zona) {
-        this.zona = zona;
-    }
-
     public Double getValor() {
         return valor;
     }
@@ -80,7 +70,23 @@ public class FactorRefAsigZona implements Serializable {
         this.valor = valor;
     }
 
-    @XmlTransient
+    public Double getZonaDesde() {
+		return zonaDesde;
+	}
+
+	public void setZonaDesde(Double zonaDesde) {
+		this.zonaDesde = zonaDesde;
+	}
+
+	public Double getZonaHasta() {
+		return zonaHasta;
+	}
+
+	public void setZonaHasta(Double zonaHasta) {
+		this.zonaHasta = zonaHasta;
+	}
+
+	@XmlTransient
     public Collection<AntecendentesComuna> getAntecendentesComunaCollection() {
         return antecendentesComunaCollection;
     }

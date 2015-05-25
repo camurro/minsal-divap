@@ -16,11 +16,8 @@
 							<f:selectItems value="#{procesoEstimacionFlujoCajaSeleccionarLineaController.anos}" itemLabel="#{ano}" var="ano" itemValue="#{ano}"/> 
 						</p:selectOneMenu>
 					</h:panelGrid>
-					<p:dataTable id="tablaMisTareas" resizableColumns="true"
-						value="#{procesoEstimacionFlujoCajaSeleccionarLineaController.programas}"
-						liveResize="true" var="_programas" rows="10" paginator="true"
-						paginatorPosition="bottom"
-						emptyMessage="No se encontro información." styleClass="dataTable">
+					<p:dataTable id="tablaMisTareas" resizableColumns="true" value="#{procesoEstimacionFlujoCajaSeleccionarLineaController.programas}" liveResize="true" 
+						var="_programas" rows="10" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." styleClass="dataTable">
 						<p:columnGroup type="header">
 							<p:row>
 								<p:column headerText="Programa" />
@@ -37,31 +34,25 @@
 							<span class="textoAjustado">#{_programas.descripcion}</span>
 						</p:column>
 						<p:column>
-							<h:commandLink rendered="${_programas.estadoFlujocaja.id eq 1}" onclick="statusDialog.show();" 
-								action="#{procesoEstimacionFlujoCajaSeleccionarLineaController.iniciar(_programas.id)}">
-								<h:graphicImage value="resources/minsal/images/play.png"
-									styleClass="divapIcons" />
+							<h:commandLink rendered="${_programas.estadoFlujocaja.id eq 1}" onclick="statusDialog.show();" action="#{procesoEstimacionFlujoCajaSeleccionarLineaController.iniciar(_programas.id)}">
+								<h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons" />
 							</h:commandLink>
 							<!-- Iniciados. No presentan boton -->
 							<!-- Finalizados. Fondo Color Gris. -->
-								<h:graphicImage value="resources/minsal/images/play_locked.png"
-									styleClass="divapIcons" rendered="${_programas.estadoFlujocaja.id eq 5}" />
+							<h:graphicImage value="resources/minsal/images/play_locked.png" styleClass="divapIcons" rendered="${_programas.estadoFlujocaja.id eq 5}" />
 						</p:column>
 
 						<p:column>
 							<!-- Modificación del programa año vigente -->
-							<h:commandLink rendered="${_programas.estadoFlujocaja.id eq 4}"
-							    action="#{procesoEstimacionFlujoCajaSeleccionarLineaController.modificar(_programas.id)}">
-								<h:graphicImage value="resources/minsal/images/play.png"
-									styleClass="divapIcons" />
+							<h:commandLink rendered="${_programas.estadoFlujocaja.id eq 4}" action="#{procesoEstimacionFlujoCajaSeleccionarLineaController.modificar(_programas.id)}">
+								<h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons" />
 							</h:commandLink>
 						</p:column>
 					</p:dataTable>
 
 				</p:panel>
 	
-				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
-					icon="ui-icon-seek-first" />
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false" icon="ui-icon-seek-first" />
 			</p:panel>
 		</h:form>
 	</ui:define>

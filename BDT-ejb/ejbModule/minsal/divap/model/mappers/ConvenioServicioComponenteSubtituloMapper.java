@@ -63,13 +63,27 @@ public class ConvenioServicioComponenteSubtituloMapper implements Mapper<Conveni
 			cargaConvenioComponenteSubtituloVO.setConvenioComponentesSubtitulosVO(convenioComponentesSubtitulosVO);
 		}
 		List<ServiciosSummaryVO> documentosResoluciones = new ArrayList<ServiciosSummaryVO>();
-		if(convenioServicio.getDocumentoConvenio() != null){
-			ServiciosSummaryVO serviciosSummaryVO = new ServiciosSummaryVO();
-			serviciosSummaryVO.setNombre_servicio(convenioServicio.getNumeroResolucion().toString());
-			serviciosSummaryVO.setId_servicio(convenioServicio.getDocumentoConvenio().getId());
-			documentosResoluciones.add(serviciosSummaryVO);
-			cargaConvenioComponenteSubtituloVO.setDocumentosResoluciones(documentosResoluciones);
+		Integer idConvenioServicio = convenioServicio.getIdConvenioServicio();
+		if(convenioServicio.getConveniosServicio() != null && convenioServicio.getConveniosServicio().size() > 0){
+			for(ConvenioServicio convenioServicioLocal : convenioServicio.getConveniosServicio()){
+				ServiciosSummaryVO serviciosSummaryVO = new ServiciosSummaryVO();
+				serviciosSummaryVO.setNombre_servicio(convenioServicioLocal.getNumeroResolucion().toString());
+				serviciosSummaryVO.setId_servicio(convenioServicioLocal.getDocumentoConvenio().getId());
+				documentosResoluciones.add(serviciosSummaryVO);
+			}
+		}else{
+			if(convenioServicio.getNumeroResolucionInicial() != null && convenioServicio.getNumeroResolucionInicial().getConveniosServicio() != null && convenioServicio.getNumeroResolucionInicial().getConveniosServicio().size() > 0){
+				for(ConvenioServicio convenioServicioLocal : convenioServicio.getNumeroResolucionInicial().getConveniosServicio()){
+					if(!idConvenioServicio.equals(convenioServicioLocal.getIdConvenioServicio())){
+						ServiciosSummaryVO serviciosSummaryVO = new ServiciosSummaryVO();
+						serviciosSummaryVO.setNombre_servicio(convenioServicioLocal.getNumeroResolucion().toString());
+						serviciosSummaryVO.setId_servicio(convenioServicioLocal.getDocumentoConvenio().getId());
+						documentosResoluciones.add(serviciosSummaryVO);
+					}
+				}
+			}
 		}
+		cargaConvenioComponenteSubtituloVO.setDocumentosResoluciones(documentosResoluciones);
 		return cargaConvenioComponenteSubtituloVO;
 	}
 

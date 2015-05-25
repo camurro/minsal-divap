@@ -37,19 +37,22 @@ import minsal.divap.service.OTService;
 public class OrdenTransferenciaRESTService extends BaseRest{
 
 	@GET
-    @Path("/ordenesDeTransferencia/cambiarEstadoPrograma/{idPrograma}/{estado}")
+    @Path("/ordenesDeTransferencia/cambiarEstadoPrograma/{idPrograma}/{ano}/{estado}")
     @Produces("application/json")
-    public void cambiarEstadoPrograma(@PathParam("idPrograma") Integer idPrograma, @PathParam("estado") String estado){
+    public void cambiarEstadoPrograma(@PathParam("idPrograma") Integer idPrograma, @PathParam("ano") Integer ano, @PathParam("estado") String estado){
 		System.out.println("cambiarEstadoPrograma-->"+idPrograma +" estado="+estado);
 		if(idPrograma == null){
 			throw new IllegalArgumentException("id del programa no puede ser nulo");
+		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano no puede ser nulo");
 		}
 		if(estado == null){
 			throw new IllegalArgumentException("estado programa: "+ idPrograma + " no puede ser nulo");
 		}
 		OTService ordenTransferenciaService = getService(OTService.class);
 		EstadosProgramas estadoPrograma = EstadosProgramas.getById(Integer.parseInt(estado));
-		ordenTransferenciaService.cambiarEstadoPrograma(idPrograma, estadoPrograma);
+		ordenTransferenciaService.cambiarEstadoPrograma(idPrograma, ano, estadoPrograma);
     }
 	
 	@GET
@@ -115,15 +118,18 @@ public class OrdenTransferenciaRESTService extends BaseRest{
     }
 
 	@GET
-    @Path("/ordenesDeTransferencia/reestablecerProgramas/{estado}")
+    @Path("/ordenesDeTransferencia/reestablecerProgramas/{ano}/{estado}")
     @Produces("application/json")
-    public void reestablecerProgramas(@PathParam("estado") String estado){
+    public void reestablecerProgramas(@PathParam("ano") Integer ano, @PathParam("estado") String estado){
 		System.out.println("Reestableciendo estado de los programas para OT");
 		if(estado == null){
 			throw new IllegalArgumentException("estado: "+ estado + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
+		}
 		OTService ordenTransferenciaService = getService(OTService.class);
-		ordenTransferenciaService.reestablecerProgramas(Integer.parseInt(estado));
+		ordenTransferenciaService.reestablecerProgramas(ano, Integer.parseInt(estado));
     }
 			
 }

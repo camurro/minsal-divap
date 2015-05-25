@@ -34,20 +34,15 @@
 						<p:column  style=" #{(programa.estadoOT.id == '3')?'background-color: #c0c0c0;':''} ">
 							<h:commandLink action="#{procesoOTSeleccionarLineaFinanciamientoController.enviar}" rendered="#{programa.estadoOT.id == '1'}" >
 								<h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons" />
-								<f:setPropertyActionListener
-								target="#{procesoOTSeleccionarLineaFinanciamientoController.programaSeleccionado}"
-								value="#{programa.id}" />
-								<f:setPropertyActionListener
-								target="#{procesoOTSeleccionarLineaFinanciamientoController.target}"
-								value="bandejaTareas.jsf"/>
+								<f:setPropertyActionListener target="#{procesoOTSeleccionarLineaFinanciamientoController.programaSeleccionado}" value="#{programa.id}" />
+								<f:setPropertyActionListener target="#{procesoOTSeleccionarLineaFinanciamientoController.target}" value="bandejaTareas.jsf"/>
 							</h:commandLink>
 						</p:column>
 					</p:dataTable>
 
 				</p:panel>
 
-				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
-					icon="ui-icon-seek-first" />
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false" icon="ui-icon-seek-first" />
 			</p:panel>
 		</h:form>
 	</ui:define>

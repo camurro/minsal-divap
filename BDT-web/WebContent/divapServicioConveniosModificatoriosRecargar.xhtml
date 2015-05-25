@@ -108,7 +108,7 @@
 							<p:inputText id="resolucion" value="#{procesoConveniosModificatoriosController.numeroResolucion}" onkeypress="return isNumber(event);" required="true"/>
 							<h:outputText value="Archivo Resolución y Convenio:" styleClass="inputLabel" />
 							<p:fileUpload id="subirArchivo" fileUploadListener="#{procesoConveniosModificatoriosController.handleFileUploadConvenioFile}" value="#{procesoConveniosModificatoriosController.plantillaFile}" mode="simple"
-								required="true" requiredMessage="Archivo es obligatorio"  allowTypes="*.pdf"/>
+								required="true" requiredMessage="Archivo es obligatorio"/>
 						</h:panelGrid>
 						<h:panelGrid  columns="2">
 								<h:outputLabel value="Resolución N°: " />
@@ -117,21 +117,20 @@
         						<p:calendar id="button" value="#{procesoConveniosModificatoriosController.currentDate}" showOn="button" />
         						<p:commandButton id="uploadFile" value="Cargar Archivo" ajax="false" actionListener="#{procesoConveniosModificatoriosController.cargarArchivo}" style="display: none" update="convenios:hiddenError" />
         				</h:panelGrid>
+					</p:panelGrid>
+					<br />
+					<span class="strong">Archivo: </span> Resoluciones
+					<p:panelGrid columns="1">
+						
         				<c:if test="#{not empty procesoConveniosModificatoriosController.documentosResoluciones}">
-						<h:panelGrid  columns="7">
-							<span class="strong">Archivo: </span> Archivo con Resoluciones
-							<ul class="versionesArchivo">
+						<h:panelGrid  columns="5">
 								<c:forEach var="vardoc" items="#{procesoConveniosModificatoriosController.documentosResoluciones}">
-								<li>
-								<p:outputLabel
-										value="Resolucion N° #{vardoc.nombre_servicio}"/> [ <h:graphicImage
-										value="resources/minsal/images/download-alt.png"
-										styleClass="divapIcons" /> <h:commandLink  value="Bajar"
-								onclick="downloadDocument(#{vardoc.id_servicio});return false;" /> 
+										<p:outputLabel value="Resolucion N° #{vardoc.nombre_servicio}"/> 
+										[ 
+										<h:graphicImage	value="resources/minsal/images/download-alt.png" styleClass="divapIcons" /> 
+										<h:commandLink  value="Bajar" onclick="downloadDocument(#{vardoc.id_servicio});return false;" /> 
 										] 
-								</li>
 								</c:forEach>
-							</ul>
 						</h:panelGrid>
 						</c:if>
 					</p:panelGrid>

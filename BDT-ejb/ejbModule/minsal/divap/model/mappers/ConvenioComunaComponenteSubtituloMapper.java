@@ -68,8 +68,28 @@ public class ConvenioComunaComponenteSubtituloMapper implements Mapper<ConvenioC
 			serviciosSummaryVO.setNombre_servicio(convenioComuna.getNumeroResolucion().toString());
 			serviciosSummaryVO.setId_servicio(convenioComuna.getDocumentoConvenio().getId());
 			documentosResoluciones.add(serviciosSummaryVO);
-			cargaConvenioComponenteSubtituloVO.setDocumentosResoluciones(documentosResoluciones);
 		}
+		Integer idConvenioComuna = convenioComuna.getIdConvenioComuna();
+		if(convenioComuna.getConveniosComuna() != null && convenioComuna.getConveniosComuna().size() > 0){
+			for(ConvenioComuna convenioComunaLocal : convenioComuna.getConveniosComuna()){
+				ServiciosSummaryVO serviciosSummaryVO = new ServiciosSummaryVO();
+				serviciosSummaryVO.setNombre_servicio(convenioComunaLocal.getNumeroResolucion().toString());
+				serviciosSummaryVO.setId_servicio(convenioComunaLocal.getDocumentoConvenio().getId());
+				documentosResoluciones.add(serviciosSummaryVO);
+			}
+		}else{
+			if(convenioComuna.getNumeroResolucionInicial() != null && convenioComuna.getNumeroResolucionInicial().getConveniosComuna() != null && convenioComuna.getNumeroResolucionInicial().getConveniosComuna().size() > 0){
+				for(ConvenioComuna convenioComunaLocal : convenioComuna.getNumeroResolucionInicial().getConveniosComuna()){
+					if(!idConvenioComuna.equals(convenioComunaLocal.getIdComuna())){
+						ServiciosSummaryVO serviciosSummaryVO = new ServiciosSummaryVO();
+						serviciosSummaryVO.setNombre_servicio(convenioComunaLocal.getNumeroResolucion().toString());
+						serviciosSummaryVO.setId_servicio(convenioComunaLocal.getDocumentoConvenio().getId());
+						documentosResoluciones.add(serviciosSummaryVO);
+					}
+				}
+			}
+		}
+		cargaConvenioComponenteSubtituloVO.setDocumentosResoluciones(documentosResoluciones);
 		return cargaConvenioComponenteSubtituloVO;
 	}
 

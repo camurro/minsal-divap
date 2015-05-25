@@ -297,7 +297,6 @@ public class AntecedentesComunaDAO {
 			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByIdComunaAnoAprobado", AntecendentesComunaCalculado.class);
 			query.setParameter("idComuna", idComuna);
 			query.setParameter("ano", ano);
-			query.setParameter("aprobado", new Boolean(false));
 			List<AntecendentesComunaCalculado> antecendentesComunaCalculado = query.getResultList(); 
 			if(antecendentesComunaCalculado != null && antecendentesComunaCalculado.size() > 0){
 				return antecendentesComunaCalculado.get(0);
@@ -347,15 +346,15 @@ public class AntecedentesComunaDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Object getPerCapitaBasalByIdServicio(Integer idServicio) {
+	public Object getPerCapitaBasalByIdServicio(Integer idServicio, Integer idDistribucionInicialPercapita) {
 		try {
 			Query query = this.em.createNamedQuery("AntecendentesComunaCalculado.getPerCapitaBasalByIdServicio");
 			query.setParameter("idServicio", idServicio);
+			query.setParameter("idDistribucionInicialPercapita", idDistribucionInicialPercapita);
 			List<Object> result =  query.getResultList();
 			if(result !=null && result.size()>0){
 				return result.get(0);
 			}
-			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -363,15 +362,15 @@ public class AntecedentesComunaDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Object getDesempenoDificilByIdServicio(Integer idServicio) {
+	public Object getDesempenoDificilByIdServicio(Integer idServicio, Integer idDistribucionInicialPercapita) {
 		try {
 			Query query = this.em.createNamedQuery("AntecendentesComunaCalculado.getDesempenoDificilByIdServicio");
 			query.setParameter("idServicio", idServicio);
+			query.setParameter("idDistribucionInicialPercapita", idDistribucionInicialPercapita);
 			List<Object> result =  query.getResultList();
 			if(result !=null && result.size()>0){
 				return result.get(0);
 			}
-			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

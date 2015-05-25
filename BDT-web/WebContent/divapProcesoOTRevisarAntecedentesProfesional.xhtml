@@ -42,7 +42,7 @@
 					<br />
 					<h3>Filtros del Programa:</h3>
 					<h:panelGrid id="busqueda_mis_tareas" columns="5">
-					<c:if test="#{not procesoOTRevisarAntecedentesController.percapita}">
+					<c:if test="#{not procesoOTRevisarAntecedentesController.percapita and not procesoOTRevisarAntecedentesController.desemenoDificil and not procesoOTRevisarAntecedentesController.rebajaIAAPS}">
 						<h:panelGrid columns="2">
 							<h:outputText value="Componente " styleClass="inputLabel" />
 							<p:selectOneMenu id="componentes"  value="#{procesoOTRevisarAntecedentesController.componenteSeleccionado}">
@@ -536,6 +536,92 @@
 										</p:column>
 									</p:dataTable>
 								
+							</p:tab>
+						</c:if>
+						<c:if test="#{procesoOTRevisarAntecedentesController.desemenoDificil}">
+							<p:tab title="Desempeño Dificil" id="tabDesempeno">
+								<p:dataTable resizableColumns="true" value="#{procesoOTRevisarAntecedentesController.resultadoPercapita}" liveResize="true" var="detalleDesempeno"
+										rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+										styleClass="dataTable" id="tablaResultadosDesempeno" rowIndexVar="rowIndexDesempeno">
+										<p:columnGroup type="header">
+											<p:row>
+												<p:column rowspan="3" headerText="Comuna" />
+												<p:column rowspan="3" headerText="Clasificación" />
+												<p:column rowspan="3" headerText="Marco Presupuestario ($)"/>
+												<p:column colspan="2" rowspan="2" headerText="Remesa Acumulada a la Fecha"/>
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPerCapita}" var="remesa">
+													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="#{remesa.mes}"/>
+												</c:forEach>
+												<p:column colspan="2" rowspan="2" headerText="Marco - Remesa Acumulada"/>
+												<p:column rowspan="3" headerText="Revisado"/>
+											</p:row>
+											<p:row>
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPerCapita}" var="remesa">
+													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="Días de Remesa"/>
+												</c:forEach>
+											</p:row>
+											<p:row>
+												<p:column headerText="Monto ($)" />
+												<p:column headerText="%" />
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPerCapita}" var="remesa">
+													<c:forEach items="#{remesa.dias}" var="dia">
+														<p:column headerText="#{dia.dia}"/>
+													</c:forEach>
+												</c:forEach>
+												<p:column headerText="Monto ($)" />
+												<p:column headerText="%" />
+											</p:row>
+										</p:columnGroup>
+											<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleDesempeno.comuna}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleDesempeno.tipoComuna}</span>
+										</p:column>
+										<p:column>
+											<h:outputText styleClass="textoAjustado textoPequenio" value="#{detalleDesempeno.marcoPresupuestario}">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
+										</p:column>
+										<p:column>
+											<h:outputText styleClass="textoAjustado textoPequenio" value="#{detalleDesempeno.transferenciaAcumulada}">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleDesempeno.porcentajeTransferenciaAcumulada}</span>
+										</p:column>
+										<c:forEach items="#{detalleDesempeno.remesas}" var="remesa">
+											<c:forEach items="#{remesa.dias}" var="dia">
+													<p:column>
+														<c:if test="#{dia.bloqueado}">
+															<h:outputText value="#{dia.monto}" styleClass="textoAjustado textoPequenio">
+																<f:convertNumber  maxFractionDigits="0"/>
+															</h:outputText> 
+														</c:if>
+														<c:if test="#{not dia.bloqueado}">
+															<h:inputText value="#{dia.monto}" styleClass="divapProcesoOTInput">
+																<f:convertNumber  maxFractionDigits="0"/>
+															</h:inputText> 
+														</c:if>
+													</p:column>
+											</c:forEach>
+										</c:forEach>
+										<p:column>
+											<h:outputText styleClass="textoAjustado textoPequenio" value="#{detalleDesempeno.diferencia}">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleDesempeno.porcentajeDiferencia}</span>
+										</p:column>
+										<p:column>
+											<p:selectBooleanCheckbox rendered="#{not detalleDesempeno.aprobado}" value="#{detalleDesempeno.aprobado}">
+								            	<p:ajax update=":form:tabs:tablaResultadosDesempeno" listener="#{procesoOTRevisarAntecedentesController.actualizarDesempenoDificil(rowIndexDesempeno, detalleDesempeno.idComuna)}"/>
+								        	</p:selectBooleanCheckbox>
+											<h:graphicImage rendered="#{detalleDesempeno.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />	
+										</p:column>
+									</p:dataTable>
 							</p:tab>
 						</c:if>
 					</p:tabView>

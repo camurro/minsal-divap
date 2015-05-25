@@ -16,6 +16,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import minsal.divap.enums.Programas;
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.service.ComponenteService;
 import minsal.divap.service.OTService;
@@ -82,6 +83,8 @@ implements Serializable {
 	private boolean subtitulo29;
 	private boolean subtitulo24;
 	private boolean percapita;
+	private boolean desemenoDificil;
+	private boolean rebajaIAAPS;
 
 
 	private String filaHidden;
@@ -107,13 +110,25 @@ implements Serializable {
 			programaSeleccionado = (Integer) getTaskDataVO()
 					.getData().get("_programaSeleccionado");
 			anoCurso = (Integer) getTaskDataVO().getData().get("_ano");
-			programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (anoCurso - 1));
-			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado, anoCurso);
-
+			if(programaSeleccionado > 0){
+				programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (anoCurso - 1));
+				IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado, anoCurso);
+			}else{
+				programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, anoCurso);
+				IdProgramaProxAno = programa.getIdProgramaAno();
+			}
 		}
 		percapita = false;
+		desemenoDificil = false;
 		if(programa.getId() < 0){
-			percapita = true;
+			if(Programas.PERCAPITA.getId().equals(programa.getId())){
+				percapita = true;
+			}else if(Programas.DESEMPENODIFICIAL.getId().equals(programa.getId())){
+				desemenoDificil = true;
+			}
+			remesasPerCapita = otService.getRemesasPerCapita(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
+		}else{
+			remesasPrograma = otService.getRemesasPrograma(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
 		}
 
 		listaServicios = utilitariosService.getAllServicios();
@@ -121,14 +136,22 @@ implements Serializable {
 		if(listaComponentes != null && listaComponentes.size() == 1){
 			componenteSeleccionado = listaComponentes.get(0).getId();
 		}
-		remesasPrograma = otService.getRemesasPrograma(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
-		remesasPerCapita = otService.getRemesasPerCapita(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
 	}
 
 	public void buscarResultados(){
 		if(programa.getId()< 0){
-			resultadoPercapita = otService.getDetallePerCapita(servicioSeleccionado, anoCurso, IdProgramaProxAno); 
-			System.out.println("Resultados PerCapita: "+resultadoPercapita.size());
+			Integer idServicio = ((servicioSeleccionado == null || (servicioSeleccionado.intValue() == -1)) ? null : servicioSeleccionado);
+			if(Programas.PERCAPITA.getId().equals(programa.getId())){
+				resultadoPercapita = otService.getDetallePerCapita(idServicio, anoCurso, IdProgramaProxAno); 
+				System.out.println("Resultados PerCapita: "+resultadoPercapita.size());
+			}else if(Programas.DESEMPENODIFICIAL.getId().equals(programa.getId())){
+				resultadoPercapita = otService.getDetalleDesempenoDificil(idServicio, anoCurso, IdProgramaProxAno); 
+				System.out.println("Resultados PerCapita: "+resultadoPercapita.size());
+			}
+			else if(Programas.REBAJAIAAPS.getId().equals(programa.getId())){
+				resultadoPercapita = otService.getDetalleRebajaIAAPS(idServicio, anoCurso, IdProgramaProxAno); 
+				System.out.println("Resultados PerCapita: "+resultadoPercapita.size());
+			}
 		}else{
 			if(componenteSeleccionado != null && (componenteSeleccionado.intValue() != -1)){
 				System.out.println("Buscar Resultados para Componente: "+componenteSeleccionado+" Servicio: "+servicioSeleccionado);
@@ -170,9 +193,19 @@ implements Serializable {
 	}
 
 	public void actualizarPerCapita(Integer row, Integer idComuna){
-		System.out.println(resultadoPercapita.size());
+		System.out.println("row "+row);
+		System.out.println("idComuna "+idComuna);
 		OTPerCapitaVO registroTabla = resultadoPercapita.get(row);
-		OTPerCapitaVO registroActualizado = otService.actualizarComunaPerCapita(idComuna,registroTabla, IdProgramaProxAno);
+		OTPerCapitaVO registroActualizado = otService.actualizarComunaPerCapita(idComuna, registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
+		resultadoPercapita.remove(registroActualizado);
+		System.out.println(resultadoPercapita.size());
+	}
+	
+	public void actualizarDesempenoDificil(Integer row, Integer idComuna){
+		System.out.println("row "+row);
+		System.out.println("idComuna "+idComuna);
+		OTPerCapitaVO registroTabla = resultadoPercapita.get(row);
+		OTPerCapitaVO registroActualizado = otService.actualizarDesempenoDificil(idComuna, registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
 		resultadoPercapita.remove(registroActualizado);
 		System.out.println(resultadoPercapita.size());
 	}
@@ -205,6 +238,14 @@ implements Serializable {
 		System.out.println("row " + row);
 		OTResumenMunicipalVO registroTabla = resultadoMunicipal.get(row);
 		OTResumenMunicipalVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
+		resultadoMunicipal.remove(registroActualizado);
+	}
+	
+	public void actualizarPercapita(Integer row, Integer idComuna){
+		System.out.println("actualizando " + idComuna);
+		System.out.println("row " + row);
+		OTPerCapitaVO registroTabla = resultadoPercapita.get(row);
+		OTPerCapitaVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
 		resultadoMunicipal.remove(registroActualizado);
 	}
 
@@ -433,104 +474,76 @@ implements Serializable {
 		this.percapita = percapita;
 	}
 
-
-
-
 	public String getFilaHidden() {
 		return filaHidden;
 	}
-
-
-
 
 	public void setFilaHidden(String filaHidden) {
 		this.filaHidden = filaHidden;
 	}
 
-
-
-
 	public String getDiaHidden() {
 		return diaHidden;
 	}
-
-
-
 
 	public void setDiaHidden(String diaHidden) {
 		this.diaHidden = diaHidden;
 	}
 
-
-
-
 	public String getMesHidden() {
 		return mesHidden;
 	}
-
-
-
 
 	public void setMesHidden(String mesHidden) {
 		this.mesHidden = mesHidden;
 	}
 
-
-
-
 	public String getMontoHidden() {
 		return montoHidden;
 	}
-
-
-
 
 	public void setMontoHidden(String montoHidden) {
 		this.montoHidden = montoHidden;
 	}
 
-
-
-
 	public List<RemesasProgramaVO> getRemesasPerCapita() {
 		return remesasPerCapita;
 	}
-
-
-
 
 	public void setRemesasPerCapita(List<RemesasProgramaVO> remesasPerCapita) {
 		this.remesasPerCapita = remesasPerCapita;
 	}
 
-
-
-
 	public String getSubtituloHidden() {
 		return subtituloHidden;
 	}
-
-
-
 
 	public void setSubtituloHidden(String subtituloHidden) {
 		this.subtituloHidden = subtituloHidden;
 	}
 
-
-
-
 	public Integer getAnoCurso() {
 		return anoCurso;
 	}
-
-
-
 
 	public void setAnoCurso(Integer anoCurso) {
 		this.anoCurso = anoCurso;
 	}
 
+	public boolean isDesemenoDificil() {
+		return desemenoDificil;
+	}
 
+	public void setDesemenoDificil(boolean desemenoDificil) {
+		this.desemenoDificil = desemenoDificil;
+	}
 
+	public boolean isRebajaIAAPS() {
+		return rebajaIAAPS;
+	}
+
+	public void setRebajaIAAPS(boolean rebajaIAAPS) {
+		this.rebajaIAAPS = rebajaIAAPS;
+	}
+	
 }

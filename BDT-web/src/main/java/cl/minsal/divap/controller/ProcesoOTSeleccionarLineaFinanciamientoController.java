@@ -1,7 +1,6 @@
 package cl.minsal.divap.controller;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,17 +10,10 @@ import javax.ejb.EJB;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
-import minsal.divap.enums.BusinessProcess;
-import minsal.divap.enums.TiposPrograma;
-import minsal.divap.service.ProgramasService;
 import minsal.divap.service.OTService;
+import minsal.divap.service.ProgramasService;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
-import minsal.divap.vo.AsignacionDistribucionPerCapitaVO;
 import minsal.divap.vo.ProgramaVO;
-import minsal.divap.vo.TaskDataVO;
-import minsal.divap.vo.TaskVO;
-import cl.minsal.divap.model.Programa;
-import cl.minsal.divap.pojo.ProcesosProgramasPojo;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
 @Named("procesoOTSeleccionarLineaFinanciamientoController")
@@ -39,11 +31,6 @@ implements Serializable {
 	private List<ProgramaVO> programas;
 	private Integer anoCurso;
 	private String programaSeleccionado;
-	
-	static private Integer IDPERCAPITA = -1;
-	static private String DESCPERCAPITA = "Línea de Financiamiento Per Cápita";
-	
-	
 
 	@PostConstruct
 	public void init() {
@@ -69,13 +56,8 @@ implements Serializable {
 
 	public List<ProgramaVO> getProgramas() {
 		if(programas == null){
-			System.out.println(" getProgramas getAnoCurso()="+getAnoCurso());
+			System.out.println("getProgramas getAnoCurso()="+getAnoCurso());
 			programas = otService.getProgramas(getLoggedUsername(), getAnoCurso());
-			ProgramaVO percapita = new ProgramaVO();
-			percapita.setNombre("PER CAPITA");
-			percapita.setId(IDPERCAPITA);
-			percapita.setDescripcion(DESCPERCAPITA);
-			programas.add(percapita);
 		}
 		return programas;
 	}

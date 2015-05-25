@@ -55,6 +55,7 @@ implements Serializable {
 	private Integer anoEvaluacion;
 	private Integer anoEnCurso;
 	private Integer anoProceso;
+	private Boolean iniciarProceso = false;
 
 	public UploadedFile getCalculoPerCapitaFile() {
 		return calculoPerCapitaFile;
@@ -148,6 +149,7 @@ implements Serializable {
 		if(sessionExpired()){
 			return;
 		}
+		this.iniciarProceso = false;
 		this.docAsignacionRecursosPercapita = distribucionInicialPercapitaService.getIdPlantillaRecursosPerCapita();
 		this.docAsignacionDesempenoDificil = distribucionInicialPercapitaService.getIdPlantillaPoblacionInscrita();
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
@@ -212,7 +214,7 @@ implements Serializable {
 				+ getSessionBean().getUsername());
 		parameters.put("usuario", getSessionBean().getUsername());
 		parameters.put("error_", new Boolean(isErrorCarga()));
-		if(anoProceso == null){
+		if(this.iniciarProceso){
 			parameters.put("ano", anoEvaluacion);
 		}
 		if (this.docIds != null) {
@@ -225,6 +227,7 @@ implements Serializable {
 
 	@Override
 	public String iniciarProceso() {
+		this.iniciarProceso = true;
 		String success = "divapProcesoAsignacionPerCapitaCargarValorizacion";
 		Long procId = iniciarProceso(BusinessProcess.PERCAPITA);
 		System.out.println("procId-->" + procId);

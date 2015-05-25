@@ -22,6 +22,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.service.DistribucionInicialPercapitaService;
 
 
@@ -224,6 +225,22 @@ public class DistribucionInicialPerCapitaRESTService extends BaseRest{
 		}
 		DistribucionInicialPercapitaService distribucionInicialPercapitaService = getService(DistribucionInicialPercapitaService.class);
 		return distribucionInicialPercapitaService.crearIntanciaDistribucionInicialPercapita(usuarioId, ano);
+    }
+	
+	@GET
+    @Path("/distribucionInicialPerCapita/cambiarEstadoPercapita/{ano}/{estado}")
+    @Produces("application/json")
+    public void cambiarEstadoPercapita(@PathParam("ano") Integer ano, @PathParam("estado") String estado){
+		System.out.println("Cambiar estado programa percapita ano-->"+ano);
+		if(ano == null){
+			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
+		}
+		if(estado == null){
+			throw new IllegalArgumentException("estado: "+ estado + " no puede ser nulo");
+		}
+		DistribucionInicialPercapitaService distribucionInicialPercapitaService = getService(DistribucionInicialPercapitaService.class);
+		EstadosProgramas estadoPrograma = EstadosProgramas.getById(Integer.parseInt(estado));
+		distribucionInicialPercapitaService.cambiarEstadoProgramaPercapita(ano, estadoPrograma);
     }
 	
 }

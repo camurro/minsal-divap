@@ -11,12 +11,14 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.FacesMessage.Severity;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import minsal.divap.enums.BusinessProcess;
+import minsal.divap.enums.Programas;
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.service.ComponenteService;
 import minsal.divap.service.OTService;
@@ -97,6 +99,7 @@ implements Serializable {
 	private boolean subtitulo29;
 	private boolean subtitulo24;
 	private boolean percapita;
+	private boolean desempenoDificil;
 	
 	private boolean subtitulo21Resumen;
 	private boolean subtitulo22Resumen;
@@ -133,13 +136,10 @@ implements Serializable {
 				log.error("Error tratando de redireccionar a login por falta de usuario en sesion.", e);
 			}
 		}
-		
 		anoCurso = otService.getAnoCurso();
 		mesActual = otService.getMesCurso(false);
-		
 		listaServicios = utilitariosService.getAllServicios();
 		listaProgramas = otService.getProgramas(anoCurso); 
-		
 		botonBloqueado = false;
 		for(ProgramaVO prog: listaProgramas){
 			if(prog.getEstadoOT().getId() != 3){
@@ -149,25 +149,16 @@ implements Serializable {
 		}
 		
 		listaProgramasResumen = otService.getProgramas(getLoggedUsername(), anoCurso);
-		listaComponentes= new ArrayList<ComponentesVO>();
-		
+		listaComponentes = new ArrayList<ComponentesVO>();
 		encabezadoFonasa = programasService.getProgramasFonasa(true);
 		cargarResumenFonasa();
-		
 		submit = "0";
-		
 	}
 	
 	private void cargarResumenFonasa() {
-		resumenFonasaServicioS21 = new ArrayList<ResumenFONASAServicioVO>();
-		resumenFonasaServicioS22 = new ArrayList<ResumenFONASAServicioVO>();
-		resumenFonasaServicioS29 = new ArrayList<ResumenFONASAServicioVO>();
-		resumenFonasaMunicipalS24 = new ArrayList<ResumenFONASAMunicipalVO>();
-		
 		resumenFonasaServicioS21 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO21.getId(), anoCurso);
 		resumenFonasaServicioS22 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO22.getId(), anoCurso);
 		resumenFonasaServicioS29 = otService.cargarFonasaServicio(Subtitulo.SUBTITULO29.getId(), anoCurso);
-		
 		resumenFonasaMunicipalS24 = otService.cargarFonasaMunicipal(anoCurso);
 	}
 
@@ -194,12 +185,19 @@ implements Serializable {
 		subtitulo29 = false;
 		subtitulo24 = false;	
 		percapita = false;
+		desempenoDificil = false;
 		if(programa != null){
 			Integer servicio = ((servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty()) ? null : Integer.parseInt(servicioSeleccionado.trim()));
 			if(programa.getId() < 0){
-				percapita = true;
-				resultadoPercapita = otService.getDetallePerCapita(servicio, anoCurso, programa.getIdProgramaAno()); 
-				System.out.println("Resultados PerCapita: "+resultadoPercapita.size());
+				if(Programas.PERCAPITA.getId().equals(programa.getId())){
+					percapita = true;
+					resultadoPercapita = otService.getDetallePerCapitaConsolidador(servicio, anoCurso, programa.getIdProgramaAno()); 
+					System.out.println("Resultados PerCapita: " + resultadoPercapita.size());
+				}else if(Programas.DESEMPENODIFICIAL.getId().equals(programa.getId())){
+					desempenoDificil = true;
+					resultadoPercapita = otService.getDetalleDesempenoDificilConsolidador(servicio, anoCurso, programa.getIdProgramaAno()); 
+					System.out.println("Resultados Desempeño Dificil: " + resultadoPercapita.size());
+				}
 			}else{
 				System.out.println("Buscar Resultados para Componente: "+componenteSeleccionado+" Servicio: "+servicio);
 				if(componenteSeleccionado != null && !componenteSeleccionado.trim().isEmpty()){
@@ -228,12 +226,12 @@ implements Serializable {
 						}
 					}
 				}else{
-					FacesMessage msg = new FacesMessage("Debe seleccionar el componente antes de realizar la búsqueda");
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el componente antes de realizar la búsqueda", null);
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				}
 			}
 		}else{
-			FacesMessage msg = new FacesMessage("Debe seleccionar el programa antes de realizar la búsqueda");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el programa antes de realizar la búsqueda", null);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
@@ -335,7 +333,15 @@ implements Serializable {
 	public void actualizarPerCapita(Integer row, Integer idComuna){
 		System.out.println(resultadoPercapita.size());
 		OTPerCapitaVO registroTabla = resultadoPercapita.get(row);
-		OTPerCapitaVO registroActualizado = otService.actualizarComunaPerCapita(idComuna,registroTabla,programa.getIdProgramaAno());
+		OTPerCapitaVO registroActualizado = otService.aprobarMontoRemesaPerCapita(registroTabla);
+		resultadoPercapita.remove(registroActualizado);
+		System.out.println(resultadoPercapita.size());
+	}
+	
+	public void actualizarDesempenoDificil(Integer row, Integer idComuna){
+		System.out.println(resultadoPercapita.size());
+		OTPerCapitaVO registroTabla = resultadoPercapita.get(row);
+		OTPerCapitaVO registroActualizado = otService.aprobarMontoRemesaDesempenoDificil(registroTabla);
 		resultadoPercapita.remove(registroActualizado);
 		System.out.println(resultadoPercapita.size());
 	}
@@ -799,5 +805,12 @@ implements Serializable {
 		this.submit = submit;
 	}
 
+	public boolean isDesempenoDificil() {
+		return desempenoDificil;
+	}
+
+	public void setDesempenoDificil(boolean desempenoDificil) {
+		this.desempenoDificil = desempenoDificil;
+	}
 	
 }
