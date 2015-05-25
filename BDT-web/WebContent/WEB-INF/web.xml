@@ -72,7 +72,7 @@
   </security-constraint>
   <login-config>
     <auth-method>FORM</auth-method>
-    <realm-name>login</realm-name>
+    <realm-name>bpms</realm-name>
     <form-login-config>
       <form-login-page>/login.xhtml</form-login-page>
       <form-error-page>/login.xhtml?msg=error</form-error-page>

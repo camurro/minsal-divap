@@ -132,7 +132,7 @@ public class ProgramasService {
 				comVO.setPeso(componente.getPeso());
 
 				List<SubtituloVO> subsVO = new ArrayList<SubtituloVO>();
-				Iterator<ComponenteSubtitulo> iter = componente.getComponenteSubtitulos().iterator();
+				Iterator<ComponenteSubtitulo> iter = componente.getComponenteSubtitulosComponente().iterator();
 				while(iter.hasNext()) {
 					SubtituloVO sub = new SubtituloVO();
 					ComponenteSubtitulo element = iter.next();

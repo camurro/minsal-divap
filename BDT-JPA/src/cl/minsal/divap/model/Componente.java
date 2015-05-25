@@ -19,8 +19,8 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name = "Componente.findAll", query = "SELECT c FROM Componente c"),
 	@NamedQuery(name = "Componente.findById", query = "SELECT c FROM Componente c WHERE c.id = :id"),
 	@NamedQuery(name = "Componente.findByNombre", query = "SELECT c FROM Componente c WHERE LOWER(c.nombre) = :nombre"),
-	@NamedQuery(name = "Componente.findByIdSubtitulo", query = "SELECT c FROM Componente c inner join c.componenteSubtitulos cs WHERE cs.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
-	@NamedQuery(name = "Componente.findByIdProgramaIdSubtitulos", query = "SELECT c FROM Componente c inner join c.componenteSubtitulos cs WHERE c.idPrograma.id = :idPrograma and cs.subtitulo.idTipoSubtitulo IN (:idTipoSubtitulos) ORDER BY c.id ASC"),
+	@NamedQuery(name = "Componente.findByIdSubtitulo", query = "SELECT c FROM Componente c inner join c.componenteSubtitulosComponente cs WHERE cs.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
+	@NamedQuery(name = "Componente.findByIdProgramaIdSubtitulos", query = "SELECT c FROM Componente c inner join c.componenteSubtitulosComponente cs WHERE c.idPrograma.id = :idPrograma and cs.subtitulo.idTipoSubtitulo IN (:idTipoSubtitulos) ORDER BY c.id ASC"),
 	@NamedQuery(name = "Componente.findByPrograma", query = "SELECT c FROM Componente c WHERE c.idPrograma.id = :idPrograma order by c.id asc")})
 public class Componente implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -36,7 +36,7 @@ public class Componente implements Serializable {
     private Set<Cuota> cuotas;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "componente")
 	@OrderBy("idComponenteSubtitulo ASC")
-	private Set<ComponenteSubtitulo> componenteSubtitulos;
+	private Set<ComponenteSubtitulo> componenteSubtitulosComponente;
 	@JoinColumn(name = "tipo_componente", referencedColumnName = "id")
 	@ManyToOne(optional = false)
 	private TipoComponente tipoComponente;
@@ -80,15 +80,16 @@ public class Componente implements Serializable {
 	}
 	
 	@XmlTransient
-	public Set<ComponenteSubtitulo> getComponenteSubtitulos() {
-		return componenteSubtitulos;
+	public Set<ComponenteSubtitulo> getComponenteSubtitulosComponente() {
+		return componenteSubtitulosComponente;
 	}
 
-	public void setComponenteSubtitulos(
-			Set<ComponenteSubtitulo> componenteSubtitulos) {
-		this.componenteSubtitulos = componenteSubtitulos;
+	public void setComponenteSubtitulosComponente(
+			Set<ComponenteSubtitulo> componenteSubtitulosComponente) {
+		this.componenteSubtitulosComponente = componenteSubtitulosComponente;
 	}
 
+	
 	public TipoComponente getTipoComponente() {
 		return tipoComponente;
 	}

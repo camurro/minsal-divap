@@ -1,9 +1,19 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -38,7 +48,7 @@ public class ProgramaMunicipalCore implements Serializable {
     @ManyToOne(optional = false)
     private Comuna comuna;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "programaMunicipalCore")
-	private Set<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes;
+	private List<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes;
 
 	public ProgramaMunicipalCore() {
 	}
@@ -80,12 +90,12 @@ public class ProgramaMunicipalCore implements Serializable {
 	}
 
 	@XmlTransient
-	public Set<ProgramaMunicipalCoreComponente> getProgramaMunicipalCoreComponentes() {
+	public List<ProgramaMunicipalCoreComponente> getProgramaMunicipalCoreComponentes() {
 		return programaMunicipalCoreComponentes;
 	}
 
 	public void setProgramaMunicipalCoreComponentes(
-			Set<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes) {
+			List<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes) {
 		this.programaMunicipalCoreComponentes = programaMunicipalCoreComponentes;
 	}
 

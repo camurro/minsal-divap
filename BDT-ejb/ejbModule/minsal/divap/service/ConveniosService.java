@@ -779,7 +779,7 @@ public class ConveniosService {
 			}
 		}
 		for(Componente componente : programaAno.getPrograma().getComponentes()){
-			for(ComponenteSubtitulo componenteSubtitulo : componente.getComponenteSubtitulos()){
+			for(ComponenteSubtitulo componenteSubtitulo : componente.getComponenteSubtitulosComponente()){
 				if(Subtitulo.SUBTITULO24.getId().equals(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo())){
 					if(componentesBySubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()) == null){
 						List<Integer> idComponentes = new ArrayList<Integer>();
@@ -818,7 +818,7 @@ public class ConveniosService {
 			}
 		}
 		for(Componente componente : programaAno.getPrograma().getComponentes()){
-			for(ComponenteSubtitulo componenteSubtitulo : componente.getComponenteSubtitulos()){
+			for(ComponenteSubtitulo componenteSubtitulo : componente.getComponenteSubtitulosComponente()){
 				if(!Subtitulo.SUBTITULO24.getId().equals(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo())){
 					if(componentesBySubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()) == null){
 						List<Integer> idComponentes = new ArrayList<Integer>();

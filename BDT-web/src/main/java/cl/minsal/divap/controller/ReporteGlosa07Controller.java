@@ -47,11 +47,11 @@ public class ReporteGlosa07Controller extends BaseController implements Serializ
 	
 	@PostConstruct 
 	public void init() {
-		this.idPlanilla = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEGLOSA07, getAno());
-		if(this.idPlanilla == null){
-			this.idPlanilla = reportesServices.generarPlanillaReporteGlosa07(getLoggedUsername(), getAno());
-		}
-		System.out.println("this.idPlanilla ---> "+this.idPlanilla);
+//		this.idPlanilla = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEGLOSA07, getAno());
+//		if(this.idPlanilla == null){
+//			this.idPlanilla = reportesServices.generarPlanillaReporteGlosa07(getLoggedUsername(), getAno());
+//		}
+//		System.out.println("this.idPlanilla ---> "+this.idPlanilla);
 		
 		Integer mesCurso = Integer.parseInt(reportesServices.getMesCurso(true));
 		
@@ -61,9 +61,10 @@ public class ReporteGlosa07Controller extends BaseController implements Serializ
 	}
 	
 	public String downloadTemplate() {
-		Integer docDownload = Integer.valueOf(Integer
-				.parseInt(getDocIdDownload()));
-		setDocumento(documentService.getDocument(docDownload));
+		this.idPlanilla = reportesServices.generarPlanillaReporteGlosa07(getLoggedUsername(), getAno());
+//		Integer docDownload = Integer.valueOf(Integer
+//				.parseInt(getDocIdDownload()));
+		setDocumento(documentService.getDocument(this.idPlanilla));
 		super.downloadDocument();
 		return null;
 	}

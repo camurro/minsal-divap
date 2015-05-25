@@ -2,6 +2,7 @@ package cl.minsal.divap.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +66,8 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 	
 	private ServiciosVO servicioSeleccionado;
 	private Integer anoEnCurso;
+	private Integer diaDelMes;
+	private Integer mesActual;
 	private Subtitulo subtituloSeleccionado;
 	
 	@EJB
@@ -78,6 +81,8 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 	@EJB
 	private ReportesServices reportesServices;
 	private ProgramaVO programaVO;
+	
+	
 	
 	private Integer activeTab = 0;
 	Map<Integer, Subtitulo> tabSubtitulo = new HashMap<Integer, Subtitulo>();
@@ -94,6 +99,10 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 	
 	
 	@PostConstruct public void init() {
+		
+		Calendar calendar = Calendar.getInstance();
+		this.diaDelMes = calendar.get(Calendar.DAY_OF_MONTH);
+		this.mesActual = Integer.parseInt(reportesServices.getMesCurso(true));
 		this.reporteMonitoreoProgramaPorComunaVO = new ArrayList<ReporteMonitoreoProgramaPorComunaVO>();
 		this.reporteMonitoreoProgramaPorEstablecimientoVOSub21 = new ArrayList<ReporteMonitoreoProgramaPorEstablecimientoVO>();
 		this.reporteMonitoreoProgramaPorEstablecimientoVOSub22 = new ArrayList<ReporteMonitoreoProgramaPorEstablecimientoVO>();
@@ -104,15 +113,15 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 		this.mostrarSub24 = false;
 		this.mostrarSub29 = false;
 		
-		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMONITOREOPROGRAMACOMUNA, getAnoEnCurso());
-		if(this.idPlanillaDocComuna == null){
-			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteMonitoreoProgramaPorComuna(getAnoEnCurso());
-		}
+//		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMONITOREOPROGRAMACOMUNA, getAnoEnCurso());
+//		if(this.idPlanillaDocComuna == null){
+//			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteMonitoreoProgramaPorComuna(getAnoEnCurso());
+//		}
 		
-		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMONITOREOPROGRAMASERVICIO, getAnoEnCurso());
-		if(this.idPlanillaDocEstablecimiento == null){
-			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteMonitoreoProgramaPorServicios(getAnoEnCurso());
-		}		
+//		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMONITOREOPROGRAMASERVICIO, getAnoEnCurso());
+//		if(this.idPlanillaDocEstablecimiento == null){
+//			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteMonitoreoProgramaPorServicios(getAnoEnCurso());
+//		}		
 		
 		this.programas = programasService.getProgramasByUserAno(getLoggedUsername(), getAnoEnCurso());
 		this.servicios = servicioSaludService.getServiciosOrderId();
@@ -290,16 +299,18 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 	}
 	
 	public String downloadTemplateComuna() {
-		Integer docDownload = Integer.valueOf(Integer
-				.parseInt(getDocIdComunaDownload()));
+		this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteMonitoreoProgramaPorComuna(getAnoEnCurso());
+		setDocIdComunaDownload(this.idPlanillaDocComuna.toString());
+		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdComunaDownload()));
 		setDocumento(documentService.getDocument(docDownload));
 		super.downloadDocument();
 		return null;
 	}
 	
 	public String downloadTemplateEstablecimiento() {
-		Integer docDownload = Integer.valueOf(Integer
-				.parseInt(getDocIdEstablecimientoDownload()));
+		this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteMonitoreoProgramaPorServicios(getAnoEnCurso());
+		setDocIdEstablecimientoDownload(this.idPlanillaDocEstablecimiento.toString());
+		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdEstablecimientoDownload()));
 		setDocumento(documentService.getDocument(docDownload));
 		super.downloadDocument();
 		return null;
@@ -638,6 +649,22 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 	
 	public void setProgramaVO(ProgramaVO programaVO) {
 		this.programaVO = programaVO;
+	}
+	
+	public Integer getDiaDelMes() {
+		return diaDelMes;
+	}
+	
+	public void setDiaDelMes(Integer diaDelMes) {
+		this.diaDelMes = diaDelMes;
+	}
+	
+	public Integer getMesActual() {
+		return mesActual;
+	}
+	
+	public void setMesActual(Integer mesActual) {
+		this.mesActual = mesActual;
 	}
 	
 }

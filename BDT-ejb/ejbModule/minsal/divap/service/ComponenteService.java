@@ -71,7 +71,7 @@ public class ComponenteService {
 		compoVO.setPeso(componente.getPeso());
 		
 		List<SubtituloVO> subtitulos = new ArrayList<SubtituloVO>();
-		for(ComponenteSubtitulo compoSubs : componente.getComponenteSubtitulos()){
+		for(ComponenteSubtitulo compoSubs : componente.getComponenteSubtitulosComponente()){
 			SubtituloVO subVO = new SubtituloVO();
 			subVO.setId(compoSubs.getSubtitulo().getIdTipoSubtitulo());
 			subVO.setNombre(compoSubs.getSubtitulo().getNombreSubtitulo());

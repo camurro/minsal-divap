@@ -87,7 +87,7 @@
 										<p:column rowspan="2" headerText="Establecimiento" />
 										<p:column rowspan="2" headerText="Componente" />
 										<p:column rowspan="2" headerText="$ Marco Presupuestario" />
-										<p:column colspan="2" headerText="$ Remesa Acumulada" />
+										<p:column colspan="2" headerText="$ Remesa Acumulada al #{reporteMonitoreoProgramaController.diaDelMes}/#{reporteMonitoreoProgramaController.mesActual}/#{reporteMonitoreoProgramaController.anoEnCurso}" />
 										<p:column colspan="2" headerText="$ Convenio" />
 										<p:column rowspan="2" headerText="$ Convenio Pendiente" />
 									</p:row>
@@ -121,7 +121,7 @@
 								</p:column>
 								<p:column>
 									<h:outputText value="#{_data.remesa_porcentaje}" styleClass="textoPequenio textoAjustado">
-										<f:convertNumber type="percent" maxFractionDigits="2" locale="es_CL" currencySymbol="$" />
+										<f:convertNumber type="percent" maxFractionDigits="2" locale="es_CL" currencySymbol="$" /><p:column colspan="2" headerText="$ Remesa Acumulada al #{reporteMonitoreoProgramaController.diaDelMes}/#{reporteMonitoreoProgramaController.mesActual}/#{reporteMonitoreoProgramaController.anoEnCurso}" />
 									</h:outputText>
 								</p:column>
 
@@ -199,7 +199,7 @@
 										<p:column rowspan="2" headerText="Establecimiento" />
 										<p:column rowspan="2" headerText="Componente" />
 										<p:column rowspan="2" headerText="$ Marco Presupuestario" />
-										<p:column colspan="2" headerText="$ Remesa Acumulada" />
+										<p:column colspan="2" headerText="$ Remesa Acumulada al #{reporteMonitoreoProgramaController.diaDelMes}/#{reporteMonitoreoProgramaController.mesActual}/#{reporteMonitoreoProgramaController.anoEnCurso}" />
 										<p:column colspan="2" headerText="$ Convenio" />
 										<p:column rowspan="2" headerText="$ Convenio Pendiente" />
 									</p:row>
@@ -311,7 +311,7 @@
 										<p:column rowspan="2" headerText="Comuna" />
 										<p:column rowspan="2" headerText="Componente" />
 										<p:column rowspan="2" headerText="$ Marco Presupuestario" />
-										<p:column colspan="2" headerText="$ Remesa Acumulada" />
+										<p:column colspan="2" headerText="$ Remesa Acumulada al #{reporteMonitoreoProgramaController.diaDelMes}/#{reporteMonitoreoProgramaController.mesActual}/#{reporteMonitoreoProgramaController.anoEnCurso}" />
 										<p:column colspan="2" headerText="$ Convenio" />
 										<p:column rowspan="2" headerText="$ Convenio Pendiente" />
 									</p:row>
@@ -423,7 +423,7 @@
 										<p:column rowspan="2" headerText="Establecimiento" />
 										<p:column rowspan="2" headerText="Componente" />
 										<p:column rowspan="2" headerText="$ Marco Presupuestario" />
-										<p:column colspan="2" headerText="$ Remesa Acumulada" />
+										<p:column colspan="2" headerText="$ Remesa Acumulada al #{reporteMonitoreoProgramaController.diaDelMes}/#{reporteMonitoreoProgramaController.mesActual}/#{reporteMonitoreoProgramaController.anoEnCurso}" />
 										<p:column colspan="2" headerText="$ Convenio" />
 										<p:column rowspan="2" headerText="$ Convenio Pendiente" />
 									</p:row>
