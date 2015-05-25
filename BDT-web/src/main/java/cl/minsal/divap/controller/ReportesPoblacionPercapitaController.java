@@ -78,10 +78,10 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 		cortes = rebajaService.getCortes(null);
 		
 		this.anoSeleccionado = anoActual;
-		this.idPlanillaPercapita = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEPOBLACIONPERCAPITA, anoActual);
-		if(this.idPlanillaPercapita == null){
-			this.idPlanillaPercapita = reportesServices.generarPlanillaPoblacionPercapita(getLoggedUsername(), anoActual);
-		} 
+//		this.idPlanillaPercapita = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEPOBLACIONPERCAPITA, anoActual);
+//		if(this.idPlanillaPercapita == null){
+//			this.idPlanillaPercapita = reportesServices.generarPlanillaPoblacionPercapita(getLoggedUsername(), anoActual);
+//		} 
 		
 		comunas = new ArrayList<ComunaSummaryVO>();
 		Integer currentTab = 0;
@@ -92,9 +92,11 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 	}
 	
 	public String downloadTemplate() {
-		Integer docDownload = Integer.valueOf(Integer
-				.parseInt(getDocIdDownload()));
-		setDocumento(documentService.getDocument(docDownload));
+		this.idPlanillaPercapita = reportesServices.generarPlanillaPoblacionPercapita(getLoggedUsername(), anoActual);
+		
+//		Integer docDownload = Integer.valueOf(Integer
+//				.parseInt(getDocIdDownload()));
+		setDocumento(documentService.getDocument(this.idPlanillaPercapita));
 		super.downloadDocument();
 		return null;
 	}

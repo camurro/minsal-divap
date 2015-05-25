@@ -121,15 +121,15 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 		this.reporteMarcoPresupuestarioEstablecimientoVOSub29 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
 		this.subtituloSeleccionado = Subtitulo.SUBTITULO21;
 		
-		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMARCOPRESPUESTARIOCOMUNA, getAnoEnCurso());
-		if(this.idPlanillaDocComuna == null){
-			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteMarcoPresupuestarioComuna(getAnoEnCurso());
-		}
+//		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMARCOPRESPUESTARIOCOMUNA, getAnoEnCurso());
+//		if(this.idPlanillaDocComuna == null){
+//			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteMarcoPresupuestarioComuna(getAnoEnCurso());
+//		}
 		
-		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMARCOPRESPUESTARIOSERVICIO, getAnoEnCurso());
-		if(this.idPlanillaDocEstablecimiento == null){
-			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteMarcoPresupuestarioServicios(getAnoEnCurso());
-		}
+//		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMARCOPRESPUESTARIOSERVICIO, getAnoEnCurso());
+//		if(this.idPlanillaDocEstablecimiento == null){
+//			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteMarcoPresupuestarioServicios(getAnoEnCurso());
+//		}
 		
 		Integer currentTab = 0;
 		tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO21);
@@ -170,6 +170,8 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 	}
 
 	public String downloadTemplateComuna() {
+		this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteMarcoPresupuestarioComuna(getAnoEnCurso());
+		setDocIdComunaDownload(this.idPlanillaDocComuna.toString());
 		Integer docDownload = Integer.valueOf(Integer
 				.parseInt(getDocIdComunaDownload()));
 		setDocumento(documentService.getDocument(docDownload));
@@ -178,6 +180,8 @@ import cl.redhat.bandejaTareas.controller.BaseController;
 	}
 	
 	public String downloadTemplateEstablecimiento() {
+		this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteMarcoPresupuestarioServicios(getAnoEnCurso());
+		setDocIdEstablecimientoDownload(this.idPlanillaDocEstablecimiento.toString());
 		Integer docDownload = Integer.valueOf(Integer
 				.parseInt(getDocIdEstablecimientoDownload()));
 		setDocumento(documentService.getDocument(docDownload));

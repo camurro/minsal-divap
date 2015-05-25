@@ -53,7 +53,7 @@ public class ReportesRebajaController extends BaseController implements Serializ
 	public void init(){
 		this.reporteRebajaVO = reportesServices.getReporteRebaja(getAno());
 		
-		this.idPlanillaRebaja = reportesServices.generarPlanillaReporteRebaja(getLoggedUsername(), getAno());
+//		this.idPlanillaRebaja = reportesServices.generarPlanillaReporteRebaja(getLoggedUsername(), getAno());
 		
 		Integer mesCurso = Integer.parseInt(reportesServices.getMesCurso(true));
 		RebajaCorte rebajaCorte = rebajaDAO.getCorteByMes(mesCurso);
@@ -77,6 +77,8 @@ public class ReportesRebajaController extends BaseController implements Serializ
 	}
 	
 	public String downloadTemplate() {
+		this.idPlanillaRebaja = reportesServices.generarPlanillaReporteRebaja(getLoggedUsername(), getAno());
+		setDocIdDownload(this.idPlanillaRebaja.toString());
 		Integer docDownload = Integer.valueOf(Integer
 				.parseInt(getDocIdDownload()));
 		setDocumento(documentService.getDocument(docDownload));

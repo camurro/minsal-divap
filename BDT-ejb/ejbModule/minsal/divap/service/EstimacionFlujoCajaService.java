@@ -243,7 +243,7 @@ public class EstimacionFlujoCajaService {
 			programaAno.setEstadoFlujoCaja(new EstadoPrograma(EstadosProgramas.CALCULARPROPUESTA.getId()));
 			Map<Integer, List<Integer>> componentesPorSubtitulo = new HashMap<Integer, List<Integer>>();
 			for(Componente componente : programaAno.getPrograma().getComponentes()){
-				for(ComponenteSubtitulo componenteSubtitulo : componente.getComponenteSubtitulos()){
+				for(ComponenteSubtitulo componenteSubtitulo : componente.getComponenteSubtitulosComponente()){
 					if(componentesPorSubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()) == null){
 						List<Integer> componentes = new ArrayList<Integer>();
 						componentes.add(componente.getId());
@@ -989,7 +989,7 @@ public class EstimacionFlujoCajaService {
 
 		Map<Integer, List<Integer>> componentesPorSubtitulo = new HashMap<Integer, List<Integer>>();
 		for(Componente componente : programaAno.getPrograma().getComponentes()){
-			for(ComponenteSubtitulo componenteSubtitulo : componente.getComponenteSubtitulos()){
+			for(ComponenteSubtitulo componenteSubtitulo : componente.getComponenteSubtitulosComponente()){
 				if(componentesPorSubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()) == null){
 					List<Integer> componentes = new ArrayList<Integer>();
 					componentes.add(componente.getId());

@@ -152,7 +152,7 @@ public class ComunaController extends AbstractController<Comuna> {
 	 */
 	public String navigateAntecendentesComunas() {
 		if (this.getSelected() != null) {
-			FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("AntecendentesComuna_items", this.getSelected().getAntecendentesComunas());
+			FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("AntecendentesComuna_items", this.getSelected().getAntecendentesComunasComuna());
 		}
 		return "/mantenedor/antecendentesComuna/index";
 	}
@@ -283,16 +283,22 @@ public class ComunaController extends AbstractController<Comuna> {
 		if(comunas == null){
 			comunas = new ArrayList<MantenedorComunaVO>();
 			for(ServiciosVO servicio : getServicios()){
+				
 //				System.out.println("servicio --> "+servicio.getNombre_servicio());
-				for(ComunaSummaryVO comuna : servicio.getComunas()){
-					MantenedorComunaVO mantenedorComuna = new MantenedorComunaVO();
-					mantenedorComuna.setIdComuna(comuna.getId());
-//					System.out.println("comuna --> "+comuna.getNombre());
-					mantenedorComuna.setNombreComuna(comuna.getNombre());
-					mantenedorComuna.setIdServicio(servicio.getId_servicio());
-					mantenedorComuna.setNombreServicio(servicio.getNombre_servicio());
-					comunas.add(mantenedorComuna);
+				if(servicio.getComunas() == null){
+					continue;
+				}else{
+					for(ComunaSummaryVO comuna : servicio.getComunas()){
+						MantenedorComunaVO mantenedorComuna = new MantenedorComunaVO();
+						mantenedorComuna.setIdComuna(comuna.getId());
+//						System.out.println("comuna --> "+comuna.getNombre());
+						mantenedorComuna.setNombreComuna(comuna.getNombre());
+						mantenedorComuna.setIdServicio(servicio.getId_servicio());
+						mantenedorComuna.setNombreServicio(servicio.getNombre_servicio());
+						comunas.add(mantenedorComuna);
+					}
 				}
+				
 			}
 		}
 		return comunas;

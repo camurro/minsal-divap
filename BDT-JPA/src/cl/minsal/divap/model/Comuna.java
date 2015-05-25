@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name = "Comuna.findByNombre", query = "SELECT c FROM Comuna c WHERE c.nombre = :nombre"),
 	@NamedQuery(name = "Comuna.findByServicio", query = "SELECT c FROM Comuna c WHERE c.servicioSalud.id = :idServicio order by c.nombre asc"),
 	@NamedQuery(name = "Comuna.findRebajasByComunas", query = "SELECT distinct(c) FROM Comuna c JOIN c.comunaCumplimientoCollection d WHERE c.id IN (:listaId) and d.idMes.idMes= :idMes order by c.id asc"),
-	@NamedQuery(name = "Comuna.findByComunaServicioAno", query = "SELECT c FROM Comuna c JOIN c.antecendentesComunas a WHERE c.nombre = :comuna and c.servicioSalud.nombre = :servicio and a.anoAnoEnCurso.ano = :anoCurso"),
+	@NamedQuery(name = "Comuna.findByComunaServicioAno", query = "SELECT c FROM Comuna c JOIN c.antecendentesComunasComuna a WHERE c.nombre = :comuna and c.servicioSalud.nombre = :servicio and a.anoAnoEnCurso.ano = :anoCurso"),
 	@NamedQuery(name = "Comuna.findComunaServicioAuxiliar", query = "SELECT c FROM Comuna c WHERE c.servicioSalud.id = :idServicio and c.auxiliar = true")})
 public class Comuna implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -54,7 +54,7 @@ public class Comuna implements Serializable {
 
 	//bi-directional many-to-one association to AntecendentesComuna
 	@OneToMany(mappedBy="idComuna")
-	private Set<AntecendentesComuna> antecendentesComunas;
+	private List<AntecendentesComuna> antecendentesComunasComuna;
 
 	//bi-directional many-to-one association to ServicioSalud
 	@ManyToOne
@@ -75,14 +75,14 @@ public class Comuna implements Serializable {
 	private Collection<Remesa> remesaCollection;
 
 	@OneToMany(mappedBy = "comuna")
-	private Set<DetalleRemesas> detalleRemesasSet;
+	private List<DetalleRemesas> detalleRemesasSet;
 
 	@XmlTransient
-	public Set<DetalleRemesas> getDetalleRemesasSet() {
+	public List<DetalleRemesas> getDetalleRemesasSet() {
 		return detalleRemesasSet;
 	}
 
-	public void setDetalleRemesasSet(Set<DetalleRemesas> detalleRemesasSet) {
+	public void setDetalleRemesasSet(List<DetalleRemesas> detalleRemesasSet) {
 		this.detalleRemesasSet = detalleRemesasSet;
 	}
 
@@ -123,12 +123,13 @@ public class Comuna implements Serializable {
 		this.auxiliar = auxiliar;
 	}
 
-	public Set<AntecendentesComuna> getAntecendentesComunas() {
-		return this.antecendentesComunas;
+	public List<AntecendentesComuna> getAntecendentesComunasComuna() {
+		return antecendentesComunasComuna;
 	}
 
-	public void setAntecendentesComunas(Set<AntecendentesComuna> antecendentesComunas) {
-		this.antecendentesComunas = antecendentesComunas;
+	public void setAntecendentesComunasComuna(
+			List<AntecendentesComuna> antecendentesComunasComuna) {
+		this.antecendentesComunasComuna = antecendentesComunasComuna;
 	}
 
 	public ServicioSalud getServicioSalud() {

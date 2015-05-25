@@ -30,9 +30,9 @@ public class ComponenteMapper implements Mapper<Componente>{
 			TipoComponenteVO tipoComponenteVO = new TipoComponenteVO(componente.getTipoComponente().getId(), componente.getTipoComponente().getNombre());
 			componentesVO.setTipoComponente(tipoComponenteVO);
 		}
-		if(componente.getComponenteSubtitulos() != null && componente.getComponenteSubtitulos().size() > 0){
+		if(componente.getComponenteSubtitulosComponente() != null && componente.getComponenteSubtitulosComponente().size() > 0){
 			List<SubtituloVO> subtitulos = new ArrayList<SubtituloVO>();
-			for(ComponenteSubtitulo componenteSubtitulo : componente.getComponenteSubtitulos()){
+			for(ComponenteSubtitulo componenteSubtitulo : componente.getComponenteSubtitulosComponente()){
 				SubtituloVO subtituloVO = new SubtituloVO(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo(), componenteSubtitulo.getSubtitulo().getNombreSubtitulo());
 				DependenciaVO dependencia = new DependenciaVO();
 				dependencia.setId(componenteSubtitulo.getSubtitulo().getDependencia().getIdDependenciaPrograma());

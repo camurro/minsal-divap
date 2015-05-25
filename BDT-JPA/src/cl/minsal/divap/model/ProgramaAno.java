@@ -79,8 +79,8 @@ public class ProgramaAno implements Serializable {
 	private Collection<Remesa> remesaCollection;
 	@OneToMany(mappedBy = "idPrograma")
 	private Set<ConvenioComuna> convenios;
-	 @OneToMany(mappedBy = "programaAno")
-	    private Set<DetalleRemesas> detalleRemesasSet;
+	@OneToMany(mappedBy = "programaAno")
+    private Set<DetalleRemesas> detalleRemesas;
 
 	public ProgramaAno() {
 	}
@@ -243,15 +243,15 @@ public class ProgramaAno implements Serializable {
 	public String toString() {
 		return "cl.minsal.divap.model.ProgramaAno[ idProgramaAno=" + idProgramaAno + " ]";
 	}
-	 @XmlTransient
-	    public Set<DetalleRemesas> getDetalleRemesasSet() {
-	        return detalleRemesasSet;
-	    }
+	
+	@XmlTransient
+	public Set<DetalleRemesas> getDetalleRemesas() {
+		return detalleRemesas;
+	}
 
-	    public void setDetalleRemesasSet(Set<DetalleRemesas> detalleRemesasSet) {
-	        this.detalleRemesasSet = detalleRemesasSet;
-	    }
-
+	public void setDetalleRemesas(Set<DetalleRemesas> detalleRemesas) {
+		this.detalleRemesas = detalleRemesas;
+	}
 
 }
 
