@@ -111,8 +111,8 @@ public class ProcesoDistRecFinSeguimientoController extends AbstractTaskMBean im
 		municipal=false;
 		mixto = false;
 		if(programa.getDependenciaMunicipal() != null && programa.getDependenciaMunicipal()){
-			resolucionPrograma = reforzamientoService.getIdResolucion(programaProxAno.getIdProgramaAno(), TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS);
 			excelResolucion = reforzamientoService.getIdResolucion(programaProxAno.getIdProgramaAno(), TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS);
+			resolucionPrograma = reforzamientoService.getIdResolucion(programaProxAno.getIdProgramaAno(), TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS);
 			plantillaResolucionCorreo = documentService.getIdDocumentoFromPlantilla(TipoDocumentosProcesos.PLANTILLARESOLUCIONCORREO);
 			municipal=true;
 		}
@@ -126,31 +126,31 @@ public class ProcesoDistRecFinSeguimientoController extends AbstractTaskMBean im
 		if(tipoProgramaPxQ){
 			//Servicio PxQ
 			if(programa.getDependenciaServicio() && !programa.getDependenciaMunicipal()){
-				resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENSERVICIO);
+				resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), this.ano, TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENSERVICIO);
 			}
 			//Municipal PxQ
 			if(programa.getDependenciaMunicipal() && !programa.getDependenciaServicio()){
-				resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENSERVICIO);
+				resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), this.ano, TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENSERVICIO);
 			}
 			//Mixto PxQ
 			if(programa.getDependenciaMunicipal() && programa.getDependenciaServicio()){
-				resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENSERVICIO);
-				resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENSERVICIO);
+				resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), this.ano, TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENSERVICIO);
+				resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), this.ano, TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENSERVICIO);
 				mixto=true;
 			}
 		}else{
 			//Servicio H
 			if(programa.getDependenciaServicio() && !programa.getDependenciaMunicipal()){
-				resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENHISTORICO);
+				resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), this.ano, TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENHISTORICO);
 			}
 			//Municipal H
 			if(programa.getDependenciaMunicipal() && !programa.getDependenciaServicio()){
-				resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENHISTORICO);
+				resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), this.ano, TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENHISTORICO);
 			}
 			//Mixto H
 			if(programa.getDependenciaMunicipal() && programa.getDependenciaServicio()){
-				resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENHISTORICO);
-				resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENHISTORICO);
+				resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), this.ano, TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENHISTORICO);
+				resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), this.ano, TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENHISTORICO);
 				mixto=true;
 			}
 		}
@@ -274,8 +274,9 @@ public class ProcesoDistRecFinSeguimientoController extends AbstractTaskMBean im
 			if((this.cco != null) && !(this.cco.trim().isEmpty())){
 				conCopiaOculta = Arrays.asList(this.cco.split("\\,")); 
 			}
-			System.out.println("ProcesoAsignacionPerCapitaSeguimientoController-->sendMail");
-			reforzamientoService.createSeguimientoProgramaReforzamiento(programaProxAno.getIdProgramaAno(), TareasSeguimiento.HACERSEGUIMIENTOPROGRAMASREFORZAMIENTORESOLUCION, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
+			System.out.println("ProcesoDistRecFinSeguimientoController-->sendMail");
+			reforzamientoService.createSeguimientoProgramaReforzamiento(programaProxAno.getIdProgramaAno(), TareasSeguimiento.HACERSEGUIMIENTOPROGRAMASREFORZAMIENTORESOLUCION, subject, body, 
+					getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos, this.ano);
 		}catch(Exception e){
 			e.printStackTrace();
 			target = null;

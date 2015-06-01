@@ -125,6 +125,8 @@ implements Serializable {
 				percapita = true;
 			}else if(Programas.DESEMPENODIFICIAL.getId().equals(programa.getId())){
 				desemenoDificil = true;
+			}else if(Programas.REBAJAIAAPS.getId().equals(programa.getId())){
+				rebajaIAAPS = true;
 			}
 			remesasPerCapita = otService.getRemesasPerCapita(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
 		}else{
@@ -206,6 +208,16 @@ implements Serializable {
 		System.out.println("idComuna "+idComuna);
 		OTPerCapitaVO registroTabla = resultadoPercapita.get(row);
 		OTPerCapitaVO registroActualizado = otService.actualizarDesempenoDificil(idComuna, registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
+		resultadoPercapita.remove(registroActualizado);
+		System.out.println(resultadoPercapita.size());
+	}
+	
+
+	public void actualizarRebajaIAAPS(Integer row, Integer idComuna){
+		System.out.println("row "+row);
+		System.out.println("idComuna "+idComuna);
+		OTPerCapitaVO registroTabla = resultadoPercapita.get(row);
+		OTPerCapitaVO registroActualizado = otService.actualizarRebajaIAAPS(idComuna, registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
 		resultadoPercapita.remove(registroActualizado);
 		System.out.println(resultadoPercapita.size());
 	}

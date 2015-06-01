@@ -55,19 +55,22 @@ public class RecursosFinancierosProgramasReforzamientoRESTService extends BaseRe
     }
 	
 	@GET
-    @Path("/recursosFinancierosProgramasReforzamiento/cambiarEstadoPrograma/{idPrograma}/{estado}")
+    @Path("/recursosFinancierosProgramasReforzamiento/cambiarEstadoPrograma/{idPrograma}/{ano}/{estado}")
     @Produces("application/json")
-    public void cambiarEstadoPrograma(@PathParam("idPrograma") Integer idPrograma, @PathParam("estado") String estado){
+    public void cambiarEstadoPrograma(@PathParam("idPrograma") Integer idPrograma, @PathParam("ano") Integer ano, @PathParam("estado") String estado){
 		System.out.println("cambiarEstadoPrograma-->"+idPrograma +" estado="+estado);
 		if(idPrograma == null){
 			throw new IllegalArgumentException("id del programa no puede ser nulo");
+		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano del programa no puede ser nulo");
 		}
 		if(estado == null){
 			throw new IllegalArgumentException("estado programa: "+ idPrograma + " no puede ser nulo");
 		}
 		RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService = getService(RecursosFinancierosProgramasReforzamientoService.class);
 		EstadosProgramas estadoPrograma = EstadosProgramas.getById(Integer.parseInt(estado));
-		recursosFinancierosProgramasReforzamientoService.cambiarEstadoPrograma(idPrograma, estadoPrograma);
+		recursosFinancierosProgramasReforzamientoService.cambiarEstadoPrograma(idPrograma, ano, estadoPrograma);
     }
 	
 	@GET
@@ -163,7 +166,7 @@ public class RecursosFinancierosProgramasReforzamientoRESTService extends BaseRe
 		RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService = getService(RecursosFinancierosProgramasReforzamientoService.class);
 		List<ResumenProgramaMixtoVO> resumen = recursosFinancierosProgramasReforzamientoService.getConsolidadoPrograma(idPrograma, ano);
 		recursosFinancierosProgramasReforzamientoService.elaborarOrdinarioProgramaReforzamiento(idPrograma, resumen, ano);
-		recursosFinancierosProgramasReforzamientoService.elaborarExcelOrdinario(idPrograma, resumen,TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS, ano);
+		recursosFinancierosProgramasReforzamientoService.elaborarExcelOrdinario(idPrograma, resumen, TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS, ano);
     }
 	
 	@GET
@@ -180,7 +183,7 @@ public class RecursosFinancierosProgramasReforzamientoRESTService extends BaseRe
 		RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService = getService(RecursosFinancierosProgramasReforzamientoService.class);
 		List<ResumenProgramaMixtoVO> resumen = recursosFinancierosProgramasReforzamientoService.getConsolidadoPrograma(idPrograma, ano);
 		recursosFinancierosProgramasReforzamientoService.elaborarResolucionProgramaReforzamiento(idPrograma, resumen, ano);
-		recursosFinancierosProgramasReforzamientoService.elaborarExcelResolucion(idPrograma, resumen,TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS, ano);
+		recursosFinancierosProgramasReforzamientoService.elaborarExcelResolucion(idPrograma, resumen, TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS, ano);
     }
 	
 	// Métodos flujo de modificación de asignación de recursos para programas APS

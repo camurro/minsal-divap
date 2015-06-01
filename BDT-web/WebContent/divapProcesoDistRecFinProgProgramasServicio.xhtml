@@ -13,6 +13,7 @@
 					<h:panelGrid columns="2">
 						<h:outputText value="Año Distribucion" styleClass="inputLabel" />
 						<p:selectOneMenu id="componentes"  value="#{procesoDistRecFinProgProgramasController.anoEvaluacion}">
+							<p:ajax listener="#{procesoDistRecFinProgProgramasController.seleccionarProgramasAno}" update="tablaMisTareas" />
 							<f:selectItems value="#{procesoDistRecFinProgProgramasController.anos}" itemLabel="#{ano}" var="ano" itemValue="#{ano}"/> 
 						</p:selectOneMenu>
 					</h:panelGrid>
@@ -40,12 +41,8 @@
 						<p:column  style=" #{(programa.estado.id == '3')?'background-color: #c0c0c0;':''} ">
 							<h:commandLink action="#{procesoDistRecFinProgProgramasController.enviar}" rendered="#{programa.estado.id == '1'}" >
 								<h:graphicImage value="resources/minsal/images/play.png" styleClass="divapIcons" />
-								<f:setPropertyActionListener
-								target="#{procesoDistRecFinProgProgramasController.programaSeleccionado}"
-								value="#{programa.id}" />
-								<f:setPropertyActionListener
-								target="#{procesoDistRecFinProgProgramasController.target}"
-								value="bandejaTareas.jsf"/>
+								<f:setPropertyActionListener target="#{procesoDistRecFinProgProgramasController.programaSeleccionado}" value="#{programa.id}" />
+								<f:setPropertyActionListener target="#{procesoDistRecFinProgProgramasController.target}" value="bandejaTareas.jsf"/>
 							</h:commandLink>
 						</p:column>
 					</p:dataTable>

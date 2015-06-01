@@ -607,8 +607,6 @@ public class DocumentService {
 		documentoProgramasReforzamiento.setIdTipoDocumento(new TipoDocumento(tipoDocumentoProceso.getId()));
 		documentoProgramasReforzamiento.setIdDocumento(referenciaDocumento);
 
-		//documentoDistribucionInicialPercapita.setIdDocumento(referenciaDocumento);
-
 		programasReforzamientoDAO.save(documentoProgramasReforzamiento);
 		System.out.println("luego de aplicar insert del documento percapita");
 		return referenciaDocumentoId;

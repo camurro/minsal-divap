@@ -380,8 +380,8 @@ public class ProgramasDAO {
 
 	}
 
-	public List<Object[]> getResumenServicio(Integer idProgramaAno,
-			Integer idSubtitulo) {
+	@SuppressWarnings("unchecked")
+	public List<Object[]> getResumenServicio(Integer idProgramaAno,	Integer idSubtitulo) {
 		List<Object[]> results = null;
 		try {
 			Query queryGetResumen = this.em.createNamedQuery("ProgramaServicioCoreComponente.getResumen");

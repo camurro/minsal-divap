@@ -26576,6 +26576,14 @@ INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (156
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (157, 12, (100.0/12), -4, 12);
 INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (23, -3, 2);
 
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (63, 'Plantilla Ley');
 
+UPDATE tipo_documento SET nombre='Resolución Recursos Programa' WHERE id_tipo_documento=57;
+UPDATE tipo_documento SET nombre='Ordinario Recursos Programa' WHERE id_tipo_documento=58;
+
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (12, 'Hacer Seguimiento Resolucion Programas de Reforzamiento');
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (13, 'Hacer Seguimiento Ordinario Programas de Reforzamiento');
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (82, 'Plantilla Resolución Recursos Programa');
 
 

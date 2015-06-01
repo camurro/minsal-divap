@@ -58,7 +58,7 @@ public class ResumenProgramaMixtoVO implements Serializable{
 	
 	public Long getTotalServicio() {
 		totalServicio = 0L;
-		if(totalS21!=null){
+		if(totalS21 != null){
 			totalServicio += totalS21;
 		}
 		if(totalS22!=null){
@@ -72,6 +72,7 @@ public class ResumenProgramaMixtoVO implements Serializable{
 		}
 		return totalServicio;
 	}
+	
 	public void setTotalServicio(Long totalServicio) {
 		this.totalServicio = totalServicio;
 	}

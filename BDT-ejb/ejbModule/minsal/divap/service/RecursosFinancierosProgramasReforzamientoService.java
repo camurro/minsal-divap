@@ -216,15 +216,14 @@ public class RecursosFinancierosProgramasReforzamientoService {
 
 
 
-	public Integer getIdPlantillaProgramasPais(Integer programaSeleccionado, TipoDocumentosProcesos tipoDocumentoProceso){
+	public Integer getIdPlantillaProgramasPais(Integer programaSeleccionado, Integer ano, TipoDocumentosProcesos tipoDocumentoProceso){
 		Integer plantillaId = documentService.getPlantillaByTypeAndProgram(tipoDocumentoProceso, programaSeleccionado);
-		Programa prog =  programaService.getProgramasByID(programaSeleccionado);
-		Integer idProxAno = programaService.getIdProgramaAnoAnterior(prog.getId(), getAnoCurso()+1);
-		ProgramaVO programa;
+		ProgramaVO programa =  programaService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
+		//Integer idProxAno = programaService.getIdProgramaAnoAnterior(prog.getId(), getAnoCurso()+1);
+		//ProgramaVO programa;
 
 		//if(plantillaId == null){
 		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
-		programa = new ProgramaMapper().getBasic(programasDAO.getProgramaAnoByID(programaSeleccionado));
 
 		List<CellExcelVO> header = new ArrayList<CellExcelVO>();
 		header.add(new CellExcelVO("Servicios de Salud", 2, 2));
@@ -235,7 +234,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		String contenType = null;
 		switch (tipoDocumentoProceso) {
 		case PLANTILLAMUNICIPALAPSRESUMENSERVICIO:
-			filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Municipal.xlsx";
+			filename += "Resumen Programa -"+ programa.getNombre().replace(":", "-")+"- Municipal.xlsx";
 			filename = StringUtil.removeSpanishAccents(filename);
 			generadorExcel = new GeneradorExcel(filename);
 			int subtitulos=0;
@@ -260,7 +259,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			subHeader.add(new CellExcelVO("Comuna", 1, 2));
 
 			for(ComponentesVO componente : programa.getComponentes()){
-				if(idComponentes.indexOf(componente.getId())!= -1){
+				if(idComponentes.indexOf(componente.getId()) != -1){
 					header.add(new CellExcelVO(componente.getNombre(), 3, 1));
 					for(SubtituloVO subtitulo : componente.getSubtitulos()){
 						if(subtitulo.getId()==3){
@@ -274,19 +273,15 @@ public class RecursosFinancierosProgramasReforzamientoService {
 
 			}
 
-
-
-
 			contenType = mimemap.getContentType(filename.toLowerCase());
-			List<ProgramaAPSVO> servicioComunas = programaService.getProgramaMunicipalesResumen(idProxAno, idComponentes, 3);
-
+			List<ProgramaAPSVO> servicioComunas = programaService.getProgramaMunicipalesResumen(programa.getIdProgramaAno(), idComponentes, 3);
 
 			ProgramaAPSMunicipalesSheetExcel programaAPSMunicipalesSheetExcel = new ProgramaAPSMunicipalesSheetExcel(header, subHeader, servicioComunas);
 			generadorExcel.addSheet(programaAPSMunicipalesSheetExcel, "Hoja 1");
 
 			break;
 		case PLANTILLASERVICIOAPSRESUMENSERVICIO:
-			filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Servicio.xlsx";
+			filename += "Resumen Programa -"+ programa.getNombre().replace(":", "-")+"- Servicio.xlsx";
 			filename = StringUtil.removeSpanishAccents(filename);
 			generadorExcel = new GeneradorExcel(filename);
 			header.add(new CellExcelVO("Establecimientos", 2, 2));
@@ -337,12 +332,12 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			contenType = mimemap.getContentType(filename.toLowerCase());
 
 
-			List<ProgramaAPSServicioResumenVO> servicioComunaEstablecimientos = programaService.getProgramaServiciosResumen(idProxAno, idComponentesServicio);
+			List<ProgramaAPSServicioResumenVO> servicioComunaEstablecimientos = programaService.getProgramaServiciosResumen(programa.getIdProgramaAno(), idComponentesServicio);
 			ProgramaAPSServicioResumenSheetExcel programaAPSServicioSheetExcel = new ProgramaAPSServicioResumenSheetExcel(header, subHeader, servicioComunaEstablecimientos);
 			generadorExcel.addSheet(programaAPSServicioSheetExcel, "Hoja 1");
 			break;
 		case PLANTILLAMUNICIPALAPSRESUMENHISTORICO:
-			filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Municipal.xlsx";
+			filename += "Resumen Programa -" + programa.getNombre().replace(":", "-")+"- Municipal.xlsx";
 			filename = StringUtil.removeSpanishAccents(filename);
 			generadorExcel = new GeneradorExcel(filename);
 			int subtitulosH=0;
@@ -376,7 +371,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			}
 
 			contenType = mimemap.getContentType(filename.toLowerCase());
-			List<ProgramaAPSVO> servicioComunasH = programaService.getProgramaMunicipalesResumen(idProxAno, idComponentesH, 3);
+			List<ProgramaAPSVO> servicioComunasH = programaService.getProgramaMunicipalesResumen(programa.getIdProgramaAno(), idComponentesH, 3);
 
 
 			ProgramaAPSMunicipalesHistoricosSheetExcel programaAPSMunicipalesHistoricosSheetExcel = new ProgramaAPSMunicipalesHistoricosSheetExcel(header, subHeader, servicioComunasH);
@@ -384,7 +379,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 
 			break;
 		case PLANTILLASERVICIOAPSRESUMENHISTORICO:
-			filename += "Resumen Programa -"+prog.getNombre().replace(":", "-")+"- Servicio.xlsx";
+			filename += "Resumen Programa -" + programa.getNombre().replace(":", "-")+"- Servicio.xlsx";
 			filename = StringUtil.removeSpanishAccents(filename);
 			generadorExcel = new GeneradorExcel(filename);
 			header.add(new CellExcelVO("Establecimientos", 2, 2));
@@ -412,7 +407,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			}
 			contenType = mimemap.getContentType(filename.toLowerCase());
 
-			List<ProgramaAPSServicioResumenVO> servicioComunaEstablecimientosH = programaService.getProgramaServicios(idProxAno);
+			List<ProgramaAPSServicioResumenVO> servicioComunaEstablecimientosH = programaService.getProgramaServicios(programa.getIdProgramaAno());
 			ProgramaAPSServiciosHistoricosSheetExcel programaAPSServiciosHistoricosSheetExcel = new ProgramaAPSServiciosHistoricosSheetExcel(header, subHeader, servicioComunaEstablecimientosH);
 			generadorExcel.addSheet(programaAPSServiciosHistoricosSheetExcel, "Hoja 1");
 			break;
@@ -422,8 +417,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 
 
 		try {
-			int ano=getAnoCurso()+1;
-			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderRecursosFinancierosAPS.replace("{ANO}", ano+""));
+			BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderRecursosFinancierosAPS.replace("{ANO}", ano.toString()));
 			plantillaId = documentService.createTemplateProgramas(tipoDocumentoProceso, response.getNodeRef(), response.getFileName(), contenType, programa);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -665,8 +659,12 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			case PLANTILLAPROGRAMAAPSMUNICIPALES:
 				header.add(new CellExcelVO("Servicios de Salud", 2, 2));
 				header.add(new CellExcelVO("Comunas", 2, 2));
-				filename += "Plantilla Programa -"+programa.getNombre()+"- Municipal.xlsx";
-				filename = StringUtil.removeSpanishAccents(filename);
+				String filenameTmp = "Plantilla Programa -"+programa.getNombre();
+				filenameTmp = filenameTmp.replace(":", "").replace(".", "").replace("/", "");;
+				filenameTmp += "- Municipal.xlsx";
+				filenameTmp = StringUtil.removeSpanishAccents(filenameTmp);
+				filename += filenameTmp;
+				System.out.println("filename->"+filename);
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulos=0;
 				List<Integer> idComponentes = new ArrayList<Integer>();
@@ -713,8 +711,12 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				break;
 			case PLANTILLAPROGRAMAAPSSERVICIO:
 				header.add(new CellExcelVO("Servicios de Salud", 2, 2));
-				filename += "Plantilla Programa -"+programa.getNombre()+"- Servicio.xlsx";
-				filename = StringUtil.removeSpanishAccents(filename);
+				String filenameServTmp = "Plantilla Programa -"+programa.getNombre();
+				filenameServTmp = filenameServTmp.replace(":", "").replace(".", "").replace("/", "");
+				filenameServTmp +=  "- Servicio.xlsx";
+				filenameServTmp = StringUtil.removeSpanishAccents(filenameServTmp);
+				filename += filenameServTmp;
+				System.out.println("filename->"+filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO("Establecimientos", 2, 2));
 				int subtitulosServicio=0;
@@ -762,8 +764,12 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			case PLANTILLALEYAPS:
 				header.add(new CellExcelVO("Servicios de Salud", 2, 1));
 				header.add(new CellExcelVO("Comunas", 2, 1));
-				filename += "Plantilla Ley -"+programa.getNombre()+".xlsx";
-				filename = StringUtil.removeSpanishAccents(filename);
+				String filenameLeyTmp = "Plantilla Ley -"+programa.getNombre();
+				filenameLeyTmp = filenameLeyTmp.replace(":", "").replace(".", "").replace("/", "");
+				filenameLeyTmp += ".xlsx";
+				filenameLeyTmp = StringUtil.removeSpanishAccents(filenameLeyTmp);
+				filename += filenameLeyTmp;
+				System.out.println("filename->"+filename);
 				generadorExcel = new GeneradorExcel(filename);
 				header.add(new CellExcelVO(programa.getNombre(), 1, 1));
 				subHeader.add(new CellExcelVO("ID", 1, 1));
@@ -782,7 +788,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			}
 
 			try {
-				BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderTemplateRecursosFinancierosAPS);
+					BodyVO response = alfrescoService.uploadDocument(generadorExcel.saveExcel(), contenType, folderTemplateRecursosFinancierosAPS);
 				plantillaId = documentService.createTemplateProgramas(tipoDocumentoProceso, response.getNodeRef(), response.getFileName(), contenType, programa);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -952,9 +958,9 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		return Integer.valueOf(formatNowYear.format(nowDate)); 
 	}
 
-	public void cambiarEstadoPrograma(Integer idPrograma, EstadosProgramas estadoPrograma) {
+	public void cambiarEstadoPrograma(Integer idPrograma, Integer ano, EstadosProgramas estadoPrograma) {
 		System.out.println("idPrograma-->" + idPrograma + " estadoPrograma.getId()-->"+estadoPrograma.getId());
-		ProgramaAno programaAno = programasDAO.getProgramaAnoByIdProgramaAndAno(idPrograma, getAnoCurso());
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByIdProgramaAndAno(idPrograma, ano);
 		programaAno.setEstado(new EstadoPrograma(estadoPrograma.getId()));
 		System.out.println("Cambia estado ok");
 	}
@@ -967,12 +973,17 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		System.out.println("Cambia estado ok");
 	}
 
-	public List<ProgramaVO> getProgramas(String username) {
+	public List<ProgramaVO> getProgramas(String username, Integer ano) {
+		if(ano == null){
+			ano = getAnoCurso();
+		}
 		List<ProgramaVO> programasVO = new ArrayList<ProgramaVO>();
-		List<ProgramaAno> programas = programasDAO.getProgramasByUserAno(username, getAnoCurso());
+		List<ProgramaAno> programas = programasDAO.getProgramasByUserAno(username, ano);
 		if(programas != null && programas.size() > 0){
-			for(ProgramaAno programa : programas){
-				programasVO.add(new ProgramaMapper().getBasic(programa));
+			for(ProgramaAno programaAno : programas){
+				if(programaAno.getPrograma().getId().intValue() > 0){
+					programasVO.add(new ProgramaMapper().getBasic(programaAno));
+				}
 			}
 		}
 		return programasVO;
@@ -992,10 +1003,10 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		return programasVO;
 	}
 
-	public List<ProgramaVO> getProgramasSinPerCapitaSinHistoricos(String username) {
+	public List<ProgramaVO> getProgramasSinPerCapitaSinHistoricos(String username, Integer ano) {
 		List<ProgramaVO> programasVO = new ArrayList<ProgramaVO>();
 		List<ProgramaVO> programasSalidaVO = new ArrayList<ProgramaVO>();
-		List<ProgramaAno> programas = programasDAO.getProgramasByUserAno(username, getAnoCurso() + 1);
+		List<ProgramaAno> programas = programasDAO.getProgramasByUserAno(username, ano);
 		if(programas != null && programas.size() > 0){
 			for(ProgramaAno programa : programas){
 				if(programa.getIdProgramaAno()>0){
@@ -2117,34 +2128,33 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		Integer plantillaBorradorResolucionProgramaReforzamiento = documentService.getPlantillaByType(TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS);
 
 		if (plantillaBorradorResolucionProgramaReforzamiento == null) {
-			throw new RuntimeException(
-					"No se puede crear Borrador Decreto Aporte Estatal, la plantilla no esta cargada");
+			throw new RuntimeException("No se puede crear Borrador Decreto Aporte Estatal, la plantilla no esta cargada");
 		}
 
 		try {
-			Long tS21=0L;
-			Long tS22=0L;
-			Long tS24=0L;
-			Long tS29=0L;
-			boolean s21=false;
-			boolean s22=false;
-			boolean s24=false;
-			boolean s29=false; 
+			Long tS21 = 0L;
+			Long tS22 = 0L;
+			Long tS24 = 0L;
+			Long tS29 = 0L;
+			boolean s21 = false;
+			boolean s22 = false;
+			boolean s24 = false;
+			boolean s29 = false; 
 			if(resumen.size()>0){
 				for(ResumenProgramaMixtoVO res : resumen){
-					if(res.getTotalS21()>0){
+					if(res.getTotalS21() != null && (res.getTotalS21() > 0)){
 						tS21 += res.getTotalS21();
 						s21=true;
 					}
-					if(res.getTotalS22()>0){
+					if(res.getTotalS22() != null && (res.getTotalS22() > 0)){
 						tS22 += res.getTotalS22();
 						s22=true;
 					}
-					if(res.getTotalS24()>0){
+					if(res.getTotalS24() != null && (res.getTotalS24() > 0)){
 						tS24 += res.getTotalS24();
 						s24=true;
 					}
-					if(res.getTotalS29()>0){
+					if(res.getTotalS29() != null && (res.getTotalS29() > 0)){
 						tS29 += res.getTotalS29();
 						s29=true;
 					}
@@ -2166,30 +2176,19 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			}
 			System.out.println(resumenAsignacion.toString());
 			ReferenciaDocumentoSummaryVO referenciaResolucionProgramasAPSVO = documentService.getDocumentByPlantillaId(plantillaBorradorResolucionProgramaReforzamiento);
-			DocumentoVO documentoBorradorResolucionProgramasAPSVO = documentService
-					.getDocument(referenciaResolucionProgramasAPSVO.getId());
-			String templateResolucionProgramasAPS = tmpDirDoc
-					+ File.separator
-					+ documentoBorradorResolucionProgramasAPSVO.getName();
+			DocumentoVO documentoBorradorResolucionProgramasAPSVO = documentService.getDocument(referenciaResolucionProgramasAPSVO.getId());
+			String templateResolucionProgramasAPS = tmpDirDoc + File.separator + documentoBorradorResolucionProgramasAPSVO.getName();
 			templateResolucionProgramasAPS = templateResolucionProgramasAPS.replace(" ", "");
 
-			String filenameBorradorResolucionProgramasAPS = tmpDirDoc
-					+ File.separator + new Date().getTime() + "_"
-					+ "ResolucionPrograma"+programa.getNombre().replace(":", "-")+".docx";
+			String filenameBorradorResolucionProgramasAPS = tmpDirDoc + File.separator + new Date().getTime() + "_" + "ResolucionPrograma" + programa.getNombre().replace(":", "-") + ".docx";
 			filenameBorradorResolucionProgramasAPS = filenameBorradorResolucionProgramasAPS.replaceAll(" ", "");
 			filenameBorradorResolucionProgramasAPS = StringUtil.removeSpanishAccents(filenameBorradorResolucionProgramasAPS);
-			System.out.println("filenameBorradorResolucionProgramasAPS filename-->"
-					+ filenameBorradorResolucionProgramasAPS);
-			System.out.println("templateResolucionProgramasAPS template-->"
-					+ templateResolucionProgramasAPS);
-			GeneradorWord generadorWordPlantillaBorradorOrdinarioProgramacionCaja = new GeneradorWord(
-					templateResolucionProgramasAPS);
+			System.out.println("filenameBorradorResolucionProgramasAPS filename-->"	+ filenameBorradorResolucionProgramasAPS);
+			System.out.println("templateResolucionProgramasAPS template-->"	+ templateResolucionProgramasAPS);
+			GeneradorWord generadorWordPlantillaBorradorOrdinarioProgramacionCaja = new GeneradorWord(templateResolucionProgramasAPS);
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
-			String contentType = mimemap
-					.getContentType(templateResolucionProgramasAPS
-							.toLowerCase());
-			System.out.println("contenTypeBorradorAporteEstatal->"
-					+ contentType);
+			String contentType = mimemap.getContentType(templateResolucionProgramasAPS.toLowerCase());
+			System.out.println("contenTypeBorradorAporteEstatal->" + contentType);
 
 			generadorWordPlantillaBorradorOrdinarioProgramacionCaja.saveContent(documentoBorradorResolucionProgramasAPSVO.getContent(), XWPFDocument.class);
 
@@ -2199,21 +2198,14 @@ public class RecursosFinancierosProgramasReforzamientoService {
 			parametersBorradorAporteEstatal.put("{resumenAsignacion}",resumenAsignacion.toString());
 
 
-			GeneradorResolucionAporteEstatal generadorWordDecretoBorradorAporteEstatal = new GeneradorResolucionAporteEstatal(
-					filenameBorradorResolucionProgramasAPS,
-					templateResolucionProgramasAPS);
+			GeneradorResolucionAporteEstatal generadorWordDecretoBorradorAporteEstatal = new GeneradorResolucionAporteEstatal(filenameBorradorResolucionProgramasAPS, templateResolucionProgramasAPS);
 			generadorWordDecretoBorradorAporteEstatal.replaceValues(parametersBorradorAporteEstatal, XWPFDocument.class);
 
-			BodyVO response = alfrescoService.uploadDocument(new File(
-					filenameBorradorResolucionProgramasAPS), contentType,
-					folderRecursosFinancierosAPS.replace("{ANO}", ano.toString()));
-			System.out.println("response responseBorradorAporteEstatal --->"
-					+ response);
+			BodyVO response = alfrescoService.uploadDocument(new File(filenameBorradorResolucionProgramasAPS), contentType, folderRecursosFinancierosAPS.replace("{ANO}", ano.toString()));
+			System.out.println("response responseBorradorAporteEstatal --->" + response);
 
-			Integer programaValorizado = programaService.getProgramaAnoSiguiente(programa.getId(), ano);
-			plantillaBorradorResolucionProgramaReforzamiento = documentService
-					.createDocumentProgramasReforzamiento(TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS, response.getNodeRef(),
-							response.getFileName(), contentType, programaValorizado);
+			plantillaBorradorResolucionProgramaReforzamiento = documentService.createDocumentProgramasReforzamiento(TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS, response.getNodeRef(),
+							response.getFileName(), contentType, programa.getIdProgramaAno() );
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -2398,65 +2390,44 @@ public class RecursosFinancierosProgramasReforzamientoService {
 
 	public Integer elaborarOrdinarioProgramaReforzamiento(Integer idPrograma, List<ResumenProgramaMixtoVO> resumen, Integer ano) {
 
-		ProgramaVO programa = programaService.getProgramaByIdProgramaAndAno(idPrograma, (ano-1));
+		ProgramaVO programa = programaService.getProgramaByIdProgramaAndAno(idPrograma, ano);
 		Integer plantillaBorradorOrdinarioProgramaReforzamiento = documentService.getPlantillaByType(TipoDocumentosProcesos.ORDINARIOPROGRAMASAPS);
 
 		if (plantillaBorradorOrdinarioProgramaReforzamiento == null) {
-			throw new RuntimeException(
-					"No se puede crear Borrador Decreto Aporte Estatal, la plantilla no esta cargada");
+			throw new RuntimeException("No se puede crear Borrador Decreto Aporte Estatal, la plantilla no esta cargada");
 		}
 
 		try {
-
-			ReferenciaDocumentoSummaryVO referenciaOrdinarioProgramasAPSVO = documentService
-					.getDocumentByPlantillaId(plantillaBorradorOrdinarioProgramaReforzamiento);
-			DocumentoVO documentoBorradorOrdinarioProgramasAPSVO = documentService
-					.getDocument(referenciaOrdinarioProgramasAPSVO.getId());
-			String templateOrdinarioProgramasAPS = tmpDirDoc
-					+ File.separator
-					+ documentoBorradorOrdinarioProgramasAPSVO.getName();
+			ReferenciaDocumentoSummaryVO referenciaOrdinarioProgramasAPSVO = documentService.getDocumentByPlantillaId(plantillaBorradorOrdinarioProgramaReforzamiento);
+			DocumentoVO documentoBorradorOrdinarioProgramasAPSVO = documentService.getDocument(referenciaOrdinarioProgramasAPSVO.getId());
+			String templateOrdinarioProgramasAPS = tmpDirDoc + File.separator + documentoBorradorOrdinarioProgramasAPSVO.getName();
 			templateOrdinarioProgramasAPS = templateOrdinarioProgramasAPS.replace(" ", "");
-
-			String filenameBorradorOrdinarioProgramasAPS = tmpDirDoc
-					+ File.separator + new Date().getTime() + "_"
-					+ "OrdinarioPrograma"+programa.getNombre().replace(":", "-")+".docx";
-			filenameBorradorOrdinarioProgramasAPS = filenameBorradorOrdinarioProgramasAPS.replaceAll(" ", "");
-			System.out.println("filenameBorradorOrdinarioProgramasAPS filename-->"
-					+ filenameBorradorOrdinarioProgramasAPS);
-			System.out.println("templateOrdinarioProgramasAPS template-->"
-					+ templateOrdinarioProgramasAPS);
-			GeneradorWord generadorWordPlantillaBorradorOrdinarioProgramacionCaja = new GeneradorWord(
-					templateOrdinarioProgramasAPS);
+			String filenameBorradorOrdinarioProgramasAPS =  "OrdinarioPrograma"+programa.getNombre(); 
+			filenameBorradorOrdinarioProgramasAPS = filenameBorradorOrdinarioProgramasAPS.replace(":", "-").replace(".", "").replace("/", "");
+			filenameBorradorOrdinarioProgramasAPS += ".docx";
+			filenameBorradorOrdinarioProgramasAPS = StringUtil.removeSpanishAccents(filenameBorradorOrdinarioProgramasAPS);
+			filenameBorradorOrdinarioProgramasAPS = tmpDirDoc + File.separator + new Date().getTime() + "_" + filenameBorradorOrdinarioProgramasAPS;
+			System.out.println("filenameBorradorOrdinarioProgramasAPS filename-->" + filenameBorradorOrdinarioProgramasAPS);
+			System.out.println("templateOrdinarioProgramasAPS template-->"	+ templateOrdinarioProgramasAPS);
+			GeneradorWord generadorWordPlantillaBorradorOrdinarioProgramacionCaja = new GeneradorWord(templateOrdinarioProgramasAPS);
 			MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
-			String contentType = mimemap
-					.getContentType(templateOrdinarioProgramasAPS
-							.toLowerCase());
-			System.out.println("contenTypeBorradorAporteEstatal->"
-					+ contentType);
+			String contentType = mimemap.getContentType(templateOrdinarioProgramasAPS.toLowerCase());
+			System.out.println("contenTypeBorradorAporteEstatal->" + contentType);
 
 			generadorWordPlantillaBorradorOrdinarioProgramacionCaja.saveContent(documentoBorradorOrdinarioProgramasAPSVO.getContent(), XWPFDocument.class);
 
 			Map<String, Object> parametersBorradorAporteEstatal = new HashMap<String, Object>();
-			parametersBorradorAporteEstatal.put("{nombrePrograma}",programa.getNombre().replace(":", "\\:"));
+			parametersBorradorAporteEstatal.put("{nombrePrograma}", programa.getNombre().replace(":", "\\:"));
 			parametersBorradorAporteEstatal.put("{anoPrograma}", ano.toString());
 
-
-			GeneradorResolucionAporteEstatal generadorWordDecretoBorradorAporteEstatal = new GeneradorResolucionAporteEstatal(
-					filenameBorradorOrdinarioProgramasAPS,
-					templateOrdinarioProgramasAPS);
+			GeneradorResolucionAporteEstatal generadorWordDecretoBorradorAporteEstatal = new GeneradorResolucionAporteEstatal(filenameBorradorOrdinarioProgramasAPS, templateOrdinarioProgramasAPS);
 			generadorWordDecretoBorradorAporteEstatal.replaceValues(parametersBorradorAporteEstatal, XWPFDocument.class);
 
-			BodyVO response = alfrescoService.uploadDocument(new File(
-					filenameBorradorOrdinarioProgramasAPS), contentType,
-					folderRecursosFinancierosAPS.replace("{ANO}", ano.toString()));
-			System.out.println("response responseBorradorAporteEstatal --->"
-					+ response);
+			BodyVO response = alfrescoService.uploadDocument(new File(filenameBorradorOrdinarioProgramasAPS), contentType, folderRecursosFinancierosAPS.replace("{ANO}", ano.toString()));
+			System.out.println("response responseBorradorAporteEstatal --->" + response);
 
-
-			Integer programaValorizado = programaService.getProgramaAnoSiguiente(programa.getId(), ano);
-			plantillaBorradorOrdinarioProgramaReforzamiento = documentService
-					.createDocumentProgramasReforzamiento(TipoDocumentosProcesos.ORDINARIOPROGRAMASAPS, response.getNodeRef(),
-							response.getFileName(), contentType, programaValorizado);
+			plantillaBorradorOrdinarioProgramaReforzamiento = documentService.createDocumentProgramasReforzamiento(TipoDocumentosProcesos.ORDINARIOPROGRAMASAPS, response.getNodeRef(),
+							response.getFileName(), contentType, programa.getIdProgramaAno());
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -2769,9 +2740,12 @@ public class RecursosFinancierosProgramasReforzamientoService {
 
 		header.add(new CellExcelVO("TOTAL ($)"));
 
-		String filename = tmpDir + File.separator;
-		filename += "Plantilla Ordinario Programa -" + programa.getNombre().replace(":", "-")+".xlsx";
+		String filename =  "Plantilla Ordinario Programa -" + programa.getNombre(); 
+		filename = filename.replace(":", "-").replace(".", "").replace("/", "");
+		filename += ".xlsx";
 		filename = StringUtil.removeSpanishAccents(filename);
+		filename = tmpDir + File.separator + "_" + filename;
+		
 		GeneradorExcel generadorExcel = new GeneradorExcel(filename);
 		String contenType = mimemap.getContentType(filename.toLowerCase());
 
@@ -2880,8 +2854,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 
 	}
 
-	public Integer getIdResolucion(Integer programaSeleccionado,
-			TipoDocumentosProcesos tipoDocumentoProceso) {
+	public Integer getIdResolucion(Integer programaSeleccionado, TipoDocumentosProcesos tipoDocumentoProceso) {
 		System.out.println("BUSCANDO ID PARA: "+ tipoDocumentoProceso.getName());
 		ReferenciaDocumentoSummaryVO referencia = documentService.getLastDocumentoSummaryByResolucionAPSType(programaSeleccionado, tipoDocumentoProceso);
 		if(referencia != null){
@@ -2890,11 +2863,8 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		return null;
 	}
 
-	public Integer createSeguimientoProgramaReforzamiento(Integer idProxAno,
-			TareasSeguimiento tareaSeguimiento,
-			String subject, String body, String username, List<String> para,
-			List<String> conCopia, List<String> conCopiaOculta,
-			List<Integer> documentos) {
+	public Integer createSeguimientoProgramaReforzamiento(Integer idProxAno, TareasSeguimiento tareaSeguimiento, String subject, String body, String username, List<String> para,
+			List<String> conCopia, List<String> conCopiaOculta, List<Integer> documentos, Integer ano) {
 
 		String from = usuarioDAO.getEmailByUsername(username);
 		if(from == null){
@@ -2907,8 +2877,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = documentService.getDocumentSummary(referenciaDocumentoId);
 				documentosTmp.add(referenciaDocumentoSummaryVO);
 				String contenType= mimemap.getContentType(referenciaDocumentoSummaryVO.getPath().toLowerCase());
-				int ano = getAnoCurso()+1;
-				BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummaryVO.getPath()), contenType, folderRecursosFinancierosAPS.replace("{ANO}", ano+""));
+				BodyVO response = alfrescoService.uploadDocument(new File(referenciaDocumentoSummaryVO.getPath()), contenType, folderRecursosFinancierosAPS.replace("{ANO}", ano.toString()));
 				System.out.println("response upload template --->"+response);
 				documentService.updateDocumentTemplate(referenciaDocumentoId, response.getNodeRef(), response.getFileName(), contenType);
 			}
@@ -2916,7 +2885,6 @@ public class RecursosFinancierosProgramasReforzamientoService {
 		Integer idSeguimiento = seguimientoService.createSeguimiento(tareaSeguimiento, subject, body, from, para, conCopia, conCopiaOculta, documentosTmp);
 		Seguimiento seguimiento = seguimientoDAO.getSeguimientoById(idSeguimiento);
 		return recursosFinancierosProgramasReforzamientoDAO.createSeguimiento(programasDAO.getProgramaAnoByID(idProxAno), seguimiento);
-		// TODO Auto-generated method stub
 
 	}
 

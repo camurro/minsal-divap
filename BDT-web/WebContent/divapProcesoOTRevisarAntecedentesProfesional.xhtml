@@ -46,7 +46,7 @@
 						<h:panelGrid columns="2">
 							<h:outputText value="Componente " styleClass="inputLabel" />
 							<p:selectOneMenu id="componentes"  value="#{procesoOTRevisarAntecedentesController.componenteSeleccionado}">
-								<f:selectItem itemLabel="Seleccione" itemValue="-1" />  
+								<f:selectItem itemLabel="Seleccione Componente" itemValue="-1" />  
 								<f:selectItems value="#{procesoOTRevisarAntecedentesController.listaComponentes}" itemLabel="#{componente.nombre}" var="componente" itemValue="#{componente.id}"/> 
 							</p:selectOneMenu>
 						</h:panelGrid>
@@ -54,7 +54,7 @@
 					<h:panelGrid columns="2">
 						<h:outputText value="Servicio: " styleClass="inputLabel" />
 						<p:selectOneMenu id="servicios"  value="#{procesoOTRevisarAntecedentesController.servicioSeleccionado}">
-							<f:selectItem itemLabel="Seleccione" itemValue="-1" />  
+							<f:selectItem itemLabel="Seleccione Servicio" itemValue="-1" />  
 							<f:selectItems value="#{procesoOTRevisarAntecedentesController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
 						</p:selectOneMenu>
 					</h:panelGrid>
@@ -620,6 +620,80 @@
 								            	<p:ajax update=":form:tabs:tablaResultadosDesempeno" listener="#{procesoOTRevisarAntecedentesController.actualizarDesempenoDificil(rowIndexDesempeno, detalleDesempeno.idComuna)}"/>
 								        	</p:selectBooleanCheckbox>
 											<h:graphicImage rendered="#{detalleDesempeno.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />	
+										</p:column>
+									</p:dataTable>
+							</p:tab>
+						</c:if>
+						<c:if test="#{procesoOTRevisarAntecedentesController.rebajaIAAPS}">
+							<p:tab title="Rebaja IAAPS" id="tabRebaja">
+								<p:dataTable resizableColumns="true" value="#{procesoOTRevisarAntecedentesController.resultadoPercapita}" liveResize="true" var="detalleRebaja"
+										rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+										styleClass="dataTable" id="tablaResultadosRebaja" rowIndexVar="rowIndexRebaja">
+										<p:columnGroup type="header">
+											<p:row>
+												<p:column rowspan="3" headerText="Comuna" />
+												<p:column rowspan="3" headerText="Clasificación" />
+												<p:column rowspan="3" headerText="Marco Presupuestario ($)"/>
+												<p:column colspan="2" rowspan="2" headerText="Rebaja Acumulada a la Fecha"/>
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPerCapita}" var="remesa">
+													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="#{remesa.mes}"/>
+												</c:forEach>
+												<p:column rowspan="3" headerText="Revisado"/>
+											</p:row>
+											<p:row>
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPerCapita}" var="remesa">
+													<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="Días de Remesa"/>
+												</c:forEach>
+											</p:row>
+											<p:row>
+												<p:column headerText="Monto ($)" />
+												<p:column headerText="%" />
+												<c:forEach items="#{procesoOTRevisarAntecedentesController.remesasPerCapita}" var="remesa">
+													<c:forEach items="#{remesa.dias}" var="dia">
+														<p:column headerText="#{dia.dia}"/>
+													</c:forEach>
+												</c:forEach>
+											</p:row>
+										</p:columnGroup>
+											<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleRebaja.comuna}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleRebaja.tipoComuna}</span>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">N/A</span>	 
+										</p:column>
+										<p:column>
+											<h:outputText styleClass="textoAjustado textoPequenio" value="#{detalleRebaja.transferenciaAcumulada}">
+												<f:convertNumber  maxFractionDigits="0"/>
+											</h:outputText>
+										</p:column>
+										<p:column>
+											<span class="textoAjustado textoPequenio">#{detalleRebaja.porcentajeTransferenciaAcumulada}</span>
+										</p:column>
+										<c:forEach items="#{detalleRebaja.remesas}" var="remesa">
+											<c:forEach items="#{remesa.dias}" var="dia">
+													<p:column>
+														<c:if test="#{dia.bloqueado}">
+															<h:outputText value="#{dia.monto}" styleClass="textoAjustado textoPequenio">
+																<f:convertNumber  maxFractionDigits="0"/>
+															</h:outputText> 
+														</c:if>
+														<c:if test="#{not dia.bloqueado}">
+															<h:inputText value="#{dia.monto}" styleClass="divapProcesoOTInput">
+																<f:convertNumber  maxFractionDigits="0"/>
+															</h:inputText> 
+														</c:if>
+													</p:column>
+											</c:forEach>
+										</c:forEach>
+										
+										<p:column>
+											<p:selectBooleanCheckbox rendered="#{not detalleRebaja.aprobado}" value="#{detalleRebaja.aprobado}">
+								            	<p:ajax update=":form:tabs:tablaResultadosRebaja" listener="#{procesoOTRevisarAntecedentesController.actualizarRebajaIAAPS(rowIndexRebaja, detalleRebaja.idComuna)}"/>
+								        	</p:selectBooleanCheckbox>
+											<h:graphicImage rendered="#{detalleRebaja.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />	
 										</p:column>
 									</p:dataTable>
 							</p:tab>

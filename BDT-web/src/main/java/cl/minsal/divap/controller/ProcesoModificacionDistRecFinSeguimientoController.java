@@ -143,16 +143,16 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 		}else{
 			//Servicio H
 			if(programa.getDependenciaServicio() && !programa.getDependenciaMunicipal()){
-				resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENHISTORICO);
+				resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), this.ano, TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENHISTORICO);
 			}
 			//Municipal H
 			if(programa.getDependenciaMunicipal() && !programa.getDependenciaServicio()){
-				resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENHISTORICO);
+				resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), this.ano, TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENHISTORICO);
 			}
 			//Mixto H
 			if(programa.getDependenciaMunicipal() && programa.getDependenciaServicio()){
-				resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENHISTORICO);
-				resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENHISTORICO);
+				resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), this.ano, TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENHISTORICO);
+				resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), this.ano, TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENHISTORICO);
 				mixto=true;
 			}
 		}
@@ -276,7 +276,8 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 			if((this.cco != null) && !(this.cco.trim().isEmpty())){
 				conCopiaOculta = Arrays.asList(this.cco.split("\\,")); 
 			}
-			reforzamientoService.createSeguimientoProgramaReforzamiento(programaProxAno.getIdProgramaAno(), TareasSeguimiento.MODHACERSEGUIMIENTOPROGRAMASREFORZAMIENTORESOLUCION, subject, body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos);
+			reforzamientoService.createSeguimientoProgramaReforzamiento(programaProxAno.getIdProgramaAno(), TareasSeguimiento.MODHACERSEGUIMIENTOPROGRAMASREFORZAMIENTORESOLUCION, subject, body,
+					getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos, this.ano);
 		}catch(Exception e){
 			e.printStackTrace();
 			target = null;

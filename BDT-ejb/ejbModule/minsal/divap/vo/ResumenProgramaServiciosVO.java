@@ -23,6 +23,7 @@ public class ResumenProgramaServiciosVO implements Serializable{
 	private Long totalS22;
 	private Long totalS29;
 	private Long totalServicio;
+	private Long totalFinalServicio;
 	
 	
 	public Integer getIdServicio() {
@@ -60,6 +61,25 @@ public class ResumenProgramaServiciosVO implements Serializable{
 	public void setTotalServicio(Long totalServicio) {
 		this.totalServicio = totalServicio;
 	}
+	
+	public Long getTotalFinalServicio() {
+		totalFinalServicio = 0L;
+		if(totalS21 != null){
+			totalFinalServicio += totalS21;
+		}
+		if(totalS22 != null){
+			totalFinalServicio += totalS22;
+		}
+		if(totalS29 != null){
+			totalFinalServicio += totalS29;
+		}
+		return totalFinalServicio;
+	}
+	
+	public void setTotalFinalServicio(Long totalFinalServicio) {
+		this.totalFinalServicio = totalFinalServicio;
+	}
+	
 	public Long getTotalServicio() {
 		totalServicio = 0l;
 		if(totalS21 != null){

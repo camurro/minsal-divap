@@ -382,7 +382,6 @@ public class ProgramasService {
 							int posicion = salida.indexOf(r);
 							if(posicion != -1){
 								r = salida.get(posicion);
-
 								if(sub.getId()==1){
 									Long totalS21 = ((Number)(resumen[2])).longValue();
 									r.setTotalS21(totalS21);
@@ -395,7 +394,6 @@ public class ProgramasService {
 									Long totalS29 = ((Number)(resumen[2])).longValue();
 									r.setTotalS29(totalS29);
 								}
-
 							}else{
 								if(sub.getId()==1){
 									Long totalS21 = ((Number)(resumen[2])).longValue();

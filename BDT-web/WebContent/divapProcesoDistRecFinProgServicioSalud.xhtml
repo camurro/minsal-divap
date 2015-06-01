@@ -41,7 +41,7 @@
 		<p:growl id="growl" showDetail="false"/> 
 		<p:commandButton id="refrescarTabla" value="refrescar" action="#{procesoDistRecFinServicioController.refrescar}" style="display: none" update="form:tablaResultados"/>
 		
-		<h:inputHidden  id="posicionElemento" value="#{procesoDistRecFinServicioController.posicionElemento}" />
+			<h:inputHidden  id="posicionElemento" value="#{procesoDistRecFinServicioController.posicionElemento}" />
 			<h:inputHidden  id="precioCantidad" value="#{procesoDistRecFinServicioController.precioCantidad}" />
 			<h:inputHidden  id="subtitulo" value="#{procesoDistRecFinServicioController.subtitulo}" />
 			<p:commandButton id="botonPrecio" value="recalcularTotales" update="tablaResultados" action="#{procesoDistRecFinServicioController.recalcularTotales}" style="display: none"/>
@@ -98,7 +98,7 @@
 						<h3>Subtítulos del Programa</h3>
 							<h:panelGrid>
 								<p:dataTable resizableColumns="true" value="#{procesoDistRecFinServicioController.detalleEstablecimientos}" liveResize="true"
-									var="_establecimiento" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+									var="_establecimiento" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
 									styleClass="dataTable" id="tablaResultados" rowIndexVar="rowIndex">
 									<p:columnGroup type="header">
 										<p:row>
@@ -242,7 +242,7 @@
 
 
 							<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk"  action="#{procesoDistRecFinServicioController.guardar}" ajax="true" value="Guardar" update="form:resumen" />
-							<p:commandButton value="Finalizar" styleClass="x-btn-text" action="#{procesoDistRecFinServicioController.enviar}" ajax="false" icon="ui-icon-seek-first" >
+							<p:commandButton value="Finalizar" styleClass="x-btn-text" action="#{procesoDistRecFinServicioController.enviar}" ajax="true" icon="ui-icon-seek-first" >
 								<f:setPropertyActionListener target="#{procesoDistRecFinServicioController.target}" value="bandejaTareas.jsf" />
 							</p:commandButton>
 					</div>

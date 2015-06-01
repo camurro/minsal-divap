@@ -444,11 +444,8 @@
 								value="#{procesoDistRecFinSeguimientoController.body}"
 								requiredMessage="Debe especificar el mensaje del correo" />
 						</h:panelGrid>
-						<p:commandButton styleClass="x-btn-text"
-							onclick="return checkListEmails()" style="float:right;"
-							value="Enviar Correo" icon="ui-icon-comment" ajax="false"
-							action="#{procesoDistRecFinSeguimientoController.sendMail}"
-							id="sendMail" />
+						<p:commandButton styleClass="x-btn-text" onclick="return checkListEmails()" style="float:right;" value="Enviar Correo" icon="ui-icon-comment" 
+						ajax="false" action="#{procesoDistRecFinSeguimientoController.sendMail}" id="sendMail" />
 					</h:panelGrid>
 						
 					<h3>Tareas de la Actividad:</h3>
@@ -461,12 +458,8 @@
 							class="strong">Reingresar</span>.
 					</p>
 					
-					<p:commandButton styleClass="x-btn-text" value="Finalizar Seguimiento"
-						icon="ui-icon-refresh"
-						action="#{procesoDistRecFinSeguimientoController.enviar}">
-						<f:setPropertyActionListener
-							target="#{procesoDistRecFinSeguimientoController.target}"
-							value="bandejaTareas.jsf" />
+					<p:commandButton styleClass="x-btn-text" value="Finalizar Seguimiento" icon="ui-icon-refresh" action="#{procesoDistRecFinSeguimientoController.enviar}">
+						<f:setPropertyActionListener target="#{procesoDistRecFinSeguimientoController.target}" value="bandejaTareas.jsf" />
 					</p:commandButton>
 			</div>
 		</p:panel>

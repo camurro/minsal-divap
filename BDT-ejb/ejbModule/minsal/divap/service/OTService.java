@@ -2463,8 +2463,14 @@ public class OTService {
 						}
 					}
 					
+					if(antecedentesComunaCalculadoRebajaSeleccionada == null){
+						continue;
+					}
+					
 					List<RemesasProgramaVO> remesas = getRemesasPrograma(programaVO.getId(), mes, programaVO.getAno());
 					OTPerCapitaVO percapitaVO = new OTPerCapitaVO();
+					percapitaVO.setMarcoPresupuestario(0L);
+					percapitaVO.setTransferenciaAcumulada(0L);
 					percapitaVO.setIdComuna(comuna.getId());
 					percapitaVO.setComuna(comuna.getNombre());
 					percapitaVO.setTipoComuna(((antecendentesComunaCalculado.getAntecedentesComuna() != null && antecendentesComunaCalculado.getAntecedentesComuna().getClasificacion() != null) ? antecendentesComunaCalculado.getAntecedentesComuna().getClasificacion().getDescripcion() : ""));
@@ -2690,6 +2696,68 @@ public OTPerCapitaVO actualizarDesempenoDificil(Integer idComuna, OTPerCapitaVO 
 		}
 		return registroTabla;
 	}
+
+public OTPerCapitaVO actualizarRebajaIAAPS(Integer idComuna, OTPerCapitaVO registroTabla, Integer idProgramaAno, Integer idSubtitulo, Integer componenteSeleccionado) {
+	
+	List<Cuota> cuotasPrograma = reliquidacionDAO.getCuotasByProgramaAno(idProgramaAno);
+	Cuota cuotaAsociada = null;
+	for(Cuota cuota : cuotasPrograma){
+		if(cuota.getId().equals(registroTabla.getCuotaFinal())){
+			cuotaAsociada = cuota;
+			break;
+		}
+	}
+
+	if(registroTabla.getIdDetalleRemesaEliminar() != null && registroTabla.getIdDetalleRemesaEliminar().size() > 0){
+		for(Integer idDetalleRemesa : registroTabla.getIdDetalleRemesaEliminar()){
+			DetalleRemesas remesa = remesasDAO.findDetalleRemesaById(idDetalleRemesa);
+			if(remesa != null){
+				remesasDAO.remove(remesa);
+			}
+		}
+	}
+
+	List<PagaRemesaVO> pagaRemesa = new ArrayList<PagaRemesaVO>();
+	for(RemesasProgramaVO registro : registroTabla.getRemesas()){
+		for(DiaVO dia : registro.getDias()){
+			if(!dia.isBloqueado()){
+				PagaRemesaVO paga =  new PagaRemesaVO();
+				paga.setDia(dia.getDia());
+				paga.setIdMes(registro.getIdMes());
+				paga.setMonto(dia.getMonto());
+				paga.setBloqueado(false);
+				pagaRemesa.add(paga);
+			}else{
+				PagaRemesaVO paga =  new PagaRemesaVO();
+				paga.setDia(dia.getDia());
+				paga.setIdMes(registro.getIdMes());
+				paga.setMonto(0L);
+				paga.setBloqueado(true);
+				pagaRemesa.add(paga);
+			}
+		}
+	}
+	
+	Comuna comuna = comunaDAO.getComunaById(idComuna);
+	for(PagaRemesaVO pagando : pagaRemesa){
+		long currentTime = Calendar.getInstance().getTimeInMillis();
+		DetalleRemesas detalleRemesas = new DetalleRemesas();
+		detalleRemesas.setComuna(comuna);
+		detalleRemesas.setProgramaAno(programasDAO.getProgramaAnoByID(idProgramaAno));
+		detalleRemesas.setRemesaPagada(false);
+		detalleRemesas.setFecha(new Date(currentTime));
+		detalleRemesas.setSubtitulo(subtituloDAO.getTipoSubtituloById(idSubtitulo));
+		detalleRemesas.setMes(utilitariosDAO.findMesById(pagando.getIdMes()));
+		detalleRemesas.setDia(utilitariosDAO.findDiaById(pagando.getDia()));
+		detalleRemesas.setMontoRemesa(pagando.getMonto().intValue());
+		detalleRemesas.setCuota(cuotaAsociada);
+		detalleRemesas.setRevisarConsolidador(false);
+		detalleRemesas.setBloqueado(pagando.isBloqueado());
+		detalleRemesas.setComponente(componenteDAO.getComponenteByID(componenteSeleccionado));
+		remesasDAO.save(detalleRemesas);
+	}
+	return registroTabla;
+}
 
 	public String getMesCurso(Boolean numero) {
 		SimpleDateFormat dateFormat = null;
@@ -4141,6 +4209,89 @@ public OTPerCapitaVO actualizarDesempenoDificil(Integer idComuna, OTPerCapitaVO 
 		}
 		return listaReportePercapita;
 	}
+	
+	public List<OTPerCapitaVO> getDetalleRebajaConsolidador(Integer servicioSeleccionado, Integer anoCurso, Integer idProgramaAno) {
+		System.out.println("getDetallePerCapitaConsolidador servicioSeleccionado->"+servicioSeleccionado);
+		System.out.println("getDetallePerCapitaConsolidador anoCurso->"+anoCurso);
+		System.out.println("getDetallePerCapitaConsolidador idProgramaAno->"+idProgramaAno);
+		List<OTPerCapitaVO> listaReportePercapita = new ArrayList<OTPerCapitaVO>();
+		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
+		Integer componenteSeleccionado = programaVO.getComponentes().get(0).getId();
+		List<ServicioSalud> servicios = null;
+		if(servicioSeleccionado == null){
+			servicios = servicioSaludDAO.getServiciosOrderId();
+		}else{
+			ServicioSalud servicioSalud = servicioSaludDAO.getById(servicioSeleccionado);
+			servicios = new ArrayList<ServicioSalud>();
+			servicios.add(servicioSalud);
+		}
+		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(anoCurso);
+		for(ServicioSalud servicioSalud : servicios){
+			if(servicioSalud.getComunas() != null && servicioSalud.getComunas().size() > 0){
+				for(Comuna comuna : servicioSalud.getComunas()){
+					OTPerCapitaVO prog = new OTPerCapitaVO();
+					prog.setIdComuna(comuna.getId());
+					prog.setComuna(comuna.getNombre());
+					Map<Integer, RemesasProgramaVO> remesasPorMes = new HashMap<Integer, RemesasProgramaVO>();
+					List<DetalleRemesas> remesasPendientes = remesasDAO.getRemesasPendientesConsolidadorProgramaAnoComponenteSubtituloComuna(idProgramaAno, componenteSeleccionado, Subtitulo.SUBTITULO24.getId(), comuna.getId());
+					System.out.println("comuna.getId()=" + comuna.getId() + " remesasPendientes.size()=" + ((remesasPendientes == null) ? 0 : remesasPendientes.size()));
+					if(remesasPendientes != null && remesasPendientes.size() > 0){
+						List<DetalleRemesas> remesasPagadasProgramaAnoComponenteComunaSubtitulo = remesasDAO.getRemesasPagadasByProgramaAnoComponenteComunaSubtitulo(idProgramaAno, componenteSeleccionado, comuna.getId(), Subtitulo.SUBTITULO24.getId());
+						List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaVigente(comuna.getServicioSalud().getId(), comuna.getId(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+						AntecendentesComunaCalculado antecendentesComunaCalculado = ((antecendentesComunaCalculados != null && antecendentesComunaCalculados.size() > 0) ? antecendentesComunaCalculados.get(0): null);
+						if(antecendentesComunaCalculado == null){
+							continue;
+						}
+						prog.setMarcoPresupuestario( 0L);
+						prog.setTipoComuna(((antecendentesComunaCalculado.getAntecedentesComuna() != null && antecendentesComunaCalculado.getAntecedentesComuna().getClasificacion() != null) ? antecendentesComunaCalculado.getAntecedentesComuna().getClasificacion().getDescripcion() : ""));
+						Long montoTransferido = 0L;
+						if(remesasPagadasProgramaAnoComponenteComunaSubtitulo != null && remesasPagadasProgramaAnoComponenteComunaSubtitulo.size() > 0){
+							for(DetalleRemesas detalleRemesa : remesasPagadasProgramaAnoComponenteComunaSubtitulo){
+								montoTransferido += detalleRemesa.getMontoRemesa();
+							}
+						}
+						prog.setTransferenciaAcumulada(montoTransferido);
+						
+						List<Integer> idDetalleRemesaAProbarConsolidador = new ArrayList<Integer>();
+						for(DetalleRemesas remesaPendienteMes : remesasPendientes){
+							idDetalleRemesaAProbarConsolidador.add(remesaPendienteMes.getIdDetalleRemesa());
+							if(remesasPorMes.get(remesaPendienteMes.getMes().getIdMes()) == null){
+								RemesasProgramaVO detalleRemesa = new RemesasProgramaVO();
+								Mes mes = mesDAO.getMesPorID(remesaPendienteMes.getMes().getIdMes());
+								detalleRemesa.setIdMes(mes.getIdMes());
+								detalleRemesa.setMes(mes.getNombre());
+								List<DiaVO> dias = new ArrayList<DiaVO>();
+								DiaVO dia = new DiaVO();
+								dia.setBloqueado(remesaPendienteMes.isBloqueado());
+								dia.setDia(remesaPendienteMes.getDia().getId());
+								dia.setIdDia(remesaPendienteMes.getDia().getId());
+								dia.setMonto(new Long(remesaPendienteMes.getMontoRemesa()));
+								dias.add(dia);
+								detalleRemesa.setDias(dias);
+								remesasPorMes.put(remesaPendienteMes.getMes().getIdMes(), detalleRemesa);
+							}else{
+								DiaVO dia = new DiaVO();
+								dia.setBloqueado(remesaPendienteMes.isBloqueado());
+								dia.setDia(remesaPendienteMes.getDia().getId());
+								dia.setIdDia(remesaPendienteMes.getDia().getId());
+								dia.setMonto(new Long(remesaPendienteMes.getMontoRemesa()));
+								remesasPorMes.get(remesaPendienteMes.getMes().getIdMes()).getDias().add(dia);
+							}
+						}
+						prog.setIdDetalleRemesaAProbarConsolidador(idDetalleRemesaAProbarConsolidador);
+						List<RemesasProgramaVO> remesas = new ArrayList<RemesasProgramaVO>();
+						for (Integer key : remesasPorMes.keySet()) {
+							RemesasProgramaVO remesasProgramaVO = remesasPorMes.get(key);
+							remesas.add(remesasProgramaVO);
+						}
+						prog.setRemesas(remesas);
+						listaReportePercapita.add(prog);
+					}
+				}
+			}
+		}
+		return listaReportePercapita;
+	}
 
 	public OTPerCapitaVO aprobarMontoRemesaPerCapita(OTPerCapitaVO registroTabla) {
 		System.out.println("aprobarMontoRemesaPerCapita registroTabla-> " + registroTabla);
@@ -4170,6 +4321,33 @@ public OTPerCapitaVO actualizarDesempenoDificil(Integer idComuna, OTPerCapitaVO 
 	}
 
 	public OTPerCapitaVO aprobarMontoRemesaDesempenoDificil(OTPerCapitaVO registroTabla) {
+		System.out.println("aprobarMontoRemesaPerCapita registroTabla-> " + registroTabla);
+		for(Integer idDetalleRemesa : registroTabla.getIdDetalleRemesaAProbarConsolidador()){
+			System.out.println("idDetalleRemesa->"+idDetalleRemesa);
+			DetalleRemesas detalleRemesa = remesasDAO.findDetalleRemesaById(idDetalleRemesa);
+			if(detalleRemesa != null){
+				if( registroTabla.getRemesas() != null &&  registroTabla.getRemesas().size() > 0){
+					for(RemesasProgramaVO remesaProgramaVO : registroTabla.getRemesas()){
+						System.out.println("remesaProgramaVO.getIdMes()->"+remesaProgramaVO.getIdMes());
+						if(detalleRemesa.getMes().getIdMes().equals(remesaProgramaVO.getIdMes())){
+							if(remesaProgramaVO.getDias() != null &&  remesaProgramaVO.getDias().size() > 0){
+								for(DiaVO diaVO : remesaProgramaVO.getDias()){
+									System.out.println("diaVO.getDia()->"+diaVO.getDia());
+									if(detalleRemesa.getDia().getDia().equals(diaVO.getDia())){
+										detalleRemesa.setMontoRemesa(diaVO.getMonto().intValue());
+										detalleRemesa.setRevisarConsolidador(true);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return registroTabla;
+	}
+	
+	public OTPerCapitaVO aprobarMontoRemesaRebaja(OTPerCapitaVO registroTabla) {
 		System.out.println("aprobarMontoRemesaPerCapita registroTabla-> " + registroTabla);
 		for(Integer idDetalleRemesa : registroTabla.getIdDetalleRemesaAProbarConsolidador()){
 			System.out.println("idDetalleRemesa->"+idDetalleRemesa);

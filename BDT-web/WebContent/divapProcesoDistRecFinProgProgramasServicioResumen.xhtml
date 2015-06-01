@@ -17,14 +17,14 @@
 							<p:row>
 								<p:column colspan="2" headerText="Serv. de Salud" />
 								<c:if test="#{procesoDistRecFinServicioController.tiene21}">
-										<p:column rowspan="2" headerText="Subtítulo 21" />
+									<p:column rowspan="2" headerText="Subtítulo 21" />
 								</c:if>
 								<c:if test="#{procesoDistRecFinServicioController.tiene22}">
-												<p:column rowspan="2" headerText="Subtítulo 22" />
-											</c:if>
-											<c:if test="#{procesoDistRecFinServicioController.tiene29}">
-												<p:column rowspan="2" headerText="Subtítulo 29" />
-											</c:if>
+									<p:column rowspan="2" headerText="Subtítulo 22" />
+								</c:if>
+								<c:if test="#{procesoDistRecFinServicioController.tiene29}">
+									<p:column rowspan="2" headerText="Subtítulo 29" />
+								</c:if>
 							<p:column rowspan="2" headerText="Total" />
 							</p:row>
 							<p:row>
@@ -62,7 +62,7 @@
 						</c:if>
 						<p:column>
 							<h:outputText value="$ " />
-							<h:outputText value="#{_proceso.totalServicio}">
+							<h:outputText value="#{_proceso.totalFinalServicio}">
 								<f:convertNumber currencyCode="CLP" type="currency" pattern="" maxFractionDigits="0" />
 							</h:outputText>
 						</p:column>

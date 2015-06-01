@@ -21,7 +21,6 @@ import minsal.divap.service.ProgramasService;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ComponentesVO;
-import minsal.divap.vo.ProgramaMunicipalVO;
 import minsal.divap.vo.ProgramaServicioVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ResumenProgramaServiciosVO;
@@ -143,7 +142,7 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 				if(tiene29){
 					totalResumen29 += ((resumen.getTotalS29() == null) ? 0 : resumen.getTotalS29());
 				}
-				totalResumen += resumen.getTotalServicio();
+				totalResumen += resumen.getTotalFinalServicio();
 			}
 		}
 		

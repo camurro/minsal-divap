@@ -91,7 +91,7 @@
 						<h3>Subtítulos del Programa</h3>
 							<h:panelGrid>
 								<p:dataTable resizableColumns="true" value="#{procesoDistRecFinController.detalleComunas}" liveResize="true"
-									var="_detalle" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+									var="_detalle" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
 									styleClass="dataTable" id="tablaResultados" rowIndexVar="rowIndex">
 
 									<p:columnGroup type="header">
@@ -146,7 +146,7 @@
 							</h:panelGrid>
 
 							<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk" action="#{procesoDistRecFinController.guardar}" ajax="true" value="Guardar" update="form:resumen"/>
-							<p:commandButton value="Finalizar" styleClass="x-btn-text" action="#{procesoDistRecFinController.enviar}" ajax="false" icon="ui-icon-seek-first" >
+							<p:commandButton value="Finalizar" styleClass="x-btn-text" action="#{procesoDistRecFinController.enviar}" ajax="true" icon="ui-icon-seek-first" >
 								<f:setPropertyActionListener target="#{procesoDistRecFinController.target}" value="bandejaTareas.jsf" />
 							</p:commandButton>
 					</div>

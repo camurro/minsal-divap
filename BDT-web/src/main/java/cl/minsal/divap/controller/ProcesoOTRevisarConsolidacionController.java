@@ -11,7 +11,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
-import javax.faces.application.FacesMessage.Severity;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -100,6 +99,7 @@ implements Serializable {
 	private boolean subtitulo24;
 	private boolean percapita;
 	private boolean desempenoDificil;
+	private boolean rebajaIAAPS;
 	
 	private boolean subtitulo21Resumen;
 	private boolean subtitulo22Resumen;
@@ -197,6 +197,10 @@ implements Serializable {
 					desempenoDificil = true;
 					resultadoPercapita = otService.getDetalleDesempenoDificilConsolidador(servicio, anoCurso, programa.getIdProgramaAno()); 
 					System.out.println("Resultados Desempeño Dificil: " + resultadoPercapita.size());
+				}else if(Programas.REBAJAIAAPS.getId().equals(programa.getId())){
+					rebajaIAAPS = true;
+					resultadoPercapita = otService.getDetalleRebajaConsolidador(servicio, anoCurso, programa.getIdProgramaAno()); 
+					System.out.println("Resultados Rebaja: " + resultadoPercapita.size());
 				}
 			}else{
 				System.out.println("Buscar Resultados para Componente: "+componenteSeleccionado+" Servicio: "+servicio);
@@ -342,6 +346,14 @@ implements Serializable {
 		System.out.println(resultadoPercapita.size());
 		OTPerCapitaVO registroTabla = resultadoPercapita.get(row);
 		OTPerCapitaVO registroActualizado = otService.aprobarMontoRemesaDesempenoDificil(registroTabla);
+		resultadoPercapita.remove(registroActualizado);
+		System.out.println(resultadoPercapita.size());
+	}
+	
+	public void actualizarRebaja(Integer row, Integer idComuna){
+		System.out.println(resultadoPercapita.size());
+		OTPerCapitaVO registroTabla = resultadoPercapita.get(row);
+		OTPerCapitaVO registroActualizado = otService.aprobarMontoRemesaRebaja(registroTabla);
 		resultadoPercapita.remove(registroActualizado);
 		System.out.println(resultadoPercapita.size());
 	}
@@ -811,6 +823,14 @@ implements Serializable {
 
 	public void setDesempenoDificil(boolean desempenoDificil) {
 		this.desempenoDificil = desempenoDificil;
+	}
+
+	public boolean isRebajaIAAPS() {
+		return rebajaIAAPS;
+	}
+
+	public void setRebajaIAAPS(boolean rebajaIAAPS) {
+		this.rebajaIAAPS = rebajaIAAPS;
 	}
 	
 }

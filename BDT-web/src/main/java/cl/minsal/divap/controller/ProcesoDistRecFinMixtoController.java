@@ -140,7 +140,6 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 				if(resumenProgramaServicio.get(i).getTotalS29() != null){
 					mixto.setTotalS29(resumenProgramaServicio.get(i).getTotalS29().longValue());
 				}
-				totalResumen += mixto.getTotalServicio();
 				resumenProgramaMixto.add(mixto);  
 			}
 			for(int i = 0; i< resumenProgramaMunicipal.size(); i++){
@@ -150,20 +149,19 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
                 mixtoServicio.setIdServicio(resumenProgramaMunicipal.get(i).getIdServicio());
 				if(posicion !=-1){
 					resumenProgramaMixto.get(posicion).setTotalS24(resumenProgramaMunicipal.get(i).getTotalS24().longValue());
-					totalResumen += resumenProgramaMixto.get(posicion).getTotalServicio();
 				}else{
 					ResumenProgramaMixtoVO mixto = new ResumenProgramaMixtoVO();
 					mixto.setIdServicio(resumenProgramaMunicipal.get(i).getIdServicio());
 					mixto.setNombreServicio(resumenProgramaMunicipal.get(i).getNombreServicio());
-					if(resumenProgramaMunicipal.get(i).getTotalS24()!=null){
+					if(resumenProgramaMunicipal.get(i).getTotalS24() != null){
 						mixto.setTotalS24(resumenProgramaMunicipal.get(i).getTotalS24().longValue());
 					}
-					totalResumen += mixto.getTotalServicio();
 					resumenProgramaMixto.add(mixto);
 				}
-				
 			}
-			
+			for(ResumenProgramaMixtoVO resumenProgramaMixtoVO: resumenProgramaMixto){
+				totalResumen += resumenProgramaMixtoVO.getTotalServicio();
+			}
 			System.out.println(resumenProgramaMixto);
 		}
 		
@@ -196,9 +194,9 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 					totalResumen21+=resumen.getTotalS21();
 				}
 				if(resumen.getTotalS22()!=null){
-							tiene22=true;	
-							totalResumen22+=resumen.getTotalS22();
-							}
+					tiene22=true;	
+					totalResumen22+=resumen.getTotalS22();
+				}
 				if(resumen.getTotalS29()!=null){
 					tiene29=true;
 					totalResumen29+=resumen.getTotalS29();
