@@ -26,6 +26,29 @@
                                            itemValue="#{servicioSaludItem.id_servicio}"
                                            itemLabel="#{servicioSaludItem.nombre_servicio}"/>
                         </p:selectOneMenu>
+                        
+                        
+                        
+                        <p:outputLabel value="Clasificación" for="clasificacion" />
+                        <p:selectOneMenu id="clasificacion" value="#{comunaController.comunaSeleccionada.idClasificacion}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}" itemValue="0"/>
+                            <f:selectItems value="#{comunaController.tipoComunas}"
+                                           var="tipoComunaItem"
+                                           itemValue="#{tipoComunaItem.idTipoComuna}"
+                                           itemLabel="#{tipoComunaItem.descripcion}"/>
+                        </p:selectOneMenu>
+                        
+                        
+                        <p:outputLabel value="Asignación Zona" for="asigZona" />
+                        <p:selectOneMenu id="asigZona" value="#{comunaController.comunaSeleccionada.idAsigZona}" >
+                            <f:selectItem itemLabel="#{messages.SelectOneMessage}" itemValue="0"/>
+                            <f:selectItems value="#{comunaController.listRefAsigZonaVO}"
+                                           var="asigZonaItem"
+                                           itemValue="#{asigZonaItem.idFactorRefAsigZona}"
+                                           itemLabel="#{asigZonaItem.valor}"/>
+                        </p:selectOneMenu>
+                        
+                        
                     </p:panelGrid>
                     <p:commandButton actionListener="#{comunaController.saveNew}" value="#{messages.Save}" update="display,:ComunaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ComunaCreateDialog);"/>
                     <p:commandButton value="#{messages.Cancel}" onclick="ComunaCreateDialog.hide()"/>

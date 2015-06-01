@@ -1,5 +1,6 @@
 package minsal.divap.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Singleton;
@@ -12,6 +13,9 @@ import cl.minsal.divap.model.AntecedentesComunaCalculadoRebaja;
 import cl.minsal.divap.model.AntecendentesComuna;
 import cl.minsal.divap.model.AntecendentesComunaCalculado;
 import cl.minsal.divap.model.Comuna;
+import cl.minsal.divap.model.FactorRefAsigZona;
+import cl.minsal.divap.model.FactorTramoPobreza;
+import cl.minsal.divap.model.TipoComuna;
 
 
 
@@ -322,6 +326,28 @@ public class AntecedentesComunaDAO {
 		}
 		return result;
 	}
+	
+	public List<AntecendentesComuna> getAntecedentesComunaByServicioAno(Integer idServicio, Integer ano){
+		List<AntecendentesComuna> resultado = new ArrayList<AntecendentesComuna>();
+		try {
+			TypedQuery<AntecendentesComuna> query = this.em.createNamedQuery("AntecendentesComuna.findAntecendentesComunaByIdServicioIdAno", AntecendentesComuna.class);
+			query.setParameter("idServicio", idServicio);
+			query.setParameter("ano", ano);
+			List<AntecendentesComuna> results = query.getResultList(); 
+			if(results != null && results.size() > 0){
+				resultado = results;
+			}else{
+				resultado = null;
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+		return resultado;
+	}
+	
+	
+	
 
 	public AntecendentesComuna save(AntecendentesComuna antecendentesComuna) {
 		em.persist(antecendentesComuna);
@@ -492,5 +518,76 @@ public class AntecedentesComunaDAO {
 			throw new RuntimeException(e);
 		}
 	}
-
+	
+	public List<FactorRefAsigZona> findAllFactorAsigZona(){
+		try {
+			TypedQuery<FactorRefAsigZona> query = this.em.createNamedQuery("FactorRefAsigZona.findAll", FactorRefAsigZona.class);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public FactorRefAsigZona findFactorRefAsigZonaById(Integer idFactorRefAsigZona){
+		try {
+			TypedQuery<FactorRefAsigZona> query = this.em.createNamedQuery("FactorRefAsigZona.findByIdFactorRefAsigZona", FactorRefAsigZona.class);
+			query.setParameter("idFactorRefAsigZona", idFactorRefAsigZona);
+			List<FactorRefAsigZona> listado = query.getResultList(); 
+			if(listado != null && listado.size() > 0){
+				return listado.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public List<FactorTramoPobreza> findAllTramoPobreza(){
+		try {
+			TypedQuery<FactorTramoPobreza> query = this.em.createNamedQuery("FactorTramoPobreza.findAll", FactorTramoPobreza.class);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+	
+	public FactorTramoPobreza findFactorTramoPobrezaById(Integer idFactorTramoPobreza){
+		try {
+			TypedQuery<FactorTramoPobreza> query = this.em.createNamedQuery("FactorTramoPobreza.findByIdFactorTramoPobreza", FactorTramoPobreza.class);
+			query.setParameter("idFactorTramoPobreza", idFactorTramoPobreza);
+			List<FactorTramoPobreza> listado = query.getResultList(); 
+			if(listado != null && listado.size() > 0){
+				return listado.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
+	public List<TipoComuna> findAllTipoComunas(){
+		try {
+			TypedQuery<TipoComuna> query = this.em.createNamedQuery("TipoComuna.findAll", TipoComuna.class);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public TipoComuna findTipoComunaById(Integer idTipoComuna){
+		try {
+			TypedQuery<TipoComuna> query = this.em.createNamedQuery("TipoComuna.findByIdTipoComuna", TipoComuna.class);
+			query.setParameter("idTipoComuna", idTipoComuna);
+			List<TipoComuna> listado = query.getResultList(); 
+			if(listado != null && listado.size() > 0){
+				return listado.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 }

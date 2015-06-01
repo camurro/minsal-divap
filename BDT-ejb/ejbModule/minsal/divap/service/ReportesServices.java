@@ -838,7 +838,8 @@ public class ReportesServices {
 			dateFormat = new SimpleDateFormat("MMMM");
 			mesCurso = dateFormat.format(new Date());
 		}
-		return mesCurso;
+//		return mesCurso;
+		return "11";
 	}
 	
 	public String currentDate(){
