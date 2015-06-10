@@ -26578,4 +26578,28 @@ INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (23, -3, 2)
 
 
 
+-- creacion de la tabla programa_componente
+
+CREATE TABLE programa_componente
+(
+  id_programa_componente serial NOT NULL,
+  programa integer NOT NULL,
+  componente integer NOT NULL,
+  CONSTRAINT programa_componente_pk PRIMARY KEY (id_programa_componente ),
+  CONSTRAINT componente_fk FOREIGN KEY (componente)
+      REFERENCES componente (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT programa_fk FOREIGN KEY (programa)
+      REFERENCES programa (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE programa_componente
+  OWNER TO postgres;
+
+
+
+
 

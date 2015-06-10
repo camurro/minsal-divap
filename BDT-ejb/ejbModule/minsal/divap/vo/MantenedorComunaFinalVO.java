@@ -7,25 +7,26 @@ public class MantenedorComunaFinalVO implements Serializable{
 
 	private static final long serialVersionUID = 7403543859974140531L;
 	
-	private Integer idClasificacion;
+	private String idClasificacion;
 	private String clasificacion;
-	private Integer idAsigZona;
+	private String idAsigZona;
 	private Double asigZonaValor;
-	private Integer idTramoPobreza;
+	private String idTramoPobreza;
 	private Double tramoPobreza;
 	private Integer idAntecedentesComuna;
 	private Integer idComuna;
 	private String nombreComuna;
-	private Integer idServicio;
+	private String idServicio;
 	private String nombreServicio;
 	private Integer ano;
 	private Integer nroResolucion;
+	private Boolean comunaAuxiliar;
 	
 	public MantenedorComunaFinalVO() {
 		super();
 	}
 
-	public MantenedorComunaFinalVO(Integer idClasificacion, String clasificacion, Integer idAsigZona, Double asigZonaValor, Integer idTramoPobreza, Double tramoPobreza, Integer idAntecedentesComuna, Integer idComuna, String nombreComuna, Integer idServicio, String nombreServicio, Integer ano, Integer nroResolucion) {
+	public MantenedorComunaFinalVO(String idClasificacion, String clasificacion, String idAsigZona, Double asigZonaValor, String idTramoPobreza, Double tramoPobreza, Integer idAntecedentesComuna, Integer idComuna, String nombreComuna, String idServicio, String nombreServicio, Integer ano, Integer nroResolucion, Boolean comunaAuxiliar) {
 		super();
 		
 		 this.idClasificacion = idClasificacion;
@@ -41,14 +42,14 @@ public class MantenedorComunaFinalVO implements Serializable{
 		 this.nombreServicio = nombreServicio;
 		 this.ano = ano;
 		 this.nroResolucion = nroResolucion;
-		
+		 this.comunaAuxiliar = comunaAuxiliar;
 	}
 
-	public Integer getIdClasificacion() {
+	public String getIdClasificacion() {
 		return idClasificacion;
 	}
 
-	public void setIdClasificacion(Integer idClasificacion) {
+	public void setIdClasificacion(String idClasificacion) {
 		this.idClasificacion = idClasificacion;
 	}
 
@@ -60,11 +61,11 @@ public class MantenedorComunaFinalVO implements Serializable{
 		this.clasificacion = clasificacion;
 	}
 
-	public Integer getIdAsigZona() {
+	public String getIdAsigZona() {
 		return idAsigZona;
 	}
 
-	public void setIdAsigZona(Integer idAsigZona) {
+	public void setIdAsigZona(String idAsigZona) {
 		this.idAsigZona = idAsigZona;
 	}
 
@@ -76,11 +77,11 @@ public class MantenedorComunaFinalVO implements Serializable{
 		this.asigZonaValor = asigZonaValor;
 	}
 
-	public Integer getIdTramoPobreza() {
+	public String getIdTramoPobreza() {
 		return idTramoPobreza;
 	}
 
-	public void setIdTramoPobreza(Integer idTramoPobreza) {
+	public void setIdTramoPobreza(String idTramoPobreza) {
 		this.idTramoPobreza = idTramoPobreza;
 	}
 
@@ -116,11 +117,11 @@ public class MantenedorComunaFinalVO implements Serializable{
 		this.nombreComuna = nombreComuna;
 	}
 
-	public Integer getIdServicio() {
+	public String getIdServicio() {
 		return idServicio;
 	}
 
-	public void setIdServicio(Integer idServicio) {
+	public void setIdServicio(String idServicio) {
 		this.idServicio = idServicio;
 	}
 
@@ -148,6 +149,14 @@ public class MantenedorComunaFinalVO implements Serializable{
 		this.nroResolucion = nroResolucion;
 	}
 
+	public Boolean getComunaAuxiliar() {
+		return comunaAuxiliar;
+	}
+
+	public void setComunaAuxiliar(Boolean comunaAuxiliar) {
+		this.comunaAuxiliar = comunaAuxiliar;
+	}
+
 	@Override
 	public String toString() {
 		return "MantenedorComunaFinalVO [idClasificacion=" + idClasificacion
@@ -158,7 +167,8 @@ public class MantenedorComunaFinalVO implements Serializable{
 				+ idAntecedentesComuna + ", idComuna=" + idComuna
 				+ ", nombreComuna=" + nombreComuna + ", idServicio="
 				+ idServicio + ", nombreServicio=" + nombreServicio + ", ano="
-				+ ano + ", nroResolucion=" + nroResolucion + "]";
+				+ ano + ", nroResolucion=" + nroResolucion
+				+ ", comunaAuxiliar=" + comunaAuxiliar + "]";
 	}
 	
 }

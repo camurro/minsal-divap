@@ -114,6 +114,8 @@ public class ProgramasService {
 		}
 		return result;
 	}
+	
+	
 
 	public Integer getAnoCurso() {
 		DateFormat formatNowYear = new SimpleDateFormat("yyyy");
@@ -1025,4 +1027,17 @@ public class ProgramasService {
 	public ProgramaVO getProgramaByIdProgramaAndAno(Integer idPrograma, Integer ano) {
 		return new ProgramaMapper().getBasic(this.programasDAO.getProgramaAnoByIdProgramaAndAno(idPrograma, ano));
 	}
+	
+	public List<ProgramaVO> getProgramasByAno(Integer ano) {
+		List<ProgramaAno> programas = this.programasDAO.findByAno(ano);
+		List<ProgramaVO> result = new ArrayList<ProgramaVO>();
+		if(programas != null && programas.size() > 0){
+			for(ProgramaAno programa : programas){
+				result.add(new ProgramaMapper().getBasic(programa));
+			}
+		}
+		return result;
+	}
+	
+	
 }

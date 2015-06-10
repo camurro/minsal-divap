@@ -20,8 +20,10 @@ import minsal.divap.dao.TipoSubtituloDAO;
 import minsal.divap.dao.UsuarioDAO;
 import minsal.divap.model.mappers.PersonaMapper;
 import minsal.divap.model.mappers.ServicioMapper;
+import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.FactorRefAsigZonaVO;
 import minsal.divap.vo.FactorTramoPobrezaVO;
+import minsal.divap.vo.FechaRemesaVO;
 import minsal.divap.vo.MantenedorAnoVO;
 import minsal.divap.vo.MantenedorComunaFinalVO;
 import minsal.divap.vo.MantenedorCumplimientoVO;
@@ -32,22 +34,27 @@ import minsal.divap.vo.MantenedorProgramaVO;
 import minsal.divap.vo.MantenedorRegionVO;
 import minsal.divap.vo.MantenedorUsuarioVO;
 import minsal.divap.vo.PersonaVO;
+import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ServiciosVO;
+import minsal.divap.vo.TipoComponenteVO;
 import minsal.divap.vo.TipoComunaVO;
 import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.AntecendentesComuna;
 import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.ComponenteSubtitulo;
+import cl.minsal.divap.model.Comuna;
 import cl.minsal.divap.model.Cumplimiento;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.FactorRefAsigZona;
 import cl.minsal.divap.model.FactorTramoPobreza;
+import cl.minsal.divap.model.FechaRemesa;
 import cl.minsal.divap.model.Persona;
 import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.Region;
 import cl.minsal.divap.model.Rol;
 import cl.minsal.divap.model.ServicioSalud;
+import cl.minsal.divap.model.TipoComponente;
 import cl.minsal.divap.model.TipoComuna;
 import cl.minsal.divap.model.TipoCumplimiento;
 import cl.minsal.divap.model.TipoSubtitulo;
@@ -66,6 +73,8 @@ public class MantenedoresService {
 	private TipoSubtituloDAO tipoSubtituloDAO;
 	@EJB
 	private ProgramasDAO programasDAO;
+	@EJB
+	private ProgramasService programasService;
 	@EJB
 	private MantenedoresDAO mantenedoresDAO;
 	@EJB
@@ -311,25 +320,60 @@ public class MantenedoresService {
 		return nombreRolesFinal;
 	}
 	
-	public List<MantenedorProgramaVO> getAllMantenedorProgramaVO(){
+	public List<MantenedorProgramaVO> getAllMantenedorProgramaVO(Integer ano){
 		List<MantenedorProgramaVO> resultado = new ArrayList<MantenedorProgramaVO>();
-		List<Programa> programas = programasDAO.getAllProgramas();
 		
-		for(Programa programa : programas){
-			ProgramaAno programaAno = mantenedoresDAO.getProgramaAnoByIdPrograma(programa.getId());
-			if(programaAno == null){
-				programaAno = new ProgramaAno();
-			}
+		List<ProgramaVO> programas = programasService.getProgramasByAno(ano);
+		List<FechaRemesa> fechasRemesas = mantenedoresDAO.getAllFechasRemesas();
+		
+		List<Integer> diaFechasRemesas = new ArrayList<Integer>();
+		for(FechaRemesa fechaRemesa : fechasRemesas){
+			diaFechasRemesas.add(fechaRemesa.getDia().getDia());
+		}
+		
+		for(ProgramaVO programa : programas){
 			
 			MantenedorProgramaVO mantenedorProgramaVO = new MantenedorProgramaVO();
 			mantenedorProgramaVO.setIdPrograma(programa.getId());
-			mantenedorProgramaVO.setIdProgramaAno(programaAno.getIdProgramaAno());
+			mantenedorProgramaVO.setIdProgramaAno(programa.getIdProgramaAno());
 			mantenedorProgramaVO.setNombrePrograma(programa.getNombre());
-			mantenedorProgramaVO.setNombreUsuario(programa.getUsuario().getUsername());
-			mantenedorProgramaVO.setCuotas(programa.getCantidadCuotas());
+			mantenedorProgramaVO.setNombreUsuario(programa.getUsername());
+			mantenedorProgramaVO.setCuotas(programa.getCantidad_cuotas());
 			mantenedorProgramaVO.setDescripcion(programa.getDescripcion());
-			mantenedorProgramaVO.setReliquidacion(programa.isReliquidacion());
 			mantenedorProgramaVO.setFonasa(programa.getRevisaFonasa());
+			mantenedorProgramaVO.setAno(ano);
+			
+			ProgramaAno programaAno = programasDAO.getProgramaAnoByID(programa.getIdProgramaAno());
+			
+			mantenedorProgramaVO.setReliquidacion(programaAno.getPrograma().isReliquidacion());
+			
+			mantenedorProgramaVO.setComponentes(programa.getComponentes());
+			String dependencia = null;
+			if(programa.getDependenciaMunicipal()){
+				dependencia = "Municipal";
+				if(programa.getDependenciaServicio()){
+					dependencia = "Mixto";
+				}
+			}else{
+				dependencia = "Servicio";
+			}
+			mantenedorProgramaVO.setDependencia(dependencia);
+			
+			mantenedorProgramaVO.setIdEstadoPrograma(programa.getEstado().getId());
+			mantenedorProgramaVO.setEstadoPrograma(programa.getEstado().getNombre());
+			mantenedorProgramaVO.setIdEstadoFlujoCaja(programa.getEstadoFlujocaja().getId());
+			mantenedorProgramaVO.setEstadoFlujoCaja(programa.getEstadoFlujocaja().getNombre());
+			mantenedorProgramaVO.setIdEstadoreliquidacion(programa.getEstadoReliquidacion().getId());
+			mantenedorProgramaVO.setEstadoreliquidacion(programa.getEstadoReliquidacion().getNombre());
+			mantenedorProgramaVO.setIdEstadoConvenio(programa.getEstadoConvenio().getId());
+			mantenedorProgramaVO.setEstadoConvenio(programa.getEstadoConvenio().getNombre());
+			mantenedorProgramaVO.setIdEstadoOT(programa.getEstadoOT().getId());
+			mantenedorProgramaVO.setEstadoOT(programa.getEstadoOT().getNombre());
+			mantenedorProgramaVO.setIdEstadoModificacionAPS(programa.getEstadoModificacionAPS().getId());
+			mantenedorProgramaVO.setEstadoModificacionAPS(programa.getEstadoModificacionAPS().getNombre());
+			mantenedorProgramaVO.setDiaPagoRemesas(diaFechasRemesas);
+//			mantenedorProgramaVO.setIdTipoPrograma(programaAno.getPrograma().get);
+			
 			resultado.add(mantenedorProgramaVO);
 		}
 		
@@ -413,6 +457,7 @@ public class MantenedoresService {
 		List<ServicioSalud> servicios = new ArrayList<ServicioSalud>();
 		servicios = servicioSaludDAO.getServiciosOrderId();
 		for(ServicioSalud servicio : servicios){
+			
 			List<AntecendentesComuna> antecedentesComunaByServicio = antecedentesComunaDAO.getAntecedentesComunaByServicioAno(servicio.getId(), ano);
 			if(antecedentesComunaByServicio != null && antecedentesComunaByServicio.size() > 0){
 				for(AntecendentesComuna antecedenteComuna : antecedentesComunaByServicio){
@@ -420,28 +465,51 @@ public class MantenedoresService {
 					MantenedorComunaFinalVO mantenedorComunaFinalVO = new MantenedorComunaFinalVO();
 					mantenedorComunaFinalVO.setAno(ano);
 					if(antecedenteComuna.getClasificacion() != null){
-						mantenedorComunaFinalVO.setIdClasificacion(antecedenteComuna.getClasificacion().getIdTipoComuna());
+						mantenedorComunaFinalVO.setIdClasificacion(antecedenteComuna.getClasificacion().getIdTipoComuna().toString());
 						mantenedorComunaFinalVO.setClasificacion(antecedenteComuna.getClasificacion().getDescripcion());
 					}
 					
 					if(antecedenteComuna.getAsignacionZona() != null){
-						mantenedorComunaFinalVO.setIdAsigZona(antecedenteComuna.getAsignacionZona().getIdFactorRefAsigZona());
+						mantenedorComunaFinalVO.setIdAsigZona(antecedenteComuna.getAsignacionZona().getIdFactorRefAsigZona().toString());
 						mantenedorComunaFinalVO.setAsigZonaValor(antecedenteComuna.getAsignacionZona().getValor());
 					}
 					if(antecedenteComuna.getTramoPobreza() != null){
-						mantenedorComunaFinalVO.setIdTramoPobreza(antecedenteComuna.getTramoPobreza().getIdFactorTramoPobreza());
+						mantenedorComunaFinalVO.setIdTramoPobreza(antecedenteComuna.getTramoPobreza().getIdFactorTramoPobreza().toString());
 						mantenedorComunaFinalVO.setTramoPobreza(antecedenteComuna.getTramoPobreza().getValor());
 					}
 					mantenedorComunaFinalVO.setIdAntecedentesComuna(antecedenteComuna.getIdAntecedentesComuna());
 					mantenedorComunaFinalVO.setIdComuna(antecedenteComuna.getIdComuna().getId());
 					mantenedorComunaFinalVO.setNombreComuna(antecedenteComuna.getIdComuna().getNombre());
-					mantenedorComunaFinalVO.setIdServicio(antecedenteComuna.getIdComuna().getServicioSalud().getId());
+					mantenedorComunaFinalVO.setIdServicio(antecedenteComuna.getIdComuna().getServicioSalud().getId().toString());
 					mantenedorComunaFinalVO.setNombreServicio(antecedenteComuna.getIdComuna().getServicioSalud().getNombre());
+					mantenedorComunaFinalVO.setComunaAuxiliar(false);
 					resultado.add(mantenedorComunaFinalVO);
 					
 				}
+				List<Comuna> comunasAuxiliaresServicio = comunaDAO.getComunaServicioAuxiliares(servicio.getId());
+				for(Comuna comunaAuxiliarServicio : comunasAuxiliaresServicio){
+					MantenedorComunaFinalVO mantenedorComunaAuxiliar = new MantenedorComunaFinalVO();
+					mantenedorComunaAuxiliar.setAno(ano);
+					mantenedorComunaAuxiliar.setIdServicio(servicio.getId().toString());
+					mantenedorComunaAuxiliar.setNombreServicio(servicio.getNombre());
+					mantenedorComunaAuxiliar.setIdComuna(comunaAuxiliarServicio.getId());
+					mantenedorComunaAuxiliar.setNombreComuna(comunaAuxiliarServicio.getNombre());
+					
+					mantenedorComunaAuxiliar.setIdClasificacion("");
+					mantenedorComunaAuxiliar.setClasificacion("No aplica");
+					mantenedorComunaAuxiliar.setIdAsigZona("");
+					mantenedorComunaAuxiliar.setAsigZonaValor(0.0);
+					mantenedorComunaAuxiliar.setIdAsigZona("");
+					mantenedorComunaAuxiliar.setAsigZonaValor(0.0);
+					mantenedorComunaAuxiliar.setIdAntecedentesComuna(0);
+					mantenedorComunaAuxiliar.setComunaAuxiliar(true);
+					
+					resultado.add(mantenedorComunaAuxiliar);
+				} 
 			}
 		}
+		
+		
 		return resultado;
 		
 	}
@@ -482,16 +550,16 @@ public class MantenedoresService {
 					MantenedorComunaFinalVO mantenedorComunaFinalVO = new MantenedorComunaFinalVO();
 					mantenedorComunaFinalVO.setAno(ano);
 					if(antecedenteComunaAnoSiguiente.getClasificacion() != null){
-						mantenedorComunaFinalVO.setIdClasificacion(antecedenteComunaAnoSiguiente.getClasificacion().getIdTipoComuna());
+						mantenedorComunaFinalVO.setIdClasificacion(antecedenteComunaAnoSiguiente.getClasificacion().getIdTipoComuna().toString());
 						mantenedorComunaFinalVO.setClasificacion(antecedenteComunaAnoSiguiente.getClasificacion().getDescripcion());
 					}
 					
 					if(antecedenteComunaAnoSiguiente.getAsignacionZona() != null){
-						mantenedorComunaFinalVO.setIdAsigZona(antecedenteComunaAnoSiguiente.getAsignacionZona().getIdFactorRefAsigZona());
+						mantenedorComunaFinalVO.setIdAsigZona(antecedenteComunaAnoSiguiente.getAsignacionZona().getIdFactorRefAsigZona().toString());
 						mantenedorComunaFinalVO.setAsigZonaValor(antecedenteComunaAnoSiguiente.getAsignacionZona().getValor());
 					}
 					if(antecedenteComunaAnoSiguiente.getTramoPobreza() != null){
-						mantenedorComunaFinalVO.setIdTramoPobreza(antecedenteComunaAnoSiguiente.getTramoPobreza().getIdFactorTramoPobreza());
+						mantenedorComunaFinalVO.setIdTramoPobreza(antecedenteComunaAnoSiguiente.getTramoPobreza().getIdFactorTramoPobreza().toString());
 						mantenedorComunaFinalVO.setTramoPobreza(antecedenteComunaAnoSiguiente.getTramoPobreza().getValor());
 					}
 					if(antecedenteComunaAnoSiguiente.getNumeroResolucion() != null){
@@ -500,11 +568,31 @@ public class MantenedoresService {
 					mantenedorComunaFinalVO.setIdAntecedentesComuna(antecedenteComunaAnoSiguiente.getIdAntecedentesComuna());
 					mantenedorComunaFinalVO.setIdComuna(antecedenteComunaAnoSiguiente.getIdComuna().getId());
 					mantenedorComunaFinalVO.setNombreComuna(antecedenteComunaAnoSiguiente.getIdComuna().getNombre());
-					mantenedorComunaFinalVO.setIdServicio(antecedenteComunaAnoSiguiente.getIdComuna().getServicioSalud().getId());
+					mantenedorComunaFinalVO.setIdServicio(antecedenteComunaAnoSiguiente.getIdComuna().getServicioSalud().getId().toString());
 					mantenedorComunaFinalVO.setNombreServicio(antecedenteComunaAnoSiguiente.getIdComuna().getServicioSalud().getNombre());
+					mantenedorComunaFinalVO.setComunaAuxiliar(antecedenteComunaAnoSiguiente.getIdComuna().isAuxiliar());
 					resultado.add(mantenedorComunaFinalVO);
-					
 				}
+				List<Comuna> comunasAuxiliaresServicio = comunaDAO.getComunaServicioAuxiliares(servicio.getId());
+				for(Comuna comunaAuxiliarServicio : comunasAuxiliaresServicio){
+					MantenedorComunaFinalVO mantenedorComunaAuxiliar = new MantenedorComunaFinalVO();
+					mantenedorComunaAuxiliar.setAno(ano);
+					mantenedorComunaAuxiliar.setIdServicio(servicio.getId().toString());
+					mantenedorComunaAuxiliar.setNombreServicio(servicio.getNombre());
+					mantenedorComunaAuxiliar.setIdComuna(comunaAuxiliarServicio.getId());
+					mantenedorComunaAuxiliar.setNombreComuna(comunaAuxiliarServicio.getNombre());
+					
+					mantenedorComunaAuxiliar.setIdClasificacion("");
+					mantenedorComunaAuxiliar.setClasificacion("No aplica");
+					mantenedorComunaAuxiliar.setIdAsigZona("");
+					mantenedorComunaAuxiliar.setAsigZonaValor(0.0);
+					mantenedorComunaAuxiliar.setIdAsigZona("");
+					mantenedorComunaAuxiliar.setAsigZonaValor(0.0);
+					mantenedorComunaAuxiliar.setIdAntecedentesComuna(0);
+					mantenedorComunaAuxiliar.setComunaAuxiliar(true);
+					
+					resultado.add(mantenedorComunaAuxiliar);
+				} 
 			}
 		}
 		return resultado;
@@ -550,7 +638,49 @@ public class MantenedoresService {
 		return resultado;
 	}
 
+	public List<String> getNombresComponentes() {
+		List<String> nombreComponentes = new ArrayList<String>();
+		List<Componente> componentes = this.componenteDAO.getComponentes();
+		if(componentes != null && componentes.size() > 0){
+			for(Componente componente : componentes){
+				nombreComponentes.add(componente.getNombre());
+			}
+		}
+		return nombreComponentes;
+	}
 	
+	public List<FechaRemesaVO> getDiasFechaRemesas(){
+		List<FechaRemesaVO> diasFechaRemesas = new ArrayList<FechaRemesaVO>();
+		List<FechaRemesa> fechaRemesas = mantenedoresDAO.getAllFechasRemesas();
+		for(FechaRemesa fechaRemesa : fechaRemesas){
+			FechaRemesaVO fechaRemesaVO = new FechaRemesaVO();
+			fechaRemesaVO.setId(fechaRemesa.getId());
+			fechaRemesaVO.setDia(fechaRemesa.getDia().getDia());
+			diasFechaRemesas.add(fechaRemesaVO);
+		}
+		return diasFechaRemesas;
+	}
+	
+	public List<TipoComponenteVO> getTiposComponente(){
+		List<TipoComponenteVO> resultado = new ArrayList<TipoComponenteVO>();
+		List<TipoComponente> componentes = componenteDAO.getAllTipoComponente();
+		for(TipoComponente tipoComponente : componentes){
+			TipoComponenteVO tipoComponenteVO = new TipoComponenteVO();
+			tipoComponenteVO.setId(tipoComponente.getId());
+			tipoComponenteVO.setNombre(tipoComponente.getNombre());
+			resultado.add(tipoComponenteVO);
+		}
+		return resultado;
+	}
+	
+	public TipoComponenteVO getTipoComponenteById(Integer idTipoComponente){
+		TipoComponente tipoComponente = componenteDAO.getTipoComponenteById(idTipoComponente);
+		TipoComponenteVO tipoComponenteVO = new TipoComponenteVO();
+		tipoComponenteVO.setId(tipoComponente.getId());
+		tipoComponenteVO.setNombre(tipoComponente.getNombre());
+		
+		return tipoComponenteVO;
+	}
 	
 }
 

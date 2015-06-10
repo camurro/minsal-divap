@@ -162,7 +162,7 @@ public class ComponenteController extends AbstractController<Componente> {
      */
     public String navigateComponenteSubtitulos() {
         if (this.getSelected() != null) {
-            FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("ComponenteSubtitulo_items", this.getSelected().getComponenteSubtitulos());
+            FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("ComponenteSubtitulo_items", this.getSelected().getComponenteSubtitulosComponente());
         }
         return "/mantenedor/componenteSubtitulo/index";
     }

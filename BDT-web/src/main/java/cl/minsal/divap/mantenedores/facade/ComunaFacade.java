@@ -54,74 +54,111 @@ public class ComunaFacade extends AbstractFacade<Comuna> {
         super(Comuna.class);
     }
 
-	public void edit(MantenedorComunaFinalVO comunaSeleccionada, Integer anoFinal) {
-		AntecendentesComuna antecedentesComuna = null;
-		
-		if(comunaSeleccionada.getIdAntecedentesComuna() == null ){
-			antecedentesComuna = new AntecendentesComuna();
-		}else{
-			antecedentesComuna = antecedentesComunaDAO.getAntecendentesComunaByComunaAno(comunaSeleccionada.getIdComuna(), comunaSeleccionada.getAno());
+	public void edit(MantenedorComunaFinalVO comunaSeleccionada, Integer anoFinal, Boolean isAuxiliar) {
+		if(!comunaSeleccionada.getComunaAuxiliar()){
+			AntecendentesComuna antecedentesComuna = null;
+			
+			if(comunaSeleccionada.getIdAntecedentesComuna() == null ){
+				antecedentesComuna = new AntecendentesComuna();
+			}else{
+				antecedentesComuna = antecedentesComunaDAO.getAntecendentesComunaByComunaAno(comunaSeleccionada.getIdComuna(), comunaSeleccionada.getAno());
+			}
+			AnoEnCurso ano = new AnoEnCurso();
+			ano.setAno(comunaSeleccionada.getAno());
+			antecedentesComuna.setAnoAnoEnCurso(ano);
+			
+			antecedentesComuna.setAsignacionZona(new FactorRefAsigZona(Integer.parseInt(comunaSeleccionada.getIdAsigZona()), comunaSeleccionada.getAsigZonaValor()));
+			antecedentesComuna.setTramoPobreza(new FactorTramoPobreza(Integer.parseInt(comunaSeleccionada.getIdTramoPobreza()), comunaSeleccionada.getTramoPobreza()));
+			
+			Comuna comuna = comunaDAO.getComunaById(comunaSeleccionada.getIdComuna());
+			comuna.setNombre(comunaSeleccionada.getNombreComuna());
+			comuna.setAuxiliar(false);
+			ServicioSalud servicio = servicioSaludDAO.getById(Integer.parseInt(comunaSeleccionada.getIdServicio()));
+			comuna.setServicioSalud(servicio);
+			
+			
+			
+			getEntityManager().merge(comuna);
+			antecedentesComuna.setIdComuna(comuna);
+			
+			antecedentesComuna.setClasificacion(new TipoComuna(Integer.parseInt(comunaSeleccionada.getIdClasificacion()), comunaSeleccionada.getClasificacion()));
+			
+			getEntityManager().merge(antecedentesComuna);
 		}
-		AnoEnCurso ano = new AnoEnCurso();
-		ano.setAno(comunaSeleccionada.getAno());
-		antecedentesComuna.setAnoAnoEnCurso(ano);
+		else{
+			Comuna comuna = comunaDAO.getComunaById(comunaSeleccionada.getIdComuna());
+			comuna.setNombre(comunaSeleccionada.getNombreComuna());
+			comuna.setAuxiliar(true);
+			ServicioSalud servicio = servicioSaludDAO.getById(Integer.parseInt(comunaSeleccionada.getIdServicio()));
+			comuna.setServicioSalud(servicio);
+			getEntityManager().merge(comuna);
+		}
 		
-		antecedentesComuna.setAsignacionZona(new FactorRefAsigZona(comunaSeleccionada.getIdAsigZona(), comunaSeleccionada.getAsigZonaValor()));
-		antecedentesComuna.setTramoPobreza(new FactorTramoPobreza(comunaSeleccionada.getIdTramoPobreza(), comunaSeleccionada.getTramoPobreza()));
-		
-		Comuna comuna = comunaDAO.getComunaById(comunaSeleccionada.getIdComuna());
-		antecedentesComuna.setIdComuna(comuna);
-		
-		antecedentesComuna.setClasificacion(new TipoComuna(comunaSeleccionada.getIdClasificacion(), comunaSeleccionada.getClasificacion()));
-		
-		getEntityManager().merge(antecedentesComuna);
 		
 	}
 	
 
-	public void remove(MantenedorComunaFinalVO comunaSeleccionada) {
-		AntecendentesComuna antecedentesComuna = null;
-		antecedentesComuna = antecedentesComunaDAO.getAntecendentesComunaByComunaAno(comunaSeleccionada.getIdComuna(), comunaSeleccionada.getAno());
-		getEntityManager().remove(getEntityManager().merge(antecedentesComuna));
+	public void remove(MantenedorComunaFinalVO comunaSeleccionada, Boolean isAuxiliar) {
+		if(!comunaSeleccionada.getComunaAuxiliar()){
+			AntecendentesComuna antecedentesComuna = null;
+			antecedentesComuna = antecedentesComunaDAO.getAntecendentesComunaByComunaAno(comunaSeleccionada.getIdComuna(), comunaSeleccionada.getAno());
+			getEntityManager().remove(getEntityManager().merge(antecedentesComuna));
+			
+			Comuna comuna = comunaDAO.getComunaById(comunaSeleccionada.getIdComuna());
+			getEntityManager().remove(getEntityManager().merge(comuna));
+		}else{
+			Comuna comuna = comunaDAO.getComunaById(comunaSeleccionada.getIdComuna());
+			getEntityManager().remove(getEntityManager().merge(comuna));
+		}
 		
-		Comuna comuna = comunaDAO.getComunaById(comunaSeleccionada.getIdComuna());
-		getEntityManager().remove(getEntityManager().merge(comuna));
 	}
 	
-	public void create(MantenedorComunaFinalVO comunaNueva, Integer anoFinal) {
-		AntecendentesComuna antecedentesComuna = null;
-		if(comunaNueva.getIdAntecedentesComuna() == null ){
-			antecedentesComuna = new AntecendentesComuna();
+	public void create(MantenedorComunaFinalVO comunaNueva, Integer anoFinal, Boolean isAuxiliar) {
+		if(!isAuxiliar){
+			AntecendentesComuna antecedentesComuna = null;
+			if(comunaNueva.getIdAntecedentesComuna() == null ){
+				antecedentesComuna = new AntecendentesComuna();
+			}else{
+				antecedentesComuna = antecedentesComunaDAO.getAntecendentesComunaByComunaAno(comunaNueva.getIdComuna(), comunaNueva.getAno());
+			}
+			AnoEnCurso ano = new AnoEnCurso();
+			DateFormat formatNowYear = new SimpleDateFormat("yyyy");
+			Date nowDate = new Date();
+			ano.setAno(anoFinal);
+			antecedentesComuna.setAnoAnoEnCurso(ano);
+			
+			FactorRefAsigZona factorRefAsigZona = antecedentesComunaDAO.findFactorRefAsigZonaById(Integer.parseInt(comunaNueva.getIdAsigZona()));
+			antecedentesComuna.setAsignacionZona(factorRefAsigZona);
+			
+			FactorTramoPobreza factorTramoPobreza = antecedentesComunaDAO.findFactorTramoPobrezaById(Integer.parseInt(comunaNueva.getIdTramoPobreza()));
+			antecedentesComuna.setTramoPobreza(factorTramoPobreza);
+			
+//			Comuna comuna = comunaDAO.getComunaById(comunaNueva.getIdComuna());
+			Comuna comuna = new Comuna();
+			comuna.setNombre(comunaNueva.getNombreComuna());
+			//TODO ver este tema
+			comuna.setAuxiliar(false);
+			ServicioSalud servicio = servicioSaludDAO.getById(Integer.parseInt(comunaNueva.getIdServicio()));
+			comuna.setServicioSalud(servicio);
+			getEntityManager().persist(comuna);
+			
+			antecedentesComuna.setIdComuna(comuna);
+			
+			TipoComuna tipoComuna = antecedentesComunaDAO.findTipoComunaById(Integer.parseInt(comunaNueva.getIdClasificacion()));
+			antecedentesComuna.setClasificacion(tipoComuna);
+			
+	        getEntityManager().persist(antecedentesComuna);
 		}else{
-			antecedentesComuna = antecedentesComunaDAO.getAntecendentesComunaByComunaAno(comunaNueva.getIdComuna(), comunaNueva.getAno());
+			Comuna comuna = new Comuna();
+			comuna.setNombre(comunaNueva.getNombreComuna());
+			//TODO ver este tema
+			comuna.setAuxiliar(true);
+			ServicioSalud servicio = servicioSaludDAO.getById(Integer.parseInt(comunaNueva.getIdServicio()));
+			comuna.setServicioSalud(servicio);
+			getEntityManager().persist(comuna);
 		}
-		AnoEnCurso ano = new AnoEnCurso();
-		DateFormat formatNowYear = new SimpleDateFormat("yyyy");
-		Date nowDate = new Date();
-		ano.setAno(anoFinal);
-		antecedentesComuna.setAnoAnoEnCurso(ano);
 		
-		FactorRefAsigZona factorRefAsigZona = antecedentesComunaDAO.findFactorRefAsigZonaById(comunaNueva.getIdAsigZona());
-		antecedentesComuna.setAsignacionZona(factorRefAsigZona);
 		
-		FactorTramoPobreza factorTramoPobreza = antecedentesComunaDAO.findFactorTramoPobrezaById(comunaNueva.getIdTramoPobreza());
-		antecedentesComuna.setTramoPobreza(factorTramoPobreza);
-		
-//		Comuna comuna = comunaDAO.getComunaById(comunaNueva.getIdComuna());
-		Comuna comuna = new Comuna();
-		comuna.setNombre(comunaNueva.getNombreComuna());
-		//TODO ver este tema
-		comuna.setAuxiliar(false);
-		ServicioSalud servicio = servicioSaludDAO.getById(comunaNueva.getIdServicio());
-		comuna.setServicioSalud(servicio);
-		getEntityManager().persist(comuna);
-		
-		antecedentesComuna.setIdComuna(comuna);
-		
-		TipoComuna tipoComuna = antecedentesComunaDAO.findTipoComunaById(comunaNueva.getIdClasificacion());
-		antecedentesComuna.setClasificacion(tipoComuna);
-		
-        getEntityManager().persist(antecedentesComuna);
     }
     
 }

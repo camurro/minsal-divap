@@ -34,20 +34,7 @@
                 <p:ajax event="rowUnselect" update=":ProgramaListForm:createButton :ProgramaListForm:viewButton :ProgramaListForm:editButton :ProgramaListForm:deleteButton :ProgramaListForm:ProgramaDataTableContextMenu" listener="#{programaController.resetParents}"/>
                 <p:ajax event="rowDblselect" onsuccess="document.getElementById('ProgramaListForm:viewButton').click();"/>
 
-                <p:column sortBy="#{item.idPrograma}" filterBy="#{item.idPrograma}">
-                    <f:facet name="header">
-                        <h:outputText value="#{messages.ListProgramaTitle_id}"/>
-                    </f:facet>
-                    <h:outputText value="#{item.idPrograma}"/>
-                </p:column>
 
-
-                <p:column sortBy="#{item.cuotas}" filterBy="#{item.cuotas}">
-                    <f:facet name="header">
-                        <h:outputText value="#{messages.ListProgramaTitle_cantidadCuotas}"/>
-                    </f:facet>
-                    <h:outputText value="#{item.cuotas}"/>
-                </p:column>
 
 
                 <p:column sortBy="#{item.nombrePrograma}" filterBy="#{item.nombrePrograma}">
@@ -66,31 +53,24 @@
                 </p:column>
 
 
-                <p:column sortBy="#{item.descripcion}" filterBy="#{item.descripcion}">
-                    <f:facet name="header">
-                        <h:outputText value="#{messages.ListProgramaTitle_descripcion}"/>
-                    </f:facet>
-                    <h:outputText value="#{item.descripcion}"/>
-                </p:column>
 
-
-                <p:column sortBy="#{item.fonasa}" filterBy="#{item.fonasa}">
-                    <f:facet name="header">
-                        <h:outputText value="#{messages.ListProgramaTitle_revisaFonasa}"/>
-                    </f:facet>
-                    <h:selectBooleanCheckbox id="revisaFonasa" value="#{item.fonasa}" title="#{messages.EditProgramaTitle_revisaFonasa}"  disabled="true"/>
-                </p:column>
-
-                <p:column sortBy="#{item.reliquidacion}" filterBy="#{item.reliquidacion}">
+                <p:column sortBy="#{item.dependencia}" filterBy="#{item.dependencia}">
                 	<f:facet name="header">
-                    	<h:outputText value="#{messages.ListProgramaTitle_reliquidacion}"/>
+                    	<h:outputText value="Dependencia"/>
                     </f:facet>
-                    <h:selectBooleanCheckbox id="reliquidacion" value="#{item.reliquidacion}" title="#{messages.EditProgramaTitle_reliquidacion}"  disabled="true"/>
+                    <h:outputText value="#{item.dependencia.toUpperCase()}"/>
+                </p:column>
+                
+                <p:column>
+                	<f:facet name="header">
+                    	<h:outputText value="Año"/>
+                    </f:facet>
+                    <h:outputText value="#{item.ano}"/>
                 </p:column>
 
             </p:dataTable>
 
-            <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{programaController.prepareCreatePrograma}" update=":ProgramaCreateForm" oncomplete="ProgramaCreateDialog.show()"/>
+            <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{programaController.prepareCreatePrograma}" update=":ProgramaCreateForm" oncomplete="wiz.loadStep(wiz.cfg.steps[0], true);ProgramaCreateDialog.show()"/>
             <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{messages.View}" update=":ProgramaViewForm" oncomplete="ProgramaViewDialog.show()" disabled="#{empty programaController.seleccionado}"/>
             <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{messages.Edit}" actionListener="#{programaController.prepareEditarPrograma}" update=":ProgramaEditForm" oncomplete="ProgramaEditDialog.show()" disabled="#{empty programaController.seleccionado}"/>
             <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{programaController.delete}" update=":growl,datalist" disabled="#{empty programaController.seleccionado}"/>

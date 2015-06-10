@@ -17,7 +17,7 @@ public class MenuMantenedoresController extends BaseController implements Serial
 	private static final long serialVersionUID = -1278346523098543061L;
 	private Integer mesCurso;
 	private Integer anoCurso;
-	private Boolean mostrarMenuComunasAnosiguiente;
+	private Boolean mostrarMenuAnosiguiente;
 	
 	@EJB
 	ReportesServices reportesService;
@@ -26,9 +26,9 @@ public class MenuMantenedoresController extends BaseController implements Serial
 	public void init(){
 		anoCurso = reportesService.getAnoCurso();
 		mesCurso = Integer.parseInt(reportesService.getMesCurso(true));
-		mostrarMenuComunasAnosiguiente = false;
+		mostrarMenuAnosiguiente = false;
 		if(mesCurso > 9 && mesCurso < 13){
-			mostrarMenuComunasAnosiguiente = true;
+			mostrarMenuAnosiguiente = true;
 		}
 	}
 
@@ -44,12 +44,12 @@ public class MenuMantenedoresController extends BaseController implements Serial
 	public void setAnoCurso(Integer anoCurso) {
 		this.anoCurso = anoCurso;
 	}
-	public Boolean getMostrarMenuComunasAnosiguiente() {
-		return mostrarMenuComunasAnosiguiente;
+	public Boolean getMostrarMenuAnosiguiente() {
+		return mostrarMenuAnosiguiente;
 	}
-	public void setMostrarMenuComunasAnosiguiente(
-			Boolean mostrarMenuComunasAnosiguiente) {
-		this.mostrarMenuComunasAnosiguiente = mostrarMenuComunasAnosiguiente;
+	public void setMostrarMenuAnosiguiente(
+			Boolean mostrarMenuAnosiguiente) {
+		this.mostrarMenuAnosiguiente = mostrarMenuAnosiguiente;
 	}
 
 }

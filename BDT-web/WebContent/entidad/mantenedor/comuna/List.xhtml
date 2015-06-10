@@ -63,21 +63,21 @@
                     <f:facet name="header">
                         <h:outputText value="Clasificación"/>
                     </f:facet>
-                    <h:outputText value="#{item.clasificacion}"/>
+                    <h:outputText value="#{item.clasificacion}" rendered="#{not item.comunaAuxiliar}"/>
                 </p:column>
                 
                 <p:column sortBy="#{item.idAsigZona}" filterBy="#{item.idAsigZona}">
                     <f:facet name="header">
                         <h:outputText value="Asignación Zona"/>
                     </f:facet>
-                    <h:outputText value="#{item.asigZonaValor}"/>
+                    <h:outputText value="#{item.asigZonaValor}" rendered="#{not item.comunaAuxiliar}"/>
                 </p:column>
                 
-                <p:column sortBy="#{item.idTramoPobreza}" filterBy="#{item.idTramoPobreza}">
+                <p:column  >
                     <f:facet name="header">
                         <h:outputText value="Tramo Pobreza"/>
                     </f:facet>
-                    <h:outputText value="#{item.tramoPobreza}"/>
+                    <h:outputText value="#{item.tramoPobreza}" rendered="#{not item.comunaAuxiliar}"/>
                 </p:column>
                 
                 <p:column>
@@ -85,6 +85,13 @@
                         <h:outputText value="Año"/>
                     </f:facet>
                     <h:outputText value="#{item.ano}"/>
+                </p:column>
+                
+                <p:column>
+                	<f:facet name="header">
+                		<h:outputText value="Auxiliar" />
+                	</f:facet>
+                	<p:selectBooleanCheckbox value="#{item.comunaAuxiliar}" disabled="true"/>
                 </p:column>
 
 

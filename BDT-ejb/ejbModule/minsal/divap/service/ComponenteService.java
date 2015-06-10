@@ -91,5 +91,14 @@ public class ComponenteService {
 		Componente componente = this.componenteDAO.getComponenteByNombre(nombre);		
 		return componente;		
 	}
+	
+	public List<ComponentesVO> getComponenteByIdTipoComponente(Integer idTipoComponente) {
+		List<Componente> componentes = this.componenteDAO.getComponenteByTipoComponente(idTipoComponente);
+		List<ComponentesVO> componentesPrograma = new ArrayList<ComponentesVO>();
+		for (Componente componente : componentes){
+			componentesPrograma.add(new ComponenteMapper().getBasic(componente));
+		}
+		return componentesPrograma;
+	}
 
 }

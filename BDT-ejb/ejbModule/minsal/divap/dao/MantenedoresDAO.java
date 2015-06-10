@@ -12,6 +12,7 @@ import cl.minsal.divap.model.Cumplimiento;
 import cl.minsal.divap.model.Cuota;
 import cl.minsal.divap.model.FactorRefAsigZona;
 import cl.minsal.divap.model.FactorTramoPobreza;
+import cl.minsal.divap.model.FechaRemesa;
 import cl.minsal.divap.model.ProgramaAno;
 import cl.minsal.divap.model.TipoCumplimiento;
 import cl.minsal.divap.model.Tramo;
@@ -115,10 +116,11 @@ public class MantenedoresDAO {
 
 	
 	
-	public ProgramaAno getProgramaAnoByIdPrograma(Integer idPrograma){
+	public ProgramaAno getProgramaAnoByIdPrograma(Integer idPrograma, Integer ano){
 		try {
-			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.findByIdPrograma", ProgramaAno.class);
+			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.findByAnoIdPrograma", ProgramaAno.class);
 			query.setParameter("idPrograma", idPrograma);
+			query.setParameter("ano", ano);
 
 			List <ProgramaAno> programas = query.getResultList(); 
 			if(programas != null && programas.size() > 0){
@@ -186,4 +188,14 @@ public class MantenedoresDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public List<FechaRemesa> getAllFechasRemesas(){
+		try {
+			TypedQuery<FechaRemesa> query = this.em.createNamedQuery("FechaRemesa.findAll", FechaRemesa.class);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 }

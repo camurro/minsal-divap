@@ -13,6 +13,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
@@ -26,6 +27,7 @@ import minsal.divap.service.ServicioSaludService;
 import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.ComunaVO;
 import minsal.divap.vo.FactorRefAsigZonaVO;
+import minsal.divap.vo.FactorTramoPobrezaVO;
 import minsal.divap.vo.MantenedorComunaFinalVO;
 import minsal.divap.vo.MantenedorComunaVO;
 import minsal.divap.vo.ServiciosVO;
@@ -49,13 +51,14 @@ public class ComunaController extends AbstractController<Comuna> {
 	private Integer idServicioSeleccionado = 0;
 	private List<ServiciosVO> servicios;
 	
-	private List<MantenedorComunaVO> comunas;
 	private List<MantenedorComunaFinalVO> listadoComunas;
 	private List<Remesa> remesas;
 	private List<FactorRefAsigZonaVO> listRefAsigZonaVO;
+	private List<FactorTramoPobrezaVO> listTramoPobrezaVO;
 	private List<TipoComunaVO> tipoComunas;
 	private Integer anoEnCurso;
 	private Integer anoFinal;
+	private Boolean nuevaComunaEsAuxiliar;
 
 	@EJB
 	private ComunaService comunaService;
@@ -86,12 +89,11 @@ public class ComunaController extends AbstractController<Comuna> {
 	@Override
 	public void init() {
 		super.setFacade(ejbFacade);
+		comunaSeleccionada = new MantenedorComunaFinalVO();
+		nuevaComunaEsAuxiliar = false;
 		FacesContext context = FacesContext.getCurrentInstance();
-		comunasAnoSiguiente = false;
-		Integer mesCurso = Integer.parseInt(reportesServices.getMesCurso(true));
-		if(mesCurso > 9 && mesCurso < 13){
-			comunasAnoSiguiente = true;
-		}
+		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		comunasAnoSiguiente = Boolean.parseBoolean(request.getParameter("anoSiguiente"));
 	}
 
 	public ComunaController() {
@@ -132,12 +134,12 @@ public class ComunaController extends AbstractController<Comuna> {
 			this.setEmbeddableKeys();
 			try {
 				if (persistAction == PersistAction.UPDATE) {
-					this.ejbFacade.edit(this.comunaSeleccionada, anoFinal);
+					this.ejbFacade.edit(this.comunaSeleccionada, anoFinal, nuevaComunaEsAuxiliar);
 				}else if(persistAction == PersistAction.CREATE){
-					this.ejbFacade.create(this.comunaSeleccionada, anoFinal);
+					this.ejbFacade.create(this.comunaSeleccionada, anoFinal, nuevaComunaEsAuxiliar);
 				}else if(persistAction == PersistAction.DELETE){
 					System.out.println("borrando con nuestro delete");
-					this.ejbFacade.remove(this.comunaSeleccionada);
+					this.ejbFacade.remove(this.comunaSeleccionada, nuevaComunaEsAuxiliar);
 				}
 				JsfUtil.addSuccessMessage(successMessage);
 			} catch (EJBException ex) {
@@ -269,14 +271,14 @@ public class ComunaController extends AbstractController<Comuna> {
 	public void saveNew(ActionEvent event) {
 		System.out.println("entra al saveNew");
 		super.saveNew(event);
-		comunas = null;
+		listadoComunas = null;
 		servicios = null;
 	}
 
 	public void edit(ActionEvent event){
 		System.out.println("entra al edit");
 		super.edit(event);
-		comunas = null;
+		listadoComunas = null;
 		servicios = null;
 	}
 	
@@ -284,7 +286,7 @@ public class ComunaController extends AbstractController<Comuna> {
 		System.out.println("entra al delete");
 		super.delete(event);
 		comunaSeleccionada = null;
-		comunas = null;
+		listadoComunas = null;
 		servicios = null;
 	}
 
@@ -302,35 +304,6 @@ public class ComunaController extends AbstractController<Comuna> {
 	public void setComunaSeleccionada(MantenedorComunaFinalVO comunaSeleccionada) {
 		System.out.println("comunaSeleccionada ----> "+comunaSeleccionada);
 		this.comunaSeleccionada = comunaSeleccionada;
-	}
-
-	public List<MantenedorComunaVO> getComunas() {
-		if(comunas == null){
-			comunas = new ArrayList<MantenedorComunaVO>();
-			for(ServiciosVO servicio : getServicios()){
-				
-//				System.out.println("servicio --> "+servicio.getNombre_servicio());
-				if(servicio.getComunas() == null){
-					continue;
-				}else{
-					for(ComunaSummaryVO comuna : servicio.getComunas()){
-						MantenedorComunaVO mantenedorComuna = new MantenedorComunaVO();
-						mantenedorComuna.setIdComuna(comuna.getId());
-//						System.out.println("comuna --> "+comuna.getNombre());
-						mantenedorComuna.setNombreComuna(comuna.getNombre());
-						mantenedorComuna.setIdServicio(servicio.getId_servicio());
-						mantenedorComuna.setNombreServicio(servicio.getNombre_servicio());
-						comunas.add(mantenedorComuna);
-					}
-				}
-				
-			}
-		}
-		return comunas;
-	}
-
-	public void setComunas(List<MantenedorComunaVO> comunas) {
-		this.comunas = comunas;
 	}
 
 	public List<ServiciosVO> getServicios() {
@@ -399,6 +372,17 @@ public class ComunaController extends AbstractController<Comuna> {
 	public void setListRefAsigZonaVO(List<FactorRefAsigZonaVO> listRefAsigZonaVO) {
 		this.listRefAsigZonaVO = listRefAsigZonaVO;
 	}
+	
+	public List<FactorTramoPobrezaVO> getListTramoPobrezaVO() {
+		if(listTramoPobrezaVO == null){
+			listTramoPobrezaVO = mantenedoresService.getAllFactorTramoPobreza();
+		}
+		return listTramoPobrezaVO;
+	}
+
+	public void setListTramoPobrezaVO(List<FactorTramoPobrezaVO> listTramoPobrezaVO) {
+		this.listTramoPobrezaVO = listTramoPobrezaVO;
+	}
 
 	public List<TipoComunaVO> getTipoComunas() {
 		if(tipoComunas == null){
@@ -426,6 +410,16 @@ public class ComunaController extends AbstractController<Comuna> {
 	public void setAnoFinal(Integer anoFinal) {
 		this.anoFinal = anoFinal;
 	}
+
+	public Boolean getNuevaComunaEsAuxiliar() {
+		return nuevaComunaEsAuxiliar;
+	}
+
+	public void setNuevaComunaEsAuxiliar(Boolean nuevaComunaEsAuxiliar) {
+		this.nuevaComunaEsAuxiliar = nuevaComunaEsAuxiliar;
+	}
+
+	
 
 
 }

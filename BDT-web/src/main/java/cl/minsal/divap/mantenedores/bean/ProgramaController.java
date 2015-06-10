@@ -18,18 +18,28 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import minsal.divap.dao.MantenedoresDAO;
 import minsal.divap.dao.UsuarioDAO;
+import minsal.divap.service.ComponenteService;
 import minsal.divap.service.MantenedoresService;
+import minsal.divap.service.ReportesServices;
+import minsal.divap.vo.ComponentesVO;
+import minsal.divap.vo.FechaRemesaVO;
 import minsal.divap.vo.MantenedorCuotasVO;
 import minsal.divap.vo.MantenedorProgramaVO;
+import minsal.divap.vo.SubtituloVO;
+import minsal.divap.vo.TipoComponenteVO;
 
+import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.event.RowEditEvent;
+import org.primefaces.model.DualListModel;
 
+import sun.security.action.GetLongAction;
 import cl.minsal.divap.mantenedores.bean.util.JsfUtil;
 import cl.minsal.divap.mantenedores.enums.PersistAction;
 import cl.minsal.divap.mantenedores.facade.ProgramaFacade;
@@ -39,7 +49,7 @@ import cl.minsal.divap.model.Usuario;
 
 @Named("programaController")
 @ViewScoped
-public class ProgramaController extends AbstractController<Programa> {
+public class ProgramaController extends AbstractController<Programa>{
 
 	
 	private List<MantenedorProgramaVO> programas;
@@ -54,6 +64,14 @@ public class ProgramaController extends AbstractController<Programa> {
 	private String fecha_convertida;
 	private Integer mes;
 	private Boolean firstCuota;
+	private Boolean programasAnoSiguiente;
+	private Integer anoEnCurso;
+	private DualListModel<ComponentesVO> componentes;
+	private DualListModel<FechaRemesaVO> fechasDiaRemesas;
+	private Integer tipoPrograma;
+	private List<TipoComponenteVO> tipoComponentes;
+	private Boolean cuotaCienPorciento;
+	
 	
     @EJB
     private ProgramaFacade ejbFacade;
@@ -64,12 +82,25 @@ public class ProgramaController extends AbstractController<Programa> {
     private UsuarioDAO usuarioDAO;
     @EJB
     private MantenedoresDAO mantenedoresDAO;
+    @EJB
+    private ReportesServices reportesServices;
+    @EJB
+    private ComponenteService componenteService;
     
     private UsuarioController usuarioController;
 
     
     
     public void addAction(){
+    	
+    	Integer porcentajeAcumuladoCuotas = 0;
+    	for(MantenedorCuotasVO cuotasVO : cuotas){
+    		porcentajeAcumuladoCuotas = porcentajeAcumuladoCuotas + cuotasVO.getPorcentaje_cuota();
+    	}
+    	if(porcentajeAcumuladoCuotas >= 100){
+    		cuotaCienPorciento = true;
+    	}
+    	
     	System.out.println("getFecha_convertida() -->"+getFecha_convertida()+"<---");
     	System.out.println("getFecha_cuota() --> "+getFecha_cuota());
     	Integer month = null;
@@ -130,8 +161,12 @@ public class ProgramaController extends AbstractController<Programa> {
     @PostConstruct
     @Override
     public void init() {
+    	cuotaCienPorciento = false;
         super.setFacade(ejbFacade);
+        anoEnCurso = reportesServices.getAnoCurso();
         this.firstCuota = true;
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        programasAnoSiguiente = Boolean.parseBoolean(request.getParameter("anoSiguiente"));
         FacesContext context = FacesContext.getCurrentInstance();
         usuarioController = context.getApplication().evaluateExpressionGet(context, "#{usuarioController}", UsuarioController.class);
         this.cuotas = new ArrayList<MantenedorCuotasVO>();
@@ -175,6 +210,9 @@ public class ProgramaController extends AbstractController<Programa> {
     }
     
     public void saveNew(ActionEvent event) {
+    	for(MantenedorCuotasVO cuotasVO : cuotas){
+    		System.out.println("\n\n\n\n\n\n\n\n\n\ncuotasVO.getMes()"+cuotasVO.toString()+"\n\n\n\n\n\n\n\n\n\n");
+    	}
     	seleccionado.setListaCuotas(getCuotas());
     	seleccionado.setCuotas(getCuotas().size());
 		System.out.println("entra al saveNew");
@@ -239,6 +277,23 @@ public class ProgramaController extends AbstractController<Programa> {
 		}
 	}
     
+	public void listenerTipoPrograma(){
+		
+		//cargar nuevamente los tipos de componente segun el tipo de programa seleccionado
+		
+//		TipoComponenteVO tipoComponenteSeleccionado = mantenedoresService.getTipoComponenteById(tipoPrograma);
+		System.out.println("\n se ha seleccionado un nuevo tipo de programa");
+		
+	}
+	
+	
+	public void onCellEdit(CellEditEvent event) {
+		
+		Object oldValue = event.getOldValue();
+        Object newValue = event.getNewValue();
+		
+	}
+	
 	public String deleteAction(MantenedorCuotasVO mantenedorCuotasVO) {
 
         this.cuotas.remove(mantenedorCuotasVO);
@@ -312,7 +367,15 @@ public class ProgramaController extends AbstractController<Programa> {
 
 	public List<MantenedorProgramaVO> getProgramas() {
 		if(programas == null){
-			programas = mantenedoresService.getAllMantenedorProgramaVO();
+			if(programasAnoSiguiente){
+				programas = mantenedoresService.getAllMantenedorProgramaVO(anoEnCurso + 1);
+				if(programas == null || programas.size() == 0){
+					
+				}
+			}else{
+				programas = mantenedoresService.getAllMantenedorProgramaVO(anoEnCurso);
+			}
+			
 		}
 		return programas;
 	}
@@ -421,5 +484,95 @@ public class ProgramaController extends AbstractController<Programa> {
 		System.out.println("firstCuota --> "+firstCuota);
 		this.firstCuota = firstCuota;
 	}
+
+	public Boolean getProgramasAnoSiguiente() {
+		return programasAnoSiguiente;
+	}
+    
+	public void setProgramasAnoSiguiente(Boolean programasAnoSiguiente) {
+		this.programasAnoSiguiente = programasAnoSiguiente;
+	}
+
+	public Integer getAnoEnCurso() {
+		return anoEnCurso;
+	}
+
+	public void setAnoEnCurso(Integer anoEnCurso) {
+		this.anoEnCurso = anoEnCurso;
+	}
+
+	public DualListModel<ComponentesVO> getComponentes() {
+		List<ComponentesVO> componentesSource = new ArrayList<ComponentesVO>();
+		List<ComponentesVO> componentesTarget = new ArrayList<ComponentesVO>();
+		
+		TipoComponenteVO tipoComponenteSeleccionado = mantenedoresService.getTipoComponenteById(tipoPrograma);
+		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n tipoComponenteSeleccionado --> "+tipoComponenteSeleccionado+"\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+		
+		
+		if(componentes == null){
+			if(tipoComponenteSeleccionado.getNombre().equalsIgnoreCase("ley")){
+				//ley
+				componentesSource = componenteService.getComponenteByIdTipoComponente(minsal.divap.enums.TipoComponenteEnum.LEY.getId());
+			}else if(tipoComponenteSeleccionado.getNombre().equalsIgnoreCase("PxQ")){
+				componentesSource = componenteService.getComponentes();
+			}else{
+				componentesSource = componenteService.getComponenteByIdTipoComponente(minsal.divap.enums.TipoComponenteEnum.HISTORICO.getId());
+			}
+			
+			componentes = new DualListModel<ComponentesVO>(componentesSource, componentesTarget);
+		}
+		
+		return componentes;
+	}
+
+	public void setComponentes(DualListModel<ComponentesVO> componentes) {
+		this.componentes = componentes;
+	}
+
+	public DualListModel<FechaRemesaVO> getFechasDiaRemesas() {
+		List<FechaRemesaVO> diasRemesasSource = new ArrayList<FechaRemesaVO>();
+		List<FechaRemesaVO> diasRemesasTarget = new ArrayList<FechaRemesaVO>();
+		
+		
+		
+		if(fechasDiaRemesas == null){
+			diasRemesasSource = mantenedoresService.getDiasFechaRemesas();
+			fechasDiaRemesas = new DualListModel<FechaRemesaVO>(diasRemesasSource, diasRemesasTarget);
+		}
+		
+		return fechasDiaRemesas;
+	}
+
+	public void setFechasDiaRemesas(DualListModel<FechaRemesaVO> fechasDiaRemesas) {
+		this.fechasDiaRemesas = fechasDiaRemesas;
+	}
+
+	public Integer getTipoPrograma() {
+		return tipoPrograma;
+	}
+
+	public void setTipoPrograma(Integer tipoPrograma) {
+		this.tipoPrograma = tipoPrograma;
+	}
+
+	public List<TipoComponenteVO> getTipoComponentes() {
+		if(tipoComponentes == null){
+			tipoComponentes = mantenedoresService.getTiposComponente();
+		}
+		return tipoComponentes;
+	}
+
+	public void setTipoComponentes(List<TipoComponenteVO> tipoComponentes) {
+		this.tipoComponentes = tipoComponentes;
+	}
+
+	public Boolean getCuotaCienPorciento() {
+		return cuotaCienPorciento;
+	}
+
+	public void setCuotaCienPorciento(Boolean cuotaCienPorciento) {
+		this.cuotaCienPorciento = cuotaCienPorciento;
+	}
+
 	
 }
