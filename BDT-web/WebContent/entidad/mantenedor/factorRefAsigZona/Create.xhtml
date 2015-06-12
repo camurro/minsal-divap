@@ -15,11 +15,15 @@
                 <h:panelGroup id="display" rendered="#{factorRefAsigZonaController.seleccionado != null}">
                     <p:panelGrid columns="2" columnClasses="column">
 
-                        <p:outputLabel value="#{messages.CreateFactorRefAsigZonaLabel_zona}" for="zona" />
-                        <p:inputText id="zona" value="#{factorRefAsigZonaController.seleccionado.zona}" title="#{messages.CreateFactorRefAsigZonaTitle_zona}" required="true" requiredMessage="#{messages.CreateFactorRefAsigZonaRequiredMessage_zona}"/>
+                        <p:outputLabel value="Zona Desde" for="zonaDesde" />
+                        <p:inputText id="zonaDesde" value="#{factorRefAsigZonaController.seleccionado.zonaDesde}" title="#{messages.CreateFactorRefAsigZonaTitle_zona}" required="true" requiredMessage="El campo Zona Desde es requerido"/>
+
+						<p:outputLabel value="Zona Hasta" for="zonaHasta" />
+                        <p:inputText id="zonaHasta" value="#{factorRefAsigZonaController.seleccionado.zonaHasta}" title="#{messages.CreateFactorRefAsigZonaTitle_zona}" required="true" requiredMessage="El campo Zona Hasta es requerido"/>
 
                         <p:outputLabel value="#{messages.CreateFactorRefAsigZonaLabel_valor}" for="valor" />
-                        <p:inputText id="valor" value="#{factorRefAsigZonaController.seleccionado.valor}" title="#{messages.CreateFactorRefAsigZonaTitle_valor}" required="true" requiredMessage="#{messages.CreateFactorRefAsigZonaRequiredMessage_valor}"/>
+                        <p:inputText id="valor" value="#{factorRefAsigZonaController.seleccionado.valor}" title="#{messages.CreateFactorRefAsigZonaTitle_valor}" required="true" requiredMessage="El campo Valor es requerido"/>
+                        
                     </p:panelGrid>
                     <p:commandButton actionListener="#{factorRefAsigZonaController.saveNew}" value="#{messages.Save}" update="display,:FactorRefAsigZonaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,FactorRefAsigZonaCreateDialog);"/>
                     <p:commandButton value="#{messages.Cancel}" onclick="FactorRefAsigZonaCreateDialog.hide()"/>

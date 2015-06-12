@@ -18,8 +18,10 @@ import javax.validation.ConstraintViolationException;
 import minsal.divap.service.MantenedoresService;
 import minsal.divap.service.ServicioSaludService;
 import minsal.divap.vo.MantenedorRegionVO;
+import minsal.divap.vo.PersonaMantenedorVO;
 import minsal.divap.vo.PersonaVO;
 import minsal.divap.vo.RegionSummaryVO;
+import minsal.divap.vo.ServiciosMantenedorVO;
 import minsal.divap.vo.ServiciosVO;
 import cl.minsal.divap.mantenedores.bean.util.JsfUtil;
 import cl.minsal.divap.mantenedores.enums.PersistAction;
@@ -38,8 +40,8 @@ public class ServicioSaludController extends AbstractController<ServicioSalud> {
     @EJB
     private MantenedoresService mantenedoresService;
     
-    private List<ServiciosVO> servicios;
-    private ServiciosVO seleccionado;
+    private List<ServiciosMantenedorVO> servicios;
+    private ServiciosMantenedorVO seleccionado;
     private List<PersonaVO> personas;
     private List<MantenedorRegionVO> regiones;
     
@@ -101,13 +103,20 @@ public class ServicioSaludController extends AbstractController<ServicioSalud> {
 			try {
 				if (persistAction == PersistAction.UPDATE) {
 					this.ejbFacade.edit(this.seleccionado);
+					JsfUtil.addSuccessMessage("Servicio de Salud fue editado exitósamente");
 				}else if(persistAction == PersistAction.CREATE){
 					this.ejbFacade.create(this.seleccionado);
+					JsfUtil.addSuccessMessage("Servicio de Salud fue creado exitósamente");
 				}else if(persistAction == PersistAction.DELETE){
-					System.out.println("borrando con nuestro delete");
-					this.ejbFacade.remove(this.seleccionado);
+					if(!seleccionado.getPuedeEliminarse()){
+						JsfUtil.addErrorMessage("El Servicio de Salud no puede eliminarse ya que se encuentra en uso");
+					}else{
+						System.out.println("borrando con nuestro delete");
+						this.ejbFacade.remove(this.seleccionado);
+						JsfUtil.addSuccessMessage("Servicio de Salud fue eliminado exitósamente");
+					}
+					
 				}
-				JsfUtil.addSuccessMessage(successMessage);
 			} catch (EJBException ex) {
 				Throwable cause = JsfUtil.getRootCause(ex.getCause());
 				if (cause != null) {
@@ -258,31 +267,31 @@ public class ServicioSaludController extends AbstractController<ServicioSalud> {
     
     public void prepareCreateServicio(ActionEvent event) {
 		System.out.println("prepareCreateServicio");
-		seleccionado = new ServiciosVO();
+		seleccionado = new ServiciosMantenedorVO();
 		RegionSummaryVO regionSummaryVO = new RegionSummaryVO();
 		seleccionado.setRegion(regionSummaryVO);
-		seleccionado.setDirector(new PersonaVO());
-		seleccionado.setEncargadoAps(new PersonaVO());
-		seleccionado.setEncargadoFinanzasAps(new PersonaVO());
+		seleccionado.setDirector(new PersonaMantenedorVO());
+		seleccionado.setEncargadoAps(new PersonaMantenedorVO());
+		seleccionado.setEncargadoFinanzasAps(new PersonaMantenedorVO());
 		super.prepareCreate(event);
 	}
 
-	public List<ServiciosVO> getServicios() {
+	public List<ServiciosMantenedorVO> getServicios() {
 		if(servicios == null){
-			servicios = servicioSaludService.getServiciosOrderId();
+			servicios = mantenedoresService.getServiciosMantenedorOrderId();
 		}
 		return servicios;
 	}
 
-	public void setServicios(List<ServiciosVO> servicios) {
+	public void setServicios(List<ServiciosMantenedorVO> servicios) {
 		this.servicios = servicios;
 	}
 
-	public ServiciosVO getSeleccionado() {
+	public ServiciosMantenedorVO getSeleccionado() {
 		return seleccionado;
 	}
 
-	public void setSeleccionado(ServiciosVO seleccionado) {
+	public void setSeleccionado(ServiciosMantenedorVO seleccionado) {
 //		System.out.println("this.seleccionado ---> "+this.seleccionado.toString());
 		this.seleccionado = seleccionado;
 	}

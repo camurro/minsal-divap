@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "FactorRefAsigZona.findAll", query = "SELECT f FROM FactorRefAsigZona f"),
+    @NamedQuery(name = "FactorRefAsigZona.findAllOrderByDesde", query = "SELECT f FROM FactorRefAsigZona f order by f.zonaDesde"),
     @NamedQuery(name = "FactorRefAsigZona.findByIdFactorRefAsigZona", query = "SELECT f FROM FactorRefAsigZona f WHERE f.idFactorRefAsigZona = :idFactorRefAsigZona"),
     @NamedQuery(name = "FactorRefAsigZona.findByValor", query = "SELECT f FROM FactorRefAsigZona f WHERE f.valor = :valor")})
 public class FactorRefAsigZona implements Serializable {

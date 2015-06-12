@@ -26600,6 +26600,13 @@ ALTER TABLE programa_componente
   OWNER TO postgres;
 
 
+-- update table factor asignacion zona, se agrega 0 al zona desde
+
+UPDATE factor_ref_asig_zona
+   SET zona_desde=0.0
+ WHERE id_factor_ref_asig_zona=1;
+
+
 
 
 

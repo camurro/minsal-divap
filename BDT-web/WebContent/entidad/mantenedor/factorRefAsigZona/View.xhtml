@@ -18,11 +18,15 @@
                         <h:outputText value="#{messages.ViewFactorRefAsigZonaLabel_idFactorRefAsigZona}"/>
                         <h:outputText value="#{factorRefAsigZonaController.seleccionado.idFactorRefAsigZona}" title="#{messages.ViewFactorRefAsigZonaTitle_idFactorRefAsigZona}"/>
 
-                        <h:outputText value="#{messages.ViewFactorRefAsigZonaLabel_zona}"/>
-                        <h:outputText value="#{factorRefAsigZonaController.seleccionado.zona}" title="#{messages.ViewFactorRefAsigZonaTitle_zona}"/>
+                        <h:outputText value="Zona Desde"/>
+                        <h:outputText value="#{factorRefAsigZonaController.seleccionado.zonaDesde}" title="Zona Desde"/>
+                        
+                        <h:outputText value="Zona Hasta"/>
+                        <h:outputText value="#{factorRefAsigZonaController.seleccionado.zonaHasta}" title="Zona Hasta"/>
 
                         <h:outputText value="#{messages.ViewFactorRefAsigZonaLabel_valor}"/>
                         <h:outputText value="#{factorRefAsigZonaController.seleccionado.valor}" title="#{messages.ViewFactorRefAsigZonaTitle_valor}"/>
+                        
                     </p:panelGrid>
                     <p:commandButton value="#{messages.Close}" onclick="FactorRefAsigZonaViewDialog.hide()"/>
                 </h:panelGroup>

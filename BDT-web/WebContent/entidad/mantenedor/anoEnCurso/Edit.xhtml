@@ -7,7 +7,7 @@
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition>
-        <p:dialog id="AnoEnCursoEditDlg" widgetVar="AnoEnCursoEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditAnoEnCursoTitle}" closeOnEscape="true">
+        <p:dialog id="AnoEnCursoEditDlg" widgetVar="AnoEnCursoEditDialog" modal="true" resizable="false"  appendToBody="true" header="Editar Parámetros de Configuración" closeOnEscape="true">
 
             <h:form id="AnoEnCursoEditForm">
 
@@ -26,9 +26,6 @@
 
                         <p:outputLabel value="#{messages.EditAnoEnCursoLabel_inflactor}" for="inflactor" />
                         <p:inputText id="inflactor" value="#{anoEnCursoController.seleccionado.inflactor}" title="#{messages.EditAnoEnCursoTitle_inflactor}"/>
-
-                        <p:outputLabel value="#{messages.EditAnoEnCursoLabel_inflactorMarcoPresupuestario}" for="inflactorMarcoPresupuestario" />
-                        <p:inputText id="inflactorMarcoPresupuestario" value="#{anoEnCursoController.seleccionado.inflactorMarcoPresupuestario}" title="#{messages.EditAnoEnCursoTitle_inflactorMarcoPresupuestario}"/>
 
                     </p:panelGrid>
                     <p:commandButton actionListener="#{anoEnCursoController.edit}" value="#{messages.Save}" update="display,:AnoEnCursoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,AnoEnCursoEditDialog);"/>

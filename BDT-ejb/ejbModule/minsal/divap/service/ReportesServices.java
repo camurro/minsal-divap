@@ -545,15 +545,19 @@ public class ReportesServices {
 							System.out.println("porcentajeRemesasPagadas --> " + porcentajeRemesasPagadas);
 							reporteMarcoPresupuestarioComunaVO.setPorcentajeCuotaTransferida(porcentajeRemesasPagadas);
 						}
-					
-		
-						Comuna comunaAuxiliar = comunaDAO.getComunaServicioAuxiliar(idServicio);
-						System.out.println("comunaAuxiliar --> " + ((comunaAuxiliar == null) ? null : comunaAuxiliar.getNombre()));
-		
+						
+						List<Comuna> comunasAuxiliares = comunaDAO.getComunaServicioAuxiliares(idServicio);
 						Long tarifaComunaAux = 0L;
-						if(comunaAuxiliar != null){
-							tarifaComunaAux = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comunaAuxiliar.getId(), programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
+						for(Comuna comunaAuxiliar : comunasAuxiliares){
+							
+							if(comunaAuxiliar != null){
+								tarifaComunaAux = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comunaAuxiliar.getId(), programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
+							}
+							if(tarifaComunaAux > 0L){
+								break;
+							}
 						}
+						
 						System.out.println("tarifaComunaAux --> "+tarifaComunaAux);
 						if (tarifaComunaAux == 0L) {
 							reporteMarcoPresupuestarioComunaVO.setObservacion("");
@@ -612,12 +616,17 @@ public class ReportesServices {
 				reporteMarcoPresupuestarioComunaVO.setPorcentajeCuotaTransferida(0.0);
 			}
 
-			Comuna comunaAuxiliar = comunaDAO.getComunaServicioAuxiliar(idServicio);
-			System.out.println("comunaAuxiliar --> " + comunaAuxiliar.getNombre());
-
-			Long tarifaComunaAux = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comunaAuxiliar.getId(), idProgramaAno, componenteVO.getId(), subtitulo.getId());
-
-			System.out.println("tarifaComunaAux --> "+tarifaComunaAux);
+			List<Comuna> comunasAuxiliares = comunaDAO.getComunaServicioAuxiliares(idServicio);
+			Long tarifaComunaAux = 0L;
+			for(Comuna comunaAuxiliar : comunasAuxiliares){
+				
+				if(comunaAuxiliar != null){
+					tarifaComunaAux = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comunaAuxiliar.getId(), programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
+				}
+				if(tarifaComunaAux > 0L){
+					break;
+				}
+			}
 
 			if (tarifaComunaAux == 0L) {
 				reporteMarcoPresupuestarioComunaVO.setObservacion("");
@@ -1913,14 +1922,20 @@ public class ReportesServices {
 							reporteMarcoPresupuestarioComunaVO.setPorcentajeCuotaTransferida(porcentajeRemesasPagadas);
 						}
 					
-		
-						Comuna comunaAuxiliar = comunaDAO.getComunaServicioAuxiliar(servicio.getId());
-						System.out.println("comunaAuxiliar --> " + ((comunaAuxiliar == null) ? null : comunaAuxiliar.getNombre()));
-		
+						List<Comuna> comunasAuxiliares = comunaDAO.getComunaServicioAuxiliares(servicio.getId());
 						Long tarifaComunaAux = 0L;
-						if(comunaAuxiliar != null){
-							tarifaComunaAux = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comunaAuxiliar.getId(), programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
+						for(Comuna comunaAuxiliar : comunasAuxiliares){
+							
+							if(comunaAuxiliar != null){
+								tarifaComunaAux = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comunaAuxiliar.getId(), programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
+							}
+							if(tarifaComunaAux > 0L){
+								break;
+							}
 						}
+						
+		
+						
 						System.out.println("tarifaComunaAux --> "+tarifaComunaAux);
 						if (tarifaComunaAux == 0L) {
 							reporteMarcoPresupuestarioComunaVO.setObservacion("");

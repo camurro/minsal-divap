@@ -8,15 +8,17 @@ public class MantenedorFactorTramoPobrezaVO implements Serializable{
 	
 	private Integer idFactorTramoPobreza;
 	private Double valor;
+	private Boolean puedeEliminarse;
 	
 	public MantenedorFactorTramoPobrezaVO(){
 		
 	}
 	
-	public MantenedorFactorTramoPobrezaVO(Integer idFactorTramoPobreza, Double valor){
+	public MantenedorFactorTramoPobrezaVO(Integer idFactorTramoPobreza, Double valor, Boolean puedeEliminarse){
 		super();
 		this.idFactorTramoPobreza = idFactorTramoPobreza;
 		this.valor = valor;
+		this.puedeEliminarse = puedeEliminarse;
 	}
 
 	public Integer getIdFactorTramoPobreza() {
@@ -35,11 +37,19 @@ public class MantenedorFactorTramoPobrezaVO implements Serializable{
 		this.valor = valor;
 	}
 
+	public Boolean getPuedeEliminarse() {
+		return puedeEliminarse;
+	}
+
+	public void setPuedeEliminarse(Boolean puedeEliminarse) {
+		this.puedeEliminarse = puedeEliminarse;
+	}
+
 	@Override
 	public String toString() {
 		return "MantenedorFactorTramoPobrezaVO [idFactorTramoPobreza="
-				+ idFactorTramoPobreza + ", valor=" + valor + "]";
+				+ idFactorTramoPobreza + ", valor=" + valor
+				+ ", puedeEliminarse=" + puedeEliminarse + "]";
 	}
-	
 	
 }

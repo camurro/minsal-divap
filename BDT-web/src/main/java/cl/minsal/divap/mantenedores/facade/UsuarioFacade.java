@@ -65,8 +65,6 @@ public class UsuarioFacade extends AbstractFacade<Usuario> {
     		usuario.setPassword("minsal2014");
     		Email email = emailDAO.getEmailIdById(seleccionado.getIdEmail());
     		usuario.setEmail(email);
-    		ServicioSalud servicio = servicioSaludDAO.getServicioSaludById(seleccionado.getIdServicio());
-    		usuario.setServicio(servicio);
     		List<Rol> rolesUsuario = new ArrayList<Rol>();
     		for(String nombreRol : seleccionado.getNombreRoles()){
     			System.out.println("nombreRol a agregar --> "+nombreRol);
@@ -87,8 +85,6 @@ public class UsuarioFacade extends AbstractFacade<Usuario> {
 		usuario.setPassword("minsaltemp");
 		Email email = emailDAO.getEmailIdById(nuevo.getIdEmail());
 		usuario.setEmail(email);
-		ServicioSalud servicio = servicioSaludDAO.getServicioSaludById(nuevo.getIdServicio());
-		usuario.setServicio(servicio);
 		List<Rol> rolesUsuario = new ArrayList<Rol>();
 		for(String nombreRol : nuevo.getNombreRoles()){
 			Rol rol = rolDAO.getRolByNombre(nombreRol);

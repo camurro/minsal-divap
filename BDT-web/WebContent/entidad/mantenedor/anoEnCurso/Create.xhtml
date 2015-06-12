@@ -8,7 +8,7 @@
 
     <ui:composition>
 
-        <p:dialog id="AnoEnCursoCreateDlg" widgetVar="AnoEnCursoCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateAnoEnCursoTitle}" closeOnEscape="true">
+        <p:dialog id="AnoEnCursoCreateDlg" widgetVar="AnoEnCursoCreateDialog" modal="true" resizable="false" appendToBody="true" header="Nuevos Parámetros de Configuración" closeOnEscape="true">
 
             <h:form id="AnoEnCursoCreateForm">
 
@@ -26,9 +26,6 @@
 
                         <p:outputLabel value="#{messages.CreateAnoEnCursoLabel_inflactor}" for="inflactor" />
                         <p:inputText id="inflactor" value="#{anoEnCursoController.seleccionado.inflactor}" title="#{messages.CreateAnoEnCursoTitle_inflactor}"/>
-
-                        <p:outputLabel value="#{messages.CreateAnoEnCursoLabel_inflactorMarcoPresupuestario}" for="inflactorMarcoPresupuestario" />
-                        <p:inputText id="inflactorMarcoPresupuestario" value="#{anoEnCursoController.seleccionado.inflactorMarcoPresupuestario}" title="#{messages.CreateAnoEnCursoTitle_inflactorMarcoPresupuestario}"/>
 
                     </p:panelGrid>
                     <p:commandButton actionListener="#{anoEnCursoController.saveNew}" value="#{messages.Save}" update="display,:AnoEnCursoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,AnoEnCursoCreateDialog);"/>

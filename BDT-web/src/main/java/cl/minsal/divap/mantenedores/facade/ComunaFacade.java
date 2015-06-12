@@ -54,11 +54,11 @@ public class ComunaFacade extends AbstractFacade<Comuna> {
         super(Comuna.class);
     }
 
-	public void edit(MantenedorComunaFinalVO comunaSeleccionada, Integer anoFinal, Boolean isAuxiliar) {
+	public void edit(MantenedorComunaFinalVO comunaSeleccionada, Integer anoFinal) {
 		if(!comunaSeleccionada.getComunaAuxiliar()){
 			AntecendentesComuna antecedentesComuna = null;
 			
-			if(comunaSeleccionada.getIdAntecedentesComuna() == null ){
+			if(comunaSeleccionada.getIdAntecedentesComuna() == -1 ){
 				antecedentesComuna = new AntecendentesComuna();
 			}else{
 				antecedentesComuna = antecedentesComunaDAO.getAntecendentesComunaByComunaAno(comunaSeleccionada.getIdComuna(), comunaSeleccionada.getAno());
@@ -86,6 +86,12 @@ public class ComunaFacade extends AbstractFacade<Comuna> {
 			getEntityManager().merge(antecedentesComuna);
 		}
 		else{
+			
+			AntecendentesComuna antecedentesComuna = antecedentesComunaDAO.getAntecendentesComunaByComunaAno(comunaSeleccionada.getIdComuna(), comunaSeleccionada.getAno());
+			if(antecedentesComuna != null){
+				getEntityManager().remove(antecedentesComuna);
+			}
+			
 			Comuna comuna = comunaDAO.getComunaById(comunaSeleccionada.getIdComuna());
 			comuna.setNombre(comunaSeleccionada.getNombreComuna());
 			comuna.setAuxiliar(true);
@@ -98,7 +104,9 @@ public class ComunaFacade extends AbstractFacade<Comuna> {
 	}
 	
 
-	public void remove(MantenedorComunaFinalVO comunaSeleccionada, Boolean isAuxiliar) {
+	public void remove(MantenedorComunaFinalVO comunaSeleccionada) {
+		
+		
 		if(!comunaSeleccionada.getComunaAuxiliar()){
 			AntecendentesComuna antecedentesComuna = null;
 			antecedentesComuna = antecedentesComunaDAO.getAntecendentesComunaByComunaAno(comunaSeleccionada.getIdComuna(), comunaSeleccionada.getAno());
@@ -107,14 +115,18 @@ public class ComunaFacade extends AbstractFacade<Comuna> {
 			Comuna comuna = comunaDAO.getComunaById(comunaSeleccionada.getIdComuna());
 			getEntityManager().remove(getEntityManager().merge(comuna));
 		}else{
+			AntecendentesComuna antecedentesComuna = antecedentesComunaDAO.getAntecendentesComunaByComunaAno(comunaSeleccionada.getIdComuna(), comunaSeleccionada.getAno());
+			if(antecedentesComuna != null){
+				getEntityManager().remove(antecedentesComuna);
+			}
 			Comuna comuna = comunaDAO.getComunaById(comunaSeleccionada.getIdComuna());
 			getEntityManager().remove(getEntityManager().merge(comuna));
 		}
 		
 	}
 	
-	public void create(MantenedorComunaFinalVO comunaNueva, Integer anoFinal, Boolean isAuxiliar) {
-		if(!isAuxiliar){
+	public void create(MantenedorComunaFinalVO comunaNueva, Integer anoFinal) {
+		if(!comunaNueva.getComunaAuxiliar()){
 			AntecendentesComuna antecedentesComuna = null;
 			if(comunaNueva.getIdAntecedentesComuna() == null ){
 				antecedentesComuna = new AntecendentesComuna();
@@ -157,8 +169,6 @@ public class ComunaFacade extends AbstractFacade<Comuna> {
 			comuna.setServicioSalud(servicio);
 			getEntityManager().persist(comuna);
 		}
-		
-		
     }
     
 }

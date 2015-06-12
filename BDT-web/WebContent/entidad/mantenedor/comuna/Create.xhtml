@@ -65,6 +65,8 @@
 
 
 						<p:outputLabel value="Asignación Zona" for="asigZona" />
+						
+						
 						<p:selectOneMenu id="asigZona"
 							required="#{not comunaController.nuevaComunaEsAuxiliar}"
 							requiredMessage="La asignaciòn zona es un campo requerido"
@@ -74,7 +76,7 @@
 							<f:selectItems value="#{comunaController.listRefAsigZonaVO}"
 								var="asigZonaItem"
 								itemValue="#{asigZonaItem.idFactorRefAsigZona}"
-								itemLabel="#{asigZonaItem.valor}" />
+								itemLabel="Tramo #{asigZonaItem.idFactorRefAsigZona}" />
 						</p:selectOneMenu>
 
 

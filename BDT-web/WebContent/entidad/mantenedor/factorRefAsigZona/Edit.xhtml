@@ -18,11 +18,15 @@
                         <h:outputLabel value="#{messages.EditFactorRefAsigZonaLabel_idFactorRefAsigZona}" for="idFactorRefAsigZona" />
                         <h:outputText id="idFactorRefAsigZona" value="#{factorRefAsigZonaController.seleccionado.idFactorRefAsigZona}" />
 
-                        <p:outputLabel value="#{messages.EditFactorRefAsigZonaLabel_zona}" for="zona" />
-                        <p:inputText id="zona" value="#{factorRefAsigZonaController.seleccionado.zona}" title="#{messages.EditFactorRefAsigZonaTitle_zona}" required="true" requiredMessage="#{messages.EditFactorRefAsigZonaRequiredMessage_zona}"/>
+                        <p:outputLabel value="Zona Desde" for="zonaDesde" />
+                        <p:inputText id="zonaDesde" value="#{factorRefAsigZonaController.seleccionado.zonaDesde}" title="#{messages.EditFactorRefAsigZonaTitle_zona}" required="true" requiredMessage="#{messages.EditFactorRefAsigZonaRequiredMessage_zona}"/>
+
+						<p:outputLabel value="Zona Hasta" for="zonaHasta" />
+                        <p:inputText id="zonaHasta" value="#{factorRefAsigZonaController.seleccionado.zonaHasta}" title="#{messages.EditFactorRefAsigZonaTitle_zona}" required="true" requiredMessage="#{messages.EditFactorRefAsigZonaRequiredMessage_zona}"/>
 
                         <p:outputLabel value="#{messages.EditFactorRefAsigZonaLabel_valor}" for="valor" />
                         <p:inputText id="valor" value="#{factorRefAsigZonaController.seleccionado.valor}" title="#{messages.EditFactorRefAsigZonaTitle_valor}" required="true" requiredMessage="#{messages.EditFactorRefAsigZonaRequiredMessage_valor}"/>
+                        
                     </p:panelGrid>
                     <p:commandButton actionListener="#{factorRefAsigZonaController.edit}" value="#{messages.Save}" update="display,:FactorRefAsigZonaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,FactorRefAsigZonaEditDialog);"/>
                     <p:commandButton value="#{messages.Cancel}" onclick="FactorRefAsigZonaEditDialog.hide()"/>

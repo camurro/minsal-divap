@@ -107,6 +107,12 @@ public class ComunaController extends AbstractController<Comuna> {
 	public void resetParents() {
 		//servicioSaludController.setSelected(null);
 	}
+	
+	public void listenerAuxiliar(){
+		if(comunaSeleccionada != null){
+			comunaSeleccionada.setComunaAuxiliar(nuevaComunaEsAuxiliar);
+		}
+	}
 
 	/**
 	 * Sets the "items" attribute with a collection of Remesa entities that are
@@ -133,15 +139,24 @@ public class ComunaController extends AbstractController<Comuna> {
 		if (this.comunaSeleccionada != null) {
 			this.setEmbeddableKeys();
 			try {
+				this.comunaSeleccionada.setComunaAuxiliar(nuevaComunaEsAuxiliar);
 				if (persistAction == PersistAction.UPDATE) {
-					this.ejbFacade.edit(this.comunaSeleccionada, anoFinal, nuevaComunaEsAuxiliar);
+					this.ejbFacade.edit(this.comunaSeleccionada, anoFinal);
+					JsfUtil.addSuccessMessage(successMessage);
 				}else if(persistAction == PersistAction.CREATE){
-					this.ejbFacade.create(this.comunaSeleccionada, anoFinal, nuevaComunaEsAuxiliar);
+					this.ejbFacade.create(this.comunaSeleccionada, anoFinal);
+					JsfUtil.addSuccessMessage(successMessage);
 				}else if(persistAction == PersistAction.DELETE){
 					System.out.println("borrando con nuestro delete");
-					this.ejbFacade.remove(this.comunaSeleccionada, nuevaComunaEsAuxiliar);
+					
+					if(!this.comunaSeleccionada.getPuedeEliminarse()){
+						JsfUtil.addErrorMessage("La comuna no puede ser eliminada ya que está siendo utilizada en los procesos de Per Cápita / Distribución de Recursos Financieros para Programas de Reforzamiento de APS");
+					}else{
+						this.ejbFacade.remove(this.comunaSeleccionada);
+						JsfUtil.addSuccessMessage(successMessage);
+					}
 				}
-				JsfUtil.addSuccessMessage(successMessage);
+				
 			} catch (EJBException ex) {
 				Throwable cause = JsfUtil.getRootCause(ex.getCause());
 				if (cause != null) {
@@ -293,9 +308,17 @@ public class ComunaController extends AbstractController<Comuna> {
 
 	public void prepareCreateComuna(ActionEvent event) {
 		System.out.println("prepareCreateComuna");
+		nuevaComunaEsAuxiliar = false;
 		comunaSeleccionada = new MantenedorComunaFinalVO();
 		super.prepareCreate(event);
 	}
+	
+	public void prepareEditComuna(ActionEvent event){
+		if(comunaSeleccionada != null){
+			nuevaComunaEsAuxiliar = comunaSeleccionada.getComunaAuxiliar();
+		}
+	}
+	
 
 	public MantenedorComunaFinalVO getComunaSeleccionada() {
 		return comunaSeleccionada;
@@ -340,14 +363,13 @@ public class ComunaController extends AbstractController<Comuna> {
 				listadoComunas = mantenedoresService.getAntedentesComunaMantenedor(getAnoEnCurso() + 1);
 				if(listadoComunas == null || listadoComunas.size() == 0){
 					//cargar antecedentesComuna año actual en año siguiente
-					listadoComunas = mantenedoresService.copyAntedentesComunaAnoActualToAnoSiguiente(getAnoEnCurso() + 1);
-					
+					mantenedoresService.copyAntedentesComunaAnoActualToAnoSiguiente(getAnoEnCurso() + 1);
+					listadoComunas = mantenedoresService.getAntedentesComunaMantenedor(getAnoEnCurso() + 1);
 				}
 			}else{
 				anoFinal = getAnoEnCurso();
 				listadoComunas = mantenedoresService.getAntedentesComunaMantenedor(getAnoEnCurso());
 			}
-			
 		}
 		return listadoComunas;
 	}

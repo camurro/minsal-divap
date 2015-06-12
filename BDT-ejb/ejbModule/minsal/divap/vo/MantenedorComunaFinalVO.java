@@ -21,12 +21,13 @@ public class MantenedorComunaFinalVO implements Serializable{
 	private Integer ano;
 	private Integer nroResolucion;
 	private Boolean comunaAuxiliar;
+	private Boolean puedeEliminarse;
 	
 	public MantenedorComunaFinalVO() {
 		super();
 	}
 
-	public MantenedorComunaFinalVO(String idClasificacion, String clasificacion, String idAsigZona, Double asigZonaValor, String idTramoPobreza, Double tramoPobreza, Integer idAntecedentesComuna, Integer idComuna, String nombreComuna, String idServicio, String nombreServicio, Integer ano, Integer nroResolucion, Boolean comunaAuxiliar) {
+	public MantenedorComunaFinalVO(String idClasificacion, String clasificacion, String idAsigZona, Double asigZonaValor, String idTramoPobreza, Double tramoPobreza, Integer idAntecedentesComuna, Integer idComuna, String nombreComuna, String idServicio, String nombreServicio, Integer ano, Integer nroResolucion, Boolean comunaAuxiliar, Boolean puedeEliminarse) {
 		super();
 		
 		 this.idClasificacion = idClasificacion;
@@ -43,6 +44,7 @@ public class MantenedorComunaFinalVO implements Serializable{
 		 this.ano = ano;
 		 this.nroResolucion = nroResolucion;
 		 this.comunaAuxiliar = comunaAuxiliar;
+		 this.puedeEliminarse = puedeEliminarse;
 	}
 
 	public String getIdClasificacion() {
@@ -157,6 +159,14 @@ public class MantenedorComunaFinalVO implements Serializable{
 		this.comunaAuxiliar = comunaAuxiliar;
 	}
 
+	public Boolean getPuedeEliminarse() {
+		return puedeEliminarse;
+	}
+
+	public void setPuedeEliminarse(Boolean puedeEliminarse) {
+		this.puedeEliminarse = puedeEliminarse;
+	}
+
 	@Override
 	public String toString() {
 		return "MantenedorComunaFinalVO [idClasificacion=" + idClasificacion
@@ -168,7 +178,9 @@ public class MantenedorComunaFinalVO implements Serializable{
 				+ ", nombreComuna=" + nombreComuna + ", idServicio="
 				+ idServicio + ", nombreServicio=" + nombreServicio + ", ano="
 				+ ano + ", nroResolucion=" + nroResolucion
-				+ ", comunaAuxiliar=" + comunaAuxiliar + "]";
+				+ ", comunaAuxiliar=" + comunaAuxiliar + ", puedeEliminarse="
+				+ puedeEliminarse + "]";
 	}
+
 	
 }

@@ -39,11 +39,18 @@
                 </p:column>
 
 
-                <p:column sortBy="#{item.zona}" filterBy="#{item.zona}">
+                <p:column sortBy="#{item.zonaDesde}" filterBy="#{item.zonaDesde}">
                     <f:facet name="header">
-                        <h:outputText value="#{messages.ListFactorRefAsigZonaTitle_zona}"/>
+                        <h:outputText value="Zona Desde"/>
                     </f:facet>
-                    <h:outputText value="#{item.zona}"/>
+                    <h:outputText value="#{item.zonaDesde}"/>
+                </p:column>
+                
+                <p:column sortBy="#{item.zonaHasta}" filterBy="#{item.zonaHasta}">
+                    <f:facet name="header">
+                        <h:outputText value="Zona Hasta"/>
+                    </f:facet>
+                    <h:outputText value="#{item.zonaHasta}"/>
                 </p:column>
 
 
@@ -53,6 +60,8 @@
                     </f:facet>
                     <h:outputText value="#{item.valor}"/>
                 </p:column>
+                
+                
 
 
             </p:dataTable>

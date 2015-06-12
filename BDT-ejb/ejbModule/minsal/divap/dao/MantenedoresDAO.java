@@ -23,9 +23,9 @@ public class MantenedoresDAO {
 	@PersistenceContext(unitName="BDT-JPA")
 	private EntityManager em;
 	
-	public List<FactorRefAsigZona> getFactorRefAsigZonaAll(){
+	public List<FactorRefAsigZona> getFactorRefAsigZonaAllOrderDesde(){
 		try {
-			TypedQuery<FactorRefAsigZona> query = this.em.createNamedQuery("FactorRefAsigZona.findAll", FactorRefAsigZona.class);
+			TypedQuery<FactorRefAsigZona> query = this.em.createNamedQuery("FactorRefAsigZona.findAllOrderByDesde", FactorRefAsigZona.class);
 			return query.getResultList(); 
 		} catch (Exception e) {
 			throw new RuntimeException(e);

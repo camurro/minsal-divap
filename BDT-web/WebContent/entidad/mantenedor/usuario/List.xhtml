@@ -55,23 +55,7 @@
                     </f:facet>
                     <h:outputText value="#{item.apellido}"/>
                 </p:column>
-
-
-                <p:column sortBy="#{item.idEmail}" filterBy="#{item.idEmail}">
-                    <f:facet name="header">
-                        <h:outputText value="#{messages.ListUsuarioTitle_email}"/>
-                    </f:facet>
-                    <h:outputText value="#{item.email}"/>
-                </p:column>
-
-
-                <p:column sortBy="#{item.idServicio}" filterBy="#{item.idServicio}">
-                    <f:facet name="header">
-                        <h:outputText value="#{messages.ListUsuarioTitle_servicio}"/>
-                    </f:facet>
-                    <h:outputText value="#{item.nombreServicio}"/>
-                </p:column>
-
+                
 
             </p:dataTable>
 

@@ -45,7 +45,7 @@
 					<p:outputLabel value="Es Auxiliar?" for="comunaAuxiliar" />
 					<h:selectBooleanCheckbox id="comunaAuxiliar"
 						value="#{comunaController.nuevaComunaEsAuxiliar}">
-						<p:ajax process="@this" event="valueChange" update="noEsAuxiliar"></p:ajax>
+						<p:ajax process="@this" event="valueChange" update="noEsAuxiliar" listener="#{comunaController.listenerAuxiliar}"></p:ajax>
 					</h:selectBooleanCheckbox>
 					<p:panelGrid columns="2"
 						rendered="#{not comunaController.nuevaComunaEsAuxiliar}">
@@ -70,7 +70,7 @@
 							<f:selectItems value="#{comunaController.listRefAsigZonaVO}"
 								var="asigZonaItem"
 								itemValue="#{asigZonaItem.idFactorRefAsigZona}"
-								itemLabel="#{asigZonaItem.valor}" />
+								itemLabel="Tramo #{asigZonaItem.idFactorRefAsigZona}" />
 						</p:selectOneMenu>
 
 
@@ -85,18 +85,8 @@
 								itemLabel="#{tramoPobrezaItem.valor}" />
 						</p:selectOneMenu>
 
-
-
 					</p:panelGrid>
-
-
-
-
-
 				</p:panel>
-
-
-
 				<p:commandButton actionListener="#{comunaController.edit}"
 					value="#{messages.Save}"
 					update="display,:ComunaListForm:datalist,:growl"
