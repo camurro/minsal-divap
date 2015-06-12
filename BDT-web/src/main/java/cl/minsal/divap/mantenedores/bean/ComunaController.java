@@ -89,7 +89,7 @@ public class ComunaController extends AbstractController<Comuna> {
 	@Override
 	public void init() {
 		super.setFacade(ejbFacade);
-		comunaSeleccionada = new MantenedorComunaFinalVO();
+//		comunaSeleccionada = new MantenedorComunaFinalVO();
 		nuevaComunaEsAuxiliar = false;
 		FacesContext context = FacesContext.getCurrentInstance();
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();

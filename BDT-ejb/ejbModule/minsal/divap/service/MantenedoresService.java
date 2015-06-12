@@ -320,6 +320,13 @@ public class MantenedoresService {
 		List<MantenedorUsuarioVO> resultado = new ArrayList<MantenedorUsuarioVO>();
 		List<Usuario> usuarios = usuarioDAO.getUserAll();
 		for (Usuario usuario : usuarios) {
+			Boolean puedeBorrarse = false;
+			if(usuario.getProgramas() != null || usuario.getProgramas().size() > 0){
+				puedeBorrarse = false;
+			}else{
+				puedeBorrarse = true;
+			}
+			
 			MantenedorUsuarioVO mantenedorUsuarioVO = new MantenedorUsuarioVO();
 			mantenedorUsuarioVO.setUsername(usuario.getUsername());
 			mantenedorUsuarioVO.setNombre(usuario.getNombre());
@@ -586,11 +593,7 @@ public class MantenedoresService {
 								.size() == 0) ? true : false);
 					}
 
-					if (antecedenteComuna.getIdComuna().getId() == 10210) {
-						System.out
-								.println("*******************************puedeEliminarse--->"
-										+ puedeEliminarse);
-					}
+					
 					mantenedorComunaFinalVO.setAno(ano);
 					mantenedorComunaFinalVO.setPuedeEliminarse(puedeEliminarse);
 					if (antecedenteComuna.getClasificacion() != null) {

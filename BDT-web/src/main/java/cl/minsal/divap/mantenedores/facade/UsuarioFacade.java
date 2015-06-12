@@ -14,10 +14,13 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.jboss.security.auth.spi.Util;
+
 import minsal.divap.dao.EmailDAO;
 import minsal.divap.dao.RolDAO;
 import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.dao.UsuarioDAO;
+import minsal.divap.service.EmailService;
 import minsal.divap.vo.MantenedorEstadoProgramaVO;
 import minsal.divap.vo.MantenedorUsuarioVO;
 import cl.minsal.divap.model.Email;
@@ -25,6 +28,7 @@ import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.Rol;
 import cl.minsal.divap.model.ServicioSalud;
 import cl.minsal.divap.model.Usuario;
+import cl.minsal.util.PasswordHelper;
 
 /**
  *
@@ -43,6 +47,8 @@ public class UsuarioFacade extends AbstractFacade<Usuario> {
     private ServicioSaludDAO servicioSaludDAO;
     @EJB
     private RolDAO rolDAO;
+    @EJB
+    private EmailService emailService;
 
     @Override
     protected EntityManager getEntityManager() {
@@ -82,9 +88,18 @@ public class UsuarioFacade extends AbstractFacade<Usuario> {
     	usuario.setUsername(nuevo.getUsername());
     	usuario.setNombre(nuevo.getNombre());
 		usuario.setApellido(nuevo.getApellido());
-		usuario.setPassword("minsaltemp");
-		Email email = emailDAO.getEmailIdById(nuevo.getIdEmail());
+		
+		PasswordHelper validacionPassword = new PasswordHelper();
+		String passwordNoEncriptada = validacionPassword.generarPassword();
+		
+		usuario.setPassword(this.generate(passwordNoEncriptada));
+		
+		Email email = new Email();
+		email.setValor(nuevo.getEmail());
+		getEntityManager().persist(email);
+		
 		usuario.setEmail(email);
+		
 		List<Rol> rolesUsuario = new ArrayList<Rol>();
 		for(String nombreRol : nuevo.getNombreRoles()){
 			Rol rol = rolDAO.getRolByNombre(nombreRol);
@@ -92,11 +107,22 @@ public class UsuarioFacade extends AbstractFacade<Usuario> {
 		}
 		usuario.setRols(rolesUsuario);
 		getEntityManager().persist(usuario);
+		
+		List<String> to = new ArrayList<String>();
+		to.add(email.getValor());
+		
+		emailService.sendMail(to, null, null, "Usuario creado", "El usuario ha sido creado con la password temporal: "+passwordNoEncriptada);
+		
+		
     }
     
     public void remove(MantenedorUsuarioVO seleccionado){
     	Usuario usuario = usuarioDAO.getUserByUsername(seleccionado.getUsername());
     	getEntityManager().remove(getEntityManager().merge(usuario));
     }
+    
+    public String generate(String password) {
+        return Util.createPasswordHash("SHA-256", "BASE64", null, null,password);
+      }
     
 }

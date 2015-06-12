@@ -19,6 +19,7 @@ import javax.validation.ConstraintViolationException;
 import org.primefaces.model.DualListModel;
 
 import minsal.divap.dao.EmailDAO;
+import minsal.divap.dao.UsuarioDAO;
 import minsal.divap.service.MantenedoresService;
 import minsal.divap.service.ServicioSaludService;
 import minsal.divap.vo.MantenedorEstadoProgramaVO;
@@ -49,6 +50,7 @@ public class UsuarioController extends AbstractController<Usuario> {
     private ServicioSaludService servicioSaludService;
     @EJB
     private EmailDAO emailDAO;
+    @EJB UsuarioDAO usuarioDAO;
     
     private EmailController emailController;
     private ServicioSaludController servicioController;
@@ -123,13 +125,21 @@ public class UsuarioController extends AbstractController<Usuario> {
 			try {
 				if (persistAction == PersistAction.UPDATE) {
 					this.ejbFacade.edit(this.seleccionado);
+					JsfUtil.addSuccessMessage("El usuario ha sido modificado exitósamente");
 				}else if(persistAction == PersistAction.CREATE){
-					this.ejbFacade.create(this.seleccionado);
+					if(usuarioDAO.getUserByUsername(this.seleccionado.getUsername()) != null){
+						JsfUtil.addErrorMessage("El nombre de usuario ya se encuentra en uso");
+					}else{
+						this.ejbFacade.create(this.seleccionado);
+						JsfUtil.addSuccessMessage("El usuario ha sido creado exitósamente");
+					}
+					
 				}else if(persistAction == PersistAction.DELETE){
 					System.out.println("borrando con nuestro delete");
 					this.ejbFacade.remove(this.seleccionado);
+					JsfUtil.addSuccessMessage("El usuario ha sido eliminado exitósamente");
 				}
-				JsfUtil.addSuccessMessage(successMessage);
+				
 			} catch (EJBException ex) {
 				Throwable cause = JsfUtil.getRootCause(ex.getCause());
 				if (cause != null) {

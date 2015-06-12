@@ -26607,6 +26607,36 @@ UPDATE factor_ref_asig_zona
  WHERE id_factor_ref_asig_zona=1;
 
 
+-- creacion tabla estado_usuario ############################33
+
+CREATE TABLE estado_usuario
+(
+  id_estado_usuario serial NOT NULL,
+  estado character varying NOT NULL,
+  CONSTRAINT pk_estado_usuario PRIMARY KEY (id_estado_usuario )
+)
+WITH (
+  OIDS=FALSE
+);
+
+
+INSERT INTO estado_usuario(id_estado_usuario, estado) VALUES (1, 'activo');
+INSERT INTO estado_usuario(id_estado_usuario, estado) VALUES (2, 'bloqueado');
+INSERT INTO estado_usuario(id_estado_usuario, estado) VALUES (3, 'eliminado');
+INSERT INTO estado_usuario(id_estado_usuario, estado) VALUES (4, 'clave temporal');
+
+
+ALTER TABLE usuario ADD COLUMN estado integer;
+
+ALTER TABLE usuario ADD CONSTRAINT estado_usuario_fk FOREIGN KEY (estado) 
+REFERENCES estado_usuario (id_estado_usuario) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+UPDATE usuario SET estado=1;
+
+ALTER TABLE usuario
+   ALTER COLUMN estado SET NOT NULL;
+
+
 
 
 

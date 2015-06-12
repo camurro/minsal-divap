@@ -51,5 +51,15 @@ public class UsuarioDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public List<Usuario> getAllUserActivos(){
+		try {
+			TypedQuery<Usuario> query = this.em.createNamedQuery("Usuario.findAll", Usuario.class);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 
 }

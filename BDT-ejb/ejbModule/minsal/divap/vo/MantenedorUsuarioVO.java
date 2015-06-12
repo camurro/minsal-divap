@@ -15,6 +15,7 @@ public class MantenedorUsuarioVO implements Serializable{
 	private String email;
 	private List<String> nombreRoles;
 	private List<String> nombreRolesFaltantes;
+	private Boolean puedeEliminarse;
 	
 	public MantenedorUsuarioVO(){
 		
@@ -85,13 +86,22 @@ public class MantenedorUsuarioVO implements Serializable{
 		this.email = email;
 	}
 
+	public Boolean getPuedeEliminarse() {
+		return puedeEliminarse;
+	}
+
+	public void setPuedeEliminarse(Boolean puedeEliminarse) {
+		this.puedeEliminarse = puedeEliminarse;
+	}
+
 	@Override
 	public String toString() {
 		return "MantenedorUsuarioVO [username=" + username + ", nombre="
 				+ nombre + ", apellido=" + apellido + ", password=" + password
 				+ ", idEmail=" + idEmail + ", email=" + email
 				+ ", nombreRoles=" + nombreRoles + ", nombreRolesFaltantes="
-				+ nombreRolesFaltantes + "]";
+				+ nombreRolesFaltantes + ", puedeEliminarse=" + puedeEliminarse
+				+ "]";
 	}
 
 }
