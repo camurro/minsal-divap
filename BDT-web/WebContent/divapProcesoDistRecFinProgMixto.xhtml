@@ -90,11 +90,11 @@
 					<h:panelGrid id="busqueda_mis_tareas" columns="5">
 						<h:panelGrid columns="2">
 								<h:outputText value="Componente " styleClass="inputLabel" />
-								<p:selectOneMenu id="componentes"  value="#{procesoDistRecFinMixtoController.componenteSeleccionado}">
-								<p:ajax listener="#{procesoDistRecFinMixtoController.seleccionComponente}" update="form:tabs:tablaResultados form:tabs:tablaServicios" />
-								<f:selectItem itemLabel="Seleccione" itemValue="" />  
-								<f:selectItems value="#{procesoDistRecFinMixtoController.listaComponentes}" itemLabel="#{componente.nombre}" var="componente" itemValue="#{componente.id}"/> 
-							</p:selectOneMenu>
+								<p:selectOneMenu id="componentes"  value="#{procesoDistRecFinMixtoController.componenteSeleccionado}"  style="width:450px;">
+									<p:ajax listener="#{procesoDistRecFinMixtoController.seleccionComponente}" update="form:tabs:tablaResultados form:tabs:tablaServicios" />
+									<f:selectItem itemLabel="Seleccione" itemValue="" />  
+									<f:selectItems value="#{procesoDistRecFinMixtoController.listaComponentes}" itemLabel="#{componente.nombre}" var="componente" itemValue="#{componente.id}"/> 
+								</p:selectOneMenu>
 							</h:panelGrid>
 					
 							<h:panelGrid columns="2">
@@ -106,7 +106,7 @@
 							</h:panelGrid>
 						
 						<h:panelGrid columns="1">
-							<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoDistRecFinMixtoController.buscarResultados()}" update="form:tabs:tablaResultados form:tabs:tablaServicios growl"/>
+							<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoDistRecFinMixtoController.buscarResultados}" update="form:tabs:tablaResultados form:tabs:tablaServicios growl"/>
 						</h:panelGrid>
 					</h:panelGrid>
 					<div id="resultados" style="display: block;">
@@ -114,7 +114,7 @@
 							<p:tab title="Municipal" id="tabMunicipal">
 								<h:panelGrid>
 								<p:dataTable resizableColumns="true" value="#{procesoDistRecFinMixtoController.detalleComunas}" liveResize="true"
-									var="_detalle" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+									var="_detalle"  paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
 									styleClass="dataTable" id="tablaResultados" rowIndexVar="rowIndex">
 
 									<p:columnGroup type="header">
@@ -171,7 +171,7 @@
 							<p:tab title="Servicio">
 							<h:panelGrid>
 								<p:dataTable resizableColumns="true" value="#{procesoDistRecFinMixtoController.detalleEstablecimientos}" liveResize="true"
-									var="_establecimiento" rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
+									var="_establecimiento"  paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
 									styleClass="dataTable" id="tablaServicios" rowIndexVar="rowIndex">
 									<p:columnGroup type="header">
 										<p:row>
@@ -313,9 +313,9 @@
 					</p:tabView>
 				</div>
 				<p:commandButton styleClass="x-btn-text" icon="ui-icon-disk"  action="#{procesoDistRecFinMixtoController.guardar}" ajax="true" value="Guardar" update="form:resumen" />
-				<p:commandButton value="Finalizar" styleClass="x-btn-text" action="#{procesoDistRecFinMixtoController.enviar}" ajax="false" icon="ui-icon-seek-first" >
-								<f:setPropertyActionListener target="#{procesoDistRecFinMixtoController.target}" value="bandejaTareas.jsf" />
-							</p:commandButton>
+				<p:commandButton value="Finalizar" styleClass="x-btn-text" action="#{procesoDistRecFinMixtoController.enviar}" ajax="true" icon="ui-icon-seek-first" >
+							<f:setPropertyActionListener target="#{procesoDistRecFinMixtoController.target}" value="bandejaTareas.jsf" />
+				</p:commandButton>
 				</p:panel>
 
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"

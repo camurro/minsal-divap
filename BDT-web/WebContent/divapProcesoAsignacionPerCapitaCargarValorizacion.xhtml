@@ -85,10 +85,12 @@
 							update="formUpload" mode="simple" />
 					</p:panelGrid>
 					<br />
-					<p:commandButton value="Cargar Archivos" ajax="false"
-						actionListener="#{procesoAsignacionPerCapitaController.uploadArchivosValorizacion}"
-						icon="ui-icon-upload" id="cargarArchivos" update=":continuar" />
+					<p:commandButton value="Cargar Archivos" onclick="BUI.show()" oncomplete="if (#{not facesContext.validationFailed and not empty facesContext.messageList}) BUI.hide()" ajax="false" actionListener="#{procesoAsignacionPerCapitaController.uploadArchivosValorizacion}" icon="ui-icon-upload" id="cargarArchivos" update=":continuar" />
 				</p:panel>
+				<p:blockUI  widgetVar="BUI"  block="Panel">
+        			Procesando Archivo<br />
+       				<p:graphicImage name="/resources/images/ajaxloadingbar.gif"/>
+    			</p:blockUI>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas.jsf?faces-redirect=true" ajax="false" icon="ui-icon-seek-first" />
 				<p:commandButton id="continuar" value="Continuar" styleClass="x-btn-text" action="#{procesoAsignacionPerCapitaController.enviar}" disabled="#{not procesoAsignacionPerCapitaController.archivosValidos}">
 					<f:setPropertyActionListener target="#{procesoAsignacionPerCapitaController.target}" value="bandejaTareas.jsf" />

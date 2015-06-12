@@ -55,19 +55,22 @@ public class RecursosFinancierosProgramasReforzamientoRESTService extends BaseRe
     }
 	
 	@GET
-    @Path("/recursosFinancierosProgramasReforzamiento/cambiarEstadoPrograma/{idPrograma}/{estado}")
+    @Path("/recursosFinancierosProgramasReforzamiento/cambiarEstadoPrograma/{idPrograma}/{ano}/{estado}")
     @Produces("application/json")
-    public void cambiarEstadoPrograma(@PathParam("idPrograma") Integer idPrograma, @PathParam("estado") String estado){
+    public void cambiarEstadoPrograma(@PathParam("idPrograma") Integer idPrograma, @PathParam("ano") Integer ano, @PathParam("estado") String estado){
 		System.out.println("cambiarEstadoPrograma-->"+idPrograma +" estado="+estado);
 		if(idPrograma == null){
 			throw new IllegalArgumentException("id del programa no puede ser nulo");
+		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano del programa no puede ser nulo");
 		}
 		if(estado == null){
 			throw new IllegalArgumentException("estado programa: "+ idPrograma + " no puede ser nulo");
 		}
 		RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService = getService(RecursosFinancierosProgramasReforzamientoService.class);
 		EstadosProgramas estadoPrograma = EstadosProgramas.getById(Integer.parseInt(estado));
-		recursosFinancierosProgramasReforzamientoService.cambiarEstadoPrograma(idPrograma, estadoPrograma);
+		recursosFinancierosProgramasReforzamientoService.cambiarEstadoPrograma(idPrograma, ano, estadoPrograma);
     }
 	
 	@GET
@@ -95,9 +98,9 @@ public class RecursosFinancierosProgramasReforzamientoRESTService extends BaseRe
 	
 	
 	@GET
-    @Path("/recursosFinancierosProgramasReforzamiento/notificarGeneracionResoluciones/{idPrograma}/{ano}")
+    @Path("/recursosFinancierosProgramasReforzamiento/notificarGeneracionResoluciones/{idPrograma}/{ano}/{usuario}")
     @Produces("application/json")
-    public void notificarGeneracionResoluciones(@PathParam("idPrograma") Integer idPrograma, @PathParam("ano") Integer ano){
+    public void notificarGeneracionResoluciones(@PathParam("idPrograma") Integer idPrograma, @PathParam("ano") Integer ano, @PathParam("usuario") String usuario){
 		System.out.println("notificarGeneracionResoluciones-->"+idPrograma );
 		if(idPrograma == null){
 			throw new IllegalArgumentException("id del programa no puede ser nulo");
@@ -105,12 +108,14 @@ public class RecursosFinancierosProgramasReforzamientoRESTService extends BaseRe
 		if(ano == null){
 			throw new IllegalArgumentException("ano no puede ser nulo");
 		}
+		RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService = getService(RecursosFinancierosProgramasReforzamientoService.class);
+		recursosFinancierosProgramasReforzamientoService.notificarGeneracionResoluciones(idPrograma, ano, usuario);
     }
 	
 	@GET
-    @Path("/recursosFinancierosProgramasReforzamiento/administrarVersionesFinales/{idPrograma}/{ano}")
+    @Path("/recursosFinancierosProgramasReforzamiento/administrarVersionesFinales/{idPrograma}/{ano}/{idProceso}")
     @Produces("application/json")
-    public void administrarVersionesFinales(@PathParam("idPrograma") Integer idPrograma , @PathParam("ano") Integer ano){
+    public void administrarVersionesFinales(@PathParam("idPrograma") Integer idPrograma, @PathParam("ano") Integer ano, @PathParam("idProceso") Integer idProceso){
 		System.out.println("administrarVersionesFinales-->"+idPrograma );
 		if(idPrograma == null){
 			throw new IllegalArgumentException("id del programa no puede ser nulo");
@@ -118,6 +123,8 @@ public class RecursosFinancierosProgramasReforzamientoRESTService extends BaseRe
 		if(ano == null){
 			throw new IllegalArgumentException("ano no puede ser nulo");
 		}
+		RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService = getService(RecursosFinancierosProgramasReforzamientoService.class);
+		recursosFinancierosProgramasReforzamientoService.administrarVersionesFinales(idPrograma, ano, idProceso);
     }
 	
 	@GET
@@ -150,37 +157,43 @@ public class RecursosFinancierosProgramasReforzamientoRESTService extends BaseRe
 	}
 	
 	@GET
-    @Path("/recursosFinancierosProgramasReforzamiento/generarOrdinariosDistribucionRecursos/{idPrograma}/{ano}")
+    @Path("/recursosFinancierosProgramasReforzamiento/generarOrdinariosDistribucionRecursos/{idPrograma}/{ano}/{idProceso}")
     @Produces("application/json")
-    public void generarOrdinariosDistribucionRecursos(@PathParam("idPrograma") Integer idPrograma, @PathParam("ano") Integer ano){
+    public void generarOrdinariosDistribucionRecursos(@PathParam("idPrograma") Integer idPrograma, @PathParam("ano") Integer ano, @PathParam("idProceso") Integer idProceso){
 		if(idPrograma == null){
 			throw new IllegalArgumentException("id del programa no puede ser nulo");
 		}
 		if(ano == null){
 			throw new IllegalArgumentException("ano no puede ser nulo");
 		}
-		System.out.println("generarOrdinariosDistribucionRecursos-->"+idPrograma + " ano=" + ano );
+		if(idProceso == null){
+			throw new IllegalArgumentException("idProceso no puede ser nulo");
+		}
+		System.out.println("generarOrdinariosDistribucionRecursos-->"+idPrograma + " ano=" + ano + " idProceso=" + idProceso);
 		RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService = getService(RecursosFinancierosProgramasReforzamientoService.class);
 		List<ResumenProgramaMixtoVO> resumen = recursosFinancierosProgramasReforzamientoService.getConsolidadoPrograma(idPrograma, ano);
-		recursosFinancierosProgramasReforzamientoService.elaborarOrdinarioProgramaReforzamiento(idPrograma, resumen, ano);
-		recursosFinancierosProgramasReforzamientoService.elaborarExcelOrdinario(idPrograma, resumen,TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS, ano);
+		recursosFinancierosProgramasReforzamientoService.elaborarOrdinarioProgramaReforzamiento(idProceso, idPrograma, resumen, ano);
+		recursosFinancierosProgramasReforzamientoService.elaborarExcelOrdinario(idProceso, idPrograma, resumen, TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS, ano);
     }
 	
 	@GET
-    @Path("/recursosFinancierosProgramasReforzamiento/generarResolucionesDistribucionRecursos/{idPrograma}/{ano}")
+    @Path("/recursosFinancierosProgramasReforzamiento/generarResolucionesDistribucionRecursos/{idPrograma}/{ano}/{idProceso}")
     @Produces("application/json")
-    public void generarResolucionesDistribucionRecursos(@PathParam("idPrograma") Integer idPrograma, @PathParam("ano") Integer ano){
+    public void generarResolucionesDistribucionRecursos(@PathParam("idPrograma") Integer idPrograma, @PathParam("ano") Integer ano, @PathParam("idProceso") Integer idProceso){
 		if(idPrograma == null){
 			throw new IllegalArgumentException("id del programa no puede ser nulo");
 		}
 		if(ano == null){
 			throw new IllegalArgumentException("ano no puede ser nulo");
+		}
+		if(idProceso == null){
+			throw new IllegalArgumentException("idProceso no puede ser nulo");
 		}
 		System.out.println("generarResolucionesDistribucionRecursos-->" + idPrograma + " ano=" + ano);
 		RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService = getService(RecursosFinancierosProgramasReforzamientoService.class);
 		List<ResumenProgramaMixtoVO> resumen = recursosFinancierosProgramasReforzamientoService.getConsolidadoPrograma(idPrograma, ano);
-		recursosFinancierosProgramasReforzamientoService.elaborarResolucionProgramaReforzamiento(idPrograma, resumen, ano);
-		recursosFinancierosProgramasReforzamientoService.elaborarExcelResolucion(idPrograma, resumen,TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS, ano);
+		recursosFinancierosProgramasReforzamientoService.elaborarResolucionProgramaReforzamiento(idProceso, idPrograma, resumen, ano);
+		recursosFinancierosProgramasReforzamientoService.elaborarExcelResolucion(idProceso, idPrograma, resumen, TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS, ano);
     }
 	
 	// Métodos flujo de modificación de asignación de recursos para programas APS
@@ -203,31 +216,51 @@ public class RecursosFinancierosProgramasReforzamientoRESTService extends BaseRe
 	
 	
 	@GET
-    @Path("/recursosFinancierosProgramasReforzamiento/modificacionGenerarOrdinariosDistribucionRecursos/{idPrograma}/{listaServicios}")
+    @Path("/recursosFinancierosProgramasReforzamiento/modificacionGenerarOrdinariosDistribucionRecursos/{idPrograma}/{listaServicios}/{ano}/{idProceso}")
     @Produces("application/json")
-    public void modificacionGenerarOrdinariosDistribucionRecursos(@PathParam("idPrograma") Integer idPrograma,@PathParam("listaServicios") String listaServicios){
-		System.out.println("generarOrdinariosDistribucionRecursos-->"+idPrograma );
-
+    public void modificacionGenerarOrdinariosDistribucionRecursos(@PathParam("idPrograma") Integer idPrograma, @PathParam("listaServicios") String listaServicios,
+    		@PathParam("ano") Integer ano, @PathParam("idProceso") Integer idProceso){
+		System.out.println("generarOrdinariosDistribucionRecursos idPrograma=" + idPrograma + " listaServicios=" + listaServicios + " ano=" + ano + " idProceso="+idProceso);
+		
+		if(idPrograma == null){
+			throw new IllegalArgumentException("id del programa no puede ser nulo");
+		}
+		if(listaServicios == null){
+			throw new IllegalArgumentException("listaServicio no puede ser nulo");
+		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano no puede ser nulo");
+		}
+		if(idProceso == null){
+			throw new IllegalArgumentException("idProceso no puede ser nulo");
+		}
 		RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService = getService(RecursosFinancierosProgramasReforzamientoService.class);
 		String[] servicios = listaServicios.split(",");
 		List<Integer> listaServ = new ArrayList<Integer>();
 		for(int i=0; i < servicios.length;i++){
 			listaServ.add(Integer.parseInt(servicios[i]));
 		}
-		List<ResumenProgramaMixtoVO> resumen = recursosFinancierosProgramasReforzamientoService.getConsolidadoProgramaModificado(idPrograma);
-		recursosFinancierosProgramasReforzamientoService.elaborarOrdinarioModificacionProgramaReforzamiento(idPrograma,resumen,listaServ);
-		recursosFinancierosProgramasReforzamientoService.elaborarExcelOrdinarioModificado(idPrograma,resumen,TipoDocumentosProcesos.MODIFICACIONORDINARIOPROGRAMASAPS);
-		if(idPrograma == null){
-			throw new IllegalArgumentException("id del programa no puede ser nulo");
-		}
+		List<ResumenProgramaMixtoVO> resumen = recursosFinancierosProgramasReforzamientoService.getConsolidadoProgramaModificado(idPrograma, ano);
+		recursosFinancierosProgramasReforzamientoService.elaborarOrdinarioModificacionProgramaReforzamiento(idProceso, idPrograma, resumen, listaServ, ano);
+		recursosFinancierosProgramasReforzamientoService.elaborarExcelOrdinarioModificado(idProceso, idPrograma, resumen, TipoDocumentosProcesos.MODIFICACIONORDINARIOPROGRAMASAPS, ano);
     }
 	
 	@GET
-    @Path("/recursosFinancierosProgramasReforzamiento/modificacionGenerarResolucionesDistribucionRecursos/{idPrograma}/{listaServicios}")
+    @Path("/recursosFinancierosProgramasReforzamiento/modificacionGenerarResolucionesDistribucionRecursos/{idPrograma}/{listaServicios}/{ano}/{idProceso}")
     @Produces("application/json")
-    public void modificacionGenerarResolucionesDistribucionRecursos(@PathParam("idPrograma") Integer idPrograma,@PathParam("listaServicios") String listaServicios){
+    public void modificacionGenerarResolucionesDistribucionRecursos(@PathParam("idPrograma") Integer idPrograma,@PathParam("listaServicios") String listaServicios,
+    		@PathParam("ano") Integer ano, @PathParam("idProceso") Integer idProceso){
 		if(idPrograma == null){
 			throw new IllegalArgumentException("id del programa no puede ser nulo");
+		}
+		if(listaServicios == null){
+			throw new IllegalArgumentException("listaServicio no puede ser nulo");
+		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano no puede ser nulo");
+		}
+		if(idProceso == null){
+			throw new IllegalArgumentException("idProceso no puede ser nulo");
 		}
 		System.out.println("generarResolucionesDistribucionRecursos-->"+idPrograma );
 		RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService = getService(RecursosFinancierosProgramasReforzamientoService.class);
@@ -236,17 +269,16 @@ public class RecursosFinancierosProgramasReforzamientoRESTService extends BaseRe
 		for(int i=0; i < servicios.length;i++){
 			listaServ.add(Integer.parseInt(servicios[i]));
 		}
-		
-		List<ResumenProgramaMixtoVO> resumen = recursosFinancierosProgramasReforzamientoService.getConsolidadoProgramaModificado(idPrograma);
-		recursosFinancierosProgramasReforzamientoService.elaborarResolucionModificacionProgramaReforzamiento(idPrograma,resumen,listaServ);
-		recursosFinancierosProgramasReforzamientoService.elaborarExcelResolucionModificado(idPrograma,resumen,TipoDocumentosProcesos.MODIFICACIONRESOLUCIONPROGRAMASAPS);
-	
+		List<ResumenProgramaMixtoVO> resumen = recursosFinancierosProgramasReforzamientoService.getConsolidadoProgramaModificado(idPrograma, ano);
+		recursosFinancierosProgramasReforzamientoService.elaborarResolucionModificacionProgramaReforzamiento(idProceso, idPrograma, resumen, listaServ, ano);
+		recursosFinancierosProgramasReforzamientoService.elaborarExcelResolucionModificado(idProceso, idPrograma, resumen, TipoDocumentosProcesos.MODIFICACIONRESOLUCIONPROGRAMASAPS, ano);
     }
 	
 	@GET
-    @Path("/recursosFinancierosProgramasReforzamiento/enviarDocumentosModificacionServicioSalud/{idPrograma}/{tipoProgramaPxQ}/{listaServicios}/{idProcesoModificacion}")
+    @Path("/recursosFinancierosProgramasReforzamiento/enviarDocumentosModificacionServicioSalud/{idPrograma}/{tipoProgramaPxQ}/{listaServicios}/{idProcesoModificacion}/{ano}")
     @Produces("application/json")
-    public void enviarDocumentosModificacionServicioSalud(@PathParam("idPrograma") Integer idPrograma,@PathParam("tipoProgramaPxQ") Boolean tipoProgramaPxQ,@PathParam("listaServicios") String listaServicios,@PathParam("idProcesoModificacion") Integer idProcesoModificacion){
+    public void enviarDocumentosModificacionServicioSalud(@PathParam("idPrograma") Integer idPrograma,@PathParam("tipoProgramaPxQ") Boolean tipoProgramaPxQ, 
+    		@PathParam("listaServicios") String listaServicios, @PathParam("idProcesoModificacion") Integer idProcesoModificacion, @PathParam("ano") Integer ano){
 		System.out.println("enviarDocumentosServicioSalud-->"+idPrograma );
 		if(idPrograma == null){
 			throw new IllegalArgumentException("id del programa no puede ser nulo");
@@ -257,7 +289,7 @@ public class RecursosFinancierosProgramasReforzamientoRESTService extends BaseRe
 			listaServ.add(Integer.parseInt(servicios[i]));
 		}
 		RecursosFinancierosProgramasReforzamientoService recursosFinancierosProgramasReforzamientoService = getService(RecursosFinancierosProgramasReforzamientoService.class);
-		recursosFinancierosProgramasReforzamientoService.recursosFinancierosProgramasReforzamientoModificacionService(idPrograma, tipoProgramaPxQ,listaServ,idProcesoModificacion);
+		recursosFinancierosProgramasReforzamientoService.recursosFinancierosProgramasReforzamientoModificacionService(idPrograma, tipoProgramaPxQ, listaServ, idProcesoModificacion, ano);
     }
 	
 	@GET

@@ -46,6 +46,7 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 		ano++;
 		anos.add(ano);
 		anoEvaluacion = ano; 
+		seleccionarProgramasAno();
 		System.out.println("anoEnCurso="+anoEnCurso);
 		System.out.println("anoEvaluacion="+anoEvaluacion);
 		System.out.println("anos="+anos);
@@ -130,11 +131,12 @@ public class ProcesoDistRecFinProgProgramas extends AbstractTaskMBean implements
 	public void setProgramaSeleccionado(String programaSeleccionado) {
 		this.programaSeleccionado = programaSeleccionado;
 	}
+	
+	public void seleccionarProgramasAno(){
+		programas = recursosFinancierosProgramasReforzamientoService.getProgramas(getLoggedUsername(), getAnoEvaluacion());
+	}
 
 	public List<ProgramaVO> getProgramas() {
-		if(programas == null){
-			programas = recursosFinancierosProgramasReforzamientoService.getProgramas(getLoggedUsername());
-		}
 		return programas;
 	}
 

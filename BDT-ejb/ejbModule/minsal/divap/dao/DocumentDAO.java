@@ -270,9 +270,7 @@ public class DocumentDAO {
 		}
 	}
 
-	public Integer getPlantillaByTypeAndProgram(
-			TipoDocumentosProcesos tipoDocumentoProceso,
-			Integer programaSeleccionado) {
+	public Integer getPlantillaByTypeAndProgram(TipoDocumentosProcesos tipoDocumentoProceso, Integer programaSeleccionado) {
 		Integer docId = null;
 		try {
 			TypedQuery<Plantilla> query = this.em.createQuery("select p from Plantilla p WHERE p.tipoPlantilla.idTipoDocumento = :idTipoPlantilla and p.idPrograma.id = :idPrograma", Plantilla.class);
@@ -655,6 +653,34 @@ public class DocumentDAO {
 			TypedQuery<ReferenciaDocumento> query = this.em.createNamedQuery("DocumentoRemesas.findVersionFinalByIdOTTipoDocumento", ReferenciaDocumento.class);
 			query.setParameter("idRemesa", idProceso);
 			query.setParameter("idTipoDocumento", tipoDocumento.getId());
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public ReferenciaDocumento getLastDocumentRecursosFinancierosByType(Integer idProceso, Integer idProgramaAno, TipoDocumentosProcesos tipoDocumento) {
+		try {
+			TypedQuery<DocumentoProgramasReforzamiento> query = this.em.createNamedQuery("DocumentoProgramasReforzamiento.findByProgramaAnoDistribucionRecursosTipoDocumento", DocumentoProgramasReforzamiento.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idTipoDocumento", tipoDocumento.getId());
+			query.setParameter("idProceso", idProceso);
+			List<DocumentoProgramasReforzamiento> referenciasDocumentos = query.getResultList(); 
+			if(referenciasDocumentos != null && referenciasDocumentos.size() > 0){
+				return referenciasDocumentos.get(0).getIdDocumento();
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<ReferenciaDocumento> getVersionFinalRecursosFinancierosByType(Integer idProceso, Integer idProgramaAno, TipoDocumentosProcesos tipoDocumento) {
+		try {
+			TypedQuery<ReferenciaDocumento> query = this.em.createNamedQuery("DocumentoProgramasReforzamiento.findVersionFinalByIdRecursosFinancierosTipoDocumento", ReferenciaDocumento.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idTipoDocumento", tipoDocumento.getId());
+			query.setParameter("idProceso", idProceso);
 			return query.getResultList(); 
 		} catch (Exception e) {
 			throw new RuntimeException(e);

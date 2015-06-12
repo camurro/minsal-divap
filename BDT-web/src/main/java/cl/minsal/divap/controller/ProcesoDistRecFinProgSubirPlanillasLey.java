@@ -37,6 +37,7 @@ public class ProcesoDistRecFinProgSubirPlanillasLey extends AbstractTaskMBean im
 	private Integer programaSeleccionado;
 	private Integer IdProgramaProxAno;
 	private Integer ano;
+	private Integer idProceso;
 	
 	@EJB
 	private ProgramasService programasService;
@@ -50,6 +51,7 @@ public class ProcesoDistRecFinProgSubirPlanillasLey extends AbstractTaskMBean im
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
 			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
+			this.idProceso = (Integer) getTaskDataVO().getData().get("_idProceso");
 			System.out.println("this.ano --->" + this.ano);
 			System.out.println("programaSeleccionado --->" + programaSeleccionado);
 			programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, this.ano);
@@ -75,15 +77,13 @@ public class ProcesoDistRecFinProgSubirPlanillasLey extends AbstractTaskMBean im
 		List<ComponentesVO> componentes = programa.getComponentes();
 			if (planillaLey != null){
 				String filename = planillaLey.getFileName();
-						
 				byte[] contentPlanillaLey = planillaLey.getContents();
-				recursosFinancierosProgramasReforzamientoService.procesarPlanillaMunicipal(true,IdProgramaProxAno, 
-										GeneradorExcel.fromContent(contentPlanillaLey, XSSFWorkbook.class),componentes,2);
+				recursosFinancierosProgramasReforzamientoService.procesarPlanillaMunicipal(true, IdProgramaProxAno, GeneradorExcel.fromContent(contentPlanillaLey, XSSFWorkbook.class), componentes, 2);
 				Integer docPlanillaLey = persistFile(filename, contentPlanillaLey);
 				if (docPlanillaLey != null) {
 					docIds.add(docPlanillaLey);
 				}
-				recursosFinancierosProgramasReforzamientoService.moveToAlfresco(IdProgramaProxAno, docPlanillaLey, TipoDocumentosProcesos.PROGRAMAAPSMUNICIPAL, null,false);
+				recursosFinancierosProgramasReforzamientoService.moveToAlfresco(idProceso, IdProgramaProxAno, docPlanillaLey, TipoDocumentosProcesos.PROGRAMAAPSMUNICIPAL, null,false);
 			}
 		}catch (Exception e) {
 			return null;

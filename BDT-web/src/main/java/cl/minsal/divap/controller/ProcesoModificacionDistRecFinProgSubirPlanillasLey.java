@@ -40,6 +40,7 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasLey extends Abstract
 	private Integer programaSeleccionado;
 	private Integer IdProgramaProxAno;
 	private Integer ano;
+	private Integer idProceso;
 	private ProgramaVO programaProxAno;
 	@EJB
 	private ProgramasService programasService;
@@ -55,6 +56,7 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasLey extends Abstract
 			programa = recursosFinancierosProgramasReforzamientoService.getProgramaById(programaSeleccionado);
 			System.out.println("programaSeleccionado --->" + programaSeleccionado);
 			ano = (Integer) getTaskDataVO().getData().get("_ano");
+			idProceso = (Integer) getTaskDataVO().getData().get("_idProceso");
 			System.out.println("ano --->" + ano);
 			if(programa.getDependenciaMunicipal() != null && programa.getDependenciaMunicipal()){
 				
@@ -74,12 +76,10 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasLey extends Abstract
 	@Override
 	public String enviar(){
 		try{
-		docIds = new ArrayList<Integer>();
-		
-		List<ComponentesVO> componentes = programa.getComponentes();
+			docIds = new ArrayList<Integer>();
+			List<ComponentesVO> componentes = programa.getComponentes();
 			if (planillaLey != null){
 				String filename = planillaLey.getFileName();
-						
 				byte[] contentPlanillaLey = planillaLey.getContents();
 				recursosFinancierosProgramasReforzamientoService.procesarPlanillaMunicipal(true,IdProgramaProxAno, 
 										GeneradorExcel.fromContent(contentPlanillaLey, XSSFWorkbook.class),componentes,2);
@@ -87,7 +87,7 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasLey extends Abstract
 				if (docPlanillaLey != null) {
 					docIds.add(docPlanillaLey);
 				}
-				recursosFinancierosProgramasReforzamientoService.moveToAlfresco(IdProgramaProxAno, docPlanillaLey, TipoDocumentosProcesos.PROGRAMAAPSMUNICIPAL, null,false);
+				recursosFinancierosProgramasReforzamientoService.moveToAlfresco(idProceso, IdProgramaProxAno, docPlanillaLey, TipoDocumentosProcesos.PROGRAMAAPSMUNICIPAL, null,false);
 			}
 		}catch (Exception e) {
 			return null;

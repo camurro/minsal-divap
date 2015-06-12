@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "DetalleRemesas.findByMontoRemesa", query = "SELECT d FROM DetalleRemesas d WHERE d.montoRemesa = :montoRemesa"),
     @NamedQuery(name = "DetalleRemesas.findByRemesaPagada", query = "SELECT d FROM DetalleRemesas d WHERE d.remesaPagada = :remesaPagada"),
     @NamedQuery(name = "DetalleRemesas.getRemesasPagadasComunaLaFecha", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.id = :idComuna and d.mes.idMes < :idMes and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.remesaPagada = :remesaPagada"),
-    @NamedQuery(name = "DetalleRemesas.getRemesasByProgramaAnoComponenteEstablecimientoSubtituloPagada", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.componente.id = :idComponente and d.establecimiento.id = :idEstablecimiento and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.remesaPagada = :remesaPagada"),
+    @NamedQuery(name = "DetalleRemesas.getRemesasByProgramaAnoComponenteEstablecimientoSubtituloPagada", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.componente.id = :idComponente and d.establecimiento.id = :idEstablecimiento and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.remesaPagada = :remesaPagada order by d.fecha asc"),
     @NamedQuery(name = "DetalleRemesas.getRemesasByProgramaAnoComponenteComunaSubtituloPagada", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.componente.id = :idComponente and d.comuna.id = :idComuna and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.remesaPagada = :remesaPagada"),
     @NamedQuery(name = "DetalleRemesas.getRemesasPagadasByProgramaAnoComponenteComunaSubtitulo", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.componente.id = :idComponente and d.comuna.id = :idComuna and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.remesaPagada = :remesaPagada"),
     @NamedQuery(name = "DetalleRemesas.getRemesasPagadasComuna", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.id = :idComuna and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.remesaPagada = :remesaPagada order by d.cuota.numeroCuota asc"),
@@ -76,6 +76,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "DetalleRemesas.getRemesasComunaSubtitulo", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.id = :idComuna and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
     @NamedQuery(name = "DetalleRemesas.getRemesasEstablecimientoSubtitulo", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.establecimiento.id = :idEstablecimiento and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
     @NamedQuery(name = "DetalleRemesas.getRemesasPorPagarMesActual", query = "SELECT d FROM DetalleRemesas d WHERE d.remesaPagada = :remesaPagada and d.mes.idMes = :idMes and d.revisarConsolidador = true"),
+    @NamedQuery(name = "DetalleRemesas.getRemesasRechazadasByIdProceso", query = "SELECT d FROM DetalleRemesas d WHERE d.remesa.idRemesa = :idProceso"),
     @NamedQuery(name = "DetalleRemesas.getRemesasProgramaAnoComponenteSubtituloEstablecimiento", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.componente.id = :idComponente and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.establecimiento.id = :idEstablecimiento"),
     @NamedQuery(name = "DetalleRemesas.getRemesasPendientesConsolidadorProgramaAnoComponenteSubtituloEstablecimiento", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.componente.id = :idComponente and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.establecimiento.id = :idEstablecimiento and d.remesaPagada = false and d.revisarConsolidador = false order by d.fecha asc"),
     @NamedQuery(name = "DetalleRemesas.getRemesasPendientesConsolidadorProgramaAnoComponenteSubtituloComuna", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.componente.id = :idComponente and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.comuna.id = :idComuna and d.remesaPagada = false and d.revisarConsolidador = false order by d.fecha asc")})
@@ -126,6 +127,9 @@ public class DetalleRemesas implements Serializable {
     @JoinColumn(name = "componente", referencedColumnName = "id")
     @ManyToOne
     private Componente componente;
+    @JoinColumn(name = "remesa", referencedColumnName = "id_remesa")
+    @ManyToOne
+    private Remesas remesa;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "remesa")
     private Set<RemesaConvenios> remesaConvenios;
     
@@ -267,6 +271,14 @@ public class DetalleRemesas implements Serializable {
 
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
+	}
+	
+	public Remesas getRemesa() {
+		return remesa;
+	}
+
+	public void setRemesa(Remesas remesa) {
+		this.remesa = remesa;
 	}
 
 	@Override

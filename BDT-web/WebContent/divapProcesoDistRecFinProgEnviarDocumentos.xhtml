@@ -57,7 +57,7 @@
 				</h1>
 				<p:panel id="Panel">
 					<h2>
-						<strong>Programa:</strong> #{procesoDistRecFinSeguimientoDocumentacionController.programa.nombre}
+						<strong>Programa:</strong> #{procesoDistRecFinSeguimientoDocumentacionController.programaEvaluacion.nombre}
 					</h2>
 					<p:dataTable resizableColumns="true" value="#{procesoDistRecFinSeguimientoDocumentacionController.reporteCorreos}" liveResize="true"
 					var="_reporte" rows="40" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información."
@@ -107,23 +107,17 @@
 						</p:column>
 					</p:dataTable>
 
-					<p:commandButton value="Finalizar Actividad" styleClass="x-btn-text"
-						action="#{procesoDistRecFinSeguimientoDocumentacionController.enviar}" ajax="false" icon="ui-icon-disk" >
+					<p:commandButton value="Finalizar Actividad" styleClass="x-btn-text" action="#{procesoDistRecFinSeguimientoDocumentacionController.enviar}" ajax="true" icon="ui-icon-disk" >
 						<f:setPropertyActionListener target="#{procesoDistRecFinSeguimientoDocumentacionController.target}" value="bandejaTareas.jsf" />
 					</p:commandButton>
 				</p:panel>
 
-				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
-					icon="ui-icon-seek-first" />
+				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"	icon="ui-icon-seek-first" />
 			</p:panel>
 		</h:form>
-				<h:form id="formDownload">
-			<h:inputHidden
-				value="#{procesoDistRecFinSeguimientoDocumentacionController.docIdDownload}"
-				id="hiddenId" />
-			<h:commandButton id="linkDownload"
-				action="#{procesoDistRecFinSeguimientoDocumentacionController.downloadArchivo()}"
-				style="display: none"></h:commandButton>
+		<h:form id="formDownload">
+			<h:inputHidden value="#{procesoDistRecFinSeguimientoDocumentacionController.docIdDownload}" id="hiddenId" />
+			<h:commandButton id="linkDownload" action="#{procesoDistRecFinSeguimientoDocumentacionController.downloadArchivo()}" style="display: none"></h:commandButton>
 		</h:form>
 	</ui:define>
 </ui:composition>

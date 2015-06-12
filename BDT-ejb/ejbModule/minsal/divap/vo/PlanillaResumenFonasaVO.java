@@ -152,7 +152,6 @@ public class PlanillaResumenFonasaVO implements Serializable{
 		this.totalS29 = totalS29;
 	}
 	public List<Object> getRow() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	public Long getTotalServicio() {

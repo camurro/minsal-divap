@@ -77,7 +77,7 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 	private String posicionElemento;
 	private String precioCantidad;
 	private String subtitulo;
-	private Integer totalPxQ;
+	private Long totalPxQ;
 	
 	private List<ResumenProgramaServiciosVO> resumenProgramaServicio;
 	private List<ResumenProgramaVO> resumenProgramaMunicipal;
@@ -140,7 +140,6 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 				if(resumenProgramaServicio.get(i).getTotalS29() != null){
 					mixto.setTotalS29(resumenProgramaServicio.get(i).getTotalS29().longValue());
 				}
-				totalResumen += mixto.getTotalServicio();
 				resumenProgramaMixto.add(mixto);  
 			}
 			for(int i = 0; i< resumenProgramaMunicipal.size(); i++){
@@ -150,20 +149,19 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
                 mixtoServicio.setIdServicio(resumenProgramaMunicipal.get(i).getIdServicio());
 				if(posicion !=-1){
 					resumenProgramaMixto.get(posicion).setTotalS24(resumenProgramaMunicipal.get(i).getTotalS24().longValue());
-					totalResumen += resumenProgramaMixto.get(posicion).getTotalServicio();
 				}else{
 					ResumenProgramaMixtoVO mixto = new ResumenProgramaMixtoVO();
 					mixto.setIdServicio(resumenProgramaMunicipal.get(i).getIdServicio());
 					mixto.setNombreServicio(resumenProgramaMunicipal.get(i).getNombreServicio());
-					if(resumenProgramaMunicipal.get(i).getTotalS24()!=null){
+					if(resumenProgramaMunicipal.get(i).getTotalS24() != null){
 						mixto.setTotalS24(resumenProgramaMunicipal.get(i).getTotalS24().longValue());
 					}
-					totalResumen += mixto.getTotalServicio();
 					resumenProgramaMixto.add(mixto);
 				}
-				
 			}
-			
+			for(ResumenProgramaMixtoVO resumenProgramaMixtoVO: resumenProgramaMixto){
+				totalResumen += resumenProgramaMixtoVO.getTotalServicio();
+			}
 			System.out.println(resumenProgramaMixto);
 		}
 		
@@ -196,9 +194,9 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 					totalResumen21+=resumen.getTotalS21();
 				}
 				if(resumen.getTotalS22()!=null){
-							tiene22=true;	
-							totalResumen22+=resumen.getTotalS22();
-							}
+					tiene22=true;	
+					totalResumen22+=resumen.getTotalS22();
+				}
 				if(resumen.getTotalS29()!=null){
 					tiene29=true;
 					totalResumen29+=resumen.getTotalS29();
@@ -237,17 +235,12 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 	
 	public String buscarResultados(){
 		if(componenteSeleccionado != null && !componenteSeleccionado.trim().isEmpty()){
-			if(servicioSeleccionado != null && !servicioSeleccionado.trim().isEmpty()){
-				detalleEstablecimientos = programasService.findByServicioComponenteServicios(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado), programaProxAno.getIdProgramaAno());
-				detalleComunas = programasService.findByServicioComponente(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado), programaProxAno.getIdProgramaAno());
-				getTotalesPxQ(detalleComunas);
-				calculaTotalesTabla();
-			}else{
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el servicio antes de realizar la búsqueda", null);
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-				detalleComunas = new ArrayList<ProgramaMunicipalVO>();
-				detalleEstablecimientos = new ArrayList<ProgramaServicioVO>();
-			}
+			Integer idServicio = ((servicioSeleccionado != null && !servicioSeleccionado.trim().isEmpty()) ? Integer.parseInt(servicioSeleccionado) : null);
+			Integer idComponente = Integer.parseInt(componenteSeleccionado);
+			detalleEstablecimientos = programasService.findByServicioComponenteServicios(idComponente, idServicio, programaProxAno.getIdProgramaAno());
+			detalleComunas = programasService.findByServicioComponente(idComponente, idServicio, programaProxAno.getIdProgramaAno());
+			getTotalesPxQ(detalleComunas);
+			calculaTotalesTabla();
 		}else{
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el componente antes de realizar la búsqueda", null);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -257,8 +250,8 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 		return null;
 	}
 	
-	private Integer getTotalesPxQ(List<ProgramaMunicipalVO> detalleComunas){
-		totalPxQ = 0;
+	private Long getTotalesPxQ(List<ProgramaMunicipalVO> detalleComunas){
+		totalPxQ = 0L;
 		for (int i=0; i<detalleComunas.size(); i++) {
 			totalPxQ += detalleComunas.get(i).getTotal();	
 		}
@@ -395,11 +388,11 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 		this.precioCantidad = precioCantidad;
 	}
 
-	public Integer getTotalPxQ() {
+	public Long getTotalPxQ() {
 		return totalPxQ;
 	}
 
-	public void setTotalPxQ(Integer totalPxQ) {
+	public void setTotalPxQ(Long totalPxQ) {
 		this.totalPxQ = totalPxQ;
 	}
 

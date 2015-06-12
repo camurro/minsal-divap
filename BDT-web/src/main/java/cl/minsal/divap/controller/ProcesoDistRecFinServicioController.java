@@ -21,7 +21,6 @@ import minsal.divap.service.ProgramasService;
 import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ComponentesVO;
-import minsal.divap.vo.ProgramaMunicipalVO;
 import minsal.divap.vo.ProgramaServicioVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ResumenProgramaServiciosVO;
@@ -97,14 +96,14 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 		}
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
+			System.out.println("this.programaSeleccionado --->" + this.programaSeleccionado);
 			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
 			System.out.println("this.ano --->" + this.ano);
 		}
 		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
 		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		listaServicios = utilitariosService.getAllServicios();
-		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
-		
+		listaComponentes = componenteService.getComponenteByPrograma(programa.getId());
 		armarResumenPrograma();
 	}
 	
@@ -143,7 +142,7 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 				if(tiene29){
 					totalResumen29 += ((resumen.getTotalS29() == null) ? 0 : resumen.getTotalS29());
 				}
-				totalResumen += resumen.getTotalServicio();
+				totalResumen += resumen.getTotalFinalServicio();
 			}
 		}
 		

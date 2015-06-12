@@ -79,41 +79,61 @@ implements Serializable {
 		if (calculoPerCapitaFile != null && valorBasicoDesempenoFile != null) {
 			try {
 				docIds = new ArrayList<Integer>();
-				String filename = calculoPerCapitaFile.getFileName();
-				byte[] contentCalculoPerCapitaFile = calculoPerCapitaFile.getContents();
-				distribucionInicialPercapitaService.procesarCalculoPercapita(getIdDistribucionInicialPercapita(), GeneradorExcel.fromContent(contentCalculoPerCapitaFile, XSSFWorkbook.class), this.anoProceso);
-				Integer docPercapita = persistFile(filename, contentCalculoPerCapitaFile);
-				if (docPercapita != null) {
-					docIds.add(docPercapita);
+				String filename = null;
+				Integer docPercapita = null;
+				Integer docDesempeno = null;
+				try{
+					filename = calculoPerCapitaFile.getFileName();
+					byte[] contentCalculoPerCapitaFile = calculoPerCapitaFile.getContents();
+					distribucionInicialPercapitaService.procesarCalculoPercapita(getIdDistribucionInicialPercapita(), GeneradorExcel.fromContent(contentCalculoPerCapitaFile, XSSFWorkbook.class), this.anoProceso);
+					docPercapita = persistFile(filename, contentCalculoPerCapitaFile);
+					if (docPercapita != null) {
+						docIds.add(docPercapita);
+					}
+				} catch (ExcelFormatException e) {
+					throw new Exception(e.getMessage() + " en el archivo Población Inscrita Validada.");
+				} catch (InvalidFormatException e) {
+					throw new Exception(e.getMessage() + " en el archivo Población Inscrita Validada..");
+				} catch (IOException e) {
+					throw new Exception(e.getMessage() + " en el archivo Población Inscrita Validada.");
 				}
-				filename = valorBasicoDesempenoFile.getFileName();
-				byte[] contentDesempeno = valorBasicoDesempenoFile.getContents();
-				distribucionInicialPercapitaService.procesarValorBasicoDesempeno(getIdDistribucionInicialPercapita(), GeneradorExcel.fromContent(contentDesempeno, XSSFWorkbook.class), this.anoProceso);
-				Integer docDesempeno = persistFile(filename, contentDesempeno);
-				if (docDesempeno != null) {
-					docIds.add(docDesempeno);
+				try{
+					filename = valorBasicoDesempenoFile.getFileName();
+					byte[] contentDesempeno = valorBasicoDesempenoFile.getContents();
+					distribucionInicialPercapitaService.procesarValorBasicoDesempeno(getIdDistribucionInicialPercapita(), GeneradorExcel.fromContent(contentDesempeno, XSSFWorkbook.class), this.anoProceso);
+				    docDesempeno = persistFile(filename, contentDesempeno);
+					if (docDesempeno != null) {
+						docIds.add(docDesempeno);
+					}
+				} catch (ExcelFormatException e) {
+					throw new Exception(e.getMessage() + " en el archivo Asignación Desempeño Difícil.");
+				} catch (InvalidFormatException e) {
+					throw new Exception(e.getMessage() + " en el archivo Asignación Desempeño Difícil.");
+				} catch (IOException e) {
+					throw new Exception(e.getMessage() + " en el archivo Asignación Desempeño Difícil.");
 				}
 				setArchivosValidos(true);
 				distribucionInicialPercapitaService.moveToAlfresco(this.idDistribucionInicialPercapita, docPercapita, TipoDocumentosProcesos.POBLACIONINSCRITA, null, this.anoProceso);
 				distribucionInicialPercapitaService.moveToAlfresco(this.idDistribucionInicialPercapita, docDesempeno, TipoDocumentosProcesos.ASIGNACIONDESEMPENODIFICIL, null, this.anoProceso);
-			} catch (ExcelFormatException e) {
-				mensaje = "Los archivos no son válidos.";
-				setArchivosValidos(false);
-				e.printStackTrace();
-			} catch (InvalidFormatException e) {
-				mensaje = "Los archivos no son válidos.";
-				setArchivosValidos(false);
-				e.printStackTrace();
-			} catch (IOException e) {
-				mensaje = "Los archivos no son válidos.";
+			} catch (Exception e) {
+				mensaje = e.getMessage();
 				setArchivosValidos(false);
 				e.printStackTrace();
 			}
 		} else {
-			mensaje = "Los archivos no fueron cargados.";
+			if(calculoPerCapitaFile == null){
+				mensaje = "El archivo Población Inscrita Validada es obligatorio.";
+			}else{
+				mensaje = "El archivo Asignación Desempeño Difícil es obligatorio.";
+			}
 			setArchivosValidos(false);
 		}
-		FacesMessage msg = new FacesMessage(mensaje);
+		FacesMessage msg = null;
+		if(!isArchivosValidos()){
+			msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, null);
+		}else{
+			msg = new FacesMessage(mensaje);
+		}
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 

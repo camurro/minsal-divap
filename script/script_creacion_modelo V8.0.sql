@@ -26576,6 +26576,35 @@ INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (156
 INSERT INTO cuota(id, numero_cuota, porcentaje, id_programa, id_mes) VALUES (157, 12, (100.0/12), -4, 12);
 INSERT INTO programa_fecha_remesa(id, programa, fecha_remesa) VALUES (23, -3, 2);
 
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (63, 'Plantilla Ley');
+
+UPDATE tipo_documento SET nombre='Resolución Recursos Programa' WHERE id_tipo_documento=57;
+UPDATE tipo_documento SET nombre='Ordinario Recursos Programa' WHERE id_tipo_documento=58;
+
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (12, 'Hacer Seguimiento Resolucion Programas de Reforzamiento');
+INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (13, 'Hacer Seguimiento Ordinario Programas de Reforzamiento');
+
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (82, 'Plantilla Resolución Recursos Programa');
+
+
+--No incluidos en presentacion 02/06/2015
+
+ALTER TABLE programas_reforzamiento_seguimiento
+  ADD COLUMN distribucion_recursos integer;
+
+ALTER TABLE programas_reforzamiento_seguimiento
+  ADD CONSTRAINT distribucion_recursos_fk FOREIGN KEY (distribucion_recursos) REFERENCES programas_reforzamiento (id_programas_reforzamiento) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE documento_programas_reforzamiento
+  ADD COLUMN distribucion_recursos integer;
+ALTER TABLE documento_programas_reforzamiento
+  ADD CONSTRAINT distribucion_recursos_fk FOREIGN KEY (distribucion_recursos) REFERENCES programas_reforzamiento (id_programas_reforzamiento) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE detalle_remesas
+  ADD COLUMN remesa integer;
+ALTER TABLE detalle_remesas
+  ADD CONSTRAINT remesa_fk FOREIGN KEY (remesa) REFERENCES remesas (id_remesa) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
 
 
 -- creacion de la tabla programa_componente

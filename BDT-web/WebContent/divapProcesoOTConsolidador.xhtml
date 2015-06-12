@@ -243,21 +243,21 @@
 							<p:tab id="tab22" title="Detalle Programas">
 								<p:panelGrid columns="2">
 									<h:outputText value="Programa: " styleClass="inputLabel" />
-									<p:selectOneMenu id="programas"  value="#{procesoOTRevisarConsolidacionController.programaSeleccionado}">
-										<f:selectItem itemLabel="Seleccione" itemValue="" />  
+									<p:selectOneMenu id="programas" style="width:650px;" value="#{procesoOTRevisarConsolidacionController.programaSeleccionado}">
+										<f:selectItem itemLabel="Seleccione Programa" itemValue="" />  
 										<f:selectItems value="#{procesoOTRevisarConsolidacionController.listaProgramas}" itemLabel="#{programa.nombre}" var="programa" itemValue="#{programa.idProgramaAno}"/>
 										<p:ajax listener="#{procesoOTRevisarConsolidacionController.cargaComponentes}" update=":form:tabViewConsolidado:componentes"/> 
 									</p:selectOneMenu>
 								 
 									<h:outputText value="Componente " styleClass="inputLabel" />
 									<p:selectOneMenu id="componentes"  value="#{procesoOTRevisarConsolidacionController.componenteSeleccionado}">
-										<f:selectItem itemLabel="Seleccione" itemValue="" />  
+										<f:selectItem itemLabel="Seleccione Componente" itemValue="" />  
 										<f:selectItems value="#{procesoOTRevisarConsolidacionController.listaComponentes}" itemLabel="#{componente.nombre}" var="componente" itemValue="#{componente.id}"/> 
 									</p:selectOneMenu>
 									
 									<h:outputText value="Servicio: " styleClass="inputLabel" />
 									<p:selectOneMenu id="servicios"  value="#{procesoOTRevisarConsolidacionController.servicioSeleccionado}">
-										<f:selectItem itemLabel="Seleccione" itemValue="" />  
+										<f:selectItem itemLabel="Seleccione Servicio" itemValue="" />  
 										<f:selectItems value="#{procesoOTRevisarConsolidacionController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
 									</p:selectOneMenu>
 									
@@ -821,12 +821,87 @@
 											</p:dataTable>
 										</p:tab>
 									</c:if>
+									<c:if test="#{procesoOTRevisarConsolidacionController.rebajaIAAPS}">
+										<p:tab title="Rebaja IAAPS">
+											<p:dataTable resizableColumns="true" value="#{procesoOTRevisarConsolidacionController.resultadoPercapita}" liveResize="true" var="detalleRebaja"
+												rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+												styleClass="dataTable" id="tablaResultadosRebaja" rowIndexVar="rowIndexRebaja">
+												<p:columnGroup type="header">
+													<p:row>
+														<p:column rowspan="3" headerText="Comuna" />
+														<p:column rowspan="3" headerText="Clasificación" />
+														<p:column rowspan="3" headerText="Marco Presupuestario ($)"/>
+														<p:column colspan="2" rowspan="2" headerText="Rebaja Acumulada a la Fecha"/>
+														<c:forEach items="#{procesoOTRevisarConsolidacionController.remesasPerCapita}" var="remesa">
+															<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="#{remesa.mes}"/>
+														</c:forEach>
+														<p:column rowspan="3" headerText="Revisado"/>
+													</p:row>
+													<p:row>
+														<c:forEach items="#{procesoOTRevisarConsolidacionController.remesasPerCapita}" var="remesa">
+															<p:column rowspan="1" colspan="#{remesa.cantDias}" headerText="Días de Remesa"/>
+														</c:forEach>
+														
+													</p:row>
+													<p:row>
+														<p:column headerText="Monto ($)" />
+														<p:column headerText="%" />
+														<c:forEach items="#{procesoOTRevisarConsolidacionController.remesasPerCapita}" var="remesa">
+															<c:forEach items="#{remesa.dias}" var="dia">
+																<p:column headerText="#{dia.dia}"/>
+															</c:forEach>
+														</c:forEach>
+													</p:row>
+												</p:columnGroup>
+													<p:column>
+													<span class="textoAjustado textoPequenio">#{detalleRebaja.comuna}</span>
+												</p:column>
+												<p:column>
+													<span class="textoAjustado textoPequenio">#{detalleRebaja.tipoComuna}</span>
+												</p:column>
+												<p:column>
+													<span class="textoAjustado textoPequenio">N/A</span>
+												</p:column>
+												
+												<p:column>
+													<h:outputText styleClass="textoAjustado textoPequenio" value="#{detalleRebaja.transferenciaAcumulada}">
+														<f:convertNumber  maxFractionDigits="0"/>
+													</h:outputText>
+												</p:column>
+												<p:column>
+													<span class="textoAjustado textoPequenio">#{detalleRebaja.porcentajeTransferenciaAcumulada}</span>
+												</p:column>
+												<c:forEach items="#{detalleRebaja.remesas}" var="remesa">
+													<c:forEach items="#{remesa.dias}" var="dia">
+															<p:column>
+																<c:if test="#{dia.bloqueado}">
+																	<h:outputText value="#{dia.monto}" styleClass="textoAjustado textoPequenio">
+																		<f:convertNumber  maxFractionDigits="0"/>
+																	</h:outputText> 
+																</c:if>
+																<c:if test="#{not dia.bloqueado}">
+																	<h:inputText value="#{dia.monto}" styleClass="divapProcesoOTInput">
+																		<f:convertNumber  maxFractionDigits="0"/>
+																	</h:inputText> 
+																</c:if>
+															</p:column>
+													</c:forEach>
+												</c:forEach>
+												<p:column>
+													<p:selectBooleanCheckbox rendered="#{not detalleRebaja.aprobado}" value="#{detalleRebaja.aprobado}">
+										            	<p:ajax update=":form:tabViewConsolidado:resumenProgramas:tablaResultadosRebaja" listener="#{procesoOTRevisarConsolidacionController.actualizarRebaja(rowIndexRebaja, detalleRebaja.idComuna)}"/>
+										        	</p:selectBooleanCheckbox>
+													<h:graphicImage rendered="#{detalleRebaja.aprobado}" value="resources/minsal/images/check-green.png" styleClass="divapIcons" />	
+												</p:column>
+											</p:dataTable>
+										</p:tab>
+									</c:if>
 								</p:tabView>
 							</p:tab>
 							<p:tab id="tab23" title="Resumen Totales">
 								<p:panelGrid columns="3">
 									<h:outputText value="Programa: " styleClass="inputLabel" />
-									<p:selectOneMenu id="programasResumen"  value="#{procesoOTRevisarConsolidacionController.programaSeleccionadoResumen}">
+									<p:selectOneMenu id="programasResumen"  value="#{procesoOTRevisarConsolidacionController.programaSeleccionadoResumen}"  style="width:650px;">
 										<f:selectItem itemLabel="Seleccione" itemValue="" />  
 										<f:selectItems value="#{procesoOTRevisarConsolidacionController.listaProgramasResumen}" itemLabel="#{programa.nombre}" var="programa" itemValue="#{programa.idProgramaAno}"/>
 									</p:selectOneMenu>

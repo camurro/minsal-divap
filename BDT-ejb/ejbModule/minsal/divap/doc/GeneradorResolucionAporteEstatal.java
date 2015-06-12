@@ -15,6 +15,9 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableCell;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
@@ -23,10 +26,12 @@ import org.docx4j.wml.Text;
 public class GeneradorResolucionAporteEstatal extends GeneradorWord {
 
 	private String templateFilename;
+	private boolean replaceInTable;
 
 	public GeneradorResolucionAporteEstatal(String fileName, String templateFilename) {
 		super(fileName);
 		this.templateFilename = templateFilename;
+		this.replaceInTable = false;
 	}
 
 	public String getTemplateFilename() {
@@ -152,6 +157,48 @@ public class GeneradorResolucionAporteEstatal extends GeneradorWord {
 				iteracion++;
 			}
 		}
+		
+		if(replaceInTable){
+			List<XWPFTable> tables = document.getTables();
+			if(tables != null && tables.size() > 0){
+				for(int index=0; index < tables.size(); index++){
+				   XWPFTable table = document.getTables().get(index);
+				   for (XWPFTableRow row : table.getRows()) {
+					      for (XWPFTableCell cell : row.getTableCells()) {
+					         for (XWPFParagraph p : cell.getParagraphs()) {
+					            for (XWPFRun r : p.getRuns()) {
+					              String text = r.getText(0);
+					              if (text != null) {
+						              System.out.println("table text="+text);
+						              for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+										    String key = entry.getKey();
+										    Object value = entry.getValue();
+										    key = key.replace("{", "\\{").replace("}", "\\}");
+										    text = text.replaceAll(key, value.toString());
+						              }
+						              r.setText(text, 0);
+					              }
+					            }
+					         }
+					      }
+					   }
+				   
+				   
+				   
+				   /*final XWPFTableCell cell = table.getRow(0).getCell(0);
+				   System.out.println("Current cell value: " + cell.getText());
+				   table.removeRow(0);
+				   final XWPFTableRow row = table.createRow();
+				   final XWPFTableCell nuevaCelda = row.createCell();
+				   final String[] lineas = newValue.split("\n");
+				   for(String s : lineas){
+					   final XWPFParagraph parrafo =  nuevaCelda.addParagraph();
+					   parrafo.createRun().setText(s);
+				   }*/
+				
+				}
+			}
+		}
 
 
 		//String replacementText = null;
@@ -271,6 +318,14 @@ public class GeneradorResolucionAporteEstatal extends GeneradorWord {
 			System.out.println("Fin parrafo");
 		}*/
 		return document;
+	}
+
+	public boolean isReplaceInTable() {
+		return replaceInTable;
+	}
+
+	public void setReplaceInTable(boolean replaceInTable) {
+		this.replaceInTable = replaceInTable;
 	}
 
 }

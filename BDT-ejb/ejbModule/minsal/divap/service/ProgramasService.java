@@ -384,7 +384,6 @@ public class ProgramasService {
 							int posicion = salida.indexOf(r);
 							if(posicion != -1){
 								r = salida.get(posicion);
-
 								if(sub.getId()==1){
 									Long totalS21 = ((Number)(resumen[2])).longValue();
 									r.setTotalS21(totalS21);
@@ -397,7 +396,6 @@ public class ProgramasService {
 									Long totalS29 = ((Number)(resumen[2])).longValue();
 									r.setTotalS29(totalS29);
 								}
-
 							}else{
 								if(sub.getId()==1){
 									Long totalS21 = ((Number)(resumen[2])).longValue();
@@ -422,9 +420,8 @@ public class ProgramasService {
 		return salida;
 	}
 
-	public int getIdProgramaAnoAnterior(Integer programaSeleccionado,
-			int anoAnterior) {
-		Integer id = programasDAO.getIdProgramaAnoAnterior(programaSeleccionado,anoAnterior);
+	public int getIdProgramaAnoAnterior(Integer programaSeleccionado, int anoAnterior) {
+		Integer id = programasDAO.getIdProgramaAnoAnterior(programaSeleccionado ,anoAnterior);
 		System.out.println(id);
 		if(id == null){
 			Programa actual = getProgramaPorID(programaSeleccionado);
@@ -597,7 +594,7 @@ public class ProgramasService {
 			programaAnoSiguiente = new ProgramaAno();
 			AnoEnCurso anoSiguienteDTO = programasDAO.getAnoEnCursoById(ano);
 			if(anoSiguienteDTO == null) {
-				AnoEnCurso anoActualDTO = programasDAO.getAnoEnCursoById(getAnoCurso());
+				AnoEnCurso anoActualDTO = programasDAO.getAnoEnCursoById((ano -1));
 				anoSiguienteDTO = new AnoEnCurso();
 				anoSiguienteDTO.setAno(ano);
 				anoSiguienteDTO.setMontoPercapitalBasal(anoActualDTO.getMontoPercapitalBasal());
@@ -1027,7 +1024,7 @@ public class ProgramasService {
 	public ProgramaVO getProgramaByIdProgramaAndAno(Integer idPrograma, Integer ano) {
 		return new ProgramaMapper().getBasic(this.programasDAO.getProgramaAnoByIdProgramaAndAno(idPrograma, ano));
 	}
-	
+
 	public List<ProgramaVO> getProgramasByAno(Integer ano) {
 		List<ProgramaAno> programas = this.programasDAO.findByAno(ano);
 		List<ProgramaVO> result = new ArrayList<ProgramaVO>();
@@ -1038,6 +1035,5 @@ public class ProgramasService {
 		}
 		return result;
 	}
-	
-	
+
 }

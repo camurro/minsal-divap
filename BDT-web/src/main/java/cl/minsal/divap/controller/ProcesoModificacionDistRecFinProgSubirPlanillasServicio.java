@@ -23,7 +23,7 @@ import org.primefaces.model.UploadedFile;
 
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
-@Named ("procesoModificacionDistRecFinProgSubirPlanillasServicioController" ) 
+@Named ("procesoModificacionDistRecFinProgSubirPlanillasServicioController") 
 @ViewScoped 
 public class ProcesoModificacionDistRecFinProgSubirPlanillasServicio extends AbstractTaskMBean implements Serializable {
 
@@ -43,6 +43,7 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasServicio extends Abs
 	private Integer programaSeleccionado;
 	private Integer ano;
 	private Integer IdProgramaProxAno;
+	private Integer idProceso;
 	@EJB
 	private ProgramasService programasService;
 	@EJB
@@ -55,15 +56,16 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasServicio extends Abs
 					.getData().get("_programaSeleccionado");
 			System.out.println("programaSeleccionado --->" + programaSeleccionado);
 			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
+			this.idProceso = (Integer) getTaskDataVO().getData().get("_idProceso");
 			System.out.println("ano --->" + ano);
 			programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
 			programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 			
 			if(programa.getDependenciaMunicipal() != null && programa.getDependenciaMunicipal()){
-				plantillaMunicipal = recursosFinancierosProgramasReforzamientoService.getIdPlantillaModificacionProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSMUNICIPALES, true);
+				plantillaMunicipal = recursosFinancierosProgramasReforzamientoService.getIdPlantillaModificacionProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSMUNICIPALES, true, this.ano);
 			}
 			if(programa.getDependenciaServicio() != null && programa.getDependenciaServicio()){
-				plantillaServicios = recursosFinancierosProgramasReforzamientoService.getIdPlantillaModificacionProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSSERVICIO, true);
+				plantillaServicios = recursosFinancierosProgramasReforzamientoService.getIdPlantillaModificacionProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSSERVICIO, true, this.ano);
 			}
 			IdProgramaProxAno = programasService.getProgramaAnoSiguiente(programaSeleccionado, ano);
 		}
@@ -90,7 +92,7 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasServicio extends Abs
 			if (docPlanillaServicio != null) {
 				docIds.add(docPlanillaServicio);
 			}
-			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(IdProgramaProxAno, docPlanillaServicio, TipoDocumentosProcesos.PROGRAMAAPSSERVICIO, null,false);
+			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(idProceso, IdProgramaProxAno, docPlanillaServicio, TipoDocumentosProcesos.PROGRAMAAPSSERVICIO, null,false);
 		}
 		}catch (Exception e) {
 			return null;

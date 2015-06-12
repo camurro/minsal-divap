@@ -118,17 +118,6 @@ public class SeguimientoDAO {
 		}
 	}
 	
-	public List<Seguimiento> getBitacoraProgramasReforzamiento(Integer idProgramaAno, TareasSeguimiento tareaSeguimiento) {
-		try {
-			TypedQuery<Seguimiento> query = this.em.createNamedQuery("Seguimiento.findByIdProgramaReforzamiento", Seguimiento.class);
-			query.setParameter("idProgramaAno", idProgramaAno);
-			query.setParameter("idTareaSeguimiento", tareaSeguimiento.getId());
-			return query.getResultList();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
 	public List<Seguimiento> getBitacoraOT(Integer idRemesa, TareasSeguimiento tareaSeguimiento) {
 		try {
 			TypedQuery<Seguimiento> query = this.em.createNamedQuery("Seguimiento.findByIdOT", Seguimiento.class);
@@ -191,6 +180,18 @@ public class SeguimientoDAO {
 			TypedQuery<Seguimiento> query = this.em.createNamedQuery("Seguimiento.findByIdFlujoCaja", Seguimiento.class);
 			query.setParameter("idFlujoCajaConsolidador", idProceso);
 			query.setParameter("idTareaSeguimiento", tareaSeguimiento.getId());
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public List<Seguimiento> getBitacoraProgramasReforzamiento(Integer idProceso, Integer idProgramaAno, TareasSeguimiento tareaSeguimiento) {
+		try {
+			TypedQuery<Seguimiento> query = this.em.createNamedQuery("Seguimiento.findByIdProgramaReforzamiento", Seguimiento.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idTareaSeguimiento", tareaSeguimiento.getId());
+			query.setParameter("idProceso", idProceso);
 			return query.getResultList();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
