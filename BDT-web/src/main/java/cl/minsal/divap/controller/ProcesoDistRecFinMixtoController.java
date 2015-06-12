@@ -77,7 +77,7 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 	private String posicionElemento;
 	private String precioCantidad;
 	private String subtitulo;
-	private Integer totalPxQ;
+	private Long totalPxQ;
 	
 	private List<ResumenProgramaServiciosVO> resumenProgramaServicio;
 	private List<ResumenProgramaVO> resumenProgramaMunicipal;
@@ -235,17 +235,12 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 	
 	public String buscarResultados(){
 		if(componenteSeleccionado != null && !componenteSeleccionado.trim().isEmpty()){
-			if(servicioSeleccionado != null && !servicioSeleccionado.trim().isEmpty()){
-				detalleEstablecimientos = programasService.findByServicioComponenteServicios(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado), programaProxAno.getIdProgramaAno());
-				detalleComunas = programasService.findByServicioComponente(Integer.valueOf(componenteSeleccionado), Integer.valueOf(servicioSeleccionado), programaProxAno.getIdProgramaAno());
-				getTotalesPxQ(detalleComunas);
-				calculaTotalesTabla();
-			}else{
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el servicio antes de realizar la búsqueda", null);
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-				detalleComunas = new ArrayList<ProgramaMunicipalVO>();
-				detalleEstablecimientos = new ArrayList<ProgramaServicioVO>();
-			}
+			Integer idServicio = ((servicioSeleccionado != null && !servicioSeleccionado.trim().isEmpty()) ? Integer.parseInt(servicioSeleccionado) : null);
+			Integer idComponente = Integer.parseInt(componenteSeleccionado);
+			detalleEstablecimientos = programasService.findByServicioComponenteServicios(idComponente, idServicio, programaProxAno.getIdProgramaAno());
+			detalleComunas = programasService.findByServicioComponente(idComponente, idServicio, programaProxAno.getIdProgramaAno());
+			getTotalesPxQ(detalleComunas);
+			calculaTotalesTabla();
 		}else{
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar el componente antes de realizar la búsqueda", null);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -255,8 +250,8 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 		return null;
 	}
 	
-	private Integer getTotalesPxQ(List<ProgramaMunicipalVO> detalleComunas){
-		totalPxQ = 0;
+	private Long getTotalesPxQ(List<ProgramaMunicipalVO> detalleComunas){
+		totalPxQ = 0L;
 		for (int i=0; i<detalleComunas.size(); i++) {
 			totalPxQ += detalleComunas.get(i).getTotal();	
 		}
@@ -393,11 +388,11 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 		this.precioCantidad = precioCantidad;
 	}
 
-	public Integer getTotalPxQ() {
+	public Long getTotalPxQ() {
 		return totalPxQ;
 	}
 
-	public void setTotalPxQ(Integer totalPxQ) {
+	public void setTotalPxQ(Long totalPxQ) {
 		this.totalPxQ = totalPxQ;
 	}
 

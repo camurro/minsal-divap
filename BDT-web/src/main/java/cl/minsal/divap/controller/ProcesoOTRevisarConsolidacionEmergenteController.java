@@ -49,39 +49,25 @@ implements Serializable {
 				log.error("Error tratando de redireccionar a login por falta de usuario en sesion.", e);
 			}
 		}
-		
-		
 		listaProgramas = otService.getProgramas(getLoggedUsername(), otService.getAnoCurso());
-		
 	}
-
-
 
 	@Override
 	protected Map<String, Object> createResultData() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
-
 
 	@Override
 	public String iniciarProceso() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
-
 
 	public List<ProgramaVO> getListaProgramas() {
 		return listaProgramas;
 	}
 
-
-
 	public void setListaProgramas(List<ProgramaVO> listaProgramas) {
 		this.listaProgramas = listaProgramas;
 	}
-	
 	
 }

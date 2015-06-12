@@ -45,6 +45,7 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasMixto extends Abstra
 	private Integer programaSeleccionado;
 	private Integer IdProgramaProxAno;
 	private Integer ano;
+	private Integer idProceso;
 	
 	@EJB
 	private ProgramasService programasService;
@@ -57,6 +58,7 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasMixto extends Abstra
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
 			ano = (Integer) getTaskDataVO().getData().get("_ano");
+			idProceso = (Integer) getTaskDataVO().getData().get("_idProceso");
 			programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, this.ano);
 			System.out.println("programaSeleccionado --->" + programaSeleccionado);
 			if(programa.getDependenciaMunicipal() != null && programa.getDependenciaMunicipal()){
@@ -101,7 +103,7 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasMixto extends Abstra
 			if (docPlanillaMuncipal != null) {
 				docIds.add(docPlanillaMuncipal);
 			}
-			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(IdProgramaProxAno, docPlanillaMuncipal, TipoDocumentosProcesos.PROGRAMAAPSMUNICIPAL, null,false);
+			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(idProceso, IdProgramaProxAno, docPlanillaMuncipal, TipoDocumentosProcesos.PROGRAMAAPSMUNICIPAL, null,false);
 		}
 		if (planillaServicio != null){
 			String filename = planillaServicio.getFileName();
@@ -113,7 +115,7 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillasMixto extends Abstra
 			if (docPlanillaServicio != null) {
 				docIds.add(docPlanillaServicio);
 			}
-			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(IdProgramaProxAno, docPlanillaServicio, TipoDocumentosProcesos.PROGRAMAAPSSERVICIO, null,false);
+			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(idProceso, IdProgramaProxAno, docPlanillaServicio, TipoDocumentosProcesos.PROGRAMAAPSSERVICIO, null,false);
 		}
 		listaServicios = new ArrayList<Integer>();
 		for(Integer idMun : listaServiciosMun){

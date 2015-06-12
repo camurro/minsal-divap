@@ -1,5 +1,6 @@
 package minsal.divap.dao;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -193,11 +194,11 @@ public class RecursosFinancierosProgramasReforzamientoDAO {
 		
 	}
 
-	public Integer createSeguimiento(ProgramaAno programaAno, Seguimiento seguimiento) {
-		// TODO Auto-generated method stub
+	public Integer createSeguimiento(ProgramasReforzamiento programasReforzamiento, ProgramaAno programaAno, Seguimiento seguimiento) {
 		ProgramasReforzamientoSeguimiento programasReforzamientoSeguimiento = new ProgramasReforzamientoSeguimiento();
 		programasReforzamientoSeguimiento.setIdProgramaAno(programaAno);
 		programasReforzamientoSeguimiento.setSeguimiento(seguimiento);
+		programasReforzamientoSeguimiento.setDistribucionRecursos(programasReforzamiento);
 		this.em.persist(programasReforzamientoSeguimiento);
 		return programasReforzamientoSeguimiento.getId();
 	}
@@ -254,24 +255,19 @@ public class RecursosFinancierosProgramasReforzamientoDAO {
 			TypedQuery<ReporteEmailsProgramasReforzamiento> query = this.em.createNamedQuery("ReporteEmailsProgramasReforzamiento.findByIdReporteEmailsProgramasReforzamiento", ReporteEmailsProgramasReforzamiento.class);
 			query.setParameter("idReporteEmailsProgramasReforzamiento", idReporteEmailsProgramasReforzamiento);
 			return query.getResultList(); 
-			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
-		
 	}
 
-	public List<DocumentoProgramasReforzamiento> getByIdTipo(
-			Integer idProgramaSiguiente, TipoDocumentosProcesos tipoDocumento,
-			Integer idServicio) {
+	public List<DocumentoProgramasReforzamiento> getByIdProcesoIdProgramaAnoIdTipoIdServicio(Integer idProceso, Integer idProgramaAno, TipoDocumentosProcesos tipoDocumento, Integer idServicio) {
 		try {
-			TypedQuery<DocumentoProgramasReforzamiento> query = this.em.createNamedQuery("DocumentoProgramasReforzamiento.findByProgramaAnoTipoDocumentoIdServicio", DocumentoProgramasReforzamiento.class);
-			query.setParameter("idProgramaAno", idProgramaSiguiente);
+			TypedQuery<DocumentoProgramasReforzamiento> query = this.em.createNamedQuery("DocumentoProgramasReforzamiento.findByProcesoProgramaAnoTipoDocumentoIdServicio", DocumentoProgramasReforzamiento.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
 			query.setParameter("idTipoDocumento", tipoDocumento.getId());
 			query.setParameter("idServicio", idServicio);
+			query.setParameter("idProceso", idProceso);
 			return query.getResultList(); 
-			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -283,14 +279,49 @@ public class RecursosFinancierosProgramasReforzamientoDAO {
 		queryDeleteDocumento.executeUpdate();
 	}
 
-	public Integer crearInstanciaModificacion(Usuario usuario, Mes mes,
-			Date date) {
+	public Integer crearInstanciaModificacion(Usuario usuario, Mes mes, Date date) {
 		ProgramasReforzamiento reforzamiento = new ProgramasReforzamiento();
 		reforzamiento.setFechaCreacion(date);
 		reforzamiento.setMes(mes);
 		reforzamiento.setUsuario(usuario);
 		em.persist(reforzamiento);
 		return reforzamiento.getIdProgramasReforzamiento();
+	}
+
+	public List<DocumentoProgramasReforzamiento> getDocumentByIdProcesoIdProgramaAnoTipoNotFinal(Integer idProceso, Integer idProgramaAno, TipoDocumentosProcesos ... tiposDocumentos) {
+		try{
+			List<Integer> idDocumentos = new ArrayList<Integer>();
+			for(TipoDocumentosProcesos tipoDocumento : tiposDocumentos){
+				idDocumentos.add(tipoDocumento.getId());
+			}
+			TypedQuery<DocumentoProgramasReforzamiento> query = this.em.createNamedQuery("DocumentoProgramasReforzamiento.findByIdProcesoIdProgramaAnoTiposNotFinal", DocumentoProgramasReforzamiento.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idTiposDocumento", idDocumentos);
+			query.setParameter("idProceso", idProceso);
+			return query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public Integer deleteDocumento(Integer idDocumento) {
+		Query query = this.em.createNamedQuery("ReferenciaDocumento.deleteUsingId");
+		query.setParameter("idDocumento", idDocumento);
+		return query.executeUpdate();
+		
+	}
+	
+	public Integer deleteDocumentoProgramasReforzamiento(Integer idDistribucionRecursos) {
+		List<Integer> idDocumentosDistribucionRecursos = new ArrayList<Integer>();
+		idDocumentosDistribucionRecursos.add(idDistribucionRecursos);
+		return deleteDocumentoProgramasReforzamiento(idDocumentosDistribucionRecursos);
+	}
+	
+	private Integer deleteDocumentoProgramasReforzamiento(List<Integer> idDistribucionRecursos) {
+		Query query = this.em.createNamedQuery("DocumentoProgramasReforzamiento.deleteUsingIds");
+		query.setParameter("idDocumentosDistribucionRecursos", idDistribucionRecursos);
+		return query.executeUpdate();
 	}
 
 }

@@ -87,9 +87,9 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 	private String body;
 	private UploadedFile attachedFile;
 	
-	private ProgramaVO programa;
-	private ProgramaVO programaProxAno;
+	private ProgramaVO programaEvaluacion;
 	private Integer ano;
+	private Integer idProceso;
 	
 	@PostConstruct public void init() {
 		if (!getSessionBean().isLogged()) {
@@ -105,58 +105,82 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
 			ano = (Integer) getTaskDataVO().getData().get("_ano");
 			tipoProgramaPxQ = (Boolean) getTaskDataVO().getData().get("_tipoProgramaPxQ");
+			idProceso = (Integer) getTaskDataVO().getData().get("_idProceso");
 		}
-		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
-		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
+		programaEvaluacion = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		servicio=false;
 		municipal=false;
 		mixto = false;
-		if(programa.getDependenciaMunicipal() != null && programa.getDependenciaMunicipal()){
-			System.out.println("idProxAno --------->>>> "+programaProxAno.getIdProgramaAno());
-			resolucionPrograma = reforzamientoService.getIdResolucion(programaProxAno.getIdProgramaAno(), TipoDocumentosProcesos.MODIFICACIONRESOLUCIONPROGRAMASAPS);
-			excelResolucion = reforzamientoService.getIdResolucion(programaProxAno.getIdProgramaAno(), TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS);
+		if(programaEvaluacion.getDependenciaMunicipal() != null && programaEvaluacion.getDependenciaMunicipal()){
+			System.out.println("idProgAno --------->>>> "+programaEvaluacion.getIdProgramaAno());
+			resolucionPrograma = reforzamientoService.getLastDocumentRecursosFinancierosByType(idProceso, programaEvaluacion.getIdProgramaAno(), TipoDocumentosProcesos.MODIFICACIONRESOLUCIONPROGRAMASAPS);
+			excelResolucion = reforzamientoService.getLastDocumentRecursosFinancierosByType(idProceso, programaEvaluacion.getIdProgramaAno(), TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS);
 			plantillaResolucionCorreo = documentService.getIdDocumentoFromPlantilla(TipoDocumentosProcesos.PLANTILLARESOLUCIONCORREO);
 			municipal=true;
 		}
-		if(programa.getDependenciaServicio() && !programa.getDependenciaMunicipal()){
-			excelOrdinario = reforzamientoService.getIdResolucion(programaProxAno.getIdProgramaAno(), TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS);
-			ordinarioPrograma = reforzamientoService.getIdResolucion(programaProxAno.getIdProgramaAno(), TipoDocumentosProcesos.MODIFICACIONORDINARIOPROGRAMASAPS);
+		if(programaEvaluacion.getDependenciaServicio() && !programaEvaluacion.getDependenciaMunicipal()){
+			excelOrdinario = reforzamientoService.getLastDocumentRecursosFinancierosByType(idProceso, programaEvaluacion.getIdProgramaAno(), TipoDocumentosProcesos.PLANTILLARESOLUCIONPROGRAMASAPS);
+			ordinarioPrograma = reforzamientoService.getLastDocumentRecursosFinancierosByType(idProceso, programaEvaluacion.getIdProgramaAno(), TipoDocumentosProcesos.MODIFICACIONORDINARIOPROGRAMASAPS);
 			plantillaOrdinarioCorreo = documentService.getIdDocumentoFromPlantilla(TipoDocumentosProcesos.PLANTILLAORDINARIOCORREO);
 			servicio=true;
 		}
 		
 		if(tipoProgramaPxQ){
 			//Servicio PxQ
-			if(programa.getDependenciaServicio() && !programa.getDependenciaMunicipal()){
-				resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPaisModificado(programa.getId(), TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENSERVICIO);
+			if(programaEvaluacion.getDependenciaServicio() && !programaEvaluacion.getDependenciaMunicipal()){
+				resumenServicioPais = reforzamientoService.getLastDocumentRecursosFinancierosByType(idProceso, programaEvaluacion.getIdProgramaAno(), TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENSERVICIO);
+				if(resumenServicioPais == null){
+					resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPaisModificado(idProceso, programaEvaluacion.getId(), TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENSERVICIO, this.ano);
+				}
 			}
 			//Municipal PxQ
-			if(programa.getDependenciaMunicipal() && !programa.getDependenciaServicio()){
-				resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPaisModificado(programa.getId(), TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENSERVICIO);
+			if(programaEvaluacion.getDependenciaMunicipal() && !programaEvaluacion.getDependenciaServicio()){
+				resumenMunicipalPais = reforzamientoService.getLastDocumentRecursosFinancierosByType(idProceso, programaEvaluacion.getIdProgramaAno(), TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENSERVICIO);
+				if(resumenMunicipalPais == null){
+					resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPaisModificado(idProceso, programaEvaluacion.getId(), TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENSERVICIO, this.ano);
+				}
 			}
 			//Mixto PxQ
-			if(programa.getDependenciaMunicipal() && programa.getDependenciaServicio()){
-				resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPaisModificado(programa.getId(), TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENSERVICIO);
-				resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPaisModificado(programa.getId(), TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENSERVICIO);
+			if(programaEvaluacion.getDependenciaMunicipal() && programaEvaluacion.getDependenciaServicio()){
+				resumenMunicipalPais = reforzamientoService.getLastDocumentRecursosFinancierosByType(idProceso, programaEvaluacion.getIdProgramaAno(), TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENSERVICIO);
+				if(resumenMunicipalPais == null){
+					resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPaisModificado(idProceso, programaEvaluacion.getId(), TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENSERVICIO, this.ano);
+				}
+				resumenServicioPais = reforzamientoService.getLastDocumentRecursosFinancierosByType(idProceso, programaEvaluacion.getIdProgramaAno(), TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENSERVICIO);
+				if(resumenServicioPais == null){
+					resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPaisModificado(idProceso, programaEvaluacion.getId(), TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENSERVICIO, this.ano);
+				}
 				mixto=true;
 			}
 		}else{
 			//Servicio H
-			if(programa.getDependenciaServicio() && !programa.getDependenciaMunicipal()){
-				resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), this.ano, TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENHISTORICO);
+			if(programaEvaluacion.getDependenciaServicio() && !programaEvaluacion.getDependenciaMunicipal()){
+				resumenServicioPais = reforzamientoService.getLastDocumentRecursosFinancierosByType(idProceso, programaEvaluacion.getIdProgramaAno(), TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENHISTORICO);
+				if(resumenServicioPais == null){
+					resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPais(idProceso, programaEvaluacion.getId(), this.ano, TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENHISTORICO);
+				}
 			}
 			//Municipal H
-			if(programa.getDependenciaMunicipal() && !programa.getDependenciaServicio()){
-				resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), this.ano, TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENHISTORICO);
+			if(programaEvaluacion.getDependenciaMunicipal() && !programaEvaluacion.getDependenciaServicio()){
+				resumenMunicipalPais = reforzamientoService.getLastDocumentRecursosFinancierosByType(idProceso, programaEvaluacion.getIdProgramaAno(), TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENHISTORICO);
+				if(resumenMunicipalPais == null){
+					resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPais(idProceso, programaEvaluacion.getId(), this.ano, TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENHISTORICO);
+				}
 			}
 			//Mixto H
-			if(programa.getDependenciaMunicipal() && programa.getDependenciaServicio()){
-				resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), this.ano, TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENHISTORICO);
-				resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPais(programa.getId(), this.ano, TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENHISTORICO);
+			if(programaEvaluacion.getDependenciaMunicipal() && programaEvaluacion.getDependenciaServicio()){
+				resumenMunicipalPais = reforzamientoService.getLastDocumentRecursosFinancierosByType(idProceso, programaEvaluacion.getIdProgramaAno(), TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENHISTORICO);
+				if(resumenMunicipalPais == null){
+					resumenMunicipalPais = reforzamientoService.getIdPlantillaProgramasPais(idProceso, programaEvaluacion.getId(), this.ano, TipoDocumentosProcesos.PLANTILLAMUNICIPALAPSRESUMENHISTORICO);
+				}
+				resumenServicioPais = reforzamientoService.getLastDocumentRecursosFinancierosByType(idProceso, programaEvaluacion.getIdProgramaAno(), TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENHISTORICO);
+				if(resumenServicioPais == null){
+					resumenServicioPais = reforzamientoService.getIdPlantillaProgramasPais(idProceso, programaEvaluacion.getId(), this.ano, TipoDocumentosProcesos.PLANTILLASERVICIOAPSRESUMENHISTORICO);
+				}
 				mixto=true;
 			}
 		}
-		bitacoraSeguimiento = reforzamientoService.getBitacora(programaProxAno.getIdProgramaAno(), TareasSeguimiento.MODHACERSEGUIMIENTOPROGRAMASREFORZAMIENTORESOLUCION);
+		bitacoraSeguimiento = reforzamientoService.getBitacora(idProceso, programaEvaluacion.getIdProgramaAno(), TareasSeguimiento.MODHACERSEGUIMIENTOPROGRAMASREFORZAMIENTORESOLUCION);
 		
 	}
 	
@@ -189,13 +213,12 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 			String filename = file.getFileName();
 			byte[] contentAttachedFile = file.getContents();
 			Integer docNewVersion = persistFile(filename,	contentAttachedFile);
-			if(programa.getDependenciaMunicipal()){
-				reforzamientoService.moveToAlfresco(programaProxAno.getIdProgramaAno(), docNewVersion, TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS, ano,versionFinal);
+			if(programaEvaluacion.getDependenciaMunicipal()){
+				reforzamientoService.moveToAlfresco(idProceso, programaEvaluacion.getIdProgramaAno(), docNewVersion, TipoDocumentosProcesos.RESOLUCIONPROGRAMASAPS, ano,versionFinal);
 			}
-			if(programa.getDependenciaServicio() && !programa.getDependenciaMunicipal()){
-				reforzamientoService.moveToAlfresco(programaProxAno.getIdProgramaAno(), docNewVersion, TipoDocumentosProcesos.ORDINARIOPROGRAMASAPS, ano,versionFinal);
+			if(programaEvaluacion.getDependenciaServicio() && !programaEvaluacion.getDependenciaMunicipal()){
+				reforzamientoService.moveToAlfresco(idProceso, programaEvaluacion.getIdProgramaAno(), docNewVersion, TipoDocumentosProcesos.ORDINARIOPROGRAMASAPS, ano,versionFinal);
 			}
-			
 			this.resolucionId = docNewVersion;
 		}else{
 			System.out.println("uploadVersion file is null");
@@ -276,8 +299,8 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 			if((this.cco != null) && !(this.cco.trim().isEmpty())){
 				conCopiaOculta = Arrays.asList(this.cco.split("\\,")); 
 			}
-			reforzamientoService.createSeguimientoProgramaReforzamiento(programaProxAno.getIdProgramaAno(), TareasSeguimiento.MODHACERSEGUIMIENTOPROGRAMASREFORZAMIENTORESOLUCION, subject, body,
-					getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos, this.ano);
+			reforzamientoService.createSeguimientoProgramaReforzamiento(idProceso, programaEvaluacion.getIdProgramaAno(), TareasSeguimiento.MODHACERSEGUIMIENTOPROGRAMASREFORZAMIENTORESOLUCION, subject,
+					body, getSessionBean().getUsername(), para, conCopia, conCopiaOculta, documentos, this.ano);
 		}catch(Exception e){
 			e.printStackTrace();
 			target = null;
@@ -362,12 +385,12 @@ public class ProcesoModificacionDistRecFinSeguimientoController extends Abstract
 		this.programaSeleccionado = programaSeleccionado;
 	}
 
-	public ProgramaVO getPrograma() {
-		return programa;
+	public ProgramaVO getProgramaEvaluacion() {
+		return programaEvaluacion;
 	}
 
-	public void setPrograma(ProgramaVO programa) {
-		this.programa = programa;
+	public void setProgramaEvaluacion(ProgramaVO programaEvaluacion) {
+		this.programaEvaluacion = programaEvaluacion;
 	}
 
 	public UploadedFile getAdjunto() {

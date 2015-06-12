@@ -22,7 +22,6 @@ import minsal.divap.service.RecursosFinancierosProgramasReforzamientoService;
 import minsal.divap.service.UtilitariosService;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ProgramaMunicipalVO;
-import minsal.divap.vo.ProgramaServicioVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ResumenProgramaVO;
 import minsal.divap.vo.ServiciosVO;
@@ -94,7 +93,9 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 		resumenPrograma = programasService.getResumenMunicipal(programaProxAno.getIdProgramaAno(), Subtitulo.SUBTITULO24.getId());
 		totalResumen24 = 0L;
 		for (ResumenProgramaVO resumen : resumenPrograma) {
-			totalResumen24 = totalResumen24+resumen.getTotalS24();
+			if(resumen.getTotalS24() != null){
+				totalResumen24 = totalResumen24 + resumen.getTotalS24();
+			}
 		}
 	}
 
@@ -125,9 +126,11 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 	}
 
 	private Long getTotalesPxQ(List<ProgramaMunicipalVO> detalleComunas){
-		totalPxQ=0l;
+		totalPxQ = 0L;
 		for (int i=0;i<detalleComunas.size();i++) {
-			totalPxQ=totalPxQ+detalleComunas.get(i).getTotal();	
+			if(detalleComunas.get(i).getTotal() != null){
+				totalPxQ = totalPxQ+detalleComunas.get(i).getTotal();	
+			}
 		}
 		return totalPxQ;
 	}
@@ -146,8 +149,6 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 		System.out.println("createResultData usuario-->"
 				+ getSessionBean().getUsername());
 		parameters.put("recursosAPSMunicipal_", true);
-		
-		
 		return parameters;
 	}
 

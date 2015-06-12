@@ -846,5 +846,15 @@ public class RemesasDAO {
 		query.setParameter("idDocumentosRemesas", idDocumentosRemesas);
 		return query.executeUpdate();
 	}
+
+	public List<DetalleRemesas> getRemesasRechazadasByIdProcesoRemesa(Integer idProcesoOT) {
+		try {
+			TypedQuery<DetalleRemesas> query = this.em.createNamedQuery("DetalleRemesas.getRemesasRechazadasByIdProceso", DetalleRemesas.class);
+			query.setParameter("idProceso", idProcesoOT);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 }

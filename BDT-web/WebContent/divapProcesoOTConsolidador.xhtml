@@ -901,7 +901,7 @@
 							<p:tab id="tab23" title="Resumen Totales">
 								<p:panelGrid columns="3">
 									<h:outputText value="Programa: " styleClass="inputLabel" />
-									<p:selectOneMenu id="programasResumen"  value="#{procesoOTRevisarConsolidacionController.programaSeleccionadoResumen}">
+									<p:selectOneMenu id="programasResumen"  value="#{procesoOTRevisarConsolidacionController.programaSeleccionadoResumen}"  style="width:650px;">
 										<f:selectItem itemLabel="Seleccione" itemValue="" />  
 										<f:selectItems value="#{procesoOTRevisarConsolidacionController.listaProgramasResumen}" itemLabel="#{programa.nombre}" var="programa" itemValue="#{programa.idProgramaAno}"/>
 									</p:selectOneMenu>

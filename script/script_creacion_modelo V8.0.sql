@@ -26587,3 +26587,24 @@ INSERT INTO tarea_seguimiento(id_tarea_seguimiento, descripcion) VALUES (13, 'Ha
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (82, 'Plantilla Resolución Recursos Programa');
 
 
+--No incluidos en presentacion 02/06/2015
+
+ALTER TABLE programas_reforzamiento_seguimiento
+  ADD COLUMN distribucion_recursos integer;
+
+ALTER TABLE programas_reforzamiento_seguimiento
+  ADD CONSTRAINT distribucion_recursos_fk FOREIGN KEY (distribucion_recursos) REFERENCES programas_reforzamiento (id_programas_reforzamiento) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE documento_programas_reforzamiento
+  ADD COLUMN distribucion_recursos integer;
+ALTER TABLE documento_programas_reforzamiento
+  ADD CONSTRAINT distribucion_recursos_fk FOREIGN KEY (distribucion_recursos) REFERENCES programas_reforzamiento (id_programas_reforzamiento) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE detalle_remesas
+  ADD COLUMN remesa integer;
+ALTER TABLE detalle_remesas
+  ADD CONSTRAINT remesa_fk FOREIGN KEY (remesa) REFERENCES remesas (id_remesa) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+
+
+

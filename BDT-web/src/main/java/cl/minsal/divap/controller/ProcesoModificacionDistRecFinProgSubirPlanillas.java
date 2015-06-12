@@ -45,6 +45,7 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillas extends AbstractTas
 	private boolean template;
 	private Integer ano;
 	private Integer IdProgramaProxAno;
+	private Integer IdProceso;
 	@EJB
 	private ProgramasService programasService;
 	@EJB
@@ -56,16 +57,17 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillas extends AbstractTas
 			programaSeleccionado = (Integer) getTaskDataVO()
 					.getData().get("_programaSeleccionado");
 			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
+			this.IdProceso = (Integer) getTaskDataVO().getData().get("_IdProceso");
 			System.out.println("this.ano --->" + this.ano);
 			programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
 			programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 			System.out.println("programaSeleccionado --->" + programaSeleccionado);
 			template=true;
 			if(programa.getDependenciaMunicipal() != null && programa.getDependenciaMunicipal()){
-				plantillaMunicipal = recursosFinancierosProgramasReforzamientoService.getIdPlantillaModificacionProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSMUNICIPALES, template);
+				plantillaMunicipal = recursosFinancierosProgramasReforzamientoService.getIdPlantillaModificacionProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSMUNICIPALES, template, this.ano);
 			}
 			if(programa.getDependenciaServicio() != null && programa.getDependenciaServicio()){
-				plantillaServicios = recursosFinancierosProgramasReforzamientoService.getIdPlantillaModificacionProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSSERVICIO, template);
+				plantillaServicios = recursosFinancierosProgramasReforzamientoService.getIdPlantillaModificacionProgramas(programaSeleccionado, TipoDocumentosProcesos.PLANTILLAPROGRAMAAPSSERVICIO, template, this.ano);
 			}
 			IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado , ano);
 		}
@@ -94,7 +96,7 @@ public class ProcesoModificacionDistRecFinProgSubirPlanillas extends AbstractTas
 			if (docPlanillaMuncipal != null) {
 				docIds.add(docPlanillaMuncipal);
 			}
-			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(IdProgramaProxAno, docPlanillaMuncipal, TipoDocumentosProcesos.PROGRAMAAPSMUNICIPAL, null,false);
+			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(IdProceso, IdProgramaProxAno, docPlanillaMuncipal, TipoDocumentosProcesos.PROGRAMAAPSMUNICIPAL, null,false);
 		}
 /*		if (planillaServicio != null){
 			String filename = planillaServicio.getFileName();

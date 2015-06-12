@@ -96,14 +96,14 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 		}
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
+			System.out.println("this.programaSeleccionado --->" + this.programaSeleccionado);
 			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
 			System.out.println("this.ano --->" + this.ano);
 		}
 		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
 		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		listaServicios = utilitariosService.getAllServicios();
-		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
-		
+		listaComponentes = componenteService.getComponenteByPrograma(programa.getId());
 		armarResumenPrograma();
 	}
 	

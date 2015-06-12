@@ -60,13 +60,17 @@
 					<br />
 					<br />
 					<br />
-					<p:commandButton value="Finalizar Actividad | Todos los Archivos fueron cargados" ajax="false" action="#{procesoDistRecFinProgSubirPlanillasControllerMixto.enviar}" icon="ui-icon-upload" >
+					<p:commandButton onclick="BUI.show()" oncomplete="if (#{not facesContext.validationFailed and not empty facesContext.messageList}) BUI.hide()"  value="Finalizar Actividad | Todos los Archivos fueron cargados" ajax="false" action="#{procesoDistRecFinProgSubirPlanillasControllerMixto.enviar}" icon="ui-icon-upload" update="growl" >
 						 <f:setPropertyActionListener target="#{procesoDistRecFinProgSubirPlanillasControllerMixto.target}" value="bandejaTareas.jsf" />
 					</p:commandButton>
 				</p:panel>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />
 			</p:panel>
+			 <p:blockUI  widgetVar="BUI"  block="Panel">
+        		Procesando Archivos<br />
+       			<p:graphicImage name="/resources/images/ajaxloadingbar.gif"/>
+    		</p:blockUI>
 		</h:form>
 	</ui:define>
 </ui:composition>

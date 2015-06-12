@@ -8,6 +8,7 @@
 
 	<ui:define name="content">
 		<h:form enctype="multipart/form-data">
+			<p:growl id="growl" showDetail="false"/> 
 			<p:panel styleClass="contentPanel">
 				<h1>
 					<h:outputText value="Distribución de Recursos Financieros por Programa" />
@@ -41,10 +42,14 @@
 					</p:panelGrid>
 					<br />
 					<br />
-					<p:commandButton value="Finalizar Actividad | Todos los Archivos fueron cargados" ajax="false" action="#{procesoDistRecFinProgSubirPlanillasController.enviar}" icon="ui-icon-upload" >
+					<p:commandButton onclick="BUI.show()" oncomplete="if (#{not facesContext.validationFailed and not empty facesContext.messageList}) BUI.hide()" value="Finalizar Actividad | Todos los Archivos fueron cargados" ajax="false" action="#{procesoDistRecFinProgSubirPlanillasController.enviar}" icon="ui-icon-upload" update="growl" >
 						 <f:setPropertyActionListener target="#{procesoDistRecFinProgSubirPlanillasController.target}" value="bandejaTareas.jsf" />
 					</p:commandButton>
 				</p:panel>
+				 <p:blockUI  widgetVar="BUI"  block="Panel">
+        			Procesando Archivo<br />
+       				<p:graphicImage name="/resources/images/ajaxloadingbar.gif"/>
+    			</p:blockUI>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true indexMenu=0" ajax="false"
 					icon="ui-icon-seek-first" />
 			</p:panel>

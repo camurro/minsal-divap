@@ -232,6 +232,7 @@
 		<p:panel styleClass="contentPanel">
 
 			<h:form id="formSeguimiento" enctype="multipart/form-data">
+				<p:growl id="growl" showDetail="false"/>  
 				<h1>
 					<h:outputText value="Distribución de Recursos Financieros por Programa" />
 				</h1>
@@ -240,7 +241,7 @@
 						<span class="strong">Actividad: Seguimiento Documentos</span>
 					</h2>
 					<h3>
-						<span class="strong">Programa | </span> #{procesoDistRecFinSeguimientoController.programa.nombre}
+						<span class="strong">Programa | </span> #{procesoDistRecFinSeguimientoController.programaEvaluacion.nombre}
 					</h3>
 					<p class="parrafo">El
 						contiene lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -259,7 +260,7 @@
 					
 					<div class="destacaArchivos ui-corner-all">
 						<h3>Archivos Disponibles para la Tarea:</h3>
-						<c:if test="#{procesoDistRecFinSeguimientoController.programa.dependenciaMunicipal}">
+						<c:if test="#{procesoDistRecFinSeguimientoController.programaEvaluacion.dependenciaMunicipal}">
 							<span class="strong">Archivo: </span> Plantilla de Correo para Resolución[
 								<h:graphicImage value="resources/minsal/images/download-alt.png"
 									styleClass="divapIcons" />
@@ -272,7 +273,7 @@
 								]
 								<br/>
 						</c:if>
-						<c:if test="#{procesoDistRecFinSeguimientoController.programa.dependenciaServicio and not procesoDistRecFinSeguimientoController.programa.dependenciaMunicipal}">
+						<c:if test="#{procesoDistRecFinSeguimientoController.programaEvaluacion.dependenciaServicio and not procesoDistRecFinSeguimientoController.programaEvaluacion.dependenciaMunicipal}">
 							<span class="strong">Archivo: </span> Plantilla de Correo para Ordinario[
 								<h:graphicImage value="resources/minsal/images/download-alt.png"
 									styleClass="divapIcons" />
@@ -289,14 +290,14 @@
 						
 						
 						<c:if test="#{procesoDistRecFinSeguimientoController.mixto}">
-							<span class="strong">Archivo: </span> Resumen País Programa Municipal #{procesoDistRecFinSeguimientoController.programa.nombre}[
+							<span class="strong">Archivo: </span> Resumen País Programa Municipal #{procesoDistRecFinSeguimientoController.programaEvaluacion.nombre}[
 								<h:graphicImage value="resources/minsal/images/download-alt.png"
 									styleClass="divapIcons" />
 								<h:commandLink value="Bajar Última Versión"
 								 onclick="downloadDocument(#{procesoDistRecFinSeguimientoController.resumenMunicipalPais});return false;" />
 								]
 								<br/>
-							<span class="strong">Archivo: </span> Resumen País Programa Servicio #{procesoDistRecFinSeguimientoController.programa.nombre}[
+							<span class="strong">Archivo: </span> Resumen País Programa Servicio #{procesoDistRecFinSeguimientoController.programaEvaluacion.nombre}[
 								<h:graphicImage value="resources/minsal/images/download-alt.png"
 								styleClass="divapIcons" />
 								<h:commandLink value="Bajar Última Versión"
@@ -305,7 +306,7 @@
 							<br/>
 						</c:if>
 						<c:if test="#{procesoDistRecFinSeguimientoController.municipal and not procesoDistRecFinSeguimientoController.mixto}">
-							<span class="strong">Archivo: </span> Resumen País Programa Municipal #{procesoDistRecFinSeguimientoController.programa.nombre}[
+							<span class="strong">Archivo: </span> Resumen País Programa Municipal #{procesoDistRecFinSeguimientoController.programaEvaluacion.nombre}[
 								<h:graphicImage value="resources/minsal/images/download-alt.png"
 									styleClass="divapIcons" />
 								<h:commandLink value="Bajar Última Versión"
@@ -314,7 +315,7 @@
 								<br/>
 						</c:if>
 						<c:if test="#{procesoDistRecFinSeguimientoController.servicio and not procesoDistRecFinSeguimientoController.mixto}">
-							<span class="strong">Archivo: </span> Resumen País Programa #{procesoDistRecFinSeguimientoController.programa.nombre}[
+							<span class="strong">Archivo: </span> Resumen País Programa #{procesoDistRecFinSeguimientoController.programaEvaluacion.nombre}[
 								<h:graphicImage value="resources/minsal/images/download-alt.png"
 								styleClass="divapIcons" />
 								<h:commandLink value="Bajar Última Versión"
@@ -324,51 +325,41 @@
 						</c:if>
 						
 									
-						<c:if test="#{procesoDistRecFinSeguimientoController.programa.dependenciaMunicipal}">
-							<span class="strong">Archivo: </span> Plantilla Resumen Programa #{procesoDistRecFinSeguimientoController.programa.nombre}[
+						<c:if test="#{procesoDistRecFinSeguimientoController.programaEvaluacion.dependenciaMunicipal}">
+							<span class="strong">Archivo: </span> Plantilla Resumen Programa #{procesoDistRecFinSeguimientoController.programaEvaluacion.nombre}[
 							<h:graphicImage value="resources/minsal/images/download-alt.png"
 								styleClass="divapIcons" />
 							<h:commandLink value="Bajar Última Versión"
 							 onclick="downloadDocument(#{procesoDistRecFinSeguimientoController.excelResolucion});return false;" />
 							]
 							<br/>
-							<span class="strong">Archivo: </span> Resolución Programa #{procesoDistRecFinSeguimientoController.programa.nombre}[
+							<span class="strong">Archivo: </span> Resolución Programa #{procesoDistRecFinSeguimientoController.programaEvaluacion.nombre}[
 							<h:graphicImage value="resources/minsal/images/download-alt.png"
 								styleClass="divapIcons" />
-							<h:commandLink value="Bajar Última Versión"
-							 onclick="downloadDocument(#{procesoDistRecFinSeguimientoController.resolucionPrograma});return false;" />
+							<h:commandLink value="Bajar Última Versión" id="idDocResolucion" onclick="downloadDocument(#{procesoDistRecFinSeguimientoController.resolucionPrograma});return false;" />
 							|
-							<h:graphicImage value="resources/minsal/images/upload-alt.png"
-								styleClass="divapIcons" />
-							<p:commandLink value="Subir Nueva Versión" oncomplete="dlgUpload.show();" />
+							<h:graphicImage value="resources/minsal/images/upload-alt.png"	styleClass="divapIcons" />
+							<p:commandLink value="Subir Nueva Versión" oncomplete="dlgUpload.show();" actionListener="#{procesoDistRecFinSeguimientoController.resetLastVersion}" update=":uploadVersion:panelNuevaVersion" />
 							]
 						
 						</c:if>
 						
-						<c:if test="#{procesoDistRecFinSeguimientoController.programa.dependenciaServicio and not procesoDistRecFinSeguimientoController.programa.dependenciaMunicipal}">
-							<span class="strong">Archivo: </span> Plantilla Resumen Programa #{procesoDistRecFinSeguimientoController.programa.nombre}[
+						<c:if test="#{procesoDistRecFinSeguimientoController.programaEvaluacion.dependenciaServicio and not procesoDistRecFinSeguimientoController.programaEvaluacion.dependenciaMunicipal}">
+							<span class="strong">Archivo: </span> Plantilla Resumen Programa #{procesoDistRecFinSeguimientoController.programaEvaluacion.nombre}[
 							<h:graphicImage value="resources/minsal/images/download-alt.png"
 								styleClass="divapIcons" />
 							<h:commandLink value="Bajar Última Versión"
 							 onclick="downloadDocument(#{procesoDistRecFinSeguimientoController.excelOrdinario});return false;" />
 							]
 							<br/>
-							<span class="strong">Archivo: </span> Ordinario Programa #{procesoDistRecFinSeguimientoController.programa.nombre}[
-							<h:graphicImage value="resources/minsal/images/download-alt.png"
-								styleClass="divapIcons" />
-							<h:commandLink value="Bajar Última Versión"
-							 onclick="downloadDocument(#{procesoDistRecFinSeguimientoController.ordinarioPrograma});return false;" />
+							<span class="strong">Archivo: </span> Ordinario Programa #{procesoDistRecFinSeguimientoController.programaEvaluacion.nombre}[
+							<h:graphicImage value="resources/minsal/images/download-alt.png" styleClass="divapIcons" />
+							<h:commandLink value="Bajar Última Versión" id="idDocOrdinario" onclick="downloadDocument(#{procesoDistRecFinSeguimientoController.ordinarioPrograma});return false;" />
 							|
-							<h:graphicImage value="resources/minsal/images/upload-alt.png"
-								styleClass="divapIcons" />
-							<p:commandLink value="Subir Nueva Versión" oncomplete="dlgUpload.show();" />
+							<h:graphicImage value="resources/minsal/images/upload-alt.png" styleClass="divapIcons" />
+							<p:commandLink value="Subir Nueva Versión" oncomplete="dlgUpload2.show();" actionListener="#{procesoDistRecFinSeguimientoController.resetLastVersion}" update=":uploadVersion2:panelNuevaVersion2" />
 							]
 						</c:if>
-						
-						
-						
-						
-						
 						
 					<!-- HISTORIAL DE SEGUIMIENTO -->
 					<h3>Bitácora de Seguimiento:</h3>
@@ -458,7 +449,7 @@
 							class="strong">Reingresar</span>.
 					</p>
 					
-					<p:commandButton styleClass="x-btn-text" value="Finalizar Seguimiento" icon="ui-icon-refresh" action="#{procesoDistRecFinSeguimientoController.enviar}">
+					<p:commandButton styleClass="x-btn-text" value="Finalizar Seguimiento" icon="ui-icon-refresh" action="#{procesoDistRecFinSeguimientoController.enviar}" update="growl" >
 						<f:setPropertyActionListener target="#{procesoDistRecFinSeguimientoController.target}" value="bandejaTareas.jsf" />
 					</p:commandButton>
 			</div>
@@ -481,7 +472,7 @@
 			
 	   <p:dialog header="Subir archivos" widgetVar="dlgUpload" id="idDlgUpload" modal="true" height="150"  appendToBody="true">
 			<h:form id="uploadVersion" enctype="multipart/form-data">
-			<p:panelGrid columns="2" >
+			<p:panelGrid columns="2" id="panelNuevaVersion">
 				<h:outputText value="Nueva Versión: " />
 				<p:fileUpload id="newVersionFile"
 							fileUploadListener="#{procesoDistRecFinSeguimientoController.handleFile}"
@@ -489,12 +480,24 @@
 							update="uploadVersion" mode="simple"  />
 				<h:outputText value="Versión Final: "  />
 				<h:selectBooleanCheckbox id="checkVersionFinal" value="#{procesoDistRecFinSeguimientoController.versionFinal}" />
-				<p:commandButton value="Aceptar" ajax="false"
-					actionListener="#{procesoDistRecFinSeguimientoController.uploadVersion}" update=":lastSeguimiento"
-					oncomplete="if (args &amp;&amp; args.showDialog){dlgUpload.hide()}else{ alert('the bean didnt let me open the dialog')}" />
-					
-				<p:commandButton value="Cancelar"
-					onclick="dlgUpload.hide()" type="button" />
+				<p:commandButton value="Aceptar" ajax="false" actionListener="#{procesoDistRecFinSeguimientoController.uploadVersion}" update=":idDocResolucion" oncomplete="if (args &amp;&amp; args.showDialog){dlgUpload.hide()}else{ alert('the bean didnt let me open the dialog')}" />
+				<p:commandButton value="Cancelar" onclick="dlgUpload.hide()" type="button" />
+			</p:panelGrid>
+			</h:form> 	
+		</p:dialog> 
+		
+		 <p:dialog header="Subir archivos" widgetVar="dlgUpload2" id="idDlgUpload2" modal="true" height="150"  appendToBody="true">
+			<h:form id="uploadVersion2" enctype="multipart/form-data">
+			<p:panelGrid columns="2" id="panelNuevaVersion2">
+				<h:outputText value="Nueva Versión: " />
+				<p:fileUpload id="newVersionFile2"
+							fileUploadListener="#{procesoDistRecFinSeguimientoController.handleFile}"
+							value="#{procesoDistRecFinSeguimientoController.file}"
+							update="uploadVersion2" mode="simple"  />
+				<h:outputText value="Versión Final: "  />
+				<h:selectBooleanCheckbox id="checkVersionFinal2" value="#{procesoDistRecFinSeguimientoController.versionFinal}" />
+				<p:commandButton value="Aceptar" ajax="false" actionListener="#{procesoDistRecFinSeguimientoController.uploadVersion2}" update=":idDocOrdinario" oncomplete="if (args &amp;&amp; args.showDialog){dlgUpload2.hide()}else{ alert('the bean didnt let me open the dialog')}" />
+				<p:commandButton value="Cancelar" onclick="dlgUpload2.hide()" type="button" />
 			</p:panelGrid>
 			</h:form> 	
 		</p:dialog> 
@@ -508,7 +511,7 @@
 							value="#{procesoDistRecFinSeguimientoController.file}"
 							update="uploadVersion" mode="simple"  />
 				<p:commandButton value="Aceptar" ajax="false"
-					actionListener="#{procesoDistRecFinSeguimientoController.uploadVersionResolucionCorreo}" update=":lastSeguimiento"
+					actionListener="#{procesoDistRecFinSeguimientoController.uploadVersionResolucionCorreo}" 
 					oncomplete="if (args &amp;&amp; args.showDialog){dlgUploadResolucionCorreo.hide()}else{ alert('the bean didnt let me open the dialog')}" />
 					
 				<p:commandButton value="Cancelar"

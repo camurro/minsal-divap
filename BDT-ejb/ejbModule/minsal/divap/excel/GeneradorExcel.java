@@ -1033,7 +1033,7 @@ public class GeneradorExcel {
 				if(lista==15){
 					columna=49;
 				}
-				for(int detalle=0; detalle < componenteResultados.get(listaIdComponentes.get(lista)).size();detalle++){
+				for(int detalle=0; detalle < componenteResultados.get(listaIdComponentes.get(lista)).size(); detalle++){
 					row = sheet.getRow(currentRow);
 					XSSFCell cell_idservicio = row.createCell(0);
 					cell_idservicio = row.getCell(0);   
@@ -1047,7 +1047,7 @@ public class GeneradorExcel {
 					XSSFCell cell_comuna = row.createCell(3);
 					cell_comuna = row.getCell(3);
 					cell_comuna.setCellValue(componenteResultados.get(listaIdComponentes.get(lista)).get(detalle).getComuna());
-					if(componenteResultados.get(listaIdComponentes.get(lista)).get(detalle).getTarifa()!= null && componenteResultados.get(listaIdComponentes.get(lista)).get(detalle).getTarifa() > 0){
+					if(componenteResultados.get(listaIdComponentes.get(lista)).get(detalle).getTarifa() !=  null && componenteResultados.get(listaIdComponentes.get(lista)).get(detalle).getTarifa() > 0){
 						XSSFCell cell_p = row.createCell(columna);
 						cell_p = row.getCell(columna);
 						cell_p.setCellValue(componenteResultados.get(listaIdComponentes.get(lista)).get(detalle).getTarifa());

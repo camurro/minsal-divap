@@ -8,7 +8,9 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import minsal.divap.enums.Subtitulo;
@@ -38,6 +40,7 @@ public class ProcesoDistRecFinProgSubirPlanillasServicio extends AbstractTaskMBe
 	private Integer programaSeleccionado;
 	private Integer IdProgramaProxAno;
 	private Integer ano;
+	private Integer idProceso;
 
 	@EJB
 	private ProgramasService programasService;
@@ -49,7 +52,9 @@ public class ProcesoDistRecFinProgSubirPlanillasServicio extends AbstractTaskMBe
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
 			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
+			this.idProceso = (Integer) getTaskDataVO().getData().get("_idProceso");
 			System.out.println("this.ano --->" + this.ano);
+			System.out.println("this.idProceso --->" + this.idProceso);
 			System.out.println("programaSeleccionado --->" + programaSeleccionado);
 			programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, this.ano);
 			if(programa.getDependenciaMunicipal() != null && programa.getDependenciaMunicipal()){
@@ -72,21 +77,29 @@ public class ProcesoDistRecFinProgSubirPlanillasServicio extends AbstractTaskMBe
 	@Override
 	public String enviar(){
 		try{
-		docIds = new ArrayList<Integer>();
-		Subtitulo[] subtitulosServicios = {Subtitulo.SUBTITULO21, Subtitulo.SUBTITULO22, Subtitulo.SUBTITULO29};
-		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulosServicios);
-		if (planillaServicio != null){
-			String filename = planillaServicio.getFileName();
-			byte[] contentPlanillaServicio = planillaServicio.getContents();
-			recursosFinancierosProgramasReforzamientoService.procesarPlanillaServicio(IdProgramaProxAno, GeneradorExcel.fromContent(contentPlanillaServicio,
-							XSSFWorkbook.class), componentes);
-			Integer docPlanillaServicio = persistFile(filename, contentPlanillaServicio);
-			if (docPlanillaServicio != null) {
-				docIds.add(docPlanillaServicio);
+			docIds = new ArrayList<Integer>();
+			Subtitulo[] subtitulosServicios = {Subtitulo.SUBTITULO21, Subtitulo.SUBTITULO22, Subtitulo.SUBTITULO29};
+			List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulosServicios);
+			if (planillaServicio != null){
+				try{
+					String filename = planillaServicio.getFileName();
+					byte[] contentPlanillaServicio = planillaServicio.getContents();
+					recursosFinancierosProgramasReforzamientoService.procesarPlanillaServicio(IdProgramaProxAno, GeneradorExcel.fromContent(contentPlanillaServicio,
+									XSSFWorkbook.class), componentes);
+					Integer docPlanillaServicio = persistFile(filename, contentPlanillaServicio);
+					if (docPlanillaServicio != null) {
+						docIds.add(docPlanillaServicio);
+					}
+					recursosFinancierosProgramasReforzamientoService.moveToAlfresco(idProceso, IdProgramaProxAno, docPlanillaServicio, TipoDocumentosProcesos.PROGRAMAAPSSERVICIO, this.ano, false);
+				}catch (Exception e) {
+					throw new Exception(e.getMessage() + " en el archivo servicio.");
+				}	
+			}else{
+				throw new Exception("El archivo servicio no fue cargado.");
 			}
-			recursosFinancierosProgramasReforzamientoService.moveToAlfresco(IdProgramaProxAno, docPlanillaServicio, TipoDocumentosProcesos.PROGRAMAAPSSERVICIO, this.ano, false);
-		}
 		}catch (Exception e) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return null;
 		}
 		return super.enviar();

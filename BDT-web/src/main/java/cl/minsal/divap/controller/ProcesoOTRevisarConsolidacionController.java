@@ -244,7 +244,7 @@ implements Serializable {
 		if(programaSeleccionadoResumen != null && !programaSeleccionadoResumen.trim().isEmpty()){
 			programaResumen = otService.getProgramaById(Integer.parseInt(programaSeleccionadoResumen));
 			System.out.println("Buscando resumen para programa: " + programaResumen.getNombre());
-			listaComponentesResumen = componenteService.getComponenteByPrograma(Integer.parseInt(programaSeleccionadoResumen));
+			listaComponentesResumen = componenteService.getComponenteByPrograma(programaResumen.getId());
 			resumenPrograma = otService.getResumenPrograma(programaResumen);
 			subtitulo21Resumen = false;
 			subtitulo22Resumen = false;
@@ -255,7 +255,7 @@ implements Serializable {
 			totalSub29Resumen = 0L;
 			totalSub24Resumen = 0L;
 			
-			for(ComponentesVO componente:listaComponentesResumen){
+			for(ComponentesVO componente : listaComponentesResumen){
 				for(SubtituloVO subtitulo : componente.getSubtitulos()){
 					if(subtitulo.getId().equals(Subtitulo.SUBTITULO21.getId())){
 						subtitulo21Resumen = true;

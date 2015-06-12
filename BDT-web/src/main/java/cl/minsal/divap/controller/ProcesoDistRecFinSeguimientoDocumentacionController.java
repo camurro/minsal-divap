@@ -32,10 +32,9 @@ public class ProcesoDistRecFinSeguimientoDocumentacionController extends Abstrac
 	private String actividadSeguimientoTitle;
 	@Inject 
 	private transient Logger log;
-	private ProgramaVO programa;
-	private ProgramaVO programaProxAno;
+	private ProgramaVO programaEvaluacion;
 	private Integer programaSeleccionado;
-	private Integer instanciaProceso;
+	private Integer idProceso;
 	private Integer ano;
 	private List<ReporteEmailsEnviadosVO> reporteCorreos;
 	private String docIdDownload;
@@ -56,17 +55,13 @@ public class ProcesoDistRecFinSeguimientoDocumentacionController extends Abstrac
 			}
 		}
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			programaSeleccionado = (Integer) getTaskDataVO()
-					.getData().get("_programaSeleccionado");
-			instanciaProceso = (Integer) getTaskDataVO()
-					.getData().get("_idProceso");
+			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
+			idProceso = (Integer) getTaskDataVO().getData().get("_idProceso");
 			this.ano = (Integer) getTaskDataVO().getData().get("_ano");
 			System.out.println("this.ano --->" + this.ano);
 		}
-		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
-		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
-		
-		reporteCorreos = reforzamientoService.getReporteCorreosByIdInstanciaReforzamiento(instanciaProceso);
+		programaEvaluacion = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
+		reporteCorreos = reforzamientoService.getReporteCorreosByIdInstanciaReforzamiento(idProceso);
 	}
 	
 	public String downloadArchivo() {
@@ -81,7 +76,7 @@ public class ProcesoDistRecFinSeguimientoDocumentacionController extends Abstrac
 	}
 	
 	public void buscarReporteCorreos(){
-		reporteCorreos = reforzamientoService.getReporteCorreosByIdInstanciaReforzamiento(instanciaProceso);
+		reporteCorreos = reforzamientoService.getReporteCorreosByIdInstanciaReforzamiento(idProceso);
 	}
 	
 	public String getActividadSeguimientoTitle() {
@@ -129,12 +124,12 @@ public class ProcesoDistRecFinSeguimientoDocumentacionController extends Abstrac
 		return null;
 	}
 
-	public ProgramaVO getPrograma() {
-		return programa;
+	public ProgramaVO getProgramaEvaluacion() {
+		return programaEvaluacion;
 	}
 
-	public void setPrograma(ProgramaVO programa) {
-		this.programa = programa;
+	public void setProgramaEvaluacion(ProgramaVO programaEvaluacion) {
+		this.programaEvaluacion = programaEvaluacion;
 	}
 
 	public Integer getProgramaSeleccionado() {
@@ -168,22 +163,6 @@ public class ProcesoDistRecFinSeguimientoDocumentacionController extends Abstrac
 
 	public void setDocIdDownload(String docIdDownload) {
 		this.docIdDownload = docIdDownload;
-	}
-
-	public Integer getInstanciaProceso() {
-		return instanciaProceso;
-	}
-
-	public void setInstanciaProceso(Integer instanciaProceso) {
-		this.instanciaProceso = instanciaProceso;
-	}
-
-	public ProgramaVO getProgramaProxAno() {
-		return programaProxAno;
-	}
-
-	public void setProgramaProxAno(ProgramaVO programaProxAno) {
-		this.programaProxAno = programaProxAno;
 	}
 
 	public Integer getAno() {

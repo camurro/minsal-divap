@@ -35,6 +35,9 @@ public class ProgramasReforzamientoSeguimiento implements Serializable {
     @JoinColumn(name = "id_programa_ano", referencedColumnName = "id_programa_ano")
     @ManyToOne
     private ProgramaAno idProgramaAno;
+    @JoinColumn(name = "distribucion_recursos", referencedColumnName = "id_programas_reforzamiento")
+    @ManyToOne
+    private ProgramasReforzamiento distribucionRecursos;
 
     public ProgramasReforzamientoSeguimiento() {
     }
@@ -67,7 +70,15 @@ public class ProgramasReforzamientoSeguimiento implements Serializable {
         this.idProgramaAno = idProgramaAno;
     }
 
-    @Override
+    public ProgramasReforzamiento getDistribucionRecursos() {
+		return distribucionRecursos;
+	}
+
+	public void setDistribucionRecursos(ProgramasReforzamiento distribucionRecursos) {
+		this.distribucionRecursos = distribucionRecursos;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);

@@ -418,9 +418,8 @@ public class ProgramasService {
 		return salida;
 	}
 
-	public int getIdProgramaAnoAnterior(Integer programaSeleccionado,
-			int anoAnterior) {
-		Integer id = programasDAO.getIdProgramaAnoAnterior(programaSeleccionado,anoAnterior);
+	public int getIdProgramaAnoAnterior(Integer programaSeleccionado, int anoAnterior) {
+		Integer id = programasDAO.getIdProgramaAnoAnterior(programaSeleccionado ,anoAnterior);
 		System.out.println(id);
 		if(id == null){
 			Programa actual = getProgramaPorID(programaSeleccionado);
@@ -593,7 +592,7 @@ public class ProgramasService {
 			programaAnoSiguiente = new ProgramaAno();
 			AnoEnCurso anoSiguienteDTO = programasDAO.getAnoEnCursoById(ano);
 			if(anoSiguienteDTO == null) {
-				AnoEnCurso anoActualDTO = programasDAO.getAnoEnCursoById(getAnoCurso());
+				AnoEnCurso anoActualDTO = programasDAO.getAnoEnCursoById((ano -1));
 				anoSiguienteDTO = new AnoEnCurso();
 				anoSiguienteDTO.setAno(ano);
 				anoSiguienteDTO.setMontoPercapitalBasal(anoActualDTO.getMontoPercapitalBasal());
@@ -1023,4 +1022,5 @@ public class ProgramasService {
 	public ProgramaVO getProgramaByIdProgramaAndAno(Integer idPrograma, Integer ano) {
 		return new ProgramaMapper().getBasic(this.programasDAO.getProgramaAnoByIdProgramaAndAno(idPrograma, ano));
 	}
+	 
 }

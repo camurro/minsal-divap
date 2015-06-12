@@ -386,14 +386,14 @@ public class DistribucionInicialPercapitaService {
 				}
 			}else{
 				System.out.println("calculoPercapitaVO.getServicio()="+calculoPercapitaVO.getServicio()+" calculoPercapitaVO.getComuna()="+calculoPercapitaVO.getComuna()+" (ano-1)="+(ano-1));
-				AntecendentesComuna antecendentesComunaInicial = antecedentesComunaDAO.findAntecendentesComunaByComunaServicioAno(calculoPercapitaVO.getServicio(), calculoPercapitaVO.getComuna(), (ano-1));
+				AntecendentesComuna antecendentesComunaBase = antecedentesComunaDAO.findAntecendentesComunaByComunaServicioAno(calculoPercapitaVO.getServicio(), calculoPercapitaVO.getComuna(), (ano-1));
 				antecendentesComunaEvaluacion = new AntecendentesComuna();
-				AnoEnCurso anoAnoEvaluacion = anoDAO.getAnoById((ano));
+				AnoEnCurso anoAnoEvaluacion = anoDAO.getAnoById(ano);
 				antecendentesComunaEvaluacion.setAnoAnoEnCurso(anoAnoEvaluacion);
-				antecendentesComunaEvaluacion.setAsignacionZona(antecendentesComunaInicial.getAsignacionZona());
-				antecendentesComunaEvaluacion.setClasificacion(antecendentesComunaInicial.getClasificacion());
-				antecendentesComunaEvaluacion.setIdComuna(antecendentesComunaInicial.getIdComuna());
-				antecendentesComunaEvaluacion.setTramoPobreza(antecendentesComunaInicial.getTramoPobreza());
+				antecendentesComunaEvaluacion.setAsignacionZona(antecendentesComunaBase.getAsignacionZona());
+				antecendentesComunaEvaluacion.setClasificacion(antecendentesComunaBase.getClasificacion());
+				antecendentesComunaEvaluacion.setIdComuna(antecendentesComunaBase.getIdComuna());
+				antecendentesComunaEvaluacion.setTramoPobreza(antecendentesComunaBase.getTramoPobreza());
 				antecedentesComunaDAO.save(antecendentesComunaEvaluacion);
 				AntecendentesComunaCalculado antecendentesComunaCalculadoEvaluacion = new AntecendentesComunaCalculado();
 				antecendentesComunaCalculadoEvaluacion.setAntecedentesComuna(antecendentesComunaEvaluacion);
@@ -474,11 +474,12 @@ public class DistribucionInicialPercapitaService {
 	public Integer valorizarDisponibilizarPlanillaTrabajo(Integer idDistribucionInicialPercapita, Integer ano) {
 		System.out.println("valorizarDisponibilizarPlanillaTrabajo-->"+idDistribucionInicialPercapita);
 		List<AntecendentesComunaCalculado>  antecendentesComunaCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaVigente(idDistribucionInicialPercapita);
+		AnoEnCurso anoEnCurso = anoDAO.getAnoById(ano);
 		if(antecendentesComunaCalculado != null && antecendentesComunaCalculado.size() > 0){
 			for(AntecendentesComunaCalculado antecendenteComunaCalculado: antecendentesComunaCalculado){
 				if(antecendenteComunaCalculado.getAntecedentesComuna() != null){
-					Integer percapitaBasal = antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso().getMontoPercapitalBasal();
-					Integer asignacionAdultoMayor = antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso().getAsignacionAdultoMayor();
+					Integer percapitaBasal = anoEnCurso.getMontoPercapitalBasal();
+					Integer asignacionAdultoMayor = anoEnCurso.getAsignacionAdultoMayor();
 					System.out.println("percapitaBasal=" + percapitaBasal + " antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza().getValor()=" + ((antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza() == null) ? 0 : antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza().getValor()));
 					Double pobreza = percapitaBasal * ((antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza() == null) ? 0 : antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza().getValor());
 					System.out.println("pobreza-->"+pobreza);
@@ -533,12 +534,12 @@ public class DistribucionInicialPercapitaService {
 							antecendenteComunaCalculado.setRuralidad(ruralidad);
 							Double valorReferencialZona = (percapitaBasal + pobreza + ruralidad) * ((antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona() == null) ? 0 : antecendenteComunaCalculado.getAntecedentesComuna().getAsignacionZona().getValor());
 							antecendenteComunaCalculado.setValorReferencialZona(valorReferencialZona);
-							Double valorPerCapitaComunalMes = (percapitaBasal + pobreza + 0.0 + valorReferencialZona);
+							Double valorPerCapitaComunalMes = (percapitaBasal + pobreza + ruralidad + valorReferencialZona);
 							antecendenteComunaCalculado.setValorPerCapitaComunalMes(valorPerCapitaComunalMes);
-							Double perCapitaCostoFijo = antecedentesComunaDAO.findPerCapitaCostoFijoByServicioComunaAnoAnterior(antecendenteComunaCalculado.getAntecedentesComuna().getIdComuna().getId(), antecendenteComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId(), ano);
+							Double perCapitaCostoFijo = antecedentesComunaDAO.findPerCapitaCostoFijoByServicioComunaAnoAnterior(antecendenteComunaCalculado.getAntecedentesComuna().getIdComuna().getId(), antecendenteComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId(), (ano-1));
 							System.out.println("perCapitaCostoFijo="+perCapitaCostoFijo);
 							perCapitaCostoFijo = ((perCapitaCostoFijo == null) ? 0.0 : perCapitaCostoFijo);
-							Double calculoFinal = (perCapitaCostoFijo * antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso().getInflactor());
+							Double calculoFinal = (perCapitaCostoFijo * anoEnCurso.getInflactor());
 							Long perCapitaMes = Math.round(calculoFinal);
 							System.out.println("perCapitaMes="+perCapitaMes);
 							antecendenteComunaCalculado.setPercapitaMes(perCapitaMes);
@@ -787,9 +788,7 @@ public class DistribucionInicialPercapitaService {
 		return distribucionInicialPercapitaDAO.createSeguimiento(idDistribucionInicialPercapita, seguimiento);
 	}
 
-	public List<SeguimientoVO> getBitacora(
-			Integer idDistribucionInicialPercapita,
-			TareasSeguimiento tareaSeguimiento) {
+	public List<SeguimientoVO> getBitacora(Integer idDistribucionInicialPercapita, TareasSeguimiento tareaSeguimiento) {
 		return seguimientoService.getBitacora(idDistribucionInicialPercapita, tareaSeguimiento);
 	}
 
@@ -1109,7 +1108,7 @@ public class DistribucionInicialPercapitaService {
 						if(emailPLantilla != null && emailPLantilla.getAsunto() != null && emailPLantilla.getCuerpo() != null){
 							emailService.sendMail(to, cc, cco, emailPLantilla.getAsunto(), emailPLantilla.getCuerpo().replaceAll("(\r\n|\n)", "<br />"), adjuntos);
 						}else{
-							emailService.sendMail(to, cc, cco , "Resolucion", "Estimados: <br /> <p> se adjuntan los documentos Resolucion</p>", adjuntos);
+							emailService.sendMail(to, cc, cco , "Resolución", "Estimados: <br /> <p> se adjuntan los documentos Resoluciones</p>", adjuntos);
 						}
 					}
 				}

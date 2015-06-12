@@ -101,8 +101,10 @@
 							<p:menuitem onclick="cambiarEstado();" value="Estimación de Flujos de Caja" url="divapProcesoProgInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
 							<p:menuitem onclick="cambiarEstado();" value="Consolidador de Flujos de Caja" url="divapProcesoProgInicioConsolidado.jsf" icon="ui-icon-arrowrefresh-1-s" />
 						</p:submenu>
-						<p:menuitem onclick="cambiarEstado();" value="Ordenes de Transferencia" url="divapProcesoOTInicio.jsf" icon="ui-icon-arrowrefresh-1-s"  />
-						<p:menuitem onclick="cambiarEstado();" value="Consolidador de Ordenes de Transferencia" url="divapProcesoOTConsolidador.jsf" icon="ui-icon-arrowrefresh-1-s" />
+						<p:submenu label="Tramitación de Ordenes de Transferencia">
+							<p:menuitem onclick="cambiarEstado();" value="Ordenes de Transferencia" url="divapProcesoOTInicio.jsf" icon="ui-icon-arrowrefresh-1-s"  />
+							<p:menuitem onclick="cambiarEstado();" value="Consolidador de Ordenes de Transferencia" url="divapProcesoOTConsolidador.jsf" icon="ui-icon-arrowrefresh-1-s" />
+						</p:submenu>
 					</p:submenu>
 					<p:submenu label="Reportes" icon="ui-icon-document">
 						<p:submenu label="Informes Comuna - Servicio">

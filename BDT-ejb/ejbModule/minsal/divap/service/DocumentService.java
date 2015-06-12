@@ -69,6 +69,7 @@ import cl.minsal.divap.model.OrdenTransferencia;
 import cl.minsal.divap.model.Plantilla;
 import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ProgramasReforzamiento;
 import cl.minsal.divap.model.Rebaja;
 import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.Reliquidacion;
@@ -593,22 +594,22 @@ public class DocumentService {
 		return referenciaDocumentoId;
 	}
 
-	public Integer createDocumentProgramasReforzamiento(TipoDocumentosProcesos tipoDocumentoProceso,
-			String nodeRef, String filename, String contenType, Integer idProgramaAno) {
-
+	public Integer createDocumentProgramasReforzamiento(ProgramasReforzamiento distribucionRecursos, TipoDocumentosProcesos tipoDocumentoProceso,
+			String nodeRef, String filename, String contenType, Integer idProgramaAno, Boolean lastVersion) {
 
 		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contenType);
 		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
-
+		if(lastVersion != null){
+			referenciaDocumento.setDocumentoFinal(lastVersion);
+		}
 		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
-
 		DocumentoProgramasReforzamiento documentoProgramasReforzamiento = new DocumentoProgramasReforzamiento();
 		documentoProgramasReforzamiento.setIdProgramaAno(programaAno);
 		documentoProgramasReforzamiento.setIdTipoDocumento(new TipoDocumento(tipoDocumentoProceso.getId()));
 		documentoProgramasReforzamiento.setIdDocumento(referenciaDocumento);
-
+		documentoProgramasReforzamiento.setDistribucionRecursos(distribucionRecursos);
 		programasReforzamientoDAO.save(documentoProgramasReforzamiento);
-		System.out.println("luego de aplicar insert del documento percapita");
+		System.out.println("luego de aplicar insert del documento Programas Reforzamiento");
 		return referenciaDocumentoId;
 	}
 
@@ -735,8 +736,7 @@ public class DocumentService {
 		return referenciaDocumento.getId();
 	}
 
-	public Integer getPlantillaByTypeAndProgram(TipoDocumentosProcesos tipoDocumentoProceso,
-			Integer programaSeleccionado) {
+	public Integer getPlantillaByTypeAndProgram(TipoDocumentosProcesos tipoDocumentoProceso, Integer programaSeleccionado) {
 		return fileDAO.getPlantillaByTypeAndProgram(tipoDocumentoProceso, programaSeleccionado);
 	}
 
@@ -869,17 +869,21 @@ public class DocumentService {
 	}
 
 
-	public Integer createDocumentProgramasReforzamiento(TipoDocumentosProcesos tipoDocumentoProceso, String nodeRef,
-			String filename, String contentType, Integer idProxAno,
-			Integer idServicio) {
+	public Integer createDocumentProgramasReforzamiento(ProgramasReforzamiento programasReforzamiento, TipoDocumentosProcesos tipoDocumentoProceso, String nodeRef,
+			String filename, String contentType, Integer idProgramaAno, Integer idServicio, Boolean lastVersion) {
 		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, filename, contentType);
 		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
-		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProxAno);
+		if(lastVersion != null){
+			referenciaDocumento.setDocumentoFinal(lastVersion);
+		}
+		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
 		DocumentoProgramasReforzamiento documentoProgramasReforzamiento = new DocumentoProgramasReforzamiento();
 		documentoProgramasReforzamiento.setIdProgramaAno(programaAno);
 		documentoProgramasReforzamiento.setIdTipoDocumento(new TipoDocumento(tipoDocumentoProceso.getId()));
 		documentoProgramasReforzamiento.setIdDocumento(referenciaDocumento);
-		documentoProgramasReforzamiento.setIdServicio(servicioSaludDAO.getById(idServicio));
+		ServicioSalud servicioSalud = ((idServicio == null) ? null : servicioSaludDAO.getById(idServicio));
+		documentoProgramasReforzamiento.setIdServicio(servicioSalud);
+		documentoProgramasReforzamiento.setDistribucionRecursos(programasReforzamiento);
 		programasReforzamientoDAO.save(documentoProgramasReforzamiento);
 		return referenciaDocumentoId;
 	}
@@ -1516,6 +1520,23 @@ public class DocumentService {
 	public List<ReferenciaDocumentoSummaryVO> getVersionFinalOTByType(Integer idProcesoOT, TipoDocumentosProcesos tipoDocumento) {
 		List<ReferenciaDocumentoSummaryVO> versionesFinales = new ArrayList<ReferenciaDocumentoSummaryVO>();
 		List<ReferenciaDocumento> referenciaDocumentos =  fileDAO.getVersionFinalOTByType(idProcesoOT, tipoDocumento);
+		if(referenciaDocumentos != null && referenciaDocumentos.size() > 0){
+			for(ReferenciaDocumento referenciaDocumento : referenciaDocumentos){
+				ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = new ReferenciaDocumentoMapper().getSummary(referenciaDocumento);
+				versionesFinales.add(referenciaDocumentoSummaryVO);
+			}
+		}
+		return versionesFinales;
+	}
+
+	public Integer getLastDocumentRecursosFinancierosByType(Integer idProceso, Integer idProgramaAno, TipoDocumentosProcesos tipoDocumento) {
+		ReferenciaDocumento referenciaDocumento = fileDAO.getLastDocumentRecursosFinancierosByType(idProceso, idProgramaAno, tipoDocumento);
+		return ((referenciaDocumento == null) ? null : referenciaDocumento.getId());
+	}
+
+	public List<ReferenciaDocumentoSummaryVO> getVersionFinalRecursosFinancierosByType(Integer idProceso, Integer idProgramaAno, TipoDocumentosProcesos tipoDocumento) {
+		List<ReferenciaDocumentoSummaryVO> versionesFinales = new ArrayList<ReferenciaDocumentoSummaryVO>();
+		List<ReferenciaDocumento> referenciaDocumentos =  fileDAO.getVersionFinalRecursosFinancierosByType(idProceso, idProgramaAno, tipoDocumento);
 		if(referenciaDocumentos != null && referenciaDocumentos.size() > 0){
 			for(ReferenciaDocumento referenciaDocumento : referenciaDocumentos){
 				ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO = new ReferenciaDocumentoMapper().getSummary(referenciaDocumento);
