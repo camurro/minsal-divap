@@ -13,20 +13,29 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
+import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.RemesaDAO;
 import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.service.ComunaService;
+import minsal.divap.service.MantenedoresService;
+import minsal.divap.service.ReportesServices;
 import minsal.divap.service.ServicioSaludService;
 import minsal.divap.vo.ComunaSummaryVO;
 import minsal.divap.vo.ComunaVO;
+import minsal.divap.vo.FactorRefAsigZonaVO;
+import minsal.divap.vo.FactorTramoPobrezaVO;
+import minsal.divap.vo.MantenedorComunaFinalVO;
 import minsal.divap.vo.MantenedorComunaVO;
 import minsal.divap.vo.ServiciosVO;
+import minsal.divap.vo.TipoComunaVO;
 import cl.minsal.divap.mantenedores.enums.PersistAction;
 import cl.minsal.divap.mantenedores.bean.util.JsfUtil;
 import cl.minsal.divap.mantenedores.facade.ComunaFacade;
+import cl.minsal.divap.model.AntecendentesComuna;
 import cl.minsal.divap.model.Comuna;
 import cl.minsal.divap.model.Remesa;
 import cl.minsal.divap.model.ServicioSalud;
@@ -38,11 +47,18 @@ public class ComunaController extends AbstractController<Comuna> {
 	@EJB
 	private ComunaFacade ejbFacade;
 	//private ServicioSaludController servicioSaludController;
-	private MantenedorComunaVO comunaSeleccionada;
+	private MantenedorComunaFinalVO comunaSeleccionada;
 	private Integer idServicioSeleccionado = 0;
 	private List<ServiciosVO> servicios;
-	private List<MantenedorComunaVO> comunas;
+	
+	private List<MantenedorComunaFinalVO> listadoComunas;
 	private List<Remesa> remesas;
+	private List<FactorRefAsigZonaVO> listRefAsigZonaVO;
+	private List<FactorTramoPobrezaVO> listTramoPobrezaVO;
+	private List<TipoComunaVO> tipoComunas;
+	private Integer anoEnCurso;
+	private Integer anoFinal;
+	private Boolean nuevaComunaEsAuxiliar;
 
 	@EJB
 	private ComunaService comunaService;
@@ -52,6 +68,14 @@ public class ComunaController extends AbstractController<Comuna> {
 	private ServicioSaludService servicioSaludService;
 	@EJB
 	private RemesaDAO remesaDAO;
+	@EJB
+	private MantenedoresService mantenedoresService;
+	@EJB
+	private ReportesServices reportesServices;
+	@EJB
+	private AntecedentesComunaDAO antecedentesComunaDAO;
+	
+	private Boolean comunasAnoSiguiente;
 
 	/**
 	 * Initialize the concrete Comuna controller bean. The AbstractController
@@ -65,8 +89,11 @@ public class ComunaController extends AbstractController<Comuna> {
 	@Override
 	public void init() {
 		super.setFacade(ejbFacade);
+		comunaSeleccionada = new MantenedorComunaFinalVO();
+		nuevaComunaEsAuxiliar = false;
 		FacesContext context = FacesContext.getCurrentInstance();
-		//servicioSaludController = (ServicioSaludController) context.getApplication().evaluateExpressionGet(context, "#{servicioSaludController}", ServicioSaludController.class);
+		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		comunasAnoSiguiente = Boolean.parseBoolean(request.getParameter("anoSiguiente"));
 	}
 
 	public ComunaController() {
@@ -79,6 +106,12 @@ public class ComunaController extends AbstractController<Comuna> {
 	 */
 	public void resetParents() {
 		//servicioSaludController.setSelected(null);
+	}
+	
+	public void listenerAuxiliar(){
+		if(comunaSeleccionada != null){
+			comunaSeleccionada.setComunaAuxiliar(nuevaComunaEsAuxiliar);
+		}
 	}
 
 	/**
@@ -106,15 +139,24 @@ public class ComunaController extends AbstractController<Comuna> {
 		if (this.comunaSeleccionada != null) {
 			this.setEmbeddableKeys();
 			try {
+				this.comunaSeleccionada.setComunaAuxiliar(nuevaComunaEsAuxiliar);
 				if (persistAction == PersistAction.UPDATE) {
-					this.ejbFacade.edit(this.comunaSeleccionada);
+					this.ejbFacade.edit(this.comunaSeleccionada, anoFinal);
+					JsfUtil.addSuccessMessage(successMessage);
 				}else if(persistAction == PersistAction.CREATE){
-					this.ejbFacade.create(this.comunaSeleccionada);
+					this.ejbFacade.create(this.comunaSeleccionada, anoFinal);
+					JsfUtil.addSuccessMessage(successMessage);
 				}else if(persistAction == PersistAction.DELETE){
 					System.out.println("borrando con nuestro delete");
-					this.ejbFacade.remove(this.comunaSeleccionada);
+					
+					if(!this.comunaSeleccionada.getPuedeEliminarse()){
+						JsfUtil.addErrorMessage("La comuna no puede ser eliminada ya que está siendo utilizada en los procesos de Per Cápita / Distribución de Recursos Financieros para Programas de Reforzamiento de APS");
+					}else{
+						this.ejbFacade.remove(this.comunaSeleccionada);
+						JsfUtil.addSuccessMessage(successMessage);
+					}
 				}
-				JsfUtil.addSuccessMessage(successMessage);
+				
 			} catch (EJBException ex) {
 				Throwable cause = JsfUtil.getRootCause(ex.getCause());
 				if (cause != null) {
@@ -152,7 +194,7 @@ public class ComunaController extends AbstractController<Comuna> {
 	 */
 	public String navigateAntecendentesComunas() {
 		if (this.getSelected() != null) {
-			FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("AntecendentesComuna_items", this.getSelected().getAntecendentesComunas());
+			FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("AntecendentesComuna_items", this.getSelected().getAntecendentesComunasComuna());
 		}
 		return "/mantenedor/antecendentesComuna/index";
 	}
@@ -185,7 +227,7 @@ public class ComunaController extends AbstractController<Comuna> {
 	}
 
 	public void createComuna(){
-		this.comunaSeleccionada = new MantenedorComunaVO();
+		this.comunaSeleccionada = new MantenedorComunaFinalVO();
 	}
 
 	/**
@@ -244,14 +286,14 @@ public class ComunaController extends AbstractController<Comuna> {
 	public void saveNew(ActionEvent event) {
 		System.out.println("entra al saveNew");
 		super.saveNew(event);
-		comunas = null;
+		listadoComunas = null;
 		servicios = null;
 	}
 
 	public void edit(ActionEvent event){
 		System.out.println("entra al edit");
 		super.edit(event);
-		comunas = null;
+		listadoComunas = null;
 		servicios = null;
 	}
 	
@@ -259,47 +301,32 @@ public class ComunaController extends AbstractController<Comuna> {
 		System.out.println("entra al delete");
 		super.delete(event);
 		comunaSeleccionada = null;
-		comunas = null;
+		listadoComunas = null;
 		servicios = null;
 	}
 
 
 	public void prepareCreateComuna(ActionEvent event) {
 		System.out.println("prepareCreateComuna");
-		comunaSeleccionada = new MantenedorComunaVO();
+		nuevaComunaEsAuxiliar = false;
+		comunaSeleccionada = new MantenedorComunaFinalVO();
 		super.prepareCreate(event);
 	}
+	
+	public void prepareEditComuna(ActionEvent event){
+		if(comunaSeleccionada != null){
+			nuevaComunaEsAuxiliar = comunaSeleccionada.getComunaAuxiliar();
+		}
+	}
+	
 
-	public MantenedorComunaVO getComunaSeleccionada() {
+	public MantenedorComunaFinalVO getComunaSeleccionada() {
 		return comunaSeleccionada;
 	}
 
-	public void setComunaSeleccionada(MantenedorComunaVO comunaSeleccionada) {
+	public void setComunaSeleccionada(MantenedorComunaFinalVO comunaSeleccionada) {
 		System.out.println("comunaSeleccionada ----> "+comunaSeleccionada);
 		this.comunaSeleccionada = comunaSeleccionada;
-	}
-
-	public List<MantenedorComunaVO> getComunas() {
-		if(comunas == null){
-			comunas = new ArrayList<MantenedorComunaVO>();
-			for(ServiciosVO servicio : getServicios()){
-//				System.out.println("servicio --> "+servicio.getNombre_servicio());
-				for(ComunaSummaryVO comuna : servicio.getComunas()){
-					MantenedorComunaVO mantenedorComuna = new MantenedorComunaVO();
-					mantenedorComuna.setIdComuna(comuna.getId());
-//					System.out.println("comuna --> "+comuna.getNombre());
-					mantenedorComuna.setNombreComuna(comuna.getNombre());
-					mantenedorComuna.setIdServicio(servicio.getId_servicio());
-					mantenedorComuna.setNombreServicio(servicio.getNombre_servicio());
-					comunas.add(mantenedorComuna);
-				}
-			}
-		}
-		return comunas;
-	}
-
-	public void setComunas(List<MantenedorComunaVO> comunas) {
-		this.comunas = comunas;
 	}
 
 	public List<ServiciosVO> getServicios() {
@@ -329,6 +356,92 @@ public class ComunaController extends AbstractController<Comuna> {
 		this.idServicioSeleccionado = idServicioSeleccionado;
 	}
 
+	public List<MantenedorComunaFinalVO> getListadoComunas() {
+		if(listadoComunas == null){
+			if(comunasAnoSiguiente){
+				anoFinal = getAnoEnCurso() + 1;
+				listadoComunas = mantenedoresService.getAntedentesComunaMantenedor(getAnoEnCurso() + 1);
+				if(listadoComunas == null || listadoComunas.size() == 0){
+					//cargar antecedentesComuna año actual en año siguiente
+					mantenedoresService.copyAntedentesComunaAnoActualToAnoSiguiente(getAnoEnCurso() + 1);
+					listadoComunas = mantenedoresService.getAntedentesComunaMantenedor(getAnoEnCurso() + 1);
+				}
+			}else{
+				anoFinal = getAnoEnCurso();
+				listadoComunas = mantenedoresService.getAntedentesComunaMantenedor(getAnoEnCurso());
+			}
+		}
+		return listadoComunas;
+	}
+
+	public void setListadoComunas(List<MantenedorComunaFinalVO> listadoComunas) {
+		this.listadoComunas = listadoComunas;
+	}
+	public Integer getAnoEnCurso() {
+		if(anoEnCurso == null){
+			anoEnCurso = reportesServices.getAnoCurso();
+		}
+		return anoEnCurso;
+	}
+
+	public List<FactorRefAsigZonaVO> getListRefAsigZonaVO() {
+		if(listRefAsigZonaVO == null){
+			listRefAsigZonaVO = mantenedoresService.getAllFactorRefAsigZonaVO();
+		}
+		return listRefAsigZonaVO;
+	}
+
+	public void setListRefAsigZonaVO(List<FactorRefAsigZonaVO> listRefAsigZonaVO) {
+		this.listRefAsigZonaVO = listRefAsigZonaVO;
+	}
+	
+	public List<FactorTramoPobrezaVO> getListTramoPobrezaVO() {
+		if(listTramoPobrezaVO == null){
+			listTramoPobrezaVO = mantenedoresService.getAllFactorTramoPobreza();
+		}
+		return listTramoPobrezaVO;
+	}
+
+	public void setListTramoPobrezaVO(List<FactorTramoPobrezaVO> listTramoPobrezaVO) {
+		this.listTramoPobrezaVO = listTramoPobrezaVO;
+	}
+
+	public List<TipoComunaVO> getTipoComunas() {
+		if(tipoComunas == null){
+			tipoComunas = mantenedoresService.getAllTipoComunas();
+		}
+		return tipoComunas;
+	}
+
+	public void setTipoComunas(List<TipoComunaVO> tipoComunas) {
+		this.tipoComunas = tipoComunas;
+	}
+
+	public Boolean getComunasAnoSiguiente() {
+		return comunasAnoSiguiente;
+	}
+
+	public void setComunasAnoSiguiente(Boolean comunasAnoSiguiente) {
+		this.comunasAnoSiguiente = comunasAnoSiguiente;
+	}
+
+	public Integer getAnoFinal() {
+		return anoFinal;
+	}
+
+	public void setAnoFinal(Integer anoFinal) {
+		this.anoFinal = anoFinal;
+	}
+
+	public Boolean getNuevaComunaEsAuxiliar() {
+		return nuevaComunaEsAuxiliar;
+	}
+
+	public void setNuevaComunaEsAuxiliar(Boolean nuevaComunaEsAuxiliar) {
+		this.nuevaComunaEsAuxiliar = nuevaComunaEsAuxiliar;
+	}
+
+	
 
 
 }

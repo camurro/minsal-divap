@@ -193,7 +193,16 @@ public class ComponenteDAO {
 		}catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
+	}
+	
+	public List<Componente> getComponenteByTipoComponente(Integer idTipoComponente){
+		try {
+			TypedQuery<Componente> query = this.em.createNamedQuery("Componente.findByIdTipoComponente", Componente.class);
+			query.setParameter("idTipoComponente", idTipoComponente);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 }

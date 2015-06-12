@@ -46,7 +46,7 @@ public class AnoEnCursoFacade extends AbstractFacade<AnoEnCurso> {
     		anoEnCurso.setMontoPercapitalBasal(seleccionado.getMontoPercapitalBasal());
     		anoEnCurso.setAsignacionAdultoMayor(seleccionado.getAsignacionAdultoMayor());
     		anoEnCurso.setInflactor(seleccionado.getInflactor());
-    		anoEnCurso.setInflactorMarcoPresupuestario(seleccionado.getInflactorMarcoPresupuestario());
+    		anoEnCurso.setInflactorMarcoPresupuestario(1.0);
     		getEntityManager().merge(anoEnCurso);
     	}
     }
@@ -57,7 +57,7 @@ public class AnoEnCursoFacade extends AbstractFacade<AnoEnCurso> {
     	anoEnCurso.setMontoPercapitalBasal(nuevo.getMontoPercapitalBasal());
 		anoEnCurso.setAsignacionAdultoMayor(nuevo.getAsignacionAdultoMayor());
 		anoEnCurso.setInflactor(nuevo.getInflactor());
-		anoEnCurso.setInflactorMarcoPresupuestario(nuevo.getInflactorMarcoPresupuestario());
+		anoEnCurso.setInflactorMarcoPresupuestario(1.0);
 		getEntityManager().persist(anoEnCurso);
     }
     

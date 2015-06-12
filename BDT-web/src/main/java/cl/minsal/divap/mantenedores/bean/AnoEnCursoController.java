@@ -77,13 +77,21 @@ public class AnoEnCursoController extends AbstractController<AnoEnCurso> {
 			try {
 				if (persistAction == PersistAction.UPDATE) {
 					this.ejbFacade.edit(this.seleccionado);
+					JsfUtil.addSuccessMessage("Los parámetros han sido editado correctamente");
 				}else if(persistAction == PersistAction.CREATE){
 					this.ejbFacade.create(this.seleccionado);
+					JsfUtil.addSuccessMessage("Los parámetros han sido creado correctamente");
 				}else if(persistAction == PersistAction.DELETE){
-					System.out.println("borrando con nuestro delete");
-					this.ejbFacade.remove(this.seleccionado);
+					if(this.seleccionado.getPuedeEliminarse()){
+						System.out.println("borrando con nuestro delete");
+						this.ejbFacade.remove(this.seleccionado);
+						JsfUtil.addSuccessMessage("Los parámetros han sido eliminado correctamente");
+					}else{
+						JsfUtil.addErrorMessage("Los parámetros no pueden ser eliminados ya que se encuentran en uso");
+					}
+					
 				}
-				JsfUtil.addSuccessMessage(successMessage);
+				
 			} catch (EJBException ex) {
 				Throwable cause = JsfUtil.getRootCause(ex.getCause());
 				if (cause != null) {

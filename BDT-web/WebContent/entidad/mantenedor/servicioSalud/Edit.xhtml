@@ -30,37 +30,115 @@
                                            itemLabel="#{regionItem.nombreRegion}"
                                            />
                         </p:selectOneMenu>
-
-                        <p:outputLabel value="#{messages.EditServicioSaludLabel_director}" for="director" />
-                        <p:selectOneMenu id="director" value="#{servicioSaludController.seleccionado.director.idPersona}" required="true" requiredMessage="#{messages.EditServicioSaludRequiredMessage_director}">
-                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
-                            <f:selectItems value="#{servicioSaludController.personas}"
-                                           var="directorItem"
-                                           itemValue="#{directorItem.idPersona}"
-                                           itemLabel="#{directorItem.nombre} #{directorItem.apellidoPaterno}"
-                                           />
-                        </p:selectOneMenu>
-
-                        <p:outputLabel value="#{messages.EditServicioSaludLabel_encargadoFinanzasAps}" for="encargadoFinanzasAps" />
-                        <p:selectOneMenu id="encargadoFinanzasAps" value="#{servicioSaludController.seleccionado.encargadoFinanzasAps.idPersona}" required="true" requiredMessage="#{messages.EditServicioSaludRequiredMessage_encargadoFinanzasAps}">
-                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
-                            <f:selectItems value="#{servicioSaludController.personas}"
-                                           var="encargadoFinanzasApsItem"
-                                           itemValue="#{encargadoFinanzasApsItem.idPersona}"
-                                           itemLabel="#{encargadoFinanzasApsItem.nombre} #{encargadoFinanzasApsItem.apellidoPaterno}"
-                                           />
-                        </p:selectOneMenu>
-
-                        <p:outputLabel value="#{messages.EditServicioSaludLabel_encargadoAps}" for="encargadoAps" />
-                        <p:selectOneMenu id="encargadoAps" value="#{servicioSaludController.seleccionado.encargadoAps.idPersona}" required="true" requiredMessage="#{messages.EditServicioSaludRequiredMessage_encargadoAps}">
-                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
-                            <f:selectItems value="#{servicioSaludController.personas}"
-                                           var="encargadoApsItem"
-                                           itemValue="#{encargadoApsItem.idPersona}"
-                                           itemLabel="#{encargadoApsItem.nombre} #{encargadoApsItem.apellidoPaterno}"
-                                           />
-                        </p:selectOneMenu>
+                        
                     </p:panelGrid>
+                    
+                    
+                    <p:panel id="panelDirector">
+					<p:outputLabel value="Datos Director" />
+					<br />
+					<br />
+
+					<p:panelGrid columns="2">
+						<p:outputLabel value="Nombre" for="nombreDirector" />
+						<p:inputText id="nombreDirector"
+							value="#{servicioSaludController.seleccionado.director.nombre}"
+							title="Nombre" required="true" />
+							
+						<p:outputLabel value="Apellido Paterno" for="aPaternoDirector" />
+						<p:inputText id="aPaternoDirector"
+							value="#{servicioSaludController.seleccionado.director.apellidoPaterno}"
+							title="Apellido Paterno" required="true" />
+							
+						<p:outputLabel value="Apellido Materno" for="aMaternoDirector" />
+						<p:inputText id="aMaternoDirector"
+							value="#{servicioSaludController.seleccionado.director.apellidoMaterno}"
+							title="Apellido Materno" required="true" />
+							
+						<p:outputLabel value="Email" for="emailDirector" />
+						<p:inputText id="emailDirector"
+							value="#{servicioSaludController.seleccionado.director.correo}"
+							title="Email" required="true" >
+							<f:validator validatorId="minsal.divap.emailValidator" />
+							<f:validateLength maximum="50" />
+						</p:inputText>
+						
+					</p:panelGrid>
+
+
+				</p:panel>
+				
+				
+				<p:panel id="panelEncargadoFinanzasAps">
+					<p:outputLabel value="Datos Encargado Finanzas APS" />
+					<br />
+					<br />
+
+					<p:panelGrid columns="2">
+						
+						<p:outputLabel value="Nombre" for="nombreEncargadoFinanzasAps" />
+						<p:inputText id="nombreEncargadoFinanzasAps"
+							value="#{servicioSaludController.seleccionado.encargadoFinanzasAps.nombre}"
+							title="Nombre" required="true" />
+							
+						<p:outputLabel value="Apellido Paterno" for="aPaternoEncargadoFinanzasAps" />
+						<p:inputText id="aPaternoEncargadoFinanzasAps"
+							value="#{servicioSaludController.seleccionado.encargadoFinanzasAps.apellidoPaterno}"
+							title="Apellido Paterno" required="true" />
+							
+						<p:outputLabel value="Apellido Materno" for="aMaternoEncargadoFinanzasAps" />
+						<p:inputText id="aMaternoEncargadoFinanzasAps"
+							value="#{servicioSaludController.seleccionado.encargadoFinanzasAps.apellidoMaterno}"
+							title="Apellido Materno" required="true" />
+							
+						<p:outputLabel value="Email" for="emailEncargadoFinanzasAps" />
+						<p:inputText id="emailEncargadoFinanzasAps"
+							value="#{servicioSaludController.seleccionado.encargadoFinanzasAps.correo}"
+							title="Email" required="true" >
+							<f:validator validatorId="minsal.divap.emailValidator" />
+							<f:validateLength maximum="50" />	
+						</p:inputText>
+					
+					</p:panelGrid>
+				
+				</p:panel>
+				
+				
+				
+				<p:panel id="panelEncargadoAps">
+					<p:outputLabel value="Datos Encargado APS" />
+					<br />
+					<br />
+
+					<p:panelGrid columns="2">
+						
+						<p:outputLabel value="Nombre" for="nombreEncargadoAps" />
+						<p:inputText id="nombreEncargadoAps"
+							value="#{servicioSaludController.seleccionado.encargadoAps.nombre}"
+							title="Nombre" required="true" />
+							
+						<p:outputLabel value="Apellido Paterno" for="aPaternoEncargadoAps" />
+						<p:inputText id="aPaternoEncargadoAps"
+							value="#{servicioSaludController.seleccionado.encargadoAps.apellidoPaterno}"
+							title="Apellido Paterno" required="true" />
+							
+						<p:outputLabel value="Apellido Materno" for="aMaternoEncargadoAps" />
+						<p:inputText id="aMaternoEncargadoAps"
+							value="#{servicioSaludController.seleccionado.encargadoAps.apellidoMaterno}"
+							title="Apellido Materno" required="true" />
+							
+						<p:outputLabel value="Email" for="emailEncargadoAps" />
+						<p:inputText id="emailEncargadoAps"
+							value="#{servicioSaludController.seleccionado.encargadoAps.correo}"
+							title="Email" required="true" >
+							<f:validator validatorId="minsal.divap.emailValidator" />
+							<f:validateLength maximum="50" />	
+						</p:inputText>
+					
+					</p:panelGrid>
+				
+				</p:panel>
+                    
                     <p:commandButton actionListener="#{servicioSaludController.edit}" value="#{messages.Save}" update="display,:ServicioSaludListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ServicioSaludEditDialog);"/>
                     <p:commandButton value="#{messages.Cancel}" onclick="ServicioSaludEditDialog.hide()"/>
                 </h:panelGroup>

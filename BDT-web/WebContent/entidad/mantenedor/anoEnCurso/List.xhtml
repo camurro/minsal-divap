@@ -8,7 +8,7 @@
 
     <h:form id="AnoEnCursoListForm">
 
-        <p:panel header="#{messages.ListAnoEnCursoTitle}">
+        <p:panel header="Parámetros de Configuración">
             <p:contextMenu id="AnoEnCursoDataTableContextMenu" for="datalist">  
                 <p:menuitem value="#{messages.Create}" onclick="document.getElementById('AnoEnCursoListForm:createButton').click();" icon="ui-icon-plus"/>
                 <p:menuitem value="#{messages.View}" onclick="document.getElementById('AnoEnCursoListForm:viewButton').click();" icon="ui-icon-search"/>
@@ -63,12 +63,7 @@
                 </p:column>
 
 
-                <p:column sortBy="#{item.inflactorMarcoPresupuestario}" filterBy="#{item.inflactorMarcoPresupuestario}">
-                    <f:facet name="header">
-                        <h:outputText value="#{messages.ListAnoEnCursoTitle_inflactorMarcoPresupuestario}"/>
-                    </f:facet>
-                    <h:outputText value="#{item.inflactorMarcoPresupuestario}"/>
-                </p:column>
+                
 
             </p:dataTable>
 

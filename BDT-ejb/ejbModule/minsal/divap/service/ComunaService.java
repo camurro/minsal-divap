@@ -7,9 +7,12 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
+import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.ComunaDAO;
 import minsal.divap.vo.ComunaVO;
+import minsal.divap.vo.MantenedorComunaFinalVO;
 import minsal.divap.vo.ProgramaAPSVO;
+import cl.minsal.divap.model.AntecendentesComuna;
 import cl.minsal.divap.model.Comuna;
 
 @Stateless

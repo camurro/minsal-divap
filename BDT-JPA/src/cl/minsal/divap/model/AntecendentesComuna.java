@@ -26,7 +26,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "AntecendentesComuna.findByIdAntecedentesComuna", query = "SELECT a FROM AntecendentesComuna a WHERE a.idAntecedentesComuna = :idAntecedentesComuna"),
     @NamedQuery(name = "AntecendentesComuna.findAntecendentesComunaByIdComunaIdAno", query = "SELECT a FROM AntecendentesComuna a WHERE a.idComuna.id = :idComuna and a.anoAnoEnCurso.ano = :ano"),
     @NamedQuery(name = "AntecendentesComuna.findByDistribucionInicialPercapitaModificacionPercapita", query = "SELECT a FROM AntecendentesComuna a JOIN a.antecendentesComunaCalculadoCollection c WHERE c.distribucionInicialPercapita.idDistribucionInicialPercapita = :idDistribucionInicialPercapita and c.modificacionPercapita.idModificacionDistribucionInicialPercapita = :idModificacionPercapita and c.fechaVigencia is null"),
-    @NamedQuery(name = "AntecendentesComuna.findByIdComunasAno", query = "SELECT a FROM AntecendentesComuna a WHERE a.anoAnoEnCurso.ano = :ano and a.idComuna.id IN (:idComunas) order by a.idComuna.servicioSalud.id asc, a.idComuna.nombre asc")})
+    @NamedQuery(name = "AntecendentesComuna.findByIdComunasAno", query = "SELECT a FROM AntecendentesComuna a WHERE a.anoAnoEnCurso.ano = :ano and a.idComuna.id IN (:idComunas) order by a.idComuna.servicioSalud.id asc, a.idComuna.nombre asc"),
+    @NamedQuery(name = "AntecendentesComuna.findAntecendentesComunaByIdServicioIdAno", query = "SELECT a FROM AntecendentesComuna a WHERE a.idComuna.servicioSalud.id = :idServicio and a.anoAnoEnCurso.ano = :ano")})
 public class AntecendentesComuna implements Serializable {
     private static final long serialVersionUID = 1L;
     @JoinColumn(name = "clasificacion", referencedColumnName = "id_tipo_comuna")

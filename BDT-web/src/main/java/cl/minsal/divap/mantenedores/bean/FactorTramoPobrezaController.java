@@ -75,13 +75,22 @@ public class FactorTramoPobrezaController extends AbstractController<FactorTramo
 			try {
 				if (persistAction == PersistAction.UPDATE) {
 					this.ejbFacade.edit(this.seleccionado);
+					JsfUtil.addSuccessMessage("El tramo ha sido actualizado con éxito");
 				}else if(persistAction == PersistAction.CREATE){
 					this.ejbFacade.create(this.seleccionado);
+					JsfUtil.addSuccessMessage("El tramo ha sido creado con éxito");
 				}else if(persistAction == PersistAction.DELETE){
-					System.out.println("borrando con nuestro delete");
-					this.ejbFacade.remove(this.seleccionado);
+					if(this.seleccionado.getPuedeEliminarse()){
+						System.out.println("borrando con nuestro delete");
+						this.ejbFacade.remove(this.seleccionado);
+						JsfUtil.addSuccessMessage("El tramo ha sido eliminado con éxito");
+					}else{
+						JsfUtil.addErrorMessage("El tramo no puede ser eliminado ya que se encuentra en uso");
+					}
+					
+					
 				}
-				JsfUtil.addSuccessMessage(successMessage);
+				
 			} catch (EJBException ex) {
 				Throwable cause = JsfUtil.getRootCause(ex.getCause());
 				if (cause != null) {

@@ -1,41 +1,115 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
 
-    <ui:composition>
- 
-        <p:dialog id="ComunaCreateDlg" widgetVar="ComunaCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateComunaTitle}" closeOnEscape="true">
+<ui:composition>
 
-           <h:form id="ComunaCreateForm">
+	<p:dialog id="ComunaCreateDlg" widgetVar="ComunaCreateDialog"
+		modal="true" resizable="false" appendToBody="true"
+		header="#{messages.CreateComunaTitle}" closeOnEscape="true">
 
-                <h:panelGroup id="display" rendered="#{comunaController.comunaSeleccionada != null}">
-                    <p:panelGrid columns="2" columnClasses="column">
+		<h:form id="ComunaCreateForm">
 
-                        <p:outputLabel value="#{messages.CreateComunaLabel_nombre}" for="nombre" />
-                        <p:inputText id="nombre" value="#{comunaController.comunaSeleccionada.nombreComuna}" title="#{messages.CreateComunaTitle_nombre}"/>
+			<h:panelGroup id="display"
+				rendered="#{comunaController.comunaSeleccionada != null}">
+				
+				
+				
+				<p:panelGrid columns="2" columnClasses="column">
+					<p:outputLabel value="#{messages.CreateComunaLabel_nombre}"
+						for="nombre" />
 
-                        <p:outputLabel value="#{messages.CreateComunaLabel_servicioSalud}" for="servicioSalud" />
-                        <p:selectOneMenu id="servicioSalud" value="#{comunaController.comunaSeleccionada.idServicio}" >
-                            <f:selectItem itemLabel="#{messages.SelectOneMessage}" itemValue="0"/>
-                            <f:selectItems value="#{comunaController.servicios}"
-                                           var="servicioSaludItem"
-                                           itemValue="#{servicioSaludItem.id_servicio}"
-                                           itemLabel="#{servicioSaludItem.nombre_servicio}"/>
-                        </p:selectOneMenu>
-                    </p:panelGrid>
-                    <p:commandButton actionListener="#{comunaController.saveNew}" value="#{messages.Save}" update="display,:ComunaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ComunaCreateDialog);"/>
-                    <p:commandButton value="#{messages.Cancel}" onclick="ComunaCreateDialog.hide()"/>
-                </h:panelGroup>
-  			</h:form>
-         
-        </p:dialog>
-         
-        
+					<p:inputText id="nombre"
+						value="#{comunaController.comunaSeleccionada.nombreComuna}"
+						title="#{messages.CreateComunaTitle_nombre}" required="true"
+						requiredMessage="El nombre de la comuna es un campo requerido" />
 
-    </ui:composition>
+					<p:outputLabel value="#{messages.CreateComunaLabel_servicioSalud}"
+						for="servicioSalud" />
+					<p:selectOneMenu id="servicioSalud"
+						value="#{comunaController.comunaSeleccionada.idServicio}"
+						required="true"
+						requiredMessage="El servicio de salud es un campo requerido">
+						<f:selectItem itemLabel="#{messages.SelectOneMessage}"
+							itemValue="" />
+						<f:selectItems value="#{comunaController.servicios}"
+							var="servicioSaludItem"
+							itemValue="#{servicioSaludItem.id_servicio}"
+							itemLabel="#{servicioSaludItem.nombre_servicio}" />
+					</p:selectOneMenu>
+
+				</p:panelGrid>
+				<p:panel id="noEsAuxiliar">
+					<p:outputLabel value="Comuna Auxiliar?" for="comunaAuxiliar" />
+					<h:selectBooleanCheckbox id="comunaAuxiliar"
+						value="#{comunaController.nuevaComunaEsAuxiliar}">
+						<p:ajax process="@this" event="valueChange" update="noEsAuxiliar"></p:ajax>
+					</h:selectBooleanCheckbox>
+					<p:panelGrid columns="2"
+						rendered="#{not comunaController.nuevaComunaEsAuxiliar}">
+						<p:outputLabel value="Tipo" for="clasificacion" />
+						<p:selectOneMenu id="clasificacion"
+							required="#{not comunaController.nuevaComunaEsAuxiliar}"
+							requiredMessage="El tipo comuna es un campo requerido"
+							value="#{comunaController.comunaSeleccionada.idClasificacion}">
+							<f:selectItem itemLabel="#{messages.SelectOneMessage}"
+								itemValue="" />
+							<f:selectItems value="#{comunaController.tipoComunas}"
+								var="tipoComunaItem" itemValue="#{tipoComunaItem.idTipoComuna}"
+								itemLabel="#{tipoComunaItem.descripcion}" />
+						</p:selectOneMenu>
+
+
+						<p:outputLabel value="Asignación Zona" for="asigZona" />
+						
+						
+						<p:selectOneMenu id="asigZona"
+							required="#{not comunaController.nuevaComunaEsAuxiliar}"
+							requiredMessage="La asignaciòn zona es un campo requerido"
+							value="#{comunaController.comunaSeleccionada.idAsigZona}">
+							<f:selectItem itemLabel="#{messages.SelectOneMessage}"
+								itemValue="" />
+							<f:selectItems value="#{comunaController.listRefAsigZonaVO}"
+								var="asigZonaItem"
+								itemValue="#{asigZonaItem.idFactorRefAsigZona}"
+								itemLabel="Tramo #{asigZonaItem.idFactorRefAsigZona}" />
+						</p:selectOneMenu>
+
+
+						<p:outputLabel value="Tramo Pobreza" for="tramoPobreza" />
+						<p:selectOneMenu id="tramoPobreza"
+							required="#{not comunaController.nuevaComunaEsAuxiliar}"
+							requiredMessage="El tramo pobreza es un campo requerido"
+							value="#{comunaController.comunaSeleccionada.idTramoPobreza}">
+							<f:selectItem itemLabel="#{messages.SelectOneMessage}"
+								itemValue="" />
+							<f:selectItems value="#{comunaController.listTramoPobrezaVO}"
+								var="tramoPobrezaItem"
+								itemValue="#{tramoPobrezaItem.idFactorTramoPobreza}"
+								itemLabel="#{tramoPobrezaItem.valor}" />
+						</p:selectOneMenu>
+
+					</p:panelGrid>
+				</p:panel>
+				<br />
+				<br />
+				<p:commandButton actionListener="#{comunaController.saveNew}"
+					value="#{messages.Save}"
+					update="display,:ComunaListForm:datalist,:growl"
+					oncomplete="handleSubmit(xhr,status,args,ComunaCreateDialog);" />
+				<p:commandButton value="#{messages.Cancel}"
+					onclick="ComunaCreateDialog.hide()" />
+			</h:panelGroup>
+		</h:form>
+
+	</p:dialog>
+
+
+
+</ui:composition>
 
 </html>

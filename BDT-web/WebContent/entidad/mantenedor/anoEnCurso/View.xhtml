@@ -8,7 +8,7 @@
 
     <ui:composition>
 
-        <p:dialog id="AnoEnCursoViewDlg" widgetVar="AnoEnCursoViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewAnoEnCursoTitle}" closeOnEscape="true">
+        <p:dialog id="AnoEnCursoViewDlg" widgetVar="AnoEnCursoViewDialog" modal="true" resizable="false"  appendToBody="true" header="Ver Parámetros de Configuración" closeOnEscape="true">
 
             <h:form id="AnoEnCursoViewForm">
 
@@ -26,9 +26,6 @@
 
                         <h:outputText value="#{messages.ViewAnoEnCursoLabel_inflactor}"/>
                         <h:outputText value="#{anoEnCursoController.seleccionado.inflactor}" title="#{messages.ViewAnoEnCursoTitle_inflactor}"/>
-
-                        <h:outputText value="#{messages.ViewAnoEnCursoLabel_inflactorMarcoPresupuestario}"/>
-                        <h:outputText value="#{anoEnCursoController.seleccionado.inflactorMarcoPresupuestario}" title="#{messages.ViewAnoEnCursoTitle_inflactorMarcoPresupuestario}"/>
 
                     </p:panelGrid>
                     <p:commandButton value="#{messages.Close}" onclick="AnoEnCursoViewDialog.hide()"/>

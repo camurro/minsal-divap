@@ -137,25 +137,34 @@
 					<p:submenu label="Mantenedores" icon="ui-icon-document">
 					
 						<p:menuitem value="Año" url="/mantenedor/anoEnCurso/index.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Comuna" url="/mantenedor/comuna/index.jsf" icon="ui-icon-document" />
+						<p:submenu label="Comuna">
+							<p:menuitem value="Comunas #{menuMantenedoresController.anoCurso}" url="/mantenedor/comuna/index.jsf?anoSiguiente=false" icon="ui-icon-document" />
+							<p:menuitem rendered="#{menuMantenedoresController.mostrarMenuAnosiguiente}" 
+								value="Configurar Comunas #{menuMantenedoresController.anoCurso + 1}" url="/mantenedor/comuna/index.jsf?anoSiguiente=true" icon="ui-icon-document" />
+						</p:submenu>
 						<p:menuitem value="Componente" url="/mantenedor/componente/index.jsf" icon="ui-icon-document" />
 						<p:menuitem value="Cumplimiento" url="/mantenedor/cumplimiento/index.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Cumplimiento Programa" url="/mantenedor/cumplimientoPrograma/index.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Cuota" url="/mantenedor/cuota/index.jsf" icon="ui-icon-document" />
+<!-- 						<p:menuitem value="Cumplimiento Programa" url="/mantenedor/cumplimientoPrograma/index.jsf" icon="ui-icon-document" /> -->
 						<p:menuitem value="Establecimiento" url="/mantenedor/establecimiento/index.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Estado Programa" url="/mantenedor/comuna/index.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Estado Convenio" url="/mantenedor/comuna/index.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Factor Referencia Asignacion Zona" url="/mantenedor/comuna/index.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Factor Tramo Pobreza" url="/mantenedor/comuna/index.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Feriados" url="/mantenedor/comuna/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Estado Programa" url="/mantenedor/estadoPrograma/index.jsf" icon="ui-icon-document" />
+<!-- 						<p:menuitem value="Estado Convenio" url="/mantenedor/comuna/index.jsf" icon="ui-icon-document" /> -->
+						<p:menuitem value="Factor Referencia Asignacion Zona" url="/mantenedor/factorRefAsigZona/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Factor Tramo Pobreza" url="/mantenedor/factorTramoPobreza/index.jsf" icon="ui-icon-document" />
+<!-- 						<p:menuitem value="Feriados" url="/mantenedor/comuna/index.jsf" icon="ui-icon-document" /> -->
 						<p:menuitem value="Persona" url="/mantenedor/persona/index.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Programa" url="/mantenedor/programa/index.jsf" icon="ui-icon-document" />
+						
+						
+						<p:submenu label="Programa">
+							<p:menuitem value="Programas #{menuMantenedoresController.anoCurso}" url="/mantenedor/programa/index.jsf?anoSiguiente=false" icon="ui-icon-document" />
+							<p:menuitem rendered="#{menuMantenedoresController.mostrarMenuAnosiguiente}" 
+								value="Configurar Programas #{menuMantenedoresController.anoCurso + 1}" url="/mantenedor/programa/index.jsf?anoSiguiente=true" icon="ui-icon-document" />
+						</p:submenu>
 						<p:menuitem value="Region" url="/mantenedor/region/index.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Roles" url="/mantenedor/comuna/index.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Servicio" url="/mantenedor/servicio/index.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Subtitulo" url="/mantenedor/subtitulo/index.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Tipo Comuna" url="/mantenedor/comuna/index.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Usuario" url="/mantenedor/comuna/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Rol" url="/mantenedor/rol/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Servicio" url="/mantenedor/servicioSalud/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Subtitulo" url="/mantenedor/tipoSubtitulo/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Tipo Comuna" url="/mantenedor/tipoComuna/index.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Usuario" url="/mantenedor/usuario/index.jsf" icon="ui-icon-document" />
 						
 					</p:submenu>
 					

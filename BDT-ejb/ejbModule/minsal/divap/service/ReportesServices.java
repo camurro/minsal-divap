@@ -13,6 +13,10 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+
+import org.apache.poi.ss.formula.functions.T;
 
 import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.ComunaDAO;
@@ -138,89 +142,108 @@ public class ReportesServices {
 		List<ReportePerCapitaVO> listaReportePerCapitaVO = new ArrayList<ReportePerCapitaVO>();
 		List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
 		for (ServicioSalud servicioSalud : servicios) {
-			for (Comuna comuna : servicioSalud.getComunas()) {
-				ReportePerCapitaVO reportePerCapitaVO = new ReportePerCapitaVO();
-				reportePerCapitaVO.setRegion(servicioSalud.getRegion()
-						.getNombre());
-				reportePerCapitaVO.setServicio(servicioSalud.getNombre());
-				reportePerCapitaVO.setComuna(comuna.getNombre());
-
-				DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO
-						.findLast((ano));
-				List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO
-						.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaVigente(
-								servicioSalud.getId(), comuna.getId(),
-								distribucionInicialPercapita
-								.getIdDistribucionInicialPercapita());
-				AntecendentesComunaCalculado antecendentesComunaCalculado = ((antecendentesComunaCalculados != null && antecendentesComunaCalculados
-						.size() > 0) ? antecendentesComunaCalculados.get(0)
-								: null);
-				System.out.println("antecendentesComunaCalculado->"
-						+ antecendentesComunaCalculado);
-
-				if (antecendentesComunaCalculado != null) {
-
-					if (antecendentesComunaCalculado.getAntecedentesComuna()
-							.getClasificacion() != null) {
-						reportePerCapitaVO
-						.setClasificacion(antecendentesComunaCalculado
-								.getAntecedentesComuna()
-								.getClasificacion().getIdTipoComuna()
-								.toString());
+				DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(ano);
+				Integer mesActual = Integer.parseInt(getMesCurso(true));
+				List<RebajaCorte> rebajaCortes = rebajaDAO.getCortes(mesActual);
+				
+				if(distribucionInicialPercapita != null){
+					for(Comuna comuna : servicioSalud.getComunas()){
+						ReportePerCapitaVO reportePerCapitaVO = new ReportePerCapitaVO();
+						reportePerCapitaVO.setRegion(servicioSalud.getRegion()
+								.getNombre());
+						reportePerCapitaVO.setServicio(servicioSalud.getNombre());
+						reportePerCapitaVO.setComuna(comuna.getNombre());
+						List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaVigente(
+								comuna.getServicioSalud().getId(), comuna.getId(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+						
+						AntecendentesComunaCalculado antecendentesComunaCalculado = ((antecendentesComunaCalculados != null && antecendentesComunaCalculados.size() > 0) ? antecendentesComunaCalculados.get(0) : null);
+						System.out.println("antecendentesComunaCalculado->"	+ antecendentesComunaCalculado);
+						if(antecendentesComunaCalculado == null){
+							continue;
+						}
+			
+						reportePerCapitaVO.setRegion(comuna.getServicioSalud().getRegion().getNombre());
+						reportePerCapitaVO.setServicio(comuna.getServicioSalud().getNombre());
+						reportePerCapitaVO.setComuna(comuna.getNombre());
+						
+			
+						if (antecendentesComunaCalculado.getAntecedentesComuna().getClasificacion() != null) {
+							reportePerCapitaVO.setClasificacion(antecendentesComunaCalculado.getAntecedentesComuna().getClasificacion().getDescripcion());
+						}
+			
+						if (antecendentesComunaCalculado.getValorPerCapitaComunalMes() != null) {
+							reportePerCapitaVO.setValorPercapita(new Long(antecendentesComunaCalculado.getValorPerCapitaComunalMes().longValue() * 12));
+						}else{
+							reportePerCapitaVO.setValorPercapita(0L);
+						}
+						
+						if (antecendentesComunaCalculado.getPoblacion() != null) {
+							reportePerCapitaVO.setPoblacion(antecendentesComunaCalculado.getPoblacion());
+						}else{
+							reportePerCapitaVO.setPoblacion(0);
+						}
+			
+						if (antecendentesComunaCalculado.getPoblacionMayor() != null) {
+							reportePerCapitaVO.setPoblacion65mayor(antecendentesComunaCalculado.getPoblacionMayor());
+						}else{
+							reportePerCapitaVO.setPoblacion65mayor(0);
+						}
+			
+						if (antecendentesComunaCalculado.getPercapitaAno() != null) {
+							reportePerCapitaVO.setPercapita(antecendentesComunaCalculado.getPercapitaAno());
+						}else{
+							reportePerCapitaVO.setPercapita(0L);
+						}
+						
+						if (antecendentesComunaCalculado.getDesempenoDificil() != null) {
+							reportePerCapitaVO.setDesempenoDificil(new Long(antecendentesComunaCalculado.getDesempenoDificil() * 12));
+						}else{
+							reportePerCapitaVO.setDesempenoDificil(0L);
+						}
+			
+						reportePerCapitaVO.setAporteEstatal((reportePerCapitaVO.getPercapita() + reportePerCapitaVO.getDesempenoDificil()));
+						
+						Long totalRebajaIAAPS = 0L;
+						if(rebajaCortes != null && rebajaCortes.size() > 0){
+							for (RebajaCorte rebajaCorte : rebajaCortes) {
+								Long montoRebajaCorte = 0L;
+								if (antecendentesComunaCalculado.getAntecedentesComunaCalculadoRebajas() != null && antecendentesComunaCalculado.getAntecedentesComunaCalculadoRebajas().size() > 0) {
+									for (AntecedentesComunaCalculadoRebaja antecedentesComunaCalculadoRebaja : antecendentesComunaCalculado.getAntecedentesComunaCalculadoRebajas()) {
+										if(rebajaCorte.getRebajaCorteId().equals(antecedentesComunaCalculadoRebaja.getRebaja().getRebajaCorte().getRebajaCorteId())){
+											totalRebajaIAAPS += antecedentesComunaCalculadoRebaja.getMontoRebaja();
+											montoRebajaCorte += antecedentesComunaCalculadoRebaja.getMontoRebaja();
+										}
+										
+									}
+								}
+								switch (rebajaCorte.getMesRebaja().getIdMes()) {
+								case 5:
+									reportePerCapitaVO.setRebajaIAAPSCorte1(montoRebajaCorte);
+									break;
+								case 8:
+									reportePerCapitaVO.setRebajaIAAPSCorte2(montoRebajaCorte);
+									break;
+								case 10:
+									reportePerCapitaVO.setRebajaIAAPSCorte3(montoRebajaCorte);
+									break;
+								case 12:
+									reportePerCapitaVO.setRebajaIAAPSCorte4(montoRebajaCorte);
+									break;
+								default:
+									break;
+								}
+							}
+						}
+						System.out.println("totalRebajaIAAPS --> " + totalRebajaIAAPS);
+			
+						// TODO falta este valor
+						Long descuentoIncentivoRetiro = 234234L;
+			
+						reportePerCapitaVO.setDescuentoIncentivoRetiro(descuentoIncentivoRetiro);
+						reportePerCapitaVO.setAporteEstatalFinal(reportePerCapitaVO.getAporteEstatal() - totalRebajaIAAPS - reportePerCapitaVO.getDescuentoIncentivoRetiro());
+						listaReportePerCapitaVO.add(reportePerCapitaVO);
 					}
-
-					if (antecendentesComunaCalculado
-							.getValorPerCapitaComunalMes() != null) {
-						reportePerCapitaVO
-						.setValorPercapita(antecendentesComunaCalculado
-								.getValorPerCapitaComunalMes()
-								.longValue());
-					} else {
-						reportePerCapitaVO.setValorPercapita(0L);
-					}
-					if (antecendentesComunaCalculado.getPoblacion() != null) {
-						reportePerCapitaVO
-						.setPoblacion(antecendentesComunaCalculado
-								.getPoblacion());
-					}
-					if (antecendentesComunaCalculado.getPoblacionMayor() != null) {
-						reportePerCapitaVO
-						.setPoblacion65mayor(antecendentesComunaCalculado
-								.getPoblacionMayor());
-					}
-
-					if (antecendentesComunaCalculado.getPercapitaAno() != null) {
-						reportePerCapitaVO
-						.setPercapita(antecendentesComunaCalculado
-								.getPercapitaAno());
-					} else {
-						reportePerCapitaVO.setPercapita(0L);
-					}
-					if (antecendentesComunaCalculado.getDesempenoDificil() != null) {
-						reportePerCapitaVO
-						.setDesempenoDificil(antecendentesComunaCalculado
-								.getDesempenoDificil().longValue());
-					} else {
-						reportePerCapitaVO.setDesempenoDificil(0L);
-					}
-					reportePerCapitaVO.setAporteEstatal((reportePerCapitaVO
-							.getPercapita() + reportePerCapitaVO
-							.getDesempenoDificil()));
-					Long rebajaIAAPS = 0L;
-					for (AntecedentesComunaCalculadoRebaja antecedentesComunaCalculadoRebaja : antecendentesComunaCalculado.getAntecedentesComunaCalculadoRebajas()) {
-						rebajaIAAPS += antecedentesComunaCalculadoRebaja.getMontoRebaja();
-						System.out.println("rebajaIAAPS --> " + rebajaIAAPS);
-					}
-					reportePerCapitaVO.setRebajaIAAPSCorte1(rebajaIAAPS);
 				}
-				// TODO falta este valor
-				Long descuentoIncentivoRetiro = 23423L;
-				reportePerCapitaVO.setDescuentoIncentivoRetiro(descuentoIncentivoRetiro);
-				reportePerCapitaVO.setAporteEstatalFinal(reportePerCapitaVO.getAporteEstatal() - reportePerCapitaVO.getRebajaIAAPSCorte1() - reportePerCapitaVO.getDescuentoIncentivoRetiro());
-
-				listaReportePerCapitaVO.add(reportePerCapitaVO);
-
-			}
 		}
 
 		return listaReportePerCapitaVO;
@@ -522,15 +545,19 @@ public class ReportesServices {
 							System.out.println("porcentajeRemesasPagadas --> " + porcentajeRemesasPagadas);
 							reporteMarcoPresupuestarioComunaVO.setPorcentajeCuotaTransferida(porcentajeRemesasPagadas);
 						}
-					
-		
-						Comuna comunaAuxiliar = comunaDAO.getComunaServicioAuxiliar(idServicio);
-						System.out.println("comunaAuxiliar --> " + ((comunaAuxiliar == null) ? null : comunaAuxiliar.getNombre()));
-		
+						
+						List<Comuna> comunasAuxiliares = comunaDAO.getComunaServicioAuxiliares(idServicio);
 						Long tarifaComunaAux = 0L;
-						if(comunaAuxiliar != null){
-							tarifaComunaAux = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comunaAuxiliar.getId(), programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
+						for(Comuna comunaAuxiliar : comunasAuxiliares){
+							
+							if(comunaAuxiliar != null){
+								tarifaComunaAux = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comunaAuxiliar.getId(), programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
+							}
+							if(tarifaComunaAux > 0L){
+								break;
+							}
 						}
+						
 						System.out.println("tarifaComunaAux --> "+tarifaComunaAux);
 						if (tarifaComunaAux == 0L) {
 							reporteMarcoPresupuestarioComunaVO.setObservacion("");
@@ -589,12 +616,17 @@ public class ReportesServices {
 				reporteMarcoPresupuestarioComunaVO.setPorcentajeCuotaTransferida(0.0);
 			}
 
-			Comuna comunaAuxiliar = comunaDAO.getComunaServicioAuxiliar(idServicio);
-			System.out.println("comunaAuxiliar --> " + comunaAuxiliar.getNombre());
-
-			Long tarifaComunaAux = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comunaAuxiliar.getId(), idProgramaAno, componenteVO.getId(), subtitulo.getId());
-
-			System.out.println("tarifaComunaAux --> "+tarifaComunaAux);
+			List<Comuna> comunasAuxiliares = comunaDAO.getComunaServicioAuxiliares(idServicio);
+			Long tarifaComunaAux = 0L;
+			for(Comuna comunaAuxiliar : comunasAuxiliares){
+				
+				if(comunaAuxiliar != null){
+					tarifaComunaAux = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comunaAuxiliar.getId(), programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
+				}
+				if(tarifaComunaAux > 0L){
+					break;
+				}
+			}
 
 			if (tarifaComunaAux == 0L) {
 				reporteMarcoPresupuestarioComunaVO.setObservacion("");
@@ -816,6 +848,7 @@ public class ReportesServices {
 			mesCurso = dateFormat.format(new Date());
 		}
 		return mesCurso;
+//		return "11";
 	}
 	
 	public String currentDate(){
@@ -837,32 +870,20 @@ public class ReportesServices {
 				reporteGlosaVO.setServicio(servicio.getNombre());
 				reporteGlosaVO.setComuna(comuna.getNombre());
 
-				DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO
-						.findLast((ano));
-				List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO
-						.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaVigente(
-								servicio.getId(), comuna.getId(),
-								distribucionInicialPercapita
-								.getIdDistribucionInicialPercapita());
-				AntecendentesComunaCalculado antecendentesComunaCalculado = ((antecendentesComunaCalculados != null && antecendentesComunaCalculados
-						.size() > 0) ? antecendentesComunaCalculados.get(0)
-								: null);
-				System.out.println("antecendentesComunaCalculado->"
-						+ antecendentesComunaCalculado);
-
+				DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(ano);
+				List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaVigente(servicio.getId(),
+						comuna.getId(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+				AntecendentesComunaCalculado antecendentesComunaCalculado = ((antecendentesComunaCalculados != null && antecendentesComunaCalculados.size() > 0) ? antecendentesComunaCalculados.get(0) : null);
+				System.out.println("antecendentesComunaCalculado->" + antecendentesComunaCalculado);
+	
+				if (antecendentesComunaCalculado != null) {
+					reporteGlosaVO.setArt49perCapita(((antecendentesComunaCalculado.getPercapitaMes() == null) ? 0L	: antecendentesComunaCalculado.getPercapitaMes()));
+				}
+	
 				Long tarifa = 0L;
 				Long totalRemesasAcumuladasMesActual = 0L;
-				if (antecendentesComunaCalculado != null) {
-					reporteGlosaVO
-					.setArt49perCapita(((antecendentesComunaCalculado
-							.getPercapitaMes() == null) ? 0L
-									: antecendentesComunaCalculado
-									.getPercapitaMes()));
-				}
-				List<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes = programasDAO
-						.getByIdComuna(comuna.getId(), ano);
-				if (programaMunicipalCoreComponentes != null
-						&& programaMunicipalCoreComponentes.size() > 0) {
+				List<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes = programasDAO.getByIdComuna(comuna.getId(), ano);
+				if (programaMunicipalCoreComponentes != null && programaMunicipalCoreComponentes.size() > 0) {
 					for (ProgramaMunicipalCoreComponente programaMunicipalCoreComponente : programaMunicipalCoreComponentes) {
 						if (programaMunicipalCoreComponente == null) {
 							continue;
@@ -872,15 +893,10 @@ public class ReportesServices {
 				}
 				reporteGlosaVO.setArt56reforzamientoMunicipal(tarifa);
 				Integer mesActual = Integer.parseInt(getMesCurso(true));
-				for (ProgramaVO programaVO : programasService
-						.getProgramasByUserAno(usuario, ano)) {
-					totalRemesasAcumuladasMesActual += remesasDAO
-							.getRemesasPagadasComunaPrograma(
-									programaVO.getIdProgramaAno(),
-									comuna.getId(), mesActual);
+				for (ProgramaVO programaVO : programasService.getProgramasByUserAno(usuario, ano)) {
+					totalRemesasAcumuladasMesActual += remesasDAO.getRemesasPagadasComunaPrograma(programaVO.getIdProgramaAno(), comuna.getId(), mesActual);
 				}
-				reporteGlosaVO
-				.setTotalRemesasEneroMarzo(totalRemesasAcumuladasMesActual);
+				reporteGlosaVO.setTotalRemesasEneroMarzo(totalRemesasAcumuladasMesActual);
 				resultado.add(reporteGlosaVO);
 			}
 		}
@@ -1131,7 +1147,8 @@ public class ReportesServices {
 		return planillaTrabajoId;
 	}
 
-	public List<ReporteHistoricoPorProgramaEstablecimientoForExcelVO> generarListadoTotalReporteHistoricoDependenciaEstablecimiento(Subtitulo subtitulo, Integer ano) {
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW) 
+	private List<ReporteHistoricoPorProgramaEstablecimientoForExcelVO> generarListadoTotalReporteHistoricoDependenciaEstablecimiento(Subtitulo subtitulo, Integer ano) {
 		List<ReporteHistoricoPorProgramaEstablecimientoForExcelVO> resultado = new ArrayList<ReporteHistoricoPorProgramaEstablecimientoForExcelVO>();
 		List<ServiciosVO> servicios = servicioSaludService.getServiciosOrderId();
 		for (ServiciosVO servicio : servicios) {
@@ -1173,7 +1190,6 @@ public class ReportesServices {
 					ReporteHistoricoPorProgramaMarcosAnosForExcelVO marcos = new ReporteHistoricoPorProgramaMarcosAnosForExcelVO();
 
 					for (ComponentesVO componente : programa.getComponentes()) {
-
 						marcoAnoActual += programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), programaAnoActual.getIdProgramaAno(),componente.getId(), subtitulo.getId());
 						marcoAnoActualMenos1 += programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAnoActualMenos1,	componente.getId(), subtitulo.getId());
 						marcoAnoActualMenos2 += programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAnoActualMenos2,	componente.getId(), subtitulo.getId());
@@ -1184,6 +1200,7 @@ public class ReportesServices {
 						marcoAnoActualMenos7 += programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAnoActualMenos7,	componente.getId(), subtitulo.getId());
 						marcoAnoActualMenos8 += programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAnoActualMenos8,	componente.getId(), subtitulo.getId());
 						marcoAnoActualMenos9 += programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), idProgramaAnoActualMenos9,	componente.getId(), subtitulo.getId());
+						
 					}
 
 					marcos.setMarcoAnoActual(marcoAnoActual);
@@ -1233,6 +1250,7 @@ public class ReportesServices {
 					Integer idProgramaAnoActualMenos7 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (ano - 7));
 					Integer idProgramaAnoActualMenos8 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (ano - 8));
 					Integer idProgramaAnoActualMenos9 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (ano - 9));
+					
 
 					Long tarifaAnoActual = 0L;
 					Long tarifaAnoActualMenos1 = 0L;
@@ -1258,7 +1276,6 @@ public class ReportesServices {
 						tarifaAnoActualMenos7 += programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(), idProgramaAnoActualMenos7, componente.getId(), subtitulo.getId());
 						tarifaAnoActualMenos8 += programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(), idProgramaAnoActualMenos8, componente.getId(), subtitulo.getId());
 						tarifaAnoActualMenos9 += programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(), idProgramaAnoActualMenos9, componente.getId(), subtitulo.getId());
-
 					}
 					marcos.setMarcoAnoActualMenos9(tarifaAnoActualMenos9);
 					marcos.setMarcoAnoActualMenos8(tarifaAnoActualMenos8);
@@ -1601,10 +1618,13 @@ public class ReportesServices {
 			e.printStackTrace();
 		}
 		return planillaTrabajoId;
-	}
+	}			
 
 	public Integer generarPlanillaReporteMonitoreoProgramaPorComuna(Integer ano) {
 		Integer planillaTrabajoId = null;
+		Calendar calendar = Calendar.getInstance();
+		Integer diaDelMes = calendar.get(Calendar.DAY_OF_MONTH);
+		Integer mesActual = Integer.parseInt(getMesCurso(true));
 		List<CellExcelVO> header = new ArrayList<CellExcelVO>();
 		List<CellExcelVO> subHeader = new ArrayList<CellExcelVO>();
 		header.add((new CellExcelVO("SERVICIO", 1, 2)));
@@ -1613,7 +1633,7 @@ public class ReportesServices {
 		header.add((new CellExcelVO("COMUNA", 1, 2)));
 		header.add((new CellExcelVO("MARCO PRESUPUESTARIO", 1, 2)));
 
-		header.add((new CellExcelVO("REMESA ACUMULADA", 1, 1)));
+		header.add((new CellExcelVO("REMESA ACUMULADA AL "+diaDelMes+"/"+mesActual+"/"+ano, 1, 1)));
 		header.add((new CellExcelVO("CONVENIO", 1, 1)));
 
 		header.add((new CellExcelVO("CONVENIO PENDIENTE", 1, 2)));
@@ -1650,6 +1670,9 @@ public class ReportesServices {
 
 	public Integer generarPlanillaReporteMonitoreoProgramaPorServicios(Integer ano) {
 		Integer planillaTrabajoId = null;
+		Calendar calendar = Calendar.getInstance();
+		Integer diaDelMes = calendar.get(Calendar.DAY_OF_MONTH);
+		Integer mesActual = Integer.parseInt(getMesCurso(true));
 		List<CellExcelVO> header = new ArrayList<CellExcelVO>();
 		List<CellExcelVO> subHeader = new ArrayList<CellExcelVO>();
 		header.add((new CellExcelVO("SERVICIO", 1, 2)));
@@ -1658,7 +1681,7 @@ public class ReportesServices {
 		header.add((new CellExcelVO("ESTABLECIMIENTO", 1, 2)));
 		header.add((new CellExcelVO("MARCO PRESUPUESTARIO", 1, 2)));
 
-		header.add((new CellExcelVO("REMESA ACUMULADA", 1, 1)));
+		header.add((new CellExcelVO("REMESA ACUMULADA AL "+diaDelMes+"/"+mesActual+"/"+ano, 1, 1)));
 		header.add((new CellExcelVO("CONVENIO", 1, 1)));
 
 		header.add((new CellExcelVO("CONVENIO PENDIENTE", 1, 2)));
@@ -1841,60 +1864,84 @@ public class ReportesServices {
 	public List<ReporteMarcoPresupuestarioComunaVO> getReporteMarcoPorComunaAll(Subtitulo subtitulo, Integer ano) {
 		List<ReporteMarcoPresupuestarioComunaVO> resultado = new ArrayList<ReporteMarcoPresupuestarioComunaVO>();
 		List<ProgramaVO> programasVO = programasService.getProgramasByAnoSubtitulo(ano, subtitulo);
-
+		Calendar calendar = Calendar.getInstance();
+		Integer diaDelMes = calendar.get(Calendar.DAY_OF_MONTH);
+		Integer mesActual = Integer.parseInt(getMesCurso(true));
 		for (ProgramaVO programa : programasVO) {
 			List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
 			for (ServicioSalud servicio : servicios) {
-				Comuna comunaAuxiliar = comunaDAO.getComunaServicioAuxiliar(servicio.getId());
-				System.out.println("comunaAuxiliar --> " +  ((comunaAuxiliar == null) ? null : comunaAuxiliar.getNombre()));
 				List<Comuna> comunas = servicio.getComunas();
 				List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulo);
 				for (Comuna comuna : comunas) {
 					for (ComponentesVO componenteVO : componentes) {
 						ReporteMarcoPresupuestarioComunaVO reporteMarcoPresupuestarioComunaVO = new ReporteMarcoPresupuestarioComunaVO();
-
-						reporteMarcoPresupuestarioComunaVO.setServicio(servicio.getNombre());
+						reporteMarcoPresupuestarioComunaVO.setServicio(comuna.getServicioSalud().getNombre());
 						reporteMarcoPresupuestarioComunaVO.setPrograma(programa.getNombre());
 						reporteMarcoPresupuestarioComunaVO.setComponente(componenteVO.getNombre());
 						reporteMarcoPresupuestarioComunaVO.setComuna(comuna.getNombre());
-
+		
+						DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast((ano));
+						List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaVigente(
+								comuna.getServicioSalud().getId(), comuna.getId(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+		
 						Long tarifaAnoActual = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(), programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
-
-						Integer mesActual = Integer.parseInt(getMesCurso(true));
+		
+					
 						reporteMarcoPresupuestarioComunaVO.setMarco(tarifaAnoActual);
-
+						
+		
 						reporteMarcoPresupuestarioComunaVO.setConvenios(0L);
-
-						Long totalRemesasAcumuladasMesActual = remesasDAO.getRemesasPagadasComunaProgramaSubtitulo(programa.getIdProgramaAno(),	subtitulo.getId(), comuna.getId(), mesActual);
-						if (totalRemesasAcumuladasMesActual > 0L) {
-							System.out.println("Marco --> "	+ reporteMarcoPresupuestarioComunaVO.getMarco());
-							System.out.println("totalRemesasAcumuladasMesActual --> " + totalRemesasAcumuladasMesActual);
-
-							Double porcentajeRemesasPagadas = (totalRemesasAcumuladasMesActual * 100.0)	/ reporteMarcoPresupuestarioComunaVO.getMarco();
+						
+						Long totalConveniosPorComuna = 0L;
+						ConvenioComunaComponenteVO convenioComunaComponente = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), comuna.getId(), EstadosConvenios.INGRESADO);
+						if(convenioComunaComponente == null){
+							convenioComunaComponente = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), comuna.getId(), EstadosConvenios.APROBADO);
+						}
+						if(convenioComunaComponente == null){
+							convenioComunaComponente = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), comuna.getId(), EstadosConvenios.TRAMITE);
+						}
+						if(convenioComunaComponente == null){
+							convenioComunaComponente = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), comuna.getId(), EstadosConvenios.PAGADO);
+						}
+						if(convenioComunaComponente != null){
+							totalConveniosPorComuna += ((convenioComunaComponente.getMonto() != null) ? convenioComunaComponente.getMonto() : 0L);
+						}
+						
+						reporteMarcoPresupuestarioComunaVO.setConvenios(totalConveniosPorComuna);
+						
+						reporteMarcoPresupuestarioComunaVO.setRemesasAcumuladas(0L);
+						Long totalRemesasAcumuladasMesActual = remesasDAO.getRemesasPagadasComunaProgramaComponenteSubtituloDiaMes(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), comuna.getId(), diaDelMes, mesActual);
+						reporteMarcoPresupuestarioComunaVO.setRemesasAcumuladas(totalRemesasAcumuladasMesActual);
+						reporteMarcoPresupuestarioComunaVO.setPorcentajeCuotaTransferida(0.0);
+						System.out.println("totalRemesasAcumuladasMesActual --> " + totalRemesasAcumuladasMesActual);
+						
+						if(totalRemesasAcumuladasMesActual > 0L && reporteMarcoPresupuestarioComunaVO.getMarco() != 0L){
+							Double porcentajeRemesasPagadas = (totalRemesasAcumuladasMesActual * 100.0) / reporteMarcoPresupuestarioComunaVO.getMarco();
 							porcentajeRemesasPagadas = porcentajeRemesasPagadas / 100.0;
 							System.out.println("porcentajeRemesasPagadas --> " + porcentajeRemesasPagadas);
-
-							reporteMarcoPresupuestarioComunaVO.setRemesasAcumuladas(totalRemesasAcumuladasMesActual);
 							reporteMarcoPresupuestarioComunaVO.setPorcentajeCuotaTransferida(porcentajeRemesasPagadas);
-						} else {
-							reporteMarcoPresupuestarioComunaVO.setRemesasAcumuladas(0L);
-							reporteMarcoPresupuestarioComunaVO.setPorcentajeCuotaTransferida(0.0);
 						}
-
+					
+						List<Comuna> comunasAuxiliares = comunaDAO.getComunaServicioAuxiliares(servicio.getId());
 						Long tarifaComunaAux = 0L;
-						if(comunaAuxiliar != null){
-							tarifaComunaAux = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comunaAuxiliar.getId(), programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
+						for(Comuna comunaAuxiliar : comunasAuxiliares){
+							
+							if(comunaAuxiliar != null){
+								tarifaComunaAux = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comunaAuxiliar.getId(), programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
+							}
+							if(tarifaComunaAux > 0L){
+								break;
+							}
 						}
-
+						
+		
+						
 						System.out.println("tarifaComunaAux --> "+tarifaComunaAux);
-
 						if (tarifaComunaAux == 0L) {
 							reporteMarcoPresupuestarioComunaVO.setObservacion("");
 						} else {
-							reporteMarcoPresupuestarioComunaVO
-							.setObservacion("Existen recursos no distribuidos en este programa");
+							reporteMarcoPresupuestarioComunaVO.setObservacion("Existen recursos no distribuidos en este programa");
 						}
-
 						resultado.add(reporteMarcoPresupuestarioComunaVO);
 					}
 				}
@@ -1906,12 +1953,13 @@ public class ReportesServices {
 	public List<ReporteMarcoPresupuestarioEstablecimientoVO> getReporteMarcoPorEstablecimientoAll(Subtitulo subtitulo, Integer ano) {
 		List<ReporteMarcoPresupuestarioEstablecimientoVO> resultado = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
 		List<ProgramaVO> programasVO = programasService.getProgramasByAnoSubtitulo(ano, subtitulo);
-
+		Calendar calendar = Calendar.getInstance();
+		Integer diaDelMes = calendar.get(Calendar.DAY_OF_MONTH);
+		Integer mesActual = Integer.parseInt(getMesCurso(true));
+		
 		for (ProgramaVO programa : programasVO) {
 			List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
 			for (ServicioSalud servicio : servicios) {
-				Establecimiento auxiliar = establecimientosDAO.getEstablecimientoServicioAuxiliar(servicio.getId());
-				System.out.println("establecimiento auxiliar --> "+ ((auxiliar == null) ? null : auxiliar.getNombre()));
 
 				List<Establecimiento> establecimientos = servicio.getEstablecimientos();
 				List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulo);
@@ -1919,8 +1967,7 @@ public class ReportesServices {
 				for (Establecimiento establecimiento : establecimientos) {
 					for (ComponentesVO componenteVO : componentes) {
 						ReporteMarcoPresupuestarioEstablecimientoVO reporteMarcoPresupuestarioEstablecimientoVO = new ReporteMarcoPresupuestarioEstablecimientoVO();
-
-						reporteMarcoPresupuestarioEstablecimientoVO.setServicio(servicio.getNombre());
+						reporteMarcoPresupuestarioEstablecimientoVO.setServicio(establecimiento.getServicioSalud().getNombre());
 						reporteMarcoPresupuestarioEstablecimientoVO.setPrograma(programa.getNombre());
 						reporteMarcoPresupuestarioEstablecimientoVO.setComponente(componenteVO.getNombre());
 						reporteMarcoPresupuestarioEstablecimientoVO.setEstablecimiento(establecimiento.getNombre());
@@ -1929,17 +1976,32 @@ public class ReportesServices {
 						System.out.println("marcoAnoActual --> " + marcoAnoActual);
 
 						reporteMarcoPresupuestarioEstablecimientoVO.setMarco(marcoAnoActual);
-						reporteMarcoPresupuestarioEstablecimientoVO.setConvenios(0L);
+						
+						Long totalConveniosPorEstablecimiento = 0L;
+						ConvenioServicioComponenteVO convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.INGRESADO);
+						if(convenioServicioComponente == null){
+							convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.APROBADO);
+						}
+						if(convenioServicioComponente == null){
+							convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.TRAMITE);
+						}
+						if(convenioServicioComponente == null){
+							convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.PAGADO);
+						}
+						if(convenioServicioComponente != null){
+							totalConveniosPorEstablecimiento += ((convenioServicioComponente.getMonto() != null) ? convenioServicioComponente.getMonto() : 0L);
+						}
+						
+						reporteMarcoPresupuestarioEstablecimientoVO.setConvenios(totalConveniosPorEstablecimiento);
 						reporteMarcoPresupuestarioEstablecimientoVO.setRemesasAcumuladas(0L);
 
-						Integer mesActual = Integer.parseInt(getMesCurso(true));
+						
 						Long totalRemesasAcumuladasMesActual = 0L;
-
-						totalRemesasAcumuladasMesActual = remesasDAO.getRemesasPagadasEstablecimientoProgramaSubtitulo(programa.getIdProgramaAno(), subtitulo.getId(),
-								establecimiento.getId(), mesActual);
+						totalRemesasAcumuladasMesActual = remesasDAO.getRemesasPagadasEstablecimientoProgramaComponenteSubtituloDiaMes(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), establecimiento.getId(), diaDelMes, mesActual);
 						System.out.println("totalRemesasAcumuladasMesActual --> "+ totalRemesasAcumuladasMesActual);
 
 						reporteMarcoPresupuestarioEstablecimientoVO.setRemesasAcumuladas(totalRemesasAcumuladasMesActual);
+
 						Double porcentajeRemesa = 0.0;
 
 						if(marcoAnoActual != 0){
@@ -1948,10 +2010,12 @@ public class ReportesServices {
 
 						reporteMarcoPresupuestarioEstablecimientoVO.setPorcentajeCuotaTransferida(porcentajeRemesa);
 
+						Establecimiento auxiliar = establecimientosDAO.getEstablecimientoServicioAuxiliar(servicio.getId());
+						System.out.println("establecimiento auxiliar --> "+ ((auxiliar == null) ? null : auxiliar.getNombre()));
+
 						Long tarifaEstablecimientoAuxiliar = 0L;
 						if(auxiliar != null){
-							tarifaEstablecimientoAuxiliar = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(
-									auxiliar.getId(), programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
+							tarifaEstablecimientoAuxiliar = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(auxiliar.getId(), programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
 						}
 
 						if (tarifaEstablecimientoAuxiliar == 0) {
@@ -1960,6 +2024,7 @@ public class ReportesServices {
 						} else {
 							reporteMarcoPresupuestarioEstablecimientoVO.setObservacion("Existen recursos no distribuidos en este programa");
 						}
+
 						resultado.add(reporteMarcoPresupuestarioEstablecimientoVO);
 					}
 				}
@@ -1971,6 +2036,9 @@ public class ReportesServices {
 	public List<ReporteMonitoreoProgramaPorComunaVO> getReporteMonitoreoPorComunaAll(Subtitulo subtitulo, Integer ano) {
 		List<ReporteMonitoreoProgramaPorComunaVO> resultado = new ArrayList<ReporteMonitoreoProgramaPorComunaVO>();
 		List<ProgramaVO> programas = programasService.getProgramasByAnoSubtitulo(ano, subtitulo);
+		Integer mesActual = Integer.parseInt(getMesCurso(true));
+		Calendar calendar = Calendar.getInstance();
+		Integer diaDelMes = calendar.get(Calendar.DAY_OF_MONTH);
 		for (ProgramaVO programa : programas) {
 			List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
 			List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulo);
@@ -1984,29 +2052,50 @@ public class ReportesServices {
 						reporteMonitoreoProgramaPorComunaVO.setComuna(comuna.getNombre());
 
 						Long tarifaAnoActual = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(), programa.getIdProgramaAno(), componente.getId(), subtitulo.getId());
-						Integer mesActual = Integer.parseInt(getMesCurso(true));
+						
 						reporteMonitoreoProgramaPorComunaVO.setMarco(tarifaAnoActual);
-
-						Long totalRemesasAcumuladasMesActual = remesasDAO.getRemesasPagadasComunaProgramaSubtitulo(programa.getIdProgramaAno(), subtitulo.getId(), comuna.getId(), mesActual);
-						if (totalRemesasAcumuladasMesActual > 0L) {
-							System.out.println("Marco --> "	+ reporteMonitoreoProgramaPorComunaVO.getMarco());
-							System.out.println("totalRemesasAcumuladasMesActual --> "+ totalRemesasAcumuladasMesActual);
-
-							Long marcoMenosRemesasPagadas = reporteMonitoreoProgramaPorComunaVO.getMarco() - totalRemesasAcumuladasMesActual;
-							System.out.println("marcoMenosRemesasPagadas ---> "	+ marcoMenosRemesasPagadas);
-							Double porcentajeRemesasPagadas = (totalRemesasAcumuladasMesActual * 100.0)	/ reporteMonitoreoProgramaPorComunaVO.getMarco();
-							porcentajeRemesasPagadas = porcentajeRemesasPagadas / 100.0;
-							System.out.println("porcentajeRemesasPagadas --> "	+ porcentajeRemesasPagadas);
-
-							reporteMonitoreoProgramaPorComunaVO.setRemesa_monto(totalRemesasAcumuladasMesActual);
-							reporteMonitoreoProgramaPorComunaVO.setRemesa_porcentaje(porcentajeRemesasPagadas);
-						} else {
-							reporteMonitoreoProgramaPorComunaVO.setRemesa_monto(0L);
-							reporteMonitoreoProgramaPorComunaVO.setRemesa_porcentaje(0.0);
-						}
+						
+						
+						 
 						reporteMonitoreoProgramaPorComunaVO.setConvenio_monto(0L);
-						reporteMonitoreoProgramaPorComunaVO.setConvenio_porcentaje(1.0);
-						reporteMonitoreoProgramaPorComunaVO.setConvenio_pendiente((long) 0);
+						reporteMonitoreoProgramaPorComunaVO.setConvenio_porcentaje(0.0);
+						
+						Long totalConveniosPorComuna = 0L;
+						ConvenioComunaComponenteVO convenioComunaComponente = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(programa.getIdProgramaAno(), componente.getId(), subtitulo.getId(), comuna.getId(), EstadosConvenios.INGRESADO);
+						if(convenioComunaComponente == null){
+							convenioComunaComponente = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(programa.getIdProgramaAno(), componente.getId(), subtitulo.getId(), comuna.getId(), EstadosConvenios.APROBADO);
+						}
+						if(convenioComunaComponente == null){
+							convenioComunaComponente = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(programa.getIdProgramaAno(), componente.getId(), subtitulo.getId(), comuna.getId(), EstadosConvenios.TRAMITE);
+						}
+						if(convenioComunaComponente == null){
+							convenioComunaComponente = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(programa.getIdProgramaAno(), componente.getId(), subtitulo.getId(), comuna.getId(), EstadosConvenios.PAGADO);
+						}
+						if(convenioComunaComponente != null){
+							totalConveniosPorComuna += ((convenioComunaComponente.getMonto() != null) ? convenioComunaComponente.getMonto() : 0L);
+						}
+						
+						if (totalConveniosPorComuna > 0L && reporteMonitoreoProgramaPorComunaVO.getMarco() > 0) {
+							System.out.println("Marco --> " + reporteMonitoreoProgramaPorComunaVO.getMarco());
+							System.out.println("totalConveniosPorComuna --> " + totalConveniosPorComuna);
+							Double porcentajeConvenio = totalConveniosPorComuna * 100.0 / reporteMonitoreoProgramaPorComunaVO.getMarco();
+							reporteMonitoreoProgramaPorComunaVO.setConvenio_monto(totalConveniosPorComuna);
+							reporteMonitoreoProgramaPorComunaVO.setConvenio_porcentaje(porcentajeConvenio);
+						}
+			
+						reporteMonitoreoProgramaPorComunaVO.setRemesa_monto(0L);
+						Long totalRemesasAcumuladasMesActual = remesasDAO.getRemesasPagadasComunaProgramaComponenteSubtituloDiaMes(programa.getIdProgramaAno(), componente.getId(), subtitulo.getId(), comuna.getId(), diaDelMes, mesActual);
+						reporteMonitoreoProgramaPorComunaVO.setRemesa_monto(totalRemesasAcumuladasMesActual);
+						reporteMonitoreoProgramaPorComunaVO.setRemesa_porcentaje(0.0);
+						System.out.println("totalRemesasAcumuladasMesActual --> " + totalRemesasAcumuladasMesActual);
+						
+						if(totalRemesasAcumuladasMesActual > 0L && reporteMonitoreoProgramaPorComunaVO.getMarco() != 0L){
+							Double porcentajeRemesasPagadas = (totalRemesasAcumuladasMesActual * 100.0) / reporteMonitoreoProgramaPorComunaVO.getMarco();
+							System.out.println("porcentajeRemesasPagadas --> " + porcentajeRemesasPagadas);
+							reporteMonitoreoProgramaPorComunaVO.setRemesa_porcentaje(porcentajeRemesasPagadas);
+						}
+						
+						reporteMonitoreoProgramaPorComunaVO.setConvenio_pendiente(reporteMonitoreoProgramaPorComunaVO.getMarco() - reporteMonitoreoProgramaPorComunaVO.getConvenio_monto());
 						resultado.add(reporteMonitoreoProgramaPorComunaVO);
 					}
 				}
@@ -2103,6 +2192,9 @@ public class ReportesServices {
 	public List<ReporteMonitoreoProgramaPorEstablecimientoVO> getReporteMonitoreoPorEstablecimientoAll(Subtitulo subtitulo, Integer ano) {
 		List<ReporteMonitoreoProgramaPorEstablecimientoVO> resultado = new ArrayList<ReporteMonitoreoProgramaPorEstablecimientoVO>();
 		List<ProgramaVO> programas = programasService.getProgramasByAnoSubtitulo(ano, subtitulo);
+		Calendar calendar = Calendar.getInstance();
+		Integer diaDelMes = calendar.get(Calendar.DAY_OF_MONTH);
+		Integer mesActual = Integer.parseInt(getMesCurso(true));
 		for (ProgramaVO programa : programas) {
 
 			List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
@@ -2121,28 +2213,56 @@ public class ReportesServices {
 						.setComponente(componente.getNombre());
 
 						Long marcoAnoActual = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), programa.getIdProgramaAno(), componente.getId(), subtitulo.getId());
+						
 						System.out.println("marcoAnoActual --> " + marcoAnoActual);
 						reporteMonitoreoProgramaPorEstablecimientoVO.setMarco(marcoAnoActual);
-
-						Integer mesActual = Integer.parseInt(getMesCurso(true));
-						Long totalRemesasAcumuladasMesActual = 0L;
-
-						totalRemesasAcumuladasMesActual = remesasDAO.getRemesasPagadasEstablecimientoProgramaSubtitulo(programa.getIdProgramaAno(), subtitulo.getId(), establecimiento.getId(), mesActual);
+						reporteMonitoreoProgramaPorEstablecimientoVO.setRemesa_monto(0L);
+						reporteMonitoreoProgramaPorEstablecimientoVO.setRemesa_porcentaje(0.0);
+						
+						Long totalRemesasAcumuladasMesActual = remesasDAO.getRemesasPagadasEstablecimientoProgramaComponenteSubtituloDiaMes(programa.getIdProgramaAno(), componente.getId(), subtitulo.getId(), establecimiento.getId(), diaDelMes, mesActual);
 						System.out.println("totalRemesasAcumuladasMesActual --> " + totalRemesasAcumuladasMesActual);
-
-						reporteMonitoreoProgramaPorEstablecimientoVO.setRemesa_monto(totalRemesasAcumuladasMesActual);
-
-						Double porcentajeRemesa = ((totalRemesasAcumuladasMesActual * 100.0) / marcoAnoActual) / 100;
-						System.out.println("porcentajeRemesa --> " + porcentajeRemesa);
-
-						if (marcoAnoActual == 0) {
-							reporteMonitoreoProgramaPorEstablecimientoVO.setRemesa_porcentaje(0.0);
-						} else {
-							reporteMonitoreoProgramaPorEstablecimientoVO.setRemesa_porcentaje(porcentajeRemesa);
+						
+						if (totalRemesasAcumuladasMesActual > 0L && reporteMonitoreoProgramaPorEstablecimientoVO.getMarco() > 0) {
+							System.out.println("Marco --> " + reporteMonitoreoProgramaPorEstablecimientoVO.getMarco());
+							System.out.println("totalRemesasAcumuladasMesActual --> " + totalRemesasAcumuladasMesActual);
+		
+							Long marcoMenosRemesasPagadas = reporteMonitoreoProgramaPorEstablecimientoVO.getMarco() - totalRemesasAcumuladasMesActual;
+							System.out.println("marcoMenosRemesasPagadas ---> " + marcoMenosRemesasPagadas);
+							Double porcentajeRemesasPagadas = (totalRemesasAcumuladasMesActual * 100.0)	/ reporteMonitoreoProgramaPorEstablecimientoVO.getMarco();
+							System.out.println("porcentajeRemesasPagadas --> " + porcentajeRemesasPagadas);
+		
+							reporteMonitoreoProgramaPorEstablecimientoVO.setRemesa_monto(totalRemesasAcumuladasMesActual);
+							reporteMonitoreoProgramaPorEstablecimientoVO.setRemesa_porcentaje(porcentajeRemesasPagadas);
 						}
+		
+						reporteMonitoreoProgramaPorEstablecimientoVO.setRemesa_monto(totalRemesasAcumuladasMesActual);
+						
 						reporteMonitoreoProgramaPorEstablecimientoVO.setConvenio_monto(0L);
 						reporteMonitoreoProgramaPorEstablecimientoVO.setConvenio_porcentaje(0.0);
-						reporteMonitoreoProgramaPorEstablecimientoVO.setConvenio_pendiente(0L);
+						
+						Long totalConveniosPorEstablecimiento = 0L;
+						ConvenioServicioComponenteVO convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programa.getIdProgramaAno(), componente.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.INGRESADO);
+						if(convenioServicioComponente == null){
+							convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programa.getIdProgramaAno(), componente.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.APROBADO);
+						}
+						if(convenioServicioComponente == null){
+							convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programa.getIdProgramaAno(), componente.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.TRAMITE);
+						}
+						if(convenioServicioComponente == null){
+							convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programa.getIdProgramaAno(), componente.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.PAGADO);
+						}
+						if(convenioServicioComponente != null){
+							totalConveniosPorEstablecimiento += ((convenioServicioComponente.getMonto() != null) ? convenioServicioComponente.getMonto() : 0L);
+						}
+						
+						if (totalConveniosPorEstablecimiento > 0L && reporteMonitoreoProgramaPorEstablecimientoVO.getMarco() > 0) {
+							System.out.println("Marco --> " + reporteMonitoreoProgramaPorEstablecimientoVO.getMarco());
+							System.out.println("totalConveniosPorEstablecimiento --> " + totalConveniosPorEstablecimiento);
+							reporteMonitoreoProgramaPorEstablecimientoVO.setConvenio_monto(totalConveniosPorEstablecimiento);
+							Double porcentajeConvenio = totalConveniosPorEstablecimiento * 100.0 / reporteMonitoreoProgramaPorEstablecimientoVO.getMarco() ;
+							reporteMonitoreoProgramaPorEstablecimientoVO.setConvenio_porcentaje(porcentajeConvenio);
+						}
+						reporteMonitoreoProgramaPorEstablecimientoVO.setConvenio_pendiente(reporteMonitoreoProgramaPorEstablecimientoVO.getMarco() - reporteMonitoreoProgramaPorEstablecimientoVO.getConvenio_monto());
 						resultado.add(reporteMonitoreoProgramaPorEstablecimientoVO);
 					}
 				}
@@ -2271,6 +2391,8 @@ public class ReportesServices {
 		List<ReporteEstadoSituacionByComunaVO> resultado = new ArrayList<ReporteEstadoSituacionByComunaVO>();
 		List<ProgramaVO> programas = programasService.getProgramasByAnoSubtitulo(ano, subtitulo);
 		Integer mesActual = Integer.parseInt(getMesCurso(true));
+		Calendar calendar = Calendar.getInstance();
+		Integer diaDelMes = calendar.get(Calendar.DAY_OF_MONTH);
 		for (ProgramaVO programa : programas) {
 			List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
 			for (ServicioSalud servicio : servicios) {
@@ -2278,17 +2400,17 @@ public class ReportesServices {
 					List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulo);
 					for (ComponentesVO componenteVO : componentes) {
 						ReporteEstadoSituacionByComunaVO reporteEstadoSituacionByComunaVO = new ReporteEstadoSituacionByComunaVO();
-
+						
 						reporteEstadoSituacionByComunaVO.setPrograma(programa.getNombre());
-						reporteEstadoSituacionByComunaVO.setServicio(servicio.getNombre());
+						reporteEstadoSituacionByComunaVO.setServicio(comuna.getServicioSalud().getNombre());
 						reporteEstadoSituacionByComunaVO.setComuna(comuna.getNombre());
 						reporteEstadoSituacionByComunaVO.setComponente(componenteVO.getNombre());
-
+			
 						Long tarifaAnteriorAnoActual = 0L;
-
+			
 						tarifaAnteriorAnoActual = programasDAO.getTarifaAnteriorComunaProgramaAnoComponenteSubtitulo(comuna.getId(), programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
 						Long tarifaAnoActual = programasDAO.getMPComunaProgramaAnoComponenteSubtitulo(comuna.getId(), programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
-
+			
 						if(tarifaAnteriorAnoActual > 0){
 							//el marco fue modificado
 							reporteEstadoSituacionByComunaVO.setMarco_modificado(tarifaAnoActual);
@@ -2298,27 +2420,81 @@ public class ReportesServices {
 							reporteEstadoSituacionByComunaVO.setMarco_inicial(tarifaAnoActual);
 							reporteEstadoSituacionByComunaVO.setMarco_modificado(tarifaAnoActual);
 						}
-
 						reporteEstadoSituacionByComunaVO.setConvenioRecibido_monto(0L);
 						reporteEstadoSituacionByComunaVO.setConvenioRecibido_porcentaje(0.0);
 						reporteEstadoSituacionByComunaVO.setConvenioPendiente_monto(0L);
 						reporteEstadoSituacionByComunaVO.setConvenioPendiente_porcentaje(0.0);
-
 						
-						Long totalRemesasAcumuladasMesActual = remesasDAO.getRemesasPagadasComunaProgramaSubtitulo(programa.getIdProgramaAno(), subtitulo.getId(), comuna.getId(), mesActual);
-						Long totalRemesasNoPagadasMesActual = remesasDAO.getRemesasNoPagadasComunaProgramaSubtituloMesHasta(programa.getIdProgramaAno(), subtitulo.getId(), comuna.getId(), mesActual);
-
-						Double porcentajeRemesasPagadas = (totalRemesasAcumuladasMesActual * 100.0) / reporteEstadoSituacionByComunaVO.getMarco_inicial();
-						Double porcentajeRemesasNoPagadas = (totalRemesasNoPagadasMesActual * 100.0) / reporteEstadoSituacionByComunaVO.getMarco_inicial();
-
+						Long totalConveniosPorComuna = 0L;
+						ConvenioComunaComponenteVO convenioComunaComponente = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), comuna.getId(), EstadosConvenios.INGRESADO);
+						if(convenioComunaComponente == null){
+							convenioComunaComponente = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), comuna.getId(), EstadosConvenios.APROBADO);
+						}
+						if(convenioComunaComponente == null){
+							convenioComunaComponente = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), comuna.getId(), EstadosConvenios.TRAMITE);
+						}
+						if(convenioComunaComponente == null){
+							convenioComunaComponente = conveniosService.getConvenioComunaComponenteByProgramaAnoComponenteSubtituloComunaEstadoConvenio(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), comuna.getId(), EstadosConvenios.PAGADO);
+						}
+						if(convenioComunaComponente != null){
+							totalConveniosPorComuna += ((convenioComunaComponente.getMonto() != null) ? convenioComunaComponente.getMonto() : 0L);
+						}
+						
+						if (totalConveniosPorComuna > 0L && reporteEstadoSituacionByComunaVO.getMarco_modificado() > 0) {
+							System.out.println("Marco --> " + reporteEstadoSituacionByComunaVO.getMarco_modificado());
+							System.out.println("totalConveniosPorComuna --> " + totalConveniosPorComuna);
+							Double porcentajeConvenio = totalConveniosPorComuna * 100.0 / reporteEstadoSituacionByComunaVO.getMarco_modificado();
+							Double porcentajeConvenioPendiente = (100.0 - porcentajeConvenio);
+							porcentajeConvenio = porcentajeConvenio / 100.0;
+							reporteEstadoSituacionByComunaVO.setConvenioRecibido_monto(totalConveniosPorComuna);
+							reporteEstadoSituacionByComunaVO.setConvenioRecibido_porcentaje(porcentajeConvenio);
+							reporteEstadoSituacionByComunaVO.setConvenioPendiente_monto(reporteEstadoSituacionByComunaVO.getMarco_modificado() - totalConveniosPorComuna);
+							reporteEstadoSituacionByComunaVO.setConvenioPendiente_porcentaje(porcentajeConvenioPendiente);
+						}
+			
+						Long totalRemesasAcumuladasMesActual = remesasDAO.getRemesasPagadasComunaProgramaComponenteSubtituloDiaMes(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), comuna.getId(), diaDelMes, mesActual);
+						Long totalRemesasNoPagadasMesActual = reporteEstadoSituacionByComunaVO.getMarco_modificado() - totalRemesasAcumuladasMesActual;
+						
 						reporteEstadoSituacionByComunaVO.setRemesaAcumulada_monto(totalRemesasAcumuladasMesActual);
-						reporteEstadoSituacionByComunaVO.setRemesaAcumulada_porcentaje(porcentajeRemesasPagadas);
+						reporteEstadoSituacionByComunaVO.setRemesaAcumulada_porcentaje(0.0);
 						reporteEstadoSituacionByComunaVO.setRemesaPendiente_monto(totalRemesasNoPagadasMesActual);
-						reporteEstadoSituacionByComunaVO.setRemesaPendiente_porcentaje(porcentajeRemesasNoPagadas);
+						reporteEstadoSituacionByComunaVO.setRemesaPendiente_porcentaje(0.0);
+						System.out.println("totalRemesasAcumuladasMesActual --> " + totalRemesasAcumuladasMesActual);
+						System.out.println("totalRemesasNoPagadasMesActual --> " + totalRemesasNoPagadasMesActual);
+						
+						if(reporteEstadoSituacionByComunaVO.getMarco_modificado() != 0L){
+							Double porcentajeRemesasPagadas = (totalRemesasAcumuladasMesActual * 100.0) / reporteEstadoSituacionByComunaVO.getMarco_modificado();
+							Double porcentajeRemesasNoPagadas = (totalRemesasNoPagadasMesActual * 100.0) / reporteEstadoSituacionByComunaVO.getMarco_modificado();
+							
+							porcentajeRemesasPagadas = porcentajeRemesasPagadas / 100.0;
+							porcentajeRemesasNoPagadas = porcentajeRemesasNoPagadas / 100.0;
+							
+							System.out.println("porcentajeRemesasPagadas --> " + porcentajeRemesasPagadas);
+							System.out.println("porcentajeRemesasNoPagadas --> " + porcentajeRemesasNoPagadas);
+							
+							reporteEstadoSituacionByComunaVO.setRemesaAcumulada_monto(totalRemesasAcumuladasMesActual);
+							reporteEstadoSituacionByComunaVO.setRemesaAcumulada_porcentaje(porcentajeRemesasPagadas);
+							reporteEstadoSituacionByComunaVO.setRemesaPendiente_monto(totalRemesasNoPagadasMesActual);
+							reporteEstadoSituacionByComunaVO.setRemesaPendiente_porcentaje(porcentajeRemesasNoPagadas);
+						}
+			
 						reporteEstadoSituacionByComunaVO.setReliquidacion_monto(0L);
 						reporteEstadoSituacionByComunaVO.setReliquidacion_porcentaje(0.0);
+						Reliquidacion reliquidacion = reliquidacionDAO.getReliquidacionByProgramaAno(programa.getIdProgramaAno());
+						if(reliquidacion != null){
+							ReliquidacionComunaComponente reliquidacionComunaComponente =  reliquidacionDAO.getReliquidacionComunaComponenteByProgramaAnoComunaComponenteSubtituloReliquidacion(programa.getIdProgramaAno(), comuna.getId(), componenteVO.getId(), subtitulo.getId(), reliquidacion.getIdReliquidacion());
+							if(reliquidacionComunaComponente != null){
+								reporteEstadoSituacionByComunaVO.setReliquidacion_monto((reliquidacionComunaComponente.getMontoRebaja() == null) ? 0 : new Long(reliquidacionComunaComponente.getMontoRebaja()));
+								Double porcentajeReliquidacion = ((reliquidacionComunaComponente.getCumplimiento() == null || reliquidacionComunaComponente.getCumplimiento().getRebaja() == null) ? null : reliquidacionComunaComponente.getCumplimiento().getRebaja());
+								if(porcentajeReliquidacion != null){
+									porcentajeReliquidacion = porcentajeReliquidacion / 100.0;
+								}else{
+									porcentajeReliquidacion = 0.0;
+								}
+								reporteEstadoSituacionByComunaVO.setReliquidacion_porcentaje(porcentajeReliquidacion);
+							}
+						}
 						reporteEstadoSituacionByComunaVO.setIncremento(reporteEstadoSituacionByComunaVO.getMarco_modificado()- reporteEstadoSituacionByComunaVO.getMarco_inicial());
-
 						resultado.add(reporteEstadoSituacionByComunaVO);
 					}
 				}
@@ -2497,6 +2673,9 @@ public class ReportesServices {
 		List<ProgramaVO> programas = programasService.getProgramasByAnoSubtitulo(ano, subtitulo);
 
 		List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
+		Integer mesActual = Integer.parseInt(getMesCurso(true));
+		Calendar calendar = Calendar.getInstance();
+		Integer diaDelMes = calendar.get(Calendar.DAY_OF_MONTH);
 		for (ProgramaVO programa : programas) {
 			List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulo);
 
@@ -2504,51 +2683,105 @@ public class ReportesServices {
 				for(Establecimiento establecimiento : servicio.getEstablecimientos()){
 					for (ComponentesVO componenteVO : componentes) {
 						ReporteEstadoSituacionByServiciosVO reporteEstadoSituacionByServiciosVO = new ReporteEstadoSituacionByServiciosVO();
-
+						
 						reporteEstadoSituacionByServiciosVO.setPrograma(programa.getNombre());
-						reporteEstadoSituacionByServiciosVO.setServicio(servicio.getNombre());
+						reporteEstadoSituacionByServiciosVO.setServicio(establecimiento.getServicioSalud().getNombre());
 						reporteEstadoSituacionByServiciosVO.setEstablecimiento(establecimiento.getNombre());
 						reporteEstadoSituacionByServiciosVO.setComponente(componenteVO.getNombre());
-
-						Long marcoAnoActual = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(
-								establecimiento.getId(), programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
-						System.out.println("marcoAnoActual --> " + marcoAnoActual);
-
-						reporteEstadoSituacionByServiciosVO.setMarco_inicial(marcoAnoActual);
-
-						// TODO ver bien de donde sacar este valor
-						reporteEstadoSituacionByServiciosVO.setMarco_modificado(marcoAnoActual);
+			
+						Long tarifaAnteriorAnoActual = programasDAO.getTarifaAnteriorEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
+						Long tarifaAnoActual = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
+						System.out.println("tarifaAnteriorAnoActual --> " + tarifaAnteriorAnoActual);
+						System.out.println("tarifaAnoActual --> " + tarifaAnoActual);
+						
+						if(tarifaAnteriorAnoActual > 0){
+							//el marco fue modificado
+							reporteEstadoSituacionByServiciosVO.setMarco_modificado(tarifaAnoActual);
+							reporteEstadoSituacionByServiciosVO.setMarco_inicial(tarifaAnteriorAnoActual);
+						}else{
+							//no tiene modificaciones
+							reporteEstadoSituacionByServiciosVO.setMarco_inicial(tarifaAnoActual);
+							reporteEstadoSituacionByServiciosVO.setMarco_modificado(tarifaAnoActual);
+						}
 						reporteEstadoSituacionByServiciosVO.setConvenioRecibido_monto(0L);
 						reporteEstadoSituacionByServiciosVO.setConvenioRecibido_porcentaje(0.0);
 						reporteEstadoSituacionByServiciosVO.setConvenioPendiente_monto(0L);
 						reporteEstadoSituacionByServiciosVO.setConvenioPendiente_porcentaje(0.0);
-
-						Integer mesActual = Integer.parseInt(getMesCurso(true));
-						Long totalRemesasAcumuladasMesActual = 0L;
-						Long totalRemesasPendientesMesActual = 0L;
-
-						totalRemesasAcumuladasMesActual = remesasDAO.getRemesasPagadasEstablecimientoProgramaSubtitulo(
-								programa.getIdProgramaAno(), subtitulo.getId(), establecimiento.getId(), mesActual);
-						System.out.println("totalRemesasAcumuladasMesActual --> "+ totalRemesasAcumuladasMesActual);
-
-						Double porcentajeRemesaAcumulada = ((totalRemesasAcumuladasMesActual * 100.0) / marcoAnoActual) / 100;
-						System.out.println("porcentajeRemesaAcumulada --> "+ porcentajeRemesaAcumulada);
-
-						totalRemesasPendientesMesActual = remesasDAO.getRemesasNoPagadasEstablecimientoProgramaSubtitulo(
-								programa.getIdProgramaAno(), subtitulo.getId(), establecimiento.getId(), mesActual);
-
-						Double porcentajeRemesaPendiente = ((totalRemesasPendientesMesActual * 100.0) / marcoAnoActual) / 100;
-						System.out.println("porcentajeRemesaPendiente --> "
-								+ porcentajeRemesaPendiente);
-
+						
+						Long totalConveniosPorEstablecimiento = 0L;
+						ConvenioServicioComponenteVO convenioServicioComponenteVO = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.INGRESADO);
+						if(convenioServicioComponenteVO == null){
+							convenioServicioComponenteVO = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.APROBADO);
+						}
+						if(convenioServicioComponenteVO == null){
+							convenioServicioComponenteVO = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.TRAMITE);
+						}
+						if(convenioServicioComponenteVO == null){
+							convenioServicioComponenteVO = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.PAGADO);
+						}
+						if(convenioServicioComponenteVO != null){
+							totalConveniosPorEstablecimiento += ((convenioServicioComponenteVO.getMonto() != null) ? convenioServicioComponenteVO.getMonto() : 0L);
+						}
+						
+						if (totalConveniosPorEstablecimiento > 0L && reporteEstadoSituacionByServiciosVO.getMarco_modificado() > 0) {
+							System.out.println("Marco --> " + reporteEstadoSituacionByServiciosVO.getMarco_modificado());
+							System.out.println("totalConveniosPorEstablecimiento --> " + totalConveniosPorEstablecimiento);
+							Double porcentajeConvenio = totalConveniosPorEstablecimiento * 100.0 / reporteEstadoSituacionByServiciosVO.getMarco_modificado();
+							Double porcentajeConvenioPendiente = (100.0 - porcentajeConvenio);
+							porcentajeConvenio = porcentajeConvenio / 100.0;
+							porcentajeConvenioPendiente = porcentajeConvenioPendiente / 100.0;
+							reporteEstadoSituacionByServiciosVO.setConvenioRecibido_monto(totalConveniosPorEstablecimiento);
+							reporteEstadoSituacionByServiciosVO.setConvenioRecibido_porcentaje(porcentajeConvenio);
+							reporteEstadoSituacionByServiciosVO.setConvenioPendiente_monto(reporteEstadoSituacionByServiciosVO.getMarco_modificado() - totalConveniosPorEstablecimiento);
+							reporteEstadoSituacionByServiciosVO.setConvenioPendiente_porcentaje(porcentajeConvenioPendiente);
+						}
+						
+						Long totalRemesasAcumuladasMesActual = remesasDAO.getRemesasPagadasEstablecimientoProgramaComponenteSubtituloDiaMes(programa.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), establecimiento.getId(), diaDelMes, mesActual);
+						Long totalRemesasNoPagadasMesActual = reporteEstadoSituacionByServiciosVO.getMarco_modificado() - totalRemesasAcumuladasMesActual;
 						reporteEstadoSituacionByServiciosVO.setRemesaAcumulada_monto(totalRemesasAcumuladasMesActual);
-						reporteEstadoSituacionByServiciosVO.setRemesaAcumulada_porcentaje(porcentajeRemesaAcumulada);
-						reporteEstadoSituacionByServiciosVO.setRemesaPendiente_monto(totalRemesasPendientesMesActual);
-						reporteEstadoSituacionByServiciosVO.setRemesaPendiente_porcentaje(porcentajeRemesaPendiente);
+						reporteEstadoSituacionByServiciosVO.setRemesaAcumulada_porcentaje(0.0);
+						reporteEstadoSituacionByServiciosVO.setRemesaPendiente_monto(totalRemesasNoPagadasMesActual);
+						reporteEstadoSituacionByServiciosVO.setRemesaPendiente_porcentaje(0.0);
+						System.out.println("totalRemesasAcumuladasMesActual --> " + totalRemesasAcumuladasMesActual);
+						System.out.println("totalRemesasNoPagadasMesActual --> " + totalRemesasNoPagadasMesActual);
+						
+						if(reporteEstadoSituacionByServiciosVO.getMarco_modificado() != 0L){
+							Double porcentajeRemesasPagadas = (totalRemesasAcumuladasMesActual * 100.0) / reporteEstadoSituacionByServiciosVO.getMarco_modificado();
+							Double porcentajeRemesasNoPagadas = (totalRemesasNoPagadasMesActual * 100.0) / reporteEstadoSituacionByServiciosVO.getMarco_modificado();
+
+							porcentajeRemesasPagadas = porcentajeRemesasPagadas / 100.0;
+							porcentajeRemesasNoPagadas = porcentajeRemesasNoPagadas / 100.0;
+							System.out.println("porcentajeRemesasPagadas --> " + porcentajeRemesasPagadas);
+							System.out.println("porcentajeRemesasNoPagadas --> " + porcentajeRemesasNoPagadas);
+							
+							reporteEstadoSituacionByServiciosVO.setRemesaAcumulada_monto(totalRemesasAcumuladasMesActual);
+							reporteEstadoSituacionByServiciosVO.setRemesaAcumulada_porcentaje(porcentajeRemesasPagadas);
+							reporteEstadoSituacionByServiciosVO.setRemesaPendiente_monto(totalRemesasNoPagadasMesActual);
+							reporteEstadoSituacionByServiciosVO.setRemesaPendiente_porcentaje(porcentajeRemesasNoPagadas);
+						}
 						reporteEstadoSituacionByServiciosVO.setReliquidacion_monto(0L);
 						reporteEstadoSituacionByServiciosVO.setReliquidacion_porcentaje(0.0);
+						Reliquidacion reliquidacion = reliquidacionDAO.getReliquidacionByProgramaAno(programa.getIdProgramaAno());
+						
+						if(reliquidacion != null){
+							ReliquidacionServicioComponente reliquidacionServicioComponente =  reliquidacionDAO.getReliquidacionServicioComponenteByProgramaAnoEstablecimientoComponenteSubtituloReliquidacion(programa.getIdProgramaAno(), establecimiento.getId(), componenteVO.getId(), subtitulo.getId(), reliquidacion.getIdReliquidacion());
+							if(reliquidacionServicioComponente != null){
+								reporteEstadoSituacionByServiciosVO.setReliquidacion_monto((reliquidacionServicioComponente.getMontoRebaja() == null) ? 0 : new Long(reliquidacionServicioComponente.getMontoRebaja()));
+								Double porcentajeReliquidacion = ((reliquidacionServicioComponente.getCumplimiento() == null || reliquidacionServicioComponente.getCumplimiento().getRebaja() == null) ? null : reliquidacionServicioComponente.getCumplimiento().getRebaja());
+								if(porcentajeReliquidacion != null){
+									porcentajeReliquidacion = porcentajeReliquidacion / 100.0;
+								}else{
+									porcentajeReliquidacion = 0.0;
+								}
+								reporteEstadoSituacionByServiciosVO.setReliquidacion_porcentaje(porcentajeReliquidacion);
+								System.out.println("porcentajeReliquidacion --> " + porcentajeReliquidacion);
+							}
+						}
 						reporteEstadoSituacionByServiciosVO.setIncremento(reporteEstadoSituacionByServiciosVO.getMarco_modificado()	- reporteEstadoSituacionByServiciosVO.getMarco_inicial());
 						resultado.add(reporteEstadoSituacionByServiciosVO);
+
+						
+						
 					}
 				}
 			}

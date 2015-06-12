@@ -71,7 +71,7 @@ public class ComponenteService {
 		compoVO.setPeso(componente.getPeso());
 		
 		List<SubtituloVO> subtitulos = new ArrayList<SubtituloVO>();
-		for(ComponenteSubtitulo compoSubs : componente.getComponenteSubtitulos()){
+		for(ComponenteSubtitulo compoSubs : componente.getComponenteSubtitulosComponente()){
 			SubtituloVO subVO = new SubtituloVO();
 			subVO.setId(compoSubs.getSubtitulo().getIdTipoSubtitulo());
 			subVO.setNombre(compoSubs.getSubtitulo().getNombreSubtitulo());
@@ -90,6 +90,15 @@ public class ComponenteService {
 	public Componente getComponenteByNombre(String nombre){
 		Componente componente = this.componenteDAO.getComponenteByNombre(nombre);		
 		return componente;		
+	}
+	
+	public List<ComponentesVO> getComponenteByIdTipoComponente(Integer idTipoComponente) {
+		List<Componente> componentes = this.componenteDAO.getComponenteByTipoComponente(idTipoComponente);
+		List<ComponentesVO> componentesPrograma = new ArrayList<ComponentesVO>();
+		for (Componente componente : componentes){
+			componentesPrograma.add(new ComponenteMapper().getBasic(componente));
+		}
+		return componentesPrograma;
 	}
 
 }

@@ -23,26 +23,15 @@
                         
                         <p:outputLabel value="#{messages.CreateUsuarioLabel_nombre}" for="nombre" />
                         <p:inputText id="nombre" value="#{usuarioController.seleccionado.nombre}" title="#{messages.CreateUsuarioTitle_nombre}"/>
+                        
+                        <p:outputLabel value="Email" for="emailUsuario" />
+						<p:inputText id="emailUsuario"
+							value="#{usuarioController.seleccionado.email}"
+							title="Email" required="true" >
+							<f:validator validatorId="minsal.divap.emailValidator" />
+							<f:validateLength maximum="50" />
+						</p:inputText>
 
-                        <p:outputLabel value="#{messages.CreateUsuarioLabel_email}" for="email" />
-                        <p:selectOneMenu id="email" value="#{usuarioController.seleccionado.idEmail}" >
-                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
-                            <f:selectItems value="#{usuarioController.emails}"
-                                           var="emailItem"
-                                           itemValue="#{emailItem.idEmail}"
-                                           itemLabel="#{emailItem.valor}"
-                                           />
-                        </p:selectOneMenu>
-
-                        <p:outputLabel value="#{messages.CreateUsuarioLabel_servicio}" for="servicio" />
-                        <p:selectOneMenu id="servicio" value="#{usuarioController.seleccionado.idServicio}" >
-                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
-                            <f:selectItems value="#{usuarioController.servicios}"
-                                           var="servicioItem"
-                                           itemValue="#{servicioItem.id_servicio}"
-                                           itemLabel="#{servicioItem.nombre_servicio}"
-                                           />
-                        </p:selectOneMenu>
                         
                         <p:outputLabel value="#{messages.CreateRolTitle_nombre}" />
                         <p:pickList id="pickList" value="#{usuarioController.roles}" var="rolItem" itemLabel="#{rolItem}" itemValue="#{rolItem}"/>

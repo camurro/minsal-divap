@@ -34,7 +34,7 @@ public class FactorRefAsigZonaController extends AbstractController<FactorRefAsi
     private FactorRefAsigZonaFacade ejbFacade;
     @EJB
     private MantenedoresService mantenedoresService;
-
+    
     
     @PostConstruct
     @Override
@@ -42,6 +42,8 @@ public class FactorRefAsigZonaController extends AbstractController<FactorRefAsi
         super.setFacade(ejbFacade);
         FacesContext context = FacesContext.getCurrentInstance();
     }
+    
+  
     
     public void prepareCreateFactorRefAsigZona(ActionEvent event) {
 		System.out.println("prepareCreateFactorRefAsigZona");
@@ -67,22 +69,55 @@ public class FactorRefAsigZonaController extends AbstractController<FactorRefAsi
 		seleccionado = null;
 		factorRefAsigZonas = null;
 	}
-    
+	
+	    
 	@Override
 	protected void persist(PersistAction persistAction, String successMessage) {
 		System.out.println("this.seleccionado ---> "+this.seleccionado);
+		factorRefAsigZonas = mantenedoresService.getMantenedorFactorRefAsigZonaAll();
 		if (this.seleccionado != null) {
 			this.setEmbeddableKeys();
 			try {
 				if (persistAction == PersistAction.UPDATE) {
 					this.ejbFacade.edit(this.seleccionado);
+					JsfUtil.addSuccessMessage(successMessage);
 				}else if(persistAction == PersistAction.CREATE){
-					this.ejbFacade.create(this.seleccionado);
+					
+					String puedeIngresarse = mantenedoresService.puedeInsertarseTramoAsigZona(factorRefAsigZonas, seleccionado);
+
+					
+					if(seleccionado.getZonaDesde() > seleccionado.getZonaHasta()){
+						JsfUtil.addErrorMessage("El tramo que se desea crear no es válido");
+					}else if(puedeIngresarse.equalsIgnoreCase("NO")){
+						JsfUtil.addErrorMessage("El tramo que se desea crear no es válido");
+					}
+					else if(puedeIngresarse.equalsIgnoreCase("SI y agregar desde al último tramo")){
+						MantenedorFactorRefAsigZonaVO ultimo = factorRefAsigZonas.get(factorRefAsigZonas.size() - 1);
+						if(ultimo.getZonaHasta() == null){
+							this.ejbFacade.createAndChangeUltimo(this.seleccionado, puedeIngresarse, ultimo);
+							JsfUtil.addSuccessMessage("El tramo se ha creado exitósamente");
+						}else{
+							this.ejbFacade.create(this.seleccionado);
+							JsfUtil.addSuccessMessage("El tramo se ha creado exitósamente");
+						}
+						
+					}
+					else{
+						this.ejbFacade.create(this.seleccionado);
+						JsfUtil.addSuccessMessage("El tramo se ha creado exitósamente");
+					}
+					
 				}else if(persistAction == PersistAction.DELETE){
-					System.out.println("borrando con nuestro delete");
-					this.ejbFacade.remove(this.seleccionado);
+					if(seleccionado.getPuedeEliminarse()){
+						System.out.println("borrando con nuestro delete");
+						this.ejbFacade.remove(this.seleccionado);
+						JsfUtil.addSuccessMessage("El tramo se ha eliminado exitósamente");
+					}else{
+						JsfUtil.addErrorMessage("El tramo no puede ser eliminado ya que se encuentra en uso");
+					}
+					
 				}
-				JsfUtil.addSuccessMessage(successMessage);
+				
 			} catch (EJBException ex) {
 				Throwable cause = JsfUtil.getRootCause(ex.getCause());
 				if (cause != null) {
@@ -151,6 +186,7 @@ public class FactorRefAsigZonaController extends AbstractController<FactorRefAsi
 	}
 
 	public void setSeleccionado(MantenedorFactorRefAsigZonaVO seleccionado) {
+//		System.out.println("this.seleccionado --> "+this.seleccionado.toString());
 		this.seleccionado = seleccionado;
 	}
     

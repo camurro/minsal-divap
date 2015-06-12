@@ -15,14 +15,22 @@
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" columnClasses="column" rendered="#{comunaController.comunaSeleccionada != null}">
 
-                        <h:outputText value="#{messages.ViewComunaLabel_id}"/>
-                        <h:outputText value="#{comunaController.comunaSeleccionada.idComuna}" title="#{messages.ViewComunaTitle_id}"/>
-
                         <h:outputText value="#{messages.ViewComunaLabel_nombre}"/>
                         <h:outputText value="#{comunaController.comunaSeleccionada.nombreComuna}" title="#{messages.ViewComunaTitle_nombre}"/>
 
                         <h:outputText value="#{messages.ViewComunaLabel_servicioSalud}"/>
                         <h:outputText value="#{comunaController.comunaSeleccionada.nombreServicio}"/>
+                        
+                        <h:outputText value="Clasificación" rendered="#{not comunaController.comunaSeleccionada.comunaAuxiliar}"/>
+                        <h:outputText value="#{comunaController.comunaSeleccionada.clasificacion}" rendered="#{not comunaController.comunaSeleccionada.comunaAuxiliar}"/>
+                        
+                        <h:outputText value="Asignación Zona" rendered="#{not comunaController.comunaSeleccionada.comunaAuxiliar}"/>
+                        <h:outputText value="Tramo #{comunaController.comunaSeleccionada.idAsigZona}" rendered="#{not comunaController.comunaSeleccionada.comunaAuxiliar}"/>
+                        
+                        <h:outputText value="Tramo Pobreza" rendered="#{not comunaController.comunaSeleccionada.comunaAuxiliar}"/>
+                        <h:outputText value="#{comunaController.comunaSeleccionada.tramoPobreza}" rendered="#{not comunaController.comunaSeleccionada.comunaAuxiliar}"/>
+                        
+                        
                     </p:panelGrid>
                     <p:commandButton value="#{messages.Close}" onclick="ComunaViewDialog.hide()"/>
                 </h:panelGroup>

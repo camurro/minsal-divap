@@ -26607,4 +26607,35 @@ ALTER TABLE detalle_remesas
 
 
 
+-- creacion de la tabla programa_componente
+
+CREATE TABLE programa_componente
+(
+  id_programa_componente serial NOT NULL,
+  programa integer NOT NULL,
+  componente integer NOT NULL,
+  CONSTRAINT programa_componente_pk PRIMARY KEY (id_programa_componente ),
+  CONSTRAINT componente_fk FOREIGN KEY (componente)
+      REFERENCES componente (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT programa_fk FOREIGN KEY (programa)
+      REFERENCES programa (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE programa_componente
+  OWNER TO postgres;
+
+
+-- update table factor asignacion zona, se agrega 0 al zona desde
+
+UPDATE factor_ref_asig_zona
+   SET zona_desde=0.0
+ WHERE id_factor_ref_asig_zona=1;
+
+
+
+
 

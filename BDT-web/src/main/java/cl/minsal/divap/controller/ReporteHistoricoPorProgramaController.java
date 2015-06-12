@@ -158,15 +158,15 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 		tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO24);
 		tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO29);
 		
-		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEHISTORICOPROGRAMACOMUNA, getAnoEnCurso());
-		if(this.idPlanillaDocComuna == null){
-			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteHistoricoComuna(getAnoEnCurso());
-		}
+//		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEHISTORICOPROGRAMACOMUNA, getAnoEnCurso());
+//		if(this.idPlanillaDocComuna == null){
+//			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteHistoricoComuna(getAnoEnCurso());
+//		}
 		
-		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEHISTORICOPROGRAMAESTABLECIMIENTO, getAnoEnCurso());
-		if(this.idPlanillaDocEstablecimiento == null){
-			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteHistoricoEstablecimiento(getAnoEnCurso());
-		}
+//		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEHISTORICOPROGRAMAESTABLECIMIENTO, getAnoEnCurso());
+//		if(this.idPlanillaDocEstablecimiento == null){
+//			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteHistoricoEstablecimiento(getAnoEnCurso());
+//		}
 	
 	}
 	
@@ -231,6 +231,8 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	}
 	
 	public String downloadTemplateComuna() {
+		this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteHistoricoComuna(getAnoEnCurso());
+		setDocIdComunaDownload(this.idPlanillaDocComuna.toString());
 		Integer docDownload = Integer.valueOf(Integer
 				.parseInt(getDocIdComunaDownload()));
 		setDocumento(documentService.getDocument(docDownload));
@@ -239,6 +241,8 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	}
 	
 	public String downloadTemplateEstablecimiento() {
+		this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteHistoricoEstablecimiento(getAnoEnCurso());
+		setDocIdEstablecimientoDownload(this.idPlanillaDocEstablecimiento.toString());
 		Integer docDownload = Integer.valueOf(Integer
 				.parseInt(getDocIdEstablecimientoDownload()));
 		setDocumento(documentService.getDocument(docDownload));

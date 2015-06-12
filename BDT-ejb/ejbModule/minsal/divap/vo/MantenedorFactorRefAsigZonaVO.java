@@ -7,19 +7,15 @@ public class MantenedorFactorRefAsigZonaVO implements Serializable{
 	private static final long serialVersionUID = -1526387060190874266L;
 	
 	private Integer idFactorRefAsigZona;
-	private Short zona;
+	private Double zonaDesde;
 	private Double valor;
+	private Double zonaHasta;
+	private Boolean puedeEliminarse;
 	
 	public MantenedorFactorRefAsigZonaVO(){
 		
 	}
 	
-	public MantenedorFactorRefAsigZonaVO(Integer idFactorRefAsigZona, Short zona, Double valor){
-		super();
-		this.idFactorRefAsigZona = idFactorRefAsigZona;
-		this.zona = zona;
-		this.valor = valor;
-	}
 
 	public Integer getIdFactorRefAsigZona() {
 		return idFactorRefAsigZona;
@@ -29,12 +25,20 @@ public class MantenedorFactorRefAsigZonaVO implements Serializable{
 		this.idFactorRefAsigZona = idFactorRefAsigZona;
 	}
 
-	public Short getZona() {
-		return zona;
+	public Double getZonaDesde() {
+		return zonaDesde;
 	}
 
-	public void setZona(Short zona) {
-		this.zona = zona;
+	public void setZonaDesde(Double zonaDesde) {
+		this.zonaDesde = zonaDesde;
+	}
+
+	public Double getZonaHasta() {
+		return zonaHasta;
+	}
+
+	public void setZonaHasta(Double zonaHasta) {
+		this.zonaHasta = zonaHasta;
 	}
 
 	public Double getValor() {
@@ -45,11 +49,20 @@ public class MantenedorFactorRefAsigZonaVO implements Serializable{
 		this.valor = valor;
 	}
 
+	public Boolean getPuedeEliminarse() {
+		return puedeEliminarse;
+	}
+
+	public void setPuedeEliminarse(Boolean puedeEliminarse) {
+		this.puedeEliminarse = puedeEliminarse;
+	}
+
 	@Override
 	public String toString() {
-		return "MantenedorFactorRefAsigZona [idFactorRefAsigZona="
-				+ idFactorRefAsigZona + ", zona=" + zona + ", valor=" + valor
-				+ "]";
+		return "MantenedorFactorRefAsigZonaVO [idFactorRefAsigZona="
+				+ idFactorRefAsigZona + ", zonaDesde=" + zonaDesde + ", valor="
+				+ valor + ", zonaHasta=" + zonaHasta + ", puedeEliminarse="
+				+ puedeEliminarse + "]";
 	}
 
 }

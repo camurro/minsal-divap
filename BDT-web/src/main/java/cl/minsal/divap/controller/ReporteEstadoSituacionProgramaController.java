@@ -130,15 +130,15 @@ public class ReporteEstadoSituacionProgramaController extends BaseController imp
 		this.reporteEstadoSituacionByServiciosVOSub22 = new ArrayList<ReporteEstadoSituacionByServiciosVO>();
 		this.reporteEstadoSituacionByServiciosVOSub29 = new ArrayList<ReporteEstadoSituacionByServiciosVO>();
 		
-		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEESTADOSITUACIONPROGRAMABYCOMUNA, getAnoEnCurso());
-		if(this.idPlanillaDocComuna == null){
-			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteEstadoSituacionPorComuna(getAnoEnCurso());
-		}
+//		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEESTADOSITUACIONPROGRAMABYCOMUNA, getAnoEnCurso());
+//		if(this.idPlanillaDocComuna == null){
+//			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteEstadoSituacionPorComuna(getAnoEnCurso());
+//		}
 		
-		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEESTADOSITUACIONPROGRAMABYSERVICIO, getAnoEnCurso());
-		if(this.idPlanillaDocEstablecimiento == null){
-			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteEstadoSituacionPorEstablecimiento(getAnoEnCurso());
-		}
+//		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEESTADOSITUACIONPROGRAMABYSERVICIO, getAnoEnCurso());
+//		if(this.idPlanillaDocEstablecimiento == null){
+//			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteEstadoSituacionPorEstablecimiento(getAnoEnCurso());
+//		}
 		
 		Integer currentTab = 0;
 		tabSubtitulo.put(currentTab++, Subtitulo.SUBTITULO21);
@@ -225,6 +225,8 @@ public class ReporteEstadoSituacionProgramaController extends BaseController imp
 	
 	
 	public String downloadTemplateComuna() {
+		this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteEstadoSituacionPorComuna(getAnoEnCurso());
+		setDocIdComunaDownload(this.idPlanillaDocComuna.toString());
 		Integer docDownload = Integer.valueOf(Integer
 				.parseInt(getDocIdComunaDownload()));
 		setDocumento(documentService.getDocument(docDownload));
@@ -233,6 +235,8 @@ public class ReporteEstadoSituacionProgramaController extends BaseController imp
 	}
 	
 	public String downloadTemplateEstablecimiento() {
+		this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteEstadoSituacionPorEstablecimiento(getAnoEnCurso());
+		setDocIdEstablecimientoDownload(this.idPlanillaDocEstablecimiento.toString());
 		Integer docDownload = Integer.valueOf(Integer
 				.parseInt(getDocIdEstablecimientoDownload()));
 		setDocumento(documentService.getDocument(docDownload));

@@ -2,6 +2,7 @@ package cl.minsal.divap.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Basic;
@@ -70,7 +71,7 @@ public class Establecimiento implements Serializable {
 	}
 	
 	@OneToMany(mappedBy = "establecimiento")
-	private Set<DetalleRemesas> detalleRemesasSet;
+	private List<DetalleRemesas> detalleRemesasSet;
 
 	public void setRemesaCollection(Collection<Remesa> remesaCollection) {
 		this.remesaCollection = remesaCollection;
@@ -128,11 +129,11 @@ public class Establecimiento implements Serializable {
 	}
 
 	@XmlTransient
-    public Set<DetalleRemesas> getDetalleRemesasSet() {
+    public List<DetalleRemesas> getDetalleRemesasSet() {
         return detalleRemesasSet;
     }
 
-    public void setDetalleRemesasSet(Set<DetalleRemesas> detalleRemesasSet) {
+    public void setDetalleRemesasSet(List<DetalleRemesas> detalleRemesasSet) {
         this.detalleRemesasSet = detalleRemesasSet;
     }
 }

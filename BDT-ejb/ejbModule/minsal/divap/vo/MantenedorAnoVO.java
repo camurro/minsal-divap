@@ -10,19 +10,19 @@ public class MantenedorAnoVO implements Serializable{
 	private Integer montoPercapitalBasal;
 	private Integer asignacionAdultoMayor;
 	private Double inflactor;
-	private Double inflactorMarcoPresupuestario;
+	private Boolean puedeEliminarse;
 	
 	public MantenedorAnoVO(){
 		
 	}
 	
-	public MantenedorAnoVO(Integer ano, Integer montoPercapitalBasal, Integer asignacionAdultoMayor, Double inflactor, Double inflactorMarcoPresupuestario){
+	public MantenedorAnoVO(Integer ano, Integer montoPercapitalBasal, Integer asignacionAdultoMayor, Double inflactor, Boolean puedeEliminarse){
 		super();
 		this.ano = ano;
 		this.montoPercapitalBasal = montoPercapitalBasal;
 		this.asignacionAdultoMayor = asignacionAdultoMayor;
 		this.inflactor = inflactor;
-		this.inflactorMarcoPresupuestario = inflactorMarcoPresupuestario;
+		this.puedeEliminarse = puedeEliminarse;
 	}
 
 	public Integer getAno() {
@@ -57,12 +57,12 @@ public class MantenedorAnoVO implements Serializable{
 		this.inflactor = inflactor;
 	}
 
-	public Double getInflactorMarcoPresupuestario() {
-		return inflactorMarcoPresupuestario;
+	public Boolean getPuedeEliminarse() {
+		return puedeEliminarse;
 	}
 
-	public void setInflactorMarcoPresupuestario(Double inflactorMarcoPresupuestario) {
-		this.inflactorMarcoPresupuestario = inflactorMarcoPresupuestario;
+	public void setPuedeEliminarse(Boolean puedeEliminarse) {
+		this.puedeEliminarse = puedeEliminarse;
 	}
 
 	@Override
@@ -70,8 +70,7 @@ public class MantenedorAnoVO implements Serializable{
 		return "MantenedorAnoVO [ano=" + ano + ", montoPercapitalBasal="
 				+ montoPercapitalBasal + ", asignacionAdultoMayor="
 				+ asignacionAdultoMayor + ", inflactor=" + inflactor
-				+ ", inflactorMarcoPresupuestario="
-				+ inflactorMarcoPresupuestario + "]";
+				+ ", puedeEliminarse=" + puedeEliminarse + "]";
 	}
 	
 }

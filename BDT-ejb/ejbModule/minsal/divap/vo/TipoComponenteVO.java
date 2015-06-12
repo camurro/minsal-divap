@@ -33,4 +33,11 @@ public class TipoComponenteVO implements Serializable{
 		this.nombre = nombre;
 	}
 
+	@Override
+	public String toString() {
+		return "TipoComponenteVO [id=" + id + ", nombre=" + nombre + "]";
+	}
+	
+	
+
 }
