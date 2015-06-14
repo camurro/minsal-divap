@@ -22,29 +22,10 @@ public class MantenedorComunaFinalVO implements Serializable{
 	private Integer nroResolucion;
 	private Boolean comunaAuxiliar;
 	private Boolean puedeEliminarse;
+	private Boolean mostrarBotonesEditViewDelete;
 	
 	public MantenedorComunaFinalVO() {
 		super();
-	}
-
-	public MantenedorComunaFinalVO(String idClasificacion, String clasificacion, String idAsigZona, Double asigZonaValor, String idTramoPobreza, Double tramoPobreza, Integer idAntecedentesComuna, Integer idComuna, String nombreComuna, String idServicio, String nombreServicio, Integer ano, Integer nroResolucion, Boolean comunaAuxiliar, Boolean puedeEliminarse) {
-		super();
-		
-		 this.idClasificacion = idClasificacion;
-		 this.clasificacion = clasificacion;
-		 this.idAsigZona = idAsigZona;
-		 this.asigZonaValor = asigZonaValor;
-		 this.idTramoPobreza = idTramoPobreza;
-		 this.tramoPobreza = tramoPobreza;
-		 this.idAntecedentesComuna = idAntecedentesComuna;
-		 this.idComuna = idComuna;
-		 this.nombreComuna = nombreComuna;
-		 this.idServicio = idServicio;
-		 this.nombreServicio = nombreServicio;
-		 this.ano = ano;
-		 this.nroResolucion = nroResolucion;
-		 this.comunaAuxiliar = comunaAuxiliar;
-		 this.puedeEliminarse = puedeEliminarse;
 	}
 
 	public String getIdClasificacion() {
@@ -167,6 +148,14 @@ public class MantenedorComunaFinalVO implements Serializable{
 		this.puedeEliminarse = puedeEliminarse;
 	}
 
+	public Boolean getMostrarBotonesEditViewDelete() {
+		return mostrarBotonesEditViewDelete;
+	}
+
+	public void setMostrarBotonesEditViewDelete(Boolean mostrarBotonesEditViewDelete) {
+		this.mostrarBotonesEditViewDelete = mostrarBotonesEditViewDelete;
+	}
+
 	@Override
 	public String toString() {
 		return "MantenedorComunaFinalVO [idClasificacion=" + idClasificacion
@@ -179,8 +168,8 @@ public class MantenedorComunaFinalVO implements Serializable{
 				+ idServicio + ", nombreServicio=" + nombreServicio + ", ano="
 				+ ano + ", nroResolucion=" + nroResolucion
 				+ ", comunaAuxiliar=" + comunaAuxiliar + ", puedeEliminarse="
-				+ puedeEliminarse + "]";
+				+ puedeEliminarse + ", mostrarBotonesEditViewDelete="
+				+ mostrarBotonesEditViewDelete + "]";
 	}
-
 	
 }

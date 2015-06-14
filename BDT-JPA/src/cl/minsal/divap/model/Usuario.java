@@ -16,6 +16,7 @@ import java.util.Set;
 @Entity
 @NamedQueries({
 	@NamedQuery(name="Usuario.findAll", query="SELECT u FROM Usuario u"),
+	@NamedQuery(name="Usuario.findNoEliminados", query="SELECT u FROM Usuario u WHERE u.estado.idEstadoUsuario <> :idEstadoUsuario"),
 	@NamedQuery(name="Usuario.findRols", query="SELECT r FROM Usuario u JOIN u.rols r WHERE u.username = :username")})
 public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -56,6 +57,9 @@ public class Usuario implements Serializable {
 			}
 			)
 	private List<Rol> rols;
+	@JoinColumn(name = "estado", referencedColumnName = "id_estado_usuario")
+    @ManyToOne(optional = false)
+    private EstadoUsuario estado;
 
 	public Usuario() {
 	}
@@ -144,6 +148,14 @@ public class Usuario implements Serializable {
 	public void setDistribucionInicialPercapitaCollection(
 			Set<DistribucionInicialPercapita> distribucionInicialPercapitaCollection) {
 		this.distribucionInicialPercapitaCollection = distribucionInicialPercapitaCollection;
+	}
+
+	public EstadoUsuario getEstado() {
+		return estado;
+	}
+
+	public void setEstado(EstadoUsuario estado) {
+		this.estado = estado;
 	}
 
 	@Override

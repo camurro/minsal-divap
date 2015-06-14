@@ -580,6 +580,7 @@ public class MantenedoresService {
 				for (AntecendentesComuna antecedenteComuna : antecedentesComunaByServicio) {
 
 					MantenedorComunaFinalVO mantenedorComunaFinalVO = new MantenedorComunaFinalVO();
+					mantenedorComunaFinalVO.setMostrarBotonesEditViewDelete(false);
 
 					Boolean puedeEliminarse = ((antecedenteComuna
 							.getAntecendentesComunaCalculadoCollection() == null || antecedenteComuna
@@ -597,32 +598,27 @@ public class MantenedoresService {
 					mantenedorComunaFinalVO.setAno(ano);
 					mantenedorComunaFinalVO.setPuedeEliminarse(puedeEliminarse);
 					if (antecedenteComuna.getClasificacion() != null) {
-						mantenedorComunaFinalVO
-								.setIdClasificacion(antecedenteComuna
-										.getClasificacion().getIdTipoComuna()
-										.toString());
-						mantenedorComunaFinalVO
-								.setClasificacion(antecedenteComuna
-										.getClasificacion().getDescripcion());
+						mantenedorComunaFinalVO.setIdClasificacion(antecedenteComuna.getClasificacion().getIdTipoComuna().toString());
+						mantenedorComunaFinalVO.setClasificacion(antecedenteComuna.getClasificacion().getDescripcion());
+					}else{
+						mantenedorComunaFinalVO.setIdClasificacion("");
+						mantenedorComunaFinalVO.setClasificacion("");
 					}
 
 					if (antecedenteComuna.getAsignacionZona() != null) {
-						mantenedorComunaFinalVO.setIdAsigZona(antecedenteComuna
-								.getAsignacionZona().getIdFactorRefAsigZona()
-								.toString());
-						mantenedorComunaFinalVO
-								.setAsigZonaValor(antecedenteComuna
-										.getAsignacionZona().getValor());
+						mantenedorComunaFinalVO.setIdAsigZona(antecedenteComuna.getAsignacionZona().getIdFactorRefAsigZona().toString());
+						mantenedorComunaFinalVO.setAsigZonaValor(antecedenteComuna.getAsignacionZona().getValor());
+					}else{
+						mantenedorComunaFinalVO.setIdAsigZona("No asignada");
 					}
 					if (antecedenteComuna.getTramoPobreza() != null) {
-						mantenedorComunaFinalVO
-								.setIdTramoPobreza(antecedenteComuna
-										.getTramoPobreza()
-										.getIdFactorTramoPobreza().toString());
-						mantenedorComunaFinalVO
-								.setTramoPobreza(antecedenteComuna
-										.getTramoPobreza().getValor());
+						mantenedorComunaFinalVO.setIdTramoPobreza(antecedenteComuna.getTramoPobreza().getIdFactorTramoPobreza().toString());
+						mantenedorComunaFinalVO.setTramoPobreza(antecedenteComuna.getTramoPobreza().getValor());
+					}else{
+						mantenedorComunaFinalVO.setIdTramoPobreza("No asignado");
 					}
+					
+					
 					mantenedorComunaFinalVO
 							.setIdAntecedentesComuna(antecedenteComuna
 									.getIdAntecedentesComuna());
@@ -722,8 +718,7 @@ public class MantenedoresService {
 
 	public List<FactorRefAsigZonaVO> getAllFactorRefAsigZonaVO() {
 		List<FactorRefAsigZonaVO> resultado = new ArrayList<FactorRefAsigZonaVO>();
-		List<FactorRefAsigZona> listRefAsigZona = antecedentesComunaDAO
-				.findAllFactorAsigZona();
+		List<FactorRefAsigZona> listRefAsigZona = mantenedoresDAO.getFactorRefAsigZonaAllOrderDesde();
 		for (FactorRefAsigZona asig : listRefAsigZona) {
 			FactorRefAsigZonaVO vo = new FactorRefAsigZonaVO();
 			vo.setIdFactorRefAsigZona(asig.getIdFactorRefAsigZona());

@@ -89,7 +89,7 @@ public class ComunaController extends AbstractController<Comuna> {
 	@Override
 	public void init() {
 		super.setFacade(ejbFacade);
-//		comunaSeleccionada = new MantenedorComunaFinalVO();
+		comunaSeleccionada = new MantenedorComunaFinalVO();
 		nuevaComunaEsAuxiliar = false;
 		FacesContext context = FacesContext.getCurrentInstance();
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
@@ -105,6 +105,7 @@ public class ComunaController extends AbstractController<Comuna> {
 	 * Resets the "selected" attribute of any parent Entity controllers.
 	 */
 	public void resetParents() {
+		this.comunaSeleccionada.setMostrarBotonesEditViewDelete(true);
 		//servicioSaludController.setSelected(null);
 	}
 	
@@ -252,21 +253,21 @@ public class ComunaController extends AbstractController<Comuna> {
 	 * @return navigation outcome for ComunaCumplimiento page
 	 */
 
-	public List<MantenedorComunaVO> cargarMantenedorComunaVO(){
-		List<MantenedorComunaVO> resultado = new ArrayList<MantenedorComunaVO>();
-		for(ServiciosVO servicio : this.servicios){
-			System.out.println("servicio --> "+servicio.getNombre_servicio());
-			for(ComunaSummaryVO comuna : servicio.getComunas()){
-				MantenedorComunaVO mantenedorComuna = new MantenedorComunaVO();
-				mantenedorComuna.setIdComuna(comuna.getId());
-				mantenedorComuna.setNombreComuna(comuna.getNombre());
-				mantenedorComuna.setIdServicio(servicio.getId_servicio());
-				mantenedorComuna.setNombreServicio(servicio.getNombre_servicio());
-				resultado.add(mantenedorComuna);
-			}
-		}
-		return resultado;
-	}
+//	public List<MantenedorComunaVO> cargarMantenedorComunaVO(){
+//		List<MantenedorComunaVO> resultado = new ArrayList<MantenedorComunaVO>();
+//		for(ServiciosVO servicio : this.servicios){
+//			System.out.println("servicio --> "+servicio.getNombre_servicio());
+//			for(ComunaSummaryVO comuna : servicio.getComunas()){
+//				MantenedorComunaVO mantenedorComuna = new MantenedorComunaVO();
+//				mantenedorComuna.setIdComuna(comuna.getId());
+//				mantenedorComuna.setNombreComuna(comuna.getNombre());
+//				mantenedorComuna.setIdServicio(servicio.getId_servicio());
+//				mantenedorComuna.setNombreServicio(servicio.getNombre_servicio());
+//				resultado.add(mantenedorComuna);
+//			}
+//		}
+//		return resultado;
+//	}
 
 	public String navigateComunaCumplimientoCollection() {
 		if (this.getSelected() != null) {
@@ -326,6 +327,9 @@ public class ComunaController extends AbstractController<Comuna> {
 
 	public void setComunaSeleccionada(MantenedorComunaFinalVO comunaSeleccionada) {
 		System.out.println("comunaSeleccionada ----> "+comunaSeleccionada);
+//		comunaSeleccionada = new MantenedorComunaFinalVO();
+//		comunaSeleccionada.setMostrarBotonesEditViewDelete(true);
+		
 		this.comunaSeleccionada = comunaSeleccionada;
 	}
 

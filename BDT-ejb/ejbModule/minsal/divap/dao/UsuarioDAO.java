@@ -52,9 +52,10 @@ public class UsuarioDAO {
 		}
 	}
 	
-	public List<Usuario> getAllUserActivos(){
+	public List<Usuario> getAllUserActivos(Integer idEstadoUsuario){
 		try {
-			TypedQuery<Usuario> query = this.em.createNamedQuery("Usuario.findAll", Usuario.class);
+			TypedQuery<Usuario> query = this.em.createNamedQuery("Usuario.findActivos", Usuario.class);
+			query.setParameter("idEstadoUsuario", idEstadoUsuario);
 			return query.getResultList(); 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
