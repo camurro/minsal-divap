@@ -17,7 +17,7 @@
 
 			<h:panelGroup id="display"
 				rendered="#{servicioSaludController.seleccionado != null}">
-				<p:panelGrid columns="2" columnClasses="column">
+				<p:panelGrid columns="4" columnClasses="column">
 
 					<p:outputLabel value="#{messages.CreateServicioSaludLabel_nombre}"
 						for="nombre" />
@@ -42,7 +42,7 @@
 					<br />
 					<br />
 
-					<p:panelGrid columns="2">
+					<p:panelGrid columns="4">
 						<p:outputLabel value="Nombre" for="nombreDirector" />
 						<p:inputText id="nombreDirector"
 							value="#{servicioSaludController.seleccionado.director.nombre}"
@@ -77,7 +77,7 @@
 					<br />
 					<br />
 
-					<p:panelGrid columns="2">
+					<p:panelGrid columns="4">
 						
 						<p:outputLabel value="Nombre" for="nombreEncargadoFinanzasAps" />
 						<p:inputText id="nombreEncargadoFinanzasAps"
@@ -113,7 +113,7 @@
 					<br />
 					<br />
 
-					<p:panelGrid columns="2">
+					<p:panelGrid columns="4">
 						
 						<p:outputLabel value="Nombre" for="nombreEncargadoAps" />
 						<p:inputText id="nombreEncargadoAps"

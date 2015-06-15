@@ -18,6 +18,7 @@ import minsal.divap.dao.RolDAO;
 import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.dao.TipoSubtituloDAO;
 import minsal.divap.dao.UsuarioDAO;
+import minsal.divap.enums.EstadoUsuarioEnum;
 import minsal.divap.model.mappers.PersonaMapper;
 import minsal.divap.model.mappers.ServicioMapper;
 import minsal.divap.vo.ComponentesVO;
@@ -318,10 +319,10 @@ public class MantenedoresService {
 
 	public List<MantenedorUsuarioVO> getMantenedorUsuarioAll() {
 		List<MantenedorUsuarioVO> resultado = new ArrayList<MantenedorUsuarioVO>();
-		List<Usuario> usuarios = usuarioDAO.getUserAll();
+		List<Usuario> usuarios = usuarioDAO.getAllUserActivos(EstadoUsuarioEnum.ELIMINADO.getId());
 		for (Usuario usuario : usuarios) {
 			Boolean puedeBorrarse = false;
-			if(usuario.getProgramas() != null || usuario.getProgramas().size() > 0){
+			if(usuario.getProgramas() != null && usuario.getProgramas().size() > 0){
 				puedeBorrarse = false;
 			}else{
 				puedeBorrarse = true;
@@ -331,6 +332,7 @@ public class MantenedoresService {
 			mantenedorUsuarioVO.setUsername(usuario.getUsername());
 			mantenedorUsuarioVO.setNombre(usuario.getNombre());
 			mantenedorUsuarioVO.setApellido(usuario.getApellido());
+			mantenedorUsuarioVO.setPuedeEliminarse(puedeBorrarse);
 			
 			if(usuario.getEmail() != null){
 				mantenedorUsuarioVO.setIdEmail(usuario.getEmail().getIdEmail());

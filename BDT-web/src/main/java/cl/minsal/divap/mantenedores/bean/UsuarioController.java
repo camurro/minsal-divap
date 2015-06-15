@@ -109,7 +109,7 @@ public class UsuarioController extends AbstractController<Usuario> {
 	
 	public void delete(ActionEvent event){
 		System.out.println("entra al delete");
-		seleccionado.setNombreRoles(roles.getTarget());
+//		seleccionado.setNombreRoles(roles.getTarget());
 		super.delete(event);
 		seleccionado = null;
 		usuarios = null;
@@ -135,9 +135,14 @@ public class UsuarioController extends AbstractController<Usuario> {
 					}
 					
 				}else if(persistAction == PersistAction.DELETE){
-					System.out.println("borrando con nuestro delete");
-					this.ejbFacade.remove(this.seleccionado);
-					JsfUtil.addSuccessMessage("El usuario ha sido eliminado exitósamente");
+					if(seleccionado.getPuedeEliminarse()){
+						System.out.println("borrando con nuestro delete");
+						this.ejbFacade.remove(this.seleccionado);
+						JsfUtil.addSuccessMessage("El usuario ha sido eliminado exitósamente");
+					}else{
+						JsfUtil.addErrorMessage("El usuario no puede ser eliminado ya que tiene programas asociados");
+					}
+					
 				}
 				
 			} catch (EJBException ex) {

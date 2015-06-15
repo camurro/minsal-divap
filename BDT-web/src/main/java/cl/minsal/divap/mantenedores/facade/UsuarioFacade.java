@@ -17,14 +17,17 @@ import javax.persistence.PersistenceContext;
 import org.jboss.security.auth.spi.Util;
 
 import minsal.divap.dao.EmailDAO;
+import minsal.divap.dao.MantenedoresDAO;
 import minsal.divap.dao.RolDAO;
 import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.dao.UsuarioDAO;
+import minsal.divap.enums.EstadoUsuarioEnum;
 import minsal.divap.service.EmailService;
 import minsal.divap.vo.MantenedorEstadoProgramaVO;
 import minsal.divap.vo.MantenedorUsuarioVO;
 import cl.minsal.divap.model.Email;
 import cl.minsal.divap.model.EstadoPrograma;
+import cl.minsal.divap.model.EstadoUsuario;
 import cl.minsal.divap.model.Rol;
 import cl.minsal.divap.model.ServicioSalud;
 import cl.minsal.divap.model.Usuario;
@@ -49,6 +52,8 @@ public class UsuarioFacade extends AbstractFacade<Usuario> {
     private RolDAO rolDAO;
     @EJB
     private EmailService emailService;
+    @EJB
+    private MantenedoresDAO mantenedoresDAO;
 
     @Override
     protected EntityManager getEntityManager() {
@@ -68,7 +73,7 @@ public class UsuarioFacade extends AbstractFacade<Usuario> {
     		usuario = usuarioDAO.getUserByUsername(seleccionado.getUsername());
     		usuario.setNombre(seleccionado.getNombre());
     		usuario.setApellido(seleccionado.getApellido());
-    		usuario.setPassword("minsal2014");
+//    		usuario.setPassword("minsal2014");
     		Email email = emailDAO.getEmailIdById(seleccionado.getIdEmail());
     		usuario.setEmail(email);
     		List<Rol> rolesUsuario = new ArrayList<Rol>();
@@ -88,6 +93,8 @@ public class UsuarioFacade extends AbstractFacade<Usuario> {
     	usuario.setUsername(nuevo.getUsername());
     	usuario.setNombre(nuevo.getNombre());
 		usuario.setApellido(nuevo.getApellido());
+		EstadoUsuario estado = mantenedoresDAO.getEstadoUsuarioById(EstadoUsuarioEnum.ACTIVO.getId());
+		usuario.setEstado(estado);
 		
 		PasswordHelper validacionPassword = new PasswordHelper();
 		String passwordNoEncriptada = validacionPassword.generarPassword();
@@ -111,14 +118,16 @@ public class UsuarioFacade extends AbstractFacade<Usuario> {
 		List<String> to = new ArrayList<String>();
 		to.add(email.getValor());
 		
-		emailService.sendMail(to, null, null, "Usuario creado", "El usuario ha sido creado con la password temporal: "+passwordNoEncriptada);
+		emailService.sendMail(to, null, null, "Usuario creado", "El usuario "+nuevo.getUsername()+" ha sido creado con la password temporal: "+passwordNoEncriptada);
 		
 		
     }
     
     public void remove(MantenedorUsuarioVO seleccionado){
     	Usuario usuario = usuarioDAO.getUserByUsername(seleccionado.getUsername());
-    	getEntityManager().remove(getEntityManager().merge(usuario));
+    	EstadoUsuario estadoUsuario = mantenedoresDAO.getEstadoUsuarioById(EstadoUsuarioEnum.ELIMINADO.getId());
+    	usuario.setEstado(estadoUsuario);
+    	getEntityManager().merge(usuario);
     }
     
     public String generate(String password) {

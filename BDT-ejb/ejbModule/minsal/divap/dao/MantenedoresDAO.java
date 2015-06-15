@@ -10,6 +10,7 @@ import javax.persistence.TypedQuery;
 import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.Cumplimiento;
 import cl.minsal.divap.model.Cuota;
+import cl.minsal.divap.model.EstadoUsuario;
 import cl.minsal.divap.model.FactorRefAsigZona;
 import cl.minsal.divap.model.FactorTramoPobreza;
 import cl.minsal.divap.model.FechaRemesa;
@@ -197,5 +198,20 @@ public class MantenedoresDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public EstadoUsuario getEstadoUsuarioById(Integer idEstadoUsuario){
+		try {
+			TypedQuery<EstadoUsuario> query = this.em.createNamedQuery("EstadoUsuario.findByIdEstadoUsuario", EstadoUsuario.class);
+			query.setParameter("idEstadoUsuario", idEstadoUsuario);
+			List<EstadoUsuario> results = query.getResultList();
+			if (results.size() >= 1)
+				return results.get(0);
+			return null;
+			
+		}catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	
 }

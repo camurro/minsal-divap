@@ -12,11 +12,8 @@
             <h:form id="ServicioSaludEditForm">
 
                 <h:panelGroup id="display">
-                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{servicioSaludController.seleccionado != null}">
+                    <p:panelGrid  columns="4" columnClasses="column" rendered="#{servicioSaludController.seleccionado != null}">
 
-
-                        <h:outputLabel value="#{messages.EditServicioSaludLabel_id}" for="id" />
-                        <h:outputText id="id" value="#{servicioSaludController.seleccionado.id_servicio}" />
 
                         <p:outputLabel value="#{messages.EditServicioSaludLabel_nombre}" for="nombre" />
                         <p:inputText id="nombre" value="#{servicioSaludController.seleccionado.nombre_servicio}" title="#{messages.EditServicioSaludTitle_nombre}"/>
@@ -39,7 +36,7 @@
 					<br />
 					<br />
 
-					<p:panelGrid columns="2">
+					<p:panelGrid columns="4">
 						<p:outputLabel value="Nombre" for="nombreDirector" />
 						<p:inputText id="nombreDirector"
 							value="#{servicioSaludController.seleccionado.director.nombre}"
@@ -74,7 +71,7 @@
 					<br />
 					<br />
 
-					<p:panelGrid columns="2">
+					<p:panelGrid columns="4">
 						
 						<p:outputLabel value="Nombre" for="nombreEncargadoFinanzasAps" />
 						<p:inputText id="nombreEncargadoFinanzasAps"
@@ -110,7 +107,7 @@
 					<br />
 					<br />
 
-					<p:panelGrid columns="2">
+					<p:panelGrid columns="4">
 						
 						<p:outputLabel value="Nombre" for="nombreEncargadoAps" />
 						<p:inputText id="nombreEncargadoAps"

@@ -19,10 +19,10 @@
                         <h:outputText id="username" value="#{usuarioController.seleccionado.username}" />
                         
                         <p:outputLabel value="#{messages.EditUsuarioLabel_nombre}" for="nombre" />
-                        <p:inputText id="nombre" value="#{usuarioController.seleccionado.nombre}" title="#{messages.EditUsuarioTitle_nombre}"/>
+                        <p:inputText id="nombre" value="#{usuarioController.seleccionado.nombre}" title="#{messages.EditUsuarioTitle_nombre}" required="true"/>
 
                         <p:outputLabel value="#{messages.EditUsuarioLabel_apellido}" for="apellido" />
-                        <p:inputText id="apellido" value="#{usuarioController.seleccionado.apellido}" title="#{messages.EditUsuarioTitle_apellido}"/>
+                        <p:inputText id="apellido" value="#{usuarioController.seleccionado.apellido}" title="#{messages.EditUsuarioTitle_apellido}" required="true"/>
                         
                         <p:outputLabel value="Email" for="emailUsuario" />
 						<p:inputText id="emailUsuario"
@@ -33,7 +33,11 @@
 						</p:inputText>
                         
                         <p:outputLabel value="#{messages.CreateRolTitle_nombre}" />
-                        <p:pickList id="pickList" value="#{usuarioController.roles}" var="rolItem" itemLabel="#{rolItem}" itemValue="#{rolItem}"/>
+                        <p:pickList id="pickList" value="#{usuarioController.roles}" var="rolItem" 
+                        	itemLabel="#{rolItem}" itemValue="#{rolItem}" 
+                        	required="true" label="Rol" validatorMessage="Debe seleccionar un rol">
+                        	<f:validator validatorId="minsal.divap.rolUsuarioValidator" />
+                        </p:pickList>
                         
                     </p:panelGrid>
                     <p:commandButton actionListener="#{usuarioController.edit}" value="#{messages.Save}" update="display,:UsuarioListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,UsuarioEditDialog);"/>

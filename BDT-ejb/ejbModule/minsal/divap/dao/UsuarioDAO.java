@@ -54,7 +54,7 @@ public class UsuarioDAO {
 	
 	public List<Usuario> getAllUserActivos(Integer idEstadoUsuario){
 		try {
-			TypedQuery<Usuario> query = this.em.createNamedQuery("Usuario.findActivos", Usuario.class);
+			TypedQuery<Usuario> query = this.em.createNamedQuery("Usuario.findNoEliminados", Usuario.class);
 			query.setParameter("idEstadoUsuario", idEstadoUsuario);
 			return query.getResultList(); 
 		} catch (Exception e) {

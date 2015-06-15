@@ -38,13 +38,6 @@
                 <p:ajax event="rowUnselect" update=":ServicioSaludListForm:createButton :ServicioSaludListForm:viewButton :ServicioSaludListForm:editButton :ServicioSaludListForm:deleteButton :ServicioSaludListForm:ServicioSaludDataTableContextMenu" listener="#{servicioSaludController.resetParents}"/>
                 <p:ajax event="rowDblselect" onsuccess="document.getElementById('ServicioSaludListForm:viewButton').click();"/>
 
-                <p:column sortBy="#{item.id_servicio}" filterBy="#{item.id_servicio}">
-                    <f:facet name="header">
-                        <h:outputText value="#{messages.ListServicioSaludTitle_id}"/>
-                    </f:facet>
-                    <h:outputText value="#{item.id_servicio}"/>
-                </p:column>
-
 
                 <p:column sortBy="#{item.nombre_servicio}" filterBy="#{item.nombre_servicio}">
                     <f:facet name="header">

@@ -15,9 +15,6 @@
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" columnClasses="column" rendered="#{servicioSaludController.seleccionado != null}">
 
-                        <h:outputText value="#{messages.ViewServicioSaludLabel_id}"/>
-                        <h:outputText value="#{servicioSaludController.seleccionado.id_servicio}" title="#{messages.ViewServicioSaludTitle_id}"/>
-
                         <h:outputText value="#{messages.ViewServicioSaludLabel_nombre}"/>
                         <h:outputText value="#{servicioSaludController.seleccionado.nombre_servicio}" title="#{messages.ViewServicioSaludTitle_nombre}"/>
 

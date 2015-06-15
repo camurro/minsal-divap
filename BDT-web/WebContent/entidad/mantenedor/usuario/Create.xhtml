@@ -16,13 +16,14 @@
                     <p:panelGrid columns="2" columnClasses="column">
                     
                     	<p:outputLabel value="#{messages.CreateUsuarioLabel_username}" for="username" />
-                        <p:inputText id="username" value="#{usuarioController.seleccionado.username}" title="#{messages.CreateUsuarioTitle_username}"/>
+                        <p:inputText id="username" value="#{usuarioController.seleccionado.username}" 
+                        	title="#{messages.CreateUsuarioTitle_username}" required="true"/>
 
                         <p:outputLabel value="#{messages.CreateUsuarioLabel_apellido}" for="apellido" />
-                        <p:inputText id="apellido" value="#{usuarioController.seleccionado.apellido}" title="#{messages.CreateUsuarioTitle_apellido}"/>
+                        <p:inputText id="apellido" value="#{usuarioController.seleccionado.apellido}" title="#{messages.CreateUsuarioTitle_apellido}" required="true"/>
                         
                         <p:outputLabel value="#{messages.CreateUsuarioLabel_nombre}" for="nombre" />
-                        <p:inputText id="nombre" value="#{usuarioController.seleccionado.nombre}" title="#{messages.CreateUsuarioTitle_nombre}"/>
+                        <p:inputText id="nombre" value="#{usuarioController.seleccionado.nombre}" title="#{messages.CreateUsuarioTitle_nombre}" required="true"/>
                         
                         <p:outputLabel value="Email" for="emailUsuario" />
 						<p:inputText id="emailUsuario"
@@ -34,7 +35,11 @@
 
                         
                         <p:outputLabel value="#{messages.CreateRolTitle_nombre}" />
-                        <p:pickList id="pickList" value="#{usuarioController.roles}" var="rolItem" itemLabel="#{rolItem}" itemValue="#{rolItem}"/>
+                        <p:pickList id="pickList" value="#{usuarioController.roles}" var="rolItem" 
+                        	itemLabel="#{rolItem}" itemValue="#{rolItem}" 
+                        	required="true" label="Rol" validatorMessage="Debe seleccionar un rol">
+                        	<f:validator validatorId="minsal.divap.rolUsuarioValidator" />
+                        </p:pickList>
                         
                     </p:panelGrid>
                     <p:commandButton actionListener="#{usuarioController.saveNew}" value="#{messages.Save}" update="display,:UsuarioListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,UsuarioCreateDialog);"/>
