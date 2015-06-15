@@ -32,13 +32,6 @@
                 <p:ajax event="rowUnselect" update=":RegionListForm:createButton :RegionListForm:viewButton :RegionListForm:editButton :RegionListForm:deleteButton :RegionListForm:RegionDataTableContextMenu" listener="#{regionController.resetParents}"/>
                 <p:ajax event="rowDblselect" onsuccess="document.getElementById('RegionListForm:viewButton').click();"/>
 
-                <p:column sortBy="#{item.idRegion}" filterBy="#{item.idRegion}">
-                    <f:facet name="header">
-                        <h:outputText value="#{messages.ListRegionTitle_id}"/>
-                    </f:facet>
-                    <h:outputText value="#{item.idRegion}"/>
-                </p:column>
-
 
                 <p:column sortBy="#{item.nombreRegion}" filterBy="#{item.nombreRegion}">
                     <f:facet name="header">
@@ -48,11 +41,11 @@
                 </p:column>
 
 
-                <p:column sortBy="#{item.idSecretarioRegional}" filterBy="#{item.idSecretarioRegional}">
+                <p:column sortBy="#{item.secretarioRegional.idPersona}" filterBy="#{ititem.secretarioRegional.idPersona}">
                     <f:facet name="header">
                         <h:outputText value="#{messages.ListRegionTitle_secretarioRegional}"/>
                     </f:facet>
-                    <h:outputText value="#{item.secretarioRegional}"/>
+                    <h:outputText value="#{item.secretarioRegional.nombre} #{item.secretarioRegional.apellidoPaterno}"/>
                 </p:column>
 
 

@@ -8,21 +8,18 @@
 
     <ui:composition>
 
-        <p:dialog id="RegionViewDlg" widgetVar="RegionViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewRegionTitle}" closeOnEscape="true">
+        <p:dialog id="RegionViewDlg" widgetVar="RegionViewDialog" modal="true" resizable="false"  appendToBody="true" header="Región" closeOnEscape="true">
 
             <h:form id="RegionViewForm">
 
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" columnClasses="column" rendered="#{regionController.seleccionado != null}">
 
-                        <h:outputText value="#{messages.ViewRegionLabel_id}"/>
-                        <h:outputText value="#{regionController.seleccionado.idRegion}" title="#{messages.ViewRegionTitle_id}"/>
-
                         <h:outputText value="#{messages.ViewRegionLabel_nombre}"/>
                         <h:outputText value="#{regionController.seleccionado.nombreRegion}" title="#{messages.ViewRegionTitle_nombre}"/>
 
                         <h:outputText value="#{messages.ViewRegionLabel_secretarioRegional}"/>
-                        <h:outputText value="#{regionController.seleccionado.secretarioRegional}"/>
+                        <h:outputText value="#{regionController.seleccionado.secretarioRegional.nombre} #{regionController.seleccionado.secretarioRegional.apellidoPaterno}"/>
                     </p:panelGrid>
                     <p:commandButton value="#{messages.Close}" onclick="RegionViewDialog.hide()"/>
                 </h:panelGroup>

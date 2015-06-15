@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import minsal.divap.dao.EmailDAO;
 import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.vo.MantenedorRegionVO;
 import minsal.divap.vo.PersonaVO;
@@ -30,6 +31,8 @@ public class RegionFacade extends AbstractFacade<Region> {
     
     @EJB
     private ServicioSaludDAO servicioSaludDAO;
+    @EJB
+    private EmailDAO emailDAO;
 
     @Override
     protected EntityManager getEntityManager() {
@@ -47,8 +50,21 @@ public class RegionFacade extends AbstractFacade<Region> {
     	}else{
     		region = servicioSaludDAO.getRegionById(seleccionado.getIdRegion());
     		region.setNombre(seleccionado.getNombreRegion().toUpperCase());
-    		Persona persona = servicioSaludDAO.getPersonaById(seleccionado.getIdSecretarioRegional());
-    		region.setSecretarioRegional(persona);
+    		
+    		
+    		Persona secretario = servicioSaludDAO.getPersonaById(seleccionado.getSecretarioRegional().getIdPersona());
+    		secretario.setNombre(seleccionado.getSecretarioRegional().getNombre());
+        	secretario.setApellidoPaterno(seleccionado.getSecretarioRegional().getApellidoPaterno());
+        	secretario.setApellidoMaterno(seleccionado.getSecretarioRegional().getApellidoMaterno());
+        	
+        	Email emailDirector = emailDAO.getEmailIdById(seleccionado.getSecretarioRegional().getIdCorreo());
+        	emailDirector.setValor(seleccionado.getSecretarioRegional().getCorreo());
+        	getEntityManager().merge(emailDirector);
+        	secretario.setEmail(emailDirector);
+        	getEntityManager().merge(secretario);
+        	
+        	region.setSecretarioRegional(secretario);
+    		
     		getEntityManager().merge(region);
     	}
     }
@@ -56,9 +72,21 @@ public class RegionFacade extends AbstractFacade<Region> {
     public void create(MantenedorRegionVO nuevo){
     	Region region = new Region();
     	region.setNombre(nuevo.getNombreRegion().toUpperCase());
-    	System.out.println("nuevo.getIdSecretarioRegional() --> "+nuevo.getIdSecretarioRegional());
-    	Persona persona = servicioSaludDAO.getPersonaById(nuevo.getIdSecretarioRegional());
-		region.setSecretarioRegional(persona);
+    	
+    	
+    	Persona secretario = new Persona();
+    	secretario.setNombre(nuevo.getSecretarioRegional().getNombre());
+    	secretario.setApellidoPaterno(nuevo.getSecretarioRegional().getApellidoPaterno());
+    	secretario.setApellidoMaterno(nuevo.getSecretarioRegional().getApellidoMaterno());
+		
+		Email emailSecretario= new Email();
+		emailSecretario.setValor(nuevo.getSecretarioRegional().getCorreo());
+		getEntityManager().persist(emailSecretario);
+		secretario.setEmail(emailSecretario);
+		getEntityManager().persist(secretario);
+		
+    	
+		region.setSecretarioRegional(secretario);
 		getEntityManager().persist(region);
     }
     

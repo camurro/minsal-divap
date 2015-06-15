@@ -152,33 +152,42 @@ public class MantenedoresService {
 		if (regiones != null && regiones.size() > 0) {
 			for (Region region : regiones) {
 				MantenedorRegionVO mantenedorRegionVO = new MantenedorRegionVO();
+				Boolean puedeEliminarse = false;
+					
+				if (region.getServicioSaluds() == null || region.getServicioSaluds().size() == 0) {
+					puedeEliminarse = true;
+				}
+				
+				mantenedorRegionVO.setPuedeEliminarse(puedeEliminarse);
 				mantenedorRegionVO.setIdRegion(region.getId());
 				mantenedorRegionVO.setNombreRegion(region.getNombre());
-				mantenedorRegionVO.setIdSecretarioRegional(region
-						.getSecretarioRegional().getIdPersona());
-				mantenedorRegionVO.setSecretarioRegional(region
-						.getSecretarioRegional().getNombre()
-						+ " "
-						+ region.getSecretarioRegional().getApellidoPaterno());
+				PersonaMantenedorVO secretarioRegional = new PersonaMantenedorVO();
+				secretarioRegional.setNombre(region.getSecretarioRegional().getNombre());
+				secretarioRegional.setIdPersona(region.getSecretarioRegional().getIdPersona());
+				secretarioRegional.setApellidoPaterno(region.getSecretarioRegional().getApellidoPaterno());
+				secretarioRegional.setApellidoMaterno(region.getSecretarioRegional().getApellidoMaterno());
+				secretarioRegional.setIdCorreo(region.getSecretarioRegional().getEmail().getIdEmail());
+				secretarioRegional.setCorreo(region.getSecretarioRegional().getEmail().getValor());
+				mantenedorRegionVO.setSecretarioRegional(secretarioRegional);
 				mantenedoresRegionVO.add(mantenedorRegionVO);
 			}
 		}
 		return mantenedoresRegionVO;
 	}
 
-	public MantenedorRegionVO getMantenedorRegioVOById(Integer idRegion) {
-		Region region = servicioSaludDAO.getRegionById(idRegion);
-		MantenedorRegionVO mantenedorRegionVO = new MantenedorRegionVO();
-		// mantenedorRegionVO.setIdRegion(region.getId());
-		mantenedorRegionVO.setNombreRegion(region.getNombre());
-		mantenedorRegionVO.setIdSecretarioRegional(region
-				.getSecretarioRegional().getIdPersona());
-		mantenedorRegionVO.setSecretarioRegional(region.getSecretarioRegional()
-				.getNombre()
-				+ " "
-				+ region.getSecretarioRegional().getApellidoPaterno());
-		return mantenedorRegionVO;
-	}
+//	public MantenedorRegionVO getMantenedorRegioVOById(Integer idRegion) {
+//		Region region = servicioSaludDAO.getRegionById(idRegion);
+//		MantenedorRegionVO mantenedorRegionVO = new MantenedorRegionVO();
+//		// mantenedorRegionVO.setIdRegion(region.getId());
+//		mantenedorRegionVO.setNombreRegion(region.getNombre());
+//		mantenedorRegionVO.setIdSecretarioRegional(region
+//				.getSecretarioRegional().getIdPersona());
+//		mantenedorRegionVO.setSecretarioRegional(region.getSecretarioRegional()
+//				.getNombre()
+//				+ " "
+//				+ region.getSecretarioRegional().getApellidoPaterno());
+//		return mantenedorRegionVO;
+//	}
 
 	public List<String> getSubtitulosNombres() {
 		List<TipoSubtitulo> tipoSubtitulos = this.tipoSubtituloDAO
@@ -803,63 +812,92 @@ public class MantenedoresService {
 		return tipoComponenteVO;
 	}
 
+//	public String puedeInsertarseTramoAsigZona(List<MantenedorFactorRefAsigZonaVO> listado, MantenedorFactorRefAsigZonaVO nuevo) {
+//		String puedeInsertarse = "NO";
+//		
+//		int count1 = 0;
+//		for (MantenedorFactorRefAsigZonaVO existente : listado) {
+//			if(count1 == (listado.size() - 1)){
+//				// es el ultimo
+//				if(existente.getZonaHasta() == null){
+//					//tiene un valor, puede compararse
+//					if ((lessThan(existente.getZonaDesde(), nuevo.getZonaDesde()) && (lessThan(nuevo.getZonaDesde(), existente.getZonaHasta())))) {
+//						puedeInsertarse = "NO";
+//						break;
+//					} else {
+//						puedeInsertarse = "SI";
+//					}
+//				}else{
+//					//no tiene un valor, no puede compararse
+//					if(lessThan(existente.getZonaDesde(), nuevo.getZonaDesde())){
+//						puedeInsertarse = "NO";
+//						break;
+//					}else{
+//						puedeInsertarse = "SI";
+//					}
+//				}
+//				
+//			}else{
+//				//no es el ultimo
+//				if ((lessThan(existente.getZonaDesde(), nuevo.getZonaDesde()) && (lessThan(
+//						nuevo.getZonaDesde(), existente.getZonaHasta())))) {
+//					puedeInsertarse = "NO";
+//					break;
+//				} else {
+//					puedeInsertarse = "SI";
+//				}
+//			}
+//			count1 ++;
+//		}
+//		int count = 0;
+//		for (MantenedorFactorRefAsigZonaVO existente : listado) {
+//			if (count == (listado.size() - 1)) {
+//				// es el ultimo
+//				puedeInsertarse = "SI y agregar desde al último tramo";
+//			} else {
+//				if ((lessThan(existente.getZonaDesde(), nuevo.getZonaHasta()) && (lessThan(
+//						nuevo.getZonaHasta(), existente.getZonaHasta())))) {
+//					puedeInsertarse = "NO";
+//					break;
+//				} else {
+//					puedeInsertarse = "SI";
+//				}
+//			}
+//			count ++;
+//		}
+//
+//		return puedeInsertarse;
+//
+//	}
+	
+	
 	public String puedeInsertarseTramoAsigZona(List<MantenedorFactorRefAsigZonaVO> listado, MantenedorFactorRefAsigZonaVO nuevo) {
 		String puedeInsertarse = "NO";
-		
-		int count1 = 0;
-		for (MantenedorFactorRefAsigZonaVO existente : listado) {
-			if(count1 == (listado.size() - 1)){
-				// es el ultimo
-				if(existente.getZonaHasta() == null){
-					//tiene un valor, puede compararse
-					if ((lessThan(existente.getZonaDesde(), nuevo.getZonaDesde()) && (lessThan(nuevo.getZonaDesde(), existente.getZonaHasta())))) {
-						puedeInsertarse = "NO";
-						break;
-					} else {
-						puedeInsertarse = "SI";
-					}
-				}else{
-					//no tiene un valor, no puede compararse
-					if(lessThan(existente.getZonaDesde(), nuevo.getZonaDesde())){
-						puedeInsertarse = "NO";
-						break;
-					}else{
-						puedeInsertarse = "SI";
-					}
-				}
-				
+		Double ultimoHasta = listado.get(listado.size() - 1).getZonaHasta();
+		if(ultimoHasta != null){
+			System.out.println("existe ultimoHasta --> "+ultimoHasta);
+			if(lessThan(ultimoHasta, nuevo.getZonaDesde())){
+				System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSE CUMPLE LA CONDICION\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+				puedeInsertarse = "SI";
 			}else{
-				//no es el ultimo
-				if ((lessThan(existente.getZonaDesde(), nuevo.getZonaDesde()) && (lessThan(
-						nuevo.getZonaDesde(), existente.getZonaHasta())))) {
-					puedeInsertarse = "NO";
-					break;
-				} else {
-					puedeInsertarse = "SI";
-				}
+				System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNOO  SE CUMPLE LA CONDICION\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+				puedeInsertarse = "NO";
 			}
-			count1 ++;
-		}
-		int count = 0;
-		for (MantenedorFactorRefAsigZonaVO existente : listado) {
-			if (count == (listado.size() - 1)) {
-				// es el ultimo
+		}else{
+			System.out.println("NO existe ultimoHasta");
+			Double ultimoDesde = listado.get(listado.size() - 1).getZonaDesde();
+			System.out.println("ultimoDesde --> "+ultimoDesde);
+			if(lessThan(ultimoDesde, (nuevo.getZonaDesde() - 1))){
+				System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSE CUMPLE LA CONDICION\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 				puedeInsertarse = "SI y agregar desde al último tramo";
-			} else {
-				if ((lessThan(existente.getZonaDesde(), nuevo.getZonaHasta()) && (lessThan(
-						nuevo.getZonaHasta(), existente.getZonaHasta())))) {
-					puedeInsertarse = "NO";
-					break;
-				} else {
-					puedeInsertarse = "SI";
-				}
+			}else{
+				System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNOO  SE CUMPLE LA CONDICION\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+				puedeInsertarse = "NO";
 			}
-			count ++;
 		}
-
 		return puedeInsertarse;
-
 	}
+	
 	
 	public List<ServiciosMantenedorVO> getServiciosMantenedorOrderId() {
 		List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();

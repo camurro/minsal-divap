@@ -17,6 +17,7 @@ import javax.validation.ConstraintViolationException;
 
 import minsal.divap.service.MantenedoresService;
 import minsal.divap.vo.MantenedorRegionVO;
+import minsal.divap.vo.PersonaMantenedorVO;
 import minsal.divap.vo.PersonaVO;
 import minsal.divap.vo.RegionVO;
 import cl.minsal.divap.mantenedores.bean.util.JsfUtil;
@@ -79,13 +80,19 @@ public class RegionController extends AbstractController<Region> {
 			try {
 				if (persistAction == PersistAction.UPDATE) {
 					this.ejbFacade.edit(this.seleccionado);
+					JsfUtil.addSuccessMessage("La región se ha editado correctamente");
 				}else if(persistAction == PersistAction.CREATE){
 					this.ejbFacade.create(this.seleccionado);
+					JsfUtil.addSuccessMessage("La región se ha creado correctamente");
 				}else if(persistAction == PersistAction.DELETE){
-					System.out.println("borrando con nuestro delete");
-					this.ejbFacade.remove(this.seleccionado);
+					if(this.seleccionado.getPuedeEliminarse()){
+						System.out.println("borrando con nuestro delete");
+						this.ejbFacade.remove(this.seleccionado);
+						JsfUtil.addSuccessMessage("La región se ha eliminado correctamente");
+					}else{
+						JsfUtil.addErrorMessage("La región posee servicios por lo tanto no puede eliminarse");
+					}
 				}
-				JsfUtil.addSuccessMessage(successMessage);
 			} catch (EJBException ex) {
 				Throwable cause = JsfUtil.getRootCause(ex.getCause());
 				if (cause != null) {
@@ -113,6 +120,8 @@ public class RegionController extends AbstractController<Region> {
 	public void prepareCreateRegion(ActionEvent event) {
 		System.out.println("prepareCreateRegion");
 		seleccionado = new MantenedorRegionVO();
+		PersonaMantenedorVO secretarioRegional = new PersonaMantenedorVO();
+		seleccionado.setSecretarioRegional(secretarioRegional);
 		super.prepareCreate(event);
 	}
 

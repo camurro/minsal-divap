@@ -14,23 +14,50 @@
                 <h:panelGroup id="display">
                     <p:panelGrid  columns="2" columnClasses="column" rendered="#{regionController.seleccionado != null}">
 
-
-                        <h:outputLabel value="#{messages.EditRegionLabel_id}" for="id" />
-                        <h:outputText id="id" value="#{regionController.seleccionado.idRegion}" />
-
                         <p:outputLabel value="#{messages.EditRegionLabel_nombre}" for="nombre" />
-                        <p:inputText id="nombre" value="#{regionController.seleccionado.nombreRegion}" title="#{messages.EditRegionTitle_nombre}"/>
-
-                        <p:outputLabel value="#{messages.EditRegionLabel_secretarioRegional}" for="secretarioRegional" />
-                        <p:selectOneMenu id="secretarioRegional" value="#{regionController.seleccionado.idSecretarioRegional}" required="true" requiredMessage="#{messages.EditRegionRequiredMessage_secretarioRegional}">
-                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
-                            <f:selectItems value="#{regionController.personas}"
-                                           var="secretarioRegionalItem"
-                                           itemValue="#{secretarioRegionalItem.idPersona}"
-                                           itemLabel="#{secretarioRegionalItem.nombre} #{secretarioRegionalItem.apellidoPaterno}"
-                                           />
-                        </p:selectOneMenu>
+                        <p:inputText id="nombre" value="#{regionController.seleccionado.nombreRegion}" 
+                        	title="#{messages.EditRegionTitle_nombre}"
+                        	required="true"/>
+                        
                     </p:panelGrid>
+                    
+                    
+                    <p:panel id="panelSecretario">
+                    	<p:outputLabel value="Datos Secretario Regional" />
+						<br />
+						<br />
+                    
+                    	<p:panelGrid columns="2">
+                    		<p:outputLabel value="Nombre" for="nombreSecretarioRegional" />
+						<p:inputText id="nombreSecretarioRegional"
+							value="#{regionController.seleccionado.secretarioRegional.nombre}"
+							title="Nombre" required="true" />
+							
+						<p:outputLabel value="Apellido Paterno" for="aPaternoSecretarioRegional" />
+						<p:inputText id="aPaternoSecretarioRegional"
+							value="#{regionController.seleccionado.secretarioRegional.apellidoPaterno}"
+							title="Apellido Paterno" required="true" />
+							
+						<p:outputLabel value="Apellido Materno" for="aMaternoSecretarioRegional" />
+						<p:inputText id="aMaternoSecretarioRegional"
+							value="#{regionController.seleccionado.secretarioRegional.apellidoMaterno}"
+							title="Apellido Materno" required="true" />
+							
+							
+						<p:outputLabel value="Email" for="emailSecretarioRegional" />
+						<p:inputText id="emailSecretarioRegional"
+							value="#{regionController.seleccionado.secretarioRegional.correo}"
+							title="Email" required="true" >
+							<f:validator validatorId="minsal.divap.emailValidator" />
+							<f:validateLength maximum="50" />
+						</p:inputText>
+                    	
+                    	
+                    	</p:panelGrid>
+                    </p:panel>
+
+                        
+                    
                     <p:commandButton actionListener="#{regionController.edit}" value="#{messages.Save}" update="display,:RegionListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,RegionEditDialog);"/>
                     <p:commandButton value="#{messages.Cancel}" onclick="RegionEditDialog.hide()"/>
                 </h:panelGroup>

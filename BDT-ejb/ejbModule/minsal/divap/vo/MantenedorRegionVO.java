@@ -9,19 +9,10 @@ public class MantenedorRegionVO implements Serializable{
 	private Integer idRegion;
 	private String nombreRegion;
 	private String descRegion;
-	private Integer idSecretarioRegional;
-	private String secretarioRegional;
+	private PersonaMantenedorVO secretarioRegional;
+	private Boolean puedeEliminarse;
 	
 	public MantenedorRegionVO(){
-		
-	}
-	public MantenedorRegionVO(Integer idRegion, String nombreRegion, String descRegion, Integer idSecretarioRegional, String secretarioRegional){
-		super();
-		this.idRegion = idRegion;
-		this.nombreRegion = nombreRegion;
-		this.descRegion = descRegion;
-		this.idSecretarioRegional = idSecretarioRegional;
-		this.secretarioRegional = secretarioRegional;
 		
 	}
 	
@@ -43,18 +34,24 @@ public class MantenedorRegionVO implements Serializable{
 	public void setDescRegion(String descRegion) {
 		this.descRegion = descRegion;
 	}
-	public Integer getIdSecretarioRegional() {
-		return idSecretarioRegional;
-	}
-	public void setIdSecretarioRegional(Integer idSecretarioRegional) {
-		this.idSecretarioRegional = idSecretarioRegional;
-	}
-	public String getSecretarioRegional() {
+	public PersonaMantenedorVO getSecretarioRegional() {
 		return secretarioRegional;
 	}
-	public void setSecretarioRegional(String secretarioRegional) {
+	public void setSecretarioRegional(PersonaMantenedorVO secretarioRegional) {
 		this.secretarioRegional = secretarioRegional;
 	}
-	
+	public Boolean getPuedeEliminarse() {
+		return puedeEliminarse;
+	}
+	public void setPuedeEliminarse(Boolean puedeEliminarse) {
+		this.puedeEliminarse = puedeEliminarse;
+	}
 
+	@Override
+	public String toString() {
+		return "MantenedorRegionVO [idRegion=" + idRegion + ", nombreRegion="
+				+ nombreRegion + ", descRegion=" + descRegion
+				+ ", secretarioRegional=" + secretarioRegional
+				+ ", puedeEliminarse=" + puedeEliminarse + "]";
+	}
 }

@@ -1,41 +1,81 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
 
-    <ui:composition>
+<ui:composition>
 
-        <p:dialog id="RegionCreateDlg" widgetVar="RegionCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateRegionTitle}" closeOnEscape="true">
+	<p:dialog id="RegionCreateDlg" widgetVar="RegionCreateDialog"
+		modal="true" resizable="false" appendToBody="true"
+		header="#{messages.CreateRegionTitle}" closeOnEscape="true">
 
-            <h:form id="RegionCreateForm">
+		<h:form id="RegionCreateForm">
 
-                <h:panelGroup id="display" rendered="#{regionController.seleccionado != null}">
-                    <p:panelGrid columns="2" columnClasses="column">
+			<h:panelGroup id="display"
+				rendered="#{regionController.seleccionado != null}">
+				<p:panelGrid columns="2" columnClasses="column">
 
-                        <p:outputLabel value="#{messages.CreateRegionLabel_nombre}" for="nombre" />
-                        <p:inputText id="nombre" value="#{regionController.seleccionado.nombreRegion}" title="#{messages.CreateRegionTitle_nombre}"/>
+					<p:outputLabel value="Nombre Región" for="nombreRegion" />
+					<p:inputText id="nombreRegion" required="true"
+						value="#{regionController.seleccionado.nombreRegion}"
+						title="#{messages.CreateRegionTitle_nombre}" />
 
-                        <p:outputLabel value="#{messages.CreateRegionLabel_secretarioRegional}" for="secretarioRegional" />
-                        <p:selectOneMenu id="secretarioRegional" value="#{regionController.seleccionado.idSecretarioRegional}" required="true" requiredMessage="#{messages.CreateRegionRequiredMessage_secretarioRegional}">
-                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
-                            <f:selectItems value="#{regionController.personas}"
-                                           var="secretarioRegionalItem"
-                                           itemValue="#{secretarioRegionalItem.idPersona}"
-                                           itemLabel="#{secretarioRegionalItem.nombre} #{secretarioRegionalItem.apellidoPaterno}"
-                                           />
-                        </p:selectOneMenu>
-                    </p:panelGrid>
-                    <p:commandButton actionListener="#{regionController.saveNew}" value="#{messages.Save}" update="display,:RegionListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,RegionCreateDialog);"/>
-                    <p:commandButton value="#{messages.Cancel}" onclick="RegionCreateDialog.hide()"/>
-                </h:panelGroup>
+				</p:panelGrid>
 
-            </h:form>
+				<p:panel id="panelSecretario">
+					<p:outputLabel value="Datos Secretario Regional" />
+					<br />
+					<br />
 
-        </p:dialog>
+					<p:panelGrid columns="2">
+						
+						<p:outputLabel value="Nombre" for="nombreSecretarioRegional" />
+						<p:inputText id="nombreSecretarioRegional"
+							value="#{regionController.seleccionado.secretarioRegional.nombre}"
+							title="Nombre" required="true" />
+							
+						<p:outputLabel value="Apellido Paterno" for="aPaternoSecretarioRegional" />
+						<p:inputText id="aPaternoSecretarioRegional"
+							value="#{regionController.seleccionado.secretarioRegional.apellidoPaterno}"
+							title="Apellido Paterno" required="true" />
+							
+						<p:outputLabel value="Apellido Materno" for="aMaternoSecretarioRegional" />
+						<p:inputText id="aMaternoSecretarioRegional"
+							value="#{regionController.seleccionado.secretarioRegional.apellidoMaterno}"
+							title="Apellido Materno" required="true" />
+							
+							
+						<p:outputLabel value="Email" for="emailSecretarioRegional" />
+						<p:inputText id="emailSecretarioRegional"
+							value="#{regionController.seleccionado.secretarioRegional.correo}"
+							title="Email" required="true" >
+							<f:validator validatorId="minsal.divap.emailValidator" />
+							<f:validateLength maximum="50" />
+						</p:inputText>
 
-    </ui:composition>
+
+					</p:panelGrid>
+
+
+				</p:panel>
+
+
+
+				<p:commandButton actionListener="#{regionController.saveNew}"
+					value="#{messages.Save}"
+					update="display,:RegionListForm:datalist,:growl"
+					oncomplete="handleSubmit(xhr,status,args,RegionCreateDialog);" />
+				<p:commandButton value="#{messages.Cancel}"
+					onclick="RegionCreateDialog.hide()" />
+			</h:panelGroup>
+
+		</h:form>
+
+	</p:dialog>
+
+</ui:composition>
 
 </html>
