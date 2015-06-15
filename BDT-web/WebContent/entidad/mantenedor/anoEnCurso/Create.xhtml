@@ -15,17 +15,23 @@
                 <h:panelGroup id="display" rendered="#{anoEnCursoController.seleccionado != null}">
                     <p:panelGrid columns="2" columnClasses="column">
 
-                        <p:outputLabel value="#{messages.CreateAnoEnCursoLabel_ano}" for="ano" />
-                        <p:inputText id="ano" value="#{anoEnCursoController.seleccionado.ano}" title="#{messages.CreateAnoEnCursoTitle_ano}" required="true" requiredMessage="#{messages.CreateAnoEnCursoRequiredMessage_ano}"/>
+                        <p:outputLabel value="Año" for="ano" />
+                        <p:inputText id="ano" value="#{anoEnCursoController.seleccionado.ano}" title="#{messages.CreateAnoEnCursoTitle_ano}" required="true" requiredMessage="El campo Año es requerido"/>
 
-                        <p:outputLabel value="#{messages.CreateAnoEnCursoLabel_montoPercapitalBasal}" for="montoPercapitalBasal" />
-                        <p:inputText id="montoPercapitalBasal" value="#{anoEnCursoController.seleccionado.montoPercapitalBasal}" title="#{messages.CreateAnoEnCursoTitle_montoPercapitalBasal}"/>
+                        <p:outputLabel value="Per Cápita Basal" for="montoPercapitalBasal" />
+                        <p:inputText id="montoPercapitalBasal" value="#{anoEnCursoController.seleccionado.montoPercapitalBasal}" 
+                        	title="Per Cápita Basal"
+                        	required="true" requiredMessage="El campo Per Cápita Basal es requerido"/>
 
                         <p:outputLabel value="#{messages.CreateAnoEnCursoLabel_asignacionAdultoMayor}" for="asignacionAdultoMayor" />
-                        <p:inputText id="asignacionAdultoMayor" value="#{anoEnCursoController.seleccionado.asignacionAdultoMayor}" title="#{messages.CreateAnoEnCursoTitle_asignacionAdultoMayor}"/>
+                        <p:inputText id="asignacionAdultoMayor" value="#{anoEnCursoController.seleccionado.asignacionAdultoMayor}" 
+                        	title="#{messages.CreateAnoEnCursoTitle_asignacionAdultoMayor}"
+                        	required="true" requiredMessage="El campo Asignación Adulto Mayor es requerido"/>
 
                         <p:outputLabel value="#{messages.CreateAnoEnCursoLabel_inflactor}" for="inflactor" />
-                        <p:inputText id="inflactor" value="#{anoEnCursoController.seleccionado.inflactor}" title="#{messages.CreateAnoEnCursoTitle_inflactor}"/>
+                        <p:inputText id="inflactor" value="#{anoEnCursoController.seleccionado.inflactor}" 
+                        	title="#{messages.CreateAnoEnCursoTitle_inflactor}"
+                        	required="true" requiredMessage="El campo Inflactor es requerido"/>
 
                     </p:panelGrid>
                     <p:commandButton actionListener="#{anoEnCursoController.saveNew}" value="#{messages.Save}" update="display,:AnoEnCursoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,AnoEnCursoCreateDialog);"/>

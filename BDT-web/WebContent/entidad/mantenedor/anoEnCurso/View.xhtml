@@ -15,10 +15,10 @@
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" columnClasses="column" rendered="#{anoEnCursoController.seleccionado != null}">
 
-                        <h:outputText value="#{messages.ViewAnoEnCursoLabel_ano}"/>
+                        <h:outputText value="Año"/>
                         <h:outputText value="#{anoEnCursoController.seleccionado.ano}" title="#{messages.ViewAnoEnCursoTitle_ano}"/>
 
-                        <h:outputText value="#{messages.ViewAnoEnCursoLabel_montoPercapitalBasal}"/>
+                        <h:outputText value="Per Cápita Basal"/>
                         <h:outputText value="#{anoEnCursoController.seleccionado.montoPercapitalBasal}" title="#{messages.ViewAnoEnCursoTitle_montoPercapitalBasal}"/>
 
                         <h:outputText value="#{messages.ViewAnoEnCursoLabel_asignacionAdultoMayor}"/>

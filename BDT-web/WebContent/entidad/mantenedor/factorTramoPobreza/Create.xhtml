@@ -16,7 +16,8 @@
                     <p:panelGrid columns="2" columnClasses="column">
 
                         <p:outputLabel value="#{messages.CreateFactorTramoPobrezaLabel_valor}" for="valor" />
-                        <p:inputText id="valor" value="#{factorTramoPobrezaController.seleccionado.valor}" title="#{messages.CreateFactorTramoPobrezaTitle_valor}" required="true" requiredMessage="#{messages.CreateFactorTramoPobrezaRequiredMessage_valor}"/>
+                        <p:inputText id="valor" value="#{factorTramoPobrezaController.seleccionado.valor}" title="#{messages.CreateFactorTramoPobrezaTitle_valor}" 
+                        	required="true" requiredMessage="El campo Valor es requerido"/>
                     </p:panelGrid>
                     <p:commandButton actionListener="#{factorTramoPobrezaController.saveNew}" value="#{messages.Save}" update="display,:FactorTramoPobrezaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,FactorTramoPobrezaCreateDialog);"/>
                     <p:commandButton value="#{messages.Cancel}" onclick="FactorTramoPobrezaCreateDialog.hide()"/>

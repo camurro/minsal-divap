@@ -14,12 +14,11 @@
                 <h:panelGroup id="display">
                     <p:panelGrid  columns="2" columnClasses="column" rendered="#{factorTramoPobrezaController.seleccionado != null}">
 
-
                         <h:outputLabel value="#{messages.EditFactorTramoPobrezaLabel_idFactorTramoPobreza}" for="idFactorTramoPobreza" />
                         <h:outputText id="idFactorTramoPobreza" value="#{factorTramoPobrezaController.seleccionado.idFactorTramoPobreza}" />
 
                         <p:outputLabel value="#{messages.EditFactorTramoPobrezaLabel_valor}" for="valor" />
-                        <p:inputText id="valor" value="#{factorTramoPobrezaController.seleccionado.valor}" title="#{messages.EditFactorTramoPobrezaTitle_valor}" required="true" requiredMessage="#{messages.EditFactorTramoPobrezaRequiredMessage_valor}"/>
+                        <p:inputText id="valor" value="#{factorTramoPobrezaController.seleccionado.valor}" title="#{messages.EditFactorTramoPobrezaTitle_valor}" required="true" requiredMessage="El campo Valor es requerido"/>
                     </p:panelGrid>
                     <p:commandButton actionListener="#{factorTramoPobrezaController.edit}" value="#{messages.Save}" update="display,:FactorTramoPobrezaListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,FactorTramoPobrezaEditDialog);"/>
                     <p:commandButton value="#{messages.Cancel}" onclick="FactorTramoPobrezaEditDialog.hide()"/>
