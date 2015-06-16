@@ -62,7 +62,7 @@
 							<h:outputText value="Servicio: " styleClass="inputLabel" />
 							<p:selectOneMenu value="#{procesoGITVerificarController.servicioSeleccionado}">
 								<f:selectItem itemLabel="Seleccione Servicio" itemValue="0" />
-								<f:selectItems itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" value="#{procesoGITVerificarController.servicios}" />
+								<f:selectItems itemLabel="#{servicio.nombreServicio}" itemValue="#{servicio.idServicio}" var="servicio" value="#{procesoGITVerificarController.servicios}" />
 								<p:ajax listener="#{procesoGITVerificarController.cargarEstablecimientosComunas}"  update="formConvenios:tabs formConvenios:tablaBotones"  /> 
 							</p:selectOneMenu>
 						</h:panelGrid>

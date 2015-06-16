@@ -58,7 +58,7 @@ public class OrdenTransferenciaRESTService extends BaseRest{
 	@GET
     @Path("/ordenesDeTransferencia/generarOficioOrdenTransferencia/{idProcesoOT}/{ano}")
     @Produces("application/json")
-    public void generarOficioOrdenTransferencia(@PathParam("idProcesoOT") String idProcesoOT, @PathParam("ano") Integer ano){
+    public void generarOficioOrdenTransferencia(@PathParam("idProcesoOT") Integer idProcesoOT, @PathParam("ano") Integer ano){
 		System.out.println("Generar Oficio Orden de Transferencia");
 		if(idProcesoOT == null){
 			throw new IllegalArgumentException("idProcesoOT: "+ idProcesoOT + " no puede ser nulo");
@@ -67,7 +67,7 @@ public class OrdenTransferenciaRESTService extends BaseRest{
 			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
 		}
 		OTService ordenTransferenciaService = getService(OTService.class);
-		ordenTransferenciaService.pagarOrdenesTransferenciayConvenios(Integer.parseInt(idProcesoOT));
+		ordenTransferenciaService.pagarOrdenesTransferenciayConvenios(idProcesoOT);
 		Long totalFinal = ordenTransferenciaService.generarExcelFonasaOT(TipoDocumentosProcesos.RESUMENCONSOLIDADOFONASA, idProcesoOT, ano);
 		ordenTransferenciaService.generarOficiosTransferencia(TipoDocumentosProcesos.PLANTILLAORDINARIOOREDENTRANSFERENCIA, idProcesoOT, totalFinal, ano);
     }	
@@ -121,15 +121,18 @@ public class OrdenTransferenciaRESTService extends BaseRest{
     }	
 	
 	@GET
-    @Path("/ordenesDeTransferencia/enviarOrdinarioServicioSalud/{idProcesoOT}")
+    @Path("/ordenesDeTransferencia/enviarOrdinarioServicioSalud/{idProcesoOT}/{ano}")
     @Produces("application/json")
-    public void enviarOrdinarioServicioSalud(@PathParam("idProcesoOT") String idProcesoOT){
+    public void enviarOrdinarioServicioSalud(@PathParam("idProcesoOT") Integer idProcesoOT, @PathParam("ano") Integer ano){
 		System.out.println("Enviando documentos OT a ServicioSalud");
 		if(idProcesoOT == null){
 			throw new IllegalArgumentException("idProcesoOT: "+ idProcesoOT + " no puede ser nulo");
 		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
+		}
 		OTService ordenTransferenciaService = getService(OTService.class);
-		ordenTransferenciaService.enviarDocumentosServicioSalud(idProcesoOT);
+		ordenTransferenciaService.enviarDocumentosServicioSalud(idProcesoOT, ano);
     }
 
 	@GET

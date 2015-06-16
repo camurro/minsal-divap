@@ -97,7 +97,7 @@
 								<h:outputText value="Servicio: " styleClass="inputLabel" />
 								<p:selectOneMenu id="servicios"  value="#{procesoModificacionDistRecFinMixtoController.servicioSeleccionado}">
 								<f:selectItem itemLabel="Seleccione" itemValue="" />  
-								<f:selectItems value="#{procesoModificacionDistRecFinMixtoController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
+								<f:selectItems value="#{procesoModificacionDistRecFinMixtoController.listaServicios}" itemLabel="#{servicio.nombreServicio}" var="servicio" itemValue="#{servicio.idServicio}"/> 
 							</p:selectOneMenu>
 							</h:panelGrid>
 						

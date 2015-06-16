@@ -906,7 +906,7 @@ public class EstimacionFlujoCajaService {
 					resumenConsolidadorVO.setServicio(servicioSalud.getNombre());
 
 					List<Long> montos = new ArrayList<Long>();
-					header.add(new CellExcelVO("SUBTÍTULO 29", programasSubtitulo24.size() + 1, 1));			
+					header.add(new CellExcelVO("SUBTÍTULO 29", programasSubtitulo29.size() + 1, 1));			
 					for(ProgramaAno programaAno : programasSubtitulo29) {
 						subHeader.add(new CellExcelVO(programaAno.getPrograma().getNombre(), 1, 1));
 					}

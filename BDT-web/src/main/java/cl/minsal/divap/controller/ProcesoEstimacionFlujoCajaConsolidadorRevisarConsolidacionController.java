@@ -11,32 +11,19 @@ import java.util.TreeMap;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import minsal.divap.enums.EstadosProgramas;
-import minsal.divap.service.ProgramasService;
-import minsal.divap.vo.ProgramaVO;
-
-import org.apache.log4j.Logger;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import minsal.divap.service.EstimacionFlujoCajaService;
+import minsal.divap.enums.EstadosProgramas;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ServicioSaludService;
 import minsal.divap.util.Util;
 import minsal.divap.vo.CajaGlobalVO;
 import minsal.divap.vo.CajaVO;
 import minsal.divap.vo.ColumnaVO;
-import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.ComunaVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.ServiciosVO;
@@ -46,8 +33,6 @@ import org.primefaces.component.api.UIColumn;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.CellEditEvent;
 
-import cl.minsal.divap.pojo.ComponentePojo;
-import cl.minsal.divap.pojo.MonitoreoPojo;
 import cl.minsal.divap.pojo.ProcesosProgramasPojo;
 import cl.redhat.bandejaTareas.task.AbstractTaskMBean;
 
@@ -234,7 +219,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 		ProgramaVO programaVO = programaService.getProgramaAno(valorComboProgramaSubtitulo21);
 		
 		for (ServiciosVO serviciosVO : programaVO.getServicios()) {
-			if (serviciosVO.getId_servicio() == valorComboServicioSubtitulo21)
+			if (serviciosVO.getIdServicio() == valorComboServicioSubtitulo21)
 			{
 				for (ComunaVO comunaVO : serviciosVO.getComuna()) {
 					comunas21.put(comunaVO.getNombre(),comunaVO.getIdComuna());
@@ -253,7 +238,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 		ProgramaVO programaVO = programaService.getProgramaAno(valorComboProgramaSubtitulo22);
 		
 		for (ServiciosVO serviciosVO : programaVO.getServicios()) {
-			if (serviciosVO.getId_servicio() == valorComboServicioSubtitulo22)
+			if (serviciosVO.getIdServicio() == valorComboServicioSubtitulo22)
 			{
 				for (ComunaVO comunaVO : serviciosVO.getComuna()) {
 					comunas22.put(comunaVO.getNombre(),comunaVO.getIdComuna());
@@ -272,7 +257,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 		ProgramaVO programaVO = programaService.getProgramaAno(valorComboProgramaSubtitulo24);
 		
 		for (ServiciosVO serviciosVO : programaVO.getServicios()) {
-			if (serviciosVO.getId_servicio() == valorComboServicioSubtitulo24)
+			if (serviciosVO.getIdServicio() == valorComboServicioSubtitulo24)
 			{
 				for (ComunaVO comunaVO : serviciosVO.getComuna()) {
 					comunas24.put(comunaVO.getNombre(),comunaVO.getIdComuna());
@@ -291,7 +276,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 		ProgramaVO programaVO = programaService.getProgramaAno(valorComboProgramaSubtitulo29);
 		
 		for (ServiciosVO serviciosVO : programaVO.getServicios()) {
-			if (serviciosVO.getId_servicio() == valorComboServicioSubtitulo29)
+			if (serviciosVO.getIdServicio() == valorComboServicioSubtitulo29)
 			{
 				for (ComunaVO comunaVO : serviciosVO.getComuna()) {
 					comunas29.put(comunaVO.getNombre(),comunaVO.getIdComuna());
@@ -310,7 +295,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 		ProgramaVO programaVO = programaService.getProgramaAno(valorComboProgramaSubtituloPerCapita);
 		
 		for (ServiciosVO serviciosVO : programaVO.getServicios()) {
-			if (serviciosVO.getId_servicio() == valorComboServicioSubtituloPerCapita)
+			if (serviciosVO.getIdServicio() == valorComboServicioSubtituloPerCapita)
 			{
 				for (ComunaVO comunaVO : serviciosVO.getComuna()) {
 					comunasPerCapita.put(comunaVO.getNombre(),comunaVO.getIdComuna());
@@ -329,7 +314,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 		setComunas21(new HashMap<String, Integer>());
 		ProgramaVO programaVO = programaService.getProgramaAno(valorComboProgramaSubtitulo21);
 		for (ServiciosVO serviciosVO : programaVO.getServicios()) {
-			servicios21.put(serviciosVO.getNombre_servicio(), serviciosVO.getId_servicio());
+			servicios21.put(serviciosVO.getNombreServicio(), serviciosVO.getIdServicio());
 		}
 		
 		Map<String, Integer> mapOrdenado = new TreeMap<String, Integer>(
@@ -342,7 +327,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 		setComunas22(new HashMap<String, Integer>());
 		ProgramaVO programaVO = programaService.getProgramaAno(valorComboProgramaSubtitulo22);
 		for (ServiciosVO serviciosVO : programaVO.getServicios()) {
-			servicios22.put(serviciosVO.getNombre_servicio(), serviciosVO.getId_servicio());
+			servicios22.put(serviciosVO.getNombreServicio(), serviciosVO.getIdServicio());
 		}
 		
 		Map<String, Integer> mapOrdenado = new TreeMap<String, Integer>(
@@ -354,7 +339,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 		setComunas24(new HashMap<String, Integer>());
 		ProgramaVO programaVO = programaService.getProgramaAno(valorComboProgramaSubtitulo24);
 		for (ServiciosVO serviciosVO : programaVO.getServicios()) {
-			servicios24.put(serviciosVO.getNombre_servicio(), serviciosVO.getId_servicio());
+			servicios24.put(serviciosVO.getNombreServicio(), serviciosVO.getIdServicio());
 		}
 		
 		Map<String, Integer> mapOrdenado = new TreeMap<String, Integer>(
@@ -366,7 +351,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 		setComunas29(new HashMap<String, Integer>());
 		ProgramaVO programaVO = programaService.getProgramaAno(valorComboProgramaSubtitulo29);
 		for (ServiciosVO serviciosVO : programaVO.getServicios()) {
-			servicios29.put(serviciosVO.getNombre_servicio(), serviciosVO.getId_servicio());
+			servicios29.put(serviciosVO.getNombreServicio(), serviciosVO.getIdServicio());
 		}
 		
 		Map<String, Integer> mapOrdenado = new TreeMap<String, Integer>(
@@ -378,7 +363,7 @@ public class ProcesoEstimacionFlujoCajaConsolidadorRevisarConsolidacionControlle
 		setComunasPerCapita(new HashMap<String, Integer>());
 		ProgramaVO programaVO = programaService.getProgramaAno(valorComboProgramaSubtituloPerCapita);
 		for (ServiciosVO serviciosVO : programaVO.getServicios()) {
-			serviciosPerCapita.put(serviciosVO.getNombre_servicio(), serviciosVO.getId_servicio());
+			serviciosPerCapita.put(serviciosVO.getNombreServicio(), serviciosVO.getIdServicio());
 		}
 		
 		Map<String, Integer> mapOrdenado = new TreeMap<String, Integer>(

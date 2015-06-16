@@ -6,7 +6,8 @@ public enum TipoDocumentosProcesos{
 	PLANTILLAPOBLACIONINSCRITA(2,"Plantilla Población Inscrita Validada"),
 	PLANILLARESULTADOSCALCULADOS(3,"Planilla de resultados calculados"), 
 	BORRADORAPORTEESTATAL(4,"Borrador decreto aporte estatal"),
-	PLANTILLABASECUMPLIMIENTO(5, "Plantilla Base Cumplimiento"), 
+	PLANTILLABASECUMPLIMIENTO(5, "Plantilla Base Cumplimiento"),
+	PLANILLABASECUMPLIMIENTO(181, "Planilla Base Cumplimiento"), 
 	REBAJACALCULADA(6,"Plantilla Rebaja Calculada"),
 	PLANTILLAOFICIOCONSULTA(7,"Plantilla Oficio Consulta"), 
 	OFICIOCONSULTA(8, "Oficio Consulta"),
@@ -103,8 +104,8 @@ public enum TipoDocumentosProcesos{
 	PLANILLAPROGRAMACIONCAJA(177, "Planilla Programación Caja"),
 	PLANTILLAORDINARIOPROGRAMACIONCAJA(178, "Plantilla Ordinario Programación Caja"),
 	PLANTILLANUMERORESOLUCION(179, "Plantilla Número Resolución"), 
-	PLANILLANUMERORESOLUCION(180, "Planilla Número Resolución");
-
+	PLANILLANUMERORESOLUCION(180, "Planilla Número Resolución"),
+	PLANILLADETALLEREMESAAPSSS(182, "Planilla Detalle Remesa APS SS");
 	
 	private Integer id;
 	private String name;

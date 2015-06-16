@@ -48,7 +48,22 @@ public class ModificacionDistribucionInicialPerCapitaRESTService extends BaseRes
 		ModificacionDistribucionInicialPercapitaService modificacionDistribucionInicialPercapitaService = getService(ModificacionDistribucionInicialPercapitaService.class);
 		return modificacionDistribucionInicialPercapitaService.valorizarDisponibilizarPlanillaTrabajo(idDistribucionInicialPercapita, ano);
 	}
-
+	
+	@GET
+	@Path("/modificacionDistribucionInicialPerCapita/habilitarModificacionPercapita/{idDistribucionInicialPercapita}/{ano}")
+	@Produces("application/json")
+	public void habilitarModificacionPercapita(@PathParam("idDistribucionInicialPercapita") Integer idDistribucionInicialPercapita, @PathParam("ano") Integer ano){
+		System.out.println("habilitarModificacionPercapita idDistribucionInicialPercapita-->" + idDistribucionInicialPercapita);
+		System.out.println("habilitarModificacionPercapita ano-->" + ano);
+		if(idDistribucionInicialPercapita == null){
+			throw new IllegalArgumentException("proceso: "+ idDistribucionInicialPercapita + " no puede ser nulo");
+		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
+		}
+		ModificacionDistribucionInicialPercapitaService modificacionDistribucionInicialPercapitaService = getService(ModificacionDistribucionInicialPercapitaService.class);
+		modificacionDistribucionInicialPercapitaService.habilitarModificacionPercapita(idDistribucionInicialPercapita, ano);
+	}
 
 	@GET
 	@Path("/modificacionDistribucionInicialPerCapita/subirAlfresco/{docId}")

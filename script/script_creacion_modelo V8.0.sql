@@ -26635,6 +26635,8 @@ UPDATE factor_ref_asig_zona
    SET zona_desde=0.0
  WHERE id_factor_ref_asig_zona=1;
 
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (181, 'Planilla Base Cumplimiento');
+
 
 -- creacion tabla estado_usuario ############################33
 
@@ -26666,6 +26668,10 @@ ALTER TABLE usuario
    ALTER COLUMN estado SET NOT NULL;
 
 
+ALTER TABLE documento_remesas
+  ADD COLUMN servicio integer;
+ALTER TABLE documento_remesas
+  ADD CONSTRAINT servicio_fk FOREIGN KEY (servicio) REFERENCES servicio_salud (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
-
+INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (182, 'Planilla Detalle Remesa APS SS');
 

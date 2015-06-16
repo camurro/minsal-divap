@@ -1,6 +1,5 @@
 package cl.minsal.divap.mantenedores.bean;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -24,26 +23,25 @@ import minsal.divap.service.ComunaService;
 import minsal.divap.service.MantenedoresService;
 import minsal.divap.service.ReportesServices;
 import minsal.divap.service.ServicioSaludService;
-import minsal.divap.vo.ComunaSummaryVO;
-import minsal.divap.vo.ComunaVO;
 import minsal.divap.vo.FactorRefAsigZonaVO;
 import minsal.divap.vo.FactorTramoPobrezaVO;
 import minsal.divap.vo.MantenedorComunaFinalVO;
-import minsal.divap.vo.MantenedorComunaVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.TipoComunaVO;
-import cl.minsal.divap.mantenedores.enums.PersistAction;
 import cl.minsal.divap.mantenedores.bean.util.JsfUtil;
+import cl.minsal.divap.mantenedores.enums.PersistAction;
 import cl.minsal.divap.mantenedores.facade.ComunaFacade;
-import cl.minsal.divap.model.AntecendentesComuna;
 import cl.minsal.divap.model.Comuna;
 import cl.minsal.divap.model.Remesa;
-import cl.minsal.divap.model.ServicioSalud;
 
 @Named("comunaController")
 @ViewScoped
 public class ComunaController extends AbstractController<Comuna> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4704651163827939668L;
 	@EJB
 	private ComunaFacade ejbFacade;
 	//private ServicioSaludController servicioSaludController;
@@ -268,6 +266,7 @@ public class ComunaController extends AbstractController<Comuna> {
 //		}
 //		return resultado;
 //	}
+
 
 	public String navigateComunaCumplimientoCollection() {
 		if (this.getSelected() != null) {

@@ -30,11 +30,12 @@
 						<p:fileUpload id="valorBasicoDesempenoFile" value="#{procesoRebajaController.cumplimientoFile}" mode="simple" />
 					</p:panelGrid>
 					<br />
-					<p:commandButton value="Cargar Archivos" ajax="false" actionListener="#{procesoRebajaController.uploadArchivoCumplimiento}"
-						icon="ui-icon-upload" update=":botonContinuar">
-						
-					</p:commandButton>
+					<p:commandButton value="Cargar Archivos" onclick="BUI.show()" oncomplete="if (#{not facesContext.validationFailed and not empty facesContext.messageList}) BUI.hide()" ajax="false" actionListener="#{procesoRebajaController.uploadArchivoCumplimiento}"	icon="ui-icon-upload" update=":botonContinuar"/>
 				</p:panel>
+				<p:blockUI  widgetVar="BUI"  block="Panel">
+        			Procesando Archivos<br />
+       				<p:graphicImage name="/resources/images/ajaxloadingbar.gif"/>
+    			</p:blockUI>
 				<p:commandButton value="Volver" styleClass="x-btn-text" action="bandejaTareas?faces-redirect=true" ajax="false"
 					icon="ui-icon-seek-first" />
 				<p:commandButton id="botonContinuar" value="Continuar" action="#{procesoRebajaController.enviar}"

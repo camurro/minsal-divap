@@ -70,12 +70,10 @@ public class PasswordHelper {
 
 }
 
-class PatronInvalidoException extends Exception
-{
+class PatronInvalidoException extends Exception{
   private static final long serialVersionUID = 1L;
 
-  public PatronInvalidoException(PasswordHelper paramPasswordHelper, String message)
-  {
+  public PatronInvalidoException(PasswordHelper paramPasswordHelper, String message){
     super(message);
   }
 }

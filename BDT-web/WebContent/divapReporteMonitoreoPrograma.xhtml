@@ -60,7 +60,7 @@
 									<h:outputText value="Servicio: " styleClass="inputLabel" />
 									<p:selectOneMenu style="width:400px;" id="cbServicio" value="#{reporteMonitoreoProgramaController.valorComboServicio}">
 										<f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
-										<f:selectItems value="#{reporteMonitoreoProgramaController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+										<f:selectItems value="#{reporteMonitoreoProgramaController.servicios}" itemLabel="#{servicio.nombreServicio}" itemValue="#{servicio.idServicio}" var="servicio" />
 									</p:selectOneMenu>
 								</h:panelGrid>
 								

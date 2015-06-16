@@ -258,7 +258,7 @@
 									<h:outputText value="Servicio: " styleClass="inputLabel" />
 									<p:selectOneMenu id="servicios"  value="#{procesoOTRevisarConsolidacionController.servicioSeleccionado}">
 										<f:selectItem itemLabel="Seleccione Servicio" itemValue="" />  
-										<f:selectItems value="#{procesoOTRevisarConsolidacionController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
+										<f:selectItems value="#{procesoOTRevisarConsolidacionController.listaServicios}" itemLabel="#{servicio.nombreServicio}" var="servicio" itemValue="#{servicio.idServicio}"/> 
 									</p:selectOneMenu>
 									
 									<p:commandButton value="Buscar" id="buscarListado" styleClass="x-btn-text" icon="ui-icon-search" actionListener="#{procesoOTRevisarConsolidacionController.buscarDetallePrograma}" update=":form:tabViewConsolidado:resumenProgramas :form:growl" oncomplete="actualizarTabla();"/>

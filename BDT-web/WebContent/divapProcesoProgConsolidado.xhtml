@@ -147,7 +147,7 @@
 												<h:outputText value="Servicio: " styleClass="inputLabel" />
 												<p:selectOneMenu id="cbServicioSub21" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio21}">
 												    <f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
-			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios21}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios21}" itemLabel="#{servicio.nombreServicio}" itemValue="#{servicio.idServicio}" var="servicio" />
 			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarEstablecimientoPorServicio(1)}" update="cbEstablecimientoSub21" />
 			           	 						</p:selectOneMenu>
 			           	 						<h:outputText value="Establecimiento: " styleClass="inputLabel" />
@@ -560,7 +560,7 @@
 												<h:outputText value="Servicio: " styleClass="inputLabel" />
 												<p:selectOneMenu id="cbServicioSub22" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio22}">
 												    <f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
-			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios22}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios22}" itemLabel="#{servicio.nombreServicio}" itemValue="#{servicio.idServicio}" var="servicio" />
 			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarEstablecimientoPorServicio(2)}" update="cbEstablecimientoSub22" />
 			           	 						</p:selectOneMenu>
 			           	 						<h:outputText value="Establecimiento: " styleClass="inputLabel" />
@@ -1008,7 +1008,7 @@
 												<h:outputText value="Servicio: " styleClass="inputLabel" />
 												<p:selectOneMenu id="cbServicioSub24" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio24}">
 												    <f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
-			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios24}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios24}" itemLabel="#{servicio.nombreServicio}" itemValue="#{servicio.idServicio}" var="servicio" />
 			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarEstablecimientoPorServicio(3)}" update="cbComunaSub24" />
 			           	 						</p:selectOneMenu>
 			           	 						<h:outputText value="Comuna: " styleClass="inputLabel" />
@@ -1454,7 +1454,7 @@
 												<h:outputText value="Servicio: " styleClass="inputLabel" />
 												<p:selectOneMenu id="cbServicioSub29" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboSubtituloServicio29}">
 												    <f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
-			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios29}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios29}" itemLabel="#{servicio.nombreServicio}" itemValue="#{servicio.idServicio}" var="servicio" />
 			           								<p:ajax listener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarEstablecimientoPorServicio(4)}" update="cbEstablecimientoSub29" />
 			           	 						</p:selectOneMenu>
 			           	 						<h:outputText value="Establecimiento: " styleClass="inputLabel" />
@@ -1903,7 +1903,7 @@
 												<h:outputText value="Servicio: " styleClass="inputLabel" />
 												<p:selectOneMenu style="width:650px;" id="cbPercapita" value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.valorComboPercapita}">
 												    <f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
-			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+			           								<f:selectItems value="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.servicios}" itemLabel="#{servicio.nombreServicio}" itemValue="#{servicio.idServicio}" var="servicio" />
 			           	 						</p:selectOneMenu>
 			           	 						<p:commandButton value="Buscar" styleClass="x-btn-text icon-guardar" actionListener="#{procesoEstimacionFlujoCajaConsolidadorRevisarMonitoreoController.filtrarPercapitaServicio}" update="tablaPercapita" />
 										</p:panelGrid>									

@@ -269,8 +269,8 @@ public class ReliquidacionService {
 			if(servicio.getComunas() != null && servicio.getComunas().size() > 0){
 				for(ComunaSummaryVO comuna : servicio.getComunas()){
 					CumplimientoApsMunicipalProgramaVO cumplimiento = new CumplimientoApsMunicipalProgramaVO();
-					cumplimiento.setIdServicio(servicio.getId_servicio());
-					cumplimiento.setServicio(servicio.getNombre_servicio());
+					cumplimiento.setIdServicio(servicio.getIdServicio());
+					cumplimiento.setServicio(servicio.getNombreServicio());
 					cumplimiento.setIdComuna(comuna.getId());
 					cumplimiento.setComuna(comuna.getNombre());
 					cumplimiento.setPorcCumplimiento(porc_cumplimiento);
@@ -344,8 +344,8 @@ public class ReliquidacionService {
 			if(servicio.getEstableclimientos() != null && servicio.getEstableclimientos().size() > 0){
 				for(EstablecimientoSummaryVO establecimiento : servicio.getEstableclimientos()){				
 					CumplimientoApsMunicipalProgramaVO cumplimiento = new CumplimientoApsMunicipalProgramaVO();
-					cumplimiento.setIdServicio(servicio.getId_servicio());
-					cumplimiento.setServicio(servicio.getNombre_servicio());
+					cumplimiento.setIdServicio(servicio.getIdServicio());
+					cumplimiento.setServicio(servicio.getNombreServicio());
 					cumplimiento.setIdComuna(establecimiento.getId());
 					cumplimiento.setComuna(establecimiento.getNombre());
 					cumplimiento.setPorcCumplimiento(porc_cumplimiento);
@@ -650,8 +650,8 @@ public class ReliquidacionService {
 			if(serv.getEstableclimientos() != null && serv.getEstableclimientos().size() > 0){
 				for(EstablecimientoSummaryVO establecimiento : serv.getEstableclimientos()){
 					ValorizarReliquidacionSummaryVO valorizarReliquidacionSummaryVO = new ValorizarReliquidacionSummaryVO();
-					valorizarReliquidacionSummaryVO.setIdServicio(serv.getId_servicio());
-					valorizarReliquidacionSummaryVO.setServicio(serv.getNombre_servicio());
+					valorizarReliquidacionSummaryVO.setIdServicio(serv.getIdServicio());
+					valorizarReliquidacionSummaryVO.setServicio(serv.getNombreServicio());
 					valorizarReliquidacionSummaryVO.setIdComuna(establecimiento.getId());
 					valorizarReliquidacionSummaryVO.setComuna(establecimiento.getNombre());
 					Long marcoInicialEstablecimiento = 0L;
@@ -775,8 +775,8 @@ public class ReliquidacionService {
 			if(serv.getComunas() != null && serv.getComunas().size() > 0){
 				for(ComunaSummaryVO comuna : serv.getComunas()){
 					ValorizarReliquidacionSummaryVO valorizarReliquidacionSummaryVO = new ValorizarReliquidacionSummaryVO();
-					valorizarReliquidacionSummaryVO.setIdServicio(serv.getId_servicio());
-					valorizarReliquidacionSummaryVO.setServicio(serv.getNombre_servicio());
+					valorizarReliquidacionSummaryVO.setIdServicio(serv.getIdServicio());
+					valorizarReliquidacionSummaryVO.setServicio(serv.getNombreServicio());
 					valorizarReliquidacionSummaryVO.setIdComuna(comuna.getId());
 					valorizarReliquidacionSummaryVO.setComuna(comuna.getNombre());
 					Long marcoInicialComuna = 0L;
@@ -1240,8 +1240,8 @@ public class ReliquidacionService {
 			if(serv.getEstableclimientos() != null && serv.getEstableclimientos().size() > 0){
 				for(EstablecimientoSummaryVO establecimiento : serv.getEstableclimientos()){
 					ValorizarReliquidacionPageSummaryVO valorizarReliquidacionSummaryVO = new ValorizarReliquidacionPageSummaryVO();
-					valorizarReliquidacionSummaryVO.setIdServicio(serv.getId_servicio());
-					valorizarReliquidacionSummaryVO.setServicio(serv.getNombre_servicio());
+					valorizarReliquidacionSummaryVO.setIdServicio(serv.getIdServicio());
+					valorizarReliquidacionSummaryVO.setServicio(serv.getNombreServicio());
 					valorizarReliquidacionSummaryVO.setIdComuna(establecimiento.getId());
 					valorizarReliquidacionSummaryVO.setComuna(establecimiento.getNombre());
 	
@@ -1366,8 +1366,8 @@ public class ReliquidacionService {
 			if(serv.getComunas() != null && serv.getComunas().size() > 0){
 				for(ComunaSummaryVO comuna : serv.getComunas()){
 					ValorizarReliquidacionPageSummaryVO valorizarReliquidacionSummaryVO = new ValorizarReliquidacionPageSummaryVO();
-					valorizarReliquidacionSummaryVO.setIdServicio(serv.getId_servicio());
-					valorizarReliquidacionSummaryVO.setServicio(serv.getNombre_servicio());
+					valorizarReliquidacionSummaryVO.setIdServicio(serv.getIdServicio());
+					valorizarReliquidacionSummaryVO.setServicio(serv.getNombreServicio());
 					valorizarReliquidacionSummaryVO.setIdComuna(comuna.getId());
 					valorizarReliquidacionSummaryVO.setComuna(comuna.getNombre());
 					/*Long marcoFinalComuna = 0L;

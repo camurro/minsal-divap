@@ -42,7 +42,7 @@
 												<h:outputText value="Servicios: " styleClass="inputLabel" />
 												<p:selectOneMenu id="cbServicio" value="#{reporteEstadoSituacionProgramaController.valorComboServicio}">
 												    <f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
-			           								<f:selectItems value="#{reporteEstadoSituacionProgramaController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+			           								<f:selectItems value="#{reporteEstadoSituacionProgramaController.servicios}" itemLabel="#{servicio.nombreServicio}" itemValue="#{servicio.idServicio}" var="servicio" />
 				           							<p:ajax listener="#{reporteEstadoSituacionProgramaController.cargarComunasEstablecimientos}" update="tabView" /> 
 			           	 						</p:selectOneMenu>
 										</h:panelGrid>

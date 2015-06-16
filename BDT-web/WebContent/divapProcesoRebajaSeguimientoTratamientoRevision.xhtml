@@ -195,7 +195,7 @@
 							<p:selectOneMenu id="servicios" value="#{procesoRebajaTramitacionController.servicioSeleccionado}">
 								<p:ajax listener="#{procesoRebajaTramitacionController.cargaComunas}" update="comunas hiddenFirstTime" />
 								<f:selectItem itemLabel="Seleccione" itemValue="" />
-								<f:selectItems value="#{procesoRebajaTramitacionController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}" />
+								<f:selectItems value="#{procesoRebajaTramitacionController.listaServicios}" itemLabel="#{servicio.nombreServicio}" var="servicio" itemValue="#{servicio.idServicio}" />
 							</p:selectOneMenu>
 							
 							<p:selectOneMenu id="comunas"  styleClass="inputLabel" value="#{procesoRebajaTramitacionController.comunaSeleccionada}">

@@ -16,8 +16,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import org.apache.poi.ss.formula.functions.T;
-
 import minsal.divap.dao.AntecedentesComunaDAO;
 import minsal.divap.dao.ComunaDAO;
 import minsal.divap.dao.ConveniosDAO;
@@ -1157,7 +1155,7 @@ public class ReportesServices {
 			}
 			for (EstablecimientoSummaryVO establecimiento : servicio.getEstableclimientos()) {
 				ReporteHistoricoPorProgramaEstablecimientoForExcelVO fila = new ReporteHistoricoPorProgramaEstablecimientoForExcelVO();
-				fila.setServicio(servicio.getNombre_servicio());
+				fila.setServicio(servicio.getNombreServicio());
 				fila.setEstablecimiento(establecimiento.getNombre());
 
 				List<ReporteHistoricoPorProgramaMarcosAnosForExcelVO> listadoMarcosAno = new ArrayList<ReporteHistoricoPorProgramaMarcosAnosForExcelVO>();
@@ -1232,7 +1230,7 @@ public class ReportesServices {
 			}
 			for (ComunaSummaryVO comuna : servicio.getComunas()) {
 				ReporteHistoricoPorProgramaComunaForExcelVO fila = new ReporteHistoricoPorProgramaComunaForExcelVO();
-				fila.setServicio(servicio.getNombre_servicio());
+				fila.setServicio(servicio.getNombreServicio());
 				fila.setComuna(comuna.getNombre());
 				List<ReporteHistoricoPorProgramaMarcosAnosForExcelVO> listadoMarcosAno = new ArrayList<ReporteHistoricoPorProgramaMarcosAnosForExcelVO>();
 
@@ -3067,8 +3065,8 @@ public class ReportesServices {
 
 		for (ServiciosVO servicio : servicios) {
 			ReporteMetaDesempenoOTAcumuladasPrincipal fila = new ReporteMetaDesempenoOTAcumuladasPrincipal();
-			fila.setCod_ss(servicio.getId_servicio());
-			fila.setServicio(servicio.getNombre_servicio());
+			fila.setCod_ss(servicio.getIdServicio());
+			fila.setServicio(servicio.getNombreServicio());
 
 			ReporteMetaDesempenoOTAcumuladasSub24 sub24 = new ReporteMetaDesempenoOTAcumuladasSub24();
 			ReporteMetaDesempenoOTAcumuladasSub21 sub21 = new ReporteMetaDesempenoOTAcumuladasSub21();
@@ -3089,7 +3087,7 @@ public class ReportesServices {
 			for(ComunaSummaryVO comuna : servicio.getComunas()){
 				List<AntecendentesComunaCalculado> antecendentesComunaCalculados = antecedentesComunaDAO
 						.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaVigente(
-								servicio.getId_servicio(), comuna.getId(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+								servicio.getIdServicio(), comuna.getId(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
 				AntecendentesComunaCalculado antecendentesComunaCalculado = ((antecendentesComunaCalculados != null && antecendentesComunaCalculados.size() > 0) ? antecendentesComunaCalculados.get(0) : null);
 				
 				if(antecendentesComunaCalculado == null){

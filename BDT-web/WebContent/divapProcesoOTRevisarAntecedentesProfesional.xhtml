@@ -55,7 +55,7 @@
 						<h:outputText value="Servicio: " styleClass="inputLabel" />
 						<p:selectOneMenu id="servicios"  value="#{procesoOTRevisarAntecedentesController.servicioSeleccionado}">
 							<f:selectItem itemLabel="Seleccione Servicio" itemValue="-1" />  
-							<f:selectItems value="#{procesoOTRevisarAntecedentesController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
+							<f:selectItems value="#{procesoOTRevisarAntecedentesController.listaServicios}" itemLabel="#{servicio.nombreServicio}" var="servicio" itemValue="#{servicio.idServicio}"/> 
 						</p:selectOneMenu>
 					</h:panelGrid>
 						

@@ -207,13 +207,13 @@ public class RebajaService {
 				planilla.setServicio(((antecendenteComuna.getIdComuna().getServicioSalud().getNombre() != null)?antecendenteComuna.getIdComuna().getServicioSalud().getNombre():null));
 				planilla.setId_comuna(antecendenteComuna.getIdComuna().getId());
 				planilla.setComuna(antecendenteComuna.getIdComuna().getNombre());
-				Integer aporteEstatalMensual = ((antecendentesComunaCalculado.getPercapitaMes() == null) ? 0 : antecendentesComunaCalculado.getPercapitaMes().intValue());
+				Long aporteEstatalMensual = ((antecendentesComunaCalculado.getPercapitaMes() == null) ? 0L : antecendentesComunaCalculado.getPercapitaMes());
 				System.out.println("PercapitaMes="+aporteEstatalMensual);
-				aporteEstatalMensual += ((antecendentesComunaCalculado.getDesempenoDificil() == null) ? 0 : antecendentesComunaCalculado.getDesempenoDificil());
+				aporteEstatalMensual += ((antecendentesComunaCalculado.getDesempenoDificil() == null) ? 0L : antecendentesComunaCalculado.getDesempenoDificil());
 				System.out.println("DesempenoDificil="+antecendentesComunaCalculado.getDesempenoDificil());
 				planilla.setAporteEstatal(aporteEstatalMensual);
 				List<CumplimientoRebajaVO> cumplimientoRebajasVO = getCumplimientoByRebajaComuna(idRebaja, antecendenteComuna.getIdComuna().getId());
-				Integer montoRebaja = 0;
+				Long montoRebaja = 0L;
 				if(cumplimientoRebajasVO != null && cumplimientoRebajasVO.size() > 0){
 					Integer porcentajeRebajaCalculado = 0;
 					Integer porcentajeRebajaFinal = 0;
@@ -245,7 +245,7 @@ public class RebajaService {
 					planilla.setTotalRebajaRebajaFinal(porcentajeRebajaFinal);
 					System.out.println("aporteEstatalMensual-->"+aporteEstatalMensual);
 					System.out.println("porcentajeRebajaFinal-->"+porcentajeRebajaFinal);
-					montoRebaja = (int)Math.round(aporteEstatalMensual * (porcentajeRebajaFinal/100.0));
+					montoRebaja = Math.round(aporteEstatalMensual * (porcentajeRebajaFinal/100.0));
 					System.out.println("montoRebaja-->"+montoRebaja);
 					planilla.setMontoRebajaMes(montoRebaja);
 				}
@@ -257,7 +257,7 @@ public class RebajaService {
 					antecedentesComunaDAO.save(antecedentesComunaCalculadoRebaja);
 
 				}
-				antecedentesComunaCalculadoRebaja.setMontoRebaja(montoRebaja);
+				antecedentesComunaCalculadoRebaja.setMontoRebaja(montoRebaja.intValue());
 				if(montoRebaja == 0){
 					System.out.println("No posee porcentaje de rebaja");
 					continue;
@@ -460,8 +460,8 @@ public class RebajaService {
 		planilla.setServicio(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getNombre());
 		planilla.setId_comuna(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getId());
 		planilla.setComuna(antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getNombre());
-		Integer aporteEstatalMensual =  ((antecendentesComunaCalculado.getPercapitaMes() == null) ? 0 : antecendentesComunaCalculado.getPercapitaMes().intValue());
-		aporteEstatalMensual +=  ((antecendentesComunaCalculado.getDesempenoDificil() == null) ? 0 : antecendentesComunaCalculado.getDesempenoDificil().intValue());
+		Long aporteEstatalMensual =  ((antecendentesComunaCalculado.getPercapitaMes() == null) ? 0L : antecendentesComunaCalculado.getPercapitaMes());
+		aporteEstatalMensual +=  ((antecendentesComunaCalculado.getDesempenoDificil() == null) ? 0L : antecendentesComunaCalculado.getDesempenoDificil());
 		planilla.setAporteEstatal(aporteEstatalMensual);
 		List<CumplimientoRebajaVO> cumplimientoRebajasVO = getCumplimientoByRebajaComuna(idRebaja, antecendentesComunaCalculado.getAntecedentesComuna().getIdComuna().getId());
 		if(cumplimientoRebajasVO != null && cumplimientoRebajasVO.size() > 0){
@@ -496,7 +496,7 @@ public class RebajaService {
 					}
 				}
 			}
-			planilla.setMontoRebajaMes(antecedentesComunaCalculadoRebaja.getMontoRebaja());
+			planilla.setMontoRebajaMes(new Long(antecedentesComunaCalculadoRebaja.getMontoRebaja()));
 			planilla.setNuevoAporteEstatal(aporteEstatalMensual - antecedentesComunaCalculadoRebaja.getMontoRebaja());
 		}
 		return planilla;
@@ -544,7 +544,6 @@ public class RebajaService {
 	}
 
 	public Integer generarExcelRebajaCalculada(int idRebaja, Integer ano) {
-
 		int documentId = 0;
 		List<PlanillaRebajaCalculadaVO> planillaRebajasCalculadas = getAllRebajasPlanillaTotal(idRebaja, ano);
 		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
@@ -771,7 +770,7 @@ public class RebajaService {
 					}
 
 					ReferenciaDocumentoSummaryVO referenciaDocumentoFinalSummaryVO = null;
-					List<ReferenciaDocumentoSummaryVO> referenciasDocumentoSummaryVO = documentService.getVersionFinalRebajaByType(idProcesoRebaja, servicio.getId_servicio(), TipoDocumentosProcesos.RESOLUCIONREBAJA);
+					List<ReferenciaDocumentoSummaryVO> referenciasDocumentoSummaryVO = documentService.getVersionFinalRebajaByType(idProcesoRebaja, servicio.getIdServicio(), TipoDocumentosProcesos.RESOLUCIONREBAJA);
 					if(referenciasDocumentoSummaryVO != null && referenciasDocumentoSummaryVO.size() > 0){
 						for(ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO : referenciasDocumentoSummaryVO){
 							String contentType = new MimetypesFileTypeMap().getContentType(referenciaDocumentoSummaryVO.getPath());

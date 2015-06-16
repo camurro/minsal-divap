@@ -61,7 +61,7 @@
 							<h:outputText value="Servicio: " styleClass="inputLabel" />
 							<p:selectOneMenu value="#{procesoReliquidacionMuniController.servicioSeleccionado}">
 								<f:selectItem itemLabel="Seleccione Servicio" itemValue="0" />  
-								<f:selectItems itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" value="#{procesoReliquidacionMuniController.servicios}" /> 
+								<f:selectItems itemLabel="#{servicio.nombreServicio}" itemValue="#{servicio.idServicio}" var="servicio" value="#{procesoReliquidacionMuniController.servicios}" /> 
 							</p:selectOneMenu>
 						</h:panelGrid>
 						<h:panelGrid>

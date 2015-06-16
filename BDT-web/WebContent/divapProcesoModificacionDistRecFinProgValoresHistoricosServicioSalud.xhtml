@@ -81,7 +81,7 @@
 								<h:outputText value="Servicio: " styleClass="inputLabel" />
 								<p:selectOneMenu id="servicios"  value="#{procesoModificacionDistRecFinHistoricoServicioController.servicioSeleccionado}">
 								<f:selectItem itemLabel="Seleccione" itemValue="" />  
-								<f:selectItems value="#{procesoModificacionDistRecFinHistoricoServicioController.listaServicios}" itemLabel="#{servicio.nombre_servicio}" var="servicio" itemValue="#{servicio.id_servicio}"/> 
+								<f:selectItems value="#{procesoModificacionDistRecFinHistoricoServicioController.listaServicios}" itemLabel="#{servicio.nombreServicio}" var="servicio" itemValue="#{servicio.idServicio}"/> 
 							</p:selectOneMenu>
 						</h:panelGrid>
 						

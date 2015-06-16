@@ -33,7 +33,7 @@
 								<h:outputText value="Servicio: " styleClass="inputLabel" />
 								<p:selectOneMenu style="width:650px;" id="cbServicio" value="#{reporteGlosa07Controller.valorComboServicio}">
 									<f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
-									<f:selectItems value="#{reporteGlosa07Controller.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+									<f:selectItems value="#{reporteGlosa07Controller.servicios}" itemLabel="#{servicio.nombreServicio}" itemValue="#{servicio.idServicio}" var="servicio" />
 									<p:ajax listener="#{reporteGlosa07Controller.cargarTablaPorServicio}" update="tabla" />
 								</p:selectOneMenu>
 							</h:panelGrid>
