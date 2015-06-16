@@ -1,7 +1,6 @@
 package minsal.divap.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -9,9 +8,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
 import minsal.divap.dao.UtilitariosDAO;
-import minsal.divap.enums.TipoComuna;
 import minsal.divap.vo.ComunaVO;
-import minsal.divap.vo.MesVO;
 import minsal.divap.vo.RegionVO;
 import minsal.divap.vo.ServiciosVO;
 import cl.minsal.divap.model.Comuna;
@@ -42,8 +39,8 @@ public class UtilitariosService {
 		List<ServiciosVO> serviciosVO = new ArrayList<ServiciosVO>();
 		for(ServicioSalud servicio:servicios){
 			ServiciosVO servicioVO = new ServiciosVO();
-			servicioVO.setId_servicio(servicio.getId());
-			servicioVO.setNombre_servicio(servicio.getNombre());
+			servicioVO.setIdServicio(servicio.getId());
+			servicioVO.setNombreServicio(servicio.getNombre());
 			serviciosVO.add(servicioVO);
 		}
 		return serviciosVO;
@@ -54,8 +51,8 @@ public class UtilitariosService {
 		List<ServiciosVO> serviciosVO = new ArrayList<ServiciosVO>();
 		for(ServicioSalud servicio:servicios){
 			ServiciosVO servicioVO = new ServiciosVO();
-			servicioVO.setId_servicio(servicio.getId());
-			servicioVO.setNombre_servicio(servicio.getNombre());
+			servicioVO.setIdServicio(servicio.getId());
+			servicioVO.setNombreServicio(servicio.getNombre());
 			serviciosVO.add(servicioVO);
 		}
 		return serviciosVO;

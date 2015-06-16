@@ -1,10 +1,11 @@
 package cl.minsal.util;
 
-import java.io.PrintStream;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.jboss.crypto.CryptoUtil;
+
 
 public class PasswordHelper {
 
@@ -24,21 +25,20 @@ public class PasswordHelper {
 				System.out.println("--->"
 						+ validacionPassword.encriptarMD5base64("PF55cV9i"));
 			}
-		} catch (PasswordHelper.PatronInvalidoException e) {
+		} catch (PatronInvalidoException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void validarFormatoContrasena(String texto)
-			throws PasswordHelper.PatronInvalidoException {
+			throws PatronInvalidoException {
 		Pattern p = Pattern
 				.compile("(?=^.{8,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$");
 
 		Matcher matcher = p.matcher(texto);
 
 		if (!matcher.matches())
-			throw new PasswordHelper.PatronInvalidoException(this,
-					"Contraseña no coinside con el patron requerido");
+			throw new PatronInvalidoException(this, "Contraseña no coinside con el patron requerido");
 	}
 
 	public String generarPassword() {
@@ -68,4 +68,14 @@ public class PasswordHelper {
 				cadena);
 	}
 
+}
+
+class PatronInvalidoException extends Exception
+{
+  private static final long serialVersionUID = 1L;
+
+  public PatronInvalidoException(PasswordHelper paramPasswordHelper, String message)
+  {
+    super(message);
+  }
 }

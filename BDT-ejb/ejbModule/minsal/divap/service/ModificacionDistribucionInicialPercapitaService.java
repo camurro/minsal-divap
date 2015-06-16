@@ -7,6 +7,7 @@ import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -71,6 +72,7 @@ import org.docx4j.openpackaging.exceptions.Docx4JException;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import cl.minsal.divap.model.AnoEnCurso;
+import cl.minsal.divap.model.AntecedentesComunaCalculadoRebaja;
 import cl.minsal.divap.model.AntecendentesComuna;
 import cl.minsal.divap.model.AntecendentesComunaCalculado;
 import cl.minsal.divap.model.DistribucionInicialPercapita;
@@ -209,30 +211,29 @@ public class ModificacionDistribucionInicialPercapitaService {
 		calculoPercapitaExcelValidator.validateFormat(worksheet);		
 		List<CalculoPercapitaVO> items = calculoPercapitaExcelValidator.getItems();
 		for(CalculoPercapitaVO calculoPercapitaVO : items){
-			AntecendentesComuna antecendentesComuna = antecedentesComunaDAO.findAntecendentesComunaByComunaServicioAno(calculoPercapitaVO.getServicio(), calculoPercapitaVO.getComuna(), ano);
-			System.out.println("antecendentesComuna-->"+antecendentesComuna);
-			if(antecendentesComuna != null){				
-				AntecendentesComunaCalculado antecendentesComunaCalculadoVigente = antecedentesComunaDAO.findByAntecedentesDistrinbucionInicialVigente (antecendentesComuna.getIdAntecedentesComuna(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
-				if(antecendentesComunaCalculadoVigente == null){
+			AntecendentesComuna antecendenteComuna = antecedentesComunaDAO.findAntecendentesComunaByComunaServicioAno(calculoPercapitaVO.getServicio(), calculoPercapitaVO.getComuna(), ano);
+			System.out.println("antecendenteComuna-->"+antecendenteComuna);
+			if(antecendenteComuna != null){				
+				AntecendentesComunaCalculado antecendentesComunaCalculadoActual = antecedentesComunaDAO.findByAntecedentesModificacionDistrinbucionInicialActual(antecendenteComuna.getIdAntecedentesComuna(), idModificacionDistribucionInicialPercapita);
+				if(antecendentesComunaCalculadoActual == null){
 					System.out.println("No tiene AntecendentesComunaCalculado se debe crear el registro");
-					AntecendentesComunaCalculado antecendentesComunaCalculado = new AntecendentesComunaCalculado();
-					antecendentesComunaCalculado.setAntecedentesComuna(antecendentesComuna);
-					antecendentesComunaCalculado.setPoblacion(calculoPercapitaVO.getPoblacion().intValue());
-					antecendentesComunaCalculado.setPoblacionMayor(calculoPercapitaVO.getPoblacionMayor().intValue());
-					antecendentesComunaCalculado.setDistribucionInicialPercapita(distribucionInicialPercapita);
-					antecendentesComunaCalculado.setModificacionPercapita(modificacionPercapita);
-					antecedentesComunaDAO.createAntecendentesComunaCalcuado(antecendentesComunaCalculado);
+					antecendentesComunaCalculadoActual = new AntecendentesComunaCalculado();
+					antecendentesComunaCalculadoActual.setAntecedentesComuna(antecendenteComuna);
+					antecendentesComunaCalculadoActual.setPoblacion(calculoPercapitaVO.getPoblacion().intValue());
+					antecendentesComunaCalculadoActual.setPoblacionMayor(calculoPercapitaVO.getPoblacionMayor().intValue());
+					antecendentesComunaCalculadoActual.setDistribucionInicialPercapita(distribucionInicialPercapita);
+					antecendentesComunaCalculadoActual.setModificacionPercapita(modificacionPercapita);
+					antecendentesComunaCalculadoActual.setFechaVigencia(new Date());
+					antecedentesComunaDAO.createAntecendentesComunaCalculado(antecendentesComunaCalculadoActual);
 				} else {
-					antecendentesComunaCalculadoVigente.setFechaVigencia(new Date());
-					AntecendentesComunaCalculado antecendentesComunaCalculado = new AntecendentesComunaCalculado();
-					antecendentesComunaCalculado.setAntecedentesComuna(antecendentesComuna);
-					antecendentesComunaCalculado.setPoblacion(calculoPercapitaVO.getPoblacion().intValue());
-					antecendentesComunaCalculado.setPoblacionMayor(calculoPercapitaVO.getPoblacionMayor().intValue());
-					antecendentesComunaCalculado.setDistribucionInicialPercapita(distribucionInicialPercapita);
-					antecendentesComunaCalculado.setModificacionPercapita(modificacionPercapita);
-					antecendentesComunaCalculado.setAprobado(antecendentesComunaCalculadoVigente.getAprobado());
-					antecendentesComunaCalculado.setDesempenoDificil(antecendentesComunaCalculadoVigente.getDesempenoDificil());
-					antecedentesComunaDAO.createAntecendentesComunaCalcuado(antecendentesComunaCalculado);
+					antecendentesComunaCalculadoActual.setAntecedentesComuna(antecendenteComuna);
+					antecendentesComunaCalculadoActual.setPoblacion(calculoPercapitaVO.getPoblacion().intValue());
+					antecendentesComunaCalculadoActual.setPoblacionMayor(calculoPercapitaVO.getPoblacionMayor().intValue());
+					antecendentesComunaCalculadoActual.setDistribucionInicialPercapita(distribucionInicialPercapita);
+					antecendentesComunaCalculadoActual.setModificacionPercapita(modificacionPercapita);
+					antecendentesComunaCalculadoActual.setDesempenoDificil(antecendentesComunaCalculadoActual.getDesempenoDificil());
+					antecendentesComunaCalculadoActual.setFechaVigencia(new Date());
+					antecedentesComunaDAO.createAntecendentesComunaCalculado(antecendentesComunaCalculadoActual);
 				}
 			}
 		}
@@ -260,18 +261,22 @@ public class ModificacionDistribucionInicialPercapitaService {
 		desempenoDificilExcelValidator.validateFormat(worksheet);		
 		List<DesempenoDificilVO> items = desempenoDificilExcelValidator.getItems();
 		for(DesempenoDificilVO desempenoDificilVO : items){
-			AntecendentesComuna antecendentesComuna = antecedentesComunaDAO.findAntecendentesComunaByComunaServicioAno(desempenoDificilVO.getServicio(), desempenoDificilVO.getComuna(), ano);
-			if(antecendentesComuna != null){
-				AntecendentesComunaCalculado antecendentesComunaCalculadoVigente = antecedentesComunaDAO.findByAntecedentesDistrinbucionInicialVigente (antecendentesComuna.getIdAntecedentesComuna(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
-				if( antecendentesComunaCalculadoVigente == null){
-					antecendentesComunaCalculadoVigente = new AntecendentesComunaCalculado();
-					antecendentesComunaCalculadoVigente.setAntecedentesComuna(antecendentesComuna);
-					antecendentesComunaCalculadoVigente.setDesempenoDificil(desempenoDificilVO.getValorDesempenoDificil().intValue());
-					antecendentesComunaCalculadoVigente.setDistribucionInicialPercapita(distribucionInicialPercapita);
-					antecendentesComunaCalculadoVigente.setModificacionPercapita(modificacionPercapita);
-					antecedentesComunaDAO.createAntecendentesComunaCalcuado(antecendentesComunaCalculadoVigente);
+			AntecendentesComuna antecendenteComuna = antecedentesComunaDAO.findAntecendentesComunaByComunaServicioAno(desempenoDificilVO.getServicio(), desempenoDificilVO.getComuna(), ano);
+			if(antecendenteComuna != null){
+				AntecendentesComunaCalculado antecendentesComunaCalculadoActual = antecedentesComunaDAO.findByAntecedentesModificacionDistrinbucionInicialActual(antecendenteComuna.getIdAntecedentesComuna(), idModificacionDistribucionInicialPercapita);
+				if( antecendentesComunaCalculadoActual == null){
+					antecendentesComunaCalculadoActual = new AntecendentesComunaCalculado();
+					antecendentesComunaCalculadoActual.setAntecedentesComuna(antecendenteComuna);
+					antecendentesComunaCalculadoActual.setDesempenoDificil(desempenoDificilVO.getValorDesempenoDificil().intValue());
+					antecendentesComunaCalculadoActual.setDistribucionInicialPercapita(distribucionInicialPercapita);
+					antecendentesComunaCalculadoActual.setModificacionPercapita(modificacionPercapita);
+					antecendentesComunaCalculadoActual.setFechaVigencia(new Date());
+					antecedentesComunaDAO.createAntecendentesComunaCalculado(antecendentesComunaCalculadoActual);
 				} else {
-					antecendentesComunaCalculadoVigente.setDesempenoDificil(desempenoDificilVO.getValorDesempenoDificil().intValue());
+					antecendentesComunaCalculadoActual.setDesempenoDificil(desempenoDificilVO.getValorDesempenoDificil().intValue());
+					antecendentesComunaCalculadoActual.setDistribucionInicialPercapita(distribucionInicialPercapita);
+					antecendentesComunaCalculadoActual.setModificacionPercapita(modificacionPercapita);
+					antecendentesComunaCalculadoActual.setFechaVigencia(new Date());
 				}
 			}
 		}
@@ -286,12 +291,13 @@ public class ModificacionDistribucionInicialPercapitaService {
 	public Integer valorizarDisponibilizarPlanillaTrabajo(Integer idModificacionDistribucionInicialPercapita, Integer ano) {
 		System.out.println("valorizarDisponibilizarPlanillaTrabajo-->"+idModificacionDistribucionInicialPercapita);
 		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(ano);
-		List<AntecendentesComunaCalculado>  antecendentesComunaCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaVigenteModificacion(
+		List<AntecendentesComunaCalculado>  antecendentesComunaCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaModificacionPercapita(
 				distribucionInicialPercapita.getIdDistribucionInicialPercapita(), idModificacionDistribucionInicialPercapita);
+		AnoEnCurso anoEnCurso = anoDAO.getAnoById(ano);
 		if(antecendentesComunaCalculado != null && antecendentesComunaCalculado.size() > 0){
 			for(AntecendentesComunaCalculado antecendenteComunaCalculado: antecendentesComunaCalculado){
-				Integer percapitaBasal = antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso().getMontoPercapitalBasal();
-				Integer asignacionAdultoMayor = antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso().getAsignacionAdultoMayor();
+				Integer percapitaBasal = anoEnCurso.getMontoPercapitalBasal();
+				Integer asignacionAdultoMayor = anoEnCurso.getAsignacionAdultoMayor();
 				System.out.println("percapitaBasal="+percapitaBasal+ " antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza().getValor()=" + ((antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza() == null) ? 0 : antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza().getValor()));
 				Double pobreza = percapitaBasal * ((antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza() == null) ? 0 : antecendenteComunaCalculado.getAntecedentesComuna().getTramoPobreza().getValor());
 				System.out.println("pobreza = " + pobreza);
@@ -351,10 +357,10 @@ public class ModificacionDistribucionInicialPercapitaService {
 						antecendenteComunaCalculado.setValorReferencialZona(valorReferencialZona);
 						Double valorPerCapitaComunalMes = (percapitaBasal + pobreza + 0.0 + valorReferencialZona);
 						antecendenteComunaCalculado.setValorPerCapitaComunalMes(valorPerCapitaComunalMes);
-						Double perCapitaCostoFijo = antecedentesComunaDAO.findPerCapitaCostoFijoByServicioComunaAnoAnterior(antecendenteComunaCalculado.getAntecedentesComuna().getIdComuna().getId(), antecendenteComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId(), ano);
+						Double perCapitaCostoFijo = antecedentesComunaDAO.findPerCapitaCostoFijoByServicioComunaAnoAnterior(antecendenteComunaCalculado.getAntecedentesComuna().getIdComuna().getId(), antecendenteComunaCalculado.getAntecedentesComuna().getIdComuna().getServicioSalud().getId(), (ano - 1));
 						System.out.println("perCapitaCostoFijo="+perCapitaCostoFijo);
 						perCapitaCostoFijo = ((perCapitaCostoFijo == null) ? 0.0 : perCapitaCostoFijo);
-						Double calculoFinal = (perCapitaCostoFijo * antecendenteComunaCalculado.getAntecedentesComuna().getAnoAnoEnCurso().getInflactor());
+						Double calculoFinal = (perCapitaCostoFijo * anoEnCurso.getInflactor());
 						Long perCapitaMes = Math.round(calculoFinal);
 						System.out.println("perCapitaMes = " + perCapitaMes);
 						antecendenteComunaCalculado.setPercapitaMes(perCapitaMes);
@@ -408,7 +414,7 @@ public class ModificacionDistribucionInicialPercapitaService {
 		System.out.println("findAntecedentesComunaCalculadosByDistribucionInicialPercapita ano-->"+ano);
 		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(ano);
 		System.out.println("findAntecedentesComunaCalculadosByDistribucionInicialPercapita idModificacionDistribucionInicialPercapita-->"+idModificacionDistribucionInicialPercapita);
-		List<AntecendentesComunaCalculado>  antecendentesComunaCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaVigente(distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+		List<AntecendentesComunaCalculado>  antecendentesComunaCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaModificacionPercapita(distribucionInicialPercapita.getIdDistribucionInicialPercapita(), idModificacionDistribucionInicialPercapita);
 		List<AsignacionDistribucionPerCapitaVO> antecedentesCalculados = new ArrayList<AsignacionDistribucionPerCapitaVO>();
 		if(antecendentesComunaCalculado != null && antecendentesComunaCalculado.size() > 0){
 			for(AntecendentesComunaCalculado antecendenteComunaCalculado : antecendentesComunaCalculado){
@@ -466,9 +472,9 @@ public class ModificacionDistribucionInicialPercapitaService {
 		List<AntecendentesComunaCalculado>  antecendentesComunaCalculado = null;
 		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(ano);
 		if(comuna != null){
-			antecendentesComunaCalculado = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaVigente(servicio, comuna, distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+			antecendentesComunaCalculado = antecedentesComunaDAO.findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaModificacionPercapita(servicio, comuna, distribucionInicialPercapita.getIdDistribucionInicialPercapita(), idModificacionDistribucionInicialPercapita);
 		} else {
-			antecendentesComunaCalculado = antecedentesComunaDAO.findAntecendentesComunaCalculadoByServicioDistribucionInicialPercapitaVigente(servicio, distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+			antecendentesComunaCalculado = antecedentesComunaDAO.findAntecendentesComunaCalculadoByServicioDistribucionInicialPercapitaModificacionPercapita(servicio, distribucionInicialPercapita.getIdDistribucionInicialPercapita(), idModificacionDistribucionInicialPercapita);
 		}
 		List<AsignacionDistribucionPerCapitaVO> antecedentesCalculados = new ArrayList<AsignacionDistribucionPerCapitaVO>();
 		if(antecendentesComunaCalculado != null && antecendentesComunaCalculado.size() > 0){
@@ -562,27 +568,28 @@ public class ModificacionDistribucionInicialPercapitaService {
 			System.out.println("templateAporteEstatalUR->"+templateAporteEstatalUR);
 			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(ano);
 			System.out.println("distribucionInicialPercapita="+distribucionInicialPercapita.getIdDistribucionInicialPercapita());
-			List<AntecendentesComuna> antecendentesComuna = antecedentesComunaDAO.findAntecendentesComunaByidDistribucionInicialPercapitaModificacionPercapita(
-					distribucionInicialPercapita.getIdDistribucionInicialPercapita(), idModificacionDistribucionInicialPercapita);
-			System.out.println("antecendentesComuna.size()="+((antecendentesComuna == null)?0:antecendentesComuna.size()));
-			if(antecendentesComuna != null && antecendentesComuna.size() > 0){
-				for(AntecendentesComuna antecendenteComuna : antecendentesComuna){
-					AntecendentesComunaCalculado antecendentesComunaCalculadoVigente = antecedentesComunaDAO.findByAntecedentesDistrinbucionInicialVigenteModificacionPercapita(antecendenteComuna.getIdAntecedentesComuna(), distribucionInicialPercapita.getIdDistribucionInicialPercapita(), idModificacionDistribucionInicialPercapita);
-					List<AntecendentesComunaCalculado> antecendentesComunaCalculadoCaducados = antecedentesComunaDAO.findByAntecedentesDistrinbucionInicialCaducado(antecendenteComuna.getIdAntecedentesComuna(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
-					AntecendentesComunaCalculado antecendentesComunaCalculadoCaducado = ((antecendentesComunaCalculadoCaducados == null || antecendentesComunaCalculadoCaducados.size() == 0) ? null : antecendentesComunaCalculadoCaducados.get(0));
+			List<AntecendentesComuna> antecedentesComuna = antecedentesComunaDAO.findAntecendentesByAno(ano);
+			System.out.println("antecedentesComuna.size()="+((antecedentesComuna == null) ? 0 : antecedentesComuna.size()));
+			if(antecedentesComuna != null && antecedentesComuna.size() > 0){
+				for(AntecendentesComuna antecendenteComuna : antecedentesComuna){
+					AntecendentesComunaCalculado antecendentesComunaCalculadoNuevo = antecedentesComunaDAO.findByAntecedentesModificacionDistrinbucionInicialActual(antecendenteComuna.getIdAntecedentesComuna(), idModificacionDistribucionInicialPercapita);
+					if(antecendentesComunaCalculadoNuevo == null){
+						continue;
+					}
+					AntecendentesComunaCalculado antecendentesComunaCalculadoCaducado = antecedentesComunaDAO.findByAntecedentesDistrinbucionInicialVigente(antecendenteComuna.getIdAntecedentesComuna(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
 					if(antecendenteComuna.getClasificacion() != null){
 						Map<String, Object> parametersAporteEstatalUR = new HashMap<String, Object>();
 						parametersAporteEstatalUR.put("{ano_curso}", ano);
 						parametersAporteEstatalUR.put("{comuna_seleccionada}", antecendenteComuna.getIdComuna().getNombre());
-						Integer poblacion = ((antecendentesComunaCalculadoVigente.getPoblacion() == null) ? 0 : antecendentesComunaCalculadoVigente.getPoblacion());
+						Integer poblacion = ((antecendentesComunaCalculadoNuevo.getPoblacion() == null) ? 0 : antecendentesComunaCalculadoNuevo.getPoblacion());
 						parametersAporteEstatalUR.put("{poblacion_seleccionada}", StringUtil.formatNumber(poblacion));
-						Double percapitaComunaMes = ((antecendentesComunaCalculadoVigente.getValorPerCapitaComunalMes() == null)? 0.0 : antecendentesComunaCalculadoVigente.getValorPerCapitaComunalMes());
+						Double percapitaComunaMes = ((antecendentesComunaCalculadoNuevo.getValorPerCapitaComunalMes() == null)? 0.0 : antecendentesComunaCalculadoNuevo.getValorPerCapitaComunalMes());
 						parametersAporteEstatalUR.put("{monto_seleccionado}", StringUtil.formatNumber(Math.round(percapitaComunaMes)));
-						Long aporteEstatalMensual = ((antecendentesComunaCalculadoVigente.getPercapitaMes() == null) ? 0 : antecendentesComunaCalculadoVigente.getPercapitaMes());
-						aporteEstatalMensual += ((antecendentesComunaCalculadoVigente.getDesempenoDificil() == null) ? 0 : antecendentesComunaCalculadoVigente.getDesempenoDificil());
+						Long aporteEstatalMensual = ((antecendentesComunaCalculadoNuevo.getPercapitaMes() == null) ? 0 : antecendentesComunaCalculadoNuevo.getPercapitaMes());
+						aporteEstatalMensual += ((antecendentesComunaCalculadoNuevo.getDesempenoDificil() == null) ? 0 : antecendentesComunaCalculadoNuevo.getDesempenoDificil());
 						
-						Long aporteEstatalAnual = ((antecendentesComunaCalculadoVigente.getPercapitaAno() == null) ? 0 : antecendentesComunaCalculadoVigente.getPercapitaAno());
-						aporteEstatalAnual += ((antecendentesComunaCalculadoVigente.getDesempenoDificil() == null) ? 0 : (antecendentesComunaCalculadoVigente.getDesempenoDificil() * 12));
+						Long aporteEstatalAnual = ((antecendentesComunaCalculadoNuevo.getPercapitaAno() == null) ? 0 : antecendentesComunaCalculadoNuevo.getPercapitaAno());
+						aporteEstatalAnual += ((antecendentesComunaCalculadoNuevo.getDesempenoDificil() == null) ? 0 : (antecendentesComunaCalculadoNuevo.getDesempenoDificil() * 12));
 						
 						parametersAporteEstatalUR.put("{aporte_mensual}", StringUtil.formatNumber(aporteEstatalMensual));
 						Long aporteEstatalMensualCaducado = 0L;
@@ -666,12 +673,22 @@ public class ModificacionDistribucionInicialPercapitaService {
 			Integer percapitaBasal = ((anoEvaluacion.getMontoPercapitalBasal() == null) ? 0 : anoEvaluacion.getMontoPercapitalBasal());
 			Integer asignacionAdultoMayor = ((anoEvaluacion.getAsignacionAdultoMayor() == null) ? 0 : anoEvaluacion.getAsignacionAdultoMayor());
 			DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(ano);
-			List<AntecendentesComunaCalculado> antecedentesComunaCalculado = antecedentesComunaDAO.findAntecedentesComunaCalculadosByDistribucionInicialPercapitaVigente(distribucionInicialPercapita.getIdDistribucionInicialPercapita());
 			Long aporteEstatal = 0L;
-			if(antecedentesComunaCalculado != null && antecedentesComunaCalculado.size() > 0){
-				for(AntecendentesComunaCalculado antecendentesComunaCalculado : antecedentesComunaCalculado){
-					aporteEstatal += ((antecendentesComunaCalculado.getPercapitaAno() == null) ? 0L : antecendentesComunaCalculado.getPercapitaAno());
-					aporteEstatal += ((antecendentesComunaCalculado.getDesempenoDificil() == null) ? 0 : antecendentesComunaCalculado.getDesempenoDificil() * 12);
+			List<AntecendentesComuna> antecedentesComuna = antecedentesComunaDAO.findAntecendentesByAno(ano);
+			System.out.println("antecedentesComuna.size()=" + ((antecedentesComuna == null) ? 0 : antecedentesComuna.size()));
+			if(antecedentesComuna != null && antecedentesComuna.size() > 0){
+				for(AntecendentesComuna antecendenteComuna : antecedentesComuna){
+					AntecendentesComunaCalculado antecedentesComunaCalculadoNuevo = antecedentesComunaDAO.findByAntecedentesModificacionDistrinbucionInicialActual(antecendenteComuna.getIdAntecedentesComuna(), idModificacionDistribucionInicialPercapita);
+					if(antecedentesComunaCalculadoNuevo != null){
+						aporteEstatal += ((antecedentesComunaCalculadoNuevo.getPercapitaAno() == null) ? 0L : antecedentesComunaCalculadoNuevo.getPercapitaAno());
+						aporteEstatal += ((antecedentesComunaCalculadoNuevo.getDesempenoDificil() == null) ? 0 : antecedentesComunaCalculadoNuevo.getDesempenoDificil() * 12);
+					}else{
+						AntecendentesComunaCalculado antecedentesComunaCalculado = antecedentesComunaDAO.findByAntecedentesDistrinbucionInicialVigente(antecendenteComuna.getIdAntecedentesComuna(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+						if(antecedentesComunaCalculado != null){
+							aporteEstatal += ((antecedentesComunaCalculado.getPercapitaAno() == null) ? 0L : antecedentesComunaCalculado.getPercapitaAno());
+							aporteEstatal += ((antecedentesComunaCalculado.getDesempenoDificil() == null) ? 0 : antecedentesComunaCalculado.getDesempenoDificil() * 12);
+						}
+					}
 				}
 			}
 			parametersBorradorAporteEstatal.put("{ano_curso}", ano);
@@ -680,7 +697,6 @@ public class ModificacionDistribucionInicialPercapitaService {
 			parametersBorradorAporteEstatal.put("{percapita_basal}", StringUtil.formatNumber(percapitaBasal));
 			parametersBorradorAporteEstatal.put("{percapita_basal_palabra}",  NumberToLetters.readNumber(percapitaBasal.toString(), "," ,"pesos"));
 			parametersBorradorAporteEstatal.put("{asignacion_adulto_mayor}", StringUtil.formatNumber(asignacionAdultoMayor));
-			
 			GeneradorResolucionAporteEstatal generadorWordDecretoBorradorAporteEstatal = new GeneradorResolucionAporteEstatal(filenameBorradorAporteEstatal, templateBorradorAporteEstatal);
 			generadorWordDecretoBorradorAporteEstatal.replaceValues(parametersBorradorAporteEstatal, XWPFDocument.class);
 			BodyVO responseBorradorAporteEstatal = alfrescoService.uploadDocument(new File(filenameBorradorAporteEstatal), contenTypeBorradorAporteEstatal, folderPercapita.replace("{ANO}", ano.toString()));
@@ -756,7 +772,7 @@ public class ModificacionDistribucionInicialPercapitaService {
 	}
 
 	@Asynchronous
-	public void enviarResolucionesServicioSalud(Integer idModificacionPercapita, Integer ano) {
+	public void enviarResolucionesServicioSalud(Integer idModificacionDistribucionInicialPercapita, Integer ano) {
 		//MODIFICAR LA LOGICA DEL ENVIO DE CORREO ES DISTINTA EN ESTE CASO
 		Integer idPlantillaCorreo = documentService.getPlantillaByType(TipoDocumentosProcesos.PLANTILLACORREORESOLUCIONESPERCAPITA);
 		if(idPlantillaCorreo == null){
@@ -794,7 +810,7 @@ public class ModificacionDistribucionInicialPercapitaService {
 						}
 					}
 					ReferenciaDocumentoSummaryVO referenciaDocumentoFinalSummaryVO = null;
-					List<ReferenciaDocumentoSummaryVO> referenciasDocumentoSummaryVO = documentService.getVersionFinalByServicioModificacionPercapitaTypes(idModificacionPercapita, servicio.getId_servicio(), TipoDocumentosProcesos.ORDINARIOMODIFICACIONRESOLUCIONAPORTEESTATAL);
+					List<ReferenciaDocumentoSummaryVO> referenciasDocumentoSummaryVO = documentService.getVersionFinalByServicioModificacionPercapitaTypes(idModificacionDistribucionInicialPercapita, servicio.getIdServicio(), TipoDocumentosProcesos.ORDINARIOMODIFICACIONRESOLUCIONAPORTEESTATAL);
 					if(referenciasDocumentoSummaryVO != null && referenciasDocumentoSummaryVO.size() > 0){
 						for(ReferenciaDocumentoSummaryVO referenciaDocumentoSummaryVO : referenciasDocumentoSummaryVO){
 							String contentType = new MimetypesFileTypeMap().getContentType(referenciaDocumentoSummaryVO.getPath());
@@ -888,7 +904,7 @@ public class ModificacionDistribucionInicialPercapitaService {
 					System.out.println("Enviando a region="+region.getDescRegion());
 					if((region.getServicios() != null) || (region.getServicios().size() > 0)){
 						for(ServiciosVO serviciosVO : region.getServicios()){
-							System.out.println("Servicio="+serviciosVO.getNombre_servicio());
+							System.out.println("Servicio="+serviciosVO.getNombreServicio());
 							if(serviciosVO.getEncargadoAps() != null &&  serviciosVO.getEncargadoAps().getCorreo() != null){
 								cc.add(serviciosVO.getEncargadoAps().getCorreo());
 							}
@@ -1189,8 +1205,8 @@ public class ModificacionDistribucionInicialPercapitaService {
 		}
 	}
 
-	public Integer countVersionFinalModificacionPercapitaResoluciones(Integer idModificacionPercapita, Integer idServicio) {
-		List<ReferenciaDocumentoSummaryVO> versionesFinales = documentService.getVersionFinalModificacionPercapitaByType(idModificacionPercapita, idServicio, TipoDocumentosProcesos.ORDINARIOMODIFICACIONRESOLUCIONAPORTEESTATAL);
+	public Integer countVersionFinalModificacionPercapitaResoluciones(Integer idModificacionDistribucionInicialPercapita, Integer idServicio) {
+		List<ReferenciaDocumentoSummaryVO> versionesFinales = documentService.getVersionFinalModificacionPercapitaByType(idModificacionDistribucionInicialPercapita, idServicio, TipoDocumentosProcesos.ORDINARIOMODIFICACIONRESOLUCIONAPORTEESTATAL);
 		if(versionesFinales != null && versionesFinales.size() > 0){
 			return versionesFinales.size();
 		} 
@@ -1204,6 +1220,35 @@ public class ModificacionDistribucionInicialPercapitaService {
 		big = big.setScale(2, RoundingMode.HALF_UP);
 		System.out.println("Número : "+big);
 		System.out.println("Número long : "+Math.round(big.doubleValue()));
+	}
+
+	public void habilitarModificacionPercapita(Integer idModificacionDistribucionInicialPercapita, Integer ano) {
+		DistribucionInicialPercapita distribucionInicialPercapita = distribucionInicialPercapitaDAO.findLast(ano);
+		System.out.println("distribucionInicialPercapita="+distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+		List<AntecendentesComuna> antecedentesComuna = antecedentesComunaDAO.findAntecendentesByAno(ano);
+		System.out.println("antecedentesComuna.size()=" + ((antecedentesComuna == null) ? 0 : antecedentesComuna.size()));
+		Date fechaCaduca = new Date(Calendar.getInstance().getTimeInMillis());
+		if(antecedentesComuna != null && antecedentesComuna.size() > 0){
+			for(AntecendentesComuna antecendenteComuna : antecedentesComuna){
+				AntecendentesComunaCalculado antecedentesComunaCalculadoNuevo = antecedentesComunaDAO.findByAntecedentesModificacionDistrinbucionInicialActual(antecendenteComuna.getIdAntecedentesComuna(), idModificacionDistribucionInicialPercapita);
+				if(antecedentesComunaCalculadoNuevo == null){
+					continue;
+				}
+				AntecendentesComunaCalculado antecedentesComunaCalculadoCaducado = antecedentesComunaDAO.findByAntecedentesDistrinbucionInicialVigente(antecendenteComuna.getIdAntecedentesComuna(), distribucionInicialPercapita.getIdDistribucionInicialPercapita());
+				if(antecedentesComunaCalculadoCaducado.getAntecedentesComunaCalculadoRebajas() != null && antecedentesComunaCalculadoCaducado.getAntecedentesComunaCalculadoRebajas().size() > 0){
+					for(AntecedentesComunaCalculadoRebaja antecedentesComunaCalculadoRebaja : antecedentesComunaCalculadoCaducado.getAntecedentesComunaCalculadoRebajas()){
+						AntecedentesComunaCalculadoRebaja antecedentesComunaCalculadoRebajaNuevo = new AntecedentesComunaCalculadoRebaja();
+						antecedentesComunaCalculadoRebajaNuevo.setAntecedentesComunaCalculado(antecedentesComunaCalculadoNuevo);
+						antecedentesComunaCalculadoRebajaNuevo.setMontoRebaja(antecedentesComunaCalculadoRebaja.getMontoRebaja());
+						antecedentesComunaCalculadoRebajaNuevo.setRebaja(antecedentesComunaCalculadoRebaja.getRebaja());
+						antecedentesComunaDAO.save(antecedentesComunaCalculadoRebajaNuevo);
+					}
+				}
+				antecedentesComunaCalculadoNuevo.setFechaVigencia(null);
+				antecedentesComunaCalculadoNuevo.setAprobado(antecedentesComunaCalculadoCaducado.getAprobado());
+				antecedentesComunaCalculadoCaducado.setFechaVigencia(fechaCaduca);
+			}
+		}
 	}
 
 }

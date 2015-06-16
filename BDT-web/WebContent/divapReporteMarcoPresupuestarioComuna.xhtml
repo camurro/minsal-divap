@@ -49,7 +49,7 @@
 									<h:outputText value="Servicio: " styleClass="inputLabel" />
 									<p:selectOneMenu style="width:450px;" id="cbServicioSub21" value="#{reportesMarcoPresupuestarioComunasController.valorComboServicio}">
 										<f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
-										<f:selectItems value="#{reportesMarcoPresupuestarioComunasController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+										<f:selectItems value="#{reportesMarcoPresupuestarioComunasController.servicios}" itemLabel="#{servicio.nombreServicio}" itemValue="#{servicio.idServicio}" var="servicio" />
 										<p:ajax listener="#{reportesMarcoPresupuestarioComunasController.cargarEstablecimientos}" update="cbEstablecimiento21" />
 									</p:selectOneMenu>
 	
@@ -161,7 +161,7 @@
 									<h:outputText value="Servicio: " styleClass="inputLabel" />
 									<p:selectOneMenu style="width:450px;" id="cbServicioSub22" value="#{reportesMarcoPresupuestarioComunasController.valorComboServicio}">
 										<f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
-										<f:selectItems value="#{reportesMarcoPresupuestarioComunasController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+										<f:selectItems value="#{reportesMarcoPresupuestarioComunasController.servicios}" itemLabel="#{servicio.nombreServicio}" itemValue="#{servicio.idServicio}" var="servicio" />
 										<p:ajax listener="#{reportesMarcoPresupuestarioComunasController.cargarEstablecimientos}" update="cbEstablecimiento22" />
 									</p:selectOneMenu>
 	
@@ -275,7 +275,7 @@
 									<h:outputText value="Servicio: " styleClass="inputLabel" />
 									<p:selectOneMenu style="width:450px;" id="cbServicioSub24" value="#{reportesMarcoPresupuestarioComunasController.valorComboServicio}">
 										<f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
-										<f:selectItems value="#{reportesMarcoPresupuestarioComunasController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+										<f:selectItems value="#{reportesMarcoPresupuestarioComunasController.servicios}" itemLabel="#{servicio.nombreServicio}" itemValue="#{servicio.idServicio}" var="servicio" />
 										<p:ajax listener="#{reportesMarcoPresupuestarioComunasController.cargarComunas}" update="cbComuna" />
 									</p:selectOneMenu>
 								
@@ -385,7 +385,7 @@
 									<h:outputText value="Servicio: " styleClass="inputLabel" />
 									<p:selectOneMenu style="width:450px;" id="cbServicioSub29" value="#{reportesMarcoPresupuestarioComunasController.valorComboServicio}">
 										<f:selectItem itemLabel="Seleccione Servicio" itemValue="" />
-										<f:selectItems value="#{reportesMarcoPresupuestarioComunasController.servicios}" itemLabel="#{servicio.nombre_servicio}" itemValue="#{servicio.id_servicio}" var="servicio" />
+										<f:selectItems value="#{reportesMarcoPresupuestarioComunasController.servicios}" itemLabel="#{servicio.nombreServicio}" itemValue="#{servicio.idServicio}" var="servicio" />
 										<p:ajax listener="#{reportesMarcoPresupuestarioComunasController.cargarEstablecimientos}" update="cbEstablecimiento29" />
 									</p:selectOneMenu>
 									<h:outputText value="Establecimiento: " styleClass="inputLabel" />

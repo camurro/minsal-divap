@@ -1780,8 +1780,8 @@ public class ConveniosService {
 			List<ComunaSummaryVO> comunas = servicios.get(i).getComunas();
 			for(int j=0;j<comunas.size();j++){
 				List<String> fila = new ArrayList<String>();
-				fila.add(servicios.get(i).getId_servicio() +"");
-				fila.add(servicios.get(i).getNombre_servicio());
+				fila.add(servicios.get(i).getIdServicio().toString());
+				fila.add(servicios.get(i).getNombreServicio());
 				fila.add(comunas.get(j).getId().toString());
 				fila.add(comunas.get(j).getNombre());
 				for(int contComponentes = 0; contComponentes< componentes.size() ; contComponentes++){
@@ -1873,8 +1873,8 @@ public class ConveniosService {
 			List<EstablecimientoSummaryVO> establecimientos = servicios.get(i).getEstableclimientos();
 			for(int j=0;j<establecimientos.size();j++){
 				List<String> fila = new ArrayList<String>();
-				fila.add(servicios.get(i).getId_servicio() +"");
-				fila.add(servicios.get(i).getNombre_servicio());
+				fila.add(servicios.get(i).getIdServicio() +"");
+				fila.add(servicios.get(i).getNombreServicio());
 				fila.add(establecimientos.get(j).getId().toString());
 				fila.add(establecimientos.get(j).getNombre());
 				for(int contComponentes = 0; contComponentes< componentes.size() ; contComponentes++){

@@ -93,7 +93,7 @@ implements Serializable {
 				} catch (ExcelFormatException e) {
 					throw new Exception(e.getMessage() + " en el archivo Población Inscrita Validada.");
 				} catch (InvalidFormatException e) {
-					throw new Exception(e.getMessage() + " en el archivo Población Inscrita Validada..");
+					throw new Exception(e.getMessage() + " en el archivo Población Inscrita Validada.");
 				} catch (IOException e) {
 					throw new Exception(e.getMessage() + " en el archivo Población Inscrita Validada.");
 				}

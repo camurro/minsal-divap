@@ -29,7 +29,7 @@ public class AntecedentesComunaDAO {
 		return this.em.find(AntecendentesComuna.class, documentId);
 	}
 
-	public Integer createAntecendentesComunaCalcuado(AntecendentesComunaCalculado antecendentesComunaCalculado) {
+	public Integer createAntecendentesComunaCalculado(AntecendentesComunaCalculado antecendentesComunaCalculado) {
 		em.persist(antecendentesComunaCalculado);;
 		return antecendentesComunaCalculado.getIdAntecendentesComunaCalculado();
 	}
@@ -98,6 +98,22 @@ public class AntecedentesComunaDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public AntecendentesComunaCalculado findByAntecedentesModificacionDistrinbucionInicialActual(Integer idAntecedentesComuna, Integer idModificacionDistribucionInicialPercapita) {
+		try {
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByAntecedentesModificacionDistrinbucionInicialActual", AntecendentesComunaCalculado.class);
+			query.setParameter("idAntecendentesComuna", idAntecedentesComuna);
+			query.setParameter("idModificacionDistribucionInicialPercapita", idModificacionDistribucionInicialPercapita);
+			List<AntecendentesComunaCalculado> antecendentesComunaCalculado = query.getResultList(); 
+			if(antecendentesComunaCalculado != null && antecendentesComunaCalculado.size() > 0){
+				return antecendentesComunaCalculado.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 
 	public List<AntecendentesComunaCalculado> findAntecedentesComunaCalculadosByDistribucionInicialPercapitaVigente(Integer idDistribucionInicialPercapita) {
 		try {
@@ -112,6 +128,17 @@ public class AntecedentesComunaDAO {
 	public List<AntecendentesComunaCalculado> findAntecedentesComunaCalculadosByDistribucionInicialPercapitaVigenteModificacion(Integer idDistribucionInicialPercapita, Integer idModificacionPercapita) {
 		try {
 			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByDistribucionInicialPercapitaVigenteModificacionPercapita", AntecendentesComunaCalculado.class);
+			query.setParameter("distribucionInicialPercapita", idDistribucionInicialPercapita);
+			query.setParameter("idModificacionPercapita", idModificacionPercapita);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public List<AntecendentesComunaCalculado> findAntecedentesComunaCalculadosByDistribucionInicialPercapitaModificacionPercapita(Integer idDistribucionInicialPercapita, Integer idModificacionPercapita) {
+		try {
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByDistribucionInicialPercapitaModificacionPercapita", AntecendentesComunaCalculado.class);
 			query.setParameter("distribucionInicialPercapita", idDistribucionInicialPercapita);
 			query.setParameter("idModificacionPercapita", idModificacionPercapita);
 			return query.getResultList(); 
@@ -182,6 +209,17 @@ public class AntecedentesComunaDAO {
 		}
 	}
 	
+	public List<AntecendentesComuna> findAntecendentesByAno(Integer anoCurso) {
+		try {
+			System.out.println("anoCurso= " + anoCurso);
+			TypedQuery<AntecendentesComuna> query = this.em.createNamedQuery("AntecendentesComuna.findAntecendentesComunaByAno", AntecendentesComuna.class);
+			query.setParameter("anoEnCurso", anoCurso);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	public AntecendentesComunaCalculado findAntecendentesComunaCalculadoByServicioComunaAno(Integer servicio, Integer comuna, Integer ano) {
 		try {
 			System.out.println("comuna="+comuna+" servicio="+servicio+" ano="+ano);
@@ -213,6 +251,39 @@ public class AntecedentesComunaDAO {
 		}
 		return results;
 	}
+	
+	
+	public List<AntecendentesComunaCalculado> findAntecendentesComunaCalculadoByComunaServicioDistribucionInicialPercapitaModificacionPercapita(
+			Integer servicio, Integer comuna, Integer idDistribucionInicialPercapita, Integer idModificacionPercapita) {
+		List<AntecendentesComunaCalculado> results = null;
+		try {
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByComunaServicioDistribucionInicialPercapitaModificacionPercapita", AntecendentesComunaCalculado.class);
+			query.setParameter("idComuna", comuna);
+			query.setParameter("idServicio", servicio);
+			query.setParameter("distribucionInicialPercapita", idDistribucionInicialPercapita);
+			query.setParameter("idModificacionPercapita", idModificacionPercapita);
+			results = query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return results;
+	}
+	
+	public List<AntecendentesComunaCalculado> findAntecendentesComunaCalculadoByServicioDistribucionInicialPercapitaModificacionPercapita(
+			Integer servicio, Integer idDistribucionInicialPercapita, Integer idModificacionPercapita) {
+		List<AntecendentesComunaCalculado> results = null;
+		try {
+			TypedQuery<AntecendentesComunaCalculado> query = this.em.createNamedQuery("AntecendentesComunaCalculado.findByServicioDistribucionInicialPercapitaModificacionPercapita", AntecendentesComunaCalculado.class);
+			query.setParameter("idServicio", servicio);
+			query.setParameter("distribucionInicialPercapita", idDistribucionInicialPercapita);
+			query.setParameter("idModificacionPercapita", idModificacionPercapita);
+			results = query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return results;
+	}
+	
 	
 	public List<AntecendentesComunaCalculado> findAntecendentesComunaCalculadoByServicioDistribucionInicialPercapitaVigente(
 			Integer servicio, Integer idDistribucionInicialPercapita) {

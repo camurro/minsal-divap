@@ -225,7 +225,7 @@ implements Serializable {
 			porcentajeRebajaCalculado += (( planillaRebajaCalculadaVO.getCumplimientoRebajasItem3().getRebajaCalculada() == null) ? 0 : planillaRebajaCalculadaVO.getCumplimientoRebajasItem3().getRebajaCalculada().intValue());
 			planillaRebajaCalculadaVO.setTotalRebajaCalculada(porcentajeRebajaCalculado);
 			planillaRebajaCalculadaVO.setTotalRebajaRebajaFinal(porcentajeRebajaFinal);
-			Integer montoRebaja = (int)(planillaRebajaCalculadaVO.getAporteEstatal() * (porcentajeRebajaFinal/100.0));
+			Long montoRebaja = Math.round((planillaRebajaCalculadaVO.getAporteEstatal() * (porcentajeRebajaFinal/100.0)));
 			planillaRebajaCalculadaVO.setMontoRebajaMes(montoRebaja);
 			planillaRebajaCalculadaVO.setNuevoAporteEstatal(planillaRebajaCalculadaVO.getAporteEstatal() - montoRebaja);
 		}

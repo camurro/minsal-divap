@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import minsal.divap.enums.BusinessProcess;
+import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.exception.ExcelFormatException;
 import minsal.divap.service.RebajaService;
@@ -122,34 +123,44 @@ public class ProcesoRebajaController extends AbstractTaskMBean
 	}
 	
 	public void uploadArchivoCumplimiento() throws ExcelFormatException{
-		String mensaje = "Los archivos fueron cargados correctamente.";
+		String mensaje = "El archivo fue cargado correctamente.";
 		if (cumplimientoFile != null) {
-			setArchivosCargados(true);
 			try{
-				docIds = new ArrayList<Integer>();
-				String filename = cumplimientoFile.getFileName();
-				byte [] content = cumplimientoFile.getContents();
-				rebajaService.procesarCalculoRebaja(idProcesoRebaja, GeneradorExcel.fromContent(content, XSSFWorkbook.class));
-				Integer docRebaja = persistFile(filename, content);
-				if(docRebaja != null){
-					docIds.add(docRebaja);
+				try{
+					docIds = new ArrayList<Integer>();
+					String filename = cumplimientoFile.getFileName();
+					byte [] content = cumplimientoFile.getContents();
+					rebajaService.procesarCalculoRebaja(idProcesoRebaja, GeneradorExcel.fromContent(content, XSSFWorkbook.class));
+					Integer docRebaja = persistFile(filename, content);
+					if(docRebaja != null){
+						docIds.add(docRebaja);
+					}
+					setArchivosValidos(true);
+					rebajaService.moveToAlfrescoDistribucionInicialPercapita(this.idProcesoRebaja, null, docRebaja, TipoDocumentosProcesos.PLANILLABASECUMPLIMIENTO, null, this.ano);
+				} catch (ExcelFormatException e) {
+					throw new Exception(e.getMessage() + " en el archivo Cumplimiento por Comuna.");
+				} catch (InvalidFormatException e) {
+					throw new Exception(e.getMessage() + " en el archivo Cumplimiento por Comuna.");
+				} catch (IOException e) {
+					throw new Exception(e.getMessage() + " en el archivo Cumplimiento por Comuna.");
 				}
-				setArchivosValidos(true);
-			} catch (InvalidFormatException e) {
-				mensaje = "Los archivos no son válidos.";
+			}catch (Exception e) {
+				mensaje = e.getMessage();
 				setArchivosValidos(false);
-				e.printStackTrace();
-			} catch (IOException e) {
-				mensaje = "Los archivos no son válidos.";
-				setArchivosValidos(false);
+				setArchivosCargados(false);
 				e.printStackTrace();
 			}
 		}else{
-			mensaje = "Los archivos no fueron cargados.";
+			mensaje = "El archivo no fue cargado.";
 			setArchivosValidos(false);
 			setArchivosCargados(false);
 		}
-		FacesMessage msg = new FacesMessage(mensaje);
+		FacesMessage msg = null;
+		if(!isArchivosValidos()){
+			msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, mensaje, null);
+		}else{
+			msg = new FacesMessage(mensaje);
+		}
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 		

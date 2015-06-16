@@ -47,7 +47,7 @@
 								<p:selectOneMenu id="servicio" value="#{procesoModificacionAsignacionPerCapitaValidarMontosController.servicioSeleccionado}">
 								<p:ajax listener="#{procesoModificacionAsignacionPerCapitaValidarMontosController.cargaComunas}" update="comuna" />
 									<f:selectItem itemLabel="Seleccione - Servicio" itemValue="" />
-									<f:selectItems itemLabel="#{_serv.nombre_servicio}" itemValue="#{_serv.id_servicio}" var="_serv"
+									<f:selectItems itemLabel="#{_serv.nombreServicio}" itemValue="#{_serv.idServicio}" var="_serv"
 										value="#{procesoModificacionAsignacionPerCapitaValidarMontosController.servicios}" />
 									
 								</p:selectOneMenu>

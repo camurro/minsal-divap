@@ -18,9 +18,9 @@ public class PlanillaRebajaCalculadaVO implements Serializable{
 	private CumplimientoRebajaVO cumplimientoRebajasItem3;
 	private Integer totalRebajaCalculada;
 	private Integer totalRebajaRebajaFinal;
-	private Integer aporteEstatal;
-	private Integer montoRebajaMes;
-	private Integer nuevoAporteEstatal;
+	private Long aporteEstatal;
+	private Long montoRebajaMes;
+	private Long nuevoAporteEstatal;
 	private String mesDesde;
 	private String mesHasta;
 	private String mesCorte;
@@ -164,27 +164,27 @@ public class PlanillaRebajaCalculadaVO implements Serializable{
 		this.cumplimientoRebajasItem3 = cumplimientoRebajasItem3;
 	}
 
-	public Integer getAporteEstatal() {
+	public Long getAporteEstatal() {
 		return aporteEstatal;
 	}
 
-	public void setAporteEstatal(Integer aporteEstatal) {
+	public void setAporteEstatal(Long aporteEstatal) {
 		this.aporteEstatal = aporteEstatal;
 	}
 
-	public Integer getMontoRebajaMes() {
+	public Long getMontoRebajaMes() {
 		return montoRebajaMes;
 	}
 
-	public void setMontoRebajaMes(Integer montoRebajaMes) {
+	public void setMontoRebajaMes(Long montoRebajaMes) {
 		this.montoRebajaMes = montoRebajaMes;
 	}
 
-	public Integer getNuevoAporteEstatal() {
+	public Long getNuevoAporteEstatal() {
 		return nuevoAporteEstatal;
 	}
 
-	public void setNuevoAporteEstatal(Integer nuevoAporteEstatal) {
+	public void setNuevoAporteEstatal(Long nuevoAporteEstatal) {
 		this.nuevoAporteEstatal = nuevoAporteEstatal;
 	}
 

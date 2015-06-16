@@ -28,13 +28,13 @@
 					</h2>
 					
 					<p:commandButton value="Aceptar Remesa" styleClass="x-btn-text"
-						action="#{procesoOTValidarRemesaFonasaController.enviar}" ajax="false" icon="ui-icon-disk" >
+						action="#{procesoOTValidarRemesaFonasaController.enviar}"  icon="ui-icon-disk" >
 						<f:setPropertyActionListener target="#{procesoOTValidarRemesaFonasaController.target}" value="bandejaTareas.jsf" />
 						<f:setPropertyActionListener target="#{procesoOTValidarRemesaFonasaController.validacionRemesaFonasa}" value="true" />
 					</p:commandButton>
 
 					<p:commandButton value="Rechazar Remesa" styleClass="x-btn-text"
-						action="#{procesoOTValidarRemesaFonasaController.enviar}" ajax="false" icon="ui-icon-disk" >
+						action="#{procesoOTValidarRemesaFonasaController.enviar}"  icon="ui-icon-disk" >
 						<f:setPropertyActionListener target="#{procesoOTValidarRemesaFonasaController.target}" value="bandejaTareas.jsf" />
 						<f:setPropertyActionListener target="#{procesoOTValidarRemesaFonasaController.validacionRemesaFonasa}" value="false" />
 					</p:commandButton>

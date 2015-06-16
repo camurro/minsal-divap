@@ -21,8 +21,8 @@ public class ServicioSaludMapper implements Mapper<ServicioSalud>{
 		
 		ServiciosVO servicioSaludVO = new ServiciosVO();
 		
-		servicioSaludVO.setId_servicio(servicioSalud.getId());
-		servicioSaludVO.setNombre_servicio(servicioSalud.getNombre());
+		servicioSaludVO.setIdServicio(servicioSalud.getId());
+		servicioSaludVO.setNombreServicio(servicioSalud.getNombre());
 		
 		return servicioSaludVO;
 	}

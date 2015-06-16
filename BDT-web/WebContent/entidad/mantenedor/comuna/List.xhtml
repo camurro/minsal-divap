@@ -96,12 +96,12 @@
 
 
             </p:dataTable>
-
+			<p:panel id="panelBotones">
             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{comunaController.prepareCreateComuna}" update=":ComunaCreateForm, datalist" oncomplete="ComunaCreateDialog.show()"/>
             <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{messages.View}" update=":ComunaViewForm, datalist" oncomplete="ComunaViewDialog.show()" disabled="#{empty comunaController.comunaSeleccionada}"/>
             <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{messages.Edit}" actionListener="#{comunaController.prepareEditComuna}" update=":ComunaEditForm" oncomplete="ComunaEditDialog.show()" disabled="#{empty comunaController.comunaSeleccionada}"/>
-            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{comunaController.delete}" update=":growl,datalist" disabled="#{empty comunaController.comunaSeleccionada}"/>
-
+            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{comunaController.delete}" update=":growl,datalist panelBotones" disabled="#{empty comunaController.comunaSeleccionada}"/>
+			</p:panel>
         </p:panel>
     </h:form>
 

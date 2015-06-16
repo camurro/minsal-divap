@@ -3,6 +3,7 @@ package minsal.divap.dao;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
 import cl.minsal.divap.model.OrdenTransferencia;
 
 
@@ -21,8 +22,5 @@ public class OrdenTransferenciaDAO {
 		this.em.persist(ordenTransferencia);
 		return ordenTransferencia.getIdOrdenTransferencia();
 	}
-
-	
-
 
 }

@@ -9,8 +9,8 @@ public class ServiciosVO implements Serializable{
 	private static final long serialVersionUID = -6107779935422525744L;
 
 	private List<ComunaVO> comuna;
-	private Integer id_servicio;
-	private String nombre_servicio;
+	private Integer idServicio;
+	private String nombreServicio;
 	private PersonaVO director;
 	private PersonaVO encargadoAps;
 	private PersonaVO encargadoFinanzasAps;
@@ -22,38 +22,39 @@ public class ServiciosVO implements Serializable{
 		
 	}
 	
-	public ServiciosVO(Integer id_servicio, String nombre_servicio){
+	public ServiciosVO(Integer idServicio, String nombreServicio){
 		super();
-		this.id_servicio = id_servicio;
-		this.nombre_servicio = nombre_servicio;
+		this.idServicio = idServicio;
+		this.nombreServicio = nombreServicio;
 	}
 	
-	public ServiciosVO(Integer id_servicio, String nombre_servicio,
+	public ServiciosVO(Integer idServicio, String nombreServicio,
 			PersonaVO director, PersonaVO encargadoAps,
 			PersonaVO encargadoFinanzasAps) {
 		super();
-		this.id_servicio = id_servicio;
-		this.nombre_servicio = nombre_servicio;
+		this.idServicio = idServicio;
+		this.nombreServicio = nombreServicio;
 		this.director = director;
 		this.encargadoAps = encargadoAps;
 		this.encargadoFinanzasAps = encargadoFinanzasAps;
 	}
+	
+	public Integer getIdServicio() {
+		return idServicio;
+	}
 
-	public Integer getId_servicio() {
-		return id_servicio;
+	public void setIdServicio(Integer idServicio) {
+		this.idServicio = idServicio;
 	}
-	
-	public void setId_servicio(Integer id_servicio) {
-		this.id_servicio = id_servicio;
+
+	public String getNombreServicio() {
+		return nombreServicio;
 	}
-	
-	public String getNombre_servicio() {
-		return nombre_servicio;
+
+	public void setNombreServicio(String nombreServicio) {
+		this.nombreServicio = nombreServicio;
 	}
-	
-	public void setNombre_servicio(String nombre_servicio) {
-		this.nombre_servicio = nombre_servicio;
-	}
+
 	public List<ComunaVO> getComuna() {
 		return comuna;
 	}
@@ -112,8 +113,8 @@ public class ServiciosVO implements Serializable{
 
 	@Override
 	public String toString() {
-		return "ServiciosVO [comuna=" + comuna + ", id_servicio=" + id_servicio
-				+ ", nombre_servicio=" + nombre_servicio + ", director="
+		return "ServiciosVO [comuna=" + comuna + ", idServicio=" + idServicio
+				+ ", nombreServicio=" + nombreServicio + ", director="
 				+ director + ", encargadoAps=" + encargadoAps
 				+ ", encargadoFinanzasAps=" + encargadoFinanzasAps
 				+ ", comunas=" + comunas + "]";

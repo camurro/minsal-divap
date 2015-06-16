@@ -266,13 +266,10 @@ public class ProgramasService {
 	}
 
 	public void guardarProgramaHistoricoMunicipal(List<ProgramaMunicipalHistoricoVO> detalleComunas) {
-
 		for(ProgramaMunicipalHistoricoVO detalle : detalleComunas){
 			ProgramaMunicipalCoreComponente programaMunicipalCoreComponente = programasDAO.getProgramaMunicipalCoreComponente(detalle.getIdProgramaMunicipalCore(),detalle.getIdComponente());
 			programaMunicipalCoreComponente.setTarifa(detalle.getTotalAnoActual());
-
 		}
-
 	}
 
 	public void guardarProgramaHistoricoServicio(List<ProgramaServicioHistoricoVO> detalleEstablecimiento) {
@@ -983,10 +980,8 @@ public class ProgramasService {
 				}else{
 					List<SubtituloVO> subs = componentes.get(componentes.indexOf(compoVO)).getSubtitulos();
 					subs.add(subVO);
-
 					componentes.get(componentes.indexOf(compoVO)).setSubtitulos(subs);
 					programaVO.get(programaVO.indexOf(prog)).setComponentes(componentes);
-
 				}
 
 			}

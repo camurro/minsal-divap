@@ -56,6 +56,9 @@ public class Usuario implements Serializable {
 			}
 			)
 	private List<Rol> rols;
+	@JoinColumn(name = "estado", referencedColumnName = "id_estado_usuario")
+    @ManyToOne(optional = false)
+    private EstadoUsuario estado;
 
 	public Usuario() {
 	}
@@ -144,6 +147,14 @@ public class Usuario implements Serializable {
 	public void setDistribucionInicialPercapitaCollection(
 			Set<DistribucionInicialPercapita> distribucionInicialPercapitaCollection) {
 		this.distribucionInicialPercapitaCollection = distribucionInicialPercapitaCollection;
+	}
+
+	public EstadoUsuario getEstado() {
+		return estado;
+	}
+
+	public void setEstado(EstadoUsuario estado) {
+		this.estado = estado;
 	}
 
 	@Override

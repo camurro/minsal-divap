@@ -38,6 +38,9 @@ public class DocumentoRemesas implements Serializable {
     @JoinColumn(name = "tipo_documento", referencedColumnName = "id_tipo_documento")
     @ManyToOne(optional = false)
     private TipoDocumento tipoDocumento;
+    @JoinColumn(name = "servicio", referencedColumnName = "id")
+    @ManyToOne
+    private ServicioSalud servicio;
     @JoinColumn(name = "remesa", referencedColumnName = "id_remesa")
     @ManyToOne(optional = false)
     private Remesas remesa;
@@ -84,7 +87,15 @@ public class DocumentoRemesas implements Serializable {
         this.documento = documento;
     }
 
-    @Override
+    public ServicioSalud getServicio() {
+		return servicio;
+	}
+
+	public void setServicio(ServicioSalud servicio) {
+		this.servicio = servicio;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (idDocumentoRemesas != null ? idDocumentoRemesas.hashCode() : 0);

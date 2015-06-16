@@ -1160,12 +1160,27 @@ public class DocumentService {
 		return documentos;
 	}
 	
-	public Integer createDocumentRemesas(TipoDocumentosProcesos tipoDocumentoProceso, String nodeRef, String fileName, String contentType, String idProcesoOT) {
+	public Integer createDocumentRemesas(TipoDocumentosProcesos tipoDocumentoProceso, String nodeRef, String fileName, String contentType, Integer idProcesoOT) {
 		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, fileName, contentType);
 		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
 		DocumentoRemesas documentoRemesas = new DocumentoRemesas();
 		documentoRemesas.setTipoDocumento(new TipoDocumento(tipoDocumentoProceso.getId()));
 		documentoRemesas.setDocumento(referenciaDocumento);
+		documentoRemesas.setRemesa(remesasDAO.findById(idProcesoOT));
+		remesasDAO.save(documentoRemesas);
+		System.out.println("luego de aplicar insert del documento OT");
+		return referenciaDocumentoId;
+	}
+	
+	public Integer createDocumentRemesas(ServicioSalud servicioSalud, TipoDocumentosProcesos tipoDocumentoProceso, String nodeRef, String fileName, String contentType, String idProcesoOT) {
+		Integer referenciaDocumentoId = createDocumentAlfresco(nodeRef, fileName, contentType);
+		ReferenciaDocumento referenciaDocumento = fileDAO.findById(referenciaDocumentoId);
+		DocumentoRemesas documentoRemesas = new DocumentoRemesas();
+		documentoRemesas.setTipoDocumento(new TipoDocumento(tipoDocumentoProceso.getId()));
+		documentoRemesas.setDocumento(referenciaDocumento);
+		if(servicioSalud != null){
+			documentoRemesas.setServicio(servicioSalud);
+		}
 		documentoRemesas.setRemesa(remesasDAO.findById(Integer.parseInt(idProcesoOT)));
 		remesasDAO.save(documentoRemesas);
 		System.out.println("luego de aplicar insert del documento OT");
