@@ -38,6 +38,7 @@ import minsal.divap.vo.PersonaMantenedorVO;
 import minsal.divap.vo.PersonaVO;
 import minsal.divap.vo.ProgramaVO;
 import minsal.divap.vo.RegionSummaryVO;
+import minsal.divap.vo.RolVO;
 import minsal.divap.vo.ServiciosMantenedorVO;
 import minsal.divap.vo.ServiciosVO;
 import minsal.divap.vo.TipoComponenteVO;
@@ -338,6 +339,15 @@ public class MantenedoresService {
 			}
 			
 			MantenedorUsuarioVO mantenedorUsuarioVO = new MantenedorUsuarioVO();
+			
+			if(usuario.getServicio() != null){
+				mantenedorUsuarioVO.setIdServicioSalud(usuario.getServicio().getId().toString());
+				mantenedorUsuarioVO.setServicioSalud(usuario.getServicio().getNombre());
+			}else{
+				mantenedorUsuarioVO.setIdServicioSalud("");
+				mantenedorUsuarioVO.setServicioSalud("");
+			}
+			
 			mantenedorUsuarioVO.setUsername(usuario.getUsername());
 			mantenedorUsuarioVO.setNombre(usuario.getNombre());
 			mantenedorUsuarioVO.setApellido(usuario.getApellido());
@@ -964,6 +974,39 @@ public class MantenedoresService {
 		return serviciosVO;
 	}
 	
+	public List<TipoComunaVO> getTipoComunas(){
+		List<TipoComunaVO> resultado = new ArrayList<TipoComunaVO>();
+		List<TipoComuna> tipoComunas = comunaDAO.getAllTipoComuna();
+		for(TipoComuna tipoComuna : tipoComunas){
+			
+			Boolean puedeEliminarse = false;
+			if(tipoComuna.getAntecendentesComunaCollection() == null || tipoComuna.getAntecendentesComunaCollection().size() == 0){
+				puedeEliminarse = true;
+			}
+			
+			TipoComunaVO tipoComunaVO = new TipoComunaVO();
+			tipoComunaVO.setPuedeEliminarse(puedeEliminarse);
+			tipoComunaVO.setIdTipoComuna(tipoComuna.getIdTipoComuna());
+			tipoComunaVO.setDescripcion(tipoComuna.getDescripcion());
+			resultado.add(tipoComunaVO);
+		}
+		return resultado;
+	}
 	
+	public List<RolVO> getAllRolesVO(){
+		List<RolVO> resultado = new ArrayList<RolVO>();
+		List<Rol> roles = rolDAO.getRoles();
+		for(Rol rol : roles){
+			Boolean puedeEliminarse = false;
+			if(rol.getUsuarios() == null || rol.getUsuarios().size() == 0){
+				puedeEliminarse = true;
+			}
+			RolVO vo = new RolVO();
+			vo.setPuedeBorrarse(puedeEliminarse);
+			vo.setNombre(rol.getNombre());
+			resultado.add(vo);
+		}
+		return resultado;
+	}
 
 }
