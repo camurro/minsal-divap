@@ -7,7 +7,7 @@
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition>
-        <p:dialog id="UsuarioEditDlg" widgetVar="UsuarioEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditUsuarioTitle}" closeOnEscape="true">
+        <p:dialog id="UsuarioEditDlg" widgetVar="UsuarioEditDialog" modal="true" resizable="false"  appendToBody="true" header="Editar Usuario" closeOnEscape="true">
 
             <h:form id="UsuarioEditForm">
 
@@ -25,22 +25,35 @@
                         <p:inputText id="apellido" value="#{usuarioController.seleccionado.apellido}" title="#{messages.EditUsuarioTitle_apellido}" required="true"/>
                         
                         <p:outputLabel value="Email" for="emailUsuario" />
-						<p:inputText id="emailUsuario"
+						<p:inputText id="emailUsuario" label="Email"
 							value="#{usuarioController.seleccionado.email}"
 							title="Email" required="true" >
 							<f:validator validatorId="minsal.divap.emailValidator" />
 							<f:validateLength maximum="50" />
 						</p:inputText>
+						
+						
+						<p:outputLabel value="Servicio de Salud"
+						for="servicioSalud" />
+							<p:selectOneMenu id="servicioSalud"
+								value="#{usuarioController.seleccionado.idServicioSalud}">
+								<f:selectItem itemLabel="#{messages.SelectOneMessage}"
+									itemValue="" />
+								<f:selectItems value="#{usuarioController.servicios}"
+									var="servicioSaludItem"
+									itemValue="#{servicioSaludItem.id_servicio}"
+									itemLabel="#{servicioSaludItem.nombre_servicio}" />
+							</p:selectOneMenu>
                         
                         <p:outputLabel value="#{messages.CreateRolTitle_nombre}" />
                         <p:pickList id="pickList" value="#{usuarioController.roles}" var="rolItem" 
-                        	itemLabel="#{rolItem}" itemValue="#{rolItem}" 
+                        	itemLabel="#{rolItem}" itemValue="#{rolItem}"
                         	required="true" label="Rol" validatorMessage="Debe seleccionar un rol">
                         	<f:validator validatorId="minsal.divap.rolUsuarioValidator" />
                         </p:pickList>
                         
                     </p:panelGrid>
-                    <p:commandButton actionListener="#{usuarioController.edit}" value="#{messages.Save}" update="display,:UsuarioListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,UsuarioEditDialog);"/>
+                    <p:commandButton actionListener="#{usuarioController.edit}" ajax="true" value="#{messages.Save}" update="display,:UsuarioListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,UsuarioEditDialog);"/>
                     <p:commandButton value="#{messages.Cancel}" onclick="UsuarioEditDialog.hide()"/>
                 </h:panelGroup>
 

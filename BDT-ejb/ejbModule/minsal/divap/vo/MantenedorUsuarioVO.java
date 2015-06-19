@@ -16,6 +16,8 @@ public class MantenedorUsuarioVO implements Serializable{
 	private List<String> nombreRoles;
 	private List<String> nombreRolesFaltantes;
 	private Boolean puedeEliminarse;
+	private String idServicioSalud;
+	private String servicioSalud;
 	
 	public MantenedorUsuarioVO(){
 		
@@ -94,6 +96,22 @@ public class MantenedorUsuarioVO implements Serializable{
 		this.puedeEliminarse = puedeEliminarse;
 	}
 
+	public String getIdServicioSalud() {
+		return idServicioSalud;
+	}
+
+	public void setIdServicioSalud(String idServicioSalud) {
+		this.idServicioSalud = idServicioSalud;
+	}
+
+	public String getServicioSalud() {
+		return servicioSalud;
+	}
+
+	public void setServicioSalud(String servicioSalud) {
+		this.servicioSalud = servicioSalud;
+	}
+
 	@Override
 	public String toString() {
 		return "MantenedorUsuarioVO [username=" + username + ", nombre="
@@ -101,7 +119,8 @@ public class MantenedorUsuarioVO implements Serializable{
 				+ ", idEmail=" + idEmail + ", email=" + email
 				+ ", nombreRoles=" + nombreRoles + ", nombreRolesFaltantes="
 				+ nombreRolesFaltantes + ", puedeEliminarse=" + puedeEliminarse
-				+ "]";
+				+ ", idServicioSalud=" + idServicioSalud + ", servicioSalud="
+				+ servicioSalud + "]";
 	}
 
 }

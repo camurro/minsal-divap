@@ -16,8 +16,10 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import minsal.divap.dao.RolDAO;
+import minsal.divap.service.MantenedoresService;
 import minsal.divap.vo.MantenedorComponenteVO;
 import minsal.divap.vo.MantenedorRolVO;
+import minsal.divap.vo.RolVO;
 import cl.minsal.divap.mantenedores.bean.util.JsfUtil;
 import cl.minsal.divap.mantenedores.enums.PersistAction;
 import cl.minsal.divap.mantenedores.facade.RolFacade;
@@ -31,9 +33,11 @@ public class RolController extends AbstractController<Rol> {
     private RolFacade ejbFacade;
     @EJB
     private RolDAO rolDAO;
+    @EJB
+    private MantenedoresService mantenedoresService;
 
-    private List<Rol> roles;
-    private Rol seleccionado;
+    private List<RolVO> roles;
+    private RolVO seleccionado;
     
     
     
@@ -90,7 +94,7 @@ public class RolController extends AbstractController<Rol> {
 	
 	public void prepareCreateRol(ActionEvent event) {
 		System.out.println("prepareCreateRol");
-		seleccionado = new Rol();
+		seleccionado = new RolVO();
 		System.out.println("seleccionado --> "+seleccionado);
 		super.prepareCreate(event);
 	}
@@ -103,13 +107,20 @@ public class RolController extends AbstractController<Rol> {
 			try {
 				if (persistAction == PersistAction.UPDATE) {
 					this.ejbFacade.edit(this.seleccionado);
+					JsfUtil.addSuccessMessage("El rol ha sido editado correctamente");
 				}else if(persistAction == PersistAction.CREATE){
 					this.ejbFacade.create(this.seleccionado);
+					JsfUtil.addSuccessMessage("El rol ha sido creado correctamente");
 				}else if(persistAction == PersistAction.DELETE){
-					System.out.println("borrando con nuestro delete");
-					this.ejbFacade.remove(this.seleccionado);
+					if(this.seleccionado.getPuedeBorrarse()){
+						System.out.println("borrando con nuestro delete");
+						this.ejbFacade.remove(this.seleccionado);
+						JsfUtil.addSuccessMessage("El rol ha sido eliminado correctamente");
+					}else{
+						JsfUtil.addErrorMessage("El rol no puede eliminarse ya que tiene usuarios asociados");
+					}
+					
 				}
-				JsfUtil.addSuccessMessage(successMessage);
 			} catch (EJBException ex) {
 				Throwable cause = JsfUtil.getRootCause(ex.getCause());
 				if (cause != null) {
@@ -135,24 +146,20 @@ public class RolController extends AbstractController<Rol> {
 	}
 	
 
-	public Rol getSeleccionado() {
+	public RolVO getSeleccionado() {
 		return seleccionado;
 	}
-
-
-	public void setSeleccionado(Rol seleccionado) {
+	public void setSeleccionado(RolVO seleccionado) {
 		this.seleccionado = seleccionado;
 	}
-
-
-	public List<Rol> getRoles() {
+	public List<RolVO> getRoles() {
 		if(roles == null){
-			roles = rolDAO.getRoles();
+			roles = mantenedoresService.getAllRolesVO();
 		}
 		return roles;
 	}
 
-	public void setRoles(List<Rol> roles) {
+	public void setRoles(List<RolVO> roles) {
 		this.roles = roles;
 	}
 

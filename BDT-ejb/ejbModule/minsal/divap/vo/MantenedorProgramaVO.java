@@ -33,7 +33,6 @@ public class MantenedorProgramaVO implements Serializable {
 	private String estadoModificacionAPS; //OK
 	private List<Integer> diaPagoRemesas; //OK
 	
-	//TODO pendiente...
 	private Integer idTipoPrograma;
 	private String tipoPrograma;
 	

@@ -8,7 +8,7 @@
 
     <ui:composition>
 
-        <p:dialog id="UsuarioViewDlg" widgetVar="UsuarioViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewUsuarioTitle}" closeOnEscape="true">
+        <p:dialog id="UsuarioViewDlg" widgetVar="UsuarioViewDialog" modal="true" resizable="false"  appendToBody="true" header="Usuario" closeOnEscape="true">
 
             <h:form id="UsuarioViewForm">
 
@@ -23,6 +23,9 @@
 
                         <h:outputText value="#{messages.ViewUsuarioLabel_apellido}"/>
                         <h:outputText value="#{usuarioController.seleccionado.apellido}" title="#{messages.ViewUsuarioTitle_apellido}"/>
+                        
+                        <h:outputText value="Servicio de Salud" rendered="#{usuarioController.seleccionado.idServicioSalud ne ''}"/>
+                        <h:outputText value="#{usuarioController.seleccionado.servicioSalud}" rendered="#{usuarioController.seleccionado.idServicioSalud ne ''}"/>
 
                         <h:outputText value="#{messages.ViewUsuarioLabel_email}"/>
                         <h:outputText value="#{usuarioController.seleccionado.email}"/>

@@ -18,6 +18,7 @@ import javax.persistence.PersistenceContext;
 
 import minsal.divap.dao.ComunaDAO;
 import minsal.divap.vo.ServiciosVO;
+import minsal.divap.vo.TipoComunaVO;
 
 /**
  *
@@ -40,7 +41,7 @@ public class TipoComunaFacade extends AbstractFacade<TipoComuna> {
         super(TipoComuna.class);
     }
     
-    public void edit(TipoComuna seleccionado){
+    public void edit(TipoComunaVO seleccionado){
     	TipoComuna tipoComuna = null;
     	if(seleccionado.getIdTipoComuna() == null){
     		tipoComuna = new TipoComuna();
@@ -51,14 +52,14 @@ public class TipoComunaFacade extends AbstractFacade<TipoComuna> {
     	}
     }
     
-    public void create(TipoComuna nuevo){
+    public void create(TipoComunaVO nuevo){
     	TipoComuna tipoComuna = new TipoComuna();
     	tipoComuna.setDescripcion(nuevo.getDescripcion().toUpperCase());
     	
 		getEntityManager().persist(tipoComuna);
     }
     
-    public void remove(TipoComuna seleccionado){
+    public void remove(TipoComunaVO seleccionado){
     	TipoComuna tipoComuna = comunaDAO.getTipoComunaById(seleccionado.getIdTipoComuna());
     	getEntityManager().remove(getEntityManager().merge(tipoComuna));
     }

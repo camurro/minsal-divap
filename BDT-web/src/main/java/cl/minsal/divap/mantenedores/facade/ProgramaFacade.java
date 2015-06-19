@@ -69,7 +69,7 @@ public class ProgramaFacade extends AbstractFacade<Programa> {
     		programa = programasDAO.getProgramaById(seleccionado.getIdPrograma());
     		programa.setNombre(seleccionado.getNombrePrograma().toUpperCase());
     		programa.setCantidadCuotas(seleccionado.getListaCuotas().size());
-    		ProgramaAno programaAno = mantenedoresDAO.getProgramaAnoByIdPrograma(seleccionado.getIdPrograma());
+    		ProgramaAno programaAno = mantenedoresDAO.getProgramaAnoByIdPrograma(seleccionado.getIdPrograma(), seleccionado.getAno());
     		
     		Usuario usuario = usuarioDAO.getUserByUsername(seleccionado.getNombreUsuario());
     		programa.setUsuario(usuario);
@@ -140,7 +140,7 @@ public class ProgramaFacade extends AbstractFacade<Programa> {
     
     public void remove(MantenedorProgramaVO seleccionado){
     	Programa programa = programasDAO.getProgramaById(seleccionado.getIdPrograma());
-    	ProgramaAno programaAno = mantenedoresDAO.getProgramaAnoByIdPrograma(seleccionado.getIdPrograma());
+    	ProgramaAno programaAno = mantenedoresDAO.getProgramaAnoByIdPrograma(seleccionado.getIdPrograma(), seleccionado.getAno());
     	for(Cuota cuota : mantenedoresDAO.getCuotasByProgramaAno(programaAno.getIdProgramaAno())){
 			getEntityManager().remove(getEntityManager().merge(cuota));
 		}

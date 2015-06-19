@@ -17,7 +17,8 @@
 		header="#{messages.CreateProgramaTitle}" closeOnEscape="true">
 
 		<h:form id="ProgramaCreateForm">
-			<p:wizard widgetVar="wiz" flowListener="#{programaController.onFlowProcess}">
+			<p:wizard widgetVar="wiz"
+				flowListener="#{programaController.onFlowProcess}">
 				<p:tab id="datosPrograma" title="Datos Programa">
 					<p:panel header="Detalle">
 
@@ -45,8 +46,8 @@
 								<p:outputLabel
 									value="#{messages.CreateProgramaLabel_descripcion}"
 									for="descripcion" />
-									
-								<p:inputTextarea id="descripcion" required="true" 
+
+								<p:inputTextarea id="descripcion" required="true"
 									style="width:500px" maxlength="300"
 									value="#{programaController.seleccionado.descripcion}"
 									title="#{messages.CreateProgramaTitle_descripcion}" />
@@ -125,12 +126,14 @@
 							styleClass="dataTable" scrollable="true">
 
 							<f:facet name="header">
-					           Cuotas
-					       </f:facet>
+                               Cuotas
+                           </f:facet>
 
-												
-								
-							<p:ajax event="cellEdit" listener="#{programaController.onCellEdit}" update=":ProgramaEditForm:tabla" />
+
+
+							<p:ajax event="cellEdit"
+								listener="#{programaController.onCellEdit}"
+								update=":ProgramaEditForm:tabla" />
 
 							<p:column headerText="Nro Cuota">
 								<p:cellEditor>
@@ -138,8 +141,8 @@
 										<h:outputText value="#{_data.nroCuota}" />
 									</f:facet>
 									<f:facet name="input">
-										<p:inputText id="modelInput" value="#{_data.nroCuota}" disabled="true"
-											style="width:100%" />
+										<p:inputText id="modelInput" value="#{_data.nroCuota}"
+											disabled="true" style="width:100%" />
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
@@ -190,7 +193,7 @@
 								<tr>
 									<td>Porcentaje :</td>
 									<td><h:inputText id="porcentajeCuota" size="20"
-											value="#{programaController.porcentaje_cuota}" /></td>
+											value="#{programaController.porcentaje_cuota}" required="true"/></td>
 								</tr>
 								<tr>
 									<td>Fecha de Pago :</td>
@@ -209,8 +212,10 @@
 							</table>
 
 						</p:panel>
-						cuotaCienPorciento -->  #{programaController.cuotaCienPorciento}
-						<p:commandButton disabled="#{programaController.cuotaCienPorciento}" value="Agregar" onclick="agregarFila();" 
+                        cuotaCienPorciento --> #{programaController.cuotaCienPorciento}
+                        <p:commandButton
+							disabled="#{programaController.cuotaCienPorciento}"
+							value="Agregar" onclick="agregarFila();"
 							update="ProgramaCreateForm:tabla ProgramaCreateForm:gridCuotas" />
 
 					</p:panel>
@@ -223,15 +228,6 @@
 					<p:commandButton value="Cancelar"
 						onclick="ProgramaCreateDialog.hide()" />
 				</p:tab>
-
-
-
-
-
-
-
-
-
 
 
 

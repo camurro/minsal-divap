@@ -31,7 +31,7 @@ public class EmailValidator implements Validator{
         }
         
         if(value.toString().startsWith(" ") || value.toString().contains(" ")){
-        	throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error de Validación", 
+        	throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Email: Error de Validación", 
                     value + " el email posee espacios;"));
         }
         String valor = value.toString().replace(" ", "");
@@ -42,7 +42,7 @@ public class EmailValidator implements Validator{
         	if(!pattern.matcher(valor).matches()) {
         		UIInput uica = (UIInput) component;
         		uica.setValid(false);
-                throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Validation Error", 
+                throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Email: Error de Validación", 
                             value + " no es un email valido;"));
                 
             }

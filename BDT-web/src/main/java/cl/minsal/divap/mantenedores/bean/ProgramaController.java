@@ -91,7 +91,10 @@ public class ProgramaController extends AbstractController<Programa>{
 
     
     
-    public void addAction(){
+    
+    
+    
+    public String addAction(){
     	
     	Integer porcentajeAcumuladoCuotas = 0;
     	for(MantenedorCuotasVO cuotasVO : cuotas){
@@ -108,17 +111,10 @@ public class ProgramaController extends AbstractController<Programa>{
     	if(this.cuotas.size() > 0){
     		setFirstCuota(false);
     	}
-    	if(!getFecha_convertida().equals("")){
+    	if(getFecha_cuota() != null){
     		System.out.println("hay fecha");
-    		month = Integer.parseInt(getFecha_convertida().substring(3, 5));
-    		Date date = null;
-        	DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-        	try {
-    			date = format.parse(getFecha_convertida());
-    		} catch (ParseException e) {
-    			e.printStackTrace();
-    		}
-        	cuota.setFecha_cuota(date);
+    		month = getFecha_cuota().getMonth();
+        	cuota.setFecha_cuota(getFecha_cuota());
         	cuota.setMes(month);
     	}
     	else{
@@ -137,6 +133,13 @@ public class ProgramaController extends AbstractController<Programa>{
     	this.cuotas.add(cuota);
     	clearField();
     	
+    	return null;
+    	
+    }
+    
+    public String deleteAction(MantenedorCuotasVO mantenedorCuotasVO) {
+        this.cuotas.remove(mantenedorCuotasVO);
+        return null;
     }
     
     private void clearField() {
@@ -294,11 +297,6 @@ public class ProgramaController extends AbstractController<Programa>{
 		
 	}
 	
-	public String deleteAction(MantenedorCuotasVO mantenedorCuotasVO) {
-
-        this.cuotas.remove(mantenedorCuotasVO);
-        return null;
-    }
 	
     public ProgramaController() {
         // Inform the Abstract parent controller of the concrete Programa?cap_first Entity
@@ -390,6 +388,7 @@ public class ProgramaController extends AbstractController<Programa>{
 
 	public void setSeleccionado(MantenedorProgramaVO seleccionado) {
 		this.seleccionado = seleccionado;
+		System.out.println("seleccionado --> "+this.seleccionado);
 	}
 
 	public List<Usuario> getUsuarios() {

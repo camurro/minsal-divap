@@ -32,6 +32,18 @@
 							<f:validator validatorId="minsal.divap.emailValidator" />
 							<f:validateLength maximum="50" />
 						</p:inputText>
+						
+						<p:outputLabel value="Servicio de Salud"
+						for="servicioSalud" />
+							<p:selectOneMenu id="servicioSalud"
+								value="#{usuarioController.seleccionado.idServicioSalud}">
+								<f:selectItem itemLabel="#{messages.SelectOneMessage}"
+									itemValue="" />
+								<f:selectItems value="#{usuarioController.servicios}"
+									var="servicioSaludItem"
+									itemValue="#{servicioSaludItem.id_servicio}"
+									itemLabel="#{servicioSaludItem.nombre_servicio}" />
+							</p:selectOneMenu>
 
                         
                         <p:outputLabel value="#{messages.CreateRolTitle_nombre}" />
@@ -42,7 +54,7 @@
                         </p:pickList>
                         
                     </p:panelGrid>
-                    <p:commandButton actionListener="#{usuarioController.saveNew}" value="#{messages.Save}" update="display,:UsuarioListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,UsuarioCreateDialog);"/>
+                    <p:commandButton actionListener="#{usuarioController.saveNew}" ajax="true" value="#{messages.Save}" update="display,:UsuarioListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,UsuarioCreateDialog,statusDialog);"/>
                     <p:commandButton value="#{messages.Cancel}" onclick="UsuarioCreateDialog.hide()"/>
                 </h:panelGroup>
 
