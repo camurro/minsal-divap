@@ -10,30 +10,17 @@ public class MantenedorComponenteVO implements Serializable{
 	
 	private Integer idComponente;
 	private String nombreComponente;
-	private Integer idPrograma;
-	private String nombrePrograma;
 	private Integer idTipoComponente;
 	private String nombreTipoComponente;
 	private Float peso;
-	private List<String> nombreSubtitulos;
-	private List<String> nombreSubtitulosFaltantes;
+	private List<SubtituloVO> nombreSubtitulos;
+	private List<SubtituloVO> nombreSubtitulosFaltantes;
+	private Boolean puedeEliminarse;
 	
 	public MantenedorComponenteVO(){
 		
 	}
 	
-	public MantenedorComponenteVO(Integer idComponente, String nombreComponente, Integer idPrograma, String nombrePrograma, Integer idTipoComponente, String nombreTipoComponente, Float peso, List<String> nombreSubtitulos, List<String> nombreSubtitulosFaltantes){
-		super();
-		this. idComponente = idComponente;
-		this. nombreComponente = nombreComponente;
-		this. idPrograma = idPrograma;
-		this. nombrePrograma = nombrePrograma;
-		this. idTipoComponente = idTipoComponente;
-		this. nombreTipoComponente = nombreTipoComponente;
-		this. peso = peso;
-		this.nombreSubtitulos = nombreSubtitulos;
-		this.nombreSubtitulosFaltantes = nombreSubtitulosFaltantes;
-	}
 
 	public Integer getIdComponente() {
 		return idComponente;
@@ -49,22 +36,6 @@ public class MantenedorComponenteVO implements Serializable{
 
 	public void setNombreComponente(String nombreComponente) {
 		this.nombreComponente = nombreComponente;
-	}
-
-	public Integer getIdPrograma() {
-		return idPrograma;
-	}
-
-	public void setIdPrograma(Integer idPrograma) {
-		this.idPrograma = idPrograma;
-	}
-
-	public String getNombrePrograma() {
-		return nombrePrograma;
-	}
-
-	public void setNombrePrograma(String nombrePrograma) {
-		this.nombrePrograma = nombrePrograma;
 	}
 
 	public Integer getIdTipoComponente() {
@@ -91,35 +62,41 @@ public class MantenedorComponenteVO implements Serializable{
 		this.peso = peso;
 	}
 	
-	public List<String> getNombreSubtitulos() {
+	public List<SubtituloVO> getNombreSubtitulos() {
 		return nombreSubtitulos;
 	}
 
-	public void setNombreSubtitulos(List<String> nombreSubtitulos) {
+	public void setNombreSubtitulos(List<SubtituloVO> nombreSubtitulos) {
 		this.nombreSubtitulos = nombreSubtitulos;
 	}
 
 	
-	public List<String> getNombreSubtitulosFaltantes() {
+	public List<SubtituloVO> getNombreSubtitulosFaltantes() {
 		return nombreSubtitulosFaltantes;
 	}
 
-	public void setNombreSubtitulosFaltantes(List<String> nombreSubtitulosFaltantes) {
+	public void setNombreSubtitulosFaltantes(List<SubtituloVO> nombreSubtitulosFaltantes) {
 		this.nombreSubtitulosFaltantes = nombreSubtitulosFaltantes;
 	}
+
+	public Boolean getPuedeEliminarse() {
+		return puedeEliminarse;
+	}
+
+	public void setPuedeEliminarse(Boolean puedeEliminarse) {
+		this.puedeEliminarse = puedeEliminarse;
+	}
+
 
 	@Override
 	public String toString() {
 		return "MantenedorComponenteVO [idComponente=" + idComponente
-				+ ", nombreComponente=" + nombreComponente + ", idPrograma="
-				+ idPrograma + ", nombrePrograma=" + nombrePrograma
+				+ ", nombreComponente=" + nombreComponente
 				+ ", idTipoComponente=" + idTipoComponente
 				+ ", nombreTipoComponente=" + nombreTipoComponente + ", peso="
 				+ peso + ", nombreSubtitulos=" + nombreSubtitulos
 				+ ", nombreSubtitulosFaltantes=" + nombreSubtitulosFaltantes
-				+ "]";
+				+ ", puedeEliminarse=" + puedeEliminarse + "]";
 	}
-
-
 
 }

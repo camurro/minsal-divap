@@ -50,9 +50,9 @@ public class ComponenteController extends AbstractController<Componente> {
     private MantenedorComponenteVO seleccionado;
     private List<Programa> programas;
     private List<TipoComponente> tipoComponentes;
-//    private DualListModel<SubtituloVO> subtitulos;
+    private DualListModel<SubtituloVO> subtitulos;
     
-    private DualListModel<String> subtitulos;
+//    private DualListModel<String> subtitulos;
     
     
     private Integer idProgramaSeleccionado;
@@ -95,15 +95,15 @@ public class ComponenteController extends AbstractController<Componente> {
     
     public void prepareCreateComponente(ActionEvent event) {
 		System.out.println("prepareCreateComponente");
-		List<String> subtitulosSource = mantenedoresService.getSubtitulosNombres();
-        List<String> subtitulosTarget = new ArrayList<String>();
-        this.subtitulos = new DualListModel<String>(subtitulosSource, subtitulosTarget);
+		List<SubtituloVO> subtitulosSource = mantenedoresService.getSubtitulosNombres();
+        List<SubtituloVO> subtitulosTarget = new ArrayList<SubtituloVO>();
+        this.subtitulos = new DualListModel<SubtituloVO>(subtitulosSource, subtitulosTarget);
 		seleccionado = new MantenedorComponenteVO();
 		super.prepareCreate(event);
 	}
     
     public void prepareEditComponente(ActionEvent event) {
-    	this.subtitulos = new DualListModel<String>(this.seleccionado.getNombreSubtitulosFaltantes(), this.seleccionado.getNombreSubtitulos());
+    	this.subtitulos = new DualListModel<SubtituloVO>(this.seleccionado.getNombreSubtitulosFaltantes(), this.seleccionado.getNombreSubtitulos());
     }
 
    
@@ -116,7 +116,7 @@ public class ComponenteController extends AbstractController<Componente> {
 				if (persistAction == PersistAction.UPDATE) {
 					this.ejbFacade.edit(this.seleccionado);
 				}else if(persistAction == PersistAction.CREATE){
-					this.ejbFacade.create(this.seleccionado);
+					this.ejbFacade.create(this.seleccionado, this.subtitulos);
 				}else if(persistAction == PersistAction.DELETE){
 					System.out.println("borrando con nuestro delete");
 					this.ejbFacade.remove(this.seleccionado);
@@ -251,23 +251,7 @@ public class ComponenteController extends AbstractController<Componente> {
     
 	public List<MantenedorComponenteVO> getComponentes() {
 		if(componentes == null){
-			componentes = new ArrayList<MantenedorComponenteVO>();
-			for(Programa programa : getProgramas()){
-				for(Componente componente : programa.getComponentes()){
-					MantenedorComponenteVO mantenedorComponenteVO = new MantenedorComponenteVO();
-					mantenedorComponenteVO.setIdComponente(componente.getId());
-					mantenedorComponenteVO.setNombreComponente(componente.getNombre());
-					mantenedorComponenteVO.setIdPrograma(programa.getId());
-					mantenedorComponenteVO.setNombrePrograma(programa.getNombre());
-					mantenedorComponenteVO.setIdTipoComponente(componente.getTipoComponente().getId());
-					mantenedorComponenteVO.setNombreTipoComponente(componente.getTipoComponente().getNombre());
-					mantenedorComponenteVO.setPeso(componente.getPeso());
-					mantenedorComponenteVO.setNombreSubtitulos(mantenedoresService.getNombreSubtitulosByComponente(componente.getId()));
-					mantenedorComponenteVO.setNombreSubtitulosFaltantes(mantenedoresService.getNombreSubtitulosFaltantesComponente(componente.getId()));
-					
-					componentes.add(mantenedorComponenteVO);
-				}
-			}
+			componentes = mantenedoresService.getAllMantenedorComponenteVO();
 		}
 		return componentes;
 	}
@@ -323,20 +307,18 @@ public class ComponenteController extends AbstractController<Componente> {
 		this.tipoComponentes = tipoComponentes;
 	}
 
-	public DualListModel<String> getSubtitulos() {
-		List<String> subtitulosSource = new ArrayList<String>();
-        List<String> subtitulosTarget = new ArrayList<String>();
+	public DualListModel<SubtituloVO> getSubtitulos() {
+		List<SubtituloVO> subtitulosSource = new ArrayList<SubtituloVO>();
+        List<SubtituloVO> subtitulosTarget = new ArrayList<SubtituloVO>();
         
         if(subtitulos == null){
         	subtitulosSource = mantenedoresService.getSubtitulosNombres();
-    		subtitulos = new DualListModel<String>(subtitulosSource, subtitulosTarget);
+    		subtitulos = new DualListModel<SubtituloVO>(subtitulosSource, subtitulosTarget);
         }
-        
-        
 		return subtitulos;
 	}
 
-	public void setSubtitulos(DualListModel<String> subtitulos) {
+	public void setSubtitulos(DualListModel<SubtituloVO> subtitulos) {
 		this.subtitulos = subtitulos;
 	}
 

@@ -71,6 +71,7 @@ public class ProgramaController extends AbstractController<Programa>{
 	private Integer tipoPrograma;
 	private List<TipoComponenteVO> tipoComponentes;
 	private Boolean cuotaCienPorciento;
+	private Boolean ingresoCamposCuotasObligatorio;
 	
 	
     @EJB
@@ -99,38 +100,48 @@ public class ProgramaController extends AbstractController<Programa>{
     	Integer porcentajeAcumuladoCuotas = 0;
     	for(MantenedorCuotasVO cuotasVO : cuotas){
     		porcentajeAcumuladoCuotas = porcentajeAcumuladoCuotas + cuotasVO.getPorcentaje_cuota();
+    		
     	}
+    	porcentajeAcumuladoCuotas = porcentajeAcumuladoCuotas + getPorcentaje_cuota();
     	if(porcentajeAcumuladoCuotas >= 100){
     		cuotaCienPorciento = true;
+    		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\ncuotaCienPorciento --> "+cuotaCienPorciento);
+    		
+    		JsfUtil.addErrorMessage("El usuario no puede ser eliminado ya que tiene programas asociados");
+    		
+    		
+    	}else{
+    		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\nporcentajeAcumuladoCuotas --> "+porcentajeAcumuladoCuotas);
+        	
+        	System.out.println("getFecha_convertida() -->"+getFecha_convertida()+"<---");
+        	System.out.println("getFecha_cuota() --> "+getFecha_cuota());
+        	Integer month = null;
+        	MantenedorCuotasVO cuota = new MantenedorCuotasVO();
+        	if(this.cuotas.size() > 0){
+        		setFirstCuota(false);
+        	}
+        	if(getFecha_cuota() != null){
+        		System.out.println("hay fecha");
+        		month = getFecha_cuota().getMonth();
+            	cuota.setFecha_cuota(getFecha_cuota());
+            	cuota.setMes(month);
+        	}
+        	else{
+        		System.out.println("no hay fecha");
+        		cuota.setFecha_cuota(null);
+        		cuota.setMes(null);
+        		setFirstCuota(false);
+        	}
+        	
+        	
+        	cuota.setNroCuota(this.cuotas.size()+1);
+        	cuota.setMonto_cuota(getMonto_cuota());
+        	cuota.setPorcentaje_cuota(getPorcentaje_cuota());
+        	
+        	
+        	this.cuotas.add(cuota);
     	}
     	
-    	System.out.println("getFecha_convertida() -->"+getFecha_convertida()+"<---");
-    	System.out.println("getFecha_cuota() --> "+getFecha_cuota());
-    	Integer month = null;
-    	MantenedorCuotasVO cuota = new MantenedorCuotasVO();
-    	if(this.cuotas.size() > 0){
-    		setFirstCuota(false);
-    	}
-    	if(getFecha_cuota() != null){
-    		System.out.println("hay fecha");
-    		month = getFecha_cuota().getMonth();
-        	cuota.setFecha_cuota(getFecha_cuota());
-        	cuota.setMes(month);
-    	}
-    	else{
-    		System.out.println("no hay fecha");
-    		cuota.setFecha_cuota(null);
-    		cuota.setMes(null);
-    		setFirstCuota(false);
-    	}
-    	
-    	
-    	cuota.setNroCuota(this.cuotas.size()+1);
-    	cuota.setMonto_cuota(getMonto_cuota());
-    	cuota.setPorcentaje_cuota(getPorcentaje_cuota());
-    	
-    	
-    	this.cuotas.add(cuota);
     	clearField();
     	
     	return null;
@@ -165,6 +176,7 @@ public class ProgramaController extends AbstractController<Programa>{
     @Override
     public void init() {
     	cuotaCienPorciento = false;
+    	ingresoCamposCuotasObligatorio = true;
         super.setFacade(ejbFacade);
         anoEnCurso = reportesServices.getAnoCurso();
         this.firstCuota = true;
@@ -216,6 +228,7 @@ public class ProgramaController extends AbstractController<Programa>{
     	for(MantenedorCuotasVO cuotasVO : cuotas){
     		System.out.println("\n\n\n\n\n\n\n\n\n\ncuotasVO.getMes()"+cuotasVO.toString()+"\n\n\n\n\n\n\n\n\n\n");
     	}
+    	ingresoCamposCuotasObligatorio = false;
     	seleccionado.setListaCuotas(getCuotas());
     	seleccionado.setCuotas(getCuotas().size());
 		System.out.println("entra al saveNew");
@@ -571,6 +584,15 @@ public class ProgramaController extends AbstractController<Programa>{
 
 	public void setCuotaCienPorciento(Boolean cuotaCienPorciento) {
 		this.cuotaCienPorciento = cuotaCienPorciento;
+	}
+
+	public Boolean getIngresoCamposCuotasObligatorio() {
+		return ingresoCamposCuotasObligatorio;
+	}
+
+	public void setIngresoCamposCuotasObligatorio(
+			Boolean ingresoCamposCuotasObligatorio) {
+		this.ingresoCamposCuotasObligatorio = ingresoCamposCuotasObligatorio;
 	}
 
 	

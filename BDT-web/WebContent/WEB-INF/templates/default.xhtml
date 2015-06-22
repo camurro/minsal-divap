@@ -61,6 +61,40 @@
 		        dialog.hide();
 		    }
 		}
+		function agregarFila(){
+			if($("#ProgramaCreateForm\\:porcentajeCuota").val()==""){
+				alert("El campo Porcentaje es obligatorio");
+				return;
+			}	
+
+			if($("#ProgramaCreateForm\\:monto").val()==""){
+				alert("El campo Monto es obligatorio");
+				return;
+			}
+
+			if($("#ProgramaCreateForm\\:firstCuota").val()== 'true'){
+				alert("primera cuota");
+			}
+				
+			
+        	$("#formAgregarCuota\\:hiddenNroCuota").val($("#ProgramaCreateForm\\:nroCuota").val());
+        	$("#formAgregarCuota\\:hiddenPorcentaje").val($("#ProgramaCreateForm\\:porcentajeCuota").val());
+        	$("#formAgregarCuota\\:hiddenFecha").val($("#ProgramaCreateForm\\:fechaPago_input").val());
+        	$("#formAgregarCuota\\:hiddenMonto").val($("#ProgramaCreateForm\\:monto").val());
+
+        	
+			 	document.getElementById('formAgregarCuota:botonAgregaCuota').click();
+        }
+
+        function agregarFilaEditar(){
+        	$("#formAgregarCuotaEdit\\:hiddenNroCuota").val($("#ProgramaEditForm\\:nroCuota").val());
+        	$("#formAgregarCuotaEdit\\:hiddenPorcentaje").val($("#ProgramaEditForm\\:porcentajeCuota").val());
+        	$("#formAgregarCuotaEdit\\:hiddenFecha").val($("#ProgramaEditForm\\:fechaPago_input").val());
+        	$("#formAgregarCuotaEdit\\:hiddenMonto").val($("#ProgramaEditForm\\:monto").val());
+
+        	
+			 	document.getElementById('formAgregarCuotaEdit:botonAgregaCuota').click();
+        }
 	</script>
 
 </h:head>
@@ -147,15 +181,9 @@
 								value="Configurar Comunas #{menuMantenedoresController.anoCurso + 1}" url="/mantenedor/comuna/index.jsf?anoSiguiente=true" icon="ui-icon-document" />
 						</p:submenu>
 						<p:menuitem value="Componente" url="/mantenedor/componente/index.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Cumplimiento" url="/mantenedor/cumplimiento/index.jsf" icon="ui-icon-document" />
-<!-- 						<p:menuitem value="Cumplimiento Programa" url="/mantenedor/cumplimientoPrograma/index.jsf" icon="ui-icon-document" /> -->
 						<p:menuitem value="Establecimiento" url="/mantenedor/establecimiento/index.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Estado Programa" url="/mantenedor/estadoPrograma/index.jsf" icon="ui-icon-document" />
-<!-- 						<p:menuitem value="Estado Convenio" url="/mantenedor/comuna/index.jsf" icon="ui-icon-document" /> -->
 						<p:menuitem value="Factor Referencia Asignacion Zona" url="/mantenedor/factorRefAsigZona/index.jsf" icon="ui-icon-document" />
 						<p:menuitem value="Factor Tramo Pobreza" url="/mantenedor/factorTramoPobreza/index.jsf" icon="ui-icon-document" />
-<!-- 						<p:menuitem value="Feriados" url="/mantenedor/comuna/index.jsf" icon="ui-icon-document" /> -->
-						<p:menuitem value="Persona" url="/mantenedor/persona/index.jsf" icon="ui-icon-document" />
 						
 						
 						<p:submenu label="Programa">

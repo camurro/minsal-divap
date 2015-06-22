@@ -26,6 +26,7 @@ import minsal.divap.vo.FactorRefAsigZonaVO;
 import minsal.divap.vo.FactorTramoPobrezaVO;
 import minsal.divap.vo.FechaRemesaVO;
 import minsal.divap.vo.MantenedorAnoVO;
+import minsal.divap.vo.MantenedorComponenteVO;
 import minsal.divap.vo.MantenedorComunaFinalVO;
 import minsal.divap.vo.MantenedorCumplimientoVO;
 import minsal.divap.vo.MantenedorEstadoProgramaVO;
@@ -41,6 +42,7 @@ import minsal.divap.vo.RegionSummaryVO;
 import minsal.divap.vo.RolVO;
 import minsal.divap.vo.ServiciosMantenedorVO;
 import minsal.divap.vo.ServiciosVO;
+import minsal.divap.vo.SubtituloVO;
 import minsal.divap.vo.TipoComponenteVO;
 import minsal.divap.vo.TipoComunaVO;
 import cl.minsal.divap.model.AnoEnCurso;
@@ -190,56 +192,58 @@ public class MantenedoresService {
 //		return mantenedorRegionVO;
 //	}
 
-	public List<String> getSubtitulosNombres() {
+	public List<SubtituloVO> getSubtitulosNombres() {
 		List<TipoSubtitulo> tipoSubtitulos = this.tipoSubtituloDAO
 				.getTipoSubtituloAll();
-		List<String> nombreSubtitulos = new ArrayList<String>();
+		List<SubtituloVO> nombreSubtitulos = new ArrayList<SubtituloVO>();
 		if (tipoSubtitulos != null && tipoSubtitulos.size() > 0) {
 			for (TipoSubtitulo tipoSubtitulo : tipoSubtitulos) {
-				nombreSubtitulos.add(tipoSubtitulo.getNombreSubtitulo());
+				SubtituloVO subtituloVO = new SubtituloVO();
+				subtituloVO.setNombre(tipoSubtitulo.getNombreSubtitulo());
+				subtituloVO.setId(tipoSubtitulo.getIdTipoSubtitulo());
+				nombreSubtitulos.add(subtituloVO);
 			}
 		}
 		return nombreSubtitulos;
 
 	}
 
-	public List<String> getNombreSubtitulosByComponente(Integer idComponente) {
-		List<ComponenteSubtitulo> componenteSubtitulos = this.tipoSubtituloDAO
-				.getByIdComponente(idComponente);
-		List<String> nombreSubtitulos = new ArrayList<String>();
+	public List<SubtituloVO> getNombreSubtitulosByComponente(Integer idComponente) {
+		List<ComponenteSubtitulo> componenteSubtitulos = this.tipoSubtituloDAO.getByIdComponente(idComponente);
+		List<SubtituloVO> nombreSubtitulos = new ArrayList<SubtituloVO>();
 		for (ComponenteSubtitulo componenteSubtitulo : componenteSubtitulos) {
-			System.out.println("subtitulo que posee el componente --> "
-					+ componenteSubtitulo.getSubtitulo().getNombreSubtitulo());
-			String nombre = null;
-			nombre = componenteSubtitulo.getSubtitulo().getNombreSubtitulo();
-			nombreSubtitulos.add(nombre);
+			SubtituloVO subtitulo = new SubtituloVO();
+			subtitulo.setId(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo());
+			subtitulo.setNombre(componenteSubtitulo.getSubtitulo().getNombreSubtitulo());
+			nombreSubtitulos.add(subtitulo);
 		}
 		return nombreSubtitulos;
 
 	}
 
-	public List<String> getNombreSubtitulosFaltantesComponente(
+	public List<SubtituloVO> getNombreSubtitulosFaltantesComponente(
 			Integer idComponente) {
 		List<TipoSubtitulo> tipoSubtitulos = this.tipoSubtituloDAO
 				.getTipoSubtituloAll();
-		List<String> nombresFinal = new ArrayList<String>();
+		List<SubtituloVO> nombresFinal = new ArrayList<SubtituloVO>();
 		for (TipoSubtitulo tipoSubtitulo : tipoSubtitulos) {
-			nombresFinal.add(tipoSubtitulo.getNombreSubtitulo());
+			SubtituloVO subtituloVO = new SubtituloVO();
+			subtituloVO.setId(tipoSubtitulo.getIdTipoSubtitulo());
+			subtituloVO.setNombre(tipoSubtitulo.getNombreSubtitulo());
+			nombresFinal.add(subtituloVO);
 		}
-		List<ComponenteSubtitulo> componenteSubtitulos = this.tipoSubtituloDAO
-				.getByIdComponente(idComponente);
-		List<String> nombreBorrar = new ArrayList<String>();
+		List<ComponenteSubtitulo> componenteSubtitulos = this.tipoSubtituloDAO.getByIdComponente(idComponente);
+		List<SubtituloVO> nombreBorrar = new ArrayList<SubtituloVO>();
 		for (ComponenteSubtitulo componenteSubtitulo : componenteSubtitulos) {
-			System.out.println("subtitulo que posee el componente --> "
-					+ componenteSubtitulo.getSubtitulo().getNombreSubtitulo());
-			String nombre = null;
-			nombre = componenteSubtitulo.getSubtitulo().getNombreSubtitulo();
-			nombreBorrar.add(nombre);
+
+			SubtituloVO subtituloVO = new SubtituloVO();
+			subtituloVO.setId(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo());
+			subtituloVO.setNombre(componenteSubtitulo.getSubtitulo().getNombreSubtitulo());
+			nombreBorrar.add(subtituloVO);
 		}
 		for (int i = 0; i < nombresFinal.size(); i++) {
-
 			for (int j = 0; j < nombreBorrar.size(); j++) {
-				if (nombresFinal.get(i).equalsIgnoreCase(nombreBorrar.get(j))) {
+				if (nombresFinal.get(i).getNombre().equalsIgnoreCase(nombreBorrar.get(j).getNombre())) {
 					nombresFinal.remove(i);
 				}
 			}
@@ -1008,5 +1012,38 @@ public class MantenedoresService {
 		}
 		return resultado;
 	}
+	
+	public List<MantenedorComponenteVO> getAllMantenedorComponenteVO(){
+		List<MantenedorComponenteVO> resultado = new ArrayList<MantenedorComponenteVO>();
+		List<Programa> programas = programasDAO.getAllProgramas();
+		for(Programa programa : programas){
+			for(Componente componente : programa.getComponentes()){
+				Boolean puedeBorrarse = false;
+				if(componente.getIdPrograma() == null){
+					puedeBorrarse = true;
+				}
+				if(puedeBorrarse){
+					if(componente.getComponenteSubtitulosComponente() == null || componente.getComponenteSubtitulosComponente().size() == 0){
+						puedeBorrarse = true;
+					}else{
+						puedeBorrarse = false;
+					}
+				}
+				
+				MantenedorComponenteVO mantenedorComponenteVO = new MantenedorComponenteVO();
+				mantenedorComponenteVO.setPuedeEliminarse(puedeBorrarse);
+				mantenedorComponenteVO.setIdComponente(componente.getId());
+				mantenedorComponenteVO.setNombreComponente(componente.getNombre());
+				mantenedorComponenteVO.setIdTipoComponente(componente.getTipoComponente().getId());
+				mantenedorComponenteVO.setNombreTipoComponente(componente.getTipoComponente().getNombre());
+				mantenedorComponenteVO.setPeso(componente.getPeso());
+				mantenedorComponenteVO.setNombreSubtitulos(this.getNombreSubtitulosByComponente(componente.getId()));
+				mantenedorComponenteVO.setNombreSubtitulosFaltantes(this.getNombreSubtitulosFaltantesComponente(componente.getId()));
+				resultado.add(mantenedorComponenteVO);
+			}
+		}
+		return resultado;
+	}
+	
 
 }

@@ -21,16 +21,6 @@
                         <p:outputLabel value="#{messages.EditComponenteLabel_nombre}" for="nombre" />
                         <p:inputText id="nombre" value="#{componenteController.seleccionado.nombreComponente}" title="#{messages.EditComponenteTitle_nombre}"/>
 
-                        <p:outputLabel value="#{messages.EditComponenteLabel_idPrograma}" for="idPrograma" />
-                        <p:selectOneMenu id="idPrograma" value="#{componenteController.seleccionado.idPrograma}" >
-                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
-                            <f:selectItems value="#{programaController.items}"
-                                           var="idProgramaItem"
-                                           itemValue="#{idProgramaItem.id}"
-                                           itemLabel="#{idProgramaItem.nombre}"
-                                           />
-                        </p:selectOneMenu>
-
                         <p:outputLabel value="#{messages.EditComponenteLabel_tipoComponente}" for="tipoComponente" />
                         <p:selectOneMenu id="tipoComponente" value="#{componenteController.seleccionado.idTipoComponente}" required="true" requiredMessage="#{messages.EditComponenteRequiredMessage_tipoComponente}">
                             <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>

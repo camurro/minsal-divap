@@ -21,11 +21,14 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.primefaces.model.DualListModel;
+
 import minsal.divap.dao.ComponenteDAO;
 import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.dao.TipoSubtituloDAO;
 import minsal.divap.vo.MantenedorComponenteVO;
 import minsal.divap.vo.MantenedorEstablecimientoVO;
+import minsal.divap.vo.SubtituloVO;
 
 /**
  *
@@ -59,19 +62,17 @@ public class ComponenteFacade extends AbstractFacade<Componente> {
     	}else{
     		componente = componenteDAO.getComponenteByID(componenteSeleccionado.getIdComponente());
     		componente.setNombre(componenteSeleccionado.getNombreComponente());
-    		Programa programa = programasDAO.getProgramaById(componenteSeleccionado.getIdPrograma());
-    		componente.setIdPrograma(programa);
     		TipoComponente tipoComponente = componenteDAO.getTipoComponenteById(componenteSeleccionado.getIdTipoComponente());
     		componente.setTipoComponente(tipoComponente);
     		getEntityManager().merge(componente);
     		
-    		List<String> nombreSubtitulos = componenteSeleccionado.getNombreSubtitulos();
+    		List<SubtituloVO> nombreSubtitulos = componenteSeleccionado.getNombreSubtitulos();
     		List <ComponenteSubtitulo> componenteSubtitulos = tipoSubtituloDAO.getByIdComponente(componenteSeleccionado.getIdComponente());
     		for(ComponenteSubtitulo componenteSubtitulo : componenteSubtitulos){
     			getEntityManager().remove(getEntityManager().merge(componenteSubtitulo));
     		}
-    		for(String nombreSubtitulo : nombreSubtitulos){
-    			TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloByName(nombreSubtitulo);
+    		for(SubtituloVO nombreSubtitulo : nombreSubtitulos){
+    			TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloPorID(nombreSubtitulo.getId());
     			ComponenteSubtitulo newComponenteSubtitulo = new ComponenteSubtitulo();
     			newComponenteSubtitulo.setComponente(componente);
     			newComponenteSubtitulo.setSubtitulo(tipoSubtitulo);
@@ -85,16 +86,14 @@ public class ComponenteFacade extends AbstractFacade<Componente> {
     	Componente componente = new Componente();
     	
 		componente.setNombre(mantenedorComponenteVO.getNombreComponente());
-		Programa programa = programasDAO.getProgramaById(mantenedorComponenteVO.getIdPrograma());
-		componente.setIdPrograma(programa);
 		TipoComponente tipoComponente = componenteDAO.getTipoComponenteById(mantenedorComponenteVO.getIdTipoComponente());
 		componente.setTipoComponente(tipoComponente);
 		
 		getEntityManager().persist(componente);
 		
-		List<String> nombreSubtitulos = mantenedorComponenteVO.getNombreSubtitulos();
-		for(String nombreSubtitulo : nombreSubtitulos){
-			TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloByName(nombreSubtitulo);
+		List<SubtituloVO> nombreSubtitulos = mantenedorComponenteVO.getNombreSubtitulos();
+		for(SubtituloVO nombreSubtitulo : nombreSubtitulos){
+			TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloPorID(nombreSubtitulo.getId());
 			ComponenteSubtitulo componenteSubtitulo = new ComponenteSubtitulo();
 			componenteSubtitulo.setComponente(componente);
 			componenteSubtitulo.setSubtitulo(tipoSubtitulo);

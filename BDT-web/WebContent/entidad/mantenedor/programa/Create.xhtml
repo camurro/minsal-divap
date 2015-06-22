@@ -166,7 +166,7 @@
 									</f:facet>
 									<f:facet name="input">
 										<p:calendar pattern="dd/MM/yyyy" value="#{_data.fecha_cuota}"
-											showOn="button" />
+											showOn="button" disabled="#{_data.nroCuota == 1}"/>
 									</f:facet>
 
 								</p:cellEditor>
@@ -188,12 +188,12 @@
 
 						<p:panel id="gridCuotas">
 
-							<h3>Ingrese Cuota</h3>
+							<h3>Ingrese Cuota  #{programaController.ingresoCamposCuotasObligatorio}</h3>
 							<table>
 								<tr>
 									<td>Porcentaje :</td>
 									<td><h:inputText id="porcentajeCuota" size="20"
-											value="#{programaController.porcentaje_cuota}" required="true"/></td>
+											value="#{programaController.porcentaje_cuota}" /></td>
 								</tr>
 								<tr>
 									<td>Fecha de Pago :</td>
@@ -232,6 +232,15 @@
 
 
 
+
+
+
+
+
+
+
+
+
 			</p:wizard>
 		</h:form>
 
@@ -244,6 +253,8 @@
 				id="hiddenFecha" />
 			<h:inputHidden value="#{programaController.monto_cuota}"
 				id="hiddenMonto" />
+			<h:inputHidden value="#{programaController.firstCuota}"
+				id="hiddenFirstCuota" />
 
 
 			<p:commandButton id="botonAgregaCuota" style="visibility: hidden;"
