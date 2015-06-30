@@ -417,7 +417,9 @@ public class ProgramasDAO {
 			if(componentes != null && componentes.size() > 0){
 				List<Integer> idComponentes = new ArrayList<Integer>();
 				for(Componente componente : componentes){
-					idComponentes.add(componente.getId());
+					if(!idComponentes.contains(componente.getId())){
+						idComponentes.add(componente.getId());
+					}
 				}
 				TypedQuery<ProgramaAno> queryProgramas = this.em.createNamedQuery("ProgramaAno.findByAnoComponente", ProgramaAno.class);
 				queryProgramas.setParameter("idComponentes", idComponentes);

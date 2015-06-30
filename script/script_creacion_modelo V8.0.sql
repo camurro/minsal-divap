@@ -26675,3 +26675,13 @@ ALTER TABLE documento_remesas
 
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (182, 'Planilla Detalle Remesa APS SS');
 
+ALTER TABLE detalle_remesas
+  ADD COLUMN remesa_profesional integer;
+
+ALTER TABLE detalle_remesas
+  ADD CONSTRAINT remesa_profesional_fk FOREIGN KEY (remesa_profesional) REFERENCES remesas (id_remesa) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE detalle_remesas
+   ALTER COLUMN monto_remesa TYPE bigint;
+
+

@@ -452,7 +452,7 @@
 						<c:if test="#{procesoOTRevisarAntecedentesController.percapita}">
 							<p:tab title="Per Cápita" id="tabPerCapita">
 								<p:dataTable resizableColumns="true" value="#{procesoOTRevisarAntecedentesController.resultadoPercapita}" liveResize="true" var="detallePercapita"
-										rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+										rows="10" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." 
 										styleClass="dataTable" id="tablaResultadosPercapita" rowIndexVar="rowIndexPerCapita">
 										<p:columnGroup type="header">
 											<p:row>
@@ -541,7 +541,7 @@
 						<c:if test="#{procesoOTRevisarAntecedentesController.desemenoDificil}">
 							<p:tab title="Desempeño Dificil" id="tabDesempeno">
 								<p:dataTable resizableColumns="true" value="#{procesoOTRevisarAntecedentesController.resultadoPercapita}" liveResize="true" var="detalleDesempeno"
-										rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+										rows="10" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." 
 										styleClass="dataTable" id="tablaResultadosDesempeno" rowIndexVar="rowIndexDesempeno">
 										<p:columnGroup type="header">
 											<p:row>
@@ -627,7 +627,7 @@
 						<c:if test="#{procesoOTRevisarAntecedentesController.rebajaIAAPS}">
 							<p:tab title="Rebaja IAAPS" id="tabRebaja">
 								<p:dataTable resizableColumns="true" value="#{procesoOTRevisarAntecedentesController.resultadoPercapita}" liveResize="true" var="detalleRebaja"
-										rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+										rows="10" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." 
 										styleClass="dataTable" id="tablaResultadosRebaja" rowIndexVar="rowIndexRebaja">
 										<p:columnGroup type="header">
 											<p:row>

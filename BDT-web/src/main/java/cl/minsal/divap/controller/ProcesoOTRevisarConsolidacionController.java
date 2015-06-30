@@ -15,6 +15,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.print.attribute.standard.Severity;
 
 import minsal.divap.enums.BusinessProcess;
 import minsal.divap.enums.Programas;
@@ -150,7 +151,7 @@ implements Serializable {
 		
 		listaProgramasResumen = otService.getProgramas(getLoggedUsername(), anoCurso);
 		listaComponentes = new ArrayList<ComponentesVO>();
-		encabezadoFonasa = programasService.getProgramasFonasa(true);
+		encabezadoFonasa = programasService.getProgramasFonasa(Boolean.TRUE);
 		cargarResumenFonasa();
 		submit = "0";
 	}
@@ -279,7 +280,7 @@ implements Serializable {
 			}
 			totalResumen = totalSub21Resumen + totalSub22Resumen + totalSub29Resumen+totalSub24Resumen;
 		}else{
-			FacesMessage msg = new FacesMessage("Debe seleccionar el programa antes de realizar la búsqueda");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR , "Debe seleccionar el programa antes de realizar la búsqueda", null);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}

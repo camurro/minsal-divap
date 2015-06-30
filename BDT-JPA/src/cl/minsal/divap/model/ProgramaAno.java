@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name = "ProgramaAno.findByAnoIdPrograma", query = "SELECT p FROM ProgramaAno p WHERE p.programa.id = :idPrograma and p.ano.ano = :ano"),
 	@NamedQuery(name = "ProgramaAno.getIdProgramaAnoAnterior", query = "SELECT p FROM ProgramaAno p WHERE p.programa.id = :idPrograma and p.ano.ano = :ano"),
 	@NamedQuery(name = "ProgramaAno.findByIdProgramaAno", query = "SELECT p FROM ProgramaAno p WHERE p.idProgramaAno = :idProgramaAno"),
-	@NamedQuery(name = "ProgramaAno.findByAnoComponente", query = "SELECT p FROM ProgramaAno p inner join p.programa.componentes pc where pc.id in (:idComponentes) and p.ano.ano = :ano"),
+	@NamedQuery(name = "ProgramaAno.findByAnoComponente", query = "SELECT DISTINCT p FROM ProgramaAno p inner join p.programa.componentes pc where pc.id in (:idComponentes) and p.ano.ano = :ano"),
 	@NamedQuery(name = "ProgramaAno.findByIdPrograma", query = "SELECT p FROM ProgramaAno p WHERE p.programa.id = :idPrograma"),
 	@NamedQuery(name = "ProgramaAno.findByAno", query = "SELECT p FROM ProgramaAno p WHERE p.ano.ano = :ano"),
 	@NamedQuery(name = "ProgramaAno.findByAnoComponenteFonasa", query = "SELECT p FROM ProgramaAno p inner join p.programa.componentes pc where pc.id in (:idComponentes) and p.ano.ano = :ano and p.programa.revisaFonasa = :fonasa")})

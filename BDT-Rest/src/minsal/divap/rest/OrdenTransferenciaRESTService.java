@@ -136,7 +136,7 @@ public class OrdenTransferenciaRESTService extends BaseRest{
     }
 
 	@GET
-    @Path("/ordenesDeTransferencia/reestablecerProgramas/{ano}/{estado}")
+    @Path("/ordenesDeTransferencia/restablecerProgramas/{ano}/{estado}")
     @Produces("application/json")
     public void reestablecerProgramas(@PathParam("ano") Integer ano, @PathParam("estado") String estado){
 		System.out.println("Reestableciendo estado de los programas para OT");
@@ -147,7 +147,25 @@ public class OrdenTransferenciaRESTService extends BaseRest{
 			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
 		}
 		OTService ordenTransferenciaService = getService(OTService.class);
-		ordenTransferenciaService.reestablecerProgramas(ano, Integer.parseInt(estado));
+		ordenTransferenciaService.restablecerProgramas(ano, Integer.parseInt(estado));
+    }
+	
+	@GET
+    @Path("/ordenesDeTransferencia/restablecerProgramasTransferencia/{idProcesoOT}/{ano}/{estado}")
+    @Produces("application/json")
+    public void restablecerProgramasTransferencia(@PathParam("idProcesoOT") Integer idProcesoOT, @PathParam("ano") Integer ano, @PathParam("estado") String estado){
+		System.out.println("restablecerProgramasTransferencia estado de los programas para OT");
+		if(idProcesoOT == null){
+			throw new IllegalArgumentException("idProcesoOT: "+ idProcesoOT + " no puede ser nulo");
+		}
+		if(estado == null){
+			throw new IllegalArgumentException("estado: "+ estado + " no puede ser nulo");
+		}
+		if(ano == null){
+			throw new IllegalArgumentException("ano: "+ ano + " no puede ser nulo");
+		}
+		OTService ordenTransferenciaService = getService(OTService.class);
+		ordenTransferenciaService.restablecerProgramasTransferencia(idProcesoOT, ano, Integer.parseInt(estado));
     }
 			
 }

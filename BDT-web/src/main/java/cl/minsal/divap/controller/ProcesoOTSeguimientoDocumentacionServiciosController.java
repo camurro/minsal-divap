@@ -69,7 +69,7 @@ public class ProcesoOTSeguimientoDocumentacionServiciosController extends Abstra
 	}
 	
 	public void buscarReporteCorreos(){
-		reporteCorreos = otService.getReporteCorreosByIdRemesa(idProcesoOT);
+		reporteCorreos = otService.getReporteCorreosServiciosByIdRemesa(idProcesoOT);
 	}
 	
 	public String getActividadSeguimientoTitle() {
@@ -101,7 +101,7 @@ public class ProcesoOTSeguimientoDocumentacionServiciosController extends Abstra
 
 	public List<ReporteEmailsEnviadosVO> getReporteCorreos() {
 		if(reporteCorreos == null){
-			reporteCorreos = otService.getReporteCorreosByIdRemesa(idProcesoOT);
+			reporteCorreos = otService.getReporteCorreosServiciosByIdRemesa(idProcesoOT);
 		}
 		return reporteCorreos;
 	}

@@ -66,11 +66,15 @@
 						styleClass="dataTable"  id="tablaResultados">
 						<p:columnGroup type="header">
 							<p:row>
+								<p:column headerText="Servicio de Salud o Entidad" />
 								<p:column headerText="Documentos" />
 								<p:column headerText="Fecha de Envío" width="150"/>
 								<p:column headerText="Destinatario" width="250"/>
 							</p:row>
 						</p:columnGroup>
+						<p:column rendered="#{not empty procesoOTSeguimientoDocumentacionServiciosController.reporteCorreos}">
+							<span class="textoAjustado textoPequenio">#{_reporte.nombreServicio}</span>
+						</p:column>
 						<p:column rendered="#{not empty procesoOTSeguimientoDocumentacionServiciosController.reporteCorreos}">
 							 
 							<p:dataTable resizableColumns="true" value="#{_reporte.adjuntos}" var="adj" styleClass="noheader borderless" >
@@ -91,6 +95,14 @@
                                 </p:column>
                                 <p:column  >
                                     <span class="strong">#{para}</span>
+                                </p:column>
+                            </p:dataTable>
+                            <p:dataTable resizableColumns="true" value="#{_reporte.cc}" var="copia" styleClass="noheader borderless" >
+                                <p:column width="20px" rowspan="#{_reporte.cc.size()}" >
+                                    <h:outputText value="Cc:" style="align:left"></h:outputText>
+                                </p:column>
+                                <p:column  >
+                                    <span class="strong">#{copia}</span>
                                 </p:column>
                             </p:dataTable>
 						</p:column>

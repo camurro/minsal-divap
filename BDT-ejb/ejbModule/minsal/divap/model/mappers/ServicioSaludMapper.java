@@ -14,22 +14,19 @@ public class ServicioSaludMapper implements Mapper<ServicioSalud>{
 
 	@Override
 	public ServiciosVO getBasic(ServicioSalud servicioSalud) {
-
 		if (servicioSalud==null){
 			return null;
 		}
 		
-		ServiciosVO servicioSaludVO = new ServiciosVO();
-		
-		servicioSaludVO.setIdServicio(servicioSalud.getId());
-		servicioSaludVO.setNombreServicio(servicioSalud.getNombre());
-		
-		return servicioSaludVO;
+		ServiciosVO servicioVO = new ServiciosVO(servicioSalud.getId(), servicioSalud.getNombre());
+		servicioVO.setDirector(new PersonaMapper().getBasic(servicioSalud.getDirector()));
+		servicioVO.setEncargadoAps(new PersonaMapper().getBasic(servicioSalud.getEncargadoAps()));
+		servicioVO.setEncargadoFinanzasAps(new PersonaMapper().getBasic(servicioSalud.getEncargadoFinanzasAps()));
+		return servicioVO;
 	}
 
 	@Override
-	public Object getData(ServicioSalud paramT) {
-		// TODO Auto-generated method stub
+	public Object getData(ServicioSalud servicioSalud) {
 		return null;
 	}
 

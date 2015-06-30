@@ -1,11 +1,10 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -24,7 +23,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "ReporteEmailsRemesas.findAll", query = "SELECT r FROM ReporteEmailsRemesas r"),
     @NamedQuery(name = "ReporteEmailsRemesas.findByIdReporteEmailsRemesas", query = "SELECT r FROM ReporteEmailsRemesas r WHERE r.idReporteEmailsRemesas = :idReporteEmailsRemesas"),
-    @NamedQuery(name = "ReporteEmailsRemesas.findByIdRemesa", query = "SELECT r FROM ReporteEmailsRemesas r WHERE r.remesa.idRemesa = :idRemesa")})
+    @NamedQuery(name = "ReporteEmailsRemesas.findByIdRemesa", query = "SELECT r FROM ReporteEmailsRemesas r WHERE r.remesa.idRemesa = :idRemesa"),
+    @NamedQuery(name = "ReporteEmailsRemesas.findByIdRemesaIdServicio", query = "SELECT r FROM ReporteEmailsRemesas r WHERE r.remesa.idRemesa = :idRemesa and r.reporteEmailsEnviados.idServicio.id = :idServicio")})
 public class ReporteEmailsRemesas implements Serializable {
     private static final long serialVersionUID = 1L;
  

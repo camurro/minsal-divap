@@ -4,12 +4,10 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -51,9 +49,8 @@ public class Remesas implements Serializable {
     @JoinColumn(name = "mes", referencedColumnName = "id_mes")
     @ManyToOne(optional = false)
     private Mes mes;
-
-
-
+    @OneToMany(mappedBy = "remesaProfesional")
+    private Set<DetalleRemesas> detalleRemesasProfesional;
     
     public Remesas() {
     }
@@ -94,7 +91,17 @@ public class Remesas implements Serializable {
         this.mes = mes;
     }
 
-    @Override
+    @XmlTransient
+    public Set<DetalleRemesas> getDetalleRemesasProfesional() {
+		return detalleRemesasProfesional;
+	}
+
+	public void setDetalleRemesasProfesional(
+			Set<DetalleRemesas> detalleRemesasProfesional) {
+		this.detalleRemesasProfesional = detalleRemesasProfesional;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (idRemesa != null ? idRemesa.hashCode() : 0);

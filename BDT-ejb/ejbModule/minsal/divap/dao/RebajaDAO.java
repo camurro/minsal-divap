@@ -240,6 +240,17 @@ public class RebajaDAO {
 		return null;
 	}
 
+	public List<RebajaCorte> getRebajaCortesOrderByMes() {
+		try{
+			TypedQuery<RebajaCorte> query = this.em.createNamedQuery("RebajaCorte.findAllOrderByMes", RebajaCorte.class);
+			return query.getResultList();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	
 	public List<Rebaja> findRebajaByByUsuarioAno(String usuario, Integer ano){
 		try{
 			TypedQuery<Rebaja> query = this.em.createNamedQuery("Rebaja.findByIdRebaja", Rebaja.class);

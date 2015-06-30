@@ -155,29 +155,24 @@ public class PlanillaResumenFonasaVO implements Serializable{
 		return null;
 	}
 	public Long getTotalServicio() {
-		Long acumulador=0l;
-		if(totalS21!=null){
+		Long acumulador = 0L;
+		if(totalS21 != null){
 			acumulador += totalS21;
 		}
-		if(totalS22!=null){
+		if(totalS22 != null){
 			acumulador += totalS22;
 		}
-		if(totalS29!=null){
+		if(totalS29 != null){
 			acumulador += totalS29;
 		}
-		if(totalS24!=null){
+		if(totalS24 != null){
 			acumulador += totalS24;
 		}
 		return acumulador;
 	}
+	
 	public void setTotalServicio(Long totalServicio) {
 		this.totalServicio = totalServicio;
 	}
-	
-	
-	
-	
-
-
 	
 }

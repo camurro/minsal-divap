@@ -37,16 +37,17 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "DetalleRemesas.getRemesasPagadasComunaLaFecha", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.id = :idComuna and d.mes.idMes < :idMes and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.remesaPagada = :remesaPagada"),
     @NamedQuery(name = "DetalleRemesas.getRemesasByProgramaAnoComponenteEstablecimientoSubtituloPagada", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.componente.id = :idComponente and d.establecimiento.id = :idEstablecimiento and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.remesaPagada = :remesaPagada order by d.fecha asc"),
     @NamedQuery(name = "DetalleRemesas.getRemesasByProgramaAnoComponenteComunaSubtituloPagada", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.componente.id = :idComponente and d.comuna.id = :idComuna and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.remesaPagada = :remesaPagada"),
-    @NamedQuery(name = "DetalleRemesas.getRemesasByProgramaAnoComponenteComunaSubtituloMesPagada", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.componente.id = :idComponente and d.comuna.id = :idComuna and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.mes.idMes <= :idMes and d.remesaPagada = :remesaPagada"),
+    @NamedQuery(name = "DetalleRemesas.getRemesasByProgramaAnoComponenteComunaSubtituloDiaMesPagada", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.componente.id = :idComponente and d.comuna.id = :idComuna and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.dia.dia <= :idDia and d.mes.idMes <= :idMes and d.remesaPagada = :remesaPagada"),
     @NamedQuery(name = "DetalleRemesas.getRemesasPagadasByProgramaAnoComponenteComunaSubtitulo", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.componente.id = :idComponente and d.comuna.id = :idComuna and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.remesaPagada = :remesaPagada"),
     @NamedQuery(name = "DetalleRemesas.getRemesasPagadasComuna", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.id = :idComuna and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.remesaPagada = :remesaPagada order by d.cuota.numeroCuota asc"),
     @NamedQuery(name = "DetalleRemesas.getDetalleRemesasByProgramaAnoEstablecimientoSubtitulo", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.establecimiento.id = :idEstablecimiento and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
     @NamedQuery(name = "DetalleRemesas.getRemesasMesActualByMesProgramaAnoServicioSubtitulo", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.establecimiento.servicioSalud.id = :idServicio and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.mes.idMes BETWEEN :idMesDesde and :idMesHasta"),
     @NamedQuery(name = "DetalleRemesas.getRemesasMesActualByMesProgramaAnoServicioSubtituloConsolidador", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.establecimiento.servicioSalud.id = :idServicio and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.revisarConsolidador = :revisarConsolidador and d.mes.idMes BETWEEN :idMesDesde and :idMesHasta"),
     @NamedQuery(name = "DetalleRemesas.getRemesasMesActualByMesProgramaAnoServicioSubtitulo1", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.establecimiento.servicioSalud.id = :idServicio and d.mes.idMes = :idMes and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.remesaPagada = :remesaPagada"),
-    @NamedQuery(name = "DetalleRemesas.getRemesasMesActualByDiaMesProgramaAnoServicioSubtitulo2", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.servicioSalud.id = :idServicio and d.dia.dia < :idDia and d.mes.idMes = :idMes and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.remesaPagada = :remesaPagada"),
-    @NamedQuery(name = "DetalleRemesas.getRemesasServicioAprobadasConsolidadorByMesProgramaAnoServicio", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.establecimiento.servicioSalud.id = :idServicio and d.mes.idMes = :idMes and d.remesaPagada = :remesaPagada"),
-    @NamedQuery(name = "DetalleRemesas.getRemesasComunaAprobadosConsolidadorMesProgramaAnoServicio", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.servicioSalud.id = :idServicio and d.mes.idMes = :idMes and d.remesaPagada = :remesaPagada"),
+    @NamedQuery(name = "DetalleRemesas.getRemesasMesActualByDiaMesProgramaAnoServicioSubtitulo1", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.establecimiento.servicioSalud.id = :idServicio and d.dia.dia <= :idDia and d.mes.idMes = :idMes and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.remesaPagada = :remesaPagada"),
+    @NamedQuery(name = "DetalleRemesas.getRemesasMesActualByDiaMesProgramaAnoServicioSubtitulo2", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.servicioSalud.id = :idServicio and d.dia.dia <= :idDia and d.mes.idMes = :idMes and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.remesaPagada = :remesaPagada"),
+    @NamedQuery(name = "DetalleRemesas.getRemesasServicioAprobadasConsolidadorByDiaMesProgramaAnoServicio", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.establecimiento.servicioSalud.id = :idServicio and d.dia.dia <= :idDia and d.mes.idMes = :idMes and d.revisarConsolidador = true"),
+    @NamedQuery(name = "DetalleRemesas.getRemesasComunaAprobadosConsolidadorDiaMesProgramaAnoServicio", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.servicioSalud.id = :idServicio and d.dia.dia <= :idDia and d.mes.idMes = :idMes and d.revisarConsolidador = true"),
     @NamedQuery(name = "DetalleRemesas.getRemesasMesActualByMesProgramaAnoServicioSubtituloMunicipal", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.servicioSalud.id = :idServicio and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.mes.idMes BETWEEN :idMesDesde and :idMesHasta"),
     @NamedQuery(name = "DetalleRemesas.getRemesasMesActualByMesProgramaAnoServicioSubtituloMunicipalConsolidador", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.servicioSalud.id = :idServicio and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.revisarConsolidador = :revisarConsolidador and d.mes.idMes BETWEEN :idMesDesde and :idMesHasta"),
     @NamedQuery(name = "DetalleRemesas.getRemesasByProgramaAnoMesEstablecimientoSubtitulo", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.establecimiento.codigo = :codEstablecimiento and d.mes.idMes = :idMes and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
@@ -76,12 +77,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "DetalleRemesas.getRemesasNoPagadasEstablecimientoSubtituloCuota", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.remesaPagada = false and d.establecimiento.id = :idEstablecimiento and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.cuota.numeroCuota = :numeroCuota"),
     @NamedQuery(name = "DetalleRemesas.getRemesasComunaSubtitulo", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.comuna.id = :idComuna and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
     @NamedQuery(name = "DetalleRemesas.getRemesasEstablecimientoSubtitulo", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.establecimiento.id = :idEstablecimiento and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
-    @NamedQuery(name = "DetalleRemesas.getRemesasPorPagarDiaMesActual", query = "SELECT d FROM DetalleRemesas d WHERE d.remesaPagada = :remesaPagada and d.dia.dia < :idDia and d.mes.idMes = :idMes and d.revisarConsolidador = true"),
-    @NamedQuery(name = "DetalleRemesas.getRemesasPagadasComunasProcesoServicioProgramaSubtituloDiaMes", query = "SELECT d FROM DetalleRemesas d WHERE d.remesa.idRemesa = :idProceso and d.comuna.servicioSalud.id = :idServicio and d.programaAno.idProgramaAno = :idProgramaAno and d.subtitulo.idTipoSubtitulo = :idSubtitulo and d.remesaPagada = true and d.dia.dia < :idDia and d.mes.idMes = :idMes and d.revisarConsolidador = true"),
-    @NamedQuery(name = "DetalleRemesas.getRemesasPagadasComunasProcesoComunaProgramaSubtituloDiaMes", query = "SELECT d FROM DetalleRemesas d WHERE d.remesa.idRemesa = :idProceso and d.comuna.id = :idComuna and d.programaAno.idProgramaAno = :idProgramaAno and d.subtitulo.idTipoSubtitulo = :idSubtitulo and d.remesaPagada = true and d.dia.dia < :idDia and d.mes.idMes = :idMes and d.revisarConsolidador = true"),
-    @NamedQuery(name = "DetalleRemesas.getRemesasPagadasEstablecimientosProcesoServicioProgramaSubtituloDiaMes", query = "SELECT d FROM DetalleRemesas d WHERE d.remesa.idRemesa = :idProceso and d.establecimiento.servicioSalud.id = :idServicio and d.programaAno.idProgramaAno = :idProgramaAno and d.subtitulo.idTipoSubtitulo = :idSubtitulo and d.remesaPagada = true and d.dia.dia < :idDia and d.mes.idMes = :idMes and d.revisarConsolidador = true"),
-    @NamedQuery(name = "DetalleRemesas.getRemesasPagadasEstablecimientosProcesoEstablecimientoProgramaSubtituloDiaMes", query = "SELECT d FROM DetalleRemesas d WHERE d.remesa.idRemesa = :idProceso and d.establecimiento.id = :idEstablecimiento and d.programaAno.idProgramaAno = :idProgramaAno and d.subtitulo.idTipoSubtitulo = :idSubtitulo and d.remesaPagada = true and d.dia.dia < :idDia and d.mes.idMes = :idMes and d.revisarConsolidador = true"),
+    @NamedQuery(name = "DetalleRemesas.getRemesasPorPagarDiaMesActual", query = "SELECT d FROM DetalleRemesas d WHERE d.remesaPagada = :remesaPagada and d.dia.dia <= :idDia and d.mes.idMes = :idMes and d.revisarConsolidador = true"),
+    @NamedQuery(name = "DetalleRemesas.getRemesasPagadasComunasProcesoServicioProgramaSubtituloDiaMes", query = "SELECT d FROM DetalleRemesas d WHERE d.remesa.idRemesa = :idProceso and d.comuna.servicioSalud.id = :idServicio and d.programaAno.idProgramaAno = :idProgramaAno and d.subtitulo.idTipoSubtitulo = :idSubtitulo and d.remesaPagada = true and d.dia.dia <= :idDia and d.mes.idMes = :idMes and d.revisarConsolidador = true"),
+    @NamedQuery(name = "DetalleRemesas.getRemesasPagadasComunasProcesoComunaProgramaSubtituloDiaMes", query = "SELECT d FROM DetalleRemesas d WHERE d.remesa.idRemesa = :idProceso and d.comuna.id = :idComuna and d.programaAno.idProgramaAno = :idProgramaAno and d.subtitulo.idTipoSubtitulo = :idSubtitulo and d.remesaPagada = true and d.dia.dia <= :idDia and d.mes.idMes = :idMes and d.revisarConsolidador = true"),
+    @NamedQuery(name = "DetalleRemesas.getRemesasPagadasEstablecimientosProcesoServicioProgramaSubtituloDiaMes", query = "SELECT d FROM DetalleRemesas d WHERE d.remesa.idRemesa = :idProceso and d.establecimiento.servicioSalud.id = :idServicio and d.programaAno.idProgramaAno = :idProgramaAno and d.subtitulo.idTipoSubtitulo = :idSubtitulo and d.remesaPagada = true and d.dia.dia <= :idDia and d.mes.idMes = :idMes and d.revisarConsolidador = true"),
+    @NamedQuery(name = "DetalleRemesas.getRemesasPagadasEstablecimientosProcesoEstablecimientoProgramaSubtituloDiaMes", query = "SELECT d FROM DetalleRemesas d WHERE d.remesa.idRemesa = :idProceso and d.establecimiento.id = :idEstablecimiento and d.programaAno.idProgramaAno = :idProgramaAno and d.subtitulo.idTipoSubtitulo = :idSubtitulo and d.remesaPagada = true and d.dia.dia <= :idDia and d.mes.idMes = :idMes and d.revisarConsolidador = true"),
     @NamedQuery(name = "DetalleRemesas.getRemesasRechazadasByIdProceso", query = "SELECT d FROM DetalleRemesas d WHERE d.remesa.idRemesa = :idProceso"),
+    @NamedQuery(name = "DetalleRemesas.getProgramaAnoByRemesaPagada", query = "SELECT DISTINCT d.programaAno FROM DetalleRemesas d WHERE d.remesa.idRemesa = :idProceso and d.revisarConsolidador = true and d.remesaPagada = true"),
     @NamedQuery(name = "DetalleRemesas.getRemesasProgramaAnoComponenteSubtituloEstablecimiento", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.componente.id = :idComponente and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.establecimiento.id = :idEstablecimiento"),
     @NamedQuery(name = "DetalleRemesas.getRemesasPendientesConsolidadorProgramaAnoComponenteSubtituloEstablecimiento", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.componente.id = :idComponente and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.establecimiento.id = :idEstablecimiento and d.remesaPagada = false and d.revisarConsolidador = false order by d.fecha asc"),
     @NamedQuery(name = "DetalleRemesas.getRemesasPendientesConsolidadorProgramaAnoComponenteSubtituloComuna", query = "SELECT d FROM DetalleRemesas d WHERE d.programaAno.idProgramaAno = :idProgramaAno and d.componente.id = :idComponente and d.subtitulo.idTipoSubtitulo = :idTipoSubtitulo and d.comuna.id = :idComuna and d.remesaPagada = false and d.revisarConsolidador = false order by d.fecha asc")})
@@ -92,7 +94,7 @@ public class DetalleRemesas implements Serializable {
    @GeneratedValue
     private Integer idDetalleRemesa;
     @Column(name = "monto_remesa")
-    private Integer montoRemesa;
+    private Long montoRemesa;
     @Basic(optional = false)
     @Column(name = "remesa_pagada")
     private boolean remesaPagada;
@@ -135,6 +137,9 @@ public class DetalleRemesas implements Serializable {
     @JoinColumn(name = "remesa", referencedColumnName = "id_remesa")
     @ManyToOne
     private Remesas remesa;
+    @JoinColumn(name = "remesa_profesional", referencedColumnName = "id_remesa")
+    @ManyToOne
+    private Remesas remesaProfesional;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "remesa")
     private Set<RemesaConvenios> remesaConvenios;
     
@@ -158,11 +163,11 @@ public class DetalleRemesas implements Serializable {
         this.idDetalleRemesa = idDetalleRemesa;
     }
 
-    public Integer getMontoRemesa() {
+    public Long getMontoRemesa() {
         return montoRemesa;
     }
 
-    public void setMontoRemesa(Integer montoRemesa) {
+    public void setMontoRemesa(Long montoRemesa) {
         this.montoRemesa = montoRemesa;
     }
 
@@ -284,6 +289,14 @@ public class DetalleRemesas implements Serializable {
 
 	public void setRemesa(Remesas remesa) {
 		this.remesa = remesa;
+	}
+	
+	public Remesas getRemesaProfesional() {
+		return remesaProfesional;
+	}
+
+	public void setRemesaProfesional(Remesas remesaProfesional) {
+		this.remesaProfesional = remesaProfesional;
 	}
 
 	@Override

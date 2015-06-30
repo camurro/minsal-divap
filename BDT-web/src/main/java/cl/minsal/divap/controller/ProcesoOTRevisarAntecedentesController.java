@@ -60,9 +60,10 @@ implements Serializable {
 
 
 	private Integer programaSeleccionado;
-	private Integer IdProgramaProxAno;
+	private Integer idProgramaProxAno;
 	private ProgramaVO programa;
-
+	private Integer idProceso;
+	
 	private Integer servicioSeleccionado;
 	private List<ServiciosVO> listaServicios;
 
@@ -107,15 +108,15 @@ implements Serializable {
 			}
 		}
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
-			programaSeleccionado = (Integer) getTaskDataVO()
-					.getData().get("_programaSeleccionado");
+			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
 			anoCurso = (Integer) getTaskDataVO().getData().get("_ano");
+			idProceso = (Integer) getTaskDataVO().getData().get("_idProceso");
 			if(programaSeleccionado > 0){
 				programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (anoCurso - 1));
-				IdProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado, anoCurso);
+				idProgramaProxAno = programasService.evaluarAnoSiguiente(programaSeleccionado, anoCurso);
 			}else{
 				programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, anoCurso);
-				IdProgramaProxAno = programa.getIdProgramaAno();
+				idProgramaProxAno = programa.getIdProgramaAno();
 			}
 		}
 		percapita = false;
@@ -144,14 +145,14 @@ implements Serializable {
 		if(programa.getId()< 0){
 			Integer idServicio = ((servicioSeleccionado == null || (servicioSeleccionado.intValue() == -1)) ? null : servicioSeleccionado);
 			if(Programas.PERCAPITA.getId().equals(programa.getId())){
-				resultadoPercapita = otService.getDetallePerCapita(idServicio, anoCurso, IdProgramaProxAno); 
+				resultadoPercapita = otService.getDetallePerCapita(idProceso, idServicio, anoCurso, idProgramaProxAno); 
 				System.out.println("Resultados PerCapita: "+resultadoPercapita.size());
 			}else if(Programas.DESEMPENODIFICIAL.getId().equals(programa.getId())){
-				resultadoPercapita = otService.getDetalleDesempenoDificil(idServicio, anoCurso, IdProgramaProxAno); 
+				resultadoPercapita = otService.getDetalleDesempenoDificil(idProceso, idServicio, anoCurso, idProgramaProxAno); 
 				System.out.println("Resultados PerCapita: "+resultadoPercapita.size());
 			}
 			else if(Programas.REBAJAIAAPS.getId().equals(programa.getId())){
-				resultadoPercapita = otService.getDetalleRebajaIAAPS(idServicio, anoCurso, IdProgramaProxAno); 
+				resultadoPercapita = otService.getDetalleRebajaIAAPS(idProceso, idServicio, anoCurso, idProgramaProxAno); 
 				System.out.println("Resultados PerCapita: "+resultadoPercapita.size());
 			}
 		}else{
@@ -163,24 +164,24 @@ implements Serializable {
 				subtitulo22 = false;
 				subtitulo29 = false;
 				subtitulo24 = false;
-				System.out.println("componenteSeleccionado="+componenteSeleccionado+" IdProgramaProxAno="+IdProgramaProxAno);
+				System.out.println("componenteSeleccionado="+componenteSeleccionado+" IdProgramaProxAno="+idProgramaProxAno);
 				for(SubtituloVO subs : componenteVO.getSubtitulos()){
 					System.out.println(subs.getId());
 					if(Subtitulo.SUBTITULO21.getId().equals(subs.getId())){
 						subtitulo21 = true;
-						resultadoServicioSub21 = otService.getDetalleOTServicio(componenteSeleccionado, idServicio, Subtitulo.SUBTITULO21.getId(), IdProgramaProxAno);
+						resultadoServicioSub21 = otService.getDetalleOTServicio(componenteSeleccionado, idServicio, Subtitulo.SUBTITULO21.getId(), idProgramaProxAno);
 					}
 					if(Subtitulo.SUBTITULO22.getId().equals(subs.getId())){
 						subtitulo22 = true;
-						resultadoServicioSub22 = otService.getDetalleOTServicio(componenteSeleccionado, idServicio, Subtitulo.SUBTITULO22.getId(), IdProgramaProxAno);
+						resultadoServicioSub22 = otService.getDetalleOTServicio(componenteSeleccionado, idServicio, Subtitulo.SUBTITULO22.getId(), idProgramaProxAno);
 					}
 					if(Subtitulo.SUBTITULO29.getId().equals(subs.getId())){
 						subtitulo29 = true;
-						resultadoServicioSub29 = otService.getDetalleOTServicio(componenteSeleccionado, idServicio, Subtitulo.SUBTITULO29.getId(), IdProgramaProxAno);
+						resultadoServicioSub29 = otService.getDetalleOTServicio(componenteSeleccionado, idServicio, Subtitulo.SUBTITULO29.getId(), idProgramaProxAno);
 					}
 					if(Subtitulo.SUBTITULO24.getId().equals(subs.getId())){
 						subtitulo24 = true;
-						resultadoMunicipal = otService.getDetalleOTMunicipal(componenteSeleccionado, idServicio, IdProgramaProxAno);
+						resultadoMunicipal = otService.getDetalleOTMunicipal(componenteSeleccionado, idServicio, idProgramaProxAno);
 					}
 				}
 			}else{
@@ -195,29 +196,29 @@ implements Serializable {
 	}
 
 	public void actualizarPerCapita(Integer row, Integer idComuna){
-		System.out.println("row "+row);
+		System.out.println("actualizarPerCapita row "+row);
 		System.out.println("idComuna "+idComuna);
 		OTPerCapitaVO registroTabla = resultadoPercapita.get(row);
-		OTPerCapitaVO registroActualizado = otService.actualizarComunaPerCapita(idComuna, registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
+		OTPerCapitaVO registroActualizado = otService.actualizarComunaPerCapita(idProceso, idComuna, registroTabla, idProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
 		resultadoPercapita.remove(registroActualizado);
 		System.out.println(resultadoPercapita.size());
 	}
 	
 	public void actualizarDesempenoDificil(Integer row, Integer idComuna){
-		System.out.println("row "+row);
+		System.out.println("actualizarDesempenoDificil row "+row);
 		System.out.println("idComuna "+idComuna);
 		OTPerCapitaVO registroTabla = resultadoPercapita.get(row);
-		OTPerCapitaVO registroActualizado = otService.actualizarDesempenoDificil(idComuna, registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
+		OTPerCapitaVO registroActualizado = otService.actualizarDesempenoDificil(idProceso, idComuna, registroTabla, idProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
 		resultadoPercapita.remove(registroActualizado);
 		System.out.println(resultadoPercapita.size());
 	}
 	
 
 	public void actualizarRebajaIAAPS(Integer row, Integer idComuna){
-		System.out.println("row "+row);
+		System.out.println("actualizarRebajaIAAPS row "+row);
 		System.out.println("idComuna "+idComuna);
 		OTPerCapitaVO registroTabla = resultadoPercapita.get(row);
-		OTPerCapitaVO registroActualizado = otService.actualizarRebajaIAAPS(idComuna, registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
+		OTPerCapitaVO registroActualizado = otService.actualizarRebajaIAAPS(idProceso, idComuna, registroTabla, idProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
 		resultadoPercapita.remove(registroActualizado);
 		System.out.println(resultadoPercapita.size());
 	}
@@ -225,7 +226,7 @@ implements Serializable {
 	public void actualizarS21(Integer row, String codEstablecimiento){
 		System.out.println("actualizando "+codEstablecimiento);
 		OTResumenDependienteServicioVO registroTabla = resultadoServicioSub21.get(row);
-		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO21.getId(), componenteSeleccionado);
+		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, idProgramaProxAno, Subtitulo.SUBTITULO21.getId(), componenteSeleccionado);
 		resultadoServicioSub21.remove(registroActualizado);
 	}
 
@@ -233,7 +234,7 @@ implements Serializable {
 		System.out.println("actualizando "+codEstablecimiento);
 		System.out.println("row " + row);
 		OTResumenDependienteServicioVO registroTabla = resultadoServicioSub22.get(row);
-		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO22.getId(), componenteSeleccionado);
+		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, idProgramaProxAno, Subtitulo.SUBTITULO22.getId(), componenteSeleccionado);
 		resultadoServicioSub22.remove(registroActualizado);
 	}
 
@@ -241,7 +242,7 @@ implements Serializable {
 		System.out.println("actualizando " + codEstablecimiento);
 		System.out.println("row " + row);
 		OTResumenDependienteServicioVO registroTabla = resultadoServicioSub29.get(row);
-		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO29.getId(), componenteSeleccionado);
+		OTResumenDependienteServicioVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, idProgramaProxAno, Subtitulo.SUBTITULO29.getId(), componenteSeleccionado);
 		resultadoServicioSub29.remove(registroActualizado);
 	}
 
@@ -249,7 +250,7 @@ implements Serializable {
 		System.out.println("actualizando " + idComuna);
 		System.out.println("row " + row);
 		OTResumenMunicipalVO registroTabla = resultadoMunicipal.get(row);
-		OTResumenMunicipalVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
+		OTResumenMunicipalVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, idProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
 		resultadoMunicipal.remove(registroActualizado);
 	}
 	
@@ -257,7 +258,7 @@ implements Serializable {
 		System.out.println("actualizando " + idComuna);
 		System.out.println("row " + row);
 		OTPerCapitaVO registroTabla = resultadoPercapita.get(row);
-		OTPerCapitaVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, IdProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
+		OTPerCapitaVO registroActualizado = otService.aprobarMontoRemesaProfesional(registroTabla, idProgramaProxAno, Subtitulo.SUBTITULO24.getId(), componenteSeleccionado);
 		resultadoMunicipal.remove(registroActualizado);
 	}
 
@@ -335,11 +336,11 @@ implements Serializable {
 	}
 
 	public Integer getIdProgramaProxAno() {
-		return IdProgramaProxAno;
+		return idProgramaProxAno;
 	}
 
 	public void setIdProgramaProxAno(Integer idProgramaProxAno) {
-		IdProgramaProxAno = idProgramaProxAno;
+		idProgramaProxAno = idProgramaProxAno;
 	}
 
 	public ProgramaVO getPrograma() {
