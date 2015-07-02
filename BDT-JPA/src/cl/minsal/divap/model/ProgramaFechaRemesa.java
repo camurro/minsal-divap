@@ -14,6 +14,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
+
 /**
  *
  * @author cmurillo
@@ -24,6 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "ProgramaFechaRemesa.findAll", query = "SELECT p FROM ProgramaFechaRemesa p"),
     @NamedQuery(name = "ProgramaFechaRemesa.findByPrograma", query = "SELECT p FROM ProgramaFechaRemesa p WHERE p.programa.id = :idPrograma"),
+    @NamedQuery(name = "ProgramaFechaRemesa.findByIdProgramaIdFecha", query = "SELECT p FROM ProgramaFechaRemesa p WHERE p.programa.id = :idPrograma and p.fechaRemesa.id = :idFechaRemesa"),
     @NamedQuery(name = "ProgramaFechaRemesa.findById", query = "SELECT p FROM ProgramaFechaRemesa p WHERE p.id = :id")})
 public class ProgramaFechaRemesa implements Serializable {
     private static final long serialVersionUID = 1L;

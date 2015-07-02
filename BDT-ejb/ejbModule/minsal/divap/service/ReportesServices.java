@@ -496,7 +496,7 @@ public class ReportesServices {
 		if(comunas != null && comunas.size() > 0){
 			for(Comuna comuna : comunas){
 				for (ProgramaVO programa : programasVO) {
-					List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulo);
+					List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), subtitulo);
 					for (ComponentesVO componenteVO : componentes) {
 						ReporteMarcoPresupuestarioComunaVO reporteMarcoPresupuestarioComunaVO = new ReporteMarcoPresupuestarioComunaVO();
 						reporteMarcoPresupuestarioComunaVO.setServicio(comuna.getServicioSalud().getNombre());
@@ -584,7 +584,7 @@ public class ReportesServices {
 		ServicioSalud servicio = servicioSaludDAO.getServicioSaludById(idServicio);
 		Comuna comuna = comunaService.getComunaById(idComuna);
 
-		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulo);
+		List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), subtitulo);
 		for (ComponentesVO componenteVO : componentes) {
 			ReporteMarcoPresupuestarioComunaVO reporteMarcoPresupuestarioComunaVO = new ReporteMarcoPresupuestarioComunaVO();
 			reporteMarcoPresupuestarioComunaVO.setServicio(servicio.getNombre());
@@ -671,7 +671,7 @@ public class ReportesServices {
 		}
 		if(establecimientos != null && establecimientos.size() > 0){
 			for(ProgramaVO programa : programas){
-				List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulo);
+				List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), subtitulo);
 				for (ComponentesVO componenteVO : componentes) {
 					for(Establecimiento establecimiento : establecimientos){
 						ReporteMarcoPresupuestarioEstablecimientoVO reporteMarcoPresupuestarioEstablecimientoVO = new ReporteMarcoPresupuestarioEstablecimientoVO();
@@ -759,8 +759,7 @@ public class ReportesServices {
 		Establecimiento establecimiento = establecimientosDAO
 				.getEstablecimientoById(idEstablecimiento);
 
-		List<ComponentesVO> componentes = programasService
-				.getComponenteByProgramaSubtitulos(programa.getId(), subtitulo);
+		List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), subtitulo);
 		for (ComponentesVO componenteVO : componentes) {
 
 			ReporteMarcoPresupuestarioEstablecimientoVO reporteMarcoPresupuestarioEstablecimientoVO = new ReporteMarcoPresupuestarioEstablecimientoVO();
@@ -985,7 +984,7 @@ public class ReportesServices {
 		}
 
 		ProgramaVO programaAnoActual = programasService.getProgramaAno(idProgramaAno); // 2015
-		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programaAnoActual.getId(), subtitulo);
+		List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programaAnoActual.getIdProgramaAno(), subtitulo);
 
 		Integer idProgramaAnoActualMenos1 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (ano - 1)); // 2014
 		Integer idProgramaAnoActualMenos2 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(), (ano - 2)); // 2013
@@ -1304,7 +1303,7 @@ public class ReportesServices {
 		List<ReporteHistoricoPorProgramaComunaVO> resultado = new ArrayList<ReporteHistoricoPorProgramaComunaVO>();
 
 		ProgramaVO programaAnoActual = programasService.getProgramaAno(idProgramaAno); // 2015
-		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programaAnoActual.getId(), subtitulo);
+		List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programaAnoActual.getIdProgramaAno(), subtitulo);
 		Integer idProgramaAnoActualMenos1 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(),	(ano - 1)); // 2014
 		Integer idProgramaAnoActualMenos2 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(),	(ano - 2)); // 2013
 		Integer idProgramaAnoActualMenos3 = programasService.getProgramaAnoSiguiente(programaAnoActual.getId(),	(ano - 3)); // 2012
@@ -1871,7 +1870,7 @@ public class ReportesServices {
 			List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
 			for (ServicioSalud servicio : servicios) {
 				List<Comuna> comunas = servicio.getComunas();
-				List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulo);
+				List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), subtitulo);
 				for (Comuna comuna : comunas) {
 					for (ComponentesVO componenteVO : componentes) {
 						ReporteMarcoPresupuestarioComunaVO reporteMarcoPresupuestarioComunaVO = new ReporteMarcoPresupuestarioComunaVO();
@@ -1962,7 +1961,7 @@ public class ReportesServices {
 			for (ServicioSalud servicio : servicios) {
 
 				List<Establecimiento> establecimientos = servicio.getEstablecimientos();
-				List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulo);
+				List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), subtitulo);
 
 				for (Establecimiento establecimiento : establecimientos) {
 					for (ComponentesVO componenteVO : componentes) {
@@ -2041,7 +2040,7 @@ public class ReportesServices {
 		Integer diaDelMes = calendar.get(Calendar.DAY_OF_MONTH);
 		for (ProgramaVO programa : programas) {
 			List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
-			List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulo);
+			List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), subtitulo);
 			for (ComponentesVO componente : componentes) {
 				for (ServicioSalud servicio : servicios) {
 					for (Comuna comuna : servicio.getComunas()) {
@@ -2274,7 +2273,7 @@ public class ReportesServices {
 	public List<ReporteMonitoreoProgramaPorEstablecimientoVO> getReporteMonitoreoPorEstablecimientoFiltroPrograma(Integer idProgramaAno, Subtitulo subtitulo) {
 		List<ReporteMonitoreoProgramaPorEstablecimientoVO> resultado = new ArrayList<ReporteMonitoreoProgramaPorEstablecimientoVO>();
 		ProgramaVO programa = programasService.getProgramaAno(idProgramaAno);
-		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulo);
+		List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), subtitulo);
 		for (ComponentesVO componente : componentes) {
 			List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
 			for (ServicioSalud servicio : servicios) {
@@ -2397,7 +2396,7 @@ public class ReportesServices {
 			List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
 			for (ServicioSalud servicio : servicios) {
 				for (Comuna comuna : servicio.getComunas()) {
-					List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulo);
+					List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), subtitulo);
 					for (ComponentesVO componenteVO : componentes) {
 						ReporteEstadoSituacionByComunaVO reporteEstadoSituacionByComunaVO = new ReporteEstadoSituacionByComunaVO();
 						
@@ -2560,7 +2559,7 @@ public class ReportesServices {
 		}
 		
 		ProgramaVO programa = programasService.getProgramaAno(idProgramaAno);
-		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulo);
+		List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), subtitulo);
 		Integer mesActual = Integer.parseInt(getMesCurso(true));
 		Calendar calendar = Calendar.getInstance();
 		Integer diaDelMes = calendar.get(Calendar.DAY_OF_MONTH);
@@ -2677,7 +2676,7 @@ public class ReportesServices {
 		Calendar calendar = Calendar.getInstance();
 		Integer diaDelMes = calendar.get(Calendar.DAY_OF_MONTH);
 		for (ProgramaVO programa : programas) {
-			List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulo);
+			List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), subtitulo);
 
 			for (ServicioSalud servicio : servicios) {
 				for(Establecimiento establecimiento : servicio.getEstablecimientos()){
@@ -2819,7 +2818,7 @@ public class ReportesServices {
 		}
 		
 		ProgramaVO programa = programasService.getProgramaAno(idProgramaAno);
-		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulo);
+		List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), subtitulo);
 		Integer mesActual = Integer.parseInt(getMesCurso(true));
 		Calendar calendar = Calendar.getInstance();
 		Integer diaDelMes = calendar.get(Calendar.DAY_OF_MONTH);

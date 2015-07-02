@@ -14,23 +14,29 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
-
+/**
+ *
+ * @author francisco
+ */
 @Entity
 @Table(name = "programa_componente")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "ProgramaComponente.findAll", query = "SELECT p FROM ProgramaComponente p"),
-    @NamedQuery(name = "ProgramaComponente.findByIdProgramaComponente", query = "SELECT p FROM ProgramaComponente p WHERE p.idProgramaComponente = :idProgramaComponente")})
+    @NamedQuery(name = "ProgramaComponente.findByIdProgramaComponente", query = "SELECT p FROM ProgramaComponente p WHERE p.idProgramaComponente = :idProgramaComponente"),
+    @NamedQuery(name = "ProgramaComponente.findByIdProgramaAno", query = "SELECT p FROM ProgramaComponente p WHERE p.programa.idProgramaAno =:idProgramaAno"),
+    @NamedQuery(name = "ProgramaComponente.findByIdProgramaAnoIdComponente", query = "SELECT p FROM ProgramaComponente p WHERE p.programa.idProgramaAno =:idProgramaAno and p.componente.id =:idComponente"),
+    @NamedQuery(name = "ProgramaComponente.findByIdProgramaAnoNombreComponente", query = "SELECT p FROM ProgramaComponente p WHERE p.programa.idProgramaAno =:idProgramaAno and p.componente.nombre =:nombreComponente")})
 public class ProgramaComponente implements Serializable {
     private static final long serialVersionUID = 1L;
+    
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id_programa_componente")
+    @Column(name="id_programa_componente", unique=true, nullable=false)
+    @GeneratedValue
     private Integer idProgramaComponente;
-    @JoinColumn(name = "programa", referencedColumnName = "id")
+    @JoinColumn(name = "programa", referencedColumnName = "id_programa_ano")
     @ManyToOne(optional = false)
-    private Programa programa;
+    private ProgramaAno programa;
     @JoinColumn(name = "componente", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Componente componente;
@@ -50,11 +56,11 @@ public class ProgramaComponente implements Serializable {
         this.idProgramaComponente = idProgramaComponente;
     }
 
-    public Programa getPrograma() {
+    public ProgramaAno getPrograma() {
         return programa;
     }
 
-    public void setPrograma(Programa programa) {
+    public void setPrograma(ProgramaAno programa) {
         this.programa = programa;
     }
 

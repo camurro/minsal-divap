@@ -15,6 +15,7 @@ import cl.minsal.divap.model.FactorRefAsigZona;
 import cl.minsal.divap.model.FactorTramoPobreza;
 import cl.minsal.divap.model.FechaRemesa;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ProgramaFechaRemesa;
 import cl.minsal.divap.model.TipoCumplimiento;
 import cl.minsal.divap.model.Tramo;
 
@@ -213,5 +214,27 @@ public class MantenedoresDAO {
 		}
 	}
 	
+	public FechaRemesa getFechaRemesaByDia(Integer dia){
+		try {
+			TypedQuery<FechaRemesa> query = this.em.createNamedQuery("FechaRemesa.findByDia", FechaRemesa.class);
+			query.setParameter("dia", dia);
+			List<FechaRemesa> results = query.getResultList();
+			if (results.size() >= 1)
+				return results.get(0);
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public List<ProgramaFechaRemesa> findRemesasAll() {
+		try {
+			TypedQuery<ProgramaFechaRemesa> query = this.em.createNamedQuery("ProgramaFechaRemesa.findAll", ProgramaFechaRemesa.class);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+	}
 	
 }

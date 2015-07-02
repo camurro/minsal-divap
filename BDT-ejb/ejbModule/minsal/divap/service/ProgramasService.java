@@ -44,6 +44,7 @@ import cl.minsal.divap.model.ComponenteSubtitulo;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ProgramaComponente;
 import cl.minsal.divap.model.ProgramaMunicipalCore;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
 import cl.minsal.divap.model.ProgramaServicioCore;
@@ -127,24 +128,27 @@ public class ProgramasService {
 		List<Programa> programa = this.programasDAO.getComponenteByPrograma(idPrograma);
 		List<ComponentesVO> componentesPrograma = new ArrayList<ComponentesVO>();
 		for (Programa prog : programa){
-			for (Componente componente : prog.getComponentes()) {
-				ComponentesVO comVO = new ComponentesVO();
-				comVO.setId(componente.getId());
-				comVO.setNombre(componente.getNombre());
-				comVO.setPeso(componente.getPeso());
-
-				List<SubtituloVO> subsVO = new ArrayList<SubtituloVO>();
-				Iterator<ComponenteSubtitulo> iter = componente.getComponenteSubtitulosComponente().iterator();
-				while(iter.hasNext()) {
-					SubtituloVO sub = new SubtituloVO();
-					ComponenteSubtitulo element = iter.next();
-					sub.setId(element.getSubtitulo().getIdTipoSubtitulo());
-					subsVO.add(sub);
+			ProgramaAno programaAno = programasDAO.getProgramaAnoByIdPrograma(idPrograma);
+			if(programaAno.getProgramaComponentes() != null &&  programaAno.getProgramaComponentes().size() > 0){
+				for (ProgramaComponente programaComponente : programaAno.getProgramaComponentes()) {
+					ComponentesVO comVO = new ComponentesVO();
+					comVO.setId(programaComponente.getComponente().getId());
+					comVO.setNombre(programaComponente.getComponente().getNombre());
+					comVO.setPeso(programaComponente.getComponente().getPeso());
+	
+					List<SubtituloVO> subsVO = new ArrayList<SubtituloVO>();
+					Iterator<ComponenteSubtitulo> iter = programaComponente.getComponente().getComponenteSubtitulosComponente().iterator();
+					while(iter.hasNext()) {
+						SubtituloVO sub = new SubtituloVO();
+						ComponenteSubtitulo element = iter.next();
+						sub.setId(element.getSubtitulo().getIdTipoSubtitulo());
+						subsVO.add(sub);
+					}
+	
+					comVO.setSubtitulos(subsVO);
+	
+					componentesPrograma.add(comVO);
 				}
-
-				comVO.setSubtitulos(subsVO);
-
-				componentesPrograma.add(comVO);
 			}
 		}
 		return componentesPrograma;
@@ -158,7 +162,14 @@ public class ProgramasService {
 		ProgramaAno programa = this.programasDAO.getProgramasByIdProgramaAno(programaAnoId);
 		return new ProgramaMapper().getBasic(programa);
 	}
-
+	
+	public ProgramaVO getProgramaAnoPorIdPrograma(int idPrograma) {
+		ProgramaAno programa = this.programasDAO.getProgramaAnoByIdPrograma(idPrograma);
+		return new ProgramaMapper().getBasic(programa);
+	}
+	
+	
+	
 	public void guardarEstadoFlujoCaja(Integer idEstado, Integer idProgramaAno) {
 		this.programasDAO.guardarEstadoFlujoCaja(idEstado,idProgramaAno);
 	}
@@ -893,9 +904,10 @@ public class ProgramasService {
 		return programaVO;
 	}
 
-	public List<ComponentesVO> getComponenteByProgramaSubtitulos(Integer programa, Subtitulo... subtitulos) {
+	public List<ComponentesVO> getComponentesByProgramaAnoSubtitulos(Integer idProgramaAno, Subtitulo... subtitulos) {
 		List<ComponentesVO> componentesVO = new ArrayList<ComponentesVO>();
-		List<Componente> componentes = componenteDAO.getComponentesByIdProgramaIdSubtitulos(programa, subtitulos);
+		ProgramaVO programaVO = this.getProgramaAno(idProgramaAno);
+		List<Componente> componentes = componenteDAO.getComponentesByIdProgramaAnoIdSubtitulos(idProgramaAno, subtitulos);
 		if(componentes != null && componentes.size() > 0){
 			for(Componente componente : componentes){
 				ComponentesVO componenteVO = new ComponenteMapper().getBasic(componente);

@@ -17,6 +17,8 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import minsal.divap.dao.TipoSubtituloDAO;
+import minsal.divap.service.MantenedoresService;
+import minsal.divap.vo.DependenciaVO;
 import minsal.divap.vo.MantenedorComponenteVO;
 import minsal.divap.vo.MantenedorTipoSubtituloVO;
 import cl.minsal.divap.mantenedores.bean.util.JsfUtil;
@@ -35,13 +37,10 @@ public class TipoSubtituloController extends AbstractController<TipoSubtitulo> {
 
     private List<MantenedorTipoSubtituloVO> subtitulos;
     private MantenedorTipoSubtituloVO seleccionado;
-    private List<Dependencia> dependencias;
-    private List<TipoSubtitulo> tipoSubtitulos;
-    
+    private List<DependenciaVO> dependencias;
+
     @EJB
-    private TipoSubtituloDAO tipoSubtituloDAO;
-    
-    
+    private MantenedoresService mantenedoresService;
     
     
     
@@ -179,7 +178,6 @@ public class TipoSubtituloController extends AbstractController<TipoSubtitulo> {
 		super.saveNew(event);
 		subtitulos = null;
 		dependencias = null;
-		tipoSubtitulos = null;
 	}
 
 	public void edit(ActionEvent event){
@@ -187,7 +185,6 @@ public class TipoSubtituloController extends AbstractController<TipoSubtitulo> {
 		super.edit(event);
 		subtitulos = null;
 		dependencias = null;
-		tipoSubtitulos = null;
 	}
 	
 	public void delete(ActionEvent event){
@@ -196,22 +193,12 @@ public class TipoSubtituloController extends AbstractController<TipoSubtitulo> {
 		seleccionado = null;
 		subtitulos = null;
 		dependencias = null;
-		tipoSubtitulos = null;
 	}
     
 
 	public List<MantenedorTipoSubtituloVO> getSubtitulos() {
 		if(subtitulos == null){
-			subtitulos = new ArrayList<MantenedorTipoSubtituloVO>();
-			for(TipoSubtitulo tipoSub : getTipoSubtitulos()){
-				MantenedorTipoSubtituloVO mantenedorTipoSubtituloVO = new MantenedorTipoSubtituloVO();
-				mantenedorTipoSubtituloVO.setIdSubtitulo(tipoSub.getIdTipoSubtitulo());
-				mantenedorTipoSubtituloVO.setNombreSubtitulo(tipoSub.getNombreSubtitulo());
-				mantenedorTipoSubtituloVO.setIdDependencia(tipoSub.getDependencia().getIdDependenciaPrograma());
-				mantenedorTipoSubtituloVO.setNombreDependencia(tipoSub.getDependencia().getNombre());
-				mantenedorTipoSubtituloVO.setInflactor(tipoSub.getInflactor());
-				subtitulos.add(mantenedorTipoSubtituloVO);
-			}
+			subtitulos = mantenedoresService.getAllMantenedorSubtitulos();
 		}
 		return subtitulos;
 	}
@@ -232,27 +219,18 @@ public class TipoSubtituloController extends AbstractController<TipoSubtitulo> {
 
 	public void setSeleccionado(MantenedorTipoSubtituloVO seleccionado) {
 		this.seleccionado = seleccionado;
+		System.out.println("this.seleccionado --->> "+this.seleccionado);
 	}
 
-	public List<TipoSubtitulo> getTipoSubtitulos() {
-		if(tipoSubtitulos == null){
-			tipoSubtitulos = tipoSubtituloDAO.getTipoSubtituloAll();
-		}
-		return tipoSubtitulos;
-	}
 
-	public void setTipoSubtitulos(List<TipoSubtitulo> tipoSubtitulos) {
-		this.tipoSubtitulos = tipoSubtitulos;
-	}
-
-	public List<Dependencia> getDependencias() {
+	public List<DependenciaVO> getDependencias() {
 		if(dependencias == null){
-			dependencias = tipoSubtituloDAO.getDependenciaAll();
+			dependencias = mantenedoresService.getAllDependenciaVO();
 		}
 		return dependencias;
 	}
 
-	public void setDependencias(List<Dependencia> dependencias) {
+	public void setDependencias(List<DependenciaVO> dependencias) {
 		this.dependencias = dependencias;
 	}
 

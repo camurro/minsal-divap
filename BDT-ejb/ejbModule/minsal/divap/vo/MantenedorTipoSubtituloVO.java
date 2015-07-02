@@ -10,19 +10,12 @@ public class MantenedorTipoSubtituloVO implements Serializable{
 	private Integer idDependencia;
 	private String nombreDependencia;
 	private Double inflactor;
+	private Boolean puedeEliminarse;
 	
 	public MantenedorTipoSubtituloVO(){
 		
 	}
 	
-	public MantenedorTipoSubtituloVO(Integer idSubtitulo, String nombreSubtitulo, Integer idDependencia, String nombreDependencia, Double inflactor){
-		super();
-		this. idSubtitulo = idSubtitulo;
-		this. nombreSubtitulo = nombreSubtitulo;
-		this. idDependencia = idDependencia;
-		this. nombreDependencia = nombreDependencia;
-		this. inflactor = inflactor;
-	}
 
 	public Integer getIdSubtitulo() {
 		return idSubtitulo;
@@ -64,13 +57,21 @@ public class MantenedorTipoSubtituloVO implements Serializable{
 		this.inflactor = inflactor;
 	}
 
-	@Override
-	public String toString() {
-		return "MantenedorTipoSubtitulo [idSubtitulo=" + idSubtitulo
-				+ ", nombreSubtitulo=" + nombreSubtitulo + ", idDependencia="
-				+ idDependencia + ", nombreDependencia=" + nombreDependencia
-				+ ", inflactor=" + inflactor + "]";
+	public Boolean getPuedeEliminarse() {
+		return puedeEliminarse;
 	}
 
+	public void setPuedeEliminarse(Boolean puedeEliminarse) {
+		this.puedeEliminarse = puedeEliminarse;
+	}
+
+	@Override
+	public String toString() {
+		return "MantenedorTipoSubtituloVO [idSubtitulo=" + idSubtitulo
+				+ ", nombreSubtitulo=" + nombreSubtitulo + ", idDependencia="
+				+ idDependencia + ", nombreDependencia=" + nombreDependencia
+				+ ", inflactor=" + inflactor + ", puedeEliminarse="
+				+ puedeEliminarse + "]";
+	}
 	
 }

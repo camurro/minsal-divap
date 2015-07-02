@@ -120,6 +120,14 @@ public class Establecimiento implements Serializable {
 		this.comuna = comuna;
 	}
 
+	public boolean isAuxiliar() {
+		return auxiliar;
+	}
+
+	public void setAuxiliar(boolean auxiliar) {
+		this.auxiliar = auxiliar;
+	}
+
 	public ServicioSalud getServicioSalud() {
 		return this.servicioSalud;
 	}

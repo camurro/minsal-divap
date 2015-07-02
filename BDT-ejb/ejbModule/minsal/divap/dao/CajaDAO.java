@@ -46,6 +46,19 @@ public class CajaDAO {
 		}
 
 	}
+	
+	public List<Caja> getByIdSubtitulo(Integer idSubtitulo){
+		try {
+			TypedQuery<Caja> query = this.em.createNamedQuery("Caja.findBySubtitulo", Caja.class);
+			query.setParameter("idSubtitulo",idSubtitulo);
+			List<Caja> results = query.getResultList();
+			return results;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+	
 
 	public List<Caja> getByIdProgramaAnoIdServicio(Integer idProgramaAno, Integer idServicio){
 		try {

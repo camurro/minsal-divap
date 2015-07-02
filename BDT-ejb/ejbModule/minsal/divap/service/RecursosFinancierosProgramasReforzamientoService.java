@@ -654,7 +654,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				generadorExcel = new GeneradorExcel(filename);
 				int subtitulos=0;
 				List<Integer> idComponentes = new ArrayList<Integer>();
-				List<ComponentesVO> componentes = programaService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO24);
+				List<ComponentesVO> componentes = programaService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), Subtitulo.SUBTITULO24);
 				for(ComponentesVO componente : componentes){
 					for(SubtituloVO subtitulo : componente.getSubtitulos()){
 						if(Subtitulo.SUBTITULO24.getId().equals(subtitulo.getId())){
@@ -710,7 +710,7 @@ public class RecursosFinancierosProgramasReforzamientoService {
 
 
 				Subtitulo[] subtitulosServicios = {Subtitulo.SUBTITULO21, Subtitulo.SUBTITULO22, Subtitulo.SUBTITULO29};
-				List<ComponentesVO> componentesServicios = programaService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulosServicios);
+				List<ComponentesVO> componentesServicios = programaService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), subtitulosServicios);
 				for(ComponentesVO componente : componentesServicios){
 					Integer cantidadSubServ=0;
 					for(SubtituloVO subtitulo : componente.getSubtitulos()){
@@ -1884,19 +1884,19 @@ public class RecursosFinancierosProgramasReforzamientoService {
 				resumenProgramaMixtoVO.setTotalS21(0L);
 				resumenProgramaMixtoVO.setTotalS22(0L);
 				resumenProgramaMixtoVO.setTotalS29(0L);
-				List<ComponentesVO> componentesPrograma = programaService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO24);
+				List<ComponentesVO> componentesPrograma = programaService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), Subtitulo.SUBTITULO24);
 				if(componentesPrograma != null && componentesPrograma.size() > 0){
 					resumenProgramaMixtoVO.setSub24(true);
 				}
-				componentesPrograma = programaService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO21);
+				componentesPrograma = programaService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), Subtitulo.SUBTITULO21);
 				if(componentesPrograma != null && componentesPrograma.size() > 0){
 					resumenProgramaMixtoVO.setSub21(true);
 				}
-				componentesPrograma = programaService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO22);
+				componentesPrograma = programaService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), Subtitulo.SUBTITULO22);
 				if(componentesPrograma != null && componentesPrograma.size() > 0){
 					resumenProgramaMixtoVO.setSub22(true);
 				}
-				componentesPrograma = programaService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO29);
+				componentesPrograma = programaService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), Subtitulo.SUBTITULO29);
 				if(componentesPrograma != null && componentesPrograma.size() > 0){
 					resumenProgramaMixtoVO.setSub29(true);
 				}
@@ -1963,15 +1963,15 @@ public class RecursosFinancierosProgramasReforzamientoService {
 					resumenProgramaMixtoVO.setTotalS22(0L);
 					resumenProgramaMixtoVO.setTotalS29(0L);
 
-					List<ComponentesVO> componentesPrograma = programaService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO21);
+					List<ComponentesVO> componentesPrograma = programaService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), Subtitulo.SUBTITULO21);
 					if(componentesPrograma != null && componentesPrograma.size() > 0){
 						resumenProgramaMixtoVO.setSub21(true);
 					}
-					componentesPrograma = programaService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO22);
+					componentesPrograma = programaService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), Subtitulo.SUBTITULO22);
 					if(componentesPrograma != null && componentesPrograma.size() > 0){
 						resumenProgramaMixtoVO.setSub22(true);
 					}
-					componentesPrograma = programaService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO29);
+					componentesPrograma = programaService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), Subtitulo.SUBTITULO29);
 					if(componentesPrograma != null && componentesPrograma.size() > 0){
 						resumenProgramaMixtoVO.setSub29(true);
 					}

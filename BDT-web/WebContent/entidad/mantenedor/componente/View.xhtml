@@ -8,15 +8,12 @@
 
     <ui:composition>
 
-        <p:dialog id="ComponenteViewDlg" widgetVar="ComponenteViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewComponenteTitle}" closeOnEscape="true">
+        <p:dialog id="ComponenteViewDlg" widgetVar="ComponenteViewDialog" modal="true" resizable="false"  appendToBody="true" header="Componente" closeOnEscape="true">
 
             <h:form id="ComponenteViewForm">
 
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" columnClasses="column" rendered="#{componenteController.seleccionado != null}">
-
-                        <h:outputText value="#{messages.ViewComponenteLabel_id}"/>
-                        <h:outputText value="#{componenteController.seleccionado.idComponente}" title="#{messages.ViewComponenteTitle_id}"/>
 
                         <h:outputText value="#{messages.ViewComponenteLabel_nombre}"/>
                         <h:outputText value="#{componenteController.seleccionado.nombreComponente}" title="#{messages.ViewComponenteTitle_nombre}"/>

@@ -108,6 +108,7 @@ import cl.minsal.divap.model.FlujoCajaConsolidador;
 import cl.minsal.divap.model.Institucion;
 import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ProgramaComponente;
 import cl.minsal.divap.model.ProgramaSubtituloComponentePeso;
 import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.ReporteEmailsAdjuntos;
@@ -242,17 +243,22 @@ public class EstimacionFlujoCajaService {
 			ProgramaAno programaAno = programasDAO.getProgramaAnoByIdProgramaAndAno(idPrograma, ano);
 			programaAno.setEstadoFlujoCaja(new EstadoPrograma(EstadosProgramas.CALCULARPROPUESTA.getId()));
 			Map<Integer, List<Integer>> componentesPorSubtitulo = new HashMap<Integer, List<Integer>>();
-			for(Componente componente : programaAno.getPrograma().getComponentes()){
-				for(ComponenteSubtitulo componenteSubtitulo : componente.getComponenteSubtitulosComponente()){
-					if(componentesPorSubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()) == null){
-						List<Integer> componentes = new ArrayList<Integer>();
-						componentes.add(componente.getId());
-						componentesPorSubtitulo.put(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo(), componentes);
-					}else{
-						componentesPorSubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()).add(componente.getId());
+			if(programaAno.getProgramaComponentes() != null &&  programaAno.getProgramaComponentes().size() > 0){
+				for(ProgramaComponente programaComponente : programaAno.getProgramaComponentes()){
+					for(ComponenteSubtitulo componenteSubtitulo : programaComponente.getComponente().getComponenteSubtitulosComponente()){
+						if(componentesPorSubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()) == null){
+							List<Integer> componentes = new ArrayList<Integer>();
+							componentes.add(programaComponente.getComponente().getId());
+							componentesPorSubtitulo.put(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo(), componentes);
+						}else{
+							componentesPorSubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()).add(programaComponente.getComponente().getId());
+						}
 					}
 				}
+				
 			}
+			
+			
 			List<Caja> cajasPogramaAno = cajaDAO.getCajasByProgramaAno(programaAno.getIdProgramaAno());
 			if(cajasPogramaAno != null && cajasPogramaAno.size() > 0){
 				List<Integer> idCajas = new ArrayList<Integer>();
@@ -988,14 +994,16 @@ public class EstimacionFlujoCajaService {
 		}
 
 		Map<Integer, List<Integer>> componentesPorSubtitulo = new HashMap<Integer, List<Integer>>();
-		for(Componente componente : programaAno.getPrograma().getComponentes()){
-			for(ComponenteSubtitulo componenteSubtitulo : componente.getComponenteSubtitulosComponente()){
-				if(componentesPorSubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()) == null){
-					List<Integer> componentes = new ArrayList<Integer>();
-					componentes.add(componente.getId());
-					componentesPorSubtitulo.put(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo(), componentes);
-				}else{
-					componentesPorSubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()).add(componente.getId());
+		if(programaAno.getProgramaComponentes() != null &&  programaAno.getProgramaComponentes().size() > 0){
+			for(ProgramaComponente programaComponente : programaAno.getProgramaComponentes()){
+				for(ComponenteSubtitulo componenteSubtitulo : programaComponente.getComponente().getComponenteSubtitulosComponente()){
+					if(componentesPorSubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()) == null){
+						List<Integer> componentes = new ArrayList<Integer>();
+						componentes.add(programaComponente.getComponente().getId());
+						componentesPorSubtitulo.put(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo(), componentes);
+					}else{
+						componentesPorSubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()).add(programaComponente.getComponente().getId());
+					}
 				}
 			}
 		}
@@ -2053,67 +2061,71 @@ public class EstimacionFlujoCajaService {
 
 	public void actualizarMonitoreoServicioEstablecimientoSubtituloFlujoCaja(Integer idProgramaAno, Integer idServicio, Integer idEstablecimiento, CajaMontoSummaryVO cajaMontoSummary, Subtitulo subtitulo, Boolean iniciarFlujoCaja) {
 		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
-		List<Componente> componentes = componenteDAO.getComponentesByIdProgramaIdSubtitulos(programaAno.getPrograma().getId(), subtitulo);
+		List<Componente> componentes = componenteDAO.getComponentesByIdProgramaAnoIdSubtitulos(idProgramaAno, subtitulo);
 		int componentesSize = componentes.size();
 		int iteracionPorComponentes = 1;
 		int montoAcumulado = 0;
-		for(Componente componente : programaAno.getPrograma().getComponentes()){
-			CajaMonto cajaMonto = cajaDAO.getCajaMontoByServicioEstablecimientoProgramaComponenteSubtituloMes(idServicio, idEstablecimiento, idProgramaAno, componente.getId(), subtitulo.getId(), cajaMontoSummary.getIdMes());
-			ProgramaSubtituloComponentePeso programaSubtituloComponentePeso = programasDAO.getProgramaSubtituloComponentePesoByProgramaComponenteSubtitulo(idProgramaAno, componente.getId(), subtitulo.getId());
-			if(programaSubtituloComponentePeso != null){
-				if(iteracionPorComponentes !=  componentesSize){
-					int pesoComponente =  (int)programaSubtituloComponentePeso.getPeso();
-					System.out.println("actualizando el caja monto="+pesoComponente);
-					if((pesoComponente) == 100){
-						cajaMonto.setMonto(cajaMontoSummary.getMontoMes().intValue());
-						montoAcumulado += cajaMontoSummary.getMontoMes(); 
-						cajaMonto.setReparos(true);
+		if(programaAno.getProgramaComponentes() != null &&  programaAno.getProgramaComponentes().size() > 0){
+			for(ProgramaComponente programaComponente : programaAno.getProgramaComponentes()){
+				CajaMonto cajaMonto = cajaDAO.getCajaMontoByServicioEstablecimientoProgramaComponenteSubtituloMes(idServicio, idEstablecimiento, idProgramaAno, programaComponente.getComponente().getId(), subtitulo.getId(), cajaMontoSummary.getIdMes());
+				ProgramaSubtituloComponentePeso programaSubtituloComponentePeso = programasDAO.getProgramaSubtituloComponentePesoByProgramaComponenteSubtitulo(idProgramaAno, programaComponente.getComponente().getId(), subtitulo.getId());
+				if(programaSubtituloComponentePeso != null){
+					if(iteracionPorComponentes !=  componentesSize){
+						int pesoComponente =  (int)programaSubtituloComponentePeso.getPeso();
+						System.out.println("actualizando el caja monto="+pesoComponente);
+						if((pesoComponente) == 100){
+							cajaMonto.setMonto(cajaMontoSummary.getMontoMes().intValue());
+							montoAcumulado += cajaMontoSummary.getMontoMes(); 
+							cajaMonto.setReparos(true);
+						}else{
+							System.out.println("actualizando el caja monto");
+							int montoActualizado = (int)((pesoComponente * cajaMontoSummary.getMontoMes())/100.0);
+							cajaMonto.setMonto(montoActualizado);
+							montoAcumulado += montoActualizado;
+							cajaMonto.setReparos(true);
+						}
 					}else{
-						System.out.println("actualizando el caja monto");
-						int montoActualizado = (int)((pesoComponente * cajaMontoSummary.getMontoMes())/100.0);
-						cajaMonto.setMonto(montoActualizado);
-						montoAcumulado += montoActualizado;
+						cajaMonto.setMonto((int)(cajaMontoSummary.getMontoMes() - montoAcumulado));
 						cajaMonto.setReparos(true);
 					}
-				}else{
-					cajaMonto.setMonto((int)(cajaMontoSummary.getMontoMes() - montoAcumulado));
-					cajaMonto.setReparos(true);
 				}
+				iteracionPorComponentes++;
 			}
-			iteracionPorComponentes++;
 		}
 	}
 
 	public void actualizarMonitoreoServicioComunaSubtituloFlujoCaja(Integer idProgramaAno, Integer idServicio, Integer idComuna, CajaMontoSummaryVO cajaMontoSummary, Subtitulo subtitulo, Boolean iniciarFlujoCaja) {
 		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
-		List<Componente> componentes = componenteDAO.getComponentesByIdProgramaIdSubtitulos(programaAno.getPrograma().getId(), subtitulo);
+		List<Componente> componentes = componenteDAO.getComponentesByIdProgramaAnoIdSubtitulos(idProgramaAno, subtitulo);
 		int componentesSize = componentes.size();
 		int iteracionPorComponentes = 1;
 		int montoAcumulado = 0;
-		for(Componente componente : programaAno.getPrograma().getComponentes()){
-			CajaMonto cajaMonto = cajaDAO.getCajaMontoByServicioComunaProgramaComponenteSubtituloMes(idServicio, idComuna, idProgramaAno, componente.getId(), subtitulo.getId(), cajaMontoSummary.getIdMes());
-			ProgramaSubtituloComponentePeso programaSubtituloComponentePeso = programasDAO.getProgramaSubtituloComponentePesoByProgramaComponenteSubtitulo(idProgramaAno, componente.getId(), subtitulo.getId());
-			if(programaSubtituloComponentePeso != null){
-				if(iteracionPorComponentes !=  componentesSize){
-					int pesoComponente =  (int)programaSubtituloComponentePeso.getPeso();
-					System.out.println("actualizando el caja monto="+pesoComponente);
-					if((pesoComponente) == 100){
-						cajaMonto.setMonto(cajaMontoSummary.getMontoMes().intValue());
-						montoAcumulado += cajaMontoSummary.getMontoMes(); 
-						cajaMonto.setReparos(true);
+		if(programaAno.getProgramaComponentes() != null &&  programaAno.getProgramaComponentes().size() > 0){
+			for(ProgramaComponente programaComponente : programaAno.getProgramaComponentes()){
+				CajaMonto cajaMonto = cajaDAO.getCajaMontoByServicioComunaProgramaComponenteSubtituloMes(idServicio, idComuna, idProgramaAno, programaComponente.getComponente().getId(), subtitulo.getId(), cajaMontoSummary.getIdMes());
+				ProgramaSubtituloComponentePeso programaSubtituloComponentePeso = programasDAO.getProgramaSubtituloComponentePesoByProgramaComponenteSubtitulo(idProgramaAno, programaComponente.getComponente().getId(), subtitulo.getId());
+				if(programaSubtituloComponentePeso != null){
+					if(iteracionPorComponentes !=  componentesSize){
+						int pesoComponente =  (int)programaSubtituloComponentePeso.getPeso();
+						System.out.println("actualizando el caja monto="+pesoComponente);
+						if((pesoComponente) == 100){
+							cajaMonto.setMonto(cajaMontoSummary.getMontoMes().intValue());
+							montoAcumulado += cajaMontoSummary.getMontoMes(); 
+							cajaMonto.setReparos(true);
+						}else{
+							System.out.println("actualizando el caja monto");
+							int montoActualizado = (int)((pesoComponente * cajaMontoSummary.getMontoMes())/100.0);
+							cajaMonto.setMonto(montoActualizado);
+							montoAcumulado += montoActualizado;
+							cajaMonto.setReparos(true);
+						}
 					}else{
-						System.out.println("actualizando el caja monto");
-						int montoActualizado = (int)((pesoComponente * cajaMontoSummary.getMontoMes())/100.0);
-						cajaMonto.setMonto(montoActualizado);
-						montoAcumulado += montoActualizado;
+						cajaMonto.setMonto((int)(cajaMontoSummary.getMontoMes() - montoAcumulado));
 						cajaMonto.setReparos(true);
 					}
-				}else{
-					cajaMonto.setMonto((int)(cajaMontoSummary.getMontoMes() - montoAcumulado));
-					cajaMonto.setReparos(true);
 				}
+				iteracionPorComponentes++;
 			}
-			iteracionPorComponentes++;
 		}
 	}
 
@@ -2510,7 +2522,7 @@ public class EstimacionFlujoCajaService {
 		subtituloFlujoCajaVO.setComuna(comuna.getNombre());
 		subtituloFlujoCajaVO.setMarcoPresupuestario(0L);
 		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
-		List<Componente> componentes = componenteDAO.getComponentesByIdProgramaIdSubtitulos(programaAno.getPrograma().getId(), subtitulo);
+		List<Componente> componentes = componenteDAO.getComponentesByIdProgramaAnoIdSubtitulos(idProgramaAno, subtitulo);
 		Long marcoPorComuna = 0L;
 		for(int mes = 1; mes <= 12; mes++){
 			Mes mesDTO = mesDAO.getMesPorID(mes);
@@ -2625,7 +2637,7 @@ public class EstimacionFlujoCajaService {
 		subtituloFlujoCajaVO.setEstablecimiento(establecimiento.getNombre());
 		subtituloFlujoCajaVO.setMarcoPresupuestario(0L);
 		ProgramaAno programaAno = programasDAO.getProgramaAnoByID(idProgramaAno);
-		List<Componente> componentes = componenteDAO.getComponentesByIdProgramaIdSubtitulos(programaAno.getPrograma().getId(), subtitulo);
+		List<Componente> componentes = componenteDAO.getComponentesByIdProgramaAnoIdSubtitulos(idProgramaAno, subtitulo);
 		Long marcoPorEstablecimiento = 0L;
 		for(int mes = 1; mes <= 12; mes++){
 			Mes mesDTO = mesDAO.getMesPorID(mes);

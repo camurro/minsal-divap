@@ -61,39 +61,42 @@
 		        dialog.hide();
 		    }
 		}
+
+		function alertaTipoComponente(){
+			alert("No se puede cambiar el tipo de programa");
+		}
+
+		function noGuardarPrograma(){
+			alert("Se seleccionó el tipo de programa como Histórico, pero no se seleccionó ningún componente Histórico");
+		}
+
+		function noGuardarProgramaDesdeHistoricoHastaPxQ(){
+			alert("Se cambió el tipo de programa a PXQ, pero aún posee componentes del tipo Históricos");
+		}
+		
 		function agregarFila(){
-			if($("#ProgramaCreateForm\\:porcentajeCuota").val()==""){
-				alert("El campo Porcentaje es obligatorio");
-				return;
-			}	
-
-			if($("#ProgramaCreateForm\\:monto").val()==""){
-				alert("El campo Monto es obligatorio");
-				return;
-			}
-
-			if($("#ProgramaCreateForm\\:firstCuota").val()== 'true'){
-				alert("primera cuota");
-			}
-				
 			
         	$("#formAgregarCuota\\:hiddenNroCuota").val($("#ProgramaCreateForm\\:nroCuota").val());
         	$("#formAgregarCuota\\:hiddenPorcentaje").val($("#ProgramaCreateForm\\:porcentajeCuota").val());
         	$("#formAgregarCuota\\:hiddenFecha").val($("#ProgramaCreateForm\\:fechaPago_input").val());
-        	$("#formAgregarCuota\\:hiddenMonto").val($("#ProgramaCreateForm\\:monto").val());
 
         	
-			 	document.getElementById('formAgregarCuota:botonAgregaCuota').click();
+			document.getElementById('formAgregarCuota:botonAgregaCuota').click();
         }
 
         function agregarFilaEditar(){
         	$("#formAgregarCuotaEdit\\:hiddenNroCuota").val($("#ProgramaEditForm\\:nroCuota").val());
         	$("#formAgregarCuotaEdit\\:hiddenPorcentaje").val($("#ProgramaEditForm\\:porcentajeCuota").val());
-        	$("#formAgregarCuotaEdit\\:hiddenFecha").val($("#ProgramaEditForm\\:fechaPago_input").val());
+        	$("#formAgregarCuotaEdit\\:hiddenFecha").val($("#ProgramaEditForm\\:fechaPago").val());
         	$("#formAgregarCuotaEdit\\:hiddenMonto").val($("#ProgramaEditForm\\:monto").val());
 
         	
 			 	document.getElementById('formAgregarCuotaEdit:botonAgregaCuota').click();
+        }
+
+
+        function levantarError(){
+		 	document.getElementById('formMessage:botonMessage').click();
         }
 	</script>
 

@@ -17,6 +17,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import minsal.divap.dao.ServicioSaludDAO;
+import minsal.divap.service.MantenedoresService;
 import minsal.divap.service.ServicioSaludService;
 import minsal.divap.vo.EstablecimientoSummaryVO;
 import minsal.divap.vo.EstablecimientoVO;
@@ -45,6 +46,8 @@ public class EstablecimientoController extends AbstractController<Establecimient
     @EJB
 	private ServicioSaludService servicioSaludService;
     @EJB ServicioSaludDAO servicioSaludDAO;
+    @EJB
+    private MantenedoresService mantenedoresService;
     /**
      * Initialize the concrete Establecimiento controller bean. The
      * AbstractController requires the EJB Facade object for most operations.
@@ -156,20 +159,7 @@ public class EstablecimientoController extends AbstractController<Establecimient
 
 	public List<MantenedorEstablecimientoVO> getEstablecimientos() {
 		if(establecimientos == null){
-			establecimientos = new ArrayList<MantenedorEstablecimientoVO>();
-			for(ServicioSalud servicio : getServicios()){
-	    		System.out.println("servicio --> "+servicio.getNombre());
-	    		for(Establecimiento establecimiento : servicio.getEstablecimientos()){
-	    			MantenedorEstablecimientoVO mantenedorEstablecimientoVO = new MantenedorEstablecimientoVO();
-	    			mantenedorEstablecimientoVO.setIdEstablecimiento(establecimiento.getId());
-	    			mantenedorEstablecimientoVO.setNombreEstablecimiento(establecimiento.getNombre());
-	    			mantenedorEstablecimientoVO.setIdServicio(servicio.getId());
-	    			mantenedorEstablecimientoVO.setNombreServicio(servicio.getNombre());
-	    			mantenedorEstablecimientoVO.setCodigo(establecimiento.getCodigo());
-	    			mantenedorEstablecimientoVO.setTipo(establecimiento.getTipo());
-	    			establecimientos.add(mantenedorEstablecimientoVO);
-	    		}
-	    	}
+			establecimientos = mantenedoresService.getAllMantenedorEstablecimientoVO();
 		}
 		return establecimientos;
 	}
@@ -183,13 +173,21 @@ public class EstablecimientoController extends AbstractController<Establecimient
 			try {
 				if (persistAction == PersistAction.UPDATE) {
 					this.ejbFacade.edit(this.establecimientoSeleccionado);
+					JsfUtil.addSuccessMessage("El establecimiento ha sido editadp exitósamente");
 				}else if(persistAction == PersistAction.CREATE){
 					this.ejbFacade.create(this.establecimientoSeleccionado);
+					JsfUtil.addSuccessMessage("El establecimiento ha sido creado exitósamente");
 				}else if(persistAction == PersistAction.DELETE){
-					System.out.println("borrando con nuestro delete");
-					this.ejbFacade.remove(this.establecimientoSeleccionado);
+					if(this.establecimientoSeleccionado.getPuedeEliminarse()){
+						System.out.println("borrando con nuestro delete");
+						this.ejbFacade.remove(this.establecimientoSeleccionado);
+						JsfUtil.addSuccessMessage("El establecimiento ha sido eliminado exitósamente");
+					}else{
+						JsfUtil.addErrorMessage("El establecimiento no puede eliminarse ya que está siendo utilizado por los procesos");
+					}
+					
+					
 				}
-				JsfUtil.addSuccessMessage(successMessage);
 			} catch (EJBException ex) {
 				Throwable cause = JsfUtil.getRootCause(ex.getCause());
 				if (cause != null) {

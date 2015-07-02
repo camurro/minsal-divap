@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name = "ProgramaServicioCore.findAll", query = "SELECT p FROM ProgramaServicioCore p"),
 	@NamedQuery(name = "ProgramaServicioCore.findByIdProgramaServicioCore", query = "SELECT p FROM ProgramaServicioCore p WHERE p.idProgramaServicioCore = :idProgramaServicioCore"),
 	@NamedQuery(name = "ProgramaServicioCore.findByProgramaAno", query = "SELECT p FROM ProgramaServicioCore p WHERE p.programaAnoServicio.idProgramaAno = :programaAno"),
+	@NamedQuery(name = "ProgramaServicioCore.findByEstablecimiento", query = "SELECT p FROM ProgramaServicioCore p WHERE p.establecimiento.id = :idEstablecimiento"),
 	@NamedQuery(name = "ProgramaServicioCore.deleteByProgramasServicioCore", query = "DELETE FROM ProgramaServicioCore p WHERE p.idProgramaServicioCore IN (:programasServicioCore)"),
 	@NamedQuery(name = "ProgramaServicioCore.findByProgramaAnoEstablecimiento", query = "SELECT p FROM ProgramaServicioCore p WHERE p.programaAnoServicio.idProgramaAno = :idProgramaAno and p.establecimiento.id = :idEstablecimiento"),
 	@NamedQuery(name = "ProgramaServicioCore.getProgramaservicioCoreByEstablecimientoProgramaAno", query = "SELECT p FROM ProgramaServicioCore p WHERE p.establecimiento.id = :idEstablecimiento and p.programaAnoServicio.idProgramaAno = :idProgramaAno")})

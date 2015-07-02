@@ -9,8 +9,10 @@ import javax.ejb.Stateless;
 
 import minsal.divap.dao.AnoDAO;
 import minsal.divap.dao.AntecedentesComunaDAO;
+import minsal.divap.dao.CajaDAO;
 import minsal.divap.dao.ComponenteDAO;
 import minsal.divap.dao.ComunaDAO;
+import minsal.divap.dao.EstimacionFlujoCajaDAO;
 import minsal.divap.dao.MantenedoresDAO;
 import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.dao.RebajaDAO;
@@ -19,9 +21,11 @@ import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.dao.TipoSubtituloDAO;
 import minsal.divap.dao.UsuarioDAO;
 import minsal.divap.enums.EstadoUsuarioEnum;
+import minsal.divap.enums.TipoComponenteEnum;
 import minsal.divap.model.mappers.PersonaMapper;
 import minsal.divap.model.mappers.ServicioMapper;
 import minsal.divap.vo.ComponentesVO;
+import minsal.divap.vo.DependenciaVO;
 import minsal.divap.vo.FactorRefAsigZonaVO;
 import minsal.divap.vo.FactorTramoPobrezaVO;
 import minsal.divap.vo.FechaRemesaVO;
@@ -29,11 +33,14 @@ import minsal.divap.vo.MantenedorAnoVO;
 import minsal.divap.vo.MantenedorComponenteVO;
 import minsal.divap.vo.MantenedorComunaFinalVO;
 import minsal.divap.vo.MantenedorCumplimientoVO;
+import minsal.divap.vo.MantenedorCuotasVO;
+import minsal.divap.vo.MantenedorEstablecimientoVO;
 import minsal.divap.vo.MantenedorEstadoProgramaVO;
 import minsal.divap.vo.MantenedorFactorRefAsigZonaVO;
 import minsal.divap.vo.MantenedorFactorTramoPobrezaVO;
 import minsal.divap.vo.MantenedorProgramaVO;
 import minsal.divap.vo.MantenedorRegionVO;
+import minsal.divap.vo.MantenedorTipoSubtituloVO;
 import minsal.divap.vo.MantenedorUsuarioVO;
 import minsal.divap.vo.PersonaMantenedorVO;
 import minsal.divap.vo.PersonaVO;
@@ -47,10 +54,14 @@ import minsal.divap.vo.TipoComponenteVO;
 import minsal.divap.vo.TipoComunaVO;
 import cl.minsal.divap.model.AnoEnCurso;
 import cl.minsal.divap.model.AntecendentesComuna;
+import cl.minsal.divap.model.Caja;
 import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.ComponenteSubtitulo;
 import cl.minsal.divap.model.Comuna;
 import cl.minsal.divap.model.Cumplimiento;
+import cl.minsal.divap.model.Cuota;
+import cl.minsal.divap.model.Dependencia;
+import cl.minsal.divap.model.Establecimiento;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.FactorRefAsigZona;
 import cl.minsal.divap.model.FactorTramoPobreza;
@@ -58,6 +69,8 @@ import cl.minsal.divap.model.FechaRemesa;
 import cl.minsal.divap.model.Persona;
 import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ProgramaComponente;
+import cl.minsal.divap.model.ProgramaFechaRemesa;
 import cl.minsal.divap.model.Region;
 import cl.minsal.divap.model.Rol;
 import cl.minsal.divap.model.ServicioSalud;
@@ -96,7 +109,14 @@ public class MantenedoresService {
 	private RebajaDAO rebajaDAO;
 	@EJB
 	private AntecedentesComunaDAO antecedentesComunaDAO;
-
+	@EJB
+	private CajaDAO cajaDAO;
+	@EJB
+	private EstimacionFlujoCajaDAO estimacionFlujoCajaDAO;
+	@EJB
+	private ComponenteService componenteService;
+	
+	
 	private final double EPSILON = 0.0000001;
 
 	private boolean equals(double a, double b) {
@@ -192,58 +212,52 @@ public class MantenedoresService {
 //		return mantenedorRegionVO;
 //	}
 
-	public List<SubtituloVO> getSubtitulosNombres() {
+	public List<String> getSubtitulosNombres() {
 		List<TipoSubtitulo> tipoSubtitulos = this.tipoSubtituloDAO
 				.getTipoSubtituloAll();
-		List<SubtituloVO> nombreSubtitulos = new ArrayList<SubtituloVO>();
+		List<String> nombreSubtitulos = new ArrayList<String>();
 		if (tipoSubtitulos != null && tipoSubtitulos.size() > 0) {
 			for (TipoSubtitulo tipoSubtitulo : tipoSubtitulos) {
-				SubtituloVO subtituloVO = new SubtituloVO();
-				subtituloVO.setNombre(tipoSubtitulo.getNombreSubtitulo());
-				subtituloVO.setId(tipoSubtitulo.getIdTipoSubtitulo());
-				nombreSubtitulos.add(subtituloVO);
+				nombreSubtitulos.add(tipoSubtitulo.getNombreSubtitulo());
 			}
 		}
 		return nombreSubtitulos;
 
 	}
 
-	public List<SubtituloVO> getNombreSubtitulosByComponente(Integer idComponente) {
-		List<ComponenteSubtitulo> componenteSubtitulos = this.tipoSubtituloDAO.getByIdComponente(idComponente);
-		List<SubtituloVO> nombreSubtitulos = new ArrayList<SubtituloVO>();
+	public List<String> getNombreSubtitulosByComponente(Integer idComponente) {
+		List<ComponenteSubtitulo> componenteSubtitulos = this.tipoSubtituloDAO
+				.getByIdComponente(idComponente);
+		List<String> nombreSubtitulos = new ArrayList<String>();
 		for (ComponenteSubtitulo componenteSubtitulo : componenteSubtitulos) {
-			SubtituloVO subtitulo = new SubtituloVO();
-			subtitulo.setId(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo());
-			subtitulo.setNombre(componenteSubtitulo.getSubtitulo().getNombreSubtitulo());
-			nombreSubtitulos.add(subtitulo);
+			String nombre = null;
+			nombre = componenteSubtitulo.getSubtitulo().getNombreSubtitulo();
+			nombreSubtitulos.add(nombre);
 		}
 		return nombreSubtitulos;
 
 	}
 
-	public List<SubtituloVO> getNombreSubtitulosFaltantesComponente(
+	public List<String> getNombreSubtitulosFaltantesComponente(
 			Integer idComponente) {
 		List<TipoSubtitulo> tipoSubtitulos = this.tipoSubtituloDAO
 				.getTipoSubtituloAll();
-		List<SubtituloVO> nombresFinal = new ArrayList<SubtituloVO>();
+		List<String> nombresFinal = new ArrayList<String>();
 		for (TipoSubtitulo tipoSubtitulo : tipoSubtitulos) {
-			SubtituloVO subtituloVO = new SubtituloVO();
-			subtituloVO.setId(tipoSubtitulo.getIdTipoSubtitulo());
-			subtituloVO.setNombre(tipoSubtitulo.getNombreSubtitulo());
-			nombresFinal.add(subtituloVO);
+			nombresFinal.add(tipoSubtitulo.getNombreSubtitulo());
 		}
-		List<ComponenteSubtitulo> componenteSubtitulos = this.tipoSubtituloDAO.getByIdComponente(idComponente);
-		List<SubtituloVO> nombreBorrar = new ArrayList<SubtituloVO>();
+		List<ComponenteSubtitulo> componenteSubtitulos = this.tipoSubtituloDAO
+				.getByIdComponente(idComponente);
+		List<String> nombreBorrar = new ArrayList<String>();
 		for (ComponenteSubtitulo componenteSubtitulo : componenteSubtitulos) {
-
-			SubtituloVO subtituloVO = new SubtituloVO();
-			subtituloVO.setId(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo());
-			subtituloVO.setNombre(componenteSubtitulo.getSubtitulo().getNombreSubtitulo());
-			nombreBorrar.add(subtituloVO);
+			String nombre = null;
+			nombre = componenteSubtitulo.getSubtitulo().getNombreSubtitulo();
+			nombreBorrar.add(nombre);
 		}
 		for (int i = 0; i < nombresFinal.size(); i++) {
+
 			for (int j = 0; j < nombreBorrar.size(); j++) {
-				if (nombresFinal.get(i).getNombre().equalsIgnoreCase(nombreBorrar.get(j).getNombre())) {
+				if (nombresFinal.get(i).equalsIgnoreCase(nombreBorrar.get(j))) {
 					nombresFinal.remove(i);
 				}
 			}
@@ -442,37 +456,98 @@ public class MantenedoresService {
 	public List<MantenedorProgramaVO> getAllMantenedorProgramaVO(Integer ano) {
 		List<MantenedorProgramaVO> resultado = new ArrayList<MantenedorProgramaVO>();
 
-		List<ProgramaVO> programas = programasService.getProgramasByAno(ano);
-		List<FechaRemesa> fechasRemesas = mantenedoresDAO.getAllFechasRemesas();
-
-		List<Integer> diaFechasRemesas = new ArrayList<Integer>();
-		for (FechaRemesa fechaRemesa : fechasRemesas) {
-			diaFechasRemesas.add(fechaRemesa.getDia().getDia());
-		}
-
-		for (ProgramaVO programa : programas) {
+		for (ProgramaAno programa : programasDAO.findByAno(ano)) {
+			
 
 			MantenedorProgramaVO mantenedorProgramaVO = new MantenedorProgramaVO();
-			mantenedorProgramaVO.setIdPrograma(programa.getId());
+			mantenedorProgramaVO.setIdPrograma(programa.getPrograma().getId());
 			mantenedorProgramaVO.setIdProgramaAno(programa.getIdProgramaAno());
-			mantenedorProgramaVO.setNombrePrograma(programa.getNombre());
-			mantenedorProgramaVO.setNombreUsuario(programa.getUsername());
-			mantenedorProgramaVO.setCuotas(programa.getCantidad_cuotas());
-			mantenedorProgramaVO.setDescripcion(programa.getDescripcion());
-			mantenedorProgramaVO.setFonasa(programa.getRevisaFonasa());
+			mantenedorProgramaVO.setNombrePrograma(programa.getPrograma().getNombre());
+			mantenedorProgramaVO.setNombreUsuario(programa.getPrograma().getUsuario().getUsername());
+			mantenedorProgramaVO.setCuotas(programa.getPrograma().getCantidadCuotas());
+			mantenedorProgramaVO.setDescripcion(programa.getPrograma().getDescripcion());
+			mantenedorProgramaVO.setFonasa(programa.getPrograma().getRevisaFonasa());
 			mantenedorProgramaVO.setAno(ano);
+			
+			
+			if(programa.getPrograma().getNombre().equalsIgnoreCase("NUEVO")){
+				System.out.println("haga algo");
+			}
+			
+			
+			List<String> diaFechasRemesas = new ArrayList<String>();
+			List<String> diaFechasRemesasFaltantes = new ArrayList<String>();
+			List<String> diaFechasRemesasActuales = new ArrayList<String>();
+			
+			ProgramaVO programaVO = programasService.getProgramaAno(programa.getIdProgramaAno());
+			List<ProgramaFechaRemesa> programaFechaRemsas = new ArrayList<ProgramaFechaRemesa>();
+			
+			programaFechaRemsas = programasDAO.findRemesasByPrograma(programaVO.getId());
+			if(programaFechaRemsas != null || programaFechaRemsas.size() > 0){
+				for(ProgramaFechaRemesa programaFechaRemesa : programaFechaRemsas){
+					diaFechasRemesas.add(programaFechaRemesa.getFechaRemesa().getDia().getId().toString());
+					diaFechasRemesasActuales.add(programaFechaRemesa.getFechaRemesa().getDia().getId().toString());
+				}
+			}
+			List<FechaRemesa> fechasRemesasAll = mantenedoresDAO.getAllFechasRemesas();
+			for(FechaRemesa fechaRemesaCompleta : fechasRemesasAll){
+				diaFechasRemesasFaltantes.add(fechaRemesaCompleta.getDia().getDia().toString());
+			}
+			
+			for(int i = 0; i < diaFechasRemesasFaltantes.size(); i++){
+				for(int j = 0; j < diaFechasRemesas.size(); j++){
+					if(diaFechasRemesasFaltantes.get(i).equals(diaFechasRemesas.get(j))){
+						diaFechasRemesasFaltantes.remove(i);
+					}
+				}
+			}
+			mantenedorProgramaVO.setDiaPagoRemesasFaltantes(diaFechasRemesasFaltantes);
 
-			ProgramaAno programaAno = programasDAO.getProgramaAnoByID(programa
-					.getIdProgramaAno());
-
-			mantenedorProgramaVO.setReliquidacion(programaAno.getPrograma()
+			mantenedorProgramaVO.setReliquidacion(programa.getPrograma()
 					.isReliquidacion());
-
-			mantenedorProgramaVO.setComponentes(programa.getComponentes());
+			
+			List<String> nombreComponentes = new ArrayList<String>();
+			if(programa.getProgramaComponentes() == null){
+				continue;
+			}
+			Integer tipoPrograma = TipoComponenteEnum.PXQ.getId();
+			
+			Boolean puedeEditarseComponentes = true;
+			
+			for(ProgramaComponente programaComponente : programa.getProgramaComponentes()){
+				if(programaComponente.getComponente().getTipoComponente().getId().equals(TipoComponenteEnum.LEY.getId())){
+					tipoPrograma = TipoComponenteEnum.LEY.getId();
+					puedeEditarseComponentes = false;
+					break;
+				}
+				if(programaComponente.getComponente().getTipoComponente().getId().equals(TipoComponenteEnum.HISTORICO.getId())){
+					tipoPrograma = TipoComponenteEnum.HISTORICO.getId();
+					break;
+				}
+				
+			}
+			List<String> nombreComponentesActuales = new ArrayList<String>();
+			for(ProgramaComponente programaComponente : programa.getProgramaComponentes()){
+				nombreComponentes.add(programaComponente.getComponente().getNombre().toUpperCase());
+				nombreComponentesActuales.add(programaComponente.getComponente().getNombre().toUpperCase());
+			}
+			
+			List<String> componentesByTipoComponenteAll = componenteService.getNombreComponenteByIdTipoComponente(tipoPrograma);
+			
+			List<String> nombreComponentesFaltantes = this.getComponentesFaltantesEntreDosListas(componentesByTipoComponenteAll, nombreComponentes);
+			mantenedorProgramaVO.setComponentesFaltantes(nombreComponentesFaltantes);
+			
+			
+			mantenedorProgramaVO.setPuedeEditarseComponentes(puedeEditarseComponentes);
+			mantenedorProgramaVO.setComponentes(nombreComponentes);
+			mantenedorProgramaVO.setComponentesActuales(nombreComponentesActuales);
+			mantenedorProgramaVO.setIdTipoPrograma(tipoPrograma);
 			String dependencia = null;
-			if (programa.getDependenciaMunicipal()) {
+			
+			
+			if (programaVO.getDependenciaMunicipal()) {
 				dependencia = "Municipal";
-				if (programa.getDependenciaServicio()) {
+				if (programaVO.getDependenciaServicio()) {
 					dependencia = "Mixto";
 				}
 			} else {
@@ -480,83 +555,64 @@ public class MantenedoresService {
 			}
 			mantenedorProgramaVO.setDependencia(dependencia);
 
-			mantenedorProgramaVO.setIdEstadoPrograma(programa.getEstado()
-					.getId());
-			mantenedorProgramaVO.setEstadoPrograma(programa.getEstado()
-					.getNombre());
-			mantenedorProgramaVO.setIdEstadoFlujoCaja(programa
-					.getEstadoFlujocaja().getId());
-			mantenedorProgramaVO.setEstadoFlujoCaja(programa
-					.getEstadoFlujocaja().getNombre());
-			mantenedorProgramaVO.setIdEstadoreliquidacion(programa
-					.getEstadoReliquidacion().getId());
-			mantenedorProgramaVO.setEstadoreliquidacion(programa
-					.getEstadoReliquidacion().getNombre());
-			mantenedorProgramaVO.setIdEstadoConvenio(programa
-					.getEstadoConvenio().getId());
-			mantenedorProgramaVO.setEstadoConvenio(programa.getEstadoConvenio()
-					.getNombre());
-			mantenedorProgramaVO.setIdEstadoOT(programa.getEstadoOT().getId());
-			mantenedorProgramaVO
-					.setEstadoOT(programa.getEstadoOT().getNombre());
-			mantenedorProgramaVO.setIdEstadoModificacionAPS(programa
-					.getEstadoModificacionAPS().getId());
-			mantenedorProgramaVO.setEstadoModificacionAPS(programa
-					.getEstadoModificacionAPS().getNombre());
+			mantenedorProgramaVO.setIdEstadoPrograma(programa.getEstado().getIdEstadoPrograma());
+			mantenedorProgramaVO.setEstadoPrograma(programa.getEstado().getNombreEstado());
+			mantenedorProgramaVO.setIdEstadoFlujoCaja(programa.getEstadoFlujoCaja().getIdEstadoPrograma());
+			mantenedorProgramaVO.setEstadoFlujoCaja(programa.getEstadoFlujoCaja().getNombreEstado());
+			mantenedorProgramaVO.setIdEstadoreliquidacion(programa.getEstadoreliquidacion().getIdEstadoPrograma());
+			mantenedorProgramaVO.setEstadoreliquidacion(programa.getEstadoreliquidacion().getNombreEstado());
+			mantenedorProgramaVO.setIdEstadoConvenio(programa.getEstadoConvenio().getIdEstadoPrograma());
+			mantenedorProgramaVO.setEstadoConvenio(programa.getEstadoConvenio().getNombreEstado());
+			mantenedorProgramaVO.setIdEstadoOT(programa.getEstadoOT().getIdEstadoPrograma());
+			mantenedorProgramaVO.setEstadoOT(programa.getEstadoOT().getNombreEstado());
+			mantenedorProgramaVO.setIdEstadoModificacionAPS(programa.getEstadoModificacionAPS().getIdEstadoPrograma());
+			mantenedorProgramaVO.setEstadoModificacionAPS(programa.getEstadoModificacionAPS().getNombreEstado());
 			mantenedorProgramaVO.setDiaPagoRemesas(diaFechasRemesas);
-			// mantenedorProgramaVO.setIdTipoPrograma(programaAno.getPrograma().get);
-
+			mantenedorProgramaVO.setDiaPagoRemesasActuales(diaFechasRemesasActuales);
+			
+			List<Cuota> cuotas = estimacionFlujoCajaDAO.getCuotasByProgramaAno(programa.getIdProgramaAno());
+			List<MantenedorCuotasVO> mantenedorCuotasVO = new ArrayList<MantenedorCuotasVO>();
+			List<MantenedorCuotasVO> mantenedorCuotasVOActuales = new ArrayList<MantenedorCuotasVO>();
+			for(Cuota cuota : cuotas){
+				MantenedorCuotasVO cuotaVO = new MantenedorCuotasVO();
+				cuotaVO.setIdCuota(cuota.getId());
+				cuotaVO.setNroCuota((int)cuota.getNumeroCuota());
+				if(cuota.getFechaPago() != null){
+					cuotaVO.setFecha_cuota(cuota.getFechaPago());
+				}
+				if(cuota.getIdMes() != null){
+					cuotaVO.setMes(cuota.getIdMes().getIdMes());
+				}
+				cuotaVO.setPorcentaje_cuota(cuota.getPorcentaje());
+				mantenedorCuotasVO.add(cuotaVO);
+				mantenedorCuotasVOActuales.add(new MantenedorCuotasVO(cuotaVO));
+			}
+			mantenedorProgramaVO.setListaCuotas(mantenedorCuotasVO);
+			mantenedorProgramaVO.setListaCuotasActuales(mantenedorCuotasVOActuales);
 			resultado.add(mantenedorProgramaVO);
 		}
 
 		return resultado;
 	}
 
-	public List<String> getNombresComponentesProgramaAll() {
-		List<String> resultado = new ArrayList<String>();
 
-		List<Componente> componentes = componenteDAO.getComponentes();
-		for (Componente componente : componentes) {
-			resultado.add(componente.getNombre());
-		}
-
-		return resultado;
-	}
-
-	public List<String> getNombresComponentesByPrograma(Integer idPrograma) {
-		List<String> resultado = new ArrayList<String>();
-		Programa programa = programasDAO.getProgramaById(idPrograma);
-		for (Componente componente : programa.getComponentes()) {
-			resultado.add(componente.getNombre());
-		}
-		return resultado;
-	}
-
-	public List<String> getNombresComponentesFaltantesByPrograma(
-			Integer idPrograma) {
-		List<String> resultado = new ArrayList<String>();
-		Programa programa = programasDAO.getProgramaById(idPrograma);
-		List<String> componentesBorrar = new ArrayList<String>();
-
-		for (Componente componente : programa.getComponentes()) {
-			componentesBorrar.add(componente.getNombre());
-		}
-
-		for (Componente componente : componenteDAO.getComponentes()) {
-			resultado.add(componente.getNombre());
-		}
-
-		for (int i = 0; i < resultado.size(); i++) {
-			for (int j = 0; j < componentesBorrar.size(); j++) {
-				if (resultado.get(i).equalsIgnoreCase(componentesBorrar.get(j))) {
-					resultado.remove(i);
+	public List<String> getComponentesFaltantesEntreDosListas(List<String> listaFinal, List<String> listaNombres){
+		List<String> listaResultado = new ArrayList<String>();
+		
+		for(int i = 0; i < listaFinal.size(); i++){
+			String componenteDesdeTodos = listaFinal.get(i);
+			for(int j = 0; j < listaNombres.size(); j++){
+				String componenteDesdePrograma = listaNombres.get(j);
+				if(componenteDesdeTodos.equalsIgnoreCase(componenteDesdePrograma)){
+					listaFinal.remove(i);
+					i--;
 				}
 			}
 		}
-
-		return resultado;
+		listaResultado = listaFinal;
+		return listaResultado;
 	}
-
+	
 	public List<MantenedorCumplimientoVO> getMantenedorCumplimientoVOAll() {
 		List<MantenedorCumplimientoVO> resultado = new ArrayList<MantenedorCumplimientoVO>();
 		List<Cumplimiento> cumplimientos = mantenedoresDAO.getCumplimientoAll();
@@ -803,6 +859,15 @@ public class MantenedoresService {
 		}
 		return diasFechaRemesas;
 	}
+	
+	public List<String> getDiasNumeroFechaRemesas() {
+		List<String> diasFechaRemesas = new ArrayList<String>();
+		List<FechaRemesa> fechaRemesas = mantenedoresDAO.getAllFechasRemesas();
+		for (FechaRemesa fechaRemesa : fechaRemesas) {
+			diasFechaRemesas.add(fechaRemesa.getDia().getDia().toString());
+		}
+		return diasFechaRemesas;
+	}
 
 	public List<TipoComponenteVO> getTiposComponente() {
 		List<TipoComponenteVO> resultado = new ArrayList<TipoComponenteVO>();
@@ -825,6 +890,7 @@ public class MantenedoresService {
 
 		return tipoComponenteVO;
 	}
+	
 
 //	public String puedeInsertarseTramoAsigZona(List<MantenedorFactorRefAsigZonaVO> listado, MantenedorFactorRefAsigZonaVO nuevo) {
 //		String puedeInsertarse = "NO";
@@ -1015,11 +1081,15 @@ public class MantenedoresService {
 	
 	public List<MantenedorComponenteVO> getAllMantenedorComponenteVO(){
 		List<MantenedorComponenteVO> resultado = new ArrayList<MantenedorComponenteVO>();
-		List<Programa> programas = programasDAO.getAllProgramas();
-		for(Programa programa : programas){
-			for(Componente componente : programa.getComponentes()){
+		List<Componente> componentes = componenteDAO.getComponentes();
+		
+			for(Componente componente : componentes){
+				if(componente.getId() < 0){
+					continue;
+				}
+				
 				Boolean puedeBorrarse = false;
-				if(componente.getIdPrograma() == null){
+				if(componente.getProgramaComponentes() == null || componente.getProgramaComponentes().size() == 0){
 					puedeBorrarse = true;
 				}
 				if(puedeBorrarse){
@@ -1041,9 +1111,83 @@ public class MantenedoresService {
 				mantenedorComponenteVO.setNombreSubtitulosFaltantes(this.getNombreSubtitulosFaltantesComponente(componente.getId()));
 				resultado.add(mantenedorComponenteVO);
 			}
+		return resultado;
+	}
+	
+	public List<MantenedorEstablecimientoVO> getAllMantenedorEstablecimientoVO(){
+		List<MantenedorEstablecimientoVO> resultado = new ArrayList<MantenedorEstablecimientoVO>();
+		List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
+		for(ServicioSalud servicio : servicios){
+			for(Establecimiento establecimiento : servicio.getEstablecimientos()){
+				
+				Boolean puedeEliminarse = false;
+				if(programasDAO.getProgramaServicioCoreByIdEstablecimiento(establecimiento.getId()) == null || 
+					programasDAO.getProgramaServicioCoreByIdEstablecimiento(establecimiento.getId()).size() == 0){
+					puedeEliminarse = true;
+				}
+				
+				MantenedorEstablecimientoVO mantenedorEstablecimientoVO = new MantenedorEstablecimientoVO();
+				mantenedorEstablecimientoVO.setPuedeEliminarse(puedeEliminarse);
+				mantenedorEstablecimientoVO.setEsAuxiliar(establecimiento.isAuxiliar());
+    			mantenedorEstablecimientoVO.setIdEstablecimiento(establecimiento.getId());
+    			mantenedorEstablecimientoVO.setNombreEstablecimiento(establecimiento.getNombre());
+    			mantenedorEstablecimientoVO.setIdServicio(servicio.getId());
+    			mantenedorEstablecimientoVO.setNombreServicio(servicio.getNombre());
+    			mantenedorEstablecimientoVO.setCodigo(establecimiento.getCodigo());
+    			mantenedorEstablecimientoVO.setTipo(establecimiento.getTipo());
+    			resultado.add(mantenedorEstablecimientoVO);
+			}
+		}
+		
+		return resultado;
+	}
+	
+	public List<MantenedorTipoSubtituloVO> getAllMantenedorSubtitulos(){
+		List<MantenedorTipoSubtituloVO> resultado = new ArrayList<MantenedorTipoSubtituloVO>();
+		List<TipoSubtitulo> getTipoSubtitulos = tipoSubtituloDAO.getTipoSubtituloAll();
+		for(TipoSubtitulo tipoSub : getTipoSubtitulos){
+			Boolean puedeEliminarse = false;
+			if(tipoSub.getProgramaMunicipalCoreComponentes() == null || tipoSub.getProgramaMunicipalCoreComponentes().size() == 0){
+				puedeEliminarse = true;
+			}
+			if(puedeEliminarse){
+				if(tipoSub.getProgramaServicioCoreComponentes() == null || tipoSub.getProgramaServicioCoreComponentes().size() == 0){
+					puedeEliminarse = true;
+				}
+			}
+			if(puedeEliminarse){
+				List<Caja> listaCaja = cajaDAO.getByIdSubtitulo(tipoSub.getIdTipoSubtitulo());
+				if(listaCaja == null || listaCaja.size() == 0){
+					puedeEliminarse = true;
+				}else{
+					puedeEliminarse = false;
+				}
+			}
+			
+			MantenedorTipoSubtituloVO mantenedorTipoSubtituloVO = new MantenedorTipoSubtituloVO();
+			mantenedorTipoSubtituloVO.setPuedeEliminarse(puedeEliminarse);
+			mantenedorTipoSubtituloVO.setIdSubtitulo(tipoSub.getIdTipoSubtitulo());
+			mantenedorTipoSubtituloVO.setNombreSubtitulo(tipoSub.getNombreSubtitulo());
+			mantenedorTipoSubtituloVO.setIdDependencia(tipoSub.getDependencia().getIdDependenciaPrograma());
+			mantenedorTipoSubtituloVO.setNombreDependencia(tipoSub.getDependencia().getNombre());
+			mantenedorTipoSubtituloVO.setInflactor(tipoSub.getInflactor());
+			resultado.add(mantenedorTipoSubtituloVO);
 		}
 		return resultado;
 	}
 	
+	public List<DependenciaVO> getAllDependenciaVO(){
+		List<DependenciaVO> resultado = new ArrayList<DependenciaVO>();
+		List<Dependencia> dependencias = tipoSubtituloDAO.getDependenciaAll();
+		for(Dependencia dependencia : dependencias){
+			DependenciaVO dependenciaVO = new DependenciaVO();
+			dependenciaVO.setId(dependencia.getIdDependenciaPrograma());
+			dependenciaVO.setNombre(dependencia.getNombre());
+			resultado.add(dependenciaVO);
+		}
+		
+		
+		return resultado;
+	}
 
 }

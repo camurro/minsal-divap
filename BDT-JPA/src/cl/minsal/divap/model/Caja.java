@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Caja.findByIdProgramaAnoIdServicio", query = "SELECT c FROM Caja c WHERE c.programa.idProgramaAno = :idProgramaAno and c.servicio.id = :idServicio"),
     @NamedQuery(name = "Caja.findByProgramaAnoServicioSubtitulo", query = "SELECT c FROM Caja c WHERE c.programa.idProgramaAno = :idProgramaAno and c.servicio.id = :idServicio and c.idSubtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
     @NamedQuery(name = "Caja.findBySubtituloAno", query = "SELECT c FROM Caja c WHERE c.idSubtitulo.idTipoSubtitulo = :idSubtitulo and c.programa is not null and c.programa.idProgramaAno = :idProgramaAno "),
+    @NamedQuery(name = "Caja.findBySubtitulo", query = "SELECT c FROM Caja c WHERE c.idSubtitulo.idTipoSubtitulo = :idSubtitulo"),
     @NamedQuery(name = "Caja.findById", query = "SELECT c FROM Caja c WHERE c.id = :id"),
     @NamedQuery(name = "Caja.findByProgramaAnoSubtitulo", query = "SELECT c FROM Caja c WHERE c.idSubtitulo.idTipoSubtitulo = :idTipoSubtitulo and c.programa.idProgramaAno = :idProgramaAno"),
     @NamedQuery(name = "Caja.findByServicioEstablecimientoProgramaAnoComponenteSubtitulo", query = "SELECT c FROM Caja c WHERE c.servicio.id = :idServicio and c.establecimiento.id = :idEstablecimiento and c.programa.idProgramaAno = :idProgramaAno and c.idComponente.id = :idComponente and c.idSubtitulo.idTipoSubtitulo = :idTipoSubtitulo"),

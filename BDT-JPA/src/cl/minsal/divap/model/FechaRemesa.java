@@ -26,7 +26,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "FechaRemesa.findAll", query = "SELECT f FROM FechaRemesa f"),
-    @NamedQuery(name = "FechaRemesa.findById", query = "SELECT f FROM FechaRemesa f WHERE f.id = :id")})
+    @NamedQuery(name = "FechaRemesa.findById", query = "SELECT f FROM FechaRemesa f WHERE f.id = :id"),
+    @NamedQuery(name = "FechaRemesa.findByDia", query = "SELECT f FROM FechaRemesa f WHERE f.dia.dia = :dia")})
 public class FechaRemesa implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

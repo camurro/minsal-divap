@@ -21,14 +21,11 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.primefaces.model.DualListModel;
-
 import minsal.divap.dao.ComponenteDAO;
 import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.dao.TipoSubtituloDAO;
 import minsal.divap.vo.MantenedorComponenteVO;
 import minsal.divap.vo.MantenedorEstablecimientoVO;
-import minsal.divap.vo.SubtituloVO;
 
 /**
  *
@@ -64,15 +61,16 @@ public class ComponenteFacade extends AbstractFacade<Componente> {
     		componente.setNombre(componenteSeleccionado.getNombreComponente());
     		TipoComponente tipoComponente = componenteDAO.getTipoComponenteById(componenteSeleccionado.getIdTipoComponente());
     		componente.setTipoComponente(tipoComponente);
+    		componente.setPeso(componenteSeleccionado.getPeso());
     		getEntityManager().merge(componente);
     		
-    		List<SubtituloVO> nombreSubtitulos = componenteSeleccionado.getNombreSubtitulos();
+    		List<String> nombreSubtitulos = componenteSeleccionado.getNombreSubtitulos();
     		List <ComponenteSubtitulo> componenteSubtitulos = tipoSubtituloDAO.getByIdComponente(componenteSeleccionado.getIdComponente());
     		for(ComponenteSubtitulo componenteSubtitulo : componenteSubtitulos){
     			getEntityManager().remove(getEntityManager().merge(componenteSubtitulo));
     		}
-    		for(SubtituloVO nombreSubtitulo : nombreSubtitulos){
-    			TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloPorID(nombreSubtitulo.getId());
+    		for(String nombreSubtitulo : nombreSubtitulos){
+    			TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloByName(nombreSubtitulo);
     			ComponenteSubtitulo newComponenteSubtitulo = new ComponenteSubtitulo();
     			newComponenteSubtitulo.setComponente(componente);
     			newComponenteSubtitulo.setSubtitulo(tipoSubtitulo);
@@ -88,12 +86,13 @@ public class ComponenteFacade extends AbstractFacade<Componente> {
 		componente.setNombre(mantenedorComponenteVO.getNombreComponente());
 		TipoComponente tipoComponente = componenteDAO.getTipoComponenteById(mantenedorComponenteVO.getIdTipoComponente());
 		componente.setTipoComponente(tipoComponente);
+		componente.setPeso(mantenedorComponenteVO.getPeso());
 		
 		getEntityManager().persist(componente);
 		
-		List<SubtituloVO> nombreSubtitulos = mantenedorComponenteVO.getNombreSubtitulos();
-		for(SubtituloVO nombreSubtitulo : nombreSubtitulos){
-			TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloPorID(nombreSubtitulo.getId());
+		List<String> nombreSubtitulos = mantenedorComponenteVO.getNombreSubtitulos();
+		for(String nombreSubtitulo : nombreSubtitulos){
+			TipoSubtitulo tipoSubtitulo = tipoSubtituloDAO.getTipoSubtituloByName(nombreSubtitulo);
 			ComponenteSubtitulo componenteSubtitulo = new ComponenteSubtitulo();
 			componenteSubtitulo.setComponente(componente);
 			componenteSubtitulo.setSubtitulo(tipoSubtitulo);

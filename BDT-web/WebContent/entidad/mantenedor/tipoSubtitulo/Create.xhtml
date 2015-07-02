@@ -8,7 +8,7 @@
 
     <ui:composition>
 
-        <p:dialog id="TipoSubtituloCreateDlg" widgetVar="TipoSubtituloCreateDialog" modal="true" resizable="false" appendToBody="true" header="#{messages.CreateTipoSubtituloTitle}" closeOnEscape="true">
+        <p:dialog id="TipoSubtituloCreateDlg" widgetVar="TipoSubtituloCreateDialog" modal="true" resizable="false" appendToBody="true" header="Nuevo Subtítulo" closeOnEscape="true">
 
             <h:form id="TipoSubtituloCreateForm">
 
@@ -16,20 +16,23 @@
                     <p:panelGrid columns="2" columnClasses="column">
 
                         <p:outputLabel value="#{messages.CreateTipoSubtituloLabel_nombreSubtitulo}" for="nombreSubtitulo" />
-                        <p:inputText id="nombreSubtitulo" value="#{tipoSubtituloController.seleccionado.nombreSubtitulo}" title="#{messages.CreateTipoSubtituloTitle_nombreSubtitulo}" required="true" requiredMessage="#{messages.CreateTipoSubtituloRequiredMessage_nombreSubtitulo}"/>
+                        <p:inputText id="nombreSubtitulo" value="#{tipoSubtituloController.seleccionado.nombreSubtitulo}" title="#{messages.CreateTipoSubtituloTitle_nombreSubtitulo}" 
+                        	required="true" requiredMessage="El nombre del subtítulo es un campo requerido"/>
 
                         <p:outputLabel value="#{messages.CreateTipoSubtituloLabel_dependencia}" for="dependencia" />
-                        <p:selectOneMenu id="dependencia" value="#{tipoSubtituloController.seleccionado.idDependencia}" required="true" requiredMessage="#{messages.CreateTipoSubtituloRequiredMessage_dependencia}">
+                        <p:selectOneMenu id="dependencia" value="#{tipoSubtituloController.seleccionado.idDependencia}" 
+                        	required="true" requiredMessage="La dependencia es un campo requerido">
                             <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
                             <f:selectItems value="#{tipoSubtituloController.dependencias}"
                                            var="dependenciaItem"
-                                           itemValue="#{dependenciaItem.idDependenciaPrograma}"
+                                           itemValue="#{dependenciaItem.id}"
                                            itemLabel="#{dependenciaItem.nombre}"
                                            />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="#{messages.CreateTipoSubtituloLabel_inflactor}" for="inflactor" />
-                        <p:inputText id="inflactor" value="#{tipoSubtituloController.seleccionado.inflactor}" title="#{messages.CreateTipoSubtituloTitle_inflactor}" required="true" requiredMessage="#{messages.CreateTipoSubtituloRequiredMessage_inflactor}"/>
+                        <p:inputText id="inflactor" value="#{tipoSubtituloController.seleccionado.inflactor}" title="#{messages.CreateTipoSubtituloTitle_inflactor}" 
+                        	required="true" requiredMessage="El inflactor es un campo requerido"/>
                     </p:panelGrid>
                     <p:commandButton actionListener="#{tipoSubtituloController.saveNew}" value="#{messages.Save}" update="display,:TipoSubtituloListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,TipoSubtituloCreateDialog);"/>
                     <p:commandButton value="#{messages.Cancel}" onclick="TipoSubtituloCreateDialog.hide()"/>

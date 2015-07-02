@@ -8,15 +8,12 @@
 
     <ui:composition>
 
-        <p:dialog id="TipoSubtituloViewDlg" widgetVar="TipoSubtituloViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewTipoSubtituloTitle}" closeOnEscape="true">
+        <p:dialog id="TipoSubtituloViewDlg" widgetVar="TipoSubtituloViewDialog" modal="true" resizable="false"  appendToBody="true" header="Subtítulo" closeOnEscape="true">
 
             <h:form id="TipoSubtituloViewForm">
 
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" columnClasses="column" rendered="#{tipoSubtituloController.seleccionado != null}">
-
-                        <h:outputText value="#{messages.ViewTipoSubtituloLabel_idTipoSubtitulo}"/>
-                        <h:outputText value="#{tipoSubtituloController.seleccionado.idSubtitulo}" title="#{messages.ViewTipoSubtituloTitle_idTipoSubtitulo}"/>
 
                         <h:outputText value="#{messages.ViewTipoSubtituloLabel_nombreSubtitulo}"/>
                         <h:outputText value="#{tipoSubtituloController.seleccionado.nombreSubtitulo}" title="#{messages.ViewTipoSubtituloTitle_nombreSubtitulo}"/>

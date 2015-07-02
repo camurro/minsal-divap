@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
@@ -34,13 +33,6 @@
                 <p:ajax event="rowSelect"   update=":ComponenteListForm:createButton :ComponenteListForm:viewButton :ComponenteListForm:editButton :ComponenteListForm:deleteButton :ComponenteListForm:ComponenteDataTableContextMenu" listener="#{componenteController.resetParents}"/>
                 <p:ajax event="rowUnselect" update=":ComponenteListForm:createButton :ComponenteListForm:viewButton :ComponenteListForm:editButton :ComponenteListForm:deleteButton :ComponenteListForm:ComponenteDataTableContextMenu" listener="#{componenteController.resetParents}"/>
                 <p:ajax event="rowDblselect" onsuccess="document.getElementById('ComponenteListForm:viewButton').click();"/>
-
-                <p:column sortBy="#{item.idComponente}" filterBy="#{item.idComponente}">
-                    <f:facet name="header">
-                        <h:outputText value="#{messages.ListComponenteTitle_id}"/>
-                    </f:facet>
-                    <h:outputText value="#{item.idComponente}"/>
-                </p:column>
 
 
                 <p:column sortBy="#{item.nombreComponente}" filterBy="#{item.nombreComponente}">

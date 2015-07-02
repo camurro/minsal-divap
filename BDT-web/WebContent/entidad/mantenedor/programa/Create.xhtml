@@ -17,11 +17,11 @@
 		header="#{messages.CreateProgramaTitle}" closeOnEscape="true">
 
 		<h:form id="ProgramaCreateForm">
-			<p:wizard widgetVar="wiz"
-				flowListener="#{programaController.onFlowProcess}">
+			
+			<p:wizard widgetVar="wiz" nextLabel="Siguiente" backLabel="Atrás"
+				flowListener="#{programaController.onFlowProcessCreate}" >
 				<p:tab id="datosPrograma" title="Datos Programa">
 					<p:panel header="Detalle">
-
 						<h:panelGroup id="display"
 							rendered="#{programaController.seleccionado != null}">
 							<p:panelGrid columns="2" columnClasses="column">
@@ -29,13 +29,13 @@
 
 								<p:outputLabel value="#{messages.CreateProgramaLabel_nombre}"
 									for="nombre" />
-								<p:inputText id="nombre"
+								<p:inputText id="nombre" size="61"
 									value="#{programaController.seleccionado.nombrePrograma}"
-									required="true" title="#{messages.CreateProgramaTitle_nombre}" />
+									title="#{messages.CreateProgramaTitle_nombre}" />
 
 								<p:outputLabel value="#{messages.CreateProgramaLabel_usuario}"
 									for="usuario" />
-								<p:selectOneMenu id="usuario" required="true"
+								<p:selectOneMenu id="usuario" 
 									value="#{programaController.seleccionado.nombreUsuario}">
 									<f:selectItem itemLabel="#{messages.SelectOneMessage}" />
 									<f:selectItems value="#{programaController.usuarios}"
@@ -47,7 +47,7 @@
 									value="#{messages.CreateProgramaLabel_descripcion}"
 									for="descripcion" />
 
-								<p:inputTextarea id="descripcion" required="true"
+								<p:inputTextarea id="descripcion" 
 									style="width:500px" maxlength="300"
 									value="#{programaController.seleccionado.descripcion}"
 									title="#{messages.CreateProgramaTitle_descripcion}" />
@@ -55,37 +55,35 @@
 								<p:outputLabel
 									value="#{messages.CreateProgramaLabel_revisaFonasa}"
 									for="revisaFonasa" />
-								<p:selectBooleanCheckbox id="revisaFonasa" required="true"
+								<p:selectBooleanCheckbox id="revisaFonasa" 
 									value="#{programaController.seleccionado.fonasa}" />
 
 								<p:outputLabel
 									value="#{messages.CreateProgramaLabel_reliquidacion}"
 									for="reliquidacion" />
-								<p:selectBooleanCheckbox id="reliquidacion" required="true"
+								<p:selectBooleanCheckbox id="reliquidacion" 
 									value="#{programaController.seleccionado.reliquidacion}" />
 
 								<p:outputLabel value="Tipo de Programa" for="tipoPrograma" />
 								<h:selectOneMenu id="tipoPrograma"
-									value="#{programaController.tipoPrograma}" required="true">
+									value="#{programaController.tipoPrograma}">
 									<f:selectItems value="#{programaController.tipoComponentes}"
 										var="r" itemLabel="#{r.nombre.toUpperCase()}"
 										itemValue="#{r.id}" />
 									<p:ajax process="@this" event="valueChange"
-										listener="#{programaController.listenerTipoPrograma()}"
+										listener="#{programaController.listenerTipoProgramaCrear()}"
 										update="componentesPrograma"></p:ajax>
 
 								</h:selectOneMenu>
 
 
-								<p:outputLabel value="Seleccione Días"
+								<p:outputLabel value="Días de Remesa"
 									for="pickListFechasRemesas" />
 								<p:pickList id="pickListFechasRemesas"
 									value="#{programaController.fechasDiaRemesas}"
 									var="diaRemesaItem" itemLabel="Día #{diaRemesaItem}"
 									itemValue="#{diaRemesaItem}">
-									<f:validator validatorId="minsal.divap.fechaRemesaValidator" />
 								</p:pickList>
-
 
 							</p:panelGrid>
 						</h:panelGroup>
@@ -102,11 +100,7 @@
 								<p:outputLabel value="Componentes" />
 								<p:pickList id="pickList"
 									value="#{programaController.componentes}" var="componenteItem"
-									itemLabel="#{componenteItem}" itemValue="#{componenteItem}"
-									required="true">
-
-									<f:validator validatorId="minsal.divap.componenteValidator" />
-
+									itemLabel="#{componenteItem}" itemValue="#{componenteItem}">
 								</p:pickList>
 							</p:panelGrid>
 						</h:panelGroup>
@@ -117,13 +111,11 @@
 
 				<p:tab id="cuotas" title="Cuotas">
 					<p:panel header="Detalle">
-						<p:messages />
+						<p:messages id="mensajeId" globalOnly="true"></p:messages>
 
-						<p:dataTable id="tabla" resizableColumns="true" editMode="cell"
-							value="#{programaController.cuotas}" liveResize="true"
-							var="_data" rows="10" paginator="true" paginatorPosition="bottom"
-							editable="true" emptyMessage="No se encontro información."
-							styleClass="dataTable" scrollable="true">
+						<p:dataTable id="tabla" resizableColumns="true" value="#{programaController.cuotas}" liveResize="true"
+							var="_data" rows="10" paginator="true" paginatorPosition="bottom" editable="true"
+							emptyMessage="No se encontro información." styleClass="dataTable" scrollable="true">
 
 							<f:facet name="header">
                                Cuotas
@@ -131,9 +123,9 @@
 
 
 
-							<p:ajax event="cellEdit"
-								listener="#{programaController.onCellEdit}"
-								update=":ProgramaEditForm:tabla" />
+							<p:ajax event="rowEdit" listener="#{programaController.onRowEdit}" update=":ProgramaCreateForm:tabla :ProgramaCreateForm:btnGuardarPrograma" />
+					       
+      					   <p:ajax event="rowEditCancel" listener="#{programaController.onRowCancel}" update=":ProgramaEditForm:tabla" />
 
 							<p:column headerText="Nro Cuota">
 								<p:cellEditor>
@@ -144,6 +136,21 @@
 										<p:inputText id="modelInput" value="#{_data.nroCuota}"
 											disabled="true" style="width:100%" />
 									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							
+							<p:column headerText="Fecha Pago">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{_data.fecha_cuota}" >
+					               			 <f:convertDateTime pattern="dd/MM/yyyy"  />
+					               		</h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:calendar pattern="dd/MM/yyyy" value="#{_data.fecha_cuota}"
+											showOn="button" disabled="#{_data.nroCuota == 1}"/>
+									</f:facet>
+
 								</p:cellEditor>
 							</p:column>
 
@@ -159,36 +166,37 @@
 								</p:cellEditor>
 							</p:column>
 
-							<p:column headerText="Fecha Pago">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{_data.fecha_cuota}" />
+							
+							<p:column style="width:32px">
+					           <p:rowEditor />
+					       </p:column>
+					       
+					       <p:columnGroup type="footer">
+							<p:row>
+								<p:column>
+									<f:facet name="footer">
+										<h:outputText value="Total Porcentaje" styleClass="textoAjustado textoPequenio">
+										</h:outputText>
 									</f:facet>
-									<f:facet name="input">
-										<p:calendar pattern="dd/MM/yyyy" value="#{_data.fecha_cuota}"
-											showOn="button" disabled="#{_data.nroCuota == 1}"/>
+								</p:column>
+								<p:column>
+									<f:facet name="footer">
+										<h:outputText value="#{programaController.totalPorcentajeCuotas}" styleClass="textoAjustado ">
+										<f:convertNumber  maxFractionDigits="0"/>
+										</h:outputText>
 									</f:facet>
-
-								</p:cellEditor>
-							</p:column>
-
-							<p:column headerText="Monto">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{_data.monto_cuota}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText value="#{_data.monto_cuota}" style="width:100%" />
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
+								</p:column>
+								<p:column/>
+								<p:column/>
+							</p:row>
+							</p:columnGroup>
 
 
 						</p:dataTable>
 
 						<p:panel id="gridCuotas">
 
-							<h3>Ingrese Cuota  #{programaController.ingresoCamposCuotasObligatorio}</h3>
+							<h3>Ingrese Cuota</h3>
 							<table>
 								<tr>
 									<td>Porcentaje :</td>
@@ -204,24 +212,18 @@
 											rendered="#{not programaController.firstCuota}" /></td>
 
 								</tr>
-								<tr>
-									<td>Monto :</td>
-									<td><h:inputText id="monto" size="5"
-											value="#{programaController.monto_cuota}" /></td>
-								</tr>
 							</table>
 
 						</p:panel>
-                        cuotaCienPorciento --> #{programaController.cuotaCienPorciento}
                         <p:commandButton
-							disabled="#{programaController.cuotaCienPorciento}"
-							value="Agregar" onclick="agregarFila();"
-							update="ProgramaCreateForm:tabla ProgramaCreateForm:gridCuotas" />
+							
+							value="Agregar" actionListener="#{programaController.listenerAgregaCuota()}"
+							update="ProgramaCreateForm:tabla ProgramaCreateForm:gridCuotas :growl btnGuardarPrograma" />
 
 					</p:panel>
 
-					<p:commandButton actionListener="#{programaController.saveNew}"
-						value="#{messages.Save}"
+					<p:commandButton id="btnGuardarPrograma" actionListener="#{programaController.saveNew}" disabled="#{not programaController.permitirGuardarPrograma}"
+						value="#{messages.Save}" 
 						update="display,:ProgramaListForm:datalist,:growl"
 						oncomplete="handleSubmit(xhr,status,args,ProgramaCreateDialog);" />
 
@@ -231,37 +233,18 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
 			</p:wizard>
 		</h:form>
 
-		<h:form id="formAgregarCuota">
-			<h:inputHidden value="#{programaController.nroCuota}"
-				id="hiddenNroCuota" />
-			<h:inputHidden value="#{programaController.porcentaje_cuota}"
-				id="hiddenPorcentaje" />
-			<h:inputHidden value="#{programaController.fecha_convertida}"
-				id="hiddenFecha" />
-			<h:inputHidden value="#{programaController.monto_cuota}"
-				id="hiddenMonto" />
-			<h:inputHidden value="#{programaController.firstCuota}"
-				id="hiddenFirstCuota" />
-
-
-			<p:commandButton id="botonAgregaCuota" style="visibility: hidden;"
-				actionListener="#{programaController.addAction}">
+		    
+    <h:form id="formMessage">
+		 
+			<p:growl id="growl" life="3000"/>
+			<p:commandButton id="botonMessage" style="visibility: hidden;" actionListener="#{programaController.revisarError}" update="growl">
 			</p:commandButton>
 
 		</h:form>
+		
 
 
 	</p:dialog>

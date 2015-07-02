@@ -10,6 +10,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.Cuota;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ProgramaComponente;
 
 public class ProgramaComponentesCuotasMapper implements Mapper<ProgramaAno>{
 
@@ -21,13 +22,13 @@ public class ProgramaComponentesCuotasMapper implements Mapper<ProgramaAno>{
 		programaComponentesCuotasSummaryVO.setIdProgramaAno(programaAno.getIdProgramaAno());
 		programaComponentesCuotasSummaryVO.setIdPrograma(programaAno.getPrograma().getId());
 		programaComponentesCuotasSummaryVO.setNombrePrograma(programaAno.getPrograma().getNombre());
-		if(programaAno.getPrograma().getComponentes() != null && programaAno.getPrograma().getComponentes().size() > 0){
-			for(Componente Componente : programaAno.getPrograma().getComponentes()){
+		if(programaAno.getProgramaComponentes() != null && programaAno.getProgramaComponentes().size() > 0){
+			for(ProgramaComponente programaComponente : programaAno.getProgramaComponentes()){
 				ComponenteSummaryVO componenteSummaryVO = new ComponenteSummaryVO();
-				componenteSummaryVO.setNombre(Componente.getNombre());
+				componenteSummaryVO.setNombre(programaComponente.getComponente().getNombre());
 				programaComponentesCuotasSummaryVO.setComponente(componenteSummaryVO);
 				break;
-			} 
+			}
 		}
 		if(programaAno.getCuotas() != null && programaAno.getCuotas().size() > 0){
 			List<CuotaSummaryVO> cuotas = new ArrayList<CuotaSummaryVO>();
@@ -49,11 +50,11 @@ public class ProgramaComponentesCuotasMapper implements Mapper<ProgramaAno>{
 		programaComponentesCuotasSummaryVO.setIdProgramaAno(programaAno.getIdProgramaAno());
 		programaComponentesCuotasSummaryVO.setIdPrograma(programaAno.getPrograma().getId());
 		programaComponentesCuotasSummaryVO.setNombrePrograma(programaAno.getPrograma().getNombre());
-		if(programaAno.getPrograma().getComponentes() != null && programaAno.getPrograma().getComponentes().size() > 0){
-			for(Componente componente : programaAno.getPrograma().getComponentes()){
-				if(idComponente.equals(componente.getId())){
+		if(programaAno.getProgramaComponentes() != null && programaAno.getProgramaComponentes().size() > 0){
+			for(ProgramaComponente programaComponente : programaAno.getProgramaComponentes()){
+				if(idComponente.equals(programaComponente.getComponente().getId())){
 					ComponenteSummaryVO componenteSummaryVO = new ComponenteSummaryVO();
-					componenteSummaryVO.setNombre(componente.getNombre());
+					componenteSummaryVO.setNombre(programaComponente.getComponente().getNombre());
 					programaComponentesCuotasSummaryVO.setComponente(componenteSummaryVO);
 					break;
 				}

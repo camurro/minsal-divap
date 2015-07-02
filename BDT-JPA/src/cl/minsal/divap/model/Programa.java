@@ -48,9 +48,6 @@ public class Programa implements Serializable {
     @JoinColumn(name = "username_usuario", referencedColumnName = "username")
     @ManyToOne
     private Usuario usuario;
-    @OneToMany(mappedBy = "idPrograma")
-    @OrderBy("id ASC")
-    private Set<Componente> componentes;
     @OneToMany(mappedBy = "programa")
     private Set<MetadataCore> metadataCores;
     @OneToMany(mappedBy = "idPrograma")
@@ -146,15 +143,6 @@ public class Programa implements Serializable {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
-	}
-	
-	@XmlTransient
-	public Set<Componente> getComponentes() {
-		return componentes;
-	}
-
-	public void setComponentes(Set<Componente> componentes) {
-		this.componentes = componentes;
 	}
 
 	public Boolean getRevisaFonasa() {

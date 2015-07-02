@@ -11,7 +11,6 @@ public class MantenedorCuotasVO implements Serializable{
 	private Integer idCuota;
 	private Integer nroCuota;
 	private Integer porcentaje_cuota;
-	private Integer monto_cuota;
 	private Integer mes;
 	private Date fecha_cuota;
 	
@@ -19,15 +18,23 @@ public class MantenedorCuotasVO implements Serializable{
 		
 	}
 	
-	public MantenedorCuotasVO(Integer idCuota, Integer nroCuota, Integer porcentaje_cuota, Integer monto_cuota, Integer mes, Date fecha_cuota){
+	public MantenedorCuotasVO(Integer idCuota, Integer nroCuota, Integer porcentaje_cuota, Integer mes, Date fecha_cuota){
 		super();
 		this.idCuota = idCuota;
 		this.nroCuota = nroCuota;
 		this.porcentaje_cuota = porcentaje_cuota;
-		this.monto_cuota = monto_cuota;
 		this.mes = mes;
 		this.fecha_cuota = fecha_cuota;
 	}
+	
+	public MantenedorCuotasVO(MantenedorCuotasVO mantenedorNuevo){
+		this.idCuota = mantenedorNuevo.getIdCuota();
+		this.nroCuota = mantenedorNuevo.getNroCuota();
+		this.porcentaje_cuota = mantenedorNuevo.getPorcentaje_cuota();
+		this.mes = mantenedorNuevo.getMes();
+		this.fecha_cuota = mantenedorNuevo.getFecha_cuota();
+	}
+	
 
 	public Integer getIdCuota() {
 		return idCuota;
@@ -53,14 +60,6 @@ public class MantenedorCuotasVO implements Serializable{
 		this.porcentaje_cuota = porcentaje_cuota;
 	}
 
-	public Integer getMonto_cuota() {
-		return monto_cuota;
-	}
-
-	public void setMonto_cuota(Integer monto_cuota) {
-		this.monto_cuota = monto_cuota;
-	}
-
 	public Integer getMes() {
 		return mes;
 	}
@@ -78,11 +77,27 @@ public class MantenedorCuotasVO implements Serializable{
 	}
 
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MantenedorCuotasVO other = (MantenedorCuotasVO) obj;
+		if (idCuota == null) {
+			if (other.idCuota != null)
+				return false;
+		} else if (!idCuota.equals(other.idCuota))
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString() {
 		return "MantenedorCuotasVO [idCuota=" + idCuota + ", nroCuota="
 				+ nroCuota + ", porcentaje_cuota=" + porcentaje_cuota
-				+ ", monto_cuota=" + monto_cuota + ", mes=" + mes
-				+ ", fecha_cuota=" + fecha_cuota + "]";
+				+ ", mes=" + mes + ", fecha_cuota=" + fecha_cuota + "]";
 	}
 
 }

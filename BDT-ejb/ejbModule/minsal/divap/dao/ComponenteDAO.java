@@ -30,11 +30,11 @@ public class ComponenteDAO {
 		}
 	}
 	
-	public List<Componente> getComponenteByProgramaSubtitulo(Integer programaId, Integer sub ){
+	/*public List<Componente> getComponenteByProgramaAnoSubtitulo(Integer idProgramaAno, Integer sub ){
 		try {
 			//toma todos los componenetes por programa 
-			TypedQuery<Componente> query1 = this.em.createNamedQuery("Componente.findByPrograma", Componente.class);
-			query1.setParameter("idPrograma", programaId);
+			TypedQuery<Componente> query1 = this.em.createNamedQuery("Componente.findByProgramaAno", Componente.class);
+			query1.setParameter("idProgramaAno", idProgramaAno);
 			List<Componente> conpo = query1.getResultList();
 			
 			List<ComponentesVO> componentesPrograma = new ArrayList<ComponentesVO>();
@@ -86,7 +86,7 @@ public class ComponenteDAO {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
+	}*/
 	
 	public List<Componente> getComponenteByPrograma(Integer idPrograma){
 		try {
@@ -124,15 +124,15 @@ public class ComponenteDAO {
 		return null;
 	}
 
-	public List<Componente> getComponentesByIdProgramaIdSubtitulos(Integer idPrograma, Subtitulo... subtitulos) {
+	public List<Componente> getComponentesByIdProgramaAnoIdSubtitulos(Integer idProgramaAno, Subtitulo... subtitulos) {
 		try {
 			List<Integer> idSubtitulos = new ArrayList<Integer>();
 			for(Subtitulo subtitulo : subtitulos){
 				idSubtitulos.add(subtitulo.getId());
 			}
-			TypedQuery<Componente> query = this.em.createNamedQuery("Componente.findByIdProgramaIdSubtitulos", Componente.class);
+			TypedQuery<Componente> query = this.em.createNamedQuery("Componente.findByIdProgramaAnoIdSubtitulos", Componente.class);
 			query.setParameter("idTipoSubtitulos", idSubtitulos);
-			query.setParameter("idPrograma", idPrograma);
+			query.setParameter("idProgramaAno", idProgramaAno);
 			return query.getResultList();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -198,6 +198,16 @@ public class ComponenteDAO {
 	public List<Componente> getComponenteByTipoComponente(Integer idTipoComponente){
 		try {
 			TypedQuery<Componente> query = this.em.createNamedQuery("Componente.findByIdTipoComponente", Componente.class);
+			query.setParameter("idTipoComponente", idTipoComponente);
+			return query.getResultList(); 
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public List<Componente> getComponenteByNotTipoComponente(Integer idTipoComponente){
+		try {
+			TypedQuery<Componente> query = this.em.createNamedQuery("Componente.findByNotIdTipoComponente", Componente.class);
 			query.setParameter("idTipoComponente", idTipoComponente);
 			return query.getResultList(); 
 		} catch (Exception e) {

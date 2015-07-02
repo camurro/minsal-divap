@@ -13,14 +13,13 @@ public class MantenedorComponenteVO implements Serializable{
 	private Integer idTipoComponente;
 	private String nombreTipoComponente;
 	private Float peso;
-	private List<SubtituloVO> nombreSubtitulos;
-	private List<SubtituloVO> nombreSubtitulosFaltantes;
+	private List<String> nombreSubtitulos;
+	private List<String> nombreSubtitulosFaltantes;
 	private Boolean puedeEliminarse;
 	
 	public MantenedorComponenteVO(){
 		
 	}
-	
 
 	public Integer getIdComponente() {
 		return idComponente;
@@ -62,20 +61,20 @@ public class MantenedorComponenteVO implements Serializable{
 		this.peso = peso;
 	}
 	
-	public List<SubtituloVO> getNombreSubtitulos() {
+	public List<String> getNombreSubtitulos() {
 		return nombreSubtitulos;
 	}
 
-	public void setNombreSubtitulos(List<SubtituloVO> nombreSubtitulos) {
+	public void setNombreSubtitulos(List<String> nombreSubtitulos) {
 		this.nombreSubtitulos = nombreSubtitulos;
 	}
 
 	
-	public List<SubtituloVO> getNombreSubtitulosFaltantes() {
+	public List<String> getNombreSubtitulosFaltantes() {
 		return nombreSubtitulosFaltantes;
 	}
 
-	public void setNombreSubtitulosFaltantes(List<SubtituloVO> nombreSubtitulosFaltantes) {
+	public void setNombreSubtitulosFaltantes(List<String> nombreSubtitulosFaltantes) {
 		this.nombreSubtitulosFaltantes = nombreSubtitulosFaltantes;
 	}
 
@@ -86,7 +85,6 @@ public class MantenedorComponenteVO implements Serializable{
 	public void setPuedeEliminarse(Boolean puedeEliminarse) {
 		this.puedeEliminarse = puedeEliminarse;
 	}
-
 
 	@Override
 	public String toString() {
