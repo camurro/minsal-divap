@@ -12,20 +12,13 @@ public class MantenedorEstablecimientoVO implements Serializable{
 	private String nombreServicio;
 	private String codigo;
 	private String tipo;
+	private Boolean esAuxiliar;
+	private Boolean puedeEliminarse;
 
 	public MantenedorEstablecimientoVO(){
 		
 	}
 	
-	public MantenedorEstablecimientoVO(Integer idEstablecimiento, String nombreEstablecimiento, Integer idServicio, String nombreServicio, String codigo, String tipo){
-		super();
-		this.idEstablecimiento = idEstablecimiento;
-		this.nombreEstablecimiento = nombreEstablecimiento;
-		this.idServicio = idServicio;
-		this.nombreServicio = nombreServicio;
-		this.codigo = codigo;
-		this.tipo = tipo;
-	}
 
 	public Integer getIdEstablecimiento() {
 		return idEstablecimiento;
@@ -75,13 +68,30 @@ public class MantenedorEstablecimientoVO implements Serializable{
 		this.tipo = tipo;
 	}
 
+	public Boolean getPuedeEliminarse() {
+		return puedeEliminarse;
+	}
+
+	public void setPuedeEliminarse(Boolean puedeEliminarse) {
+		this.puedeEliminarse = puedeEliminarse;
+	}
+
+	public Boolean getEsAuxiliar() {
+		return esAuxiliar;
+	}
+
+	public void setEsAuxiliar(Boolean esAuxiliar) {
+		this.esAuxiliar = esAuxiliar;
+	}
+
 	@Override
 	public String toString() {
 		return "MantenedorEstablecimientoVO [idEstablecimiento="
 				+ idEstablecimiento + ", nombreEstablecimiento="
 				+ nombreEstablecimiento + ", idServicio=" + idServicio
 				+ ", nombreServicio=" + nombreServicio + ", codigo=" + codigo
-				+ ", tipo=" + tipo + "]";
+				+ ", tipo=" + tipo + ", esAuxiliar=" + esAuxiliar
+				+ ", puedeEliminarse=" + puedeEliminarse + "]";
 	}
-	
+
 }

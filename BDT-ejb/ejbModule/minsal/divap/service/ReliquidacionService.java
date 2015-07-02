@@ -237,7 +237,7 @@ public class ReliquidacionService {
 		name = Normalizer.normalize(name, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 		String filename = tmpDir + File.separator + "plantillaBaseReliquidacionMunicpal " + name + ".xlsx";
 		String contenType = mimemap.getContentType(filename.toLowerCase());
-		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programaAno.getId(),  Subtitulo.SUBTITULO24);
+		List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programaAno.getIdProgramaAno(),  Subtitulo.SUBTITULO24);
 		List<Double> porc_cumplimiento = new ArrayList<Double>();
 		Programa programa = programasDAO.getProgramaPorID(programaAno.getId());
 
@@ -299,7 +299,7 @@ public class ReliquidacionService {
 		String contenType = mimemap.getContentType(filename.toLowerCase());
 		Programa programa = programasDAO.getProgramaPorID(programaAno.getId());
 		Subtitulo[] subtitulosServicio = {Subtitulo.SUBTITULO21, Subtitulo.SUBTITULO22, Subtitulo.SUBTITULO29};
-		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programaAno.getId(), subtitulosServicio);
+		List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programaAno.getIdProgramaAno(), subtitulosServicio);
 		int totalSubtitulos = 0;
 		Map<Integer, Integer> subtitulosPorComponente = new HashMap<Integer, Integer>();
 		for(ComponentesVO componente : componentes){
@@ -410,7 +410,7 @@ public class ReliquidacionService {
 		String filename = tmpDir + File.separator + "planillaTrabajoCumplimientoReliquidacionMunicipal " + name + ".xlsx";
 		String contenType = mimemap.getContentType(filename.toLowerCase());
 		Subtitulo[] subtitulosMunicipal = {Subtitulo.SUBTITULO24};
-		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programaVO.getId(), subtitulosMunicipal);
+		List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programaVO.getIdProgramaAno(), subtitulosMunicipal);
 		GeneradorExcel generadorExcel = new GeneradorExcel(filename);
 		header.add(new CellExcelVO("SERVICIOS DE SALUD", 2, 2));
 		header.add(new CellExcelVO("COMUNAS", 2, 2));
@@ -466,7 +466,7 @@ public class ReliquidacionService {
 		System.out.println("planillaTrabajoCumplimientoReliquidacionServicio--->"+filename);
 		String contenType = mimemap.getContentType(filename.toLowerCase());
 		Subtitulo[] subtitulosServicio = {Subtitulo.SUBTITULO21, Subtitulo.SUBTITULO22, Subtitulo.SUBTITULO29};
-		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programaVO.getId(), subtitulosServicio);
+		List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programaVO.getIdProgramaAno(), subtitulosServicio);
 		int totalSubtitulos = 0;
 		Map <Integer , List<SubtituloVO>> subtitulosPorComponente = new HashMap<Integer, List<SubtituloVO>>();
 		for(ComponentesVO componente : componentes){
@@ -531,7 +531,7 @@ public class ReliquidacionService {
 		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
 
 		Subtitulo[] subtitulosServicio = {Subtitulo.SUBTITULO24};
-		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programaVO.getId(), subtitulosServicio);
+		List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programaVO.getIdProgramaAno(), subtitulosServicio);
 
 		List<Comuna> comunas = comunaDAO.getComunasByServicio(idServicio);
 		for(Comuna comuna : comunas){
@@ -580,7 +580,7 @@ public class ReliquidacionService {
 		ProgramaVO programaVO = programasService.getProgramaAno(idProgramaAno);
 
 		Subtitulo[] subtitulosServicio = {Subtitulo.SUBTITULO21, Subtitulo.SUBTITULO22, Subtitulo.SUBTITULO29};
-		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programaVO.getId(), subtitulosServicio);
+		List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programaVO.getIdProgramaAno(), subtitulosServicio);
 		Map <Integer , List<SubtituloVO>> subtitulosPorComponente = new HashMap<Integer, List<SubtituloVO>>();
 		for(ComponentesVO componente : componentes){
 			List<SubtituloVO> subtitulos = new ArrayList<SubtituloVO>();

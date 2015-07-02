@@ -33,13 +33,6 @@
                 <p:ajax event="rowUnselect" update=":EstablecimientoListForm:createButton :EstablecimientoListForm:viewButton :EstablecimientoListForm:editButton :EstablecimientoListForm:deleteButton :EstablecimientoListForm:EstablecimientoDataTableContextMenu" listener="#{establecimientoController.resetParents}"/>
                 <p:ajax event="rowDblselect" onsuccess="document.getElementById('EstablecimientoListForm:viewButton').click();"/>
 
-                <p:column sortBy="#{item.idEstablecimiento}" filterBy="#{item.idEstablecimiento}">
-                    <f:facet name="header">
-                        <h:outputText value="#{messages.ListEstablecimientoTitle_id}"/>
-                    </f:facet>
-                    <h:outputText value="#{item.idEstablecimiento}"/>
-                </p:column>
-
 
                 <p:column sortBy="#{item.nombreEstablecimiento}" filterBy="#{item.nombreEstablecimiento}">
                     <f:facet name="header">
@@ -62,6 +55,13 @@
                         <h:outputText value="#{messages.ListEstablecimientoTitle_servicioSalud}"/>
                     </f:facet>
                     <h:outputText value="#{item.nombreServicio}"/>
+                </p:column>
+                
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Es Auxiliar"/>
+                    </f:facet>
+                    <p:selectBooleanCheckbox value="#{item.esAuxiliar}" disabled="true"/>
                 </p:column>
 
 

@@ -1,42 +1,47 @@
 package minsal.divap.vo;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 
 public class MantenedorProgramaVO implements Serializable {
 
 	private static final long serialVersionUID = 7346986726867582210L;
 	
-	private Integer idPrograma; //OK
-	private Integer idProgramaAno; //OK
-	private String nombrePrograma; //OK
-	private String nombreUsuario; //OK
-	private Integer cuotas; //OK
+	private Integer idPrograma; 
+	private Integer idProgramaAno; 
+	private String nombrePrograma; 
+	private String nombreUsuario; 
+	private Integer cuotas; 
 	private List<MantenedorCuotasVO> listaCuotas;
-	private String descripcion; //OK
-	private Boolean reliquidacion; //OK
-	private Boolean fonasa; //OK
-	private Integer ano; //OK
-	private List<ComponentesVO> componentes; //OK
-	private String dependencia; //OK
-	private Integer idEstadoPrograma; //OK
-	private String estadoPrograma; //OK
-	private Integer idEstadoFlujoCaja; //OK
-	private String estadoFlujoCaja; //OK
-	private Integer idEstadoreliquidacion; //OK
-	private String estadoreliquidacion; //OK
-	private Integer idEstadoConvenio; //OK
-	private String estadoConvenio; //OK
-	private Integer idEstadoOT; //OK
-	private String estadoOT; //OK
-	private Integer idEstadoModificacionAPS; //OK
-	private String estadoModificacionAPS; //OK
-	private List<Integer> diaPagoRemesas; //OK
-	
-	//TODO pendiente...
+	private List<MantenedorCuotasVO> listaCuotasActuales;
+	private String descripcion; 
+	private Boolean reliquidacion; 
+	private Boolean fonasa; 
+	private Integer ano; 
+	private List<String> componentes; 
+	private List<String> componentesFaltantes; 
+	private List<String> componentesActuales; 
+	private String dependencia; 
+	private Integer idEstadoPrograma; 
+	private String estadoPrograma; 
+	private Integer idEstadoFlujoCaja; 
+	private String estadoFlujoCaja; 
+	private Integer idEstadoreliquidacion; 
+	private String estadoreliquidacion; 
+	private Integer idEstadoConvenio; 
+	private String estadoConvenio; 
+	private Integer idEstadoOT; 
+	private String estadoOT; 
+	private Integer idEstadoModificacionAPS; 
+	private String estadoModificacionAPS; 
+	private List<String> diaPagoRemesas; 
+	private List<String> diaPagoRemesasActuales; 
+	private List<String> diaPagoRemesasFaltantes; 
 	private Integer idTipoPrograma;
 	private String tipoPrograma;
-	
+	private Boolean puedeEditarseComponentes;
+	HashMap<String, Boolean> reiniciarProcesos;
 	
 	
 	
@@ -124,11 +129,11 @@ public class MantenedorProgramaVO implements Serializable {
 		this.ano = ano;
 	}
 
-	public List<ComponentesVO> getComponentes() {
+	public List<String> getComponentes() {
 		return componentes;
 	}
 
-	public void setComponentes(List<ComponentesVO> componentes) {
+	public void setComponentes(List<String> componentes) {
 		this.componentes = componentes;
 	}
 
@@ -236,12 +241,20 @@ public class MantenedorProgramaVO implements Serializable {
 		this.estadoModificacionAPS = estadoModificacionAPS;
 	}
 
-	public List<Integer> getDiaPagoRemesas() {
+	public List<String> getDiaPagoRemesas() {
 		return diaPagoRemesas;
 	}
 
-	public void setDiaPagoRemesas(List<Integer> diaPagoRemesas) {
+	public void setDiaPagoRemesas(List<String> diaPagoRemesas) {
 		this.diaPagoRemesas = diaPagoRemesas;
+	}
+
+	public List<String> getDiaPagoRemesasFaltantes() {
+		return diaPagoRemesasFaltantes;
+	}
+
+	public void setDiaPagoRemesasFaltantes(List<String> diaPagoRemesasFaltantes) {
+		this.diaPagoRemesasFaltantes = diaPagoRemesasFaltantes;
 	}
 
 	public Integer getIdTipoPrograma() {
@@ -260,16 +273,67 @@ public class MantenedorProgramaVO implements Serializable {
 		this.tipoPrograma = tipoPrograma;
 	}
 
+	public List<String> getComponentesFaltantes() {
+		return componentesFaltantes;
+	}
+
+	public void setComponentesFaltantes(List<String> componentesFaltantes) {
+		this.componentesFaltantes = componentesFaltantes;
+	}
+
+	public Boolean getPuedeEditarseComponentes() {
+		return puedeEditarseComponentes;
+	}
+
+	public void setPuedeEditarseComponentes(Boolean puedeEditarseComponentes) {
+		this.puedeEditarseComponentes = puedeEditarseComponentes;
+	}
+
+	public HashMap<String, Boolean> getReiniciarProcesos() {
+		return reiniciarProcesos;
+	}
+
+	public void setReiniciarProcesos(HashMap<String, Boolean> reiniciarProcesos) {
+		this.reiniciarProcesos = reiniciarProcesos;
+	}
+
+	public List<String> getComponentesActuales() {
+		return componentesActuales;
+	}
+
+	public void setComponentesActuales(List<String> componentesActuales) {
+		this.componentesActuales = componentesActuales;
+	}
+
+	public List<MantenedorCuotasVO> getListaCuotasActuales() {
+		return listaCuotasActuales;
+	}
+
+	public void setListaCuotasActuales(List<MantenedorCuotasVO> listaCuotasActuales) {
+		this.listaCuotasActuales = listaCuotasActuales;
+	}
+
+	public List<String> getDiaPagoRemesasActuales() {
+		return diaPagoRemesasActuales;
+	}
+
+	public void setDiaPagoRemesasActuales(List<String> diaPagoRemesasActuales) {
+		this.diaPagoRemesasActuales = diaPagoRemesasActuales;
+	}
+
 	@Override
 	public String toString() {
 		return "MantenedorProgramaVO [idPrograma=" + idPrograma
 				+ ", idProgramaAno=" + idProgramaAno + ", nombrePrograma="
 				+ nombrePrograma + ", nombreUsuario=" + nombreUsuario
 				+ ", cuotas=" + cuotas + ", listaCuotas=" + listaCuotas
+				+ ", listaCuotasActuales=" + listaCuotasActuales
 				+ ", descripcion=" + descripcion + ", reliquidacion="
 				+ reliquidacion + ", fonasa=" + fonasa + ", ano=" + ano
-				+ ", componentes=" + componentes + ", dependencia="
-				+ dependencia + ", idEstadoPrograma=" + idEstadoPrograma
+				+ ", componentes=" + componentes + ", componentesFaltantes="
+				+ componentesFaltantes + ", componentesActuales="
+				+ componentesActuales + ", dependencia=" + dependencia
+				+ ", idEstadoPrograma=" + idEstadoPrograma
 				+ ", estadoPrograma=" + estadoPrograma + ", idEstadoFlujoCaja="
 				+ idEstadoFlujoCaja + ", estadoFlujoCaja=" + estadoFlujoCaja
 				+ ", idEstadoreliquidacion=" + idEstadoreliquidacion
@@ -279,8 +343,13 @@ public class MantenedorProgramaVO implements Serializable {
 				+ idEstadoOT + ", estadoOT=" + estadoOT
 				+ ", idEstadoModificacionAPS=" + idEstadoModificacionAPS
 				+ ", estadoModificacionAPS=" + estadoModificacionAPS
-				+ ", diaPagoRemesas=" + diaPagoRemesas + ", idTipoPrograma="
-				+ idTipoPrograma + ", tipoPrograma=" + tipoPrograma + "]";
+				+ ", diaPagoRemesas=" + diaPagoRemesas
+				+ ", diaPagoRemesasActuales=" + diaPagoRemesasActuales
+				+ ", diaPagoRemesasFaltantes=" + diaPagoRemesasFaltantes
+				+ ", idTipoPrograma=" + idTipoPrograma + ", tipoPrograma="
+				+ tipoPrograma + ", puedeEditarseComponentes="
+				+ puedeEditarseComponentes + ", reiniciarProcesos="
+				+ reiniciarProcesos + "]";
 	}
 
 }

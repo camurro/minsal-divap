@@ -71,9 +71,9 @@ public class CajaMontoController extends AbstractController<CajaMonto> {
      * @param event Event object for the widget that triggered an action
      */
     public void prepareMonto(ActionEvent event) {
-        if (this.getSelected() != null && montoController.getSelected() == null) {
-            montoController.setSelected(this.getSelected().getMonto());
-        }
+//        if (this.getSelected() != null && montoController.getSelected() == null) {
+//            montoController.setSelected(this.getSelected().getMonto());
+//        }
     }
 
     /**

@@ -49,9 +49,9 @@ public class MontoMesController extends AbstractController<MontoMes> {
      * @return navigation outcome for CajaMonto page
      */
     public String navigateCajaMontos() {
-        if (this.getSelected() != null) {
-            FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("CajaMonto_items", this.getSelected().getCajaMontos());
-        }
+//        if (this.getSelected() != null) {
+//            FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("CajaMonto_items", this.getSelected().getCajaMontos());
+//        }
         return "/mantenedor/cajaMonto/index";
     }
 

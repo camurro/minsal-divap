@@ -20,9 +20,10 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name = "Componente.findById", query = "SELECT c FROM Componente c WHERE c.id = :id"),
 	@NamedQuery(name = "Componente.findByNombre", query = "SELECT c FROM Componente c WHERE LOWER(c.nombre) = :nombre"),
 	@NamedQuery(name = "Componente.findByIdSubtitulo", query = "SELECT c FROM Componente c inner join c.componenteSubtitulosComponente cs WHERE cs.subtitulo.idTipoSubtitulo = :idTipoSubtitulo"),
-	@NamedQuery(name = "Componente.findByIdProgramaIdSubtitulos", query = "SELECT c FROM Componente c inner join c.componenteSubtitulosComponente cs WHERE c.idPrograma.id = :idPrograma and cs.subtitulo.idTipoSubtitulo IN (:idTipoSubtitulos) ORDER BY c.id ASC"),
+	@NamedQuery(name = "Componente.findByIdProgramaAnoIdSubtitulos", query = "SELECT c FROM Componente c inner join c.componenteSubtitulosComponente cs inner join c.programaComponentes pc WHERE pc.programa.idProgramaAno = :idProgramaAno and cs.subtitulo.idTipoSubtitulo IN (:idTipoSubtitulos) ORDER BY c.id ASC"),
 	@NamedQuery(name = "Componente.findByIdTipoComponente", query = "SELECT c FROM Componente c WHERE c.tipoComponente.id = :idTipoComponente"),
-	@NamedQuery(name = "Componente.findByPrograma", query = "SELECT c FROM Componente c WHERE c.idPrograma.id = :idPrograma order by c.id asc")})
+	@NamedQuery(name = "Componente.findByNotIdTipoComponente", query = "SELECT c FROM Componente c WHERE c.tipoComponente.id <> :idTipoComponente ORDER BY c.tipoComponente.id ASC"),
+	@NamedQuery(name = "Componente.findByProgramaAno", query = "SELECT c FROM Componente c inner join c.programaComponentes pc WHERE pc.programa.idProgramaAno = :idProgramaAno order by c.id asc")})
 public class Componente implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -38,12 +39,11 @@ public class Componente implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "componente")
 	@OrderBy("idComponenteSubtitulo ASC")
 	private Set<ComponenteSubtitulo> componenteSubtitulosComponente;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "componente")
+    private Set<ProgramaComponente> programaComponentes;
 	@JoinColumn(name = "tipo_componente", referencedColumnName = "id")
 	@ManyToOne(optional = false)
 	private TipoComponente tipoComponente;
-	@JoinColumn(name = "id_programa", referencedColumnName = "id")
-	@ManyToOne
-	private Programa idPrograma;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "servicioCoreComponente")
 	private Set<ProgramaServicioCoreComponente> programaServicioCoreComponentes;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "municipalCoreComponente")
@@ -71,14 +71,6 @@ public class Componente implements Serializable {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-
-	public Programa getIdPrograma() {
-		return idPrograma;
-	}
-
-	public void setIdPrograma(Programa idPrograma) {
-		this.idPrograma = idPrograma;
-	}
 	
 	@XmlTransient
 	public Set<ComponenteSubtitulo> getComponenteSubtitulosComponente() {
@@ -89,8 +81,15 @@ public class Componente implements Serializable {
 			Set<ComponenteSubtitulo> componenteSubtitulosComponente) {
 		this.componenteSubtitulosComponente = componenteSubtitulosComponente;
 	}
-
 	
+	public Set<ProgramaComponente> getProgramaComponentes() {
+		return programaComponentes;
+	}
+
+	public void setProgramaComponentes(Set<ProgramaComponente> programaComponentes) {
+		this.programaComponentes = programaComponentes;
+	}
+
 	public TipoComponente getTipoComponente() {
 		return tipoComponente;
 	}

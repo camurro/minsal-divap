@@ -3,6 +3,7 @@ package minsal.divap.model.mappers;
 import java.util.ArrayList;
 import java.util.List;
 
+import minsal.divap.dao.ComponenteDAO;
 import minsal.divap.enums.Subtitulo;
 import minsal.divap.vo.ComponentesVO;
 import minsal.divap.vo.EstadoProgramaVO;
@@ -13,6 +14,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.MarcoPresupuestario;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ProgramaComponente;
 import cl.minsal.divap.model.ServicioSalud;
 
 public class ProgramaMapper implements Mapper<ProgramaAno>{
@@ -74,9 +76,10 @@ public class ProgramaMapper implements Mapper<ProgramaAno>{
 			if(programaAno.getPrograma().getUsuario() != null){
 				programaVO.setUsername(programaAno.getPrograma().getUsuario().getUsername());
 			}
-			if(programaAno.getPrograma().getComponentes() != null && programaAno.getPrograma().getComponentes().size() >0){
+			if(programaAno.getProgramaComponentes() != null &&  programaAno.getProgramaComponentes().size() > 0){
 				List<ComponentesVO> componentesVO = new ArrayList<ComponentesVO>();
-				for(Componente componente : programaAno.getPrograma().getComponentes()){
+				for(ProgramaComponente programaComponente : programaAno.getProgramaComponentes()){
+					Componente componente = programaComponente.getComponente();
 					componentesVO.add(new ComponenteMapper().getBasic(componente));
 				}
 				programaVO.setComponentes(componentesVO);

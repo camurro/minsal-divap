@@ -16,6 +16,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import minsal.divap.service.MantenedoresService;
+import minsal.divap.service.ReportesServices;
 import minsal.divap.vo.MantenedorAnoVO;
 import minsal.divap.vo.MantenedorEstadoProgramaVO;
 import cl.minsal.divap.mantenedores.bean.util.JsfUtil;
@@ -31,15 +32,19 @@ public class AnoEnCursoController extends AbstractController<AnoEnCurso> {
     private AnoEnCursoFacade ejbFacade;
     @EJB
     private MantenedoresService mantenedoresService;
+    @EJB
+    private ReportesServices reportesServices;
 
     private List<MantenedorAnoVO> anos;
     private MantenedorAnoVO seleccionado;
+    private Integer anoActual;
 
     
     
     @PostConstruct
     @Override
     public void init() {
+    	this.anoActual = reportesServices.getAnoCurso();
         super.setFacade(ejbFacade);
         FacesContext context = FacesContext.getCurrentInstance();
     }
@@ -158,6 +163,14 @@ public class AnoEnCursoController extends AbstractController<AnoEnCurso> {
 
 	public void setSeleccionado(MantenedorAnoVO seleccionado) {
 		this.seleccionado = seleccionado;
+	}
+
+	public Integer getAnoActual() {
+		return anoActual;
+	}
+
+	public void setAnoActual(Integer anoActual) {
+		this.anoActual = anoActual;
 	}
 
     

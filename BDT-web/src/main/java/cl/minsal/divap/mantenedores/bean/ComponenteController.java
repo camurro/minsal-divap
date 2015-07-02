@@ -115,13 +115,23 @@ public class ComponenteController extends AbstractController<Componente> {
 			try {
 				if (persistAction == PersistAction.UPDATE) {
 					this.ejbFacade.edit(this.seleccionado);
+					JsfUtil.addSuccessMessage("El componente ha sido editado exitósamente");
 				}else if(persistAction == PersistAction.CREATE){
 					this.ejbFacade.create(this.seleccionado);
+					JsfUtil.addSuccessMessage("El componente ha sido creado exitósamente");
 				}else if(persistAction == PersistAction.DELETE){
-					System.out.println("borrando con nuestro delete");
-					this.ejbFacade.remove(this.seleccionado);
+					if(this.seleccionado.getPuedeEliminarse()){
+						System.out.println("borrando con nuestro delete");
+						this.ejbFacade.remove(this.seleccionado);
+						JsfUtil.addSuccessMessage("El componente ha sido eliminado exitósamente");
+					}
+					else{
+						JsfUtil.addErrorMessage("El componente no puede eliminarse ya que se encuentra en uso");
+					}
+					
+					
 				}
-				JsfUtil.addSuccessMessage(successMessage);
+				
 			} catch (EJBException ex) {
 				Throwable cause = JsfUtil.getRootCause(ex.getCause());
 				if (cause != null) {
@@ -148,9 +158,9 @@ public class ComponenteController extends AbstractController<Componente> {
     
     
     public void prepareIdPrograma(ActionEvent event) {
-        if (this.getSelected() != null && idProgramaController.getSelected() == null) {
-            idProgramaController.setSelected(this.getSelected().getIdPrograma());
-        }
+//        if (this.getSelected() != null && idProgramaController.getSelected() == null) {
+//            idProgramaController.setSelected(this.getSelected().getIdPrograma());
+//        }
     }
 
     /**
@@ -251,23 +261,7 @@ public class ComponenteController extends AbstractController<Componente> {
     
 	public List<MantenedorComponenteVO> getComponentes() {
 		if(componentes == null){
-			componentes = new ArrayList<MantenedorComponenteVO>();
-			for(Programa programa : getProgramas()){
-				for(Componente componente : programa.getComponentes()){
-					MantenedorComponenteVO mantenedorComponenteVO = new MantenedorComponenteVO();
-					mantenedorComponenteVO.setIdComponente(componente.getId());
-					mantenedorComponenteVO.setNombreComponente(componente.getNombre());
-					mantenedorComponenteVO.setIdPrograma(programa.getId());
-					mantenedorComponenteVO.setNombrePrograma(programa.getNombre());
-					mantenedorComponenteVO.setIdTipoComponente(componente.getTipoComponente().getId());
-					mantenedorComponenteVO.setNombreTipoComponente(componente.getTipoComponente().getNombre());
-					mantenedorComponenteVO.setPeso(componente.getPeso());
-					mantenedorComponenteVO.setNombreSubtitulos(mantenedoresService.getNombreSubtitulosByComponente(componente.getId()));
-					mantenedorComponenteVO.setNombreSubtitulosFaltantes(mantenedoresService.getNombreSubtitulosFaltantesComponente(componente.getId()));
-					
-					componentes.add(mantenedorComponenteVO);
-				}
-			}
+			componentes = mantenedoresService.getAllMantenedorComponenteVO();
 		}
 		return componentes;
 	}

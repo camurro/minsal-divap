@@ -18,7 +18,6 @@
                 <p:menuitem value="#{messages.ProgramaMenuItem_metadataCores}" icon="ui-icon-search"  action="#{programaController.navigateMetadataCores}" disabled="#{empty programaController.selected.metadataCores}" ajax="false"/>  
                 <p:menuitem value="#{messages.ProgramaMenuItem_usuario}" icon="ui-icon-search"  actionListener="#{programaController.prepareUsuario}" update=":UsuarioViewForm" oncomplete="UsuarioViewDialog.show()" disabled="#{empty programaController.selected.usuario}"/>  
                 <p:menuitem value="#{messages.ProgramaMenuItem_programasAnos}" icon="ui-icon-search"  action="#{programaController.navigateProgramasAnos}" disabled="#{empty programaController.selected.programasAnos}" ajax="false"/>  
-                <p:menuitem value="#{messages.ProgramaMenuItem_componentes}" icon="ui-icon-search"  action="#{programaController.navigateComponentes}" disabled="#{empty programaController.selected.componentes}" ajax="false"/>  
             </p:contextMenu>
             <p:dataTable id="datalist"
                          value="#{programaController.programas}"
@@ -72,7 +71,7 @@
 
             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{messages.Create}" actionListener="#{programaController.prepareCreatePrograma}" update=":ProgramaCreateForm" oncomplete="wiz.loadStep(wiz.cfg.steps[0], true);ProgramaCreateDialog.show()"/>
             <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{messages.View}" update=":ProgramaViewForm" oncomplete="ProgramaViewDialog.show()" disabled="#{empty programaController.seleccionado}"/>
-            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{messages.Edit}" actionListener="#{programaController.prepareEditarPrograma}" update=":ProgramaEditForm" oncomplete="ProgramaEditDialog.show()" disabled="#{empty programaController.seleccionado}"/>
+            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{messages.Edit}" actionListener="#{programaController.prepareEditarPrograma}" update=":ProgramaEditForm" oncomplete="wiz.loadStep(wiz.cfg.steps[0], true);ProgramaEditDialog.show()" disabled="#{empty programaController.seleccionado}"/>
             <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{messages.Delete}" actionListener="#{programaController.delete}" update=":growl,datalist" disabled="#{empty programaController.seleccionado}"/>
 
         </p:panel>

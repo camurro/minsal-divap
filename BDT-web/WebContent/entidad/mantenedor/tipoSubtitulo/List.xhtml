@@ -35,14 +35,6 @@
                 <p:ajax event="rowUnselect" update=":TipoSubtituloListForm:createButton :TipoSubtituloListForm:viewButton :TipoSubtituloListForm:editButton :TipoSubtituloListForm:deleteButton :TipoSubtituloListForm:TipoSubtituloDataTableContextMenu" listener="#{tipoSubtituloController.resetParents}"/>
                 <p:ajax event="rowDblselect" onsuccess="document.getElementById('TipoSubtituloListForm:viewButton').click();"/>
 
-                <p:column sortBy="#{item.idSubtitulo}" filterBy="#{item.idSubtitulo}">
-                    <f:facet name="header">
-                        <h:outputText value="#{messages.ListTipoSubtituloTitle_idTipoSubtitulo}"/>
-                    </f:facet>
-                    <h:outputText value="#{item.idSubtitulo}"/>
-                </p:column>
-
-
                 <p:column sortBy="#{item.nombreSubtitulo}" filterBy="#{item.nombreSubtitulo}">
                     <f:facet name="header">
                         <h:outputText value="#{messages.ListTipoSubtituloTitle_nombreSubtitulo}"/>

@@ -106,6 +106,4 @@ public class SubtituloVO implements Serializable{
 		this.total = total;
 	}
 	
-	
-
 }

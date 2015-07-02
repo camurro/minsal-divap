@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
@@ -16,7 +15,6 @@
                 <p:menuitem value="#{messages.Delete}" onclick="document.getElementById('ComponenteListForm:deleteButton').click();" icon="ui-icon-trash"/>
                 <p:separator/>
                 <p:menuitem value="#{messages.ComponenteMenuItem_idPrograma}" icon="ui-icon-search"  actionListener="#{componenteController.prepareIdPrograma}" update=":ProgramaViewForm" oncomplete="ProgramaViewDialog.show()" disabled="#{empty componenteController.selected.idPrograma}"/>  
-                <p:menuitem value="#{messages.ComponenteMenuItem_componenteSubtitulos}" icon="ui-icon-search"  action="#{componenteController.navigateComponenteSubtitulos}" disabled="#{empty componenteController.selected.componenteSubtitulos}" ajax="false"/>  
                 <p:menuitem value="#{messages.ComponenteMenuItem_tipoComponente}" icon="ui-icon-search"  actionListener="#{componenteController.prepareTipoComponente}" update=":TipoComponenteViewForm" oncomplete="TipoComponenteViewDialog.show()" disabled="#{empty componenteController.selected.tipoComponente}"/>  
                 <p:menuitem value="#{messages.ComponenteMenuItem_programaServicioCoreComponentes}" icon="ui-icon-search"  action="#{componenteController.navigateProgramaServicioCoreComponentes}" disabled="#{empty componenteController.selected.programaServicioCoreComponentes}" ajax="false"/>  
                 <p:menuitem value="#{messages.ComponenteMenuItem_programaMunicipalCoreComponentes}" icon="ui-icon-search"  action="#{componenteController.navigateProgramaMunicipalCoreComponentes}" disabled="#{empty componenteController.selected.programaMunicipalCoreComponentes}" ajax="false"/>  
@@ -36,13 +34,6 @@
                 <p:ajax event="rowUnselect" update=":ComponenteListForm:createButton :ComponenteListForm:viewButton :ComponenteListForm:editButton :ComponenteListForm:deleteButton :ComponenteListForm:ComponenteDataTableContextMenu" listener="#{componenteController.resetParents}"/>
                 <p:ajax event="rowDblselect" onsuccess="document.getElementById('ComponenteListForm:viewButton').click();"/>
 
-                <p:column sortBy="#{item.idComponente}" filterBy="#{item.idComponente}">
-                    <f:facet name="header">
-                        <h:outputText value="#{messages.ListComponenteTitle_id}"/>
-                    </f:facet>
-                    <h:outputText value="#{item.idComponente}"/>
-                </p:column>
-
 
                 <p:column sortBy="#{item.nombreComponente}" filterBy="#{item.nombreComponente}">
                     <f:facet name="header">
@@ -50,15 +41,6 @@
                     </f:facet>
                     <h:outputText value="#{item.nombreComponente}"/>
                 </p:column>
-
-
-                <p:column sortBy="#{item.nombrePrograma}" filterBy="#{item.nombrePrograma}">
-                    <f:facet name="header">
-                        <h:outputText value="#{messages.ListComponenteTitle_idPrograma}"/>
-                    </f:facet>
-                    <h:outputText value="#{item.nombrePrograma}"/>
-                </p:column>
-
 
                 <p:column sortBy="#{item.idTipoComponente}" filterBy="#{item.idTipoComponente}">
                     <f:facet name="header">

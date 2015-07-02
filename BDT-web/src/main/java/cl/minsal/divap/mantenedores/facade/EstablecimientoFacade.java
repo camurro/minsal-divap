@@ -53,6 +53,7 @@ public class EstablecimientoFacade extends AbstractFacade<Establecimiento> {
     		establecimiento.setServicioSalud(servicio);
     		establecimiento.setCodigo(establecimientoSeleccionado.getCodigo());
     		establecimiento.setTipo(establecimientoSeleccionado.getTipo());
+    		establecimiento.setAuxiliar(establecimientoSeleccionado.getEsAuxiliar());
     		getEntityManager().merge(establecimiento);
     	}
     }
@@ -64,6 +65,7 @@ public class EstablecimientoFacade extends AbstractFacade<Establecimiento> {
 		establecimiento.setServicioSalud(servicio);
 		establecimiento.setCodigo(mantenedorEstablecimientoVO.getCodigo());
 		establecimiento.setTipo(mantenedorEstablecimientoVO.getTipo());
+		establecimiento.setAuxiliar(mantenedorEstablecimientoVO.getEsAuxiliar());
 		getEntityManager().persist(establecimiento);
     }
     

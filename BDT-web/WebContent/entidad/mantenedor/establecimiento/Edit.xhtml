@@ -7,30 +7,36 @@
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition>
-        <p:dialog id="EstablecimientoEditDlg" widgetVar="EstablecimientoEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditEstablecimientoTitle}" closeOnEscape="true">
+        <p:dialog id="EstablecimientoEditDlg" widgetVar="EstablecimientoEditDialog" modal="true" resizable="false"  appendToBody="true" header="Editar Establecimiento" closeOnEscape="true">
 
             <h:form id="EstablecimientoEditForm">
 
                 <h:panelGroup id="display">
                     <p:panelGrid  columns="2" columnClasses="column" rendered="#{establecimientoController.establecimientoSeleccionado != null}">
 
-
-                        <h:outputLabel value="#{messages.EditEstablecimientoLabel_id}" for="id" />
-                        <h:outputText id="id" value="#{establecimientoController.establecimientoSeleccionado.idEstablecimiento}" />
-
                         <p:outputLabel value="#{messages.EditEstablecimientoLabel_nombre}" for="nombre" />
-                        <p:inputText id="nombre" value="#{establecimientoController.establecimientoSeleccionado.nombreEstablecimiento}" title="#{messages.EditEstablecimientoTitle_nombre}"/>
+                        <p:inputText id="nombre" value="#{establecimientoController.establecimientoSeleccionado.nombreEstablecimiento}" 
+                        	title="#{messages.EditEstablecimientoTitle_nombre}"
+                        	required="true" requiredMessage="El nombre del establecimiento es requerido"/>
 
                         <p:outputLabel value="#{messages.EditEstablecimientoLabel_codigo}" for="codigo" />
-                        <p:inputText id="codigo" value="#{establecimientoController.establecimientoSeleccionado.codigo}" title="#{messages.EditEstablecimientoTitle_codigo}"/>
-
+                        <p:inputText id="codigo" value="#{establecimientoController.establecimientoSeleccionado.codigo}" 
+                        	title="#{messages.EditEstablecimientoTitle_codigo}"
+                        	required="true" requiredMessage="El código del establecimiento es requerido"/>
+						
+						<p:outputLabel value="Establecimiento Auxiliar ?" for="establecimientoAuxiliar" />
+						<h:selectBooleanCheckbox id="establecimientoAuxiliar"
+							value="#{establecimientoController.establecimientoSeleccionado.esAuxiliar}">
+						</h:selectBooleanCheckbox>
+						
                         <p:outputLabel value="#{messages.EditEstablecimientoLabel_servicioSalud}" for="servicioSalud" />
-                        <p:selectOneMenu id="servicioSalud" value="#{establecimientoController.establecimientoSeleccionado.idServicio}" >
+                        <p:selectOneMenu id="servicioSalud" value="#{establecimientoController.establecimientoSeleccionado.idServicio}" 
+                        	required="true" requiredMessage="Debe seleccionar el servicio de salud">
                             <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
-                            <f:selectItems value="#{establecimientoController.establecimientos}"
+                            <f:selectItems value="#{establecimientoController.servicios}"
                                            var="servicioSaludItem"
-                                           itemValue="#{servicioSaludItem.idServicio}"
-                                           itemLabel="#{servicioSaludItem.nombreServicio}"
+                                           itemValue="#{servicioSaludItem.id}"
+                                           itemLabel="#{servicioSaludItem.nombre}"
                                            />
                         </p:selectOneMenu>
                     </p:panelGrid>

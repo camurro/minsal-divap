@@ -19,6 +19,7 @@ import javax.persistence.PersistenceContext;
 import minsal.divap.dao.RolDAO;
 import minsal.divap.vo.MantenedorComponenteVO;
 import minsal.divap.vo.MantenedorRolVO;
+import minsal.divap.vo.RolVO;
 
 /**
  *
@@ -42,7 +43,7 @@ public class RolFacade extends AbstractFacade<Rol> {
     }
     
     
-    public void edit(Rol seleccionado){
+    public void edit(RolVO seleccionado){
     	Rol rol = null;
     	if(seleccionado.getNombre() == null){
     		rol = new Rol();
@@ -53,13 +54,13 @@ public class RolFacade extends AbstractFacade<Rol> {
     	}
     }
     
-    public void create(Rol newRol){
+    public void create(RolVO newRol){
     	Rol rol = new Rol();
     	rol.setNombre(newRol.getNombre());
 		getEntityManager().persist(rol);
     }
     
-    public void remove(Rol seleccionado){
+    public void remove(RolVO seleccionado){
     	Rol rol = rolDAO.getRolByNombre(seleccionado.getNombre());
     	getEntityManager().remove(getEntityManager().merge(rol));
     }

@@ -15,9 +15,6 @@
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" columnClasses="column" rendered="#{establecimientoController.establecimientoSeleccionado != null}">
 
-                        <h:outputText value="#{messages.ViewEstablecimientoLabel_id}"/>
-                        <h:outputText value="#{establecimientoController.establecimientoSeleccionado.idEstablecimiento}" title="#{messages.ViewEstablecimientoTitle_id}"/>
-
                         <h:outputText value="#{messages.ViewEstablecimientoLabel_nombre}"/>
                         <h:outputText value="#{establecimientoController.establecimientoSeleccionado.nombreEstablecimiento}" title="#{messages.ViewEstablecimientoTitle_nombre}"/>
 

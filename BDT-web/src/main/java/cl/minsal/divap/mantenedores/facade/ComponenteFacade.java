@@ -59,10 +59,9 @@ public class ComponenteFacade extends AbstractFacade<Componente> {
     	}else{
     		componente = componenteDAO.getComponenteByID(componenteSeleccionado.getIdComponente());
     		componente.setNombre(componenteSeleccionado.getNombreComponente());
-    		Programa programa = programasDAO.getProgramaById(componenteSeleccionado.getIdPrograma());
-    		componente.setIdPrograma(programa);
     		TipoComponente tipoComponente = componenteDAO.getTipoComponenteById(componenteSeleccionado.getIdTipoComponente());
     		componente.setTipoComponente(tipoComponente);
+    		componente.setPeso(componenteSeleccionado.getPeso());
     		getEntityManager().merge(componente);
     		
     		List<String> nombreSubtitulos = componenteSeleccionado.getNombreSubtitulos();
@@ -85,10 +84,9 @@ public class ComponenteFacade extends AbstractFacade<Componente> {
     	Componente componente = new Componente();
     	
 		componente.setNombre(mantenedorComponenteVO.getNombreComponente());
-		Programa programa = programasDAO.getProgramaById(mantenedorComponenteVO.getIdPrograma());
-		componente.setIdPrograma(programa);
 		TipoComponente tipoComponente = componenteDAO.getTipoComponenteById(mantenedorComponenteVO.getIdTipoComponente());
 		componente.setTipoComponente(tipoComponente);
+		componente.setPeso(mantenedorComponenteVO.getPeso());
 		
 		getEntityManager().persist(componente);
 		

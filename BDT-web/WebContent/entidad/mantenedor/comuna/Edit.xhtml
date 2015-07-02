@@ -9,7 +9,7 @@
 <ui:composition>
 	<p:dialog id="ComunaEditDlg" widgetVar="ComunaEditDialog" modal="true"
 		resizable="false" appendToBody="true"
-		header="#{messages.EditComunaTitle}" closeOnEscape="true">
+		header="Editar Comuna" closeOnEscape="true">
 
 		<h:form id="ComunaEditForm">
 
@@ -20,7 +20,7 @@
 
 					<p:outputLabel value="#{messages.CreateComunaLabel_nombre}"
 						for="nombre" />
-					<p:inputText id="nombre"
+					<p:inputText id="nombre" size="35"
 						value="#{comunaController.comunaSeleccionada.nombreComuna}"
 						title="#{messages.CreateComunaTitle_nombre}" />
 

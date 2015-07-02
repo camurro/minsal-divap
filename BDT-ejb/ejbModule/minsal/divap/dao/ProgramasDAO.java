@@ -16,6 +16,7 @@ import cl.minsal.divap.model.Componente;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ProgramaComponente;
 import cl.minsal.divap.model.ProgramaFechaRemesa;
 import cl.minsal.divap.model.ProgramaMunicipalCore;
 import cl.minsal.divap.model.ProgramaMunicipalCoreComponente;
@@ -45,6 +46,21 @@ public class ProgramasDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public ProgramaAno getProgramaAnoByIdPrograma(Integer idPrograma){
+		try {
+			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.findByIdPrograma", ProgramaAno.class);
+			query.setParameter("idPrograma", idPrograma);
+			List <ProgramaAno> programas = query.getResultList(); 
+			if(programas != null && programas.size() > 0){
+				return programas.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 
 	public List<Programa> getProgramasByUser(String username){
 		try {
@@ -506,6 +522,18 @@ public class ProgramasDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public List<ProgramaServicioCore> getProgramaServicioCoreByIdEstablecimiento(Integer idEstablecimiento) {
+		try{
+			TypedQuery<ProgramaServicioCore> queryProgramaMunCore = this.em.createNamedQuery("ProgramaServicioCore.findByEstablecimiento", ProgramaServicioCore.class);
+			queryProgramaMunCore.setParameter("idEstablecimiento",idEstablecimiento);
+			return  queryProgramaMunCore.getResultList();
+
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
+	}
+	
 
 	public List<ProgramaServicioCoreComponente> getProgramaServiciosResumen(
 			Integer idProxAno, List<Integer> idComponentesServicio) {
@@ -627,6 +655,23 @@ public class ProgramasDAO {
 		}
 
 	}
+	
+	public ProgramaFechaRemesa findRemesaByIdProgramaIdFechaRemesa(Integer idPrograma, Integer idFechaRemesa) {
+		try {
+			TypedQuery<ProgramaFechaRemesa> query = this.em.createNamedQuery("ProgramaFechaRemesa.findByIdProgramaIdFecha", ProgramaFechaRemesa.class);
+			query.setParameter("idPrograma", idPrograma);
+			query.setParameter("idFechaRemesa", idFechaRemesa);
+			List <ProgramaFechaRemesa> programas = query.getResultList(); 
+			if(programas != null && programas.size() > 0){
+				return programas.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
 
 	public Long getMPEstablecimientoProgramaAnoComponenteSubtitulo(Integer idEstablecimiento,
 			Integer idProgramaAno, Integer componenteSeleccionado,
@@ -949,6 +994,51 @@ public class ProgramasDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public List<ProgramaComponente> getProgramaComponenteByIdPrograma(Integer idProgramaAno) {
+		try {
+			TypedQuery<ProgramaComponente> query = this.em.createNamedQuery("ProgramaComponente.findByIdProgramaAno", ProgramaComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			List<ProgramaComponente> result = query.getResultList();
+			if(result.size() > 0){
+				return result;
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return null;
+	}
+	
+	public ProgramaComponente getProgramaComponenteByIdProgramaIdComponente(Integer idProgramaAno, Integer idComponente) {
+		try {
+			TypedQuery<ProgramaComponente> query = this.em.createNamedQuery("ProgramaComponente.findByIdProgramaAnoIdComponente", ProgramaComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("idComponente", idComponente);
+			List <ProgramaComponente> programas = query.getResultList(); 
+			if(programas != null && programas.size() > 0){
+				return programas.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public ProgramaComponente getProgramaComponenteByIdProgramaNombreComponente(Integer idProgramaAno, String nombreComponente) {
+		try {
+			TypedQuery<ProgramaComponente> query = this.em.createNamedQuery("ProgramaComponente.findByIdProgramaAnoNombreComponente", ProgramaComponente.class);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			query.setParameter("nombreComponente", nombreComponente);
+			List <ProgramaComponente> programas = query.getResultList(); 
+			if(programas != null && programas.size() > 0){
+				return programas.get(0);
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 
 }
 

@@ -15,14 +15,25 @@
                 <h:panelGroup id="display" rendered="#{establecimientoController.establecimientoSeleccionado != null}">
                     <p:panelGrid columns="2" columnClasses="column">
 
-                        <p:outputLabel value="#{messages.CreateEstablecimientoLabel_nombre}" for="nombre" />
-                        <p:inputText id="nombre" value="#{establecimientoController.establecimientoSeleccionado.nombreEstablecimiento}" title="#{messages.CreateEstablecimientoTitle_nombre}"/>
+                        <p:outputLabel value="Nombre" for="nombre" />
+                        <p:inputText id="nombre" value="#{establecimientoController.establecimientoSeleccionado.nombreEstablecimiento}" 
+                        	title="#{messages.CreateEstablecimientoTitle_nombre}"
+                        	required="true" requiredMessage="El nombre del establecimiento es requerido"/>
 
-                        <p:outputLabel value="#{messages.CreateEstablecimientoLabel_codigo}" for="codigo" />
-                        <p:inputText id="codigo" value="#{establecimientoController.establecimientoSeleccionado.codigo}" title="#{messages.CreateEstablecimientoTitle_codigo}"/>
+                        <p:outputLabel value="Código" for="codigo" />
+                        <p:inputText id="codigo" value="#{establecimientoController.establecimientoSeleccionado.codigo}" 
+                        	title="#{messages.CreateEstablecimientoTitle_codigo}"
+                        	required="true" requiredMessage="El código del establecimiento es requerido"/>
+                        	
+                        <p:outputLabel value="Establecimiento Auxiliar ?" for="establecimientoAuxiliar" />
+						<h:selectBooleanCheckbox id="establecimientoAuxiliar"
+							value="#{establecimientoController.establecimientoSeleccionado.esAuxiliar}">
+						</h:selectBooleanCheckbox>
+                        	
 
                         <p:outputLabel value="#{messages.CreateEstablecimientoLabel_servicioSalud}" for="servicioSalud" />
-                        <p:selectOneMenu id="servicioSalud" value="#{establecimientoController.establecimientoSeleccionado.idServicio}" >
+                        <p:selectOneMenu id="servicioSalud" value="#{establecimientoController.establecimientoSeleccionado.idServicio}" 
+                        	required="true" requiredMessage="Debe seleccionar el servicio de salud">
                             <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
                             <f:selectItems value="#{establecimientoController.servicios}"
                                            var="servicioSaludItem"

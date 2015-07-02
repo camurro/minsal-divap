@@ -44,18 +44,18 @@ public class ComponenteService {
 		return componentesPrograma;
 	}
 
-	public List<ComponentesVO> getComponenteByProgramaSubtitulo(int programaId, int sub) {
-		List<Componente> componentes =	this.componenteDAO.getComponenteByProgramaSubtitulo(programaId, sub);
-		List<ComponentesVO> componentesPrograma = new ArrayList<ComponentesVO>();
-		for (Componente componente : componentes){
-			ComponentesVO comVO = new ComponentesVO();
-			comVO.setId(componente.getId());
-			comVO.setNombre(componente.getNombre());
-			componentesPrograma.add(comVO);
-
-		}
-		return componentesPrograma;
-	}
+//	public List<ComponentesVO> getComponenteByProgramaSubtitulo(int programaId, int sub) {
+//		List<Componente> componentes =	this.componenteDAO.getComponenteByProgramaSubtitulo(programaId, sub);
+//		List<ComponentesVO> componentesPrograma = new ArrayList<ComponentesVO>();
+//		for (Componente componente : componentes){
+//			ComponentesVO comVO = new ComponentesVO();
+//			comVO.setId(componente.getId());
+//			comVO.setNombre(componente.getNombre());
+//			componentesPrograma.add(comVO);
+//
+//		}
+//		return componentesPrograma;
+//	}
 
 	public ComponentesVO getComponenteById(Integer idComponente) {
 		Componente componente = this.componenteDAO.getComponenteByID(idComponente);
@@ -100,5 +100,34 @@ public class ComponenteService {
 		}
 		return componentesPrograma;
 	}
+	
+	public List<String> getNombreComponenteByIdTipoComponente(Integer idTipoComponente) {
+		List<Componente> componentes = this.componenteDAO.getComponenteByTipoComponente(idTipoComponente);
+		List<String> componentesPrograma = new ArrayList<String>();
+		for (Componente componente : componentes){
+			componentesPrograma.add(componente.getNombre());
+		}
+		return componentesPrograma;
+	}
+	
+	public List<String> getNombreComponenteByNotIdTipoComponente(Integer idTipoComponente) {
+		List<Componente> componentes = this.componenteDAO.getComponenteByNotTipoComponente(idTipoComponente);
+		List<String> componentesPrograma = new ArrayList<String>();
+		for (Componente componente : componentes){
+			componentesPrograma.add(componente.getNombre());
+		}
+		return componentesPrograma;
+	}
+	
+	public List<String> getNombreComponenteAll(){
+		List<String> resultado = new ArrayList<String>();
+		List<Componente> componentes = this.componenteDAO.getComponentes();
+		for(Componente componente : componentes){
+			resultado.add(componente.getNombre());
+		}
+		
+		return resultado;
+	}
+	
 
 }

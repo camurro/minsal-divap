@@ -73,8 +73,18 @@ public class UsuarioFacade extends AbstractFacade<Usuario> {
     		usuario = usuarioDAO.getUserByUsername(seleccionado.getUsername());
     		usuario.setNombre(seleccionado.getNombre());
     		usuario.setApellido(seleccionado.getApellido());
-//    		usuario.setPassword("minsal2014");
+    		
+    		if(!seleccionado.getIdServicioSalud().equalsIgnoreCase("")){
+    			ServicioSalud servicio = servicioSaludDAO.getById(Integer.parseInt(seleccionado.getIdServicioSalud()));
+    			usuario.setServicio(servicio);
+    		}
+    		else{
+    			usuario.setServicio(null);
+    		}
+    		
     		Email email = emailDAO.getEmailIdById(seleccionado.getIdEmail());
+    		email.setValor(seleccionado.getEmail());
+    		getEntityManager().merge(email);
     		usuario.setEmail(email);
     		List<Rol> rolesUsuario = new ArrayList<Rol>();
     		for(String nombreRol : seleccionado.getNombreRoles()){
@@ -93,6 +103,12 @@ public class UsuarioFacade extends AbstractFacade<Usuario> {
     	usuario.setUsername(nuevo.getUsername());
     	usuario.setNombre(nuevo.getNombre());
 		usuario.setApellido(nuevo.getApellido());
+		
+		if(!nuevo.getIdServicioSalud().equalsIgnoreCase("")){
+			ServicioSalud servicio = servicioSaludDAO.getById(Integer.parseInt(nuevo.getIdServicioSalud()));
+			usuario.setServicio(servicio);
+		}
+		
 		EstadoUsuario estado = mantenedoresDAO.getEstadoUsuarioById(EstadoUsuarioEnum.ACTIVO.getId());
 		usuario.setEstado(estado);
 		

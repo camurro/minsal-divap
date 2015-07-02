@@ -32,10 +32,11 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name = "ProgramaAno.findByAnoIdPrograma", query = "SELECT p FROM ProgramaAno p WHERE p.programa.id = :idPrograma and p.ano.ano = :ano"),
 	@NamedQuery(name = "ProgramaAno.getIdProgramaAnoAnterior", query = "SELECT p FROM ProgramaAno p WHERE p.programa.id = :idPrograma and p.ano.ano = :ano"),
 	@NamedQuery(name = "ProgramaAno.findByIdProgramaAno", query = "SELECT p FROM ProgramaAno p WHERE p.idProgramaAno = :idProgramaAno"),
-	@NamedQuery(name = "ProgramaAno.findByAnoComponente", query = "SELECT DISTINCT p FROM ProgramaAno p inner join p.programa.componentes pc where pc.id in (:idComponentes) and p.ano.ano = :ano"),
+//	@NamedQuery(name = "ProgramaAno.findByAnoComponente", query = "SELECT DISTINCT p FROM ProgramaAno p inner join p.programa.componentes pc where pc.id in (:idComponentes) and p.ano.ano = :ano"),
+	@NamedQuery(name = "ProgramaAno.findByAnoComponente", query = "SELECT p FROM ProgramaAno p inner join p.programaComponentes pc where pc.componente.id in (:idComponentes) and p.ano.ano = :ano"),
 	@NamedQuery(name = "ProgramaAno.findByIdPrograma", query = "SELECT p FROM ProgramaAno p WHERE p.programa.id = :idPrograma"),
 	@NamedQuery(name = "ProgramaAno.findByAno", query = "SELECT p FROM ProgramaAno p WHERE p.ano.ano = :ano"),
-	@NamedQuery(name = "ProgramaAno.findByAnoComponenteFonasa", query = "SELECT p FROM ProgramaAno p inner join p.programa.componentes pc where pc.id in (:idComponentes) and p.ano.ano = :ano and p.programa.revisaFonasa = :fonasa")})
+	@NamedQuery(name = "ProgramaAno.findByAnoComponenteFonasa", query = "SELECT p FROM ProgramaAno p inner join p.programaComponentes pc where pc.componente.id in (:idComponentes) and p.ano.ano = :ano and p.programa.revisaFonasa = :fonasa")})
 public class ProgramaAno implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -48,6 +49,8 @@ public class ProgramaAno implements Serializable {
 	@JoinColumn(name = "estadoflujocaja", referencedColumnName = "id_estado_programa")
 	@ManyToOne
 	private EstadoPrograma estadoFlujoCaja;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "programa")
+    private Set<ProgramaComponente> programaComponentes;
 	@JoinColumn(name = "estado", referencedColumnName = "id_estado_programa")
 	@ManyToOne(optional = false)
 	private EstadoPrograma estado;
@@ -95,6 +98,14 @@ public class ProgramaAno implements Serializable {
 
 	public void setIdProgramaAno(Integer idProgramaAno) {
 		this.idProgramaAno = idProgramaAno;
+	}
+
+	public Set<ProgramaComponente> getProgramaComponentes() {
+		return programaComponentes;
+	}
+
+	public void setProgramaComponentes(Set<ProgramaComponente> programaComponentes) {
+		this.programaComponentes = programaComponentes;
 	}
 
 	public Programa getPrograma() {

@@ -28,7 +28,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "FechaRemesa.findAll", query = "SELECT f FROM FechaRemesa f"),
     @NamedQuery(name = "FechaRemesa.findAllOrderByDia", query = "SELECT f FROM FechaRemesa f order by f.dia.dia asc"),
     @NamedQuery(name = "FechaRemesa.findByProgramaOrderByDia", query = "SELECT f FROM FechaRemesa f JOIN f.programaFechaRemesaSet p WHERE p.programa.id = :idPrograma order by f.dia.dia asc"),
-    @NamedQuery(name = "FechaRemesa.findById", query = "SELECT f FROM FechaRemesa f WHERE f.id = :id")})
+    @NamedQuery(name = "FechaRemesa.findById", query = "SELECT f FROM FechaRemesa f WHERE f.id = :id"),
+    @NamedQuery(name = "FechaRemesa.findByDia", query = "SELECT f FROM FechaRemesa f WHERE f.dia.dia = :dia")})
 public class FechaRemesa implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

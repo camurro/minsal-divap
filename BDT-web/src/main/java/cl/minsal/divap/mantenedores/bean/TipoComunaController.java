@@ -16,9 +16,11 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import minsal.divap.dao.ComunaDAO;
+import minsal.divap.service.MantenedoresService;
 import minsal.divap.vo.PersonaVO;
 import minsal.divap.vo.RegionSummaryVO;
 import minsal.divap.vo.ServiciosVO;
+import minsal.divap.vo.TipoComunaVO;
 import cl.minsal.divap.mantenedores.bean.util.JsfUtil;
 import cl.minsal.divap.mantenedores.enums.PersistAction;
 import cl.minsal.divap.mantenedores.facade.TipoComunaFacade;
@@ -31,11 +33,13 @@ public class TipoComunaController extends AbstractController<TipoComuna> {
     @EJB
     private TipoComunaFacade ejbFacade;
 
-    private List<TipoComuna> tipoComunas;
-    private TipoComuna seleccionado;
+    private List<TipoComunaVO> tipoComunas;
+    private TipoComunaVO seleccionado;
     
     @EJB
     private ComunaDAO comunaDAO;
+    @EJB
+    private MantenedoresService mantenedoresService;
     
     @PostConstruct
     @Override
@@ -71,13 +75,20 @@ public class TipoComunaController extends AbstractController<TipoComuna> {
 			try {
 				if (persistAction == PersistAction.UPDATE) {
 					this.ejbFacade.edit(this.seleccionado);
+					JsfUtil.addSuccessMessage("El Tipo de Comuna ha sido editado exitósamente");
 				}else if(persistAction == PersistAction.CREATE){
 					this.ejbFacade.create(this.seleccionado);
+					JsfUtil.addSuccessMessage("El Tipo de Comuna ha sido creado exitósamente");
 				}else if(persistAction == PersistAction.DELETE){
-					System.out.println("borrando con nuestro delete");
-					this.ejbFacade.remove(this.seleccionado);
+					if(this.seleccionado.getPuedeEliminarse()){
+						System.out.println("borrando con nuestro delete");
+						this.ejbFacade.remove(this.seleccionado);
+						JsfUtil.addSuccessMessage("El Tipo de Comuna ha sido eliminado exitósamente");
+					}else{
+						JsfUtil.addErrorMessage("El Tipo de Comuna no puede eliminarse ya que está siendo usado");
+					}
 				}
-				JsfUtil.addSuccessMessage(successMessage);
+				
 			} catch (EJBException ex) {
 				Throwable cause = JsfUtil.getRootCause(ex.getCause());
 				if (cause != null) {
@@ -115,7 +126,7 @@ public class TipoComunaController extends AbstractController<TipoComuna> {
 
     public void prepareCreateTipoComuna(ActionEvent event) {
 		System.out.println("prepareCreateTipoComuna");
-		seleccionado = new TipoComuna();
+		seleccionado = new TipoComunaVO();
 		super.prepareCreate(event);
 	}
 
@@ -127,22 +138,22 @@ public class TipoComunaController extends AbstractController<TipoComuna> {
         return "/mantenedor/antecendentesComuna/index";
     }
 
-	public List<TipoComuna> getTipoComunas() {
+	public List<TipoComunaVO> getTipoComunas() {
 		if(tipoComunas == null){
-			tipoComunas = comunaDAO.getAllTipoComuna();
+			tipoComunas = mantenedoresService.getTipoComunas();
 		}
 		return tipoComunas;
 	}
 
-	public void setTipoComunas(List<TipoComuna> tipoComunas) {
+	public void setTipoComunas(List<TipoComunaVO> tipoComunas) {
 		this.tipoComunas = tipoComunas;
 	}
 
-	public TipoComuna getSeleccionado() {
+	public TipoComunaVO getSeleccionado() {
 		return seleccionado;
 	}
 
-	public void setSeleccionado(TipoComuna seleccionado) {
+	public void setSeleccionado(TipoComunaVO seleccionado) {
 		this.seleccionado = seleccionado;
 	}
     

@@ -7,32 +7,18 @@
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition>
-        <p:dialog id="ComponenteEditDlg" widgetVar="ComponenteEditDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.EditComponenteTitle}" closeOnEscape="true">
+        <p:dialog id="ComponenteEditDlg" widgetVar="ComponenteEditDialog" modal="true" resizable="false"  appendToBody="true" header="Editar Componente" closeOnEscape="true">
 
             <h:form id="ComponenteEditForm">
 
                 <h:panelGroup id="display">
                     <p:panelGrid  columns="2" columnClasses="column" rendered="#{componenteController.seleccionado != null}">
 
-
-                        <h:outputLabel value="#{messages.EditComponenteLabel_id}" for="id" />
-                        <h:outputText id="id" value="#{componenteController.seleccionado.idComponente}" />
-
-                        <p:outputLabel value="#{messages.EditComponenteLabel_nombre}" for="nombre" />
+                        <p:outputLabel value="#{messages.EditComponenteLabel_nombre} *" for="nombre" />
                         <p:inputText id="nombre" value="#{componenteController.seleccionado.nombreComponente}" title="#{messages.EditComponenteTitle_nombre}"/>
 
-                        <p:outputLabel value="#{messages.EditComponenteLabel_idPrograma}" for="idPrograma" />
-                        <p:selectOneMenu id="idPrograma" value="#{componenteController.seleccionado.idPrograma}" >
-                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
-                            <f:selectItems value="#{programaController.items}"
-                                           var="idProgramaItem"
-                                           itemValue="#{idProgramaItem.id}"
-                                           itemLabel="#{idProgramaItem.nombre}"
-                                           />
-                        </p:selectOneMenu>
-
                         <p:outputLabel value="#{messages.EditComponenteLabel_tipoComponente}" for="tipoComponente" />
-                        <p:selectOneMenu id="tipoComponente" value="#{componenteController.seleccionado.idTipoComponente}" required="true" requiredMessage="#{messages.EditComponenteRequiredMessage_tipoComponente}">
+                        <p:selectOneMenu id="tipoComponente" value="#{componenteController.seleccionado.idTipoComponente}" required="true" requiredMessage="El campo tipo de componente es requerido">
                             <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
                             <f:selectItems value="#{componenteController.tipoComponentes}"
                                            var="tipoComponenteItem"
@@ -44,8 +30,9 @@
                         <p:outputLabel value="#{messages.EditComponenteLabel_peso}" for="peso" />
                         <p:inputText id="peso" value="#{componenteController.seleccionado.peso}" title="#{messages.EditComponenteTitle_peso}"/>
                         
-                        <p:outputLabel value="#{messages.CreateTipoSubtituloLabel_componenteSubtitulos}" />
-                        <p:pickList id="pickList" value="#{componenteController.subtitulos}" var="subItem" itemLabel="#{subItem}" itemValue="#{subItem}"/>
+                        <p:outputLabel value="Subtítulos *" />
+                        <p:pickList id="pickList" value="#{componenteController.subtitulos}" var="subItem" 
+                        	itemLabel="#{subItem}" itemValue="#{subItem}" required="true" requiredMessage="Debe seleccionar por lo menos un subítulo"/>
                         
                     </p:panelGrid>
                     <p:commandButton actionListener="#{componenteController.edit}" value="#{messages.Save}" update="display,:ComponenteListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ComponenteEditDialog);"/>

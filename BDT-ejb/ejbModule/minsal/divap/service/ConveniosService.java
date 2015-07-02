@@ -103,6 +103,7 @@ import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.Institucion;
 import cl.minsal.divap.model.Mes;
 import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ProgramaComponente;
 import cl.minsal.divap.model.ReferenciaDocumento;
 import cl.minsal.divap.model.ReporteEmailsAdjuntos;
 import cl.minsal.divap.model.ReporteEmailsConvenio;
@@ -210,9 +211,12 @@ public class ConveniosService {
 		componentesConvenios.setProgramaNombre(Convenios.getIdPrograma().getPrograma().getNombre());
 		componentesConvenios.setIdConverio(Convenios.getIdConvenioComuna());
 		componentesConvenios.setNumeroResolucion(Convenios.getNumeroResolucion());
-		Collection<Componente> con = Convenios.getIdPrograma().getPrograma().getComponentes();
-		for (Componente conve : con){
-			componentesConvenios.setComponente(conve.getNombre());
+		if(Convenios.getIdPrograma().getProgramaComponentes() != null && Convenios.getIdPrograma().getProgramaComponentes().size() > 0){
+			for (ProgramaComponente programaComponente : Convenios.getIdPrograma().getProgramaComponentes()){
+				if(programaComponente.getComponente() != null){
+					componentesConvenios.setComponente(programaComponente.getComponente().getNombre());
+				}
+			}
 		}
 		return componentesConvenios;
 	}
@@ -778,15 +782,17 @@ public class ConveniosService {
 				idComunas.add(comuna.getId());
 			}
 		}
-		for(Componente componente : programaAno.getPrograma().getComponentes()){
-			for(ComponenteSubtitulo componenteSubtitulo : componente.getComponenteSubtitulosComponente()){
-				if(Subtitulo.SUBTITULO24.getId().equals(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo())){
-					if(componentesBySubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()) == null){
-						List<Integer> idComponentes = new ArrayList<Integer>();
-						idComponentes.add(componente.getId());
-						componentesBySubtitulo.put(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo(), idComponentes);
-					}else{
-						componentesBySubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()).add(componente.getId());
+		if(programaAno.getProgramaComponentes() != null &&  programaAno.getProgramaComponentes().size() > 0){
+			for(ProgramaComponente programaComponente : programaAno.getProgramaComponentes()){
+				for(ComponenteSubtitulo componenteSubtitulo : programaComponente.getComponente().getComponenteSubtitulosComponente()){
+					if(Subtitulo.SUBTITULO24.getId().equals(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo())){
+						if(componentesBySubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()) == null){
+							List<Integer> idComponentes = new ArrayList<Integer>();
+							idComponentes.add(programaComponente.getComponente().getId());
+							componentesBySubtitulo.put(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo(), idComponentes);
+						}else{
+							componentesBySubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()).add(programaComponente.getComponente().getId());
+						}
 					}
 				}
 			}
@@ -817,15 +823,17 @@ public class ConveniosService {
 				idEstablecimientos.add(establecimiento.getId());
 			}
 		}
-		for(Componente componente : programaAno.getPrograma().getComponentes()){
-			for(ComponenteSubtitulo componenteSubtitulo : componente.getComponenteSubtitulosComponente()){
-				if(!Subtitulo.SUBTITULO24.getId().equals(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo())){
-					if(componentesBySubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()) == null){
-						List<Integer> idComponentes = new ArrayList<Integer>();
-						idComponentes.add(componente.getId());
-						componentesBySubtitulo.put(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo(), idComponentes);
-					}else{
-						componentesBySubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()).add(componente.getId());
+		if(programaAno.getProgramaComponentes() != null &&  programaAno.getProgramaComponentes().size() > 0){
+			for(ProgramaComponente programaComponente : programaAno.getProgramaComponentes()){
+				for(ComponenteSubtitulo componenteSubtitulo : programaComponente.getComponente().getComponenteSubtitulosComponente()){
+					if(!Subtitulo.SUBTITULO24.getId().equals(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo())){
+						if(componentesBySubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()) == null){
+							List<Integer> idComponentes = new ArrayList<Integer>();
+							idComponentes.add(programaComponente.getComponente().getId());
+							componentesBySubtitulo.put(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo(), idComponentes);
+						}else{
+							componentesBySubtitulo.get(componenteSubtitulo.getSubtitulo().getIdTipoSubtitulo()).add(programaComponente.getComponente().getId());
+						}
 					}
 				}
 			}
@@ -1750,7 +1758,7 @@ public class ConveniosService {
 		String filename = tmpDir + File.separator + "planillaConvenioMunicipal " + programa.getNombre().replace(":", "") + ".xlsx";
 		String contenType = mimemap.getContentType(filename.toLowerCase());
 		Subtitulo[] subtitulosServicio = {Subtitulo.SUBTITULO24};
-		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulosServicio);
+		List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), subtitulosServicio);
 		List<Integer> idComponentes = new ArrayList<Integer>();
 		GeneradorExcel generadorExcel = new GeneradorExcel(filename);
 		List<CellExcelVO> header = new ArrayList<CellExcelVO>();
@@ -1833,7 +1841,7 @@ public class ConveniosService {
 		String filename = tmpDir + File.separator + "planillaConvenioServicio " + programa.getNombre().replace(":", "") + ".xlsx";
 		String contenType = mimemap.getContentType(filename.toLowerCase());
 		Subtitulo[] subtitulosServicio = {Subtitulo.SUBTITULO21, Subtitulo.SUBTITULO22, Subtitulo.SUBTITULO29};
-		List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulosServicio);
+		List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), subtitulosServicio);
 		int totalSubtitulos = 0;
 		for(ComponentesVO componentesVO : componentes){
 			for(SubtituloVO subtituloVO : componentesVO.getSubtitulos()){

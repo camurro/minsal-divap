@@ -1,44 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
 <h:head>
 	<meta http-equiv="X-UA-Compatible" content="IE=9" />
 	<title>Ministerio de Salud. Gobierno de Chile</title>
 	<style type="text/css" media="all">
-@import url("resources/minsal/theme/style.css");
 
-@import url("resources/minsal/modules/system/system.base.css");
-
-@import url("resources/minsal/modules/system/system.menus.css");
-
-@import url("resources/css/bandeja_tareas_main.css");
 </style>
+
+	
+	<link href="#{facesContext.externalContext.requestContextPath}/resources/minsal/theme/style.css" type="text/css" rel="stylesheet" />
+	<link href="#{facesContext.externalContext.requestContextPath}/resources/minsal/modules/system/system.base.css" type="text/css" rel="stylesheet" />
+	<link href="#{facesContext.externalContext.requestContextPath}/resources/minsal/modules/system/system.menus.css" type="text/css" rel="stylesheet" />
+	<link href="#{facesContext.externalContext.requestContextPath}/resources/css/bandeja_tareas_main.css" type="text/css" rel="stylesheet" />
+	
+
+
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-	<link rel="shortcut icon" href="resources/minsal/theme/favicon.ico" />
-	<link rel="shortcut icon" href="resources/minsal/theme/favicon.png" />
-	<link rel="stylesheet" type="text/css" href="resources/css/ext-all.css" />
-	<link rel="stylesheet" type="text/css" href="resources/css/xtheme-dgac-siso.css" />
+	<link rel="shortcut icon" href="#{facesContext.externalContext.requestContextPath}/resources/minsal/theme/favicon.ico" />
+	<link rel="shortcut icon" href="#{facesContext.externalContext.requestContextPath}/resources/minsal/theme/favicon.png" />
+	<link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.requestContextPath}/resources/css/ext-all.css" />
+	<link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.requestContextPath}/resources/css/xtheme-dgac-siso.css" />
 	<!-- <link rel="stylesheet" type="text/css" href="resources/css/estilo.css" /> -->
-	<script src="resources/SpryAssets/SpryMenuBar.js" type="text/javascript"></script>
-	<script src="resources/css/primefaceLocale.js" type="text/javascript"></script>
-	<link href="resources/SpryAssets/SpryMenuBarHorizontal.css" rel="stylesheet" type="text/css" />
-	<link href="resources/SpryAssets/SpryMenuBarHorizontal.css" type="text/css" rel="stylesheet" />
-	<link href="resources/SpryAssets/SpryValidationTextField.css" type="text/css" rel="stylesheet" />
-	<link href="resources/SpryAssets/SpryValidationPassword.css" type="text/css" rel="stylesheet" />
-	<link href="resources/minsal/theme/estilos_oirs_nuevo.css" type="text/css" rel="stylesheet" />
+	<script src="#{facesContext.externalContext.requestContextPath}/resources/SpryAssets/SpryMenuBar.js" type="text/javascript"></script>
+	<script src="#{facesContext.externalContext.requestContextPath}/resources/css/primefaceLocale.js" type="text/javascript"></script>
+	<link href="#{facesContext.externalContext.requestContextPath}/resources/SpryAssets/SpryMenuBarHorizontal.css" rel="stylesheet" type="text/css" />
+	<link href="#{facesContext.externalContext.requestContextPath}/resources/SpryAssets/SpryMenuBarHorizontal.css" type="text/css" rel="stylesheet" />
+	<link href="#{facesContext.externalContext.requestContextPath}/resources/SpryAssets/SpryValidationTextField.css" type="text/css" rel="stylesheet" />
+	<link href="#{facesContext.externalContext.requestContextPath}/resources/SpryAssets/SpryValidationPassword.css" type="text/css" rel="stylesheet" />
+	<link href="#{facesContext.externalContext.requestContextPath}/resources/minsal/theme/estilos_oirs_nuevo.css" type="text/css" rel="stylesheet" />
 
 	<!-- <link rel="stylesheet" type="text/css" href="resources/css/ext-all.css" /> -->
 	<!-- <link rel="stylesheet" type="text/css" href="resources/css/xtheme-dgac-siso.css" /> -->
-	<link rel="stylesheet" type="text/css" href="resources/css/iconos.css" />
+	<link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.requestContextPath}/resources/css/iconos.css" />
 	<!-- <link rel="stylesheet" type="text/css" href="resources/css/estilo.css" /> -->
-	<script src="resources/SpryAssets/SpryMenuBar.js" type="text/javascript"></script>
-	<link href="resources/SpryAssets/SpryMenuBarHorizontal.css" rel="stylesheet" type="text/css" />
+	<script src="#{facesContext.externalContext.requestContextPath}/resources/SpryAssets/SpryMenuBar.js" type="text/javascript"></script>
+	<link href="#{facesContext.externalContext.requestContextPath}/resources/SpryAssets/SpryMenuBarHorizontal.css" rel="stylesheet" type="text/css" />
 
-	<script src="resources/SpryAssets/SpryMenuBar.js" type="text/javascript"></script>
-	<script src="resources/SpryAssets/SpryValidationTextField.js" type="text/javascript"></script>
-	<script src="resources/SpryAssets/SpryValidationPassword.js" type="text/javascript"></script>
+	<script src="#{facesContext.externalContext.requestContextPath}/resources/SpryAssets/SpryMenuBar.js" type="text/javascript"></script>
+	<script src="#{facesContext.externalContext.requestContextPath}/resources/SpryAssets/SpryValidationTextField.js" type="text/javascript"></script>
+	<script src="#{facesContext.externalContext.requestContextPath}/resources/SpryAssets/SpryValidationPassword.js" type="text/javascript"></script>
 	<ui:insert name="zonaJavaScript"></ui:insert>
 	<script type="text/javascript">
 		function addInputPrimeButtonStyleClass(element,styleClass){
@@ -49,6 +53,51 @@
 			elVar = 'input[id*="'+element+'"]';
 			jQuery(elVar).removeClass(styleClass);
 		}
+		function handleSubmit(xhr, status, args, dialog) {
+		    var jqDialog = jQuery('#'+dialog.id);
+		    if(args.validationFailed) {
+		        jqDialog.effect('shake', { times:3 }, 100);
+		    } else {
+		        dialog.hide();
+		    }
+		}
+
+		function alertaTipoComponente(){
+			alert("No se puede cambiar el tipo de programa");
+		}
+
+		function noGuardarPrograma(){
+			alert("Se seleccionó el tipo de programa como Histórico, pero no se seleccionó ningún componente Histórico");
+		}
+
+		function noGuardarProgramaDesdeHistoricoHastaPxQ(){
+			alert("Se cambió el tipo de programa a PXQ, pero aún posee componentes del tipo Históricos");
+		}
+		
+		function agregarFila(){
+			
+        	$("#formAgregarCuota\\:hiddenNroCuota").val($("#ProgramaCreateForm\\:nroCuota").val());
+        	$("#formAgregarCuota\\:hiddenPorcentaje").val($("#ProgramaCreateForm\\:porcentajeCuota").val());
+        	$("#formAgregarCuota\\:hiddenFecha").val($("#ProgramaCreateForm\\:fechaPago_input").val());
+
+        	
+			document.getElementById('formAgregarCuota:botonAgregaCuota').click();
+        }
+
+        function agregarFilaEditar(){
+        	$("#formAgregarCuotaEdit\\:hiddenNroCuota").val($("#ProgramaEditForm\\:nroCuota").val());
+        	$("#formAgregarCuotaEdit\\:hiddenPorcentaje").val($("#ProgramaEditForm\\:porcentajeCuota").val());
+        	$("#formAgregarCuotaEdit\\:hiddenFecha").val($("#ProgramaEditForm\\:fechaPago").val());
+        	$("#formAgregarCuotaEdit\\:hiddenMonto").val($("#ProgramaEditForm\\:monto").val());
+
+        	
+			 	document.getElementById('formAgregarCuotaEdit:botonAgregaCuota').click();
+        }
+
+
+        function levantarError(){
+		 	document.getElementById('formMessage:botonMessage').click();
+        }
 	</script>
 
 </h:head>
@@ -56,7 +105,7 @@
 	<div id="wrapper">
 		<header id="header" class="clearfix">
 		<div id="site-logo">
-			<h:graphicImage value="resources/minsal/theme/logo.png" styleClass="divapIcons" />
+			<h:graphicImage value="${pageContext.request.contextPath}/resources/minsal/theme/logo.png" styleClass="divapIcons" />
 		</div>
 		<div class="content" style="float: right;">
 			<div>
@@ -75,53 +124,54 @@
 			<!-- INICIO MENU -->
 			<h:form>
 				<p:growl id="messages" />
+				
 				<p:menubar>
 					<p:submenu label="Bandeja de Tareas" icon="ui-icon-seek-next">
-						<p:menuitem value="Mis Tareas" url="bandejaTareas.jsf?indexMenu=0" icon="ui-icon-pencil" />
-						<p:menuitem value="Tareas Disponibles" url="bandejaTareas.jsf?indexMenu=1" icon="ui-icon-video" />
-						<p:menuitem value="Buscar Tareas" url="bandejaTareas.jsf?indexMenu=2" icon="ui-icon-search" />
+						<p:menuitem value="Mis Tareas" url="${pageContext.request.contextPath}/bandejaTareas.jsf?indexMenu=0" icon="ui-icon-pencil" />
+						<p:menuitem value="Tareas Disponibles" url="${pageContext.request.contextPath}/bandejaTareas.jsf?indexMenu=1" icon="ui-icon-video" />
+						<p:menuitem value="Buscar Tareas" url="${pageContext.request.contextPath}/bandejaTareas.jsf?indexMenu=2" icon="ui-icon-search" />
 					</p:submenu>
 					<p:submenu label="Procesos" icon="ui-icon-extlink">
 						<p:submenu label="Asignación de Recursos per Capita">
-							<p:menuitem value="Asignación N° Resoluciones Por Comuna" url="divapProcesoAsignacionPerCapitaCargarResoluciones.jsf" icon="ui-icon-document" />
-							<p:menuitem value="Asignación y Distribución de Recursos Per Cápita" url="divapProcesoAsignacionPerCapitaInicio.jsf" icon="ui-icon-document" />
-							<p:menuitem value="Modificación de Distribución de Recursos Per Cápita" url="divapProcesoModificacionAsignacionPerCapitaInicio.jsf" icon="ui-icon-document" />
+							<p:menuitem value="Asignación N° Resoluciones Por Comuna" url="${pageContext.request.contextPath}/divapProcesoAsignacionPerCapitaCargarResoluciones.jsf" icon="ui-icon-document" />
+							<p:menuitem value="Asignación y Distribución de Recursos Per Cápita" url="${pageContext.request.contextPath}/divapProcesoAsignacionPerCapitaInicio.jsf" icon="ui-icon-document" />
+							<p:menuitem value="Modificación de Distribución de Recursos Per Cápita" url="${pageContext.request.contextPath}/divapProcesoModificacionAsignacionPerCapitaInicio.jsf" icon="ui-icon-document" />
 						</p:submenu>
-						<p:menuitem value="Resoluciones de Rebaja" url="divapProcesoRebajaInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
+						<p:menuitem value="Resoluciones de Rebaja" url="${pageContext.request.contextPath}/divapProcesoRebajaInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
 						<p:submenu label="Distribución de Recursos Financieros APS">
-							<p:menuitem value="Distribución Inicial de Recursos" url="divapProcesoDistRecFinProgInicio.jsf"
+							<p:menuitem value="Distribución Inicial de Recursos" url="${pageContext.request.contextPath}/divapProcesoDistRecFinProgInicio.jsf"
 								icon="ui-icon-arrowrefresh-1-s" />
-							<p:menuitem value="Modificar Distribución" url="divapProcesoModificacionDistRecFinProgInicio.jsf"
+							<p:menuitem value="Modificar Distribución" url="${pageContext.request.contextPath}/divapProcesoModificacionDistRecFinProgInicio.jsf"
 								icon="ui-icon-arrowrefresh-1-s" />
 						</p:submenu>
-						<p:menuitem value="Reliquidación" url="divapProcesoReliqInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
-						<p:menuitem value="Gestión de Información para Transferencia" url="divapProcesoGITInicio.jsf"
+						<p:menuitem value="Reliquidación" url="${pageContext.request.contextPath}/divapProcesoReliqInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
+						<p:menuitem value="Gestión de Información para Transferencia" url="${pageContext.request.contextPath}/divapProcesoGITInicio.jsf"
 							icon="ui-icon-arrowrefresh-1-s" />
 						<p:submenu label="Estimación de Flujos de Caja">
-							<p:menuitem onclick="cambiarEstado();" value="Estimación de Flujos de Caja" url="divapProcesoProgInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
-							<p:menuitem onclick="cambiarEstado();" value="Consolidador de Flujos de Caja" url="divapProcesoProgInicioConsolidado.jsf" icon="ui-icon-arrowrefresh-1-s" />
+							<p:menuitem onclick="cambiarEstado();" value="Estimación de Flujos de Caja" url="${pageContext.request.contextPath}/divapProcesoProgInicio.jsf" icon="ui-icon-arrowrefresh-1-s" />
+							<p:menuitem onclick="cambiarEstado();" value="Consolidador de Flujos de Caja" url="${pageContext.request.contextPath}/divapProcesoProgInicioConsolidado.jsf" icon="ui-icon-arrowrefresh-1-s" />
 						</p:submenu>
 						<p:submenu label="Tramitación de Ordenes de Transferencia">
-							<p:menuitem onclick="cambiarEstado();" value="Ordenes de Transferencia" url="divapProcesoOTInicio.jsf" icon="ui-icon-arrowrefresh-1-s"  />
-							<p:menuitem onclick="cambiarEstado();" value="Consolidador de Ordenes de Transferencia" url="divapProcesoOTConsolidador.jsf" icon="ui-icon-arrowrefresh-1-s" />
+							<p:menuitem onclick="cambiarEstado();" value="Ordenes de Transferencia" url="${pageContext.request.contextPath}/divapProcesoOTInicio.jsf" icon="ui-icon-arrowrefresh-1-s"  />
+							<p:menuitem onclick="cambiarEstado();" value="Consolidador de Ordenes de Transferencia" url="${pageContext.request.contextPath}/divapProcesoOTConsolidador.jsf" icon="ui-icon-arrowrefresh-1-s" />
 						</p:submenu>
 					</p:submenu>
 					<p:submenu label="Reportes" icon="ui-icon-document">
 						<p:submenu label="Informes Comuna - Servicio">
-							<p:menuitem onclick="cambiarEstado();" value="Marco Presupuestario Programa por Comuna y Servicios de Salud" url="divapReporteMarcoPresupuestarioComuna.jsf" icon="ui-icon-document" />
-							<p:menuitem onclick="cambiarEstado();" value="Población per Capita" url="divapReportePoblacionPerCapita.jsf" icon="ui-icon-document" />
-							<p:menuitem onclick="cambiarEstado();" value="Histórico por Programa" url="divapReporteHistoricoPorPrograma.jsf" icon="ui-icon-document" />
+							<p:menuitem onclick="cambiarEstado();" value="Marco Presupuestario Programa por Comuna y Servicios de Salud" url="${pageContext.request.contextPath}/divapReporteMarcoPresupuestarioComuna.jsf" icon="ui-icon-document" />
+							<p:menuitem onclick="cambiarEstado();" value="Población per Capita" url="${pageContext.request.contextPath}/divapReportePoblacionPerCapita.jsf" icon="ui-icon-document" />
+							<p:menuitem onclick="cambiarEstado();" value="Histórico por Programa" url="${pageContext.request.contextPath}/divapReporteHistoricoPorPrograma.jsf" icon="ui-icon-document" />
 						</p:submenu>
-						<p:menuitem value="Monitoreo Programa" url="divapReporteMonitoreoPrograma.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Rebajas" url="divapReporteRebajas.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Estado Situación de Programa" url="divapReporteEstadoSituacionPrograma.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Meta Desempeño" url="divapReporteMetaDesempenio.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Glosa 07" url="divapReporteGlosa07.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Monitoreo Programa" url="${pageContext.request.contextPath}/divapReporteMonitoreoPrograma.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Rebajas" url="${pageContext.request.contextPath}/divapReporteRebajas.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Estado Situación de Programa" url="${pageContext.request.contextPath}/divapReporteEstadoSituacionPrograma.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Meta Desempeño" url="${pageContext.request.contextPath}/divapReporteMetaDesempenio.jsf" icon="ui-icon-document" />
+						<p:menuitem value="Glosa 07" url="${pageContext.request.contextPath}/divapReporteGlosa07.jsf" icon="ui-icon-document" />
 
 					</p:submenu>
 					<p:submenu label="Servicio de Salud" icon="ui-icon-extlink" rendered="#{not empty loginController.servicio}">
-						<p:menuitem value="Gestión de Convenios y Resoluciones" url="divapServicioConvenios.jsf" icon="ui-icon-pencil"/>
-						<p:menuitem value="Gestión de Convenios y Resoluciones Modificatorias" url="divapServicioConveniosModificatorios.jsf" icon="ui-icon-pencil"/>
+						<p:menuitem value="Gestión de Convenios y Resoluciones" url="${pageContext.request.contextPath}/divapServicioConvenios.jsf" icon="ui-icon-pencil"/>
+						<p:menuitem value="Gestión de Convenios y Resoluciones Modificatorias" url="${pageContext.request.contextPath}/divapServicioConveniosModificatorios.jsf" icon="ui-icon-pencil"/>
 					</p:submenu>
 							
 					
@@ -134,15 +184,9 @@
 								value="Configurar Comunas #{menuMantenedoresController.anoCurso + 1}" url="/mantenedor/comuna/index.jsf?anoSiguiente=true" icon="ui-icon-document" />
 						</p:submenu>
 						<p:menuitem value="Componente" url="/mantenedor/componente/index.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Cumplimiento" url="/mantenedor/cumplimiento/index.jsf" icon="ui-icon-document" />
-<!-- 						<p:menuitem value="Cumplimiento Programa" url="/mantenedor/cumplimientoPrograma/index.jsf" icon="ui-icon-document" /> -->
 						<p:menuitem value="Establecimiento" url="/mantenedor/establecimiento/index.jsf" icon="ui-icon-document" />
-						<p:menuitem value="Estado Programa" url="/mantenedor/estadoPrograma/index.jsf" icon="ui-icon-document" />
-<!-- 						<p:menuitem value="Estado Convenio" url="/mantenedor/comuna/index.jsf" icon="ui-icon-document" /> -->
 						<p:menuitem value="Factor Referencia Asignacion Zona" url="/mantenedor/factorRefAsigZona/index.jsf" icon="ui-icon-document" />
 						<p:menuitem value="Factor Tramo Pobreza" url="/mantenedor/factorTramoPobreza/index.jsf" icon="ui-icon-document" />
-<!-- 						<p:menuitem value="Feriados" url="/mantenedor/comuna/index.jsf" icon="ui-icon-document" /> -->
-						<p:menuitem value="Persona" url="/mantenedor/persona/index.jsf" icon="ui-icon-document" />
 						
 						
 						<p:submenu label="Programa">
@@ -191,6 +235,7 @@
 					<ui:insert name="content">
 					
                     [Template content will be inserted here]
+                    
          			</ui:insert>
 					<br />
 					<h:form>

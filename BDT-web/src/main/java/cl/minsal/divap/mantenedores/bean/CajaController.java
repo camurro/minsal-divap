@@ -86,9 +86,9 @@ public class CajaController extends AbstractController<Caja> {
      * @param event Event object for the widget that triggered an action
      */
     public void prepareMarcoPresupuestario(ActionEvent event) {
-        if (this.getSelected() != null && marcoPresupuestarioController.getSelected() == null) {
-            marcoPresupuestarioController.setSelected(this.getSelected().getMarcoPresupuestario());
-        }
+//        if (this.getSelected() != null && marcoPresupuestarioController.getSelected() == null) {
+//            marcoPresupuestarioController.setSelected(this.getSelected().getMarcoPresupuestario());
+//        }
     }
 
     /**

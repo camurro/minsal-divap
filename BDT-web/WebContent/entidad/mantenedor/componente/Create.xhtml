@@ -16,20 +16,13 @@
                     <p:panelGrid columns="2" columnClasses="column">
 
                         <p:outputLabel value="#{messages.CreateComponenteLabel_nombre}" for="nombre" />
-                        <p:inputText id="nombre" value="#{componenteController.seleccionado.nombreComponente}" title="#{messages.CreateComponenteTitle_nombre}"/>
+                        <p:inputText id="nombre" value="#{componenteController.seleccionado.nombreComponente}" 
+                        	title="#{messages.CreateComponenteTitle_nombre}"
+                        	required="true" requiredMessage="El nombre del componente es un campo requerido"/>
 
-                        <p:outputLabel value="#{messages.CreateComponenteLabel_idPrograma}" for="idPrograma" />
-                        <p:selectOneMenu id="idPrograma" value="#{componenteController.seleccionado.idPrograma}" >
-                            <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
-                            <f:selectItems value="#{componenteController.programas}"
-                                           var="idProgramaItem"
-                                           itemValue="#{idProgramaItem.id}"
-                                           itemLabel="#{idProgramaItem.nombre}"
-                                           />
-                        </p:selectOneMenu>
 
                         <p:outputLabel value="#{messages.CreateComponenteLabel_tipoComponente}" for="tipoComponente" />
-                        <p:selectOneMenu id="tipoComponente" value="#{componenteController.seleccionado.idTipoComponente}" required="true" requiredMessage="#{messages.CreateComponenteRequiredMessage_tipoComponente}">
+                        <p:selectOneMenu id="tipoComponente" value="#{componenteController.seleccionado.idTipoComponente}" required="true" requiredMessage="El tipo de componente es un campo requerido">
                             <f:selectItem itemLabel="#{messages.SelectOneMessage}"/>
                             <f:selectItems value="#{componenteController.tipoComponentes}"
                                            var="tipoComponenteItem"
@@ -41,8 +34,10 @@
                         <p:outputLabel value="#{messages.CreateComponenteLabel_peso}" for="peso" />
                         <p:inputText id="peso" value="#{componenteController.seleccionado.peso}" title="#{messages.CreateComponenteTitle_peso}"/>
                         
-                        <p:outputLabel value="#{messages.CreateTipoSubtituloLabel_componenteSubtitulos}" />
-                        <p:pickList id="pickList" value="#{componenteController.subtitulos}" var="subItem" itemLabel="#{subItem}" itemValue="#{subItem}"/>
+                        <p:outputLabel value="Seleccione Subtítulos" for="pickList"/>
+                        <p:pickList id="pickList" value="#{componenteController.subtitulos}" var="subItem" 
+                        	itemLabel="#{subItem}" itemValue="#{subItem}" required="true" requiredMessage="Debe seleccionar por lo menos un subtítulo">
+                        </p:pickList>
                         
                     </p:panelGrid>
                     <p:commandButton actionListener="#{componenteController.saveNew}" value="#{messages.Save}" update="display,:ComponenteListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,ComponenteCreateDialog);"/>

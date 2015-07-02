@@ -31,7 +31,10 @@
                         <p:outputLabel value="#{messages.CreateAnoEnCursoLabel_inflactor}" for="inflactor" />
                         <p:inputText id="inflactor" value="#{anoEnCursoController.seleccionado.inflactor}" 
                         	title="#{messages.CreateAnoEnCursoTitle_inflactor}"
-                        	required="true" requiredMessage="El campo Inflactor es requerido"/>
+                        	required="true" requiredMessage="El campo Inflactor es requerido">
+                        	
+                        	<f:validateDoubleRange minimum="0" maximum="10"></f:validateDoubleRange>	
+                        </p:inputText>
 
                     </p:panelGrid>
                     <p:commandButton actionListener="#{anoEnCursoController.saveNew}" value="#{messages.Save}" update="display,:AnoEnCursoListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,AnoEnCursoCreateDialog);"/>
