@@ -15,7 +15,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.print.attribute.standard.Severity;
 
 import minsal.divap.enums.BusinessProcess;
 import minsal.divap.enums.Programas;
@@ -169,7 +168,7 @@ implements Serializable {
 			remesasPrograma = otService.getRemesasPrograma(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
 			remesasPerCapita = otService.getRemesasPerCapita(programa.getId(), Integer.parseInt(otService.getMesCurso(true)), anoCurso);
 			System.out.println("programaSeleccionado" + programaSeleccionado);
-			listaComponentes = componenteService.getComponenteByPrograma(programa.getId());
+			listaComponentes = componenteService.getComponentesByProgramaAno(programa.getId());
 			if(listaComponentes != null && listaComponentes.size() == 1){
 				componenteSeleccionado = listaComponentes.get(0).getId().toString();
 			}
@@ -245,7 +244,7 @@ implements Serializable {
 		if(programaSeleccionadoResumen != null && !programaSeleccionadoResumen.trim().isEmpty()){
 			programaResumen = otService.getProgramaById(Integer.parseInt(programaSeleccionadoResumen));
 			System.out.println("Buscando resumen para programa: " + programaResumen.getNombre());
-			listaComponentesResumen = componenteService.getComponenteByPrograma(programaResumen.getId());
+			listaComponentesResumen = componenteService.getComponentesByProgramaAno(programaResumen.getIdProgramaAno());
 			resumenPrograma = otService.getResumenPrograma(programaResumen);
 			subtitulo21Resumen = false;
 			subtitulo22Resumen = false;

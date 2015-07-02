@@ -85,7 +85,7 @@ public class ProcesoDistRecFinController extends AbstractTaskMBean implements Se
 		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
 		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		listaServicios = utilitariosService.getAllServicios();
-		listaComponentes = componenteService.getComponenteByPrograma(programa.getId());
+		listaComponentes = componenteService.getComponentesByProgramaAno(programaProxAno.getIdProgramaAno());
 		armarResumenPrograma();
 	}
 	

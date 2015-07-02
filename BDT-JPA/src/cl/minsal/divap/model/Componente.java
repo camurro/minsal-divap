@@ -1,6 +1,7 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -38,7 +39,7 @@ public class Componente implements Serializable {
     private Set<Cuota> cuotas;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "componente")
 	@OrderBy("idComponenteSubtitulo ASC")
-	private Set<ComponenteSubtitulo> componenteSubtitulosComponente;
+	private List<ComponenteSubtitulo> componenteSubtitulosComponente;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "componente")
     private Set<ProgramaComponente> programaComponentes;
 	@JoinColumn(name = "tipo_componente", referencedColumnName = "id")
@@ -73,12 +74,12 @@ public class Componente implements Serializable {
 	}
 	
 	@XmlTransient
-	public Set<ComponenteSubtitulo> getComponenteSubtitulosComponente() {
+	public List<ComponenteSubtitulo> getComponenteSubtitulosComponente() {
 		return componenteSubtitulosComponente;
 	}
 
 	public void setComponenteSubtitulosComponente(
-			Set<ComponenteSubtitulo> componenteSubtitulosComponente) {
+			List<ComponenteSubtitulo> componenteSubtitulosComponente) {
 		this.componenteSubtitulosComponente = componenteSubtitulosComponente;
 	}
 	

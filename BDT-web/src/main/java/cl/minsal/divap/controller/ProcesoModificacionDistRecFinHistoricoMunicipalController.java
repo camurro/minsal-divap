@@ -92,7 +92,7 @@ public class ProcesoModificacionDistRecFinHistoricoMunicipalController extends A
 		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, anoBase);
 		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		listaServicios = utilitariosService.getAllServicios();
-		listaComponentes= componenteService.getComponenteByPrograma(programaSeleccionado);
+		listaComponentes= componenteService.getComponentesByProgramaAno(programaProxAno.getIdProgramaAno());
 		inflactorS24 = subtituloService.getInflactor(3);
 		//armarResumenPrograma();
 	}

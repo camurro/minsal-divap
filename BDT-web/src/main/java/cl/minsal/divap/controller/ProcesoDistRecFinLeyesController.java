@@ -83,7 +83,7 @@ public class ProcesoDistRecFinLeyesController extends AbstractTaskMBean implemen
 		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		
 		listaServicios = utilitariosService.getAllServicios();
-		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
+		listaComponentes= componenteService.getComponentesByProgramaAno(programaProxAno.getIdProgramaAno());
 		componenteSeleccionado =  listaComponentes.get(0).getId().toString();
 		
 	}

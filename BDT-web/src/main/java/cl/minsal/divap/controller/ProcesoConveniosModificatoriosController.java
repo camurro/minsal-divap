@@ -185,7 +185,7 @@ public class ProcesoConveniosModificatoriosController extends BaseController imp
 			}else{
 				dependenciaSeleccionado = "2";
 			}
-			List<ComponentesVO> componentesTmp = componenteService.getComponenteByPrograma(this.programa.getId());
+			List<ComponentesVO> componentesTmp = componenteService.getComponentesByProgramaAno(this.programa.getIdProgramaAno());
 			if(componentesTmp != null && componentesTmp.size() > 0){
 				for(ComponentesVO componentesVO : componentesTmp){
 					if(TiposPrograma.ProgramaLey.getId().equals(componentesVO.getTipoComponente().getId())){
@@ -304,7 +304,7 @@ public class ProcesoConveniosModificatoriosController extends BaseController imp
 			}
 			if(dependencias != null && dependencias.size() == 1){
 				dependenciaSeleccionado = dependencias.get(0).getId().toString();
-				List<ComponentesVO> componentesTmp = componenteService.getComponenteByPrograma(programa.getId());
+				List<ComponentesVO> componentesTmp = componenteService.getComponentesByProgramaAno(programa.getIdProgramaAno());
 				if(componentesTmp != null && componentesTmp.size() > 0){
 					for(ComponentesVO componentesVO : componentesTmp){
 						if(TiposPrograma.ProgramaLey.getId().equals(componentesVO.getTipoComponente().getId())){
@@ -366,7 +366,7 @@ public class ProcesoConveniosModificatoriosController extends BaseController imp
 			componenteSeleccionado = "";
 			orderList = new ArrayList<ConvenioComponenteSubtituloVO>();
 			itemSeleccionado = null;
-			List<ComponentesVO> componentesTmp = componenteService.getComponenteByPrograma(programa.getId());
+			List<ComponentesVO> componentesTmp = componenteService.getComponentesByProgramaAno(programa.getIdProgramaAno());
 			if(dependenciaSeleccionado.equals("1")){
 				if(componentesTmp != null && componentesTmp.size() > 0){
 					for(ComponentesVO componentesVO : componentesTmp){

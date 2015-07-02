@@ -9,9 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import minsal.divap.enums.Subtitulo;
-import minsal.divap.vo.ComponentesVO;
 import cl.minsal.divap.model.Componente;
-import cl.minsal.divap.model.ComponenteSubtitulo;
 import cl.minsal.divap.model.ConvenioComuna;
 import cl.minsal.divap.model.ConvenioServicio;
 import cl.minsal.divap.model.TipoComponente;
@@ -88,15 +86,7 @@ public class ComponenteDAO {
 		}
 	}*/
 	
-	public List<Componente> getComponenteByPrograma(Integer idPrograma){
-		try {
-			TypedQuery<Componente> query = this.em.createNamedQuery("Componente.findByPrograma", Componente.class);
-			query.setParameter("idPrograma", idPrograma);
-			return query.getResultList(); 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+
 
 	public Componente getComponenteByID(Integer Id){
 		try {
@@ -132,6 +122,16 @@ public class ComponenteDAO {
 			}
 			TypedQuery<Componente> query = this.em.createNamedQuery("Componente.findByIdProgramaAnoIdSubtitulos", Componente.class);
 			query.setParameter("idTipoSubtitulos", idSubtitulos);
+			query.setParameter("idProgramaAno", idProgramaAno);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public List<Componente> getComponentesByIdProgramaAno(Integer idProgramaAno) {
+		try {
+			TypedQuery<Componente> query = this.em.createNamedQuery("ProgramaComponente.findComponentesByIdProgramaAno", Componente.class);
 			query.setParameter("idProgramaAno", idProgramaAno);
 			return query.getResultList();
 		} catch (Exception e) {

@@ -114,7 +114,7 @@ public class ProcesoModificacionDistRecFinHistoricoServicioController extends Ab
 		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, anoBase);
 		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		listaServicios = utilitariosService.getAllServicios();
-		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
+		listaComponentes= componenteService.getComponentesByProgramaAno(programa.getIdProgramaAno());
 		inflactorS21 = subtituloService.getInflactor(1);
 		inflactorS22 = subtituloService.getInflactor(2);
 		inflactorS29 = subtituloService.getInflactor(4);

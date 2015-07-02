@@ -1,11 +1,10 @@
 package cl.minsal.divap.model;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -25,6 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ProgramaComponente.findAll", query = "SELECT p FROM ProgramaComponente p"),
     @NamedQuery(name = "ProgramaComponente.findByIdProgramaComponente", query = "SELECT p FROM ProgramaComponente p WHERE p.idProgramaComponente = :idProgramaComponente"),
     @NamedQuery(name = "ProgramaComponente.findByIdProgramaAno", query = "SELECT p FROM ProgramaComponente p WHERE p.programa.idProgramaAno =:idProgramaAno"),
+    @NamedQuery(name = "ProgramaComponente.findComponentesByIdProgramaAno", query = "SELECT DISTINCT(p.componente) FROM ProgramaComponente p WHERE p.programa.idProgramaAno =:idProgramaAno"),
     @NamedQuery(name = "ProgramaComponente.findByIdProgramaAnoIdComponente", query = "SELECT p FROM ProgramaComponente p WHERE p.programa.idProgramaAno =:idProgramaAno and p.componente.id =:idComponente"),
     @NamedQuery(name = "ProgramaComponente.findByIdProgramaAnoNombreComponente", query = "SELECT p FROM ProgramaComponente p WHERE p.programa.idProgramaAno =:idProgramaAno and p.componente.nombre =:nombreComponente")})
 public class ProgramaComponente implements Serializable {

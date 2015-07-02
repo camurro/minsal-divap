@@ -119,7 +119,7 @@ public class ProcesoModificacionDistRecFinMixtoController extends AbstractTaskMB
 		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		System.out.println("\n\n\n###programaProxAno --> "+programaProxAno+"\n\n\n");
 		listaServicios = utilitariosService.getAllServicios();
-		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
+		listaComponentes= componenteService.getComponentesByProgramaAno(programaProxAno.getIdProgramaAno());
 		armarResumenPrograma();
 	}
 

@@ -135,7 +135,7 @@ implements Serializable {
 		}
 
 		listaServicios = utilitariosService.getAllServicios();
-		listaComponentes = componenteService.getComponenteByPrograma(programa.getId());
+		listaComponentes = componenteService.getComponentesByProgramaAno(programa.getIdProgramaAno());
 		if(listaComponentes != null && listaComponentes.size() == 1){
 			componenteSeleccionado = listaComponentes.get(0).getId();
 		}

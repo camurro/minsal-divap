@@ -35,27 +35,14 @@ public class ComponenteService {
 		return ComponentesVO;
 	}
 
-	public List<ComponentesVO> getComponenteByPrograma(Integer programaId) {
-		List<Componente> componentes = this.componenteDAO.getComponenteByPrograma(programaId);
+	public List<ComponentesVO> getComponentesByProgramaAno(Integer idProgramaAno) {
+		List<Componente> componentes = this.componenteDAO.getComponentesByIdProgramaAno(idProgramaAno);
 		List<ComponentesVO> componentesPrograma = new ArrayList<ComponentesVO>();
 		for (Componente componente : componentes){
 			componentesPrograma.add(new ComponenteMapper().getBasic(componente));
 		}
 		return componentesPrograma;
 	}
-
-//	public List<ComponentesVO> getComponenteByProgramaSubtitulo(int programaId, int sub) {
-//		List<Componente> componentes =	this.componenteDAO.getComponenteByProgramaSubtitulo(programaId, sub);
-//		List<ComponentesVO> componentesPrograma = new ArrayList<ComponentesVO>();
-//		for (Componente componente : componentes){
-//			ComponentesVO comVO = new ComponentesVO();
-//			comVO.setId(componente.getId());
-//			comVO.setNombre(componente.getNombre());
-//			componentesPrograma.add(comVO);
-//
-//		}
-//		return componentesPrograma;
-//	}
 
 	public ComponentesVO getComponenteById(Integer idComponente) {
 		Componente componente = this.componenteDAO.getComponenteByID(idComponente);

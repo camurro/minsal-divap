@@ -94,7 +94,7 @@ public class ProcesoDistRecFinHistoricoMunicipalController extends AbstractTaskM
 		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
 		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		listaServicios = utilitariosService.getAllServicios();
-		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
+		listaComponentes= componenteService.getComponentesByProgramaAno(programaProxAno.getIdProgramaAno());
 		inflactorS24 = subtituloService.getInflactor(3);
 	}
 	
