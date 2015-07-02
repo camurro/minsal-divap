@@ -138,7 +138,7 @@ Serializable {
 					mostrarMunicipal = true;
 					mostrarServicio = true;
 					Subtitulo[] subtitulosMunicipal = { Subtitulo.SUBTITULO24};
-					componentes = programaService.getComponenteByProgramaSubtitulos(getPrograma().getId(),  subtitulosMunicipal);
+					componentes = programaService.getComponentesByProgramaAnoSubtitulos(getPrograma().getIdProgramaAno(), subtitulosMunicipal);
 					this.reliquidacionServicio21 = new ArrayList<ValorizarReliquidacionPageSummaryVO>();
 					this.reliquidacionServicio22 = new ArrayList<ValorizarReliquidacionPageSummaryVO>();
 					this.reliquidacionServicio29 = new ArrayList<ValorizarReliquidacionPageSummaryVO>();
@@ -165,7 +165,7 @@ Serializable {
 					this.reliquidacionServicio22 = new ArrayList<ValorizarReliquidacionPageSummaryVO>();
 					this.reliquidacionServicio29 = new ArrayList<ValorizarReliquidacionPageSummaryVO>();
 					Subtitulo[] subtitulosServicios = {Subtitulo.SUBTITULO21, Subtitulo.SUBTITULO22, Subtitulo.SUBTITULO29};
-					componentes = programaService.getComponenteByProgramaSubtitulos(getPrograma().getId(),  subtitulosServicios);
+					componentes = programaService.getComponentesByProgramaAnoSubtitulos(getPrograma().getIdProgramaAno(), subtitulosServicios);
 					this.componenteSeleccionado =  componentes.get(0).getId().toString();
 					for(SubtituloVO subtituloVO : componentes.get(0).getSubtitulos()){
 						if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId())){
@@ -216,7 +216,7 @@ Serializable {
 				this.reliquidacionServicio22 = new ArrayList<ValorizarReliquidacionPageSummaryVO>();
 				this.reliquidacionServicio29 = new ArrayList<ValorizarReliquidacionPageSummaryVO>();
 				Subtitulo[] subtitulos =  {Subtitulo.SUBTITULO24};
-				componentes = programaService.getComponenteByProgramaSubtitulos(getPrograma().getId(),  subtitulos);
+				componentes = programaService.getComponentesByProgramaAnoSubtitulos(getPrograma().getIdProgramaAno(), subtitulos);
 				this.componenteSeleccionado =  componentes.get(0).getId().toString();
 				this.reliquidacionMunicipal = reliquidacionService.getReliquidacionMunicipalSummaryVO(getPrograma().getIdProgramaAno(), Integer.parseInt(this.componenteSeleccionado), null, getIdReliquidacion());
 			}else{
@@ -225,7 +225,7 @@ Serializable {
 				this.reliquidacionServicio29 = new ArrayList<ValorizarReliquidacionPageSummaryVO>();
 				this.reliquidacionMunicipal = new ArrayList<ValorizarReliquidacionPageSummaryVO>();
 				Subtitulo[] subtitulos =  {Subtitulo.SUBTITULO21, Subtitulo.SUBTITULO22, Subtitulo.SUBTITULO29};
-				componentes = programaService.getComponenteByProgramaSubtitulos(getPrograma().getId(),  subtitulos);
+				componentes = programaService.getComponentesByProgramaAnoSubtitulos(getPrograma().getIdProgramaAno(), subtitulos);
 				this.componenteSeleccionado =  componentes.get(0).getId().toString();
 				for(SubtituloVO subtituloVO : componentes.get(0).getSubtitulos()){
 					if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId())){
@@ -246,7 +246,7 @@ Serializable {
 			this.reliquidacionServicio29 = new ArrayList<ValorizarReliquidacionPageSummaryVO>();
 			this.reliquidacionMunicipal = new ArrayList<ValorizarReliquidacionPageSummaryVO>();
 			Subtitulo[] subtitulos =  {Subtitulo.SUBTITULO21, Subtitulo.SUBTITULO22, Subtitulo.SUBTITULO29};
-			componentes = programaService.getComponenteByProgramaSubtitulos(getPrograma().getId(),  subtitulos);
+			componentes = programaService.getComponentesByProgramaAnoSubtitulos(getPrograma().getIdProgramaAno(), subtitulos);
 			this.componenteSeleccionado =  componentes.get(0).getId().toString();
 			for(SubtituloVO subtituloVO : componentes.get(0).getSubtitulos()){
 				if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId())){
@@ -313,7 +313,7 @@ Serializable {
 				this.reliquidacionServicio29 = new ArrayList<ValorizarReliquidacionPageSummaryVO>();
 				this.reliquidacionMunicipal = new ArrayList<ValorizarReliquidacionPageSummaryVO>();
 				Subtitulo[] subtitulos =  {Subtitulo.SUBTITULO21, Subtitulo.SUBTITULO22, Subtitulo.SUBTITULO29};
-				componentes = programaService.getComponenteByProgramaSubtitulos(getPrograma().getId(),  subtitulos);
+				componentes = programaService.getComponentesByProgramaAnoSubtitulos(getPrograma().getIdProgramaAno(), subtitulos);
 				ComponentesVO componente = componenteService.getComponenteById(idComponente);
 				for(SubtituloVO subtituloVO : componente.getSubtitulos()){
 					if(Subtitulo.SUBTITULO21.getId().equals(subtituloVO.getId())){

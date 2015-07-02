@@ -79,7 +79,7 @@ public class ProcesoDistRecFinProgSubirPlanillasServicio extends AbstractTaskMBe
 		try{
 			docIds = new ArrayList<Integer>();
 			Subtitulo[] subtitulosServicios = {Subtitulo.SUBTITULO21, Subtitulo.SUBTITULO22, Subtitulo.SUBTITULO29};
-			List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulosServicios);
+			List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), subtitulosServicios);
 			if (planillaServicio != null){
 				try{
 					String filename = planillaServicio.getFileName();

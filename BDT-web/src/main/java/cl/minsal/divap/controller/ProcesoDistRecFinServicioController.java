@@ -119,15 +119,15 @@ public class ProcesoDistRecFinServicioController extends AbstractTaskMBean imple
 			totalResumen29 = 0l;
 			totalResumen = 0l;
 			
-			List<ComponentesVO> componentesPrograma = programasService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO21);
+			List<ComponentesVO> componentesPrograma = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), Subtitulo.SUBTITULO21);
 			if(componentesPrograma != null && componentesPrograma.size() > 0){
 				tiene21 = true;
 			}
-			componentesPrograma = programasService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO22);
+			componentesPrograma = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), Subtitulo.SUBTITULO22);
 			if(componentesPrograma != null && componentesPrograma.size() > 0){
 				tiene22 = true;
 			}
-			componentesPrograma = programasService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO29);
+			componentesPrograma = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), Subtitulo.SUBTITULO29);
 			if(componentesPrograma != null && componentesPrograma.size() > 0){
 				tiene29 = true;
 			}

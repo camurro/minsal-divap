@@ -82,7 +82,7 @@ public class ProcesoDistRecFinProgSubirPlanillas extends AbstractTaskMBean imple
 				try{
 					String filename = planillaMuncipal.getFileName();
 					byte[] contentPlanillaMuncipal = planillaMuncipal.getContents();
-					List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO24);
+					List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), Subtitulo.SUBTITULO24);
 					recursosFinancierosProgramasReforzamientoService.procesarPlanillaMunicipal(false, IdProgramaProxAno, GeneradorExcel.fromContent(contentPlanillaMuncipal, XSSFWorkbook.class), componentes, 4);
 					Integer docPlanillaMuncipal = persistFile(filename, contentPlanillaMuncipal);
 					if (docPlanillaMuncipal != null) {

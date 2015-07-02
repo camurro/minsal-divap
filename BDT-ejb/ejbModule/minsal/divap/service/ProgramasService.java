@@ -903,7 +903,6 @@ public class ProgramasService {
 
 	public List<ComponentesVO> getComponentesByProgramaAnoSubtitulos(Integer idProgramaAno, Subtitulo... subtitulos) {
 		List<ComponentesVO> componentesVO = new ArrayList<ComponentesVO>();
-		ProgramaVO programaVO = this.getProgramaAno(idProgramaAno);
 		List<Componente> componentes = componenteDAO.getComponentesByIdProgramaAnoIdSubtitulos(idProgramaAno, subtitulos);
 		if(componentes != null && componentes.size() > 0){
 			for(Componente componente : componentes){

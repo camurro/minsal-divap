@@ -1,8 +1,5 @@
 package cl.minsal.divap.mantenedores.bean;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,7 +12,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.faces.application.FacesMessage;
-import javax.faces.application.FacesMessage.Severity;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -30,24 +26,18 @@ import minsal.divap.enums.TipoComponenteEnum;
 import minsal.divap.service.ComponenteService;
 import minsal.divap.service.MantenedoresService;
 import minsal.divap.service.ReportesServices;
-import minsal.divap.vo.ComponentesVO;
-import minsal.divap.vo.FechaRemesaVO;
 import minsal.divap.vo.MantenedorCuotasVO;
 import minsal.divap.vo.MantenedorProgramaVO;
-import minsal.divap.vo.SubtituloVO;
 import minsal.divap.vo.TipoComponenteVO;
 
-import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.DualListModel;
 
-import sun.security.action.GetLongAction;
 import cl.minsal.divap.mantenedores.bean.util.JsfUtil;
 import cl.minsal.divap.mantenedores.enums.PersistAction;
 import cl.minsal.divap.mantenedores.facade.ProgramaFacade;
 import cl.minsal.divap.model.Componente;
-import cl.minsal.divap.model.Cuota;
 import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.Usuario;
 import cl.minsal.util.PrimeFacesUtil;
@@ -56,13 +46,17 @@ import cl.minsal.util.PrimeFacesUtil;
 @ViewScoped
 public class ProgramaController extends AbstractController<Programa> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 105689477006407632L;
 	private List<MantenedorProgramaVO> programas;
 	private MantenedorProgramaVO seleccionado;
 	private List<Usuario> usuarios;
 	private List<MantenedorCuotasVO> cuotas;
 	private List<Integer> cantidadCuotas;
 	private Integer nroCuota;
-	private Integer porcentaje_cuota;
+	private Integer porcentajeCuota;
 	private Date fecha_cuota;
 	private String fecha_convertida;
 	private Integer mes;
@@ -110,7 +104,7 @@ public class ProgramaController extends AbstractController<Programa> {
 		this.cuotas.remove(mantenedorCuotasVO);
 		Integer porcentajeTotal = 0;
 		for(MantenedorCuotasVO cuotas : this.cuotas){
-			porcentajeTotal += cuotas.getPorcentaje_cuota();
+			porcentajeTotal += cuotas.getPorcentajeCuota();
 		}
 		if(porcentajeTotal == 100){
 			permitirGuardarPrograma = true;
@@ -121,7 +115,7 @@ public class ProgramaController extends AbstractController<Programa> {
 	}
 
 	private void clearField() {
-		setPorcentaje_cuota(null);
+		setPorcentajeCuota(null);
 		setFecha_cuota(null);
 	}
 
@@ -139,7 +133,7 @@ public class ProgramaController extends AbstractController<Programa> {
 			}
 		}
 		for(MantenedorCuotasVO cuotasVO : this.cuotas){
-			porcentajeAcumuladoCuotas = porcentajeAcumuladoCuotas + cuotasVO.getPorcentaje_cuota();
+			porcentajeAcumuladoCuotas = porcentajeAcumuladoCuotas + cuotasVO.getPorcentajeCuota();
 		}
 		
 		
@@ -250,8 +244,6 @@ public class ProgramaController extends AbstractController<Programa> {
 	}
 
 	public void edit(ActionEvent event) {
-		Boolean guardar = false;
-		String ejecutarJavaScrip = null;
 
 		ingresoCamposCuotasObligatorio = false;
 		seleccionado.setListaCuotas(getCuotas());
@@ -565,7 +557,6 @@ public class ProgramaController extends AbstractController<Programa> {
 		System.out.println("event.getOldStep-->" + event.getOldStep());
 		System.out.println("event.getNewStep-->" + event.getNewStep());
 
-		String ejecutarJavaScrip = null;
 		Boolean guardar = false;
 		errorMessage = "";
 		if (event.getOldStep().equalsIgnoreCase("datosPrograma") && event.getNewStep().equalsIgnoreCase("componentesPrograma")) {
@@ -647,7 +638,6 @@ public class ProgramaController extends AbstractController<Programa> {
 		System.out.println("event.getOldStep-->" + event.getOldStep());
 		System.out.println("event.getNewStep-->" + event.getNewStep());
 
-		String ejecutarJavaScrip = null;
 		Boolean guardar = false;
 		errorMessage = "";
 		if (event.getOldStep().equalsIgnoreCase("datosPrograma") && event.getNewStep().equalsIgnoreCase("componentesPrograma")) {
@@ -718,7 +708,7 @@ public class ProgramaController extends AbstractController<Programa> {
 		System.out.println("llega al action listener");
 		Integer porcentajeAcumuladoCuotas = 0;
 		Boolean agregarCuota = true;
-		if(this.porcentaje_cuota == null || this.porcentaje_cuota == 0){
+		if(this.porcentajeCuota == null || this.porcentajeCuota == 0){
 			errorMessage = "Debe ingresar el porcentaje de la cuota";
 			agregarCuota = false;
 			PrimeFacesUtil.ejecutarJavaScript("levantarError();");
@@ -754,10 +744,10 @@ public class ProgramaController extends AbstractController<Programa> {
 		if(agregarCuota){
 			for (MantenedorCuotasVO cuotasVO : cuotas) {
 				porcentajeAcumuladoCuotas = porcentajeAcumuladoCuotas
-						+ cuotasVO.getPorcentaje_cuota();
+						+ cuotasVO.getPorcentajeCuota();
 
 			}
-			porcentajeAcumuladoCuotas += getPorcentaje_cuota();
+			porcentajeAcumuladoCuotas += getPorcentajeCuota();
 			
 			
 			if(porcentajeAcumuladoCuotas == 100){
@@ -773,7 +763,7 @@ public class ProgramaController extends AbstractController<Programa> {
 			} else {
 				//PrimeFacesUtil.ejecutarJavaScript("agregarFila();");
 				MantenedorCuotasVO cuota = new MantenedorCuotasVO();
-				cuota.setPorcentaje_cuota(porcentaje_cuota);
+				cuota.setPorcentajeCuota(porcentajeCuota);
 				if(this.fecha_cuota != null){
 					cuota.setFecha_cuota(fecha_cuota);
 				}
@@ -814,12 +804,12 @@ public class ProgramaController extends AbstractController<Programa> {
 		this.nroCuota = nroCuota;
 	}
 
-	public Integer getPorcentaje_cuota() {
-		return porcentaje_cuota;
+	public Integer getPorcentajeCuota() {
+		return porcentajeCuota;
 	}
 
-	public void setPorcentaje_cuota(Integer porcentaje_cuota) {
-		this.porcentaje_cuota = porcentaje_cuota;
+	public void setPorcentajeCuota(Integer porcentajeCuota) {
+		this.porcentajeCuota = porcentajeCuota;
 	}
 
 
@@ -1009,7 +999,7 @@ public class ProgramaController extends AbstractController<Programa> {
 		totalPorcentajeCuotas = 0;
 		if(cuotas != null && cuotas.size() > 0){
 			for(MantenedorCuotasVO mantenedorCuotasVO : cuotas){
-				totalPorcentajeCuotas += ((mantenedorCuotasVO.getPorcentaje_cuota() != null) ? mantenedorCuotasVO.getPorcentaje_cuota() : 0);
+				totalPorcentajeCuotas += ((mantenedorCuotasVO.getPorcentajeCuota() != null) ? mantenedorCuotasVO.getPorcentajeCuota() : 0);
 			}
 		}
 		return totalPorcentajeCuotas;

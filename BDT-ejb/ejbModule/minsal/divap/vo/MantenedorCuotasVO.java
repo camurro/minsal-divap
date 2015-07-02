@@ -10,7 +10,7 @@ public class MantenedorCuotasVO implements Serializable{
 	
 	private Integer idCuota;
 	private Integer nroCuota;
-	private Integer porcentaje_cuota;
+	private Integer porcentajeCuota;
 	private Integer mes;
 	private Date fecha_cuota;
 	
@@ -18,11 +18,11 @@ public class MantenedorCuotasVO implements Serializable{
 		
 	}
 	
-	public MantenedorCuotasVO(Integer idCuota, Integer nroCuota, Integer porcentaje_cuota, Integer mes, Date fecha_cuota){
+	public MantenedorCuotasVO(Integer idCuota, Integer nroCuota, Integer porcentajeCuota, Integer mes, Date fecha_cuota){
 		super();
 		this.idCuota = idCuota;
 		this.nroCuota = nroCuota;
-		this.porcentaje_cuota = porcentaje_cuota;
+		this.porcentajeCuota = porcentajeCuota;
 		this.mes = mes;
 		this.fecha_cuota = fecha_cuota;
 	}
@@ -30,7 +30,7 @@ public class MantenedorCuotasVO implements Serializable{
 	public MantenedorCuotasVO(MantenedorCuotasVO mantenedorNuevo){
 		this.idCuota = mantenedorNuevo.getIdCuota();
 		this.nroCuota = mantenedorNuevo.getNroCuota();
-		this.porcentaje_cuota = mantenedorNuevo.getPorcentaje_cuota();
+		this.porcentajeCuota = mantenedorNuevo.getPorcentajeCuota();
 		this.mes = mantenedorNuevo.getMes();
 		this.fecha_cuota = mantenedorNuevo.getFecha_cuota();
 	}
@@ -52,12 +52,12 @@ public class MantenedorCuotasVO implements Serializable{
 		this.nroCuota = nroCuota;
 	}
 
-	public Integer getPorcentaje_cuota() {
-		return porcentaje_cuota;
+	public Integer getPorcentajeCuota() {
+		return porcentajeCuota;
 	}
 
-	public void setPorcentaje_cuota(Integer porcentaje_cuota) {
-		this.porcentaje_cuota = porcentaje_cuota;
+	public void setPorcentajeCuota(Integer porcentajeCuota) {
+		this.porcentajeCuota = porcentajeCuota;
 	}
 
 	public Integer getMes() {
@@ -96,7 +96,7 @@ public class MantenedorCuotasVO implements Serializable{
 	@Override
 	public String toString() {
 		return "MantenedorCuotasVO [idCuota=" + idCuota + ", nroCuota="
-				+ nroCuota + ", porcentaje_cuota=" + porcentaje_cuota
+				+ nroCuota + ", porcentajeCuota=" + porcentajeCuota
 				+ ", mes=" + mes + ", fecha_cuota=" + fecha_cuota + "]";
 	}
 

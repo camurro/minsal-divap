@@ -71,6 +71,7 @@ public class ProcesoModificacionDistRecFinHistoricoMunicipalController extends A
 	private ProgramaVO programa;
 	private ProgramaVO programaProxAno;
 	private Integer ano;
+	private Integer anoBase;
 	
 	@PostConstruct 
 	public void init() {
@@ -86,8 +87,9 @@ public class ProcesoModificacionDistRecFinHistoricoMunicipalController extends A
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
 			ano = (Integer) getTaskDataVO().getData().get("_ano");
+			anoBase = ((ano == null) ? null : (ano - 1));
 		}
-		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
+		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, anoBase);
 		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes= componenteService.getComponenteByPrograma(programaSeleccionado);
@@ -290,6 +292,22 @@ public class ProcesoModificacionDistRecFinHistoricoMunicipalController extends A
 
 	public void setProgramaProxAno(ProgramaVO programaProxAno) {
 		this.programaProxAno = programaProxAno;
+	}
+
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
+
+	public Integer getAnoBase() {
+		return anoBase;
+	}
+
+	public void setAnoBase(Integer anoBase) {
+		this.anoBase = anoBase;
 	}
 	
 }

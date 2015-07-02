@@ -93,6 +93,7 @@ public class ProcesoModificacionDistRecFinHistoricoServicioController extends Ab
 	private String subtitulo;
 	private ProgramaVO programaProxAno;
 	private Integer ano;
+	private Integer anoBase;
 	
 	@PostConstruct 
 	public void init() {
@@ -108,8 +109,9 @@ public class ProcesoModificacionDistRecFinHistoricoServicioController extends Ab
 		if (getTaskDataVO() != null && getTaskDataVO().getData() != null) {
 			programaSeleccionado = (Integer) getTaskDataVO().getData().get("_programaSeleccionado");
 			ano = (Integer) getTaskDataVO().getData().get("_ano");
+			anoBase = ((ano == null) ? null : (ano - 1));
 		}
-		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, (ano - 1));
+		programa = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, anoBase);
 		programaProxAno = programasService.getProgramaByIdProgramaAndAno(programaSeleccionado, ano);
 		listaServicios = utilitariosService.getAllServicios();
 		listaComponentes= componenteService.getComponenteByPrograma(programa.getId());
@@ -498,4 +500,20 @@ public class ProcesoModificacionDistRecFinHistoricoServicioController extends Ab
 		this.programaProxAno = programaProxAno;
 	}
 
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
+
+	public Integer getAnoBase() {
+		return anoBase;
+	}
+
+	public void setAnoBase(Integer anoBase) {
+		this.anoBase = anoBase;
+	}
+	
 }

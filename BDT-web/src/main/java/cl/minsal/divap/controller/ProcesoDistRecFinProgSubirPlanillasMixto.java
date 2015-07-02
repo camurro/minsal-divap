@@ -96,7 +96,7 @@ public class ProcesoDistRecFinProgSubirPlanillasMixto extends AbstractTaskMBean 
 				try{
 					String filename = planillaMuncipal.getFileName();			
 					byte[] contentPlanillaMuncipal = planillaMuncipal.getContents();
-					List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO24);
+					List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), Subtitulo.SUBTITULO24);
 					recursosFinancierosProgramasReforzamientoService.procesarPlanillaMunicipal(false, IdProgramaProxAno, GeneradorExcel.fromContent(contentPlanillaMuncipal, XSSFWorkbook.class), componentes, 4);
 					Integer docPlanillaMuncipal = persistFile(filename, contentPlanillaMuncipal);
 					if (docPlanillaMuncipal != null) {
@@ -114,7 +114,7 @@ public class ProcesoDistRecFinProgSubirPlanillasMixto extends AbstractTaskMBean 
 					String filename = planillaServicio.getFileName();
 					byte[] contentPlanillaServicio = planillaServicio.getContents();
 					Subtitulo[] subtitulos = {Subtitulo.SUBTITULO21, Subtitulo.SUBTITULO22, Subtitulo.SUBTITULO29};
-					List<ComponentesVO> componentes = programasService.getComponenteByProgramaSubtitulos(programa.getId(), subtitulos);		
+					List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), subtitulos);
 					recursosFinancierosProgramasReforzamientoService.procesarPlanillaServicio(IdProgramaProxAno, GeneradorExcel.fromContent(contentPlanillaServicio,
 									XSSFWorkbook.class), componentes);
 					Integer docPlanillaServicio = persistFile(filename, contentPlanillaServicio);

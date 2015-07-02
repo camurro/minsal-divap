@@ -185,7 +185,7 @@ public class ProgramaFacade extends AbstractFacade<Programa> {
     		for(MantenedorCuotasVO mantenedorCuotasVO : cuotasNuevas){
     			Cuota cuota = new Cuota();
     			cuota.setNumeroCuota((short)mantenedorCuotasVO.getNroCuota().intValue());
-    			cuota.setPorcentaje(mantenedorCuotasVO.getPorcentaje_cuota());
+    			cuota.setPorcentaje(mantenedorCuotasVO.getPorcentajeCuota());
     			cuota.setIdPrograma(programaAno);
     			cuota.setFechaPago(mantenedorCuotasVO.getFecha_cuota());
     			Mes mes = null;
@@ -258,7 +258,7 @@ public class ProgramaFacade extends AbstractFacade<Programa> {
 		for(MantenedorCuotasVO mantenedorCuotasVO : nuevo.getListaCuotas()){
 			Cuota cuota = new Cuota();
 			cuota.setNumeroCuota((short)i);
-			cuota.setPorcentaje(mantenedorCuotasVO.getPorcentaje_cuota());
+			cuota.setPorcentaje(mantenedorCuotasVO.getPorcentajeCuota());
 			cuota.setIdPrograma(programaAno);
 			cuota.setFechaPago(mantenedorCuotasVO.getFecha_cuota());
 			Mes mes = null;

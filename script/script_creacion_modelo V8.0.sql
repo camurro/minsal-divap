@@ -26913,10 +26913,6 @@ INSERT INTO	programa_componente	(id_programa_componente, programa, componente) V
 INSERT INTO	programa_componente	(id_programa_componente, programa, componente) VALUES (228,167,112);
 
 
-
-
->>>>>>> mantenedoresFinal6
-
 INSERT INTO tipo_documento(id_tipo_documento, nombre) VALUES (182, 'Planilla Detalle Remesa APS SS');
 
 ALTER TABLE detalle_remesas

@@ -14,8 +14,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.jboss.security.auth.spi.Util;
-
 import minsal.divap.dao.EmailDAO;
 import minsal.divap.dao.MantenedoresDAO;
 import minsal.divap.dao.RolDAO;
@@ -23,15 +21,16 @@ import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.dao.UsuarioDAO;
 import minsal.divap.enums.EstadoUsuarioEnum;
 import minsal.divap.service.EmailService;
-import minsal.divap.vo.MantenedorEstadoProgramaVO;
+import minsal.divap.util.PasswordHelper;
 import minsal.divap.vo.MantenedorUsuarioVO;
+
+import org.jboss.security.auth.spi.Util;
+
 import cl.minsal.divap.model.Email;
-import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.EstadoUsuario;
 import cl.minsal.divap.model.Rol;
 import cl.minsal.divap.model.ServicioSalud;
 import cl.minsal.divap.model.Usuario;
-import cl.minsal.util.PasswordHelper;
 
 /**
  *

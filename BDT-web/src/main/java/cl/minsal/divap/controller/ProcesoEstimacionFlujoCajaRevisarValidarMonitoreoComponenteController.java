@@ -98,7 +98,7 @@ public class ProcesoEstimacionFlujoCajaRevisarValidarMonitoreoComponenteControll
 		String subtituloSeleccionado = getRequestParameter("subtituloSeleccionado");
 		if(subtituloSeleccionado != null){
 			Integer sub = Integer.parseInt(subtituloSeleccionado);
-			componentesSeleccionados = programaService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.getById(sub));
+			componentesSeleccionados = programaService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), Subtitulo.getById(sub));
 			setSubtituloSeleccionado(Subtitulo.getById(sub));
 			if(this.programa != null && this.programa.getComponentes() != null){
 				if(this.programa.getComponentes().size() == 1){

@@ -172,7 +172,7 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 		resumenProgramaMunicipal = programasService.getResumenMunicipal(programaProxAno.getIdProgramaAno(), 3);
 		totalResumen24 = 0L;
 		tiene24 = false;
-		List<ComponentesVO> componentesPrograma = programasService.getComponenteByProgramaSubtitulos(programa.getId(), Subtitulo.SUBTITULO24);
+		List<ComponentesVO> componentesPrograma = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), Subtitulo.SUBTITULO24);
 		if(componentesPrograma != null && componentesPrograma.size() > 0){
 			tiene24 = true;
 		}

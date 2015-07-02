@@ -583,7 +583,7 @@ public class MantenedoresService {
 				if(cuota.getIdMes() != null){
 					cuotaVO.setMes(cuota.getIdMes().getIdMes());
 				}
-				cuotaVO.setPorcentaje_cuota(cuota.getPorcentaje());
+				cuotaVO.setPorcentajeCuota(cuota.getPorcentaje());
 				mantenedorCuotasVO.add(cuotaVO);
 				mantenedorCuotasVOActuales.add(new MantenedorCuotasVO(cuotaVO));
 			}

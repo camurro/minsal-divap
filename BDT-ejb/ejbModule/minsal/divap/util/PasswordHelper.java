@@ -1,4 +1,4 @@
-package cl.minsal.util;
+package minsal.divap.util;
 
 import java.util.Random;
 import java.util.regex.Matcher;
