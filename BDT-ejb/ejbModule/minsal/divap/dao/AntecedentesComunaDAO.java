@@ -182,7 +182,7 @@ public class AntecedentesComunaDAO {
 			query.setParameter("anoEnCurso", anoAnterior);
 			List<AntecendentesComunaCalculado> results = query.getResultList(); 
 			if(results != null && results.size() > 0){
-				result = results.get(0).getValorPerCapitaComunalMes();
+				result = ((results.get(0).getPercapitaMes() == null) ? 0.0 : results.get(0).getPercapitaMes().doubleValue());
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);

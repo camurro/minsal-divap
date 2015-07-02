@@ -4323,6 +4323,7 @@ public class GeneradorExcel {
 		currentRow = 2;
 		currentCol = excelSheet.getOffsetColumns();
 		List<ResumenConsolidadorVO> items = excelSheet.getItems();
+		List<Long> totales = new ArrayList<Long>();
 		System.out.println("items.size()=" + ((items == null) ? 0 : items.size()));
 		if (items != null) {
 			int lastRow = items.size();
@@ -4333,38 +4334,92 @@ public class GeneradorExcel {
 			for (ResumenConsolidadorVO resumenConsolidadorVO : items) {
 				if(primeraCarga){
 					if (contElementos != lastRow) {
+						if(contElementos == 1){
+							for(int contador = 0; contador < resumenConsolidadorVO.getMontos().size(); contador++){
+								totales.add(0L);
+							}
+							totales.add(0L);
+						}
 						XSSFRow row = sheet.createRow(currentRow);
 						XSSFCell cell = row.createCell(currentCol++);
 						cell.setCellValue(resumenConsolidadorVO.getCodigoServicio());
 						cell = row.createCell(currentCol++);
 						cell.setCellValue(resumenConsolidadorVO.getServicio());
+						int contador = 0;
 						for (Long monto : resumenConsolidadorVO.getMontos()) {
 							cell = row.createCell(currentCol++);
 							cell.setCellStyle(cellStyleLong);
 							cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
 							cell.setCellValue(monto);
+							Long montoAcumulado = totales.get(contador) + monto;
+							totales.set(contador, montoAcumulado);
+							contador++;
 						}
 						cell = row.createCell(currentCol);
 						cell.setCellStyle(cellStyleHeader);
 						cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
-						cell.setCellValue(resumenConsolidadorVO.getTotal());
+						Long totalFinal = resumenConsolidadorVO.getTotal();
+						cell.setCellValue(totalFinal);
+						Long montoAcumulado = totales.get(contador) + totalFinal;
+						totales.set(contador, montoAcumulado);
 					} else {
+						currentCol = excelSheet.getOffsetColumns();
+						XSSFRow row = sheet.createRow(currentRow);
+						XSSFCell cell = row.createCell(currentCol);
+						cell.setCellStyle(styleTotales);
+						cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+						cell.setCellValue("Total");
+						cell = row.createCell((currentCol+1));
+						cell.setCellStyle(styleTotales);
+						cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+						sheet.addMergedRegion(new CellRangeAddress(currentRow, currentRow, currentCol, (currentCol + 1)));
+						currentCol += 2;
+						for(Long total : totales){
+							cell = row.createCell(currentCol++);
+							cell.setCellStyle(styleTotales);
+							cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+							cell.setCellValue(total);
+						}
 					}
 				}else{
 					if (contElementos != lastRow) {
+						if(contElementos == 1){
+							for(int contador = 0; contador < resumenConsolidadorVO.getMontos().size(); contador++){
+								totales.add(0L);
+							}
+							totales.add(0L);
+						}
 						XSSFRow row = sheet.getRow(currentRow);
 						XSSFCell cell = null;
+						int contador = 0;
 						for (Long monto : resumenConsolidadorVO.getMontos()) {
 							cell = row.createCell(currentCol++);
 							cell.setCellStyle(cellStyleLong);
 							cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
 							cell.setCellValue(monto);
+							Long montoAcumulado = totales.get(contador) + monto;
+							totales.set(contador, montoAcumulado);
+							contador++;
 						}
 						cell = row.createCell(currentCol);
 						cell.setCellStyle(cellStyleHeader);
 						cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
-						cell.setCellValue(resumenConsolidadorVO.getTotal());
+						Long totalFinal = resumenConsolidadorVO.getTotal();
+						cell.setCellValue(totalFinal);
+						Long montoAcumulado = totales.get(contador) + totalFinal;
+						totales.set(contador, montoAcumulado);
 					} else {
+						currentCol = excelSheet.getOffsetColumns();
+						XSSFRow row = sheet.getRow(currentRow);
+						if(row == null){
+							row = sheet.createRow(currentRow);
+						}
+						for(Long total : totales){
+							XSSFCell cell = row.createCell(currentCol++);
+							cell.setCellStyle(styleTotales);
+							cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+							cell.setCellValue(total);
+						}
 					}
 				}
 				currentCol = excelSheet.getOffsetColumns();
