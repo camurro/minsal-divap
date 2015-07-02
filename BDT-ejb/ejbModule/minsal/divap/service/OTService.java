@@ -2960,11 +2960,11 @@ public class OTService {
 		if(numero){
 			dateFormat = new SimpleDateFormat("MM");
 			mesCurso = dateFormat.format(new Date());
-			mesCurso = "7";
+			mesCurso = "8";
 		}else{
 			dateFormat = new SimpleDateFormat("MMMM");
 			mesCurso = dateFormat.format(new Date());
-			mesCurso = "Julio";
+			mesCurso = "Agosto";
 		}
 		/*String mesCurso;
 		if(numero){
