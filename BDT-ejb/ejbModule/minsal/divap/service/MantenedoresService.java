@@ -574,7 +574,13 @@ public class MantenedoresService {
 			List<MantenedorCuotasVO> mantenedorCuotasVO = new ArrayList<MantenedorCuotasVO>();
 			List<MantenedorCuotasVO> mantenedorCuotasVOActuales = new ArrayList<MantenedorCuotasVO>();
 			for(Cuota cuota : cuotas){
+				Boolean puedeEliminarse = false;
+				if(cuota.getDetalleRemesasSet() == null || cuota.getDetalleRemesasSet().size() == 0){
+					puedeEliminarse = true;
+				}
+				
 				MantenedorCuotasVO cuotaVO = new MantenedorCuotasVO();
+				cuotaVO.setPuedeEliminarse(puedeEliminarse);
 				cuotaVO.setIdCuota(cuota.getId());
 				cuotaVO.setNroCuota((int)cuota.getNumeroCuota());
 				if(cuota.getFechaPago() != null){

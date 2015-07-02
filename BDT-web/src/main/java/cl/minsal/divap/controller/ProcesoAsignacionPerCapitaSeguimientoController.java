@@ -149,7 +149,7 @@ implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
 	}
-	
+
 	public void uploadVersionFinal() {
 		if (file != null){
 			try {
@@ -266,7 +266,7 @@ implements Serializable {
 		serviciosResoluciones = new ArrayList<ServiciosSummaryVO>();
 		System.out.println("fin limpiar");
 	}
-	
+
 	public void resetLastVersion(){
 		System.out.println("resetLastVersion lastVersion = false");
 		lastVersion = false;
@@ -518,7 +518,7 @@ implements Serializable {
 		super.downloadDocument();
 		return null;
 	}
-	
+
 	public String downloadResolucion() {
 		Integer idServicio = Integer.valueOf(Integer.parseInt(getDocIdDownload()));
 		ServiciosSummaryVO serviciosSummaryVO = serviciosService.getServicioSaludSummaryById(idServicio);
@@ -650,7 +650,7 @@ implements Serializable {
 	public void setHiddenIdServicio(String hiddenIdServicio) {
 		this.hiddenIdServicio = hiddenIdServicio;
 	}
-	
+
 	@Override
 	public String enviar(){
 		int numDocFinales = 0;
@@ -692,7 +692,7 @@ implements Serializable {
 		}
 		return super.enviar();
 	}
-	
+
 	public ReferenciaDocumentoSummaryVO getDocumentoPlanillaOficio() {
 		return documentoPlanillaOficio;
 	}

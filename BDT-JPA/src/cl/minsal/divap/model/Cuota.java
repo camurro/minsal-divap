@@ -2,6 +2,7 @@ package cl.minsal.divap.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -49,6 +50,8 @@ public class Cuota implements Serializable {
     @JoinColumn(name = "id_mes", referencedColumnName = "id_mes")
     @ManyToOne
     private Mes idMes;
+    @OneToMany(mappedBy = "cuota")
+    private Set<DetalleRemesas> detalleRemesasSet;
 
     public Cuota() {
     }
@@ -126,6 +129,14 @@ public class Cuota implements Serializable {
     public void setComponente(Componente componente) {
         this.componente = componente;
     }
+
+	public Set<DetalleRemesas> getDetalleRemesasSet() {
+		return detalleRemesasSet;
+	}
+
+	public void setDetalleRemesasSet(Set<DetalleRemesas> detalleRemesasSet) {
+		this.detalleRemesasSet = detalleRemesasSet;
+	}
 
 	@Override
     public int hashCode() {
