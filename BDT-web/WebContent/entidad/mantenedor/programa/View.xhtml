@@ -8,15 +8,12 @@
 
     <ui:composition>
 
-        <p:dialog id="ProgramaViewDlg" widgetVar="ProgramaViewDialog" modal="true" resizable="false"  appendToBody="true" header="#{messages.ViewProgramaTitle}" closeOnEscape="true">
+        <p:dialog id="ProgramaViewDlg" widgetVar="ProgramaViewDialog" modal="true" resizable="false"  appendToBody="true" header="Programa" closeOnEscape="true">
 
             <h:form id="ProgramaViewForm">
 
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" columnClasses="column" rendered="#{programaController.seleccionado != null}">
-
-                        <h:outputText value="#{messages.ViewProgramaLabel_id}"/>
-                        <h:outputText value="#{programaController.seleccionado.idPrograma}" title="#{messages.ViewProgramaTitle_id}"/>
 
                         <h:outputText value="#{messages.ViewProgramaLabel_cantidadCuotas}"/>
                         <h:outputText value="#{programaController.seleccionado.cuotas}" title="#{messages.ViewProgramaTitle_cantidadCuotas}"/>

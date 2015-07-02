@@ -175,14 +175,14 @@
 					               			 <f:convertDateTime pattern="dd/MM/yyyy"  />
 					               		</h:outputText>
 					               	</f:facet>
-					               <f:facet name="input"><p:calendar pattern="dd/MM/yyyy" value="#{_data.fecha_cuota}" showOn="button" /></f:facet>
+					               <f:facet name="input"><p:calendar disabled="#{not _data.puedeEliminarse}" pattern="dd/MM/yyyy" value="#{_data.fecha_cuota}" showOn="button" /></f:facet>
 					               
 					           </p:cellEditor>
 					       </p:column>
 					       <p:column headerText="Porcentaje">
 					           <p:cellEditor>
 					               <f:facet name="output"><h:outputText value="#{_data.porcentajeCuota}" /></f:facet>
-					               <f:facet name="input"><p:inputText value="#{_data.porcentajeCuota}" style="width:100%"/></f:facet>
+					               <f:facet name="input"><p:inputText value="#{_data.porcentajeCuota}" disabled="#{not _data.puedeEliminarse}" style="width:100%"/></f:facet>
 					           </p:cellEditor>
 					       </p:column>
 					       
@@ -194,7 +194,7 @@
 					       
 					        <p:column style="width:32px">
 					           <p:commandButton id="eliminarCuota" title="Eliminar" icon="ui-icon-trash" style="width:20px;height:20px;"
-					           	actionListener="#{programaController.deleteAction(_data)}"
+					           	actionListener="#{programaController.deleteAction(_data)}" disabled="#{not _data.puedeEliminarse}"
 					           	update=":ProgramaEditForm:tabla :ProgramaEditForm:gridCuotas :growl :ProgramaEditForm:panelBotones" >
 					           	
 					           </p:commandButton>

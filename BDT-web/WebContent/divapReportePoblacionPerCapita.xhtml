@@ -8,6 +8,16 @@
 	xmlns:c="http://java.sun.com/jstl/core">
 
 	<ui:define name="content">
+	
+	
+		<script type="text/javascript">
+			function downloadDocument(idDoc) {  
+	            document.getElementById('formDownload:hiddenId').value=idDoc;
+	            document.getElementById('formDownload:linkDownload').click();  
+	        } 
+		</script>
+	
+	
 		<h:form id="formTabView" enctype="multipart/form-data">
 			<p:panel styleClass="contentPanel">
 				<h1>
@@ -22,13 +32,22 @@
 						Capita [
 						<h:graphicImage value="resources/minsal/images/download-alt.png"
 							styleClass="divapIcons" />
-						<h:commandLink
+						
+						<ui:remove>
+						
+						<h:commandLink 
 										action="#{reportesPoblacionPercapitaController.downloadTemplate}"
 										value="Bajar">
 										<f:setPropertyActionListener
 											target="#{reportesPoblacionPercapitaController.docIdDownload}"
 											value="#{reportesPoblacionPercapitaController.idPlanillaPercapita}" />
 									</h:commandLink>
+						
+						</ui:remove>
+						
+						<h:commandLink value="Bajar Última Versión" onclick="downloadDocument(#{reportesPoblacionPercapitaController.idPlanillaPercapita});return false;" />
+						
+						
 						]
 					</div>
 					<br />
@@ -550,5 +569,19 @@
 					icon="ui-icon-seek-first" />
 			</p:panel>
 		</h:form>
+		
+		
+		<h:form id="formDownload">
+			<h:inputHidden
+				value="#{reportesPoblacionPercapitaController.docIdDownload}"
+				id="hiddenId" />
+			<p:commandButton id="linkDownload" ajax="false"
+				actionListener="#{reportesPoblacionPercapitaController.downloadTemplate}"
+				style="display: none">
+			</p:commandButton>
+				
+				
+		</h:form>
+		
 	</ui:define>
 </ui:composition>
