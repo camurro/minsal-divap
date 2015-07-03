@@ -21,6 +21,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import minsal.divap.dao.MantenedoresDAO;
+import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.dao.UsuarioDAO;
 import minsal.divap.enums.TipoComponenteEnum;
 import minsal.divap.service.ComponenteService;
@@ -38,7 +39,11 @@ import cl.minsal.divap.mantenedores.bean.util.JsfUtil;
 import cl.minsal.divap.mantenedores.enums.PersistAction;
 import cl.minsal.divap.mantenedores.facade.ProgramaFacade;
 import cl.minsal.divap.model.Componente;
+import cl.minsal.divap.model.FechaRemesa;
 import cl.minsal.divap.model.Programa;
+import cl.minsal.divap.model.ProgramaAno;
+import cl.minsal.divap.model.ProgramaComponente;
+import cl.minsal.divap.model.ProgramaFechaRemesa;
 import cl.minsal.divap.model.Usuario;
 import cl.minsal.util.PrimeFacesUtil;
 
@@ -95,6 +100,8 @@ public class ProgramaController extends AbstractController<Programa> {
 	private ReportesServices reportesServices;
 	@EJB
 	private ComponenteService componenteService;
+	@EJB
+	private ProgramasDAO programasDAO;
 
 	private UsuarioController usuarioController;
 
@@ -103,6 +110,9 @@ public class ProgramaController extends AbstractController<Programa> {
 		System.out.println("llega al deleteAction");
 		this.cuotas.remove(mantenedorCuotasVO);
 		Integer porcentajeTotal = 0;
+		if(cuotas.isEmpty()){
+			firstCuota = true;
+		}
 		for(MantenedorCuotasVO cuotas : this.cuotas){
 			porcentajeTotal += cuotas.getPorcentajeCuota();
 		}
@@ -206,20 +216,71 @@ public class ProgramaController extends AbstractController<Programa> {
 	}
 
 	public void prepareEditarPrograma(ActionEvent event) {
+		
+		ProgramaAno programaAnoSeleccionado = programasDAO.getProgramaAnoByID(this.seleccionado.getIdProgramaAno());
+		Integer tipoProgramaSeleccionado = TipoComponenteEnum.PXQ.getId();
+		for(ProgramaComponente programaComponente : programaAnoSeleccionado.getProgramaComponentes()){
+			if(programaComponente.getComponente().getTipoComponente().getId().equals(TipoComponenteEnum.LEY.getId())){
+				tipoProgramaSeleccionado = TipoComponenteEnum.LEY.getId();
+				break;
+			}
+			if(programaComponente.getComponente().getTipoComponente().getId().equals(TipoComponenteEnum.HISTORICO.getId())){
+				tipoProgramaSeleccionado = TipoComponenteEnum.HISTORICO.getId();
+				break;
+			}
+		}
+		this.tipoPrograma = tipoProgramaSeleccionado;
+		
+		List<String> diaFechasRemesas = new ArrayList<String>();
+		List<String> diaFechasRemesasFaltantes = new ArrayList<String>();
+		
+		List<ProgramaFechaRemesa> programaFechaRemsas = new ArrayList<ProgramaFechaRemesa>();
+		programaFechaRemsas = programasDAO.findRemesasByPrograma(programaAnoSeleccionado.getPrograma().getId());
+		if(programaFechaRemsas != null || programaFechaRemsas.size() > 0){
+			for(ProgramaFechaRemesa programaFechaRemesa : programaFechaRemsas){
+				diaFechasRemesas.add(programaFechaRemesa.getFechaRemesa().getDia().getId().toString());
+			}
+		}
+		
+		List<FechaRemesa> fechasRemesasAll = mantenedoresDAO.getAllFechasRemesas();
+		for(FechaRemesa fechaRemesaCompleta : fechasRemesasAll){
+			diaFechasRemesasFaltantes.add(fechaRemesaCompleta.getDia().getDia().toString());
+		}
+		
+		for(int i = 0; i < diaFechasRemesasFaltantes.size(); i++){
+			for(int j = 0; j < diaFechasRemesas.size(); j++){
+				if(diaFechasRemesasFaltantes.get(i).equals(diaFechasRemesas.get(j))){
+					diaFechasRemesasFaltantes.remove(i);
+				}
+			}
+		}
+		
+		//falta setear nuevamente los componentes
+		
 
-		List<String> diasRemesasSource = seleccionado
-				.getDiaPagoRemesasFaltantes();
-		List<String> diasRemesasTarget = seleccionado.getDiaPagoRemesas();
+		List<String> diasRemesasSource = diaFechasRemesasFaltantes;
+		List<String> diasRemesasTarget = diaFechasRemesas;
 		fechasDiaRemesas = new DualListModel<String>(diasRemesasSource,
 				diasRemesasTarget);
 
 		this.tipoPrograma = seleccionado.getIdTipoPrograma();
+		
+		List<String> nombreComponentes = new ArrayList<String>();
+		for(ProgramaComponente programaComponente : programaAnoSeleccionado.getProgramaComponentes()){
+			nombreComponentes.add(programaComponente.getComponente().getNombre().toUpperCase());
+		}
+		
+		List<String> componentesByTipoComponenteAll = componenteService.getNombreComponenteByIdTipoComponente(tipoPrograma);
+		
+		List<String> nombreComponentesFaltantes = mantenedoresService.getComponentesFaltantesEntreDosListas(componentesByTipoComponenteAll, nombreComponentes);
+		
+		
 
 		List<String> componentesSource = new ArrayList<String>();
 		List<String> componentesTarget = new ArrayList<String>();
 
-		componentesSource = seleccionado.getComponentesFaltantes();
-		componentesTarget = seleccionado.getComponentes();
+		componentesSource = nombreComponentesFaltantes;
+		componentesTarget = nombreComponentes;
 
 		componentes = new DualListModel<String>(componentesSource,
 				componentesTarget);
@@ -524,7 +585,6 @@ public class ProgramaController extends AbstractController<Programa> {
 				programas = mantenedoresService
 						.getAllMantenedorProgramaVO(anoEnCurso);
 			}
-
 		}
 		return programas;
 	}
@@ -727,17 +787,22 @@ public class ProgramaController extends AbstractController<Programa> {
 				PrimeFacesUtil.ejecutarJavaScript("levantarError();");
 			}
 		}else{
-			if(cuotas.get(cuotas.size() - 1).getFecha_cuota() == null){
-				agregarCuota = true;
-			}else{
-				if(this.fecha_cuota.after(cuotas.get(cuotas.size() - 1).getFecha_cuota())){
+			if(!cuotas.isEmpty()){
+				if(cuotas.get(cuotas.size() - 1).getFecha_cuota() == null){
 					agregarCuota = true;
 				}else{
-					agregarCuota = false;
-					errorMessage = "La fecha de la nueva cuota debe ser superior a la de la última cuota de la lista";
-					PrimeFacesUtil.ejecutarJavaScript("levantarError();");
+					if(this.fecha_cuota.after(cuotas.get(cuotas.size() - 1).getFecha_cuota())){
+						agregarCuota = true;
+					}else{
+						agregarCuota = false;
+						errorMessage = "La fecha de la nueva cuota debe ser superior a la de la última cuota de la lista";
+						PrimeFacesUtil.ejecutarJavaScript("levantarError();");
+					}
 				}
+			}else{
+				agregarCuota = true;
 			}
+			
 			
 		}
 		
@@ -781,6 +846,15 @@ public class ProgramaController extends AbstractController<Programa> {
 	
 
 	public List<MantenedorCuotasVO> getCuotas() {
+		Integer porcentajeTotal = 0;
+		for(MantenedorCuotasVO cuotaVO : cuotas){
+			porcentajeTotal += cuotaVO.getPorcentajeCuota();
+		}
+		if(porcentajeTotal == 100){
+			permitirGuardarPrograma = true;
+		}else{
+			permitirGuardarPrograma = false;
+		}
 		return cuotas;
 	}
 

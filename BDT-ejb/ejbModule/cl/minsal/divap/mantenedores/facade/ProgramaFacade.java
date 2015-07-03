@@ -17,6 +17,7 @@ import javax.persistence.PersistenceContext;
 
 import minsal.divap.dao.AnoDAO;
 import minsal.divap.dao.ComponenteDAO;
+import minsal.divap.dao.EstimacionFlujoCajaDAO;
 import minsal.divap.dao.MantenedoresDAO;
 import minsal.divap.dao.MesDAO;
 import minsal.divap.dao.ProgramasDAO;
@@ -53,6 +54,8 @@ public class ProgramaFacade extends AbstractFacade<Programa> {
     private ComponenteDAO componenteDAO;
     @EJB
     private MantenedoresDAO mantenedoresDAO;
+    @EJB
+    private EstimacionFlujoCajaDAO estimacionFlujoCajaDAO;
     @EJB
     private MesDAO mesDAO;
     @EJB
@@ -170,7 +173,24 @@ public class ProgramaFacade extends AbstractFacade<Programa> {
     		
     		List<MantenedorCuotasVO> cuotasNuevas = new ArrayList<MantenedorCuotasVO>();
     		List<MantenedorCuotasVO> cuotasEliminar = new ArrayList<MantenedorCuotasVO>();
-    		for(MantenedorCuotasVO cuotaVO : seleccionado.getListaCuotasActuales()){
+    		List<MantenedorCuotasVO> mantenedorCuotasActuales = new ArrayList<MantenedorCuotasVO>();
+    		for(Cuota cuota : estimacionFlujoCajaDAO.getCuotasByProgramaAno(programaAno.getIdProgramaAno())){
+    			MantenedorCuotasVO cuotaVO = new MantenedorCuotasVO();
+				cuotaVO.setIdCuota(cuota.getId());
+				cuotaVO.setNroCuota((int)cuota.getNumeroCuota());
+				if(cuota.getFechaPago() != null){
+					cuotaVO.setFecha_cuota(cuota.getFechaPago());
+				}
+				if(cuota.getIdMes() != null){
+					cuotaVO.setMes(cuota.getIdMes().getIdMes());
+				}
+				cuotaVO.setPorcentajeCuota(cuota.getPorcentaje());
+				mantenedorCuotasActuales.add(cuotaVO);
+    		}
+    		
+    		
+    		
+    		for(MantenedorCuotasVO cuotaVO : mantenedorCuotasActuales){
     			if(!seleccionado.getListaCuotas().contains(cuotaVO)){
     				cuotasEliminar.add(cuotaVO);
     			}

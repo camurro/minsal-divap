@@ -6,7 +6,8 @@ public class PasswordGenerator {
         //System.out.println(new PasswordGenerator().generate("Redhat123_")+"//");
 	   //System.out.println(new PasswordGenerator().generate("minSAL.2014")+"//");
 	   //System.out.println(new PasswordGenerator().generate("Minsal.2015")+"//");
-	   System.out.println(new PasswordGenerator().generate("minSAL.2014")+"//");
+	   System.out.println(new PasswordGenerator().generate("minsal.2015")+"//");
+	   System.out.println(new PasswordGenerator().generate("divap")+"//");
     }
    private String generate(String password) {
      return Util.createPasswordHash("SHA-256", "BASE64", null, null, password);
