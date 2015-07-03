@@ -2,6 +2,7 @@ package cl.minsal.divap.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Basic;
@@ -45,7 +46,7 @@ public class TipoSubtitulo implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "subtitulo")
     private Set<ComponenteSubtitulo> componenteSubtitulos;
     @OneToMany(mappedBy = "subtitulo")
-    private Set<ProgramaServicioCoreComponente> programaServicioCoreComponentes;
+    private List<ProgramaServicioCoreComponente> programaServicioCoreComponentes;
     @JoinColumn(name = "dependencia", referencedColumnName = "id_dependencia_programa")
     @ManyToOne(optional = false)
     private Dependencia dependencia;
@@ -109,12 +110,12 @@ public class TipoSubtitulo implements Serializable {
 	}
 	
 	@XmlTransient
-	public Set<ProgramaServicioCoreComponente> getProgramaServicioCoreComponentes() {
+	public List<ProgramaServicioCoreComponente> getProgramaServicioCoreComponentes() {
 		return programaServicioCoreComponentes;
 	}
 
 	public void setProgramaServicioCoreComponentes(
-			Set<ProgramaServicioCoreComponente> programaServicioCoreComponentes) {
+			List<ProgramaServicioCoreComponente> programaServicioCoreComponentes) {
 		this.programaServicioCoreComponentes = programaServicioCoreComponentes;
 	}
 

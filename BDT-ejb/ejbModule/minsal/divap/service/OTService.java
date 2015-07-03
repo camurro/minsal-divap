@@ -4296,7 +4296,7 @@ public class OTService {
 	}
 
 	public void restablecerProgramas(Integer ano, int estadoOT) {
-		List<ProgramaAno> programasAno = programasDAO.findByAno(ano);
+		List<ProgramaAno> programasAno = programasDAO.getProgramasByAno(ano);
 		for(ProgramaAno programaAno : programasAno){
 			if(EstadosProgramas.FINALIZADO.getId().equals(programaAno.getEstadoOT().getIdEstadoPrograma())){
 				programaAno.setEstadoOT(new EstadoPrograma(estadoOT));
@@ -4309,7 +4309,7 @@ public class OTService {
 		if(ano == null){
 			ano = getAnoCurso();
 		}
-		List<ProgramaAno> programas = programasDAO.findByAno(ano);
+		List<ProgramaAno> programas = programasDAO.getProgramasByAno(ano);
 		if(programas != null && programas.size() > 0){
 			for(ProgramaAno programa : programas){
 				programasVO.add(new ProgramaMapper().getBasic(programa));

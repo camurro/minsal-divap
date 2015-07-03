@@ -291,7 +291,7 @@ public class ReporteEstadoSituacionProgramaController extends BaseController imp
 
 	public List<ProgramaVO> getProgramas() {
 		if(programas == null){
-			programas = programasService.getProgramasByUserAno(getLoggedUsername(), getAnoEnCurso());
+			programas = programasService.getProgramasReporteByAno(getAnoEnCurso());
 		}
 		return programas;
 	}

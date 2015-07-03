@@ -1825,7 +1825,7 @@ public class ReportesServices {
 		//List<ReporteMarcoPresupuestarioEstablecimientoVO> reporteMarcoPresupuestarioEstablecimientoVO22 = this.getReporteMarcoPorEstablecimientoAll(Subtitulo.SUBTITULO22, ano);
 
 		//List<ReporteMarcoPresupuestarioEstablecimientoVO> reporteMarcoPresupuestarioEstablecimientoVO29 = this.getReporteMarcoPorEstablecimientoAll(Subtitulo.SUBTITULO29, ano);
-		
+
 		HashMap<Subtitulo, List<ReporteMarcoPresupuestarioEstablecimientoVO>>  reporteMarcoPresupuestarioEstablecimientoVO = this.getReporteMarcoPorEstablecimientoAll(ano);
 
 		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
@@ -1952,46 +1952,58 @@ public class ReportesServices {
 
 	public HashMap<Subtitulo, List<ReporteMarcoPresupuestarioEstablecimientoVO>> getReporteMarcoPorEstablecimientoAll(Integer ano) {
 		HashMap<Subtitulo, List<ReporteMarcoPresupuestarioEstablecimientoVO>> resultado = new HashMap<Subtitulo, List<ReporteMarcoPresupuestarioEstablecimientoVO>>();
-		List<ReporteMarcoPresupuestarioEstablecimientoVO> resultadoSub21 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
-		List<ReporteMarcoPresupuestarioEstablecimientoVO> resultadoSub22 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
-		List<ReporteMarcoPresupuestarioEstablecimientoVO> resultadoSub29 = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
 		List<ProgramaVO> programasSub21VO = programasService.getProgramasByAnoSubtitulo(ano, Subtitulo.SUBTITULO21);
 		List<ProgramaVO> programasSub22VO = programasService.getProgramasByAnoSubtitulo(ano, Subtitulo.SUBTITULO22);
 		List<ProgramaVO> programasSub29VO = programasService.getProgramasByAnoSubtitulo(ano, Subtitulo.SUBTITULO29);
 
+		
+
+		List<ServiciosVO> servicios = servicioSaludService.getServiciosOrderId();
+		for (ServiciosVO servicio : servicios) {
+			List<ReporteMarcoPresupuestarioEstablecimientoVO> resultadoSub21 = obtenerReporteMarcoPresupuestarioEstablecimiento(servicio, programasSub21VO, Subtitulo.SUBTITULO21);
+			resultado.put(Subtitulo.SUBTITULO21, resultadoSub21);
+			List<ReporteMarcoPresupuestarioEstablecimientoVO> resultadoSub22 = obtenerReporteMarcoPresupuestarioEstablecimiento(servicio, programasSub22VO, Subtitulo.SUBTITULO22);
+			resultado.put(Subtitulo.SUBTITULO22, resultadoSub22);
+			List<ReporteMarcoPresupuestarioEstablecimientoVO> resultadoSub29 = obtenerReporteMarcoPresupuestarioEstablecimiento(servicio, programasSub29VO, Subtitulo.SUBTITULO29);
+			resultado.put(Subtitulo.SUBTITULO29, resultadoSub29);
+		}
+		return resultado;
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	private List<ReporteMarcoPresupuestarioEstablecimientoVO> obtenerReporteMarcoPresupuestarioEstablecimiento(ServiciosVO servicio, List<ProgramaVO> programasVO, Subtitulo subtitulo){
+		List<ReporteMarcoPresupuestarioEstablecimientoVO> resultadoSub = new ArrayList<ReporteMarcoPresupuestarioEstablecimientoVO>();
 		Calendar calendar = Calendar.getInstance();
 		Integer diaDelMes = calendar.get(Calendar.DAY_OF_MONTH);
 		Integer mesActual = Integer.parseInt(getMesCurso(true));
-
-		List<ServicioSalud> servicios = servicioSaludDAO.getServiciosOrderId();
-		for (ServicioSalud servicio : servicios) {
-			List<Establecimiento> establecimientos = servicio.getEstablecimientos();
-			for (Establecimiento establecimiento : establecimientos) {
-				if(programasSub21VO != null && programasSub21VO.size() > 0){
-					for(ProgramaVO programaSub21VO : programasSub21VO){
-						List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programaSub21VO.getIdProgramaAno(), Subtitulo.SUBTITULO21);
+		if(servicio.getEstableclimientos() != null && servicio.getEstableclimientos().size() > 0){
+			Establecimiento establecimientoAuxiliar = establecimientosDAO.getEstablecimientoServicioAuxiliar(servicio.getIdServicio());
+			for (EstablecimientoSummaryVO establecimiento : servicio.getEstableclimientos()) {
+				if(programasVO != null && programasVO.size() > 0){
+					for(ProgramaVO programaSubVO : programasVO){
+						List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programaSubVO.getIdProgramaAno(), subtitulo);
 						for (ComponentesVO componenteVO : componentes) {
 							ReporteMarcoPresupuestarioEstablecimientoVO reporteMarcoPresupuestarioEstablecimientoVO = new ReporteMarcoPresupuestarioEstablecimientoVO();
-							reporteMarcoPresupuestarioEstablecimientoVO.setServicio(establecimiento.getServicioSalud().getNombre());
-							reporteMarcoPresupuestarioEstablecimientoVO.setPrograma(programaSub21VO.getNombre());
+							reporteMarcoPresupuestarioEstablecimientoVO.setServicio(servicio.getNombreServicio());
+							reporteMarcoPresupuestarioEstablecimientoVO.setPrograma(programaSubVO.getNombre());
 							reporteMarcoPresupuestarioEstablecimientoVO.setComponente(componenteVO.getNombre());
 							reporteMarcoPresupuestarioEstablecimientoVO.setEstablecimiento(establecimiento.getNombre());
 
-							Long marcoAnoActual = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), programaSub21VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO21.getId());
+							Long marcoAnoActual = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), programaSubVO.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
 							System.out.println("marcoAnoActual --> " + marcoAnoActual);
 
 							reporteMarcoPresupuestarioEstablecimientoVO.setMarco(marcoAnoActual);
 
 							Long totalConveniosPorEstablecimiento = 0L;
-							ConvenioServicioComponenteVO convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programaSub21VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO21.getId(), establecimiento.getId(), EstadosConvenios.INGRESADO);
+							ConvenioServicioComponenteVO convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programaSubVO.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.INGRESADO);
 							if(convenioServicioComponente == null){
-								convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programaSub21VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO21.getId(), establecimiento.getId(), EstadosConvenios.APROBADO);
+								convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programaSubVO.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.APROBADO);
 							}
 							if(convenioServicioComponente == null){
-								convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programaSub21VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO21.getId(), establecimiento.getId(), EstadosConvenios.TRAMITE);
+								convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programaSubVO.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.TRAMITE);
 							}
 							if(convenioServicioComponente == null){
-								convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programaSub21VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO21.getId(), establecimiento.getId(), EstadosConvenios.PAGADO);
+								convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programaSubVO.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), establecimiento.getId(), EstadosConvenios.PAGADO);
 							}
 							if(convenioServicioComponente != null){
 								totalConveniosPorEstablecimiento += ((convenioServicioComponente.getMonto() != null) ? convenioServicioComponente.getMonto() : 0L);
@@ -2002,7 +2014,7 @@ public class ReportesServices {
 
 
 							Long totalRemesasAcumuladasMesActual = 0L;
-							totalRemesasAcumuladasMesActual = remesasDAO.getRemesasPagadasEstablecimientoProgramaComponenteSubtituloDiaMes(programaSub21VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO21.getId(), establecimiento.getId(), diaDelMes, mesActual);
+							totalRemesasAcumuladasMesActual = remesasDAO.getRemesasPagadasEstablecimientoProgramaComponenteSubtituloDiaMes(programaSubVO.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId(), establecimiento.getId(), diaDelMes, mesActual);
 							System.out.println("totalRemesasAcumuladasMesActual --> "+ totalRemesasAcumuladasMesActual);
 
 							reporteMarcoPresupuestarioEstablecimientoVO.setRemesasAcumuladas(totalRemesasAcumuladasMesActual);
@@ -2015,163 +2027,27 @@ public class ReportesServices {
 
 							reporteMarcoPresupuestarioEstablecimientoVO.setPorcentajeCuotaTransferida(porcentajeRemesa);
 
-							Establecimiento auxiliar = establecimientosDAO.getEstablecimientoServicioAuxiliar(servicio.getId());
-							System.out.println("establecimiento auxiliar --> "+ ((auxiliar == null) ? null : auxiliar.getNombre()));
+							reporteMarcoPresupuestarioEstablecimientoVO.setObservacion("");
+							if(marcoAnoActual == 0){
+								Long tarifaEstablecimientoAuxiliar = 0L;
+								if(establecimientoAuxiliar != null){
+									tarifaEstablecimientoAuxiliar = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimientoAuxiliar.getId(), programaSubVO.getIdProgramaAno(), componenteVO.getId(), subtitulo.getId());
+								}
 
-							Long tarifaEstablecimientoAuxiliar = 0L;
-							if(auxiliar != null){
-								tarifaEstablecimientoAuxiliar = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(auxiliar.getId(), programaSub21VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO21.getId());
+								if (tarifaEstablecimientoAuxiliar == 0) {
+									System.out.println("el establecimiento auxiliar no tiene recursos asignados");
+									reporteMarcoPresupuestarioEstablecimientoVO.setObservacion("");
+								} else {
+									reporteMarcoPresupuestarioEstablecimientoVO.setObservacion("Existen recursos no distribuidos en este programa");
+								}
 							}
-
-							if (tarifaEstablecimientoAuxiliar == 0) {
-								System.out.println("el establecimiento auxiliar no tiene recursos asignados");
-								reporteMarcoPresupuestarioEstablecimientoVO.setObservacion("");
-							} else {
-								reporteMarcoPresupuestarioEstablecimientoVO.setObservacion("Existen recursos no distribuidos en este programa");
-							}
-							resultadoSub21.add(reporteMarcoPresupuestarioEstablecimientoVO);
+							resultadoSub.add(reporteMarcoPresupuestarioEstablecimientoVO);
 						}
-						resultado.put(Subtitulo.SUBTITULO21, resultadoSub21);
-					}
-
-				}
-				if(programasSub22VO != null && programasSub22VO.size() > 0){
-					for(ProgramaVO programaSub22VO : programasSub22VO){
-						List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programaSub22VO.getIdProgramaAno(), Subtitulo.SUBTITULO22);
-						for (ComponentesVO componenteVO : componentes) {
-							ReporteMarcoPresupuestarioEstablecimientoVO reporteMarcoPresupuestarioEstablecimientoVO = new ReporteMarcoPresupuestarioEstablecimientoVO();
-							reporteMarcoPresupuestarioEstablecimientoVO.setServicio(establecimiento.getServicioSalud().getNombre());
-							reporteMarcoPresupuestarioEstablecimientoVO.setPrograma(programaSub22VO.getNombre());
-							reporteMarcoPresupuestarioEstablecimientoVO.setComponente(componenteVO.getNombre());
-							reporteMarcoPresupuestarioEstablecimientoVO.setEstablecimiento(establecimiento.getNombre());
-
-							Long marcoAnoActual = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), programaSub22VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO22.getId());
-							System.out.println("marcoAnoActual --> " + marcoAnoActual);
-
-							reporteMarcoPresupuestarioEstablecimientoVO.setMarco(marcoAnoActual);
-
-							Long totalConveniosPorEstablecimiento = 0L;
-							ConvenioServicioComponenteVO convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programaSub22VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO22.getId(), establecimiento.getId(), EstadosConvenios.INGRESADO);
-							if(convenioServicioComponente == null){
-								convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programaSub22VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO22.getId(), establecimiento.getId(), EstadosConvenios.APROBADO);
-							}
-							if(convenioServicioComponente == null){
-								convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programaSub22VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO22.getId(), establecimiento.getId(), EstadosConvenios.TRAMITE);
-							}
-							if(convenioServicioComponente == null){
-								convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programaSub22VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO22.getId(), establecimiento.getId(), EstadosConvenios.PAGADO);
-							}
-							if(convenioServicioComponente != null){
-								totalConveniosPorEstablecimiento += ((convenioServicioComponente.getMonto() != null) ? convenioServicioComponente.getMonto() : 0L);
-							}
-
-							reporteMarcoPresupuestarioEstablecimientoVO.setConvenios(totalConveniosPorEstablecimiento);
-							reporteMarcoPresupuestarioEstablecimientoVO.setRemesasAcumuladas(0L);
-
-
-							Long totalRemesasAcumuladasMesActual = 0L;
-							totalRemesasAcumuladasMesActual = remesasDAO.getRemesasPagadasEstablecimientoProgramaComponenteSubtituloDiaMes(programaSub22VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO22.getId(), establecimiento.getId(), diaDelMes, mesActual);
-							System.out.println("totalRemesasAcumuladasMesActual --> "+ totalRemesasAcumuladasMesActual);
-
-							reporteMarcoPresupuestarioEstablecimientoVO.setRemesasAcumuladas(totalRemesasAcumuladasMesActual);
-
-							Double porcentajeRemesa = 0.0;
-
-							if(marcoAnoActual != 0){
-								porcentajeRemesa = ((totalRemesasAcumuladasMesActual * 100.0) / marcoAnoActual) / 100;
-							}
-
-							reporteMarcoPresupuestarioEstablecimientoVO.setPorcentajeCuotaTransferida(porcentajeRemesa);
-
-							Establecimiento auxiliar = establecimientosDAO.getEstablecimientoServicioAuxiliar(servicio.getId());
-							System.out.println("establecimiento auxiliar --> "+ ((auxiliar == null) ? null : auxiliar.getNombre()));
-
-							Long tarifaEstablecimientoAuxiliar = 0L;
-							if(auxiliar != null){
-								tarifaEstablecimientoAuxiliar = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(auxiliar.getId(), programaSub22VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO22.getId());
-							}
-
-							if (tarifaEstablecimientoAuxiliar == 0) {
-								System.out.println("el establecimiento auxiliar no tiene recursos asignados");
-								reporteMarcoPresupuestarioEstablecimientoVO.setObservacion("");
-							} else {
-								reporteMarcoPresupuestarioEstablecimientoVO.setObservacion("Existen recursos no distribuidos en este programa");
-							}
-							resultadoSub22.add(reporteMarcoPresupuestarioEstablecimientoVO);
-						}
-						resultado.put(Subtitulo.SUBTITULO22, resultadoSub22);
-					}
-				}
-				if(programasSub29VO != null && programasSub29VO.size() > 0){
-					for(ProgramaVO programaSub29VO : programasSub29VO){
-						List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programaSub29VO.getIdProgramaAno(), Subtitulo.SUBTITULO29);
-						for (ComponentesVO componenteVO : componentes) {
-							ReporteMarcoPresupuestarioEstablecimientoVO reporteMarcoPresupuestarioEstablecimientoVO = new ReporteMarcoPresupuestarioEstablecimientoVO();
-							reporteMarcoPresupuestarioEstablecimientoVO.setServicio(establecimiento.getServicioSalud().getNombre());
-							reporteMarcoPresupuestarioEstablecimientoVO.setPrograma(programaSub29VO.getNombre());
-							reporteMarcoPresupuestarioEstablecimientoVO.setComponente(componenteVO.getNombre());
-							reporteMarcoPresupuestarioEstablecimientoVO.setEstablecimiento(establecimiento.getNombre());
-
-							Long marcoAnoActual = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(establecimiento.getId(), programaSub29VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO29.getId());
-							System.out.println("marcoAnoActual --> " + marcoAnoActual);
-
-							reporteMarcoPresupuestarioEstablecimientoVO.setMarco(marcoAnoActual);
-
-							Long totalConveniosPorEstablecimiento = 0L;
-							ConvenioServicioComponenteVO convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programaSub29VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO29.getId(), establecimiento.getId(), EstadosConvenios.INGRESADO);
-							if(convenioServicioComponente == null){
-								convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programaSub29VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO29.getId(), establecimiento.getId(), EstadosConvenios.APROBADO);
-							}
-							if(convenioServicioComponente == null){
-								convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programaSub29VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO29.getId(), establecimiento.getId(), EstadosConvenios.TRAMITE);
-							}
-							if(convenioServicioComponente == null){
-								convenioServicioComponente = conveniosService.getConvenioServicioComponenteByProgramaAnoComponenteSubtituloEstablecimientoEstadoConvenio(programaSub29VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO29.getId(), establecimiento.getId(), EstadosConvenios.PAGADO);
-							}
-							if(convenioServicioComponente != null){
-								totalConveniosPorEstablecimiento += ((convenioServicioComponente.getMonto() != null) ? convenioServicioComponente.getMonto() : 0L);
-							}
-
-							reporteMarcoPresupuestarioEstablecimientoVO.setConvenios(totalConveniosPorEstablecimiento);
-							reporteMarcoPresupuestarioEstablecimientoVO.setRemesasAcumuladas(0L);
-
-
-							Long totalRemesasAcumuladasMesActual = 0L;
-							totalRemesasAcumuladasMesActual = remesasDAO.getRemesasPagadasEstablecimientoProgramaComponenteSubtituloDiaMes(programaSub29VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO29.getId(), establecimiento.getId(), diaDelMes, mesActual);
-							System.out.println("totalRemesasAcumuladasMesActual --> "+ totalRemesasAcumuladasMesActual);
-
-							reporteMarcoPresupuestarioEstablecimientoVO.setRemesasAcumuladas(totalRemesasAcumuladasMesActual);
-
-							Double porcentajeRemesa = 0.0;
-
-							if(marcoAnoActual != 0){
-								porcentajeRemesa = ((totalRemesasAcumuladasMesActual * 100.0) / marcoAnoActual) / 100;
-							}
-
-							reporteMarcoPresupuestarioEstablecimientoVO.setPorcentajeCuotaTransferida(porcentajeRemesa);
-
-							Establecimiento auxiliar = establecimientosDAO.getEstablecimientoServicioAuxiliar(servicio.getId());
-							System.out.println("establecimiento auxiliar --> "+ ((auxiliar == null) ? null : auxiliar.getNombre()));
-
-							Long tarifaEstablecimientoAuxiliar = 0L;
-							if(auxiliar != null){
-								tarifaEstablecimientoAuxiliar = programasDAO.getMPEstablecimientoProgramaAnoComponenteSubtitulo(auxiliar.getId(), programaSub29VO.getIdProgramaAno(), componenteVO.getId(), Subtitulo.SUBTITULO29.getId());
-							}
-
-							if (tarifaEstablecimientoAuxiliar == 0) {
-								System.out.println("el establecimiento auxiliar no tiene recursos asignados");
-								reporteMarcoPresupuestarioEstablecimientoVO.setObservacion("");
-							} else {
-								reporteMarcoPresupuestarioEstablecimientoVO.setObservacion("Existen recursos no distribuidos en este programa");
-							}
-							resultadoSub29.add(reporteMarcoPresupuestarioEstablecimientoVO);
-						}
-						resultado.put(Subtitulo.SUBTITULO29, resultadoSub29);
 					}
 				}
 			}
 		}
-		return resultado;
+		return resultadoSub;
 	}
 
 	public List<ReporteMonitoreoProgramaPorComunaVO> getReporteMonitoreoPorComunaAll(Subtitulo subtitulo, Integer ano) {

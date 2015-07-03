@@ -81,7 +81,7 @@ public class ReporteMetaDesempenoController extends BaseController implements Se
 	}
 	public List<ProgramaVO> getProgramas() {
 		if(programas == null){
-			programas = programasService.getProgramasByUserAno(getLoggedUsername(), getAnoEnCurso()+1);
+			programas = programasService.getProgramasReporteByAno(getAnoEnCurso());
 		}
 		return programas;
 	}

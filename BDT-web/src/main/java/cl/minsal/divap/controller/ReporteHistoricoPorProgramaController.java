@@ -12,7 +12,6 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
 import minsal.divap.enums.Subtitulo;
-import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ReliquidacionService;
 import minsal.divap.service.ReportesServices;
@@ -375,7 +374,7 @@ public class ReporteHistoricoPorProgramaController extends BaseController implem
 	public List<ProgramaVO> getProgramas() {
 		if(programas == null){
 			System.out.println("getAnoEnCurso()-->"+getAnoEnCurso());
-			programas = programasService.getProgramasByUserAno(getLoggedUsername(), getAnoEnCurso());
+			programas = programasService.getProgramasReporteByAno(getAnoEnCurso());
 		}
 		return programas;
 	}

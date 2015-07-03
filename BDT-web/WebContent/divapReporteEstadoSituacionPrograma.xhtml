@@ -49,7 +49,7 @@
 										
 										<h:panelGrid>
 												<h:outputText value="Programas: " styleClass="inputLabel" />
-												<p:selectOneMenu  id="cbPrograma" value="#{reporteEstadoSituacionProgramaController.valorComboPrograma}">
+												<p:selectOneMenu  id="cbPrograma" style="width:400px;" value="#{reporteEstadoSituacionProgramaController.valorComboPrograma}">
 												    <f:selectItem itemLabel="Seleccione Programa" itemValue="" />
 			           								<f:selectItems value="#{reporteEstadoSituacionProgramaController.programas}" itemLabel="#{programa.nombre}" itemValue="#{programa.idProgramaAno}" var="programa" />
  			           								<p:ajax listener="#{reporteEstadoSituacionProgramaController.recargarProgramas}" update="tabView" />  

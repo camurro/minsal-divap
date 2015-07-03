@@ -50,7 +50,6 @@ public class ComponenteService {
 	}
 	
 	public ComponentesVO getComponenteVOById(Integer idComponente) {
-		//	List<ComponenteSubtitulo> componentes = this.componenteDAO.getComponenteByProgramaSubtitulo(programaId, sub);
 		Componente componente = this.componenteDAO.getComponenteByID(idComponente);
 		ComponentesVO compoVO = new ComponentesVO();
 		compoVO.setId(componente.getId());

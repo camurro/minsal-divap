@@ -15,7 +15,6 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import minsal.divap.enums.Subtitulo;
-import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.ComponenteService;
 import minsal.divap.service.ProgramasService;
 import minsal.divap.service.ReliquidacionService;
@@ -113,17 +112,7 @@ public class ReporteMonitoreoProgramaController extends BaseController implement
 		this.mostrarSub24 = false;
 		this.mostrarSub29 = false;
 		
-//		this.idPlanillaDocComuna = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMONITOREOPROGRAMACOMUNA, getAnoEnCurso());
-//		if(this.idPlanillaDocComuna == null){
-//			this.idPlanillaDocComuna = reportesServices.generarPlanillaReporteMonitoreoProgramaPorComuna(getAnoEnCurso());
-//		}
-		
-//		this.idPlanillaDocEstablecimiento = reportesServices.getDocumentByTypeAnoActual(TipoDocumentosProcesos.REPORTEMONITOREOPROGRAMASERVICIO, getAnoEnCurso());
-//		if(this.idPlanillaDocEstablecimiento == null){
-//			this.idPlanillaDocEstablecimiento = reportesServices.generarPlanillaReporteMonitoreoProgramaPorServicios(getAnoEnCurso());
-//		}		
-		
-		this.programas = programasService.getProgramasByUserAno(getLoggedUsername(), getAnoEnCurso());
+		this.programas = programasService.getProgramasReporteByAno(getAnoEnCurso());
 		this.servicios = servicioSaludService.getServiciosOrderId();
 		
 	}
