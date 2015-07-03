@@ -137,7 +137,6 @@ public class ReportesPoblacionPercapitaController extends BaseController impleme
 			this.anoSeleccionado = this.anoActual;
 		}
 		System.out.println("anoSeleccionado --> "+this.anoSeleccionado);
-		
 	}
 	
 	public void cargarTablaServiciosFiltradosComuna(){

@@ -62,7 +62,7 @@
 							<br />
 							<p:dataTable id="tabladatos2014" resizableColumns="true"
 								value="#{reportesPoblacionPercapitaController.reportesPerCapitaVO}"
-								liveResize="true" var="_data" rows="10" paginator="false"
+								liveResize="true" var="_data" rows="20" paginator="true"
 								paginatorPosition="bottom"
 								emptyMessage="No se encontro información."
 								styleClass="dataTable" scrollable="true">
@@ -174,7 +174,6 @@
 								</p:column>
 
 							</p:dataTable>
-
 						</p:tab>
 						
 						
@@ -184,7 +183,7 @@
 							<br />
 							<p:dataTable id="tabladatos2013" resizableColumns="true"
 								value="#{reportesPoblacionPercapitaController.reportesPerCapitaVO}"
-								liveResize="true" var="_data" rows="10" paginator="false"
+								liveResize="true" var="_data" rows="20" paginator="true"
 								paginatorPosition="bottom"
 								emptyMessage="No se encontro información."
 								styleClass="dataTable" scrollable="true">
@@ -303,7 +302,7 @@
 							<br />
 							<p:dataTable id="tabladatos2012" resizableColumns="true"
 								value="#{reportesPoblacionPercapitaController.reportesPerCapitaVO}"
-								liveResize="true" var="_data" rows="10" paginator="false"
+								liveResize="true" var="_data" rows="20" paginator="true"
 								paginatorPosition="bottom"
 								emptyMessage="No se encontro información."
 								styleClass="dataTable" scrollable="true">
@@ -424,25 +423,25 @@
 							<br />
 							<p:dataTable id="tabladatos2011" resizableColumns="true"
 								value="#{reportesPoblacionPercapitaController.reportesPerCapitaVO}"
-								liveResize="true" var="_data" rows="#{reportesPoblacionPercapitaController.reportesPerCapitaVO.size}" paginator="false"
+								liveResize="true" var="_data" rows="20" paginator="true"
 								paginatorPosition="bottom"
 								emptyMessage="No se encontro información."
 								styleClass="dataTable" scrollable="true">
 
 								<p:columnGroup type="header">
 									<p:row>
-										<p:column headerText="Región" width="250" />
-										<p:column headerText="Servicio" width="250" />
-										<p:column headerText="Comuna" width="250" />
-										<p:column headerText="Clasificación" width="250" />
-										<p:column headerText="$ Valor Per Capita" width="250" />
-										<p:column headerText="Población" width="250" />
-										<p:column headerText="Población Mayor 65 y Mas Años" width="250" />
-										<p:column headerText="$ Per Capita Año" width="250" />
-										<p:column headerText="$ Desempeño Difícil" width="250" />
-										<p:column headerText="$ Aporte Estatal" width="250" />
+										<p:column headerText="Región" />
+										<p:column headerText="Servicio" />
+										<p:column headerText="Comuna"  />
+										<p:column headerText="Clasificación"  />
+										<p:column headerText="$ Valor Per Capita" />
+										<p:column headerText="Población" />
+										<p:column headerText="Población Mayor 65 y Mas Años" />
+										<p:column headerText="$ Per Capita Año"  />
+										<p:column headerText="$ Desempeño Difícil"  />
+										<p:column headerText="$ Aporte Estatal"  />
 										<c:forEach var="varCorte" items="#{reportesPoblacionPercapitaController.cortes}">
-											<p:column headerText="$ Rebaja IAAPS #{varCorte.mesRebaja.nombre}" width="250" />
+											<p:column headerText="$ Rebaja IAAPS #{varCorte.mesRebaja.nombre}"  />
 										</c:forEach>
 										<p:column headerText="$ Descuento por Incentivo al Retiro" width="250" />
 										<p:column headerText="$ Aporte Estatal Final" width="250" />

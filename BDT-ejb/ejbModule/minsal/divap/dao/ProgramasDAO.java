@@ -767,7 +767,7 @@ public class ProgramasDAO {
 		}
 	}
 
-	public List<ProgramaAno> findByAno(Integer anoCurso) {
+	public List<ProgramaAno> getProgramasByAno(Integer anoCurso) {
 		try {
 			TypedQuery<ProgramaAno> query = this.em.createNamedQuery("ProgramaAno.findByAno", ProgramaAno.class);
 			query.setParameter("ano", anoCurso);

@@ -105,6 +105,20 @@ public class ProgramasService {
 		return result;
 	}
 
+	public List<ProgramaVO> getProgramasReporteByAno(Integer ano) {
+		List<ProgramaAno> programas = this.programasDAO.getProgramasByAno(ano);
+		List<ProgramaVO> result = new ArrayList<ProgramaVO>();
+		if(programas != null && programas.size() > 0){
+			for(ProgramaAno programa : programas){
+				if(programa.getPrograma().getId() > 0){
+					result.add(new ProgramaMapper().getBasic(programa));
+				}
+			}
+		}
+		return result;
+	}
+	
+	
 	public List<ProgramaVO> getProgramasByUserAno(String username, Integer ano) {
 		List<ProgramaAno> programas = this.programasDAO.getProgramasByUserAno(username, ano);
 		List<ProgramaVO> result = new ArrayList<ProgramaVO>();
@@ -903,16 +917,40 @@ public class ProgramasService {
 
 	public List<ComponentesVO> getComponentesByProgramaAnoSubtitulos(Integer idProgramaAno, Subtitulo... subtitulos) {
 		List<ComponentesVO> componentesVO = new ArrayList<ComponentesVO>();
-		List<Componente> componentes = componenteDAO.getComponentesByIdProgramaAnoIdSubtitulos(idProgramaAno, subtitulos);
+		//List<Componente> componentes = componenteDAO.getComponentesByIdProgramaAnoIdSubtitulos(idProgramaAno, subtitulos);
+		List<Componente> componentes = componenteDAO.getComponentesByIdProgramaAno(idProgramaAno);
 		if(componentes != null && componentes.size() > 0){
 			for(Componente componente : componentes){
-				ComponentesVO componenteVO = new ComponenteMapper().getBasic(componente);
-				if(!componentesVO.contains(componenteVO)){
-					componentesVO.add(componenteVO);
+				if(componente.getComponenteSubtitulosComponente() != null && componente.getComponenteSubtitulosComponente().size() > 0){
+					for(ComponenteSubtitulo componenteSubtitulo : componente.getComponenteSubtitulosComponente()){
+						if(contieneSubtitulo(componenteSubtitulo.getSubtitulo(), subtitulos)){
+							ComponentesVO componenteVO = new ComponenteMapper().getBasic(componente);
+							if(!componentesVO.contains(componenteVO)){
+								componentesVO.add(componenteVO);
+							}
+						}
+					}
 				}
 			}
 		}
 		return componentesVO;
+	}
+	
+	private boolean contieneSubtitulo(TipoSubtitulo tipoSubtitulo, Subtitulo... subtitulos){
+		if(subtitulos == null){
+			return false;
+		}
+		if(tipoSubtitulo == null){
+			return false;
+		}
+		boolean contiene = false;
+		for(Subtitulo subtitulo : subtitulos){
+			if(subtitulo.getId().equals(tipoSubtitulo.getIdTipoSubtitulo())){
+				contiene = true;
+				break;
+			}
+		}
+		return contiene;
 	}
 
 	public List<ProgramaAPSServicioResumenVO> getProgramaServiciosResumen(
@@ -1032,7 +1070,7 @@ public class ProgramasService {
 	}
 
 	public List<ProgramaVO> getProgramasByAno(Integer ano) {
-		List<ProgramaAno> programas = this.programasDAO.findByAno(ano);
+		List<ProgramaAno> programas = this.programasDAO.getProgramasByAno(ano);
 		List<ProgramaVO> result = new ArrayList<ProgramaVO>();
 		if(programas != null && programas.size() > 0){
 			for(ProgramaAno programa : programas){

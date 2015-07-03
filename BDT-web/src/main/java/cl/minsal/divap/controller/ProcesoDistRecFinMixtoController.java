@@ -164,8 +164,6 @@ public class ProcesoDistRecFinMixtoController extends AbstractTaskMBean implemen
 			}
 			System.out.println(resumenProgramaMixto);
 		}
-		
-		
 	}
 
 	private void resumenMunicipal() {

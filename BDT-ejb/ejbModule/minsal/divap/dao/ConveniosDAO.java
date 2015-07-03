@@ -37,11 +37,9 @@ import cl.minsal.divap.model.Usuario;
 
 @Singleton
 public class ConveniosDAO {
-	@PersistenceContext 
-	private EntityManager emm;
 	@PersistenceContext(unitName="BDT-JPA")
 	private EntityManager em;
-
+	
 	public ConvenioComuna getConvenioComunaById(Integer id){
 		try {
 			TypedQuery<ConvenioComuna> query = this.em.createNamedQuery("ConvenioComuna.findByIdConvenioComuna", ConvenioComuna.class);

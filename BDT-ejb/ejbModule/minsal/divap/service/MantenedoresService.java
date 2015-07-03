@@ -456,7 +456,7 @@ public class MantenedoresService {
 	public List<MantenedorProgramaVO> getAllMantenedorProgramaVO(Integer ano) {
 		List<MantenedorProgramaVO> resultado = new ArrayList<MantenedorProgramaVO>();
 
-		for (ProgramaAno programa : programasDAO.findByAno(ano)) {
+		for (ProgramaAno programa : programasDAO.getProgramasByAno(ano)) {
 			
 
 			MantenedorProgramaVO mantenedorProgramaVO = new MantenedorProgramaVO();

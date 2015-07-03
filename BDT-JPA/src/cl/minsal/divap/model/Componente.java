@@ -46,7 +46,7 @@ public class Componente implements Serializable {
 	@ManyToOne(optional = false)
 	private TipoComponente tipoComponente;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "servicioCoreComponente")
-	private Set<ProgramaServicioCoreComponente> programaServicioCoreComponentes;
+	private List<ProgramaServicioCoreComponente> programaServicioCoreComponentes;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "municipalCoreComponente")
 	private Set<ProgramaMunicipalCoreComponente> programaMunicipalCoreComponentes;
 
@@ -100,12 +100,12 @@ public class Componente implements Serializable {
 	}
 	
 	@XmlTransient
-	public Set<ProgramaServicioCoreComponente> getProgramaServicioCoreComponentes() {
+	public List<ProgramaServicioCoreComponente> getProgramaServicioCoreComponentes() {
 		return programaServicioCoreComponentes;
 	}
 
 	public void setProgramaServicioCoreComponentes(
-			Set<ProgramaServicioCoreComponente> programaServicioCoreComponentes) {
+			List<ProgramaServicioCoreComponente> programaServicioCoreComponentes) {
 		this.programaServicioCoreComponentes = programaServicioCoreComponentes;
 	}
 	
