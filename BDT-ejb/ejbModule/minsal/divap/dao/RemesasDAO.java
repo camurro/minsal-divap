@@ -1003,4 +1003,18 @@ public class RemesasDAO {
 		}
 	}
 	
+	public DetalleRemesas findDetalleRemesaByIdCuota(Integer idCuota) {
+		try {
+			TypedQuery<DetalleRemesas> query = this.em.createNamedQuery("DetalleRemesas.findByIdCuota", DetalleRemesas.class);
+			query.setParameter("idCuota", idCuota);
+			List<DetalleRemesas> result =  query.getResultList(); 
+			if(result.size() > 0){
+				return result.get(0);
+			}else{
+				return null;
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

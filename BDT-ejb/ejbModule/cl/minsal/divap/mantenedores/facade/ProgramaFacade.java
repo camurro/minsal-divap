@@ -143,7 +143,18 @@ public class ProgramaFacade extends AbstractFacade<Programa> {
     		List<String> diaRemesasNuevos = new ArrayList<String>();
     		List<String> diaRemesasBorrar = new ArrayList<String>();
     		
-    		for(String diaRemesa : seleccionado.getDiaPagoRemesasActuales()){
+    		List<String> diaFechasRemesasActuales = new ArrayList<String>();
+    		
+    		List<ProgramaFechaRemesa> programaFechaRemsas = new ArrayList<ProgramaFechaRemesa>();
+    		
+    		programaFechaRemsas = programasDAO.findRemesasByPrograma(programaAno.getPrograma().getId());
+			if(programaFechaRemsas != null || programaFechaRemsas.size() > 0){
+				for(ProgramaFechaRemesa programaFechaRemesa : programaFechaRemsas){
+					diaFechasRemesasActuales.add(programaFechaRemesa.getFechaRemesa().getDia().getId().toString());
+				}
+			}
+    		
+    		for(String diaRemesa : diaFechasRemesasActuales){
     			if(!seleccionado.getDiaPagoRemesas().contains(diaRemesa)){
     				diaRemesasBorrar.add(diaRemesa);
     			}

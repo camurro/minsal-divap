@@ -230,6 +230,7 @@ public class ProgramaController extends AbstractController<Programa> {
 			}
 		}
 		this.tipoPrograma = tipoProgramaSeleccionado;
+		this.seleccionado.setIdTipoPrograma(this.tipoPrograma);
 		
 		List<String> diaFechasRemesas = new ArrayList<String>();
 		List<String> diaFechasRemesasFaltantes = new ArrayList<String>();
@@ -255,7 +256,6 @@ public class ProgramaController extends AbstractController<Programa> {
 			}
 		}
 		
-		//falta setear nuevamente los componentes
 		
 
 		List<String> diasRemesasSource = diaFechasRemesasFaltantes;
@@ -263,16 +263,36 @@ public class ProgramaController extends AbstractController<Programa> {
 		fechasDiaRemesas = new DualListModel<String>(diasRemesasSource,
 				diasRemesasTarget);
 
-		this.tipoPrograma = seleccionado.getIdTipoPrograma();
 		
 		List<String> nombreComponentes = new ArrayList<String>();
 		for(ProgramaComponente programaComponente : programaAnoSeleccionado.getProgramaComponentes()){
 			nombreComponentes.add(programaComponente.getComponente().getNombre().toUpperCase());
 		}
 		
-		List<String> componentesByTipoComponenteAll = componenteService.getNombreComponenteByIdTipoComponente(tipoPrograma);
+		TipoComponenteVO tipoComponenteSeleccionado = mantenedoresService
+				.getTipoComponenteById(tipoPrograma);
 		
-		List<String> nombreComponentesFaltantes = mantenedoresService.getComponentesFaltantesEntreDosListas(componentesByTipoComponenteAll, nombreComponentes);
+		List<String> componentesByTipOaLL = new ArrayList<String>();
+		
+		if (tipoComponenteSeleccionado.getNombre().equalsIgnoreCase("ley")) {
+			// ley
+			componentesByTipOaLL = componenteService
+					.getNombreComponenteByIdTipoComponente(minsal.divap.enums.TipoComponenteEnum.LEY
+							.getId());
+		} else if (tipoComponenteSeleccionado.getNombre().equalsIgnoreCase(
+				"PxQ")) {
+			componentesByTipOaLL = componenteService
+					.getNombreComponenteByIdTipoComponente(minsal.divap.enums.TipoComponenteEnum.PXQ
+							.getId());
+		} else {
+			componentesByTipOaLL = componenteService
+					.getNombreComponenteByNotIdTipoComponente(minsal.divap.enums.TipoComponenteEnum.LEY
+							.getId());
+		}
+		
+		
+		
+		List<String> nombreComponentesFaltantes = mantenedoresService.getComponentesFaltantesEntreDosListas(componentesByTipOaLL, nombreComponentes);
 		
 		
 

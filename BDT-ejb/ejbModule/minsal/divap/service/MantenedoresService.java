@@ -16,6 +16,7 @@ import minsal.divap.dao.EstimacionFlujoCajaDAO;
 import minsal.divap.dao.MantenedoresDAO;
 import minsal.divap.dao.ProgramasDAO;
 import minsal.divap.dao.RebajaDAO;
+import minsal.divap.dao.RemesasDAO;
 import minsal.divap.dao.RolDAO;
 import minsal.divap.dao.ServicioSaludDAO;
 import minsal.divap.dao.TipoSubtituloDAO;
@@ -61,6 +62,7 @@ import cl.minsal.divap.model.Comuna;
 import cl.minsal.divap.model.Cumplimiento;
 import cl.minsal.divap.model.Cuota;
 import cl.minsal.divap.model.Dependencia;
+import cl.minsal.divap.model.DetalleRemesas;
 import cl.minsal.divap.model.Establecimiento;
 import cl.minsal.divap.model.EstadoPrograma;
 import cl.minsal.divap.model.FactorRefAsigZona;
@@ -115,6 +117,8 @@ public class MantenedoresService {
 	private EstimacionFlujoCajaDAO estimacionFlujoCajaDAO;
 	@EJB
 	private ComponenteService componenteService;
+	@EJB
+	private RemesasDAO remesasDAO;
 	
 	
 	private final double EPSILON = 0.0000001;
@@ -575,7 +579,9 @@ public class MantenedoresService {
 			List<MantenedorCuotasVO> mantenedorCuotasVOActuales = new ArrayList<MantenedorCuotasVO>();
 			for(Cuota cuota : cuotas){
 				Boolean puedeEliminarse = false;
-				if(cuota.getDetalleRemesasSet() == null || cuota.getDetalleRemesasSet().size() == 0){
+				
+				DetalleRemesas detalleRemesaByCuota = remesasDAO.findDetalleRemesaByIdCuota(cuota.getId());
+				if(detalleRemesaByCuota == null){
 					puedeEliminarse = true;
 				}
 				
