@@ -138,6 +138,7 @@ implements Serializable {
 			try {
 				System.out.println("uploadVersion2 file2 is not null");
 				String filename = file2.getFileName();
+				filename = StringUtil.removeSpanishAccents(filename);
 				filename = filename.replaceAll(" ", "");
 				byte[] contentPlantillaFile = file2.getContents();
 				File file = createTemporalFile(filename, contentPlantillaFile);
