@@ -1,7 +1,5 @@
 package minsal.divap.util;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
@@ -16,6 +14,13 @@ public class StringUtil {
 
     private static final NumberFormat INT_FORMATTER_4CHARS = NumberFormat.getIntegerInstance();
     private static final Pattern URL_PATTERN = Pattern.compile("\\b(https?|ftp|file)://[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|]",Pattern.CASE_INSENSITIVE);
+    
+    
+    private static final String DEG = "\u00B0";
+    private static final String MIN = "\u2032";
+    private static final String SEC = "\u2033";
+    
+    private static final String [] specialCharacters = {DEG, MIN, SEC};
 
     public static String padNumber(int value, int minCharCount) {
         StringBuilder sb = new StringBuilder(String.valueOf(value));
@@ -98,7 +103,18 @@ public class StringUtil {
      * @return
      */
     public static String removeSpanishAccents(String input) {
-        input = input.replace('á', 'a').replace('é', 'e').replace('í', 'i').replace('ó', 'o').replace('ú', 'u').replace('ñ', 'n').replace('Á', 'A').replace('É', 'E').replace('Í', 'I').replace('Ó', 'O').replace('Ú', 'U').replace('Ñ', 'N');
+        input = input.replace('á', 'a').replace('é', 'e').replace('í', 'i').replace('ó', 'o').replace('ú', 'u').replace('ñ', 'n').replace('Á', 'A').replace('É', 'E').replace('Í', 'I').replace('Ó', 'O').replace('Ú', 'U').replace('Ñ', 'N').replace('º', ' ');
+        return input;
+    }
+    
+    public static String removeSpecialCharacters(String input) {
+    	for(int i = 0; i<input.length(); i++){
+    		System.out.print(input.charAt(i));
+    	}
+    	System.out.println("******************************************************************");
+    	for(String specialChar : specialCharacters){
+    		input = input.replace(specialChar, "?");
+    	}
         return input;
     }
 
@@ -107,7 +123,7 @@ public class StringUtil {
      *
      * @param input
      * @return la cadena input en minusculas y caracteres distintos de letras y
-     *         numeros. Cambia espacios por '-'
+     *         numeros. Cambia espacios por '-'   Nº
      */
     public static String normalizeString(String input, boolean keepSpaces) {
         StringBuilder sb = new StringBuilder();
@@ -259,9 +275,9 @@ public class StringUtil {
 	}
 
 	public static void main(String[] args){
-		 
-		System.out.println("Número double : "+ formatNumber(1500.505));
+		System.out.println("Número double : "+ removeSpecialCharacters(removeSpanishAccents("42 Chiloé, Oficio Nº 152 de 26.01.15, Remite Resoluciones que determinan Aporte Estatal Mensual, año 2015.pdf"))); 
+		/*System.out.println("Número double : "+ formatNumber(1500.505));
 		System.out.println("Número long : "+ formatNumber(500000000l));
-		System.out.println("Número integer : "+ formatNumber(455800));
+		System.out.println("Número integer : "+ formatNumber(455800));*/
 	}
 }

@@ -33,7 +33,6 @@ public class ReporteMetaDesempenoController extends BaseController implements Se
 	private String docIdDownloadCuadro1;
 	private Integer idPlanillaCuadro2;
 	private String docIdDownloadCuadro2;
-	
 	@EJB
 	private ReportesServices reportesServices;
 	@EJB
@@ -48,7 +47,6 @@ public class ReporteMetaDesempenoController extends BaseController implements Se
 		
 	}
 	
-	
 	public String downloadTemplateCuadro2() {
 		Integer docDownload = Integer.valueOf(Integer.parseInt(getDocIdDownloadCuadro2()));
 		setDocumento(documentService.getDocument(docDownload));
@@ -56,68 +54,70 @@ public class ReporteMetaDesempenoController extends BaseController implements Se
 		return null;
 	}
 	
-	
 	public Integer getAnoCurso() {
 		DateFormat formatNowYear = new SimpleDateFormat("yyyy");
 		Date nowDate = new Date();
 		return Integer.valueOf(formatNowYear.format(nowDate));
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	public List<ServiciosVO> getServicios() {
 		return servicios;
 	}
+	
 	public void setServicios(List<ServiciosVO> servicios) {
 		this.servicios = servicios;
 	}
+	
 	public List<ProgramaVO> getProgramas() {
 		if(programas == null){
 			programas = programasService.getProgramasReporteByAno(getAnoEnCurso());
 		}
 		return programas;
 	}
+	
 	public void setProgramas(List<ProgramaVO> programas) {
 		this.programas = programas;
 	}
+	
 	public Integer getIdPlanillaCuadro1() {
 		return idPlanillaCuadro1;
 	}
+	
 	public void setIdPlanillaCuadro1(Integer idPlanillaCuadro1) {
 		this.idPlanillaCuadro1 = idPlanillaCuadro1;
 	}
+	
 	public String getDocIdDownloadCuadro1() {
 		return docIdDownloadCuadro1;
 	}
+	
 	public void setDocIdDownloadCuadro1(String docIdDownloadCuadro1) {
 		this.docIdDownloadCuadro1 = docIdDownloadCuadro1;
 	}
+	
 	public Integer getIdPlanillaCuadro2() {
 		return idPlanillaCuadro2;
 	}
+	
 	public void setIdPlanillaCuadro2(Integer idPlanillaCuadro2) {
 		this.idPlanillaCuadro2 = idPlanillaCuadro2;
 	}
+	
 	public String getDocIdDownloadCuadro2() {
 		return docIdDownloadCuadro2;
 	}
+	
 	public void setDocIdDownloadCuadro2(String docIdDownloadCuadro2) {
 		this.docIdDownloadCuadro2 = docIdDownloadCuadro2;
 	}
+	
 	public Integer getAnoEnCurso() {
 		if(anoEnCurso == null){
 			anoEnCurso = reportesServices.getAnoCurso();
 		}
 		return anoEnCurso;
 	}
+	
 	public void setAnoEnCurso(Integer anoEnCurso) {
 		this.anoEnCurso = anoEnCurso;
 	}

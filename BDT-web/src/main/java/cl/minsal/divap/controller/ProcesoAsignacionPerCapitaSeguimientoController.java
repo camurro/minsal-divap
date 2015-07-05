@@ -22,6 +22,7 @@ import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.service.DistribucionInicialPercapitaService;
 import minsal.divap.service.DocumentService;
 import minsal.divap.service.ServicioSaludService;
+import minsal.divap.util.StringUtil;
 import minsal.divap.vo.ReferenciaDocumentoSummaryVO;
 import minsal.divap.vo.ReferenciaDocumentoVO;
 import minsal.divap.vo.SeguimientoVO;
@@ -104,6 +105,7 @@ implements Serializable {
 		if (file != null){
 			System.out.println("uploadVersion file is not null");
 			String filename = file.getFileName();
+			filename = StringUtil.removeSpanishAccents(filename);
 			byte[] contentAttachedFile = file.getContents();
 			Integer docNewVersion = persistFile(filename,	contentAttachedFile);
 			switch (tareaSeguimiento) {
@@ -136,6 +138,7 @@ implements Serializable {
 			try {
 				System.out.println("uploadVersion2 file2 is not null");
 				String filename = file2.getFileName();
+				filename = StringUtil.removeSpanishAccents(filename);
 				filename = filename.replaceAll(" ", "");
 				byte[] contentPlantillaFile = file2.getContents();
 				File file = createTemporalFile(filename, contentPlantillaFile);
@@ -155,6 +158,7 @@ implements Serializable {
 			try {
 				System.out.println("uploadVersionFinal file is not null");
 				String filename = file.getFileName();
+				filename = StringUtil.removeSpanishAccents(filename);
 				filename = filename.replaceAll(" ", "");
 				byte[] contentResolucionFile = file.getContents();
 				Integer docResolucion = persistFile(filename, contentResolucionFile);
