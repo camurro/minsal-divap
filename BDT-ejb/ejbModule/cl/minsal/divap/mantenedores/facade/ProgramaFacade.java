@@ -178,17 +178,21 @@ public class ProgramaFacade extends AbstractFacade<Programa> {
     			getEntityManager().remove(getEntityManager().merge(programFechaRemesa));
     		}
     		
-    		for(Cuota cuota : mantenedoresDAO.getCuotasByProgramaAno(programaAno.getIdProgramaAno())){
-    			getEntityManager().remove(getEntityManager().merge(cuota));
-    		}
+//    		for(Cuota cuota : mantenedoresDAO.getCuotasByProgramaAno(programaAno.getIdProgramaAno())){
+//    			getEntityManager().remove(getEntityManager().merge(cuota));
+//    		}
     		
     		List<MantenedorCuotasVO> cuotasNuevas = new ArrayList<MantenedorCuotasVO>();
     		List<MantenedorCuotasVO> cuotasEliminar = new ArrayList<MantenedorCuotasVO>();
     		List<MantenedorCuotasVO> mantenedorCuotasActuales = new ArrayList<MantenedorCuotasVO>();
-    		for(Cuota cuota : estimacionFlujoCajaDAO.getCuotasByProgramaAno(programaAno.getIdProgramaAno())){
+    		
+    		List<Cuota> cuotasActualesProgramaAno = estimacionFlujoCajaDAO.getCuotasByProgramaAno(programaAno.getIdProgramaAno());
+    		
+    		for(Cuota cuota : cuotasActualesProgramaAno){
     			MantenedorCuotasVO cuotaVO = new MantenedorCuotasVO();
 				cuotaVO.setIdCuota(cuota.getId());
 				cuotaVO.setNroCuota((int)cuota.getNumeroCuota());
+				cuotaVO.setEditarPuedeEliminarCuota(true);
 				if(cuota.getFechaPago() != null){
 					cuotaVO.setFecha_cuota(cuota.getFechaPago());
 				}
@@ -200,18 +204,28 @@ public class ProgramaFacade extends AbstractFacade<Programa> {
     		}
     		
     		
-    		
-    		for(MantenedorCuotasVO cuotaVO : mantenedorCuotasActuales){
-    			if(!seleccionado.getListaCuotas().contains(cuotaVO)){
-    				cuotasEliminar.add(cuotaVO);
+    		for(MantenedorCuotasVO cuotaEditada : seleccionado.getListaCuotas()){
+    			for(MantenedorCuotasVO cuotaVOActuales : mantenedorCuotasActuales){
+    				if(cuotaEditada.getIdCuota() == null){
+    					cuotasNuevas.add(cuotaEditada);
+    					continue;
+    				}else{
+    					if(cuotaEditada.getIdCuota() == cuotaVOActuales.getIdCuota()){
+    						cuotaVOActuales.setEditarPuedeEliminarCuota(false);
+    					}
+    				}
+    				
+    				
     			}
+//    			if(!seleccionado.getListaCuotas().contains(cuotaVO)){
+//    				cuotasEliminar.add(cuotaVO);
+//    			}
     		}
-    		for(MantenedorCuotasVO cuotaVO : seleccionado.getListaCuotas()){
-    			if(cuotaVO.getIdCuota() == null){
-    				cuotasNuevas.add(cuotaVO);
-    			}
-    		}
-    		
+//    		for(MantenedorCuotasVO cuotaVO : seleccionado.getListaCuotas()){
+//    			if(cuotaVO.getIdCuota() == null){
+//    				cuotasNuevas.add(cuotaVO);
+//    			}
+//    		}
     		
     		for(MantenedorCuotasVO mantenedorCuotasVO : cuotasNuevas){
     			Cuota cuota = new Cuota();
@@ -230,12 +244,17 @@ public class ProgramaFacade extends AbstractFacade<Programa> {
     			getEntityManager().persist(cuota);
     		} 
     		
-    		for(MantenedorCuotasVO mantenedorCuotasVO : cuotasEliminar){
-    			System.out.println("mantenedorCuotasVO-->"+mantenedorCuotasVO.getIdCuota());
-    			Cuota cuota = mantenedoresDAO.getCuotaByIdProgramaAnoNroCuota(programaAno.getIdProgramaAno(), (short)mantenedorCuotasVO.getIdCuota().intValue());
-    			if(cuota != null){
-    				getEntityManager().remove(cuota);
+    		for(MantenedorCuotasVO mantenedorCuotasVO : mantenedorCuotasActuales){
+    			if(mantenedorCuotasVO.getEditarPuedeEliminarCuota()){
+    				Cuota cuota = mantenedoresDAO.getCuotaByIdProgramaAnoNroCuota(programaAno.getIdProgramaAno(), (short)mantenedorCuotasVO.getIdCuota().intValue());
+        			if(cuota != null){
+        				getEntityManager().remove(cuota);
+        			}
     			}
+    			else{
+    				continue;
+    			}
+    			
     		}
     	}
     }
