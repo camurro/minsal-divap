@@ -20,6 +20,7 @@ import minsal.divap.enums.TipoDocumentosProcesos;
 import minsal.divap.excel.GeneradorExcel;
 import minsal.divap.exception.ExcelFormatException;
 import minsal.divap.service.RebajaService;
+import minsal.divap.util.StringUtil;
 import minsal.divap.vo.TaskDataVO;
 import minsal.divap.vo.TaskVO;
 
@@ -129,14 +130,15 @@ public class ProcesoRebajaController extends AbstractTaskMBean
 				try{
 					docIds = new ArrayList<Integer>();
 					String filename = cumplimientoFile.getFileName();
+					filename = StringUtil.removeSpanishAccents(filename);
 					byte [] content = cumplimientoFile.getContents();
 					rebajaService.procesarCalculoRebaja(idProcesoRebaja, GeneradorExcel.fromContent(content, XSSFWorkbook.class));
 					Integer docRebaja = persistFile(filename, content);
 					if(docRebaja != null){
 						docIds.add(docRebaja);
 					}
-					setArchivosValidos(true);
 					rebajaService.moveToAlfrescoDistribucionInicialPercapita(this.idProcesoRebaja, null, docRebaja, TipoDocumentosProcesos.PLANILLABASECUMPLIMIENTO, null, this.ano);
+					setArchivosValidos(true);
 				} catch (ExcelFormatException e) {
 					throw new Exception(e.getMessage() + " en el archivo Cumplimiento por Comuna.");
 				} catch (InvalidFormatException e) {

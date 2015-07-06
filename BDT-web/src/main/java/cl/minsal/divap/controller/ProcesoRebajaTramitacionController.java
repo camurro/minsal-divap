@@ -22,6 +22,7 @@ import minsal.divap.enums.TiposCumplimientos;
 import minsal.divap.service.RebajaService;
 import minsal.divap.service.ServicioSaludService;
 import minsal.divap.service.UtilitariosService;
+import minsal.divap.util.StringUtil;
 import minsal.divap.vo.ComunaVO;
 import minsal.divap.vo.PlanillaRebajaCalculadaVO;
 import minsal.divap.vo.RegionVO;
@@ -184,8 +185,9 @@ implements Serializable {
 	public void uploadVersion() {
 		if (file != null){
 			try {
-				System.out.println("uploadVersion file is not null");
+				System.out.println("El archivo ha sido cargado correctamente");
 				String filename = file.getFileName();
+				filename = StringUtil.removeSpanishAccents(filename);
 				filename = filename.replaceAll(" ", "");
 				byte[] contentPlantillaFile = file.getContents();
 				File file = createTemporalFile(filename, contentPlantillaFile);
@@ -194,8 +196,8 @@ implements Serializable {
 				e.printStackTrace();
 			}
 		}else{
-			System.out.println("uploadVersion file is null");
-			FacesMessage message = new FacesMessage("uploadVersion file is null");
+			System.out.println("El archivo no ha sido cargado");
+			FacesMessage message = new FacesMessage("El archivo no ha sido cargado");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
 	}
@@ -292,8 +294,9 @@ implements Serializable {
 	public void uploadVersionFinal() {
 		if (file != null){
 			try {
-				System.out.println("uploadVersionFinal file is not null");
+				System.out.println("El archivo ha sido cargado correctamente");
 				String filename = file.getFileName();
+				filename = StringUtil.removeSpanishAccents(filename);
 				filename = filename.replaceAll(" ", "");
 				byte[] contentResolucionFile = file.getContents();
 				Integer docResolucion = persistFile(filename, contentResolucionFile);
@@ -314,8 +317,8 @@ implements Serializable {
 				e.printStackTrace();
 			}
 		}else{
-			System.out.println("uploadVersion file is null");
-			FacesMessage message = new FacesMessage("uploadVersion file is null");
+			System.out.println("El archivo no ha sido cargado");
+			FacesMessage message = new FacesMessage("El archivo no ha sido cargado");
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
 	}
