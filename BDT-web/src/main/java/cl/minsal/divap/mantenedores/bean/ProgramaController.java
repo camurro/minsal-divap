@@ -20,8 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
+import minsal.divap.dao.EstimacionFlujoCajaDAO;
 import minsal.divap.dao.MantenedoresDAO;
 import minsal.divap.dao.ProgramasDAO;
+import minsal.divap.dao.RemesasDAO;
 import minsal.divap.dao.UsuarioDAO;
 import minsal.divap.enums.TipoComponenteEnum;
 import minsal.divap.service.ComponenteService;
@@ -39,6 +41,8 @@ import cl.minsal.divap.mantenedores.bean.util.JsfUtil;
 import cl.minsal.divap.mantenedores.enums.PersistAction;
 import cl.minsal.divap.mantenedores.facade.ProgramaFacade;
 import cl.minsal.divap.model.Componente;
+import cl.minsal.divap.model.Cuota;
+import cl.minsal.divap.model.DetalleRemesas;
 import cl.minsal.divap.model.FechaRemesa;
 import cl.minsal.divap.model.Programa;
 import cl.minsal.divap.model.ProgramaAno;
@@ -102,6 +106,10 @@ public class ProgramaController extends AbstractController<Programa> {
 	private ComponenteService componenteService;
 	@EJB
 	private ProgramasDAO programasDAO;
+	@EJB
+	private EstimacionFlujoCajaDAO estimacionFlujoCajaDAO;
+	@EJB
+	private RemesasDAO remesasDAO;
 
 	private UsuarioController usuarioController;
 
@@ -157,6 +165,46 @@ public class ProgramaController extends AbstractController<Programa> {
 		FacesMessage msg = new FacesMessage("Cuota Editada", null);
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
+	
+	
+	public void editarOnRowEdit(RowEditEvent event) {
+		System.out.println("entra al row edit");
+		MantenedorCuotasVO cuotaVO = (MantenedorCuotasVO) event.getObject();
+		System.out.println("cuotaVO --> " + cuotaVO);
+		
+		Integer porcentajeAcumuladoCuotas = 0;
+		
+//		for(int i = 0; i < cuotas.size(); i ++){
+//			if(cuotas.get(i).getNroCuota() == cuotaVO.getNroCuota()){
+//				cuotas.remove(i);
+//				cuotas.add(i, cuotaVO);
+//			}
+//		}
+		for(MantenedorCuotasVO cuotasVO : this.cuotas){
+			porcentajeAcumuladoCuotas = porcentajeAcumuladoCuotas + cuotasVO.getPorcentajeCuota();
+		}
+		
+		
+		
+		if(porcentajeAcumuladoCuotas > 100){
+			errorMessage = "Debe ingresar un porcentaje de cuota mas bajo";
+			PrimeFacesUtil.ejecutarJavaScript("levantarError();");
+			
+			
+		}else{
+			if(porcentajeAcumuladoCuotas == 100){
+				permitirGuardarPrograma = true;
+			}else{
+				permitirGuardarPrograma = false;
+			}
+			this.totalPorcentajeCuotas = porcentajeAcumuladoCuotas;
+			
+			FacesMessage msg = new FacesMessage("Cuota Editada", null);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+		
+	}
+	
 
 	public void onRowCancel(RowEditEvent event) {
 		FacesMessage msg = new FacesMessage("Edicion Cancelada", null);
@@ -255,6 +303,8 @@ public class ProgramaController extends AbstractController<Programa> {
 				}
 			}
 		}
+		
+		
 		
 		
 
@@ -851,8 +901,10 @@ public class ProgramaController extends AbstractController<Programa> {
 				cuota.setPorcentajeCuota(porcentajeCuota);
 				if(this.fecha_cuota != null){
 					cuota.setFecha_cuota(fecha_cuota);
+					cuota.setMes(fecha_cuota.getMonth());
 				}
 				cuota.setNroCuota(cuotas.size() + 1);
+				cuota.setPuedeEliminarse(true);
 				cuotas.add(cuota);
 				if(cuotas.size() > 0){
 					this.firstCuota = false;

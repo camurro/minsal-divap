@@ -14,12 +14,13 @@ public class MantenedorCuotasVO implements Serializable{
 	private Integer mes;
 	private Date fecha_cuota;
 	private Boolean puedeEliminarse;
+	private Boolean editarPuedeEliminarCuota;
 	
 	public MantenedorCuotasVO(){
 		
 	}
 	
-	public MantenedorCuotasVO(Integer idCuota, Integer nroCuota, Integer porcentajeCuota, Integer mes, Date fecha_cuota, Boolean puedeEliminarse){
+	public MantenedorCuotasVO(Integer idCuota, Integer nroCuota, Integer porcentajeCuota, Integer mes, Date fecha_cuota, Boolean puedeEliminarse, Boolean editarPuedeEliminarCuota){
 		super();
 		this.idCuota = idCuota;
 		this.nroCuota = nroCuota;
@@ -27,6 +28,7 @@ public class MantenedorCuotasVO implements Serializable{
 		this.mes = mes;
 		this.fecha_cuota = fecha_cuota;
 		this.puedeEliminarse = puedeEliminarse;
+		this.editarPuedeEliminarCuota = editarPuedeEliminarCuota;
 	}
 	
 	public MantenedorCuotasVO(MantenedorCuotasVO mantenedorNuevo){
@@ -85,6 +87,14 @@ public class MantenedorCuotasVO implements Serializable{
 
 	public void setPuedeEliminarse(Boolean puedeEliminarse) {
 		this.puedeEliminarse = puedeEliminarse;
+	}
+
+	public Boolean getEditarPuedeEliminarCuota() {
+		return editarPuedeEliminarCuota;
+	}
+
+	public void setEditarPuedeEliminarCuota(Boolean editarPuedeEliminarCuota) {
+		this.editarPuedeEliminarCuota = editarPuedeEliminarCuota;
 	}
 
 	@Override
