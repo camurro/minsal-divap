@@ -26924,4 +26924,13 @@ ALTER TABLE detalle_remesas
 ALTER TABLE detalle_remesas
    ALTER COLUMN monto_remesa TYPE bigint;
 
+INSERT INTO rebaja_corte(rebaja_corte_id, mes_desde, mes_hasta, mes_rebaja, mes_inicio) VALUES (1, 1, 3, 5, 1);
+INSERT INTO rebaja_corte(rebaja_corte_id, mes_desde, mes_hasta, mes_rebaja, mes_inicio) VALUES (2, 4, 6, 8, 1);
+INSERT INTO rebaja_corte(rebaja_corte_id, mes_desde, mes_hasta, mes_rebaja, mes_inicio) VALUES (3, 7, 8, 10, 1);
+INSERT INTO rebaja_corte(rebaja_corte_id, mes_desde, mes_hasta, mes_rebaja, mes_inicio) VALUES (4, 9, 10, 12, 1);
+
+INSERT INTO tipo_cumplimiento(id_tipo_cumplimiento, descripcion) VALUES (1, 'Actividad General');
+INSERT INTO tipo_cumplimiento(id_tipo_cumplimiento, descripcion) VALUES (2, 'Continuidad de la Atención de Salud');
+INSERT INTO tipo_cumplimiento(id_tipo_cumplimiento, descripcion) VALUES (3, 'Actividad con Garantías Explícitas en Salud');
+
 

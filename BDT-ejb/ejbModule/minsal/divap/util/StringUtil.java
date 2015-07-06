@@ -103,7 +103,8 @@ public class StringUtil {
      * @return
      */
     public static String removeSpanishAccents(String input) {
-        input = input.replace('á', 'a').replace('é', 'e').replace('í', 'i').replace('ó', 'o').replace('ú', 'u').replace('ñ', 'n').replace('Á', 'A').replace('É', 'E').replace('Í', 'I').replace('Ó', 'O').replace('Ú', 'U').replace('Ñ', 'N').replace('º', ' ');
+        input = input.replace('á', 'a').replace('é', 'e').replace('í', 'i').replace('ó', 'o').replace('ú', 'u').replace('ñ', 'n').replace('Á', 'A').replace('É', 'E').replace('Í', 'I').replace('Ó', 'O').replace('Ú', 'U')
+        		.replace('Ñ', 'N').replace('º', ' ').replace('\'', ' ');
         return input;
     }
     
