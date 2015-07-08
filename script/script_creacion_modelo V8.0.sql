@@ -26933,4 +26933,6 @@ INSERT INTO tipo_cumplimiento(id_tipo_cumplimiento, descripcion) VALUES (1, 'Act
 INSERT INTO tipo_cumplimiento(id_tipo_cumplimiento, descripcion) VALUES (2, 'Continuidad de la Atención de Salud');
 INSERT INTO tipo_cumplimiento(id_tipo_cumplimiento, descripcion) VALUES (3, 'Actividad con Garantías Explícitas en Salud');
 
+INSERT INTO institucion(id_institucion, nombre, email, director) VALUES (1, 'FONASA', 1, 19);
+
 

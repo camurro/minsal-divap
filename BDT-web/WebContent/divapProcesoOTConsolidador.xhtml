@@ -648,7 +648,7 @@
 									<c:if test="#{procesoOTRevisarConsolidacionController.percapita}">
 										<p:tab title="Per Capita">
 											<p:dataTable resizableColumns="true" value="#{procesoOTRevisarConsolidacionController.resultadoPercapita}" liveResize="true" var="detallePercapita"
-												rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+												rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." 
 												styleClass="dataTable" id="tablaResultadosPercapita" rowIndexVar="rowIndexPerCapita">
 												<p:columnGroup type="header">
 													<p:row>
@@ -736,7 +736,7 @@
 									<c:if test="#{procesoOTRevisarConsolidacionController.desempenoDificil}">
 										<p:tab title="Desempeño Dificil">
 											<p:dataTable resizableColumns="true" value="#{procesoOTRevisarConsolidacionController.resultadoPercapita}" liveResize="true" var="detalleDesempeno"
-												rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+												rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." 
 												styleClass="dataTable" id="tablaResultadosDesempeno" rowIndexVar="rowIndexDesempeno">
 												<p:columnGroup type="header">
 													<p:row>
@@ -824,7 +824,7 @@
 									<c:if test="#{procesoOTRevisarConsolidacionController.rebajaIAAPS}">
 										<p:tab title="Rebaja IAAPS">
 											<p:dataTable resizableColumns="true" value="#{procesoOTRevisarConsolidacionController.resultadoPercapita}" liveResize="true" var="detalleRebaja"
-												rows="10" paginator="false" paginatorPosition="bottom" emptyMessage="No se encontro información." 
+												rows="20" paginator="true" paginatorPosition="bottom" emptyMessage="No se encontro información." 
 												styleClass="dataTable" id="tablaResultadosRebaja" rowIndexVar="rowIndexRebaja">
 												<p:columnGroup type="header">
 													<p:row>

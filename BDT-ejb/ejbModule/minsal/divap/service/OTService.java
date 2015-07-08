@@ -2621,6 +2621,11 @@ public class OTService {
 								montoRemesa += new Long(antecedentesComunaCalculadoRebaja.getMontoRebaja());
 							}
 						}
+						
+						if(montoRemesa == 0){
+							continue;
+						}
+						
 						montoRemesa = montoRemesa * -1;
 						boolean primerMes = true;
 						boolean mesConMontoAsignado = false;
@@ -2960,18 +2965,10 @@ public class OTService {
 		if(numero){
 			dateFormat = new SimpleDateFormat("MM");
 			mesCurso = dateFormat.format(new Date());
-			mesCurso = "8";
 		}else{
 			dateFormat = new SimpleDateFormat("MMMM");
 			mesCurso = dateFormat.format(new Date());
-			mesCurso = "Agosto";
 		}
-		/*String mesCurso;
-		if(numero){
-			mesCurso="10";
-		}else{
-			mesCurso="OCTUBRE";
-		}*/
 		return mesCurso;
 	}
 
@@ -3465,7 +3462,7 @@ public class OTService {
 
 		if (plantillaOrdinarioOT == null) {
 			throw new RuntimeException(
-					"No se puede crear Borrador Decreto Aporte Estatal, la plantilla no esta cargada");
+					"No se puede crear Oficio Transferencia, la plantilla no esta cargada");
 		}
 
 		try {
@@ -3531,6 +3528,9 @@ public class OTService {
 		Long totalFinal = 0L;
 		List<ProgramaFonasaVO> encabezadoFonasa = programasService.getProgramasFonasa(true);
 		MimetypesFileTypeMap mimemap = new MimetypesFileTypeMap();
+		
+		Integer mesActual = Integer.parseInt(getMesCurso(true));
+		Integer diaDelMes = getDia();
 
 		List<CellExcelVO> header = new ArrayList<CellExcelVO>();
 		header.add(new CellExcelVO("COD.",1,2));	
@@ -3569,7 +3569,7 @@ public class OTService {
 		subHeader.add(new CellExcelVO("Total Ref. Servicios Subt. 29 ($)",1,1));
 
 		String filename = tmpDir + File.separator;
-		filename += "PlantillaResumenOrdenesTransferenciaFormatoFONASA.xlsx";
+		filename += "PlantillaResumenOrdenesTransferenciaFormatoFONASA-" + diaDelMes + "-" + mesActual + "-" + ano +".xlsx";
 		GeneradorExcel generadorExcel = new GeneradorExcel(filename);
 		String contenType = mimemap.getContentType(filename.toLowerCase());
 
@@ -3581,9 +3581,7 @@ public class OTService {
 
 		List<PlanillaResumenFonasaVO> resumenFonasa = new ArrayList<PlanillaResumenFonasaVO>();
 		List<ServicioSalud> servicios = utilitariosDAO.getServicios();
-		Integer mesActual = Integer.parseInt(getMesCurso(true));
 		List<FechaRemesa> fechasRemesas = remesasDAO.getFechasRemesasOrderByDia();
-		Integer diaDelMes = getDia();
 		if(fechasRemesas != null && fechasRemesas.size() > 0){
 			for(FechaRemesa fechaRemesa : fechasRemesas){
 				if(diaDelMes < fechaRemesa.getDia().getDia()){
@@ -3614,7 +3612,8 @@ public class OTService {
 				acumulador += detalle.getMontoRemesa();
 			}
 			resumen.setAddf(acumulador);
-
+			
+			acumulador = 0L;
 			programa = programasService.getProgramaByIdProgramaAndAno(Programas.REBAJAIAAPS.getId(), ano);
 			remesas = remesasDAO.getRemesasMesActualByDiaMesProgramaAnoServicioSubtitulo2(diaDelMes, mesActual,
 					programa.getIdProgramaAno(), servicio.getId(), Subtitulo.SUBTITULO24.getId(), Boolean.TRUE);
@@ -3622,11 +3621,14 @@ public class OTService {
 			for(DetalleRemesas detalle : remesas){
 				acumulador += detalle.getMontoRemesa();
 			}
+			if(acumulador<0){
+				acumulador *= -1;
+			}
 			resumen.setRebajaIaaps(acumulador);
 
 			resumen.setDesctoLeyes(0L);
 
-			Long totalPerCapita = resumen.getPerCapitaBasal() + resumen.getAddf() + resumen.getRebajaIaaps() + resumen.getDesctoLeyes();
+			Long totalPerCapita = resumen.getPerCapitaBasal() + resumen.getAddf() - resumen.getRebajaIaaps() - resumen.getDesctoLeyes();
 			resumen.setTotalPerCapita(totalPerCapita);
 
 			resumen.setFonasaS24(cargarFonasa(servicio.getId(), Subtitulo.SUBTITULO24.getId(), ano));
@@ -4631,7 +4633,6 @@ public class OTService {
 	private Integer getDia(){
 		Calendar calendar = Calendar.getInstance();
 		Integer dia = calendar.get(Calendar.DAY_OF_MONTH);
-		dia = 20;
 		return dia;
 	}
 

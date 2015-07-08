@@ -454,6 +454,13 @@ public class ReportesServices {
 		Date nowDate = new Date();
 		return Integer.valueOf(formatNowYear.format(nowDate));
 	}
+	
+	private Integer getDia(){
+		Calendar calendar = Calendar.getInstance();
+		Integer dia = calendar.get(Calendar.DAY_OF_MONTH);
+		return dia;
+	}
+
 
 	public List<ReporteMarcoPresupuestarioComunaVO> getReporteMarcoPorComunaFiltroServicioComuna(Integer idServicio, Integer idComuna, Subtitulo subtitulo, String usuario, Integer ano) {
 
@@ -486,8 +493,8 @@ public class ReportesServices {
 				}
 			}
 		}
-		Calendar calendar = Calendar.getInstance();
-		Integer diaDelMes = calendar.get(Calendar.DAY_OF_MONTH);
+		
+		Integer diaDelMes = getDia();
 		Integer mesActual = Integer.parseInt(getMesCurso(true));
 
 		System.out.println("diaDelMes --> "+diaDelMes);
@@ -495,6 +502,10 @@ public class ReportesServices {
 		if(comunas != null && comunas.size() > 0){
 			for(Comuna comuna : comunas){
 				for (ProgramaVO programa : programasVO) {
+					if(programa.getId() < 0){
+						// no toma en cuenta percapita, desempeño dificial y rebaja
+						continue;
+					}
 					List<ComponentesVO> componentes = programasService.getComponentesByProgramaAnoSubtitulos(programa.getIdProgramaAno(), subtitulo);
 					for (ComponentesVO componenteVO : componentes) {
 						ReporteMarcoPresupuestarioComunaVO reporteMarcoPresupuestarioComunaVO = new ReporteMarcoPresupuestarioComunaVO();
